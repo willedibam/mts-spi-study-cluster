@@ -5,7 +5,7 @@
 #PBS -l walltime=08:00:00
 # Update -J range after running:
 #   python -m src.run_experiments --mode full --count-only
-#PBS -J 1-46
+#PBS -J 1-225
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 

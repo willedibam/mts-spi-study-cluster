@@ -94,9 +94,9 @@ The PBS script tries to `source .venv/bin/activate` if present; otherwise ensure
 
 ## Experiment configs & mapping
 
-- `configs/experiments_dev.yaml` and `configs/experiments_full.yaml` are the single source of truth for which MTS classes, sizes (`M`, `T`), instances, and variants to run.
+- `configs/experiments_dev.yaml` and `configs/experiments_full.yaml` are the single source of truth for which MTS classes, sizes (`M`, `T`), instances, and variants to run. Each file has a `defaults:` block (shared `M_values`, `T_values`, `instances`); individual classes only override those when absolutely necessary.
 - Each class selects a generator (`var`, `cml_logistic`, `kuramoto`, `gaussian_noise`, `cauchy_noise`), provides default parameters, and optionally defines variants (e.g. CML α/ε combos, Kuramoto directed vs undirected).
-- `src/mapping.py` expands the Cartesian product of `(class × variants × M × T × instances)` into a deterministic list. PBS job indices (1-based) map directly onto this list.
+- `src/mapping.py` expands the Cartesian product of `(class × M × T × instances)` into a deterministic list, then distributes variants across those datasets in a round-robin fashion so each class still contributes exactly the same number of combinations (e.g. 45 datasets per class with 3 Ms × 5 Ts × 3 instances). PBS job indices (1-based) map directly onto this list. If `include_base_variant: true` (default), the “base” parameter set participates in that rotation alongside any variant blocks.
 - Run `python -m src.run_experiments --mode full --count-only` after editing the YAML to obtain the new array size, then update `#PBS -J 1-N` inside `jobs/run_spi_array.pbs`.
 
 ## Running locally
