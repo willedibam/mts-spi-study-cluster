@@ -1,0 +1,335 @@
+# Oliver SPI Configuration
+# Combines discriminating SPIs from FEATURE_IMPORTANCE.md + low-cost SPIs from pilot0_config.yaml
+# Excludes: DynamicTimeWarping (high cost)
+
+# ============================================================================
+# LOW-COST SPIs FROM PILOT0 (BASELINE MEASURES)
+# ============================================================================
+
+.statistics.basic:
+  SpearmanR:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: false
+
+  Covariance:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+
+  CrossCorrelation:
+    labels:
+      - undirected
+      - linear
+      - signed/unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - statistic: mean
+      - statistic: max
+
+  KendallTau:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: false
+
+.statistics.distance:
+  PairwiseDistance:
+    labels:
+      - unsigned
+      - unordered
+      - nonlinear
+      - undirected
+    dependencies:
+    configs:
+      - metric: euclidean
+      - metric: cosine
+      - metric: cityblock
+      - metric: braycurtis
+      - metric: canberra
+
+  DistanceCorrelation:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - biased: false
+
+  MultiscaleGraphCorrelation:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+
+  DynamicTimeWarping:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - global_constraint: sakoe_chiba
+
+# ============================================================================
+# INFORMATION-THEORETIC SPIs (HIGH DISCRIMINATING POWER)
+# ============================================================================
+
+.statistics.infotheory:
+  MutualInfo:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+      - java
+    configs:
+      - estimator: gaussian
+      - estimator: kraskov
+        prop_k: 4
+
+  ConditionalEntropy:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+      - java
+    configs:
+      - estimator: kozachenko
+      - estimator: kernel
+
+  DirectedInfo:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+      - java
+    configs:
+      - estimator: gaussian
+
+  TimeLaggedMutualInfo:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+      - java
+    configs:
+      - estimator: kraskov
+        prop_k: 4
+
+  TransferEntropy:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+      - java
+    configs:
+      - estimator: gaussian
+        k_history: 1
+        l_history: 1
+      - estimator: symbolic
+        k_history: 1
+        l_history: 1
+      - estimator: kraskov
+        prop_k: 4
+        k_history: 1
+        l_history: 1
+      - estimator: kraskov
+        prop_k: 4
+        k_history: 1
+        l_history: 1
+        dyn_corr_excl: AUTO
+
+# ============================================================================
+# SPECTRAL SPIs (FREQUENCY-DOMAIN DISCRIMINATORS)
+# ============================================================================
+
+.statistics.spectral:
+  CoherenceMagnitude:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0
+        fmax: 0.5
+
+  ImaginaryCoherence:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0
+        fmax: 0.5
+      - fmin: 0.25
+        fmax: 0.5
+
+  PhaseSlopeIndex:
+    labels:
+      - directed
+      - linear/nonlinear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0
+        fmax: 0.5
+
+  # Partial Directed Coherence (top discriminator for Noise vs VAR/CML)
+  PartialDirectedCoherence:
+    labels:
+      - directed
+      - linear
+      - unsigned
+      - multivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0
+        fmax: 0.5
+      - fmin: 0.25
+        fmax: 0.5
+
+  # Directed Transfer Function
+  DirectedTransferFunction:
+    labels:
+      - directed
+      - linear
+      - unsigned
+      - multivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0
+        fmax: 0.5
+
+  # Generalized Partial Directed Coherence
+  GeneralizedPartialDirectedCoherence:
+    labels:
+      - directed
+      - linear
+      - unsigned
+      - multivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+
+  # Phase Lag Index
+  PhaseLagIndex:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.5
+
+  # Spectral Granger Causality (critical discriminator)
+  SpectralGrangerCausality:
+    labels:
+      - directed
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - method: nonparametric
+        fmin: 0.25
+        fmax: 0.5
+        statistic: mean
+
+.statistics.misc:
+  PowerEnvelopeCorrelation:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - orth: true
+        log: false
+        absolute: false
+
+  Cointegration:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - method: johansen
+        statistic: trace_stat
+        det_order: 0
+        k_ar_diff: 10

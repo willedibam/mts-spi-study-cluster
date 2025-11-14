@@ -1,0 +1,75 @@
+mode: dev
+base_output_dir: data/dev
+pyspi_config: configs/fast_config.yaml
+pyspi_subset: default
+normalise: true
+rng_seed: 42024
+save_heatmap: false
+threads: 4
+
+mts_classes:
+  - name: "VAR(1)"
+    labels: ["linear", "gaussian", "var"]
+    generator: "var"
+    base_params:
+      phi: 0.92
+      coupling: 0.7
+      noise_std: 0.15
+      transients: 80
+    M_values: [5, 10]
+    T_values: [250]
+    instances: [0, 1]
+    variants:
+      - name: "phi0.85"
+        params:
+          phi: 0.85
+
+  - name: "CML"
+    labels: ["chaotic", "cml", "nonlinear"]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      delta: 10
+      transients: 80
+    M_values: [5]
+    T_values: [250]
+    instances: [0, 1]
+    variants:
+      - name: "alpha1p8_eps0p002"
+        params:
+          alpha: 1.8
+          eps: 0.002
+
+  - name: "Kuramoto"
+    labels: ["oscillator", "kuramoto", "phase"]
+    generator: "kuramoto"
+    base_params:
+      dt: 0.004
+      K: 1.5
+      omega_mean: 0.4
+      omega_std: 0.03
+      transients: 1500
+    M_values: [5]
+    T_values: [500]
+    instances: [0, 1]
+    variants:
+      - name: "directed"
+        params:
+          directed: true
+
+  - name: "GaussianNoise"
+    labels: ["noise", "gaussian"]
+    generator: "gaussian_noise"
+    base_params: {}
+    M_values: [5]
+    T_values: [250]
+    instances: [0, 1, 2]
+
+  - name: "CauchyNoise"
+    labels: ["noise", "cauchy", "heavy-tail"]
+    generator: "cauchy_noise"
+    base_params: {}
+    M_values: [5]
+    T_values: [250]
+    instances: [0, 1, 2]
