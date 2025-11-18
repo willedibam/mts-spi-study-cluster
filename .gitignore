@@ -10,6 +10,7 @@ dist/
 # venv
 .venv/
 .env/
+.venv-*/
 
 # notebooks
 .ipynb_checkpoints/
@@ -32,3 +33,6 @@ logs/
 
 # PowerShell scripts
 *.ps1
+
+# Weird cluster outputs
+spi_array.*

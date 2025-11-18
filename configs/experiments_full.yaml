@@ -45,23 +45,40 @@ mts_classes:
       - name: "alpha2_eps0p3"
         params: {alpha: 2.0, eps: 0.3}
 
+  - name: "CML_STI"
+    labels: ["cml", "logistic", "sti_typeI"]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      delta: 12
+      transients: 0
+    variants:
+      - name: "settled"
+        params: { transients: 100 }
+
+
   - name: "Kuramoto"
     labels: ["oscillator", "kuramoto", "phase"]
     generator: "kuramoto"
     base_params:
-      dt: 0.002
-      K: 2.0
-      omega_mean: 0.5
-      omega_std: 0.05
-      eta: 0.01
-      transients: 2500
+      dt: 0.004
+      K: 1.5
+      omega_mean: 0.4
+      omega_std: 0.03
+      transients: 1500
+      coupling_scheme: "bidirectional_list"
+      k_ring: 1
     variants:
-      - name: "strong_coupling"
-        params: {K: 2.5, omega_std: 0.03}
-      - name: "noisy_sync"
-        params: {eta: 0.02, omega_std: 0.08}
-      - name: "directed_ring"
-        params: {directed: true, eta: 0.005}
+      - name: "noisy"
+        params:
+          eta: 0.02
+          omega_std: 0.08
+      - name: "grid_four"
+        params:
+          coupling_scheme: "grid_four"
+          K: 1.0
+
 
   - name: "GaussianNoise"
     labels: ["noise", "gaussian"]

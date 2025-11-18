@@ -85,9 +85,17 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--heatmap",
+        dest="heatmap",
         action="store_true",
-        help="Force creation of mts_heatmap.png.",
+        help="Generate mts_heatmap.png (default behaviour).",
     )
+    parser.add_argument(
+        "--no-heatmap",
+        dest="heatmap",
+        action="store_false",
+        help="Disable heatmap generation.",
+    )
+    parser.set_defaults(heatmap=True)
     parser.add_argument(
         "--parquet",
         action="store_true",
@@ -98,12 +106,19 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Show which dataset would run without executing generation or PySPI.",
     )
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Skip datasets that already have timeseries, calc.csv, and meta.json.",
+    )
     args = parser.parse_args(argv)
     return args
 
 
 def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
+    if not os.environ.get("CUDA_VISIBLE_DEVICES"):
+        os.environ["CUDA_VISIBLE_DEVICES"] = "[]"
     config_path = (
         Path(args.experiment_config)
         if args.experiment_config
@@ -138,6 +153,12 @@ def main(argv: List[str] | None = None) -> None:
     print(f"[INFO] Running dataset {spec.index}/{len(mapping)}: {spec.name}")
     if args.dry_run:
         print(_describe_dataset(spec))
+        return
+    if args.skip_existing and _dataset_complete(spec.dataset_dir):
+        print(
+            f"[INFO] Skipping dataset {spec.name} "
+            f"(found meta.json and calc.csv in {to_relative(spec.dataset_dir)})."
+        )
         return
     _export_thread_hints(args.threads or spec.threads)
     dataset_dir = spec.dataset_dir
@@ -310,6 +331,15 @@ def _build_metadata(
             "compute_seconds": compute_seconds,
         },
     }
+
+
+def _dataset_complete(dataset_dir: Path) -> bool:
+    required = [
+        dataset_dir / "meta.json",
+        dataset_dir / "csv" / "calc.csv",
+        dataset_dir / "arrays" / "timeseries.npy",
+    ]
+    return all(path.exists() for path in required)
 
 
 def _describe_dataset(spec) -> str:

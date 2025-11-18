@@ -84,47 +84,107 @@ def generate_cml_logistic(
     output = Y[(transients * delta) :: delta, :]
     return zscore(output[:T], axis=0)
 
+def _build_kuramoto_adjacency(
+    M: int,
+    scheme: str = "bidirectional_list",
+    k_ring: int = 1,
+) -> np.ndarray:
+    """
+    Build a boolean adjacency matrix a_ij for the Kuramoto model.
+
+    scheme:
+      - "all_to_all": every oscillator connected to every other.
+      - "bidirectional_list": 1D ring, each node to k_ring neighbours on each side.
+      - "grid_four": 2D torus, each node to its 4 nearest neighbours;
+                     requires M to be a perfect square.
+    """
+    scheme = scheme.lower()
+    A = np.zeros((M, M), float)
+
+    if scheme in {"all_to_all", "all-to-all"}:
+        A[:] = 1.0
+        np.fill_diagonal(A, 0.0)
+
+    elif scheme in {"bidirectional_list", "ring", "list"}:
+        for i in range(M):
+            for d in range(1, k_ring + 1):
+                A[i, (i + d) % M] = 1.0
+                A[i, (i - d) % M] = 1.0
+
+    elif scheme in {"grid_four", "grid-4", "grid"}:
+        side = int(np.sqrt(M))
+        if side * side != M:
+            raise ValueError(
+                f"grid_four scheme requires M to be a perfect square, got M={M}"
+            )
+        for idx in range(M):
+            r, c = divmod(idx, side)
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nr = (r + dr) % side
+                nc = (c + dc) % side
+                j = nr * side + nc
+                A[idx, j] = 1.0
+    else:
+        raise ValueError(f"Unknown Kuramoto coupling scheme '{scheme}'")
+
+    return A
 
 def generate_kuramoto(
     M: int,
     T: int,
     dt: float = 0.002,
     K: float = 1.5,
-    k: int = 1,
-    w: float = 1.0,
+    k_ring: int = 1,
     omega_mean: float = 2 * np.pi * 0.1,
     omega_std: float = 0.01,
     eta: float = 0.0,
     transients: int = 2000,
     output: str = "sin",
-    directed: bool = False,
+    coupling_scheme: str = "bidirectional_list",
     rng=None,
 ) -> np.ndarray:
+    """
+    Kuramoto network:
+
+        dθ_i/dt = ω_i + K * (1/deg_i) * sum_j a_ij sin(θ_j - θ_i) + noise
+
+    where a_ij is boolean adjacency determined by `coupling_scheme`
+    and deg_i = sum_j a_ij.
+
+    We then output z_i(t) = sin θ_i(t) (or cos/θ directly) and z-score per channel.
+    """
     rng = _resolve_rng(None, rng)
-    A = np.zeros((M, M))
-    if directed:
-        for i in range(M):
-            A[i, (i + 1) % M] = w
-    else:
-        for i in range(M):
-            for d in range(1, k + 1):
-                A[i, (i + d) % M] = w
-                A[i, (i - d) % M] = w
-    theta = rng.uniform(0, 2 * np.pi, size=M)
+
+    # Boolean adjacency a_ij
+    A = _build_kuramoto_adjacency(M, scheme=coupling_scheme, k_ring=k_ring)
+    degree = A.sum(axis=1)
+    # Avoid division by zero if some node has no neighbours
+    inv_degree = np.where(degree > 0, 1.0 / degree, 0.0)
+
+    # Initial phases and natural frequencies
+    theta = rng.uniform(0.0, 2.0 * np.pi, size=M)
     omega = rng.normal(omega_mean, omega_std, size=M)
+
     steps = transients + T
-    Y = np.zeros((steps, M))
+    Y = np.zeros((steps, M), float)
+
     for t in range(steps):
+        # Record observable z_i(t)
         if output == "sin":
             Y[t] = np.sin(theta)
         elif output == "cos":
             Y[t] = np.cos(theta)
         else:
             Y[t] = theta
-        S = np.sin(theta[None, :] - theta[:, None])
-        coupling_term = K * (A * S).sum(axis=1)
+
+        # Kuramoto coupling term
+        phase_diff = theta[None, :] - theta[:, None]    # θ_j - θ_i in [i,j] layout
+        coupling_term = (A * np.sin(phase_diff)).sum(axis=1)
+
+        dtheta = omega + K * inv_degree * coupling_term
         noise = eta * np.sqrt(dt) * rng.normal(size=M)
-        theta = np.mod(theta + (omega + coupling_term) * dt + noise, 2 * np.pi)
+        theta = np.mod(theta + dtheta * dt + noise, 2.0 * np.pi)
+
     return zscore(Y[transients:], axis=0)
 
 
