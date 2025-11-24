@@ -8,8 +8,8 @@ save_heatmap: false
 threads: 8
 
 defaults:
-  M_values: [5, 10, 20]
-  T_values: [250, 500, 750, 1000, 1250]
+  M_values: [4, 9, 16]
+  T_values: [100, 400, 900, 1600]
   instances: [0, 1, 2]
 
 mts_classes:
@@ -32,6 +32,8 @@ mts_classes:
   - name: "CML"
     labels: ["nonlinear", "cml"]
     generator: "cml_logistic"
+    M_values: [9, 16, 25]
+    T_values: [100, 400, 900, 1600]
     base_params:
       alpha: 1.7522
       eps: 0.00115
@@ -48,6 +50,8 @@ mts_classes:
   - name: "CML_STI"
     labels: ["cml", "logistic", "sti_typeI"]
     generator: "cml_logistic"
+    M_values: [9, 16, 25]
+    T_values: [100, 400, 900, 1600]
     base_params:
       alpha: 1.7522
       eps: 0.00115
@@ -63,7 +67,7 @@ mts_classes:
     generator: "kuramoto"
     base_params:
       dt: 0.004
-      K: 1.5
+      K: -4
       omega_mean: 0.4
       omega_std: 0.03
       transients: 1500

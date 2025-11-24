@@ -20,6 +20,66 @@ def _as_path(path_value: str | Path) -> Path:
     return project_root() / path
 
 
+def _parse_delta_list(value: Any) -> List[int]:
+    if value is None:
+        return [1]
+    if isinstance(value, list):
+        parsed = [int(v) for v in value if int(v) > 0]
+        return parsed or [1]
+    if isinstance(value, (int, float)):
+        val = int(value)
+        return [val if val > 0 else 1]
+    text = str(value)
+    parts = [token.strip() for token in text.split(",")]
+    parsed = []
+    for token in parts:
+        if not token:
+            continue
+        parsed.append(max(1, int(token)))
+    return parsed or [1]
+
+
+_KURAMOTO_CONNECTIVITY_ALIASES = {
+    "all-to-all": "all-to-all",
+    "all_to_all": "all-to-all",
+    "alltoall": "all-to-all",
+    "full": "all-to-all",
+    "fully_connected": "all-to-all",
+    "bidirectional-list": "bidirectional-list",
+    "bidirectional_list": "bidirectional-list",
+    "list": "bidirectional-list",
+    "ring": "bidirectional-list",
+    "grid-four": "grid-four",
+    "grid_four": "grid-four",
+    "grid-4": "grid-four",
+    "grid": "grid-four",
+}
+
+
+def _format_numeric_token(value: Any) -> str:
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        return slugify(str(value))
+    text = f"{numeric:.8f}".rstrip("0").rstrip(".")
+    if not text or text == "-":
+        text = "0"
+    if text == "-0":
+        text = "0"
+    return text.replace(".", "p")
+
+
+def _canonical_kuramoto_connectivity(name: str) -> str:
+    key = name.strip().lower().replace(" ", "-")
+    key = key.replace("_", "-")
+    if key not in _KURAMOTO_CONNECTIVITY_ALIASES:
+        raise ValueError(
+            f"Unknown Kuramoto connectivity '{name}'. "
+            "Expected one of all-to-all, bidirectional-list, grid-four."
+        )
+    return _KURAMOTO_CONNECTIVITY_ALIASES[key]
+
+
 @dataclass(frozen=True)
 class VariantSpec:
     name: str | None
@@ -176,6 +236,7 @@ class DatasetSpec:
     save_heatmap: bool
     rng_seed: int
     threads: int | None
+    heatmap_deltas: List[int]
 
     @property
     def name(self) -> str:
@@ -193,6 +254,42 @@ class DatasetSpec:
             "pyspi_config": str(self.pyspi_config),
             "dataset_dir": str(self.dataset_dir),
         }
+
+
+def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
+    base = f"M{spec.M}_T{spec.T}_I{spec.instance}"
+    class_name = spec.mts_class.lower()
+    if class_name.startswith("cml"):
+        alpha = spec.generator_params.get("alpha")
+        eps = spec.generator_params.get("eps") or spec.generator_params.get("epsilon")
+        if alpha is None or eps is None:
+            return None
+        alpha_token = _format_numeric_token(alpha)
+        eps_token = _format_numeric_token(eps)
+        return f"{base}_alpha{alpha_token}-eps{eps_token}"
+    if class_name == "kuramoto":
+        conn = spec.generator_params.get("connectivity") or spec.generator_params.get(
+            "coupling_scheme"
+        )
+        coupling = spec.generator_params.get("k")
+        if coupling is None:
+            coupling = spec.generator_params.get("K")
+        if conn is None or coupling is None:
+            return None
+        conn_slug = _canonical_kuramoto_connectivity(str(conn))
+        k_token = _format_numeric_token(coupling)
+        return f"{base}_{conn_slug}-k-{k_token}"
+    return None
+
+
+def _apply_dataset_slug(spec: DatasetSpec) -> None:
+    slug = _custom_dataset_slug(spec)
+    if not slug:
+        slug = f"M{spec.M}_T{spec.T}_I{spec.instance}"
+    if spec.variant and spec.variant.slug:
+        slug = f"{slug}_{spec.variant.slug}"
+    spec.dataset_slug = slug
+    spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
 
 
 class DatasetMapping:
@@ -213,7 +310,6 @@ class DatasetMapping:
 
     def _expand_specs(self) -> List[DatasetSpec]:
         specs: List[DatasetSpec] = []
-        seed_cursor = self.config.rng_seed
         for class_entry in self.config.classes:
             class_specs: List[DatasetSpec] = []
             for M in class_entry.M_values:
@@ -260,30 +356,55 @@ class DatasetMapping:
                                 pyspi_subset=pyspi_subset,
                                 normalise=normalise,
                                 save_heatmap=save_heatmap,
-                                rng_seed=seed_cursor,
+                                rng_seed=instance * 2 + 1,
                                 threads=threads,
+                                heatmap_deltas=[1],
                             )
                         )
-                        seed_cursor += 1
             variant_choices: List[VariantSpec | None] = []
             if class_entry.include_base_variant:
                 variant_choices.append(None)
             variant_choices.extend(class_entry.variants)
             if variant_choices:
-                for idx, spec in enumerate(class_specs):
-                    variant = variant_choices[idx % len(variant_choices)]
-                    spec.generator_params = dict(class_entry.base_params)
-                    if variant:
-                        spec.generator_params.update(variant.params)
-                    spec.variant = variant
-                    if variant and variant.slug:
-                        spec.dataset_slug = f"{spec.dataset_slug}_{variant.slug}"
-                        spec.dataset_dir = (
-                            spec.base_output_dir
-                            / spec.class_dir
-                            / spec.dataset_slug
+                expanded_specs: List[DatasetSpec] = []
+                for spec in class_specs:
+                    for variant in variant_choices:
+                        clone = DatasetSpec(
+                            index=spec.index,
+                            mode=spec.mode,
+                            mts_class=spec.mts_class,
+                            class_labels=spec.class_labels,
+                            class_dir=spec.class_dir,
+                            dataset_slug=spec.dataset_slug,
+                            dataset_dir=spec.dataset_dir,
+                            generator=spec.generator,
+                            base_output_dir=spec.base_output_dir,
+                            generator_params=dict(class_entry.base_params),
+                            variant=variant,
+                            M=spec.M,
+                            T=spec.T,
+                            instance=spec.instance,
+                            pyspi_config=spec.pyspi_config,
+                            pyspi_subset=spec.pyspi_subset,
+                            normalise=spec.normalise,
+                            save_heatmap=spec.save_heatmap,
+                            rng_seed=spec.rng_seed,
+                            threads=spec.threads,
+                            heatmap_deltas=[1],
                         )
+                        if variant:
+                            clone.generator_params.update(variant.params)
+                        expanded_specs.append(clone)
+                class_specs = expanded_specs
+            else:
+                for spec in class_specs:
+                    spec.generator_params = dict(class_entry.base_params)
             for spec in class_specs:
+                spec.heatmap_deltas = _parse_delta_list(
+                    spec.generator_params.get("delta")
+                )
+            for spec in class_specs:
+                _apply_dataset_slug(spec)
                 spec.index = len(specs) + 1
                 specs.append(spec)
         return specs

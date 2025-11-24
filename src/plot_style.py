@@ -20,8 +20,10 @@ def apply_plot_style() -> None:
             "font.size": 12,
             "font.family": "serif",
             "font.serif": ["Computer Modern Roman"],
-            "axes.labelsize": 16,
-            "axes.titlesize": 20,
+            "axes.labelsize": 14,
+            "axes.titlesize": 16,
+            "xtick.bottom": True,     # Turn the tick ON
+            "ytick.left": True,
             "xtick.labelsize": 10,
             "ytick.labelsize": 10,
         },

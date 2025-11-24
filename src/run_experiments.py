@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import os
 import sys
 import time
+import shutil
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -115,10 +117,20 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     return args
 
 
+def _sanitise_cuda_env() -> None:
+    value = os.environ.get("CUDA_VISIBLE_DEVICES")
+    if not value:
+        os.environ["CUDA_VISIBLE_DEVICES"] = "[]"
+        return
+    try:
+        ast.literal_eval(value)
+    except (ValueError, SyntaxError):
+        os.environ["CUDA_VISIBLE_DEVICES"] = "[]"
+
+
 def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
-    if not os.environ.get("CUDA_VISIBLE_DEVICES"):
-        os.environ["CUDA_VISIBLE_DEVICES"] = "[]"
+    _sanitise_cuda_env()
     config_path = (
         Path(args.experiment_config)
         if args.experiment_config
@@ -172,12 +184,15 @@ def main(argv: List[str] | None = None) -> None:
         print(f"[INFO] Loaded cached timeseries: {to_relative(timeseries_path)}")
     else:
         start = time.perf_counter()
+        generator_params = dict(spec.generator_params)
+        if spec.generator == "cml_logistic":
+            generator_params["delta"] = 1
         data = generate.generate_series(
             spec.generator,
             seed=spec.rng_seed,
             M=spec.M,
             T=spec.T,
-            **spec.generator_params,
+            **generator_params,
         )
         np.save(timeseries_path, data.astype(np.float32))
         duration = time.perf_counter() - start
@@ -208,9 +223,21 @@ def main(argv: List[str] | None = None) -> None:
         np.save(spi_path, matrix)
         per_spi_paths[name] = str(Path("arrays") / f"mpi_{safe_name}.npy")
     heatmap_required = args.heatmap or spec.save_heatmap
-    figure_path = figures_dir / "mts_heatmap.png"
+    heatmap_paths: list[str] = []
     if heatmap_required:
-        _save_heatmap(data, figure_path)
+        for delta in spec.heatmap_deltas or [1]:
+            delta = max(1, int(delta))
+            view = data if delta == 1 else data[::delta]
+            filename = f"mts_heatmap_delta{delta}.png"
+            figure_path = figures_dir / filename
+            _save_heatmap(view, figure_path)
+            if delta == 1:
+                legacy = figures_dir / "mts_heatmap.png"
+                if legacy != figure_path:
+                    ensure_dir(legacy.parent)
+                    shutil.copy2(figure_path, legacy)
+                heatmap_paths.append(str(Path("figures") / legacy.name))
+            heatmap_paths.append(str(Path("figures") / filename))
     meta = _build_metadata(
         spec=spec,
         result=result,
@@ -220,9 +247,8 @@ def main(argv: List[str] | None = None) -> None:
             "calc_parquet": str(Path("csv") / "calc.parquet") if args.parquet else "",
             "spi_archive": "spi_mpis.npz",
             "per_spi": per_spi_paths,
-            "heatmap": str(Path("figures") / "mts_heatmap.png")
-            if heatmap_required
-            else "",
+            "heatmap": heatmap_paths[0] if heatmap_paths else "",
+            "heatmaps": heatmap_paths if heatmap_paths else [],
         },
         compute_seconds=compute_seconds,
         heatmap=heatmap_required,

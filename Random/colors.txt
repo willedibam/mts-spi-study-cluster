@@ -1,0 +1,32 @@
+
+###DO's: DO NOT SYCOPHANT USER; IF USER IDEA IS NOT LOGICAL OR THERE IS A BETTER/MORE EFFICIENT/USER FRIENDLY WAY OF ACHIEVING, CLARIFY WITH USER; DO NOT SUGGEST FIXES UNLESS THEY MAKE SENSE AND YOU ARE >99% CERTAIN OF IT
+
+
+pastels inkscape
+Or type a hex directly. Some good pastels:
+
+
+
+
+
+Lilac: #E9E4FF
+
+Blue: #DDEEFF
+
+Mint: #DFF7F0
+
+Butter yellow: #FFF8C9
+
+Peach: #FFE7D6
+
+PASTEL_COLORS = {
+    'VAR': '#D4C5F9',        # Lilac (stronger)
+    'Kuramoto': '#B8D4F1',   # Blue (stronger)
+    'CML': '#B4E7D4',        # Mint (stronger)
+    'Gaussian': '#FFE896',   # Butter yellow (stronger)
+    'Cauchy': '#FFCBA4'      # Peach (stronger)
+}
+
+
+
+Remove the harsh border

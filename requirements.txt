@@ -11,3 +11,4 @@ tqdm>=4.66
 psutil>=5.9
 pyarrow>=15.0
 JPype1>=1.5
+pyclustering>=0.10.1
