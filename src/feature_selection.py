@@ -21,8 +21,8 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from .plot_style import apply_plot_style
-from .utils import ensure_dir, project_root, slugify, timestamp
+from .plot_style import apply_plot_style, save_figure
+from .utils import DATASET_MODES, ensure_dir, project_root, slugify, timestamp
 
 LOGGER = logging.getLogger(__name__)
 
@@ -202,6 +202,7 @@ def _evaluate_order_accuracy(
 def _plot_accuracy_curves(curves: dict[str, list[float]], path: Path, title: str) -> None:
     if not curves:
         return
+    apply_plot_style()
     fig, ax = plt.subplots(figsize=(6, 4), constrained_layout=True)
     for label, values in curves.items():
         if not values:
@@ -218,8 +219,7 @@ def _plot_accuracy_curves(curves: dict[str, list[float]], path: Path, title: str
     ax.set_ylim(0, 1)
     ax.grid(True, alpha=0.3)
     ax.legend(frameon=False)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, dpi=300)
+    save_figure(fig, path, dpi=300)
     plt.close(fig)
 
 
@@ -232,6 +232,7 @@ def _plot_stat_scores(
 ) -> None:
     if not indices:
         return
+    apply_plot_style()
     labels = [spi_names[i] for i in indices]
     fig, ax = plt.subplots(figsize=(6, 4), constrained_layout=True)
     colors = plt.cm.Blues(np.linspace(0.4, 0.9, len(indices)))
@@ -240,8 +241,7 @@ def _plot_stat_scores(
     ax.set_xticklabels(labels, rotation=45, ha="right")
     ax.set_ylabel("Statistic score")
     ax.set_title(title)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, dpi=300)
+    save_figure(fig, path, dpi=300)
     plt.close(fig)
 
 
@@ -298,7 +298,6 @@ def _plot_violin(
         return
     apply_plot_style()
     label_order_global = list(dict.fromkeys(labels.tolist()))
-    plt.rcParams["text.usetex"] = False
     mask = np.isin(labels, selected)
     if not mask.any():
         return
@@ -332,8 +331,7 @@ def _plot_violin(
     for tick in ax.get_xticklabels():
         tick.set_rotation(30)
         tick.set_ha("right")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, dpi=300)
+    save_figure(fig, path, dpi=300)
     plt.close(fig)
 
 
@@ -751,7 +749,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["dev", "full"],
+        choices=list(DATASET_MODES),
         help="Dataset mode to analyse.",
     )
     parser.add_argument(

@@ -19,8 +19,8 @@ from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import StandardScaler
 from umap import UMAP
 
-from .plot_style import apply_plot_style
-from .utils import ensure_dir, load_json, project_root
+from .plot_style import apply_plot_style, save_figure
+from .utils import DATASET_MODES, ensure_dir, load_json, project_root
 
 LOGGER = logging.getLogger(__name__)
 
@@ -346,6 +346,14 @@ def _build_variant_palette(df: pd.DataFrame) -> dict[str, tuple[float, float, fl
     return color_map
 
 
+def _is_dark_theme(option: str) -> bool:
+    return (option or "light").lower() == "dark"
+
+
+def _kde_colormap(color: tuple[float, float, float]):
+    return sns.light_palette(color, n_colors=10, as_cmap=True)
+
+
 def _plot_embedding(
     df: pd.DataFrame,
     space: str,
@@ -356,10 +364,12 @@ def _plot_embedding(
     silhouette: float | None,
     split_variants: bool,
     label_column: str,
+    theme: str,
 ) -> Path:
     apply_plot_style()
     ensure_dir(figures_dir)
     fig, ax = plt.subplots(figsize=(6, 6))
+    use_dark_theme = _is_dark_theme(theme)
     if split_variants:
         color_lookup = _build_variant_palette(df)
         ordered_labels = []
@@ -395,23 +405,42 @@ def _plot_embedding(
             label=label,
         )
         if len(cls_df) >= 5:
-            sns.kdeplot(
-                x=cls_df["x"],
-                y=cls_df["y"],
-                levels=4,
-                color=color,
-                alpha=0.25,
-                fill=True,
-                thresh=0.05,
-                ax=ax,
-            )
-    ax.set_facecolor("white")
+            if use_dark_theme:
+                kde_cmap = _kde_colormap(color)
+                sns.kdeplot(
+                    x=cls_df["x"],
+                    y=cls_df["y"],
+                    levels=6,
+                    color=color,
+                    fill=True,
+                    thresh=0.05,
+                    cmap=kde_cmap,
+                    alpha=0.7,
+                    ax=ax,
+                )
+            else:
+                sns.kdeplot(
+                    x=cls_df["x"],
+                    y=cls_df["y"],
+                    levels=4,
+                    color=color,
+                    alpha=0.25,
+                    fill=True,
+                    thresh=0.05,
+                    ax=ax,
+                )
+    if use_dark_theme:
+        ax.set_facecolor("#1f2433")
+        fig.patch.set_facecolor("#1f2433")
+    else:
+        ax.set_facecolor("white")
+        fig.patch.set_facecolor("white")
     ax.set_xlabel("UMAP-1")
     ax.set_ylabel("UMAP-2")
     ax.set_box_aspect(1)
     sil_text = f"{silhouette:.3f}" if silhouette is not None else "NA"
     ax.set_title(f"features: {space} | nn={n_neighbors} | md={min_dist:.2f} | sil={sil_text}")
-    ax.tick_params(axis="both", which="both", colors="black", width=0.8, length=4.0)
+    ax.tick_params(axis="both", which="both", width=0.8, length=4.0)
     for spine in ax.spines.values():
         spine.set_visible(True)
         spine.set_color("black")
@@ -442,9 +471,9 @@ def _plot_embedding(
             [0],
             [0],
             marker="o",
-            color="gray",
+            color="#666666",
             linestyle="",
-            markerfacecolor="gray",
+            markerfacecolor="#666666",
             markersize=np.sqrt(size_map[m]) / 2,
             label=f"M={m}",
         )
@@ -458,7 +487,7 @@ def _plot_embedding(
     )
     ax.grid(False)
     fig_path = figures_dir / f"{prefix}.png"
-    fig.savefig(fig_path, dpi=300)
+    save_figure(fig, fig_path, dpi=300)
     plt.close(fig)
     return fig_path
 
@@ -605,6 +634,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
                 silhouette=silhouette,
                 split_variants=args.split_variants,
                 label_column="display_class" if args.split_variants else "base_class",
+                theme=args.theme,
             )
             if silhouette is not None:
                 LOGGER.info(
@@ -635,7 +665,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["dev", "full"],
+        choices=list(DATASET_MODES),
         help="Dataset mode to analyse.",
     )
     parser.add_argument(
@@ -730,7 +760,22 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--dataset-filter",
         type=str,
         default=None,
-        help="Optional glob (matched against the dataset path, e.g. 'data/full/CML/*alpha1p75*') to limit which datasets are plotted.",
+        help="Optional glob (matched against the dataset path, e.g. 'data/full-variants/CML/*alpha1p75*') to limit which datasets are plotted.",
+    )
+    parser.add_argument(
+        "--light",
+        dest="theme",
+        action="store_const",
+        const="light",
+        default="light",
+        help="Render plots with a light background (default).",
+    )
+    parser.add_argument(
+        "--dark",
+        dest="theme",
+        action="store_const",
+        const="dark",
+        help="Render plots with a dark background.",
     )
     return parser
 

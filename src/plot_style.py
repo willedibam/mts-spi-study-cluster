@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import seaborn as sns
 
 _STYLE_INITIALISED = False
@@ -30,3 +33,23 @@ def apply_plot_style() -> None:
     )
     _STYLE_INITIALISED = True
 
+
+def save_figure(
+    fig: Figure,
+    path: str | Path,
+    *,
+    dpi: int = 300,
+    **savefig_kwargs,
+) -> None:
+    """
+    Persist a Matplotlib figure as both PNG (primary path) and SVG.
+    """
+    dest = Path(path)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(dest, dpi=dpi, **savefig_kwargs)
+    svg_path = dest.with_suffix(".svg")
+    if svg_path == dest:
+        png_path = dest.with_suffix(".png")
+        fig.savefig(png_path, dpi=dpi, **savefig_kwargs)
+        return
+    fig.savefig(svg_path, dpi=dpi, **savefig_kwargs)

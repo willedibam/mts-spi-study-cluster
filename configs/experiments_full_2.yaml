@@ -68,6 +68,7 @@ mts_classes:
   - name: "Kuramoto"
     labels: ["oscillator", "kuramoto", "phase"]
     generator: "kuramoto"
+    instances: [0]
     base_params:
       dt: 0.1
       k: -4

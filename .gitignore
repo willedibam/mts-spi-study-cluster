@@ -36,3 +36,8 @@ logs/
 
 # Weird cluster outputs
 spi_array.*
+
+# Random things
+*.ipynb
+cml_kur.ipynb
+Random/

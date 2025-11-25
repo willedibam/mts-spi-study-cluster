@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 import numpy as np
 import pandas as pd
 
-from . import java_bridge  # noqa: F401  # ensures JVM started for PySPI
+from .java_bridge import ensure_java_started
 from . import pyspi_patches  # noqa: F401  # patches spectral input handling
 from pyspi.calculator import Calculator
 
@@ -35,6 +35,7 @@ def run_pyspi(
     subset: str = "default",
     normalise: bool = True,
 ) -> ComputeResult:
+    ensure_java_started()
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]

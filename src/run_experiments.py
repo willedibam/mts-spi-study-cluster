@@ -15,8 +15,9 @@ import pandas as pd
 from . import generate
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
-from .plot_style import apply_plot_style
+from .plot_style import apply_plot_style, save_figure
 from .utils import (
+    DATASET_MODES,
     dump_json,
     ensure_dir,
     project_root,
@@ -41,7 +42,12 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run PySPI experiments for a single dataset specification."
     )
-    parser.add_argument("--mode", default="dev", help="Experiment mode (dev/full).")
+    parser.add_argument(
+        "--mode",
+        default="dev",
+        choices=list(DATASET_MODES),
+        help="Experiment mode (dev/full/full-variants).",
+    )
     parser.add_argument(
         "--job-index",
         type=int,
@@ -302,7 +308,7 @@ def _save_heatmap(data: np.ndarray, path: Path) -> None:
     ax.set_yticks([])
     ensure_dir(path.parent)
     fig.tight_layout()
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+    save_figure(fig, path, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print(f"[INFO] Wrote heatmap to {to_relative(path)}")
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
@@ -110,6 +111,7 @@ class ClassSpec:
     normalise: bool | None = None
     save_heatmap: bool | None = None
     threads: int | None = None
+    rng_seed: int | None = None
 
 
 @dataclass
@@ -211,6 +213,7 @@ def _parse_class(
         normalise=entry.get("normalise"),
         save_heatmap=entry.get("save_heatmap"),
         threads=entry.get("threads"),
+        rng_seed=int(entry["rng_seed"]) if "rng_seed" in entry and entry["rng_seed"] is not None else None,
     )
 
 
@@ -292,6 +295,26 @@ def _apply_dataset_slug(spec: DatasetSpec) -> None:
     spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
 
 
+def _derive_dataset_seed(*, base_seed: int, spec: DatasetSpec) -> int:
+    variant_slug = spec.variant.slug if spec.variant else ""
+    components = [
+        str(base_seed),
+        spec.mode,
+        spec.mts_class,
+        spec.dataset_slug,
+        variant_slug,
+        f"M{spec.M}",
+        f"T{spec.T}",
+        f"I{spec.instance}",
+    ]
+    payload = "|".join(components).encode("utf-8")
+    digest = hashlib.blake2s(payload, digest_size=8).digest()
+    seed = int.from_bytes(digest, "big") % 2147483647
+    if seed == 0:
+        seed = 2147483647
+    return seed
+
+
 class DatasetMapping:
     def __init__(self, config: ExperimentConfig) -> None:
         self.config = config
@@ -356,7 +379,7 @@ class DatasetMapping:
                                 pyspi_subset=pyspi_subset,
                                 normalise=normalise,
                                 save_heatmap=save_heatmap,
-                                rng_seed=instance * 2 + 1,
+                                rng_seed=0,
                                 threads=threads,
                                 heatmap_deltas=[1],
                             )
@@ -388,7 +411,7 @@ class DatasetMapping:
                             pyspi_subset=spec.pyspi_subset,
                             normalise=spec.normalise,
                             save_heatmap=spec.save_heatmap,
-                            rng_seed=spec.rng_seed,
+                            rng_seed=0,
                             threads=spec.threads,
                             heatmap_deltas=[1],
                         )
@@ -399,12 +422,18 @@ class DatasetMapping:
             else:
                 for spec in class_specs:
                     spec.generator_params = dict(class_entry.base_params)
+            base_seed = (
+                class_entry.rng_seed
+                if class_entry.rng_seed is not None
+                else self.config.rng_seed
+            )
             for spec in class_specs:
                 spec.heatmap_deltas = _parse_delta_list(
                     spec.generator_params.get("delta")
                 )
             for spec in class_specs:
                 _apply_dataset_slug(spec)
+                spec.rng_seed = _derive_dataset_seed(base_seed=base_seed, spec=spec)
                 spec.index = len(specs) + 1
                 specs.append(spec)
         return specs

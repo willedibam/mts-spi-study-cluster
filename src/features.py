@@ -14,7 +14,15 @@ from matplotlib import pyplot as plt
 from scipy.stats import ConstantInputWarning, spearmanr
 from tqdm import tqdm
 
-from .utils import ensure_dir, iter_dataset_dirs, load_json, project_root, to_relative
+from .plot_style import apply_plot_style, save_figure
+from .utils import (
+    DATASET_MODES,
+    ensure_dir,
+    iter_dataset_dirs,
+    load_json,
+    project_root,
+    to_relative,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -75,10 +83,9 @@ def _plot_fingerprint(
 ) -> None:
     if X.size == 0:
         return
+    apply_plot_style()
     values = np.clip(X, -1.0, 1.0)
-    height = max(1.5, X.shape[0] * 0.2)
-    width = max(5.0, height * 5.0)
-    fig, ax = plt.subplots(figsize=(width, height), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(16,6), constrained_layout=True)
     sns.heatmap(
         values,
         cmap="coolwarm",
@@ -92,8 +99,7 @@ def _plot_fingerprint(
     ax.set_title(f"{space} feature fingerprint")
     ax.set_xlabel("Features")
     ax.set_ylabel("Datasets")
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_path, dpi=300)
+    save_figure(fig, output_path, dpi=300)
     plt.close(fig)
 
 
@@ -463,7 +469,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["dev", "full"],
+        choices=list(DATASET_MODES),
         help="Dataset mode to process.",
     )
     parser.add_argument(
