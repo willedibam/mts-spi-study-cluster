@@ -1,8 +1,8 @@
 #!/bin/bash
-#PBS -N spi_array
+#PBS -N spi_array_cml_kur
 #PBS -l select=1:ncpus=8:mem=8gb
 #PBS -l walltime=24:00:00
-#PBS -J 1-225
+#PBS -J 1-90
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 
@@ -22,7 +22,7 @@ JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
 exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 
 module purge
-source .venv/bin/activate 
+source .venv/bin/activate
 
 NUM_THREADS=${NUM_THREADS:-8}
 export OMP_NUM_THREADS=$NUM_THREADS
@@ -35,7 +35,7 @@ python -m src.run_experiments \
   --mode full \
   --job-index "${ARRAY_ID}" \
   --skip-existing \
-  --experiment-config configs/experiments_full.yaml \
+  --experiment-config configs/experiments_full_cml_kur.yaml \
   --threads "${NUM_THREADS}" \
   --parquet
 echo "[INFO] Finished at $(date)"

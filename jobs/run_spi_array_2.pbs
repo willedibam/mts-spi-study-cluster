@@ -1,8 +1,8 @@
 #!/bin/bash
-#PBS -N spi_array
-#PBS -l select=1:ncpus=8:mem=8gb
+#PBS -N spi_array_full_asym
+#PBS -l select=1:ncpus=8:mem=32gb
 #PBS -l walltime=24:00:00
-#PBS -J 1-225
+#PBS -J 1-180
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 
@@ -22,7 +22,7 @@ JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
 exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 
 module purge
-source .venv/bin/activate 
+source .venv/bin/activate
 
 NUM_THREADS=${NUM_THREADS:-8}
 export OMP_NUM_THREADS=$NUM_THREADS
@@ -35,7 +35,10 @@ python -m src.run_experiments \
   --mode full \
   --job-index "${ARRAY_ID}" \
   --skip-existing \
-  --experiment-config configs/experiments_full.yaml \
+  --regenerate-timeseries \
+  --experiment-config configs/experiments_full_2.yaml \
+  --pyspi-config configs/blended_config.yaml \
   --threads "${NUM_THREADS}" \
+  --heatmap \
   --parquet
 echo "[INFO] Finished at $(date)"

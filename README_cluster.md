@@ -32,10 +32,9 @@ mts-spi-study-cluster/
 
 Per-dataset folders live under `data/{dev,full}/<Class>/M{M}_T{T}_I{I}[_variant]/`. Each folder contains:
 
-- `arrays/timeseries.npy` – the M×T array (float32) plus per-SPI adjacency matrices (`arrays/mpi_<spi>.npy`)
-- `csv/calc.csv` (+ optional `calc.parquet`) – raw PySPI table
-- `spi_mpis.npz` – consolidated archive of all SPI-specific adjacency matrices
-- `figures/mts_heatmap.png` – optional quick diagnostic
+- `calc.csv` (+ optional `calc.parquet`) – raw PySPI table
+- `spi_mpis.npz` – consolidated archive of all SPI adjacency matrices
+- `mts_heatmap.png` – optional quick diagnostic (only extras like `mts_heatmap_deltaK.png` when explicitly configured)
 - `meta.json` – metadata (see below)
 
 No `results/` tree is created; downstream analysis can build its own workspace by walking the structured data directories.
@@ -111,7 +110,7 @@ python -m src.run_experiments --mode dev --job-index 1 --heatmap
 Alternative with the helper wrapper:
 
 ```
-python jobs/run_spi_single.py --mode dev --job-index 3 --regenerate-data
+python jobs/run_spi_single.py --mode dev --job-index 3
 ```
 
 Use `--list` to inspect dataset mappings and `--dry-run` to print a summary without doing any work.
@@ -174,12 +173,13 @@ Each `meta.json` includes:
     ]
   },
   "paths": {
-    "timeseries": "arrays/timeseries.npy",
-    "calc_csv": "csv/calc.csv",
+    "timeseries": "",
+    "calc_csv": "calc.csv",
     "calc_parquet": "",
     "spi_archive": "spi_mpis.npz",
-    "per_spi": {"SpearmanR": "arrays/mpi_spearmanr.npy"},
-    "heatmap": ""
+    "per_spi": {},
+    "heatmap": "",
+    "heatmaps": []
   },
   "job": {
     "index": 3,

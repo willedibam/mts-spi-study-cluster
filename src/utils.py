@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Tuple
+from typing import Any, Dict, Iterable, Iterator, List
 
 import numpy as np
 import pandas as pd
@@ -13,6 +13,7 @@ import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = PROJECT_ROOT / "data"
+DATASET_MODES: tuple[str, ...] = ("dev", "full", "full-variants")
 
 
 def project_root() -> Path:
@@ -133,4 +134,3 @@ def load_all_spi(mode: str) -> List[DatasetSPIBundle]:
     for dataset_dir in iter_dataset_dirs(mode):
         bundles.append(load_spi_for_dataset(dataset_dir))
     return bundles
-

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import numpy as np
-import numpy as np
 
 try:
     from spectral_connectivity.transforms import prepare_time_series
@@ -14,6 +13,8 @@ except ImportError:
             )
         return time_series[:, np.newaxis, :]
 
+from pyspi.base import parse_bivariate
+from pyspi.statistics import basic as _basic
 from pyspi.statistics import spectral as _spectral
 
 
@@ -77,3 +78,26 @@ def _patch_bivariate():
 
 _patch_multivariate()
 _patch_bivariate()
+
+
+def _patch_cross_correlation():
+    original_bivariate = _basic.CrossCorrelation.bivariate
+
+    @parse_bivariate
+    def safe_bivariate(self, data, i=None, j=None):
+        try:
+            return original_bivariate(self, data, i=i, j=j)
+        except IndexError:
+            if not getattr(self, "_sigonly", False):
+                raise
+            previous = self._sigonly
+            self._sigonly = False
+            try:
+                return original_bivariate(self, data, i=i, j=j)
+            finally:
+                self._sigonly = previous
+
+    _basic.CrossCorrelation.bivariate = safe_bivariate
+
+
+_patch_cross_correlation()

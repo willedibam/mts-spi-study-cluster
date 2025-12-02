@@ -10,14 +10,16 @@ dist/
 # venv
 .venv/
 .env/
+.venv-*/
 
 # notebooks
 .ipynb_checkpoints/
 
 # results/cache/data
-results/
+analysis/
 cache/
 data/
+results/
 
 # OS
 .DS_Store
@@ -32,3 +34,11 @@ logs/
 
 # PowerShell scripts
 *.ps1
+
+# Weird cluster outputs
+spi_array.*
+
+# Random things
+*.ipynb
+cml_kur.ipynb
+Random/

@@ -18,8 +18,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--threads", type=int)
     parser.add_argument("--normalise", type=int, choices=[0, 1])
     parser.add_argument("--heatmap", action="store_true")
-    parser.add_argument("--regenerate-data", action="store_true")
     parser.add_argument("--parquet", action="store_true")
+    parser.add_argument("--regenerate-timeseries", action="store_true")
     return parser.parse_args()
 
 
@@ -43,13 +43,12 @@ def main() -> None:
         forwarded += ["--normalise", str(args.normalise)]
     if args.heatmap:
         forwarded.append("--heatmap")
-    if args.regenerate_data:
-        forwarded.append("--regenerate-data")
     if args.parquet:
         forwarded.append("--parquet")
+    if args.regenerate_timeseries:
+        forwarded.append("--regenerate-timeseries")
     run_experiments.main(forwarded)
 
 
 if __name__ == "__main__":
     main()
-

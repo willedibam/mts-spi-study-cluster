@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import shutil
+from importlib import metadata as importlib_metadata
 from pathlib import Path
 
 import jpype
@@ -18,6 +20,9 @@ def ensure_java_started() -> None:
     """
     if jpype.isJVMStarted():
         return
+    support_jar_path = _ensure_support_jar()
+    if support_jar_path and not os.environ.get("JPYPE_JAR"):
+        os.environ["JPYPE_JAR"] = support_jar_path
     jvm_path = (
         _jvm_from_env("PYSPI_JVM")
         or _jvm_from_java_home()
@@ -29,7 +34,10 @@ def ensure_java_started() -> None:
             "Example: export PYSPI_JVM=/usr/lib/jvm/jdk-21/lib/server/libjvm.so"
         )
     jar = _pyspi_jidt_jar()
-    jpype.startJVM(jvm_path, "-ea", classpath=[jar])
+    classpath = [jar]
+    if support_jar_path:
+        classpath.append(support_jar_path)
+    jpype.startJVM(jvm_path, "-ea", classpath=classpath)
 
 
 def _jvm_from_env(var: str) -> str | None:
@@ -71,6 +79,66 @@ def _pyspi_jidt_jar() -> str:
     return str(jar)
 
 
-# Auto-start when the module is imported so downstream code can assume TE-ready
-ensure_java_started()
+def _ensure_support_jar() -> str | None:
+    """
+    JPype's C extension expects org.jpype.jar to sit next to the compiled module.
+    Some site layouts (e.g. separate purelib/lib64) install the jar elsewhere; copy
+    it into the location JPype probes so startJVM succeeds.
+    """
+    jpype_dir = Path(jpype.__file__).resolve().parent
+    candidates = [
+        jpype_dir / "org.jpype.jar",
+        jpype_dir.parent / "org.jpype.jar",
+    ]
+    try:
+        import jpype._core as _jp_core  # type: ignore[attr-defined]
 
+        core_base = Path(_jp_core.__file__).resolve().parent.parent
+        candidates.append(core_base / "org.jpype.jar")
+    except Exception:
+        core_base = None
+    source = _first_existing(candidates) or _jar_from_distribution()
+    if source is None:
+        raise RuntimeError(
+            "JPype support jar (org.jpype.jar) is missing; reinstall JPype1 "
+            "or ensure the jar is present in your virtual environment."
+        )
+    if core_base is None:
+        return str(source)
+    target = core_base / "org.jpype.jar"
+    try:
+        if target.exists():
+            return str(target)
+        if source.resolve() == target.resolve():
+            return str(target)
+    except OSError:
+        pass
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        return str(target)
+    except OSError as exc:  # pragma: no cover
+        raise RuntimeError(
+            f"Failed to copy JPype support jar to {target}: {exc}. "
+            "Copy org.jpype.jar there manually or reinstall JPype1."
+        ) from exc
+
+
+def _jar_from_distribution() -> Path | None:
+    try:
+        files = importlib_metadata.files("JPype1") or []
+    except importlib_metadata.PackageNotFoundError:
+        return None
+    for entry in files:
+        if entry.name == "org.jpype.jar":
+            located = Path(entry.locate())
+            if located.exists():
+                return located
+    return None
+
+
+def _first_existing(candidates: list[Path]) -> Path | None:
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
