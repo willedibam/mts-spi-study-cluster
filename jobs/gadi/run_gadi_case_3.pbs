@@ -2,7 +2,7 @@
 #PBS -N case_3_pyspi
 #PBS -P ql44
 #PBS -q normal
-#PBS -l walltime=04:00:00
+#PBS -l walltime=02:00:00
 #PBS -l ncpus=4
 #PBS -l mem=16GB
 #PBS -l jobfs=10GB
