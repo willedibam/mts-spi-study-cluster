@@ -612,12 +612,103 @@ def generate_kuramoto_bidirectional_list(*args, k: float, **kwargs) -> np.ndarra
 def generate_kuramoto_grid_four(*args, k: float, **kwargs) -> np.ndarray:
     return generate_kuramoto(*args, k=k, connectivity="grid-four", **kwargs)
 
+import numpy as np
+
+import numpy as np
+
+def generate_mackey_glass(
+    M: int,
+    T: int,
+    tau: float = 17.0,      # Physical delay
+    beta: float = 0.2,      # Feedback strength
+    gamma: float = 0.1,     # Decay
+    n: int = 10,            # Nonlinearity power
+    coupling: float = 0.05, # Diffusive coupling strength
+    transients: int = 1000,
+    dt: float = 0.1,        # High-Fidelity Integration Step
+    topology: str = "ring-unidirectional",
+    rng=None,
+    zscore: bool = True,
+):
+    """
+    Generates M coupled Mackey-Glass oscillators.
+    High-fidelity DDE simulation (dt=0.1) with no downsampling.
+    
+    NOTE: With dt=0.1 and tau=17.0, the lag occurs at index 170.
+    Ensure T > 680 so that 170 is within the T/4 xcorr scan window.
+    """
+    if rng is None:
+        rng = np.random.default_rng()
+
+    # 1. Calculate Lag in Steps
+    tau_steps = int(round(tau / dt))
+    if tau_steps < 1:
+        raise ValueError(f"tau ({tau}) must be >= dt ({dt}).")
+
+    # 2. Allocation
+    steps = transients + T
+    # Buffer: History (tau) + Simulation (steps) + 1 safety
+    X = np.zeros((steps + tau_steps + 1, M))
+
+    # 3. Initialization (History)
+    X[:tau_steps + 1] = rng.uniform(0.5, 1.5, size=(tau_steps + 1, M))
+
+    # 4. Topology Neighbors
+    neighbors_left = None
+    neighbors_right = None
+    
+    if topology == "ring-unidirectional":
+        neighbors_left = np.roll(np.arange(M), 1)
+    elif topology == "ring-symmetric":
+        neighbors_left = np.roll(np.arange(M), 1)
+        neighbors_right = np.roll(np.arange(M), -1)
+
+    # 5. Integration Loop
+    start_k = tau_steps
+    end_k = start_k + steps
+    
+    for k in range(start_k, end_k):
+        curr_state = X[k]
+        delayed_state = X[k - tau_steps]
+        
+        # A. Internal Dynamics
+        interaction = (beta * delayed_state) / (1.0 + delayed_state**n)
+        decay = -gamma * curr_state
+        
+        # B. External Coupling
+        coupling_force = 0.0
+        if topology == "ring-unidirectional":
+            neighbor = X[k, neighbors_left]
+            # Standard Diffusive: coupling * (neighbor - self)
+            coupling_force = coupling * (neighbor - curr_state)
+        elif topology == "ring-symmetric":
+            left = X[k, neighbors_left]
+            right = X[k, neighbors_right]
+            # Standard Laplacian: coupling * sum(neighbors - self)
+            coupling_force = coupling * ((left - curr_state) + (right - curr_state))
+
+        # C. Euler Step
+        dxdt = interaction + decay + coupling_force
+        X[k + 1] = curr_state + dxdt * dt
+
+    # 6. Output Slicing
+    output = X[start_k + transients : start_k + transients + T]
+
+    if zscore:
+        mus = output.mean(axis=0)
+        sigs = output.std(axis=0)
+        sigs[sigs < 1e-6] = 1.0
+        output = (output - mus) / sigs
+
+    return output
+
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "varma": generate_varma,
     "var": generate_varma,
     "varma_shuffled": generate_varma_shuffled,
     "cml_logistic": generate_cml_logistic,
+    "mackey_glass": generate_mackey_glass,
     "kuramoto": generate_kuramoto,
     "kuramoto_all_to_all": generate_kuramoto_all_to_all,
     "kuramoto_bidirectional_list": generate_kuramoto_bidirectional_list,

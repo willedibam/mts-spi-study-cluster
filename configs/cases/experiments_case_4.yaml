@@ -1,0 +1,55 @@
+base_output_dir: data/case_4/
+pyspi_config: configs/pyspi/case_4_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 8
+
+defaults:
+  M_values: [8, 16]
+  T_values: [750, 1000, 2000]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+  # single_instance_M_values: [64]
+  # single_instance_T_values: [1000]
+  # single_instance_instances: [0]
+
+mts_classes:
+  - name: "MackeyGlass"
+    labels: ["nonlinear", "chaotic", "delay", "long-memory"]
+    generator: "mackey_glass"
+    include_base_variant: false
+    base_params:
+      tau: 17.0
+      beta: 0.2
+      gamma: 0.1
+      n: 10
+      topology: "ring-unidirectional"
+      coupling: 0.2
+      # Ensure transients are sufficient for attractor convergence
+      transients: 2000
+      dt: 0.1
+      zscore: true
+    variants:
+      - name: "base"
+        params: {}
+
+  # CLASS 2: Unidirectional (Directed Information Flow)
+  - name: "VAR(1)-Unidirectional"
+    labels: ["linear", "gaussian", "var", "directed"]
+    generator: "varma"
+    include_base_variant: true
+    base_params:
+      phi: 0.6
+      # Note: You might need to adjust coupling slightly if the loss of 
+      # one neighbor drops the spectral radius too much, 
+      # but the code handles rescaling automatically via target_rho.
+      coupling: 0.2
+      topology: "ring-unidirectional"
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      transients: 100
+      zscore: true
+      target_rho: 0.99
+    variants: []
