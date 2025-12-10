@@ -56,6 +56,11 @@ def _maybe_zscore(data: np.ndarray, *, zscore: bool = True) -> np.ndarray:
     return _zscore_channels(arr) if zscore else arr
 
 
+import numpy as np
+from numpy.random import default_rng
+
+# ... (Include your existing _global_rng, _resolve_rng, _zscore_channels, _maybe_zscore helpers here) ...
+
 def generate_varma(
     M: int,
     T: int,
@@ -66,64 +71,33 @@ def generate_varma(
     noise_std: float = 0.1,
     transients: int = 100,
     target_rho: float = 0.99,
+    topology: str = "ring-symmetric",  # <--- NEW PARAMETER
     rng=None,
     zscore: bool = True,
 ):
     """
-    Generate a multivariate VARMA(1,1) process on a ring topology.
-
-    Model:
-        X_t = A X_{t-1} + ε_t + B ε_{t-1},
-        ε_t ~ N(0, noise_std^2 I_M)
-
-    Topology:
-        - A and B are built on a *ring*:
-            * diagonal: self terms
-            * off-diagonal: nearest neighbours (i-1, i+1 mod M)
-
-    Parameters
-    ----------
-    M : int
-        Number of channels (nodes) in the multivariate time series.
-    T : int
-        Number of time steps to return (after discarding transients).
-    phi : float
-        Autoregressive self-correlation (diagonal of A).
-        Larger -> stronger persistence of each channel's own past.
-    coupling : float
-        Autoregressive ring coupling strength (off-diagonals of A).
-        Larger -> stronger influence of nearest neighbours.
-    ma_phi : float
-        Moving-average self term (diagonal of B).
-        Set to 0.0 to obtain a pure VAR(1) (no MA component).
-    ma_coupling : float
-        Moving-average ring coupling term (off-diagonals of B).
-        Set to 0.0 to obtain a pure VAR(1).
-    noise_std : float
-        Standard deviation of the innovation noise ε_t (Gaussian).
-    transients : int
-        Number of initial steps to simulate and discard as burn-in.
-    target_rho : float
-        Target spectral radius for the AR matrix A. If ρ(A) ≥ target_rho,
-        A is rescaled as A ← (target_rho / ρ(A)) A.
-    rng :
-        Optional np.random.Generator or seed; resolved via _resolve_rng.
-
-    Returns
-    -------
-    X : (T, M) np.ndarray
-        Multivariate time series (z-scored when `zscore=True`) after discarding transients.
+    Generates VARMA(p,q) process with specified topology.
+    
+    Supported topologies:
+      - 'ring-symmetric': Standard diffuse coupling (i connected to i-1 AND i+1).
+      - 'ring-unidirectional': Advective coupling (i connected to i+1 only).
     """
     rng = _resolve_rng(None, rng)
     I = np.eye(M)
-    right = np.roll(I, 1, axis=1)   # neighbour (i+1 mod M)
-    left = np.roll(I, -1, axis=1)   # neighbour (i-1 mod M)
-    A = phi * I + coupling * (left + right)     # Autoregressive matrix A (ring topology)
+    right = np.roll(I, 1, axis=1)   # i influenced by i+1 (flow from right)
+    left = np.roll(I, -1, axis=1)   # i influenced by i-1 (flow from left)
+    if topology == "ring-symmetric":
+        neighbors = left + right
+    elif topology == "ring-unidirectional":
+        neighbors = left 
+    else:
+        raise ValueError(f"Unknown topology: {topology}")
+    A = phi * I + coupling * neighbors
     ev = np.linalg.eigvals(A)
     sr = np.max(np.abs(ev))
     if sr >= target_rho:
         A = A * (target_rho / sr)
-    B = ma_phi * I + ma_coupling * (left + right)     # Moving-average matrix B (ring topology)
+    B = ma_phi * I + ma_coupling * neighbors
     steps = transients + T
     X = np.zeros((steps, M), float)
     eps = rng.normal(0.0, noise_std, size=(steps, M))
@@ -131,11 +105,9 @@ def generate_varma(
         X[t] = A @ X[t - 1] + eps[t] + B @ eps[t - 1]
     return _maybe_zscore(X[transients:], zscore=zscore)
 
-
 def generate_varma_shuffled(
     M: int,
     T: int,
-    # Pass through all standard VARMA parameters
     phi: float = 0.6,
     coupling: float = 0.4,
     ma_phi: float = 0.2,
@@ -143,6 +115,7 @@ def generate_varma_shuffled(
     noise_std: float = 0.1,
     transients: int = 100,
     target_rho: float = 0.99,
+    topology: str = "ring-symmetric",
     rng=None,
     zscore: bool = True,
 ) -> np.ndarray:
@@ -152,7 +125,7 @@ def generate_varma_shuffled(
         phi=phi, coupling=coupling, 
         ma_phi=ma_phi, ma_coupling=ma_coupling,
         noise_std=noise_std, transients=transients, 
-        target_rho=target_rho, rng=rng, zscore=False
+        target_rho=target_rho, topology=topology, rng=rng, zscore=False
     )
     for m in range(M):
         rng.shuffle(X[:, m])

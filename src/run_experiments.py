@@ -15,14 +15,7 @@ from . import generate
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
-from .utils import (
-    DATASET_MODES,
-    dump_json,
-    ensure_dir,
-    project_root,
-    timestamp,
-    to_relative,
-)
+from .utils import dump_json, ensure_dir, project_root, timestamp, to_relative
 
 
 def _resolve_path(path_value: str) -> Path:
@@ -32,19 +25,9 @@ def _resolve_path(path_value: str) -> Path:
     return project_root() / path
 
 
-def _default_config_path(mode: str) -> Path:
-    return project_root() / "configs" / f"experiments_{mode}.yaml"
-
-
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run PySPI experiments for a single dataset specification."
-    )
-    parser.add_argument(
-        "--mode",
-        default="dev",
-        choices=list(DATASET_MODES),
-        help="Experiment mode (dev/full/full-variants).",
     )
     parser.add_argument(
         "--job-index",
@@ -53,7 +36,8 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--experiment-config",
-        help="Path to experiments_<mode>.yaml (defaults to configs/experiments_<mode>.yaml).",
+        required=True,
+        help="Path to an experiment YAML file.",
     )
     parser.add_argument(
         "--pyspi-config",
@@ -135,11 +119,7 @@ def _sanitise_cuda_env() -> None:
 def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
     _sanitise_cuda_env()
-    config_path = (
-        Path(args.experiment_config)
-        if args.experiment_config
-        else _default_config_path(args.mode)
-    )
+    config_path = Path(args.experiment_config)
     config = ExperimentConfig.from_file(config_path)
     if args.pyspi_config:
         config.pyspi_config = _resolve_path(args.pyspi_config)
@@ -151,7 +131,7 @@ def main(argv: List[str] | None = None) -> None:
         config.threads = args.threads
     mapping = DatasetMapping(config)
     if args.list:
-        print(f"[INFO] Listing {len(mapping)} dataset combinations for mode '{config.mode}'.")
+        print(f"[INFO] Listing {len(mapping)} dataset combinations from {to_relative(config_path)}.")
         for summary in mapping.summaries():
             print(
                 f"{summary['index']:4d}: "
@@ -319,7 +299,6 @@ def _build_metadata(
         }
     return {
         "name": spec.name,
-        "mode": spec.mode,
         "mts_class": spec.mts_class,
         "labels": spec.class_labels,
         "M": spec.M,

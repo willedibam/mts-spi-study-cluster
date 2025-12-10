@@ -29,8 +29,7 @@ def plot_mpi_heatmap(
     dataset_slug: str,
     spis: Iterable[str],
     *,
-    mode: str = "full",
-    root: Path | str = Path("data"),
+    base_dir: Path | str = Path("data") / "full",
     auto_scale: bool = True,
     center: float | None = None,
     cmap: str | None = None,
@@ -42,14 +41,13 @@ def plot_mpi_heatmap(
         mts_class: Dataset class name (e.g., "CML", "Kuramoto").
         dataset_slug: Directory slug (e.g., "M25_T1600_I0_<variant-slug>").
         spis: Iterable of SPI names to plot.
-        mode: Dataset mode under data/ (default: "full").
-        root: Base path to data directory (default: "data").
+        base_dir: Base path to dataset directory (default: data/full).
         auto_scale: If True, infer vmin/vmax/center/cmap from data and SPI name.
         center: Optional manual center override.
         cmap: Optional manual cmap override.
     """
     apply_plot_style()
-    dataset_dir = Path(root) / mode / mts_class / dataset_slug
+    dataset_dir = Path(base_dir) / mts_class / dataset_slug
     archive = dataset_dir / "spi_mpis.npz"
     if not archive.exists():
         raise FileNotFoundError(f"Missing archive: {archive}")

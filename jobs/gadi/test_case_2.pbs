@@ -1,0 +1,48 @@
+#!/bin/bash
+#PBS -N test_case_2
+#PBS -P ql44
+#PBS -q express
+#PBS -l walltime=00:10:00
+#PBS -l ncpus=4
+#PBS -l mem=4GB
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+set -euo pipefail
+
+# 1. Load the exact environment we tested manually
+#    (Ensures JAVA_HOME and Python 3.11 are correct)
+if [ -f "activate_gadi.sh" ]; then
+    source activate_gadi.sh
+else
+    echo "Error: activate_gadi.sh not found!"
+    exit 1
+fi
+
+# 2. Logs (Will go to your home folder's repo/logs)
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+JOB_LABEL="${PBS_JOBNAME}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+# 3. Threading (Match ncpus=4)
+export NUM_THREADS=4
+export OMP_NUM_THREADS=4
+
+echo "[INFO] Running test on host: $(hostname)"
+echo "[INFO] Python: $(which python)"
+echo "[INFO] Java Home: ${JAVA_HOME:-Not Set}"
+
+# 4. Run the code with the TEST config
+#    (We use job-index 1 because the config only generates 1 job)
+python -m src.run_experiments \
+  --job-index 1 \
+  --experiment-config configs/cases/test_case_2.yaml \
+  --pyspi-config configs/pyspi/case_2_config.yaml \
+  --threads 4 \
+  --parquet
+
+echo "[INFO] Finished test at $(date)"

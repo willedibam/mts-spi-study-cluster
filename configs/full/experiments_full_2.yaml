@@ -1,63 +1,46 @@
-mode: full
 base_output_dir: data/full
-pyspi_config: configs/blended_config.yaml
+pyspi_config: configs/config.yaml
 pyspi_subset: default
-normalise: false
+normalise: true
 rng_seed: 110305
 save_heatmap: false
 threads: 8
 
 defaults:
-  M_values: [4, 8, 16, 32]
-  T_values: [500, 1000, 2000]
-  instances: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-  single_instance_M_values: [64]
-  single_instance_T_values: [1000]
-  single_instance_instances: [0]
+  M_values: [4, 9, 16]
+  T_values: [100, 400, 900, 1600]
+  instances: [0, 1, 2]
 
 mts_classes:
   - name: "VAR(1)"
     labels: ["linear", "gaussian", "var"]
-    generator: "varma"
+    generator: "var"
     include_base_variant: false
+    instances: [0]
     base_params:
-      phi: 0.6
-      coupling: 0.2
-      ma_phi: 0.0
-      ma_coupling: 0.0
+      phi: 0.94
+      coupling: 0.67
       noise_std: 0.1
       transients: 100
-      zscore: true
     variants:
-      - name: "phi-0.6_coupling-0.2"
-        params: {}  
+      - name: "phi=0.33"
+        params: {phi: 0.33}
+      - name: "phi=0.66"
+        params: {phi: 0.66}
+      - name: "phi=0.99"
+        params: {phi: 0.99}
 
-  - name: "VAR(1)-shuffled"
-    labels: ["linear", "gaussian", "var", "shuffled"]
-    generator: "varma_shuffled"
-    include_base_variant: false
-    base_params:
-      phi: 0.6
-      coupling: 0.2
-      ma_phi: 0.0
-      ma_coupling: 0.0
-      noise_std: 0.1
-      transients: 100
-      zscore: true
-    variants:
-      - name: "phi-0.6_coupling-0.2"
-        params: {}  
-  
   - name: "CML"
     labels: ["nonlinear", "cml"]
     generator: "cml_logistic"
     include_base_variant: false
+    M_values: [9, 16, 25]
+    T_values: [100, 400, 900, 1600]
     base_params:
       alpha: 1.7522
       eps: 0.00115
       delta: "3"
       transients: 0
-      zscore: true
     variants:
       - name: "spatiotemporal_intermittency_I"
         params:
@@ -69,6 +52,7 @@ mts_classes:
   - name: "Kuramoto"
     labels: ["oscillator", "kuramoto", "phase"]
     generator: "kuramoto"
+    instances: [0]
     base_params:
       dt: 0.1
       k: -4
@@ -76,21 +60,25 @@ mts_classes:
       omega_std: 0.3
       eta: 0.0
       transients: 100
-      zscore: true
     include_base_variant: false
+    instances: [0]
     variants:
-      - name: 
+      - name: "all_to_all"
         params:
           connectivity: "all-to-all"
+      - name: "bidirectional_list"
+        params:
+          connectivity: "bidirectional-list"
+      - name: "grid_four"
+        params:
+          connectivity: "grid-four"
 
   - name: "GaussianNoise"
     labels: ["noise", "gaussian"]
     generator: "gaussian_noise"
-    base_params:
-      zscore: true
+    base_params: {}
 
   - name: "CauchyNoise"
     labels: ["noise", "cauchy", "heavy-tail"]
     generator: "cauchy_noise"
-    base_params:
-      zscore: false
+    base_params: {}

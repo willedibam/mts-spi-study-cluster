@@ -119,7 +119,6 @@ class ClassSpec:
 
 @dataclass
 class ExperimentConfig:
-    mode: str
     base_output_dir: Path
     pyspi_config: Path
     pyspi_subset: str
@@ -138,10 +137,7 @@ class ExperimentConfig:
     @classmethod
     def from_file(cls, path: str | Path) -> "ExperimentConfig":
         data = load_yaml(path)
-        mode = data.get("mode")
-        if not mode:
-            raise ValueError("Experiment config missing 'mode'.")
-        base_output_dir = _as_path(data.get("base_output_dir", f"data/{mode}"))
+        base_output_dir = _as_path(data.get("base_output_dir", "data"))
         pyspi_config = _as_path(data["pyspi_config"])
         pyspi_subset = data.get("pyspi_subset", "default")
         normalise = bool(data.get("normalise", False))
@@ -174,7 +170,6 @@ class ExperimentConfig:
         if not classes:
             raise ValueError("No mts_classes defined in experiment config.")
         return cls(
-            mode=mode,
             base_output_dir=base_output_dir,
             pyspi_config=pyspi_config,
             pyspi_subset=pyspi_subset,
@@ -258,7 +253,6 @@ def _parse_class(
 @dataclass
 class DatasetSpec:
     index: int
-    mode: str
     mts_class: str
     class_labels: List[str]
     class_dir: str
@@ -286,7 +280,6 @@ class DatasetSpec:
     def to_summary(self) -> dict[str, Any]:
         return {
             "index": self.index,
-            "mode": self.mode,
             "class": self.mts_class,
             "variant": self.variant.slug if self.variant else "",
             "M": self.M,
@@ -337,7 +330,7 @@ def _derive_dataset_seed(*, base_seed: int, spec: DatasetSpec) -> int:
     variant_slug = spec.variant.slug if spec.variant else ""
     components = [
         str(base_seed),
-        spec.mode,
+        str(spec.base_output_dir),
         spec.mts_class,
         spec.dataset_slug,
         variant_slug,
@@ -410,7 +403,6 @@ class DatasetMapping:
                             class_specs.append(
                                 DatasetSpec(
                                     index=0,  # placeholder, updated later
-                                    mode=self.config.mode,
                                     mts_class=class_entry.name,
                                     class_labels=class_entry.labels,
                                     class_dir=class_dir,
@@ -453,7 +445,6 @@ class DatasetMapping:
                     for variant in variant_choices:
                         clone = DatasetSpec(
                             index=spec.index,
-                            mode=spec.mode,
                             mts_class=spec.mts_class,
                             class_labels=spec.class_labels,
                             class_dir=spec.class_dir,

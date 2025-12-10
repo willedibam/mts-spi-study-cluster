@@ -1,6 +1,5 @@
-mode: dev
-base_output_dir: data/dev
-pyspi_config: configs/blended_config.yaml
+base_output_dir: data/full
+pyspi_config: configs/blended_sonnet_config.yaml
 pyspi_subset: default
 normalise: true
 rng_seed: 110305
@@ -8,40 +7,49 @@ save_heatmap: false
 threads: 8
 
 defaults:
-  M_values: [4,9]
-  T_values: [400]
+  M_values: [4, 8, 16]
+  T_values: [200, 400, 800, 1600]
   instances: [0, 1, 2]
 
 mts_classes:
   - name: "VAR(1)"
     labels: ["linear", "gaussian", "var"]
-    generator: "var"
+    generator: "varma"
     include_base_variant: false
     instances: [0]
     base_params:
-      phi: 0.94
-      coupling: 0.75
+      phi: 0.6
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
       noise_std: 0.1
-      transients: 150
+      transients: 100
     variants:
-      - name: "phi=0.33"
-        params: {phi: 0.33}
-      - name: "phi=0.66"
-        params: {phi: 0.66}
-      - name: "phi=0.99"
-        params: {phi: 0.99}
-
+      - name: "phi-0.6-coupling-0.4"
+        params: {}  
+      - name: "phi-0.2-coupling-0.8"
+        params:
+          phi: 0.2
+          coupling: 0.8
+          ma_phi: 0.0
+          ma_coupling: 0.0
+      - name: "phi-0-9-coupling-0-1"
+        params:
+          phi: 0.9
+          coupling: 0.1
+          ma_phi: 0.0
+          ma_coupling: 0.0
+  
   - name: "CML"
     labels: ["nonlinear", "cml"]
     generator: "cml_logistic"
     include_base_variant: false
-    M_values: [9,10]
-    T_values: [100, 400]
-    instances: [0]
+    M_values: [8, 16, 32]
+    T_values: [200, 400, 800, 1600]
     base_params:
       alpha: 1.7522
       eps: 0.00115
-      delta: "1"
+      delta: "3"
       transients: 0
     variants:
       - name: "spatiotemporal_intermittency_I"
@@ -50,20 +58,6 @@ mts_classes:
           eps: 0.00115
           delta: "1,3,12"
           transients: 0
-      - name: "frozen_chaos"
-        params:
-          alpha: 1.45
-          eps: 0.2
-          transients: 10000
-          respect_transients: true
-          delta: "1"
-      - name: "travelling_wave"
-        params:
-          alpha: 1.67
-          eps: 0.5
-          transients: 10000
-          respect_transients: true
-          delta: "1,2,3,4"
 
   - name: "Kuramoto"
     labels: ["oscillator", "kuramoto", "phase"]
@@ -72,8 +66,8 @@ mts_classes:
     base_params:
       dt: 0.1
       k: -4
-      omega_mean: 0.8
-      omega_std: 0.6
+      omega_mean: 0.5
+      omega_std: 0.3
       eta: 0.0
       transients: 100
     include_base_variant: false
@@ -82,12 +76,13 @@ mts_classes:
       - name: "all_to_all"
         params:
           connectivity: "all-to-all"
+      - name: "all_to_all"
+        params:
+          k: 4
+          connectivity: "all-to-all"
       - name: "bidirectional_list"
         params:
           connectivity: "bidirectional-list"
-      - name: "grid_four"
-        params:
-          connectivity: "grid-four"
 
   - name: "GaussianNoise"
     labels: ["noise", "gaussian"]

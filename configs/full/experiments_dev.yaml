@@ -1,6 +1,5 @@
-mode: full
-base_output_dir: data/full
-pyspi_config: configs/config.yaml
+base_output_dir: data/dev
+pyspi_config: configs/blended_config.yaml
 pyspi_subset: default
 normalise: true
 rng_seed: 110305
@@ -8,8 +7,8 @@ save_heatmap: false
 threads: 8
 
 defaults:
-  M_values: [4, 9, 16]
-  T_values: [100, 400, 900, 1600]
+  M_values: [4,9]
+  T_values: [400]
   instances: [0, 1, 2]
 
 mts_classes:
@@ -20,9 +19,9 @@ mts_classes:
     instances: [0]
     base_params:
       phi: 0.94
-      coupling: 0.67
+      coupling: 0.75
       noise_std: 0.1
-      transients: 100
+      transients: 150
     variants:
       - name: "phi=0.33"
         params: {phi: 0.33}
@@ -35,12 +34,13 @@ mts_classes:
     labels: ["nonlinear", "cml"]
     generator: "cml_logistic"
     include_base_variant: false
-    M_values: [9, 16, 25]
-    T_values: [100, 400, 900, 1600]
+    M_values: [9,10]
+    T_values: [100, 400]
+    instances: [0]
     base_params:
       alpha: 1.7522
       eps: 0.00115
-      delta: "3"
+      delta: "1"
       transients: 0
     variants:
       - name: "spatiotemporal_intermittency_I"
@@ -49,6 +49,20 @@ mts_classes:
           eps: 0.00115
           delta: "1,3,12"
           transients: 0
+      - name: "frozen_chaos"
+        params:
+          alpha: 1.45
+          eps: 0.2
+          transients: 10000
+          respect_transients: true
+          delta: "1"
+      - name: "travelling_wave"
+        params:
+          alpha: 1.67
+          eps: 0.5
+          transients: 10000
+          respect_transients: true
+          delta: "1,2,3,4"
 
   - name: "Kuramoto"
     labels: ["oscillator", "kuramoto", "phase"]
@@ -57,8 +71,8 @@ mts_classes:
     base_params:
       dt: 0.1
       k: -4
-      omega_mean: 0.5
-      omega_std: 0.3
+      omega_mean: 0.8
+      omega_std: 0.6
       eta: 0.0
       transients: 100
     include_base_variant: false
