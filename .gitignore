@@ -45,3 +45,5 @@ data_backup.tar.gz
 cml_kur.ipynb
 Random/
 *.tar.gz
+case_*
+test_case_*
