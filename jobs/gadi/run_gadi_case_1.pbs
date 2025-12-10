@@ -1,8 +1,8 @@
 #!/bin/bash
-#PBS -N case_2_pyspi
+#PBS -N case_1_pyspi
 #PBS -P ql44
 #PBS -q normal
-#PBS -l walltime=04:00:00
+#PBS -l walltime=02:00:00
 #PBS -l ncpus=4
 #PBS -l mem=16GB
 #PBS -l jobfs=10GB
@@ -46,8 +46,8 @@ echo "[INFO] Starting at $(date)"
 python -m src.run_experiments \
   --job-index "${ARRAY_ID}" \
   --skip-existing \
-  --experiment-config configs/cases/experiments_cases_2.yaml \
-  --pyspi-config configs/pyspi/case_2_config.yaml \
+  --experiment-config configs/cases/experiments_cases_1.yaml \
+  --pyspi-config configs/pyspi/case_1_config.yaml \
   --threads "${NUM_THREADS}" \
   --parquet
 
