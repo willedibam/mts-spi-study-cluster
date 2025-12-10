@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N spi_array_full_asym
 #PBS -l select=1:ncpus=8:mem=32gb
-#PBS -l walltime=24:00:00
+#PBS -l walltime=48:00:00
 #PBS -J 1-180
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
@@ -34,10 +34,9 @@ echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"
 python -m src.run_experiments \
   --mode full \
   --job-index "${ARRAY_ID}" \
-  --skip-existing \
   --regenerate-timeseries \
-  --experiment-config configs/experiments_full_2.yaml \
-  --pyspi-config configs/blended_config.yaml \
+  --experiment-config configs/experiments_full_3.yaml \
+  --pyspi-config configs/blended_sonnet_config.yaml \
   --threads "${NUM_THREADS}" \
   --heatmap \
   --parquet

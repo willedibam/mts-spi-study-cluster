@@ -51,37 +51,152 @@ def _zscore_channels(data: np.ndarray) -> np.ndarray:
     return normalised
 
 
-def generate_var(
+def _maybe_zscore(data: np.ndarray, *, zscore: bool = True) -> np.ndarray:
+    arr = np.asarray(data, dtype=float)
+    return _zscore_channels(arr) if zscore else arr
+
+
+def generate_varma(
     M: int,
     T: int,
-    phi: float = 0.95,
-    coupling: float = 0.8,
+    phi: float = 0.6,
+    coupling: float = 0.4,
+    ma_phi: float = 0.2,
+    ma_coupling: float = 0.1,
     noise_std: float = 0.1,
     transients: int = 100,
+    target_rho: float = 0.99,
     rng=None,
-) -> np.ndarray:
+    zscore: bool = True,
+):
+    """
+    Generate a multivariate VARMA(1,1) process on a ring topology.
+
+    Model:
+        X_t = A X_{t-1} + ε_t + B ε_{t-1},
+        ε_t ~ N(0, noise_std^2 I_M)
+
+    Topology:
+        - A and B are built on a *ring*:
+            * diagonal: self terms
+            * off-diagonal: nearest neighbours (i-1, i+1 mod M)
+
+    Parameters
+    ----------
+    M : int
+        Number of channels (nodes) in the multivariate time series.
+    T : int
+        Number of time steps to return (after discarding transients).
+    phi : float
+        Autoregressive self-correlation (diagonal of A).
+        Larger -> stronger persistence of each channel's own past.
+    coupling : float
+        Autoregressive ring coupling strength (off-diagonals of A).
+        Larger -> stronger influence of nearest neighbours.
+    ma_phi : float
+        Moving-average self term (diagonal of B).
+        Set to 0.0 to obtain a pure VAR(1) (no MA component).
+    ma_coupling : float
+        Moving-average ring coupling term (off-diagonals of B).
+        Set to 0.0 to obtain a pure VAR(1).
+    noise_std : float
+        Standard deviation of the innovation noise ε_t (Gaussian).
+    transients : int
+        Number of initial steps to simulate and discard as burn-in.
+    target_rho : float
+        Target spectral radius for the AR matrix A. If ρ(A) ≥ target_rho,
+        A is rescaled as A ← (target_rho / ρ(A)) A.
+    rng :
+        Optional np.random.Generator or seed; resolved via _resolve_rng.
+
+    Returns
+    -------
+    X : (T, M) np.ndarray
+        Multivariate time series (z-scored when `zscore=True`) after discarding transients.
+    """
     rng = _resolve_rng(None, rng)
-    A = np.eye(M) * phi + (coupling / M) * (np.ones((M, M)) - np.eye(M))
+    I = np.eye(M)
+    right = np.roll(I, 1, axis=1)   # neighbour (i+1 mod M)
+    left = np.roll(I, -1, axis=1)   # neighbour (i-1 mod M)
+    A = phi * I + coupling * (left + right)     # Autoregressive matrix A (ring topology)
     ev = np.linalg.eigvals(A)
     sr = np.max(np.abs(ev))
-    if sr >= 0.98:
-        A = A / (1.05 * sr)
+    if sr >= target_rho:
+        A = A * (target_rho / sr)
+    B = ma_phi * I + ma_coupling * (left + right)     # Moving-average matrix B (ring topology)
     steps = transients + T
     X = np.zeros((steps, M), float)
     eps = rng.normal(0.0, noise_std, size=(steps, M))
     for t in range(1, steps):
-        X[t] = A @ X[t - 1] + eps[t]
-    return _zscore_channels(X[transients:])
+        X[t] = A @ X[t - 1] + eps[t] + B @ eps[t - 1]
+    return _maybe_zscore(X[transients:], zscore=zscore)
 
 
-def generate_gaussian_noise(M: int, T: int, rng=None) -> np.ndarray:
+def generate_varma_shuffled(
+    M: int,
+    T: int,
+    # Pass through all standard VARMA parameters
+    phi: float = 0.6,
+    coupling: float = 0.4,
+    ma_phi: float = 0.2,
+    ma_coupling: float = 0.1,
+    noise_std: float = 0.1,
+    transients: int = 100,
+    target_rho: float = 0.99,
+    rng=None,
+    zscore: bool = True,
+) -> np.ndarray:
     rng = _resolve_rng(None, rng)
-    return rng.normal(size=(T, M))
+    X = generate_varma(
+        M=M, T=T, 
+        phi=phi, coupling=coupling, 
+        ma_phi=ma_phi, ma_coupling=ma_coupling,
+        noise_std=noise_std, transients=transients, 
+        target_rho=target_rho, rng=rng, zscore=False
+    )
+    for m in range(M):
+        rng.shuffle(X[:, m])
+    return _maybe_zscore(X, zscore=zscore)
 
 
-def generate_cauchy_noise(M: int, T: int, rng=None) -> np.ndarray:
+def generate_gaussian_noise(
+    M: int,
+    T: int,
+    *,
+    zscore: bool = True,
+    rng=None,
+) -> np.ndarray:
     rng = _resolve_rng(None, rng)
-    return rng.standard_cauchy(size=(T, M))
+    raw_data = rng.normal(size=(T, M))
+    return _maybe_zscore(raw_data, zscore=zscore)
+
+def generate_cauchy_noise(
+    M: int,
+    T: int,
+    *,
+    zscore: bool = False,
+    rng=None,
+) -> np.ndarray:
+    rng = _resolve_rng(None, rng)
+    data = rng.standard_cauchy(size=(T, M))
+    return _maybe_zscore(data, zscore=zscore) if zscore else data
+
+
+def generate_exponential_noise(
+    M: int,
+    T: int,
+    *,
+    zscore: bool = False,
+    rng=None,
+) -> np.ndarray:
+    """
+    Standard Exponential distribution (rate parameter gamma = 1).
+    """
+    rng = _resolve_rng(None, rng)
+    # NumPy uses scale parameter beta = 1/gamma.
+    # For gamma = 1, scale = 1.0.
+    data = rng.exponential(scale=1.0, size=(T, M))
+    return _maybe_zscore(data, zscore=zscore) if zscore else data
 
 
 def generate_cml_logistic(
@@ -93,6 +208,7 @@ def generate_cml_logistic(
     transients: int = 100,
     respect_transients: bool = False,
     rng=None,
+    zscore: bool = True,
 ) -> np.ndarray:
     rng = _resolve_rng(None, rng)
     M = int(M)
@@ -129,22 +245,25 @@ def generate_cml_logistic(
         )
     cropped = states[:total_samples, offset : offset + M]
     usable = cropped[transient_samples : transient_samples + T]
-    return _zscore_channels(usable)
+    return _maybe_zscore(usable, zscore=zscore)
 
 
 def _laplacian_1d(z: np.ndarray) -> np.ndarray:
+    """
+    Finite difference Laplacian in 1D with periodic boundary conditions.
+    Approximates d^2z/du^2.
+    """
     return np.roll(z, -1) - 2.0 * z + np.roll(z, 1)
 
 
 def _laplacian_2d(z: np.ndarray) -> np.ndarray:
-    return (
-        np.roll(z, -1, axis=0)
-        - 2.0 * z
-        + np.roll(z, 1, axis=0)
-        + np.roll(z, -1, axis=1)
-        - 2.0 * z
-        + np.roll(z, 1, axis=1)
-    )
+    """
+    Finite difference Laplacian in 2D with periodic boundary conditions.
+    Approximates d^2z/du^2 + d^2z/dv^2.
+    """
+    grad_u = np.roll(z, -1, axis=0) - 2.0 * z + np.roll(z, 1, axis=0)
+    grad_v = np.roll(z, -1, axis=1) - 2.0 * z + np.roll(z, 1, axis=1)
+    return grad_u + grad_v
 
 
 def generate_wave_1d(
@@ -154,27 +273,50 @@ def generate_wave_1d(
     c: float = 10.0,
     seed: int | None = None,
     rng=None,
+    zscore: bool = True,
 ) -> np.ndarray:
-    rng = np.random.default_rng(seed) if seed is not None else _resolve_rng(None, rng)
+    """
+    Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
+    
+    Context parameters:
+      - c = 10 (default)
+      - Periodic boundary conditions
+      - Initial condition: Gaussian with sigma = M/20
+    """
+    rng = _resolve_rng(seed, rng)
+    
+    # 1. Setup Space and Time (Unit domain)
     dx = 1.0 / M
+    # Courant stability condition: c * dt/dx <= 1. Use 0.2 safety factor.
     dt = 0.2 * dx / c
     coeff = (c * dt / dx) ** 2
+
+    # 2. Initial Conditions (Gaussian)
     coords = np.arange(M, dtype=float)
+    center = M / 2.0
     sigma = M / 20.0
-    z_prev = np.exp(-((coords - M / 2.0) ** 2) / (2.0 * sigma**2))
+    
+    z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
     z_prev = z_prev / np.max(np.abs(z_prev))
+
+    # 3. First Time Step (t=1)
+    # Assume initial velocity dz/dt = 0; Taylor expansion
     lap_prev = _laplacian_1d(z_prev)
     z_curr = z_prev + 0.5 * coeff * lap_prev
+
+    # 4. Integration Loop
     samples = np.zeros((T, M), dtype=float)
     samples[0] = z_prev
     if T > 1:
         samples[1] = z_curr
+
     for t in range(2, T):
         lap = _laplacian_1d(z_curr)
         z_next = 2.0 * z_curr - z_prev + coeff * lap
         samples[t] = z_next
         z_prev, z_curr = z_curr, z_next
-    return _zscore_channels(samples)
+
+    return _maybe_zscore(samples, zscore=zscore)
 
 
 def generate_wave_2d(
@@ -184,31 +326,55 @@ def generate_wave_2d(
     c: float = 10.0,
     seed: int | None = None,
     rng=None,
+    zscore: bool = True,
 ) -> np.ndarray:
+    """
+    Simulates the 2D Wave Equation: d^2z/dt^2 = c^2 * (d^2z/du^2 + d^2z/dv^2)
+    
+    Context parameters:
+      - c = 10 (default)
+      - Periodic boundary conditions
+      - Initial condition: Gaussian with sigma = M/20
+      - M is the total number of processes (nodes). The grid side is sqrt(M).
+    """
+    rng = _resolve_rng(seed, rng)
+
+    # 1. Setup Grid
     side = int(np.sqrt(M))
     if side * side != M:
-        raise ValueError("Wave 2D generator requires M to be a perfect square.")
-    rng = np.random.default_rng(seed) if seed is not None else _resolve_rng(None, rng)
+        raise ValueError(f"Wave 2D generator requires M to be a perfect square. Got M={M}.")
+    
     dx = 1.0 / side
     dt = 0.2 * dx / c
     coeff = (c * dt / dx) ** 2
+
+    # 2. Initial Conditions (2D Gaussian)
     x = np.arange(side, dtype=float)
     X, Y = np.meshgrid(x, x, indexing="ij")
+    center = side / 2.0
     sigma = M / 20.0
-    z_prev = np.exp(-(((X - side / 2.0) ** 2 + (Y - side / 2.0) ** 2) / (2.0 * sigma**2)))
+    
+    dist_sq = (X - center) ** 2 + (Y - center) ** 2
+    z_prev = np.exp(-(dist_sq) / (2.0 * sigma**2))
     z_prev = z_prev / np.max(np.abs(z_prev))
+
+    # 3. First Time Step (t=1)
     lap_prev = _laplacian_2d(z_prev)
     z_curr = z_prev + 0.5 * coeff * lap_prev
+
+    # 4. Integration Loop
     samples = np.zeros((T, M), dtype=float)
     samples[0] = z_prev.reshape(-1)
     if T > 1:
         samples[1] = z_curr.reshape(-1)
+
     for t in range(2, T):
         lap = _laplacian_2d(z_curr)
         z_next = 2.0 * z_curr - z_prev + coeff * lap
         samples[t] = z_next.reshape(-1)
         z_prev, z_curr = z_curr, z_next
-    return _zscore_channels(samples)
+
+    return _maybe_zscore(samples, zscore=zscore)
 
 
 _KURAMOTO_CONN_ALIASES = {
@@ -311,6 +477,7 @@ def generate_kuramoto(
     connectivity: str | None = None,
     k: float | None = None,
     rng=None,
+    zscore: bool = True,
 ) -> np.ndarray:
     """
     Kuramoto network driven by pyclustering's sync_network.
@@ -362,6 +529,7 @@ def generate_kuramoto(
         sim_time=sim_time,
         total_steps=total_steps,
         rng=rng,
+        zscore=zscore,
     )
     if data is None:
         print(
@@ -381,6 +549,7 @@ def generate_kuramoto(
             transients=transients,
             output=output,
             rng=rng,
+            zscore=zscore,
         )
     return data
 
@@ -400,6 +569,7 @@ def _simulate_pyclustering_kuramoto(
     sim_time: float,
     total_steps: int,
     rng,
+    zscore: bool,
 ) -> np.ndarray | None:
     net = sync_network(
         num_osc=M,
@@ -447,7 +617,7 @@ def _simulate_pyclustering_kuramoto(
         raise ValueError(f"Unknown output '{output}'.")
     if not np.isfinite(data).all():
         return None
-    return _zscore_channels(data)
+    return _maybe_zscore(data, zscore=zscore)
 
 
 def _simulate_python_kuramoto(
@@ -464,6 +634,7 @@ def _simulate_python_kuramoto(
     transients: int,
     output: str,
     rng,
+    zscore: bool,
 ) -> np.ndarray:
     A = _build_kuramoto_adjacency(M, connectivity, k_ring)
     degree = A.sum(axis=1)
@@ -484,7 +655,7 @@ def _simulate_python_kuramoto(
         dtheta = omega + coupling * inv_degree * coupling_term
         noise = eta * np.sqrt(dt) * rng.normal(size=M)
         theta = np.mod(theta + dtheta * dt + noise, 2.0 * np.pi)
-    return _zscore_channels(Y[transients:])
+    return _maybe_zscore(Y[transients:], zscore=zscore)
 
 
 def generate_kuramoto_all_to_all(*args, k: float, **kwargs) -> np.ndarray:
@@ -500,7 +671,9 @@ def generate_kuramoto_grid_four(*args, k: float, **kwargs) -> np.ndarray:
 
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
-    "var": generate_var,
+    "varma": generate_varma,
+    "var": generate_varma,
+    "varma_shuffled": generate_varma_shuffled,
     "cml_logistic": generate_cml_logistic,
     "kuramoto": generate_kuramoto,
     "kuramoto_all_to_all": generate_kuramoto_all_to_all,
@@ -508,6 +681,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "kuramoto_grid_four": generate_kuramoto_grid_four,
     "gaussian_noise": generate_gaussian_noise,
     "cauchy_noise": generate_cauchy_noise,
+    "exponential_noise": generate_exponential_noise,
     "wave_1d": generate_wave_1d,
     "wave_2d": generate_wave_2d,
 }

@@ -16,9 +16,11 @@ dist/
 .ipynb_checkpoints/
 
 # results/cache/data
-results/
+analysis/
 cache/
 data/
+results/
+tar/
 
 # OS
 .DS_Store
@@ -38,6 +40,8 @@ logs/
 spi_array.*
 
 # Random things
-*.ipynb
+data_backup.tar.gz
+# *.ipynb
 cml_kur.ipynb
 Random/
+*.tar.gz

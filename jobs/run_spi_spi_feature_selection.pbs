@@ -1,0 +1,64 @@
+#!/bin/bash
+#PBS -N spi_spi_feat_select
+#PBS -l select=1:ncpus=16:mem=32gb
+#PBS -l walltime=24:00:00
+#PBS -j oe
+#PBS -m bea
+#PBS -M your_email@example.com
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+JOB_LABEL="${PBS_JOBNAME}_$([ -n "${PBS_ARRAY_INDEX:-}" ] && echo "${PBS_ARRAY_INDEX}" || echo "0")"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+# Tunables (override via env)
+MODE=${MODE:-full}
+LIMIT=${LIMIT:-}
+TARGET_DIM=${TARGET_DIM:-12}
+ESTIMATOR=${ESTIMATOR:-rf}
+SPLITS=${SPLITS:-5}
+N_JOBS=${N_JOBS:-16}
+CACHE=${CACHE:-}
+RECOMPUTE=${RECOMPUTE:-0}
+
+export OMP_NUM_THREADS=$N_JOBS
+export OPENBLAS_NUM_THREADS=$N_JOBS
+export MKL_NUM_THREADS=$N_JOBS
+export NUMEXPR_NUM_THREADS=$N_JOBS
+
+echo "[INFO] Starting feature selection at $(date)"
+
+CMD=(python feature_selection.py
+  --mode "$MODE"
+  --target-dim "$TARGET_DIM"
+  --estimator "$ESTIMATOR"
+  --splits "$SPLITS"
+  --n-jobs "$N_JOBS"
+)
+
+if [[ -n "$LIMIT" ]]; then
+  CMD+=(--dataset-limit "$LIMIT")
+fi
+if [[ -n "$CACHE" ]]; then
+  CMD+=(--cache "$CACHE")
+fi
+if [[ "$RECOMPUTE" == "1" ]]; then
+  CMD+=(--recompute)
+fi
+
+echo "[INFO] Command: ${CMD[*]}"
+"${CMD[@]}"
+
+echo "[INFO] Finished at $(date)"

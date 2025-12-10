@@ -1,6 +1,6 @@
 mode: full
 base_output_dir: data/full
-pyspi_config: configs/config.yaml
+pyspi_config: configs/blended_config.yaml
 pyspi_subset: default
 normalise: true
 rng_seed: 110305
@@ -8,35 +8,31 @@ save_heatmap: false
 threads: 8
 
 defaults:
-  M_values: [4, 9, 16]
-  T_values: [100, 400, 900, 1600]
-  instances: [0, 1, 2]
+  M_values: [4, 8, 16, 32]
+  T_values: [200, 400, 800, 1600]
+  instances: [0, 1, 2, 3]
 
 mts_classes:
   - name: "VAR(1)"
     labels: ["linear", "gaussian", "var"]
-    generator: "var"
+    generator: "varma"
     include_base_variant: false
-    instances: [0]
+    instances: [0, 1, 2, 3]
     base_params:
-      phi: 0.94
-      coupling: 0.67
+      phi: 0.6
+      coupling: 0.2
+      ma_phi: 0.0
+      ma_coupling: 0.0
       noise_std: 0.1
       transients: 100
     variants:
-      - name: "phi=0.33"
-        params: {phi: 0.33}
-      - name: "phi=0.66"
-        params: {phi: 0.66}
-      - name: "phi=0.99"
-        params: {phi: 0.99}
-
+      - name: "phi-0.6_coupling-0.2"
+        params: {}  
+  
   - name: "CML"
     labels: ["nonlinear", "cml"]
     generator: "cml_logistic"
     include_base_variant: false
-    M_values: [9, 16, 25]
-    T_values: [100, 400, 900, 1600]
     base_params:
       alpha: 1.7522
       eps: 0.00115
@@ -53,7 +49,6 @@ mts_classes:
   - name: "Kuramoto"
     labels: ["oscillator", "kuramoto", "phase"]
     generator: "kuramoto"
-    instances: [0]
     base_params:
       dt: 0.1
       k: -4
@@ -62,17 +57,24 @@ mts_classes:
       eta: 0.0
       transients: 100
     include_base_variant: false
-    instances: [0]
+    instances: [0, 1, 2, 3]
     variants:
-      - name: "all_to_all"
+      - name: 
         params:
           connectivity: "all-to-all"
-      - name: "bidirectional_list"
-        params:
-          connectivity: "bidirectional-list"
-      - name: "grid_four"
-        params:
-          connectivity: "grid-four"
+
+  - name: "Wave1D"
+    labels: ["pde", "wave", "1d"]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+
+  - name: "Wave2D"
+    labels: ["pde", "wave", "2d"]
+    generator: "wave_2d"
+    M_values: [4, 9, 16, 25]
+    base_params:
+      c: 10.0
 
   - name: "GaussianNoise"
     labels: ["noise", "gaussian"]
@@ -82,4 +84,9 @@ mts_classes:
   - name: "CauchyNoise"
     labels: ["noise", "cauchy", "heavy-tail"]
     generator: "cauchy_noise"
+    base_params: {}
+
+  - name: "ExponentialNoise"
+    labels: ["noise", "exponential"]
+    generator: "exponential_noise"
     base_params: {}

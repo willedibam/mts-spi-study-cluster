@@ -104,6 +104,9 @@ class ClassSpec:
     M_values: List[int]
     T_values: List[int]
     instances: List[int]
+    single_instance_M_values: List[int]
+    single_instance_instances: List[int]
+    single_instance_T_values: List[int]
     variants: List[VariantSpec]
     include_base_variant: bool
     pyspi_config: Path | None = None
@@ -127,6 +130,9 @@ class ExperimentConfig:
     default_M_values: List[int]
     default_T_values: List[int]
     default_instances: List[int]
+    single_instance_M_values: List[int]
+    single_instance_instances: List[int]
+    single_instance_T_values: List[int]
     classes: List[ClassSpec] = field(default_factory=list)
 
     @classmethod
@@ -138,14 +144,19 @@ class ExperimentConfig:
         base_output_dir = _as_path(data.get("base_output_dir", f"data/{mode}"))
         pyspi_config = _as_path(data["pyspi_config"])
         pyspi_subset = data.get("pyspi_subset", "default")
-        normalise = bool(data.get("normalise", True))
+        normalise = bool(data.get("normalise", False))
         rng_seed = int(data.get("rng_seed", 0))
         save_heatmap = bool(data.get("save_heatmap", False))
         threads = data.get("threads")
         defaults = data.get("defaults") or {}
-        default_M = list(defaults.get("M_values") or [])
-        default_T = list(defaults.get("T_values") or [])
-        default_instances = list(defaults.get("instances") or [])
+        default_M = [int(v) for v in (defaults.get("M_values") or [])]
+        default_T = [int(v) for v in (defaults.get("T_values") or [])]
+        default_instances = [int(v) for v in (defaults.get("instances") or [])]
+        default_single_M = [int(v) for v in (defaults.get("single_instance_M_values") or [])]
+        default_single_instances = [
+            int(v) for v in (defaults.get("single_instance_instances") or [0])
+        ]
+        default_single_T = [int(v) for v in (defaults.get("single_instance_T_values") or [])]
         classes_raw = data.get("mts_classes") or []
         classes: List[ClassSpec] = []
         for entry in classes_raw:
@@ -155,6 +166,9 @@ class ExperimentConfig:
                     default_M,
                     default_T,
                     default_instances,
+                    default_single_M,
+                    default_single_instances,
+                    default_single_T,
                 )
             )
         if not classes:
@@ -171,6 +185,9 @@ class ExperimentConfig:
             default_M_values=default_M,
             default_T_values=default_T,
             default_instances=default_instances,
+            single_instance_M_values=default_single_M,
+            single_instance_instances=default_single_instances,
+            single_instance_T_values=default_single_T,
             classes=classes,
         )
 
@@ -180,6 +197,9 @@ def _parse_class(
     default_M: List[int],
     default_T: List[int],
     default_instances: List[int],
+    default_single_M: List[int],
+    default_single_instances: List[int],
+    default_single_T: List[int],
 ) -> ClassSpec:
     required = ["name", "generator"]
     for key in required:
@@ -198,14 +218,32 @@ def _parse_class(
         if not vals and default:
             return list(default)
         return vals
+    M_values = [int(v) for v in _resolve_list(entry.get("M_values"), default_M)]
+    T_values = [int(v) for v in _resolve_list(entry.get("T_values"), default_T)]
+    instances = [int(v) for v in _resolve_list(entry.get("instances"), default_instances)]
+    single_instance_M_values = [
+        int(v) for v in _resolve_list(entry.get("single_instance_M_values"), default_single_M)
+    ]
+    single_instance_T_values = [
+        int(v) for v in _resolve_list(entry.get("single_instance_T_values"), default_single_T)
+    ]
+    single_instance_instances: List[int] = []
+    if single_instance_M_values:
+        raw_single_instances = _resolve_list(
+            entry.get("single_instance_instances"), default_single_instances
+        )
+        single_instance_instances = [int(v) for v in raw_single_instances]
     return ClassSpec(
         name=entry["name"],
         generator=entry["generator"],
         labels=list(entry.get("labels", [])),
         base_params=base_params,
-        M_values=_resolve_list(entry.get("M_values"), default_M),
-        T_values=_resolve_list(entry.get("T_values"), default_T),
-        instances=_resolve_list(entry.get("instances"), default_instances),
+        M_values=M_values,
+        T_values=T_values,
+        instances=instances,
+        single_instance_M_values=single_instance_M_values,
+        single_instance_instances=single_instance_instances,
+        single_instance_T_values=single_instance_T_values,
         variants=variants,
         include_base_variant=entry.get("include_base_variant", True),
         pyspi_config=_as_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
@@ -335,55 +373,76 @@ class DatasetMapping:
         specs: List[DatasetSpec] = []
         for class_entry in self.config.classes:
             class_specs: List[DatasetSpec] = []
-            for M in class_entry.M_values:
-                for T in class_entry.T_values:
-                    for instance in class_entry.instances:
-                        dataset_slug = f"M{M}_T{T}_I{instance}"
-                        class_dir = class_dir_name(class_entry.name)
-                        dataset_dir = (
-                            self.config.base_output_dir
-                            / class_dir
-                            / dataset_slug
-                        )
-                        generator_params = dict(class_entry.base_params)
-                        pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
-                        pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
-                        normalise = (
-                            class_entry.normalise
-                            if class_entry.normalise is not None
-                            else self.config.normalise
-                        )
-                        save_heatmap = (
-                            class_entry.save_heatmap
-                            if class_entry.save_heatmap is not None
-                            else self.config.save_heatmap
-                        )
-                        threads = class_entry.threads or self.config.threads
-                        class_specs.append(
-                            DatasetSpec(
-                                index=0,  # placeholder, updated later
-                                mode=self.config.mode,
-                                mts_class=class_entry.name,
-                                class_labels=class_entry.labels,
-                                class_dir=class_dir,
-                                dataset_slug=dataset_slug,
-                                dataset_dir=dataset_dir,
-                                generator=class_entry.generator,
-                                base_output_dir=self.config.base_output_dir,
-                                generator_params=generator_params,
-                                variant=None,
-                                M=M,
-                                T=T,
-                                instance=instance,
-                                pyspi_config=pyspi_config,
-                                pyspi_subset=pyspi_subset,
-                                normalise=normalise,
-                                save_heatmap=save_heatmap,
-                                rng_seed=0,
-                                threads=threads,
-                                heatmap_deltas=[1],
+            regular_M_values = [
+                m for m in class_entry.M_values if m not in class_entry.single_instance_M_values
+            ]
+
+            def _append_specs(
+                M_values: List[int],
+                instances: List[int],
+                T_values: List[int] | None = None,
+            ) -> None:
+                t_values = T_values if T_values is not None else class_entry.T_values
+                for M in M_values:
+                    for T in t_values:
+                        for instance in instances:
+                            dataset_slug = f"M{M}_T{T}_I{instance}"
+                            class_dir = class_dir_name(class_entry.name)
+                            dataset_dir = (
+                                self.config.base_output_dir
+                                / class_dir
+                                / dataset_slug
                             )
-                        )
+                            generator_params = dict(class_entry.base_params)
+                            pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
+                            pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
+                            normalise = (
+                                class_entry.normalise
+                                if class_entry.normalise is not None
+                                else self.config.normalise
+                            )
+                            save_heatmap = (
+                                class_entry.save_heatmap
+                                if class_entry.save_heatmap is not None
+                                else self.config.save_heatmap
+                            )
+                            threads = class_entry.threads or self.config.threads
+                            class_specs.append(
+                                DatasetSpec(
+                                    index=0,  # placeholder, updated later
+                                    mode=self.config.mode,
+                                    mts_class=class_entry.name,
+                                    class_labels=class_entry.labels,
+                                    class_dir=class_dir,
+                                    dataset_slug=dataset_slug,
+                                    dataset_dir=dataset_dir,
+                                    generator=class_entry.generator,
+                                    base_output_dir=self.config.base_output_dir,
+                                    generator_params=generator_params,
+                                    variant=None,
+                                    M=M,
+                                    T=T,
+                                    instance=instance,
+                                    pyspi_config=pyspi_config,
+                                    pyspi_subset=pyspi_subset,
+                                    normalise=normalise,
+                                    save_heatmap=save_heatmap,
+                                    rng_seed=0,
+                                    threads=threads,
+                                    heatmap_deltas=[1],
+                                )
+                            )
+
+            if regular_M_values:
+                _append_specs(regular_M_values, class_entry.instances)
+            if class_entry.single_instance_M_values:
+                single_instances = class_entry.single_instance_instances or [0]
+                t_values = (
+                    class_entry.single_instance_T_values
+                    if class_entry.single_instance_T_values
+                    else class_entry.T_values
+                )
+                _append_specs(class_entry.single_instance_M_values, single_instances, t_values)
             variant_choices: List[VariantSpec | None] = []
             if class_entry.include_base_variant:
                 variant_choices.append(None)

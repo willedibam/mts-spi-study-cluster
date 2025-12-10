@@ -5,7 +5,6 @@ import ast
 import os
 import sys
 import time
-import shutil
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -21,7 +20,6 @@ from .utils import (
     dump_json,
     ensure_dir,
     project_root,
-    slugify,
     timestamp,
     to_relative,
 )
@@ -87,11 +85,6 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         help="Print number of dataset combinations and exit.",
     )
     parser.add_argument(
-        "--regenerate-data",
-        action="store_true",
-        help="Force regeneration of timeseries even if arrays/timeseries.npy exists.",
-    )
-    parser.add_argument(
         "--heatmap",
         dest="heatmap",
         action="store_true",
@@ -117,7 +110,12 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--skip-existing",
         action="store_true",
-        help="Skip datasets that already have timeseries, calc.csv, and meta.json.",
+        help="Skip datasets that already have meta.json, calc.csv, and spi_mpis.npz.",
+    )
+    parser.add_argument(
+        "--regenerate-timeseries",
+        action="store_true",
+        help="Force regeneration of timeseries even if timeseries.npy exists.",
     )
     args = parser.parse_args(argv)
     return args
@@ -175,19 +173,16 @@ def main(argv: List[str] | None = None) -> None:
     if args.skip_existing and _dataset_complete(spec.dataset_dir):
         print(
             f"[INFO] Skipping dataset {spec.name} "
-            f"(found meta.json and calc.csv in {to_relative(spec.dataset_dir)})."
+            f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
         )
         return
     _export_thread_hints(args.threads or spec.threads)
-    dataset_dir = spec.dataset_dir
-    arrays_dir = ensure_dir(dataset_dir / "arrays")
-    csv_dir = ensure_dir(dataset_dir / "csv")
-    figures_dir = ensure_dir(dataset_dir / "figures")
-    timeseries_path = arrays_dir / "timeseries.npy"
+    dataset_dir = ensure_dir(spec.dataset_dir)
     data: np.ndarray
-    if timeseries_path.exists() and not args.regenerate_data:
-        data = np.load(timeseries_path).astype(np.float64, copy=False)
-        print(f"[INFO] Loaded cached timeseries: {to_relative(timeseries_path)}")
+    ts_path = dataset_dir / "timeseries.npy"
+    if ts_path.exists() and not args.regenerate_timeseries:
+        data = np.load(ts_path).astype(np.float64, copy=False)
+        print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
     else:
         start = time.perf_counter()
         generator_params = dict(spec.generator_params)
@@ -200,11 +195,11 @@ def main(argv: List[str] | None = None) -> None:
             T=spec.T,
             **generator_params,
         )
-        np.save(timeseries_path, data.astype(np.float32))
+        np.save(ts_path, data.astype(np.float32))
         duration = time.perf_counter() - start
         print(
             f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
-            f"in {duration:.2f}s -> {to_relative(timeseries_path)}"
+            f"in {duration:.2f}s -> {to_relative(ts_path)}"
         )
     data = data.astype(np.float64, copy=False)
     compute_start = time.perf_counter()
@@ -215,44 +210,38 @@ def main(argv: List[str] | None = None) -> None:
         normalise=spec.normalise,
     )
     compute_seconds = time.perf_counter() - compute_start
-    csv_path = csv_dir / "calc.csv"
+    csv_path = dataset_dir / "calc.csv"
     result.table.to_csv(csv_path, index=True)
-    parquet_path = csv_dir / "calc.parquet"
+    parquet_path = dataset_dir / "calc.parquet"
     if args.parquet:
         _safe_write_parquet(result.table, parquet_path)
     npz_path = dataset_dir / "spi_mpis.npz"
     np.savez_compressed(npz_path, **result.matrices)
-    per_spi_paths: Dict[str, str] = {}
-    for name, matrix in result.matrices.items():
-        safe_name = slugify(name)
-        spi_path = arrays_dir / f"mpi_{safe_name}.npy"
-        np.save(spi_path, matrix)
-        per_spi_paths[name] = str(Path("arrays") / f"mpi_{safe_name}.npy")
     heatmap_required = args.heatmap or spec.save_heatmap
     heatmap_paths: list[str] = []
     if heatmap_required:
-        for delta in spec.heatmap_deltas or [1]:
-            delta = max(1, int(delta))
-            view = data if delta == 1 else data[::delta]
-            filename = f"mts_heatmap_delta{delta}.png"
-            figure_path = figures_dir / filename
-            _save_heatmap(view, figure_path)
+        deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
+        base_filename = "mts_heatmap.png"
+        base_path = dataset_dir / base_filename
+        _save_heatmap(data, base_path)
+        heatmap_paths.append(base_filename)
+        for delta in deltas:
             if delta == 1:
-                legacy = figures_dir / "mts_heatmap.png"
-                if legacy != figure_path:
-                    ensure_dir(legacy.parent)
-                    shutil.copy2(figure_path, legacy)
-                heatmap_paths.append(str(Path("figures") / legacy.name))
-            heatmap_paths.append(str(Path("figures") / filename))
+                continue
+            filename = f"mts_heatmap_delta{delta}.png"
+            figure_path = dataset_dir / filename
+            view = data[::delta]
+            _save_heatmap(view, figure_path)
+            heatmap_paths.append(filename)
     meta = _build_metadata(
         spec=spec,
         result=result,
         paths={
-            "timeseries": str(Path("arrays") / "timeseries.npy"),
-            "calc_csv": str(Path("csv") / "calc.csv"),
-            "calc_parquet": str(Path("csv") / "calc.parquet") if args.parquet else "",
+            "timeseries": "",
+            "calc_csv": "calc.csv",
+            "calc_parquet": "calc.parquet" if args.parquet else "",
             "spi_archive": "spi_mpis.npz",
-            "per_spi": per_spi_paths,
+            "per_spi": {},
             "heatmap": heatmap_paths[0] if heatmap_paths else "",
             "heatmaps": heatmap_paths if heatmap_paths else [],
         },
@@ -368,8 +357,9 @@ def _build_metadata(
 def _dataset_complete(dataset_dir: Path) -> bool:
     required = [
         dataset_dir / "meta.json",
-        dataset_dir / "csv" / "calc.csv",
-        dataset_dir / "arrays" / "timeseries.npy",
+        dataset_dir / "calc.csv",
+        dataset_dir / "spi_mpis.npz",
+        dataset_dir / "timeseries.npy",
     ]
     return all(path.exists() for path in required)
 

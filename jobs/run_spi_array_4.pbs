@@ -1,8 +1,8 @@
 #!/bin/bash
-#PBS -N spi_array_cml_kur
-#PBS -l select=1:ncpus=8:mem=8gb
-#PBS -l walltime=24:00:00
-#PBS -J 1-90
+#PBS -N spi_array_full_4
+#PBS -l select=1:ncpus=8:mem=32gb
+#PBS -l walltime=48:00:00
+#PBS -J 1-512
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 
@@ -34,8 +34,10 @@ echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"
 python -m src.run_experiments \
   --mode full \
   --job-index "${ARRAY_ID}" \
-  --skip-existing \
-  --experiment-config configs/experiments_full_cml_kur.yaml \
+  --regenerate-timeseries \
+  --experiment-config configs/experiments_full_4.yaml \
+  --pyspi-config configs/blended_config.yaml \
   --threads "${NUM_THREADS}" \
+  --heatmap \
   --parquet
 echo "[INFO] Finished at $(date)"
