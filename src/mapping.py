@@ -4,6 +4,7 @@ import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
+import numpy as np
 
 from .utils import (
     class_dir_name,
@@ -98,7 +99,15 @@ class VariantSpec:
 @dataclass
 class ClassSpec:
     name: str
-    generator: str
+    generator: str | None
+    package: str | None
+    dataset_name: str | None
+    target_classes: List[Any]
+    tickers: List[str]
+    market: str | None
+    period: str | None
+    interval: str | None
+    m_assets: int | None
     labels: List[str]
     base_params: Dict[str, Any]
     M_values: List[int]
@@ -111,6 +120,7 @@ class ClassSpec:
     include_base_variant: bool
     pyspi_config: Path | None = None
     pyspi_subset: str | None = None
+    zscore_data: bool = False
     normalise: bool | None = None
     save_heatmap: bool | None = None
     threads: int | None = None
@@ -196,10 +206,22 @@ def _parse_class(
     default_single_instances: List[int],
     default_single_T: List[int],
 ) -> ClassSpec:
-    required = ["name", "generator"]
-    for key in required:
-        if key not in entry:
-            raise ValueError(f"Class entry missing '{key}'. Entry: {entry}")
+    if "name" not in entry:
+        raise ValueError(f"Class entry missing 'name'. Entry: {entry}")
+    generator = entry.get("generator")
+    package = entry.get("package")
+    dataset_name = entry.get("dataset_name")
+    if not generator and not package:
+        raise ValueError(
+            f"Class entry '{entry.get('name')}' must define either 'generator' (synthetic) "
+            "or 'package' for real-world data."
+        )
+    if generator and package:
+        raise ValueError(f"Class entry '{entry.get('name')}' cannot define both 'generator' and 'package'.")
+    if package and package.lower() not in {"aeon", "sktime", "yfinance"}:
+        raise ValueError(f"Unsupported package '{package}' for '{entry.get('name')}'.")
+    if package and package.lower() in {"aeon", "sktime"} and not dataset_name:
+        raise ValueError(f"Class entry '{entry.get('name')}' missing 'dataset_name' for package data.")
     variants_data = entry.get("variants") or []
     variants = [
         VariantSpec(name=var.get("name"), params=var.get("params", {}))
@@ -228,9 +250,26 @@ def _parse_class(
             entry.get("single_instance_instances"), default_single_instances
         )
         single_instance_instances = [int(v) for v in raw_single_instances]
+    target_classes = list(entry.get("classes", []))
+    tickers = [str(t).upper() for t in entry.get("tickers", [])]
+    market = entry.get("market")
+    period = entry.get("period")
+    interval = entry.get("interval")
+    m_assets = entry.get("M") or entry.get("assets") or entry.get("m_assets")
+    m_assets = int(m_assets) if m_assets is not None else None
+    if m_assets is None and tickers:
+        m_assets = len(tickers)
     return ClassSpec(
         name=entry["name"],
-        generator=entry["generator"],
+        generator=generator,
+        package=package,
+        dataset_name=dataset_name,
+        target_classes=target_classes,
+        tickers=tickers,
+        market=market,
+        period=period,
+        interval=interval,
+        m_assets=m_assets,
         labels=list(entry.get("labels", [])),
         base_params=base_params,
         M_values=M_values,
@@ -243,6 +282,7 @@ def _parse_class(
         include_base_variant=entry.get("include_base_variant", True),
         pyspi_config=_as_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
         pyspi_subset=entry.get("pyspi_subset"),
+        zscore_data=bool(entry.get("zscore", False)),
         normalise=entry.get("normalise"),
         save_heatmap=entry.get("save_heatmap"),
         threads=entry.get("threads"),
@@ -258,7 +298,14 @@ class DatasetSpec:
     class_dir: str
     dataset_slug: str
     dataset_dir: Path
-    generator: str
+    generator: str | None
+    source: str
+    package: str | None
+    dataset_name: str | None
+    class_label: Any | None
+    sample_index: int | None
+    channels_first: bool | None
+    zscore_data: bool
     base_output_dir: Path
     generator_params: Dict[str, Any]
     variant: VariantSpec | None
@@ -272,6 +319,11 @@ class DatasetSpec:
     rng_seed: int
     threads: int | None
     heatmap_deltas: List[int]
+    tickers: List[str] = field(default_factory=list)
+    market: str | None = None
+    period: str | None = None
+    interval: str | None = None
+    m_assets: int | None = None
 
     @property
     def name(self) -> str:
@@ -291,6 +343,8 @@ class DatasetSpec:
 
 
 def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
+    if spec.source == "real":
+        return spec.dataset_slug or None
     base = f"M{spec.M}_T{spec.T}_I{spec.instance}"
     class_name = spec.mts_class.lower()
     if class_name.startswith("cml"):
@@ -317,6 +371,9 @@ def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
 
 
 def _apply_dataset_slug(spec: DatasetSpec) -> None:
+    if spec.source == "real" and spec.dataset_slug:
+        spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
+        return
     slug = _custom_dataset_slug(spec)
     if not slug:
         slug = f"M{spec.M}_T{spec.T}_I{spec.instance}"
@@ -366,6 +423,129 @@ class DatasetMapping:
         specs: List[DatasetSpec] = []
         for class_entry in self.config.classes:
             class_specs: List[DatasetSpec] = []
+            if class_entry.package:
+                instances = class_entry.instances or self.config.default_instances or [0]
+                class_dir = class_dir_name(class_entry.name)
+                pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
+                pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
+                normalise = (
+                    class_entry.normalise
+                    if class_entry.normalise is not None
+                    else self.config.normalise
+                )
+                save_heatmap = (
+                    class_entry.save_heatmap
+                    if class_entry.save_heatmap is not None
+                    else self.config.save_heatmap
+                )
+                threads = class_entry.threads or self.config.threads
+                base_seed = (
+                    class_entry.rng_seed
+                    if class_entry.rng_seed is not None
+                    else self.config.rng_seed
+                )
+                if class_entry.package.lower() == "yfinance":
+                    if not (class_entry.tickers or class_entry.market):
+                        raise ValueError(
+                            f"Class '{class_entry.name}' (yfinance) requires 'tickers' or 'market'."
+                        )
+                    if not class_entry.m_assets:
+                        raise ValueError(
+                            f"Class '{class_entry.name}' (yfinance) requires 'M' (m_assets) to sample."
+                        )
+                    for instance in instances:
+                        dataset_slug = f"I{instance}"
+                        dataset_dir = self.config.base_output_dir / class_dir / dataset_slug
+                        class_specs.append(
+                            DatasetSpec(
+                                index=0,
+                                mts_class=class_entry.name,
+                                class_labels=class_entry.labels,
+                                class_dir=class_dir,
+                                dataset_slug=dataset_slug,
+                                dataset_dir=dataset_dir,
+                                generator=None,
+                                source="yfinance",
+                                package=class_entry.package,
+                                dataset_name=class_entry.dataset_name,
+                                class_label=None,
+                                sample_index=None,
+                                channels_first=None,
+                                zscore_data=class_entry.zscore_data,
+                                base_output_dir=self.config.base_output_dir,
+                                generator_params={},
+                                variant=None,
+                                M=0,
+                                T=0,
+                                instance=instance,
+                                pyspi_config=pyspi_config,
+                                pyspi_subset=pyspi_subset,
+                                normalise=normalise,
+                                save_heatmap=save_heatmap,
+                                rng_seed=base_seed,
+                                threads=threads,
+                                heatmap_deltas=[1],
+                                tickers=class_entry.tickers,
+                                market=class_entry.market,
+                                period=class_entry.period,
+                                interval=class_entry.interval,
+                                m_assets=class_entry.m_assets,
+                            )
+                        )
+                else:
+                    if not class_entry.target_classes:
+                        raise ValueError(
+                            f"Class '{class_entry.name}' (package={class_entry.package}) must define 'classes'."
+                        )
+                    for cls_label in class_entry.target_classes:
+                        cls_slug = slugify(str(cls_label))
+                        for instance in instances:
+                            dataset_slug = f"class{cls_slug}_I{instance}"
+                            dataset_dir = (
+                                self.config.base_output_dir
+                                / class_dir
+                                / dataset_slug
+                            )
+                            class_specs.append(
+                                DatasetSpec(
+                                    index=0,
+                                    mts_class=class_entry.name,
+                                    class_labels=class_entry.labels,
+                                    class_dir=class_dir,
+                                    dataset_slug=dataset_slug,
+                                    dataset_dir=dataset_dir,
+                                    generator=None,
+                                    source="real",
+                                    package=class_entry.package,
+                                    dataset_name=class_entry.dataset_name,
+                                    class_label=cls_label,
+                                    sample_index=None,
+                                    channels_first=None,
+                                    zscore_data=class_entry.zscore_data,
+                                    base_output_dir=self.config.base_output_dir,
+                                    generator_params={},
+                                    variant=None,
+                                    M=0,
+                                    T=0,
+                                    instance=instance,
+                                    pyspi_config=pyspi_config,
+                                    pyspi_subset=pyspi_subset,
+                                    normalise=normalise,
+                                    save_heatmap=save_heatmap,
+                                    rng_seed=base_seed,
+                                    threads=threads,
+                                    heatmap_deltas=[1],
+                                    tickers=class_entry.tickers,
+                                    market=class_entry.market,
+                                    period=class_entry.period,
+                                    interval=class_entry.interval,
+                                    m_assets=class_entry.m_assets,
+                                )
+                            )
+                for spec in class_specs:
+                    spec.index = len(specs) + 1
+                    specs.append(spec)
+                continue
             regular_M_values = [
                 m for m in class_entry.M_values if m not in class_entry.single_instance_M_values
             ]
@@ -409,6 +589,13 @@ class DatasetMapping:
                                     dataset_slug=dataset_slug,
                                     dataset_dir=dataset_dir,
                                     generator=class_entry.generator,
+                                    source="synthetic",
+                                    package=None,
+                                    dataset_name=None,
+                                    class_label=None,
+                                    sample_index=None,
+                                    channels_first=None,
+                                    zscore_data=bool(class_entry.base_params.get("zscore", False)),
                                     base_output_dir=self.config.base_output_dir,
                                     generator_params=generator_params,
                                     variant=None,
@@ -451,6 +638,13 @@ class DatasetMapping:
                             dataset_slug=spec.dataset_slug,
                             dataset_dir=spec.dataset_dir,
                             generator=spec.generator,
+                            source=spec.source,
+                            package=spec.package,
+                            dataset_name=spec.dataset_name,
+                            class_label=spec.class_label,
+                            sample_index=spec.sample_index,
+                            channels_first=spec.channels_first,
+                            zscore_data=spec.zscore_data,
                             base_output_dir=spec.base_output_dir,
                             generator_params=dict(class_entry.base_params),
                             variant=variant,

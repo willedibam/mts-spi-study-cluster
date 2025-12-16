@@ -1,0 +1,52 @@
+#!/bin/bash
+#PBS -N combined_0_pyspi
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=01:00:00
+#PBS -l ncpus=8
+#PBS -l mem=16GB
+#PBS -l jobfs=10GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -J 1-36
+#PBS -r y
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+set -euo pipefail
+
+# 1. Load Environment
+if [ -f "activate_gadi.sh" ]; then
+    source activate_gadi.sh
+else
+    echo "[ERROR] activate_gadi.sh not found!"
+    exit 1
+fi
+
+# 2. Logs
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+# 3. Threading
+export NUM_THREADS=8
+export OMP_NUM_THREADS=$NUM_THREADS
+export OPENBLAS_NUM_THREADS=$NUM_THREADS
+export MKL_NUM_THREADS=$NUM_THREADS
+export VECLIB_MAXIMUM_THREADS=$NUM_THREADS
+export NUMEXPR_NUM_THREADS=$NUM_THREADS
+
+echo "[INFO] Running Job ${ARRAY_ID} on host: $(hostname)"
+
+# 4. Run Experiment
+python -m src.run_experiments \
+  --job-index "${ARRAY_ID}" \
+  --skip-existing \
+  --experiment-config configs/combined/combined_0.yaml \
+  --pyspi-config configs/pyspi/test_case_0.yaml \
+  --threads "${NUM_THREADS}" \
+  --parquet
+
+echo "[INFO] Finished at $(date)"

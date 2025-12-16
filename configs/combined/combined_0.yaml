@@ -1,0 +1,147 @@
+base_output_dir: data/combined_0
+pyspi_config: configs/pyspi/test_0_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 8
+
+defaults:
+  M_values: [4, 8]
+  T_values: [400]
+  instances: [0]
+  single_instance_M_values: 
+  single_instance_T_values: 
+  single_instance_instances:
+
+mts_classes:
+  - name: "VAR_1"
+    labels: ["linear", "gaussian", "var"]
+    generator: "varma"
+    instances: [0, 1]
+    include_base_variant: false
+    base_params:
+      phi: 0.6
+      coupling: 0.2
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      transients: 100
+      zscore: true
+    variants:
+      - name: "phi-0.6_coupling-0.2"
+        params: {}  
+      - name: "phi-0.6_coupling-0.2_all-to-all"
+        params:
+          topology: "all-to-all"
+  
+  - name: "CML"
+    labels: ["nonlinear", "cml"]
+    generator: "cml_logistic"
+    include_base_variant: false
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      delta: "3"
+      transients: 0
+      zscore: true
+    variants:
+      - name: "spatiotemporal_intermittency_I"
+        params:
+          alpha: 1.7522
+          eps: 0.00115
+          delta: "1,3,12"
+          transients: 0
+
+  - name: "Kuramoto"
+    labels: ["oscillator", "kuramoto", "phase"]
+    generator: "kuramoto"
+    base_params:
+      dt: 0.1
+      k: -4
+      omega_mean: 0.5
+      omega_std: 0.3
+      eta: 0.0
+      transients: 100
+      zscore: true
+    include_base_variant: false
+    variants:
+      - name: 
+        params:
+          connectivity: "all-to-all"
+
+  - name: "GaussianNoise"
+    labels: ["noise", "gaussian"]
+    generator: "gaussian_noise"
+    base_params:
+      zscore: true
+
+  - name: "CauchyNoise"
+    labels: ["noise", "cauchy", "heavy-tail"]
+    generator: "cauchy_noise"
+    base_params:
+      zscore: false
+
+  - name: "MotorImagery"
+    labels: ["real", "aeon", "classification"]
+    package: "aeon"
+    dataset_name: "MotorImagery"
+    classes: ["finger", "tongue"]
+    instances: [0]
+    zscore: true
+
+  - name: "SelfRegulationSCP1"
+    labels: ["real", "aeon", "classification", "SelfRegulationSCP1", "eeg"]
+    package: "aeon"
+    dataset_name: "SelfRegulationSCP1"
+    classes: ['negativity', 'positivity']
+    instances: [0]
+    zscore: true
+
+  - name: "EigenWorms"
+    labels: ["real", "aeon", "classification", "eigenworms"]
+    package: "aeon"
+    dataset_name: "EigenWorms"
+    classes: ["1", "2", "3", "4", "5"]
+    instances: [0, 1]
+    zscore: true
+
+  - name: "YF_SP500-rng"
+    labels: ["real", "yfinance", "equities"]
+    package: "yfinance"
+    market: "sp500"
+    period: "1y"
+    interval: "1d"
+    M: 4
+    instances: [0, 1]
+    zscore: true
+
+  - name: "YF_SP500-rng"
+    labels: ["real", "yfinance", "equities"]
+    package: "yfinance"
+    market: "sp500"
+    period: "1y"
+    interval: "1d"
+    M: 8
+    instances: [0, 1]
+    zscore: true
+
+  - name: "YF_SP500-rng"
+    labels: ["real", "yfinance", "equities"]
+    package: "yfinance"
+    market: "sp500"
+    period: "1y"
+    interval: "1d"
+    M: 16
+    instances: [0]
+    zscore: true
+
+  - name: "YF_SP500-mag7"
+    labels: ["real", "yfinance", "equities", "mag7"]
+    package: "yfinance"
+    tickers: ["GOOG", "AMZN", "MSFT", "AAPL", "NVDA", "META", "TSLA"]
+    market: "sp500"
+    period: "60d"
+    interval: "5m"
+    instances: [0]
+    zscore: true

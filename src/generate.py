@@ -81,6 +81,7 @@ def generate_varma(
     Supported topologies:
       - 'ring-symmetric': Standard diffuse coupling (i connected to i-1 AND i+1).
       - 'ring-unidirectional': Advective coupling (i connected to i+1 only).
+      - 'all-to-all': Each channel receives the same coupling from every other channel.
     """
     rng = _resolve_rng(None, rng)
     I = np.eye(M)
@@ -90,6 +91,8 @@ def generate_varma(
         neighbors = left + right
     elif topology == "ring-unidirectional":
         neighbors = left 
+    elif topology == "all-to-all":
+        neighbors = np.ones((M, M)) - I  # full coupling except self
     else:
         raise ValueError(f"Unknown topology: {topology}")
     A = phi * I + coupling * neighbors
@@ -554,6 +557,7 @@ def generate_kuramoto(
     k_ring: int = 1,
     omega_mean: float = 2 * np.pi * 0.1,
     omega_std: float = 0.01,
+    noise_std: float | None = None,
     eta: float = 0.0,
     transients: int = 2000,
     output: str = "sin",
@@ -576,6 +580,8 @@ def generate_kuramoto(
 
     # RESOLVE COUPLING STRENGTH
     coupling = float(k if k is not None else K)
+    # Allow legacy noise_std param as alias for eta
+    resolved_eta = float(eta if noise_std is None else noise_std)
     
     # PARAMETER SETUP
     base_frequency = float(omega_mean)
@@ -593,7 +599,7 @@ def generate_kuramoto(
         k_ring=k_ring,
         omega_mean=base_frequency,
         omega_std=omega_std,
-        eta=eta,
+        eta=resolved_eta,
         transients=transients,
         output=output,
         rng=rng,

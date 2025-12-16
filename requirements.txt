@@ -1,14 +1,24 @@
-numpy>=1.26
+# Core Scientific Stack
+# IMPORTANT: Keep numpy < 2.0.0 to prevent binary incompatibility with numba/aeon
+numpy>=1.26,<2.0.0
+pandas>=2.2.0
 scipy>=1.11
-pandas>=2.1
-pyyaml>=6.0
-pyspi>=1.1.0
+scikit-learn>=1.4.2
 matplotlib>=3.8
 seaborn>=0.13
-scikit-learn>=1.4
+
+# Time Series Libraries (Upgraded to support Pandas 2.2+)
+sktime>=0.30.0
+aeon>=0.12.0
+yfinance>=0.2.36
+
+# Dependencies for your project
+pyspi>=1.1.0
 umap-learn>=0.5.5
+pyclustering>=0.10.1
+xarray>=2024.2.0
+pyyaml>=6.0
 tqdm>=4.66
 psutil>=5.9
 pyarrow>=15.0
 JPype1>=1.5
-pyclustering>=0.10.1

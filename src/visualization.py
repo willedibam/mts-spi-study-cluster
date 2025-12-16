@@ -7,8 +7,8 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from scipy.stats import spearmanr
-from sklearn.preprocessing import StandardScaler
+from scipy.stats import spearmanr, zscore
+from sklearn.preprocessing import StandardScaler, robust_scale
 from sklearn.decomposition import PCA
 try:
     from sklearn.manifold import TSNE
@@ -162,6 +162,86 @@ def plot_mts_heatmap(
     plt.show()
 
 
+def scale_mts_heatmap(
+    data_dir: str | Path,
+    *,
+    filename: str = "timeseries.npy",
+) -> list[Path]:
+    """
+    Scale and save MxT heatmaps as SVGs.
+
+    - If `data_dir/filename` exists, process just that file.
+    - Otherwise, recursively find all `filename` matches under `data_dir`.
+    - Layout is MxT (transpose if loaded as TxM).
+    - Normalisation: robust_scale for Cauchy datasets; otherwise z-score per channel
+      (robust_scale line is left as a commented alternative).
+    - Color: icefire; vmin/vmax = [-2, 2], except Cauchy uses symmetric 0.1/99.9 pct.
+    - Output: saved alongside each timeseries as `mts_heatmap_scaled.svg` and `.png`.
+    """
+
+    def _process(data_path: Path) -> Path:
+        data = np.load(data_path).astype(float, copy=False)
+        if data.ndim != 2:
+            raise ValueError(f"Expected 2D array, got shape {data.shape} for {data_path}")
+        if data.shape[0] > data.shape[1]:
+            data = data.T
+        M, T = data.shape
+
+        is_cauchy = "cauchy" in data_path.name.lower() or "cauchy" in data_path.parent.name.lower()
+        if is_cauchy:
+            scaled = robust_scale(data, axis=1)
+        else:
+            scaled = zscore(data, axis=1, nan_policy="omit")
+            # scaled = robust_scale(data, axis=1)  # robust alternative
+        scaled = np.nan_to_num(scaled, nan=0.0, posinf=0.0, neginf=0.0)
+
+        if is_cauchy:
+            lo, hi = np.percentile(scaled, [0.1, 99.9])
+            bound = float(np.max(np.abs([lo, hi])))
+            vmin, vmax = -bound, bound
+        else:
+            vmin, vmax = -2.0, 2.0
+
+        base_M, base_T = 16.0, 1000.0
+        base_fig = (8.0, 4.0)
+        width = float(np.clip(base_fig[0] * (T / base_T), 4.0, 18.0))
+        height = float(np.clip(base_fig[1] * (M / base_M), 2.0, 12.0))
+
+        fig, ax = plt.subplots(figsize=(width, height), dpi=300)
+        ax.pcolormesh(
+            scaled,
+            shading="flat",
+            vmin=vmin,
+            vmax=vmax,
+            cmap=sns.color_palette("icefire", as_cmap=True),
+        )
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_xlabel(None)
+        ax.set_ylabel(None)
+        fig.tight_layout(pad=0.05)
+        base = data_path.with_name("mts_heatmap_scaled")
+        svg_path = base.with_suffix(".svg")
+        png_path = base.with_suffix(".png")
+        fig.savefig(svg_path, format="svg", bbox_inches="tight", pad_inches=0)
+        fig.savefig(png_path, format="png", dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close(fig)
+        return svg_path
+
+    apply_plot_style()
+    root = Path(data_dir)
+    targets: list[Path] = []
+    if root.is_file() and root.name == filename:
+        targets = [root]
+    elif (root / filename).exists():
+        targets = [root / filename]
+    else:
+        targets = list(root.rglob(filename))
+    if not targets:
+        raise FileNotFoundError(f"No {filename} found under {root}")
+    return [_process(path) for path in sorted(targets)]
+
+
 def _clean_legend(ax, hue: str, size_col: str) -> None:
     """
     Helper to remove size indicators and redundant titles from Seaborn legends.
@@ -292,6 +372,8 @@ def plot_mts_corr_density(
     spi_pair: list[str],
     *,
     bw_adjust: float = 1.0,
+    show_hist: bool = False,
+    kde: bool = True,
     bins: int = 40,
 ) -> None:
     """
@@ -300,13 +382,21 @@ def plot_mts_corr_density(
     Args:
         mts_class_paths: List of class directories (e.g., ["data/full/CauchyNoise", "data/full/VAR_1"]).
         spi_pair: Two SPI names to compare (e.g., ["cov_EmpiricalCovariance", "mi_kraskov_NN-4"]).
+                  For directed SPIs you can suffix with __ij or __ji; if a directed SPI is given
+                  without a suffix, both directions are plotted.
         bw_adjust: Optional KDE bandwidth adjustment passed to seaborn.
         show_hist: If True, overlay per-class histograms (density-normalized).
         bins: Number of histogram bins when show_hist is True.
     """
     if len(spi_pair) != 2:
         raise ValueError("spi_pair must contain exactly two SPI names.")
-    spi_x, spi_y = spi_pair
+
+    def _parse_token(token: str) -> tuple[str, str | None]:
+        if token.endswith("__ij"):
+            return token.rsplit("__", 1)[0], "ij"
+        if token.endswith("__ji"):
+            return token.rsplit("__", 1)[0], "ji"
+        return token, None
 
     def _safe_zscore(vec: np.ndarray) -> np.ndarray:
         std = vec.std()
@@ -314,94 +404,121 @@ def plot_mts_corr_density(
             return np.zeros_like(vec)
         return (vec - vec.mean()) / std
 
-    def _upper_vector(mat: np.ndarray, directed: bool) -> np.ndarray:
+    def _vector_for(mat: np.ndarray, directed: bool, direction: str | None) -> np.ndarray:
         if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
             raise ValueError(f"SPI matrix must be square, got shape={mat.shape}")
         if not directed:
             mat = 0.5 * (mat + mat.T)
-        mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
+            mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
+            return mat[mask]
+        if direction == "ji":
+            mask = np.tril(np.ones(mat.shape, dtype=bool), k=-1)
+        else:
+            mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
         return mat[mask]
 
     apply_plot_style()
-    fig, ax = plt.subplots(figsize=(6, 6), dpi=300)
 
-    palette = sns.color_palette("tab10", len(mts_class_paths))
+    spi_x_base, spi_x_dir_req = _parse_token(spi_pair[0])
+    spi_y_base, spi_y_dir_req = _parse_token(spi_pair[1])
 
-    for idx, class_path in enumerate(mts_class_paths):
-        color = palette[idx % len(palette)]
-        class_dir = Path(class_path)
-        if not class_dir.exists():
-            raise FileNotFoundError(f"MTS class directory not found: {class_dir}")
-        values: list[float] = []
-        label = class_dir.name
+    def _collect(direction_choice_x: str | None, direction_choice_y: str | None) -> None:
+        fig, ax = plt.subplots(figsize=(6, 6), dpi=300)
+        palette = sns.color_palette("tab10", len(mts_class_paths))
+        plotted = False
 
-        for dataset_dir in sorted(p for p in class_dir.iterdir() if p.is_dir()):
-            meta_path = dataset_dir / "meta.json"
-            npz_path = dataset_dir / "spi_mpis.npz"
-            if not meta_path.exists() or not npz_path.exists():
-                continue
+        for idx, class_path in enumerate(mts_class_paths):
+            color = palette[idx % len(palette)]
+            class_dir = Path(class_path)
+            if not class_dir.exists():
+                raise FileNotFoundError(f"MTS class directory not found: {class_dir}")
+            values: list[float] = []
+            label = class_dir.name
 
-            meta = load_json(meta_path)
-            spi_meta = {
-                entry.get("name"): entry
-                for entry in meta.get("pyspi", {}).get("spis", [])
-                if isinstance(entry, dict) and entry.get("name")
-            }
-            if spi_x not in spi_meta or spi_y not in spi_meta:
-                continue
-            directed_x = bool(spi_meta[spi_x].get("directed", False))
-            directed_y = bool(spi_meta[spi_y].get("directed", False))
-
-            with np.load(npz_path) as npz:
-                if spi_x not in npz or spi_y not in npz:
+            for dataset_dir in sorted(p for p in class_dir.iterdir() if p.is_dir()):
+                meta_path = dataset_dir / "meta.json"
+                npz_path = dataset_dir / "spi_mpis.npz"
+                if not meta_path.exists() or not npz_path.exists():
                     continue
-                vec_x = _upper_vector(np.asarray(npz[spi_x], float), directed_x)
-                vec_y = _upper_vector(np.asarray(npz[spi_y], float), directed_y)
 
-            if vec_x.shape != vec_y.shape:
+                meta = load_json(meta_path)
+                spi_meta = {
+                    entry.get("name"): entry
+                    for entry in meta.get("pyspi", {}).get("spis", [])
+                    if isinstance(entry, dict) and entry.get("name")
+                }
+                if spi_x_base not in spi_meta or spi_y_base not in spi_meta:
+                    continue
+                directed_x = bool(spi_meta[spi_x_base].get("directed", False))
+                directed_y = bool(spi_meta[spi_y_base].get("directed", False))
+
+                with np.load(npz_path) as npz:
+                    if spi_x_base not in npz or spi_y_base not in npz:
+                        continue
+                    vec_x = _vector_for(np.asarray(npz[spi_x_base], float), directed_x, direction_choice_x)
+                    vec_y = _vector_for(np.asarray(npz[spi_y_base], float), directed_y, direction_choice_y)
+
+                if vec_x.shape != vec_y.shape:
+                    continue
+                valid = np.isfinite(vec_x) & np.isfinite(vec_y)
+                if not valid.any():
+                    continue
+                zx = _safe_zscore(vec_x[valid])
+                zy = _safe_zscore(vec_y[valid])
+                rho = spearmanr(zx, zy).correlation
+                if np.isfinite(rho):
+                    values.append(float(rho))
+
+            if values:
+                plotted = True
+                if show_hist:
+                    sns.histplot(
+                        values,
+                        bins=bins,
+                        binrange=(-1, 1),
+                        stat="density",
+                        color=color,
+                        element="step",
+                        fill=True,
+                        alpha=0.25,
+                        ax=ax,
+                        label=f"{label} (n={len(values)})",
+                    )
+                if kde:
+                    sns.kdeplot(
+                        values,
+                        label=f"{label} (n={len(values)})",
+                        ax=ax,
+                        bw_adjust=bw_adjust,
+                        clip=(-1, 1),
+                        fill=False,
+                        color=color,
+                        alpha=0.6,
+                    )
+
+        dir_suffix_x = f"__{direction_choice_x}" if direction_choice_x else ""
+        dir_suffix_y = f"__{direction_choice_y}" if direction_choice_y else ""
+        ax.set_xlim(-1, 1)
+        ax.set_xlabel(f"{spi_x_base}{dir_suffix_x} vs {spi_y_base}{dir_suffix_y}")
+        ax.set_ylabel("Density")
+        if plotted and ax.get_legend_handles_labels()[0]:
+            ax.legend(title="mts_class")
+        plt.tight_layout()
+        if plotted:
+            plt.show()
+
+    # If a directed SPI is passed without suffix, plot both ij/ji; otherwise honor the suffix.
+    directions_x = [spi_x_dir_req] if spi_x_dir_req else [None, "ij", "ji"]
+    directions_y = [spi_y_dir_req] if spi_y_dir_req else [None, "ij", "ji"]
+
+    seen: set[tuple[str | None, str | None]] = set()
+    for dx in directions_x:
+        for dy in directions_y:
+            key = (dx, dy)
+            if key in seen:
                 continue
-            valid = np.isfinite(vec_x) & np.isfinite(vec_y)
-            if not valid.any():
-                continue
-            zx = _safe_zscore(vec_x[valid])
-            zy = _safe_zscore(vec_y[valid])
-            rho = spearmanr(zx, zy).correlation
-            if np.isfinite(rho):
-                values.append(float(rho))
-
-        if values:
-            sns.histplot(
-                values,
-                bins=bins,
-                binrange=(-1, 1),
-                stat="density",
-                color=color,
-                # kde=True,
-                element="step",
-                fill=True,
-                alpha=0.25,
-                ax=ax,
-                label=f"{label} (n={len(values)})",
-            )
-            sns.kdeplot(
-                values,
-                label=f"{label} (n={len(values)})",
-                ax=ax,
-                bw_adjust=bw_adjust,
-                clip=(-1, 1),
-                fill=False,
-                color=color,
-                alpha=0.6,
-            )
-
-    ax.set_xlim(-1, 1)
-    ax.set_xlabel(rf"{spi_x} to {spi_y}")
-    ax.set_ylabel("Density")
-    ax.set_title("SPI pair correlation density across MTS classes")
-    if ax.get_legend_handles_labels()[0]:
-        ax.legend(title="mts_class")
-    plt.tight_layout()
-    plt.show()
+            seen.add(key)
+            _collect(dx, dy)
 
 def plot_pca(
     x: np.ndarray,

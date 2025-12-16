@@ -1,0 +1,171 @@
+# Basic statistics
+.statistics.basic:
+  Covariance:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+      - estimator: GraphicalLasso
+      - estimator: GraphicalLassoCV
+      - estimator: LedoitWolf
+      - estimator: OAS
+      - estimator: ShrunkCovariance
+      - estimator: EmpiricalCovariance
+        squared: True
+      - estimator: GraphicalLasso
+        squared: True
+      - estimator: LedoitWolf
+        squared: True
+      - estimator: OAS
+        squared: True
+      - estimator: ShrunkCovariance
+        squared: True
+
+  # Precision
+  Precision:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+      - estimator: GraphicalLasso
+      - estimator: LedoitWolf
+      - estimator: OAS
+      - estimator: ShrunkCovariance
+      - estimator: EmpiricalCovariance
+        squared: True
+      - estimator: GraphicalLasso
+        squared: True
+      - estimator: LedoitWolf
+        squared: True
+      - estimator: OAS
+        squared: True
+      - estimator: ShrunkCovariance
+        squared: True
+
+  # Spearman's correlation coefficient
+  SpearmanR:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: True
+      - squared: False
+
+  # Kendall's rank correlation coefficient
+  KendallTau:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: True
+      - squared: False
+      
+  # statistics based on cross-correlation (squared means we square the xcorr, not the output)
+  CrossCorrelation:
+    labels:
+      - undirected
+      - linear
+      - signed/unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - statistic: "max"
+
+      - statistic: "max"
+        squared: True
+
+      - statistic: "mean"
+
+      - statistic: "mean"
+        squared: True
+
+      - statistic: "mean"
+        sigonly: False
+
+      - statistic: "mean"
+        squared: True
+        sigonly: False
+
+
+# Information-theoretic statistics
+.statistics.infotheory:
+  JointEntropy: # No theiler window yet
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies: 
+      - java
+    configs:
+      - estimator: gaussian
+      - estimator: kozachenko
+      - estimator: kernel
+
+  # Mutual information
+  MutualInfo:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies: 
+      - java
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+      - estimator: kraskov
+        prop_k: 4
+        dyn_corr_excl: AUTO
+
+      - estimator: kernel
+        kernel_width: 0.25
+
+  # Mutual information
+  TimeLaggedMutualInfo:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies: 
+      - java
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+      - estimator: kraskov
+        prop_k: 4
+        dyn_corr_excl: AUTO
+
+      - estimator: kernel
+        kernel_width: 0.25
+
+
