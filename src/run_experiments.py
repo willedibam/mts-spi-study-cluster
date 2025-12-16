@@ -89,6 +89,11 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         help="Also export calc.parquet alongside calc.csv.",
     )
     parser.add_argument(
+        "--mts-only",
+        action="store_true",
+        help="Generate timeseries.npy only (skip PySPI/heatmaps). If no job-index is given, runs all.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Show which dataset would run without executing generation or PySPI.",
@@ -145,125 +150,82 @@ def main(argv: List[str] | None = None) -> None:
     if args.count_only:
         print(len(mapping))
         return
-    if args.job_index is None:
-        raise SystemExit("--job-index is required unless --list/--count-only is used.")
-    spec = mapping.spec_for_index(args.job_index)
-    print(f"[INFO] Running dataset {spec.index}/{len(mapping)}: {spec.name}")
-    if args.dry_run:
-        print(_describe_dataset(spec))
-        return
-    if args.skip_existing and _dataset_complete(spec.dataset_dir):
-        print(
-            f"[INFO] Skipping dataset {spec.name} "
-            f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
-        )
-        return
-    _export_thread_hints(args.threads or spec.threads)
-    data: np.ndarray
-    if spec.source == "real":
-        data, M, T, dataset_slug, chosen_idx, channels_first = _load_real_sample(spec)
-        spec.M = M
-        spec.T = T
-        spec.dataset_slug = dataset_slug
-        spec.sample_index = chosen_idx
-        spec.channels_first = channels_first
-        spec.dataset_dir = ensure_dir(spec.base_output_dir / spec.class_dir / dataset_slug)
-        dataset_dir = spec.dataset_dir
-        ts_path = dataset_dir / "timeseries.npy"
-        np.save(ts_path, data.astype(np.float32))
-        print(
-            f"[INFO] Loaded real dataset '{spec.dataset_name}' class '{spec.class_label}' "
-            f"sample {chosen_idx} -> {to_relative(ts_path)} (shape {data.shape[0]}x{data.shape[1]})"
-        )
-    elif spec.source == "yfinance":
-        data, M, T, dataset_slug, tickers = _load_yfinance_sample(spec)
-        spec.M = M
-        spec.T = T
-        spec.dataset_slug = dataset_slug
-        spec.dataset_dir = ensure_dir(spec.base_output_dir / spec.class_dir / dataset_slug)
-        dataset_dir = spec.dataset_dir
-        ts_path = dataset_dir / "timeseries.npy"
-        np.save(ts_path, data.astype(np.float32))
-        print(
-            f"[INFO] Loaded yfinance data for {tickers} ({spec.period}, {spec.interval}) "
-            f"-> {to_relative(ts_path)} (shape {data.shape[0]}x{data.shape[1]})"
-        )
+    if args.mts_only and args.job_index is None:
+        specs = list(mapping.specs)
     else:
-        dataset_dir = ensure_dir(spec.dataset_dir)
-        ts_path = dataset_dir / "timeseries.npy"
-        if ts_path.exists() and not args.regenerate_timeseries:
-            data = np.load(ts_path).astype(np.float64, copy=False)
-            print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
-        else:
-            start = time.perf_counter()
-            generator_params = dict(spec.generator_params)
-            if spec.generator == "cml_logistic":
-                generator_params["delta"] = 1
-            data = generate.generate_series(
-                spec.generator,
-                seed=spec.rng_seed,
-                M=spec.M,
-                T=spec.T,
-                **generator_params,
-            )
-            np.save(ts_path, data.astype(np.float32))
-            duration = time.perf_counter() - start
+        if args.job_index is None:
+            raise SystemExit("--job-index is required unless --list/--count-only/--mts-only is used.")
+        specs = [mapping.spec_for_index(args.job_index)]
+
+    for spec in specs:
+        print(f"[INFO] Running dataset {spec.index}/{len(mapping)}: {spec.name}")
+        if args.dry_run:
+            print(_describe_dataset(spec))
+            continue
+        if args.skip_existing and _dataset_complete(spec.dataset_dir):
             print(
-                f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
-                f"in {duration:.2f}s -> {to_relative(ts_path)}"
+                f"[INFO] Skipping dataset {spec.name} "
+                f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
             )
-    data = data.astype(np.float64, copy=False)
-    compute_start = time.perf_counter()
-    result = run_pyspi(
-        data,
-        config_path=spec.pyspi_config,
-        subset=spec.pyspi_subset,
-        normalise=spec.normalise,
-    )
-    compute_seconds = time.perf_counter() - compute_start
-    csv_path = dataset_dir / "calc.csv"
-    result.table.to_csv(csv_path, index=True)
-    parquet_path = dataset_dir / "calc.parquet"
-    if args.parquet:
-        _safe_write_parquet(result.table, parquet_path)
-    npz_path = dataset_dir / "spi_mpis.npz"
-    np.savez_compressed(npz_path, **result.matrices)
-    heatmap_required = args.heatmap or spec.save_heatmap
-    heatmap_paths: list[str] = []
-    if heatmap_required:
-        deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
-        base_filename = "mts_heatmap.png"
-        base_path = dataset_dir / base_filename
-        _save_heatmap(data, base_path)
-        heatmap_paths.append(base_filename)
-        for delta in deltas:
-            if delta == 1:
-                continue
-            filename = f"mts_heatmap_delta{delta}.png"
-            figure_path = dataset_dir / filename
-            view = data[::delta]
-            _save_heatmap(view, figure_path)
-            heatmap_paths.append(filename)
-    meta = _build_metadata(
-        spec=spec,
-        result=result,
-        paths={
-            "timeseries": "",
-            "calc_csv": "calc.csv",
-            "calc_parquet": "calc.parquet" if args.parquet else "",
-            "spi_archive": "spi_mpis.npz",
-            "per_spi": {},
-            "heatmap": heatmap_paths[0] if heatmap_paths else "",
-            "heatmaps": heatmap_paths if heatmap_paths else [],
-        },
-        compute_seconds=compute_seconds,
-        heatmap=heatmap_required,
-    )
-    dump_json(dataset_dir / "meta.json", meta)
-    print(
-        f"[INFO] Stored SPI results in {to_relative(csv_path.parent)} "
-        f"({len(result.metadata)} SPIs, {compute_seconds:.1f}s)."
-    )
+            continue
+        _export_thread_hints(args.threads or spec.threads)
+        data, ts_path = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
+        if args.mts_only:
+            continue
+
+        data = data.astype(np.float64, copy=False)
+        dataset_dir = ts_path.parent
+        compute_start = time.perf_counter()
+        result = run_pyspi(
+            data,
+            config_path=spec.pyspi_config,
+            subset=spec.pyspi_subset,
+            normalise=spec.normalise,
+        )
+        compute_seconds = time.perf_counter() - compute_start
+        csv_path = dataset_dir / "calc.csv"
+        result.table.to_csv(csv_path, index=True)
+        parquet_path = dataset_dir / "calc.parquet"
+        if args.parquet:
+            _safe_write_parquet(result.table, parquet_path)
+        npz_path = dataset_dir / "spi_mpis.npz"
+        np.savez_compressed(npz_path, **result.matrices)
+        heatmap_required = args.heatmap or spec.save_heatmap
+        heatmap_paths: list[str] = []
+        if heatmap_required:
+            deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
+            base_filename = "mts_heatmap.png"
+            base_path = dataset_dir / base_filename
+            _save_heatmap(data, base_path)
+            heatmap_paths.append(base_filename)
+            for delta in deltas:
+                if delta == 1:
+                    continue
+                filename = f"mts_heatmap_delta{delta}.png"
+                figure_path = dataset_dir / filename
+                view = data[::delta]
+                _save_heatmap(view, figure_path)
+                heatmap_paths.append(filename)
+        meta = _build_metadata(
+            spec=spec,
+            result=result,
+            paths={
+                "timeseries": "",
+                "calc_csv": "calc.csv",
+                "calc_parquet": "calc.parquet" if args.parquet else "",
+                "spi_archive": "spi_mpis.npz",
+                "per_spi": {},
+                "heatmap": heatmap_paths[0] if heatmap_paths else "",
+                "heatmaps": heatmap_paths if heatmap_paths else [],
+            },
+            compute_seconds=compute_seconds,
+            heatmap=heatmap_required,
+        )
+        dump_json(dataset_dir / "meta.json", meta)
+        print(
+            f"[INFO] Stored SPI results in {to_relative(csv_path.parent)} "
+            f"({len(result.metadata)} SPIs, {compute_seconds:.1f}s)."
+        )
 
 
 def _export_thread_hints(threads: int | None) -> None:
@@ -284,6 +246,64 @@ def _safe_write_parquet(table: pd.DataFrame, path: Path) -> None:
         print(f"[INFO] Wrote {to_relative(path)}")
     except Exception as exc:  # noqa: BLE001
         print(f"[WARN] Skipped parquet export ({exc}).")
+
+
+def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
+    if spec.source == "real":
+        data, M, T, dataset_slug, chosen_idx, channels_first = _load_real_sample(spec)
+        spec.M = M
+        spec.T = T
+        spec.dataset_slug = dataset_slug
+        spec.sample_index = chosen_idx
+        spec.channels_first = channels_first
+        spec.dataset_dir = ensure_dir(spec.base_output_dir / spec.class_dir / dataset_slug)
+        dataset_dir = spec.dataset_dir
+        ts_path = dataset_dir / "timeseries.npy"
+        np.save(ts_path, data.astype(np.float32))
+        print(
+            f"[INFO] Loaded real dataset '{spec.dataset_name}' class '{spec.class_label}' "
+            f"sample {chosen_idx} -> {to_relative(ts_path)} (shape {data.shape[0]}x{data.shape[1]})"
+        )
+        return data, ts_path
+    if spec.source == "yfinance":
+        data, M, T, dataset_slug, tickers = _load_yfinance_sample(spec)
+        spec.M = M
+        spec.T = T
+        spec.dataset_slug = dataset_slug
+        spec.dataset_dir = ensure_dir(spec.base_output_dir / spec.class_dir / dataset_slug)
+        dataset_dir = spec.dataset_dir
+        ts_path = dataset_dir / "timeseries.npy"
+        np.save(ts_path, data.astype(np.float32))
+        print(
+            f"[INFO] Loaded yfinance data for {tickers} ({spec.period}, {spec.interval}) "
+            f"-> {to_relative(ts_path)} (shape {data.shape[0]}x{data.shape[1]})"
+        )
+        return data, ts_path
+
+    dataset_dir = ensure_dir(spec.dataset_dir)
+    ts_path = dataset_dir / "timeseries.npy"
+    if ts_path.exists() and not regenerate:
+        data = np.load(ts_path).astype(np.float64, copy=False)
+        print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
+    else:
+        start = time.perf_counter()
+        generator_params = dict(spec.generator_params)
+        if spec.generator == "cml_logistic":
+            generator_params["delta"] = 1
+        data = generate.generate_series(
+            spec.generator,
+            seed=spec.rng_seed,
+            M=spec.M,
+            T=spec.T,
+            **generator_params,
+        )
+        np.save(ts_path, data.astype(np.float32))
+        duration = time.perf_counter() - start
+        print(
+            f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
+            f"in {duration:.2f}s -> {to_relative(ts_path)}"
+        )
+    return data.astype(np.float64, copy=False), ts_path
 
 
 def _real_sample_seed(*, dataset_name: str, class_label: str, instance: int, base_seed: int) -> int:
@@ -340,6 +360,51 @@ def _load_real_sample(spec) -> tuple[np.ndarray, int, int, str, int, bool]:
     return data, M, T, dataset_slug, chosen_idx, channels_first
 
 
+def _static_market_tickers(market: str) -> list[str]:
+    """
+    Return a static snapshot of common index constituents.
+    Used because yfinance 0.2.x removed tickers_sp500()/tickers_dow()/tickers_nasdaq
+    and scraping endpoints are blocked on the cluster.
+    """
+    key = (
+        market.lower()
+        .replace("-", "")
+        .replace("_", "")
+        .replace(" ", "")
+        .replace("&", "and")
+    )
+    if key in {"sp500", "sandp500"}:
+        return [
+            "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "GOOG", "BRK-B", "TSLA", "AVGO",
+            "JPM", "LLY", "UNH", "XOM", "V", "MA", "PG", "HD", "COST", "JNJ",
+            "MRK", "ABBV", "CVX", "BAC", "KO", "CRM", "NFLX", "AMD", "PEP", "ADBE",
+            "WMT", "TMO", "LIN", "MCD", "DIS", "ACN", "CSCO", "INTU", "ORCL", "ABT",
+            "WFC", "QCOM", "CAT", "GE", "VZ", "IBM", "AMAT", "DHR", "INTC", "TXN",
+            "UBER", "NOW", "PFE", "UNP", "LOW", "PM", "SPGI", "HON", "COP", "RTX",
+            "AXP", "AMGN", "SYK", "ISRG", "NEE", "ELV", "GS", "PGR", "ETN", "T",
+            "BKNG", "LRCX", "BLK", "MDT", "BSX", "TJX", "ADP", "VRTX", "C", "CI",
+            "GILD", "MMC", "CB", "LMT", "SCHW", "PLD", "FI", "PANW", "TMUS", "DE",
+        ]
+    if key in {"dow", "djia", "dowjones", "dow30"}:
+        return [
+            "MMM", "AXP", "AMGN", "AAPL", "BA", "CAT", "CVX", "CSCO", "KO", "DIS",
+            "DOW", "GS", "HD", "HON", "IBM", "INTC", "JNJ", "JPM", "MCD", "MRK",
+            "MSFT", "NKE", "PG", "CRM", "TRV", "UNH", "VZ", "V", "WBA", "WMT",
+        ]
+    if key in {"nasdaq", "nasdaq100", "ndx"}:
+        return [
+            "AAPL", "MSFT", "NVDA", "AMZN", "AVGO", "META", "TSLA", "GOOGL", "GOOG", "COST",
+            "NFLX", "AMD", "ADBE", "PEP", "LIN", "CSCO", "TMUS", "INTU", "CMCSA", "QCOM",
+            "INTC", "TXN", "AMAT", "HON", "AMGN", "ISRG", "BKNG", "LRCX", "VRTX", "GILD",
+            "SBUX", "PANW", "MDLZ", "ADP", "MU", "ADI", "REGN", "MELI", "KLAC", "SNPS",
+            "CDNS", "PYPL", "ASML", "MAR", "CSX", "ORLY", "MNST", "CTAS", "LULU", "NXPI",
+            "PCAR", "ROST", "MRVL", "FTNT", "WDAY", "ODFL", "IDXX", "PAYX", "MCHP", "EXC",
+            "KDP", "AEP", "CTSH", "EA", "AZN", "BIIB", "FAST", "XEL", "GEHC", "BKR",
+            "CME", "DXCM", "TEAM", "SGEN", "ZS", "VRSK", "CPRT", "SIRI", "DLTR", "EBAY",
+        ]
+    return []
+
+
 def _load_yfinance_sample(spec) -> tuple[np.ndarray, int, int, str, list[str]]:
     try:
         import yfinance as yf
@@ -355,16 +420,10 @@ def _load_yfinance_sample(spec) -> tuple[np.ndarray, int, int, str, list[str]]:
     if spec.tickers:
         universe.extend(spec.tickers)
     if spec.market:
-        market_key = spec.market.lower()
-        try:
-            if market_key in {"sp500", "s&p500", "s&p-500"}:
-                universe.extend(yf.tickers_sp500())
-            elif market_key in {"nasdaq"}:
-                universe.extend(yf.tickers_nasdaq())
-            elif market_key in {"djia", "dow", "dowjones"}:
-                universe.extend(yf.tickers_dow())
-        except Exception as exc:  # noqa: BLE001
-            raise RuntimeError(f"Failed to fetch tickers for market '{spec.market}': {exc}") from exc
+        market_tickers = _static_market_tickers(spec.market)
+        if not market_tickers:
+            raise RuntimeError(f"Unsupported or empty market '{spec.market}'.")
+        universe.extend(market_tickers)
     universe = sorted({t.upper() for t in universe if t})
     if not universe:
         raise ValueError("No tickers available for yfinance source.")
