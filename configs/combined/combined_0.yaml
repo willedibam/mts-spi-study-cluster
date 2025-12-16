@@ -34,47 +34,6 @@ mts_classes:
       - name: "phi-0.6_coupling-0.2_all-to-all"
         params:
           topology: "all-to-all"
-  
-  - name: "CML"
-    labels: ["nonlinear", "cml"]
-    generator: "cml_logistic"
-    include_base_variant: false
-    base_params:
-      alpha: 1.7522
-      eps: 0.00115
-      delta: "3"
-      transients: 0
-      zscore: true
-    variants:
-      - name: "spatiotemporal_intermittency_I"
-        params:
-          alpha: 1.7522
-          eps: 0.00115
-          delta: "1,3,12"
-          transients: 0
-
-  - name: "Kuramoto"
-    labels: ["oscillator", "kuramoto", "phase"]
-    generator: "kuramoto"
-    base_params:
-      dt: 0.1
-      k: -4
-      omega_mean: 0.5
-      omega_std: 0.3
-      eta: 0.0
-      transients: 100
-      zscore: true
-    include_base_variant: false
-    variants:
-      - name: 
-        params:
-          connectivity: "all-to-all"
-
-  - name: "GaussianNoise"
-    labels: ["noise", "gaussian"]
-    generator: "gaussian_noise"
-    base_params:
-      zscore: true
 
   - name: "CauchyNoise"
     labels: ["noise", "cauchy", "heavy-tail"]
