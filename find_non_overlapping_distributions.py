@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import ast
 from pathlib import Path
 from typing import Iterable, List
 
@@ -161,7 +162,17 @@ def main() -> None:
     mts_classes = [c.strip() for c in args.mts_classes.split(",") if c.strip()]
     if len(mts_classes) < 2:
         raise ValueError("Provide at least two mts_classes for comparison.")
-    bw_values = [float(p) for p in str(args.kde_bandwidth).split(",") if p.strip()]
+    bw_values: list[float] = []
+    try:
+        parsed = ast.literal_eval(args.kde_bandwidth)
+        if isinstance(parsed, (int, float)):
+            bw_values = [float(parsed)]
+        elif isinstance(parsed, (list, tuple)):
+            bw_values = [float(p) for p in parsed]
+    except Exception:
+        pass
+    if not bw_values:
+        bw_values = [float(p) for p in str(args.kde_bandwidth).split(",") if p.strip()]
     if args.kde and not bw_values:
         raise ValueError("Provide at least one bandwidth when using --kde.")
     if not args.kde:

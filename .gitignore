@@ -47,3 +47,10 @@ Random/
 *.tar.gz
 ./case_*
 test_case_*
+
+# local artifacts
+*.tar.gz
+data/
+__pycache__/
+*.pyc
+

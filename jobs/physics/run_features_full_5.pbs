@@ -1,8 +1,9 @@
 #!/bin/bash
-#PBS -N features_full_5
-#PBS -l select=1:ncpus=32:mem=8gb
-#PBS -l walltime=02:00:00
+#PBS -N spi_array_full_5
+#PBS -l select=1:ncpus=4:mem=16gb
+#PBS -l walltime=48:00:00
 #PBS -j oe
+#PBS -J 1-1446
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 
@@ -17,35 +18,27 @@ cd "$PBS_O_WORKDIR"
 
 LOG_DIR="$PBS_O_WORKDIR/logs"
 mkdir -p "$LOG_DIR"
-JOB_LABEL="${PBS_JOBNAME}"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
 exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 
 module purge
 source .venv/bin/activate
 
-NUM_THREADS=${NUM_THREADS:-8}
+NUM_THREADS=${NUM_THREADS:-4}
 export OMP_NUM_THREADS=$NUM_THREADS
 export OPENBLAS_NUM_THREADS=$NUM_THREADS
 export MKL_NUM_THREADS=$NUM_THREADS
 export NUMEXPR_NUM_THREADS=$NUM_THREADS
 
-echo "[INFO] Starting feature extraction at $(date) on $(hostname)"
-
-python test_features.py \
-  --data-path data/full \
-  --space spi-spi \
-  --output analysis/features_full_5.npz \
-  --recompute
-
-python test_features_directed.py \
-  --data-path data/full \
-  --space spi-spi \
-  --output analysis/features_full_5_directed.npz \
-  --recompute
-
-python process_features.py \
-  --data-path data/full \
-  --output analysis/feature_cache/features_full_5.npz \
-  --recompute
-
+echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"
+python -m src.run_experiments \
+  --mode full \
+  --job-index "${ARRAY_ID}" \
+  --skip-existing \
+  --experiment-config configs/experiments_full_5.yaml \
+  --pyspi-config configs/blended_config.yaml \
+  --threads "${NUM_THREADS}" \
+  --heatmap \
+  --parquet
 echo "[INFO] Finished at $(date)"
