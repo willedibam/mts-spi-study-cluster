@@ -1,0 +1,28 @@
+base_output_dir: data/case_1/
+pyspi_config: configs/pyspi/case_1_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 8
+
+defaults:
+  M_values: [8, 16]
+  T_values: [500, 1000, 2000]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+  # single_instance_M_values: [64]
+  # single_instance_T_values: [1000]
+  # single_instance_instances: [0]
+
+mts_classes:
+  - name: "GaussianNoise"
+    labels: ["noise", "gaussian"]
+    generator: "gaussian_noise"
+    base_params:
+      zscore: true
+
+  - name: "CauchyNoise"
+    labels: ["noise", "cauchy", "heavy-tail"]
+    generator: "cauchy_noise"
+    base_params:
+      zscore: false

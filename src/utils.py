@@ -13,7 +13,6 @@ import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = PROJECT_ROOT / "data"
-DATASET_MODES: tuple[str, ...] = ("dev", "full", "full-variants")
 
 
 def project_root() -> Path:
@@ -86,8 +85,10 @@ class DatasetMetaRecord:
     meta: dict[str, Any]
 
 
-def iter_dataset_dirs(mode: str) -> Iterator[Path]:
-    base = DATA_ROOT / mode
+def iter_dataset_dirs(base_dir: str | Path = DATA_ROOT) -> Iterator[Path]:
+    base = Path(base_dir)
+    if not base.is_absolute():
+        base = DATA_ROOT / base
     if not base.exists():
         return iter(())
     class_dirs = sorted([p for p in base.iterdir() if p.is_dir()])
@@ -97,9 +98,9 @@ def iter_dataset_dirs(mode: str) -> Iterator[Path]:
                 yield dataset_dir
 
 
-def load_all_meta(mode: str) -> pd.DataFrame:
+def load_all_meta(base_dir: str | Path = DATA_ROOT) -> pd.DataFrame:
     rows: List[dict[str, Any]] = []
-    for dataset_dir in iter_dataset_dirs(mode):
+    for dataset_dir in iter_dataset_dirs(base_dir):
         meta = load_json(dataset_dir / "meta.json")
         meta["dataset_path"] = to_relative(dataset_dir)
         rows.append(meta)
@@ -129,8 +130,8 @@ def load_spi_for_dataset(dataset_dir: str | Path) -> DatasetSPIBundle:
     )
 
 
-def load_all_spi(mode: str) -> List[DatasetSPIBundle]:
+def load_all_spi(base_dir: str | Path = DATA_ROOT) -> List[DatasetSPIBundle]:
     bundles: List[DatasetSPIBundle] = []
-    for dataset_dir in iter_dataset_dirs(mode):
+    for dataset_dir in iter_dataset_dirs(base_dir):
         bundles.append(load_spi_for_dataset(dataset_dir))
     return bundles

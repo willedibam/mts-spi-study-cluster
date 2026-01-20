@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -N ks_overlap
+#PBS -l select=1:ncpus=8:mem=8gb
+#PBS -l walltime=04:00:00
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+JOB_LABEL="${PBS_JOBNAME}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+# Tunables
+FEATURES_NPZ="analysis/features_full_all.npz"
+MTS_CLASSES="CauchyNoise,GaussianNoise,VAR_1,Kuramoto,CML"
+KDE_BW_LIST="0.25,0.5,0.75,1.0,1.25,1.5"
+OUT_DIR="analysis/non-overlapping-distributions"
+
+echo "[INFO] Starting KS sweep at $(date)"
+python find_non_overlapping_distributions.py \
+  --features "$FEATURES_NPZ" \
+  --mts-classes "$MTS_CLASSES" \
+  --output-dir "$OUT_DIR" \
+  --kde --kde-bandwidth "$KDE_BW_LIST"
+echo "[INFO] Finished at $(date)"

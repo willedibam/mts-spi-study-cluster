@@ -1,4 +1,3 @@
-mode: dev
 base_output_dir: data/dev
 pyspi_config: configs/blended_config.yaml
 pyspi_subset: default

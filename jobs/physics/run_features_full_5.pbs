@@ -1,0 +1,51 @@
+#!/bin/bash
+#PBS -N features_full_5
+#PBS -l select=1:ncpus=32:mem=8gb
+#PBS -l walltime=02:00:00
+#PBS -j oe
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+JOB_LABEL="${PBS_JOBNAME}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+NUM_THREADS=${NUM_THREADS:-8}
+export OMP_NUM_THREADS=$NUM_THREADS
+export OPENBLAS_NUM_THREADS=$NUM_THREADS
+export MKL_NUM_THREADS=$NUM_THREADS
+export NUMEXPR_NUM_THREADS=$NUM_THREADS
+
+echo "[INFO] Starting feature extraction at $(date) on $(hostname)"
+
+python test_features.py \
+  --data-path data/full \
+  --space spi-spi \
+  --output analysis/features_full_5.npz \
+  --recompute
+
+python test_features_directed.py \
+  --data-path data/full \
+  --space spi-spi \
+  --output analysis/features_full_5_directed.npz \
+  --recompute
+
+python process_features.py \
+  --data-path data/full \
+  --output analysis/feature_cache/features_full_5.npz \
+  --recompute
+
+echo "[INFO] Finished at $(date)"

@@ -4,6 +4,7 @@ import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
+import numpy as np
 
 from .utils import (
     class_dir_name,
@@ -98,16 +99,28 @@ class VariantSpec:
 @dataclass
 class ClassSpec:
     name: str
-    generator: str
+    generator: str | None
+    package: str | None
+    dataset_name: str | None
+    target_classes: List[Any]
+    tickers: List[str]
+    market: str | None
+    period: str | None
+    interval: str | None
+    m_assets: int | None
     labels: List[str]
     base_params: Dict[str, Any]
     M_values: List[int]
     T_values: List[int]
     instances: List[int]
+    single_instance_M_values: List[int]
+    single_instance_instances: List[int]
+    single_instance_T_values: List[int]
     variants: List[VariantSpec]
     include_base_variant: bool
     pyspi_config: Path | None = None
     pyspi_subset: str | None = None
+    zscore_data: bool = False
     normalise: bool | None = None
     save_heatmap: bool | None = None
     threads: int | None = None
@@ -116,7 +129,6 @@ class ClassSpec:
 
 @dataclass
 class ExperimentConfig:
-    mode: str
     base_output_dir: Path
     pyspi_config: Path
     pyspi_subset: str
@@ -127,25 +139,30 @@ class ExperimentConfig:
     default_M_values: List[int]
     default_T_values: List[int]
     default_instances: List[int]
+    single_instance_M_values: List[int]
+    single_instance_instances: List[int]
+    single_instance_T_values: List[int]
     classes: List[ClassSpec] = field(default_factory=list)
 
     @classmethod
     def from_file(cls, path: str | Path) -> "ExperimentConfig":
         data = load_yaml(path)
-        mode = data.get("mode")
-        if not mode:
-            raise ValueError("Experiment config missing 'mode'.")
-        base_output_dir = _as_path(data.get("base_output_dir", f"data/{mode}"))
+        base_output_dir = _as_path(data.get("base_output_dir", "data"))
         pyspi_config = _as_path(data["pyspi_config"])
         pyspi_subset = data.get("pyspi_subset", "default")
-        normalise = bool(data.get("normalise", True))
+        normalise = bool(data.get("normalise", False))
         rng_seed = int(data.get("rng_seed", 0))
         save_heatmap = bool(data.get("save_heatmap", False))
         threads = data.get("threads")
         defaults = data.get("defaults") or {}
-        default_M = list(defaults.get("M_values") or [])
-        default_T = list(defaults.get("T_values") or [])
-        default_instances = list(defaults.get("instances") or [])
+        default_M = [int(v) for v in (defaults.get("M_values") or [])]
+        default_T = [int(v) for v in (defaults.get("T_values") or [])]
+        default_instances = [int(v) for v in (defaults.get("instances") or [])]
+        default_single_M = [int(v) for v in (defaults.get("single_instance_M_values") or [])]
+        default_single_instances = [
+            int(v) for v in (defaults.get("single_instance_instances") or [0])
+        ]
+        default_single_T = [int(v) for v in (defaults.get("single_instance_T_values") or [])]
         classes_raw = data.get("mts_classes") or []
         classes: List[ClassSpec] = []
         for entry in classes_raw:
@@ -155,12 +172,14 @@ class ExperimentConfig:
                     default_M,
                     default_T,
                     default_instances,
+                    default_single_M,
+                    default_single_instances,
+                    default_single_T,
                 )
             )
         if not classes:
             raise ValueError("No mts_classes defined in experiment config.")
         return cls(
-            mode=mode,
             base_output_dir=base_output_dir,
             pyspi_config=pyspi_config,
             pyspi_subset=pyspi_subset,
@@ -171,6 +190,9 @@ class ExperimentConfig:
             default_M_values=default_M,
             default_T_values=default_T,
             default_instances=default_instances,
+            single_instance_M_values=default_single_M,
+            single_instance_instances=default_single_instances,
+            single_instance_T_values=default_single_T,
             classes=classes,
         )
 
@@ -180,11 +202,26 @@ def _parse_class(
     default_M: List[int],
     default_T: List[int],
     default_instances: List[int],
+    default_single_M: List[int],
+    default_single_instances: List[int],
+    default_single_T: List[int],
 ) -> ClassSpec:
-    required = ["name", "generator"]
-    for key in required:
-        if key not in entry:
-            raise ValueError(f"Class entry missing '{key}'. Entry: {entry}")
+    if "name" not in entry:
+        raise ValueError(f"Class entry missing 'name'. Entry: {entry}")
+    generator = entry.get("generator")
+    package = entry.get("package")
+    dataset_name = entry.get("dataset_name")
+    if not generator and not package:
+        raise ValueError(
+            f"Class entry '{entry.get('name')}' must define either 'generator' (synthetic) "
+            "or 'package' for real-world data."
+        )
+    if generator and package:
+        raise ValueError(f"Class entry '{entry.get('name')}' cannot define both 'generator' and 'package'.")
+    if package and package.lower() not in {"aeon", "sktime", "yfinance"}:
+        raise ValueError(f"Unsupported package '{package}' for '{entry.get('name')}'.")
+    if package and package.lower() in {"aeon", "sktime"} and not dataset_name:
+        raise ValueError(f"Class entry '{entry.get('name')}' missing 'dataset_name' for package data.")
     variants_data = entry.get("variants") or []
     variants = [
         VariantSpec(name=var.get("name"), params=var.get("params", {}))
@@ -198,18 +235,54 @@ def _parse_class(
         if not vals and default:
             return list(default)
         return vals
+    M_values = [int(v) for v in _resolve_list(entry.get("M_values"), default_M)]
+    T_values = [int(v) for v in _resolve_list(entry.get("T_values"), default_T)]
+    instances = [int(v) for v in _resolve_list(entry.get("instances"), default_instances)]
+    single_instance_M_values = [
+        int(v) for v in _resolve_list(entry.get("single_instance_M_values"), default_single_M)
+    ]
+    single_instance_T_values = [
+        int(v) for v in _resolve_list(entry.get("single_instance_T_values"), default_single_T)
+    ]
+    single_instance_instances: List[int] = []
+    if single_instance_M_values:
+        raw_single_instances = _resolve_list(
+            entry.get("single_instance_instances"), default_single_instances
+        )
+        single_instance_instances = [int(v) for v in raw_single_instances]
+    target_classes = list(entry.get("classes", []))
+    tickers = [str(t).upper() for t in entry.get("tickers", [])]
+    market = entry.get("market")
+    period = entry.get("period")
+    interval = entry.get("interval")
+    m_assets = entry.get("M") or entry.get("assets") or entry.get("m_assets")
+    m_assets = int(m_assets) if m_assets is not None else None
+    if m_assets is None and tickers:
+        m_assets = len(tickers)
     return ClassSpec(
         name=entry["name"],
-        generator=entry["generator"],
+        generator=generator,
+        package=package,
+        dataset_name=dataset_name,
+        target_classes=target_classes,
+        tickers=tickers,
+        market=market,
+        period=period,
+        interval=interval,
+        m_assets=m_assets,
         labels=list(entry.get("labels", [])),
         base_params=base_params,
-        M_values=_resolve_list(entry.get("M_values"), default_M),
-        T_values=_resolve_list(entry.get("T_values"), default_T),
-        instances=_resolve_list(entry.get("instances"), default_instances),
+        M_values=M_values,
+        T_values=T_values,
+        instances=instances,
+        single_instance_M_values=single_instance_M_values,
+        single_instance_instances=single_instance_instances,
+        single_instance_T_values=single_instance_T_values,
         variants=variants,
         include_base_variant=entry.get("include_base_variant", True),
         pyspi_config=_as_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
         pyspi_subset=entry.get("pyspi_subset"),
+        zscore_data=bool(entry.get("zscore", False)),
         normalise=entry.get("normalise"),
         save_heatmap=entry.get("save_heatmap"),
         threads=entry.get("threads"),
@@ -220,13 +293,19 @@ def _parse_class(
 @dataclass
 class DatasetSpec:
     index: int
-    mode: str
     mts_class: str
     class_labels: List[str]
     class_dir: str
     dataset_slug: str
     dataset_dir: Path
-    generator: str
+    generator: str | None
+    source: str
+    package: str | None
+    dataset_name: str | None
+    class_label: Any | None
+    sample_index: int | None
+    channels_first: bool | None
+    zscore_data: bool
     base_output_dir: Path
     generator_params: Dict[str, Any]
     variant: VariantSpec | None
@@ -240,6 +319,11 @@ class DatasetSpec:
     rng_seed: int
     threads: int | None
     heatmap_deltas: List[int]
+    tickers: List[str] = field(default_factory=list)
+    market: str | None = None
+    period: str | None = None
+    interval: str | None = None
+    m_assets: int | None = None
 
     @property
     def name(self) -> str:
@@ -248,7 +332,6 @@ class DatasetSpec:
     def to_summary(self) -> dict[str, Any]:
         return {
             "index": self.index,
-            "mode": self.mode,
             "class": self.mts_class,
             "variant": self.variant.slug if self.variant else "",
             "M": self.M,
@@ -260,6 +343,8 @@ class DatasetSpec:
 
 
 def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
+    if spec.source == "real":
+        return spec.dataset_slug or None
     base = f"M{spec.M}_T{spec.T}_I{spec.instance}"
     class_name = spec.mts_class.lower()
     if class_name.startswith("cml"):
@@ -286,6 +371,9 @@ def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
 
 
 def _apply_dataset_slug(spec: DatasetSpec) -> None:
+    if spec.source == "real" and spec.dataset_slug:
+        spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
+        return
     slug = _custom_dataset_slug(spec)
     if not slug:
         slug = f"M{spec.M}_T{spec.T}_I{spec.instance}"
@@ -299,7 +387,7 @@ def _derive_dataset_seed(*, base_seed: int, spec: DatasetSpec) -> int:
     variant_slug = spec.variant.slug if spec.variant else ""
     components = [
         str(base_seed),
-        spec.mode,
+        str(spec.base_output_dir),
         spec.mts_class,
         spec.dataset_slug,
         variant_slug,
@@ -335,55 +423,205 @@ class DatasetMapping:
         specs: List[DatasetSpec] = []
         for class_entry in self.config.classes:
             class_specs: List[DatasetSpec] = []
-            for M in class_entry.M_values:
-                for T in class_entry.T_values:
-                    for instance in class_entry.instances:
-                        dataset_slug = f"M{M}_T{T}_I{instance}"
-                        class_dir = class_dir_name(class_entry.name)
-                        dataset_dir = (
-                            self.config.base_output_dir
-                            / class_dir
-                            / dataset_slug
+            if class_entry.package:
+                instances = class_entry.instances or self.config.default_instances or [0]
+                class_dir = class_dir_name(class_entry.name)
+                pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
+                pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
+                normalise = (
+                    class_entry.normalise
+                    if class_entry.normalise is not None
+                    else self.config.normalise
+                )
+                save_heatmap = (
+                    class_entry.save_heatmap
+                    if class_entry.save_heatmap is not None
+                    else self.config.save_heatmap
+                )
+                threads = class_entry.threads or self.config.threads
+                base_seed = (
+                    class_entry.rng_seed
+                    if class_entry.rng_seed is not None
+                    else self.config.rng_seed
+                )
+                if class_entry.package.lower() == "yfinance":
+                    if not (class_entry.tickers or class_entry.market):
+                        raise ValueError(
+                            f"Class '{class_entry.name}' (yfinance) requires 'tickers' or 'market'."
                         )
-                        generator_params = dict(class_entry.base_params)
-                        pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
-                        pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
-                        normalise = (
-                            class_entry.normalise
-                            if class_entry.normalise is not None
-                            else self.config.normalise
+                    if not class_entry.m_assets:
+                        raise ValueError(
+                            f"Class '{class_entry.name}' (yfinance) requires 'M' (m_assets) to sample."
                         )
-                        save_heatmap = (
-                            class_entry.save_heatmap
-                            if class_entry.save_heatmap is not None
-                            else self.config.save_heatmap
-                        )
-                        threads = class_entry.threads or self.config.threads
+                    for instance in instances:
+                        dataset_slug = f"I{instance}"
+                        dataset_dir = self.config.base_output_dir / class_dir / dataset_slug
                         class_specs.append(
                             DatasetSpec(
-                                index=0,  # placeholder, updated later
-                                mode=self.config.mode,
+                                index=0,
                                 mts_class=class_entry.name,
                                 class_labels=class_entry.labels,
                                 class_dir=class_dir,
                                 dataset_slug=dataset_slug,
                                 dataset_dir=dataset_dir,
-                                generator=class_entry.generator,
+                                generator=None,
+                                source="yfinance",
+                                package=class_entry.package,
+                                dataset_name=class_entry.dataset_name,
+                                class_label=None,
+                                sample_index=None,
+                                channels_first=None,
+                                zscore_data=class_entry.zscore_data,
                                 base_output_dir=self.config.base_output_dir,
-                                generator_params=generator_params,
+                                generator_params={},
                                 variant=None,
-                                M=M,
-                                T=T,
+                                M=0,
+                                T=0,
                                 instance=instance,
                                 pyspi_config=pyspi_config,
                                 pyspi_subset=pyspi_subset,
                                 normalise=normalise,
                                 save_heatmap=save_heatmap,
-                                rng_seed=0,
+                                rng_seed=base_seed,
                                 threads=threads,
                                 heatmap_deltas=[1],
+                                tickers=class_entry.tickers,
+                                market=class_entry.market,
+                                period=class_entry.period,
+                                interval=class_entry.interval,
+                                m_assets=class_entry.m_assets,
                             )
                         )
+                else:
+                    if not class_entry.target_classes:
+                        raise ValueError(
+                            f"Class '{class_entry.name}' (package={class_entry.package}) must define 'classes'."
+                        )
+                    for cls_label in class_entry.target_classes:
+                        cls_slug = slugify(str(cls_label))
+                        for instance in instances:
+                            dataset_slug = f"class{cls_slug}_I{instance}"
+                            dataset_dir = (
+                                self.config.base_output_dir
+                                / class_dir
+                                / dataset_slug
+                            )
+                            class_specs.append(
+                                DatasetSpec(
+                                    index=0,
+                                    mts_class=class_entry.name,
+                                    class_labels=class_entry.labels,
+                                    class_dir=class_dir,
+                                    dataset_slug=dataset_slug,
+                                    dataset_dir=dataset_dir,
+                                    generator=None,
+                                    source="real",
+                                    package=class_entry.package,
+                                    dataset_name=class_entry.dataset_name,
+                                    class_label=cls_label,
+                                    sample_index=None,
+                                    channels_first=None,
+                                    zscore_data=class_entry.zscore_data,
+                                    base_output_dir=self.config.base_output_dir,
+                                    generator_params={},
+                                    variant=None,
+                                    M=0,
+                                    T=0,
+                                    instance=instance,
+                                    pyspi_config=pyspi_config,
+                                    pyspi_subset=pyspi_subset,
+                                    normalise=normalise,
+                                    save_heatmap=save_heatmap,
+                                    rng_seed=base_seed,
+                                    threads=threads,
+                                    heatmap_deltas=[1],
+                                    tickers=class_entry.tickers,
+                                    market=class_entry.market,
+                                    period=class_entry.period,
+                                    interval=class_entry.interval,
+                                    m_assets=class_entry.m_assets,
+                                )
+                            )
+                for spec in class_specs:
+                    spec.index = len(specs) + 1
+                    specs.append(spec)
+                continue
+            regular_M_values = [
+                m for m in class_entry.M_values if m not in class_entry.single_instance_M_values
+            ]
+
+            def _append_specs(
+                M_values: List[int],
+                instances: List[int],
+                T_values: List[int] | None = None,
+            ) -> None:
+                t_values = T_values if T_values is not None else class_entry.T_values
+                for M in M_values:
+                    for T in t_values:
+                        for instance in instances:
+                            dataset_slug = f"M{M}_T{T}_I{instance}"
+                            class_dir = class_dir_name(class_entry.name)
+                            dataset_dir = (
+                                self.config.base_output_dir
+                                / class_dir
+                                / dataset_slug
+                            )
+                            generator_params = dict(class_entry.base_params)
+                            pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
+                            pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
+                            normalise = (
+                                class_entry.normalise
+                                if class_entry.normalise is not None
+                                else self.config.normalise
+                            )
+                            save_heatmap = (
+                                class_entry.save_heatmap
+                                if class_entry.save_heatmap is not None
+                                else self.config.save_heatmap
+                            )
+                            threads = class_entry.threads or self.config.threads
+                            class_specs.append(
+                                DatasetSpec(
+                                    index=0,  # placeholder, updated later
+                                    mts_class=class_entry.name,
+                                    class_labels=class_entry.labels,
+                                    class_dir=class_dir,
+                                    dataset_slug=dataset_slug,
+                                    dataset_dir=dataset_dir,
+                                    generator=class_entry.generator,
+                                    source="synthetic",
+                                    package=None,
+                                    dataset_name=None,
+                                    class_label=None,
+                                    sample_index=None,
+                                    channels_first=None,
+                                    zscore_data=bool(class_entry.base_params.get("zscore", False)),
+                                    base_output_dir=self.config.base_output_dir,
+                                    generator_params=generator_params,
+                                    variant=None,
+                                    M=M,
+                                    T=T,
+                                    instance=instance,
+                                    pyspi_config=pyspi_config,
+                                    pyspi_subset=pyspi_subset,
+                                    normalise=normalise,
+                                    save_heatmap=save_heatmap,
+                                    rng_seed=0,
+                                    threads=threads,
+                                    heatmap_deltas=[1],
+                                )
+                            )
+
+            if regular_M_values:
+                _append_specs(regular_M_values, class_entry.instances)
+            if class_entry.single_instance_M_values:
+                single_instances = class_entry.single_instance_instances or [0]
+                t_values = (
+                    class_entry.single_instance_T_values
+                    if class_entry.single_instance_T_values
+                    else class_entry.T_values
+                )
+                _append_specs(class_entry.single_instance_M_values, single_instances, t_values)
             variant_choices: List[VariantSpec | None] = []
             if class_entry.include_base_variant:
                 variant_choices.append(None)
@@ -394,13 +632,19 @@ class DatasetMapping:
                     for variant in variant_choices:
                         clone = DatasetSpec(
                             index=spec.index,
-                            mode=spec.mode,
                             mts_class=spec.mts_class,
                             class_labels=spec.class_labels,
                             class_dir=spec.class_dir,
                             dataset_slug=spec.dataset_slug,
                             dataset_dir=spec.dataset_dir,
                             generator=spec.generator,
+                            source=spec.source,
+                            package=spec.package,
+                            dataset_name=spec.dataset_name,
+                            class_label=spec.class_label,
+                            sample_index=spec.sample_index,
+                            channels_first=spec.channels_first,
+                            zscore_data=spec.zscore_data,
                             base_output_dir=spec.base_output_dir,
                             generator_params=dict(class_entry.base_params),
                             variant=variant,

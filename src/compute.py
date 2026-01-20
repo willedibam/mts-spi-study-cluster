@@ -33,7 +33,7 @@ def run_pyspi(
     *,
     config_path: Path,
     subset: str = "default",
-    normalise: bool = True,
+    normalise: bool = False,
 ) -> ComputeResult:
     ensure_java_started()
     if timeseries.ndim != 2:

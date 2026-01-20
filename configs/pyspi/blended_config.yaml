@@ -501,6 +501,7 @@
       - unsigned
       - bivariate
       - frequency-dependent
+      - time-frequency dependent
     dependencies:
     configs:
       - fmin: 0
