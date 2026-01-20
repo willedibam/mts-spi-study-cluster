@@ -47,3 +47,7 @@ Random/
 *.tar.gz
 ./case_*
 test_case_*
+__pycache__/
+*.pyc
+hs_err_pid*.log
+.venv/
