@@ -175,6 +175,46 @@ def generate_exponential_noise(
     return _maybe_zscore(data, zscore=zscore) if zscore else data
 
 
+def generate_gbm(
+    M: int,
+    T: int,
+    *,
+    mu: float | np.ndarray = 0.0,
+    sigma: float | np.ndarray = 0.2,
+    dt: float = 1.0,
+    s0: float | np.ndarray = 1.0,
+    rng=None,
+    zscore: bool = False,
+) -> np.ndarray:
+    """
+    Simulate M independent geometric Brownian motion paths.
+
+    dS_t / S_t = mu * dt + sigma * dW_t
+    Discretised with Euler–Maruyama in log space:
+        S_{t+1} = S_t * exp((mu - 0.5*sigma^2)*dt + sigma*sqrt(dt)*N(0,1))
+    """
+    if dt <= 0:
+        raise ValueError(f"dt must be positive, got {dt}")
+    rng = _resolve_rng(None, rng)
+
+    mu_arr = np.broadcast_to(np.asarray(mu, dtype=float), (M,))
+    sigma_arr = np.broadcast_to(np.asarray(sigma, dtype=float), (M,))
+    s0_arr = np.broadcast_to(np.asarray(s0, dtype=float), (M,))
+
+    paths = np.zeros((T, M), dtype=float)
+    paths[0] = s0_arr
+
+    noise = rng.normal(size=(max(T - 1, 0), M))
+    drift = (mu_arr - 0.5 * sigma_arr**2) * dt
+    diffusion_scale = sigma_arr * np.sqrt(dt)
+
+    for t in range(1, T):
+        increment = drift + diffusion_scale * noise[t - 1]
+        paths[t] = paths[t - 1] * np.exp(increment)
+
+    return _maybe_zscore(paths, zscore=zscore)
+
+
 def generate_cml_logistic(
     M: int,
     T: int,
@@ -242,6 +282,58 @@ def _laplacian_2d(z: np.ndarray) -> np.ndarray:
     return grad_u + grad_v
 
 
+# def generate_wave_1d(
+#     M: int,
+#     T: int,
+#     *,
+#     c: float = 10.0,
+#     seed: int | None = None,
+#     rng=None,
+#     zscore: bool = True,
+# ) -> np.ndarray:
+#     """
+#     Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
+    
+#     Context parameters:
+#       - c = 10 (default)
+#       - Periodic boundary conditions
+#       - Initial condition: Gaussian with sigma = M/20
+#     """
+#     rng = _resolve_rng(seed, rng)
+    
+#     # 1. Setup Space and Time (Unit domain)
+#     dx = 1.0 / M
+#     # Courant stability condition: c * dt/dx <= 1. Use 0.2 safety factor.
+#     dt = 0.2 * dx / c
+#     coeff = (c * dt / dx) ** 2
+
+#     # 2. Initial Conditions (Gaussian)
+#     coords = np.arange(M, dtype=float)
+#     center = M / 2.0
+#     sigma = M / 20.0
+    
+#     z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
+#     z_prev = z_prev / np.max(np.abs(z_prev))
+
+#     # 3. First Time Step (t=1)
+#     # Assume initial velocity dz/dt = 0; Taylor expansion
+#     lap_prev = _laplacian_1d(z_prev)
+#     z_curr = z_prev + 0.5 * coeff * lap_prev
+
+#     # 4. Integration Loop
+#     samples = np.zeros((T, M), dtype=float)
+#     samples[0] = z_prev
+#     if T > 1:
+#         samples[1] = z_curr
+
+#     for t in range(2, T):
+#         lap = _laplacian_1d(z_curr)
+#         z_next = 2.0 * z_curr - z_prev + coeff * lap
+#         samples[t] = z_next
+#         z_prev, z_curr = z_curr, z_next
+
+#     return _maybe_zscore(samples, zscore=zscore)
+
 def generate_wave_1d(
     M: int,
     T: int,
@@ -250,37 +342,56 @@ def generate_wave_1d(
     seed: int | None = None,
     rng=None,
     zscore: bool = True,
+    # NEW:
+    vel_std: float = 0.2,        # strength of initial velocity (0.0 reproduces old behavior)
+    vel_modes: int = 6,          # bandlimit (smoothness). <= M//2
+    vel_decay: float = 2.0,      # amplitudes ~ 1/k^vel_decay
 ) -> np.ndarray:
     """
     Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
-    
-    Context parameters:
-      - c = 10 (default)
-      - Periodic boundary conditions
-      - Initial condition: Gaussian with sigma = M/20
+
+    Periodic BC.
+    Initial displacement: Gaussian.
+    Initial velocity: random smooth (bandlimited Fourier) if vel_std>0.
     """
     rng = _resolve_rng(seed, rng)
-    
-    # 1. Setup Space and Time (Unit domain)
+
     dx = 1.0 / M
-    # Courant stability condition: c * dt/dx <= 1. Use 0.2 safety factor.
     dt = 0.2 * dx / c
     coeff = (c * dt / dx) ** 2
 
-    # 2. Initial Conditions (Gaussian)
+    # --- Initial displacement z(x,0) ---
     coords = np.arange(M, dtype=float)
     center = M / 2.0
     sigma = M / 20.0
-    
+
     z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
     z_prev = z_prev / np.max(np.abs(z_prev))
 
-    # 3. First Time Step (t=1)
-    # Assume initial velocity dz/dt = 0; Taylor expansion
-    lap_prev = _laplacian_1d(z_prev)
-    z_curr = z_prev + 0.5 * coeff * lap_prev
+    # --- NEW: Initial velocity v(x,0) = dz/dt ---
+    v0 = np.zeros(M, dtype=float)
+    if vel_std > 0:
+        x = coords / M  # [0,1)
+        K = int(min(max(1, vel_modes), M // 2))
+        ks = np.arange(1, K + 1, dtype=float)
 
-    # 4. Integration Loop
+        phases = rng.uniform(0.0, 2.0 * np.pi, size=K)
+        amps = rng.normal(0.0, 1.0, size=K) / (ks ** vel_decay)
+
+        # bandlimited random field
+        for k, a, ph in zip(ks, amps, phases):
+            v0 += a * np.sin(2.0 * np.pi * k * x + ph)
+
+        v0 -= v0.mean()  # remove mean to avoid global drift
+        s = np.std(v0)
+        if s > 0:
+            v0 = (v0 / s) * vel_std
+
+    # --- First time step z(x,dt) ---
+    lap_prev = _laplacian_1d(z_prev)
+    z_curr = z_prev + dt * v0 + 0.5 * coeff * lap_prev
+
+    # --- Integrate ---
     samples = np.zeros((T, M), dtype=float)
     samples[0] = z_prev
     if T > 1:
@@ -293,6 +404,7 @@ def generate_wave_1d(
         z_prev, z_curr = z_curr, z_next
 
     return _maybe_zscore(samples, zscore=zscore)
+
 
 
 def generate_wave_2d(
@@ -714,6 +826,8 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "var": generate_varma,
     "varma_shuffled": generate_varma_shuffled,
     "cml_logistic": generate_cml_logistic,
+    "gbm": generate_gbm,
+    "geometric_brownian_motion": generate_gbm,
     "mackey_glass": generate_mackey_glass,
     "kuramoto": generate_kuramoto,
     "kuramoto_all_to_all": generate_kuramoto_all_to_all,

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable, Optional
 
 import json
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib.colors import Normalize
 from scipy.stats import spearmanr, zscore
 from sklearn.preprocessing import StandardScaler, robust_scale
 from sklearn.decomposition import PCA
@@ -23,98 +23,290 @@ from .plot_style import apply_plot_style
 from .spi_color import infer_spi_color_scale
 from .utils import load_json
 
+dpi = 600
 
 def plot_mpi_heatmap(
-    mts_class: str,
-    dataset_slug: str,
-    spis: Iterable[str],
+    dataset_dir: Path | str,
+    spi: str,
     *,
-    base_dir: Path | str = Path("data") / "full",
-    auto_scale: bool = True,
-    center: float | None = None,
-    cmap: str | None = None,
+    save_dir: Path | str,
+    cmap: str,
 ) -> None:
     """
-    Plot heatmaps for one or more SPIs from a dataset's spi_mpis.npz.
-
-    Args:
-        mts_class: Dataset class name (e.g., "CML", "Kuramoto").
-        dataset_slug: Directory slug (e.g., "M25_T1600_I0_<variant-slug>").
-        spis: Iterable of SPI names to plot.
-        base_dir: Base path to dataset directory (default: data/full).
-        auto_scale: If True, infer vmin/vmax/center/cmap from data and SPI name.
-        center: Optional manual center override.
-        cmap: Optional manual cmap override.
+    Plot a single SPI matrix heatmap for a dataset directory.
     """
     apply_plot_style()
-    dataset_dir = Path(base_dir) / mts_class / dataset_slug
+    dataset_dir = Path(dataset_dir)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
     archive = dataset_dir / "spi_mpis.npz"
     if not archive.exists():
         raise FileNotFoundError(f"Missing archive: {archive}")
-    npz = np.load(archive)
-    labels_map: dict[str, list[str]] = {}
+
     meta_path = dataset_dir / "meta.json"
+    labels = None
     if meta_path.exists():
         with meta_path.open("r", encoding="utf-8") as handle:
             meta = json.load(handle)
             for entry in meta.get("pyspi", {}).get("spis", []):
-                labels_map[str(entry.get("name"))] = entry.get("labels", [])
-    spis = list(spis)
-    if not spis:
-        raise ValueError("No SPIs provided to plot.")
+                if str(entry.get("name")) == spi:
+                    labels = entry.get("labels")
+                    break
 
-    n = len(spis)
-    cols = min(3, n)
-    rows = int(np.ceil(n / cols))
-    fig, axes = plt.subplots(rows, cols, figsize=(5 * cols, 5 * rows), squeeze=False)
-    fig.suptitle(f"{mts_class}/{dataset_slug}", fontsize=12)
-
-    for ax, spi in zip(axes.ravel(), spis):
+    with np.load(archive) as npz:
         if spi not in npz:
-            ax.axis("off")
-            ax.set_title(f"{spi} (missing)")
-            continue
+            raise KeyError(f"Missing SPI '{spi}' in {archive}")
         arr = npz[spi]
-        vmin = vmax = None
-        used_center = center
-        used_cmap = cmap
-        if auto_scale:
-            scale = infer_spi_color_scale(
-                spi,
-                float(np.nanmin(arr)),
-                float(np.nanmax(arr)),
-                labels=labels_map.get(spi),
-            )
-            vmin, vmax, inferred_center, inferred_cmap = (
-                scale.vmin,
-                scale.vmax,
-                scale.center,
-                scale.cmap,
-            )
-            used_center = inferred_center if center is None else center
-            used_cmap = inferred_cmap if cmap is None else cmap
-        else:
-            used_center = center
-            used_cmap = cmap or "coolwarm"
+
+    scale = infer_spi_color_scale(
+        spi,
+        float(np.nanmin(arr)),
+        float(np.nanmax(arr)),
+        labels=labels,
+    )
+    used_cmap = cmap or scale.cmap or "coolwarm"
+
+    fig, ax = plt.subplots(figsize=(5, 5), dpi=dpi)
+    sns.heatmap(
+        arr,
+        cmap=used_cmap,
+        center=scale.center,
+        vmin=scale.vmin,
+        vmax=scale.vmax,
+        square=True,
+        xticklabels=False,
+        yticklabels=False,
+        cbar=False,
+        ax=ax,
+    )
+    ax.set_xlabel(None)
+    ax.set_ylabel(None)
+    fig.suptitle(f"{spi}", fontsize=20)
+    fig.tight_layout()
+
+    dataset_name = dataset_dir.name
+    mts_class = dataset_dir.parent.name
+    output_path = save_dir / f"{spi}_mpi_heatmap_{mts_class}_{dataset_name}.svg"
+    fig.savefig(output_path, dpi=dpi, transparent=True)
+    plt.show()
+
+
+def plot_unravel_mpi(
+    dataset_dir: Path | str,
+    spi: str,
+    *,
+    save_dir: Path | str,
+    cmap: str,
+) -> np.ndarray | dict[str, np.ndarray]:
+    """
+    Unravel an MPI matrix into a 1D "barcode" and save as SVG/PNG.
+
+    - If the SPI is undirected, returns the lower-triangular off-diagonal entries.
+    - If directed, returns a dict with "__ij" (upper) and "__ji" (lower) vectors and
+      saves both barcodes.
+    """
+    apply_plot_style()
+    dataset_dir = Path(dataset_dir)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    archive = dataset_dir / "spi_mpis.npz"
+    if not archive.exists():
+        raise FileNotFoundError(f"Missing archive: {archive}")
+
+    meta_path = dataset_dir / "meta.json"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing meta.json: {meta_path}")
+    meta = load_json(meta_path)
+    spi_entries = {
+        entry.get("name"): entry
+        for entry in meta.get("pyspi", {}).get("spis", [])
+        if isinstance(entry, dict) and entry.get("name")
+    }
+    if spi not in spi_entries:
+        raise KeyError(f"Missing SPI metadata for '{spi}' in {meta_path}")
+    labels = spi_entries[spi].get("labels")
+    directed = bool(spi_entries[spi].get("directed", False))
+
+    with np.load(archive) as npz:
+        if spi not in npz:
+            raise KeyError(f"Missing SPI '{spi}' in {archive}")
+        mat = np.asarray(npz[spi], float)
+
+    if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
+        raise ValueError(f"SPI matrix must be square, got shape={mat.shape}")
+
+    scale = infer_spi_color_scale(
+        spi,
+        float(np.nanmin(mat)),
+        float(np.nanmax(mat)),
+        labels=labels,
+    )
+    used_cmap = cmap or scale.cmap or "coolwarm"
+
+    upper_mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
+    lower_mask = np.tril(np.ones(mat.shape, dtype=bool), k=-1)
+
+    mts_class = dataset_dir.parent.name
+    dataset_name = dataset_dir.name
+
+    def _plot_barcode(vec: np.ndarray, suffix: str) -> None:
+        if vec.size == 0:
+            return
+        width = max(4.0, float(vec.size) / 5.0)
+        fig, ax = plt.subplots(figsize=(width, 1), dpi=dpi)
         sns.heatmap(
-            arr,
-            cmap=used_cmap or "coolwarm",
-            center=used_center,
-            vmin=vmin,
-            vmax=vmax,
-            square=True,
+            vec[np.newaxis, :],
+            cmap=used_cmap,
+            center=scale.center,
+            vmin=scale.vmin,
+            vmax=scale.vmax,
+            cbar=False,
             xticklabels=False,
             yticklabels=False,
-            cbar=True,
-            cbar_kws={"shrink": 0.8},
             ax=ax,
         )
-        ax.set_title(spi)
+        ax.set_xlabel(None)
+        ax.set_ylabel(None)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.tick_params(left=False, bottom=False)
+        fig.tight_layout(pad=0.05)
+        filename = f"barcode_{mts_class}_{dataset_name}_{spi}{suffix}"
+        fig.savefig(save_dir / f"{filename}.svg", dpi=dpi, transparent=True)
+        fig.savefig(save_dir / f"{filename}.png", dpi=dpi, transparent=True)
+        # plt.close(fig)
+        plt.show()
 
-    for ax in axes.ravel()[n:]:
-        ax.axis("off")
-    fig.tight_layout()
+    if directed:
+        vec_ij = mat[upper_mask]
+        vec_ji = mat[lower_mask]
+        _plot_barcode(vec_ij, "__ij")
+        _plot_barcode(vec_ji, "__ji")
+        return {"ij": vec_ij, "ji": vec_ji}
+
+    vec = mat[lower_mask]
+    _plot_barcode(vec, "")
+    return vec
+
+
+def plot_spi_spi_barcode(
+    dataset_dir: Path | str,
+    spis: list[str] | None = None,
+    *,
+    spi_index_lim: int | None = None,
+    save_dir: Path | str,
+    cmap: str,
+) -> np.ndarray:
+    """
+    Compute Spearman correlations between flattened MPI barcodes of SPIs and plot as a barcode.
+    """
+    apply_plot_style()
+    dataset_dir = Path(dataset_dir)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    archive = dataset_dir / "spi_mpis.npz"
+    if not archive.exists():
+        raise FileNotFoundError(f"Missing archive: {archive}")
+
+    meta_path = dataset_dir / "meta.json"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing meta.json: {meta_path}")
+    meta = load_json(meta_path)
+    spi_entries = [
+        entry
+        for entry in meta.get("pyspi", {}).get("spis", [])
+        if isinstance(entry, dict) and entry.get("name")
+    ]
+    available_names = [str(entry["name"]) for entry in spi_entries]
+
+    if not spis:
+        spis = available_names
+    if spi_index_lim is not None:
+        spis = spis[:spi_index_lim]
+    if len(spis) < 2:
+        raise ValueError("At least two SPIs are required to compute pairwise correlations.")
+
+    entry_map = {str(entry["name"]): entry for entry in spi_entries}
+    with np.load(archive) as npz:
+        vectors: list[tuple[str, np.ndarray]] = []
+
+        def _is_directed(entry: dict) -> bool:
+            labels = entry.get("labels") or []
+            directed_label = any(isinstance(lbl, str) and lbl.lower() == "directed" for lbl in labels)
+            return bool(entry.get("directed", False) or directed_label)
+
+        for name in spis:
+            if name not in entry_map:
+                raise KeyError(f"Missing SPI metadata for '{name}' in {meta_path}")
+            entry = entry_map[name]
+            if name not in npz:
+                raise KeyError(f"Missing SPI '{name}' in {archive}")
+            mat = np.asarray(npz[name], float)
+            if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
+                raise ValueError(f"SPI matrix must be square, got shape={mat.shape} for {name}")
+
+            upper_mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
+            lower_mask = np.tril(np.ones(mat.shape, dtype=bool), k=-1)
+
+            if _is_directed(entry):
+                vectors.append((f"{name}__ij", mat[upper_mask]))
+                vectors.append((f"{name}__ji", mat[lower_mask]))
+            else:
+                vectors.append((name, mat[lower_mask]))
+
+    if len(vectors) < 2:
+        raise ValueError("Need at least two SPI barcodes to correlate.")
+
+    corr_values: list[float] = []
+    # Pairwise Spearman correlations
+    for idx in range(len(vectors)):
+        for jdx in range(idx + 1, len(vectors)):
+            _, vec_a = vectors[idx]
+            _, vec_b = vectors[jdx]
+            valid = np.isfinite(vec_a) & np.isfinite(vec_b)
+            if valid.sum() < 2:
+                corr = np.nan
+            else:
+                corr = float(spearmanr(vec_a[valid], vec_b[valid]).correlation)
+            corr_values.append(corr)
+
+    corr_vec = np.asarray(corr_values, float)
+    if corr_vec.size == 0:
+        raise ValueError("No pairwise correlations could be computed.")
+
+    mts_class = dataset_dir.parent.name
+    dataset_name = dataset_dir.name
+
+    width = max(4.0, float(corr_vec.size) / 5.0)
+    fig, ax = plt.subplots(figsize=(width, 1), dpi=dpi)
+    sns.heatmap(
+        corr_vec[np.newaxis, :],
+        cmap=cmap,
+        center=0.0,
+        vmin=-1.0,
+        vmax=1.0,
+        cbar=False,
+        xticklabels=False,
+        yticklabels=False,
+        ax=ax,
+    )
+    ax.set_xlabel(None)
+    ax.set_ylabel(None)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.tick_params(left=False, bottom=False)
+    fig.tight_layout(pad=0.05)
+
+    filename = f"spi_spi_barcode_{mts_class}_{dataset_name}"
+    fig.savefig(save_dir / f"{filename}.svg", dpi=dpi, transparent=True)
+    fig.savefig(save_dir / f"{filename}.png", dpi=dpi, transparent=True)
+    # plt.close(fig)
     plt.show()
+
+    return corr_vec
 
 
 def plot_mts_heatmap(
@@ -143,7 +335,7 @@ def plot_mts_heatmap(
     # Heuristic: if columns >> rows, assume shape (T, M) and transpose to (M, T)
     if data.shape[0] > data.shape[1]:
         data = data.T
-    fig, ax = plt.subplots(figsize=figsize, dpi=300)
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
     ax.pcolormesh(
         data,
         shading="flat",
@@ -164,8 +356,12 @@ def plot_mts_heatmap(
 
 def scale_mts_heatmap(
     data_dir: str | Path,
+    dpi: int,
+    cmap: str = "icefire",
     *,
     filename: str = "timeseries.npy",
+    save_tag: str | None = None,
+    delta: int | None = None,
 ) -> list[Path]:
     """
     Scale and save MxT heatmaps as SVGs.
@@ -177,6 +373,7 @@ def scale_mts_heatmap(
       (robust_scale line is left as a commented alternative).
     - Color: icefire; vmin/vmax = [-2, 2], except Cauchy uses symmetric 0.1/99.9 pct.
     - Output: saved alongside each timeseries as `mts_heatmap_scaled.svg` and `.png`.
+    - If delta > 1, subsample time axis by that stride and suffix filenames with `_delta<delta>_scaled`.
     """
 
     def _process(data_path: Path) -> Path:
@@ -202,30 +399,42 @@ def scale_mts_heatmap(
         else:
             vmin, vmax = -2.0, 2.0
 
+        used_delta = max(0, int(delta or 0))
+        if used_delta > 1:
+            scaled = scaled[:, ::used_delta]
+
         base_M, base_T = 16.0, 1000.0
         base_fig = (8.0, 4.0)
-        width = float(np.clip(base_fig[0] * (T / base_T), 4.0, 18.0))
+        eff_T = scaled.shape[1]
+        width = float(np.clip(base_fig[0] * (eff_T / base_T), 4.0, 18.0))
         height = float(np.clip(base_fig[1] * (M / base_M), 2.0, 12.0))
 
-        fig, ax = plt.subplots(figsize=(width, height), dpi=300)
+        fig, ax = plt.subplots(figsize=(width, height), dpi=dpi)
         ax.pcolormesh(
             scaled,
             shading="flat",
             vmin=vmin,
             vmax=vmax,
-            cmap=sns.color_palette("icefire", as_cmap=True),
+            cmap=sns.color_palette(cmap, as_cmap=True),
         )
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_xlabel(None)
         ax.set_ylabel(None)
         fig.tight_layout(pad=0.05)
-        base = data_path.with_name("mts_heatmap_scaled")
-        svg_path = base.with_suffix(".svg")
-        png_path = base.with_suffix(".png")
-        fig.savefig(svg_path, format="svg", bbox_inches="tight", pad_inches=0)
-        fig.savefig(png_path, format="png", dpi=300, bbox_inches="tight", pad_inches=0)
+        base_stem = data_path.name.lower().rsplit(".", 1)[0]
+        delta_suffix = f"_delta{used_delta}" if used_delta > 1 else ""
+        base = data_path.with_name(f"{base_stem}{delta_suffix}_scaled")
+        if save_tag:
+            svg_path = base.with_name(f"{save_tag}_{base.name}").with_suffix(".svg")
+            png_path = base.with_name(f"{save_tag}_{base.name}").with_suffix(".png")
+        else:
+            svg_path = base.with_suffix(".svg")
+            png_path = base.with_suffix(".png")
+        fig.savefig(svg_path, format="svg", dpi=dpi, bbox_inches="tight", pad_inches=0)
+        fig.savefig(png_path, format="png", dpi=dpi, bbox_inches="tight", pad_inches=0)
         plt.close(fig)
+        # print(f"{data_path.name.lower().rsplit('.', 1)[0]}_mts_heatmap_scaled")
         return svg_path
 
     apply_plot_style()
@@ -240,6 +449,214 @@ def scale_mts_heatmap(
     if not targets:
         raise FileNotFoundError(f"No {filename} found under {root}")
     return [_process(path) for path in sorted(targets)]
+
+
+def plot_mts_channel(
+    dataset_dir: Path | str,
+    channel: int,
+    *,
+    clip: tuple[int, int] | None = None,
+    save_dir: Path | str,
+    cmap: str = "icefire",
+    stems: bool = False,
+) -> np.ndarray:
+    """
+    Plot a single channel from an MxT multivariate time series as a 1D barcode.
+    Uses the same scaling as scale_mts_heatmap for consistency.
+
+    Args:
+        dataset_dir: Directory containing timeseries.npy or direct path to it.
+        channel: Channel index (0-based).
+        clip: Optional (start, end) indices to slice the time axis.
+        save_dir: Directory to save outputs.
+        cmap: Colormap name.
+        stems: If True, render a stem plot instead of a heatmap barcode.
+    """
+    apply_plot_style()
+    dataset_dir = Path(dataset_dir)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    data_path = dataset_dir / "timeseries.npy" if dataset_dir.is_dir() else dataset_dir
+    if not data_path.exists():
+        raise FileNotFoundError(f"Missing timeseries file: {data_path}")
+
+    data = np.load(data_path).astype(float, copy=False)
+    if data.ndim != 2:
+        raise ValueError(f"Expected 2D array, got shape {data.shape} for {data_path}")
+    if data.shape[0] > data.shape[1]:
+        data = data.T
+    M, T = data.shape
+    if channel < 0 or channel >= M:
+        raise IndexError(f"Channel {channel} out of bounds for M={M}")
+
+    is_cauchy = "cauchy" in data_path.name.lower() or "cauchy" in data_path.parent.name.lower()
+    if is_cauchy:
+        scaled = robust_scale(data, axis=1)
+    else:
+        scaled = zscore(data, axis=1, nan_policy="omit")
+    scaled = np.nan_to_num(scaled, nan=0.0, posinf=0.0, neginf=0.0)
+
+    if is_cauchy:
+        lo, hi = np.percentile(scaled, [0.1, 99.9])
+        bound = float(np.max(np.abs([lo, hi])))
+        vmin, vmax = -bound, bound
+    else:
+        vmin, vmax = -2.0, 2.0
+
+    start = end = None
+    if clip is not None:
+        if (
+            not isinstance(clip, tuple)
+            or len(clip) != 2
+            or not all(isinstance(x, int) for x in clip)
+        ):
+            raise TypeError("clip must be a tuple of two ints (start, end).")
+        start, end = clip
+        if not (0 <= start < end <= T):
+            raise ValueError(f"clip must satisfy 0 <= start < end <= {T}, got {clip}")
+        channel_vec = np.asarray(scaled[channel, start:end], float)
+    else:
+        channel_vec = np.asarray(scaled[channel, :], float)
+
+    effective_len = channel_vec.shape[0]
+    width = float(np.clip(8.0 * (effective_len / 1000.0), 4.0, 18.0))
+    if dataset_dir.is_dir():
+        dataset_name = dataset_dir.name
+        mts_class = dataset_dir.parent.name
+    else:
+        dataset_name = dataset_dir.stem
+        mts_class = dataset_dir.parent.name
+
+    clip_suffix = f"_clip-{clip[0]}-{clip[1]}" if clip is not None else ""
+    base_name = f"channel-{channel}_{mts_class}_{dataset_name}{clip_suffix}"
+
+    if stems:
+        stem_name = f"stems_{base_name}"
+        plot_stems(
+            series=channel_vec,
+            name=stem_name,
+            output_dir=save_dir,
+            cmap=cmap,
+        )
+    else:
+        fig, ax = plt.subplots(figsize=(width, 1), dpi=dpi)
+        sns.heatmap(
+            channel_vec[np.newaxis, :],
+            cmap=sns.color_palette(cmap, as_cmap=True),
+            vmin=vmin,
+            vmax=vmax,
+            cbar=False,
+            xticklabels=False,
+            yticklabels=False,
+            ax=ax,
+        )
+        ax.set_xlabel(None)
+        ax.set_ylabel(None)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.tick_params(left=False, bottom=False)
+        fig.tight_layout(pad=0.05)
+
+        fig.savefig(save_dir / f"{base_name}.svg", dpi=dpi, transparent=True)
+        fig.savefig(save_dir / f"{base_name}.png", dpi=dpi, transparent=True)
+        plt.show()
+        # plt.close(fig)
+
+    return channel_vec
+
+
+def plot_stems(
+    series: np.ndarray | None = None,
+    name: str = "stems",
+    output_dir: Path | str = Path("."),
+    *,
+    dataset_dir: Path | str | None = None,
+    channel: int = 0,
+    clip: tuple[int, int] | None = None,
+    cmap: str = "icefire",
+    ax=None,
+):
+    """
+    Plot a 1D series as a stem plot; can load a channel from a dataset_dir if series is not provided.
+    Saves both SVG and PNG with the given name.
+    """
+    apply_plot_style()
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    if series is None:
+        if dataset_dir is None:
+            raise ValueError("Provide either series or dataset_dir.")
+        dataset_dir = Path(dataset_dir)
+        data_path = dataset_dir / "timeseries.npy" if dataset_dir.is_dir() else dataset_dir
+        if not data_path.exists():
+            raise FileNotFoundError(f"Missing timeseries file: {data_path}")
+        data = np.load(data_path).astype(float, copy=False)
+        if data.ndim != 2:
+            raise ValueError(f"Expected 2D array, got shape {data.shape} for {data_path}")
+        if data.shape[0] > data.shape[1]:
+            data = data.T
+        M, T = data.shape
+        if channel < 0 or channel >= M:
+            raise IndexError(f"Channel {channel} out of bounds for M={M}")
+        is_cauchy = "cauchy" in data_path.name.lower() or "cauchy" in data_path.parent.name.lower()
+        if is_cauchy:
+            scaled = robust_scale(data, axis=1)
+        else:
+            scaled = zscore(data, axis=1, nan_policy="omit")
+        scaled = np.nan_to_num(scaled, nan=0.0, posinf=0.0, neginf=0.0)
+        if clip is not None:
+            if (
+                not isinstance(clip, tuple)
+                or len(clip) != 2
+                or not all(isinstance(x, int) for x in clip)
+            ):
+                raise TypeError("clip must be a tuple of two ints (start, end).")
+            start, end = clip
+            if not (0 <= start < end <= T):
+                raise ValueError(f"clip must satisfy 0 <= start < end <= {T}, got {clip}")
+            vals = np.asarray(scaled[channel, start:end], float)
+        else:
+            vals = np.asarray(scaled[channel, :], float)
+    else:
+        vals = np.asarray(series, dtype=float).reshape(-1)
+        if clip is not None:
+            if (
+                not isinstance(clip, tuple)
+                or len(clip) != 2
+                or not all(isinstance(x, int) for x in clip)
+            ):
+                raise TypeError("clip must be a tuple of two ints (start, end).")
+            start, end = clip
+            if not (0 <= start < end <= vals.size):
+                raise ValueError(f"clip must satisfy 0 <= start < end <= {vals.size}, got {clip}")
+            vals = vals[start:end]
+
+    xs = np.arange(vals.size)
+    cmap_fn = sns.color_palette(cmap, as_cmap=True)
+    colors = cmap_fn((vals - vals.min()) / (vals.ptp() or 1.0))
+    if ax is None:
+        width = float(np.clip(8.0 * (vals.size / 1000.0), 4.0, 18.0))
+        fig, ax = plt.subplots(figsize=(width, 2.5), dpi=dpi)
+    else:
+        fig = ax.figure
+    ax.vlines(xs, 0.0, vals, colors=colors, linewidth=1.5)
+    ax.hlines(0.0, xs[0] - 1, xs[-1] + 1, colors="black", linewidth=1.0)
+    ax.scatter(xs, vals, c=colors, s=10, zorder=3, alpha=1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlabel(None)
+    ax.set_ylabel(None)
+    ax.tick_params(left=False, bottom=False)
+    ax.axis("off")
+    fig.tight_layout(pad=0.1)
+    svg_path = output_dir / f"{name}.svg"
+    png_path = output_dir / f"{name}.png"
+    fig.savefig(svg_path, transparent=True, dpi=dpi)
+    fig.savefig(png_path, transparent=True, dpi=dpi)
+    plt.close(fig)
+    return fig, ax
 
 
 def _clean_legend(ax, hue: str, size_col: str) -> None:
@@ -423,7 +840,7 @@ def plot_mts_corr_density(
     spi_y_base, spi_y_dir_req = _parse_token(spi_pair[1])
 
     def _collect(direction_choice_x: str | None, direction_choice_y: str | None) -> None:
-        fig, ax = plt.subplots(figsize=(6, 6), dpi=300)
+        fig, ax = plt.subplots(figsize=(6, 6), dpi=dpi)
         palette = sns.color_palette("tab10", len(mts_class_paths))
         plotted = False
 
@@ -549,7 +966,7 @@ def plot_pca(
     meta_df["pca_x"] = embedding[:, 0]
     meta_df["pca_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=300)
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=dpi)
     
     sns.scatterplot(
         data=meta_df,
@@ -627,7 +1044,7 @@ def plot_umap(
     meta_df["umap_x"] = embedding[:, 0]
     meta_df["umap_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=300)
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=dpi)
     
     sns.scatterplot(
         data=meta_df,
@@ -707,7 +1124,7 @@ def plot_tsne(
     meta_df["tsne_x"] = embedding[:, 0]
     meta_df["tsne_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=300)
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=dpi)
     
     sns.scatterplot(
         data=meta_df,

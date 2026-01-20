@@ -249,6 +249,14 @@ def _safe_write_parquet(table: pd.DataFrame, path: Path) -> None:
 
 
 def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
+    # If timeseries already exists on disk, reuse it to avoid reloading/downloading.
+    if spec.source in {"real", "yfinance"} and not regenerate:
+        existing = _load_existing_timeseries(spec)
+        if existing:
+            data, ts_path = existing
+            print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
+            return data, ts_path
+
     if spec.source == "real":
         data, M, T, dataset_slug, chosen_idx, channels_first = _load_real_sample(spec)
         spec.M = M
@@ -304,6 +312,38 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
             f"in {duration:.2f}s -> {to_relative(ts_path)}"
         )
     return data.astype(np.float64, copy=False), ts_path
+
+
+def _load_existing_timeseries(spec) -> tuple[np.ndarray, Path] | None:
+    if spec.source == "real":
+        class_dir = spec.base_output_dir / spec.class_dir
+        cls_slug = slugify(str(spec.class_label))
+        for candidate in class_dir.glob(f"*_I{spec.instance}_class{cls_slug}"):
+            ts_path = candidate / "timeseries.npy"
+            if not ts_path.exists():
+                continue
+            data = np.load(ts_path).astype(np.float64, copy=False)
+            spec.dataset_dir = candidate
+            spec.dataset_slug = candidate.name
+            spec.M = data.shape[1]
+            spec.T = data.shape[0]
+            spec.channels_first = False
+            return data, ts_path
+    if spec.source == "yfinance":
+        class_dir = spec.base_output_dir / spec.class_dir
+        for candidate in class_dir.glob(f"*_I{spec.instance}"):
+            ts_path = candidate / "timeseries.npy"
+            if not ts_path.exists():
+                continue
+            data = np.load(ts_path).astype(np.float64, copy=False)
+            if spec.m_assets and data.shape[1] != spec.m_assets:
+                continue
+            spec.dataset_dir = candidate
+            spec.dataset_slug = candidate.name
+            spec.M = data.shape[1]
+            spec.T = data.shape[0]
+            return data, ts_path
+    return None
 
 
 def _real_sample_seed(*, dataset_name: str, class_label: str, instance: int, base_seed: int) -> int:
