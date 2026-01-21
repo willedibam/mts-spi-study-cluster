@@ -1,4 +1,4 @@
-base_output_dir: data/case_260119_var_vs_wave_spi_corr/
+base_output_dir: data/case_260119/
 pyspi_config: configs/pyspi/case_260119.yaml
 
 pyspi_subset: default
@@ -15,8 +15,6 @@ defaults:
   M_values: [8, 16]
   T_values: [400, 800, 1600, 3200]
 
-  # NOTE: With your current wave generator, "instances" are redundant (see critique).
-  # Keep this moderate unless you PATCH wave to randomize initial conditions.
   instances: [0, 1, 2, 3]
 
 mts_classes:
@@ -60,21 +58,6 @@ mts_classes:
       - name: "near_critical"
         params:
           target_rho: 0.99
-
-  # - name: "Wave1D"
-  #   labels: ["pde", "wave", "1d"]
-  #   generator: "wave_1d"
-  #   include_base_variant: true
-  #   base_params:
-  #     c: 10.0
-  #     zscore: true
-  #   variants:
-  #     - name: "slow"
-  #       params:
-  #         c: 5.0
-  #     - name: "fast"
-  #       params:
-  #         c: 20.0
 
   - name: "Wave1D"
     labels: ["pde", "wave", "1d"]

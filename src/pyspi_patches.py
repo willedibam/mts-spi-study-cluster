@@ -143,7 +143,8 @@ def _patch_lagged_correlation():
             if x.size < 2 or y.size < 2:
                 return np.nan
             if self._estimator == "pearson":
-                return np.corrcoef(x, y)[0, 1]
+                return stats.pearsonr(x, y).correlation
+                # return np.corrcoef(x, y)[0, 1]
             if self._estimator == "spearman":
                 return stats.spearmanr(x, y).correlation
             if self._estimator == "kendall":

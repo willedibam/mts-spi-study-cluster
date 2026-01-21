@@ -1,0 +1,115 @@
+base_output_dir: data/case_i_r_rho_mi/
+pyspi_config: configs/pyspi/case_r_rho_mi.yaml
+
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 16
+
+defaults:
+  M_values: [4, 8, 16, 32]
+  # M_values: [8]
+  T_values: [200, 400, 800, 1600]
+  # T_values: [1600]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7]
+  # instances: [0,1]
+
+mts_classes:
+  # ---------------------------
+  # System 1: Linear (ring VAR-like)
+  # x_{t+1}^{(i)} = a x_t^{(i)} + b x_t^{(i-1)} + eps
+  # Pearson ~ Spearman ~ MI (all strong)
+  # ---------------------------
+  - name: "linear_g-1_h-prev"
+    labels: ["linear", "gaussian", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.25
+      c: 0.0
+      g: "identity"
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.1
+      transients: 1000
+      x0: 0.0
+      init_std: 1.0
+      target_rho: 0.98
+      zscore: true
+    variants:
+
+  # ---------------------------
+  # System 2: Monotone nonlinear (saturating)
+  # x_{t+1}^{(i)} = a x_t^{(i)} + c tanh(x_t^{(i-1)}) + eps
+  # Pearson degrades; Spearman + MI remain strong
+  # ---------------------------
+  - name: "monotone_nonlinear_g-tanh_h-prev"
+    labels: ["nonlinear", "monotone", "tanh", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 0.8
+      g: "tanh"
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 1.0
+      transients: 1000
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  # ---------------------------
+  # System 3: Nonlinear + non-monotone (U-shaped)
+  # x_{t+1}^{(i)} = a x_t^{(i)} + c ( (x_t^{(i-1)})^2 - sigma2 ) + eps
+  # Pearson + Spearman can collapse; MI still strong
+  # ---------------------------
+  # - name: "nmonotone_nonlinear_g-quadratic_h-prev"
+  #   labels: ["nonlinear", "nonmonotone", "quadratic", "ring"]
+  #   generator: "case_i"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.6
+  #     b: 0.0
+  #     c: 0.2
+  #     g: "square_centered"
+  #     sigma2: 1.0
+  #     interaction: "prev"
+  #     topology: "ring"
+  #     noise_std: 0.1
+  #     transients: 500
+  #     x0: 0.0
+  #     init_std: 1.0
+  #     zscore: true
+  #   variants:
+  #     - name: "stronger_quadratic"
+  #       params:
+  #         c: 0.8
+  #     - name: "weaker_quadratic"
+  #       params:
+  #         c: 0.3
+
+# g(z) = sin(z)
+  - name: "nmonotone_nonlinear_g-sin_h-prev"
+    labels: ["nonlinear", "nonmonotone", "sin", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 0.9
+      g: "sin"
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 1.0
+      transients: 5000
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+
+
+    
