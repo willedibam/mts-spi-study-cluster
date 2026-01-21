@@ -140,6 +140,8 @@ def _patch_lagged_correlation():
             self.identifier = f"corr_{est}_tau-{self._tau}{suffix}"
 
         def _corr(self, x, y):
+            x = np.asarray(x).reshape(-1)
+            y = np.asarray(y).reshape(-1)
             if x.size < 2 or y.size < 2:
                 return np.nan
             if self._estimator == "pearson":
