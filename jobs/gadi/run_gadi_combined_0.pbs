@@ -8,7 +8,7 @@
 #PBS -l jobfs=10GB
 #PBS -l storage=scratch/ql44+gdata/ql44
 #PBS -l wd
-#PBS -J 1-36
+#PBS -J 1-30
 #PBS -r y
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
@@ -45,7 +45,7 @@ python -m src.run_experiments \
   --job-index "${ARRAY_ID}" \
   --skip-existing \
   --experiment-config configs/combined/combined_0.yaml \
-  --pyspi-config configs/pyspi/test_case_0.yaml \
+  --pyspi-config configs/pyspi/test_0_config.yaml \
   --threads "${NUM_THREADS}" \
   --parquet
 

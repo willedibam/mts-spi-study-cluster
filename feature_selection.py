@@ -1,7 +1,7 @@
 """
 SPI-SPI feature selection pipeline (cluster-friendly, no plots).
 
-- Assumes features computed via feature_compute.py (same directed splitting).
+- Assumes features computed via process_features.py (same directed handling).
 - Loads cached SPI-SPI matrix if present, otherwise computes on the fly.
 - Runs forward SequentialFeatureSelector with a configurable estimator.
 - Writes selected features to analysis/feature_selection/<estimator>_<mode>_<k>_<timestamp>.txt
@@ -138,6 +138,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--splits", type=int, default=5, help="Max CV folds for selection.")
     parser.add_argument("--cache", type=str, default=None, help="Custom cache path (npz).")
     parser.add_argument("--recompute", action="store_true", help="Recompute feature matrix even if cached.")
+    parser.add_argument(
+        "--split-directed",
+        action="store_true",
+        help="Split directed SPIs into two pseudo-SPIs (upper/lower). Default: off (symmetrize into one).",
+    )
     parser.add_argument("--n-jobs", type=int, default=None, help="Parallelism for estimator/SFS (set thoughtfully on laptop).")
     return parser.parse_args(argv)
 
@@ -146,7 +151,16 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    cache_file = Path(args.cache) if args.cache else cache_path(args.mode, args.dataset_limit, None)
+    cache_file = (
+        Path(args.cache)
+        if args.cache
+        else cache_path(
+            args.mode,
+            args.dataset_limit,
+            None,
+            split_directed=args.split_directed,
+        )
+    )
     cached = load_cached_features(cache_file, recompute=args.recompute)
 
     if cached:
@@ -157,7 +171,12 @@ def main(argv: Sequence[str] | None = None) -> None:
     else:
         LOGGER.info("Computing features from data/%s (limit=%s)", args.mode, args.dataset_limit)
         samples, spi_order, directed_flags = load_samples_with_flags(args.mode, limit=args.dataset_limit)
-        X_raw, y, pairs, dataset_paths = build_feature_matrix(samples, spi_order, directed_flags)
+        X_raw, y, pairs, dataset_paths, _variants, _Ms, _Ts, _instances = build_feature_matrix(
+            samples,
+            spi_order,
+            directed_flags,
+            split_directed=args.split_directed,
+        )
         payload = {
             "X": X_raw.astype(np.float32),
             "y": y,

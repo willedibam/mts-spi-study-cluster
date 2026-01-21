@@ -2,7 +2,8 @@
 Compute and cache SPI-SPI feature matrices for downstream analysis.
 
 - Loads datasets under a provided data path (e.g., data/full), enforcing consistent SPI ordering/flags.
-- Directed SPIs are split into two pseudo-SPIs (i->j upper triangle, j->i lower triangle).
+- Directed SPIs can be split into two pseudo-SPIs (i->j upper triangle, j->i lower triangle) via --split-directed.
+- Without splitting, directed SPIs are symmetrized and treated as a single SPI.
 - Features are Spearman correlations between pseudo-SPI edge vectors (upper triangle of the SPI-SPI corr matrix).
 - Supports optional SPI name subset via --spi-subset (txt, one per line).
 """
@@ -110,11 +111,21 @@ def _safe_zscore(vec: np.ndarray) -> np.ndarray:
     return (vec - vec.mean()) / std
 
 
-def _edge_vectors(name: str, mat: np.ndarray, directed: bool) -> List[tuple[str, np.ndarray]]:
+def _edge_vectors(
+    name: str,
+    mat: np.ndarray,
+    directed: bool,
+    split_directed: bool = False,
+) -> List[tuple[str, np.ndarray]]:
     mat = np.asarray(mat, float)
     if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
         raise ValueError(f"{name} is not square (shape={mat.shape})")
     if not directed:
+        mat = 0.5 * (mat + mat.T)
+        mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
+        return [(name, _safe_zscore(mat[mask]))]
+    if not split_directed:
+        # Collapse direction to keep a single vector per SPI.
         mat = 0.5 * (mat + mat.T)
         mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
         return [(name, _safe_zscore(mat[mask]))]
@@ -126,11 +137,17 @@ def _edge_vectors(name: str, mat: np.ndarray, directed: bool) -> List[tuple[str,
     ]
 
 
-def build_spi_spi_features(sample: Dict, spi_order: List[str], directed_flags: List[bool]) -> tuple[np.ndarray, List[str]]:
+def build_spi_spi_features(
+    sample: Dict,
+    spi_order: List[str],
+    directed_flags: List[bool],
+    *,
+    split_directed: bool = False,
+) -> tuple[np.ndarray, List[str]]:
     vectors: List[np.ndarray] = []
     names: List[str] = []
     for name, directed in zip(spi_order, directed_flags):
-        entries = _edge_vectors(name, sample["mpis"][name], directed)
+        entries = _edge_vectors(name, sample["mpis"][name], directed, split_directed)
         for pseudo_name, vec in entries:
             names.append(pseudo_name)
             vectors.append(vec)
@@ -145,7 +162,13 @@ def build_spi_spi_features(sample: Dict, spi_order: List[str], directed_flags: L
     return corr[iu], names
 
 
-def build_feature_matrix(samples: List[Dict], spi_order: List[str], directed_flags: List[bool]) -> tuple[np.ndarray, np.ndarray, List[tuple[str, str]], List[str]]:
+def build_feature_matrix(
+    samples: List[Dict],
+    spi_order: List[str],
+    directed_flags: List[bool],
+    *,
+    split_directed: bool = False,
+) -> tuple[np.ndarray, np.ndarray, List[tuple[str, str]], List[str]]:
     X_list: List[np.ndarray] = []
     y_list: List[str] = []
     dataset_paths: List[str] = []
@@ -156,7 +179,12 @@ def build_feature_matrix(samples: List[Dict], spi_order: List[str], directed_fla
     names_ref: List[str] | None = None
     pairs: List[tuple[str, str]] | None = None
     for idx, sample in enumerate(samples, start=1):
-        feat_vec, names = build_spi_spi_features(sample, spi_order, directed_flags)
+        feat_vec, names = build_spi_spi_features(
+            sample,
+            spi_order,
+            directed_flags,
+            split_directed=split_directed,
+        )
         if names_ref is None:
             names_ref = names
         elif names != names_ref:
@@ -180,11 +208,18 @@ def build_feature_matrix(samples: List[Dict], spi_order: List[str], directed_fla
     return X, y, pairs, dataset_paths, variants, Ms, Ts, instances
 
 
-def cache_path(data_path: str, limit: int | None, subset_label: str | None) -> Path:
+def cache_path(
+    data_path: str,
+    limit: int | None,
+    subset_label: str | None,
+    *,
+    split_directed: bool = False,
+) -> Path:
     suffix = f"_limit{limit}" if limit else ""
     subset_suffix = f"_{subset_label}" if subset_label else ""
+    split_suffix = "_split" if split_directed else "_nosplit"
     safe = data_path.replace("\\", "-").replace("/", "-").strip("-")
-    return project_root() / "analysis" / "feature_cache" / f"features_{safe}{subset_suffix}{suffix}.npz"
+    return project_root() / "analysis" / "feature_cache" / f"features_{safe}{split_suffix}{subset_suffix}{suffix}.npz"
 
 
 def load_cached_features(path: Path, recompute: bool) -> dict | None:
@@ -208,6 +243,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--spi-subset", type=str, default=None, help="Path to txt file listing SPI names (one per line).")
     parser.add_argument("--recompute", action="store_true", help="Recompute even if cache exists.")
     parser.add_argument(
+        "--split-directed",
+        action="store_true",
+        help="Split directed SPIs into two pseudo-SPIs (upper/lower). Default: off (symmetrize into one).",
+    )
+    parser.add_argument(
         "--mts-classes",
         type=str,
         default=None,
@@ -228,7 +268,16 @@ def main(argv: Sequence[str] | None = None) -> None:
     else:
         LOGGER.info("Using all SPIs")
 
-    cache_file = Path(args.output) if args.output else cache_path(args.data_path, args.dataset_limit, subset_label)
+    cache_file = (
+        Path(args.output)
+        if args.output
+        else cache_path(
+            args.data_path,
+            args.dataset_limit,
+            subset_label,
+            split_directed=args.split_directed,
+        )
+    )
     cached = load_cached_features(cache_file, recompute=args.recompute)
 
     if cached:
@@ -246,7 +295,12 @@ def main(argv: Sequence[str] | None = None) -> None:
         subset_names=subset_names,
         mts_classes=mts_classes,
     )
-    X_raw, y, pairs, dataset_paths, variants, Ms, Ts, instances = build_feature_matrix(samples, spi_order, directed_flags)
+    X_raw, y, pairs, dataset_paths, variants, Ms, Ts, instances = build_feature_matrix(
+        samples,
+        spi_order,
+        directed_flags,
+        split_directed=args.split_directed,
+    )
     payload = {
         "X": X_raw.astype(np.float32),
         "y": y,  # mts_class labels
@@ -261,6 +315,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         "mode": args.data_path,
         "dataset_limit": args.dataset_limit if args.dataset_limit is not None else -1,
         "spi_subset": subset_label or "",
+        "split_directed": bool(args.split_directed),
     }
     save_cached_features(cache_file, payload)
     LOGGER.info("Saved features -> %s", cache_file)

@@ -175,6 +175,46 @@ def generate_exponential_noise(
     return _maybe_zscore(data, zscore=zscore) if zscore else data
 
 
+def generate_gbm(
+    M: int,
+    T: int,
+    *,
+    mu: float | np.ndarray = 0.0,
+    sigma: float | np.ndarray = 0.2,
+    dt: float = 1.0,
+    s0: float | np.ndarray = 1.0,
+    rng=None,
+    zscore: bool = False,
+) -> np.ndarray:
+    """
+    Simulate M independent geometric Brownian motion paths.
+
+    dS_t / S_t = mu * dt + sigma * dW_t
+    Discretised with Euler–Maruyama in log space:
+        S_{t+1} = S_t * exp((mu - 0.5*sigma^2)*dt + sigma*sqrt(dt)*N(0,1))
+    """
+    if dt <= 0:
+        raise ValueError(f"dt must be positive, got {dt}")
+    rng = _resolve_rng(None, rng)
+
+    mu_arr = np.broadcast_to(np.asarray(mu, dtype=float), (M,))
+    sigma_arr = np.broadcast_to(np.asarray(sigma, dtype=float), (M,))
+    s0_arr = np.broadcast_to(np.asarray(s0, dtype=float), (M,))
+
+    paths = np.zeros((T, M), dtype=float)
+    paths[0] = s0_arr
+
+    noise = rng.normal(size=(max(T - 1, 0), M))
+    drift = (mu_arr - 0.5 * sigma_arr**2) * dt
+    diffusion_scale = sigma_arr * np.sqrt(dt)
+
+    for t in range(1, T):
+        increment = drift + diffusion_scale * noise[t - 1]
+        paths[t] = paths[t - 1] * np.exp(increment)
+
+    return _maybe_zscore(paths, zscore=zscore)
+
+
 def generate_cml_logistic(
     M: int,
     T: int,
@@ -242,6 +282,58 @@ def _laplacian_2d(z: np.ndarray) -> np.ndarray:
     return grad_u + grad_v
 
 
+# def generate_wave_1d(
+#     M: int,
+#     T: int,
+#     *,
+#     c: float = 10.0,
+#     seed: int | None = None,
+#     rng=None,
+#     zscore: bool = True,
+# ) -> np.ndarray:
+#     """
+#     Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
+    
+#     Context parameters:
+#       - c = 10 (default)
+#       - Periodic boundary conditions
+#       - Initial condition: Gaussian with sigma = M/20
+#     """
+#     rng = _resolve_rng(seed, rng)
+    
+#     # 1. Setup Space and Time (Unit domain)
+#     dx = 1.0 / M
+#     # Courant stability condition: c * dt/dx <= 1. Use 0.2 safety factor.
+#     dt = 0.2 * dx / c
+#     coeff = (c * dt / dx) ** 2
+
+#     # 2. Initial Conditions (Gaussian)
+#     coords = np.arange(M, dtype=float)
+#     center = M / 2.0
+#     sigma = M / 20.0
+    
+#     z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
+#     z_prev = z_prev / np.max(np.abs(z_prev))
+
+#     # 3. First Time Step (t=1)
+#     # Assume initial velocity dz/dt = 0; Taylor expansion
+#     lap_prev = _laplacian_1d(z_prev)
+#     z_curr = z_prev + 0.5 * coeff * lap_prev
+
+#     # 4. Integration Loop
+#     samples = np.zeros((T, M), dtype=float)
+#     samples[0] = z_prev
+#     if T > 1:
+#         samples[1] = z_curr
+
+#     for t in range(2, T):
+#         lap = _laplacian_1d(z_curr)
+#         z_next = 2.0 * z_curr - z_prev + coeff * lap
+#         samples[t] = z_next
+#         z_prev, z_curr = z_curr, z_next
+
+#     return _maybe_zscore(samples, zscore=zscore)
+
 def generate_wave_1d(
     M: int,
     T: int,
@@ -250,37 +342,56 @@ def generate_wave_1d(
     seed: int | None = None,
     rng=None,
     zscore: bool = True,
+    # NEW:
+    vel_std: float = 0.2,        # strength of initial velocity (0.0 reproduces old behavior)
+    vel_modes: int = 6,          # bandlimit (smoothness). <= M//2
+    vel_decay: float = 2.0,      # amplitudes ~ 1/k^vel_decay
 ) -> np.ndarray:
     """
     Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
-    
-    Context parameters:
-      - c = 10 (default)
-      - Periodic boundary conditions
-      - Initial condition: Gaussian with sigma = M/20
+
+    Periodic BC.
+    Initial displacement: Gaussian.
+    Initial velocity: random smooth (bandlimited Fourier) if vel_std>0.
     """
     rng = _resolve_rng(seed, rng)
-    
-    # 1. Setup Space and Time (Unit domain)
+
     dx = 1.0 / M
-    # Courant stability condition: c * dt/dx <= 1. Use 0.2 safety factor.
     dt = 0.2 * dx / c
     coeff = (c * dt / dx) ** 2
 
-    # 2. Initial Conditions (Gaussian)
+    # --- Initial displacement z(x,0) ---
     coords = np.arange(M, dtype=float)
     center = M / 2.0
     sigma = M / 20.0
-    
+
     z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
     z_prev = z_prev / np.max(np.abs(z_prev))
 
-    # 3. First Time Step (t=1)
-    # Assume initial velocity dz/dt = 0; Taylor expansion
-    lap_prev = _laplacian_1d(z_prev)
-    z_curr = z_prev + 0.5 * coeff * lap_prev
+    # --- NEW: Initial velocity v(x,0) = dz/dt ---
+    v0 = np.zeros(M, dtype=float)
+    if vel_std > 0:
+        x = coords / M  # [0,1)
+        K = int(min(max(1, vel_modes), M // 2))
+        ks = np.arange(1, K + 1, dtype=float)
 
-    # 4. Integration Loop
+        phases = rng.uniform(0.0, 2.0 * np.pi, size=K)
+        amps = rng.normal(0.0, 1.0, size=K) / (ks ** vel_decay)
+
+        # bandlimited random field
+        for k, a, ph in zip(ks, amps, phases):
+            v0 += a * np.sin(2.0 * np.pi * k * x + ph)
+
+        v0 -= v0.mean()  # remove mean to avoid global drift
+        s = np.std(v0)
+        if s > 0:
+            v0 = (v0 / s) * vel_std
+
+    # --- First time step z(x,dt) ---
+    lap_prev = _laplacian_1d(z_prev)
+    z_curr = z_prev + dt * v0 + 0.5 * coeff * lap_prev
+
+    # --- Integrate ---
     samples = np.zeros((T, M), dtype=float)
     samples[0] = z_prev
     if T > 1:
@@ -293,6 +404,7 @@ def generate_wave_1d(
         z_prev, z_curr = z_curr, z_next
 
     return _maybe_zscore(samples, zscore=zscore)
+
 
 
 def generate_wave_2d(
@@ -709,11 +821,161 @@ def generate_mackey_glass(
     return output
 
 
+def _resolve_g(g: str | Callable[[np.ndarray], np.ndarray], *, sigma2: float | None) -> Callable[[np.ndarray], np.ndarray]:
+    """Resolve coupling function g from a string key or callable."""
+    if callable(g):
+        return g
+
+    name = str(g).lower().strip()
+
+    if name in {"id", "identity", "linear"}:
+        return lambda z: z
+    if name == "tanh":
+        return np.tanh
+    if name == "sin":
+        return np.sin
+    if name in {"abs", "absolute"}:
+        return np.abs
+    if name in {"square", "pow2", "quadratic"}:
+        return lambda z: z**2
+    if name in {"square_centered", "pow2_centered", "quadratic_centered"}:
+        s2 = 1.0 if sigma2 is None else float(sigma2)
+        return lambda z, _s2=s2: z**2 - _s2
+
+    raise ValueError(
+        f"Unknown g='{g}'. Supported: identity, tanh, sin, abs, square, square_centered (or pass a callable)."
+    )
+
+def generate_case_i(
+    M: int,
+    T: int,
+    *,
+    a: float | np.ndarray = 0.6,
+    b: float | np.ndarray = 0.25,
+    c: float | np.ndarray = 0.0,
+    g: str | Callable[[np.ndarray], np.ndarray] = "identity",
+    interaction: str = "prev",
+    topology: str = "ring",
+    boundary_value: float = 0.0,
+    noise_std: float | np.ndarray = 0.1,
+    transients: int = 0,
+    x0: float | np.ndarray | None = 0.0,
+    init_std: float = 1.0,
+    sigma2: float | None = None,
+    target_rho: float | None = None,
+    rng=None,
+    zscore: bool = True,
+) -> np.ndarray:
+    """
+    Generic ring/chain-coupled M-channel MTS with configurable nonlinear coupling.
+
+    Update (per channel i):
+        x_{t+1}^{(i)} = a*x_t^{(i)} + b*x_t^{(i-1)} + c*g( h(x_t^{(i)}, x_t^{(i-1)}) ) + eps_{t+1}^{(i)}
+
+    target_rho:
+      - If provided, rescale the *linear* backbone (a,b) to have spectral radius <= target_rho,
+        in the same way as generate_varma.
+      - Only allowed when c == 0 (purely linear system). No normalization is done for nonlinear cases.
+
+    Returns array of shape (T, M).
+    """
+    if M <= 0:
+        raise ValueError(f"M must be positive, got {M}")
+    if T <= 0:
+        raise ValueError(f"T must be positive, got {T}")
+    if transients < 0:
+        raise ValueError(f"transients must be >= 0, got {transients}")
+    if target_rho is not None and target_rho <= 0:
+        raise ValueError(f"target_rho must be positive, got {target_rho}")
+
+    rng = _resolve_rng(None, rng)
+
+    a_arr = np.broadcast_to(np.asarray(a, dtype=float), (M,)).copy()
+    b_arr = np.broadcast_to(np.asarray(b, dtype=float), (M,)).copy()
+    c_arr = np.broadcast_to(np.asarray(c, dtype=float), (M,))
+    noise_std_arr = np.broadcast_to(np.asarray(noise_std, dtype=float), (M,))
+
+    # --- Spectral radius normalization (linear case only) ---
+    if target_rho is not None:
+        if not np.allclose(c_arr, 0.0):
+            raise ValueError("target_rho is only supported for the linear case (requires c == 0).")
+
+        topology_key = str(topology).lower().strip()
+        A = np.zeros((M, M), dtype=float)
+        idx = np.arange(M)
+        A[idx, idx] = a_arr
+
+        if topology_key == "ring":
+            prev_cols = (idx - 1) % M
+            A[idx, prev_cols] = b_arr
+        elif topology_key == "chain":
+            if M > 1:
+                A[idx[1:], idx[:-1]] = b_arr[1:]  # row i uses b_i * x_{i-1}
+            # note: boundary_value is an external constant, not part of A
+        else:
+            raise ValueError("topology must be 'ring' or 'chain'")
+
+        ev = np.linalg.eigvals(A)
+        sr = float(np.max(np.abs(ev))) if ev.size else 0.0
+        if sr >= float(target_rho) and sr > 0.0:
+            scale = float(target_rho) / sr
+            a_arr *= scale
+            b_arr *= scale
+    # -------------------------------------------------------
+
+    g_fn = _resolve_g(g, sigma2=sigma2)
+
+    total_T = T + transients
+    paths = np.zeros((total_T, M), dtype=float)
+
+    if x0 is None:
+        paths[0] = rng.normal(scale=float(init_std), size=(M,))
+    else:
+        paths[0] = np.broadcast_to(np.asarray(x0, dtype=float), (M,))
+
+    noise = rng.normal(size=(max(total_T - 1, 0), M)) * noise_std_arr
+
+    interaction_key = str(interaction).lower().strip()
+    topology_key = str(topology).lower().strip()
+
+    for t in range(1, total_T):
+        cur = paths[t - 1]
+
+        if topology_key == "ring":
+            prev = np.roll(cur, 1)
+        elif topology_key == "chain":
+            prev = np.empty_like(cur)
+            prev[0] = float(boundary_value)
+            prev[1:] = cur[:-1]
+        else:
+            raise ValueError("topology must be 'ring' or 'chain'")
+
+        if interaction_key == "prev":
+            z = prev
+        elif interaction_key == "product":
+            z = cur * prev
+        elif interaction_key == "sum":
+            z = cur + prev
+        elif interaction_key == "diff":
+            z = cur - prev
+        else:
+            raise ValueError("interaction must be one of: prev, product, sum, diff")
+
+        paths[t] = a_arr * cur + b_arr * prev + np.broadcast_to(c_arr, (M,)) * g_fn(z) + noise[t - 1]
+
+    out = paths[transients:] if transients > 0 else paths
+    return _maybe_zscore(out, zscore=zscore)
+
+
+
+
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "varma": generate_varma,
     "var": generate_varma,
     "varma_shuffled": generate_varma_shuffled,
     "cml_logistic": generate_cml_logistic,
+    "gbm": generate_gbm,
+    "geometric_brownian_motion": generate_gbm,
     "mackey_glass": generate_mackey_glass,
     "kuramoto": generate_kuramoto,
     "kuramoto_all_to_all": generate_kuramoto_all_to_all,
@@ -724,6 +986,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "exponential_noise": generate_exponential_noise,
     "wave_1d": generate_wave_1d,
     "wave_2d": generate_wave_2d,
+    "case_i": generate_case_i,
 }
 
 
