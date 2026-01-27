@@ -1,0 +1,55 @@
+base_output_dir: data/case_iii_mi_te/
+pyspi_config: configs/pyspi/case_iii_mi_te.yaml
+
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 16
+
+defaults:
+  M_values: [8, 16]
+  T_values: [200, 400, 800, 1600]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+mts_classes:
+  # ---------------------------
+  # System A: TE high (directed), lag-0 MI low
+  # Pairwise lagged drive: 0->1, 2->3, ...
+  # ---------------------------
+  - name: "te_high_lagged_drive_pairs"
+    labels: ["te_high", "directed", "lagged", "mi_low_lag0"]
+    generator: "case_iii"
+    include_base_variant: true
+    base_params:
+      mode: "lagged_drive_pairs"
+      a_driver: 0.0
+      a_resp: 0.0
+      coupling: 2.0
+      noise_std_driver: 1.0
+      noise_std_resp: 1.0
+      transients: 200
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants: []
+
+  # ---------------------------
+  # System B: MI high (instantaneous), TE ~ 0
+  # Independent AR bases + i.i.d. common cause Z_t
+  # ---------------------------
+  - name: "mi_high_instantaneous_common_cause"
+    labels: ["mi_high", "instantaneous", "common_cause", "te_low"]
+    generator: "case_iii"
+    include_base_variant: true
+    base_params:
+      mode: "instantaneous_common_cause"
+      a_base: 0.0
+      noise_std_base: 1.0
+      latent_std: 3.0
+      alpha: 1.0
+      transients: 200
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants: []

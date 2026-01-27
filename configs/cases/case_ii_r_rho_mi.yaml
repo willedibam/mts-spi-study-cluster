@@ -1,0 +1,102 @@
+base_output_dir: data/case_ii_r_rho_mi_lean/
+pyspi_config: configs/pyspi/cases/case_ii_r_rho_mi_lean.yaml
+
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 16
+
+defaults:
+  M_values: [4, 8]
+  # M_values: [8]
+  T_values: [200, 400, 800, 1600]
+  # T_values: [1600]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+  # instances: [0,1]
+
+mts_classes:
+  # #first run: all 4
+  # - name: "linear_g-id"
+  #   labels: ["linear", "monotone", "lag0", "ring"]
+  #   generator: "case_ii"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.2
+  #     b: 1.0
+  #     g: "identity"
+  #     topology: "ring"
+  #     noise_std: 1.0
+  #     transients: 1000
+  #     z0: 0.0
+  #     init_std: 1.0
+  #     target_rho: 0.98
+  #     zscore: true
+  #   variants:
+
+  # - name: "monotone_nonlinear_g-tanh"
+  #   labels: ["nonlinear", "monotone", "lag0", "tanh", "ring"]
+  #   generator: "case_ii"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.2
+  #     b: 3.0
+  #     g: "tanh"
+  #     topology: "ring"
+  #     noise_std: 3.0
+  #     transients: 1000
+  #     z0: 0.0
+  #     init_std: 1.0
+  #     zscore: true
+  #   variants:
+
+  # - name: "nonmonotone_nonlinear_g-sin"
+  #   labels: ["nonlinear", "nonmonotone", "lag0", "sin", "ring"]
+  #   generator: "case_ii"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.2
+  #     b: 3.0
+  #     g: "sin"
+  #     topology: "ring"
+  #     noise_std: 5.0
+  #     transients: 1000
+  #     z0: 0.0
+  #     init_std: 1.0
+  #     zscore: true
+  #   variants:
+
+  #  - name: "nonmonotone_nonlinear_g-quadratic_centered"
+  #   labels: ["nonlinear", "nonmonotone", "lag0", "sin", "ring"]
+  #   generator: "case_ii"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.2
+  #     b: 2.0
+  #     g: "quadratic_centered"
+  #     topology: "ring"
+  #     noise_std: 1.5
+  #     transients: 1000
+  #     z0: 0.0
+  #     init_std: 1.0
+  #     zscore: true
+  #   variants:
+
+  #second run: linear vs monotone nonlinear: softplus
+    - name: "monotone_nonlinear_g-softplus_centered"
+      labels: ["nonlinear", "monotone", "lag0", "ring", "softplus"]
+      generator: "case_ii"
+      include_base_variant: true
+      base_params:
+        a: 0.2
+        b: 2.0
+        g: "softplus_centered"
+        topology: "ring"
+        noise_std: 2.0
+        transients: 1000
+        z0: 0.0
+        init_std: 1.0
+        zscore: true
+        # Only include sigma2 if you did NOT add auto-compute in generate_case_ii:
+        # sigma2: 4.1666666667   # = noise_std^2 / (1 - a^2) = 4 / 0.96
+      variants: []

@@ -821,8 +821,32 @@ def generate_mackey_glass(
     return output
 
 
-def _resolve_g(g: str | Callable[[np.ndarray], np.ndarray], *, sigma2: float | None) -> Callable[[np.ndarray], np.ndarray]:
-    """Resolve coupling function g from a string key or callable."""
+def _softplus(x: np.ndarray) -> np.ndarray:
+    # stable log(1+exp(x))
+    return np.logaddexp(0.0, x)
+
+
+def _E_softplus_gaussian(sigma2: float | np.ndarray, *, n_gh: int = 40) -> np.ndarray:
+    """
+    Approx E[softplus(Z)] for Z ~ N(0, sigma2) using Gauss–Hermite quadrature.
+    Vectorized over sigma2.
+    """
+    s2 = np.asarray(sigma2, dtype=float)
+    # GH nodes/weights for ∫ e^{-x^2} f(x) dx
+    x, w = np.polynomial.hermite.hermgauss(n_gh)  # shapes (n_gh,)
+
+    # E[f(Z)] = 1/sqrt(pi) * sum_i w_i f( sqrt(2*s2)*x_i )
+    scale = np.sqrt(2.0 * s2)[..., None]  # (...,1)
+    vals = _softplus(scale * x[None, :])  # (..., n_gh)
+    return (vals @ w) / np.sqrt(np.pi)    # (...,)
+
+
+def _resolve_g(
+    g: str | Callable[[np.ndarray], np.ndarray],
+    *,
+    sigma2: float | np.ndarray | None,
+) -> Callable[[np.ndarray], np.ndarray]:
+    """Resolve coupling/mixing function g from a string key or callable."""
     if callable(g):
         return g
 
@@ -839,12 +863,39 @@ def _resolve_g(g: str | Callable[[np.ndarray], np.ndarray], *, sigma2: float | N
     if name in {"square", "pow2", "quadratic"}:
         return lambda z: z**2
     if name in {"square_centered", "pow2_centered", "quadratic_centered"}:
-        s2 = 1.0 if sigma2 is None else float(sigma2)
+        if sigma2 is None:
+            raise ValueError("g='square_centered' requires sigma2 (Var of the latent).")
+        s2 = np.asarray(sigma2, dtype=float)
         return lambda z, _s2=s2: z**2 - _s2
 
+    # --- NEW: skewed monotone nonlinearities ---
+    if name == "exp":
+        # clip to avoid inf; tweak bounds if you want more/less skew
+        return lambda z: np.exp(np.clip(z, -50.0, 50.0))
+
+    if name in {"exp_centered", "exp_shifted"}:
+        # centered: exp(z) - E[exp(Z)] where Z~N(0,s2), E = exp(s2/2)
+        if sigma2 is None:
+            raise ValueError("g='exp_centered' requires sigma2 (Var of the latent).")
+        s2 = np.asarray(sigma2, dtype=float)
+        mu = np.exp(0.5 * s2)
+        return lambda z, _mu=mu: np.exp(np.clip(z, -50.0, 50.0)) - _mu
+
+    if name == "softplus":
+        return _softplus
+
+    if name in {"softplus_centered", "softplus_shifted"}:
+        if sigma2 is None:
+            raise ValueError("g='softplus_centered' requires sigma2 (Var of the latent).")
+        s2 = np.asarray(sigma2, dtype=float)
+        mu = _E_softplus_gaussian(s2, n_gh=40)
+        return lambda z, _mu=mu: _softplus(z) - _mu
+
     raise ValueError(
-        f"Unknown g='{g}'. Supported: identity, tanh, sin, abs, square, square_centered (or pass a callable)."
+        f"Unknown g='{g}'. Supported: identity, tanh, sin, abs, square, square_centered, "
+        f"exp, exp_centered, softplus, softplus_centered (or pass a callable)."
     )
+
 
 def generate_case_i(
     M: int,
@@ -967,6 +1018,237 @@ def generate_case_i(
     return _maybe_zscore(out, zscore=zscore)
 
 
+def generate_case_ii(
+    M: int,
+    T: int,
+    *,
+    a: float | np.ndarray = 0.6,
+    b: float | np.ndarray = 0.25,
+    g: str | Callable[[np.ndarray], np.ndarray] = "identity",
+    topology: str = "ring",
+    boundary_value: float = 0.0,
+    noise_std: float | np.ndarray = 0.1,
+    transients: int = 0,
+    z0: float | np.ndarray | None = 0.0,
+    init_std: float = 1.0,
+    sigma2: float | None = None,
+    target_rho: float | None = None,
+    rng=None,
+    zscore: bool = True,
+    return_latents: bool = False,
+):
+    """
+    Case II: latent independent AR(1) channels + instantaneous (lag-0) mixing.
+
+    Latents (independent across channels):
+        z_{t+1}^{(i)} = a_i * z_t^{(i)} + eps_{t+1}^{(i)},  eps ~ N(0, noise_std_i^2)
+
+    Observation / mixing layer (instantaneous ring/chain):
+        x_t^{(i)} = z_t^{(i)} + b_i * g( z_t^{(i-1)} )
+
+    - topology='ring': z_t^{(i-1)} uses wraparound (i-1 mod M)
+    - topology='chain': z_t^{(i-1)} uses boundary_value for i=0
+
+    target_rho:
+      - If provided, rescales the AR coefficients a_i so that max_i |a_i| <= target_rho.
+        (This is the analogue of "stability control" for independent AR(1) latents.)
+
+    Returns:
+      - x of shape (T, M) by default
+      - (x, z) if return_latents=True
+    """
+    if M <= 0:
+        raise ValueError(f"M must be positive, got {M}")
+    if T <= 0:
+        raise ValueError(f"T must be positive, got {T}")
+    if transients < 0:
+        raise ValueError(f"transients must be >= 0, got {transients}")
+    if target_rho is not None and target_rho <= 0:
+        raise ValueError(f"target_rho must be positive, got {target_rho}")
+
+    # Keep same repo hygiene: use your RNG resolver + zscore helper.
+    rng = _resolve_rng(None, rng)  # noqa: F821 (expected to exist in your repo)
+
+    a_arr = np.broadcast_to(np.asarray(a, dtype=float), (M,)).copy()
+    b_arr = np.broadcast_to(np.asarray(b, dtype=float), (M,)).copy()
+    noise_std_arr = np.broadcast_to(np.asarray(noise_std, dtype=float), (M,)).copy()
+
+    # inside generate_case_ii, after a_arr and noise_std_arr are defined:
+    sigma2_auto = None
+    g_name = str(g).lower().strip() if not callable(g) else ""
+    if sigma2 is None and g_name.endswith(("centered", "shifted")):
+        # per-channel stationary variance for AR(1) latents
+        denom = 1.0 - a_arr**2
+        if np.any(denom <= 0):
+            raise ValueError("Cannot auto-compute sigma2 when |a|>=1.")
+        sigma2_auto = (noise_std_arr**2) / denom
+
+    g_fn = _resolve_g(g, sigma2=sigma2 if sigma2 is not None else sigma2_auto)
+
+    # --- Stability control for independent AR(1) latents ---
+    if target_rho is not None:
+        maxabs = float(np.max(np.abs(a_arr))) if a_arr.size else 0.0
+        if maxabs > float(target_rho) and maxabs > 0.0:
+            a_arr *= float(target_rho) / maxabs
+    # ------------------------------------------------------
+
+    total_T = T + transients
+    z = np.zeros((total_T, M), dtype=float)
+
+    # Initial condition for latents
+    if z0 is None:
+        z[0] = rng.normal(scale=float(init_std), size=(M,))
+    else:
+        z[0] = np.broadcast_to(np.asarray(z0, dtype=float), (M,))
+
+    # Latent noise
+    eps = rng.normal(size=(max(total_T - 1, 0), M)) * noise_std_arr
+
+    # Generate latents (independent across channels)
+    for t in range(1, total_T):
+        z[t] = a_arr * z[t - 1] + eps[t - 1]
+
+    # Instantaneous mixing at each t (lag-0 across channels)
+    topology_key = str(topology).lower().strip()
+    if topology_key == "ring":
+        prev = np.roll(z, 1, axis=1)
+    elif topology_key == "chain":
+        prev = np.empty_like(z)
+        prev[:, 0] = float(boundary_value)
+        prev[:, 1:] = z[:, :-1]
+    else:
+        raise ValueError("topology must be 'ring' or 'chain'")
+
+    x = z + g_fn(prev) * b_arr  # b_arr broadcasts over time
+
+    # Drop transients then z-score (same pattern as generate_case_i)
+    x_out = x[transients:] if transients > 0 else x
+    z_out = z[transients:] if transients > 0 else z
+
+    x_out = _maybe_zscore(x_out, zscore=zscore)  # noqa: F821 (expected to exist in your repo)
+    if return_latents:
+        z_out = _maybe_zscore(z_out, zscore=zscore)
+        return x_out, z_out
+
+    return x_out
+
+
+def generate_case_iii(
+    M: int,
+    T: int,
+    *,
+    mode: str = "lagged_drive_pairs",
+    # ---- lagged_drive_pairs params ----
+    a_driver: float | np.ndarray = 0.0,   # set 0.0 for i.i.d. drivers -> MI(lag0) ~ 0
+    a_resp: float | np.ndarray = 0.6,
+    coupling: float | np.ndarray = 0.8,   # driver -> responder (lag-1)
+    noise_std_driver: float | np.ndarray = 1.0,
+    noise_std_resp: float | np.ndarray = 1.0,
+    # ---- instantaneous_common_cause params ----
+    a_base: float | np.ndarray = 0.6,     # independent AR(1) base per channel
+    noise_std_base: float | np.ndarray = 1.0,
+    latent_std: float = 1.0,              # Z_t ~ N(0, latent_std^2), i.i.d. over t
+    alpha: float | np.ndarray = 1.0,      # mixing strength per channel
+    # ---- shared ----
+    transients: int = 0,
+    x0: float | np.ndarray | None = 0.0,
+    init_std: float = 1.0,
+    rng=None,
+    zscore: bool = True,
+) -> np.ndarray:
+    """
+    Case III: two regimes to separate lag-0 MI from directed TE.
+
+    mode="lagged_drive_pairs":
+        Channels are paired (0->1, 2->3, ...). Even channels are "drivers",
+        odd channels are "responders".
+
+        driver:   x_{t+1}^{(2k)}   = a_driver * x_t^{(2k)} + eps^D
+        responder x_{t+1}^{(2k+1)} = a_resp   * x_t^{(2k+1)} + coupling * x_t^{(2k)} + eps^R
+
+        If a_driver=0 (i.i.d. drivers), then x_t^{(2k)} is independent of x_t^{(2k+1)}
+        (which depends only on past driver), so MI at lag-0 is ~0 while TE (2k -> 2k+1) is high.
+
+    mode="instantaneous_common_cause":
+        Independent AR(1) bases + instantaneous i.i.d. common cause:
+            u_{t+1}^{(i)} = a_base * u_t^{(i)} + eta^{(i)}
+            x_t^{(i)}     = u_t^{(i)} + alpha_i * Z_t,  Z_t i.i.d.
+
+        This creates large lag-0 MI across channels (shared Z_t) but TE ~ 0 (no cross-lag mechanism).
+
+    Returns array shape (T, M).
+    """
+    if M <= 0:
+        raise ValueError(f"M must be positive, got {M}")
+    if T <= 0:
+        raise ValueError(f"T must be positive, got {T}")
+    if transients < 0:
+        raise ValueError(f"transients must be >= 0, got {transients}")
+
+    rng = _resolve_rng(None, rng)  # expected to exist in your repo
+
+    total_T = T + transients
+    x = np.zeros((total_T, M), dtype=float)
+
+    if x0 is None:
+        x[0] = rng.normal(scale=float(init_std), size=(M,))
+    else:
+        x[0] = np.broadcast_to(np.asarray(x0, dtype=float), (M,))
+
+    mode_key = str(mode).lower().strip()
+
+    if mode_key == "lagged_drive_pairs":
+        aD = np.broadcast_to(np.asarray(a_driver, dtype=float), (M,))
+        aR = np.broadcast_to(np.asarray(a_resp, dtype=float), (M,))
+        c = np.broadcast_to(np.asarray(coupling, dtype=float), (M,))
+        sD = np.broadcast_to(np.asarray(noise_std_driver, dtype=float), (M,))
+        sR = np.broadcast_to(np.asarray(noise_std_resp, dtype=float), (M,))
+
+        drivers = (np.arange(M) % 2 == 0)  # even indices
+        responders = ~drivers               # odd indices
+
+        eps = rng.normal(size=(max(total_T - 1, 0), M))
+        for t in range(1, total_T):
+            prev = x[t - 1]
+
+            # driver update (no cross-channel terms)
+            nxt = np.empty_like(prev)
+            nxt[drivers] = aD[drivers] * prev[drivers] + eps[t - 1, drivers] * sD[drivers]
+
+            # responder update: depends on *paired* driver at lag-1
+            # For odd i, paired driver is i-1
+            paired_driver = np.zeros_like(prev)
+            if M > 1:
+                paired_driver[responders] = prev[np.where(responders)[0] - 1]
+            nxt[responders] = (
+                aR[responders] * prev[responders]
+                + c[responders] * paired_driver[responders]
+                + eps[t - 1, responders] * sR[responders]
+            )
+
+            x[t] = nxt
+
+    elif mode_key == "instantaneous_common_cause":
+        a = np.broadcast_to(np.asarray(a_base, dtype=float), (M,))
+        s = np.broadcast_to(np.asarray(noise_std_base, dtype=float), (M,))
+        alpha_arr = np.broadcast_to(np.asarray(alpha, dtype=float), (M,))
+
+        # simulate independent base u_t in-place in x, then add Z_t each time
+        eps = rng.normal(size=(max(total_T - 1, 0), M))
+        for t in range(1, total_T):
+            x[t] = a * x[t - 1] + eps[t - 1] * s
+
+        Z = rng.normal(scale=float(latent_std), size=(total_T,))
+        x = x + Z[:, None] * alpha_arr[None, :]
+
+    else:
+        raise ValueError("mode must be one of: 'lagged_drive_pairs', 'instantaneous_common_cause'")
+
+    out = x[transients:] if transients > 0 else x
+    return _maybe_zscore(out, zscore=zscore)  # expected to exist in your repo
+
+
+
 
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
@@ -987,6 +1269,8 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "wave_1d": generate_wave_1d,
     "wave_2d": generate_wave_2d,
     "case_i": generate_case_i,
+    "case_ii": generate_case_ii,
+    "case_iii": generate_case_iii,  # alias
 }
 
 

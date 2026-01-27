@@ -1,0 +1,12 @@
+cov_EmpiricalCovariance
+dtw_constraint-itakura
+bary_dtw_mean
+anm
+di_gaussian
+te_kraskov_NN-4_DCE_k-max-10_tau-max-4
+cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5
+psi_wavelet_max_fs-1_fmin-0_fmax-0-5_max
+sgc_nonparametric_mean_fs-1_fmin-0_fmax-0-5
+psi_multitaper_mean_fs-1_fmin-0_fmax-0-5
+coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10
+pec

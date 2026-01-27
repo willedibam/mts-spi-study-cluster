@@ -4,15 +4,16 @@ Compute and cache SPI-SPI feature matrices for downstream analysis.
 - Loads datasets under a provided data path (e.g., data/full), enforcing consistent SPI ordering/flags.
 - Directed SPIs can be split into two pseudo-SPIs (i->j upper triangle, j->i lower triangle) via --split-directed.
 - Without splitting, directed SPIs are symmetrized and treated as a single SPI.
-- Features are Spearman correlations between pseudo-SPI edge vectors (upper triangle of the SPI-SPI corr matrix).
+- Features are pairwise similarities between pseudo-SPI edge vectors (upper triangle of the SPI-SPI matrix).
 - Supports optional SPI name subset via --spi-subset (txt, one per line).
+- Supports different metrics via --metric: spearman, pearson, mi (mutual information).
 """
 from __future__ import annotations
 
 import argparse
 import logging
 from pathlib import Path
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Literal, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -24,6 +25,8 @@ import warnings
 
 warnings.simplefilter("ignore", ConstantInputWarning)
 LOGGER = logging.getLogger(__name__)
+
+MetricType = Literal["spearman", "pearson", "mi"]
 
 
 def load_spi_subset(path: str | Path) -> tuple[list[str], str]:
@@ -137,12 +140,76 @@ def _edge_vectors(
     ]
 
 
+def _rankdata(arr: np.ndarray) -> np.ndarray:
+    """Vectorized ranking along axis 1 (rows)."""
+    n = arr.shape[1]
+    order = np.argsort(arr, axis=1)
+    ranks = np.empty_like(order, dtype=np.float64)
+    rows = np.arange(arr.shape[0])[:, None]
+    ranks[rows, order] = np.arange(1, n + 1)
+    return ranks
+
+
+def _pearson_corr_matrix(V: np.ndarray) -> np.ndarray:
+    """Compute Pearson correlation matrix for row vectors."""
+    V = V - V.mean(axis=1, keepdims=True)
+    norms = np.linalg.norm(V, axis=1, keepdims=True)
+    norms[norms < 1e-12] = 1.0
+    V = V / norms
+    return V @ V.T
+
+
+def _spearman_corr_matrix(V: np.ndarray) -> np.ndarray:
+    """Compute Spearman correlation matrix (Pearson on ranks)."""
+    R = _rankdata(V)
+    return _pearson_corr_matrix(R)
+
+
+def _mutual_information_matrix(V: np.ndarray, n_bins: int = 20) -> np.ndarray:
+    """
+    Compute pairwise mutual information matrix using histogram-based estimation.
+    Returns normalized MI (0 to 1 range).
+    """
+    n_vectors = V.shape[0]
+    mi_matrix = np.zeros((n_vectors, n_vectors), dtype=np.float64)
+    digitized = np.zeros_like(V, dtype=np.int32)
+    for i in range(n_vectors):
+        vec = V[i]
+        vec_min, vec_max = vec.min(), vec.max()
+        if vec_max - vec_min < 1e-12:
+            digitized[i] = 0
+        else:
+            bins = np.linspace(vec_min, vec_max, n_bins + 1)
+            digitized[i] = np.clip(np.digitize(vec, bins) - 1, 0, n_bins - 1)
+    for i in range(n_vectors):
+        mi_matrix[i, i] = 1.0  # Self MI normalized to 1
+        for j in range(i + 1, n_vectors):
+            joint_hist = np.zeros((n_bins, n_bins), dtype=np.float64)
+            np.add.at(joint_hist, (digitized[i], digitized[j]), 1)
+            joint_hist /= joint_hist.sum()
+            p_i = joint_hist.sum(axis=1)
+            p_j = joint_hist.sum(axis=0)
+            outer = np.outer(p_i, p_j)
+            mask = (joint_hist > 0) & (outer > 0)
+            mi = np.sum(joint_hist[mask] * np.log(joint_hist[mask] / outer[mask]))
+            h_i = -np.sum(p_i[p_i > 0] * np.log(p_i[p_i > 0]))
+            h_j = -np.sum(p_j[p_j > 0] * np.log(p_j[p_j > 0]))
+            min_h = min(h_i, h_j)
+            if min_h > 1e-12:
+                mi_normalized = mi / min_h
+            else:
+                mi_normalized = 0.0
+            mi_matrix[i, j] = mi_matrix[j, i] = mi_normalized
+    return mi_matrix
+
+
 def build_spi_spi_features(
     sample: Dict,
     spi_order: List[str],
     directed_flags: List[bool],
     *,
     split_directed: bool = False,
+    metric: MetricType = "spearman",
 ) -> tuple[np.ndarray, List[str]]:
     vectors: List[np.ndarray] = []
     names: List[str] = []
@@ -151,14 +218,21 @@ def build_spi_spi_features(
         for pseudo_name, vec in entries:
             names.append(pseudo_name)
             vectors.append(vec)
-    n = len(vectors)
-    corr = np.eye(n, dtype=np.float32)
-    for i in range(n):
-        for j in range(i + 1, n):
-            r = spearmanr(vectors[i], vectors[j]).correlation
-            corr[i, j] = corr[j, i] = 0.0 if not np.isfinite(r) else r
+            
+    V = np.vstack(vectors).astype(np.float64)
+    n = V.shape[0]
+    
+    if metric == "spearman":
+        corr = _spearman_corr_matrix(V)
+    elif metric == "pearson":
+        corr = _pearson_corr_matrix(V)
+    elif metric == "mi":
+        corr = _mutual_information_matrix(V)
+    else:
+        raise ValueError(f"Unknown metric: {metric}")
+    
+    corr = np.where(np.isfinite(corr), corr, 0.0).astype(np.float32)
     iu = np.triu_indices(n, k=1)
-    pairs = [(names[i], names[j]) for i, j in zip(iu[0], iu[1])]
     return corr[iu], names
 
 
@@ -168,6 +242,7 @@ def build_feature_matrix(
     directed_flags: List[bool],
     *,
     split_directed: bool = False,
+    metric: MetricType = "spearman",
 ) -> tuple[np.ndarray, np.ndarray, List[tuple[str, str]], List[str]]:
     X_list: List[np.ndarray] = []
     y_list: List[str] = []
@@ -184,6 +259,7 @@ def build_feature_matrix(
             spi_order,
             directed_flags,
             split_directed=split_directed,
+            metric=metric,
         )
         if names_ref is None:
             names_ref = names
@@ -214,12 +290,14 @@ def cache_path(
     subset_label: str | None,
     *,
     split_directed: bool = False,
+    metric: MetricType = "spearman",
 ) -> Path:
     suffix = f"_limit{limit}" if limit else ""
     subset_suffix = f"_{subset_label}" if subset_label else ""
-    split_suffix = "_split" if split_directed else "_nosplit"
+    split_suffix = "_split" if split_directed else ""
+    metric_suffix = f"_{metric}"
     safe = data_path.replace("\\", "-").replace("/", "-").strip("-")
-    return project_root() / "analysis" / "feature_cache" / f"features_{safe}{split_suffix}{subset_suffix}{suffix}.npz"
+    return project_root() / "analysis" / "feature_cache" / f"{safe}{split_suffix}{metric_suffix}{subset_suffix}{suffix}.npz"
 
 
 def load_cached_features(path: Path, recompute: bool) -> dict | None:
@@ -253,6 +331,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Comma-separated mts_class names to include (filters class folders under the data path).",
     )
+    parser.add_argument(
+        "--metric",
+        type=str,
+        choices=["spearman", "pearson", "mi"],
+        default="spearman",
+        help="Metric for SPI-SPI similarity: spearman (default), pearson, or mi (mutual information).",
+    )
     return parser.parse_args(argv)
 
 
@@ -267,6 +352,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         LOGGER.info("Using SPI subset: %s (%d SPIs)", subset_label, len(subset_names))
     else:
         LOGGER.info("Using all SPIs")
+    
+    LOGGER.info("Using metric: %s", args.metric)
 
     cache_file = (
         Path(args.output)
@@ -276,6 +363,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             args.dataset_limit,
             subset_label,
             split_directed=args.split_directed,
+            metric=args.metric,
         )
     )
     cached = load_cached_features(cache_file, recompute=args.recompute)
@@ -300,6 +388,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         spi_order,
         directed_flags,
         split_directed=args.split_directed,
+        metric=args.metric,
     )
     payload = {
         "X": X_raw.astype(np.float32),
@@ -316,6 +405,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         "dataset_limit": args.dataset_limit if args.dataset_limit is not None else -1,
         "spi_subset": subset_label or "",
         "split_directed": bool(args.split_directed),
+        "metric": args.metric,
     }
     save_cached_features(cache_file, payload)
     LOGGER.info("Saved features -> %s", cache_file)

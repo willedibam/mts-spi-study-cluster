@@ -16,7 +16,6 @@ dist/
 .ipynb_checkpoints/
 
 # results/cache/data
-analysis/
 cache/
 data/
 results/
@@ -33,6 +32,9 @@ jupyter/
 # logs
 logs/
 
+# figures
+figures/
+
 # PowerShell scripts
 *.ps1
 
@@ -44,6 +46,7 @@ data_backup.tar.gz
 # *.ipynb
 cml_kur.ipynb
 Random/
+random/
 *.tar.gz
 ./case_*
 test_case_*

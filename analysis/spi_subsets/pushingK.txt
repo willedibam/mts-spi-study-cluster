@@ -1,0 +1,12 @@
+spearmanr
+xcorr_max_sig-True
+pdist_euclidean
+pdist_canberra
+mi_kraskov_NN-4
+ce_gaussian
+igci
+cds
+phase_multitaper_mean_fs-1_fmin-0_fmax-0-5
+cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5
+lmfit_BayesianRidge
+coint_johansen_max_eig_stat_order-0_ardiff-10

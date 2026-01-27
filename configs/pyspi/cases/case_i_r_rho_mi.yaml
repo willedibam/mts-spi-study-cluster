@@ -1,0 +1,197 @@
+.statistics.basic:
+  # Covariance
+  Covariance:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+
+  # Spearman's correlation coefficient
+  SpearmanR:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: False
+
+  # Kendall's rank correlation coefficient
+  KendallTau:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: False
+
+  # Lagged correlation coefficient
+  LaggedCorrelation:
+    labels:
+      - undirected
+      - linear
+      - signed/unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - estimator: pearson
+        max_tau: 5
+        squared: False
+      - estimator: pearson
+        tau: 10
+        squared: False
+      - estimator: pearson
+        tau: 20
+        squared: False
+      - estimator: spearman
+        max_tau: 5
+        squared: False
+      - estimator: spearman
+        tau: 10
+        squared: False
+      - estimator: spearman
+        tau: 20
+        squared: False
+      - estimator: kendall
+        max_tau: 5
+        squared: False
+      - estimator: kendall
+        tau: 10
+        squared: False
+      - estimator: kendall
+        tau: 20
+        squared: False
+
+  # statistics based on cross-correlation (squared means we square the xcorr, not the output)
+  CrossCorrelation:
+    labels:
+      - undirected
+      - linear
+      - signed/unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - statistic: "max"
+
+      - statistic: "max"
+        squared: True
+
+      - statistic: "mean"
+
+      - statistic: "mean"
+        squared: True
+
+      - statistic: "mean"
+        sigonly: False
+
+      - statistic: "mean"
+        squared: True
+        sigonly: False
+
+.statistics.distance:
+  PairwiseDistance:
+    labels:
+      - unsigned
+      - unordered
+      - nonlinear
+      - undirected
+    dependencies:
+    configs:
+      - metric: "euclidean"
+      - metric: "cityblock"
+      - metric: "cosine"
+      - metric: "chebyshev"
+      - metric: "canberra"
+      - metric: "braycurtis"
+    
+.statistics.infotheory:
+  MutualInfo:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies: 
+      - java
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+      - estimator: kraskov
+        prop_k: 4
+        dyn_corr_excl: AUTO
+
+      - estimator: kernel
+        kernel_width: 0.25
+
+  TimeLaggedMutualInfo:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies: 
+      - java
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+      - estimator: kraskov
+        prop_k: 4
+        dyn_corr_excl: AUTO
+
+      - estimator: kernel
+        kernel_width: 0.25
+    
+  TransferEntropy:
+    # Kraskov estimator with fixed embedding of 1 for source/target and DCE
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies: 
+      - java
+    configs:
+      - estimator: kraskov
+        prop_k: 4
+        k_history: 1
+        l_history: 1
+        dyn_corr_excl: AUTO
+
+      - estimator: gaussian
+        k_history: 1
+        l_history: 1
+
+  DirectedInfo: # No theiler window yet
+      labels:
+        - directed
+        - nonlinear
+        - unsigned
+        - bivariate
+        - time-dependent
+      dependencies: 
+        - java
+      configs:
+        - estimator: gaussian
+        - estimator: kozachenko
+        - estimator: kernel
