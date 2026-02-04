@@ -825,6 +825,18 @@ def _softplus(x: np.ndarray) -> np.ndarray:
     # stable log(1+exp(x))
     return np.logaddexp(0.0, x)
 
+def _sigmoid(x: np.ndarray) -> np.ndarray:
+    """
+    Numerically-stable logistic sigmoid.
+    """
+    x = np.asarray(x)
+    out = np.empty_like(x, dtype=float)
+    pos = x >= 0
+    out[pos] = 1.0 / (1.0 + np.exp(-x[pos]))
+    ex = np.exp(x[~pos])
+    out[~pos] = ex / (1.0 + ex)
+    return out
+
 
 def _E_softplus_gaussian(sigma2: float | np.ndarray, *, n_gh: int = 40) -> np.ndarray:
     """
@@ -845,19 +857,33 @@ def _resolve_g(
     g: str | Callable[[np.ndarray], np.ndarray],
     *,
     sigma2: float | np.ndarray | None,
+    params: dict[str, float] | None = None,
 ) -> Callable[[np.ndarray], np.ndarray]:
     """Resolve coupling/mixing function g from a string key or callable."""
     if callable(g):
         return g
 
     name = str(g).lower().strip()
+    p: dict[str, float] = {} if params is None else dict(params)
 
     if name in {"id", "identity", "linear"}:
         return lambda z: z
+    if name in {"affine", "linear_affine"}:
+        if "alpha" not in p:
+            raise ValueError("g='affine' requires g_params with key 'alpha' (slope).")
+        alpha = float(p["alpha"])
+        beta = float(p.get("beta", 0.0))  # intercept (note: zscore=True will remove offsets)
+        return lambda z, _a=alpha, _b=beta: _a * z + _b
     if name == "tanh":
         return np.tanh
     if name == "sin":
         return np.sin
+    if name in {"sigmoid", "logistic"}:
+        if "beta" not in p:
+            raise ValueError("g='sigmoid' requires g_params with key 'beta' (slope).")
+        beta = float(p["beta"])
+        bias = float(p.get("bias", 0.0))  # optional shift: sigmoid(beta*z + bias)
+        return lambda z, _k=beta, _b=bias: _sigmoid(_k * z + _b)
     if name in {"abs", "absolute"}:
         return np.abs
     if name in {"square", "pow2", "quadratic"}:
@@ -894,6 +920,8 @@ def _resolve_g(
     raise ValueError(
         f"Unknown g='{g}'. Supported: identity, tanh, sin, abs, square, square_centered, "
         f"exp, exp_centered, softplus, softplus_centered (or pass a callable)."
+        f"Unknown g='{g}'. Supported: identity, affine, sigmoid, tanh, sin, abs, square, "
+        f"square_centered, exp, exp_centered, softplus, softplus_centered (or pass a callable)."
     )
 
 
@@ -905,6 +933,7 @@ def generate_case_i(
     b: float | np.ndarray = 0.25,
     c: float | np.ndarray = 0.0,
     g: str | Callable[[np.ndarray], np.ndarray] = "identity",
+    g_params: dict[str, float] | None = None,
     interaction: str = "prev",
     topology: str = "ring",
     boundary_value: float = 0.0,
@@ -974,7 +1003,7 @@ def generate_case_i(
             b_arr *= scale
     # -------------------------------------------------------
 
-    g_fn = _resolve_g(g, sigma2=sigma2)
+    g_fn = _resolve_g(g, sigma2=sigma2, params=g_params)
 
     total_T = T + transients
     paths = np.zeros((total_T, M), dtype=float)

@@ -687,12 +687,23 @@ def _clean_legend(ax, hue: str, size_col: str) -> None:
 def plot_spi_space_individual(
     dataset_path: str,
     spis: list[str],
+    *,
+    split_directed: bool = False,
 ) -> None:
+    """
+    Scatter + marginal KDE of two SPI flattened vectors from a single dataset.
+
+    Args:
+        dataset_path: Path to dataset directory (supports glob patterns).
+        spis: Exactly two SPI names.
+        split_directed: If False (default), symmetrize matrices and plot once.
+                        If True, respect directionality and plot i→j / j→i separately.
+    """
     if len(spis) != 2:
         raise ValueError("Expects exactly two SPI names.")
-    
+
     spi_x, spi_y = spis
-    
+
     if any(ch in dataset_path for ch in "*?[]"):
         matches = sorted(Path(".").glob(dataset_path))
         if not matches:
@@ -724,32 +735,39 @@ def plot_spi_space_individual(
     missing_meta = [name for name in (spi_x, spi_y) if name not in directed_map]
     if missing_meta:
         raise KeyError(f"Missing directed metadata for {missing_meta} in {meta_path}")
-        
+
     with np.load(archive) as npz:
         if spi_x not in npz or spi_y not in npz:
             raise KeyError(f"Missing SPIs in archive")
-        arr_x, arr_y = npz[spi_x], npz[spi_y]
+        arr_x = np.asarray(npz[spi_x], float)
+        arr_y = np.asarray(npz[spi_y], float)
 
     if arr_x.shape != arr_y.shape:
         raise ValueError("Shape mismatch")
-    
+
     apply_plot_style()
 
-    directed_x = directed_map[spi_x]
-    directed_y = directed_map[spi_y]
+    directed_x = directed_map[spi_x] if split_directed else False
+    directed_y = directed_map[spi_y] if split_directed else False
+
+    # Symmetrize if not splitting
+    if not split_directed:
+        arr_x = 0.5 * (arr_x + arr_x.T)
+        arr_y = 0.5 * (arr_y + arr_y.T)
+
     upper_mask = np.triu(np.ones(arr_x.shape, dtype=bool), k=1)
     lower_mask = np.tril(np.ones(arr_x.shape, dtype=bool), k=-1)
 
-    def _extract(mask_is_lower: bool) -> tuple[np.ndarray, np.ndarray]:
-        mask_x = lower_mask if (mask_is_lower and directed_x) else upper_mask
-        mask_y = lower_mask if (mask_is_lower and directed_y) else upper_mask
+    def _extract(use_lower: bool) -> tuple[np.ndarray, np.ndarray]:
+        mask_x = lower_mask if (use_lower and directed_x) else upper_mask
+        mask_y = lower_mask if (use_lower and directed_y) else upper_mask
         x_vals = arr_x[mask_x]
         y_vals = arr_y[mask_y]
         valid_mask = np.isfinite(x_vals) & np.isfinite(y_vals)
         return x_vals[valid_mask], y_vals[valid_mask]
 
-    directions = [(r"$i \to j$", False)]
-    if directed_x or directed_y:
+    directions: list[tuple[str, bool]] = [(r"$i \to j$", False)]
+    if split_directed and (directed_x or directed_y):
         directions.append((r"$j \to i$", True))
 
     plotted = False
@@ -757,7 +775,7 @@ def plot_spi_space_individual(
         x_vals, y_vals = _extract(use_lower)
         if x_vals.size == 0:
             continue
-            
+
         rho, _ = spearmanr(x_vals, y_vals)
         g = sns.jointplot(
             x=x_vals,
@@ -767,152 +785,162 @@ def plot_spi_space_individual(
             marginal_kws=dict(kde=True, fill=True),
             s=15,
             alpha=0.6,
-            color="#1f77b4"
+            color="#1f77b4",
         )
-        # sns.kdeplot(x=x_vals, y=y_vals, ax=g.ax_joint, levels=5, color="#1f77b4", alpha=0.5, linewidths=1 # the contours
-
         sns.regplot(x=x_vals, y=y_vals, ax=g.ax_joint, scatter=False, color="#d62728", ci=None)
         x_label = f"{spi_x} ({direction_label})" if directed_x else spi_x
         y_label = f"{spi_y} ({direction_label})" if directed_y else spi_y
         g.set_axis_labels(x_label, y_label)
         title_slug = "/".join(dataset_dir.parts[-2:])
         g.fig.suptitle(f"{title_slug}\n$\\rho = {rho:.2f}$", y=1.02)
-    
+
         plotted = True
 
     if plotted:
         plt.show()
 
-def plot_mts_corr_density(
-    mts_class_path_a: str,
-    mts_class_path_b: str,
-    spi_pair: list[str],
+def plot_spi_space_recursive(
+    dataset_path: str,
+    spis: list[str],
     *,
-    bw_adjust: float = 1.0,
-    show_hist: bool = False,
-    kde: bool = True,
-    bins: int = 40,
-) -> None:
+    split_directed: bool = False,
+    formats: list[str] | None = None,
+    dpi: int = 300,
+    show: bool = False,
+) -> list[Path]:
     """
-    Plot density of Spearman correlations between two SPI matrices across two mts_classes.
+    Recursively plot SPI-SPI scatter plots for all datasets under a directory.
 
     Args:
-        mts_class_path_a: Class directory (e.g., "data/full/CauchyNoise").
-        mts_class_path_b: Class directory (e.g., "data/full/VAR_1").
-        spi_pair: Two SPI names to compare (e.g., ["cov_EmpiricalCovariance", "mi_kraskov_NN-4"]).
-                  NOTE: This function does not consider directionality; SPIs are treated as undirected.
-        bw_adjust: Optional KDE bandwidth adjustment passed to seaborn.
-        show_hist: If True, overlay per-class histograms (density-normalized).
-        bins: Number of histogram bins when show_hist is True.
+        dataset_path: Parent directory containing M<M>_T<T>_I<I>_<variant> subdirectories,
+                      each with an spi_mpis.npz file.
+        spis: Exactly two SPI names to compare.
+        split_directed: If False (default), symmetrize matrices and plot once.
+                        If True, respect directionality and plot i→j / j→i separately.
+        formats: List of output formats (e.g., ["png", "svg"]). Defaults to ["png"].
+        dpi: Resolution for saved figures. Defaults to 300.
+        show: If True, display each plot interactively. Defaults to False.
+
+    Returns:
+        List of paths to saved plot files.
     """
-    if len(spi_pair) != 2:
-        raise ValueError("spi_pair must contain exactly two SPI names.")
+    if len(spis) != 2:
+        raise ValueError("Expects exactly two SPI names.")
 
-    def _safe_zscore(vec: np.ndarray) -> np.ndarray:
-        std = vec.std()
-        if std < 1e-12 or not np.isfinite(std):
-            return np.zeros_like(vec)
-        return (vec - vec.mean()) / std
+    spi_x, spi_y = spis
+    formats = formats or ["png"]
+    root = Path(dataset_path)
+    if not root.exists():
+        raise FileNotFoundError(f"Dataset path not found: {root}")
 
-    def _vector_for(mat: np.ndarray) -> np.ndarray:
-        if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
-            raise ValueError(f"SPI matrix must be square, got shape={mat.shape}")
-        # No directionality: symmetrize and take strict upper triangle
-        mat = 0.5 * (mat + mat.T)
-        mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
-        return mat[mask]
+    # Create output directory
+    output_dir = root / f"plot_{spi_x}_{spi_y}"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Find all subdirectories with spi_mpis.npz
+    candidates = sorted(
+        p.parent for p in root.rglob("spi_mpis.npz")
+        if p.parent != root  # exclude root itself if it has the file
+    )
+    if not candidates:
+        raise FileNotFoundError(f"No spi_mpis.npz files found under {root}")
 
     apply_plot_style()
+    saved_paths: list[Path] = []
 
-    mts_class_paths = [mts_class_path_a, mts_class_path_b]
-    spi_x, spi_y = spi_pair[0], spi_pair[1]
+    for dataset_dir in candidates:
+        archive = dataset_dir / "spi_mpis.npz"
+        meta_path = dataset_dir / "meta.json"
+        if not meta_path.exists():
+            continue
 
-    fig, ax = plt.subplots(figsize=(6, 6), dpi=dpi)
-    palette = sns.color_palette("tab10", len(mts_class_paths))
-    plotted = False
+        meta = load_json(meta_path)
+        spi_meta = meta.get("pyspi", {}).get("spis", [])
+        directed_map = {
+            entry.get("name"): bool(entry.get("directed", False))
+            for entry in spi_meta
+            if isinstance(entry, dict) and entry.get("name")
+        }
+        if spi_x not in directed_map or spi_y not in directed_map:
+            continue
 
-    for idx, class_path in enumerate(mts_class_paths):
-        color = palette[idx % len(palette)]
-        class_dir = Path(class_path)
-        if not class_dir.exists():
-            raise FileNotFoundError(f"MTS class directory not found: {class_dir}")
-        values: list[float] = []
-        label = class_dir.name
+        with np.load(archive) as npz:
+            if spi_x not in npz or spi_y not in npz:
+                continue
+            arr_x = np.asarray(npz[spi_x], float)
+            arr_y = np.asarray(npz[spi_y], float)
 
-        for dataset_dir in sorted(p for p in class_dir.iterdir() if p.is_dir()):
-            meta_path = dataset_dir / "meta.json"
-            npz_path = dataset_dir / "spi_mpis.npz"
-            if not meta_path.exists() or not npz_path.exists():
+        if arr_x.shape != arr_y.shape:
+            continue
+
+        directed_x = directed_map[spi_x] if split_directed else False
+        directed_y = directed_map[spi_y] if split_directed else False
+
+        # Symmetrize if not splitting
+        if not split_directed:
+            arr_x = 0.5 * (arr_x + arr_x.T)
+            arr_y = 0.5 * (arr_y + arr_y.T)
+
+        upper_mask = np.triu(np.ones(arr_x.shape, dtype=bool), k=1)
+        lower_mask = np.tril(np.ones(arr_x.shape, dtype=bool), k=-1)
+
+        def _extract(use_lower: bool) -> tuple[np.ndarray, np.ndarray]:
+            mask_x = lower_mask if (use_lower and directed_x) else upper_mask
+            mask_y = lower_mask if (use_lower and directed_y) else upper_mask
+            x_vals = arr_x[mask_x]
+            y_vals = arr_y[mask_y]
+            valid_mask = np.isfinite(x_vals) & np.isfinite(y_vals)
+            return x_vals[valid_mask], y_vals[valid_mask]
+
+        directions: list[tuple[str, bool, str]] = [(r"$i \to j$", False, "")]
+        if split_directed and (directed_x or directed_y):
+            directions.append((r"$j \to i$", True, "__ji"))
+            directions[0] = (r"$i \to j$", False, "__ij")
+
+        base_name = dataset_dir.name
+
+        for direction_label, use_lower, dir_suffix in directions:
+            x_vals, y_vals = _extract(use_lower)
+            if x_vals.size == 0:
                 continue
 
-            meta = load_json(meta_path)
-            spi_meta = {
-                entry.get("name"): entry
-                for entry in meta.get("pyspi", {}).get("spis", [])
-                if isinstance(entry, dict) and entry.get("name")
-            }
-            if spi_x not in spi_meta or spi_y not in spi_meta:
-                continue
+            rho, _ = spearmanr(x_vals, y_vals)
+            g = sns.jointplot(
+                x=x_vals,
+                y=y_vals,
+                kind="scatter",
+                height=6,
+                marginal_kws=dict(kde=True, fill=True),
+                s=15,
+                alpha=0.6,
+                color="#1f77b4",
+            )
+            sns.regplot(x=x_vals, y=y_vals, ax=g.ax_joint, scatter=False, color="#d62728", ci=None)
+            x_label = f"{spi_x} ({direction_label})" if directed_x else spi_x
+            y_label = f"{spi_y} ({direction_label})" if directed_y else spi_y
+            g.set_axis_labels(x_label, y_label)
+            title_slug = "/".join(dataset_dir.parts[-2:])
+            g.fig.suptitle(f"{title_slug}\n$\\rho = {rho:.2f}$", y=1.02)
 
-            with np.load(npz_path) as npz:
-                if spi_x not in npz or spi_y not in npz:
-                    continue
-                vec_x = _vector_for(np.asarray(npz[spi_x], float))
-                vec_y = _vector_for(np.asarray(npz[spi_y], float))
+            for fmt in formats:
+                out_path = output_dir / f"{base_name}{dir_suffix}.{fmt}"
+                g.fig.savefig(out_path, dpi=dpi, bbox_inches="tight")
+                saved_paths.append(out_path)
 
-            if vec_x.shape != vec_y.shape:
-                continue
-            valid = np.isfinite(vec_x) & np.isfinite(vec_y)
-            if not valid.any():
-                continue
-            zx = _safe_zscore(vec_x[valid])
-            zy = _safe_zscore(vec_y[valid])
-            rho = spearmanr(zx, zy).correlation
-            if np.isfinite(rho):
-                values.append(float(rho))
+            if show:
+                plt.show()
+            else:
+                plt.close(g.fig)
 
-        if values:
-            plotted = True
-            if show_hist:
-                sns.histplot(
-                    values,
-                    bins=bins,
-                    binrange=(-1, 1),
-                    stat="density",
-                    color=color,
-                    element="step",
-                    fill=True,
-                    alpha=0.25,
-                    ax=ax,
-                    label=f"{label} (n={len(values)})",
-                )
-            if kde:
-                sns.kdeplot(
-                    values,
-                    label=f"{label} (n={len(values)})",
-                    ax=ax,
-                    bw_adjust=bw_adjust,
-                    clip=(-1, 1),
-                    fill=False,
-                    color=color,
-                    alpha=0.6,
-                )
-
-    ax.set_xlim(-1, 1)
-    ax.set_xlabel(f"{spi_x} vs {spi_y}")
-    ax.set_ylabel("Density")
-    if plotted and ax.get_legend_handles_labels()[0]:
-        ax.legend(title="mts_class")
-    plt.tight_layout()
-    if plotted:
-        plt.show()
+    print(f"[INFO] Saved {len(saved_paths)} plots to {output_dir}")
+    return saved_paths
 
 
-
-def plot_mts_corr_density_dir(
+def plot_mts_corr_density(
     mts_class_paths: list[str],
     spi_pair: list[str],
     *,
+    split_directed: bool = False,
     bw_adjust: float = 1.0,
     show_hist: bool = False,
     kde: bool = True,
@@ -924,10 +952,13 @@ def plot_mts_corr_density_dir(
     Args:
         mts_class_paths: List of class directories (e.g., ["data/full/CauchyNoise", "data/full/VAR_1"]).
         spi_pair: Two SPI names to compare (e.g., ["cov_EmpiricalCovariance", "mi_kraskov_NN-4"]).
-                  For directed SPIs you can suffix with __ij or __ji; if a directed SPI is given
-                  without a suffix, both directions are plotted.
+                  When split_directed=True, you can suffix with __ij or __ji to select a direction;
+                  if omitted, both directions are plotted for directed SPIs.
+        split_directed: If False (default), symmetrize matrices and produce one plot.
+                        If True, respect directionality metadata and plot i→j / j→i separately.
         bw_adjust: Optional KDE bandwidth adjustment passed to seaborn.
         show_hist: If True, overlay per-class histograms (density-normalized).
+        kde: If True (default), overlay KDE curves.
         bins: Number of histogram bins when show_hist is True.
     """
     if len(spi_pair) != 2:
@@ -946,7 +977,9 @@ def plot_mts_corr_density_dir(
             return np.zeros_like(vec)
         return (vec - vec.mean()) / std
 
-    def _vector_for(mat: np.ndarray, directed: bool, direction: str | None) -> np.ndarray:
+    def _vector_for(
+        mat: np.ndarray, directed: bool, direction: str | None
+    ) -> np.ndarray:
         if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
             raise ValueError(f"SPI matrix must be square, got shape={mat.shape}")
         if not directed:
@@ -991,14 +1024,18 @@ def plot_mts_corr_density_dir(
                 }
                 if spi_x_base not in spi_meta or spi_y_base not in spi_meta:
                     continue
-                directed_x = bool(spi_meta[spi_x_base].get("directed", False))
-                directed_y = bool(spi_meta[spi_y_base].get("directed", False))
+                directed_x = bool(spi_meta[spi_x_base].get("directed", False)) if split_directed else False
+                directed_y = bool(spi_meta[spi_y_base].get("directed", False)) if split_directed else False
 
                 with np.load(npz_path) as npz:
                     if spi_x_base not in npz or spi_y_base not in npz:
                         continue
-                    vec_x = _vector_for(np.asarray(npz[spi_x_base], float), directed_x, direction_choice_x)
-                    vec_y = _vector_for(np.asarray(npz[spi_y_base], float), directed_y, direction_choice_y)
+                    vec_x = _vector_for(
+                        np.asarray(npz[spi_x_base], float), directed_x, direction_choice_x
+                    )
+                    vec_y = _vector_for(
+                        np.asarray(npz[spi_y_base], float), directed_y, direction_choice_y
+                    )
 
                 if vec_x.shape != vec_y.shape:
                     continue
@@ -1049,18 +1086,22 @@ def plot_mts_corr_density_dir(
         if plotted:
             plt.show()
 
-    # If a directed SPI is passed without suffix, plot both ij/ji; otherwise honor the suffix.
-    directions_x = [spi_x_dir_req] if spi_x_dir_req else [None, "ij", "ji"]
-    directions_y = [spi_y_dir_req] if spi_y_dir_req else [None, "ij", "ji"]
+    if split_directed:
+        # If a directed SPI is passed without suffix, plot both ij/ji; otherwise honor the suffix.
+        directions_x = [spi_x_dir_req] if spi_x_dir_req else [None, "ij", "ji"]
+        directions_y = [spi_y_dir_req] if spi_y_dir_req else [None, "ij", "ji"]
 
-    seen: set[tuple[str | None, str | None]] = set()
-    for dx in directions_x:
-        for dy in directions_y:
-            key = (dx, dy)
-            if key in seen:
-                continue
-            seen.add(key)
-            _collect(dx, dy)
+        seen: set[tuple[str | None, str | None]] = set()
+        for dx in directions_x:
+            for dy in directions_y:
+                key = (dx, dy)
+                if key in seen:
+                    continue
+                seen.add(key)
+                _collect(dx, dy)
+    else:
+        _collect(None, None)
+
 
 def plot_pca(
     x: np.ndarray,

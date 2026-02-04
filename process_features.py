@@ -6,7 +6,7 @@ Compute and cache SPI-SPI feature matrices for downstream analysis.
 - Without splitting, directed SPIs are symmetrized and treated as a single SPI.
 - Features are pairwise similarities between pseudo-SPI edge vectors (upper triangle of the SPI-SPI matrix).
 - Supports optional SPI name subset via --spi-subset (txt, one per line).
-- Supports different metrics via --metric: spearman, pearson, mi (mutual information).
+- Supports different metrics via --metric (comma-separated): spearman, pearson, mi (mutual information).
 """
 from __future__ import annotations
 
@@ -317,7 +317,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compute and cache SPI-SPI feature matrices.")
     parser.add_argument("--data-path", default="data/full", help="Path to data root (e.g., data/full, data/full-variants).")
     parser.add_argument("--dataset-limit", type=int, default=None, help="Optional dataset limit for quick runs.")
-    parser.add_argument("--output", type=str, default=None, help="Output npz path (default: analysis/feature_cache/features_{data-path}[...] .npz)")
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=None,
+        help="Output npz path (if multiple metrics, suffixes are added per metric).",
+    )
     parser.add_argument("--spi-subset", type=str, default=None, help="Path to txt file listing SPI names (one per line).")
     parser.add_argument("--recompute", action="store_true", help="Recompute even if cache exists.")
     parser.add_argument(
@@ -334,11 +339,38 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--metric",
         type=str,
-        choices=["spearman", "pearson", "mi"],
         default="spearman",
-        help="Metric for SPI-SPI similarity: spearman (default), pearson, or mi (mutual information).",
+        help="Comma-separated metrics to compute: spearman (default), pearson, mi.",
     )
     return parser.parse_args(argv)
+
+
+def _parse_metrics(raw: str | None) -> List[MetricType]:
+    if not raw:
+        return ["spearman"]
+    metrics = [m.strip().lower() for m in raw.split(",") if m.strip()]
+    if not metrics:
+        return ["spearman"]
+    allowed = {"spearman", "pearson", "mi"}
+    unknown = [m for m in metrics if m not in allowed]
+    if unknown:
+        raise ValueError(f"Unknown metric(s): {', '.join(sorted(set(unknown)))}")
+    seen = set()
+    ordered: List[MetricType] = []
+    for m in metrics:
+        if m not in seen:
+            ordered.append(m)  # type: ignore[arg-type]
+            seen.add(m)
+    return ordered
+
+
+def _output_path_for_metric(base: str, metric: MetricType, multi: bool) -> Path:
+    out = Path(base)
+    if not multi:
+        return out
+    suffix = out.suffix
+    stem = out.stem if suffix else out.name
+    return out.with_name(f"{stem}_{metric}{suffix}")
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -353,23 +385,30 @@ def main(argv: Sequence[str] | None = None) -> None:
     else:
         LOGGER.info("Using all SPIs")
     
-    LOGGER.info("Using metric: %s", args.metric)
+    metrics = _parse_metrics(args.metric)
+    multi_metric = len(metrics) > 1
+    LOGGER.info("Using metric(s): %s", ", ".join(metrics))
 
-    cache_file = (
-        Path(args.output)
-        if args.output
-        else cache_path(
-            args.data_path,
-            args.dataset_limit,
-            subset_label,
-            split_directed=args.split_directed,
-            metric=args.metric,
+    targets: List[tuple[MetricType, Path]] = []
+    for metric in metrics:
+        cache_file = (
+            _output_path_for_metric(args.output, metric, multi_metric)
+            if args.output
+            else cache_path(
+                args.data_path,
+                args.dataset_limit,
+                subset_label,
+                split_directed=args.split_directed,
+                metric=metric,
+            )
         )
-    )
-    cached = load_cached_features(cache_file, recompute=args.recompute)
+        cached = load_cached_features(cache_file, recompute=args.recompute)
+        if cached:
+            LOGGER.info("Cache exists, skipping computation: %s", cache_file)
+        else:
+            targets.append((metric, cache_file))
 
-    if cached:
-        LOGGER.info("Cache exists, skipping computation: %s", cache_file)
+    if not targets:
         return
 
     mts_classes = (
@@ -383,32 +422,34 @@ def main(argv: Sequence[str] | None = None) -> None:
         subset_names=subset_names,
         mts_classes=mts_classes,
     )
-    X_raw, y, pairs, dataset_paths, variants, Ms, Ts, instances = build_feature_matrix(
-        samples,
-        spi_order,
-        directed_flags,
-        split_directed=args.split_directed,
-        metric=args.metric,
-    )
-    payload = {
-        "X": X_raw.astype(np.float32),
-        "y": y,  # mts_class labels
-        "pairs": np.array(pairs, dtype=object),
-        "spi_order": np.array(spi_order, dtype=object),
-        "directed_flags": np.array(directed_flags, dtype=bool),
-        "dataset_paths": np.array(dataset_paths, dtype=object),
-        "variant": np.array(variants, dtype=object),
-        "M": np.array(Ms, dtype=object),
-        "T": np.array(Ts, dtype=object),
-        "instance": np.array(instances, dtype=object),
-        "mode": args.data_path,
-        "dataset_limit": args.dataset_limit if args.dataset_limit is not None else -1,
-        "spi_subset": subset_label or "",
-        "split_directed": bool(args.split_directed),
-        "metric": args.metric,
-    }
-    save_cached_features(cache_file, payload)
-    LOGGER.info("Saved features -> %s", cache_file)
+    for metric, cache_file in targets:
+        LOGGER.info("Computing features (metric=%s)", metric)
+        X_raw, y, pairs, dataset_paths, variants, Ms, Ts, instances = build_feature_matrix(
+            samples,
+            spi_order,
+            directed_flags,
+            split_directed=args.split_directed,
+            metric=metric,
+        )
+        payload = {
+            "X": X_raw.astype(np.float32),
+            "y": y,  # mts_class labels
+            "pairs": np.array(pairs, dtype=object),
+            "spi_order": np.array(spi_order, dtype=object),
+            "directed_flags": np.array(directed_flags, dtype=bool),
+            "dataset_paths": np.array(dataset_paths, dtype=object),
+            "variant": np.array(variants, dtype=object),
+            "M": np.array(Ms, dtype=object),
+            "T": np.array(Ts, dtype=object),
+            "instance": np.array(instances, dtype=object),
+            "mode": args.data_path,
+            "dataset_limit": args.dataset_limit if args.dataset_limit is not None else -1,
+            "spi_subset": subset_label or "",
+            "split_directed": bool(args.split_directed),
+            "metric": metric,
+        }
+        save_cached_features(cache_file, payload)
+        LOGGER.info("Saved features -> %s", cache_file)
 
 
 if __name__ == "__main__":

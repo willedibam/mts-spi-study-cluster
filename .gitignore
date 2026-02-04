@@ -50,3 +50,4 @@ random/
 *.tar.gz
 ./case_*
 test_case_*
+.python-version
