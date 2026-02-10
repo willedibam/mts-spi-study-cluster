@@ -46,7 +46,7 @@
     dependencies:
     configs:
       - estimator: pearson
-        max_tau: 5
+        max_tau: 8
         squared: False
       - estimator: pearson
         tau: 10
@@ -55,7 +55,7 @@
         tau: 20
         squared: False
       - estimator: spearman
-        max_tau: 5
+        max_tau: 8
         squared: False
       - estimator: spearman
         tau: 10
@@ -64,7 +64,7 @@
         tau: 20
         squared: False
       - estimator: kendall
-        max_tau: 5
+        max_tau: 8
         squared: False
       - estimator: kendall
         tau: 10
@@ -160,38 +160,4 @@
 
       - estimator: kernel
         kernel_width: 0.25
-    
-  TransferEntropy:
-    # Kraskov estimator with fixed embedding of 1 for source/target and DCE
-    labels:
-      - directed
-      - nonlinear
-      - unsigned
-      - bivariate
-      - time-dependent
-    dependencies: 
-      - java
-    configs:
-      - estimator: kraskov
-        prop_k: 4
-        k_history: 1
-        l_history: 1
-        dyn_corr_excl: AUTO
-
-      - estimator: gaussian
-        k_history: 1
-        l_history: 1
-
-  DirectedInfo: # No theiler window yet
-      labels:
-        - directed
-        - nonlinear
-        - unsigned
-        - bivariate
-        - time-dependent
-      dependencies: 
-        - java
-      configs:
-        - estimator: gaussian
-        - estimator: kozachenko
-        - estimator: kernel
+  

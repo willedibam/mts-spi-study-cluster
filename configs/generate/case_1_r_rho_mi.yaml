@@ -1,0 +1,237 @@
+base_output_dir: data/master_signal/
+pyspi_config: configs/pyspi/case_i_rrho_mi.yaml
+
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 16
+
+defaults:
+  M_values: [8, 16]
+  T_values: [100, 200, 400, 800]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7]
+
+# Shared parameters — change these to apply to all classes
+shared_params: &shared
+  a: 0.8
+  noise_std: 1.0
+  alpha: 0.1
+
+mts_classes:
+  - name: "affine_beta0p001"
+    labels: ["affine"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "affine"
+      beta: 0.001
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "affine_beta0p5"
+    labels: ["affine"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "affine"
+      beta: 0.5
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "affine_beta1p0"
+    labels: ["affine"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "affine"
+      beta: 1.0
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "affine_beta2p0"
+    labels: ["affine"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "affine"
+      beta: 2.0
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "sigmoid_beta0p001"
+    labels: ["sigmoid"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "sigmoid"
+      beta: 0.001
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "sigmoid_beta0p5"
+    labels: ["sigmoid"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "sigmoid"
+      beta: 0.5
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "sigmoid_beta1p0"
+    labels: ["sigmoid"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "sigmoid"
+      beta: 1.0
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "sigmoid_beta2p0"
+    labels: ["sigmoid"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "sigmoid"
+      beta: 2.0
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "bell_beta0p001"
+    labels: ["bell"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "bell"
+      beta: 0.001
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "bell_beta0p5"
+    labels: ["bell"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "bell"
+      beta: 0.5
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "bell_beta1p0"
+    labels: ["bell"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "bell"
+      beta: 1.0
+      transients: 0
+      zscore: true
+    variants:
+
+  - name: "bell_beta2p0"
+    labels: ["bell"]
+    generator: "mts_master"
+    include_base_variant: true
+    base_params:
+      <<: *shared
+      g: "bell"
+      beta: 2.0
+      transients: 0
+      zscore: true
+    variants:
+
+# mts_classes:
+#   - name: "affine"
+#     labels: ["affine"]
+#     generator: "mts_master"
+#     include_base_variant: false
+#     base_params:
+#       <<: *shared
+#       g: "affine"
+#       beta: 0.001
+#       transients: 0
+#       zscore: true
+#     variants:
+#       - name: "beta0p001"
+#         params:
+#           beta: 0.001
+#       - name: "beta0p5"
+#         params:
+#           beta: 0.5
+#       - name: "beta1p0"
+#         params:
+#           beta: 1.0
+#       - name: "beta2p0"
+#         params:
+#           beta: 2.0
+
+#   - name: "sigmoid"
+#     labels: ["sigmoid"]
+#     generator: "mts_master"
+#     include_base_variant: false
+#     base_params:
+#       <<: *shared
+#       g: "sigmoid"
+#       beta: 0.001
+#       transients: 0
+#       zscore: true
+#     variants:
+#       - name: "beta0p001"
+#         params:
+#           beta: 0.001
+#       - name: "beta0p5"
+#         params:
+#           beta: 0.5
+#       - name: "beta1p0"
+#         params:
+#           beta: 1.0
+#       - name: "beta2p0"
+#         params:
+#           beta: 2.0
+
+#   - name: "bell"
+#     labels: ["bell"]
+#     generator: "mts_master"
+#     include_base_variant: false
+#     base_params:
+#       <<: *shared
+#       g: "bell"
+#       beta: 0.001
+#       transients: 0
+#       zscore: true
+#     variants:
+#       - name: "beta0p001"
+#         params:
+#           beta: 0.001
+#       - name: "beta0p5"
+#         params:
+#           beta: 0.5
+#       - name: "beta1p0"
+#         params:
+#           beta: 1.0
+#       - name: "beta2p0"
+#         params:
+#           beta: 2.0

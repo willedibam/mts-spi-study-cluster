@@ -1,0 +1,256 @@
+base_output_dir: data/case_i_rrho_mi/
+pyspi_config: configs/pyspi/case_i_rrho_mi.yaml
+
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 16
+
+defaults:
+  M_values: [4, 8, 16]
+  T_values: [200, 400, 800, 1600]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7]
+
+mts_classes:
+  # System A: affine linear g, no self-memory component
+  - name: "set1_a0_b0_c1p0_g-affine_alpha0p8_beta0"
+    labels: ["linear", "gaussian", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.0
+      b: 0.0
+      c: 1.0
+      g: "affine"
+      g_params:
+        alpha: 0.8
+        beta: 0.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 200
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  - name: "set1_a0_b0_c1p0_g-sigmoid_beta8p0"
+    labels: ["linear", "gaussian", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.0
+      b: 0.0
+      c: 1.0
+      g: "sigmoid"
+      g_params:
+        beta: 8.0
+        bias: -4.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 200
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  #   # -----------------------------
+  # # Set 2 (recommended): self-memory for robustness
+  # # -----------------------------
+  - name: "set2a_a0p4_b0_c0p6_g-affine_alpha0p8_beta0"
+    labels: ["set2", "linear", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.4
+      b: 0.0
+      c: 0.6
+      g: "affine"
+      g_params:
+        alpha: 0.8
+        beta: 0.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  - name: "set2a_a0p6_b0_c1p0_g-sigmoid_beta4p0"
+    labels: ["set2", "nonlinear", "monotone", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 1.0
+      g: "sigmoid"
+      g_params:
+        beta: 4.0
+        bias: 0.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  - name: "set2b_a0p6_b0_c1p0_g-sigmoid_beta0p01"
+    labels: ["set2", "nonlinear", "monotone", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 1.0
+      g: "sigmoid"
+      g_params:
+        beta: 0.01
+        bias: 0.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+
+  # - name: "set2b_a0p6_b0_c1p0_g-sigmoid_beta0p5"
+  #   labels: ["set2", "nonlinear", "monotone", "ring"]
+  #   generator: "case_i"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.6
+  #     b: 0.0
+  #     c: 1.0
+  #     g: "sigmoid"
+  #     g_params:
+  #       beta: 0.5
+  #       bias: 0.0
+  #     interaction: "prev"
+  #     topology: "ring"
+  #     noise_std: 0.05
+  #     transients: 300
+  #     x0: 0.0
+  #     init_std: 1.0
+  #     zscore: true
+  #   variants:
+
+  - name: "set2b_a0p6_b0_c1p0_g-sigmoid_beta1p0"
+    labels: ["set2", "nonlinear", "monotone", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 1.0
+      g: "sigmoid"
+      g_params:
+        beta: 1.0
+        bias: 0.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  # - name: "set2b_a0p6_b0_c1p0_g-sigmoid_beta16p0"
+  #   labels: ["set2", "nonlinear", "monotone", "ring"]
+  #   generator: "case_i"
+  #   include_base_variant: true
+  #   base_params:
+  #     a: 0.6
+  #     b: 0.0
+  #     c: 1.0
+  #     g: "sigmoid"
+  #     g_params:
+  #       beta: 16.0
+  #       bias: 0.0
+  #     interaction: "prev"
+  #     topology: "ring"
+  #     noise_std: 0.05
+  #     transients: 300
+  #     x0: 0.0
+  #     init_std: 1.0
+  #     zscore: true
+  #   variants:
+
+  - name: "set2b_a0p6_b0_c1p0_g-sigmoid_beta32p0"
+    labels: ["set2", "nonlinear", "monotone", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 1.0
+      g: "sigmoid"
+      g_params:
+        beta: 32.0
+        bias: 0.0
+      interaction: "prev"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  # -----------------------------
+  # Set 3: stronger nonlinearity exposure via interaction="product"
+  # -----------------------------
+  - name: "set3_a0p6_b0_c0p8_g-affine_alpha0p8_beta0_product"
+    labels: ["set3", "linear", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 0.8
+      g: "affine"
+      g_params:
+        alpha: 0.8
+        beta: 0.0
+      interaction: "product"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+  - name: "set3_a0p6_b0_c1p0_g-sigmoid_beta4p0_product"
+    labels: ["set3", "nonlinear", "monotone", "ring"]
+    generator: "case_i"
+    include_base_variant: true
+    base_params:
+      a: 0.6
+      b: 0.0
+      c: 1.0
+      g: "sigmoid"
+      g_params:
+        beta: 4.0
+        bias: 0.0
+      interaction: "product"
+      topology: "ring"
+      noise_std: 0.05
+      transients: 300
+      x0: 0.0
+      init_std: 1.0
+      zscore: true
+    variants:
+
+
+    

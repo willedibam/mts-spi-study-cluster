@@ -1277,7 +1277,102 @@ def generate_case_iii(
     return _maybe_zscore(out, zscore=zscore)  # expected to exist in your repo
 
 
+def generate_mts_master(
+    M: int,
+    T: int,
+    *,
+    g: str = "sigmoid",
+    beta: float = 1.0,
+    a: float = 1.0,
+    noise_std: float = 1.0,
+    alpha: float = 0.0,
+    transients: int = 0,
+    seed: int | None = None,
+    rng=None,
+    zscore: bool = True,
+) -> np.ndarray:
+    """
+    Generate M-channel MTS by applying a shared nonlinear filter to a common AR(1) master signal.
 
+    Model:
+        Master signal:  z_{t+1} = a * z_t + ε_t,  where ε_t ~ N(0, noise_std²)
+        Observations:   X_t^{(i)} = g(z_t; β) + α * η_t^{(i)},  where η ~ N(0, 1)
+
+    All channels share the same filter g with the same β, differing only in
+    independent observational noise (controlled by α).
+
+    Parameters
+    ----------
+    M : int
+        Number of channels.
+    T : int
+        Length of the output time series.
+    g : str
+        Filter function: 'sigmoid', 'bell', or 'affine'.
+        - sigmoid: 1 / (1 + exp(-β * z))   (increasing)
+        - bell:    exp(-β * z²)            (Gaussian bump centered at 0)
+        - affine:  β * z                   (linear scaling)
+    beta : float
+        Filter parameter (same for all channels).
+    a : float
+        AR(1) persistence coefficient for the master signal. Default 1.0 (random walk).
+    noise_std : float
+        Standard deviation of AR(1) innovations. Default 1.0.
+    alpha : float
+        Observational noise level. Set to 0 to disable. Default 0.0.
+    transients : int
+        Number of initial time steps to discard (burn-in). Default 0.
+    seed : int | None
+        Random seed.
+    rng : Generator | None
+        NumPy random generator (takes precedence over seed).
+    zscore : bool
+        Whether to z-score each channel. Default True.
+
+    Returns
+    -------
+    np.ndarray
+        Array of shape (T, M).
+    """
+    if M <= 0:
+        raise ValueError("M must be positive")
+    if T <= 0:
+        raise ValueError("T must be positive")
+
+    rng = _resolve_rng(seed, rng)
+
+    # --- Generate master AR(1) signal ---
+    total_T = T + transients
+    z = np.zeros(total_T, dtype=float)
+    eps = rng.normal(0, noise_std, size=total_T)
+    for t in range(1, total_T):
+        z[t] = a * z[t - 1] + eps[t]
+
+    # --- Define filter functions ---
+    g_name = str(g).lower().strip()
+    if g_name == "sigmoid":
+        def g_fn(x: np.ndarray) -> np.ndarray:
+            return 1.0 / (1.0 + np.exp(-beta * x))
+    elif g_name == "bell":
+        def g_fn(x: np.ndarray) -> np.ndarray:
+            return np.exp(-beta * x ** 2)
+    elif g_name == "affine":
+        def g_fn(x: np.ndarray) -> np.ndarray:
+            return beta * x
+    else:
+        raise ValueError(f"Unknown g='{g}'. Supported: 'sigmoid', 'bell', 'affine'.")
+
+    # --- Apply filter to master signal ---
+    z_use = z[transients:]  # shape (T,)
+    filtered = g_fn(z_use)  # shape (T,)
+
+    # --- Broadcast to M channels and add observational noise ---
+    X = np.tile(filtered[:, None], (1, M))  # shape (T, M)
+    if alpha > 0:
+        eta = rng.normal(0, 1, size=(T, M))
+        X = X + alpha * eta
+
+    return _maybe_zscore(X, zscore=zscore)
 
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
@@ -1299,7 +1394,8 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "wave_2d": generate_wave_2d,
     "case_i": generate_case_i,
     "case_ii": generate_case_ii,
-    "case_iii": generate_case_iii,  # alias
+    "case_iii": generate_case_iii,
+    "mts_master": generate_mts_master,
 }
 
 
