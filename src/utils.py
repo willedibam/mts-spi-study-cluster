@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List
 
@@ -20,7 +20,7 @@ def project_root() -> Path:
 
 
 def timestamp() -> str:
-    return datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:
