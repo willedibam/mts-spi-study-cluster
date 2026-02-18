@@ -32,6 +32,10 @@ feature-selection = "src.feature_selection:main"
 run-dtw-ed = "src.run_dtw_ed:main"
 find-distributions = "src.find_non_overlapping_distributions:main"
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
