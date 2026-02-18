@@ -43,11 +43,7 @@ spi_array.*
 
 # Random things
 data_backup.tar.gz
-# *.ipynb
-cml_kur.ipynb
 Random/
 random/
 *.tar.gz
-./case_*
-test_case_*
 .python-version
