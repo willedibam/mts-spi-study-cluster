@@ -1,0 +1,6 @@
+# Dependency overrides for Python 3.11 on the Physics cluster.
+# pyspi pulls old sktime/numba/llvmlite versions that don't build on 3.11.
+# Usage: uv pip install -e . --override cluster-overrides.txt
+numba>=0.57.0
+llvmlite>=0.40.0
+sktime>=0.16.0
