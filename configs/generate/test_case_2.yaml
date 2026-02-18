@@ -1,0 +1,29 @@
+base_output_dir: data/test_case_2/
+pyspi_config: configs/pyspi/case_2_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4  # MATCHED to PBS ncpus
+
+defaults:
+  M_values: [8]       # Smallest size
+  T_values: [100]     # Shortest time
+  instances: [0]      # Just one instance
+
+mts_classes:
+  - name: "VAR(1)-Symmetric"
+    labels: ["linear", "gaussian", "var", "symmetric"]
+    generator: "varma"
+    include_base_variant: true
+    base_params:
+      phi: 0.6
+      coupling: 0.2
+      topology: "ring-symmetric"
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      transients: 100
+      zscore: true
+      target_rho: 0.99
+    variants: []

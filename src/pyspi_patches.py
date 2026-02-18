@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import importlib
+import os
+import warnings
 
 import numpy as np
 from scipy import stats
@@ -19,8 +21,19 @@ except ImportError:
 
 from pyspi.base import Undirected, Signed, parse_bivariate
 from pyspi.statistics import basic as _basic
+from pyspi.statistics import distance as _distance
 from pyspi.statistics import spectral as _spectral
 from pyspi import calculator as _calculator
+
+
+# PySPI still references np.NaN in some paths; keep compatibility on NumPy 2.
+if not hasattr(np, "NaN"):
+    np.NaN = np.nan
+
+
+_DTW_SAKOE_LINEAR_FRAC = float(os.getenv("PYSPI_DTW_SAKOE_LINEAR_FRAC", "0.10"))
+_DTW_SAKOE_SQRT_COEFF = float(os.getenv("PYSPI_DTW_SAKOE_SQRT_COEFF", "1.5"))
+_DTW_SAKOE_MIN_RADIUS = int(os.getenv("PYSPI_DTW_SAKOE_MIN_RADIUS", "10"))
 
 
 def _ensure_time_series_3d(z: np.ndarray) -> np.ndarray:
@@ -28,6 +41,16 @@ def _ensure_time_series_3d(z: np.ndarray) -> np.ndarray:
     if z.ndim == 2:
         return prepare_time_series(z, axis="signals")
     return z
+
+
+def _auto_sakoe_radius(length: int) -> int:
+    if length <= 1:
+        return 1
+    linear = int(np.ceil(max(0.0, _DTW_SAKOE_LINEAR_FRAC) * length))
+    sqrt_scaled = int(np.ceil(max(0.0, _DTW_SAKOE_SQRT_COEFF) * np.sqrt(length)))
+    radius = min(linear, sqrt_scaled)
+    radius = max(1, _DTW_SAKOE_MIN_RADIUS, radius)
+    return min(radius, length - 1)
 
 
 def _patch_multivariate():
@@ -106,6 +129,114 @@ def _patch_cross_correlation():
 
 
 _patch_cross_correlation()
+
+
+def _patch_dynamic_time_warping():
+    if getattr(_distance.DynamicTimeWarping, "_dtaidistance_c_patch", False):
+        return
+
+    try:
+        from dtaidistance import dtw as _dtw_c
+        from dtaidistance.exceptions import CythonException
+    except Exception:
+        return
+
+    base_init = _distance.TimeWarping.__init__
+
+    def patched_init(
+        self,
+        global_constraint=None,
+        sakoe_chiba_radius=None,
+        sakoe_chiba_ratio=None,
+    ):
+        if sakoe_chiba_radius is not None and sakoe_chiba_ratio is not None:
+            raise ValueError("Set only one of sakoe_chiba_radius or sakoe_chiba_ratio.")
+        if sakoe_chiba_radius is not None:
+            sakoe_chiba_radius = int(sakoe_chiba_radius)
+            if sakoe_chiba_radius < 1:
+                raise ValueError("sakoe_chiba_radius must be >= 1.")
+        if sakoe_chiba_ratio is not None:
+            sakoe_chiba_ratio = float(sakoe_chiba_ratio)
+            if sakoe_chiba_ratio <= 0:
+                raise ValueError("sakoe_chiba_ratio must be > 0.")
+
+        base_init(self, global_constraint=global_constraint)
+        self._sakoe_chiba_radius = sakoe_chiba_radius
+        self._sakoe_chiba_ratio = sakoe_chiba_ratio
+        self._warned_itakura_fallback = False
+        self._warned_c_fallback = False
+
+        if global_constraint == "sakoe_chiba":
+            if sakoe_chiba_radius is not None:
+                self.identifier += f"_radius-{sakoe_chiba_radius}"
+            elif sakoe_chiba_ratio is not None:
+                self.identifier += f"_ratio-{sakoe_chiba_ratio:.4g}"
+            else:
+                self.identifier += "_radius-auto"
+
+    def _resolve_radius(self, n: int) -> int:
+        if self._sakoe_chiba_radius is not None:
+            return min(self._sakoe_chiba_radius, max(1, n - 1))
+        if self._sakoe_chiba_ratio is not None:
+            ratio_radius = int(np.ceil(self._sakoe_chiba_ratio * n))
+            return min(max(1, ratio_radius), max(1, n - 1))
+        return _auto_sakoe_radius(n)
+
+    @parse_bivariate
+    def patched_bivariate(self, data, i=None, j=None):
+        z = data.to_numpy(squeeze=True)
+        x = np.ascontiguousarray(z[i], dtype=np.double)
+        y = np.ascontiguousarray(z[j], dtype=np.double)
+        constraint = self._global_constraint
+        n = min(len(x), len(y))
+
+        if constraint == "itakura":
+            if not self._warned_itakura_fallback:
+                warnings.warn(
+                    "DynamicTimeWarping(itakura) falls back to tslearn; "
+                    "dtaidistance C backend does not support itakura.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                self._warned_itakura_fallback = True
+            return _distance.tslearn.metrics.dtw(x, y, global_constraint="itakura")
+
+        radius = None
+        window = None
+        if constraint == "sakoe_chiba":
+            # tslearn radius r matches dtaidistance window r+1.
+            radius = _resolve_radius(self, n)
+            window = radius + 1
+
+        try:
+            kwargs = {"use_c": True}
+            if window is not None:
+                kwargs["window"] = window
+            return _dtw_c.distance(x, y, **kwargs)
+        except (CythonException, ValueError):
+            if not self._warned_c_fallback:
+                warnings.warn(
+                    "dtaidistance C backend unavailable for DynamicTimeWarping; "
+                    "falling back to tslearn.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                self._warned_c_fallback = True
+            if constraint == "sakoe_chiba":
+                return _distance.tslearn.metrics.dtw(
+                    x,
+                    y,
+                    global_constraint="sakoe_chiba",
+                    sakoe_chiba_radius=radius,
+                )
+            return _distance.tslearn.metrics.dtw(x, y)
+
+    _distance.DynamicTimeWarping.__init__ = patched_init
+    _distance.DynamicTimeWarping.bivariate = patched_bivariate
+    _distance.DynamicTimeWarping._dtaidistance_c_patch = True
+
+
+_patch_dynamic_time_warping()
 
 
 def _patch_lagged_correlation():
