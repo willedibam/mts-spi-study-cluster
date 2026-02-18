@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr, ConstantInputWarning
 
-from src.utils import load_json, project_root
+from .utils import load_json, project_root
 
 import warnings
 

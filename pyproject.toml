@@ -25,6 +25,13 @@ dependencies = [
 real = ["sktime>=0.30.0", "aeon", "yfinance"]
 dtw = ["dtw-python", "fastdtw", "dtaidistance"]
 
+[project.scripts]
+run-experiment = "src.run_experiments:main"
+process-features = "src.process_features:main"
+feature-selection = "src.feature_selection:main"
+run-dtw-ed = "src.run_dtw_ed:main"
+find-distributions = "src.find_non_overlapping_distributions:main"
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"

@@ -43,7 +43,7 @@ python test_features_directed.py \
   --output analysis/features_full_5_directed.npz \
   --recompute
 
-python process_features.py \
+python -m src.process_features \
   --data-path data/full \
   --output analysis/feature_cache/features_full_5.npz \
   --recompute

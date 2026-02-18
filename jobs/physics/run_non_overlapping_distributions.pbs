@@ -29,7 +29,7 @@ KDE_BW_LIST="0.25,0.5,0.75,1.0,1.25,1.5"
 OUT_DIR="analysis/non-overlapping-distributions"
 
 echo "[INFO] Starting KS sweep at $(date)"
-python find_non_overlapping_distributions.py \
+python -m src.find_non_overlapping_distributions \
   --features "$FEATURES_NPZ" \
   --mts-classes "$MTS_CLASSES" \
   --output-dir "$OUT_DIR" \

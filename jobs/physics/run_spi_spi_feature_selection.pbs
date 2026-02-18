@@ -40,7 +40,7 @@ export NUMEXPR_NUM_THREADS=$N_JOBS
 
 echo "[INFO] Starting feature selection at $(date)"
 
-CMD=(python feature_selection.py
+CMD=(python -m src.feature_selection
   --mode "$MODE"
   --target-dim "$TARGET_DIM"
   --estimator "$ESTIMATOR"

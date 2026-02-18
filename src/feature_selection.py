@@ -23,14 +23,14 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 
-from process_features import (
+from .process_features import (
     build_feature_matrix,
     cache_path,
     load_cached_features,
     load_samples_with_flags,
     save_cached_features,
 )
-from src.utils import project_root
+from .utils import project_root
 
 LOGGER = logging.getLogger(__name__)
 
