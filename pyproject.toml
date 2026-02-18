@@ -18,7 +18,12 @@ dependencies = [
     "pyarrow>=15.0",
     "JPype1>=1.5",
     "pyclustering>=0.10.1",
+    "xarray",
 ]
+
+[project.optional-dependencies]
+real = ["sktime>=0.30.0", "aeon", "yfinance"]
+dtw = ["dtw-python", "fastdtw", "dtaidistance"]
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
