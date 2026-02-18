@@ -23,7 +23,7 @@ from .plot_style import apply_plot_style
 from .spi_color import infer_spi_color_scale
 from .utils import load_json
 
-dpi = 600
+DEFAULT_DPI = 600
 
 def plot_mpi_heatmap(
     dataset_dir: Path | str,
@@ -67,7 +67,7 @@ def plot_mpi_heatmap(
     )
     used_cmap = cmap or scale.cmap or "coolwarm"
 
-    fig, ax = plt.subplots(figsize=(5, 5), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(5, 5), dpi=DEFAULT_DPI)
     sns.heatmap(
         arr,
         cmap=used_cmap,
@@ -88,7 +88,7 @@ def plot_mpi_heatmap(
     dataset_name = dataset_dir.name
     mts_class = dataset_dir.parent.name
     output_path = save_dir / f"{spi}_mpi_heatmap_{mts_class}_{dataset_name}.svg"
-    fig.savefig(output_path, dpi=dpi, transparent=True)
+    fig.savefig(output_path, dpi=DEFAULT_DPI, transparent=True)
     plt.show()
 
 
@@ -155,7 +155,7 @@ def plot_unravel_mpi(
         if vec.size == 0:
             return
         width = max(4.0, float(vec.size) / 5.0)
-        fig, ax = plt.subplots(figsize=(width, 1), dpi=dpi)
+        fig, ax = plt.subplots(figsize=(width, 1), dpi=DEFAULT_DPI)
         sns.heatmap(
             vec[np.newaxis, :],
             cmap=used_cmap,
@@ -174,9 +174,8 @@ def plot_unravel_mpi(
         ax.tick_params(left=False, bottom=False)
         fig.tight_layout(pad=0.05)
         filename = f"barcode_{mts_class}_{dataset_name}_{spi}{suffix}"
-        fig.savefig(save_dir / f"{filename}.svg", dpi=dpi, transparent=True)
-        fig.savefig(save_dir / f"{filename}.png", dpi=dpi, transparent=True)
-        # plt.close(fig)
+        fig.savefig(save_dir / f"{filename}.svg", dpi=DEFAULT_DPI, transparent=True)
+        fig.savefig(save_dir / f"{filename}.png", dpi=DEFAULT_DPI, transparent=True)
         plt.show()
 
     if directed:
@@ -281,7 +280,7 @@ def plot_spi_spi_barcode(
     dataset_name = dataset_dir.name
 
     width = max(4.0, float(corr_vec.size) / 5.0)
-    fig, ax = plt.subplots(figsize=(width, 1), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(width, 1), dpi=DEFAULT_DPI)
     sns.heatmap(
         corr_vec[np.newaxis, :],
         cmap=cmap,
@@ -301,8 +300,8 @@ def plot_spi_spi_barcode(
     fig.tight_layout(pad=0.05)
 
     filename = f"spi_spi_barcode_{mts_class}_{dataset_name}"
-    fig.savefig(save_dir / f"{filename}.svg", dpi=dpi, transparent=True)
-    fig.savefig(save_dir / f"{filename}.png", dpi=dpi, transparent=True)
+    fig.savefig(save_dir / f"{filename}.svg", dpi=DEFAULT_DPI, transparent=True)
+    fig.savefig(save_dir / f"{filename}.png", dpi=DEFAULT_DPI, transparent=True)
     # plt.close(fig)
     plt.show()
 
@@ -335,7 +334,7 @@ def plot_mts_heatmap(
     # Heuristic: if columns >> rows, assume shape (T, M) and transpose to (M, T)
     if data.shape[0] > data.shape[1]:
         data = data.T
-    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+    fig, ax = plt.subplots(figsize=figsize, dpi=DEFAULT_DPI)
     ax.pcolormesh(
         data,
         shading="flat",
@@ -434,7 +433,6 @@ def scale_mts_heatmap(
         fig.savefig(svg_path, format="svg", dpi=dpi, bbox_inches="tight", pad_inches=0)
         fig.savefig(png_path, format="png", dpi=dpi, bbox_inches="tight", pad_inches=0)
         plt.close(fig)
-        # print(f"{data_path.name.lower().rsplit('.', 1)[0]}_mts_heatmap_scaled")
         return svg_path
 
     apply_plot_style()
@@ -540,7 +538,7 @@ def plot_mts_channel(
             cmap=cmap,
         )
     else:
-        fig, ax = plt.subplots(figsize=(width, 1), dpi=dpi)
+        fig, ax = plt.subplots(figsize=(width, 1), dpi=DEFAULT_DPI)
         sns.heatmap(
             channel_vec[np.newaxis, :],
             cmap=sns.color_palette(cmap, as_cmap=True),
@@ -558,10 +556,9 @@ def plot_mts_channel(
         ax.tick_params(left=False, bottom=False)
         fig.tight_layout(pad=0.05)
 
-        fig.savefig(save_dir / f"{base_name}.svg", dpi=dpi, transparent=True)
-        fig.savefig(save_dir / f"{base_name}.png", dpi=dpi, transparent=True)
+        fig.savefig(save_dir / f"{base_name}.svg", dpi=DEFAULT_DPI, transparent=True)
+        fig.savefig(save_dir / f"{base_name}.png", dpi=DEFAULT_DPI, transparent=True)
         plt.show()
-        # plt.close(fig)
 
     return channel_vec
 
@@ -638,7 +635,7 @@ def plot_stems(
     colors = cmap_fn((vals - vals.min()) / (vals.ptp() or 1.0))
     if ax is None:
         width = float(np.clip(8.0 * (vals.size / 1000.0), 4.0, 18.0))
-        fig, ax = plt.subplots(figsize=(width, 2.5), dpi=dpi)
+        fig, ax = plt.subplots(figsize=(width, 2.5), dpi=DEFAULT_DPI)
     else:
         fig = ax.figure
     ax.vlines(xs, 0.0, vals, colors=colors, linewidth=1.5)
@@ -653,8 +650,8 @@ def plot_stems(
     fig.tight_layout(pad=0.1)
     svg_path = output_dir / f"{name}.svg"
     png_path = output_dir / f"{name}.png"
-    fig.savefig(svg_path, transparent=True, dpi=dpi)
-    fig.savefig(png_path, transparent=True, dpi=dpi)
+    fig.savefig(svg_path, transparent=True, dpi=DEFAULT_DPI)
+    fig.savefig(png_path, transparent=True, dpi=DEFAULT_DPI)
     plt.close(fig)
     return fig, ax
 
@@ -998,7 +995,7 @@ def plot_mts_corr_density(
     spi_y_base, spi_y_dir_req = _parse_token(spi_pair[1])
 
     def _collect(direction_choice_x: str | None, direction_choice_y: str | None) -> None:
-        fig, ax = plt.subplots(figsize=(6, 6), dpi=dpi)
+        fig, ax = plt.subplots(figsize=(6, 6), dpi=DEFAULT_DPI)
         palette = sns.color_palette("tab10", len(mts_class_paths))
         plotted = False
 
@@ -1132,7 +1129,7 @@ def plot_pca(
     meta_df["pca_x"] = embedding[:, 0]
     meta_df["pca_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
     
     sns.scatterplot(
         data=meta_df,
@@ -1146,21 +1143,7 @@ def plot_pca(
         ax=ax,
         legend="full", 
     )
-    
-    # sns.kdeplot(
-    #     data=meta_df,
-    #     x="pca_x",
-    #     y="pca_y",
-    #     hue=hue,
-    #     palette="pastel",
-    #     levels=10,
-    #     thresh=0.05,
-    #     fill=True,
-    #     alpha=0.5,
-    #     ax=ax,
-    #     legend=False
-    # )
-    
+
     _clean_legend(ax, hue, size_col)
     
     ax.set_title(f"PCA ({feature_space}) | Var: {var_pc1+var_pc2:.4f}")
@@ -1210,7 +1193,7 @@ def plot_umap(
     meta_df["umap_x"] = embedding[:, 0]
     meta_df["umap_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
     
     sns.scatterplot(
         data=meta_df,
@@ -1290,7 +1273,7 @@ def plot_tsne(
     meta_df["tsne_x"] = embedding[:, 0]
     meta_df["tsne_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
     
     sns.scatterplot(
         data=meta_df,

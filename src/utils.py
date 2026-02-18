@@ -20,7 +20,7 @@ def project_root() -> Path:
 
 
 def timestamp() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:

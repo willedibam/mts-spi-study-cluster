@@ -5,21 +5,6 @@ from typing import Any, Callable, Dict
 import numpy as np
 from numpy.random import default_rng
 
-try:
-    from pyclustering.nnet.sync import (
-        conn_represent,
-        conn_type,
-        initial_type,
-        solve_type,
-        sync_network,
-    )
-except ImportError as exc:  # pragma: no cover
-    sync_network = None  # type: ignore[assignment]
-    conn_type = conn_represent = initial_type = solve_type = None  # type: ignore[assignment]
-    _PYCLUSTERING_IMPORT_ERROR = exc
-else:
-    _PYCLUSTERING_IMPORT_ERROR = None
-
 GeneratorFn = Callable[..., np.ndarray]
 
 
@@ -55,11 +40,6 @@ def _maybe_zscore(data: np.ndarray, *, zscore: bool = True) -> np.ndarray:
     arr = np.asarray(data, dtype=float)
     return _zscore_channels(arr) if zscore else arr
 
-
-import numpy as np
-from numpy.random import default_rng
-
-# ... (Include your existing _global_rng, _resolve_rng, _zscore_channels, _maybe_zscore helpers here) ...
 
 def generate_varma(
     M: int,
@@ -282,58 +262,6 @@ def _laplacian_2d(z: np.ndarray) -> np.ndarray:
     return grad_u + grad_v
 
 
-# def generate_wave_1d(
-#     M: int,
-#     T: int,
-#     *,
-#     c: float = 10.0,
-#     seed: int | None = None,
-#     rng=None,
-#     zscore: bool = True,
-# ) -> np.ndarray:
-#     """
-#     Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
-    
-#     Context parameters:
-#       - c = 10 (default)
-#       - Periodic boundary conditions
-#       - Initial condition: Gaussian with sigma = M/20
-#     """
-#     rng = _resolve_rng(seed, rng)
-    
-#     # 1. Setup Space and Time (Unit domain)
-#     dx = 1.0 / M
-#     # Courant stability condition: c * dt/dx <= 1. Use 0.2 safety factor.
-#     dt = 0.2 * dx / c
-#     coeff = (c * dt / dx) ** 2
-
-#     # 2. Initial Conditions (Gaussian)
-#     coords = np.arange(M, dtype=float)
-#     center = M / 2.0
-#     sigma = M / 20.0
-    
-#     z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
-#     z_prev = z_prev / np.max(np.abs(z_prev))
-
-#     # 3. First Time Step (t=1)
-#     # Assume initial velocity dz/dt = 0; Taylor expansion
-#     lap_prev = _laplacian_1d(z_prev)
-#     z_curr = z_prev + 0.5 * coeff * lap_prev
-
-#     # 4. Integration Loop
-#     samples = np.zeros((T, M), dtype=float)
-#     samples[0] = z_prev
-#     if T > 1:
-#         samples[1] = z_curr
-
-#     for t in range(2, T):
-#         lap = _laplacian_1d(z_curr)
-#         z_next = 2.0 * z_curr - z_prev + coeff * lap
-#         samples[t] = z_next
-#         z_prev, z_curr = z_curr, z_next
-
-#     return _maybe_zscore(samples, zscore=zscore)
-
 def generate_wave_1d(
     M: int,
     T: int,
@@ -498,15 +426,6 @@ def _normalize_connectivity(name: str) -> str:
     return _KURAMOTO_CONN_ALIASES[key]
 
 
-def _conn_type_from_name(name: str) -> conn_type:
-    mapping = {
-        "all-to-all": conn_type.ALL_TO_ALL,
-        "bidirectional-list": conn_type.LIST_BIDIR,
-        "grid-four": conn_type.GRID_FOUR,
-    }
-    return mapping[name]
-
-
 def _ensure_grid_compatible(connectivity: str, M: int) -> None:
     if connectivity != "grid-four":
         return
@@ -516,89 +435,6 @@ def _ensure_grid_compatible(connectivity: str, M: int) -> None:
             f"grid-four connectivity requires M to be a perfect square (got M={M})."
         )
 
-
-def generate_kuramoto(
-    M: int,
-    T: int,
-    dt: float = 0.01, # Standard dt
-    K: float = 1.0,   # Coupling strength
-    topology: str = "all-to-all", # 'all-to-all', 'ring-symmetric', 'ring-unidirectional'
-    omega_mean: float = 1.0,
-    omega_std: float = 0.1,
-    noise_std: float = 0.05, # Dynamic noise (eta)
-    transients: int = 1000,
-    rng=None,
-    zscore: bool = True,
-):
-    """
-    Highly optimized Kuramoto generator.
-    Removes pyclustering dependency.
-    """
-    if rng is None: rng = np.random.default_rng()
-    
-    # 1. Initialization
-    steps = transients + T
-    # Intrinsic frequencies
-    omega = rng.normal(loc=omega_mean, scale=omega_std, size=M)
-    # Initial phases
-    theta = rng.uniform(0, 2*np.pi, M)
-    
-    # Pre-allocate output (only storing the post-transient part to save RAM if T is large)
-    # We store the *Sine* of the phase, as that is the observable time series.
-    X = np.zeros((T, M), dtype=np.float32)
-
-    # 2. Pre-calculation for noise
-    # We add sqrt(dt) scaling to noise standard deviation for Euler-Maruyama
-    noise_scale = noise_std * np.sqrt(dt)
-
-    # 3. Simulation Loop
-    for t in range(-transients, T):
-        
-        # --- TOPOLOGY SWITCHING ---
-        
-        # A. All-to-All (Mean Field Optimization) - O(M)
-        if topology == "all-to-all":
-            # Order parameter Z = R * e^(i*Psi) = (1/M) * sum(e^(i*theta))
-            Z = np.mean(np.exp(1j * theta))
-            R = np.abs(Z)
-            Psi = np.angle(Z)
-            # Interaction = K * R * sin(Psi - theta)
-            interaction = K * R * np.sin(Psi - theta)
-            
-        # B. Unidirectional Ring (Splay/Wave) - O(M)
-        elif topology == "ring-unidirectional":
-            # i depends on i-1. Flow is Right -> Left in array index.
-            theta_prev = np.roll(theta, 1) 
-            interaction = K * np.sin(theta_prev - theta)
-            
-        # C. Symmetric Ring (Diffusive) - O(M)
-        elif topology == "ring-symmetric":
-            theta_left = np.roll(theta, 1)  # i-1
-            theta_right = np.roll(theta, -1) # i+1
-            # Average of neighbors
-            interaction = (K/2) * (np.sin(theta_left - theta) + np.sin(theta_right - theta))
-            
-        else:
-            raise ValueError(f"Unknown topology: {topology}")
-            
-        # --- UPDATE STEP (Euler-Maruyama) ---
-        theta += (omega + interaction) * dt + rng.normal(scale=noise_scale, size=M)
-        
-        # Store after transients
-        if t >= 0:
-            X[t] = np.sin(theta)
-
-    # 4. Return Z-Scored
-    if zscore:
-        # Simple safe z-score
-        mus = X.mean(axis=0)
-        sigs = X.std(axis=0)
-        sigs[sigs < 1e-6] = 1.0
-        X = (X - mus) / sigs
-        
-    return X
-
-# 3. UPDATE GENERATOR TO BYPASS PYCLUSTERING FOR UNIDIRECTIONAL
 
 def _build_kuramoto_adjacency(
     M: int,
@@ -730,9 +566,6 @@ def generate_kuramoto_bidirectional_list(*args, k: float, **kwargs) -> np.ndarra
 def generate_kuramoto_grid_four(*args, k: float, **kwargs) -> np.ndarray:
     return generate_kuramoto(*args, k=k, connectivity="grid-four", **kwargs)
 
-import numpy as np
-
-import numpy as np
 
 def generate_mackey_glass(
     M: int,
@@ -918,8 +751,6 @@ def _resolve_g(
         return lambda z, _mu=mu: _softplus(z) - _mu
 
     raise ValueError(
-        f"Unknown g='{g}'. Supported: identity, tanh, sin, abs, square, square_centered, "
-        f"exp, exp_centered, softplus, softplus_centered (or pass a callable)."
         f"Unknown g='{g}'. Supported: identity, affine, sigmoid, tanh, sin, abs, square, "
         f"square_centered, exp, exp_centered, softplus, softplus_centered (or pass a callable)."
     )
