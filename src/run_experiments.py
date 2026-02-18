@@ -13,7 +13,7 @@ import numpy as np
 from scipy.stats import zscore
 import pandas as pd
 
-from . import generate
+from . import generators as generate
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
