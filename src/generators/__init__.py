@@ -19,8 +19,10 @@ from .linear import (
     generate_exponential_noise,
     generate_gaussian_noise,
     generate_gbm,
+    generate_sin_mts,
     generate_varma,
     generate_varma_shuffled,
+    generate_warping_mts,
 )
 from .pde import generate_wave_1d, generate_wave_2d
 from .registry import GENERATOR_REGISTRY, available_generators, generate_series
@@ -44,8 +46,10 @@ __all__ = [
     "generate_mackey_glass",
     "generate_mts_master",
     "generate_series",
+    "generate_sin_mts",
     "generate_varma",
     "generate_varma_shuffled",
+    "generate_warping_mts",
     "generate_wave_1d",
     "generate_wave_2d",
 ]

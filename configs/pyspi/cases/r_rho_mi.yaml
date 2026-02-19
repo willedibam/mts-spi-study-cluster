@@ -1,0 +1,60 @@
+.statistics.basic:
+  # Covariance
+  Covariance:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+
+  # Spearman's correlation coefficient
+  SpearmanR:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: False
+
+  # Kendall's rank correlation coefficient
+  KendallTau:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: False
+
+    
+.statistics.infotheory:
+  MutualInfo:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies: 
+      - java
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+      - estimator: kraskov
+        prop_k: 4
+        dyn_corr_excl: AUTO
+
+      - estimator: kernel
+        kernel_width: 0.25

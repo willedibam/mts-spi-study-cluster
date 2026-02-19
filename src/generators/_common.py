@@ -14,6 +14,8 @@ def _global_rng():
 
 def _resolve_rng(seed: int | None, rng=None):
     if rng is not None:
+        if isinstance(rng, (int, np.integer)):
+            return default_rng(int(rng))
         return rng
     if seed is None:
         return _global_rng()

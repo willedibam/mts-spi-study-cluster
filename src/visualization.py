@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import json
+import re
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -18,6 +19,10 @@ try:
     from umap import UMAP
 except ImportError:
     UMAP = None
+try:
+    import plotly.graph_objects as _go
+except ImportError:
+    _go = None
 
 from .plot_style import apply_plot_style
 from .spi_color import infer_spi_color_scale
@@ -1233,6 +1238,291 @@ def plot_umap(
     plt.tight_layout()
     plt.show()
     return embedding
+
+
+# Anchor colors for regime mixing: linear=peach, monotonic=lavender, non-monotonic=mint
+_REGIME_ANCHORS = np.array([
+    [1.0,  0.80, 0.55],   # linear       → peach
+    [0.78, 0.65, 0.95],   # monotonic    → lavender
+    [0.55, 0.90, 0.88],   # non-monotonic → mint
+], dtype=np.float32)
+_REGIME_LABELS = ["linear", "monotonic", "non-monotonic"]
+
+
+def _regime_rgb(proportions: np.ndarray) -> np.ndarray:
+    """Mix anchor colors by regime proportions. proportions: (N, 3) in [0,1]."""
+    return np.clip(proportions @ _REGIME_ANCHORS, 0.0, 1.0).astype(np.float32)
+
+
+def regime_colors(dataset_paths) -> np.ndarray:
+    """
+    Parse l/m/nm proportions from sin_mts dataset slugs.
+    Returns (N, 3) array where columns are [p_linear, p_monotonic, p_non_monotonic].
+    Use _regime_rgb() to convert to displayable colors.
+    """
+    pat = re.compile(r"_l-(\d+)_m-(\d+)_nm-(\d+)")
+    out = []
+    for path in dataset_paths:
+        m = pat.search(str(path))
+        if m is None:
+            raise ValueError(f"Cannot parse l/m/nm from path: {path}")
+        l, mo, nm = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        total = l + mo + nm
+        out.append([l / total, mo / total, nm / total])
+    return np.array(out, dtype=np.float32)
+
+
+def _embedding(Xs: np.ndarray, method: str, random_state: int, **kwargs):
+    """Compute 2D embedding. Returns (emb, xlabel, ylabel, title)."""
+    if method == "pca":
+        pca = PCA(n_components=2, random_state=random_state)
+        emb = pca.fit_transform(Xs)
+        var = pca.explained_variance_ratio_
+        return emb, f"PC1 ({var[0]:.3f})", f"PC2 ({var[1]:.3f})", f"PCA | var={var[0]+var[1]:.3f}"
+    if method == "umap":
+        if UMAP is None:
+            raise ImportError("umap-learn is required for UMAP")
+        emb = UMAP(n_neighbors=kwargs.get("n_neighbors", 7), min_dist=kwargs.get("min_dist", 0.5),
+                   metric=kwargs.get("metric", "euclidean"), random_state=random_state, verbose=False
+                   ).fit_transform(Xs)
+        return emb, "UMAP-1", "UMAP-2", f"UMAP (nn={kwargs.get('n_neighbors',7)}, d={kwargs.get('min_dist',0.5)})"
+    if method == "tsne":
+        if TSNE is None:
+            raise ImportError("scikit-learn is required for t-SNE")
+        p = kwargs.get("perplexity", 30.0)
+        emb = TSNE(n_components=2, metric=kwargs.get("metric", "euclidean"), random_state=random_state,
+                   init="pca", perplexity=p, learning_rate="auto").fit_transform(Xs)
+        return emb, "t-SNE-1", "t-SNE-2", f"t-SNE (p={p})"
+    raise ValueError(f"Unknown method '{method}'. Expected 'pca', 'umap', or 'tsne'.")
+
+
+def _point_sizes(meta_df, size_col, sizes, n):
+    if meta_df is not None and size_col and size_col in meta_df.columns:
+        vals = meta_df[size_col].to_numpy(dtype=float)
+        lo, hi = vals.min(), vals.max()
+        norm = (vals - lo) / (hi - lo) if hi > lo else np.full(n, 0.5)
+        return sizes[0] + norm * (sizes[1] - sizes[0])
+    return sizes[0]
+
+
+def plot_regime_embedding(
+    X: np.ndarray,
+    proportions: np.ndarray,
+    *,
+    method: str = "pca",
+    meta_df=None,
+    size_col: str | None = "M",
+    sizes: tuple[float, float] = (20.0, 120.0),
+    random_state: int = 0,
+    n_neighbors: int = 7,
+    min_dist: float = 0.5,
+    perplexity: float = 30.0,
+    metric: str = "euclidean",
+    facecolor: str = "#282a36",
+    alpha: float = 0.85,
+    plotly: bool = False,
+) -> np.ndarray:
+    """
+    Embed X and scatter-plot with per-point colors mixed from regime proportions.
+    Anchors: linear=orange, monotonic=purple, non-monotonic=teal.
+
+    Args:
+        proportions: (N, 3) from regime_colors() — [p_linear, p_monotonic, p_non_monotonic].
+        plotly: If True, render interactively with plotly instead of matplotlib.
+    Returns:
+        (N, 2) embedding array.
+    """
+    Xs = StandardScaler().fit_transform(X)
+    emb, xlabel, ylabel, title = _embedding(
+        Xs, method, random_state,
+        n_neighbors=n_neighbors, min_dist=min_dist, perplexity=perplexity, metric=metric,
+    )
+    rgb = _regime_rgb(proportions)
+    s = _point_sizes(meta_df, size_col, sizes, len(proportions))
+
+    if plotly:
+        if _go is None:
+            raise ImportError("plotly is required for plotly=True")
+        # plotly marker size is diameter; matplotlib s is area — convert via sqrt
+        # marker_size = np.sqrt(s) if hasattr(s, "__len__") else float(np.sqrt(s))
+        marker_size = s**(1/3) if hasattr(s, "__len__") else float(s**(1/3))
+        colors = [f"rgba({int(r*255)},{int(g*255)},{int(b*255)},{alpha})" for r, g, b in rgb]
+        hover = [
+            f"p_linear={p[0]:.2f}, p_mono={p[1]:.2f}, p_nm={p[2]:.2f}"
+            for p in proportions
+        ]
+        fig = _go.Figure()
+        fig.add_trace(_go.Scatter(
+            x=emb[:, 0], y=emb[:, 1],
+            mode="markers",
+            marker=dict(color=colors, size=marker_size),
+            text=hover,
+            hoverinfo="text",
+            showlegend=False,
+        ))
+        for label, color in zip(_REGIME_LABELS, _REGIME_ANCHORS):
+            fig.add_trace(_go.Scatter(
+                x=[None], y=[None], mode="markers",
+                marker=dict(color=f"rgb({int(color[0]*255)},{int(color[1]*255)},{int(color[2]*255)})", size=10),
+                name=label,
+            ))
+        fig.update_layout(
+            title=title,
+            xaxis_title=xlabel,
+            yaxis_title=ylabel,
+            plot_bgcolor=facecolor,
+            paper_bgcolor=facecolor,
+            font=dict(color="white"),
+            legend_title_text="regime (pure)",
+            width=700, height=700,
+            yaxis=dict(scaleanchor="x", scaleratio=1),
+        )
+        fig.show()
+        return emb
+
+    apply_plot_style()
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+    ax.scatter(emb[:, 0], emb[:, 1], c=rgb, s=s, alpha=alpha, linewidths=0)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.set_box_aspect(1)
+    ax.set_facecolor(facecolor)
+    for label, color in zip(_REGIME_LABELS, _REGIME_ANCHORS):
+        ax.scatter([], [], c=[color], s=50, label=label)
+    ax.legend(title="regime (pure)", loc="upper left", bbox_to_anchor=(1, 1), frameon=True)
+    plt.tight_layout()
+    plt.show()
+    return emb
+
+
+def plot_regime_embedding_triple(
+    X: np.ndarray,
+    proportions: np.ndarray,
+    *,
+    method: str = "pca",
+    meta_df=None,
+    size_col: str | None = "M",
+    sizes: tuple[float, float] = (20.0, 120.0),
+    random_state: int = 0,
+    n_neighbors: int = 7,
+    min_dist: float = 0.5,
+    perplexity: float = 30.0,
+    metric: str = "euclidean",
+    facecolor: str = "#282a36", # "#282a36"
+    alpha: float = 0.85,
+) -> np.ndarray:
+    """
+    Embed X and produce 3 subplots — one per regime proportion (p_linear, p_monotonic, p_non_monotonic).
+    Each subplot uses a sequential colormap matched to the anchor color.
+
+    Returns:
+        (N, 2) embedding array.
+    """
+    apply_plot_style()
+    Xs = StandardScaler().fit_transform(X)
+    emb, xlabel, ylabel, title_base = _embedding(
+        Xs, method, random_state,
+        n_neighbors=n_neighbors, min_dist=min_dist, perplexity=perplexity, metric=metric,
+    )
+    s = _point_sizes(meta_df, size_col, sizes, len(proportions))
+    cmaps = ["YlOrBr", "BuPu", "BuGn"]  # peach, lavender, mint
+
+    fig, axes = plt.subplots(1, 3, figsize=(21, 7), dpi=DEFAULT_DPI)
+    for i, (ax, label, cmap) in enumerate(zip(axes, _REGIME_LABELS, cmaps)):
+        sc = ax.scatter(emb[:, 0], emb[:, 1], c=proportions[:, i],
+                        cmap=cmap, vmin=0, vmax=1, s=s, alpha=alpha, linewidths=0)
+        plt.colorbar(sc, ax=ax, fraction=0.046, pad=0.04)
+        ax.set_title(f"{title_base} — p_{label}")
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel if i == 0 else "")
+        ax.set_box_aspect(1)
+        ax.set_facecolor(facecolor)
+    plt.tight_layout()
+    plt.show()
+    return emb
+
+
+def plot_ternary_regime(
+    proportions: np.ndarray,
+    *,
+    meta_df=None,
+    hue_col: str | None = "mts_class",
+    facecolor: str = "#282a36",
+    alpha: float = 0.85,
+    s: float = 40.0,
+    show_background: bool = True,
+) -> None:
+    """
+    Plot datasets as points in the (p_linear, p_monotonic, p_non_monotonic) ternary space.
+
+    Vertex layout (equilateral triangle):
+        bottom-left  = linear
+        bottom-right = monotonic
+        top          = non-monotonic
+
+    Args:
+        proportions: (N, 3) from regime_colors().
+        hue_col: Column in meta_df to color points by (categorical). None = regime mix color.
+        show_background: Fill the triangle with the regime anchor color gradient.
+    """
+    apply_plot_style()
+
+    # Barycentric → Cartesian: bottom-left=linear, bottom-right=monotonic, top=non-monotonic
+    def _to_cart(prop):
+        p_l, p_m, p_nm = prop[:, 0], prop[:, 1], prop[:, 2]
+        x = p_m + 0.5 * p_nm
+        y = (np.sqrt(3) / 2) * p_nm
+        return x, y
+
+    fig, ax = plt.subplots(figsize=(7, 7), dpi=DEFAULT_DPI)
+    ax.set_aspect("equal")
+    ax.set_facecolor(facecolor)
+    ax.axis("off")
+
+    # Triangle border
+    tri_x = [0, 1, 0.5, 0]
+    tri_y = [0, 0, np.sqrt(3) / 2, 0]
+    ax.plot(tri_x, tri_y, color="white", linewidth=1.0, zorder=2)
+
+    # Vertex labels
+    offset = 0.05
+    ax.text(-offset, -offset,         "linear",          ha="center", va="top",    color="white", fontsize=10)
+    ax.text(1 + offset, -offset,      "monotonic",       ha="center", va="top",    color="white", fontsize=10)
+    ax.text(0.5, np.sqrt(3)/2 + offset, "non-monotonic", ha="center", va="bottom", color="white", fontsize=10)
+
+    if show_background:
+        # Dense grid of barycentric points → colored by anchor mix
+        n_grid = 80
+        grid = []
+        for i in range(n_grid + 1):
+            for j in range(n_grid + 1 - i):
+                k = n_grid - i - j
+                grid.append([i / n_grid, j / n_grid, k / n_grid])
+        grid = np.array(grid, dtype=np.float32)
+        gx, gy = _to_cart(grid)
+        gc = _regime_rgb(grid)
+        ax.scatter(gx, gy, c=gc, s=6, alpha=0.5, linewidths=0, zorder=1)
+
+    # Data points
+    px, py = _to_cart(proportions)
+    if meta_df is not None and hue_col and hue_col in meta_df.columns:
+        classes = meta_df[hue_col].values
+        unique = list(dict.fromkeys(classes))
+        palette = sns.color_palette("tab10", len(unique))
+        color_map = dict(zip(unique, palette))
+        for cls in unique:
+            mask = classes == cls
+            ax.scatter(px[mask], py[mask], c=[color_map[cls]], s=s, alpha=alpha,
+                       linewidths=0.3, edgecolors="white", zorder=3, label=cls)
+        ax.legend(title=hue_col, loc="upper left", bbox_to_anchor=(1, 1), frameon=True)
+    else:
+        ax.scatter(px, py, c=_regime_rgb(proportions), s=s, alpha=alpha,
+                   linewidths=0.3, edgecolors="white", zorder=3)
+
+    ax.set_title("Regime composition (ternary)")
+    plt.tight_layout()
+    plt.show()
 
 
 def plot_tsne(

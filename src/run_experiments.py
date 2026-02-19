@@ -94,6 +94,11 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         help="Generate timeseries.npy only (skip PySPI/heatmaps). If no job-index is given, runs all.",
     )
     parser.add_argument(
+        "--run-all",
+        action="store_true",
+        help="Run all dataset combinations sequentially (local mode, no --job-index required).",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Show which dataset would run without executing generation or PySPI.",
@@ -152,9 +157,13 @@ def main(argv: List[str] | None = None) -> None:
         return
     if args.mts_only and args.job_index is None:
         specs = list(mapping.specs)
+    elif args.run_all:
+        if args.job_index is not None:
+            raise SystemExit("--run-all and --job-index are mutually exclusive.")
+        specs = list(mapping.specs)
     else:
         if args.job_index is None:
-            raise SystemExit("--job-index is required unless --list/--count-only/--mts-only is used.")
+            raise SystemExit("--job-index is required unless --list/--count-only/--mts-only/--run-all is used.")
         specs = [mapping.spec_for_index(args.job_index)]
 
     for spec in specs:

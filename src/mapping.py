@@ -15,6 +15,13 @@ from .utils import (
 )
 
 
+def _sin_mts_pre_seed(M: int, T: int, instance: int, mts_class: str) -> int:
+    """Stable seed for sin_mts random regime assignment, independent of the dataset slug."""
+    payload = f"sin_mts_regime|{M}|{T}|{instance}|{mts_class}".encode()
+    digest = hashlib.blake2s(payload, digest_size=8).digest()
+    return int.from_bytes(digest, "big") % (2**32 - 1) or 1
+
+
 def _as_path(path_value: str | Path) -> Path:
     path = Path(path_value)
     if path.is_absolute():
@@ -157,7 +164,7 @@ class ExperimentConfig:
         defaults = data.get("defaults") or {}
         default_M = [int(v) for v in (defaults.get("M_values") or [])]
         default_T = [int(v) for v in (defaults.get("T_values") or [])]
-        default_instances = [int(v) for v in (defaults.get("instances") or [])]
+        default_instances = list(range(int(defaults["instances"]))) if "instances" in defaults else []
         default_single_M = [int(v) for v in (defaults.get("single_instance_M_values") or [])]
         default_single_instances = [
             int(v) for v in (defaults.get("single_instance_instances") or [0])
@@ -237,7 +244,7 @@ def _parse_class(
         return vals
     M_values = [int(v) for v in _resolve_list(entry.get("M_values"), default_M)]
     T_values = [int(v) for v in _resolve_list(entry.get("T_values"), default_T)]
-    instances = [int(v) for v in _resolve_list(entry.get("instances"), default_instances)]
+    instances = list(range(int(entry["instances"]))) if "instances" in entry else list(default_instances)
     single_instance_M_values = [
         int(v) for v in _resolve_list(entry.get("single_instance_M_values"), default_single_M)
     ]
@@ -346,6 +353,25 @@ def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
     if spec.source == "real":
         return spec.dataset_slug or None
     base = f"M{spec.M}_T{spec.T}_I{spec.instance}"
+    if spec.generator == "sin_mts":
+        regime = str(spec.generator_params.get("regime", "fixed"))
+        if regime == "fixed":
+            n_linear_raw = spec.generator_params.get("n_linear")
+            n_monotonic_raw = spec.generator_params.get("n_monotonic")
+            nl = int(n_linear_raw) if n_linear_raw is not None else spec.M // 3
+            nm = int(n_monotonic_raw) if n_monotonic_raw is not None else spec.M // 3
+            nnm = spec.M - nl - nm
+            return f"{base}_l-{nl}_m-{nm}_nm-{nnm}"
+        if regime == "random":
+            pre_seed = _sin_mts_pre_seed(spec.M, spec.T, spec.instance, spec.mts_class)
+            regime_rng = np.random.default_rng(pre_seed)
+            keys = ["linear", "monotonic", "non-monotonic"]
+            assignments = [keys[i] for i in regime_rng.integers(0, 3, size=spec.M)]
+            l = assignments.count("linear")
+            m = assignments.count("monotonic")
+            nm = assignments.count("non-monotonic")
+            return f"{base}_l-{l}_m-{m}_nm-{nm}"
+        return None
     class_name = spec.mts_class.lower()
     if class_name.startswith("cml"):
         alpha = spec.generator_params.get("alpha")
@@ -381,6 +407,10 @@ def _apply_dataset_slug(spec: DatasetSpec) -> None:
         slug = f"{slug}_{spec.variant.slug}"
     spec.dataset_slug = slug
     spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
+    if spec.generator == "sin_mts" and spec.generator_params.get("regime") == "random":
+        spec.generator_params["_regime_seed"] = _sin_mts_pre_seed(
+            spec.M, spec.T, spec.instance, spec.mts_class
+        )
 
 
 def _derive_dataset_seed(*, base_seed: int, spec: DatasetSpec) -> int:
@@ -566,7 +596,10 @@ class DatasetMapping:
                                 / class_dir
                                 / dataset_slug
                             )
-                            generator_params = dict(class_entry.base_params)
+                            generator_params = {
+                                k: (M if v == "M" else v)
+                                for k, v in class_entry.base_params.items()
+                            }
                             pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
                             pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
                             normalise = (
@@ -646,7 +679,10 @@ class DatasetMapping:
                             channels_first=spec.channels_first,
                             zscore_data=spec.zscore_data,
                             base_output_dir=spec.base_output_dir,
-                            generator_params=dict(class_entry.base_params),
+                            generator_params={
+                                k: (spec.M if v == "M" else v)
+                                for k, v in class_entry.base_params.items()
+                            },
                             variant=variant,
                             M=spec.M,
                             T=spec.T,

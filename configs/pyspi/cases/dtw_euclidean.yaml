@@ -1,0 +1,21 @@
+.statistics.distance:
+  PairwiseDistance:
+    labels:
+      - unsigned
+      - unordered
+      - nonlinear
+      - undirected
+    dependencies:
+    configs:
+      - metric: "euclidean"
+
+  DynamicTimeWarping:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - global_constraint: null

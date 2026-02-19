@@ -24,12 +24,16 @@ from .linear import (
     generate_exponential_noise,
     generate_gaussian_noise,
     generate_gbm,
+    generate_sin_mts,
     generate_varma,
     generate_varma_shuffled,
+    generate_warping_mts,
 )
 from .pde import generate_wave_1d, generate_wave_2d
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
+    "sin_mts": generate_sin_mts,
+    "warping_mts": generate_warping_mts,
     "varma": generate_varma,
     "var": generate_varma,
     "varma_shuffled": generate_varma_shuffled,

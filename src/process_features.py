@@ -84,12 +84,9 @@ def load_samples_with_flags(
                     raise ValueError(f"SPI order mismatch in {ds_dir}")
                 if flags != directed_flags:
                     raise ValueError(f"Directed flags mismatch in {ds_dir}")
-            with np.load(ds_dir / "spi_mpis.npz") as npz:
-                mpis = {k: npz[k] for k in npz.files}
             samples.append(
                 {
                     "label": meta["mts_class"],
-                    "mpis": mpis,
                     "M": meta.get("M"),
                     "T": meta.get("T"),
                     "path": ds_dir,
@@ -211,10 +208,12 @@ def build_spi_spi_features(
     split_directed: bool = False,
     metric: MetricType = "spearman",
 ) -> tuple[np.ndarray, List[str]]:
+    with np.load(sample["path"] / "spi_mpis.npz") as npz:
+        mpis = {k: npz[k] for k in npz.files}
     vectors: List[np.ndarray] = []
     names: List[str] = []
     for name, directed in zip(spi_order, directed_flags):
-        entries = _edge_vectors(name, sample["mpis"][name], directed, split_directed)
+        entries = _edge_vectors(name, mpis[name], directed, split_directed)
         for pseudo_name, vec in entries:
             names.append(pseudo_name)
             vectors.append(vec)

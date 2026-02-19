@@ -1,0 +1,55 @@
+base_output_dir: data/sin_mts_test/
+pyspi_config: configs/pyspi/cases/r_rho_mi.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  T_values: [200, 400, 800, 1600]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7]
+
+# Pure-regime classes: each channel gets the same regime.
+# "M" in base_params is a sentinel resolved to the actual M at spec-expansion time.
+mts_classes:
+  - name: "SinMTS-Fixed-Linear"
+    labels: ["sinusoidal", "fixed", "linear"]
+    generator: "sin_mts"
+    M_values: [3, 9, 18, 27]
+    base_params:
+      regime: "fixed"
+      n_linear: "M"   # all channels linear
+      n_monotonic: 0
+      noise_std: 0.05
+      zscore: false
+
+  - name: "SinMTS-Fixed-Monotonic"
+    labels: ["sinusoidal", "fixed", "monotonic"]
+    generator: "sin_mts"
+    M_values: [3, 9, 18, 27]
+    base_params:
+      regime: "fixed"
+      n_linear: 0
+      n_monotonic: "M"  # all channels monotonic
+      noise_std: 0.05
+      zscore: false
+
+  - name: "SinMTS-Fixed-NonMonotonic"
+    labels: ["sinusoidal", "fixed", "non-monotonic"]
+    generator: "sin_mts"
+    M_values: [3, 9, 18, 27]
+    base_params:
+      regime: "fixed"
+      n_linear: 0
+      n_monotonic: 0    # all channels non-monotonic (nm = M - 0 - 0)
+      noise_std: 0.05
+      zscore: false
+
+  # - name: "SinMTS-Random"
+  #   labels: ["sinusoidal", "random"]
+  #   generator: "sin_mts"
+  #   base_params:
+  #     regime: "random"
+  #     noise_std: 0.05
+  #     zscore: false
