@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import numpy as np
 
 from ._common import _maybe_zscore, _resolve_rng
@@ -206,13 +207,22 @@ def _path_to_mapping(path: np.ndarray, T: int) -> np.ndarray:
     return m
 
 
+@dataclass
+class WarpingInternals:
+    """Internals returned by generate_warping_mts when return_internals=True."""
+    mother: np.ndarray                    # (T,) mother signal before channel noise
+    is_warped: list                       # (M,) True if channel is a warped copy
+    paths: list                           # (M,) warping path array or None per channel
+    mappings: list                        # (M,) time-index mapping array or None per channel
+
+
 def generate_warping_mts(
     M: int,
     T: int,
-    regime: str = "fixed",
+    warping_channel_regime: str = "fixed",
     n_noisy: int | None = None,
     n_warped: int | None = None,
-    warping_regime: str = "rebound",
+    warping_path_regime: str = "rebound",
     warp_p: float = 0.5,
     warp_p_step: float = 0.5,
     warp_step: int = 1,
@@ -222,9 +232,11 @@ def generate_warping_mts(
     zscore: bool = False,
     _regime_seed: int | None = None,
     rng=None,
-) -> np.ndarray:
+    mother: np.ndarray | None = None,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, WarpingInternals]:
     """
-    M-channel MTS built from a shared AR(1) mother signal. Each channel is either
+    M-channel MTS built from a shared mother signal. Each channel is either
     a noisy copy of the mother or a time-warped copy with added noise.
 
     Channel assignment
@@ -234,7 +246,7 @@ def generate_warping_mts(
     "random" : each channel independently and uniformly assigned noisy or warped (50/50).
                Pass _regime_seed for reproducible assignment independent of data noise seed.
 
-    Warping regimes (warping_regime)
+    Warping regimes (warping_path_regime)
     ---------------------------------
     "walk"      : fixed step size warp_step, uniform random direction.
     "geometric" : step ~ Geometric(warp_p), uniform random direction.
@@ -245,57 +257,74 @@ def generate_warping_mts(
     ----------
     M              : number of channels
     T              : time steps
-    regime         : "fixed" | "random"  — channel assignment
+    warping_channel_regime : "fixed" | "random"  — channel assignment
     n_noisy        : noisy channels   (fixed only; default M // 2)
     n_warped       : warped channels  (fixed only; default M - M // 2)
-    warping_regime : warp path type   "walk" | "geometric" | "rebound"
-    warp_p         : Geometric parameter       (geometric, rebound)
+    warping_path_regime : warp path type   "walk" | "geometric" | "rebound"
+    warp_p         : Geometric parameter controlling step size       (geometric, rebound)
     warp_p_step    : L-excursion probability   (rebound only)
     warp_step      : fixed step size           (walk only)
     noise_std      : noise std added to every channel
-    ar1_a          : AR(1) autoregressive coefficient for mother signal
-    ar1_noise_std  : noise std of the mother signal
+    ar1_a          : AR(1) autoregressive coefficient for mother signal (ignored if mother provided)
+    ar1_noise_std  : noise std of the mother signal (ignored if mother provided)
     zscore         : z-score output
     _regime_seed   : seed for channel assignment RNG  (random regime)
     rng            : RNG instance or int seed
+    mother         : optional 1D array of length T to use as the mother signal instead of AR(1)
+    return_internals : if True, return (data, WarpingInternals) instead of just data
 
-    Returns shape (T, M).
+    Returns shape (T, M), or tuple of ((T, M), WarpingInternals) when return_internals=True.
     Slug convention: M<M>_T<T>_I<I>_m<n_noisy>_w<n_warped>
     """
     rng = _resolve_rng(None, rng)
 
-    # Mother signal: AR(1)
-    mother = np.zeros(T)
-    for t in range(1, T):
-        mother[t] = ar1_a * mother[t - 1] + rng.normal(0, ar1_noise_std)
+    # Mother signal
+    if mother is not None:
+        mother = np.asarray(mother, dtype=float)
+        if mother.ndim != 1 or len(mother) != T:
+            raise ValueError(f"mother must be 1D of length T={T}, got shape {mother.shape}")
+    else:
+        mother = np.zeros(T)
+        for t in range(1, T):
+            mother[t] = ar1_a * mother[t - 1] + rng.normal(0, ar1_noise_std)
 
     # Channel assignment
-    if regime == "fixed":
+    if warping_channel_regime == "fixed":
         nm = int(n_noisy)  if n_noisy  is not None else M // 2
         nw = int(n_warped) if n_warped is not None else M - nm
         if nm + nw != M:
             raise ValueError(f"n_noisy ({nm}) + n_warped ({nw}) != M ({M}).")
         is_warped = [False] * nm + [True] * nw
-    elif regime == "random":
+    elif warping_channel_regime == "random":
         regime_rng = np.random.default_rng(_regime_seed) if _regime_seed is not None else rng
         is_warped = [bool(regime_rng.integers(2)) for _ in range(M)]
     else:
-        raise ValueError(f"regime must be 'fixed' or 'random', got {regime!r}")
+        raise ValueError(f"warping_channel_regime must be 'fixed' or 'random', got {warping_channel_regime!r}")
 
     data = np.empty((T, M))
+    paths: list = []
+    mappings: list = []
     for i in range(M):
         if is_warped[i]:
-            path = _warp_path(T, warping_regime, step=warp_step, p=warp_p, p_step=warp_p_step, rng=rng)
+            path = _warp_path(T, warping_path_regime, step=warp_step, p=warp_p, p_step=warp_p_step, rng=rng)
             mapping = _path_to_mapping(path, T)
             data[:, i] = mother[mapping] + rng.normal(0, noise_std, T)
+            paths.append(path)
+            mappings.append(mapping)
         else:
             data[:, i] = mother + rng.normal(0, noise_std, T)
+            identity = np.arange(T)
+            paths.append(np.column_stack([identity, identity]))
+            mappings.append(identity)
 
-    return _maybe_zscore(data, zscore=zscore)
+    result = _maybe_zscore(data, zscore=zscore)
+    if return_internals:
+        return result, WarpingInternals(mother=mother, is_warped=is_warped, paths=paths, mappings=mappings)
+    return result
 
 
 _SIN_INTERVALS = {
-    "linear":        (-np.pi / 16, np.pi / 16),
+    "linear":        (-np.pi / 16, np.pi / 16), # for a \in [32, 16, 8, 4] = [0.16%, 0.65%, 2.6%, 11%] max deviation from linear (| sinx - x| )
     "monotonic":     (-np.pi / 2,  np.pi / 2),
     "non-monotonic": (-np.pi,       np.pi),
 }
@@ -354,4 +383,91 @@ def generate_sin_mts(
     _sin_channels(data, channel_regimes, T, noise_std, rng)
     return _maybe_zscore(data, zscore=zscore)
 
+
+def generate_sin_mts_mother(
+    M: int,
+    T: int,
+    regime: str = "fixed",
+    n_linear: int | None = None,
+    n_monotonic: int | None = None,
+    noise_std: float = 0.05,
+    ar1_a: float = 0.8,
+    ar1_noise_std: float = 1.0,
+    zscore: bool = False,
+    _regime_seed: int | None = None,
+    rng=None,
+    mother: np.ndarray | None = None,
+) -> np.ndarray:
+    """
+    M sinusoidal channels derived from a shared AR(1) mother signal.
+
+    The mother is min-max scaled to [0,1], then each channel applies
+    g(x) = sin((b-a)*x + a) for its regime-specific interval [a,b]:
+      linear:        [a,b] = [-pi/16, pi/16]  — approximately linear
+      monotonic:     [a,b] = [-pi/2,  pi/2]   — strictly increasing
+      non-monotonic: [a,b] = [-pi,    pi]     — full cycle
+
+    Channel assignment:
+      regime='fixed':  first n_linear channels linear, next n_monotonic monotonic,
+                       remaining non-monotonic. Defaults: M//3 each.
+      regime='random': each channel randomly assigned (uniform over 3 regimes).
+                       Pass _regime_seed for reproducible assignment independent of noise seed.
+
+    Parameters
+    ----------
+    M             : number of channels
+    T             : time steps
+    regime        : 'fixed' | 'random'
+    n_linear      : linear channels (fixed only; default M//3)
+    n_monotonic   : monotonic channels (fixed only; default M//3)
+    noise_std     : per-channel i.i.d. noise std added after transformation
+    ar1_a         : AR(1) autoregressive coefficient for mother signal
+    ar1_noise_std : driving noise std of the mother signal
+    zscore        : z-score output
+    _regime_seed  : seed for random regime assignment (random regime only)
+    rng           : RNG instance or int seed
+    mother        : optional 1D array of length T to use as mother instead of AR(1)
+
+    Returns shape (T, M).
+    Slug convention: M<M>_T<T>_I<I>_l-<n_linear>_m-<n_monotonic>_nm-<n_nonmonotonic>
+    """
+    rng = _resolve_rng(None, rng)
+
+    # Mother signal
+    if mother is not None:
+        mother = np.asarray(mother, dtype=float)
+        if mother.ndim != 1 or len(mother) != T:
+            raise ValueError(f"mother must be 1D of length T={T}, got shape {mother.shape}")
+    else:
+        m = np.zeros(T)
+        for t in range(1, T):
+            m[t] = ar1_a * m[t - 1] + rng.normal(0, ar1_noise_std)
+        mother = m
+
+    # Min-max scale to [0, 1]
+    lo, hi = mother.min(), mother.max()
+    m_bar = np.zeros(T) if hi == lo else (mother - lo) / (hi - lo)
+
+    # Channel regime assignment
+    if regime == "fixed":
+        nl = int(n_linear) if n_linear is not None else M // 3
+        nm = int(n_monotonic) if n_monotonic is not None else M // 3
+        nnm = M - nl - nm
+        if nnm < 0:
+            raise ValueError(f"n_linear ({nl}) + n_monotonic ({nm}) > M ({M}).")
+        channel_regimes = ["linear"] * nl + ["monotonic"] * nm + ["non-monotonic"] * nnm
+    elif regime == "random":
+        keys = list(_SIN_INTERVALS.keys())
+        regime_rng = np.random.default_rng(_regime_seed) if _regime_seed is not None else rng
+        channel_regimes = [keys[i] for i in regime_rng.integers(0, 3, size=M)]
+    else:
+        raise ValueError(f"Unknown regime '{regime}'. Expected 'fixed' or 'random'.")
+
+    data = np.empty((T, M))
+    for i, reg in enumerate(channel_regimes):
+        a, b = _SIN_INTERVALS[reg]
+        y = (b - a) * m_bar + a
+        data[:, i] = np.sin(y) + rng.normal(0, noise_std, T)
+
+    return _maybe_zscore(data, zscore=zscore)
 

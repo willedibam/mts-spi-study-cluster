@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import ast
 import os
+from datetime import datetime
 from hashlib import blake2s
 import sys
 import time
@@ -141,6 +142,10 @@ def main(argv: List[str] | None = None) -> None:
         config.normalise = bool(args.normalise)
     if args.threads:
         config.threads = args.threads
+    _run_ts = datetime.now().strftime("%y%m%d_%H%M%S")
+    config.base_output_dir = config.base_output_dir.parent / (
+        config.base_output_dir.name + f"_{_run_ts}"
+    )
     mapping = DatasetMapping(config)
     if args.list:
         print(f"[INFO] Listing {len(mapping)} dataset combinations from {to_relative(config_path)}.")

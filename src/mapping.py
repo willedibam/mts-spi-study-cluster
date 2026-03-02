@@ -22,6 +22,20 @@ def _sin_mts_pre_seed(M: int, T: int, instance: int, mts_class: str) -> int:
     return int.from_bytes(digest, "big") % (2**32 - 1) or 1
 
 
+def _sin_mts_mother_pre_seed(M: int, T: int, instance: int, mts_class: str) -> int:
+    """Stable seed for sin_mts_mother random regime assignment, independent of the dataset slug."""
+    payload = f"sin_mts_mother_regime|{M}|{T}|{instance}|{mts_class}".encode()
+    digest = hashlib.blake2s(payload, digest_size=8).digest()
+    return int.from_bytes(digest, "big") % (2**32 - 1) or 1
+
+
+def _warping_mts_pre_seed(M: int, T: int, instance: int, mts_class: str) -> int:
+    """Stable seed for warping_mts random channel assignment, independent of the dataset slug."""
+    payload = f"warping_mts_regime|{M}|{T}|{instance}|{mts_class}".encode()
+    digest = hashlib.blake2s(payload, digest_size=8).digest()
+    return int.from_bytes(digest, "big") % (2**32 - 1) or 1
+
+
 def _as_path(path_value: str | Path) -> Path:
     path = Path(path_value)
     if path.is_absolute():
@@ -353,7 +367,7 @@ def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
     if spec.source == "real":
         return spec.dataset_slug or None
     base = f"M{spec.M}_T{spec.T}_I{spec.instance}"
-    if spec.generator == "sin_mts":
+    if spec.generator in {"sin_mts", "sin_mts_mother"}:
         regime = str(spec.generator_params.get("regime", "fixed"))
         if regime == "fixed":
             n_linear_raw = spec.generator_params.get("n_linear")
@@ -363,7 +377,12 @@ def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
             nnm = spec.M - nl - nm
             return f"{base}_l-{nl}_m-{nm}_nm-{nnm}"
         if regime == "random":
-            pre_seed = _sin_mts_pre_seed(spec.M, spec.T, spec.instance, spec.mts_class)
+            pre_seed_fn = (
+                _sin_mts_mother_pre_seed
+                if spec.generator == "sin_mts_mother"
+                else _sin_mts_pre_seed
+            )
+            pre_seed = pre_seed_fn(spec.M, spec.T, spec.instance, spec.mts_class)
             regime_rng = np.random.default_rng(pre_seed)
             keys = ["linear", "monotonic", "non-monotonic"]
             assignments = [keys[i] for i in regime_rng.integers(0, 3, size=spec.M)]
@@ -371,6 +390,22 @@ def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
             m = assignments.count("monotonic")
             nm = assignments.count("non-monotonic")
             return f"{base}_l-{l}_m-{m}_nm-{nm}"
+        return None
+    if spec.generator == "warping_mts":
+        regime = str(spec.generator_params.get("warping_channel_regime", "fixed"))
+        if regime == "fixed":
+            n_noisy_raw = spec.generator_params.get("n_noisy")
+            n_warped_raw = spec.generator_params.get("n_warped")
+            nm = int(n_noisy_raw) if n_noisy_raw is not None else spec.M // 2
+            nw = int(n_warped_raw) if n_warped_raw is not None else spec.M - nm
+            return f"{base}_m-{nm}_w-{nw}"
+        if regime == "random":
+            pre_seed = _warping_mts_pre_seed(spec.M, spec.T, spec.instance, spec.mts_class)
+            regime_rng = np.random.default_rng(pre_seed)
+            is_warped = [bool(regime_rng.integers(2)) for _ in range(spec.M)]
+            nw = sum(is_warped)
+            nm = spec.M - nw
+            return f"{base}_m-{nm}_w-{nw}"
         return None
     class_name = spec.mts_class.lower()
     if class_name.startswith("cml"):
@@ -409,6 +444,14 @@ def _apply_dataset_slug(spec: DatasetSpec) -> None:
     spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
     if spec.generator == "sin_mts" and spec.generator_params.get("regime") == "random":
         spec.generator_params["_regime_seed"] = _sin_mts_pre_seed(
+            spec.M, spec.T, spec.instance, spec.mts_class
+        )
+    if spec.generator == "sin_mts_mother" and spec.generator_params.get("regime") == "random":
+        spec.generator_params["_regime_seed"] = _sin_mts_mother_pre_seed(
+            spec.M, spec.T, spec.instance, spec.mts_class
+        )
+    if spec.generator == "warping_mts" and spec.generator_params.get("warping_channel_regime") == "random":
+        spec.generator_params["_regime_seed"] = _warping_mts_pre_seed(
             spec.M, spec.T, spec.instance, spec.mts_class
         )
 

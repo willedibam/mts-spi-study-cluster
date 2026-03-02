@@ -1,0 +1,286 @@
+base_output_dir: data/dtw_euclidean/dtw_euclidean_vary-w/
+pyspi_config: configs/pyspi/cases/dtw_euclidean.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+defaults:
+  M_values:
+  - 16
+  T_values:
+  - 100
+  instances: 30
+mts_classes:
+- name: fixed_n-16_w-0
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 16
+    n_warped: 0
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-15_w-1
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 15
+    n_warped: 1
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-14_w-2
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 14
+    n_warped: 2
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-13_w-3
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 13
+    n_warped: 3
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-12_w-4
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 12
+    n_warped: 4
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-11_w-5
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 11
+    n_warped: 5
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-10_w-6
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 10
+    n_warped: 6
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-9_w-7
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 9
+    n_warped: 7
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-8_w-8
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 8
+    n_warped: 8
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-7_w-9
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 7
+    n_warped: 9
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-6_w-10
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 6
+    n_warped: 10
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-5_w-11
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 5
+    n_warped: 11
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-4_w-12
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 4
+    n_warped: 12
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-3_w-13
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 3
+    n_warped: 13
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-2_w-14
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 2
+    n_warped: 14
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-1_w-15
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 1
+    n_warped: 15
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false
+- name: fixed_n-0_w-16
+  labels:
+  - warped
+  - fixed
+  generator: warping_mts
+  base_params:
+    warping_channel_regime: fixed
+    n_noisy: 0
+    n_warped: 16
+    warping_path_regime: rebound
+    warp_p: 0.5
+    warp_p_step: 0.5
+    noise_std: 0.1
+    ar1_a: 0.8
+    ar1_noise_std: 1.0
+    zscore: false

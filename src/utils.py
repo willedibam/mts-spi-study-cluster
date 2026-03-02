@@ -65,7 +65,7 @@ def slugify(text: str, fallback: str = "variant") -> str:
 
 
 def class_dir_name(name: str) -> str:
-    safe = re.sub(r"[^A-Za-z0-9]+", "_", name).strip("_")
+    safe = re.sub(r"[^A-Za-z0-9\-\.]+", "_", name).strip("_")
     return safe or "class"
 
 

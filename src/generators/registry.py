@@ -25,6 +25,7 @@ from .linear import (
     generate_gaussian_noise,
     generate_gbm,
     generate_sin_mts,
+    generate_sin_mts_mother,
     generate_varma,
     generate_varma_shuffled,
     generate_warping_mts,
@@ -33,6 +34,7 @@ from .pde import generate_wave_1d, generate_wave_2d
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "sin_mts": generate_sin_mts,
+    "sin_mts_mother": generate_sin_mts_mother,
     "warping_mts": generate_warping_mts,
     "varma": generate_varma,
     "var": generate_varma,

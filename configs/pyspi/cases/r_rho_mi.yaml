@@ -1,3 +1,4 @@
+# Basic statistics
 .statistics.basic:
   # Covariance
   Covariance:
@@ -23,20 +24,9 @@
     configs:
       - squared: False
 
-  # Kendall's rank correlation coefficient
-  KendallTau:
-    labels:
-      - undirected
-      - nonlinear
-      - signed
-      - bivariate
-      - contemporaneous
-    dependencies:
-    configs:
-      - squared: False
-
-    
+# Information-theoretic statistics
 .statistics.infotheory:
+  # Mutual information
   MutualInfo:
     labels:
       - undirected
@@ -58,3 +48,4 @@
 
       - estimator: kernel
         kernel_width: 0.25
+

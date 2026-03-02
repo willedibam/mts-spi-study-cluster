@@ -6,6 +6,7 @@ import json
 import re
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 from matplotlib.colors import Normalize
 from scipy.stats import spearmanr, zscore
@@ -706,7 +707,7 @@ def plot_spi_space_individual(
 
     spi_x, spi_y = spis
 
-    if any(ch in dataset_path for ch in "*?[]"):
+    if any(ch in str(dataset_path) for ch in "*?[]"):
         matches = sorted(Path(".").glob(dataset_path))
         if not matches:
             raise FileNotFoundError(
@@ -794,12 +795,158 @@ def plot_spi_space_individual(
         y_label = f"{spi_y} ({direction_label})" if directed_y else spi_y
         g.set_axis_labels(x_label, y_label)
         title_slug = "/".join(dataset_dir.parts[-2:])
-        g.fig.suptitle(f"{title_slug}\n$\\rho = {rho:.2f}$", y=1.02)
+        g.fig.suptitle(title_slug, y=1.02)
+        g.ax_joint.text(
+            0.97, 0.97, f"$\\rho = {rho:.2f}$",
+            transform=g.ax_joint.transAxes,
+            ha="right", va="top",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.7, pad=2),
+        )
 
         plotted = True
 
     if plotted:
         plt.show()
+
+
+def plot_spi_space_individual_embed(
+    dataset_path: str,
+    spis: list[str],
+    ax,
+    *,
+    split_directed: bool = False,
+    marginals: bool = True,
+    marginal_kde: bool = True,
+    main_spines: bool = True,
+) -> None:
+    """
+    Same visual output as plot_spi_space_individual, but embeds into an existing subplot axes.
+
+    When marginals=True, the provided ax must be a subplot cell (created via plt.subplots or
+    GridSpec). It will be removed and replaced by an inner 2x2 GridSpecFromSubplotSpec
+    replicating the jointplot layout: histogram (+ optional KDE) on top (x) and right (y),
+    scatter + regression line in the center.
+
+    When marginals=False, the provided ax is used directly for the scatter plot only.
+
+    NOTE: split_directed=True is not supported; only the symmetrised single-direction
+    case is rendered. Use plot_spi_space_individual for directed multi-plot cases.
+
+    Args:
+        dataset_path: Path to dataset directory.
+        spis: Exactly two SPI names.
+        ax: Matplotlib subplot axes to embed into.
+        split_directed: Ignored (symmetrised only); kept for API parity.
+        marginals: If True, show marginal histograms on top and right.
+        marginal_kde: If True, overlay a smoothed KDE on the marginal histograms.
+        main_spines: If True (default), all four spines are shown on the scatter axes.
+                     If False, top and right spines are hidden.
+    """
+    from matplotlib.gridspec import GridSpecFromSubplotSpec
+
+    if len(spis) != 2:
+        raise ValueError("Expects exactly two SPI names.")
+
+    spi_x, spi_y = spis
+
+    if any(ch in str(dataset_path) for ch in "*?[]"):
+        matches = sorted(Path(".").glob(str(dataset_path)))
+        if not matches:
+            raise FileNotFoundError(f"No dataset matched pattern '{dataset_path}'")
+        if len(matches) > 1:
+            raise ValueError(f"Pattern '{dataset_path}' matched multiple datasets")
+        dataset_dir = matches[0]
+    else:
+        dataset_dir = Path(dataset_path)
+
+    archive = dataset_dir / "spi_mpis.npz"
+    if not archive.exists():
+        raise FileNotFoundError(f"Missing archive: {archive}")
+    meta_path = dataset_dir / "meta.json"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing meta.json: {meta_path}")
+    meta = load_json(meta_path)
+    spi_meta = meta.get("pyspi", {}).get("spis", [])
+    directed_map = {
+        entry.get("name"): bool(entry.get("directed", False))
+        for entry in spi_meta
+        if isinstance(entry, dict) and entry.get("name")
+    }
+    missing_meta = [name for name in (spi_x, spi_y) if name not in directed_map]
+    if missing_meta:
+        raise KeyError(f"Missing directed metadata for {missing_meta} in {meta_path}")
+
+    with np.load(archive) as npz:
+        if spi_x not in npz or spi_y not in npz:
+            raise KeyError(f"Missing SPIs in archive: {archive}")
+        arr_x = np.asarray(npz[spi_x], float)
+        arr_y = np.asarray(npz[spi_y], float)
+
+    arr_x = 0.5 * (arr_x + arr_x.T)
+    arr_y = 0.5 * (arr_y + arr_y.T)
+    upper_mask = np.triu(np.ones(arr_x.shape, dtype=bool), k=1)
+    x_vals, y_vals = arr_x[upper_mask], arr_y[upper_mask]
+    valid = np.isfinite(x_vals) & np.isfinite(y_vals)
+    x_vals, y_vals = x_vals[valid], y_vals[valid]
+
+    rho, _ = spearmanr(x_vals, y_vals)
+    title_slug = "/".join(dataset_dir.parts[-2:])
+
+    if marginals:
+        fig = ax.get_figure()
+        ss = ax.get_subplotspec()
+        ax.remove()
+
+        inner = GridSpecFromSubplotSpec(
+            2, 2, subplot_spec=ss,
+            height_ratios=[1, 4], width_ratios=[4, 1],
+            hspace=0.05, wspace=0.05,
+        )
+        ax_joint = fig.add_subplot(inner[1, 0])
+        ax_marg_x = fig.add_subplot(inner[0, 0], sharex=ax_joint)
+        ax_marg_y = fig.add_subplot(inner[1, 1], sharey=ax_joint)
+        ax_corner = fig.add_subplot(inner[0, 1])
+        ax_corner.axis("off")
+
+        # Marginals: histogram + optional KDE
+        sns.histplot(x=x_vals, ax=ax_marg_x, stat="density", kde=marginal_kde,
+                     color="#1f77b4", fill=True, linewidth=0.8)
+        sns.histplot(y=y_vals, ax=ax_marg_y, stat="density", kde=marginal_kde,
+                     color="#1f77b4", fill=True, linewidth=0.8)
+
+        # Top marginal: keep bottom spine only
+        ax_marg_x.spines[["top", "left", "right"]].set_visible(False)
+        ax_marg_x.tick_params(left=False, labelleft=False)
+        plt.setp(ax_marg_x.get_xticklabels(), visible=False)
+        ax_marg_x.set_xlabel("")
+        ax_marg_x.set_ylabel("")
+
+        # Right marginal: keep left spine only
+        ax_marg_y.spines[["top", "right", "bottom"]].set_visible(False)
+        ax_marg_y.tick_params(bottom=False, labelbottom=False)
+        plt.setp(ax_marg_y.get_yticklabels(), visible=False)
+        ax_marg_y.set_xlabel("")
+        ax_marg_y.set_ylabel("")
+
+        ax_scatter = ax_joint
+    else:
+        ax_scatter = ax
+
+    # Scatter + regression
+    ax_scatter.scatter(x_vals, y_vals, s=15, alpha=0.6, color="#1f77b4")
+    sns.regplot(x=x_vals, y=y_vals, ax=ax_scatter, scatter=False, color="#d62728", ci=None)
+    ax_scatter.set_xlabel(spi_x)
+    ax_scatter.set_ylabel(spi_y)
+    ax_scatter.set_title(title_slug)
+    ax_scatter.text(
+        0.205, 0.97, f"$\\rho={rho:.2f}$",
+        transform=ax_scatter.transAxes,
+        ha="right", va="top", fontsize=15,
+        bbox=dict(facecolor="white", edgecolor="gray", alpha=0.7, pad=5),
+    )
+    if not main_spines:
+        ax_scatter.spines[["top", "right"]].set_visible(False)
+
 
 def plot_spi_space_recursive(
     dataset_path: str,
@@ -922,7 +1069,13 @@ def plot_spi_space_recursive(
             y_label = f"{spi_y} ({direction_label})" if directed_y else spi_y
             g.set_axis_labels(x_label, y_label)
             title_slug = "/".join(dataset_dir.parts[-2:])
-            g.fig.suptitle(f"{title_slug}\n$\\rho = {rho:.2f}$", y=1.02)
+            g.fig.suptitle(title_slug, y=1.02)
+            g.ax_joint.text(
+                0.97, 0.97, f"$\\rho = {rho:.2f}$",
+                transform=g.ax_joint.transAxes,
+                ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", alpha=0.7, pad=2),
+            )
 
             for fmt in formats:
                 out_path = output_dir / f"{base_name}{dir_suffix}.{fmt}"
@@ -1116,26 +1269,27 @@ def plot_pca(
     size_col: str = "M",
     sizes: tuple[int, int] = (20, 160),
     facecolor: str = "#282a36", #old: #2C2C34
+    kde: bool = True,
 ) -> np.ndarray:
     """
     PCA embedding + scatter/KDE plot.
     """
     apply_plot_style()
-    
+
     xs = StandardScaler().fit_transform(x)
     pca = PCA(n_components=n_components, random_state=random_state)
     embedding = pca.fit_transform(xs)
-    
+
     var_ratios = pca.explained_variance_ratio_
-    var_pc1 = var_ratios[0] 
-    var_pc2 = var_ratios[1] 
+    var_pc1 = var_ratios[0]
+    var_pc2 = var_ratios[1]
 
     meta_df = meta_df.copy()
     meta_df["pca_x"] = embedding[:, 0]
     meta_df["pca_y"] = embedding[:, 1]
 
     fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
-    
+
     sns.scatterplot(
         data=meta_df,
         x="pca_x",
@@ -1146,8 +1300,23 @@ def plot_pca(
         sizes=sizes,
         alpha=0.8,
         ax=ax,
-        legend="full", 
+        legend="full",
     )
+
+    if kde:
+        sns.kdeplot(
+            data=meta_df,
+            x="pca_x",
+            y="pca_y",
+            hue=hue,
+            palette="pastel",
+            levels=10,
+            thresh=0.05,
+            fill=True,
+            alpha=0.5,
+            ax=ax,
+            legend=False,
+        )
 
     _clean_legend(ax, hue, size_col)
     
@@ -1599,7 +1768,136 @@ def plot_tsne(
     ax.set_ylabel("t-SNE-2")
     ax.set_box_aspect(1)
     ax.set_facecolor(facecolor)
-    
+
     plt.tight_layout()
     plt.show()
     return embedding
+
+
+def plot_spi_corr_sweep(
+    dataset_path: Path | str,
+    spi_pair: list[str],
+    *,
+    folder_template: str,
+    x_var: str,
+    x_transform=None,
+    metric: str = "spearman",
+    hue: bool = True,
+    title: str | None = None,
+    xlabel: str | None = None,
+    ylabel: str | None = None,
+    ax=None,
+) -> pd.DataFrame:
+    """
+    Plot corr(spi_pair[0], spi_pair[1]) as a function of a swept parameter,
+    walking all datasets under dataset_path/<class_dir>/<dataset_dir>.
+
+    For each dataset dir whose name matches `folder_template`, parses named
+    numeric variables (int or float) and uses x_var as the x-axis value.
+
+    Args:
+        dataset_path: Root dir, e.g. project_root() / "data/dtw_euclidean_vary-p".
+        spi_pair: Exactly two SPI names, e.g. ["dtw", "pdist_euclidean"].
+        folder_template: Template using <varname> placeholders (ints or floats),
+            e.g. "w-<w>_p-<p>" matches folders like "M16_T100_I5_...w-16_p-0.1".
+        x_var: Name of the parsed variable to use as the x-axis.
+        x_transform: Optional callable(dict[str, float]) -> float to derive the
+            x value from all parsed vars, e.g. for a proportion:
+            lambda g: g["w"] / (g["w"] + g["m"]).
+            If None, uses groups[x_var] directly.
+        metric: "spearman" (default) or "pearson".
+        hue: If True, color lines by the intermediate class subdirectory name.
+        title: Axes title. If None, no title is set.
+        xlabel: x-axis label. If None, no label is set.
+        ylabel: y-axis label. If None, no label is set.
+        ax: Matplotlib axes to draw on. If None, uses plt.gca().
+
+    Returns:
+        DataFrame with columns [x, correlation, mts_class].
+    """
+    if len(spi_pair) != 2:
+        raise ValueError("spi_pair must contain exactly two SPI names.")
+    if metric not in ("spearman", "pearson"):
+        raise ValueError("metric must be 'spearman' or 'pearson'.")
+
+    spi_x, spi_y = spi_pair
+    root = Path(dataset_path)
+    if not root.exists():
+        raise FileNotFoundError(f"dataset_path not found: {root}")
+
+    # Convert "w-<w>_p-<p>" -> regex "w-(?P<w>[\d.]+)_p-(?P<p>[\d.]+)"
+    regex = re.sub(r"<(\w+)>", lambda m: f"(?P<{m.group(1)}>[\\d.]+)", folder_template)
+    pat = re.compile(regex)
+
+    rows: list[dict] = []
+    for class_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        for dataset_dir in sorted(p for p in class_dir.iterdir() if p.is_dir()):
+            m = pat.search(f"{class_dir.name}/{dataset_dir.name}")
+            if m is None:
+                continue
+
+            groups = {k: float(v) for k, v in m.groupdict().items()}
+            if x_var not in groups:
+                raise KeyError(f"x_var '{x_var}' not in template groups: {list(groups)}")
+
+            x = x_transform(groups) if x_transform is not None else groups[x_var]
+
+            npz_path = dataset_dir / "spi_mpis.npz"
+            if not npz_path.exists():
+                continue
+
+            with np.load(npz_path) as npz:
+                if spi_x not in npz or spi_y not in npz:
+                    continue
+                arr_x = np.asarray(npz[spi_x], float)
+                arr_y = np.asarray(npz[spi_y], float)
+
+            if arr_x.shape != arr_y.shape or arr_x.ndim != 2:
+                continue
+
+            arr_x = 0.5 * (arr_x + arr_x.T)
+            arr_y = 0.5 * (arr_y + arr_y.T)
+            mask = np.triu(np.ones(arr_x.shape, dtype=bool), k=1)
+            vec_x, vec_y = arr_x[mask], arr_y[mask]
+            valid = np.isfinite(vec_x) & np.isfinite(vec_y)
+            if valid.sum() < 2:
+                continue
+
+            vec_x, vec_y = vec_x[valid], vec_y[valid]
+            if metric == "spearman":
+                corr = float(spearmanr(vec_x, vec_y).correlation)
+            else:
+                corr = float(np.corrcoef(vec_x, vec_y)[0, 1])
+
+            if not np.isfinite(corr):
+                continue
+
+            rows.append({"x": x, "correlation": corr, "mts_class": class_dir.name})
+
+    if not rows:
+        raise ValueError(
+            f"No matching datasets found under {root} with template '{folder_template}'"
+        )
+
+    df = pd.DataFrame(rows)
+
+    if ax is None:
+        ax = plt.gca()
+
+    sns.lineplot(
+        data=df,
+        x="x",
+        y="correlation",
+        hue="mts_class" if hue else None,
+        ax=ax,
+        errorbar=("ci", 95),
+        err_style="band",
+    )
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
+    if title is not None:
+        ax.set_title(title)
+
+    return df

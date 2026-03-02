@@ -1,0 +1,64 @@
+base_output_dir: data/r_rho_mi/
+pyspi_config: configs/pyspi/cases/r_rho_mi.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [16]
+  T_values: [100]
+
+# Pure-regime classes: each channel gets the same regime.
+# "M" in base_params is a sentinel resolved to the actual M at spec-expansion time.
+mts_classes:
+  - name: "fixed-linear"
+    labels: ["sinusoidal-mother", "fixed", "linear"]
+    generator: "sin_mts_mother"
+    instances: 100
+    base_params:
+      regime: "fixed"
+      n_linear: "M"   # all channels linear
+      n_monotonic: 0
+      noise_std: 0.02
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: false
+
+  - name: "fixed-monotonic"
+    labels: ["sinusoidal-mother", "fixed", "monotonic"]
+    generator: "sin_mts_mother"
+    instances: 100
+    base_params:
+      regime: "fixed"
+      n_linear: 0
+      n_monotonic: "M"  # all channels monotonic
+      noise_std: 0.05
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: false
+
+  - name: "fixed-nonmonotonic"
+    labels: ["sinusoidal-mother", "fixed", "non-monotonic"]
+    generator: "sin_mts_mother"
+    instances: 100
+    base_params:
+      regime: "fixed"
+      n_linear: 0
+      n_monotonic: 0    # all channels non-monotonic (nnm = M - 0 - 0)
+      noise_std: 0.05
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: false
+
+  - name: "random"
+    labels: ["sinusoidal-mother", "random"]
+    generator: "sin_mts_mother"
+    instances: 100
+    base_params:
+      regime: "random"
+      noise_std: 0.05
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: false
