@@ -1,0 +1,51 @@
+base_output_dir: data/topology/topology
+pyspi_config: configs/pyspi/cases/eeml.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [16]
+  T_values: [500]
+
+# Topology classification: 4 coupling structures, same linear/Gaussian character.
+# The only difference is the NETWORK STRUCTURE of coupling.
+mts_classes:
+  - name: "topology-uniform"
+    labels: ["topology", "uniform"]
+    generator: "topology_uniform"
+    instances: 50
+    base_params:
+      ar_coeff: 0.95
+      sigma: 0.1
+      zscore: true
+
+  - name: "topology-hub-spoke"
+    labels: ["topology", "hub-spoke"]
+    generator: "topology_hub_spoke"
+    instances: 50
+    base_params:
+      ar_coeff: 0.95
+      sigma: 0.1
+      zscore: true
+
+  - name: "topology-chain"
+    labels: ["topology", "chain"]
+    generator: "topology_chain"
+    instances: 50
+    base_params:
+      ar_coeff: 0.95
+      sigma: 0.1
+      zscore: true
+
+  - name: "topology-clustered"
+    labels: ["topology", "clustered"]
+    generator: "topology_clustered"
+    instances: 50
+    base_params:
+      ar_coeff: 0.95
+      sigma: 0.1
+      inter_cluster_noise: 0.5
+      zscore: true

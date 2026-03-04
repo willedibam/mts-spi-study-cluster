@@ -9,6 +9,7 @@ threads: 4
 defaults:
   M_values: [16]
   T_values: [100]
+  instances: 100
 
 # Pure-regime classes: each channel gets the same regime.
 # "M" in base_params is a sentinel resolved to the actual M at spec-expansion time.
@@ -16,7 +17,6 @@ mts_classes:
   - name: "fixed-linear"
     labels: ["sinusoidal-mother", "fixed", "linear"]
     generator: "sin_mts_mother"
-    instances: 100
     base_params:
       regime: "fixed"
       n_linear: "M"   # all channels linear
@@ -29,7 +29,6 @@ mts_classes:
   - name: "fixed-monotonic"
     labels: ["sinusoidal-mother", "fixed", "monotonic"]
     generator: "sin_mts_mother"
-    instances: 100
     base_params:
       regime: "fixed"
       n_linear: 0
@@ -42,7 +41,6 @@ mts_classes:
   - name: "fixed-nonmonotonic"
     labels: ["sinusoidal-mother", "fixed", "non-monotonic"]
     generator: "sin_mts_mother"
-    instances: 100
     base_params:
       regime: "fixed"
       n_linear: 0
@@ -55,7 +53,6 @@ mts_classes:
   - name: "random"
     labels: ["sinusoidal-mother", "random"]
     generator: "sin_mts_mother"
-    instances: 100
     base_params:
       regime: "random"
       noise_std: 0.05

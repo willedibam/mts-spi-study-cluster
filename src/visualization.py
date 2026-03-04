@@ -933,7 +933,7 @@ def plot_spi_space_individual_embed(
         ax_scatter = ax
 
     # Scatter + regression
-    ax_scatter.scatter(x_vals, y_vals, s=15, alpha=0.6, color="#1f77b4")
+    ax_scatter.scatter(x_vals, y_vals, s=15, alpha=0.4, color="#1f77b4")
     sns.regplot(x=x_vals, y=y_vals, ax=ax_scatter, scatter=False, color="#d62728", ci=None)
     ax_scatter.set_xlabel(spi_x)
     ax_scatter.set_ylabel(spi_y)
@@ -1901,3 +1901,163 @@ def plot_spi_corr_sweep(
         ax.set_title(title)
 
     return df
+
+
+# ---------------------------------------------------------------------------
+# Channel-type marker constants for plot_spi_space_individual_embed_properties
+# ---------------------------------------------------------------------------
+_CHANNEL_TAGS = ["linear", "monotonic", "non-monotonic"]
+
+# Unordered pair → (label, marker)
+_PAIR_STYLES: dict[tuple[str, str], tuple[str, str]] = {
+    ("linear",       "linear"):        ("L–L",  "o"),
+    ("linear",       "monotonic"):     ("L–M",  "^"),
+    ("linear",       "non-monotonic"): ("L–NM", "s"),
+    ("monotonic",    "monotonic"):     ("M–M",  "*"),
+    ("monotonic",    "non-monotonic"): ("M–NM", "P"),
+    ("non-monotonic","non-monotonic"): ("NM–NM","X"),
+}
+_PAIR_COLORS = [
+    "#4878CF",  # L–L      blue
+    "#6ACC65",  # L–M      green
+    "#D65F5F",  # L–NM     red
+    "#B47CC7",  # M–M      purple
+    "#C4AD66",  # M–NM     gold
+    "#77BEDB",  # NM–NM    cyan
+]
+
+
+def _tag_channel(a: float, thresh_linear: float, thresh_monotonic: float) -> str:
+    if a < thresh_linear:
+        return "linear"
+    if a < thresh_monotonic:
+        return "monotonic"
+    return "non-monotonic"
+
+
+def _pair_key(tag_i: str, tag_j: str) -> tuple[str, str]:
+    """Canonical (sorted) key for an unordered channel-type pair."""
+    order = {t: i for i, t in enumerate(_CHANNEL_TAGS)}
+    return (tag_i, tag_j) if order[tag_i] <= order[tag_j] else (tag_j, tag_i)
+
+
+def plot_spi_space_individual_embed_properties(
+    dataset_path: str,
+    spis: list[str],
+    ax,
+    *,
+    thresh_linear: float = np.pi / 8,
+    thresh_monotonic: float = np.pi / 2,
+    color_by_type: bool = True,
+    s: float = 20.0,
+    alpha: float = 0.5,
+    main_spines: bool = True,
+) -> None:
+    """
+    Like plot_spi_space_individual_embed (marginals=False), but markers encode
+    the channel-type pair for each SPI value.
+
+    Each upper-triangle entry (i,j) represents the SPI between channels i and j.
+    Each channel is tagged {linear, monotonic, non-monotonic} from its a_value
+    in meta.json (generator.a_values), using thresholds:
+        a < thresh_linear     → linear
+        a < thresh_monotonic  → monotonic
+        else                  → non-monotonic
+
+    Marker shapes per unordered pair:
+        L–L   circle  'o'
+        L–M   triangle '^'
+        L–NM  square  's'
+        M–M   star    '*'
+        M–NM  filled+ 'P'
+        NM–NM filled× 'X'
+
+    Parameters
+    ----------
+    thresh_linear    : a threshold below which a channel is "linear" (default π/8)
+    thresh_monotonic : a threshold below which a channel is "monotonic" (default π/2)
+    color_by_type    : if True, each pair type gets a distinct color; if False, all '#1f77b4'
+    """
+    if len(spis) != 2:
+        raise ValueError("Expects exactly two SPI names.")
+
+    spi_x, spi_y = spis
+    dataset_dir = Path(dataset_path)
+
+    archive = dataset_dir / "spi_mpis.npz"
+    if not archive.exists():
+        raise FileNotFoundError(f"Missing archive: {archive}")
+    meta_path = dataset_dir / "meta.json"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing meta.json: {meta_path}")
+
+    meta = load_json(meta_path)
+    a_values = meta.get("generator", {}).get("a_values")
+    if a_values is None:
+        raise KeyError(
+            f"'a_values' not found in meta.json generator block for {dataset_dir}. "
+            "Dataset must be generated (not cache-loaded) with sin_mts_smooth."
+        )
+    a_values = np.asarray(a_values, dtype=float)
+    M = len(a_values)
+
+    spi_meta = meta.get("pyspi", {}).get("spis", [])
+    directed_map = {
+        entry.get("name"): bool(entry.get("directed", False))
+        for entry in spi_meta
+        if isinstance(entry, dict) and entry.get("name")
+    }
+    for name in (spi_x, spi_y):
+        if name not in directed_map:
+            raise KeyError(f"Missing directed metadata for '{name}' in {meta_path}")
+
+    with np.load(archive) as npz:
+        if spi_x not in npz or spi_y not in npz:
+            raise KeyError(f"Missing SPIs in archive: {archive}")
+        arr_x = np.asarray(npz[spi_x], float)
+        arr_y = np.asarray(npz[spi_y], float)
+
+    arr_x = 0.5 * (arr_x + arr_x.T)
+    arr_y = 0.5 * (arr_y + arr_y.T)
+
+    tags = [_tag_channel(a, thresh_linear, thresh_monotonic) for a in a_values]
+    upper_i, upper_j = np.triu_indices(M, k=1)
+
+    x_vals = arr_x[upper_i, upper_j]
+    y_vals = arr_y[upper_i, upper_j]
+    valid = np.isfinite(x_vals) & np.isfinite(y_vals)
+    upper_i, upper_j = upper_i[valid], upper_j[valid]
+    x_vals, y_vals = x_vals[valid], y_vals[valid]
+
+    rho, _ = spearmanr(x_vals, y_vals)
+    title_slug = "/".join(dataset_dir.parts[-2:])
+
+    apply_plot_style()
+
+    pair_keys = [_pair_key(tags[i], tags[j]) for i, j in zip(upper_i, upper_j)]
+    style_order = list(_PAIR_STYLES.keys())
+
+    for k, (key, color) in enumerate(zip(style_order, _PAIR_COLORS)):
+        label, marker = _PAIR_STYLES[key]
+        mask = np.array([pk == key for pk in pair_keys])
+        if not mask.any():
+            continue
+        c = color if color_by_type else "#1f77b4"
+        ax.scatter(
+            x_vals[mask], y_vals[mask],
+            marker=marker, s=s, alpha=alpha, color=c,
+            label=label, linewidths=0.3,
+        )
+
+    sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="#d62728", ci=None)
+    ax.set_xlabel(spi_x)
+    ax.set_ylabel(spi_y)
+    ax.set_title(title_slug)
+    ax.text(
+        0.205, 0.97, f"$\\rho={rho:.2f}$",
+        transform=ax.transAxes,
+        ha="right", va="top", fontsize=15,
+        bbox=dict(facecolor="white", edgecolor="gray", alpha=0.7, pad=5),
+    )
+    if not main_spines:
+        ax.spines[["top", "right"]].set_visible(False)

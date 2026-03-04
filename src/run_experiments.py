@@ -15,6 +15,7 @@ from scipy.stats import zscore
 import pandas as pd
 
 from . import generators as generate
+from .generators import generate_sin_mts_smooth
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
@@ -142,10 +143,11 @@ def main(argv: List[str] | None = None) -> None:
         config.normalise = bool(args.normalise)
     if args.threads:
         config.threads = args.threads
-    _run_ts = datetime.now().strftime("%y%m%d_%H%M%S")
-    config.base_output_dir = config.base_output_dir.parent / (
-        config.base_output_dir.name + f"_{_run_ts}"
-    )
+    if config.timestamp:
+        _run_ts = datetime.now().strftime("%y%m%d_%H%M%S")
+        config.base_output_dir = config.base_output_dir.parent / (
+            config.base_output_dir.name + f"_{_run_ts}"
+        )
     mapping = DatasetMapping(config)
     if args.list:
         print(f"[INFO] Listing {len(mapping)} dataset combinations from {to_relative(config_path)}.")
@@ -183,7 +185,7 @@ def main(argv: List[str] | None = None) -> None:
             )
             continue
         _export_thread_hints(args.threads or spec.threads)
-        data, ts_path = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
+        data, ts_path, gen_extras = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
         if args.mts_only:
             continue
 
@@ -234,6 +236,7 @@ def main(argv: List[str] | None = None) -> None:
             },
             compute_seconds=compute_seconds,
             heatmap=heatmap_required,
+            gen_extras=gen_extras,
         )
         dump_json(dataset_dir / "meta.json", meta)
         print(
@@ -262,14 +265,14 @@ def _safe_write_parquet(table: pd.DataFrame, path: Path) -> None:
         print(f"[WARN] Skipped parquet export ({exc}).")
 
 
-def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
+def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
     # If timeseries already exists on disk, reuse it to avoid reloading/downloading.
     if spec.source in {"real", "yfinance"} and not regenerate:
         existing = _load_existing_timeseries(spec)
         if existing:
             data, ts_path = existing
             print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
-            return data, ts_path
+            return data, ts_path, {}
 
     if spec.source == "real":
         data, M, T, dataset_slug, chosen_idx, channels_first = _load_real_sample(spec)
@@ -286,7 +289,7 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
             f"[INFO] Loaded real dataset '{spec.dataset_name}' class '{spec.class_label}' "
             f"sample {chosen_idx} -> {to_relative(ts_path)} (shape {data.shape[0]}x{data.shape[1]})"
         )
-        return data, ts_path
+        return data, ts_path, {}
     if spec.source == "yfinance":
         data, M, T, dataset_slug, tickers = _load_yfinance_sample(spec)
         spec.M = M
@@ -300,10 +303,11 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
             f"[INFO] Loaded yfinance data for {tickers} ({spec.period}, {spec.interval}) "
             f"-> {to_relative(ts_path)} (shape {data.shape[0]}x{data.shape[1]})"
         )
-        return data, ts_path
+        return data, ts_path, {}
 
     dataset_dir = ensure_dir(spec.dataset_dir)
     ts_path = dataset_dir / "timeseries.npy"
+    gen_extras: dict = {}
     if ts_path.exists() and not regenerate:
         data = np.load(ts_path).astype(np.float64, copy=False)
         print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
@@ -312,20 +316,30 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path]:
         generator_params = dict(spec.generator_params)
         if spec.generator == "cml_logistic":
             generator_params["delta"] = 1
-        data = generate.generate_series(
-            spec.generator,
-            seed=spec.rng_seed,
-            M=spec.M,
-            T=spec.T,
-            **generator_params,
-        )
+        if spec.generator == "sin_mts_smooth":
+            data, internals = generate_sin_mts_smooth(
+                M=spec.M,
+                T=spec.T,
+                rng=np.random.default_rng(spec.rng_seed),
+                return_internals=True,
+                **generator_params,
+            )
+            gen_extras = {"a_values": internals.a_values.tolist()}
+        else:
+            data = generate.generate_series(
+                spec.generator,
+                seed=spec.rng_seed,
+                M=spec.M,
+                T=spec.T,
+                **generator_params,
+            )
         np.save(ts_path, data.astype(np.float32))
         duration = time.perf_counter() - start
         print(
             f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
             f"in {duration:.2f}s -> {to_relative(ts_path)}"
         )
-    return data.astype(np.float64, copy=False), ts_path
+    return data.astype(np.float64, copy=False), ts_path, gen_extras
 
 
 def _load_existing_timeseries(spec) -> tuple[np.ndarray, Path] | None:
@@ -555,6 +569,7 @@ def _build_metadata(
     paths: Dict[str, Any],
     compute_seconds: float,
     heatmap: bool,
+    gen_extras: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     variant_block = None
     if spec.variant:
@@ -570,6 +585,7 @@ def _build_metadata(
                 "name": spec.generator,
                 "params": spec.generator_params,
                 "seed": spec.rng_seed,
+                **(gen_extras or {}),
             }
         )
     elif spec.source == "real":

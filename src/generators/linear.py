@@ -323,6 +323,12 @@ def generate_warping_mts(
     return result
 
 
+@dataclass
+class SmoothSinInternals:
+    """Internals returned by generate_sin_mts_smooth when return_internals=True."""
+    a_values: np.ndarray  # (M,) sampled half-widths, one per channel
+
+
 _SIN_INTERVALS = {
     "linear":        (-np.pi / 16, np.pi / 16), # for a \in [32, 16, 8, 4] = [0.16%, 0.65%, 2.6%, 11%] max deviation from linear (| sinx - x| )
     "monotonic":     (-np.pi / 2,  np.pi / 2),
@@ -382,6 +388,79 @@ def generate_sin_mts(
     data = np.empty((T, M))
     _sin_channels(data, channel_regimes, T, noise_std, rng)
     return _maybe_zscore(data, zscore=zscore)
+
+
+def generate_sin_mts_smooth(
+    M: int,
+    T: int,
+    A: float = np.pi,
+    noise_std: float = 0.05,
+    ar1_a: float = 0.8,
+    ar1_noise_std: float = 1.0,
+    zscore: bool = False,
+    rng=None,
+    mother: np.ndarray | None = None,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, SmoothSinInternals]:
+    """
+    M sinusoidal channels derived from a shared AR(1) mother signal,
+    with per-channel interval half-width a_i ~ Uniform(pi/64, A).
+
+    As A increases from pi/64 toward pi, the proportion of channels filtered
+    through nonlinear (and eventually non-monotonic) transformations increases,
+    smoothly interpolating across regime space rather than using discrete
+    linear/monotonic/non-monotonic assignments.
+
+    Per-channel construction:
+        y_i = 2*a_i * m_bar - a_i          # [0,1] -> [-a_i, a_i]
+        g_i = sin(y_i) / sin(min(a_i, pi/2))   # normalised to [-1, 1]
+        X^(i) = g_i + noise
+
+    Parameters
+    ----------
+    M             : number of channels
+    T             : time steps
+    A             : upper bound of Uniform(pi/64, A) for per-channel half-width
+    noise_std     : per-channel i.i.d. noise std
+    ar1_a         : AR(1) autoregressive coefficient for mother signal
+    ar1_noise_std : driving noise std of the mother signal
+    zscore        : z-score output
+    rng           : RNG instance or int seed
+    mother        : optional 1D array of length T to use instead of AR(1)
+    return_internals : if True, return (data, SmoothSinInternals)
+
+    Returns shape (T, M), or tuple of ((T, M), SmoothSinInternals).
+    """
+    a_min = np.pi / 64
+    if A <= a_min:
+        raise ValueError(f"A must be > pi/64 ({a_min:.4f}), got {A}.")
+    rng = _resolve_rng(None, rng)
+
+    if mother is not None:
+        mother = np.asarray(mother, dtype=float)
+        if mother.ndim != 1 or len(mother) != T:
+            raise ValueError(f"mother must be 1D of length T={T}, got shape {mother.shape}")
+    else:
+        m = np.zeros(T)
+        for t in range(1, T):
+            m[t] = ar1_a * m[t - 1] + rng.normal(0, ar1_noise_std)
+        mother = m
+
+    lo, hi = mother.min(), mother.max()
+    m_bar = np.zeros(T) if hi == lo else (mother - lo) / (hi - lo)
+
+    a_values = rng.uniform(a_min, A, size=M)
+    data = np.empty((T, M))
+    for i, a_i in enumerate(a_values):
+        y = 2 * a_i * m_bar - a_i
+        g = np.sin(y)
+        g_max = np.sin(min(a_i, np.pi / 2))
+        data[:, i] = g / g_max + rng.normal(0, noise_std, T)
+
+    result = _maybe_zscore(data, zscore=zscore)
+    if return_internals:
+        return result, SmoothSinInternals(a_values=a_values)
+    return result
 
 
 def generate_sin_mts_mother(
@@ -467,7 +546,9 @@ def generate_sin_mts_mother(
     for i, reg in enumerate(channel_regimes):
         a, b = _SIN_INTERVALS[reg]
         y = (b - a) * m_bar + a
-        data[:, i] = np.sin(y) + rng.normal(0, noise_std, T)
+        g = np.sin(y)
+        g_max = np.sin(min(abs(b), np.pi / 2))
+        data[:, i] = g / g_max + rng.normal(0, noise_std, T)
 
     return _maybe_zscore(data, zscore=zscore)
 

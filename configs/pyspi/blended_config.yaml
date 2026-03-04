@@ -194,6 +194,17 @@
     dependencies:
     configs:
 
+  DynamicTimeWarping:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - global_constraint: null
+
 .statistics.causal:
   # Additive noise model
   AdditiveNoiseModel:

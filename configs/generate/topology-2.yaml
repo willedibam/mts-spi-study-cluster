@@ -1,0 +1,76 @@
+base_output_dir: data/topology/topology-2_260305_074714/
+timestamp: false
+pyspi_config: configs/pyspi/cases/eeml.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [16]
+  T_values: [500]
+  instances: 200
+
+# VAR(1)-based topology classification.
+#
+# All classes use X_t = A X_{t-1} + eps_t with A = phi*I + coupling*G/rho(G).
+# The first three classes are 2-regular (same degree, same edge count,
+# same per-edge coupling weight) and differ ONLY in wiring:
+#   - var-ring:      single 16-cycle (1 connected component)
+#   - var-tworing:   two disjoint 8-cycles (2 components)
+#   - var-fourring:  four disjoint 4-cycles (4 components)
+# The fourth class uses a 4x4 grid lattice (degree 2-4, denser).
+#
+# Node indices are randomly permuted per sample, so positional cues
+# carry no signal. The SPI-SPI flat baseline should struggle because
+# marginal edge statistics are matched (within the 2-regular group).
+
+mts_classes:
+  - name: "var-ring"
+    labels: ["topology", "var-ring"]
+    generator: "var_ring"
+    base_params:
+      phi: 0.5
+      coupling: 0.5
+      noise_std: 1.0
+      target_rho: 0.95
+      transients: 200
+      permute: true
+      zscore: true
+
+  - name: "var-tworing"
+    labels: ["topology", "var-tworing"]
+    generator: "var_tworing"
+    base_params:
+      phi: 0.5
+      coupling: 0.5
+      noise_std: 1.0
+      target_rho: 0.95
+      transients: 200
+      permute: true
+      zscore: true
+
+  - name: "var-fourring"
+    labels: ["topology", "var-fourring"]
+    generator: "var_fourring"
+    base_params:
+      phi: 0.5
+      coupling: 0.5
+      noise_std: 1.0
+      target_rho: 0.95
+      transients: 200
+      permute: true
+      zscore: true
+
+  - name: "var-lattice"
+    labels: ["topology", "var-lattice"]
+    generator: "var_lattice"
+    base_params:
+      phi: 0.5
+      coupling: 0.5
+      noise_std: 1.0
+      target_rho: 0.95
+      transients: 200
+      permute: true
+      zscore: true

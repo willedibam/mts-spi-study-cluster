@@ -8,7 +8,7 @@ dependencies = [
     "scipy>=1.11",
     "pandas>=2.1",
     "pyyaml>=6.0",
-    "pyspi>=1.1.0",
+    "pyspi>=2.0.1",
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "scikit-learn>=1.4",
@@ -19,11 +19,15 @@ dependencies = [
     "JPype1>=1.5",
     "pyclustering>=0.10.1",
     "xarray",
+    "dtaidistance==2.3.13",
+    "dtw-python",
+    "fastdtw",
 ]
 
 [project.optional-dependencies]
 real = ["sktime>=0.30.0", "aeon", "yfinance"]
 dtw = ["dtw-python", "fastdtw", "dtaidistance"]
+graph = ["torch>=2.0", "torch-geometric>=2.5"]
 
 [project.scripts]
 run-experiment = "src.run_experiments:main"
@@ -31,6 +35,7 @@ process-features = "src.process_features:main"
 feature-selection = "src.feature_selection:main"
 run-dtw-ed = "src.run_dtw_ed:main"
 find-distributions = "src.find_non_overlapping_distributions:main"
+graph-pipeline = "src.graph_pipeline:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

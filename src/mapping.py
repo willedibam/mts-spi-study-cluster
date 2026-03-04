@@ -157,6 +157,7 @@ class ExperimentConfig:
     rng_seed: int
     save_heatmap: bool
     threads: int | None
+    timestamp: bool
     default_M_values: List[int]
     default_T_values: List[int]
     default_instances: List[int]
@@ -174,6 +175,7 @@ class ExperimentConfig:
         normalise = bool(data.get("normalise", False))
         rng_seed = int(data.get("rng_seed", 0))
         save_heatmap = bool(data.get("save_heatmap", False))
+        timestamp = bool(data.get("timestamp", True))
         threads = data.get("threads")
         defaults = data.get("defaults") or {}
         default_M = [int(v) for v in (defaults.get("M_values") or [])]
@@ -208,6 +210,7 @@ class ExperimentConfig:
             rng_seed=rng_seed,
             save_heatmap=save_heatmap,
             threads=threads,
+            timestamp=timestamp,
             default_M_values=default_M,
             default_T_values=default_T,
             default_instances=default_instances,

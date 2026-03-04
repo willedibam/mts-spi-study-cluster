@@ -26,15 +26,27 @@ from .linear import (
     generate_gbm,
     generate_sin_mts,
     generate_sin_mts_mother,
+    generate_sin_mts_smooth,
     generate_varma,
     generate_varma_shuffled,
     generate_warping_mts,
 )
 from .pde import generate_wave_1d, generate_wave_2d
+from .topology import (
+    generate_topology_chain,
+    generate_topology_clustered,
+    generate_topology_hub_spoke,
+    generate_topology_uniform,
+    generate_var_fourring,
+    generate_var_lattice,
+    generate_var_ring,
+    generate_var_tworing,
+)
 
 GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "sin_mts": generate_sin_mts,
     "sin_mts_mother": generate_sin_mts_mother,
+    "sin_mts_smooth": generate_sin_mts_smooth,
     "warping_mts": generate_warping_mts,
     "varma": generate_varma,
     "var": generate_varma,
@@ -56,6 +68,14 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "case_ii": generate_case_ii,
     "case_iii": generate_case_iii,
     "mts_master": generate_mts_master,
+    "topology_uniform": generate_topology_uniform,
+    "topology_hub_spoke": generate_topology_hub_spoke,
+    "topology_chain": generate_topology_chain,
+    "topology_clustered": generate_topology_clustered,
+    "var_ring": generate_var_ring,
+    "var_tworing": generate_var_tworing,
+    "var_fourring": generate_var_fourring,
+    "var_lattice": generate_var_lattice,
 }
 
 

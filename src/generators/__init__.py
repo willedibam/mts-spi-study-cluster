@@ -21,11 +21,19 @@ from .linear import (
     generate_gbm,
     generate_sin_mts,
     generate_sin_mts_mother,
+    generate_sin_mts_smooth,
     generate_varma,
     generate_varma_shuffled,
     generate_warping_mts,
+    SmoothSinInternals,
 )
 from .pde import generate_wave_1d, generate_wave_2d
+from .topology import (
+    generate_topology_chain,
+    generate_topology_clustered,
+    generate_topology_hub_spoke,
+    generate_topology_uniform,
+)
 from .registry import GENERATOR_REGISTRY, available_generators, generate_series
 
 __all__ = [
@@ -49,9 +57,15 @@ __all__ = [
     "generate_series",
     "generate_sin_mts",
     "generate_sin_mts_mother",
+    "generate_sin_mts_smooth",
+    "SmoothSinInternals",
     "generate_varma",
     "generate_varma_shuffled",
     "generate_warping_mts",
+    "generate_topology_chain",
+    "generate_topology_clustered",
+    "generate_topology_hub_spoke",
+    "generate_topology_uniform",
     "generate_wave_1d",
     "generate_wave_2d",
 ]

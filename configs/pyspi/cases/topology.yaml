@@ -1,3 +1,14 @@
+# SPI subset for topology classification experiment.
+# Target: diverse families so edge feature vectors are rich enough
+# for the GNN to distinguish coupling structures.
+#
+# Families represented:
+#   1. Correlation (Covariance, SpearmanR)
+#   2. Information-theoretic (MutualInfo — multiple estimators)
+#
+# To extend: add spectral (Coherence), causal (Granger), or nonlinear
+# (HSIC) SPIs as needed. Start with this fast subset and verify coverage.
+
 # Basic statistics
 .statistics.basic:
   # Covariance
@@ -34,8 +45,17 @@
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
+    dependencies:
       - java
     configs:
+      - estimator: gaussian
+
       - estimator: kraskov
         prop_k: 4
+
+      - estimator: kraskov
+        prop_k: 4
+        dyn_corr_excl: AUTO
+
+      - estimator: kernel
+        kernel_width: 0.25
