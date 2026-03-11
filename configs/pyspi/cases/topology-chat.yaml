@@ -146,7 +146,7 @@
     configs:
       - estimator: gaussian
 
-  # Transfer entropy
+  # # Transfer entropy
   # TransferEntropy:
   #   labels:
   #     - directed
