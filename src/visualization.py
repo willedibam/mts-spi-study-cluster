@@ -687,11 +687,36 @@ def _clean_legend(ax, hue: str, size_col: str) -> None:
     )
 
 
+def _best_corner_loc(x_vals: np.ndarray, y_vals: np.ndarray) -> tuple[float, float, str, str]:
+    """Return (x_ax, y_ax, ha, va) in axes coords for the least-dense corner."""
+    if x_vals.size < 2:
+        return 0.97, 0.97, "right", "top"
+    xr, yr = x_vals.ptp(), y_vals.ptp()
+    if xr < 1e-12 or yr < 1e-12:
+        return 0.97, 0.97, "right", "top"
+    xn = (x_vals - x_vals.min()) / xr
+    yn = (y_vals - y_vals.min()) / yr
+    corners = [
+        (0.03, 0.97, "left",  "top"),
+        (0.97, 0.97, "right", "top"),
+        (0.03, 0.03, "left",  "bottom"),
+        (0.97, 0.03, "right", "bottom"),
+    ]
+    counts = [
+        int(((xn < 0.25) & (yn > 0.75)).sum()),
+        int(((xn > 0.75) & (yn > 0.75)).sum()),
+        int(((xn < 0.25) & (yn < 0.25)).sum()),
+        int(((xn > 0.75) & (yn < 0.25)).sum()),
+    ]
+    return corners[int(np.argmin(counts))]
+
+
 def plot_spi_space_individual(
     dataset_path: str,
     spis: list[str],
     *,
     split_directed: bool = False,
+    metric: str = "spearman",
 ) -> None:
     """
     Scatter + marginal KDE of two SPI flattened vectors from a single dataset.
@@ -779,7 +804,12 @@ def plot_spi_space_individual(
         if x_vals.size == 0:
             continue
 
-        rho, _ = spearmanr(x_vals, y_vals)
+        if metric == "pearson":
+            corr = float(np.corrcoef(x_vals, y_vals)[0, 1])
+            corr_label = f"$r = {corr:.2f}$"
+        else:
+            corr, _ = spearmanr(x_vals, y_vals)
+            corr_label = f"$\\rho = {corr:.2f}$"
         g = sns.jointplot(
             x=x_vals,
             y=y_vals,
@@ -796,10 +826,11 @@ def plot_spi_space_individual(
         g.set_axis_labels(x_label, y_label)
         title_slug = "/".join(dataset_dir.parts[-2:])
         g.fig.suptitle(title_slug, y=1.02)
+        _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
         g.ax_joint.text(
-            0.97, 0.97, f"$\\rho = {rho:.2f}$",
+            _tx, _ty, corr_label,
             transform=g.ax_joint.transAxes,
-            ha="right", va="top",
+            ha=_ha, va=_va,
             bbox=dict(facecolor="white", edgecolor="none", alpha=0.7, pad=2),
         )
 
@@ -818,6 +849,7 @@ def plot_spi_space_individual_embed(
     marginals: bool = True,
     marginal_kde: bool = True,
     main_spines: bool = True,
+    metric: str = "spearman",
 ) -> None:
     """
     Same visual output as plot_spi_space_individual, but embeds into an existing subplot axes.
@@ -889,7 +921,12 @@ def plot_spi_space_individual_embed(
     valid = np.isfinite(x_vals) & np.isfinite(y_vals)
     x_vals, y_vals = x_vals[valid], y_vals[valid]
 
-    rho, _ = spearmanr(x_vals, y_vals)
+    if metric == "pearson":
+        corr = float(np.corrcoef(x_vals, y_vals)[0, 1])
+        corr_label = f"$r={corr:.2f}$"
+    else:
+        corr, _ = spearmanr(x_vals, y_vals)
+        corr_label = f"$\\rho={corr:.2f}$"
     title_slug = "/".join(dataset_dir.parts[-2:])
 
     if marginals:
@@ -938,10 +975,11 @@ def plot_spi_space_individual_embed(
     ax_scatter.set_xlabel(spi_x)
     ax_scatter.set_ylabel(spi_y)
     ax_scatter.set_title(title_slug)
+    _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
     ax_scatter.text(
-        0.205, 0.97, f"$\\rho={rho:.2f}$",
+        _tx, _ty, corr_label,
         transform=ax_scatter.transAxes,
-        ha="right", va="top", fontsize=15,
+        ha=_ha, va=_va, fontsize=15,
         bbox=dict(facecolor="white", edgecolor="gray", alpha=0.7, pad=5),
     )
     if not main_spines:
@@ -1070,10 +1108,11 @@ def plot_spi_space_recursive(
             g.set_axis_labels(x_label, y_label)
             title_slug = "/".join(dataset_dir.parts[-2:])
             g.fig.suptitle(title_slug, y=1.02)
+            _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
             g.ax_joint.text(
-                0.97, 0.97, f"$\\rho = {rho:.2f}$",
+                _tx, _ty, f"$\\rho = {rho:.2f}$",
                 transform=g.ax_joint.transAxes,
-                ha="right", va="top",
+                ha=_ha, va=_va,
                 bbox=dict(facecolor="white", edgecolor="none", alpha=0.7, pad=2),
             )
 
@@ -1909,22 +1948,42 @@ def plot_spi_corr_sweep(
 _CHANNEL_TAGS = ["linear", "monotonic", "non-monotonic"]
 
 # Unordered pair → (label, marker)
+# _PAIR_STYLES: dict[tuple[str, str], tuple[str, str]] = {
+#     ("linear",       "linear"):        ("L–L",  "o"),
+#     ("linear",       "monotonic"):     ("L–M",  "^"),
+#     ("linear",       "non-monotonic"): ("L–NM", "s"),
+#     ("monotonic",    "monotonic"):     ("M–M",  "*"),
+#     ("monotonic",    "non-monotonic"): ("M–NM", "P"),
+#     ("non-monotonic","non-monotonic"): ("NM–NM","X"),
+# }
+
 _PAIR_STYLES: dict[tuple[str, str], tuple[str, str]] = {
-    ("linear",       "linear"):        ("L–L",  "o"),
-    ("linear",       "monotonic"):     ("L–M",  "^"),
-    ("linear",       "non-monotonic"): ("L–NM", "s"),
-    ("monotonic",    "monotonic"):     ("M–M",  "*"),
-    ("monotonic",    "non-monotonic"): ("M–NM", "P"),
-    ("non-monotonic","non-monotonic"): ("NM–NM","X"),
+    ("linear",       "linear"):        ("linear–linear",  "o"),
+    ("linear",       "monotonic"):     ("linear–monotonic",  "^"),
+    ("linear",       "non-monotonic"): ("linear–non-monotonic", "s"),
+    ("monotonic",    "monotonic"):     ("monotonic–monotonic",  "*"),
+    ("monotonic",    "non-monotonic"): ("monotonic–non-monotonic", "P"),
+    ("non-monotonic","non-monotonic"): ("non-monotonic–non-monotonic","X"),
 }
+
 _PAIR_COLORS = [
-    "#4878CF",  # L–L      blue
-    "#6ACC65",  # L–M      green
-    "#D65F5F",  # L–NM     red
-    "#B47CC7",  # M–M      purple
+    "#B47CC7",  # L–L      purple
+    "#4878CF",  # L–M      blue
+    "#77BEDB",  # L–NM     cyan
+    "#6ACC65",  # M–M      green
     "#C4AD66",  # M–NM     gold
-    "#77BEDB",  # NM–NM    cyan
+    # "#D65F5F",  # NM–NM    red
+    "#CC79A7",  # NM–NM    rose/magenta
 ]
+
+# _PAIR_COLORS = [
+#     "#A58AD6",  # L–L      indigo/purple
+#     "#7EA6E0",  # L–M      blue
+#     "#8FD1A3",  # L–NM     green
+#     "#EAD98B",  # M–M      yellow
+#     "#E9B27A",  # M–NM     orange
+#     "#D98B8B",  # NM–NM    red
+# ]
 
 
 def _tag_channel(a: float, thresh_linear: float, thresh_monotonic: float) -> str:
@@ -1949,9 +2008,10 @@ def plot_spi_space_individual_embed_properties(
     thresh_linear: float = np.pi / 8,
     thresh_monotonic: float = np.pi / 2,
     color_by_type: bool = True,
-    s: float = 20.0,
-    alpha: float = 0.5,
+    s: float = 25.0,
+    alpha: float = 0.4,
     main_spines: bool = True,
+    metric: str = "spearman",
 ) -> None:
     """
     Like plot_spi_space_individual_embed (marginals=False), but markers encode
@@ -2029,7 +2089,12 @@ def plot_spi_space_individual_embed_properties(
     upper_i, upper_j = upper_i[valid], upper_j[valid]
     x_vals, y_vals = x_vals[valid], y_vals[valid]
 
-    rho, _ = spearmanr(x_vals, y_vals)
+    if metric == "pearson":
+        corr = float(np.corrcoef(x_vals, y_vals)[0, 1])
+        corr_label = f"$r={corr:.2f}$"
+    else:
+        corr, _ = spearmanr(x_vals, y_vals)
+        corr_label = f"$\\rho={corr:.2f}$"
     title_slug = "/".join(dataset_dir.parts[-2:])
 
     apply_plot_style()
@@ -2049,15 +2114,18 @@ def plot_spi_space_individual_embed_properties(
             label=label, linewidths=0.3,
         )
 
-    sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="#d62728", ci=None)
+    # "#d62728" red line color
+    sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="red", line_kws={"lw":"1.0"} , ci=None)
     ax.set_xlabel(spi_x)
     ax.set_ylabel(spi_y)
     ax.set_title(title_slug)
+    _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
     ax.text(
-        0.205, 0.97, f"$\\rho={rho:.2f}$",
+        _tx, _ty, corr_label,
         transform=ax.transAxes,
-        ha="right", va="top", fontsize=15,
-        bbox=dict(facecolor="white", edgecolor="gray", alpha=0.7, pad=5),
+        ha=_ha, va=_va, fontsize=15,
+        bbox=dict(facecolor="white", edgecolor="red", lw=0.7, alpha=0.7, pad=5),
     )
     if not main_spines:
         ax.spines[["top", "right"]].set_visible(False)
+    ax.tick_params(labelbottom=True, labelleft=True)

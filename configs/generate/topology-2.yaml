@@ -1,4 +1,4 @@
-base_output_dir: data/topology/topology-2_260305_074714/
+base_output_dir: data/topology/topology-2/
 timestamp: false
 pyspi_config: configs/pyspi/cases/eeml.yaml
 pyspi_subset: default
@@ -9,8 +9,8 @@ threads: 4
 
 defaults:
   M_values: [16]
-  T_values: [500]
-  instances: 200
+  T_values: [1000]
+  instances: 500
 
 # VAR(1)-based topology classification.
 #

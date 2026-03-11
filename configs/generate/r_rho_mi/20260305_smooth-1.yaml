@@ -1,0 +1,44 @@
+base_output_dir: data/r_rho_mi/20260305_smooth-4/
+timestamp: false
+pyspi_config: configs/pyspi/cases/r_rho_mi.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [16]
+  T_values: [1000]
+  instances: 30
+
+mts_classes:
+- name: "smooth_A-pi32"
+  labels: [sinusoidal-mother, smooth]
+  generator: "sin_mts_smooth"
+  base_params:
+    A: 0.09812  # pi/32
+    noise_std: 0.05
+    ar1_a: 0.95
+    ar1_noise_std: 1.0
+    zscore: true
+
+- name: "smooth_A-pi2"
+  labels: [sinusoidal-mother, smooth]
+  generator: "sin_mts_smooth"
+  base_params:
+    A: 1.5708  # pi/2
+    noise_std: 0.05
+    ar1_a: 0.95
+    ar1_noise_std: 1.0
+    zscore: true
+
+- name: "smooth_A-4pi" 
+  labels: [sinusoidal-mother, smooth]
+  generator: "sin_mts_smooth"
+  base_params:
+    A: 12.5663  # 4*pi
+    noise_std: 0.05
+    ar1_a: 0.95
+    ar1_noise_std: 1.0
+    zscore: true

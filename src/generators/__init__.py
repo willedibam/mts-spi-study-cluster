@@ -27,6 +27,12 @@ from .linear import (
     generate_warping_mts,
     SmoothSinInternals,
 )
+from .chat import (
+    ChatMotifInternals,
+    generate_var_chat_a,
+    generate_var_chat_b,
+    generate_var_chat_c,
+)
 from .pde import generate_wave_1d, generate_wave_2d
 from .topology import (
     generate_topology_chain,
@@ -66,6 +72,10 @@ __all__ = [
     "generate_topology_clustered",
     "generate_topology_hub_spoke",
     "generate_topology_uniform",
+    "generate_var_chat_a",
+    "generate_var_chat_b",
+    "generate_var_chat_c",
+    "ChatMotifInternals",
     "generate_wave_1d",
     "generate_wave_2d",
 ]

@@ -394,6 +394,8 @@ def generate_sin_mts_smooth(
     M: int,
     T: int,
     A: float = np.pi,
+    k: float = np.pi,
+    linspace: bool = False,
     noise_std: float = 0.05,
     ar1_a: float = 0.8,
     ar1_noise_std: float = 1.0,
@@ -412,15 +414,27 @@ def generate_sin_mts_smooth(
     linear/monotonic/non-monotonic assignments.
 
     Per-channel construction:
-        y_i = 2*a_i * m_bar - a_i          # [0,1] -> [-a_i, a_i]
-        g_i = sin(y_i) / sin(min(a_i, pi/2))   # normalised to [-1, 1]
+        y_i = 2*a_i * m_bar - a_i                              # [0,1] -> [-a_i, a_i]
+        g_i = tanh(k*sin(y_i)) / tanh(k*sin(min(a_i, pi/2)))  # normalised to [-1, 1]
         X^(i) = g_i + noise
+
+    Approximate regime boundaries for a_i (with default k=pi):
+        a_i < pi/32  : super-linear  (~0.16% max |sin(x)-x| deviation)
+        pi/32 - pi/16: approximately linear  (~0.65% max deviation)
+        pi/16 - pi/2 : nonlinear monotonic
+        pi/2  - pi   : non-monotonic  (sin(y) cycles through extremum)
 
     Parameters
     ----------
     M             : number of channels
     T             : time steps
-    A             : upper bound of Uniform(pi/64, A) for per-channel half-width
+    A             : upper bound of Uniform(pi/64, A) for per-channel half-width.
+                    A > pi/2 is needed to sample non-monotonic channels.
+    k             : tanh compositional gain in tanh(k·sin(y)); default np.pi.
+                    Larger k → stronger saturation near extremes (more step-like).
+                    Does not change monotonicity structure; increase A for that.
+    linspace      : if True, a_values = np.linspace(pi/64, A, M) (deterministic, evenly
+                    spaced); if False (default), a_values ~ Uniform(pi/64, A).
     noise_std     : per-channel i.i.d. noise std
     ar1_a         : AR(1) autoregressive coefficient for mother signal
     ar1_noise_std : driving noise std of the mother signal
@@ -449,12 +463,14 @@ def generate_sin_mts_smooth(
     lo, hi = mother.min(), mother.max()
     m_bar = np.zeros(T) if hi == lo else (mother - lo) / (hi - lo)
 
-    a_values = rng.uniform(a_min, A, size=M)
+    a_values = np.linspace(a_min, A, M) if linspace else rng.uniform(a_min, A, size=M)
     data = np.empty((T, M))
     for i, a_i in enumerate(a_values):
         y = 2 * a_i * m_bar - a_i
-        g = np.sin(y)
-        g_max = np.sin(min(a_i, np.pi / 2))
+        # g = np.sin(y)        # pure sin (no tanh compression)
+        # g_max = np.sin(min(a_i, np.pi / 2))
+        g = np.tanh(k * np.sin(y))  # compositional: tanh(k·sin(y))
+        g_max = np.tanh(k * np.sin(min(a_i, np.pi / 2)))
         data[:, i] = g / g_max + rng.normal(0, noise_std, T)
 
     result = _maybe_zscore(data, zscore=zscore)

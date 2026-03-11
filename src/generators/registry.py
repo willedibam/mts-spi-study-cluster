@@ -31,6 +31,11 @@ from .linear import (
     generate_varma_shuffled,
     generate_warping_mts,
 )
+from .chat import (
+    generate_var_chat_a,
+    generate_var_chat_b,
+    generate_var_chat_c,
+)
 from .pde import generate_wave_1d, generate_wave_2d
 from .topology import (
     generate_topology_chain,
@@ -76,6 +81,9 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "var_tworing": generate_var_tworing,
     "var_fourring": generate_var_fourring,
     "var_lattice": generate_var_lattice,
+    "var_chat_a": generate_var_chat_a,
+    "var_chat_b": generate_var_chat_b,
+    "var_chat_c": generate_var_chat_c,
 }
 
 
