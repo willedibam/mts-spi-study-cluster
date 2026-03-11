@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N eeml_chat
-#PBS -l select=1:ncpus=4:mem=4gb
-#PBS -l walltime=02:00:00
+#PBS -l select=1:ncpus=12:mem=16gb
+#PBS -l walltime=12:00:00
 #PBS -j oe
 #PBS -J 1-3500
 #PBS -m bea
@@ -25,7 +25,7 @@ exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 module purge
 source .venv/bin/activate
 
-NUM_THREADS=${NUM_THREADS:-4}
+NUM_THREADS=${NUM_THREADS:-12}
 export OMP_NUM_THREADS=$NUM_THREADS
 export OPENBLAS_NUM_THREADS=$NUM_THREADS
 export MKL_NUM_THREADS=$NUM_THREADS
