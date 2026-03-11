@@ -19,10 +19,13 @@ except ImportError:
             )
         return time_series[:, np.newaxis, :]
 
-from pyspi.base import Undirected, Signed, parse_bivariate
+import pandas as pd
+
+from pyspi.base import Undirected, Signed, parse_bivariate, parse_multivariate
 from pyspi.statistics import basic as _basic
 from pyspi.statistics import distance as _distance
 from pyspi.statistics import spectral as _spectral
+from pyspi.statistics import infotheory as _infotheory
 from pyspi import calculator as _calculator
 
 
@@ -396,3 +399,482 @@ def _patch_calculator_lagged_correlation_configs():
 
 
 _patch_calculator_lagged_correlation_configs()
+
+
+# ---------------------------------------------------------------------------
+# Vectorized multivariate patches (1-5)
+# Replace M×M bivariate loops with batch numpy/scipy operations.
+# ---------------------------------------------------------------------------
+
+def _patch_spearman_multivariate():
+    """SpearmanR: scipy.stats.spearmanr on full (M, T) matrix → (M, M) at once."""
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        rho, _ = stats.spearmanr(Z, axis=1)
+        if Z.shape[0] == 2:
+            # spearmanr returns scalar for 2 variables
+            rho = np.array([[1.0, rho], [rho, 1.0]])
+        if self._squared:
+            rho = rho ** 2
+        np.fill_diagonal(rho, np.nan)
+        return rho
+
+    _basic.SpearmanR.multivariate = multivariate
+
+
+_patch_spearman_multivariate()
+
+
+def _patch_kendall_multivariate():
+    """KendallTau: pandas .corr(method='kendall') on (T, M) DataFrame → (M, M)."""
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        df = pd.DataFrame(Z.T)
+        tau = df.corr(method="kendall").values
+        if self._squared:
+            tau = tau ** 2
+        np.fill_diagonal(tau, np.nan)
+        return tau
+
+    _basic.KendallTau.multivariate = multivariate
+
+
+_patch_kendall_multivariate()
+
+
+def _patch_lagged_correlation_multivariate():
+    """LaggedCorrelation: np.corrcoef on time-shifted arrays, symmetrized."""
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        M, T = Z.shape
+        tau = self._tau
+
+        if tau == 0 or tau >= T:
+            if tau >= T:
+                return np.full((M, M), np.nan)
+            # tau == 0: plain correlation
+            if self._estimator == "pearson":
+                C = np.corrcoef(Z)
+            elif self._estimator == "spearman":
+                C, _ = stats.spearmanr(Z, axis=1)
+                if M == 2:
+                    C = np.array([[1.0, C], [C, 1.0]])
+            elif self._estimator == "kendall":
+                C = pd.DataFrame(Z.T).corr(method="kendall").values
+            else:
+                raise ValueError(f"Unknown estimator: {self._estimator}")
+            if self._squared:
+                C = C ** 2
+            np.fill_diagonal(C, np.nan)
+            return C
+
+        # tau > 0: forward = corr(x[tau:], y[:-tau]), backward = corr(y[tau:], x[:-tau])
+        # Symmetric average: 0.5 * (forward + backward)
+        Z_lead = Z[:, tau:]    # x[tau:]
+        Z_lag = Z[:, :-tau]    # y[:-tau]  (when computing corr(x_i[tau:], y_j[:-tau]))
+
+        if self._estimator == "pearson":
+            # Stack [Z_lead; Z_lag] and compute full (2M, 2M) correlation
+            stacked = np.vstack([Z_lead, Z_lag])  # (2M, T-tau)
+            C_full = np.corrcoef(stacked)  # (2M, 2M)
+            # Forward: C_full[i, M+j] = corr(x_i[tau:], y_j[:-tau])
+            # Backward: C_full[M+i, j] = corr(x_i[:-tau], y_j[tau:])
+            forward = C_full[:M, M:]
+            backward = C_full[M:, :M]
+        elif self._estimator == "spearman":
+            stacked = np.vstack([Z_lead, Z_lag])
+            rho, _ = stats.spearmanr(stacked, axis=1)
+            if stacked.shape[0] == 2:
+                rho = np.array([[1.0, rho], [rho, 1.0]])
+            forward = rho[:M, M:]
+            backward = rho[M:, :M]
+        elif self._estimator == "kendall":
+            stacked = np.vstack([Z_lead, Z_lag])
+            df = pd.DataFrame(stacked.T)
+            C_full = df.corr(method="kendall").values
+            forward = C_full[:M, M:]
+            backward = C_full[M:, :M]
+        else:
+            raise ValueError(f"Unknown estimator: {self._estimator}")
+
+        # Symmetric average
+        C = 0.5 * (forward + backward)
+        if self._squared:
+            C = C ** 2
+        np.fill_diagonal(C, np.nan)
+        return C
+
+    _basic.LaggedCorrelation.multivariate = multivariate
+
+
+_patch_lagged_correlation_multivariate()
+
+
+def _patch_cross_correlation_multivariate():
+    """CrossCorrelation: precompute all pairwise xcorr, then apply statistic.
+
+    Matches original signal.correlate normalization exactly.
+    Avoids redundant per-pair caching overhead.
+    """
+    from scipy.signal import fftconvolve
+
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        M, T = Z.shape
+        result = np.full((M, M), np.nan)
+
+        stds = Z.std(axis=1)
+        stds[stds == 0] = 1.0
+        quarter = T // 4
+
+        for i in range(M):
+            for j in range(i + 1, M):
+                # Exact match of original: signal.correlate(x, y, "full")
+                # fftconvolve(x, y[::-1]) == correlate(x, y)
+                r_ij = fftconvolve(Z[i], Z[j, ::-1], mode="full")
+                r_ij = r_ij / (stds[i] * stds[j] * (T - 1))
+                # Truncate to T/4 around center
+                r_ij = r_ij[T - 1 - quarter : T - 1 + quarter]
+
+                if self._sigonly:
+                    N = len(r_ij) // 2
+                    if N > 0:
+                        threshold = 1.96 / np.sqrt(N)
+                        fwd = np.where(np.abs(r_ij[N:]) <= threshold)[0]
+                        fzf = fwd[0] if len(fwd) > 0 else len(r_ij) - N
+                        bwd = np.where(np.abs(r_ij[:N]) <= threshold)[0]
+                        fzr = bwd[-1] if len(bwd) > 0 else 0
+                        r_ij = r_ij[N - fzr : N + fzf]
+
+                if self._statistic == "max":
+                    val = np.max(r_ij ** 2) if self._squared else np.max(r_ij)
+                elif self._statistic == "mean":
+                    val = np.mean(r_ij ** 2) if self._squared else np.mean(r_ij)
+                else:
+                    val = np.max(r_ij ** 2) if self._squared else np.max(r_ij)
+
+                result[i, j] = val
+                result[j, i] = val
+
+        return result
+
+    _basic.CrossCorrelation.multivariate = multivariate
+
+
+_patch_cross_correlation_multivariate()
+
+
+def _patch_dtw_multivariate():
+    """DTW: dtaidistance.dtw.distance_matrix for batch computation."""
+    try:
+        from dtaidistance import dtw as _dtw_c
+    except ImportError:
+        return
+
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        M = Z.shape[0]
+        T = Z.shape[1]
+        series = [np.ascontiguousarray(Z[i], dtype=np.double) for i in range(M)]
+
+        constraint = self._global_constraint
+
+        if constraint == "itakura":
+            # dtaidistance doesn't support itakura; fall back to bivariate loop
+            A = np.full((M, M), np.nan)
+            for i in range(M):
+                for j in range(i + 1, M):
+                    d = _distance.tslearn.metrics.dtw(
+                        series[i], series[j], global_constraint="itakura"
+                    )
+                    A[i, j] = d
+                    A[j, i] = d
+            return A
+
+        kwargs = {"use_c": True, "compact": False}
+        if constraint == "sakoe_chiba":
+            n = min(len(s) for s in series)
+            radius = self._resolve_radius(n) if hasattr(self, '_resolve_radius') else _auto_sakoe_radius(n)
+            kwargs["window"] = radius + 1
+
+        try:
+            dm = _dtw_c.distance_matrix(series, **kwargs)
+        except Exception:
+            # Fallback: try without C
+            kwargs["use_c"] = False
+            dm = _dtw_c.distance_matrix(series, **kwargs)
+
+        # distance_matrix returns full (M, M) with 0 on diagonal and inf for not-computed
+        # It only computes upper triangle; mirror it
+        dm = np.array(dm)
+        # Make symmetric (lower triangle might be 0 or inf)
+        mask_upper = np.triu(np.ones((M, M), dtype=bool), k=1)
+        dm_sym = np.where(mask_upper, dm, dm.T)
+        np.fill_diagonal(dm_sym, np.nan)
+        return dm_sym
+
+    _distance.DynamicTimeWarping.multivariate = multivariate
+
+
+_patch_dtw_multivariate()
+
+
+# ---------------------------------------------------------------------------
+# Vectorized info-theoretic patches (7): Gaussian estimator replacements
+# Replace JIDT Gaussian MI/JE/CE/TLMI with pure numpy analytical formulas.
+# Only applies to estimator="gaussian". KSG/kernel still use JIDT.
+# ---------------------------------------------------------------------------
+
+def _patch_gaussian_mutual_info():
+    """MI_gaussian: MI(X;Y) = -0.5 * ln(1 - r^2) where r = Pearson correlation."""
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        R = np.corrcoef(Z)  # (M, M) Pearson correlation
+        r2 = np.clip(R ** 2, 0, 1 - 1e-15)
+        MI = -0.5 * np.log(1 - r2)
+        np.fill_diagonal(MI, np.nan)
+        return MI
+
+    # Only patch instances with gaussian estimator — done at compute time
+    _infotheory.MutualInfo._gaussian_multivariate = multivariate
+
+
+def _patch_gaussian_joint_entropy():
+    """JE_gaussian: H(X,Y) = ln(2*pi*e) + 0.5*ln(var_x) + 0.5*ln(var_y) + 0.5*ln(1 - r^2)."""
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        M = Z.shape[0]
+        R = np.corrcoef(Z)
+        variances = np.var(Z, axis=1, ddof=0)
+        log_var = np.log(np.maximum(variances, 1e-300))
+        r2 = np.clip(R ** 2, 0, 1 - 1e-15)
+
+        # H(X_i, X_j) = ln(2*pi*e) + 0.5*ln(var_i) + 0.5*ln(var_j) + 0.5*ln(1 - r_ij^2)
+        JE = (np.log(2 * np.pi * np.e)
+              + 0.5 * log_var[:, None]
+              + 0.5 * log_var[None, :]
+              + 0.5 * np.log(1 - r2))
+        np.fill_diagonal(JE, np.nan)
+        return JE
+
+    _infotheory.JointEntropy._gaussian_multivariate = multivariate
+
+
+def _patch_gaussian_conditional_entropy():
+    """CE_gaussian: H(Y|X) = H(X,Y) - H(X).
+    H(X) = 0.5*ln(2*pi*e*var_x).
+    CE is directed: result[i,j] = H(j|i).
+    """
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        M = Z.shape[0]
+        R = np.corrcoef(Z)
+        variances = np.var(Z, axis=1, ddof=0)
+        log_var = np.log(np.maximum(variances, 1e-300))
+        r2 = np.clip(R ** 2, 0, 1 - 1e-15)
+
+        # H(X_i) = 0.5 * ln(2*pi*e*var_i)
+        H_marginal = 0.5 * np.log(2 * np.pi * np.e * np.maximum(variances, 1e-300))
+
+        # H(X_j, X_i) = ln(2*pi*e) + 0.5*ln(var_j) + 0.5*ln(var_i) + 0.5*ln(1 - r^2)
+        JE = (np.log(2 * np.pi * np.e)
+              + 0.5 * log_var[:, None]
+              + 0.5 * log_var[None, :]
+              + 0.5 * np.log(1 - r2))
+
+        # CE[i, j] = H(j | i) = H(i, j) - H(i)
+        CE = JE - H_marginal[:, None]
+        np.fill_diagonal(CE, np.nan)
+        return CE
+
+    _infotheory.ConditionalEntropy._gaussian_multivariate = multivariate
+
+
+def _patch_gaussian_time_lagged_mi():
+    """TLMI_gaussian: MI between x[:-1] and y[1:], using Gaussian formula."""
+    @parse_multivariate
+    def multivariate(self, data):
+        Z = data.to_numpy(squeeze=True)  # (M, T)
+        M, T = Z.shape
+        Z_src = Z[:, :-1]   # sources: x_i(t)
+        Z_tgt = Z[:, 1:]    # targets: y_j(t+1)
+
+        # Stack and compute full correlation
+        stacked = np.vstack([Z_src, Z_tgt])  # (2M, T-1)
+        R = np.corrcoef(stacked)  # (2M, 2M)
+
+        # Cross-block: R[i, M+j] = corr(x_i[:-1], y_j[1:])
+        r_cross = R[:M, M:]
+        r2 = np.clip(r_cross ** 2, 0, 1 - 1e-15)
+        TLMI = -0.5 * np.log(1 - r2)
+        np.fill_diagonal(TLMI, np.nan)
+        return TLMI
+
+    _infotheory.TimeLaggedMutualInfo._gaussian_multivariate = multivariate
+
+
+def _apply_gaussian_info_patches():
+    """Install vectorized multivariate for Gaussian info-theoretic SPIs.
+
+    For Gaussian estimator: uses pure numpy (no JIDT/JVM needed).
+    For other estimators (kraskov, kernel): falls back to original JIDT-based method.
+    """
+    _patch_gaussian_mutual_info()
+    _patch_gaussian_joint_entropy()
+    _patch_gaussian_conditional_entropy()
+    _patch_gaussian_time_lagged_mi()
+
+    for cls in (_infotheory.MutualInfo, _infotheory.JointEntropy,
+                _infotheory.ConditionalEntropy, _infotheory.TimeLaggedMutualInfo):
+        if not hasattr(cls, '_gaussian_multivariate'):
+            continue
+        # Both orig_mv and gaussian_mv are already @parse_multivariate-wrapped.
+        # The dispatch function should NOT be wrapped again — just delegate.
+        orig_mv = cls.multivariate
+        gaussian_mv = cls._gaussian_multivariate
+
+        def make_dispatch(orig, fast):
+            def dispatched(self, data, inplace=True):
+                if getattr(self, '_estimator', None) == 'gaussian':
+                    return fast(self, data, inplace=inplace)
+                return orig(self, data, inplace=inplace)
+            return dispatched
+
+        cls.multivariate = make_dispatch(orig_mv, gaussian_mv)
+
+
+_apply_gaussian_info_patches()
+
+
+_PARALLEL_CALC = None  # module-level for fork-based sharing
+
+
+def _fork_compute_spi(spi_key):
+    """Worker function for fork-based parallel SPI computation.
+
+    Runs in a forked child process. Accesses _PARALLEL_CALC via inherited
+    memory (copy-on-write). Each child gets its own address space, so
+    spectral cache writes don't race.
+    """
+    spi = _PARALLEL_CALC._spis[spi_key]
+    data = _PARALLEL_CALC.dataset
+    try:
+        S = spi.multivariate(data)
+        np.fill_diagonal(S, np.nan)
+        return spi_key, S, None
+    except Exception as err:
+        return spi_key, np.nan, str(err)
+
+
+def _patch_parallel_compute():
+    """
+    Patch Calculator.compute() to run SPIs in parallel using fork-based
+    multiprocessing.
+
+    Controlled by PYSPI_N_JOBS environment variable (default: 1 = sequential).
+
+    Fork-based parallelism avoids GIL and pickling issues:
+      - child processes inherit parent memory (copy-on-write)
+      - SPI objects don't need to be picklable (only spi_key strings
+        and numpy arrays cross the pipe)
+      - each child process has its own address space (no cache races)
+
+    JIDT (infotheory) SPIs run sequentially in the main process because
+    JPype's JVM does not survive fork().
+    """
+    import multiprocessing as _mp
+    import time as _time
+
+    from colorama import Fore
+    from tqdm import tqdm
+
+    from pyspi.calculator import inspect_calc_results
+
+    _original_compute = _calculator.Calculator.compute
+
+    def parallel_compute(self):
+        if not hasattr(self, "_dataset"):
+            raise AttributeError(
+                "Dataset not loaded yet. Please initialise with load_dataset."
+            )
+
+        n_jobs = int(os.getenv("PYSPI_N_JOBS", "1"))
+        if n_jobs <= 1:
+            return _original_compute(self)
+
+        spi_keys = list(self.spis.keys())
+
+        # JIDT SPIs use JPype/JVM which doesn't survive fork()
+        # Gaussian info-theoretic SPIs are patched to use pure numpy,
+        # so they can safely run in forked workers.
+        def _needs_jidt(spi):
+            if "infotheory" not in spi.__class__.__module__:
+                return False
+            return getattr(spi, '_estimator', None) != 'gaussian'
+
+        jidt_keys = [k for k in spi_keys if _needs_jidt(self._spis[k])]
+        fork_keys = [k for k in spi_keys if k not in jidt_keys]
+        n_workers = min(n_jobs, len(fork_keys))
+
+        print(
+            f"[pyspi-parallel] {len(fork_keys)} SPIs via {n_workers} "
+            f"fork workers, {len(jidt_keys)} JIDT SPIs sequential"
+        )
+
+        t0 = _time.time()
+
+        # Fork-based parallel for non-JIDT SPIs
+        global _PARALLEL_CALC
+        _PARALLEL_CALC = self
+
+        ctx = _mp.get_context("fork")
+        with ctx.Pool(n_workers) as pool:
+            pbar = tqdm(
+                pool.imap_unordered(_fork_compute_spi, fork_keys),
+                total=len(fork_keys),
+                desc="SPIs (parallel)",
+            )
+            for spi_key, result, err in pbar:
+                if err is not None:
+                    warnings.warn(
+                        f'Caught error for SPI "{spi_key}": {err}'
+                    )
+                self._table[spi_key] = result
+                pbar.set_description(f"Done: {spi_key}")
+
+        _PARALLEL_CALC = None
+
+        # Sequential for JIDT SPIs (need JVM in main process)
+        if jidt_keys:
+            pbar = tqdm(jidt_keys, desc="SPIs (JIDT)")
+            for spi_key in pbar:
+                pbar.set_description(f"JIDT: {spi_key}")
+                try:
+                    S = self._spis[spi_key].multivariate(self.dataset)
+                    np.fill_diagonal(S, np.nan)
+                    self._table[spi_key] = S
+                except Exception as err:
+                    warnings.warn(
+                        f'Caught {type(err).__name__} for SPI "{spi_key}": {err}'
+                    )
+                    self._table[spi_key] = np.nan
+
+        elapsed = _time.time() - t0
+        print(
+            Fore.GREEN
+            + f"\nCalculation complete. Time taken: {elapsed:.4f}s"
+        )
+        inspect_calc_results(self)
+
+    _calculator.Calculator.compute = parallel_compute
+
+
+_patch_parallel_compute()

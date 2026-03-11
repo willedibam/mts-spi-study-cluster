@@ -46,4 +46,4 @@ data_backup.tar.gz
 Random/
 random/
 *.tar.gz
-.python-version
+# .python-version
