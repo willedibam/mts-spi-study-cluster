@@ -24,6 +24,7 @@ from .linear import (
     generate_exponential_noise,
     generate_gaussian_noise,
     generate_gbm,
+    generate_lagged_mts,
     generate_sin_mts,
     generate_sin_mts_mother,
     generate_sin_mts_smooth,
@@ -35,6 +36,7 @@ from .chat import (
     generate_var_chat_a,
     generate_var_chat_b,
     generate_var_chat_c,
+    generate_var_chat_d,
 )
 from .pde import generate_wave_1d, generate_wave_2d
 from .topology import (
@@ -53,6 +55,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "sin_mts_mother": generate_sin_mts_mother,
     "sin_mts_smooth": generate_sin_mts_smooth,
     "warping_mts": generate_warping_mts,
+    "lagged_mts": generate_lagged_mts,
     "varma": generate_varma,
     "var": generate_varma,
     "varma_shuffled": generate_varma_shuffled,
@@ -84,6 +87,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "var_chat_a": generate_var_chat_a,
     "var_chat_b": generate_var_chat_b,
     "var_chat_c": generate_var_chat_c,
+    "var_chat_d": generate_var_chat_d,
 }
 
 

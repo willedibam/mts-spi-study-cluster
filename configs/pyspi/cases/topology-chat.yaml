@@ -141,39 +141,42 @@
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
+    dependencies:
       - java
     configs:
       - estimator: gaussian
 
-  # # Transfer entropy
-  # TransferEntropy:
-  #   labels:
-  #     - directed
-  #     - nonlinear
-  #     - unsigned
-  #     - bivariate
-  #     - time-dependent
-  #   dependencies: 
-  #     - java
-  #   configs:
-  #     # Kraskov estimator with fixed embedding of 1 for source/target and DCE
-  #     - estimator: kraskov
-  #       prop_k: 4
-  #       k_history: 1
-  #       l_history: 1
-  #       dyn_corr_excl: AUTO
+      - estimator: kraskov
+        prop_k: 4
 
-  #     # Currently the Kernel method has an overload issue with the AIS calculator..
-  #     # Kernel estimator with auto-embedding on source/target and DCE
-  #     # - estimator: kernel
-  #     #   auto_embed_method: MAX_CORR_AIS
-  #     #   k_search_max: 4
-  #     #   kernel_width: 0.25
+  # Transfer entropy
+  TransferEntropy:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies: 
+      - java
+    configs:
+      # Kraskov estimator with fixed embedding of 1 for source/target and DCE
+      - estimator: kraskov
+        prop_k: 4
+        k_history: 1
+        l_history: 1
+        # dyn_corr_excl: AUTO
 
-  #     - estimator: gaussian
-  #       k_history: 1
-  #       l_history: 1
+      # Currently the Kernel method has an overload issue with the AIS calculator..
+      # Kernel estimator with auto-embedding on source/target and DCE
+      # - estimator: kernel
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 4
+      #   kernel_width: 0.25
+
+      - estimator: gaussian
+        k_history: 1
+        l_history: 1
 
 # statistics that analyse in the frequency-domain (see Schoegl and Supp, 2006)
 .statistics.spectral:

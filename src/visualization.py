@@ -2129,3 +2129,120 @@ def plot_spi_space_individual_embed_properties(
     if not main_spines:
         ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(labelbottom=True, labelleft=True)
+
+
+def plot_spi_space_individual_embed_lags(
+    dataset_path: str,
+    spis: list[str],
+    ax,
+    *,
+    lag_feature: str = "diff",
+    cmap: str = "viridis",
+    s: float = 25.0,
+    alpha: float = 0.6,
+    main_spines: bool = True,
+    metric: str = "spearman",
+) -> None:
+    """
+    Like plot_spi_space_individual_embed (marginals=False), but markers are
+    colored by a per-pair lag feature derived from generator.lags in meta.json.
+
+    Parameters
+    ----------
+    lag_feature : "diff"  → |τ_i − τ_j|  (how misaligned the pair is)
+                  "max"   → max(τ_i, τ_j) (absolute lag regime of the pair)
+                  "mean"  → (τ_i + τ_j) / 2
+    """
+    if len(spis) != 2:
+        raise ValueError("Expects exactly two SPI names.")
+    if lag_feature not in ("diff", "max", "mean"):
+        raise ValueError("lag_feature must be 'diff', 'max', or 'mean'.")
+
+    spi_x, spi_y = spis
+    dataset_dir = Path(dataset_path)
+
+    archive = dataset_dir / "spi_mpis.npz"
+    if not archive.exists():
+        raise FileNotFoundError(f"Missing archive: {archive}")
+    meta_path = dataset_dir / "meta.json"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing meta.json: {meta_path}")
+
+    meta = load_json(meta_path)
+    lags = meta.get("generator", {}).get("lags")
+    if lags is None:
+        raise KeyError(
+            f"'lags' not found in meta.json generator block for {dataset_dir}. "
+            "Dataset must be generated with lagged_mts."
+        )
+    lags = np.asarray(lags, dtype=float)
+    M = len(lags)
+
+    spi_meta = meta.get("pyspi", {}).get("spis", [])
+    directed_map = {
+        entry.get("name"): bool(entry.get("directed", False))
+        for entry in spi_meta
+        if isinstance(entry, dict) and entry.get("name")
+    }
+    for name in (spi_x, spi_y):
+        if name not in directed_map:
+            raise KeyError(f"Missing directed metadata for '{name}' in {meta_path}")
+
+    with np.load(archive) as npz:
+        if spi_x not in npz or spi_y not in npz:
+            raise KeyError(f"Missing SPIs in archive: {archive}")
+        arr_x = np.asarray(npz[spi_x], float)
+        arr_y = np.asarray(npz[spi_y], float)
+
+    arr_x = 0.5 * (arr_x + arr_x.T)
+    arr_y = 0.5 * (arr_y + arr_y.T)
+
+    upper_i, upper_j = np.triu_indices(M, k=1)
+    x_vals = arr_x[upper_i, upper_j]
+    y_vals = arr_y[upper_i, upper_j]
+    valid = np.isfinite(x_vals) & np.isfinite(y_vals)
+    upper_i, upper_j = upper_i[valid], upper_j[valid]
+    x_vals, y_vals = x_vals[valid], y_vals[valid]
+
+    if lag_feature == "diff":
+        lag_vals = np.abs(lags[upper_i] - lags[upper_j])
+        cbar_label = r"$|\tau_i - \tau_j|$"
+    elif lag_feature == "max":
+        lag_vals = np.maximum(lags[upper_i], lags[upper_j])
+        cbar_label = r"$\max(\tau_i, \tau_j)$"
+    else:
+        lag_vals = 0.5 * (lags[upper_i] + lags[upper_j])
+        cbar_label = r"$(\tau_i + \tau_j)/2$"
+
+    if metric == "pearson":
+        corr = float(np.corrcoef(x_vals, y_vals)[0, 1])
+        corr_label = f"$r={corr:.2f}$"
+    else:
+        corr, _ = spearmanr(x_vals, y_vals)
+        corr_label = f"$\\rho={corr:.2f}$"
+    title_slug = "/".join(dataset_dir.parts[-2:])
+
+    apply_plot_style()
+
+    sc = ax.scatter(
+        x_vals, y_vals,
+        c=lag_vals, cmap=cmap,
+        vmin=0, vmax=lag_vals.max() if lag_vals.max() > 0 else 1,
+        s=s, alpha=alpha, linewidths=0,
+    )
+    plt.colorbar(sc, ax=ax, label=cbar_label, fraction=0.046, pad=0.04)
+
+    sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="red", line_kws={"lw": "1.0"}, ci=None)
+    ax.set_xlabel(spi_x)
+    ax.set_ylabel(spi_y)
+    ax.set_title(title_slug)
+    _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
+    ax.text(
+        _tx, _ty, corr_label,
+        transform=ax.transAxes,
+        ha=_ha, va=_va, fontsize=15,
+        bbox=dict(facecolor="white", edgecolor="red", lw=0.7, alpha=0.7, pad=5),
+    )
+    if not main_spines:
+        ax.spines[["top", "right"]].set_visible(False)
+    ax.tick_params(labelbottom=True, labelleft=True)

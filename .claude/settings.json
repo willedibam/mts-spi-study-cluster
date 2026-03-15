@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/python -:*)",
+      "Bash(python -c \"import pyspi; import os; print\\(os.path.dirname\\(pyspi.__file__\\)\\)\")"
+    ]
+  }
+}

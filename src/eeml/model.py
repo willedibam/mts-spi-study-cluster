@@ -35,10 +35,7 @@ def _unbatch_spi(batch: Batch) -> torch.Tensor:
     PyG stores spi_tensor as (B*M, M, K) after batching individual
     (M, M, K) tensors. This function returns (B, M, M, K).
     """
-    # spi_tensor: (B*M, M, K), batch.batch: (B*M,) with graph indices
     spi_flat = batch.spi_tensor  # (B*M, M, K)
-    # to_dense_batch pads variable-length sequences; for fixed M it just reshapes
-    # It expects (N, *) and batch vector (N,), returns (B, M_max, *)
     dense, _ = to_dense_batch(spi_flat, batch.batch)  # (B, M, M, K)
     return dense
 

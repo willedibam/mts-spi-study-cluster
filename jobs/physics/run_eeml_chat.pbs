@@ -3,7 +3,7 @@
 #PBS -l select=1:ncpus=4:mem=4gb
 #PBS -l walltime=24:00:00
 #PBS -j oe
-#PBS -J 1-1000
+#PBS -J 1-4500
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 

@@ -19,12 +19,14 @@ from .linear import (
     generate_exponential_noise,
     generate_gaussian_noise,
     generate_gbm,
+    generate_lagged_mts,
     generate_sin_mts,
     generate_sin_mts_mother,
     generate_sin_mts_smooth,
     generate_varma,
     generate_varma_shuffled,
     generate_warping_mts,
+    LaggedInternals,
     SmoothSinInternals,
 )
 from .chat import (
@@ -32,6 +34,7 @@ from .chat import (
     generate_var_chat_a,
     generate_var_chat_b,
     generate_var_chat_c,
+    generate_var_chat_d,
 )
 from .pde import generate_wave_1d, generate_wave_2d
 from .topology import (
@@ -54,6 +57,8 @@ __all__ = [
     "generate_exponential_noise",
     "generate_gaussian_noise",
     "generate_gbm",
+    "generate_lagged_mts",
+    "LaggedInternals",
     "generate_kuramoto",
     "generate_kuramoto_all_to_all",
     "generate_kuramoto_bidirectional_list",
@@ -75,6 +80,7 @@ __all__ = [
     "generate_var_chat_a",
     "generate_var_chat_b",
     "generate_var_chat_c",
+    "generate_var_chat_d",
     "ChatMotifInternals",
     "generate_wave_1d",
     "generate_wave_2d",

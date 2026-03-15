@@ -7,6 +7,7 @@ motif edge annotations stored as auxiliary returns.
 Generator A  (var_chat_a): directed 3-node VAR motifs (chain / fork / collider)
 Generator B  (var_chat_b): common-driver confounder (no direct 2→3 vs direct 2→3)
 Generator C  (var_chat_c): nonlinear coupling (linear vs tanh)
+Generator D  (var_chat_d): lag discrimination (lag 1 vs lag 3)
 
 All generators embed a small motif into M nodes; remaining nodes are
 independent AR(1) nuisance processes. Motif node indices are randomly
@@ -347,6 +348,77 @@ def generate_var_chat_c(
             motif_edges=edges_permuted,
             class_label=_CHAT_C_CLASSES[motif_class],
             coupling_values={"c": c, "rho": rho},
+        )
+        return data, internals
+    return data
+
+
+# ---------------------------------------------------------------------------
+# Generator D: lag discrimination
+# ---------------------------------------------------------------------------
+
+_CHAT_D_CLASSES = {
+    0: "lag1",
+    1: "lag3",
+}
+
+
+def generate_var_chat_d(
+    M: int,
+    T: int,
+    motif_class: int = 0,
+    alpha_lo: float = 0.25,
+    alpha_hi: float = 0.8,
+    rho: float = 0.5,
+    noise_std: float = 0.2,
+    transients: int = 200,
+    rng=None,
+    zscore: bool = True,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, ChatMotifInternals]:
+    """
+    Generator D: 2-node motif with coupling at different lags.
+
+    Node 0 is the driver:
+        x0(t) = rho * x0(t-1) + noise
+        x1(t) = rho * x1(t-1) + alpha * x0(t - lag) + noise
+
+    Classes:
+        0 = lag 1
+        1 = lag 3
+
+    Same topology and coupling strength — only the lag differs.
+    Tests whether temporal SPIs (lagged correlation, TLMI, TE) can
+    discriminate lag structure.
+    """
+    if M < 2:
+        raise ValueError(f"M must be >= 2 for a 2-node motif, got {M}")
+    rng = _resolve_rng(None, rng)
+
+    alpha = float(rng.uniform(alpha_lo, alpha_hi))
+    lag = 1 if motif_class == 0 else 3
+    edges: list[tuple[int, int]] = [(0, 1)]
+
+    steps = transients + T
+    X_motif = np.zeros((steps, 2))
+    for t in range(lag, steps):
+        X_motif[t, 0] = rho * X_motif[t - 1, 0] + rng.normal(0, noise_std)
+        X_motif[t, 1] = rho * X_motif[t - 1, 1] + alpha * X_motif[t - lag, 0] + rng.normal(0, noise_std)
+    X_motif = X_motif[transients:]
+
+    X_nuisance = _ar1_nuisance(T, M - 2, rho, noise_std, rng)
+
+    data, motif_indices, edges_permuted = _permute_and_merge(
+        X_motif, X_nuisance, edges, rng
+    )
+    data = _maybe_zscore(data, zscore=zscore)
+
+    if return_internals:
+        internals = ChatMotifInternals(
+            motif_node_indices=motif_indices,
+            motif_edges=edges_permuted,
+            class_label=_CHAT_D_CLASSES[motif_class],
+            coupling_values={"alpha": alpha, "lag": lag, "rho": rho},
         )
         return data, internals
     return data

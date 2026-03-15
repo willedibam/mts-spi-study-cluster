@@ -4,7 +4,7 @@ from typing import Callable
 
 import numpy as np
 
-from ._common import _maybe_zscore, _resolve_rng
+from ._common import _maybe_zscore, _resolve_channel_noise_stds, _resolve_rng
 
 
 def _softplus(x: np.ndarray) -> np.ndarray:
@@ -110,6 +110,8 @@ def generate_case_i(
     topology: str = "ring",
     boundary_value: float = 0.0,
     noise_std: float | np.ndarray = 0.1,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     transients: int = 0,
     x0: float | np.ndarray | None = 0.0,
     init_std: float = 1.0,
@@ -145,7 +147,10 @@ def generate_case_i(
     a_arr = np.broadcast_to(np.asarray(a, dtype=float), (M,)).copy()
     b_arr = np.broadcast_to(np.asarray(b, dtype=float), (M,)).copy()
     c_arr = np.broadcast_to(np.asarray(c, dtype=float), (M,))
-    noise_std_arr = np.broadcast_to(np.asarray(noise_std, dtype=float), (M,))
+    noise_std_arr = np.broadcast_to(np.asarray(noise_std, dtype=float), (M,)).copy()
+    if noise_std_variable:
+        p = 1.0 / float(noise_std_scale)
+        noise_std_arr = noise_std_arr * rng.geometric(p, size=M).astype(float)
 
     if target_rho is not None:
         if not np.allclose(c_arr, 0.0):
@@ -226,6 +231,8 @@ def generate_case_ii(
     topology: str = "ring",
     boundary_value: float = 0.0,
     noise_std: float | np.ndarray = 0.1,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     transients: int = 0,
     z0: float | np.ndarray | None = 0.0,
     init_std: float = 1.0,
@@ -262,6 +269,9 @@ def generate_case_ii(
     a_arr = np.broadcast_to(np.asarray(a, dtype=float), (M,)).copy()
     b_arr = np.broadcast_to(np.asarray(b, dtype=float), (M,)).copy()
     noise_std_arr = np.broadcast_to(np.asarray(noise_std, dtype=float), (M,)).copy()
+    if noise_std_variable:
+        p = 1.0 / float(noise_std_scale)
+        noise_std_arr = noise_std_arr * rng.geometric(p, size=M).astype(float)
 
     sigma2_auto = None
     g_name = str(g).lower().strip() if not callable(g) else ""

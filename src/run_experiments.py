@@ -15,7 +15,8 @@ from scipy.stats import zscore
 import pandas as pd
 
 from . import generators as generate
-from .generators import generate_sin_mts_smooth
+from .generators import generate_sin_mts_smooth, generate_lagged_mts
+from .generators.chat import generate_var_chat_a, generate_var_chat_b, generate_var_chat_c, generate_var_chat_d
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
@@ -325,6 +326,35 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
                 **generator_params,
             )
             gen_extras = {"a_values": internals.a_values.tolist()}
+        elif spec.generator == "lagged_mts":
+            data, internals = generate_lagged_mts(
+                M=spec.M,
+                T=spec.T,
+                rng=np.random.default_rng(spec.rng_seed),
+                return_internals=True,
+                **generator_params,
+            )
+            gen_extras = {"lags": internals.lags.tolist()}
+        elif spec.generator in ("var_chat_a", "var_chat_b", "var_chat_c", "var_chat_d"):
+            _chat_gen = {
+                "var_chat_a": generate_var_chat_a,
+                "var_chat_b": generate_var_chat_b,
+                "var_chat_c": generate_var_chat_c,
+                "var_chat_d": generate_var_chat_d,
+            }[spec.generator]
+            data, internals = _chat_gen(
+                M=spec.M,
+                T=spec.T,
+                rng=np.random.default_rng(spec.rng_seed),
+                return_internals=True,
+                **generator_params,
+            )
+            gen_extras = {
+                "motif_node_indices": internals.motif_node_indices,
+                "motif_edges": [list(e) for e in internals.motif_edges],
+                "class_label": internals.class_label,
+                "coupling_values": internals.coupling_values,
+            }
         else:
             data = generate.generate_series(
                 spec.generator,

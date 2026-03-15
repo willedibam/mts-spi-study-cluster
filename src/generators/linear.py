@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 
-from ._common import _maybe_zscore, _resolve_rng
+from ._common import _maybe_zscore, _resolve_channel_noise_stds, _resolve_rng
 
 
 def generate_varma(
@@ -14,6 +14,8 @@ def generate_varma(
     ma_phi: float = 0.2,
     ma_coupling: float = 0.1,
     noise_std: float = 0.1,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     transients: int = 100,
     target_rho: float = 0.99,
     topology: str = "ring-symmetric",
@@ -48,7 +50,11 @@ def generate_varma(
     B = ma_phi * I + ma_coupling * neighbors
     steps = transients + T
     X = np.zeros((steps, M), float)
-    eps = rng.normal(0.0, noise_std, size=(steps, M))
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
+    eps = rng.normal(0.0, 1.0, size=(steps, M)) * noise_stds[None, :]
     for t in range(1, steps):
         X[t] = A @ X[t - 1] + eps[t] + B @ eps[t - 1]
     return _maybe_zscore(X[transients:], zscore=zscore)
@@ -62,6 +68,8 @@ def generate_varma_shuffled(
     ma_phi: float = 0.2,
     ma_coupling: float = 0.1,
     noise_std: float = 0.1,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     transients: int = 100,
     target_rho: float = 0.99,
     topology: str = "ring-symmetric",
@@ -73,7 +81,8 @@ def generate_varma_shuffled(
         M=M, T=T,
         phi=phi, coupling=coupling,
         ma_phi=ma_phi, ma_coupling=ma_coupling,
-        noise_std=noise_std, transients=transients,
+        noise_std=noise_std, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, transients=transients,
         target_rho=target_rho, topology=topology, rng=rng, zscore=False
     )
     for m in range(M):
@@ -227,6 +236,8 @@ def generate_warping_mts(
     warp_p_step: float = 0.5,
     warp_step: int = 1,
     noise_std: float = 0.05,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     ar1_a: float = 0.8,
     ar1_noise_std: float = 1.0,
     zscore: bool = False,
@@ -301,6 +312,10 @@ def generate_warping_mts(
     else:
         raise ValueError(f"warping_channel_regime must be 'fixed' or 'random', got {warping_channel_regime!r}")
 
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
     data = np.empty((T, M))
     paths: list = []
     mappings: list = []
@@ -308,11 +323,11 @@ def generate_warping_mts(
         if is_warped[i]:
             path = _warp_path(T, warping_path_regime, step=warp_step, p=warp_p, p_step=warp_p_step, rng=rng)
             mapping = _path_to_mapping(path, T)
-            data[:, i] = mother[mapping] + rng.normal(0, noise_std, T)
+            data[:, i] = mother[mapping] + rng.normal(0, noise_stds[i], T)
             paths.append(path)
             mappings.append(mapping)
         else:
-            data[:, i] = mother + rng.normal(0, noise_std, T)
+            data[:, i] = mother + rng.normal(0, noise_stds[i], T)
             identity = np.arange(T)
             paths.append(np.column_stack([identity, identity]))
             mappings.append(identity)
@@ -320,6 +335,116 @@ def generate_warping_mts(
     result = _maybe_zscore(data, zscore=zscore)
     if return_internals:
         return result, WarpingInternals(mother=mother, is_warped=is_warped, paths=paths, mappings=mappings)
+    return result
+
+
+@dataclass
+class LaggedInternals:
+    """Internals returned by generate_lagged_mts when return_internals=True."""
+    mother: np.ndarray  # (T + max_lag,) full extended mother signal
+    lags: np.ndarray    # (M,) integer lag tau_i per channel
+
+
+def generate_lagged_mts(
+    M: int,
+    T: int,
+    A: float = 1.0,
+    linspace: bool = False,
+    fixed_lag: bool = False,
+    noise_std: float = 0.05,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
+    ar1_a: float = 0.8,
+    ar1_noise_std: float = 1.0,
+    zscore: bool = False,
+    rng=None,
+    mother: np.ndarray | None = None,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, LaggedInternals]:
+    """
+    M-channel MTS built from a shared AR(1) mother signal, each channel
+    shifted by an integer lag tau_i.
+
+    Per-channel construction:
+        X_t^{(i)} = mother[t - tau_i] + eta_t^{(i)},   eta ~ N(0, noise_std^2)
+
+    Lag parameterisation (controlled by A >= 1); precedence: fixed_lag > linspace > random:
+        fixed_lag=True:  tau_i = round(A-1) for every channel (all channels share
+            the same deterministic lag; A=1 => tau=0, A=k => tau=k-1).
+        linspace=True:   tau_i = round(linspace(0, A-1, M)[i])  (deterministic,
+            evenly spaced from 0 to round(A-1)).
+        default (both False):  tau_i ~ Geom(p=1/A) - 1  i.i.d. per channel
+            A=1  => p=1, tau_i = 0 always (unlagged)
+            A>1  => E[tau_i] = A-1, Var[tau_i] = A(A-1); larger A => more variable lag.
+
+    The mother signal is extended by max_lag steps at the front so that every
+    channel has exactly T valid time steps.
+
+    Parameters
+    ----------
+    M             : number of channels
+    T             : time steps in output
+    A             : lag scale; must be >= 1. A=1 => no lag. E[tau] = A-1.
+    linspace      : if True, lags evenly spaced 0..round(A-1) (ignored if fixed_lag)
+    fixed_lag     : if True, all channels get the same lag tau = round(A-1)
+    noise_std     : per-channel i.i.d. measurement noise std
+    ar1_a         : AR(1) autoregressive coefficient for mother signal
+    ar1_noise_std : driving noise std of the mother signal
+    zscore        : z-score output
+    rng           : RNG instance or int seed
+    mother        : optional 1D array of length >= T + max_lag to use as mother
+    return_internals : if True, return (data, LaggedInternals)
+
+    Returns shape (T, M), or tuple of ((T, M), LaggedInternals).
+    """
+    if A < 1.0:
+        raise ValueError(f"A must be >= 1 (got {A}). A=1 means no lag.")
+    rng = _resolve_rng(None, rng)
+
+    # --- Assign per-channel lags ---
+    if fixed_lag:
+        tau = int(round(A - 1))
+        lags = np.full(M, tau, dtype=int)
+    elif linspace:
+        max_lag = int(round(A - 1))
+        lags = np.round(np.linspace(0, max_lag, M)).astype(int)
+    else:
+        p = 1.0 / A
+        lags = rng.geometric(p, size=M) - 1  # tau ~ Geom(1/A) - 1
+        # lags = rng.uniform(0, A, size=M) < (A - 1 - lags) / A  # Random tie-breaking to achieve exact E[tau]=A-1
+
+    max_lag = int(lags.max())
+    extended_T = T + max_lag
+
+    # --- Mother signal ---
+    if mother is not None:
+        mother = np.asarray(mother, dtype=float)
+        if mother.ndim != 1 or len(mother) < extended_T:
+            raise ValueError(
+                f"mother must be 1D of length >= T + max_lag = {extended_T}, "
+                f"got shape {mother.shape}"
+            )
+    else:
+        m = np.zeros(extended_T)
+        for t in range(1, extended_T):
+            m[t] = ar1_a * m[t - 1] + rng.normal(0, ar1_noise_std)
+        mother = m
+
+    # --- Build channels ---
+    # Channel with lag tau takes mother[max_lag - tau : max_lag - tau + T],
+    # i.e., it observes the mother tau steps in the past relative to lag-0 channels.
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
+    data = np.empty((T, M))
+    for i, tau in enumerate(lags):
+        offset = max_lag - tau
+        data[:, i] = mother[offset : offset + T] + rng.normal(0, noise_stds[i], T)
+
+    result = _maybe_zscore(data, zscore=zscore)
+    if return_internals:
+        return result, LaggedInternals(mother=mother, lags=lags)
     return result
 
 
@@ -336,12 +461,18 @@ _SIN_INTERVALS = {
 }
 
 
-def _sin_channels(data: np.ndarray, channel_regimes: list, T: int, noise_std: float, rng) -> None:
-    """Fill data[:, i] in-place for each channel given its regime."""
+def _sin_channels(data: np.ndarray, channel_regimes: list, T: int, noise_stds, rng) -> None:
+    """Fill data[:, i] in-place for each channel given its regime.
+
+    noise_stds: scalar or array-like of length len(channel_regimes).
+    """
+    noise_stds = np.broadcast_to(
+        np.asarray(noise_stds, dtype=float), (len(channel_regimes),)
+    )
     for i, reg in enumerate(channel_regimes):
         lo, hi = _SIN_INTERVALS[reg]
         t = np.linspace(lo, hi, T)
-        data[:, i] = np.sin(t) + rng.normal(0, noise_std, T)
+        data[:, i] = np.sin(t) + rng.normal(0, float(noise_stds[i]), T)
 
 
 def generate_sin_mts(
@@ -351,6 +482,8 @@ def generate_sin_mts(
     n_linear: int | None = None,
     n_monotonic: int | None = None,
     noise_std: float = 0.05,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     zscore: bool = False,
     _regime_seed: int | None = None,
     rng=None,
@@ -385,8 +518,12 @@ def generate_sin_mts(
         channel_regimes = [keys[i] for i in regime_rng.integers(0, 3, size=M)]
     else:
         raise ValueError(f"Unknown regime '{regime}'. Expected 'fixed' or 'random'.")
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
     data = np.empty((T, M))
-    _sin_channels(data, channel_regimes, T, noise_std, rng)
+    _sin_channels(data, channel_regimes, T, noise_stds, rng)
     return _maybe_zscore(data, zscore=zscore)
 
 
@@ -397,6 +534,8 @@ def generate_sin_mts_smooth(
     k: float = np.pi,
     linspace: bool = False,
     noise_std: float = 0.05,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     ar1_a: float = 0.8,
     ar1_noise_std: float = 1.0,
     zscore: bool = False,
@@ -464,6 +603,10 @@ def generate_sin_mts_smooth(
     m_bar = np.zeros(T) if hi == lo else (mother - lo) / (hi - lo)
 
     a_values = np.linspace(a_min, A, M) if linspace else rng.uniform(a_min, A, size=M)
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
     data = np.empty((T, M))
     for i, a_i in enumerate(a_values):
         y = 2 * a_i * m_bar - a_i
@@ -471,7 +614,7 @@ def generate_sin_mts_smooth(
         # g_max = np.sin(min(a_i, np.pi / 2))
         g = np.tanh(k * np.sin(y))  # compositional: tanh(k·sin(y))
         g_max = np.tanh(k * np.sin(min(a_i, np.pi / 2)))
-        data[:, i] = g / g_max + rng.normal(0, noise_std, T)
+        data[:, i] = g / g_max + rng.normal(0, noise_stds[i], T)
 
     result = _maybe_zscore(data, zscore=zscore)
     if return_internals:
@@ -486,6 +629,8 @@ def generate_sin_mts_mother(
     n_linear: int | None = None,
     n_monotonic: int | None = None,
     noise_std: float = 0.05,
+    noise_std_variable: bool = False,
+    noise_std_scale: float = np.e,
     ar1_a: float = 0.8,
     ar1_noise_std: float = 1.0,
     zscore: bool = False,
@@ -558,13 +703,17 @@ def generate_sin_mts_mother(
     else:
         raise ValueError(f"Unknown regime '{regime}'. Expected 'fixed' or 'random'.")
 
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
     data = np.empty((T, M))
     for i, reg in enumerate(channel_regimes):
         a, b = _SIN_INTERVALS[reg]
         y = (b - a) * m_bar + a
         g = np.sin(y)
         g_max = np.sin(min(abs(b), np.pi / 2))
-        data[:, i] = g / g_max + rng.normal(0, noise_std, T)
+        data[:, i] = g / g_max + rng.normal(0, noise_stds[i], T)
 
     return _maybe_zscore(data, zscore=zscore)
 

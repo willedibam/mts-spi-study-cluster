@@ -13,7 +13,7 @@
 #
 # Start small (200 per class) for development; scale up when pipeline works.
 
-base_output_dir: data/eeml/chat/
+base_output_dir: data/eeml_260315/chat/
 timestamp: false
 pyspi_config: configs/pyspi/cases/topology-chat.yaml
 pyspi_subset: default
@@ -113,8 +113,8 @@ mts_classes:
     generator: "var_chat_c"
     base_params:
       motif_class: 0
-      c_lo: 0.5
-      c_hi: 1.5
+      c_lo: 2.0
+      c_hi: 5.0
       rho: 0.5
       noise_std: 0.2
       transients: 200
@@ -125,8 +125,36 @@ mts_classes:
     generator: "var_chat_c"
     base_params:
       motif_class: 1
-      c_lo: 0.5
-      c_hi: 1.5
+      c_lo: 2.0
+      c_hi: 5.0
+      rho: 0.5
+      noise_std: 0.2
+      transients: 200
+      zscore: true
+
+  # -------------------------------------------------------------------------
+  # Generator D: lag discrimination
+  # -------------------------------------------------------------------------
+
+  - name: "chat-d-lag1"
+    labels: ["chat-d", "lag1"]
+    generator: "var_chat_d"
+    base_params:
+      motif_class: 0
+      alpha_lo: 0.25
+      alpha_hi: 0.8
+      rho: 0.5
+      noise_std: 0.2
+      transients: 200
+      zscore: true
+
+  - name: "chat-d-lag3"
+    labels: ["chat-d", "lag3"]
+    generator: "var_chat_d"
+    base_params:
+      motif_class: 1
+      alpha_lo: 0.25
+      alpha_hi: 0.8
       rho: 0.5
       noise_std: 0.2
       transients: 200

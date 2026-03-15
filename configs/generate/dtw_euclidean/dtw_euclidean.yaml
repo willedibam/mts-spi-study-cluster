@@ -23,6 +23,7 @@ mts_classes:
       warp_p: 0.1
       warp_p_step: 0.9
       noise_std: 0.1
+      noise_std_variable: false
       ar1_a: 0.8
       ar1_noise_std: 1.0
       zscore: false
@@ -38,6 +39,7 @@ mts_classes:
       warp_p: 0.1
       warp_p_step: 0.9
       noise_std: 0.1
+      noise_std_variable: false
       ar1_a: 0.8
       ar1_noise_std: 1.0
       zscore: false
@@ -51,6 +53,7 @@ mts_classes:
       warp_p: 0.1
       warp_p_step: 0.9
       noise_std: 0.1
+      noise_std_variable: false
       ar1_a: 0.8
       ar1_noise_std: 1.0
       zscore: false
