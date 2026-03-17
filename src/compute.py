@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 
 from .java_bridge import ensure_java_started
-from . import pyspi_patches  # noqa: F401  # patches spectral input handling
 from pyspi.calculator import Calculator
 
 from .utils import load_yaml

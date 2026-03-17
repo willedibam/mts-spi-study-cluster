@@ -1,6 +1,6 @@
 base_output_dir: data/dtw_euclidean/260313_lagged-3/
 timestamp: false
-pyspi_config: configs/pyspi/cases/dtw_euclidean.yaml
+pyspi_config: configs/pyspi-v2/cases/dtw_euclidean.yaml
 pyspi_subset: default
 normalise: false
 rng_seed: 42

@@ -13,9 +13,9 @@
 #
 # Start small (200 per class) for development; scale up when pipeline works.
 
-base_output_dir: data/eeml_260315/chat/
+base_output_dir: data/eeml_260318/
 timestamp: false
-pyspi_config: configs/pyspi/cases/topology-chat.yaml
+pyspi_config: configs/pyspi-v2/cases/eeml.yaml
 pyspi_subset: default
 normalise: false
 rng_seed: 260311

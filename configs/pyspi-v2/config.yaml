@@ -1,3 +1,7 @@
+# pyspi-v2 config: pure numpy/scipy — no JVM/JIDT/octave dependencies
+# Auto-embedding configs (MAX_CORR_AIS) are commented out — not yet implemented in numpy.
+# IntegratedInformation (octave dep) is commented out.
+
 # Basic statistics
 .statistics.basic:
   # Covariance
@@ -473,58 +477,54 @@
       - statistic: diff
         embedding_dimension: 10
 
-# Information-theoretic statistics
+# Information-theoretic statistics (numpy implementations — no JIDT/JVM)
 .statistics.infotheory:
-  JointEntropy: # No theiler window yet
+  JointEntropy:
     labels:
       - undirected
       - nonlinear
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
       - estimator: kozachenko
       - estimator: kernel
 
-  ConditionalEntropy: # No theiler window yet
+  ConditionalEntropy:
     labels:
       - undirected
       - nonlinear
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
       - estimator: kozachenko
       - estimator: kernel
 
-  CausalEntropy: # No theiler window yet
+  CausalEntropy:
     labels:
       - directed
       - nonlinear
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
       - estimator: kozachenko
       - estimator: kernel
 
-  CrossmapEntropy: # No theiler window yet
+  CrossmapEntropy:
     labels:
       - unsigned
       - directed
       - time-dependent
       - bivariate
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
         history_length: 1
@@ -544,29 +544,27 @@
       - estimator: kernel
         history_length: 10
 
-  DirectedInfo: # No theiler window yet
+  DirectedInfo:
     labels:
       - directed
       - nonlinear
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
       - estimator: kozachenko
       - estimator: kernel
 
-  StochasticInteraction: # No theiler window
+  StochasticInteraction:
     labels:
       - undirected
       - nonlinear
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
       - estimator: kozachenko
@@ -580,8 +578,7 @@
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
 
@@ -603,8 +600,7 @@
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
 
@@ -626,22 +622,21 @@
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
-      - java
+    dependencies:
     configs:
-      # Kraskov estimator with auto-embedding on source/target and DCE
-      - estimator: kraskov
-        prop_k: 4
-        auto_embed_method: MAX_CORR_AIS
-        k_search_max: 10
-        tau_search_max: 4
+      # TODO: auto_embed_method not yet implemented in numpy — implement custom AIS-based embedding search
+      # - estimator: kraskov
+      #   prop_k: 4
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 10
+      #   tau_search_max: 4
 
-      - estimator: kraskov
-        prop_k: 4
-        auto_embed_method: MAX_CORR_AIS
-        k_search_max: 10
-        tau_search_max: 4
-        dyn_corr_excl: AUTO
+      # - estimator: kraskov
+      #   prop_k: 4
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 10
+      #   tau_search_max: 4
+      #   dyn_corr_excl: AUTO
 
       # Kraskov estimator with auto-embedding on target-only, src history of 1, and DCE
       - estimator: kraskov
@@ -663,24 +658,17 @@
         k_history: 1
         l_history: 1
 
-      # Currently the Kernel method has an overload issue with the AIS calculator..
-      # Kernel estimator with auto-embedding on source/target and DCE
-      # - estimator: kernel
-      #   auto_embed_method: MAX_CORR_AIS
-      #   k_search_max: 4
-      #   kernel_width: 0.25
-
       # Kernel estimator with no auto-embedding on source/target and DCE
       - estimator: kernel
         kernel_width: 0.25
         k_history: 1
         l_history: 1
 
-      # Gaussian estimator doesn't have DCE (aka Bartlett corrections) yet
-      - estimator: gaussian
-        auto_embed_method: MAX_CORR_AIS
-        k_search_max: 10
-        tau_search_max: 2
+      # TODO: auto_embed_method not yet implemented in numpy
+      # - estimator: gaussian
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 10
+      #   tau_search_max: 2
 
       - estimator: gaussian
         k_history: 1
@@ -694,25 +682,23 @@
         k_history: 10
         l_history: 1
 
-  IntegratedInformation:
-    labels:
-      - undirected
-      - nonlinear
-      - unsigned
-      - bivariate
-      - time-dependent
-    dependencies: 
-      - octave
-    configs:
-      - phitype: "star"
-
-      - phitype: "star"
-        normalization: 1
-
-      - phitype: "Geo"
-
-      - phitype: "Geo"
-        normalization: 1
+  # TODO: IntegratedInformation requires octave — not available in pyspi-v2
+  # IntegratedInformation:
+  #   labels:
+  #     - undirected
+  #     - nonlinear
+  #     - unsigned
+  #     - bivariate
+  #     - time-dependent
+  #   dependencies:
+  #     - octave
+  #   configs:
+  #     - phitype: "star"
+  #     - phitype: "star"
+  #       normalization: 1
+  #     - phitype: "Geo"
+  #     - phitype: "Geo"
+  #       normalization: 1
 
 # statistics that analyse in the frequency-domain (see Schoegl and Supp, 2006)
 .statistics.spectral:

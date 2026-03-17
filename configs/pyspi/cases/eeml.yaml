@@ -22,7 +22,7 @@
       - contemporaneous
     dependencies:
     configs:
-      - squared: True
+      - squared: False
 
   # Kendall's rank correlation coefficient
   KendallTau:
@@ -88,6 +88,21 @@
     configs:
       - global_constraint: null
 
+  CrossPairwiseDistance:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - metric: "euclidean"
+        tau: 1
+        statistic: "min"
+      - metric: "euclidean"
+        tau: 1
+        statistic: "mean"
 
 # .statistics.causal: removed — pyEDM requires pkg_resources (unavailable in Python 3.12+)
 
@@ -145,6 +160,9 @@
       - java
     configs:
       - estimator: gaussian
+    
+      - estimator: kraskov
+        prop_k: 4
 
   # Transfer entropy
   TransferEntropy:
@@ -162,7 +180,6 @@
         prop_k: 4
         k_history: 1
         l_history: 1
-        dyn_corr_excl: AUTO
 
       # Currently the Kernel method has an overload issue with the AIS calculator..
       # Kernel estimator with auto-embedding on source/target and DCE

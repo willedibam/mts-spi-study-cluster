@@ -1,3 +1,5 @@
+# pyspi-v2 EEML case config: no JVM/JIDT dependencies
+
 # Basic statistics
 .statistics.basic:
   # Covariance
@@ -22,7 +24,7 @@
       - contemporaneous
     dependencies:
     configs:
-      - squared: True
+      - squared: False
 
   # Kendall's rank correlation coefficient
   KendallTau:
@@ -88,32 +90,43 @@
     configs:
       - global_constraint: null
 
+  CrossPairwiseDistance:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - metric: "euclidean"
+        tau: 1
+        statistic: "min"
+      - metric: "euclidean"
+        tau: 1
+        statistic: "mean"
 
-# .statistics.causal: removed — pyEDM requires pkg_resources (unavailable in Python 3.12+)
-
-# Information-theoretic statistics
+# Information-theoretic statistics (numpy implementations — no JIDT/JVM)
 .statistics.infotheory:
-  JointEntropy: # No theiler window yet
+  JointEntropy:
     labels:
       - undirected
       - nonlinear
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
 
-  ConditionalEntropy: # No theiler window yet
+  ConditionalEntropy:
     labels:
       - undirected
       - nonlinear
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
 
@@ -125,8 +138,7 @@
       - unsigned
       - bivariate
       - contemporaneous
-    dependencies: 
-      - java
+    dependencies:
     configs:
       - estimator: gaussian
 
@@ -142,7 +154,6 @@
       - bivariate
       - time-dependent
     dependencies:
-      - java
     configs:
       - estimator: gaussian
 
@@ -157,15 +168,13 @@
       - unsigned
       - bivariate
       - time-dependent
-    dependencies: 
-      - java
+    dependencies:
     configs:
       # Kraskov estimator with fixed embedding of 1 for source/target and DCE
       - estimator: kraskov
         prop_k: 4
         k_history: 1
         l_history: 1
-        # dyn_corr_excl: AUTO
 
       # Currently the Kernel method has an overload issue with the AIS calculator..
       # Kernel estimator with auto-embedding on source/target and DCE

@@ -8,7 +8,7 @@ dependencies = [
     "scipy>=1.11",
     "pandas>=2.1",
     "pyyaml>=6.0",
-    "pyspi>=2.0.1",
+    # pyspi: install from local fork (editable): uv pip install -e ../pyspi-fork
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "scikit-learn>=1.4",
@@ -16,7 +16,7 @@ dependencies = [
     "tqdm>=4.66",
     "psutil>=5.9",
     "pyarrow>=15.0",
-    "JPype1>=1.5",
+    # "JPype1>=1.5",  # no longer needed — JIDT eliminated in pyspi-v2
     "pyclustering>=0.10.1",
     "xarray",
     "dtaidistance==2.3.13",
