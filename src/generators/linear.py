@@ -351,9 +351,11 @@ def generate_lagged_mts(
     A: float = 1.0,
     linspace: bool = False,
     fixed_lag: bool = False,
+    lag_dist: str = "geometric",
     noise_std: float = 0.05,
     noise_std_variable: bool = False,
     noise_std_scale: float = np.e,
+    noise_dist: str = "geometric",
     ar1_a: float = 0.8,
     ar1_noise_std: float = 1.0,
     zscore: bool = False,
@@ -366,16 +368,24 @@ def generate_lagged_mts(
     shifted by an integer lag tau_i.
 
     Per-channel construction:
-        X_t^{(i)} = mother[t - tau_i] + eta_t^{(i)},   eta ~ N(0, noise_std^2)
+        X_t^{(i)} = mother[t - tau_i] + eta_t^{(i)},   eta ~ N(0, noise_std_i^2)
 
     Lag parameterisation (controlled by A >= 1); precedence: fixed_lag > linspace > random:
         fixed_lag=True:  tau_i = round(A-1) for every channel (all channels share
             the same deterministic lag; A=1 => tau=0, A=k => tau=k-1).
         linspace=True:   tau_i = round(linspace(0, A-1, M)[i])  (deterministic,
             evenly spaced from 0 to round(A-1)).
-        default (both False):  tau_i ~ Geom(p=1/A) - 1  i.i.d. per channel
-            A=1  => p=1, tau_i = 0 always (unlagged)
-            A>1  => E[tau_i] = A-1, Var[tau_i] = A(A-1); larger A => more variable lag.
+        default (both False):  controlled by lag_dist:
+            lag_dist="geometric": tau_i ~ Geom(p=1/A) - 1  [original]
+                A=1 => tau_i=0 always; A>1 => E[tau_i]=A-1, heavy right tail.
+            lag_dist="uniform":   tau_i ~ DiscreteUniform(0, round(A-1))
+                A=1 => tau_i=0 always; A>1 => E[tau_i]=(A-1)/2, bounded support.
+
+    Noise std parameterisation (when noise_std_variable=True); controlled by noise_dist:
+        noise_dist="geometric": noise_std_i = noise_std * kappa_i,
+            kappa_i ~ Geom(1/noise_std_scale); integer multiples, E[std]=noise_std*scale. [original]
+        noise_dist="uniform":   noise_std_i ~ Uniform(noise_std/noise_std_scale,
+            noise_std*noise_std_scale); continuous, same effective range.
 
     The mother signal is extended by max_lag steps at the front so that every
     channel has exactly T valid time steps.
@@ -384,10 +394,14 @@ def generate_lagged_mts(
     ----------
     M             : number of channels
     T             : time steps in output
-    A             : lag scale; must be >= 1. A=1 => no lag. E[tau] = A-1.
+    A             : lag scale; must be >= 1. A=1 => no lag.
     linspace      : if True, lags evenly spaced 0..round(A-1) (ignored if fixed_lag)
     fixed_lag     : if True, all channels get the same lag tau = round(A-1)
-    noise_std     : per-channel i.i.d. measurement noise std
+    lag_dist      : "geometric" (original) | "uniform" — active only when linspace=False, fixed_lag=False
+    noise_std     : per-channel i.i.d. measurement noise std (base value)
+    noise_std_variable : if True, per-channel noise std sampled according to noise_dist
+    noise_std_scale    : scale parameter for noise distribution
+    noise_dist    : "geometric" (original) | "uniform" — active only when noise_std_variable=True
     ar1_a         : AR(1) autoregressive coefficient for mother signal
     ar1_noise_std : driving noise std of the mother signal
     zscore        : z-score output
@@ -399,6 +413,10 @@ def generate_lagged_mts(
     """
     if A < 1.0:
         raise ValueError(f"A must be >= 1 (got {A}). A=1 means no lag.")
+    if lag_dist not in ("geometric", "uniform"):
+        raise ValueError(f"lag_dist must be 'geometric' or 'uniform', got {lag_dist!r}")
+    if noise_dist not in ("geometric", "uniform"):
+        raise ValueError(f"noise_dist must be 'geometric' or 'uniform', got {noise_dist!r}")
     rng = _resolve_rng(None, rng)
 
     # --- Assign per-channel lags ---
@@ -408,10 +426,14 @@ def generate_lagged_mts(
     elif linspace:
         max_lag = int(round(A - 1))
         lags = np.round(np.linspace(0, max_lag, M)).astype(int)
-    else:
+    elif lag_dist == "geometric":
+        # Original: tau_i ~ Geom(1/A) - 1; E[tau]=A-1, heavy right tail, unbounded.
         p = 1.0 / A
-        lags = rng.geometric(p, size=M) - 1  # tau ~ Geom(1/A) - 1
-        # lags = rng.uniform(0, A, size=M) < (A - 1 - lags) / A  # Random tie-breaking to achieve exact E[tau]=A-1
+        lags = rng.geometric(p, size=M) - 1
+    else:
+        # Uniform: tau_i ~ DiscreteUniform(0, round(A-1)); bounded support [0, A-1].
+        max_lag_u = int(round(A - 1))
+        lags = rng.integers(0, max_lag_u + 1, size=M)
 
     max_lag = int(lags.max())
     extended_T = T + max_lag
@@ -430,13 +452,26 @@ def generate_lagged_mts(
             m[t] = ar1_a * m[t - 1] + rng.normal(0, ar1_noise_std)
         mother = m
 
+    # --- Per-channel noise stds ---
+    if not noise_std_variable:
+        noise_stds = np.full(M, float(noise_std))
+    elif noise_dist == "geometric":
+        # Original: noise_std_i = noise_std * kappa_i, kappa_i ~ Geom(1/scale);
+        # discrete integer multiples of noise_std, E[std] = noise_std * scale.
+        noise_stds = _resolve_channel_noise_stds(
+            noise_std, M, noise_std_variable=True,
+            noise_std_scale=noise_std_scale, rng=rng,
+        )
+    else:
+        # Uniform: noise_std_i ~ Uniform(noise_std/scale, noise_std*scale);
+        # continuous, symmetric range around noise_std on log scale.
+        lo = float(noise_std) / float(noise_std_scale)
+        hi = float(noise_std) * float(noise_std_scale)
+        noise_stds = rng.uniform(lo, hi, size=M)
+
     # --- Build channels ---
     # Channel with lag tau takes mother[max_lag - tau : max_lag - tau + T],
     # i.e., it observes the mother tau steps in the past relative to lag-0 channels.
-    noise_stds = _resolve_channel_noise_stds(
-        noise_std, M, noise_std_variable=noise_std_variable,
-        noise_std_scale=noise_std_scale, rng=rng,
-    )
     data = np.empty((T, M))
     for i, tau in enumerate(lags):
         offset = max_lag - tau

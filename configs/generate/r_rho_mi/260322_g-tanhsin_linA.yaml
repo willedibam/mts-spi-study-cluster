@@ -1,0 +1,472 @@
+base_output_dir: data/r_rho_mi/260322_g-tanhsin_linA/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/r_rho_mi.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [20]
+  T_values: [2000]
+  instances: 30
+
+# 30 linearly-spaced A: linspace(pi/32, 4pi, 30) [placeholder]
+# k=1, noise_std=0.1
+# Regime boundaries (per-channel a_i):
+#   a_i < pi/16  ≈ 0.196 : approximately linear  (L)
+#   pi/16..pi/2  ≈ 0.196..1.571 : nonlinear monotonic  (L-M)
+#   a_i > pi/2   ≈ 1.571 : non-monotonic onset  (L-M-NM)
+
+mts_classes:
+
+  # v00: A = 0.0982 (0.031π)
+  - name: "A-0.031pi_L"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 0.0982
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v01: A = 0.5281 (0.168π)
+  - name: "A-0.168pi_L-M"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 0.5281
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v02: A = 0.9581 (0.305π)
+  - name: "A-0.305pi_L-M"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 0.9581
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v03: A = 1.3880 (0.442π)
+  - name: "A-0.442pi_L-M"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 1.3880
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v04: A = 1.8179 (0.579π)
+  - name: "A-0.579pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 1.8179
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v05: A = 2.2479 (0.716π)
+  - name: "A-0.716pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 2.2479
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v06: A = 2.6778 (0.852π)
+  - name: "A-0.852pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 2.6778
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v07: A = 3.1077 (0.989π)
+  - name: "A-0.989pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 3.1077
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v08: A = 3.5377 (1.126π)
+  - name: "A-1.126pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 3.5377
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v09: A = 3.9676 (1.263π)
+  - name: "A-1.263pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 3.9676
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v10: A = 4.3976 (1.400π)
+  - name: "A-1.400pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 4.3976
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v11: A = 4.8275 (1.537π)
+  - name: "A-1.537pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 4.8275
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v12: A = 5.2574 (1.673π)
+  - name: "A-1.673pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 5.2574
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v13: A = 5.6874 (1.810π)
+  - name: "A-1.810pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 5.6874
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v14: A = 6.1173 (1.947π)
+  - name: "A-1.947pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 6.1173
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v15: A = 6.5472 (2.084π)
+  - name: "A-2.084pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 6.5472
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v16: A = 6.9772 (2.221π)
+  - name: "A-2.221pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 6.9772
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v17: A = 7.4071 (2.358π)
+  - name: "A-2.358pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 7.4071
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v18: A = 7.8371 (2.495π)
+  - name: "A-2.495pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 7.8371
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v19: A = 8.2670 (2.631π)
+  - name: "A-2.631pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 8.2670
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v20: A = 8.6969 (2.768π)
+  - name: "A-2.768pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 8.6969
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v21: A = 9.1269 (2.905π)
+  - name: "A-2.905pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 9.1269
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v22: A = 9.5568 (3.042π)
+  - name: "A-3.042pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 9.5568
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v23: A = 9.9867 (3.179π)
+  - name: "A-3.179pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 9.9867
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v24: A = 10.4167 (3.316π)
+  - name: "A-3.316pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 10.4167
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v25: A = 10.8466 (3.453π)
+  - name: "A-3.453pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 10.8466
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v26: A = 11.2766 (3.589π)
+  - name: "A-3.589pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 11.2766
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v27: A = 11.7065 (3.726π)
+  - name: "A-3.726pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 11.7065
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v28: A = 12.1364 (3.863π)
+  - name: "A-3.863pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 12.1364
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # v29: A = 12.5664 (4.000π)
+  - name: "A-4.000pi_L-M-NM"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 12.5664
+      k: 1
+      linspace: true
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true

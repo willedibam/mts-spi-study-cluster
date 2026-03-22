@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.colors import Normalize
+from matplotlib.offsetbox import AnchoredText
 from scipy.stats import spearmanr, zscore
 from sklearn.preprocessing import StandardScaler, robust_scale
 from sklearn.decomposition import PCA
@@ -717,6 +718,7 @@ def plot_spi_space_individual(
     *,
     split_directed: bool = False,
     metric: str = "spearman",
+    show_dataset: bool = False,
 ) -> None:
     """
     Scatter + marginal KDE of two SPI flattened vectors from a single dataset.
@@ -824,15 +826,11 @@ def plot_spi_space_individual(
         x_label = f"{spi_x} ({direction_label})" if directed_x else spi_x
         y_label = f"{spi_y} ({direction_label})" if directed_y else spi_y
         g.set_axis_labels(x_label, y_label)
-        title_slug = "/".join(dataset_dir.parts[-2:])
+        title_slug = "/".join(dataset_dir.parts[-2:]) if show_dataset else dataset_dir.parts[-2] if show_dataset else dataset_dir.parts[-2]
         g.fig.suptitle(title_slug, y=1.02)
-        _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
-        g.ax_joint.text(
-            _tx, _ty, corr_label,
-            transform=g.ax_joint.transAxes,
-            ha=_ha, va=_va,
-            bbox=dict(facecolor="white", edgecolor="none", alpha=0.7, pad=2),
-        )
+        at = AnchoredText(corr_label, loc="upper left", frameon=True, prop=dict(size=10), pad=0.3, borderpad=0.3)
+        at.patch.set(facecolor="none", edgecolor="none", alpha=0.7)
+        g.ax_joint.add_artist(at)
 
         plotted = True
 
@@ -850,6 +848,7 @@ def plot_spi_space_individual_embed(
     marginal_kde: bool = True,
     main_spines: bool = True,
     metric: str = "spearman",
+    show_dataset: bool = False,
 ) -> None:
     """
     Same visual output as plot_spi_space_individual, but embeds into an existing subplot axes.
@@ -927,7 +926,7 @@ def plot_spi_space_individual_embed(
     else:
         corr, _ = spearmanr(x_vals, y_vals)
         corr_label = f"$\\rho={corr:.2f}$"
-    title_slug = "/".join(dataset_dir.parts[-2:])
+    title_slug = "/".join(dataset_dir.parts[-2:]) if show_dataset else dataset_dir.parts[-2]
 
     if marginals:
         fig = ax.get_figure()
@@ -975,13 +974,9 @@ def plot_spi_space_individual_embed(
     ax_scatter.set_xlabel(spi_x)
     ax_scatter.set_ylabel(spi_y)
     ax_scatter.set_title(title_slug)
-    _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
-    ax_scatter.text(
-        _tx, _ty, corr_label,
-        transform=ax_scatter.transAxes,
-        ha=_ha, va=_va, fontsize=15,
-        bbox=dict(facecolor="white", edgecolor="gray", alpha=0.7, pad=5),
-    )
+    at = AnchoredText(corr_label, loc="upper left", frameon=True, prop=dict(size=15), pad=0.3, borderpad=0.3)
+    at.patch.set(facecolor="none", edgecolor="gray", alpha=0.7)
+    ax_scatter.add_artist(at)
     if not main_spines:
         ax_scatter.spines[["top", "right"]].set_visible(False)
 
@@ -994,6 +989,7 @@ def plot_spi_space_recursive(
     formats: list[str] | None = None,
     dpi: int = 300,
     show: bool = False,
+    show_dataset: bool = False,
 ) -> list[Path]:
     """
     Recursively plot SPI-SPI scatter plots for all datasets under a directory.
@@ -1106,15 +1102,11 @@ def plot_spi_space_recursive(
             x_label = f"{spi_x} ({direction_label})" if directed_x else spi_x
             y_label = f"{spi_y} ({direction_label})" if directed_y else spi_y
             g.set_axis_labels(x_label, y_label)
-            title_slug = "/".join(dataset_dir.parts[-2:])
+            title_slug = "/".join(dataset_dir.parts[-2:]) if show_dataset else dataset_dir.parts[-2] if show_dataset else dataset_dir.parts[-2]
             g.fig.suptitle(title_slug, y=1.02)
-            _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
-            g.ax_joint.text(
-                _tx, _ty, f"$\\rho = {rho:.2f}$",
-                transform=g.ax_joint.transAxes,
-                ha=_ha, va=_va,
-                bbox=dict(facecolor="white", edgecolor="none", alpha=0.7, pad=2),
-            )
+            at = AnchoredText(f"$\\rho = {rho:.2f}$", loc="upper left", frameon=True, prop=dict(size=10), pad=0.3, borderpad=0.3)
+            at.patch.set(facecolor="none", edgecolor="none", alpha=0.7)
+            g.ax_joint.add_artist(at)
 
             for fmt in formats:
                 out_path = output_dir / f"{base_name}{dir_suffix}.{fmt}"
@@ -1942,6 +1934,131 @@ def plot_spi_corr_sweep(
     return df
 
 
+def plot_spi_corr_meta(
+    dataset_path: Path | str,
+    spi_pairs: list[list[str]],
+    *,
+    x_key: str,
+    x_transform=None,
+    pair_labels: list[str] | None = None,
+    metric: str = "spearman",
+    title: str | None = None,
+    xlabel: str | None = None,
+    ylabel: str | None = None,
+    ax=None,
+) -> pd.DataFrame:
+    """
+    Plot corr(spi_x, spi_y) vs a swept generator parameter for multiple SPI pairs,
+    reading the x-axis value from meta.json["generator"]["params"][x_key].
+
+    Walks dataset_path/<class_dir>/<dataset_dir>/, reads each meta.json for the
+    generator parameter value, and computes pairwise SPI correlation for each pair.
+    Multiple spi_pairs are overlaid as separate hued lines; confidence bands reflect
+    variation across instances (dataset_dirs) sharing the same x value.
+
+    This is the meta.json-aware successor to plot_spi_corr_sweep: no folder-name
+    regex required, and multiple pairs can be overlaid in one call.
+
+    Args:
+        dataset_path: Root dir (parent of class dirs).
+        spi_pairs: List of [spi_x, spi_y] pairs to overlay as separate lines.
+        x_key: Key in meta["generator"]["params"] to use as x-axis, e.g. "A".
+        x_transform: Optional callable(float) -> float applied to the raw x value.
+        pair_labels: Display labels for each pair. If None, auto-generates "(spi_x, spi_y)".
+        metric: "spearman" (default) or "pearson" — correlation between SPI matrix entries.
+        title: Axes title.
+        xlabel: x-axis label.
+        ylabel: y-axis label.
+        ax: Matplotlib axes. If None, uses plt.gca().
+
+    Returns:
+        DataFrame with columns [x, correlation, spi_pair].
+    """
+    if not spi_pairs:
+        raise ValueError("spi_pairs must be non-empty.")
+    if metric not in ("spearman", "pearson"):
+        raise ValueError("metric must be 'spearman' or 'pearson'.")
+    if pair_labels is not None and len(pair_labels) != len(spi_pairs):
+        raise ValueError("pair_labels must have the same length as spi_pairs.")
+
+    labels = pair_labels or [f"({p[0]}, {p[1]})" for p in spi_pairs]
+
+    root = Path(dataset_path)
+    if not root.exists():
+        raise FileNotFoundError(f"dataset_path not found: {root}")
+
+    rows: list[dict] = []
+    for class_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        for dataset_dir in sorted(p for p in class_dir.iterdir() if p.is_dir()):
+            meta_path = dataset_dir / "meta.json"
+            npz_path = dataset_dir / "spi_mpis.npz"
+            if not meta_path.exists() or not npz_path.exists():
+                continue
+
+            meta = load_json(meta_path)
+            gen_params = meta.get("generator", {}).get("params", {})
+            if x_key not in gen_params:
+                continue
+            raw_x = float(gen_params[x_key])
+            x = x_transform(raw_x) if x_transform is not None else raw_x
+
+            with np.load(npz_path) as npz:
+                for pair, label in zip(spi_pairs, labels):
+                    spi_x, spi_y = pair
+                    if spi_x not in npz or spi_y not in npz:
+                        continue
+                    arr_x = np.asarray(npz[spi_x], float)
+                    arr_y = np.asarray(npz[spi_y], float)
+                    if arr_x.shape != arr_y.shape or arr_x.ndim != 2:
+                        continue
+
+                    arr_x = 0.5 * (arr_x + arr_x.T)
+                    arr_y = 0.5 * (arr_y + arr_y.T)
+                    mask = np.triu(np.ones(arr_x.shape, dtype=bool), k=1)
+                    vec_x, vec_y = arr_x[mask], arr_y[mask]
+                    valid = np.isfinite(vec_x) & np.isfinite(vec_y)
+                    if valid.sum() < 2:
+                        continue
+                    vec_x, vec_y = vec_x[valid], vec_y[valid]
+
+                    if metric == "spearman":
+                        corr = float(spearmanr(vec_x, vec_y).correlation)
+                    else:
+                        corr = float(np.corrcoef(vec_x, vec_y)[0, 1])
+
+                    if not np.isfinite(corr):
+                        continue
+                    rows.append({"x": x, "correlation": corr, "spi_pair": label})
+
+    if not rows:
+        raise ValueError(
+            f"No matching datasets found under {root} with x_key='{x_key}'"
+        )
+
+    df = pd.DataFrame(rows)
+
+    if ax is None:
+        ax = plt.gca()
+
+    sns.lineplot(
+        data=df,
+        x="x",
+        y="correlation",
+        hue="spi_pair",
+        ax=ax,
+        errorbar=("ci", 95),
+        err_style="band",
+    )
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
+    if title is not None:
+        ax.set_title(title)
+
+    return df
+
+
 # ---------------------------------------------------------------------------
 # Channel-type marker constants for plot_spi_space_individual_embed_properties
 # ---------------------------------------------------------------------------
@@ -2012,6 +2129,8 @@ def plot_spi_space_individual_embed_properties(
     alpha: float = 0.4,
     main_spines: bool = True,
     metric: str = "spearman",
+    identity: bool = True,
+    show_dataset: bool = False,
 ) -> None:
     """
     Like plot_spi_space_individual_embed (marginals=False), but markers encode
@@ -2037,6 +2156,7 @@ def plot_spi_space_individual_embed_properties(
     thresh_linear    : a threshold below which a channel is "linear" (default π/8)
     thresh_monotonic : a threshold below which a channel is "monotonic" (default π/2)
     color_by_type    : if True, each pair type gets a distinct color; if False, all '#1f77b4'
+    identity         : if True (default), draw a y=x reference line
     """
     if len(spis) != 2:
         raise ValueError("Expects exactly two SPI names.")
@@ -2095,7 +2215,7 @@ def plot_spi_space_individual_embed_properties(
     else:
         corr, _ = spearmanr(x_vals, y_vals)
         corr_label = f"$\\rho={corr:.2f}$"
-    title_slug = "/".join(dataset_dir.parts[-2:])
+    title_slug = "/".join(dataset_dir.parts[-2:]) if show_dataset else dataset_dir.parts[-2]
 
     apply_plot_style()
 
@@ -2116,16 +2236,16 @@ def plot_spi_space_individual_embed_properties(
 
     # "#d62728" red line color
     sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="red", line_kws={"lw":"1.0"} , ci=None)
+    if identity:
+        lim = [min(x_vals.min(), y_vals.min()), max(x_vals.max(), y_vals.max())]
+        ax.plot(lim, lim, color="gray", linewidth=0.8, linestyle="--", zorder=0)
     ax.set_xlabel(spi_x)
     ax.set_ylabel(spi_y)
     ax.set_title(title_slug)
-    _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
-    ax.text(
-        _tx, _ty, corr_label,
-        transform=ax.transAxes,
-        ha=_ha, va=_va, fontsize=15,
-        bbox=dict(facecolor="white", edgecolor="red", lw=0.7, alpha=0.7, pad=5),
-    )
+    ax.set_box_aspect(1)
+    at = AnchoredText(corr_label, loc="upper left", frameon=True, prop=dict(size=15), pad=0.3, borderpad=0.3)
+    at.patch.set(facecolor="none", edgecolor="red", lw=0.7, alpha=0.7)
+    ax.add_artist(at)
     if not main_spines:
         ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(labelbottom=True, labelleft=True)
@@ -2142,6 +2262,8 @@ def plot_spi_space_individual_embed_lags(
     alpha: float = 0.6,
     main_spines: bool = True,
     metric: str = "spearman",
+    identity: bool = True,
+    show_dataset: bool = False,
 ) -> None:
     """
     Like plot_spi_space_individual_embed (marginals=False), but markers are
@@ -2152,6 +2274,7 @@ def plot_spi_space_individual_embed_lags(
     lag_feature : "diff"  → |τ_i − τ_j|  (how misaligned the pair is)
                   "max"   → max(τ_i, τ_j) (absolute lag regime of the pair)
                   "mean"  → (τ_i + τ_j) / 2
+    identity    : if True (default), draw a y=x reference line
     """
     if len(spis) != 2:
         raise ValueError("Expects exactly two SPI names.")
@@ -2220,9 +2343,11 @@ def plot_spi_space_individual_embed_lags(
     else:
         corr, _ = spearmanr(x_vals, y_vals)
         corr_label = f"$\\rho={corr:.2f}$"
-    title_slug = "/".join(dataset_dir.parts[-2:])
+    title_slug = "/".join(dataset_dir.parts[-2:]) if show_dataset else dataset_dir.parts[-2]
 
     apply_plot_style()
+
+    from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
     sc = ax.scatter(
         x_vals, y_vals,
@@ -2230,19 +2355,28 @@ def plot_spi_space_individual_embed_lags(
         vmin=0, vmax=lag_vals.max() if lag_vals.max() > 0 else 1,
         s=s, alpha=alpha, linewidths=0,
     )
-    plt.colorbar(sc, ax=ax, label=cbar_label, fraction=0.046, pad=0.04)
+    # inset_axes with bbox_transform=ax.transAxes anchors the colorbar to the
+    # square axes box (post set_box_aspect), not the subplot cell — so its
+    # height always matches the scatter plot exactly.
+    cax = inset_axes(
+        ax, width="5%", height="100%", loc="lower left",
+        bbox_to_anchor=(1.05, 0.0, 1, 1),
+        bbox_transform=ax.transAxes,
+        borderpad=0,
+    )
+    plt.colorbar(sc, cax=cax, label=cbar_label)
 
     sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="red", line_kws={"lw": "1.0"}, ci=None)
+    if identity:
+        lim = [min(x_vals.min(), y_vals.min()), max(x_vals.max(), y_vals.max())]
+        ax.plot(lim, lim, color="gray", linewidth=0.8, linestyle="--", zorder=0)
     ax.set_xlabel(spi_x)
     ax.set_ylabel(spi_y)
     ax.set_title(title_slug)
-    _tx, _ty, _ha, _va = _best_corner_loc(x_vals, y_vals)
-    ax.text(
-        _tx, _ty, corr_label,
-        transform=ax.transAxes,
-        ha=_ha, va=_va, fontsize=15,
-        bbox=dict(facecolor="white", edgecolor="red", lw=0.7, alpha=0.7, pad=5),
-    )
+    ax.set_box_aspect(1)
+    at = AnchoredText(corr_label, loc="upper left", frameon=True, prop=dict(size=15), pad=0.3, borderpad=0.3)
+    at.patch.set(facecolor="none", edgecolor="red", lw=0.7, alpha=0.7)
+    ax.add_artist(at)
     if not main_spines:
         ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(labelbottom=True, labelleft=True)

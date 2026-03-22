@@ -1,0 +1,119 @@
+base_output_dir: data/dtw_euclidean/260322_random-uniform-lag-noise_rmse_T1000/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/dtw_euclidean_norm.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [20]
+  T_values: [1000]
+  instances: 30
+
+mts_classes:
+  # A=1: tau_i = 0 for all channels (no lag; pure noisy copies of the mother)
+  - name: "A-1_uniform-lag-noise"
+    labels: [lagged-mother, tau-zero]
+    generator: "lagged_mts"
+    base_params:
+      A: 1.0
+      linspace: false
+      lag_dist: "uniform"       # geometric: Geom(1/A)-1, E[tau]=A-1=0 here; uniform: DiscreteUniform(0,A-1)=0 here — same either way for A=1
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      # noise_dist: "geometric"     # geometric (original): noise_std * Geom(1/scale), integer multiples; uniform: Uniform(std/scale, std*scale), continuous
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # A=2: tau_i ~ Geom(1/2)-1; E[tau]=1, most channels lag 0 or 1
+  - name: "A-2_uniform-lag-noise"
+    labels: [lagged-mother, short-lag]
+    generator: "lagged_mts"
+    base_params:
+      A: 2.0
+      linspace: false
+      # lag_dist: "geometric"       # geometric: E[tau]=1, right-tailed; uniform: DiscreteUniform(0,1), uniform mass on {0,1}
+      lag_dist: "uniform"
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      # noise_dist: "geometric"     # geometric (original): integer multiples of noise_std; uniform: Uniform(0.037, 0.272)
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # A=5: tau_i ~ Geom(1/5)-1; E[tau]=4, heavy tail — some channels can have very large lags
+  - name: "A-5_uniform-lag-noise"
+    labels: [lagged-mother, short-lag]
+    generator: "lagged_mts"
+    base_params:
+      A: 5.0
+      linspace: false
+      # lag_dist: "geometric"       # geometric: E[tau]=4, unbounded; uniform: DiscreteUniform(0,4), E[tau]=2, bounded
+      lag_dist: "uniform"
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "geometric"     # geometric (original): integer multiples of noise_std; uniform: Uniform(0.037, 0.272)
+      # noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # A=20: tau_i ~ Geom(1/20)-1; E[tau]=19, heavy tail — some channels can have very large lags
+  - name: "A-20_uniform-lag-noise"
+    labels: [lagged-mother, long-lag]
+    generator: "lagged_mts"
+    base_params:
+      A: 20.0
+      linspace: false
+      # lag_dist: "geometric"       # geometric: E[tau]=4, unbounded; uniform: DiscreteUniform(0,4), E[tau]=2, bounded
+      lag_dist: "uniform"
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "geometric"     # geometric (original): integer multiples of noise_std; uniform: Uniform(0.037, 0.272)
+      # noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  # A=5 linspace: deterministic lags 0,1,2,3,4 evenly spread across M=16 channels
+  - name: "A-5_uniform-lag-noise_linspace"
+    labels: [lagged-mother, short-lag]
+    generator: "lagged_mts"
+    base_params:
+      A: 5.0
+      linspace: true              # lag_dist ignored when linspace=True
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      # noise_dist: "geometric"     # geometric (original): integer multiples of noise_std; uniform: Uniform(0.037, 0.272)
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+
+
+  # A=20 linspace: deterministic lags 0..19; M=20 channels each offset by 1 step
+  - name: "A-20_uniform-lag-noise_linspace"
+    labels: [lagged-mother, long-lag]
+    generator: "lagged_mts"
+    base_params:
+      A: 20.0
+      linspace: true              # lag_dist ignored when linspace=True
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      # noise_dist: "geometric"     # geometric (original): integer multiples of noise_std; uniform: Uniform(0.037, 0.272)
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
