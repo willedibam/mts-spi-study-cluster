@@ -1,161 +1,51 @@
-# EEML GNN-on-SPI study: synthetic generators for graph-level classification.
-#
-# Generator A: directed 3-node VAR motifs (chain / fork / collider)
-# Generator B: common-driver confounder (no-direct vs direct 2→3)
-# Generator C: nonlinear coupling (linear vs tanh)
-#
-# Each class embeds a small motif into M=20 nodes; remaining nodes are
-# independent AR(1) nuisance processes with rho=0.5.
-#
-# Instance count = total samples per class.
-# Train/val/test split is handled downstream by the EEML pipeline,
-# not by the experiment runner.
-#
-# Start small (200 per class) for development; scale up when pipeline works.
-
-base_output_dir: data/eeml_260318/
+base_output_dir: data/260326_eeml/
 timestamp: false
 pyspi_config: configs/pyspi-v2/cases/eeml.yaml
 pyspi_subset: default
 normalise: false
-rng_seed: 260311
+rng_seed: 110305
 save_heatmap: false
 threads: 4
 
 defaults:
-  M_values: [20]
-  T_values: [300]
-  instances: 500
+  M_values: [5]
+  T_values: [1000]
+  instances: 1000
 
 # ---------------------------------------------------------------------------
 # Generator A: directed VAR motifs
 # ---------------------------------------------------------------------------
 
 mts_classes:
-  - name: "chat-a-chain"
-    labels: ["chat-a", "chain"]
+  - name: "var-chain"
+    labels: ["var", "chain"]
     generator: "var_chat_a"
     base_params:
       motif_class: 0
-      alpha_lo: 0.25
-      alpha_hi: 0.8
-      rho_nuisance: 0.5
-      noise_std: 0.2
-      transients: 200
+      alpha_lo: 0.5
+      alpha_hi: 0.95
+      rho_nuisance: 0.8
+      noise_std: 0.1
       zscore: true
 
-  - name: "chat-a-fork"
-    labels: ["chat-a", "fork"]
+  - name: "var-fork"
+    labels: ["var", "fork"]
     generator: "var_chat_a"
     base_params:
       motif_class: 1
-      alpha_lo: 0.25
-      alpha_hi: 0.8
-      rho_nuisance: 0.5
-      noise_std: 0.2
-      transients: 200
+      alpha_lo: 0.5
+      alpha_hi: 0.95
+      rho_nuisance: 0.8
+      noise_std: 0.1
       zscore: true
 
-  - name: "chat-a-collider"
-    labels: ["chat-a", "collider"]
+  - name: "var-collider"
+    labels: ["var", "collider"]
     generator: "var_chat_a"
     base_params:
       motif_class: 2
-      alpha_lo: 0.25
-      alpha_hi: 0.8
-      rho_nuisance: 0.5
-      noise_std: 0.2
-      transients: 200
-      zscore: true
-
-  # -------------------------------------------------------------------------
-  # Generator B: common-driver confounder
-  # -------------------------------------------------------------------------
-
-  - name: "chat-b-no-direct"
-    labels: ["chat-b", "no-direct"]
-    generator: "var_chat_b"
-    base_params:
-      motif_class: 0
-      a_lo: 0.25
-      a_hi: 0.8
-      b_lo: 0.25
-      b_hi: 0.8
-      c_lo: 0.25
-      c_hi: 0.8
-      rho: 0.5
-      noise_std: 0.2
-      transients: 200
-      zscore: true
-
-  - name: "chat-b-with-direct"
-    labels: ["chat-b", "with-direct"]
-    generator: "var_chat_b"
-    base_params:
-      motif_class: 1
-      a_lo: 0.25
-      a_hi: 0.8
-      b_lo: 0.25
-      b_hi: 0.8
-      c_lo: 0.25
-      c_hi: 0.8
-      rho: 0.5
-      noise_std: 0.2
-      transients: 200
-      zscore: true
-
-  # -------------------------------------------------------------------------
-  # Generator C: nonlinear coupling
-  # -------------------------------------------------------------------------
-
-  - name: "chat-c-linear"
-    labels: ["chat-c", "linear"]
-    generator: "var_chat_c"
-    base_params:
-      motif_class: 0
-      c_lo: 2.0
-      c_hi: 5.0
-      rho: 0.5
-      noise_std: 0.2
-      transients: 200
-      zscore: true
-
-  - name: "chat-c-tanh"
-    labels: ["chat-c", "tanh"]
-    generator: "var_chat_c"
-    base_params:
-      motif_class: 1
-      c_lo: 2.0
-      c_hi: 5.0
-      rho: 0.5
-      noise_std: 0.2
-      transients: 200
-      zscore: true
-
-  # -------------------------------------------------------------------------
-  # Generator D: lag discrimination
-  # -------------------------------------------------------------------------
-
-  - name: "chat-d-lag1"
-    labels: ["chat-d", "lag1"]
-    generator: "var_chat_d"
-    base_params:
-      motif_class: 0
-      alpha_lo: 0.25
-      alpha_hi: 0.8
-      rho: 0.5
-      noise_std: 0.2
-      transients: 200
-      zscore: true
-
-  - name: "chat-d-lag3"
-    labels: ["chat-d", "lag3"]
-    generator: "var_chat_d"
-    base_params:
-      motif_class: 1
-      alpha_lo: 0.25
-      alpha_hi: 0.8
-      rho: 0.5
-      noise_std: 0.2
-      transients: 200
+      alpha_lo: 0.5
+      alpha_hi: 0.95
+      rho_nuisance: 0.8
+      noise_std: 0.1
       zscore: true

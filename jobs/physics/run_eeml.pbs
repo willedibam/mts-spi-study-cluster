@@ -1,9 +1,9 @@
 #!/bin/bash
 #PBS -N eeml_chat
-#PBS -l select=1:ncpus=4:mem=4gb
-#PBS -l walltime=24:00:00
+#PBS -l select=1:ncpus=4:mem=8gb
+#PBS -l walltime=04:00:00
 #PBS -j oe
-#PBS -J 1-4500
+#PBS -J 1-3000
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 
@@ -29,6 +29,7 @@ export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
 export PYSPI_N_JOBS=4
 
 echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"

@@ -568,6 +568,7 @@ def generate_sin_mts_smooth(
     A: float = np.pi,
     k: float = np.pi,
     linspace: bool = False,
+    logspace: bool = False,
     noise_std: float = 0.05,
     noise_std_variable: bool = False,
     noise_std_scale: float = np.e,
@@ -637,7 +638,12 @@ def generate_sin_mts_smooth(
     lo, hi = mother.min(), mother.max()
     m_bar = np.zeros(T) if hi == lo else (mother - lo) / (hi - lo)
 
-    a_values = np.linspace(a_min, A, M) if linspace else rng.uniform(a_min, A, size=M)
+    if logspace:
+        a_values = np.geomspace(a_min, A, M)
+    elif linspace:
+        a_values = np.linspace(a_min, A, M)
+    else:
+        a_values = rng.uniform(a_min, A, size=M)
     noise_stds = _resolve_channel_noise_stds(
         noise_std, M, noise_std_variable=noise_std_variable,
         noise_std_scale=noise_std_scale, rng=rng,

@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Mapping
 import numpy as np
 import pandas as pd
 
-from .java_bridge import ensure_java_started
+
 from pyspi.calculator import Calculator
 
 from .utils import load_yaml
@@ -18,6 +18,7 @@ class SPIInfo:
     name: str
     directed: bool
     labels: List[str]
+    family: str = ""
 
 
 @dataclass
@@ -25,6 +26,7 @@ class ComputeResult:
     table: pd.DataFrame
     matrices: Dict[str, np.ndarray]
     metadata: List[SPIInfo]
+    timings: Dict[str, float] | None = None
 
 
 def run_pyspi(
@@ -34,7 +36,6 @@ def run_pyspi(
     subset: str = "default",
     normalise: bool = False,
 ) -> ComputeResult:
-    ensure_java_started()
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]
@@ -53,14 +54,16 @@ def run_pyspi(
         info = info_map.get(spi_name, {})
         directed = info.get("directed", False)
         labels = info.get("labels", [])
+        family = info.get("family", "")
         matrices[spi_name] = _reconstruct_mpi(
             calc.table,
             spi_name,
             M=M,
             symmetrise=not directed,
         )
-        metadata.append(SPIInfo(name=spi_name, directed=directed, labels=labels))
-    return ComputeResult(table=calc.table.copy(), matrices=matrices, metadata=metadata)
+        metadata.append(SPIInfo(name=spi_name, directed=directed, labels=labels, family=family))
+    spi_timings = getattr(calc, 'timings', None)
+    return ComputeResult(table=calc.table.copy(), matrices=matrices, metadata=metadata, timings=spi_timings)
 
 
 def _load_spi_info(
@@ -79,7 +82,8 @@ def _load_spi_info(
         class_name = spi.__class__.__name__
         labels = labels_by_origin.get((module_key, class_name), [])
         directed = any(label.lower() == "directed" for label in labels)
-        info[identifier] = {"labels": labels, "directed": directed}
+        family = spi.__module__.split(".")[-1]
+        info[identifier] = {"labels": labels, "directed": directed, "family": family}
     return info
 
 
