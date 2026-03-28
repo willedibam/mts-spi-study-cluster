@@ -1,0 +1,68 @@
+base_output_dir: data/260328_eeml_kuramoto/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/eeml.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [10]
+  T_values: [500]
+  instances: 1500
+
+# ---------------------------------------------------------------------------
+# Kuramoto Chat A: phase-coupled 3-node motifs
+# ---------------------------------------------------------------------------
+# Coupling K ~ U(3, 6) makes motif nodes phase-synchronise while nuisance
+# nodes drift independently. The signature is spectral (coherence, PLV)
+# rather than causal (Granger, SGC), so the vocabulary should select
+# different SPIs than the VAR experiment.
+# ---------------------------------------------------------------------------
+
+mts_classes:
+  - name: "kuramoto-chain"
+    labels: ["kuramoto", "chain"]
+    generator: "kuramoto_chat_a"
+    base_params:
+      motif_class: 0
+      dt: 0.05
+      K_lo: 3.0
+      K_hi: 6.0
+      omega_mean: 6.283185    # 2π × 1.0 Hz
+      omega_std: 0.3
+      eta: 0.3
+      transients: 500
+      output: "sin"
+      zscore: true
+
+  - name: "kuramoto-fork"
+    labels: ["kuramoto", "fork"]
+    generator: "kuramoto_chat_a"
+    base_params:
+      motif_class: 1
+      dt: 0.05
+      K_lo: 3.0
+      K_hi: 6.0
+      omega_mean: 6.283185
+      omega_std: 0.3
+      eta: 0.3
+      transients: 500
+      output: "sin"
+      zscore: true
+
+  - name: "kuramoto-collider"
+    labels: ["kuramoto", "collider"]
+    generator: "kuramoto_chat_a"
+    base_params:
+      motif_class: 2
+      dt: 0.05
+      K_lo: 3.0
+      K_hi: 6.0
+      omega_mean: 6.283185
+      omega_std: 0.3
+      eta: 0.3
+      transients: 500
+      output: "sin"
+      zscore: true
