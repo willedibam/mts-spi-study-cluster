@@ -376,7 +376,11 @@ def _load_existing_timeseries(spec) -> tuple[np.ndarray, Path] | None:
     if spec.source == "real":
         class_dir = spec.base_output_dir / spec.class_dir
         cls_slug = slugify(str(spec.class_label))
-        for candidate in class_dir.glob(f"*_I{spec.instance}_class{cls_slug}"):
+        # New naming (prep_uea / prep_bciciv2a): class{slug}_I{n}
+        # Old naming (_load_real_sample after knowing M/T): M{M}_T{T}_I{n}_class{slug}
+        candidates = list(class_dir.glob(f"class{cls_slug}_I{spec.instance}")) + \
+                     list(class_dir.glob(f"*_I{spec.instance}_class{cls_slug}"))
+        for candidate in candidates:
             ts_path = candidate / "timeseries.npy"
             if not ts_path.exists():
                 continue
