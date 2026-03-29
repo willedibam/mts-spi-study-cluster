@@ -1,0 +1,466 @@
+# pyspi config for MotorImagery (M=64, T=3000).
+# Based on eeml.yaml with targeted removals for M=64 scale (4032 directed pairs):
+#   - Removed: distance SPIs (DTW, GromovWasserstain, CrossPairwiseDistance),
+#     LinearModel variants, CausalEntropy, CrossmapEntropy, DirectedInfo,
+#     StochasticInteraction, InterDependenceScore, kraskov TE auto-embed.
+#   - Retained: full coherence/spectral family, MI+TLMI+TE with both gaussian
+#     and kraskov estimators (feasible at T=3000 within 24h walltime),
+#     PairwiseDistance (euclidean+cosine, trivially fast).
+
+.statistics.basic:
+  Covariance:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+      - estimator: LedoitWolf
+      - estimator: EmpiricalCovariance
+        squared: True
+      - estimator: LedoitWolf
+        squared: True
+
+  Precision:
+    labels:
+      - undirected
+      - linear
+      - signed
+      - multivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: EmpiricalCovariance
+      - estimator: LedoitWolf
+      - estimator: EmpiricalCovariance
+        squared: True
+
+  SpearmanR:
+    labels:
+      - undirected
+      - nonlinear
+      - signed
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - squared: True
+      - squared: False
+
+  CrossCorrelation:
+    labels:
+      - undirected
+      - linear
+      - signed/unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - statistic: "max"
+      - statistic: "mean"
+
+.statistics.distance:
+  PairwiseDistance:
+    labels:
+      - unsigned
+      - unordered
+      - nonlinear
+      - undirected
+    dependencies:
+    configs:
+      - metric: "euclidean"
+      - metric: "cosine"
+
+.statistics.causal:
+  RegressionErrorCausalInference:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+
+  InformationGeometricConditionalIndependence:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+
+.statistics.infotheory:
+  MutualInfo:
+    labels:
+      - undirected
+      - nonlinear
+      - unsigned
+      - bivariate
+      - contemporaneous
+    dependencies:
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+  TimeLaggedMutualInfo:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - estimator: gaussian
+
+      - estimator: kraskov
+        prop_k: 4
+
+  TransferEntropy:
+    labels:
+      - directed
+      - nonlinear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - estimator: kraskov
+        prop_k: 4
+        k_history: 1
+        l_history: 1
+
+      - estimator: gaussian
+        auto_embed_method: MAX_CORR_AIS
+        k_search_max: 10
+        tau_search_max: 2
+
+      - estimator: gaussian
+        k_history: 1
+        l_history: 1
+
+      - estimator: symbolic
+        k_history: 1
+        l_history: 1
+
+.statistics.spectral:
+  CoherencePhase:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  CoherenceMagnitude:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  ImaginaryCoherence:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  PhaseSlopeIndex:
+    labels:
+      - directed
+      - linear/nonlinear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fmin: 0
+        fmax: 0.5
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+
+  PhaseLockingValue:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  PhaseLagIndex:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  WeightedPhaseLagIndex:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  DebiasedSquaredPhaseLagIndex:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  DebiasedSquaredWeightedPhaseLagIndex:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  PairwisePhaseConsistency:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fs: 1
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+  SpectralGrangerCausality:
+    labels:
+      - directed
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+    dependencies:
+    configs:
+      - method: nonparametric
+        fmin: 0
+        fmax: 0.5
+        statistic: mean
+      - method: nonparametric
+        fmin: 0
+        fmax: 0.25
+        statistic: mean
+      - method: nonparametric
+        fmin: 0.25
+        fmax: 0.5
+        statistic: mean
+      - method: nonparametric
+        fmin: 0
+        fmax: 0.5
+        statistic: max
+      - method: nonparametric
+        fmin: 0
+        fmax: 0.25
+        statistic: max
+      - method: nonparametric
+        fmin: 0.25
+        fmax: 0.5
+        statistic: max
+      - method: parametric
+        fmin: 0
+        fmax: 0.5
+        statistic: mean
+      - fs: 1
+        order: 1
+        method: parametric
+        statistic: mean
+      - fs: 1
+        order: 1
+        method: parametric
+        statistic: max
+
+.statistics.wavelet:
+  PhaseSlopeIndex:
+    labels:
+      - undirected
+      - unsigned
+      - time/frequency dependent
+      - bivariate
+    dependencies:
+    configs:
+      - fs: 1
+      - fmin: 0
+        fmax: 0.25
+      - fmin: 0.25
+        fmax: 0.5
+      - fmin: 0
+        fmax: 0.5
+        statistic: max
+      - fmin: 0
+        fmax: 0.25
+        statistic: max
+      - fmin: 0.25
+        fmax: 0.5
+        statistic: max
+
+.statistics.misc:
+  PowerEnvelopeCorrelation:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - time-dependent
+    dependencies:
+    configs:
+      - orth: False
+        log: False
+        absolute: False
+      - orth: True
+        log: False
+        absolute: False
+      - orth: True
+        log: False
+        absolute: True
