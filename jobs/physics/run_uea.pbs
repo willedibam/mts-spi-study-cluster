@@ -1,0 +1,75 @@
+#!/bin/bash
+#PBS -N uea_spi
+#PBS -l select=1:ncpus=4:mem=8gb
+#PBS -l walltime=08:00:00
+#PBS -j oe
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+# Generic PBS array job for any UEA dataset processed by src/prep_uea.py.
+#
+# Required: DATASET variable (config stem, e.g. "basicmotions")
+# Required: -J range must be set at submission to match total trial count
+#
+# Submit (use job count printed by prep_uea.py):
+#   qsub -J 1-<TOTAL> -v DATASET=<name> jobs/physics/run_uea.pbs
+#
+# Examples:
+#   qsub -J 1-80   -v DATASET=basicmotions          jobs/physics/run_uea.pbs
+#   qsub -J 1-408  -v DATASET=handmovementdirection  jobs/physics/run_uea.pbs
+#   qsub -J 1-259  -v DATASET=eigenworms             jobs/physics/run_uea.pbs
+#   qsub -J 1-575  -v DATASET=articularywordrecognition jobs/physics/run_uea.pbs
+#   qsub -J 1-180  -v DATASET=cricket                jobs/physics/run_uea.pbs
+#   qsub -J 1-6668 -v DATASET=phonemespectra         jobs/physics/run_uea.pbs
+#   qsub -J 1-360  -v DATASET=natops                 jobs/physics/run_uea.pbs
+#   qsub -J 1-378  -v DATASET=motorimagery -l walltime=24:00:00 jobs/physics/run_uea.pbs
+#                  ^ MotorImagery: M=64, ~4096 pairs — needs extra walltime
+#
+# EigenWorms (T=17984) may also need more walltime; test with a single job first:
+#   qsub -J 1-1 -v DATASET=eigenworms jobs/physics/run_uea.pbs
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set — must be submitted via qsub."
+  exit 1
+fi
+
+if [[ -z "${DATASET:-}" ]]; then
+  echo "[ERROR] DATASET variable not set.  Use: qsub -v DATASET=<name> ..."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${DATASET}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+export PYSPI_N_JOBS=4
+
+CONFIG="configs/generate/${DATASET}.yaml"
+if [[ ! -f "$CONFIG" ]]; then
+  echo "[ERROR] Config not found: ${CONFIG}"
+  echo "[ERROR] Run prep_uea.py with --config-out ${CONFIG} first."
+  exit 1
+fi
+
+echo "[INFO] Dataset=${DATASET}  array index=${ARRAY_ID}  started=$(date)"
+python -m src.run_experiments \
+  --job-index "${ARRAY_ID}" \
+  --skip-existing \
+  --experiment-config "${CONFIG}" \
+  --threads 4 \
+  --parquet
+echo "[INFO] Finished at $(date)"
