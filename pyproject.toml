@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-real = ["sktime>=0.30.0", "aeon", "yfinance"]
+real = ["sktime>=0.30.0", "aeon>=0.11.0", "yfinance"]
 dtw = ["dtw-python", "fastdtw", "dtaidistance"]
 graph = ["torch>=2.0", "torch-geometric>=2.5"]
 

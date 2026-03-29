@@ -1,0 +1,28 @@
+base_output_dir: data/selfreg/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/eeml.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+# M/T not needed for real data — determined from loaded arrays.
+# 279 positivity + 282 negativity = 561 total PBS array jobs.
+
+mts_classes:
+  - name: "positive"
+    labels: ["eeg", "scp1", "positivity", "selfreg"]
+    package: "aeon"
+    dataset_name: "SelfRegulationSCP1"
+    classes: ["positivity"]
+    zscore: false      # already z-scored by src/prep_selfreg.py
+    instances: 279
+
+  - name: "negative"
+    labels: ["eeg", "scp1", "negativity", "selfreg"]
+    package: "aeon"
+    dataset_name: "SelfRegulationSCP1"
+    classes: ["negativity"]
+    zscore: false      # already z-scored by src/prep_selfreg.py
+    instances: 282
