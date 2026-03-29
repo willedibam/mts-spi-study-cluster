@@ -1,35 +1,22 @@
 """
-Preprocess BCI Competition IV Dataset 2a for pyspi.
+Preprocess BCI Competition IV Dataset 2a for pyspi via MOABB.
 
-Manual download required (registration at bbci.de):
-  1. https://www.bbci.de/competition/iv/  →  Data sets  →  Data set 2a
-  2. Download BCICIV_2a_gdf.zip  (training + eval GDFs, ~90 MB)
-  3. Download true_labels.zip     (eval class labels, tiny)
-  4. Extract both into data/raw/bciciv2a/ so the layout is:
-
-       data/raw/bciciv2a/
-           A01T.gdf  A02T.gdf  ...  A09T.gdf   (training, labels embedded)
-           A01E.gdf  A02E.gdf  ...  A09E.gdf   (eval, labels separate)
-           true_labels/
-               A01E.mat  A02E.mat  ...  A09E.mat
+MOABB (Mother of All BCI Benchmarks) downloads the dataset automatically —
+no manual download required. Data is cached in ~/mne_data/ on first run.
 
 Usage (run once from project root):
 
     python -m src.prep_bciciv2a \\
-        --data-dir data/raw/bciciv2a \\
         --output-dir data/bciciv2a \\
         --config-out configs/generate/bciciv2a.yaml
 
-Output layout (pooled across all 9 subjects):
+Output layout (all 9 subjects pooled):
 
     data/bciciv2a/
-        left/classleft_I{n}/timeseries.npy       (~648 trials)
-        right/classright_I{n}/timeseries.npy     (~648 trials)
-        feet/classfeet_I{n}/timeseries.npy       (~648 trials)
-        tongue/classtongue_I{n}/timeseries.npy   (~648 trials)
+        <class>/class<class>_I{n}/timeseries.npy   (~648 trials per class)
 
 Each timeseries.npy: float32, shape (T=1000, M=22), z-scored per channel.
-Trials within each class are ordered by (subject index, original trial index).
+Trials within each class are ordered by (subject, session, run).
 Existing files are skipped (safe to re-run).
 """
 
@@ -37,104 +24,52 @@ import argparse
 from pathlib import Path
 
 import numpy as np
-from scipy.io import loadmat
 from scipy.stats import zscore
 
 from .prep_uea import _write_yaml_config
 from .utils import class_dir_name, slugify
 
-# GDF event code → class label
-_CLASS_EVENTS = {769: "left", 770: "right", 771: "feet", 772: "tongue"}
-# eval files use 783 for "unknown"; true labels are 1-4 → add 768 to get event code
-_EVAL_EVENT_CODE = 783
-_N_EEG = 22   # drop EOG channels (last 3 of 25)
-_T_EPOCH = 1000  # 4 s × 250 Hz
+_N_SUBJECTS = list(range(1, 10))   # subjects 1-9
+_T_EPOCH = 1000                    # 4 s × 250 Hz
+_TMIN = 0.0
+_TMAX = (_T_EPOCH - 1) / 250.0    # 3.996 s → exactly 1000 samples
 
 
-def _pick_eeg(raw):
-    """Return channel indices: prefer type=EEG, fall back to first _N_EEG channels."""
+def _load_all_trials():
+    """
+    Download and epoch BCI IV 2a via MOABB.
+    Returns X (N, M, T) float64 and y (N,) str.
+    """
     try:
-        import mne
-        picks = mne.pick_types(raw.info, eeg=True, eog=False)
-    except Exception:
-        picks = np.arange(len(raw.ch_names))
-    if len(picks) == 0 or len(picks) < _N_EEG:
-        picks = np.arange(_N_EEG)
-    return picks[:_N_EEG]
+        from moabb.datasets import BNCI2014_001
+        from moabb.paradigms import MotorImagery
+    except ImportError as exc:
+        raise SystemExit("moabb is required: uv pip install moabb") from exc
 
+    print("[INFO] Initialising MOABB BNCI2014_001 (BCI IV 2a) …")
+    dataset = BNCI2014_001()
 
-def _epoch_data(raw, event_times, picks):
-    """
-    Extract fixed-length epochs from raw data.
+    # No bandpass — let pyspi SPIs see the full spectrum.
+    # tmin/tmax set to yield exactly T=1000 samples at 250 Hz.
+    paradigm = MotorImagery(
+        n_classes=4,
+        tmin=_TMIN,
+        tmax=_TMAX,
+        fmin=None,
+        fmax=None,
+        baseline=None,
+    )
 
-    event_times : sample indices of epoch onsets (int array)
-    Returns ndarray of shape (N, M, T).
-    """
-    data = raw.get_data(picks=picks)  # (M, total_samples)
-    n_total = data.shape[1]
-    epochs = []
-    for onset in event_times:
-        end = onset + _T_EPOCH
-        if end > n_total:
-            continue
-        epochs.append(data[:, onset:end])
-    return np.stack(epochs, axis=0)  # (N, M, T)
+    print(f"[INFO] Fetching data for subjects {_N_SUBJECTS} (downloads on first run) …")
+    X, y, metadata = paradigm.get_data(dataset=dataset, subjects=_N_SUBJECTS)
+    # X: (N, M, T) — MOABB returns channels-last or channels-first depending on version
+    # Ensure (N, M, T): if last dim > first spatial dim, it's channels-last → transpose
+    if X.ndim == 3 and X.shape[2] < X.shape[1]:
+        X = X.transpose(0, 2, 1)  # (N, T, M) → (N, M, T)
 
-
-def _load_training(gdf_path: Path):
-    """Load one training file. Returns (X, y): X (N, M, T), y str array."""
-    import mne
-    raw = mne.io.read_raw_gdf(str(gdf_path), preload=True, verbose=False)
-    events, _ = mne.events_from_annotations(raw, verbose=False)
-    picks = _pick_eeg(raw)
-
-    X_parts, y_parts = [], []
-    for code, label in _CLASS_EVENTS.items():
-        mask = events[:, 2] == code
-        if not mask.any():
-            continue
-        onsets = events[mask, 0]
-        X_cls = _epoch_data(raw, onsets, picks)
-        if X_cls.shape[0] == 0:
-            continue
-        X_parts.append(X_cls)
-        y_parts.extend([label] * X_cls.shape[0])
-
-    if not X_parts:
-        raise ValueError(f"No class events (769-772) found in {gdf_path.name}")
-
-    return np.concatenate(X_parts, axis=0), np.array(y_parts)
-
-
-def _load_eval(gdf_path: Path, label_path: Path):
-    """Load one eval file + true_labels .mat. Returns (X, y)."""
-    import mne
-    raw = mne.io.read_raw_gdf(str(gdf_path), preload=True, verbose=False)
-    events, _ = mne.events_from_annotations(raw, verbose=False)
-    picks = _pick_eeg(raw)
-
-    trial_mask = events[:, 2] == _EVAL_EVENT_CODE
-    if not trial_mask.any():
-        # Some releases encode eval trials differently; try any event.
-        raise ValueError(
-            f"No event code {_EVAL_EVENT_CODE} in {gdf_path.name}. "
-            "Check that this is an eval (E) file."
-        )
-    onsets = events[trial_mask, 0]
-
-    mat = loadmat(str(label_path))
-    # Variable 'classlabel': shape (N,) or (N,1), values 1-4
-    raw_labels = mat["classlabel"].flatten().astype(int)
-
-    if len(onsets) != len(raw_labels):
-        raise ValueError(
-            f"{gdf_path.name}: {len(onsets)} trial onsets but "
-            f"{len(raw_labels)} labels in {label_path.name}"
-        )
-
-    X = _epoch_data(raw, onsets, picks)
-    # labels 1-4 → event codes 769-772 → string labels
-    y = np.array([_CLASS_EVENTS[int(l) + 768] for l in raw_labels[: len(X)]])
+    N, M, T = X.shape
+    classes = sorted(set(y.tolist()))
+    print(f"[INFO] {N} trials  M={M}  T={T}  classes={classes}")
     return X, y
 
 
@@ -158,8 +93,8 @@ def _write_trials(X_all: np.ndarray, y_all: np.ndarray, out_root: Path) -> dict:
                 skipped += 1
                 continue
 
-            sample = X_all[trial_idx]  # (M, T) channels-first
-            data = sample.T            # (T, M)
+            sample = X_all[trial_idx]   # (M, T) channels-first
+            data = sample.T             # (T, M)
             data = zscore(data, axis=0, nan_policy="omit")
             data = np.nan_to_num(data, nan=0.0, posinf=0.0, neginf=0.0)
             data = data.astype(np.float32)
@@ -169,7 +104,7 @@ def _write_trials(X_all: np.ndarray, y_all: np.ndarray, out_root: Path) -> dict:
             written += 1
 
         print(
-            f"[INFO]   '{cls_label}': {len(ordered)} trials  "
+            f"[INFO]   '{cls_label}' ({cls_slug}): {len(ordered)} trials  "
             f"written={written}  skipped={skipped}"
         )
         summary[cls_label] = (cls_slug, cls_name, len(ordered))
@@ -179,8 +114,6 @@ def _write_trials(X_all: np.ndarray, y_all: np.ndarray, out_root: Path) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", required=True, type=Path,
-                        help="Directory containing A01T.gdf ... A09E.gdf + true_labels/")
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--config-out", type=Path, default=None)
     parser.add_argument("--pyspi-config", default="configs/pyspi-v2/cases/eeml.yaml")
@@ -188,38 +121,7 @@ def main():
     parser.add_argument("--rng-seed", type=int, default=110305)
     args = parser.parse_args()
 
-    try:
-        import mne  # noqa: F401
-    except ImportError:
-        raise SystemExit("mne is required: uv pip install mne")
-
-    X_parts, y_parts = [], []
-    for subj in range(1, 10):
-        gdf_t = args.data_dir / f"A0{subj}T.gdf"
-        if not gdf_t.exists():
-            raise FileNotFoundError(
-                f"Missing {gdf_t}. Extract BCICIV_2a_gdf.zip into {args.data_dir}."
-            )
-        print(f"[INFO] Subject {subj} — training …")
-        X_t, y_t = _load_training(gdf_t)
-        X_parts.append(X_t)
-        y_parts.append(y_t)
-
-        gdf_e = args.data_dir / f"A0{subj}E.gdf"
-        label_e = args.data_dir / "true_labels" / f"A0{subj}E.mat"
-        if gdf_e.exists() and label_e.exists():
-            print(f"[INFO] Subject {subj} — eval …")
-            X_e, y_e = _load_eval(gdf_e, label_e)
-            X_parts.append(X_e)
-            y_parts.append(y_e)
-        else:
-            print(f"[WARN] Subject {subj} — eval files missing, skipping.")
-
-    X_all = np.concatenate(X_parts, axis=0)
-    y_all = np.concatenate(y_parts)
-    N, M, T = X_all.shape
-    print(f"[INFO] Combined: {N} trials  M={M}  T={T}")
-
+    X_all, y_all = _load_all_trials()
     summary = _write_trials(X_all, y_all, args.output_dir)
 
     if args.config_out:
