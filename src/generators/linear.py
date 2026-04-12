@@ -176,8 +176,11 @@ def _warp_path(
     step_dist controls the excursion size distribution:
         "geometric" (default): s ~ Geom(p)
         "uniform":             s ~ DiscreteUniform(1, step_max)
+        "fixed":               s = step_max  (deterministic)
     """
     def _draw_step() -> int:
+        if step_dist == "fixed":
+            return int(step_max)
         if step_dist == "uniform":
             return int(rng.integers(1, step_max + 1))
         return int(rng.geometric(p))
@@ -510,14 +513,11 @@ def generate_lagged_warping_mts(
     T: int,
     # --- Lag parameters ---
     max_lag: int = 4,
-    lag_dist: str = "uniform",
-    linspace: bool = False,
-    fixed_lag: bool = False,
+    lag_dist: str = "linspace",
     # --- Warping parameters (rebound) ---
     p_step: float = 0.0,
-    warp_p: float = 0.1,
-    warp_step_dist: str = "uniform",
-    warp_step_max: int = 10,
+    warp_step_dist: str = "fixed",
+    warp_step_max: int = 3,
     # --- Noise ---
     noise_std: float = 0.1,
     noise_std_variable: bool = True,
@@ -541,36 +541,41 @@ def generate_lagged_warping_mts(
         p_step=0  : pure lag (equivalent to lagged_mts)
         p_step>0  : lag + warping on top
 
-    Lag parameterisation (controlled by max_lag >= 0):
-        fixed_lag=True:  tau_i = max_lag for every channel.
-        linspace=True:   tau_i = round(linspace(0, max_lag, M)[i]).
-        default:         controlled by lag_dist:
-            "uniform":   tau_i ~ DiscreteUniform(0, max_lag).
-            "geometric": tau_i ~ Geom(1/(max_lag+1)) - 1;  E[tau] = max_lag.
+    Lag parameterisation (controlled by max_lag >= 0 and lag_dist):
+        "linspace":  tau_i = round(linspace(0, max_lag, M)[i])  (deterministic).
+        "uniform":   tau_i ~ DiscreteUniform(0, max_lag).
+        "fixed":     tau_i = max_lag for every channel (no per-pair spread).
 
-    Warping: rebound regime from warping_mts.  With prob p_step each timestep
-    takes an L-shaped excursion of size s; else diagonal.  Step size drawn from
-    warp_step_dist ("geometric": s ~ Geom(warp_p); "uniform": s ~ U(1, warp_step_max)).
+    Warping: rebound regime.  With prob p_step each path-step takes an L-shaped
+    excursion of size s; else a diagonal step of size 1.  Excursion size drawn
+    from warp_step_dist:
+        "fixed":     s = warp_step_max  (deterministic, recommended).
+        "uniform":   s ~ DiscreteUniform(1, warp_step_max).
+        "geometric": s ~ Geom(warp_p)   (legacy; warp_p hard-coded internal).
 
     Returns shape (T, M), or tuple of ((T, M), LaggedWarpingInternals).
     """
     max_lag = int(max_lag)
     if max_lag < 0:
         raise ValueError(f"max_lag must be >= 0 (got {max_lag}).")
-    if lag_dist not in ("geometric", "uniform"):
-        raise ValueError(f"lag_dist must be 'geometric' or 'uniform', got {lag_dist!r}")
+    if lag_dist not in ("linspace", "uniform", "fixed"):
+        raise ValueError(
+            f"lag_dist must be 'linspace', 'uniform', or 'fixed', got {lag_dist!r}"
+        )
+    if warp_step_dist not in ("fixed", "uniform", "geometric"):
+        raise ValueError(
+            f"warp_step_dist must be 'fixed', 'uniform', or 'geometric', got {warp_step_dist!r}"
+        )
     if noise_dist not in ("geometric", "uniform"):
         raise ValueError(f"noise_dist must be 'geometric' or 'uniform', got {noise_dist!r}")
     rng = _resolve_rng(None, rng)
 
     # --- Per-channel lags ---
-    if fixed_lag:
+    if lag_dist == "fixed":
         lags = np.full(M, max_lag, dtype=int)
-    elif linspace:
+    elif lag_dist == "linspace":
         lags = np.round(np.linspace(0, max_lag, M)).astype(int)
-    elif lag_dist == "geometric":
-        lags = rng.geometric(1.0 / (max_lag + 1), size=M) - 1
-    else:
+    else:  # "uniform"
         lags = rng.integers(0, max_lag + 1, size=M)
 
     actual_max_lag = int(lags.max())
@@ -612,7 +617,7 @@ def generate_lagged_warping_mts(
 
         if p_step > 0:
             path = _warp_path(
-                T, "rebound", step=1, p=warp_p, p_step=p_step, rng=rng,
+                T, "rebound", step=1, p=0.1, p_step=p_step, rng=rng,
                 step_dist=warp_step_dist, step_max=warp_step_max,
             )
             mapping = _path_to_mapping(path, T)
