@@ -15,7 +15,7 @@ from scipy.stats import zscore
 import pandas as pd
 
 from . import generators as generate
-from .generators import generate_sin_mts_smooth, generate_lagged_mts
+from .generators import generate_sin_mts_smooth, generate_lagged_mts, generate_lagged_warping_mts
 from .generators.chat import generate_var_chat_a, generate_var_chat_b, generate_var_chat_c, generate_var_chat_d
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
@@ -211,14 +211,14 @@ def main(argv: List[str] | None = None) -> None:
         heatmap_paths: list[str] = []
         if heatmap_required:
             deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
-            base_filename = "mts_heatmap.png"
+            base_filename = "mts_heatmap.pdf"
             base_path = dataset_dir / base_filename
             _save_heatmap(data, base_path)
             heatmap_paths.append(base_filename)
             for delta in deltas:
                 if delta == 1:
                     continue
-                filename = f"mts_heatmap_delta{delta}.png"
+                filename = f"mts_heatmap_delta{delta}.pdf"
                 figure_path = dataset_dir / filename
                 view = data[::delta]
                 _save_heatmap(view, figure_path)
@@ -328,6 +328,15 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
             gen_extras = {"a_values": internals.a_values.tolist()}
         elif spec.generator == "lagged_mts":
             data, internals = generate_lagged_mts(
+                M=spec.M,
+                T=spec.T,
+                rng=np.random.default_rng(spec.rng_seed),
+                return_internals=True,
+                **generator_params,
+            )
+            gen_extras = {"lags": internals.lags.tolist()}
+        elif spec.generator == "lagged_warping_mts":
+            data, internals = generate_lagged_warping_mts(
                 M=spec.M,
                 T=spec.T,
                 rng=np.random.default_rng(spec.rng_seed),
@@ -589,11 +598,12 @@ def _save_heatmap(data: np.ndarray, path: Path) -> None:
     ax.set_ylabel(None)
     ax.set_xticks([])
     ax.set_yticks([])
-    ensure_dir(path.parent)
+    pdf_path = Path(path).with_suffix(".pdf")
+    ensure_dir(pdf_path.parent)
     fig.tight_layout()
-    save_figure(fig, path, dpi=150, bbox_inches="tight")
+    fig.savefig(pdf_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
-    print(f"[INFO] Wrote heatmap to {to_relative(path)}")
+    print(f"[INFO] Wrote heatmap to {to_relative(pdf_path)}")
 
 
 def _build_metadata(

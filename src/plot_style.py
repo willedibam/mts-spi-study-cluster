@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -13,6 +14,11 @@ def apply_plot_style() -> None:
     global _STYLE_INITIALISED
     if _STYLE_INITIALISED:
         return
+    # Ensure TeX binaries are on PATH for matplotlib's usetex (VS Code
+    # notebook kernels often don't inherit the shell PATH on macOS).
+    _texbin = "/Library/TeX/texbin"
+    if os.path.isdir(_texbin) and _texbin not in os.environ.get("PATH", "").split(os.pathsep):
+        os.environ["PATH"] = _texbin + os.pathsep + os.environ.get("PATH", "")
     plt.close("all")
     plt.rcdefaults()
     sns.reset_orig()
@@ -42,14 +48,14 @@ def save_figure(
     **savefig_kwargs,
 ) -> None:
     """
-    Persist a Matplotlib figure as both PNG (primary path) and SVG.
+    Persist a Matplotlib figure as both PNG (primary path) and PDF.
     """
     dest = Path(path)
     dest.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(dest, dpi=dpi, **savefig_kwargs)
-    svg_path = dest.with_suffix(".svg")
-    if svg_path == dest:
+    pdf_path = dest.with_suffix(".pdf")
+    if pdf_path == dest:
         png_path = dest.with_suffix(".png")
         fig.savefig(png_path, dpi=dpi, **savefig_kwargs)
         return
-    fig.savefig(svg_path, dpi=dpi, **savefig_kwargs)
+    fig.savefig(pdf_path, dpi=dpi, **savefig_kwargs)

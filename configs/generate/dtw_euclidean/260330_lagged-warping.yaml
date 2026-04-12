@@ -1,0 +1,119 @@
+base_output_dir: data/dtw_euclidean/260330_lagged-warping_rmse_T1000/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/dtw_euclidean_norm.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [20]
+  T_values: [1000]
+  instances: 30
+
+mts_classes:
+  # Sweep p_step (warping intensity) with fixed lag distribution max_lag=4, uniform.
+  # max_lag=4 → tau_i ∈ {0,...,4};  p_step=0: pure lag; higher p_step = more warping.
+
+  - name: "lag-5_pstep-0.0"
+    labels: [lagged-warping, no-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      max_lag: 5
+      lag_dist: "uniform"
+      p_step: 0.0              # pure lag, no warping
+      warp_step_dist: "uniform"
+      warp_step_max: 10
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "lag-5_pstep-0.1"
+    labels: [lagged-warping, light-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      max_lag: 5
+      lag_dist: "uniform"
+      p_step: 0.1
+      warp_step_dist: "uniform"
+      warp_step_max: 10
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "lag-5_pstep-0.3"
+    labels: [lagged-warping, moderate-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      max_lag: 5
+      lag_dist: "uniform"
+      p_step: 0.3
+      warp_step_dist: "uniform"
+      warp_step_max: 10
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "lag-5_pstep-0.5"
+    labels: [lagged-warping, moderate-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      max_lag: 5
+      lag_dist: "uniform"
+      p_step: 0.5
+      warp_step_dist: "uniform"
+      warp_step_max: 10
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "lag-5_pstep-0.7"
+    labels: [lagged-warping, heavy-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      max_lag: 5
+      lag_dist: "uniform"
+      p_step: 0.7
+      warp_step_dist: "uniform"
+      warp_step_max: 10
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "lag-5_pstep-0.9"
+    labels: [lagged-warping, heavy-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      max_lag: 5
+      lag_dist: "uniform"
+      p_step: 0.9
+      warp_step_dist: "uniform"
+      warp_step_max: 10
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true

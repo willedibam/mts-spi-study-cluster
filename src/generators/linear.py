@@ -167,13 +167,26 @@ def generate_gbm(
     return _maybe_zscore(paths, zscore=zscore)
 
 
-def _warp_path(T: int, regime: str, *, step: int, p: float, p_step: float, rng) -> np.ndarray:
-    """Random monotone warping path from (0,0) to (T-1,T-1)."""
+def _warp_path(
+    T: int, regime: str, *, step: int, p: float, p_step: float, rng,
+    step_dist: str = "geometric", step_max: int | None = None,
+) -> np.ndarray:
+    """Random monotone warping path from (0,0) to (T-1,T-1).
+
+    step_dist controls the excursion size distribution:
+        "geometric" (default): s ~ Geom(p)
+        "uniform":             s ~ DiscreteUniform(1, step_max)
+    """
+    def _draw_step() -> int:
+        if step_dist == "uniform":
+            return int(rng.integers(1, step_max + 1))
+        return int(rng.geometric(p))
+
     x, y = 0, 0
     path = [(x, y)]
     if regime in ("walk", "geometric"):
         while x < T - 1 or y < T - 1:
-            s = step if regime == "walk" else int(np.clip(rng.geometric(p), 1, T))
+            s = step if regime == "walk" else int(np.clip(_draw_step(), 1, T))
             if x >= T - 1:
                 y = min(y + s, T - 1)
             elif y >= T - 1:
@@ -185,7 +198,7 @@ def _warp_path(T: int, regime: str, *, step: int, p: float, p_step: float, rng) 
             path.append((x, y))
     elif regime == "rebound":
         while x < T - 1:
-            s = int(min(rng.geometric(p), T - 1 - x))
+            s = int(min(_draw_step(), T - 1 - x))
             if rng.uniform() < p_step:
                 if rng.integers(2) == 0:  # R then U
                     x += s; path.append((x, y))
@@ -480,6 +493,143 @@ def generate_lagged_mts(
     result = _maybe_zscore(data, zscore=zscore)
     if return_internals:
         return result, LaggedInternals(mother=mother, lags=lags)
+    return result
+
+
+@dataclass
+class LaggedWarpingInternals:
+    """Internals returned by generate_lagged_warping_mts when return_internals=True."""
+    mother: np.ndarray    # (T + max_lag,) extended mother
+    lags: np.ndarray      # (M,) per-channel integer lags
+    paths: list           # (M,) warping path arrays
+    mappings: list        # (M,) time-index mapping arrays
+
+
+def generate_lagged_warping_mts(
+    M: int,
+    T: int,
+    # --- Lag parameters ---
+    max_lag: int = 4,
+    lag_dist: str = "uniform",
+    linspace: bool = False,
+    fixed_lag: bool = False,
+    # --- Warping parameters (rebound) ---
+    p_step: float = 0.0,
+    warp_p: float = 0.1,
+    warp_step_dist: str = "uniform",
+    warp_step_max: int = 10,
+    # --- Noise ---
+    noise_std: float = 0.1,
+    noise_std_variable: bool = True,
+    noise_std_scale: float = np.e,
+    noise_dist: str = "uniform",
+    # --- Mother ---
+    ar1_a: float = 0.5,
+    ar1_noise_std: float = 1.0,
+    zscore: bool = True,
+    rng=None,
+    mother: np.ndarray | None = None,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, LaggedWarpingInternals]:
+    """
+    M-channel MTS with persistent per-channel lags + rebound warping on top.
+
+    Composes lagged_mts (constant shift) with warping_mts (rebound excursions):
+        channel_i[t] = mother[lag_offset_i + warp_mapping_i(t)] + noise
+
+    Single knob: p_step (warping intensity).
+        p_step=0  : pure lag (equivalent to lagged_mts)
+        p_step>0  : lag + warping on top
+
+    Lag parameterisation (controlled by max_lag >= 0):
+        fixed_lag=True:  tau_i = max_lag for every channel.
+        linspace=True:   tau_i = round(linspace(0, max_lag, M)[i]).
+        default:         controlled by lag_dist:
+            "uniform":   tau_i ~ DiscreteUniform(0, max_lag).
+            "geometric": tau_i ~ Geom(1/(max_lag+1)) - 1;  E[tau] = max_lag.
+
+    Warping: rebound regime from warping_mts.  With prob p_step each timestep
+    takes an L-shaped excursion of size s; else diagonal.  Step size drawn from
+    warp_step_dist ("geometric": s ~ Geom(warp_p); "uniform": s ~ U(1, warp_step_max)).
+
+    Returns shape (T, M), or tuple of ((T, M), LaggedWarpingInternals).
+    """
+    max_lag = int(max_lag)
+    if max_lag < 0:
+        raise ValueError(f"max_lag must be >= 0 (got {max_lag}).")
+    if lag_dist not in ("geometric", "uniform"):
+        raise ValueError(f"lag_dist must be 'geometric' or 'uniform', got {lag_dist!r}")
+    if noise_dist not in ("geometric", "uniform"):
+        raise ValueError(f"noise_dist must be 'geometric' or 'uniform', got {noise_dist!r}")
+    rng = _resolve_rng(None, rng)
+
+    # --- Per-channel lags ---
+    if fixed_lag:
+        lags = np.full(M, max_lag, dtype=int)
+    elif linspace:
+        lags = np.round(np.linspace(0, max_lag, M)).astype(int)
+    elif lag_dist == "geometric":
+        lags = rng.geometric(1.0 / (max_lag + 1), size=M) - 1
+    else:
+        lags = rng.integers(0, max_lag + 1, size=M)
+
+    actual_max_lag = int(lags.max())
+    extended_T = T + actual_max_lag
+
+    # --- Mother signal ---
+    if mother is not None:
+        mother = np.asarray(mother, dtype=float)
+        if mother.ndim != 1 or len(mother) < extended_T:
+            raise ValueError(
+                f"mother must be 1D of length >= {extended_T}, got {mother.shape}"
+            )
+    else:
+        m = np.zeros(extended_T)
+        for t in range(1, extended_T):
+            m[t] = ar1_a * m[t - 1] + rng.normal(0, ar1_noise_std)
+        mother = m
+
+    # --- Per-channel noise stds ---
+    if not noise_std_variable:
+        noise_stds = np.full(M, float(noise_std))
+    elif noise_dist == "geometric":
+        noise_stds = _resolve_channel_noise_stds(
+            noise_std, M, noise_std_variable=True,
+            noise_std_scale=noise_std_scale, rng=rng,
+        )
+    else:
+        lo = float(noise_std) / float(noise_std_scale)
+        hi = float(noise_std) * float(noise_std_scale)
+        noise_stds = rng.uniform(lo, hi, size=M)
+
+    # --- Build channels: lag + warp ---
+    data = np.empty((T, M))
+    paths: list = []
+    mappings: list = []
+    for i, tau_i in enumerate(lags):
+        offset = actual_max_lag - tau_i
+        lagged_slice = mother[offset : offset + T]
+
+        if p_step > 0:
+            path = _warp_path(
+                T, "rebound", step=1, p=warp_p, p_step=p_step, rng=rng,
+                step_dist=warp_step_dist, step_max=warp_step_max,
+            )
+            mapping = _path_to_mapping(path, T)
+            data[:, i] = lagged_slice[mapping] + rng.normal(0, noise_stds[i], T)
+        else:
+            identity = np.arange(T)
+            path = np.column_stack([identity, identity])
+            mapping = identity
+            data[:, i] = lagged_slice + rng.normal(0, noise_stds[i], T)
+        paths.append(path)
+        mappings.append(mapping)
+
+    result = _maybe_zscore(data, zscore=zscore)
+    if return_internals:
+        return result, LaggedWarpingInternals(
+            mother=mother, lags=lags, paths=paths, mappings=mappings,
+        )
     return result
 
 

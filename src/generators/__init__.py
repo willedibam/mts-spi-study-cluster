@@ -21,6 +21,7 @@ from .linear import (
     generate_gaussian_noise,
     generate_gbm,
     generate_lagged_mts,
+    generate_lagged_warping_mts,
     generate_sin_mts,
     generate_sin_mts_mother,
     generate_sin_mts_smooth,
@@ -28,6 +29,7 @@ from .linear import (
     generate_varma_shuffled,
     generate_warping_mts,
     LaggedInternals,
+    LaggedWarpingInternals,
     SmoothSinInternals,
 )
 from .chat import (
@@ -59,7 +61,9 @@ __all__ = [
     "generate_gaussian_noise",
     "generate_gbm",
     "generate_lagged_mts",
+    "generate_lagged_warping_mts",
     "LaggedInternals",
+    "LaggedWarpingInternals",
     "generate_kuramoto",
     "generate_kuramoto_all_to_all",
     "generate_kuramoto_bidirectional_list",

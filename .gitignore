@@ -48,3 +48,7 @@ random/
 *.tar.gz
 # .python-version
 WORKDLOW.md
+
+# Editor / recovery
+.vscode/
+.git.broken/
