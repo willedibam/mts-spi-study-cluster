@@ -1,0 +1,92 @@
+base_output_dir: data/dtw_euclidean/260412_lagged-warping_rmse_T1000/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/dtw_euclidean_norm.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [20]
+  T_values: [1000]
+  instances: 30
+
+# Sweep p_step (warping intensity) along the alignment hierarchy:
+#   pdist (no invariance) ⊂ xpdist_tau (single global shift) ⊂ dtw (any monotone path)
+#
+# Calibration:
+#   max_lag = 5      → tau_i ∈ {0,...,5}, max |Δτ_ij| = 5
+#   warp_step_max = 3 (fixed)  → every rebound excursion is exactly 3 source steps
+#   xpdist tau = 10  → encompassing (≥ max_lag + warp_step_max + slack)
+#
+# Two baseline classes establish the floor:
+#   pstep-0_maxlag-0  : noisy AR(1) copies, no lag, no warp → corr(*) ≈ 1
+#   pstep-0_maxlag-5  : pure lag, no warp                   → tests xpdist absorbs lag
+
+mts_classes:
+
+  - name: "pstep-0.0_maxlag-0"
+    labels: [lagged-warping, baseline-floor]
+    generator: "lagged_warping_mts"
+    base_params: &base_params
+      lag_dist: "linspace"
+      warp_step_dist: "fixed"
+      warp_step_max: 3
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.718
+      noise_dist: "uniform"
+      ar1_a: 0.5
+      ar1_noise_std: 1.0
+      zscore: true
+      max_lag: 0
+      p_step: 0.0
+
+  - name: "pstep-0.0_maxlag-5"
+    labels: [lagged-warping, baseline-lag-only]
+    generator: "lagged_warping_mts"
+    base_params:
+      <<: *base_params
+      max_lag: 5
+      p_step: 0.0
+
+  - name: "pstep-0.1_maxlag-5"
+    labels: [lagged-warping, light-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      <<: *base_params
+      max_lag: 5
+      p_step: 0.1
+
+  - name: "pstep-0.3_maxlag-5"
+    labels: [lagged-warping, moderate-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      <<: *base_params
+      max_lag: 5
+      p_step: 0.3
+
+  - name: "pstep-0.5_maxlag-5"
+    labels: [lagged-warping, moderate-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      <<: *base_params
+      max_lag: 5
+      p_step: 0.5
+
+  - name: "pstep-0.7_maxlag-5"
+    labels: [lagged-warping, heavy-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      <<: *base_params
+      max_lag: 5
+      p_step: 0.7
+
+  - name: "pstep-0.9_maxlag-5"
+    labels: [lagged-warping, heavy-warp]
+    generator: "lagged_warping_mts"
+    base_params:
+      <<: *base_params
+      max_lag: 5
+      p_step: 0.9
