@@ -1,0 +1,265 @@
+%%%%%%%% ICML 2025 EXAMPLE TEMPLATE LATEX FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2025} with \usepackage[nohyperref]{icml2025} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2025}
+
+\usepackage[accepted]{icml2025}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Running title}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Title}
+
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Will Edibam}{usyd,dns}
+\icmlauthor{Oliver Cliff}{usyd}
+\icmlauthor{Nic Barbara}{usyd,dns}
+\icmlauthor{Ben Fulcher}{usyd,dns}
+% \icmlauthor{Firstname4 Lastname4}{sch}
+% \icmlauthor{Firstname5 Lastname5}{yyy}
+% \icmlauthor{Firstname6 Lastname6}{sch,yyy,comp}
+% \icmlauthor{Firstname7 Lastname7}{comp}
+%\icmlauthor{}{sch}
+% \icmlauthor{Firstname8 Lastname8}{sch}
+% \icmlauthor{Firstname8 Lastname8}{yyy,comp}
+%\icmlauthor{}{sch}
+%\icmlauthor{}{sch}
+\end{icmlauthorlist}
+
+\icmlaffiliation{usyd}{Department of Physics, University of Sydney, New South Wales, Australia}
+\icmlaffiliation{dns}{Dynamics and Neural Systems Group, Sydney, Australia}
+
+\icmlcorrespondingauthor{Will Edibam}{will.edibam@sydney.edu.au}
+
+% \icmlkeywords{Machine Learning, ICML}
+
+\vskip 0.3in
+]
+
+%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
+
+\begin{abstract}
+\end{abstract}
+
+\section{Case Studies}
+\label{casestudies}
+
+\subsection{Feature-based Multivariate Time Series Analysis}
+Feature-based time series analysis \cite{}
+% feature-based methods are invariant to the dimension of the temporal component of a time series, and so enable statistical and machine learning techniques to draw comparisons between time series based on their relationships in a common feature space. in multivariate time series, the spatial dimension ($M$ for an M-channeled multivariate process) may also vary, and so feature-based methods -- while eliminating temporal scale variance -- still result in a feature set which differs in dimension due to the spatial component, and so cannot be put into a common space, and therefore cannot be analyzed with conventional machine learning models. "Chopping" datasets to the lowest common dimension will often eliminate important dynamical regimes \text{it} between channels of a multivariate system, and thereby erode important information about the underlying system interactions. What are the current methods to circumvent this problem of domain shift variance (I.e., many processes in a multivariate time series) while still preserving the important dynamical properties and dependency structures in the entire system?
+
+CONTEXT: For an $M$-channeled multivariate time series (MTS) $\mathbf{X}^{M \times T}$ with channels $\{X_t^{(i)}\}$ for $i \in \{1, 2, \dots, M\}$ the python library \texttt{pyspi} computes a diverse library of $>250$ statistics for pairwise interaction (SPIs) between every pair of channels, yielding ${M \choose 2}=\frac{M(M-1)}{2}$ total interactions for a chosen statistic. Computing the $k$-th SPI yields an $(M \times M)$-dimensional adjacency matrix, coined a matrix of pairwise interaction (MPI). Within this adjacency matrix, we can geometrically interpret the $i$-th node to represent the $i$-th channel of the multivariate time series, $X_t^{(i)}$, where the elements $(i,j)$ are the edge-weights corresponding to the value of the SPI computed between the $i$-th and $j$-th nodes, i.e., $\mathrm{SPI}_k(i,j)$. By computing $K$ SPIs on a given multivariate time series, we generate a $(K \times M \times M)$-dimensional feature space, with each $\mathrm{MPI}_k$ the adjacency matrix corresponding to the $k$-th SPI.
+
+Like feature-based univariate time series analysis, operating in MPI-space allows us to compare multivariate time series which may differ in the length of the time component. For example, let us jointly consider two MTS processes: $\mathbf{X}^{M \times T_1}$ and $\mathbf{Y}^{M \times T_2}$, where $T_1 \neq T_2$. Then, computing the $k$-th SPI for each pair of channels within $\mathbf{X}$ and $\mathbf{Y}$ yields the two adjacency matrices $\mathrm{MPI}_k({\mathbf{X}})$ and $\mathrm{MPI}_k({\mathbf{Y}})$. Comparing the matrix element $(i,j)$ between each MPI informs on the strength of the chosen statistic between nodes (channels) $i$ and $j$ within each time series. This reveals information on the dependency structure between channels within each system according to the choice of statistic. For example, if we choose to compute the Pearson correlation ($r$) (the SPI) between every pair of channels within each system, we can read the values of the resultant MPI to identify which nodes are emblematic of a linear dependency structure (high $(i,j)$), or those which are indicative of a non-Gaussian relationship, such as nonlinear variation or heavy-tailed outliers.
+
+In a similar way that feature-based methods for univariate time series are helpful to compare (potentially varying length) data using a set of summary statistics (features), a strength of using \texttt{pyspi} to convert a multivariate time series into a $K$-length series of interpretable features (MPIs) is its invariance to datasets differing in their temporal scale. This is useful to convert multivariate time series data into a feature space sharing a common dimension -- the number of selected features $k$ -- which can, in turn, be used for comparing systems varying in sampling rate or length with more explanatory statistical or machine learning techniques. However, like all feature-based methods for multivariate systems, they remain sensitive to the size of the spatial component of the process -- the number of channels $M$ -- which limits the breadth of analysis between systems. Thus, if we could compare systems which vary in potentially both the spatial and temporal component, we should be able to uncover relationships between multivariate systems which may be dynamically, dependently, or structurally related in non-trivial ways.
+
+\subsection{Extracting Informative Features from Multivariate Time Series}
+A possible novel route to circumvent this is to construct an abstracted feature space generated from the relationships \textit{between} features themselves. In a similar style to which feature-based methods for univariate time series abstract one dimension from the data (they transform a $T$-dimensional data into a uniform, interpretable $K$-dimensional feature space), abstracting a second dimension resolves the dependency on the spatial component, $M$. 
+
+% For an undirected statistic -- mutual information, cross-correlation, coherence magnitude -- this results in $M(M-1)/2$ unique elements; for a directed statistic -- transfer entropy, time-lagged mutual information, phase slope index -- we have $M(M-1)$ unique elements. 
+Consider a set of $K$ SPIs and two MTS processes, $\mathbf{X}^{M_1 \times T_1}$ and $\mathbf{Y}^{M_2 \times T_2}$, where $M_1 \neq M_2$ (and optionally $T_1 \neq T_2$). Computing the $K$ SPIs on each MTS yields $K$ MPI adjacency matrices, each with $M(M-1)$ off-diagonal elements $(i, j)$. By extracting the off-diagonal entries of each MPI and computing the correlation \textcolor{red}{(I think Pearson over Spearman (evaluate the choices) because rank-space may corrupt subtle signatures between clusters of pairs of interactions between channels)} between the entries of these matrices yields a singular summary statistics -- a feature $f_k \coloneqq \mathrm{corr}(\mathrm{SPI}_{\mathbf{X}}, \mathrm{SPI}_{\mathbf{Y}})$. For $K$ SPIs, the result is a ${K \choose 2}$-dimensional feature vector, where each value encodes the empirical relationship between any two statistics for a given multivariate time series. Since this feature vector is uniform in its dimensionality for any two multivariate systems $\mathbf{X}$ and $\mathbf{Y}$ -- irrespective of the counts spatial node count $M$ or the temporal length $T$ -- it uniquely allows for \textit{any} set of multivariate systems to be embedded into a common feature space, which is necessary to perform downstream statistical and machine learning.
+
+For consistency, we call this feature space generated ``\textit{SPI-SPI space}". Crucially, in this abstracted feature space, the information extracted from each value is interpreted differently to conventional feature-based analyses. Comparing the values of this feature vector between different multivariate processes informs not on the strength of relationship between channels, but on the empirical similarity in the \textit{character} or \textit{nature} of dependency structures within each system. For example, consider two multivariate systems, of any spatial and temporal construction, and a series of $K$ SPIs whose intersection of statistical assumptions can highlight the presence (or absence) of a particular dependency regime present in each system. In the first system, define a strong coupling of some characteristic nature between nodes $(1, 2)$, and the same coupling between nodes $(1, 3)$ in the second system. Since the ``\textit{meshgrid}" of statistical assumptions is assumed to be capable of detecting the dynamical regime underpinning the coupling, the relationships between pairs of the $K$ statistics (the features $f_k$ of the SPI-SPI feature space $\mathbf{f}^{K \choose 2}$) are sufficient to express the presence (or absence) of the coupling regime within the system. That is, when considered jointly, the relevant features $f_k \in \mathbf{f}$ will co-vary in such a way that we can conclude that both systems exhibit the toy coupling as defined in each of the two systems. We note that since this feature space is a further dimension abstract from the raw data, it is agnostic to some \textit{fundamental} differences within the system. That is, while this method is capable of detecting the shared dependency structure within systems (given a sufficiently expressible set of statistics), it is ``blind`` to \textit{where} the coupling lives. Hence, this feature space is most suitable to analyses which involve \textcolor{red}{[unfinished].}
+
+
+\subsection{Case Studies}
+We can establish the intuition of this method through an examination of the intricate dynamical signatures that are yielded in carefully constructed multivariate systems using this feature-feature method.
+
+\subsubsection{Differentiating Between Linear, Nonlinear, and Non-monotonic Dependencies}
+In this study, we investigate how the feature-feature correlation space can tease a linear or nonlinear dependency within multivariate systems.
+
+Consider Pearson’s product-moment correlation coefficient $r$ and Spearman's rank-correlation coefficient $\rho$, which are two of the most well-known statistics for quantifying the strength and direction of pairwise dependence between time series. In many settings, the results of their computation yield similar results, since Spearman's $\rho$ is equivalent to Pearson’s $r$ computed on rank-transformed data. Thus, for datasets where variables are distributed linearly in the absence of non-Gaussian outliers, we should expect reasonable equivalence (i.e., a strongly coupled $f_k = \mathrm{corr}(r, \rho)$). Contrastingly, for systems that include heavy-tailed data or strongly non-Gaussian scaling -- like seismograph readings in earthquakes or financial returns with heavy-tailed outliers -- Pearson’s $r$ and Spearman’s $\rho$ will begin to \textit{meaningfully} differ, since Spearman’s rank-transformed correlation space is invariant to large monotonic scaling changes or data polluted with non-Gaussian outliers. In the case of the decoupling of $r$ with $\rho$ (i.e., a relative decrease in $f_k \coloneqq \mathrm{corr}(r, \rho)$ compared to our linear system above), we could conclude that our data must have some characteristic nonlinearity to it that is not captured by the assumptions of Pearson correlation. That is, our data must exhibit at least one of (monotonic) non-linear scaling, heavy-tailed outliers, or non-Gaussian distributed variables.
+% or for stronger moves relative to other baselines, must have a greater proportion of the total interactions $M(M-1)$ as linear-nonlinear mixing to indicate stronger decoupling.
+
+Let us engineer an $M \times T$ multivariate time series through concatenating channels $X_t^{(i)}$ for $i \in \{1,2,\dots,M\}$ as noisy copies of a latent mean-reverting autoregressive “mother” signal
+\begin{equation*}
+   z_t = a \cdot z_{t-1} + \epsilon_t, \quad \epsilon \sim \mathcal{N}(0,1),
+\end{equation*} 
+
+which is passed through some filter function $g(z;a)$ as
+\begin{equation*}
+    X_t^{(i)} = g(z_t;a) + \eta_t^{(i)}, \quad \eta \sim \mathcal{N}(0,0.1^2).
+\end{equation*} 
+
+In this case, let $g(z;a)$ be a $\sin$ wave clipped to some interval $[-a,a]$, which, for certain $a$, can induce different degrees of linearity, nonlinear montonicity, and non-monotonicity in the observation. First, we rescale the mother signal $z_t$ to be $z_t \in [0,1]$ by applying the linear rescaling $\frac{z_t - z_{t_{\min}}}{z_{t_{\max}} - z_{t_{\min}}}$. Then, using the transformation $[0,1] \to [a,b]$ as $y = (b-a)x + a$, we can re-map the mother signal to points defined on the linear space of an $[-a,a]$ interval of the sine wave. After computing $g = \mathrm{clip}(\sin(z_{\mathrm{rescaled}}), a)$, divide by its theoretical maximum, i.e. $g_{\max} = \min(\sin(a), a)$ $\to$ $X_t = g/g_{\max}$, which stretches it vertically to have a range of $[-1,1]$, which standardises the measurement noise $\eta_t$ to preserve the signal-to-noise ratio across all $[-a,a]$ intervals.
+
+Recall that the per-channel construction of the multivariate system is the filtered noisy copy of the mother signal $z_t$:
+\begin{equation*}
+    X_t^{(i)} = g(z_t;a) + \eta_t^{(i)}.
+\end{equation*} 
+
+The main experimental driver is as follows: consider an $M=16$-channelled MTS with the construction above and the interval $[-a,a]$ defined by sampling from the uniform distribution $a \sim \mathrm{Uniform}(\pi / 64, A)$, where the choice of the left interval is small to enforce some super-linear regime. As we increase $A \to \pi$, the likelihood across many samples that individual channels (processes) are filtered through nonlinear increases (and then similarly for non-monotonicity for $\pi/2 < A \leq \pi$) regimes, and so the pairwise dependence in multivariate time series with a high proportion of channels that are mostly nonlinear under the lens of Pearson correlation $r$ becomes polluted (since it violates the Gaussian + linearity assumptions of Pearson correlation), while Spearman’s $\rho$ will remain relatively unchanged, since the ordering of elements in rank-space is preserved for (potentially non-Gaussian) monotonic nonlinear transformations. Thus, as $A$ nears $\pi/2$, more channels $X_t^{(i)}$ become filtered with a nonlinear $g$, and so the proportion of total pairwise channel interactions ${M \choose 2}$ with a nonlinear dependency structure increases. It follows that we should observe a decoupling of $f_k = \mathrm{corr}_r(r, \rho)$ as a function of $A$. In fact, were we to plot the scatter of the off-diagonal entries of the MPI adjacency matrix for the MPIs $\mathrm{MPI}_{r}, \mathrm{MPI}_{\rho}$, we would expect to see a widening of the marginal distribution of Pearson correlation for MTS with more nonlinearly filtered channels. Similarly, for $A > \pi/2$, Spearman’s $\rho$ is no longer robust as we enter a non-monotonic regime, and we should begin to see distortion in the marginal distribution of $\rho$ across many samples. Thus, we could conclude that the degree to which $\rho$ and $r$ are pairwise correlated informs on the degree to which our data contains pairwise interactions which are linear in their dependence structure. 
+
+A logical question may be “but isn’t the mean-reverting autoregressive latent driver non-monotonic anyway?”. Indeed, $z_t$ \textit{is} nonlinearly non-monotonic, and so it can feel unnatural to think of an individual channel (essentially a noisy copy of the non-monotonic autoregressive mother signal) as “linear” or “nonlinear monotonic”, per say, even if it is filtered through a linear/monotonic $g(z_t, a)$. We can then say that it is important to understand that this method captures the \textit{character} or \textit{nature} of dependence \textit{between} processes, not the actual channel-wise dynamics itself. It is through this lens that we can derive informative properties about the dependency structure that may be constructive in comparing multivariate systems that were previously (or otherwise) not able to be compared due to spatial or temporal dimension mismatching. [unfinished: not that we could add mutual information into the set of $\{r, \rho, MI\}$ in order to then capture the nonlinear non-monotonic (general) dependency.]
+
+\subsubsection{Temporal (Mis)alignment and Distance Measures}
+We can consider another case study which aims to investigate the nature of temporal (mis)alignment or warping in (and between) multivariate systems by examining the joint-behaviour of dynamic time warping (DTW) and Euclidean distance (ED) on MTS varying in the degree to which their components contain warped signals. Firstly, we note that DTW is a way to quantify the similarity between two time series which may be stretched or compressed in time — such as wearable sensor data in smooth hand movement in a healthy subject juxtaposed with a jerked movement in a motor-impaired subject, or variable rates of speech between a first versus second language speaker — by optimising for the minimum-cost alignment path through a distance matrix, and that Euclidean distance is the straight-line distance between two vectors. In the context of time series data, Euclidean distance is typically referred to as the $L_2$/Frobenius norm. A corollary that naturally follows is that for a signal $X_{t_{\mathrm{orig.}}}$ and a warped copy of the same signal, $X_{t_{\mathrm{warp}}}$, DTW reduces to the point-wise Euclidean/Frobenius distance for an alignment path which is the identity $t_{\mathrm{orig}} = t_{\mathrm{warp}}$, i.e., there is no warping. This distinction underpins the foundation that the meta-feature $f_k \coloneqq \mathrm{corr}_r(ED, DTW)$ encodes information about the degree to which a data contains warped signals.
+
+We construct the multivariate system as follows: consider again the mean-reverting autoregressive latent mother signal $z_t$, and an $M \times T$ MTS with channels $X_t^{(i)}, i \in \{1,2,\dots,M\}$. The channels $X_t^{(i)}$ are noisy warped copies of the latent mother signal $z_t$, according to some warping function $w^{(i)}(z_t;p_{\mathrm{warp}};q)$, where $p_{\mathrm{warp}}$ is the probability that we undertake an “L-shaped” excursion away from the identity line $t_{\mathrm{orig.}} = t_{\mathrm{warp}}$, with warp step parameterised geometrically by the rate $q$, as $\mathrm{size} \sim \mathrm{Geom}(q)$. The intuition can be built by considering a path in $(t_{\mathrm{orig.}},t_{\mathrm{warp}})$-space, where the identity $t_{\mathrm{orig.}} = t_{\mathrm{warp}}$ represents no warping between the mother signal $z_t$ and the channel $X_t^{(i)}$ (i.e., $X_t^{(i)}$ is a noisy copy of the latent driver $z_t$). At any iteration, with a probability $p_{\mathrm{step}}$, we undertake an “L-shaped” warping excursion away from the identity line (either up (U) then right (R), UR, or right (R) then (U), RU, with equal probability). The excursion is a warp step of $\mathrm{size} \sim \mathrm{Geom}(q)$, with expected warp step size $\mathbb{E}[\mathrm{size}]=1/q$ and variance $\mathrm{Var}[\mathrm{step}] = \frac{1-q}{q^2}$. For experimental purposes, we fix $q = 0.5$, giving $\mathbb{E}[\mathrm{size}]=1/0.5=2$ and $\mathrm{Var}[\mathrm{step}] = \frac{0.5}{0.5^2}=2$ to allow for variation in the warp jump. Thus, by sampling $p_{\mathrm{step}} \sim \mathrm{Uniform}[0,a]$, we are left with a multivariate system whose “warpedness” is tuneable by varying the single parameter $a$ parameterising the width of the distribution of $p_{\mathrm{step}}$. 
+
+We can, in fact, define the “warpedness” $\mathcal{W}^{(i)}$ as: $\mathcal{W}^{(i)} = \sum_{t=1}^{T}\lvert t_{\mathrm{orig.};t}-t_{\mathrm{warp};t}\rvert$, i.e., the $L_1$ norm of the diagonal deviation of the warping path from the identity in $(t_{\mathrm{orig.}},t_{\mathrm{warp}})$-space. $\mathcal{W}^{(i)}$ accumulates the area between the warping path and the identity line, and is therefore a direct measure of total temporal displacement. Given this construction, we can characterise the expected warpedness analytically. At any time $t$ let $d_t = \lvert t_{\mathrm{orig}} - t_{\mathrm{warp}}\rvert$ be the current displacement. An excursion occurs with probability $p_{\mathrm{step}} \sim \mathrm{Uniform}[0,a]$, so:
+\begin{equation*}
+\mathbb{E}[p_{\mathrm{step}}^{(i)}] = \frac{a}{2}.
+\end{equation*}
+Each excursion injects a displacement of $s \sim \mathrm{Geom}(q)$, and the path stays displaced for $s$ steps. So, the expected per-channel warpedness scales roughly as:
+\begin{equation*}
+\mathbb{E}[\mathcal{W}^{(i)}] \approx 2T \cdot \frac{a}{2} \cdot \mathbb{E}[s] \cdot \mathbb{E}[s] = T \cdot \frac{a}{2} \cdot \frac{1}{q^2}.
+\end{equation*}
+For $q=0.5$: $\mathbb{E}[\mathcal{W}^{(i)}] \approx 2aT$, so per-channel warpedness scales linearly in $a$. Naturally, it follows that the per-MTS aggregate is:
+\begin{equation*}
+\mathcal{W} = \frac{1}{M}\sum_{i=1}^{M}\mathcal{W}^{(i)} = \frac{1}{M}\sum_{i=1}^{M} \sum_{t=1}^{T}\left| t_{\mathrm{orig};t} - t_{\mathrm{warp};t}^{(i)}\right|.
+\end{equation*}
+This is the mean accumulated displacement area across channels, and it inherits the nice properties of the per-channel measure directly. Since $\mathbb{E}[\mathcal{W}^{(i)}] \approx 2aT$ for all $i$ equally, the per-MTS measure satisfies:
+\begin{equation*}
+\mathbb{E}[\mathcal{W}] = \mathbb{E}[\mathcal{W}^{(i)}] \approx 2aT,
+\end{equation*}
+which reduces variance by a factor of $M$, concentrating $\mathcal{W}$ more tightly around its mean as $M$ grows. This is useful experimentally: larger $M$ gives a more stable measure of the “true” warpedness level induced by a given $a$. Optionally, we can create a scale-free measure comparable across different $T$ by normalising:
+\begin{equation*}
+\bar{\mathcal{W}} = \frac{1}{MT} \sum_{i=1}^{M} \sum_{t=1}^{T}\left| t_{\mathrm{orig};t} - t_{\mathrm{warp};t}^{(i)}\right|,
+\end{equation*}
+which gives the mean displacement per timestep per channel, with $\mathbb{E}[\bar{\mathcal{W}}] \approx 2a$ — a quantity that depends only on $a$, making it a clean empirical proxy for the control parameter.
+
+In a similar way to the case study between $\{r, \rho, MI\}$, we can hypothesise that as we vary $a: 0 \to 1$, the likelihood that channels are warped with a greater $p_{\mathrm{step}}^{(i)}$ increases (since $p_{\mathrm{step}}^{(i)} \sim \mathrm{Uniform}[0,a]$ with $\mathbb{E}[p_{\mathrm{step}}^{(i)}] = \frac{a}{2}$). Therefore, the mean per-channel warpedness $\mathcal{W}$, which scales linearly in $a$ [ref the $\mathcal{W}$ eq.], will, on average, also increase.
+
+Intuitively, for an MTS whose channels $X_t^{(i)}$ warp a latent signal by sampling from the uniform distribution $p_{\mathrm{step}}^{(i)} \sim \mathrm{U}[0,a]$, allowing a wider distribution by increasing $a$ will cause \textcolor{red}{[unfinished].}
+
+\subsubsection{Extending Beyond Case Examples}
+
+In reality, for data which contain many more complex (and potentially ill-defined) dynamical properties, the signature from the decoupling of some $f_k$ between two SPI-level features is typically subtle, and that it is the relative change in the feature value that carries information for understanding the \textit{nature} of the dependency structure between time series, which is, by construction, determined by the set of statistical assumptions — i.e., the “mesh grid” formed in the space of the statistical properties each feature captures. 
+
+In practise, for a set of $K$ SPIs, we have ${K \choose 2}$ individual features $f_k$, with each feature encoding a different dependency structure (a ‘tile’) on a manifold (a ‘mosaic’) of statistical assumptions in the feature space generated by the choice of SPIs in $K$. By selecting many features (SPIs) representative of a broad spectrum of statistical families — from basic measures like Pearson’s $r$ and Spearman’s $\rho$, to distance measures like cosine distance or distance correlation, to information theoretic metrics like time-lagged mutual information and joint entropy, or to spectral measures like phase slope index and coherence magnitude — we can construct a grid of assumptions for which many distinct dynamical properties can be captured. Then, through interleaving the activations (and by jointly considering the non-activations, which carries information in the negative sense) of many individual features $f_{k_i}$ on this space, we can generate an interpretable dynamical signature which is informative of the complex dynamics of a system. Crucially — and in a novel demonstration — we can collate these rich signatures generated by different systems to put multivariate time series into a common space for the first time, which can then be used in downstream machine learning tasks on varying-dimensional multivariate time series.
+
+
+Preliminary applications of this method successfully cluster the same classes of multivariate systems based on the dependency structures alluded to by the pairwise interactions between channels, irrespective of the process size M or observations T. Importantly, these clusters are distinctly separated in low-dimensional representations like PCA, UMAP and t-SNE, which indicates that distinct dynamical signatures exist within the high-dimensional SPI-SPI feature space, and these signatures are rich enough to classify a multivariate system based on the nature of the dependency structures as defined in the $f_k$ feature space, invariant to process size and length.
+
+
+\section{Section}
+\subsection{Subsection}
+.
+
+\subsection{Subsection}
+.
+
+\subsubsection{Subsubsection}
+
+.
+
+\subsubsection{Paragraphs and Footnotes}
+
+
+\begin{figure}[ht]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{figures/icml_numpapers}}
+\caption{Caption}
+\label{icml-historical}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+
+\subsection{Tables}
+
+% Note use of \abovespace and \belowspace to get reasonable spacing
+% above and below tabular lines.
+
+\begin{table}[t]
+\caption{Classification accuracies for naive Bayes and flexible
+Bayes on various data sets.}
+\label{sample-table}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\toprule
+Data set & Naive & Flexible & Better? \\
+\midrule
+Breast    & 95.9$\pm$ 0.2& 96.7$\pm$ 0.2& $\surd$ \\
+Cleveland & 83.3$\pm$ 0.6& 80.0$\pm$ 0.6& $\times$\\
+Glass2    & 61.9$\pm$ 1.4& 83.8$\pm$ 0.7& $\surd$ \\
+Credit    & 74.8$\pm$ 0.5& 78.3$\pm$ 0.6&         \\
+Horse     & 73.3$\pm$ 0.9& 69.7$\pm$ 1.0& $\times$\\
+Meta      & 67.1$\pm$ 0.6& 76.5$\pm$ 0.5& $\surd$ \\
+Pima      & 75.1$\pm$ 0.6& 73.9$\pm$ 0.5&         \\
+Vehicle   & 44.9$\pm$ 0.6& 61.5$\pm$ 0.4& $\surd$ \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+
+\subsection{Theorems, lemme, corollary, assumption} %probably not needed.
+
+%restatable
+
+
+\bibliography{bibliography}
+\bibliographystyle{icml2025}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\onecolumn
+\section{}
+
+
+\end{document}
+

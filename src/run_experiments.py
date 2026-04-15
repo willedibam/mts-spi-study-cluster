@@ -562,7 +562,14 @@ def _save_heatmap(data: np.ndarray, path: Path) -> None:
     import seaborn as sns
 
     apply_plot_style()
-    fig, ax = plt.subplots(figsize=(12, 4), dpi=150)
+    # Constant pixels-per-sample scaling so heatmaps across M/T combos are
+    # visually comparable. At 300 dpi: ~1 px per timestep, ~24 px per channel.
+    T, M = data.shape
+    fig_w = max(2.0, min(16.0, T / 300.0))
+    fig_h = max(0.5, min(8.0, M / 12.5))
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=300)
+    fig.patch.set_alpha(0.0)
+    ax.set_facecolor("none")
     ax.pcolormesh(
         data.T,
         shading="flat",
@@ -575,10 +582,12 @@ def _save_heatmap(data: np.ndarray, path: Path) -> None:
     ax.set_ylabel(None)
     ax.set_xticks([])
     ax.set_yticks([])
+    for spine in ax.spines.values():
+        spine.set_visible(False)
     out_path = Path(path).with_suffix(".png")
     ensure_dir(out_path.parent)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.tight_layout(pad=0)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0, transparent=True)
     plt.close(fig)
     print(f"[INFO] Wrote heatmap to {to_relative(out_path)}")
 

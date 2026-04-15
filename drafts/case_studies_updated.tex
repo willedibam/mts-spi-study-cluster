@@ -1,0 +1,192 @@
+%%%%%%%% ICML 2025 EXAMPLE TEMPLATE LATEX FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+\usepackage{xcolor}
+
+\usepackage{hyperref}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+\usepackage[accepted]{icml2025}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\usepackage[textsize=tiny]{todonotes}
+
+% Red placeholder for figures referenced inline before they exist.
+\newcommand{\figph}[1]{{\color{red}[Figure: #1]}}
+
+\icmltitlerunning{Running title}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Title}
+
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Will Edibam}{usyd,dns}
+\icmlauthor{Oliver Cliff}{usyd}
+\icmlauthor{Nic Barbara}{usyd,dns}
+\icmlauthor{Ben Fulcher}{usyd,dns}
+\end{icmlauthorlist}
+
+\icmlaffiliation{usyd}{Department of Physics, University of Sydney, New South Wales, Australia}
+\icmlaffiliation{dns}{Dynamics and Neural Systems Group, Sydney, Australia}
+
+\icmlcorrespondingauthor{Will Edibam}{will.edibam@sydney.edu.au}
+
+\vskip 0.3in
+]
+
+\printAffiliationsAndNotice{\icmlEqualContribution}
+
+\section{Feature-based Multivariate Time Series Analysis}
+\label{sec:fbmts}
+
+Feature-based time series analysis has, over the past decade, emerged as a productive approach to comparing univariate recordings that differ in sampling rate, duration, or provenance \cite{}. By summarising a series $\{x_t\}_{t=1}^{T}$ as a fixed-length vector of interpretable statistics, such methods eliminate the temporal dimension $T$ from the comparison and allow statistical and machine-learning techniques to operate in a common space. This temporal invariance is what underwrites much of their utility: if two recordings can be placed side by side only once they have been summarised through the same set of statistics, then the choice of statistics becomes the scientific object of interest.
+
+The same move does not carry over straightforwardly to multivariate time series (MTS). An $M$-channelled MTS $\mathbf{X}^{M \times T}$ with channels $\{X_t^{(i)}\}_{i=1}^{M}$ retains a spatial dimension---the number of channels $M$---which feature-based methods applied per-channel do not remove. MTS of different widths therefore still live in different spaces, and the most common workaround, truncating the channel set to the lowest common dimension, tends to discard precisely those channels whose joint behaviour distinguishes one system from another.
+
+A natural response is to describe an MTS not by its individual channels but by its pattern of pairwise interactions. For any statistic of pairwise interaction (SPI), applying it to every channel pair $(i,j)$ yields an $M \times M$ adjacency matrix of the corresponding edge weights, which we refer to as a matrix of pairwise interaction (MPI) and denote $\mathrm{MPI}_k(\mathbf{X})$ for the $k$-th SPI. The Python library \texttt{pyspi} \cite{} computes such MPIs for a diverse library of over $250$ SPIs drawn from correlation, distance, information-theoretic, spectral, and causal families. Computing $K$ SPIs yields a $(K \times M \times M)$-dimensional tensor per MTS, and the interpretation at a single element is direct: the $(i,j)$ entry of $\mathrm{MPI}_k$ records the strength of the $k$-th SPI between channels $i$ and $j$. A Pearson-correlation MPI flags linearly coupled channel pairs; a mutual-information MPI flags any pair with statistical dependence regardless of functional form.
+
+Operating in MPI space removes no more of the spatial dimension than working in the raw channel space does, and for that reason it does not on its own allow multivariate systems of differing widths to be compared directly. It does, however, reorganise the problem in a way that makes the next step natural.
+
+\section{Extracting Informative Features from Multivariate Time Series}
+\label{sec:extract}
+
+To eliminate the spatial dimension we take a second abstraction step, analogous to the one that feature-based univariate analysis takes to remove $T$. Rather than treating the $K$ MPIs as the feature space, we treat the \emph{within-MTS agreement between pairs of MPIs} as the feature space. For a given MTS $\mathbf{X}$ and a pair of SPIs indexed by $i$ and $j$, define
+\begin{equation}
+f_{ij}(\mathbf{X}) \;=\; \mathrm{corr}\!\Big(\mathrm{vec}(\mathrm{MPI}_i(\mathbf{X})),\ \mathrm{vec}(\mathrm{MPI}_j(\mathbf{X}))\Big),
+\label{eq:fij}
+\end{equation}
+where $\mathrm{vec}(\cdot)$ extracts the unique off-diagonal entries over the $\binom{M}{2}$ channel pairs of an undirected statistic.\footnote{For directed statistics the full $M(M-1)$ off-diagonal entries are used instead; the construction is otherwise unchanged.} Each $f_{ij}$ is a single scalar per MTS, and the full vector $\mathbf{f}(\mathbf{X}) \in \mathbb{R}^{K(K-1)/2}$ has dimension independent of both the number of channels $M$ and the length $T$. For $K \approx 200$, this vector carries roughly twenty thousand components. We refer to this abstracted feature space as SPI--SPI space.
+
+The choice of correlation in \Cref{eq:fij}---Pearson, Spearman, or something else---is not yet settled, and we return to it briefly in the discussion; for the present case studies we use Pearson, on the grounds that rank-transformations may erode subtle variation in the co-movement of pairs of interactions across channels.
+
+The information carried by an element of SPI--SPI space is interpreted differently to that of a conventional feature. Where $\mathrm{MPI}_k$ reports the strength of interaction between each pair of channels under the $k$-th SPI, $f_{ij}$ reports the degree to which SPIs $i$ and $j$ \emph{agree} across all channel pairs within a single MTS. Agreement is an informative quantity whenever the two SPIs differ in their statistical assumptions: if, on some pair $(a,b)$, one SPI registers a dependency that the other cannot, the two MPIs will disagree at that entry, and $f_{ij}$ will be pulled below unity. The residual from perfect agreement is a direct, unsigned probe of the dependency axis along which the two SPIs differ.
+
+It is helpful to think of the set of $K$ SPIs as a grid of statistical assumptions, with each pair $(i,j)$ tiling one intersection of that grid. Two SPIs that respond identically to every channel pair in a given MTS agree, and their corresponding feature $f_{ij}$ sits near unity; two that respond differently disagree, and $f_{ij}$ drops below unity in a manner informative of \emph{how} they disagree. A carefully chosen SPI library therefore induces a mosaic of tiles, each tile sensitive to a different axis of dependency character---linearity, monotonicity, lag, warping, synchrony, nonstationarity, and so on---and any individual MTS lights up the subset of tiles consistent with the character of its internal couplings. We make no claim that the $\sim\!20{,}000$-dimensional feature vector is orthogonal; the intrinsic dimensionality will almost certainly be far smaller. What matters is that the tiling is expressive enough to distinguish dependency characters from one another.
+
+Several consequences follow from this construction. First, $\mathbf{f}(\mathbf{X})$ has fixed dimension and so places MTS of differing $M$ and $T$ into a common feature space for the first time, which is a precondition for downstream statistical and machine-learning analyses over heterogeneous multivariate datasets. Second, because the feature vector is obtained by abstracting once more from the raw data, it carries information about the \emph{character} of dependencies rather than the identities of the channels that host them: an MTS with a warped coupling between channels $(1,2)$ and an MTS with the same warped coupling between channels $(1,3)$ will map to similar points in SPI--SPI space, even though the couplings inhabit different nodes. This is a feature rather than a bug for applications in which the character of interaction is the scientific question---clustering of multivariate systems by dynamical regime, for example, or distinguishing dependency structures that are nominally similar but functionally distinct.
+
+\section{Case Studies}
+\label{sec:casestudies}
+
+To build intuition for what SPI--SPI features encode, and in what sense they encode it, we present two case studies. Each is constructed around an SPI triplet whose members form a transparent hierarchy of statistical assumptions, and each sweeps a synthetic multivariate system along a single generative knob that progressively violates those assumptions from the bottom of the hierarchy upwards. The payoff is that the reader can independently verify, from first principles, where on the hierarchy a given MTS sits, and therefore check that the triplet's three pairwise correlations move as predicted.
+
+The two triplets are chosen to probe orthogonal axes of dependency character. The first, built around Pearson $r$, Spearman $\rho$, and mutual information, probes the \emph{functional form} of the coupling between channels: whether the relationship is linear, nonlinear but monotone, or non-monotone. The second, built around pointwise Euclidean distance, a lag-tolerant Euclidean variant, and dynamic time warping, probes the \emph{temporal alignment} of channels: whether they are synchronous, rigidly lagged, or locally warped. The familiarity of both triplets is the point rather than a weakness. They are pedagogical mechanism demonstrations, legible instances of a machinery whose value, once the mechanism is understood, will be tested on SPI pairs whose axis of disagreement has no textbook name.
+
+\subsection{Functional Form: Linear, Monotone, and Non-monotone Dependence}
+\label{sec:case1}
+
+\subsubsection{The triplet and the hierarchy it defines}
+
+Pearson's product-moment correlation coefficient $r$, Spearman's rank-correlation coefficient $\rho$, and mutual information $\mathrm{MI}$ (estimated with the Kraskov nearest-neighbour estimator) are three of the most widely used statistics for quantifying the strength of pairwise dependence between time series. They differ, however, in which transformations of the underlying signals they are invariant to, and it is this difference that gives their pairwise agreement its diagnostic power. Pearson's $r$ captures linear dependence only; it is invariant to affine rescalings of its inputs but nothing more. Spearman's $\rho$, which is Pearson computed on rank-transformed data, is invariant to any monotone transformation and therefore captures all monotone dependence, linear or otherwise. Mutual information is invariant to any bijective transformation of either input and captures any statistical dependence, monotone or not. Denoting by $\mathcal{C}(\cdot)$ the class of channel-pair relationships that a statistic is sensitive to, we have the strict inclusion
+\begin{equation*}
+\mathcal{C}(r) \;\subset\; \mathcal{C}(\rho) \;\subset\; \mathcal{C}(\mathrm{MI}).
+\end{equation*}
+Adjacent rungs of this ladder agree on any channel pair whose dependency lies in the lower of the two classes and may disagree on pairs whose dependency lies in the upper class but not the lower. Reading this statement across the triplet gives three meta-features, each diagnosing a specific structural move: $\mathrm{corr}(r,\rho)$ drops when monotone nonlinearity appears, $\mathrm{corr}(\rho,\mathrm{MI})$ drops when non-monotonicity appears, and $\mathrm{corr}(r,\mathrm{MI})$ drops under any nonlinearity at all and is therefore the coarsest of the three.
+
+\subsubsection{An engineered multivariate system}
+
+To exercise this ladder we construct a multivariate system in which each channel is a filtered noisy copy of a shared mean-reverting latent ``mother'' signal,
+\begin{equation*}
+z_t = a\, z_{t-1} + \epsilon_t, \qquad \epsilon_t \sim \mathcal{N}(0,1),
+\end{equation*}
+with a high autoregressive coefficient ($a=0.95$) so that $z_t$ varies slowly and cleanly. The mother signal is linearly rescaled to the unit interval, $\bar z_t = (z_t - \min z)/(\max z - \min z)$, and the $i$-th channel is then obtained by
+\begin{equation*}
+X_t^{(i)} = g_{a_i}(\bar z_t) + \eta_t^{(i)}, \qquad \eta_t^{(i)} \sim \mathcal{N}(0, \sigma_i^2),
+\end{equation*}
+where the per-channel filter $g_{a_i}$ is a saturated sinusoid of the form
+\begin{equation*}
+g_{a_i}(u) \;=\; \frac{\tanh\!\big(k\sin(2 a_i u - a_i)\big)}{\tanh\!\big(k\sin(\min(a_i,\pi/2))\big)}.
+\end{equation*}
+The argument $2 a_i u - a_i$ re-maps the rescaled mother onto the interval $[-a_i, a_i]$ of the sine, and the outer $\tanh$ with gain $k$ acts as a smooth saturation whose role is cosmetic: it shapes the channel's waveform without altering its monotonicity structure. The $a_i$-dependent denominator fixes each channel's amplitude to $[-1,1]$, preserving the signal-to-noise ratio across values of $a_i$ and allowing the observation noise to be specified once for the whole system.
+
+The per-channel half-width $a_i$ is the only control on the channel's regime, and the correspondence between $a_i$ and the functional-form class it induces is straightforward. For $a_i \ll \pi/16$ the argument of the sine varies over a narrow interval on which $\sin$ is essentially affine, so $g_{a_i}(u)$ is very nearly a linear function of $u$ and the channel is, for all practical purposes, linearly coupled to the mother. As $a_i$ grows toward $\pi/2$ the sine traverses an increasingly large portion of a single monotone arc, and the filter becomes a \emph{nonlinear but still monotone} function of $u$. Once $a_i$ exceeds $\pi/2$, the sine's argument crosses its turning point and the filter ceases to be monotone altogether: a given mother value maps to one of two possible channel values, and the dependence between channel and mother is non-monotone in the strict sense.
+
+The experimental knob is a single upper bound $A$ on the per-channel half-width. For each MTS we draw the $a_i$ deterministically as $\mathrm{linspace}(\pi/64, A, M)$, so that a single MTS contains a \emph{mixture} of per-channel regimes whose composition is set by $A$ alone. Sweeping $A$ from $\pi/64$ through $4\pi$ therefore takes the system along a trajectory in which the fraction of linear channels falls, the fraction of monotone-nonlinear channels rises and then itself falls, and the fraction of non-monotone channels rises from zero. Because each SPI is computed between \emph{pairs} of channels, the quantities of interest are the resulting pair-type fractions---linear--linear, linear--monotone, linear--non-monotone, monotone--monotone, monotone--non-monotone, and non-monotone--non-monotone---which are bilinear in the channel fractions and therefore smooth functions of $A$.
+
+One consequence of the linspace mixing deserves emphasis. Because any given MTS contains a spread of regimes rather than a pure one, the pairwise meta-features do not exhibit sharp knees at the per-channel regime boundaries. Instead, the drops in $\mathrm{corr}(r,\rho)$ and $\mathrm{corr}(\rho,\mathrm{MI})$ are smooth sigmoidal transitions whose centroids sit to the right of the per-channel boundaries (roughly around $A \sim \pi/4$ and $A \sim \pi$ respectively) and whose asymptotic floor at large $A$ is non-trivial: even at $A = 4\pi$ a small minority of linear--linear and linear--monotone pairs remain, so $\mathrm{corr}(r,\rho)$ does not collapse to zero. The curve shape is an artefact of the mixing geometry, not of any single channel's transition. What is preserved and what the case study actually tests is the \emph{ordering} of the drops: $\mathrm{corr}(r,\rho)$ begins to fall first, at the linear-to-monotone transition, and $\mathrm{corr}(\rho,\mathrm{MI})$ begins to fall second, at the monotone-to-non-monotone transition. It is this staggered pattern that reads the functional-form regime of the MTS off the pairwise agreement of the triplet.
+
+\subsubsection{Predicted behaviour}
+
+\figph{1: schematic of the saturated sinusoid filter $g_{a_i}$ at three representative half-widths, illustrating the linear, monotone-nonlinear, and non-monotone regimes, together with three example channels derived from a shared mother.}
+
+\figph{2: scatter grid of the off-diagonal entries of each pair of MPIs in the triplet, one row per value of $A$ on a log-spaced sweep from $\pi/32$ to $4\pi$, columns $(r,\rho)$, $(\rho,\mathrm{MI})$, $(r,\mathrm{MI})$. Points coloured by the per-pair nonlinearity regime of the channel pair.}
+
+\figph{3: the three meta-features $\mathrm{corr}(r,\rho)$, $\mathrm{corr}(\rho,\mathrm{MI})$ and $\mathrm{corr}(r,\mathrm{MI})$ as functions of $A$ on a single axis. Predicted: the first begins to fall near the linear-to-monotone boundary; the second begins to fall near the monotone-to-non-monotone boundary; the third falls under any nonlinearity and so is the coarsest.}
+
+A reader encountering this construction for the first time may note that the latent mother $z_t$ is itself a non-monotone object, and that it is in that sense awkward to call a channel ``linear'' or ``monotone'' at all. The answer is that the case study concerns the \emph{character of dependency between channels}, not the character of the channels themselves. Two channels derived from the same mother through affine filters are linearly dependent regardless of whether the mother is linear in time; two channels derived through a non-monotone filter are non-monotonically dependent regardless of the mother's temporal shape. The case study's signal lives entirely in the pairwise dependency between channels, and it is this that the triplet of meta-features is sensitive to.
+
+\subsection{Temporal Alignment: Synchrony, Lag, and Warping}
+\label{sec:case2}
+
+\subsubsection{The triplet and the hierarchy it defines}
+
+Our second triplet consists of three distance measures between pairs of channels, all built on the same underlying pointwise Euclidean metric and differing only in the class of temporal transformations they are invariant to. Pointwise Euclidean distance, written here as $d_{\mathrm{E}}$, is the root-mean-square of the sample-wise difference between two channels and has no temporal invariance at all: any offset in time between two otherwise identical channels incurs its full penalty. A lag-tolerant Euclidean variant, $d_{\mathrm{E}}^{\tau}$, minimises the same root-mean-square over a single global shift $s$ in the bounded range $|s|\leq K$, and so absorbs any persistent lag between the two channels provided the lag is within window. It cannot, however, track offsets that vary over time. Dynamic time warping, $d_{\mathrm{DTW}}$, minimises over any monotone alignment path between the two series and so absorbs both persistent lags and local time-varying warps.
+
+Writing $\mathcal{I}(\cdot)$ for the class of temporal transformations to which a distance is invariant, we have the strict inclusion
+\begin{equation*}
+\mathcal{I}(d_{\mathrm{E}}) \;\subset\; \mathcal{I}(d_{\mathrm{E}}^{\tau}) \;\subset\; \mathcal{I}(d_{\mathrm{DTW}}),
+\end{equation*}
+which mirrors, on the alignment axis, the capture hierarchy of the first case study on the functional-form axis. Each adjacent pair is a ladder rung, and each rung diagnoses a specific alignment move. The meta-feature $\mathrm{corr}(d_{\mathrm{E}}, d_{\mathrm{E}}^{\tau})$ drops when persistent per-channel lags appear, because $d_{\mathrm{E}}^{\tau}$ absorbs them and $d_{\mathrm{E}}$ does not. The meta-feature $\mathrm{corr}(d_{\mathrm{E}}^{\tau}, d_{\mathrm{DTW}})$ drops when time-varying local warping appears, because $d_{\mathrm{DTW}}$ tracks local excursions that a single global shift cannot reproduce. The meta-feature $\mathrm{corr}(d_{\mathrm{E}}, d_{\mathrm{DTW}})$ drops under any misalignment at all and is the coarsest of the three. We note for later reference that the three distances are in fact ordered pointwise, $d_{\mathrm{DTW}} \leq d_{\mathrm{E}}^{\tau} \leq d_{\mathrm{E}}$, as a consequence of each being a minimum over a richer class of alignments than the one below it. This ordering holds by construction for every pair of channels and is not an empirical claim.
+
+\subsubsection{An engineered multivariate system}
+
+To exercise this ladder we reuse the mean-reverting mother signal $z_t$ of the previous case study and construct each channel as a noisy copy of the mother read through a warped time index,
+\begin{equation*}
+X_t^{(i)} = z\!\left(\tau_i + \phi_i(t)\right) + \eta_t^{(i)},
+\end{equation*}
+where $\tau_i$ is a persistent integer lag drawn uniformly from $\{0,\dots,\tau_{\max}\}$ and $\phi_i(t)$ is a per-channel warping path---a random walk in index space along the shifted diagonal that controls local time-varying alignment. The system thereby composes two independent mechanisms: a rigid per-channel lag, which shifts the whole channel in time, and a per-step local excursion, which stretches and compresses it locally.
+
+The warping path $\phi_i(t)$ is constructed as a \emph{rebound} random walk. At each step the path either holds its current displacement or initiates a short excursion away from the diagonal; every excursion is matched by a symmetric return, so that the path is constrained to revisit zero displacement periodically. A single scalar, the per-step excursion probability $p_{\mathrm{step}} \in [0,1]$, controls the intensity of local warping: at $p_{\mathrm{step}}=0$ the channel is purely lagged with no warping, and as $p_{\mathrm{step}}$ increases the fraction of steps spent away from the diagonal grows. The rebound constraint is the key design choice, and it is in place for a specific reason: it enforces $\mathbb{E}[\phi_i(t)] \approx 0$ over the length of the channel, which decouples the two mechanisms in a manner that is legible to the triplet. The lag $\tau_i$ is precisely the quantity that the lag-tolerant $d_{\mathrm{E}}^{\tau}$ recovers as its optimal global shift; the rebound warping path, by contrast, has zero mean displacement and so offers $d_{\mathrm{E}}^{\tau}$'s single global shift no useful correction, while $d_{\mathrm{DTW}}$ absorbs it in full. Without the rebound constraint the warping path would drift, and a drifting warp could be partially absorbed by $d_{\mathrm{E}}^{\tau}$ through an opportunistic choice of global shift, muddying the diagnostic we are trying to extract. The rebound construction therefore cleanly separates ``what a single shift can absorb'' from ``what only a monotone alignment path can absorb''.
+
+A fair calibration of the three distances requires a little care. The lag-tolerant variant's search window $K$ is chosen to be large enough to encompass both the persistent lag and any individual rebound excursion; with this choice every single excursion is within $d_{\mathrm{E}}^{\tau}$'s reach as a \emph{candidate} shift. Any observed degradation of $\mathrm{corr}(d_{\mathrm{E}}^{\tau}, d_{\mathrm{DTW}})$ as $p_{\mathrm{step}}$ grows is then attributable to the structural limitation that $d_{\mathrm{E}}^{\tau}$ is restricted to a single global shift per channel pair, not to a handicapped window. The degradation is, in this precise sense, the signature of global-versus-local alignment flexibility, and it is that signature the meta-feature picks up.
+
+\subsubsection{Predicted behaviour}
+
+\figph{4: schematic of the shared mother and three derived channels, one synchronised, one persistently lagged but unwarped, and one lagged with rebound warping.}
+
+\figph{5: scatter grid of the off-diagonal entries of each pair of MPIs in the triplet, one row per value of $p_{\mathrm{step}}$ on a sweep from $0$ to $0.9$ at fixed persistent-lag budget, columns $(d_{\mathrm{E}},d_{\mathrm{E}}^{\tau})$, $(d_{\mathrm{E}}^{\tau},d_{\mathrm{DTW}})$, $(d_{\mathrm{E}},d_{\mathrm{DTW}})$. Points coloured by the absolute difference of persistent lags $|\tau_i - \tau_j|$ of the channel pair.}
+
+\figph{6: the three meta-features as functions of $p_{\mathrm{step}}$ on a single axis. Predicted: $\mathrm{corr}(d_{\mathrm{E}}, d_{\mathrm{E}}^{\tau})$ is already low at $p_{\mathrm{step}}=0$ because of the persistent lag budget, and is flat in $p_{\mathrm{step}}$; $\mathrm{corr}(d_{\mathrm{E}}^{\tau}, d_{\mathrm{DTW}})$ is high at $p_{\mathrm{step}}=0$ and falls as warping intensity grows; $\mathrm{corr}(d_{\mathrm{E}}, d_{\mathrm{DTW}})$ is low throughout.}
+
+Read in combination, the three meta-features locate an MTS on the joint plane of (lag intensity, warping intensity): the first reports whether persistent lags are present, the second reports whether local warping is present, and the third reports total misalignment. No ground-truth alignment is required at any stage of the analysis; the triplet extracts the information from the pattern of within-MTS agreement between its three members alone.
+
+\subsection{Beyond the Case Examples}
+\label{sec:beyond}
+
+The two case studies share a single structural template. A single generative knob drives a multivariate system along a regime hierarchy whose rungs are matched one-for-one by the invariance hierarchy of an SPI triplet, and the staggered pattern of drops across the triplet's three meta-features reads the regime off the data. The familiarity of the triplets is what makes this reading legible: the reader can compute the per-pair regime from the generator directly and verify, without recourse to the machinery, that the meta-features are doing what is claimed.
+
+Stepping outside the two cases, the same construction applies to arbitrary SPI pairs. Consider, for example, the phase slope index against distance correlation. No textbook label attaches to the class of channel-pair relationships on which they disagree, and the name of the corresponding axis of dependency character is consequently harder to pin down. Yet by the same mechanism their within-MTS agreement must encode some such axis, and an MTS whose internal couplings differentiate channel pairs along that axis will reveal itself through the corresponding meta-feature just as cleanly as the case studies reveal functional form and temporal alignment. A broad library of SPIs---drawn from correlation, distance, information-theoretic, spectral, and causal families---tiles a large number of such axes simultaneously, and the $\sim\!20{,}000$-dimensional meta-feature vector $\mathbf{f}(\mathbf{X})$ is the collection of readings from all tiles at once. Individual axes need not be named for their contributions to be informative, and collectively they form an interpretable dynamical signature that distinguishes one character of multivariate dependency from another. Preliminary experiments indicate that such signatures are rich enough to cluster classes of multivariate systems in low-dimensional projections of $\mathbf{f}$-space, and that the clustering is invariant to the width and length of the underlying MTS in the manner the construction promises, but a thorough investigation of this is left to future work.
+
+\bibliography{bibliography}
+\bibliographystyle{icml2025}
+
+\newpage
+\appendix
+\onecolumn
+\section{}
+
+\end{document}

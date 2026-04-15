@@ -8,9 +8,9 @@ threads: 4
 timestamp: false
 
 defaults:
-  M_values: [20]
-  T_values: [1000]
-  instances: 2
+  M_values: [5,10,20,30]
+  T_values: [100,500,1000,2000]
+  instances: 1
 
 mts_classes:
   - name: "VAR(1)-AllToAll"
