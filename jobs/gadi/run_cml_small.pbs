@@ -8,8 +8,9 @@
 #PBS -l jobfs=4GB
 #PBS -l storage=scratch/ql44+gdata/ql44
 #PBS -l wd
-#PBS -J 1-60
 #PBS -r y
+# NOTE: Gadi server enforces max_array_size=10. Submit via CLI -J in chunks of 10:
+#   for s in 1 11 21 31 41 51; do qsub -J $s-$((s+9)) jobs/gadi/run_cml_small.pbs; done
 #PBS -j oe
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
