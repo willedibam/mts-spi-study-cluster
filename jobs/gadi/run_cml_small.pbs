@@ -1,0 +1,51 @@
+#!/bin/bash
+#PBS -N cml_small
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=01:00:00
+#PBS -l ncpus=4
+#PBS -l mem=8GB
+#PBS -l jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -J 1-60
+#PBS -r y
+#PBS -j oe
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+set -euo pipefail
+
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+module load python3/3.12.1
+
+export UV_CACHE_DIR=/scratch/ql44/we2614/uv-cache
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+export PYSPI_N_JOBS=4
+
+# cdt (imported transitively by pyspi.statistics.causal) does
+# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time.
+# Empty-string value crashes literal_eval; unset forces cdt's fallback.
+unset CUDA_VISIBLE_DEVICES
+
+echo "[INFO] Job ${ARRAY_ID} on $(hostname) at $(date)"
+python -m src.run_experiments \
+  --job-index "${ARRAY_ID}" \
+  --skip-existing \
+  --experiment-config configs/generate/embeddings/cml-small.yaml \
+  --threads 4 \
+  --parquet
+echo "[INFO] Finished at $(date)"
