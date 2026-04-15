@@ -32,6 +32,12 @@ export NUMEXPR_NUM_THREADS=1
 export KMP_DUPLICATE_LIB_OK=TRUE
 export PYSPI_N_JOBS=4
 
+# cdt (imported transitively by pyspi.statistics.causal) does
+# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time.
+# On PBS compute nodes the var is set to an empty string, which crashes
+# literal_eval with SyntaxError. Unsetting forces cdt's fallback path.
+unset CUDA_VISIBLE_DEVICES
+
 echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"
 python -m src.run_experiments \
   --job-index "${ARRAY_ID}" \
