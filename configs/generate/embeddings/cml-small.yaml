@@ -8,9 +8,9 @@ save_heatmap: true
 threads: 4
 
 defaults:
-  M_values: [4]
+  M_values: [5, 10, 20]
   T_values: [500, 1000, 2000]
-  instances: 2
+  instances: 10
 
 # Coupled map lattice of logistic maps f(x) = 1 - a x^2 with diffusive
 # nearest-neighbour coupling on a 1D periodic lattice of 100 sites.
