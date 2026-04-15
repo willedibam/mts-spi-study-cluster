@@ -29,8 +29,12 @@ JOB_LABEL="${PBS_JOBNAME}"
 exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 
 # 3. Threading (Match ncpus=4)
-export NUM_THREADS=4
-export OMP_NUM_THREADS=4
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export PYSPI_N_JOBS=4
 
 echo "[INFO] Running test on host: $(hostname)"
 echo "[INFO] Python: $(which python)"

@@ -17,7 +17,7 @@ def generate_varma(
     noise_std_variable: bool = False,
     noise_std_scale: float = np.e,
     transients: int = 100,
-    target_rho: float = 0.99,
+    target_rho: float = 0.98,
     topology: str = "ring-symmetric",
     rng=None,
     zscore: bool = True,
@@ -44,9 +44,13 @@ def generate_varma(
         raise ValueError(f"Unknown topology: {topology}")
     A = phi * I + coupling * neighbors
     ev = np.linalg.eigvals(A)
-    sr = np.max(np.abs(ev))
+    sr = float(np.max(np.abs(ev)))
     if sr >= target_rho:
         A = A * (target_rho / sr)
+        print(
+            f"[INFO] varma: rescaled A (raw spectral_radius={sr:.4f} -> "
+            f"{target_rho:.4f}); configured phi/coupling are no longer literal."
+        )
     B = ma_phi * I + ma_coupling * neighbors
     steps = transients + T
     X = np.zeros((steps, M), float)
@@ -71,7 +75,7 @@ def generate_varma_shuffled(
     noise_std_variable: bool = False,
     noise_std_scale: float = np.e,
     transients: int = 100,
-    target_rho: float = 0.99,
+    target_rho: float = 0.98,
     topology: str = "ring-symmetric",
     rng=None,
     zscore: bool = True,

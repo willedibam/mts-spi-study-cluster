@@ -4,7 +4,6 @@ import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
-import numpy as np
 
 from .utils import (
     class_dir_name,
@@ -62,47 +61,6 @@ def _parse_delta_list(value: Any) -> List[int]:
     return parsed or [1]
 
 
-_KURAMOTO_CONNECTIVITY_ALIASES = {
-    "all-to-all": "all-to-all",
-    "all_to_all": "all-to-all",
-    "alltoall": "all-to-all",
-    "full": "all-to-all",
-    "fully_connected": "all-to-all",
-    "bidirectional-list": "bidirectional-list",
-    "bidirectional_list": "bidirectional-list",
-    "list": "bidirectional-list",
-    "ring": "bidirectional-list",
-    "grid-four": "grid-four",
-    "grid_four": "grid-four",
-    "grid-4": "grid-four",
-    "grid": "grid-four",
-}
-
-
-def _format_numeric_token(value: Any) -> str:
-    try:
-        numeric = float(value)
-    except (TypeError, ValueError):
-        return slugify(str(value))
-    text = f"{numeric:.8f}".rstrip("0").rstrip(".")
-    if not text or text == "-":
-        text = "0"
-    if text == "-0":
-        text = "0"
-    return text.replace(".", "p")
-
-
-def _canonical_kuramoto_connectivity(name: str) -> str:
-    key = name.strip().lower().replace(" ", "-")
-    key = key.replace("_", "-")
-    if key not in _KURAMOTO_CONNECTIVITY_ALIASES:
-        raise ValueError(
-            f"Unknown Kuramoto connectivity '{name}'. "
-            "Expected one of all-to-all, bidirectional-list, grid-four."
-        )
-    return _KURAMOTO_CONNECTIVITY_ALIASES[key]
-
-
 @dataclass(frozen=True)
 class VariantSpec:
     name: str | None
@@ -134,9 +92,6 @@ class ClassSpec:
     M_values: List[int]
     T_values: List[int]
     instances: List[int]
-    single_instance_M_values: List[int]
-    single_instance_instances: List[int]
-    single_instance_T_values: List[int]
     variants: List[VariantSpec]
     include_base_variant: bool
     pyspi_config: Path | None = None
@@ -161,9 +116,6 @@ class ExperimentConfig:
     default_M_values: List[int]
     default_T_values: List[int]
     default_instances: List[int]
-    single_instance_M_values: List[int]
-    single_instance_instances: List[int]
-    single_instance_T_values: List[int]
     classes: List[ClassSpec] = field(default_factory=list)
 
     @classmethod
@@ -181,25 +133,10 @@ class ExperimentConfig:
         default_M = [int(v) for v in (defaults.get("M_values") or [])]
         default_T = [int(v) for v in (defaults.get("T_values") or [])]
         default_instances = list(range(int(defaults["instances"]))) if "instances" in defaults else []
-        default_single_M = [int(v) for v in (defaults.get("single_instance_M_values") or [])]
-        default_single_instances = [
-            int(v) for v in (defaults.get("single_instance_instances") or [0])
-        ]
-        default_single_T = [int(v) for v in (defaults.get("single_instance_T_values") or [])]
         classes_raw = data.get("mts_classes") or []
         classes: List[ClassSpec] = []
         for entry in classes_raw:
-            classes.append(
-                _parse_class(
-                    entry,
-                    default_M,
-                    default_T,
-                    default_instances,
-                    default_single_M,
-                    default_single_instances,
-                    default_single_T,
-                )
-            )
+            classes.append(_parse_class(entry, default_M, default_T, default_instances))
         if not classes:
             raise ValueError("No mts_classes defined in experiment config.")
         return cls(
@@ -214,9 +151,6 @@ class ExperimentConfig:
             default_M_values=default_M,
             default_T_values=default_T,
             default_instances=default_instances,
-            single_instance_M_values=default_single_M,
-            single_instance_instances=default_single_instances,
-            single_instance_T_values=default_single_T,
             classes=classes,
         )
 
@@ -226,9 +160,6 @@ def _parse_class(
     default_M: List[int],
     default_T: List[int],
     default_instances: List[int],
-    default_single_M: List[int],
-    default_single_instances: List[int],
-    default_single_T: List[int],
 ) -> ClassSpec:
     if "name" not in entry:
         raise ValueError(f"Class entry missing 'name'. Entry: {entry}")
@@ -262,18 +193,6 @@ def _parse_class(
     M_values = [int(v) for v in _resolve_list(entry.get("M_values"), default_M)]
     T_values = [int(v) for v in _resolve_list(entry.get("T_values"), default_T)]
     instances = list(range(int(entry["instances"]))) if "instances" in entry else list(default_instances)
-    single_instance_M_values = [
-        int(v) for v in _resolve_list(entry.get("single_instance_M_values"), default_single_M)
-    ]
-    single_instance_T_values = [
-        int(v) for v in _resolve_list(entry.get("single_instance_T_values"), default_single_T)
-    ]
-    single_instance_instances: List[int] = []
-    if single_instance_M_values:
-        raw_single_instances = _resolve_list(
-            entry.get("single_instance_instances"), default_single_instances
-        )
-        single_instance_instances = [int(v) for v in raw_single_instances]
     target_classes = list(entry.get("classes", []))
     tickers = [str(t).upper() for t in entry.get("tickers", [])]
     market = entry.get("market")
@@ -299,9 +218,6 @@ def _parse_class(
         M_values=M_values,
         T_values=T_values,
         instances=instances,
-        single_instance_M_values=single_instance_M_values,
-        single_instance_instances=single_instance_instances,
-        single_instance_T_values=single_instance_T_values,
         variants=variants,
         include_base_variant=entry.get("include_base_variant", True),
         pyspi_config=_as_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
@@ -366,85 +282,27 @@ class DatasetSpec:
         }
 
 
-def _custom_dataset_slug(spec: DatasetSpec) -> str | None:
-    if spec.source == "real":
-        return spec.dataset_slug or None
-    base = f"M{spec.M}_T{spec.T}_I{spec.instance}"
-    if spec.generator in {"sin_mts", "sin_mts_mother"}:
-        regime = str(spec.generator_params.get("regime", "fixed"))
-        if regime == "fixed":
-            n_linear_raw = spec.generator_params.get("n_linear")
-            n_monotonic_raw = spec.generator_params.get("n_monotonic")
-            nl = int(n_linear_raw) if n_linear_raw is not None else spec.M // 3
-            nm = int(n_monotonic_raw) if n_monotonic_raw is not None else spec.M // 3
-            nnm = spec.M - nl - nm
-            return f"{base}_l-{nl}_m-{nm}_nm-{nnm}"
-        if regime == "random":
-            pre_seed_fn = (
-                _sin_mts_mother_pre_seed
-                if spec.generator == "sin_mts_mother"
-                else _sin_mts_pre_seed
-            )
-            pre_seed = pre_seed_fn(spec.M, spec.T, spec.instance, spec.mts_class)
-            regime_rng = np.random.default_rng(pre_seed)
-            keys = ["linear", "monotonic", "non-monotonic"]
-            assignments = [keys[i] for i in regime_rng.integers(0, 3, size=spec.M)]
-            l = assignments.count("linear")
-            m = assignments.count("monotonic")
-            nm = assignments.count("non-monotonic")
-            return f"{base}_l-{l}_m-{m}_nm-{nm}"
-        return None
-    if spec.generator == "warping_mts":
-        regime = str(spec.generator_params.get("warping_channel_regime", "fixed"))
-        if regime == "fixed":
-            n_noisy_raw = spec.generator_params.get("n_noisy")
-            n_warped_raw = spec.generator_params.get("n_warped")
-            nm = int(n_noisy_raw) if n_noisy_raw is not None else spec.M // 2
-            nw = int(n_warped_raw) if n_warped_raw is not None else spec.M - nm
-            return f"{base}_m-{nm}_w-{nw}"
-        if regime == "random":
-            pre_seed = _warping_mts_pre_seed(spec.M, spec.T, spec.instance, spec.mts_class)
-            regime_rng = np.random.default_rng(pre_seed)
-            is_warped = [bool(regime_rng.integers(2)) for _ in range(spec.M)]
-            nw = sum(is_warped)
-            nm = spec.M - nw
-            return f"{base}_m-{nm}_w-{nw}"
-        return None
-    class_name = spec.mts_class.lower()
-    if class_name.startswith("cml"):
-        alpha = spec.generator_params.get("alpha")
-        eps = spec.generator_params.get("eps") or spec.generator_params.get("epsilon")
-        if alpha is None or eps is None:
-            return None
-        alpha_token = _format_numeric_token(alpha)
-        eps_token = _format_numeric_token(eps)
-        return f"{base}_alpha{alpha_token}-eps{eps_token}"
-    if class_name == "kuramoto":
-        conn = spec.generator_params.get("connectivity") or spec.generator_params.get(
-            "coupling_scheme"
-        )
-        coupling = spec.generator_params.get("k")
-        if coupling is None:
-            coupling = spec.generator_params.get("K")
-        if conn is None or coupling is None:
-            return None
-        conn_slug = _canonical_kuramoto_connectivity(str(conn))
-        k_token = _format_numeric_token(coupling)
-        return f"{base}_{conn_slug}-k-{k_token}"
-    return None
-
-
 def _apply_dataset_slug(spec: DatasetSpec) -> None:
     if spec.source == "real" and spec.dataset_slug:
         spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
         return
-    slug = _custom_dataset_slug(spec)
-    if not slug:
-        slug = f"M{spec.M}_T{spec.T}_I{spec.instance}"
+    slug = f"M{spec.M}_T{spec.T}_I{spec.instance}"
     if spec.variant and spec.variant.slug:
         slug = f"{slug}_{spec.variant.slug}"
     spec.dataset_slug = slug
     spec.dataset_dir = spec.base_output_dir / spec.class_dir / spec.dataset_slug
+    if spec.generator == "sin_mts" and spec.generator_params.get("regime") == "random":
+        spec.generator_params["_regime_seed"] = _sin_mts_pre_seed(
+            spec.M, spec.T, spec.instance, spec.mts_class
+        )
+    if spec.generator == "sin_mts_mother" and spec.generator_params.get("regime") == "random":
+        spec.generator_params["_regime_seed"] = _sin_mts_mother_pre_seed(
+            spec.M, spec.T, spec.instance, spec.mts_class
+        )
+    if spec.generator == "warping_mts" and spec.generator_params.get("warping_channel_regime") == "random":
+        spec.generator_params["_regime_seed"] = _warping_mts_pre_seed(
+            spec.M, spec.T, spec.instance, spec.mts_class
+        )
     if spec.generator == "sin_mts" and spec.generator_params.get("regime") == "random":
         spec.generator_params["_regime_seed"] = _sin_mts_pre_seed(
             spec.M, spec.T, spec.instance, spec.mts_class
@@ -622,18 +480,12 @@ class DatasetMapping:
                     spec.index = len(specs) + 1
                     specs.append(spec)
                 continue
-            regular_M_values = [
-                m for m in class_entry.M_values if m not in class_entry.single_instance_M_values
-            ]
-
             def _append_specs(
                 M_values: List[int],
                 instances: List[int],
-                T_values: List[int] | None = None,
             ) -> None:
-                t_values = T_values if T_values is not None else class_entry.T_values
                 for M in M_values:
-                    for T in t_values:
+                    for T in class_entry.T_values:
                         for instance in instances:
                             dataset_slug = f"M{M}_T{T}_I{instance}"
                             class_dir = class_dir_name(class_entry.name)
@@ -691,16 +543,8 @@ class DatasetMapping:
                                 )
                             )
 
-            if regular_M_values:
-                _append_specs(regular_M_values, class_entry.instances)
-            if class_entry.single_instance_M_values:
-                single_instances = class_entry.single_instance_instances or [0]
-                t_values = (
-                    class_entry.single_instance_T_values
-                    if class_entry.single_instance_T_values
-                    else class_entry.T_values
-                )
-                _append_specs(class_entry.single_instance_M_values, single_instances, t_values)
+            if class_entry.M_values:
+                _append_specs(class_entry.M_values, class_entry.instances)
             variant_choices: List[VariantSpec | None] = []
             if class_entry.include_base_variant:
                 variant_choices.append(None)

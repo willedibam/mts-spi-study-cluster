@@ -10,16 +10,24 @@ def generate_cml_logistic(
     T: int,
     alpha: float = 1.7522,
     eps: float = 0.00115,
-    delta: int = 12,
     transients: int = 100,
-    respect_transients: bool = False,
+    sample_every: int = 1,
     rng=None,
     zscore: bool = True,
 ) -> np.ndarray:
+    """
+    Coupled map lattice of logistic maps with diffusive ring coupling.
+
+    sample_every: retain every `sample_every`-th step after the burn-in
+        (`observe every delta points`). sample_every=1 keeps every step.
+        Increasing it decorrelates adjacent samples; useful when the fast
+        chaotic timescale would swamp the slower spatial coupling signal.
+    """
     rng = _resolve_rng(None, rng)
     M = int(M)
     T = int(T)
-    transient_samples = int(transients) if (respect_transients and transients > 0) else 0
+    transients = max(0, int(transients))
+    sample_every = max(1, int(sample_every))
 
     def logistic(x, a):
         return 1 - a * x**2
@@ -31,24 +39,15 @@ def generate_cml_logistic(
         return (1 - epsilon) * fx + (epsilon / 2.0) * (left + right)
 
     lattice_M = max(M, 20)
-    total_samples = max(1, transient_samples + T)
-    baseline_samples = max(total_samples, 1000)
-    states = np.zeros((baseline_samples, lattice_M), dtype=float)
+    offset = (lattice_M - M) // 2
+    total_steps = transients + T * sample_every
+    states = np.zeros((total_steps, lattice_M), dtype=float)
     states[0] = rng.random(lattice_M)
     f = lambda x: logistic(x, alpha)
-    for t in range(1, baseline_samples):
+    for t in range(1, total_steps):
         states[t] = iterate_map(states[t - 1], eps, f)
-    if baseline_samples < total_samples:
-        raise ValueError(
-            f"Insufficient CML samples (need {total_samples}, have {baseline_samples})."
-        )
-    offset = (lattice_M - M) // 2
-    if offset < 0 or offset + M > lattice_M:
-        raise ValueError(
-            f"Cannot crop {M} channels from lattice size {lattice_M}."
-        )
-    cropped = states[:total_samples, offset : offset + M]
-    usable = cropped[transient_samples : transient_samples + T]
+    cropped = states[transients:, offset : offset + M]
+    usable = cropped[::sample_every][:T]
     return _maybe_zscore(usable, zscore=zscore)
 
 

@@ -1,35 +1,65 @@
-base_output_dir: data/test/
-pyspi_config: configs/pyspi/test_config.yaml
+base_output_dir: data/test/blended_config
+pyspi_config: configs/pyspi-v2/blended_config.yaml
 pyspi_subset: default
 normalise: false
 rng_seed: 110305
 save_heatmap: false
-threads: 8
+threads: 4
+timestamp: false
 
 defaults:
-  M_values: [4, 8]
-  T_values: [400, 800]
-  instances: [0, 1]
+  M_values: [20]
+  T_values: [1000]
+  instances: 2
 
 mts_classes:
-  - name: "VAR(1)-Unidirectional"
-    labels: ["linear", "gaussian", "var", "directed"]
+  - name: "VAR(1)-AllToAll"
+    labels: ["linear", "gaussian", "var", "undirected"]
     generator: "varma"
-    include_base_variant: true
     base_params:
-      phi: 0.6
-      coupling: 0.2
-      topology: "ring-unidirectional"
+      phi: 0.8
+      coupling: 0.6
+      topology: "all-to-all"
       ma_phi: 0.0
       ma_coupling: 0.0
-      noise_std: 0.1
-      transients: 100
+      noise_std: 0.2
+      transients: 500
       zscore: true
       target_rho: 0.99
-    variants: 
+
+  - name: "GaussianNoise"
+    labels: ["noise", "gaussian"]
+    generator: "gaussian_noise"
+    base_params:
+      zscore: true
 
   - name: "CauchyNoise"
     labels: ["noise", "cauchy", "heavy-tail"]
     generator: "cauchy_noise"
     base_params:
       zscore: false
+
+  - name: "CML-Logistic"
+    labels: ["nonlinear", "chaotic", "cml"]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 500
+      sample_every: 12
+      zscore: true
+
+  - name: "Kuramoto-Ring"
+    labels: ["nonlinear", "oscillator", "kuramoto", "undirected"]
+    generator: "kuramoto"
+    base_params:
+      connectivity: "ring"
+      K: -4
+      k_ring: 1
+      dt: 0.002
+      omega_mean: 0.6283185307179586
+      omega_std: 0.01
+      eta: 0.0
+      transients: 2000
+      output: "sin"
+      zscore: true

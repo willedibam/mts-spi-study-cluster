@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import ast
 import os
 from datetime import datetime
 from hashlib import blake2s
@@ -55,7 +54,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--threads",
         type=int,
-        help="Override CPU/thread count (also exported to BLAS env vars).",
+        help="Override worker count (sets PYSPI_N_JOBS). BLAS threads must be pinned to 1 in the shell.",
     )
     parser.add_argument(
         "--normalise",
@@ -94,12 +93,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--mts-only",
         action="store_true",
-        help="Generate timeseries.npy only (skip PySPI/heatmaps). If no job-index is given, runs all.",
-    )
-    parser.add_argument(
-        "--run-all",
-        action="store_true",
-        help="Run all dataset combinations sequentially (local mode, no --job-index required).",
+        help="Generate timeseries.npy only (skip PySPI/heatmaps). Composes with --job-index.",
     )
     parser.add_argument(
         "--dry-run",
@@ -120,20 +114,8 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     return args
 
 
-def _sanitise_cuda_env() -> None:
-    value = os.environ.get("CUDA_VISIBLE_DEVICES")
-    if not value:
-        os.environ["CUDA_VISIBLE_DEVICES"] = "[]"
-        return
-    try:
-        ast.literal_eval(value)
-    except (ValueError, SyntaxError):
-        os.environ["CUDA_VISIBLE_DEVICES"] = "[]"
-
-
 def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
-    _sanitise_cuda_env()
     config_path = Path(args.experiment_config)
     config = ExperimentConfig.from_file(config_path)
     if args.pyspi_config:
@@ -163,15 +145,9 @@ def main(argv: List[str] | None = None) -> None:
     if args.count_only:
         print(len(mapping))
         return
-    if args.mts_only and args.job_index is None:
-        specs = list(mapping.specs)
-    elif args.run_all:
-        if args.job_index is not None:
-            raise SystemExit("--run-all and --job-index are mutually exclusive.")
+    if args.job_index is None:
         specs = list(mapping.specs)
     else:
-        if args.job_index is None:
-            raise SystemExit("--job-index is required unless --list/--count-only/--mts-only/--run-all is used.")
         specs = [mapping.spec_for_index(args.job_index)]
 
     for spec in specs:
@@ -185,7 +161,7 @@ def main(argv: List[str] | None = None) -> None:
                 f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
             )
             continue
-        _export_thread_hints(args.threads or spec.threads)
+        _configure_threading(args.threads or spec.threads)
         data, ts_path, gen_extras = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
         if args.mts_only:
             continue
@@ -202,23 +178,21 @@ def main(argv: List[str] | None = None) -> None:
         compute_seconds = time.perf_counter() - compute_start
         csv_path = dataset_dir / "calc.csv"
         result.table.to_csv(csv_path, index=True)
-        parquet_path = dataset_dir / "calc.parquet"
         if args.parquet:
-            _safe_write_parquet(result.table, parquet_path)
+            _safe_write_parquet(result.table, dataset_dir / "calc.parquet")
         npz_path = dataset_dir / "spi_mpis.npz"
         np.savez_compressed(npz_path, **result.matrices)
-        heatmap_required = args.heatmap or spec.save_heatmap
         heatmap_paths: list[str] = []
-        if heatmap_required:
+        if args.heatmap or spec.save_heatmap:
             deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
-            base_filename = "mts_heatmap.pdf"
+            base_filename = "mts_heatmap.png"
             base_path = dataset_dir / base_filename
             _save_heatmap(data, base_path)
             heatmap_paths.append(base_filename)
             for delta in deltas:
                 if delta == 1:
                     continue
-                filename = f"mts_heatmap_delta{delta}.pdf"
+                filename = f"mts_heatmap_delta{delta}.png"
                 figure_path = dataset_dir / filename
                 view = data[::delta]
                 _save_heatmap(view, figure_path)
@@ -232,11 +206,9 @@ def main(argv: List[str] | None = None) -> None:
                 "calc_parquet": "calc.parquet" if args.parquet else "",
                 "spi_archive": "spi_mpis.npz",
                 "per_spi": {},
-                "heatmap": heatmap_paths[0] if heatmap_paths else "",
-                "heatmaps": heatmap_paths if heatmap_paths else [],
+                "heatmaps": heatmap_paths,
             },
             compute_seconds=compute_seconds,
-            heatmap=heatmap_required,
             gen_extras=gen_extras,
         )
         dump_json(dataset_dir / "meta.json", meta)
@@ -246,16 +218,23 @@ def main(argv: List[str] | None = None) -> None:
         )
 
 
-def _export_thread_hints(threads: int | None) -> None:
-    if not threads:
-        return
-    for var in [
-        "OMP_NUM_THREADS",
-        "OPENBLAS_NUM_THREADS",
-        "MKL_NUM_THREADS",
-        "NUMEXPR_NUM_THREADS",
-    ]:
-        os.environ[var] = str(threads)
+def _configure_threading(threads: int | None) -> None:
+    """
+    Set PYSPI_N_JOBS (parallel-SPI worker count) for pyspi-fork.
+
+    BLAS threading (OMP/OPENBLAS/MKL) must be pinned to 1 *before* Python starts
+    — i.e. in the PBS/shell script — because libopenblas reads its env vars at
+    import time. Setting them here would be a no-op for the parent process, and
+    forked workers inherit the live BLAS state in-memory, not fresh env vars.
+    """
+    if threads and threads > 0:
+        os.environ["PYSPI_N_JOBS"] = str(threads)
+    for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+        if os.environ.get(var) not in ("1", None):
+            print(
+                f"[WARN] {var}={os.environ.get(var)} — expected 1 to avoid BLAS oversubscription "
+                f"when PYSPI_N_JOBS>1. Set it in your shell/PBS script before launching python."
+            )
 
 
 def _safe_write_parquet(table: pd.DataFrame, path: Path) -> None:
@@ -315,8 +294,6 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
     else:
         start = time.perf_counter()
         generator_params = dict(spec.generator_params)
-        if spec.generator == "cml_logistic":
-            generator_params["delta"] = 1
         if spec.generator == "sin_mts_smooth":
             data, internals = generate_sin_mts_smooth(
                 M=spec.M,
@@ -598,12 +575,12 @@ def _save_heatmap(data: np.ndarray, path: Path) -> None:
     ax.set_ylabel(None)
     ax.set_xticks([])
     ax.set_yticks([])
-    pdf_path = Path(path).with_suffix(".pdf")
-    ensure_dir(pdf_path.parent)
+    out_path = Path(path).with_suffix(".png")
+    ensure_dir(out_path.parent)
     fig.tight_layout()
-    fig.savefig(pdf_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
-    print(f"[INFO] Wrote heatmap to {to_relative(pdf_path)}")
+    print(f"[INFO] Wrote heatmap to {to_relative(out_path)}")
 
 
 def _build_metadata(
@@ -612,7 +589,6 @@ def _build_metadata(
     result,
     paths: Dict[str, Any],
     compute_seconds: float,
-    heatmap: bool,
     gen_extras: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     variant_block = None
@@ -680,7 +656,6 @@ def _build_metadata(
         "job": {
             "index": spec.index,
             "threads": spec.threads,
-            "heatmap": heatmap,
             "compute_seconds": compute_seconds,
         },
     }

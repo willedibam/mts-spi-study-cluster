@@ -391,7 +391,7 @@
     configs:
       - estimator: gaussian
       - estimator: kozachenko
-      - estimator: kernel
+      # - estimator: kernel  # sequential
 
   ConditionalEntropy: # No theiler window yet
     labels:
@@ -404,7 +404,7 @@
     configs:
       - estimator: gaussian
       - estimator: kozachenko
-      - estimator: kernel
+      # - estimator: kernel  # sequential
 
   # Causal Entropy
   CausalEntropy: # No theiler window yet
@@ -418,7 +418,7 @@
     configs:
       - estimator: gaussian
       - estimator: kozachenko
-      - estimator: kernel
+      # - estimator: kernel  # sequential
 
   CrossmapEntropy: # No theiler window yet
     labels:
@@ -434,8 +434,8 @@
       - estimator: kozachenko
         history_length: 1
 
-      - estimator: kernel
-        history_length: 1
+      # - estimator: kernel  # sequential
+      #   history_length: 1
 
       - estimator: gaussian
         history_length: 10
@@ -443,8 +443,8 @@
       - estimator: kozachenko
         history_length: 10
 
-      - estimator: kernel
-        history_length: 10
+      # - estimator: kernel  # sequential
+      #   history_length: 10
 
   # Directed Information
   DirectedInfo: # No theiler window yet
@@ -492,8 +492,8 @@
         prop_k: 4
         dyn_corr_excl: AUTO
 
-      - estimator: kernel
-        kernel_width: 0.25
+      # - estimator: kernel  # sequential
+      #   kernel_width: 0.25
 
   # Time-lagged mutual information
   TimeLaggedMutualInfo:
@@ -514,8 +514,8 @@
       #   prop_k: 4
       #   dyn_corr_excl: AUTO
 
-      - estimator: kernel
-        kernel_width: 0.25
+      # - estimator: kernel  # sequential
+      #   kernel_width: 0.25
 
   # Transfer entropy
   TransferEntropy:
@@ -527,33 +527,33 @@
       - time-dependent
     dependencies:
     configs:
-      # Kraskov estimator with auto-embedding on source/target and DCE
-      - estimator: kraskov
-        prop_k: 4
-        auto_embed_method: MAX_CORR_AIS
-        k_search_max: 10
-        tau_search_max: 4
+      # # Kraskov estimator with auto-embedding on source/target and DCE
+      # - estimator: kraskov
+      #   prop_k: 4
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 10
+      #   tau_search_max: 4
 
-      - estimator: kraskov
-        prop_k: 4
-        auto_embed_method: MAX_CORR_AIS
-        k_search_max: 10
-        tau_search_max: 4
-        dyn_corr_excl: AUTO
+      # - estimator: kraskov
+      #   prop_k: 4
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 10
+      #   tau_search_max: 4
+      #   dyn_corr_excl: AUTO
 
-      # Kraskov estimator with fixed embedding of 2 for target, 1 for source, and DCE
-      - estimator: kraskov
-        prop_k: 4
-        k_history: 2
-        l_history: 1
-        dyn_corr_excl: AUTO
+      # # Kraskov estimator with fixed embedding of 2 for target, 1 for source, and DCE
+      # - estimator: kraskov
+      #   prop_k: 4
+      #   k_history: 2
+      #   l_history: 1
+      #   dyn_corr_excl: AUTO
 
-      # Kraskov estimator with fixed embedding of 1 for source/target and DCE
-      - estimator: kraskov
-        prop_k: 4
-        k_history: 1
-        l_history: 1
-        dyn_corr_excl: AUTO
+      # # Kraskov estimator with fixed embedding of 1 for source/target and DCE
+      # - estimator: kraskov
+      #   prop_k: 4
+      #   k_history: 1
+      #   l_history: 1
+      #   dyn_corr_excl: AUTO
 
       # Same as above with no DCE
       - estimator: kraskov
@@ -562,28 +562,28 @@
         l_history: 1
 
       # Kernel estimator with no auto-embedding on source/target
-      - estimator: kernel
-        kernel_width: 0.25
-        k_history: 1
-        l_history: 1
+      # - estimator: kernel  # sequential
+      #   kernel_width: 0.25
+      #   k_history: 1
+      #   l_history: 1
 
-      # Gaussian estimator with auto-embedding
+      # # Gaussian estimator with auto-embedding
+      # - estimator: gaussian
+      #   auto_embed_method: MAX_CORR_AIS
+      #   k_search_max: 10
+      #   tau_search_max: 2
+
       - estimator: gaussian
-        auto_embed_method: MAX_CORR_AIS
-        k_search_max: 10
-        tau_search_max: 2
-
-      - estimator: gaussian
         k_history: 1
         l_history: 1
 
-      - estimator: symbolic
-        k_history: 1
-        l_history: 1
+      # - estimator: symbolic  # sequential
+      #   k_history: 1
+      #   l_history: 1
 
-      - estimator: symbolic
-        k_history: 10
-        l_history: 1
+      # - estimator: symbolic  # sequential
+      #   k_history: 10
+      #   l_history: 1
 
   IntegratedInformation:
     labels:

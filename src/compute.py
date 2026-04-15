@@ -88,20 +88,7 @@ def _load_spi_info(
 
 
 def _extract_spi_names(table: pd.DataFrame) -> List[str]:
-    cols = table.columns
-    if isinstance(cols, pd.MultiIndex):
-        return list(pd.unique(cols.get_level_values(0)))
-    names: List[str] = []
-    for col in cols:
-        if isinstance(col, tuple):
-            names.append(col[0])
-        else:
-            names.append(col)
-    seen: List[str] = []
-    for name in names:
-        if name not in seen:
-            seen.append(name)
-    return seen
+    return list(pd.unique(table.columns.get_level_values(0)))
 
 
 def _reconstruct_mpi(
@@ -111,52 +98,12 @@ def _reconstruct_mpi(
     M: int,
     symmetrise: bool,
 ) -> np.ndarray:
-    cols = [
-        c
-        for c in table.columns
-        if (isinstance(c, tuple) and c[0] == spi_name) or (c == spi_name)
-    ]
-    if cols:
-        def _proc_key(col):
-            if isinstance(col, tuple) and isinstance(col[1], str):
-                parts = col[1].split("-")
-                if len(parts) == 2 and parts[0] == "proc":
-                    try:
-                        return int(parts[1])
-                    except ValueError:
-                        return 0
-            return 0
-
-        cols_sorted = sorted(cols, key=_proc_key)
-        vecs = [np.asarray(table[c]).ravel() for c in cols_sorted]
-        if len(vecs) >= M and all(v.size == M for v in vecs[:M]):
-            mat = np.column_stack(vecs[:M])
-            np.fill_diagonal(mat, 0.0)
-            return 0.5 * (mat + mat.T) if symmetrise else mat
-    vec = np.asarray(table[spi_name]).astype(float).ravel()
-    E_dir = M * (M - 1)
-    E_und = M * (M - 1) // 2
-    if vec.size == E_dir:
-        mat = np.zeros((M, M), float)
-        idx = 0
-        for i in range(M):
-            for j in range(M):
-                if i == j:
-                    continue
-                mat[i, j] = vec[idx]
-                idx += 1
-        np.fill_diagonal(mat, 0.0)
-        return 0.5 * (mat + mat.T) if symmetrise else mat
-    if vec.size == E_und:
-        mat = np.zeros((M, M), float)
-        iu = np.triu_indices(M, k=1)
-        mat[iu] = vec
-        if symmetrise:
-            mat[(iu[1], iu[0])] = vec
-        else:
-            np.fill_diagonal(mat, 0.0)
-        return mat
-    mat = np.array(table[spi_name])
-    if mat.ndim == 2 and mat.shape == (M, M):
-        return mat
-    raise ValueError(f"Cannot reconstruct MPI for '{spi_name}'")
+    mat = np.asarray(table[spi_name], dtype=float)
+    if mat.shape != (M, M):
+        raise ValueError(
+            f"Expected (M,M)=({M},{M}) matrix for SPI '{spi_name}', got {mat.shape}."
+        )
+    np.fill_diagonal(mat, 0.0)
+    if symmetrise:
+        mat = 0.5 * (mat + mat.T)
+    return mat
