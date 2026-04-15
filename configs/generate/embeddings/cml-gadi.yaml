@@ -1,4 +1,4 @@
-base_output_dir: data/embeddings/cml/
+base_output_dir: data/embeddings/cml-gadi/
 timestamp: false
 pyspi_config: configs/pyspi-v2/blended_config.yaml
 pyspi_subset: default
@@ -8,7 +8,7 @@ save_heatmap: true
 threads: 4
 
 defaults:
-  M_values: [8, 16, 32]
+  M_values: [5, 10, 20]
   T_values: [500, 1000, 2000]
   instances: 10
 
