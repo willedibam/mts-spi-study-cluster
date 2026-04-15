@@ -601,6 +601,7 @@ class DatasetMapping:
                 spec.heatmap_deltas = _parse_delta_list(
                     spec.generator_params.get("delta")
                 )
+                spec.generator_params.pop("delta", None)
             for spec in class_specs:
                 _apply_dataset_slug(spec)
                 spec.rng_seed = _derive_dataset_seed(base_seed=base_seed, spec=spec)

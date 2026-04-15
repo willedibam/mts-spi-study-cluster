@@ -38,7 +38,7 @@ def generate_cml_logistic(
         right = np.roll(fx, -1)
         return (1 - epsilon) * fx + (epsilon / 2.0) * (left + right)
 
-    lattice_M = max(M, 20)
+    lattice_M = max(M, 100)
     offset = (lattice_M - M) // 2
     total_steps = transients + T * sample_every
     states = np.zeros((total_steps, lattice_M), dtype=float)

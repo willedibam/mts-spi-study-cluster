@@ -1,0 +1,124 @@
+base_output_dir: data/embeddings/cml/
+timestamp: false
+pyspi_config: configs/pyspi-v2/blended_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 4
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [500, 1000, 2000]
+  instances: 10
+
+# Coupled map lattice of logistic maps f(x) = 1 - a x^2 with diffusive
+# nearest-neighbour coupling on a 1D periodic lattice of 100 sites.
+# The generator simulates on max(M, 100) sites then crops a contiguous
+# centred window of M channels; pyspi runs on the cropped window only.
+#
+# `delta` is a visualization-only field (heatmap stride). delta=1 is
+# omitted (default); set a list [d1,d2,...] to emit extra mts_heatmap_delta{d}.png.
+# pyspi computation always uses every timestep.
+
+mts_classes:
+  - name: "frozen-chaos"
+    labels: [cml, frozen-chaos]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.45
+      eps: 0.2
+      transients: 2000
+      sample_every: 1
+      zscore: true
+
+  - name: "pattern-selection"
+    labels: [cml, pattern-selection]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.71
+      eps: 0.4
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "brownian-defect"
+    labels: [cml, brownian-defect]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.85
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "defect-turbulence"
+    labels: [cml, defect-turbulence]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "sti-i"
+    labels: [cml, sti, directed-percolation]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: true
+      delta: [3, 6, 12]
+
+  - name: "sti-ii"
+    labels: [cml, sti, on-off-intermittency]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.75
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "fdstc"
+    labels: [cml, fully-developed-stc]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 2.0
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "traveling-wave"
+    labels: [cml, traveling-wave]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.47
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "chaotic-traveling-wave"
+    labels: [cml, traveling-wave, chaotic]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.69
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "traveling-wave-kaneko67"
+    labels: [cml, traveling-wave]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.67
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
