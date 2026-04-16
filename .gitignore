@@ -20,6 +20,7 @@ cache/
 data/
 results/
 tar/
+features/
 
 # OS
 .DS_Store

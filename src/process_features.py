@@ -87,6 +87,7 @@ def load_samples_with_flags(
             samples.append(
                 {
                     "label": meta["mts_class"],
+                    "labels": meta.get("labels", []),
                     "M": meta.get("M"),
                     "T": meta.get("T"),
                     "path": ds_dir,
@@ -103,14 +104,6 @@ def load_samples_with_flags(
     return samples, spi_order, directed_flags
 
 
-def _safe_zscore(vec: np.ndarray) -> np.ndarray:
-    vec = np.asarray(vec, float)
-    std = vec.std()
-    if std < 1e-12 or not np.isfinite(std):
-        return np.zeros_like(vec)
-    return (vec - vec.mean()) / std
-
-
 def _edge_vectors(
     name: str,
     mat: np.ndarray,
@@ -120,20 +113,15 @@ def _edge_vectors(
     mat = np.asarray(mat, float)
     if mat.ndim != 2 or mat.shape[0] != mat.shape[1]:
         raise ValueError(f"{name} is not square (shape={mat.shape})")
-    if not directed:
+    if not directed or not split_directed:
         mat = 0.5 * (mat + mat.T)
         mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
-        return [(name, _safe_zscore(mat[mask]))]
-    if not split_directed:
-        # Collapse direction to keep a single vector per SPI.
-        mat = 0.5 * (mat + mat.T)
-        mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
-        return [(name, _safe_zscore(mat[mask]))]
+        return [(name, mat[mask])]
     upper_mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
     lower_mask = np.tril(np.ones(mat.shape, dtype=bool), k=-1)
     return [
-        (f"{name}__ij", _safe_zscore(mat[upper_mask])),
-        (f"{name}__ji", _safe_zscore(mat[lower_mask])),
+        (f"{name}__ij", mat[upper_mask]),
+        (f"{name}__ji", mat[lower_mask]),
     ]
 
 
@@ -290,13 +278,15 @@ def cache_path(
     *,
     split_directed: bool = False,
     metric: MetricType = "spearman",
+    output_dir: str | None = None,
 ) -> Path:
     suffix = f"_limit{limit}" if limit else ""
     subset_suffix = f"_{subset_label}" if subset_label else ""
     split_suffix = "_split" if split_directed else ""
     metric_suffix = f"_{metric}"
     safe = data_path.replace("\\", "-").replace("/", "-").strip("-")
-    return project_root() / "analysis" / "feature_cache" / f"{safe}{split_suffix}{metric_suffix}{subset_suffix}{suffix}.npz"
+    base_dir = Path(output_dir) if output_dir else project_root() / "features"
+    return base_dir / f"{safe}{split_suffix}{metric_suffix}{subset_suffix}{suffix}.npz"
 
 
 def load_cached_features(path: Path, recompute: bool) -> dict | None:
@@ -322,6 +312,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Output npz path (if multiple metrics, suffixes are added per metric).",
     )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Output directory for cached features (default: features/).",
+    )
     parser.add_argument("--spi-subset", type=str, default=None, help="Path to txt file listing SPI names (one per line).")
     parser.add_argument("--recompute", action="store_true", help="Recompute even if cache exists.")
     parser.add_argument(
@@ -340,6 +336,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         type=str,
         default="spearman",
         help="Comma-separated metrics to compute: spearman (default), pearson, mi.",
+    )
+    parser.add_argument(
+        "--var-threshold",
+        type=float,
+        default=1e-8,
+        help="Drop feature columns with std below this threshold (default: 1e-8). Set to 0 to keep all.",
     )
     return parser.parse_args(argv)
 
@@ -399,6 +401,7 @@ def main(argv: Sequence[str] | None = None) -> None:
                 subset_label,
                 split_directed=args.split_directed,
                 metric=metric,
+                output_dir=args.output_dir,
             )
         )
         cached = load_cached_features(cache_file, recompute=args.recompute)
@@ -430,10 +433,23 @@ def main(argv: Sequence[str] | None = None) -> None:
             split_directed=args.split_directed,
             metric=metric,
         )
+        # drop near-zero-variance features
+        pairs_arr = np.array(pairs, dtype=object)
+        if args.var_threshold > 0:
+            col_std = np.std(X_raw, axis=0)
+            keep = col_std >= args.var_threshold
+            n_dropped = (~keep).sum()
+            if n_dropped:
+                LOGGER.info("Dropping %d/%d features with std < %g", n_dropped, X_raw.shape[1], args.var_threshold)
+                X_raw = X_raw[:, keep]
+                pairs_arr = pairs_arr[keep]
+
+        sample_labels = [s.get("labels", []) for s in samples]
         payload = {
             "X": X_raw.astype(np.float32),
             "y": y,  # mts_class labels
-            "pairs": np.array(pairs, dtype=object),
+            "labels": np.array(sample_labels, dtype=object),
+            "pairs": pairs_arr,
             "spi_order": np.array(spi_order, dtype=object),
             "directed_flags": np.array(directed_flags, dtype=bool),
             "dataset_paths": np.array(dataset_paths, dtype=object),

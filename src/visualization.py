@@ -663,6 +663,13 @@ def plot_stems(
     return fig, ax
 
 
+def _scatter_size_kw(meta_df, size_col: str | None, s: float) -> dict:
+    """Build seaborn size kwargs: scale around baseline s if size_col exists."""
+    if size_col and size_col in meta_df.columns:
+        return {"size": size_col, "sizes": (s * 0.4, s * 2.0)}
+    return {"s": s}
+
+
 def _clean_legend(ax, hue: str, size_col: str) -> None:
     """
     Helper to remove size indicators and redundant titles from Seaborn legends.
@@ -1297,69 +1304,106 @@ def plot_pca(
     random_state: int = 0,
     feature_space: str = "",
     hue: str = "mts_class",
-    size_col: str = "M",
-    sizes: tuple[int, int] = (20, 160),
-    facecolor: str = "#282a36", #old: #2C2C34
-    kde: bool = True,
-) -> np.ndarray:
-    """
-    PCA embedding + scatter/KDE plot.
+    size_col: str | None = "M",
+    s: float = 30,
+    alpha: float = 0.8,
+    kde: bool = False,
+    ax=None,
+    save: str | None = None,
+) -> tuple[np.ndarray, plt.Axes]:
+    """PCA embedding + scatter plot. Pass ax to embed in an existing figure.
+    save: path to save figure (e.g. "pca.svg"). Only works when ax is None.
     """
     apply_plot_style()
 
     xs = StandardScaler().fit_transform(x)
     pca = PCA(n_components=n_components, random_state=random_state)
     embedding = pca.fit_transform(xs)
-
-    var_ratios = pca.explained_variance_ratio_
-    var_pc1 = var_ratios[0]
-    var_pc2 = var_ratios[1]
+    var = pca.explained_variance_ratio_
 
     meta_df = meta_df.copy()
     meta_df["pca_x"] = embedding[:, 0]
     meta_df["pca_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+    own_fig = ax is None
+    if own_fig:
+        _, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
 
-    sns.scatterplot(
-        data=meta_df,
-        x="pca_x",
-        y="pca_y",
-        hue=hue,
-        palette="pastel",
-        size=size_col,
-        sizes=sizes,
-        alpha=0.8,
-        ax=ax,
-        legend="full",
-    )
-
+    sns.scatterplot(data=meta_df, x="pca_x", y="pca_y", hue=hue,
+                    **_scatter_size_kw(meta_df, size_col, s), alpha=alpha,
+                    edgecolor="face", ax=ax, legend="full")
     if kde:
-        sns.kdeplot(
-            data=meta_df,
-            x="pca_x",
-            y="pca_y",
-            hue=hue,
-            palette="pastel",
-            levels=10,
-            thresh=0.05,
-            fill=True,
-            alpha=0.5,
-            ax=ax,
-            legend=False,
-        )
+        sns.kdeplot(data=meta_df, x="pca_x", y="pca_y", hue=hue,
+                    levels=10, thresh=0.05, fill=True, alpha=0.3, ax=ax, legend=False)
 
-    _clean_legend(ax, hue, size_col)
-    
-    ax.set_title(f"PCA ({feature_space}) | Var: {var_pc1+var_pc2:.4f}")
-    ax.set_xlabel(f"PC1 ({var_pc1:.4f})")
-    ax.set_ylabel(f"PC2 ({var_pc2:.4f})")
+    ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
+    ax.set_title(f"PCA ({feature_space}) | Var: {var[0]+var[1]:.4f}")
+    ax.set_xlabel(f"PC1 ({var[0]:.4f})")
+    ax.set_ylabel(f"PC2 ({var[1]:.4f})")
+    ax.set_box_aspect(1)
+    ax.patch.set_alpha(0)
+    ax.get_figure().patch.set_alpha(0)
+
+    if own_fig:
+        plt.tight_layout()
+        if save:
+            ax.get_figure().savefig(save, bbox_inches="tight", transparent=True)
+        plt.show()
+    return embedding, ax
+
+
+def plot_pca_dark(
+    x: np.ndarray,
+    meta_df,
+    *,
+    n_components: int = 2,
+    random_state: int = 0,
+    feature_space: str = "",
+    hue: str = "mts_class",
+    size_col: str | None = "M",
+    s: float = 30,
+    alpha: float = 0.8,
+    facecolor: str = "#282a36",
+    kde: bool = True,
+    ax=None,
+    save: str | None = None,
+) -> tuple[np.ndarray, plt.Axes]:
+    """PCA embedding + scatter/KDE plot (dark background). Pass ax to embed."""
+    apply_plot_style()
+
+    xs = StandardScaler().fit_transform(x)
+    pca = PCA(n_components=n_components, random_state=random_state)
+    embedding = pca.fit_transform(xs)
+    var = pca.explained_variance_ratio_
+
+    meta_df = meta_df.copy()
+    meta_df["pca_x"] = embedding[:, 0]
+    meta_df["pca_y"] = embedding[:, 1]
+
+    own_fig = ax is None
+    if own_fig:
+        _, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+
+    sns.scatterplot(data=meta_df, x="pca_x", y="pca_y", hue=hue, palette="pastel",
+                    **_scatter_size_kw(meta_df, size_col, s), alpha=alpha,
+                    edgecolor="white", linewidth=0.3, ax=ax, legend="full")
+    if kde:
+        sns.kdeplot(data=meta_df, x="pca_x", y="pca_y", hue=hue, palette="pastel",
+                    levels=10, thresh=0.05, fill=True, alpha=0.5, ax=ax, legend=False)
+
+    ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
+    ax.set_title(f"PCA ({feature_space}) | Var: {var[0]+var[1]:.4f}")
+    ax.set_xlabel(f"PC1 ({var[0]:.4f})")
+    ax.set_ylabel(f"PC2 ({var[1]:.4f})")
     ax.set_box_aspect(1)
     ax.set_facecolor(facecolor)
-    
-    plt.tight_layout()
-    plt.show()
-    return embedding
+
+    if own_fig:
+        plt.tight_layout()
+        if save:
+            ax.get_figure().savefig(save, bbox_inches="tight")
+        plt.show()
+    return embedding, ax
 
 
 def plot_umap(
@@ -1372,72 +1416,237 @@ def plot_umap(
     random_state: int = 0,
     feature_space: str = "",
     hue: str = "mts_class",
-    size_col: str = "M",
-    sizes: tuple[int, int] = (20, 160),
-    facecolor: str = "#282a36",
-) -> np.ndarray:
-    """
-    UMAP embedding + scatter/KDE plot.
+    size_col: str | None = "M",
+    s: float = 30,
+    alpha: float = 0.8,
+    kde: bool = False,
+    ax=None,
+    save: str | None = None,
+) -> tuple[np.ndarray, plt.Axes]:
+    """UMAP embedding + scatter plot. Pass ax to embed in an existing figure.
+    save: path to save figure (e.g. "umap.svg"). Only works when ax is None.
     """
     if UMAP is None:
         raise ImportError("umap-learn is required for plot_umap")
 
     apply_plot_style()
-    
+
     xs = StandardScaler().fit_transform(x)
-    reducer = UMAP(
-        n_neighbors=n_neighbors,
-        min_dist=min_dist,
-        metric=metric,
-        random_state=random_state,
-        verbose=True,
-    )
-    embedding = reducer.fit_transform(xs)
-    
+    embedding = UMAP(
+        n_neighbors=n_neighbors, min_dist=min_dist,
+        metric=metric, random_state=random_state, verbose=False,
+    ).fit_transform(xs)
+
     meta_df = meta_df.copy()
     meta_df["umap_x"] = embedding[:, 0]
     meta_df["umap_y"] = embedding[:, 1]
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
-    
-    sns.scatterplot(
-        data=meta_df,
-        x="umap_x",
-        y="umap_y",
-        hue=hue,
-        palette="pastel",
-        size=size_col,
-        sizes=sizes,
-        alpha=0.8,
-        ax=ax,
-        legend="full", 
-    )
-    
-    sns.kdeplot(
-        data=meta_df,
-        x="umap_x",
-        y="umap_y",
-        hue=hue,
-        palette="pastel",
-        levels=10,
-        thresh=0.05,
-        fill=True,
-        alpha=0.5,
-        ax=ax,
-        legend=False
-    )
-    
-    _clean_legend(ax, hue, size_col)
-    
+    own_fig = ax is None
+    if own_fig:
+        _, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+
+    sns.scatterplot(data=meta_df, x="umap_x", y="umap_y", hue=hue,
+                    **_scatter_size_kw(meta_df, size_col, s), alpha=alpha,
+                    edgecolor="face", ax=ax, legend="full")
+    if kde:
+        sns.kdeplot(data=meta_df, x="umap_x", y="umap_y", hue=hue,
+                    levels=10, thresh=0.05, fill=True, alpha=0.3, ax=ax, legend=False)
+
+    ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
+    ax.set_title(f"UMAP ({feature_space}, metric={metric})")
+    ax.set_xlabel("UMAP-1")
+    ax.set_ylabel("UMAP-2")
+    ax.set_box_aspect(1)
+    ax.patch.set_alpha(0)
+    ax.get_figure().patch.set_alpha(0)
+
+    if own_fig:
+        plt.tight_layout()
+        if save:
+            ax.get_figure().savefig(save, bbox_inches="tight", transparent=True)
+        plt.show()
+    return embedding, ax
+
+
+def plot_umap_dark(
+    x: np.ndarray,
+    meta_df,
+    *,
+    metric: str = "euclidean",
+    n_neighbors: int = 7,
+    min_dist: float = 0.5,
+    random_state: int = 0,
+    feature_space: str = "",
+    hue: str = "mts_class",
+    s: float = 30,
+    size_col: str | None = "M",
+    alpha: float = 0.8,
+    facecolor: str = "#282a36",
+    kde: bool = True,
+    ax=None,
+    save: str | None = None,
+) -> tuple[np.ndarray, plt.Axes]:
+    """UMAP embedding + scatter/KDE plot (dark background). Pass ax to embed."""
+    if UMAP is None:
+        raise ImportError("umap-learn is required for plot_umap_dark")
+
+    apply_plot_style()
+
+    xs = StandardScaler().fit_transform(x)
+    embedding = UMAP(
+        n_neighbors=n_neighbors, min_dist=min_dist,
+        metric=metric, random_state=random_state, verbose=False,
+    ).fit_transform(xs)
+
+    meta_df = meta_df.copy()
+    meta_df["umap_x"] = embedding[:, 0]
+    meta_df["umap_y"] = embedding[:, 1]
+
+    own_fig = ax is None
+    if own_fig:
+        _, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+
+    sns.scatterplot(data=meta_df, x="umap_x", y="umap_y", hue=hue, palette="pastel",
+                    **_scatter_size_kw(meta_df, size_col, s), alpha=alpha,
+                    edgecolor="white", linewidth=0.3, ax=ax, legend="full")
+    if kde:
+        sns.kdeplot(data=meta_df, x="umap_x", y="umap_y", hue=hue, palette="pastel",
+                    levels=10, thresh=0.05, fill=True, alpha=0.5, ax=ax, legend=False)
+
+    ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
     ax.set_title(f"UMAP ({feature_space}, metric={metric})")
     ax.set_xlabel("UMAP-1")
     ax.set_ylabel("UMAP-2")
     ax.set_box_aspect(1)
     ax.set_facecolor(facecolor)
-    
-    plt.tight_layout()
-    plt.show()
-    return embedding
+
+    if own_fig:
+        plt.tight_layout()
+        if save:
+            ax.get_figure().savefig(save, bbox_inches="tight")
+        plt.show()
+    return embedding, ax
+
+
+def plot_tsne(
+    x: np.ndarray,
+    meta_df,
+    *,
+    metric: str = "euclidean",
+    perplexity: float = 30.0,
+    random_state: int = 0,
+    feature_space: str = "",
+    hue: str = "mts_class",
+    s: float = 30,
+    size_col: str | None = "M",
+    alpha: float = 0.8,
+    kde: bool = False,
+    ax=None,
+    save: str | None = None,
+) -> tuple[np.ndarray, plt.Axes]:
+    """t-SNE embedding + scatter plot. Pass ax to embed in an existing figure.
+    save: path to save figure (e.g. "tsne.svg"). Only works when ax is None.
+    """
+    if TSNE is None:
+        raise ImportError("scikit-learn is required for plot_tsne")
+
+    apply_plot_style()
+
+    xs = StandardScaler().fit_transform(x)
+    embedding = TSNE(
+        n_components=2, metric=metric, random_state=random_state,
+        init="pca", perplexity=perplexity, learning_rate="auto", n_jobs=-1, verbose=0,
+    ).fit_transform(xs)
+
+    meta_df = meta_df.copy()
+    meta_df["tsne_x"] = embedding[:, 0]
+    meta_df["tsne_y"] = embedding[:, 1]
+
+    own_fig = ax is None
+    if own_fig:
+        _, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+
+    sns.scatterplot(data=meta_df, x="tsne_x", y="tsne_y", hue=hue,
+                    **_scatter_size_kw(meta_df, size_col, s), alpha=alpha,
+                    edgecolor="face", ax=ax, legend="full")
+    if kde:
+        sns.kdeplot(data=meta_df, x="tsne_x", y="tsne_y", hue=hue,
+                    levels=10, thresh=0.05, fill=True, alpha=0.3, ax=ax, legend=False)
+
+    ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
+    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, perplexity={perplexity})")
+    ax.set_xlabel("t-SNE-1")
+    ax.set_ylabel("t-SNE-2")
+    ax.set_box_aspect(1)
+    ax.patch.set_alpha(0)
+    ax.get_figure().patch.set_alpha(0)
+
+    if own_fig:
+        plt.tight_layout()
+        if save:
+            ax.get_figure().savefig(save, bbox_inches="tight", transparent=True)
+        plt.show()
+    return embedding, ax
+
+
+def plot_tsne_dark(
+    x: np.ndarray,
+    meta_df,
+    *,
+    metric: str = "euclidean",
+    perplexity: float = 30.0,
+    random_state: int = 0,
+    feature_space: str = "",
+    hue: str = "mts_class",
+    s: float = 30,
+    size_col: str | None = "M",
+    alpha: float = 0.8,
+    facecolor: str = "#282a36",
+    kde: bool = True,
+    ax=None,
+    save: str | None = None,
+) -> tuple[np.ndarray, plt.Axes]:
+    """t-SNE embedding + scatter/KDE plot (dark background). Pass ax to embed."""
+    if TSNE is None:
+        raise ImportError("scikit-learn is required for plot_tsne_dark")
+
+    apply_plot_style()
+
+    xs = StandardScaler().fit_transform(x)
+    embedding = TSNE(
+        n_components=2, metric=metric, random_state=random_state,
+        init="pca", perplexity=perplexity, learning_rate="auto", n_jobs=-1, verbose=0,
+    ).fit_transform(xs)
+
+    meta_df = meta_df.copy()
+    meta_df["tsne_x"] = embedding[:, 0]
+    meta_df["tsne_y"] = embedding[:, 1]
+
+    own_fig = ax is None
+    if own_fig:
+        _, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
+
+    sns.scatterplot(data=meta_df, x="tsne_x", y="tsne_y", hue=hue, palette="pastel",
+                    **_scatter_size_kw(meta_df, size_col, s), alpha=alpha,
+                    edgecolor="white", linewidth=0.3, ax=ax, legend="full")
+    if kde:
+        sns.kdeplot(data=meta_df, x="tsne_x", y="tsne_y", hue=hue, palette="pastel",
+                    levels=10, thresh=0.05, fill=True, alpha=0.5, ax=ax, legend=False)
+
+    ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
+    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, perplexity={perplexity})")
+    ax.set_xlabel("t-SNE-1")
+    ax.set_ylabel("t-SNE-2")
+    ax.set_box_aspect(1)
+    ax.set_facecolor(facecolor)
+
+    if own_fig:
+        plt.tight_layout()
+        if save:
+            ax.get_figure().savefig(save, bbox_inches="tight")
+        plt.show()
+    return embedding, ax
+
 
 
 # Anchor colors for regime mixing: linear=peach, monotonic=lavender, non-monotonic=mint
@@ -1723,86 +1932,6 @@ def plot_ternary_regime(
     ax.set_title("Regime composition (ternary)")
     plt.tight_layout()
     plt.show()
-
-
-def plot_tsne(
-    x: np.ndarray,
-    meta_df,
-    *,
-    metric: str = "euclidean",
-    perplexity: float = 30.0,
-    random_state: int = 0,
-    feature_space: str = "",
-    hue: str = "mts_class",
-    size_col: str = "M",
-    sizes: tuple[int, int] = (20, 160),
-    facecolor: str = "#282a36",
-) -> np.ndarray:
-    """
-    t-SNE embedding + scatter/KDE plot.
-    """
-    if TSNE is None:
-        raise ImportError("scikit-learn is required for plot_tsne")
-
-    apply_plot_style()
-    
-    xs = StandardScaler().fit_transform(x)
-    tsne = TSNE(
-        n_components=2,
-        metric=metric,
-        random_state=random_state,
-        init="pca",
-        perplexity=perplexity,
-        learning_rate="auto",
-        n_jobs=-1,
-        verbose=0,
-    )
-    embedding = tsne.fit_transform(xs)
-    
-    meta_df = meta_df.copy()
-    meta_df["tsne_x"] = embedding[:, 0]
-    meta_df["tsne_y"] = embedding[:, 1]
-
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=DEFAULT_DPI)
-    
-    sns.scatterplot(
-        data=meta_df,
-        x="tsne_x",
-        y="tsne_y",
-        hue=hue,
-        palette="pastel",
-        size=size_col,
-        sizes=sizes,
-        alpha=0.8,
-        ax=ax,
-        legend="full", 
-    )
-    
-    sns.kdeplot(
-        data=meta_df,
-        x="tsne_x",
-        y="tsne_y",
-        hue=hue,
-        palette="pastel",
-        levels=10,
-        thresh=0.05,
-        fill=True,
-        alpha=0.5,
-        ax=ax,
-        legend=False
-    )
-    
-    _clean_legend(ax, hue, size_col)
-    
-    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, perplexity={perplexity})")
-    ax.set_xlabel("t-SNE-1")
-    ax.set_ylabel("t-SNE-2")
-    ax.set_box_aspect(1)
-    ax.set_facecolor(facecolor)
-
-    plt.tight_layout()
-    plt.show()
-    return embedding
 
 
 def plot_spi_corr_sweep(
