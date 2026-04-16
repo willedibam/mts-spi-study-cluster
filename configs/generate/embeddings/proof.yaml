@@ -1,0 +1,153 @@
+base_output_dir: data/embeddings/proof/
+timestamp: false
+pyspi_config: configs/pyspi-v2/blended_sonnet_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 4
+
+defaults:
+  M_values: [5, 10, 20]
+  T_values: [500, 1000, 2000]
+  instances: 10
+
+mts_classes:
+  # --- VAR(1) ring-symmetric (pure AR, no MA) ---
+  - name: "var-ring-sym"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.8
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto (bidirectional list, K=-4) ---
+  - name: "kuramoto"
+    labels: [kuramoto, nonlinear, bidirectional-list]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      connectivity: "bidirectional-list"
+      transients: 2000
+      zscore: true
+
+  # --- Null models ---
+  - name: "cauchy-noise"
+    labels: [noise, null, cauchy]
+    generator: "cauchy_noise"
+    base_params:
+      zscore: false
+
+  - name: "gaussian-noise"
+    labels: [noise, null, gaussian]
+    generator: "gaussian_noise"
+    base_params:
+      zscore: true
+
+  # --- Coupled Map Lattice regimes ---
+  - name: "frozen-chaos"
+    labels: [cml, frozen-chaos]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.45
+      eps: 0.2
+      transients: 2000
+      sample_every: 1
+      zscore: true
+
+  - name: "pattern-selection"
+    labels: [cml, pattern-selection]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.71
+      eps: 0.4
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "brownian-defect"
+    labels: [cml, brownian-defect]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.85
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "defect-turbulence"
+    labels: [cml, defect-turbulence]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "sti-i"
+    labels: [cml, sti, directed-percolation]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: true
+      delta: [3, 6, 12]
+
+  - name: "sti-ii"
+    labels: [cml, sti, on-off-intermittency]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.75
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "fdstc"
+    labels: [cml, fully-developed-stc]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 2.0
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "traveling-wave"
+    labels: [cml, traveling-wave]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.47
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "chaotic-traveling-wave"
+    labels: [cml, traveling-wave, chaotic]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.69
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "traveling-wave-kaneko67"
+    labels: [cml, traveling-wave]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.67
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true

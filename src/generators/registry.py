@@ -17,7 +17,6 @@ from .dynamical import (
     generate_kuramoto_all_to_all,
     generate_kuramoto_bidirectional_list,
     generate_kuramoto_grid_four,
-    generate_kuramoto_chat_a,
     generate_mackey_glass,
 )
 from .linear import (
@@ -87,7 +86,6 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "var_tworing": generate_var_tworing,
     "var_fourring": generate_var_fourring,
     "var_lattice": generate_var_lattice,
-    "kuramoto_chat_a": generate_kuramoto_chat_a,
     "var_chat_a": generate_var_chat_a,
     "var_chat_b": generate_var_chat_b,
     "var_chat_c": generate_var_chat_c,
