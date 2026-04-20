@@ -27,12 +27,20 @@ mts_classes:
       transients: 100
       zscore: true
 
-  # --- Kuramoto (bidirectional list, K=-4) ---
+  # --- Kuramoto (bidirectional list, near-critical positive K) ---
+  # dt/omega_mean tuned so omega*T*dt gives ~25 cycles in T=1000 window;
+  # K=0.5 with omega_std=0.6*omega_mean and small noise reliably yields
+  # n_pcs_95 >= 3 across seeds (Cliff et al. dim filter passes).
   - name: "kuramoto"
     labels: [kuramoto, nonlinear, bidirectional-list]
     generator: "kuramoto"
     base_params:
-      K: -4.0
+      K: -1.0
+      dt: 0.05
+      omega_mean: 3.14159265
+      omega_std: 1.88495559
+      eta: 0.05
+      output: "sin"
       connectivity: "bidirectional-list"
       transients: 2000
       zscore: true

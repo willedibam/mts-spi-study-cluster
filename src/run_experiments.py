@@ -187,7 +187,7 @@ def main(argv: List[str] | None = None) -> None:
             deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
             base_filename = "mts_heatmap.png"
             base_path = dataset_dir / base_filename
-            _save_heatmap(data, base_path)
+            save_mts_heatmap(data, base_path)
             heatmap_paths.append(base_filename)
             for delta in deltas:
                 if delta == 1:
@@ -195,7 +195,7 @@ def main(argv: List[str] | None = None) -> None:
                 filename = f"mts_heatmap_delta{delta}.png"
                 figure_path = dataset_dir / filename
                 view = data[::delta]
-                _save_heatmap(view, figure_path)
+                save_mts_heatmap(view, figure_path)
                 heatmap_paths.append(filename)
         meta = _build_metadata(
             spec=spec,
@@ -293,62 +293,7 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
         print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
     else:
         start = time.perf_counter()
-        generator_params = dict(spec.generator_params)
-        if spec.generator == "sin_mts_smooth":
-            data, internals = generate_sin_mts_smooth(
-                M=spec.M,
-                T=spec.T,
-                rng=np.random.default_rng(spec.rng_seed),
-                return_internals=True,
-                **generator_params,
-            )
-            gen_extras = {"a_values": internals.a_values.tolist()}
-        elif spec.generator == "lagged_mts":
-            data, internals = generate_lagged_mts(
-                M=spec.M,
-                T=spec.T,
-                rng=np.random.default_rng(spec.rng_seed),
-                return_internals=True,
-                **generator_params,
-            )
-            gen_extras = {"lags": internals.lags.tolist()}
-        elif spec.generator == "lagged_warping_mts":
-            data, internals = generate_lagged_warping_mts(
-                M=spec.M,
-                T=spec.T,
-                rng=np.random.default_rng(spec.rng_seed),
-                return_internals=True,
-                **generator_params,
-            )
-            gen_extras = {"lags": internals.lags.tolist()}
-        elif spec.generator in ("var_chat_a", "var_chat_b", "var_chat_c", "var_chat_d"):
-            _chat_gen = {
-                "var_chat_a": generate_var_chat_a,
-                "var_chat_b": generate_var_chat_b,
-                "var_chat_c": generate_var_chat_c,
-                "var_chat_d": generate_var_chat_d,
-            }[spec.generator]
-            data, internals = _chat_gen(
-                M=spec.M,
-                T=spec.T,
-                rng=np.random.default_rng(spec.rng_seed),
-                return_internals=True,
-                **generator_params,
-            )
-            gen_extras = {
-                "motif_node_indices": internals.motif_node_indices,
-                "motif_edges": [list(e) for e in internals.motif_edges],
-                "class_label": internals.class_label,
-                "coupling_values": internals.coupling_values,
-            }
-        else:
-            data = generate.generate_series(
-                spec.generator,
-                seed=spec.rng_seed,
-                M=spec.M,
-                T=spec.T,
-                **generator_params,
-            )
+        data, gen_extras = generate_synthetic_from_spec(spec)
         np.save(ts_path, data.astype(np.float32))
         duration = time.perf_counter() - start
         print(
@@ -356,6 +301,74 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
             f"in {duration:.2f}s -> {to_relative(ts_path)}"
         )
     return data.astype(np.float64, copy=False), ts_path, gen_extras
+
+
+def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
+    """Generate synthetic MTS data for a spec without disk I/O or caching.
+
+    Pure function: reads spec.generator, spec.M, spec.T, spec.rng_seed, and
+    spec.generator_params, returns (data, gen_extras). Used by the CLI path
+    (_ensure_timeseries wraps it with caching + np.save) and by notebooks
+    that want in-memory parameter exploration.
+    """
+    generator_params = dict(spec.generator_params)
+    gen_extras: dict = {}
+    if spec.generator == "sin_mts_smooth":
+        data, internals = generate_sin_mts_smooth(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            **generator_params,
+        )
+        gen_extras = {"a_values": internals.a_values.tolist()}
+    elif spec.generator == "lagged_mts":
+        data, internals = generate_lagged_mts(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            **generator_params,
+        )
+        gen_extras = {"lags": internals.lags.tolist()}
+    elif spec.generator == "lagged_warping_mts":
+        data, internals = generate_lagged_warping_mts(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            **generator_params,
+        )
+        gen_extras = {"lags": internals.lags.tolist()}
+    elif spec.generator in ("var_chat_a", "var_chat_b", "var_chat_c", "var_chat_d"):
+        _chat_gen = {
+            "var_chat_a": generate_var_chat_a,
+            "var_chat_b": generate_var_chat_b,
+            "var_chat_c": generate_var_chat_c,
+            "var_chat_d": generate_var_chat_d,
+        }[spec.generator]
+        data, internals = _chat_gen(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            **generator_params,
+        )
+        gen_extras = {
+            "motif_node_indices": internals.motif_node_indices,
+            "motif_edges": [list(e) for e in internals.motif_edges],
+            "class_label": internals.class_label,
+            "coupling_values": internals.coupling_values,
+        }
+    else:
+        data = generate.generate_series(
+            spec.generator,
+            seed=spec.rng_seed,
+            M=spec.M,
+            T=spec.T,
+            **generator_params,
+        )
+    return data, gen_extras
 
 
 def _load_existing_timeseries(spec) -> tuple[np.ndarray, Path] | None:
@@ -555,15 +568,18 @@ def _load_yfinance_sample(spec) -> tuple[np.ndarray, int, int, str, list[str]]:
     return arr, M, T, dataset_slug, list(choices)
 
 
-def _save_heatmap(data: np.ndarray, path: Path) -> None:
-    import matplotlib
-    matplotlib.use("Agg")
+def build_mts_heatmap(data: np.ndarray):
+    """Build an MTS heatmap Figure without any disk I/O.
+
+    Leaves the current matplotlib backend untouched so notebooks keep their
+    inline renderer. Constant pixels-per-sample scaling keeps heatmaps
+    visually comparable across M/T combos (~1 px per timestep, ~24 px per
+    channel at 300 dpi).
+    """
     import matplotlib.pyplot as plt
     import seaborn as sns
 
     apply_plot_style()
-    # Constant pixels-per-sample scaling so heatmaps across M/T combos are
-    # visually comparable. At 300 dpi: ~1 px per timestep, ~24 px per channel.
     T, M = data.shape
     fig_w = max(2.0, min(16.0, T / 300.0))
     fig_h = max(0.5, min(8.0, M / 12.5))
@@ -584,9 +600,19 @@ def _save_heatmap(data: np.ndarray, path: Path) -> None:
     ax.set_yticks([])
     for spine in ax.spines.values():
         spine.set_visible(False)
+    fig.tight_layout(pad=0)
+    return fig
+
+
+def save_mts_heatmap(data: np.ndarray, path: Path) -> None:
+    import matplotlib
+    # Pin Agg for headless cluster runs; no-op if a backend is already set.
+    matplotlib.use("Agg", force=False)
+    import matplotlib.pyplot as plt
+
+    fig = build_mts_heatmap(data)
     out_path = Path(path).with_suffix(".png")
     ensure_dir(out_path.parent)
-    fig.tight_layout(pad=0)
     fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0, transparent=True)
     plt.close(fig)
     print(f"[INFO] Wrote heatmap to {to_relative(out_path)}")
