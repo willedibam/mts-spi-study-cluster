@@ -27,18 +27,22 @@ mts_classes:
       transients: 100
       zscore: true
 
-  # --- Kuramoto (bidirectional list, near-critical positive K) ---
-  # dt/omega_mean tuned so omega*T*dt gives ~25 cycles in T=1000 window;
-  # K=0.5 with omega_std=0.6*omega_mean and small noise reliably yields
-  # n_pcs_95 >= 3 across seeds (Cliff et al. dim filter passes).
+  # --- Kuramoto (bidirectional list, narrow-band incoherent) ---
+  # Tuned for max distinguishability vs gaussian/cauchy/var/sti-ii on a
+  # 6-feature proxy (corr, PLV, lag1, kurtosis, spec peak, freq spread).
+  # omega_mean=4*pi (~2 Hz at dt=0.05) gives ~100 cycles per T=1000 window
+  # -> sharp narrow-band spectral peak, the signature pyspi spectral SPIs
+  # should latch onto. Coupling K=-2 stays in the incoherent regime
+  # (r ~ 0.2-0.4 across M) since K_c scales with M for local topology;
+  # genuine partial sync at all M is not achievable with one config.
   - name: "kuramoto"
     labels: [kuramoto, nonlinear, bidirectional-list]
     generator: "kuramoto"
     base_params:
-      K: -1.0
+      K: -2.0
       dt: 0.05
-      omega_mean: 3.14159265
-      omega_std: 1.88495559
+      omega_mean: 12.56637061   # 4*pi
+      omega_std: 7.53982237     # 0.6 * omega_mean
       eta: 0.05
       output: "sin"
       connectivity: "bidirectional-list"
