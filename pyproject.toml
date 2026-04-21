@@ -8,7 +8,15 @@ dependencies = [
     "scipy>=1.11",
     "pandas>=2.1",
     "pyyaml>=6.0",
-    # pyspi: install from local fork (editable): uv pip install -e ../pyspi-fork
+    # pyspi itself is NOT listed here; it ships as a sister repo at ../pyspi-fork
+    # and MUST be installed editable after creating the venv:
+    #   uv pip install -e ../pyspi-fork
+    # Required at runtime by pyEDM (transitive via pyspi-fork): Python 3.12 venvs
+    # no longer bundle setuptools by default (PEP 632), but pyEDM/LoadData.py still
+    # does `import pkg_resources`, which lives inside setuptools. Upper bound <80
+    # because setuptools>=80 removed pkg_resources from the default install
+    # (pyEDM has not migrated to importlib.metadata yet).
+    "setuptools>=68,<80",
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "scikit-learn>=1.4",
@@ -25,6 +33,8 @@ dependencies = [
     "infomeasure>=0.6.0",
     "torch>=2.1.0",
     "torch-geometric>=2.5.0",
+    "plotly>=6.7.0",
+    "nbformat>=5.10.4",
 ]
 
 [project.optional-dependencies]

@@ -1,4 +1,4 @@
-base_output_dir: data/embeddings/proof/
+base_output_dir: data/embeddings/proof_260420/
 timestamp: false
 pyspi_config: configs/pyspi-v2/blended_sonnet_config.yaml
 pyspi_subset: default
@@ -27,7 +27,7 @@ mts_classes:
       transients: 100
       zscore: true
 
-  # --- Kuramoto (bidirectional list, narrow-band incoherent) ---
+  # --- Kuramoto (ours: bidirectional list, narrow-band incoherent) ---
   # Tuned for max distinguishability vs gaussian/cauchy/var/sti-ii on a
   # 6-feature proxy (corr, PLV, lag1, kurtosis, spec peak, freq spread).
   # omega_mean=4*pi (~2 Hz at dt=0.05) gives ~100 cycles per T=1000 window
@@ -47,6 +47,44 @@ mts_classes:
       output: "sin"
       connectivity: "bidirectional-list"
       transients: 2000
+      zscore: true
+
+  # --- Kuramoto (theirs: pyclustering port, all-to-all, slow, splay-state) ---
+  # Port of a collaborator's pyclustering.sync_network config:
+  #   sync_network(M, weight=-4, frequency=0.05, type_conn=ALL_TO_ALL)
+  #   np.sin(output)
+  # with steps = 100 + T and time = 10*T/1500.
+  #
+  # Convention translation:
+  #   - Pyclustering ODE: dθ_i/dt = ω_i + (K/N)·Σ_j sin(θ_j - θ_i)
+  #   - Our ODE:          dθ_i/dt = ω_i + (K/deg_i)·Σ_j A_ij·sin(θ_j - θ_i)
+  #     For all-to-all deg = N-1, so per-pair coupling differs by (N-1)/N
+  #     (~5-20% for M in {5,10,20}). K=-4 is a faithful port at this tolerance.
+  #   - Their `frequency=0.05` seeds ω_i ~ U(0, 0.05); our generator samples
+  #     ω_i ~ N(omega_mean, omega_std), so we match moments:
+  #       mean(U(0,0.05)) = 0.025
+  #       std (U(0,0.05)) = 0.05/sqrt(12) ≈ 0.01443
+  #     Distributional shape differs (uniform vs gaussian) but ω is tiny
+  #     and coupling-dominated so this is negligible.
+  #   - Their dt = time/steps = (10*T/1500)/(100+T) ≈ 0.00625 for T=1500.
+  #
+  # Dynamics: homogeneous-ish slow ω + strong repulsive all-to-all coupling
+  # + no stochastic noise -> deterministic anti-phase splay/cluster states
+  # seeded by random initial phases. Structured pair-level patterns that
+  # pyspi coherence/PLV/Granger should register strongly; expected to sit
+  # far from gaussian in the SPI-SPI feature space.
+  - name: "kuramoto-pyc"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 0.025
+      omega_std: 0.01443        # 0.05 / sqrt(12), matches U(0, 0.05) std
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
       zscore: true
 
   # --- Null models ---
