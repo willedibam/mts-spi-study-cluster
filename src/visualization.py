@@ -1411,6 +1411,7 @@ def plot_umap(
     meta_df,
     *,
     metric: str = "euclidean",
+    scale: bool = True,
     n_neighbors: int = 7,
     min_dist: float = 0.5,
     random_state: int = 0,
@@ -1425,13 +1426,15 @@ def plot_umap(
 ) -> tuple[np.ndarray, plt.Axes]:
     """UMAP embedding + scatter plot. Pass ax to embed in an existing figure.
     save: path to save figure (e.g. "umap.svg"). Only works when ax is None.
+    scale: if True (default), z-score feature columns before UMAP. Disable for
+           bounded-correlation feature spaces where magnitude is meaningful.
     """
     if UMAP is None:
         raise ImportError("umap-learn is required for plot_umap")
 
     apply_plot_style()
 
-    xs = StandardScaler().fit_transform(x)
+    xs = StandardScaler().fit_transform(x) if scale else x
     embedding = UMAP(
         n_neighbors=n_neighbors, min_dist=min_dist,
         metric=metric, random_state=random_state, verbose=False,
@@ -1453,7 +1456,7 @@ def plot_umap(
                     levels=10, thresh=0.05, fill=True, alpha=0.3, ax=ax, legend=False)
 
     ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
-    ax.set_title(f"UMAP ({feature_space}, metric={metric})")
+    ax.set_title(f"UMAP ({feature_space}, metric={metric}, scale={scale})")
     ax.set_xlabel("UMAP-1")
     ax.set_ylabel("UMAP-2")
     ax.set_box_aspect(1)
@@ -1473,6 +1476,7 @@ def plot_umap_dark(
     meta_df,
     *,
     metric: str = "euclidean",
+    scale: bool = True,
     n_neighbors: int = 7,
     min_dist: float = 0.5,
     random_state: int = 0,
@@ -1492,7 +1496,7 @@ def plot_umap_dark(
 
     apply_plot_style()
 
-    xs = StandardScaler().fit_transform(x)
+    xs = StandardScaler().fit_transform(x) if scale else x
     embedding = UMAP(
         n_neighbors=n_neighbors, min_dist=min_dist,
         metric=metric, random_state=random_state, verbose=False,
@@ -1514,7 +1518,7 @@ def plot_umap_dark(
                     levels=10, thresh=0.05, fill=True, alpha=0.5, ax=ax, legend=False)
 
     ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
-    ax.set_title(f"UMAP ({feature_space}, metric={metric})")
+    ax.set_title(f"UMAP ({feature_space}, metric={metric}, scale={scale})")
     ax.set_xlabel("UMAP-1")
     ax.set_ylabel("UMAP-2")
     ax.set_box_aspect(1)
@@ -1533,6 +1537,7 @@ def plot_tsne(
     meta_df,
     *,
     metric: str = "euclidean",
+    scale: bool = True,
     perplexity: float = 30.0,
     random_state: int = 0,
     feature_space: str = "",
@@ -1546,13 +1551,14 @@ def plot_tsne(
 ) -> tuple[np.ndarray, plt.Axes]:
     """t-SNE embedding + scatter plot. Pass ax to embed in an existing figure.
     save: path to save figure (e.g. "tsne.svg"). Only works when ax is None.
+    scale: if True (default), z-score feature columns before t-SNE.
     """
     if TSNE is None:
         raise ImportError("scikit-learn is required for plot_tsne")
 
     apply_plot_style()
 
-    xs = StandardScaler().fit_transform(x)
+    xs = StandardScaler().fit_transform(x) if scale else x
     embedding = TSNE(
         n_components=2, metric=metric, random_state=random_state,
         init="pca", perplexity=perplexity, learning_rate="auto", n_jobs=-1, verbose=0,
@@ -1574,7 +1580,7 @@ def plot_tsne(
                     levels=10, thresh=0.05, fill=True, alpha=0.3, ax=ax, legend=False)
 
     ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
-    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, perplexity={perplexity})")
+    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, scale={scale}, perplexity={perplexity})")
     ax.set_xlabel("t-SNE-1")
     ax.set_ylabel("t-SNE-2")
     ax.set_box_aspect(1)
@@ -1594,6 +1600,7 @@ def plot_tsne_dark(
     meta_df,
     *,
     metric: str = "euclidean",
+    scale: bool = True,
     perplexity: float = 30.0,
     random_state: int = 0,
     feature_space: str = "",
@@ -1612,7 +1619,7 @@ def plot_tsne_dark(
 
     apply_plot_style()
 
-    xs = StandardScaler().fit_transform(x)
+    xs = StandardScaler().fit_transform(x) if scale else x
     embedding = TSNE(
         n_components=2, metric=metric, random_state=random_state,
         init="pca", perplexity=perplexity, learning_rate="auto", n_jobs=-1, verbose=0,
@@ -1634,7 +1641,7 @@ def plot_tsne_dark(
                     levels=10, thresh=0.05, fill=True, alpha=0.5, ax=ax, legend=False)
 
     ax.legend(title=hue, loc="upper left", bbox_to_anchor=(1.02, 1), frameon=True)
-    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, perplexity={perplexity})")
+    ax.set_title(f"t-SNE ({feature_space}, metric={metric}, scale={scale}, perplexity={perplexity})")
     ax.set_xlabel("t-SNE-1")
     ax.set_ylabel("t-SNE-2")
     ax.set_box_aspect(1)
