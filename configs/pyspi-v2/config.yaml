@@ -441,15 +441,15 @@
     configs:
 
   # Information-geometric conditional independence
-  InformationGeometricConditionalIndependence:
-    labels:
-      - directed
-      - nonlinear
-      - unsigned
-      - bivariate
-      - contemporaneous
-    dependencies:
-    configs:
+  # InformationGeometricConditionalIndependence:
+  #   labels:
+  #     - directed
+  #     - nonlinear
+  #     - unsigned
+  #     - bivariate
+  #     - contemporaneous
+  #   dependencies:
+  #   configs:
 
   # Convergent-cross mapping
   ConvergentCrossMapping:

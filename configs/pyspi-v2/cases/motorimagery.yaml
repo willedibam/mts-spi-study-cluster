@@ -85,15 +85,15 @@
     dependencies:
     configs:
 
-  InformationGeometricConditionalIndependence:
-    labels:
-      - directed
-      - nonlinear
-      - unsigned
-      - bivariate
-      - contemporaneous
-    dependencies:
-    configs:
+  # InformationGeometricConditionalIndependence:
+  #   labels:
+  #     - directed
+  #     - nonlinear
+  #     - unsigned
+  #     - bivariate
+  #     - contemporaneous
+  #   dependencies:
+  #   configs:
 
 .statistics.infotheory:
   MutualInfo:
