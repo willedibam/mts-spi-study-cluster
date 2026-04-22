@@ -1,0 +1,67 @@
+#!/bin/bash
+#PBS -N bench_large_proof
+#PBS -l select=1:ncpus=8:mem=32gb
+#PBS -l walltime=12:00:00
+#PBS -j oe
+#PBS -J 1-3
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+# Plan-A "proof probe" into the large-M regime. Runs only the cheapest three
+# large-preset cells to give scaling-curve extrapolation points without
+# committing cluster hours to the full M={32,64} x T={100..3200} grid:
+#   array 1: M=32, T=100
+#   array 2: M=32, T=200
+#   array 3: M=32, T=400
+# (scaling_large preset iterates M outer, T inner -> indices 1-6 are all M=32.)
+#
+# Walltime 12h: M=32 T=100 exceeded 2h on the first run; T=200 and T=400 scale
+# roughly linearly in T on pair-count bound SPIs, so T=400 could approach 8-10h.
+# 496 pairs at M=32 means BLAS-heavy SPIs dominate; 8 ncpus keeps BLAS busy.
+#
+# If these three succeed, M=32 T=800..3200 and all M=64 cells need family-split
+# submissions (separate generator script).
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+# physics queue exports CUDA_VISIBLE_DEVICES="" on CPU-only jobs; cdt's
+# autoset_settings() calls ast.literal_eval() on it at import and dies with
+# SyntaxError. Unset so cdt falls back to the KeyError/CPU path.
+unset CUDA_VISIBLE_DEVICES
+
+NCPUS=8
+export OMP_NUM_THREADS=$NCPUS
+export OPENBLAS_NUM_THREADS=$NCPUS
+export MKL_NUM_THREADS=$NCPUS
+export NUMEXPR_NUM_THREADS=$NCPUS
+export VECLIB_MAXIMUM_THREADS=$NCPUS
+export KMP_DUPLICATE_LIB_OK=TRUE
+
+PYSPI_CONFIG=/suphys/wedi0306/pyspi-fork/pyspi/config.yaml
+OUTPUT_DIR="$PBS_O_WORKDIR/data/benchmark/large"
+mkdir -p "$OUTPUT_DIR"
+
+echo "[INFO] PBS large-proof array ${ARRAY_ID}/3 on $(hostname) at $(date)"
+python scripts/benchmark_spis.py \
+  --preset scaling_large \
+  --array-index "${ARRAY_ID}" \
+  --repeats 1 \
+  --pyspi-config "$PYSPI_CONFIG" \
+  --output "$OUTPUT_DIR/large_${ARRAY_ID}.json"
+echo "[INFO] Finished at $(date)"
