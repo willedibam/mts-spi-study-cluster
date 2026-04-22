@@ -29,6 +29,12 @@ exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 module purge
 source .venv/bin/activate
 
+# physics/l40s/h100 queues export CUDA_VISIBLE_DEVICES="" on CPU-only jobs;
+# cdt's autoset_settings() calls ast.literal_eval() on that empty string and
+# dies at import (SyntaxError: invalid syntax (<unknown>, line 0)). Unset so
+# cdt hits its KeyError/CPU fallback path. Harmless on taiji (already unset).
+unset CUDA_VISIBLE_DEVICES
+
 # One worker per task, so BLAS can use all ncpus — intentionally *not*
 # sourcing scripts/activate.sh (which pins threads to 1 for multi-worker
 # setups). Keep these in sync with ncpus above.

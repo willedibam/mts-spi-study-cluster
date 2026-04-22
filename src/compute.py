@@ -108,7 +108,7 @@ def _reconstruct_mpi(
     M: int,
     symmetrise: bool,
 ) -> np.ndarray:
-    mat = np.asarray(table[spi_name], dtype=float)
+    mat = np.array(table[spi_name], dtype=float, copy=True)
     if mat.shape != (M, M):
         raise ValueError(
             f"Expected (M,M)=({M},{M}) matrix for SPI '{spi_name}', got {mat.shape}."

@@ -37,6 +37,11 @@ exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 module purge
 source .venv/bin/activate
 
+# physics queue exports CUDA_VISIBLE_DEVICES="" on CPU-only jobs; cdt's
+# autoset_settings() calls ast.literal_eval() on it at import and dies with
+# SyntaxError. Unset so cdt falls back to the KeyError/CPU path.
+unset CUDA_VISIBLE_DEVICES
+
 NCPUS=8
 export OMP_NUM_THREADS=$NCPUS
 export OPENBLAS_NUM_THREADS=$NCPUS
