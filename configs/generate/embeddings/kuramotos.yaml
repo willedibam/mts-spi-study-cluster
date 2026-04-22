@@ -1,0 +1,129 @@
+base_output_dir: data/embeddings/kuramotos_260421/
+timestamp: false
+pyspi_config: configs/pyspi-v2/blended_sonnet_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 4
+
+defaults:
+  M_values: [5, 10, 20]
+  T_values: [500, 1000, 2000]
+  instances: 3
+
+# omega_mean sweep over the pyclustering-port splay-state regime.
+# Fixed across all five variants:
+#   K=-4, dt=0.00625, eta=0, connectivity=all-to-all, output=sin, transients=100
+# Varying only omega_mean; omega_std = omega_mean/sqrt(3) throughout so that
+# (mean, std) continue to match U(0, 2*omega_mean), the distributional form
+# of the original pyclustering seeding. Cycles-per-window at T=1000:
+#   cycles = omega_mean * dt * T / (2*pi) = omega_mean * 0.9947
+# so omega_mean is ~= cycles at T=1000.
+
+mts_classes:
+  # --- Kuramoto-pyc (original pyclustering port, near-frozen) ---
+  # Port of a collaborator's pyclustering.sync_network config:
+  #   sync_network(M, weight=-4, frequency=0.05, type_conn=ALL_TO_ALL)
+  #   np.sin(output)
+  # with steps = 100 + T and time = 10*T/1500.
+  #
+  # Convention translation:
+  #   - Pyclustering ODE: dθ_i/dt = ω_i + (K/N)·Σ_j sin(θ_j - θ_i)
+  #   - Our ODE:          dθ_i/dt = ω_i + (K/deg_i)·Σ_j A_ij·sin(θ_j - θ_i)
+  #     For all-to-all deg = N-1, so per-pair coupling differs by (N-1)/N
+  #     (~5-20% for M in {5,10,20}). K=-4 is a faithful port at this tolerance.
+  #   - Their `frequency=0.05` seeds ω_i ~ U(0, 0.05); our generator samples
+  #     ω_i ~ N(omega_mean, omega_std), so we match moments:
+  #       mean(U(0, 0.05)) = 0.025
+  #       std (U(0, 0.05)) = 0.05/sqrt(12) = 0.025/sqrt(3) ≈ 0.01443
+  #   - Their dt = time/steps = (10*T/1500)/(100+T) ≈ 0.00625 for T=1500.
+  #
+  # Dynamics: homogeneous-ish slow ω + strong repulsive all-to-all coupling
+  # + no stochastic noise -> deterministic anti-phase splay/cluster states
+  # seeded by random initial phases. At omega_mean=0.025 the phase advance
+  # per T=1000 window is ~0.025 cycles, so the splay appears near-frozen
+  # in the carpet plot.
+  - name: "kuramoto-pyc"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 0.025
+      omega_std: 0.01443        # 0.025/sqrt(3)
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto-pyc-slow (same splay, ~0.3 cycles per T=1000) ---
+  # Sub-cycle phase advance: the splay-state structure is visible as a
+  # slow phase drift across the window rather than full oscillation.
+  - name: "kuramoto-pyc-slow"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 0.3
+      omega_std: 0.17321        # 0.3/sqrt(3)
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto-pyc-med (same splay, ~1 cycle per T=1000) ---
+  # One full cycle per window: each row traces roughly a single sine wave,
+  # with anti-phase offsets between rows set by the splay state.
+  - name: "kuramoto-pyc-med"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 1.0
+      omega_std: 0.57735        # 1.0/sqrt(3)
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto-pyc-fast (same splay, ~3 cycles per T=1000) ---
+  # Splay resolves as explicit multi-cycle oscillation with clear
+  # anti-phase banding across the M channels.
+  - name: "kuramoto-pyc-fast"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 3.0
+      omega_std: 1.73205        # 3.0/sqrt(3)
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto-pyc-fastest (same splay, ~10 cycles per T=1000) ---
+  # High phase advance per window; splay banding is dense. omega_std scales
+  # up with omega_mean (relative spread held constant) so heterogeneity
+  # now dominates over splay locking at longer times -- expect partial
+  # decoherence at T=2000.
+  - name: "kuramoto-pyc-fastest"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 10.0
+      omega_std: 5.77350        # 10.0/sqrt(3)
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
