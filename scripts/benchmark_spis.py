@@ -27,9 +27,14 @@ interrupt-safe. Use --resume to skip combos already computed at the same
 
 Output schema:
     {
+        "mts_class": "var1",
+        "mts_class_labels": ["var", "linear", "ring-symmetric"],
+        "generator": "varma",
+        "generator_params": {...},
         "pyspi_config": "...",
         "family_filter": null,
         "n_repeats": 3,
+        "seed": 42,
         "environment": {
             "pyspi_git_sha": "...", "pyspi_version": "...",
             "numpy_version": "...", "python_version": "...",
@@ -38,13 +43,17 @@ Output schema:
             "dep_fingerprint": "sha256:..."  # hash of dep_versions
         },
         "grid": {"M_values": [...], "T_values": [...], "points": [[M,T], ...] | null},
-        "spi_families": {spi_name: family, ...},
+        "spi_metadata": {
+            spi_name: {"family": ..., "module": ..., "class_name": ...,
+                        "directed": bool, "labels": [...]},
+            ...
+        },
         "results": [
             {
-                "M": 3, "T": 100, "n_repeats": 3,
+                "mts_class": "var1", "M": 3, "T": 100, "n_repeats": 3,
                 "total_seconds": {"mean": ..., "std": ..., "values": [...]},
                 "peak_rss_mb_before": ..., "peak_rss_mb_after": ...,
-                "n_spis": 120,
+                "n_spis": 120, "n_spis_failed": 0, "failed_spis": [],
                 "timings": {
                     "SPI_name": {"mean": ..., "std": ..., "values": [...]},
                     ...
@@ -78,14 +87,15 @@ import numpy as np
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.generators.linear import generate_varma
+from src.generators.registry import generate_series
 from src.compute import run_pyspi
 
 
 DEFAULT_M = [3, 5, 10, 16, 20, 32, 64]
 DEFAULT_T = [100, 500, 1000, 2000, 5000]
-DEFAULT_OUTPUT = PROJECT_ROOT / "data" / "benchmark" / "timings.json"
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data" / "benchmark"
 DEFAULT_REPEATS = 3
+DEFAULT_MTS_CLASS = "var1"
 
 PRESETS = {
     "headline": {
@@ -94,6 +104,49 @@ PRESETS = {
     "scaling": {
         "M": [2, 4, 8, 16, 32, 64],
         "T": [100, 200, 400, 800, 1600, 3200],
+    },
+}
+
+# MTS-class specs. Each entry pins a stable (name -> generator registry key +
+# base_params + dataset-level labels). Keeping these in code rather than YAML so
+# a benchmark run is self-contained: the JSON payload records exactly what was
+# generated and how.
+MTS_CLASS_SPECS = {
+    "var1": {
+        "generator": "varma",
+        "labels": ["var", "linear", "ring-symmetric"],
+        "base_params": {
+            "phi": 0.8,
+            "coupling": 0.4,
+            "ma_phi": 0.0,
+            "ma_coupling": 0.0,
+            "noise_std": 0.1,
+            "topology": "ring-symmetric",
+            "transients": 100,
+            "zscore": True,
+        },
+    },
+    "kuramoto": {
+        "generator": "kuramoto",
+        "labels": ["kuramoto", "nonlinear", "oscillator", "all-to-all", "ODE"],
+        "base_params": {
+            "K": -4.0,
+            "dt": 0.00625,
+            "omega_mean": 3.0,
+            "omega_std": 1.73205,  # 3.0 / sqrt(3)
+            "eta": 0.0,
+            "output": "sin",
+            "connectivity": "all-to-all",
+            "transients": 100,
+            "zscore": True,
+        },
+    },
+    "gaussian_noise": {
+        "generator": "gaussian_noise",
+        "labels": ["noise", None, "gaussian"],
+        "base_params": {
+            "zscore": True,
+        },
     },
 }
 
@@ -122,6 +175,9 @@ def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--pyspi-config", type=str, default="configs/pyspi-v2/blended_config.yaml",
                     help="PySPI config YAML to benchmark.")
+    p.add_argument("--mts-class", type=str, default=DEFAULT_MTS_CLASS,
+                    choices=list(MTS_CLASS_SPECS),
+                    help="MTS dataset class to benchmark against.")
     p.add_argument("--preset", type=str, default=None, choices=list(PRESETS),
                     help="Grid preset; overrides --M/--T. 'headline' uses explicit (M,T) points.")
     p.add_argument("--M", type=int, nargs="+", default=DEFAULT_M,
@@ -134,7 +190,7 @@ def parse_args(argv=None):
                     choices=list(FAMILY_SECTIONS.keys()),
                     help="Only benchmark SPIs from this family.")
     p.add_argument("--output", type=str, default=None,
-                    help="Output JSON path (default: data/benchmark/timings.json).")
+                    help="Output JSON path (default: data/benchmark/timings_<class>_<config>.json).")
     p.add_argument("--resume", action="store_true",
                     help="Skip combos already computed at the same n_repeats.")
     p.add_argument("--seed", type=int, default=42, help="RNG seed for data generation.")
@@ -176,17 +232,31 @@ def _resolve_pyspi_config(config_str: str, family: str | None) -> Path:
     return tmp_path
 
 
-def _generate_var1(M: int, T: int, seed: int) -> np.ndarray:
-    """Generate a VAR(1) process for benchmarking."""
-    return generate_varma(
-        M=M, T=T,
-        phi=0.6, coupling=0.3,
-        ma_phi=0.0, ma_coupling=0.0,
-        noise_std=0.2, transients=100,
-        topology="ring-symmetric",
-        rng=np.random.default_rng(seed),
-        zscore=True,
+def _generate_data(mts_class: str, M: int, T: int, seed: int) -> np.ndarray:
+    """Dispatch to the configured generator for ``mts_class`` with fixed params."""
+    spec = MTS_CLASS_SPECS[mts_class]
+    return generate_series(
+        spec["generator"], seed=seed, M=M, T=T, **spec["base_params"]
     )
+
+
+def _count_failed_spis(matrices: dict) -> tuple[int, list[str]]:
+    """An SPI is considered failed if every off-diagonal cell is NaN.
+
+    pyspi sets the whole column to NaN on exception (calc.table[spi] = nan),
+    which reconstructs into an all-NaN matrix; a successful SPI has NaN
+    diagonal only.
+    """
+    failed = []
+    for name, m in matrices.items():
+        if m.ndim != 2 or m.shape[0] != m.shape[1] or m.shape[0] < 2:
+            continue
+        off = m[~np.eye(m.shape[0], dtype=bool)]
+        if off.size == 0:
+            continue
+        if np.all(np.isnan(off)):
+            failed.append(name)
+    return len(failed), sorted(failed)
 
 
 def _peak_rss_mb() -> float:
@@ -278,16 +348,23 @@ def _summarise(values: list[float]) -> dict:
     }
 
 
-def _run_one_combo(M: int, T: int, seed: int, pyspi_config: Path, repeats: int):
-    """Run a single (M, T) combo ``repeats`` times. Returns (entry_dict, spi_families_or_None)."""
+def _run_one_combo(mts_class: str, M: int, T: int, seed: int, pyspi_config: Path, repeats: int):
+    """Run a single (M, T) combo ``repeats`` times. Returns (entry_dict, spi_metadata_or_None).
+
+    Generator time is explicitly excluded from the timed region: ``t0`` starts
+    after ``_generate_data`` returns. Per-SPI timings come from ``calc.timings``
+    (perf_counter around each ``multivariate`` call in pyspi).
+    """
     rss_before = _peak_rss_mb()
     totals: list[float] = []
     per_spi: dict[str, list[float]] = {}
-    spi_families = None
+    spi_metadata = None
+    last_failed: list[str] = []
+    last_n_failed = 0
     last_error = None
 
     for rep in range(repeats):
-        data = _generate_var1(M, T, seed).astype(np.float64, copy=False)
+        data = _generate_data(mts_class, M, T, seed).astype(np.float64, copy=False)
         t0 = time.perf_counter()
         try:
             result = run_pyspi(
@@ -300,8 +377,18 @@ def _run_one_combo(M: int, T: int, seed: int, pyspi_config: Path, repeats: int):
             timings = result.timings or {}
             for k, v in timings.items():
                 per_spi.setdefault(k, []).append(float(v))
-            if spi_families is None and result.metadata:
-                spi_families = {m.name: m.family for m in result.metadata}
+            if spi_metadata is None and result.metadata:
+                spi_metadata = {
+                    m.name: {
+                        "family": m.family,
+                        "module": m.module,
+                        "class_name": m.class_name,
+                        "directed": bool(m.directed),
+                        "labels": list(m.labels),
+                    }
+                    for m in result.metadata
+                }
+            last_n_failed, last_failed = _count_failed_spis(result.matrices)
         except Exception as exc:
             totals.append(time.perf_counter() - t0)
             last_error = str(exc)
@@ -311,36 +398,46 @@ def _run_one_combo(M: int, T: int, seed: int, pyspi_config: Path, repeats: int):
 
     if last_error is not None:
         entry = {
+            "mts_class": mts_class,
             "M": M, "T": T, "n_repeats": len(totals),
             "total_seconds": _summarise(totals) if totals else None,
-            "n_spis": 0, "timings": {},
+            "n_spis": 0, "n_spis_failed": 0, "failed_spis": [],
+            "timings": {},
             "peak_rss_mb_before": round(rss_before, 2),
             "peak_rss_mb_after": round(rss_after, 2),
             "error": last_error,
         }
         return entry, None
 
-    # Only keep SPIs that were timed on every repeat; if any repeat dropped
-    # one, its summary would be on a smaller sample — flag by recording
-    # the actual count.
     timings_out = {k: _summarise(v) for k, v in per_spi.items()}
     entry = {
+        "mts_class": mts_class,
         "M": M, "T": T, "n_repeats": repeats,
         "total_seconds": _summarise(totals),
         "n_spis": len(timings_out),
+        "n_spis_failed": last_n_failed,
+        "failed_spis": last_failed,
         "timings": timings_out,
         "peak_rss_mb_before": round(rss_before, 2),
         "peak_rss_mb_after": round(rss_after, 2),
     }
-    return entry, spi_families
+    return entry, spi_metadata
+
+
+def _default_output_path(pyspi_config: str, mts_class: str, family: str | None) -> Path:
+    """Derive a unique output path from config + mts-class + family."""
+    cfg_stem = Path(pyspi_config).stem.replace("_config", "")
+    suffix = f"_{family}" if family else ""
+    return DEFAULT_OUTPUT_DIR / f"timings_{mts_class}_{cfg_stem}{suffix}.json"
 
 
 def main(argv=None):
     args = parse_args(argv)
 
-    output_path = Path(args.output) if args.output else DEFAULT_OUTPUT
-    if args.family and not args.output:
-        output_path = output_path.with_name(f"timings_{args.family}.json")
+    if args.output:
+        output_path = Path(args.output)
+    else:
+        output_path = _default_output_path(args.pyspi_config, args.mts_class, args.family)
 
     pyspi_config = _resolve_pyspi_config(args.pyspi_config, args.family)
     M_values, T_values, explicit_points = _resolve_grid(args)
@@ -350,21 +447,37 @@ def main(argv=None):
     else:
         combos = [(M, T) for M in M_values for T in T_values]
 
+    spec = MTS_CLASS_SPECS[args.mts_class]
+
     existing = _load_existing(output_path) if args.resume else None
     completed = _completed_at_n_repeats(existing, args.repeats)
 
     if existing is not None:
+        # Resume guard: the existing file must be for the same mts_class.
+        prev_class = existing.get("mts_class")
+        if prev_class is not None and prev_class != args.mts_class:
+            raise SystemExit(
+                f"--resume: existing file {output_path} was generated for "
+                f"mts_class={prev_class!r}, refusing to mix with {args.mts_class!r}."
+            )
         output_data = existing
-        # Always refresh environment + n_repeats on a resume: old runs may have
-        # been done against a different pyspi sha. We keep the old per-entry
-        # rows (they include their own n_repeats).
         output_data["environment"] = _build_environment(args.repeats)
         output_data["n_repeats"] = args.repeats
+        output_data.setdefault("mts_class", args.mts_class)
+        output_data.setdefault("mts_class_labels", spec["labels"])
+        output_data.setdefault("generator", spec["generator"])
+        output_data.setdefault("generator_params", spec["base_params"])
+        output_data.setdefault("seed", args.seed)
     else:
         output_data = {
+            "mts_class": args.mts_class,
+            "mts_class_labels": spec["labels"],
+            "generator": spec["generator"],
+            "generator_params": spec["base_params"],
             "pyspi_config": args.pyspi_config,
             "family_filter": args.family,
             "n_repeats": args.repeats,
+            "seed": args.seed,
             "environment": _build_environment(args.repeats),
             "grid": {
                 "M_values": M_values, "T_values": T_values,
@@ -379,12 +492,12 @@ def main(argv=None):
     for i, (M, T) in enumerate(combos, 1):
         if (M, T) in completed:
             skipped += 1
-            print(f"[{i}/{total}] M={M}, T={T} — skipped (already have n_repeats>={args.repeats})")
+            print(f"[{i}/{total}] {args.mts_class} M={M}, T={T} — skipped (already have n_repeats>={args.repeats})")
             continue
 
-        print(f"[{i}/{total}] M={M}, T={T} x {args.repeats} repeats ...", flush=True)
+        print(f"[{i}/{total}] {args.mts_class} M={M}, T={T} x {args.repeats} repeats ...", flush=True)
         t0 = time.perf_counter()
-        entry, spi_families = _run_one_combo(M, T, args.seed, pyspi_config, args.repeats)
+        entry, spi_metadata = _run_one_combo(args.mts_class, M, T, args.seed, pyspi_config, args.repeats)
         elapsed = time.perf_counter() - t0
 
         if "error" in entry:
@@ -393,12 +506,12 @@ def main(argv=None):
             tot = entry["total_seconds"]
             print(f"  done in {elapsed:.1f}s wall "
                   f"(per-run mean {tot['mean']:.1f}s ± {tot['std']:.2f}s, "
-                  f"{entry['n_spis']} SPIs, peak RSS {entry['peak_rss_mb_after']:.0f} MB)")
+                  f"{entry['n_spis']} SPIs, {entry['n_spis_failed']} failed, "
+                  f"peak RSS {entry['peak_rss_mb_after']:.0f} MB)")
 
-        if spi_families and "spi_families" not in output_data:
-            output_data["spi_families"] = spi_families
+        if spi_metadata and "spi_metadata" not in output_data:
+            output_data["spi_metadata"] = spi_metadata
 
-        # Replace any prior row for this (M,T) — the new one is strictly better.
         output_data["results"] = [
             r for r in output_data["results"] if (r["M"], r["T"]) != (M, T)
         ]

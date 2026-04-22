@@ -19,6 +19,8 @@ class SPIInfo:
     directed: bool
     labels: List[str]
     family: str = ""
+    module: str = ""
+    class_name: str = ""
 
 
 @dataclass
@@ -55,13 +57,18 @@ def run_pyspi(
         directed = info.get("directed", False)
         labels = info.get("labels", [])
         family = info.get("family", "")
+        module = info.get("module", "")
+        class_name = info.get("class_name", "")
         matrices[spi_name] = _reconstruct_mpi(
             calc.table,
             spi_name,
             M=M,
             symmetrise=not directed,
         )
-        metadata.append(SPIInfo(name=spi_name, directed=directed, labels=labels, family=family))
+        metadata.append(SPIInfo(
+            name=spi_name, directed=directed, labels=labels,
+            family=family, module=module, class_name=class_name,
+        ))
     spi_timings = getattr(calc, 'timings', None)
     return ComputeResult(table=calc.table.copy(), matrices=matrices, metadata=metadata, timings=spi_timings)
 
@@ -83,7 +90,10 @@ def _load_spi_info(
         labels = labels_by_origin.get((module_key, class_name), [])
         directed = any(label.lower() == "directed" for label in labels)
         family = spi.__module__.split(".")[-1]
-        info[identifier] = {"labels": labels, "directed": directed, "family": family}
+        info[identifier] = {
+            "labels": labels, "directed": directed, "family": family,
+            "module": spi.__module__, "class_name": class_name,
+        }
     return info
 
 
