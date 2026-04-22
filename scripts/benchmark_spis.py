@@ -105,6 +105,16 @@ PRESETS = {
         "M": [2, 4, 8, 16, 32, 64],
         "T": [100, 200, 400, 800, 1600, 3200],
     },
+    # Subsets of `scaling` for splitting Job 2 (small M) and Job 3 (large M)
+    # onto separate PBS submits with differently-sized per-task resources.
+    "scaling_small": {
+        "M": [2, 4, 8, 16],
+        "T": [100, 200, 400, 800, 1600, 3200],
+    },
+    "scaling_large": {
+        "M": [32, 64],
+        "T": [100, 200, 400, 800, 1600, 3200],
+    },
 }
 
 # MTS-class specs. Each entry pins a stable (name -> generator registry key +
@@ -194,6 +204,9 @@ def parse_args(argv=None):
     p.add_argument("--resume", action="store_true",
                     help="Skip combos already computed at the same n_repeats.")
     p.add_argument("--seed", type=int, default=42, help="RNG seed for data generation.")
+    p.add_argument("--array-index", type=int, default=None,
+                    help="Run only the Nth (1-indexed) (M,T) combo from the resolved grid. "
+                         "Intended for PBS arrays: pass $PBS_ARRAY_INDEX.")
     return p.parse_args(argv)
 
 
@@ -446,6 +459,14 @@ def main(argv=None):
         combos = list(explicit_points)
     else:
         combos = [(M, T) for M in M_values for T in T_values]
+
+    if args.array_index is not None:
+        if not 1 <= args.array_index <= len(combos):
+            raise SystemExit(
+                f"--array-index {args.array_index} out of range [1, {len(combos)}] "
+                f"for resolved grid ({len(combos)} combos)"
+            )
+        combos = [combos[args.array_index - 1]]
 
     spec = MTS_CLASS_SPECS[args.mts_class]
 

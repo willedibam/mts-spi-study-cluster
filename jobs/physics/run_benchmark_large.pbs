@@ -1,0 +1,59 @@
+#!/bin/bash
+#PBS -N bench_large
+#PBS -l select=1:ncpus=8:mem=32gb
+#PBS -l walltime=02:00:00
+#PBS -j oe
+#PBS -J 1-12
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+# Job 3 (large-M extension): M={32,64} x T={100,200,400,800,1600,3200} = 12
+# cells, one PBS task per cell, no repeats. Each task gets 8 ncpus / 32gb
+# because M=64 has 2016 pairs and BLAS-heavy SPIs benefit from more threads.
+# Per-user 48 ncpus cap in physics -> 6 concurrent tasks; 12 cells ~ 2 waves.
+#
+# Known risk: M=64 at T=1600/3200 may exceed 2h walltime on config.yaml
+# superset (dominated by DTW, soft-DTW, kraskov TE, spectral Granger).
+# If so, re-submit those heavy cells with --family split across 7 sub-tasks:
+#   python scripts/benchmark_spis.py --M 64 --T 3200 --family infotheory ...
+# Array cap here is 12 initially; family-split variant would be -J 1-14
+# (2 heavy T values x 7 families) on a separate submit.
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+NCPUS=8
+export OMP_NUM_THREADS=$NCPUS
+export OPENBLAS_NUM_THREADS=$NCPUS
+export MKL_NUM_THREADS=$NCPUS
+export NUMEXPR_NUM_THREADS=$NCPUS
+export VECLIB_MAXIMUM_THREADS=$NCPUS
+export KMP_DUPLICATE_LIB_OK=TRUE
+
+PYSPI_CONFIG=/suphys/wedi0306/pyspi-fork/pyspi/config.yaml
+OUTPUT_DIR="$PBS_O_WORKDIR/data/benchmark/large"
+mkdir -p "$OUTPUT_DIR"
+
+echo "[INFO] PBS array ${ARRAY_ID}/12 on $(hostname) at $(date)"
+python scripts/benchmark_spis.py \
+  --preset scaling_large \
+  --array-index "${ARRAY_ID}" \
+  --repeats 1 \
+  --pyspi-config "$PYSPI_CONFIG" \
+  --output "$OUTPUT_DIR/large_${ARRAY_ID}.json"
+echo "[INFO] Finished at $(date)"
