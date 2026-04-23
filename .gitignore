@@ -7,17 +7,18 @@ __pycache__/
 .build/
 dist/
 
-# venv
-.venv/
-.env/
-.venv-*/
+# venv (no trailing slash — also matches symlinks-to-directories, which
+# `git clean -fd` otherwise treats as tracked-candidate files and removes)
+.venv
+.env
+.venv-*
 
 # notebooks
 .ipynb_checkpoints/
 
-# results/cache/data
+# results/cache/data (no trailing slash on `data` — it's a symlink on Gadi)
 cache/
-data/
+data
 results/
 features/
 tar/
