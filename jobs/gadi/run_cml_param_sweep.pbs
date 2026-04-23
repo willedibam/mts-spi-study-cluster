@@ -1,0 +1,79 @@
+#!/bin/bash
+#PBS -N cml_psweep
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=10:00:00
+#PBS -l ncpus=8
+#PBS -l mem=16GB
+#PBS -l jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -r y
+#PBS -j oe
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+# Gadi enforces max_array_size=10. Each array subjob processes CHUNK_SIZE
+# contiguous datasets via a loop. Submit via jobs/gadi/submit_cml_param_sweep.sh,
+# which iterates batches and sets BATCH_OFFSET + CHUNK_SIZE per qsub.
+#
+# Dataset index range per subjob:
+#   start = BATCH_OFFSET + (PBS_ARRAY_INDEX - 1) * CHUNK_SIZE + 1
+#   end   = BATCH_OFFSET +  PBS_ARRAY_INDEX      * CHUNK_SIZE
+# --skip-existing protects against overlap at the tail of the final batch.
+
+set -euo pipefail
+
+CHUNK_SIZE="${CHUNK_SIZE:-20}"
+BATCH_OFFSET="${BATCH_OFFSET:-0}"
+TOTAL_DATASETS="${TOTAL_DATASETS:-2440}"
+
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+START_IDX=$(( BATCH_OFFSET + (ARRAY_ID - 1) * CHUNK_SIZE + 1 ))
+END_IDX=$(( BATCH_OFFSET + ARRAY_ID * CHUNK_SIZE ))
+if [[ $END_IDX -gt $TOTAL_DATASETS ]]; then
+    END_IDX=$TOTAL_DATASETS
+fi
+
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+JOB_LABEL="${PBS_JOBNAME}_o${BATCH_OFFSET}_a${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+module load python3/3.12.1
+
+export UV_CACHE_DIR=/scratch/ql44/we2614/uv-cache
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+export PYSPI_N_JOBS=8
+
+# cdt (imported transitively by pyspi.statistics.causal) does
+# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time.
+# Empty-string value crashes literal_eval; unset forces cdt's fallback.
+unset CUDA_VISIBLE_DEVICES
+
+echo "[INFO] offset=$BATCH_OFFSET array=$ARRAY_ID datasets=${START_IDX}..${END_IDX} host=$(hostname) start=$(date)"
+
+if [[ $START_IDX -gt $TOTAL_DATASETS ]]; then
+    echo "[INFO] start index $START_IDX > total $TOTAL_DATASETS — nothing to do."
+    exit 0
+fi
+
+for idx in $(seq "$START_IDX" "$END_IDX"); do
+    echo "[INFO] dataset $idx / $TOTAL_DATASETS"
+    python -m src.run_experiments \
+        --job-index "$idx" \
+        --skip-existing \
+        --experiment-config configs/generate/embeddings/cml-param-sweep.yaml \
+        --threads 8 \
+        --parquet
+done
+
+echo "[INFO] finished at $(date)"

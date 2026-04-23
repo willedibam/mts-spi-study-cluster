@@ -1,0 +1,48 @@
+#!/bin/bash
+#PBS -N cml_asweep
+#PBS -l select=1:ncpus=4:mem=8gb
+#PBS -l walltime=01:00:00
+#PBS -j oe
+#PBS -J 1-123
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+JOB_LABEL="${PBS_JOBNAME}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+export PYSPI_N_JOBS=4
+
+# cdt (imported transitively by pyspi.statistics.causal) does
+# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time.
+# On PBS compute nodes the var is set to an empty string, which crashes
+# literal_eval with SyntaxError. Unsetting forces cdt's fallback path.
+unset CUDA_VISIBLE_DEVICES
+
+echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"
+python -m src.run_experiments \
+  --job-index "${ARRAY_ID}" \
+  --skip-existing \
+  --experiment-config configs/generate/embeddings/cml_alpha_sweep.yaml \
+  --threads 4 \
+  --parquet
+echo "[INFO] Finished at $(date)"

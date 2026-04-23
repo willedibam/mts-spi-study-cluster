@@ -14,7 +14,9 @@ def generate_cml_logistic(
     sample_every: int = 1,
     rng=None,
     zscore: bool = True,
-) -> np.ndarray:
+    init_state: np.ndarray | None = None,
+    return_final_state: bool = False,
+):
     """
     Coupled map lattice of logistic maps with diffusive ring coupling.
 
@@ -22,6 +24,12 @@ def generate_cml_logistic(
         (`observe every delta points`). sample_every=1 keeps every step.
         Increasing it decorrelates adjacent samples; useful when the fast
         chaotic timescale would swamp the slower spatial coupling signal.
+
+    init_state: optional lattice state to seed the simulation with (shape
+        (max(M, 100),)). When provided the random initialisation is skipped;
+        used to chain runs across parameter values (quasi-static sweep).
+    return_final_state: when True, return (data, final_lattice_state) so the
+        caller can feed it back as init_state for the next run.
     """
     rng = _resolve_rng(None, rng)
     M = int(M)
@@ -42,13 +50,24 @@ def generate_cml_logistic(
     offset = (lattice_M - M) // 2
     total_steps = transients + T * sample_every
     states = np.zeros((total_steps, lattice_M), dtype=float)
-    states[0] = rng.random(lattice_M)
+    if init_state is None:
+        states[0] = rng.random(lattice_M)
+    else:
+        init = np.asarray(init_state, dtype=float)
+        if init.shape != (lattice_M,):
+            raise ValueError(
+                f"init_state must have shape ({lattice_M},), got {init.shape}"
+            )
+        states[0] = init
     f = lambda x: logistic(x, alpha)
     for t in range(1, total_steps):
         states[t] = iterate_map(states[t - 1], eps, f)
     cropped = states[transients:, offset : offset + M]
     usable = cropped[::sample_every][:T]
-    return _maybe_zscore(usable, zscore=zscore)
+    result = _maybe_zscore(usable, zscore=zscore)
+    if return_final_state:
+        return result, states[-1].copy()
+    return result
 
 
 _KURAMOTO_CONN_ALIASES = {
