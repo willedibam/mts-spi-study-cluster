@@ -1,0 +1,259 @@
+# proof-benchmarked-full.yaml
+# Multi-(M,T) expansion of proof-benchmarked.yaml.
+# Same 20 classes, same benchmarked_config SPI set, but sweeps (M,T) across
+# the proof.yaml grid: M in {5,10,20} x T in {500,1000,2000}.
+#
+# Scope:
+# - 20 classes x 3 M x 3 T x 50 instances = 9000 datasets.
+# - Purpose: extend anchor space to cover cross-(M,T) generalisation,
+#   and produce per-(M,T)-matched reference clouds for future sweeps
+#   at different resolutions than the M=10/T=1000 current sweep.
+# - Output goes to a separate base_output_dir so it doesn't collide with
+#   the M=10/T=1000-only proof_benchmarked_260424 run.
+#
+# Submission guidance (Gadi whole-node, PYSPI_N_JOBS=4, parallel=12):
+# - Per-dataset wall varies ~3x across the M/T grid (M=5/T=500 is cheapest,
+#   M=20/T=2000 is ~30-60 min). Average ~10 min/dataset.
+# - CHUNK_SIZE=200, 10 subjobs/array, 5 arrays = 50 subjobs total, each
+#   subjob ~3-4 h wall. walltime=6h is adequate.
+# - Estimated total SU: ~15 KSU (of remaining ~94 KSU budget).
+# - Submit with:
+#     EXPERIMENT_CONFIG=configs/generate/embeddings/proof-benchmarked-full.yaml \
+#     TOTAL_DATASETS=9000 CHUNK_SIZE=200 \
+#       bash jobs/gadi/submit_cml_param_sweep.sh
+base_output_dir: data/embeddings/proof_benchmarked_full_260424/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 4
+
+defaults:
+  M_values: [5, 10, 20]
+  T_values: [500, 1000, 2000]
+  instances: 50
+
+mts_classes:
+  # --- VAR(1) ring-symmetric ---
+  - name: "var-ring-sym_phi-0.95"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.95
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.2"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.2
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.6"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.6
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.6_coupling-0.1"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.6
+      coupling: 0.1
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.6_coupling-0.8"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.6
+      coupling: 0.8
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto (fast-omega all-to-all) ---
+  - name: "kuramoto_omega-fast"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 3.0
+      omega_std: 1.73205
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto (slow-omega pyclustering port) ---
+  - name: "kuramoto_omega-slow"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 0.025
+      omega_std: 0.01443
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Null models ---
+  - name: "cauchy-noise"
+    labels: [noise, null, cauchy]
+    generator: "cauchy_noise"
+    base_params:
+      zscore: false
+
+  - name: "gaussian-noise"
+    labels: [noise, null, gaussian]
+    generator: "gaussian_noise"
+    base_params:
+      zscore: true
+
+  # --- Coupled Map Lattice regimes ---
+  - name: "frozen-chaos"
+    labels: [cml, frozen-chaos]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.45
+      eps: 0.2
+      transients: 2000
+      sample_every: 1
+      zscore: true
+
+  - name: "pattern-selection"
+    labels: [cml, pattern-selection]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.71
+      eps: 0.4
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "brownian-defect"
+    labels: [cml, brownian-defect]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.85
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "defect-turbulence"
+    labels: [cml, defect-turbulence]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "sti-i"
+    labels: [cml, sti, directed-percolation]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: true
+      delta: [3, 6, 12]
+
+  - name: "sti-ii"
+    labels: [cml, sti, on-off-intermittency]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.75
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "fdstc"
+    labels: [cml, fully-developed-stc]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 2.0
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "traveling-wave"
+    labels: [cml, traveling-wave]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.47
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "chaotic-traveling-wave"
+    labels: [cml, traveling-wave, chaotic]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.69
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  - name: "traveling-wave-kaneko67"
+    labels: [cml, traveling-wave]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.67
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: true
+
+  # --- Wave equation (1D) ---
+  - name: "wave-1d-default"
+    labels: [wave, pde, 1d]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.2
+      vel_modes: 6
+      vel_decay: 2.0
+      zscore: true
