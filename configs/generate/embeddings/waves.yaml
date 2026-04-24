@@ -1,0 +1,104 @@
+# waves.yaml — wave-equation PDE preview.
+# Purpose: generate MTS heatmaps for 1D and 2D wave variants so user can
+# inspect dynamics and pick which variants to fold into proof-benchmarked
+# as anchor classes.
+#
+# Usage for preview (generates timeseries.npy + mts_heatmap.png, skips SPI):
+#   python -m src.run_experiments \
+#       --experiment-config configs/generate/embeddings/waves.yaml \
+#       --mts-only
+#
+# Notes on the generator knobs:
+# - `c` (wave speed) does NOT change the visible MTS. `dt = 0.2*dx/c` in
+#   generate_wave_1d and generate_wave_2d, so across T fixed steps the wave
+#   advances `0.2*T/M` domain-widths regardless of c. Trajectory shape is
+#   c-invariant; c only rescales physical time. Don't sweep c.
+# - wave_1d randomizes initial velocity via bandlimited Fourier. Knobs:
+#     vel_std   — amplitude of random IC velocity (0 = pure Gaussian pulse)
+#     vel_modes — # Fourier modes in IC velocity
+#     vel_decay — power-law fall-off of high-freq modes (higher = smoother)
+# - wave_2d is FULLY DETERMINISTIC: rng param is built but never used
+#   (src/generators/pde.py line ~100). All instances identical. Fine for
+#   a single-shot preview, but broken as an anchor class (zero variance).
+#   Needs random IC added before it can serve as an anchor.
+# - wave_2d requires M to be a perfect square.
+#
+# Preview: 3 instances per class, M=16 (4x4 grid for wave_2d, matches
+# proof-benchmarked's M=10 as closely as a perfect square permits).
+base_output_dir: data/embeddings/waves_260424/
+timestamp: false
+pyspi_config: configs/pyspi-v2/blended_sonnet_config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 4
+
+defaults:
+  M_values: [4,9,16]
+  T_values: [500,1000,2000]
+  instances: 3
+
+mts_classes:
+  # --- 1D wave: clean Gaussian pulse, no IC noise ---
+  - name: "wave-1d-clean"
+    labels: [wave, pde, 1d, clean]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.0
+      vel_modes: 6
+      vel_decay: 2.0
+      zscore: true
+
+  # --- 1D wave: default (moderate IC velocity noise) ---
+  - name: "wave-1d-default"
+    labels: [wave, pde, 1d]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.2
+      vel_modes: 6
+      vel_decay: 2.0
+      zscore: true
+
+  # --- 1D wave: strong IC velocity noise, moderate mode count ---
+  - name: "wave-1d-noisy"
+    labels: [wave, pde, 1d, noisy]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.5
+      vel_modes: 6
+      vel_decay: 2.0
+      zscore: true
+
+  # --- 1D wave: rich spectrum (more modes, shallower decay -> high-freq IC) ---
+  - name: "wave-1d-rich"
+    labels: [wave, pde, 1d, rich-spectrum]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.3
+      vel_modes: 12
+      vel_decay: 1.0
+      zscore: true
+
+  # --- 1D wave: single-mode initial velocity (near-sinusoidal) ---
+  - name: "wave-1d-sine"
+    labels: [wave, pde, 1d, single-mode]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.3
+      vel_modes: 1
+      vel_decay: 2.0
+      zscore: true
+
+  # --- 2D wave (deterministic, single instance is representative) ---
+  - name: "wave-2d"
+    labels: [wave, pde, 2d]
+    generator: "wave_2d"
+    base_params:
+      c: 10.0
+      zscore: true

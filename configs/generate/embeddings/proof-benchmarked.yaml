@@ -5,9 +5,10 @@
 # comparable for PCA fit + sweep projection.
 #
 # Scope:
-# - All 15 proof.yaml classes (10 CML + 5 non-CML controls).
-# - Single (M, T) = (10, 1000). 10 instances each -> 150 datasets total.
-# - kuramoto class updated to fast-omega all-to-all variant.
+# - 20 classes: 5 VAR variants + 2 Kuramoto + 2 noise + 10 CML + 1 wave-1d.
+# - Single (M, T) = (10, 1000). 50 instances each -> 1000 datasets total.
+# - kuramoto split into fast-omega (K=-4, omega=3.0) and slow-omega
+#   (K=-4, omega=0.025) variants.
 base_output_dir: data/embeddings/proof_benchmarked_260424/
 timestamp: false
 pyspi_config: configs/pyspi-v2/benchmarked_config.yaml
@@ -20,16 +21,68 @@ threads: 4
 defaults:
   M_values: [10]
   T_values: [1000]
-  instances: 10
+  instances: 50
 
 mts_classes:
   # --- VAR(1) ring-symmetric ---
-  - name: "var-ring-sym"
+  - name: "var-ring-sym_phi-0.95"
     labels: [var, linear, ring-symmetric]
     generator: "varma"
     base_params:
-      phi: 0.8
+      phi: 0.95
       coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.2"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.2
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.6"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.6
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.6_coupling-0.1"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.6
+      coupling: 0.1
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-ring-sym_phi-0.6_coupling-0.8"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.6
+      coupling: 0.8
       ma_phi: 0.0
       ma_coupling: 0.0
       noise_std: 0.1
@@ -39,7 +92,7 @@ mts_classes:
 
   # --- Kuramoto (fast-omega all-to-all, per user spec) ---
   # omega_std = 3.0 / sqrt(3) (uniform-std moment match for U(0, 2*3)).
-  - name: "kuramoto"
+  - name: "kuramoto_omega-fast"
     labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
     generator: "kuramoto"
     base_params:
@@ -54,7 +107,7 @@ mts_classes:
       zscore: true
 
   # --- Kuramoto (slow-omega pyclustering port, unchanged from proof.yaml) ---
-  - name: "kuramoto-pyc"
+  - name: "kuramoto_omega-slow"
     labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
     generator: "kuramoto"
     base_params:
@@ -181,4 +234,15 @@ mts_classes:
       eps: 0.5
       transients: 1000
       sample_every: 1
+      zscore: true
+
+  # --- Wave equation (1D, Gaussian pulse + bandlimited random IC velocity) ---
+  - name: "wave-1d-default"
+    labels: [wave, pde, 1d]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      vel_std: 0.2
+      vel_modes: 6
+      vel_decay: 2.0
       zscore: true

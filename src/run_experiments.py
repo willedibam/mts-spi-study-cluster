@@ -164,6 +164,8 @@ def main(argv: List[str] | None = None) -> None:
         _configure_threading(args.threads or spec.threads)
         data, ts_path, gen_extras = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
         if args.mts_only:
+            if args.heatmap or spec.save_heatmap:
+                save_mts_heatmap(data, ts_path.parent / "mts_heatmap.png")
             continue
 
         data = data.astype(np.float64, copy=False)
