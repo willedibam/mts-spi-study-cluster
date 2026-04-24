@@ -20,11 +20,13 @@ SUBJOBS_PER_ARRAY="${SUBJOBS_PER_ARRAY:-10}"
 TOTAL_DATASETS="${TOTAL_DATASETS:-2440}"
 PARALLEL="${PARALLEL:-12}"
 PYSPI_JOBS="${PYSPI_JOBS:-4}"
+EXPERIMENT_CONFIG="${EXPERIMENT_CONFIG:-configs/generate/embeddings/cml-param-sweep.yaml}"
 PBS_SCRIPT="${PBS_SCRIPT:-jobs/gadi/run_cml_param_sweep.pbs}"
 
 BATCH_DATASETS=$(( CHUNK_SIZE * SUBJOBS_PER_ARRAY ))
 N_BATCHES=$(( (TOTAL_DATASETS + BATCH_DATASETS - 1) / BATCH_DATASETS ))
 
+echo "[INFO] experiment_config=$EXPERIMENT_CONFIG"
 echo "[INFO] total=$TOTAL_DATASETS  chunk=$CHUNK_SIZE  subjobs/array=$SUBJOBS_PER_ARRAY"
 echo "[INFO] parallel/subjob=$PARALLEL  pyspi_jobs=$PYSPI_JOBS  -> $(( PARALLEL * PYSPI_JOBS )) cores/subjob"
 echo "[INFO] datasets/batch=$BATCH_DATASETS  n_batches=$N_BATCHES"
@@ -35,7 +37,7 @@ for (( b=0; b<N_BATCHES; b++ )); do
     echo "[INFO] submitting batch $((b+1))/$N_BATCHES (offset=$OFFSET)"
     qsub \
         -J "1-${SUBJOBS_PER_ARRAY}" \
-        -v "CHUNK_SIZE=${CHUNK_SIZE},BATCH_OFFSET=${OFFSET},TOTAL_DATASETS=${TOTAL_DATASETS},PARALLEL=${PARALLEL},PYSPI_JOBS=${PYSPI_JOBS}" \
+        -v "CHUNK_SIZE=${CHUNK_SIZE},BATCH_OFFSET=${OFFSET},TOTAL_DATASETS=${TOTAL_DATASETS},PARALLEL=${PARALLEL},PYSPI_JOBS=${PYSPI_JOBS},EXPERIMENT_CONFIG=${EXPERIMENT_CONFIG}" \
         "$PBS_SCRIPT"
 done
 

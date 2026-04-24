@@ -30,6 +30,7 @@ BATCH_OFFSET="${BATCH_OFFSET:-0}"
 TOTAL_DATASETS="${TOTAL_DATASETS:-2440}"
 PARALLEL="${PARALLEL:-12}"
 PYSPI_JOBS="${PYSPI_JOBS:-4}"
+EXPERIMENT_CONFIG="${EXPERIMENT_CONFIG:-configs/generate/embeddings/cml-param-sweep.yaml}"
 
 ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
 START_IDX=$(( BATCH_OFFSET + (ARRAY_ID - 1) * CHUNK_SIZE + 1 ))
@@ -80,7 +81,7 @@ seq "$START_IDX" "$END_IDX" | \
         python -m src.run_experiments \
             --job-index {} \
             --skip-existing \
-            --experiment-config configs/generate/embeddings/cml-param-sweep.yaml \
+            --experiment-config "$EXPERIMENT_CONFIG" \
             --threads "$PYSPI_JOBS" \
             --parquet
 
