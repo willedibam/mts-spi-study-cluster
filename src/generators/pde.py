@@ -25,16 +25,20 @@ def generate_wave_1d(
     seed: int | None = None,
     rng=None,
     zscore: bool = True,
-    vel_std: float = 0.2,
+    center_jitter: float = 0.5,
+    sigma_factor: float = 1.0 / 20.0,
+    vel_std: float = 0.0,
     vel_modes: int = 6,
     vel_decay: float = 2.0,
 ) -> np.ndarray:
     """
     Simulates the 1D Wave Equation: d^2z/dt^2 = c^2 * d^2z/du^2
 
-    Periodic BC.
-    Initial displacement: Gaussian.
-    Initial velocity: random smooth (bandlimited Fourier) if vel_std>0.
+    Periodic BC. Default IC: Gaussian pulse, sigma = M * sigma_factor (BDT default 1/20).
+
+    Per-instance variability sources:
+      - center_jitter: pulse centre ~ U(M/2 - jit*M, M/2 + jit*M), wrapped periodically.
+      - vel_std: optional bandlimited random IC velocity (off by default).
     """
     rng = _resolve_rng(seed, rng)
 
@@ -44,9 +48,15 @@ def generate_wave_1d(
 
     coords = np.arange(M, dtype=float)
     center = M / 2.0
-    sigma = M / 20.0
+    if center_jitter > 0:
+        center = (center + rng.uniform(-center_jitter * M, center_jitter * M)) % M
+    sigma = M * sigma_factor
 
-    z_prev = np.exp(-((coords - center) ** 2) / (2.0 * sigma**2))
+    # Periodic distance to centre so off-centre pulses don't create a boundary discontinuity.
+    delta = coords - center
+    delta = (delta + M / 2.0) % M - M / 2.0
+
+    z_prev = np.exp(-(delta ** 2) / (2.0 * sigma ** 2))
     z_prev = z_prev / np.max(np.abs(z_prev))
 
     v0 = np.zeros(M, dtype=float)

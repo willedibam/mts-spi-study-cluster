@@ -1,0 +1,86 @@
+#!/bin/bash
+#PBS -N pipeline
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=06:00:00
+#PBS -l ncpus=48
+#PBS -l mem=190GB
+#PBS -l jobfs=20GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -r y
+#PBS -j oe
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+# Generic whole-node pipeline runner. Works for any experiment-config yaml.
+# Submit via jobs/gadi/submit_pipeline.sh (handles Gadi's max_array_size=10
+# cap by chunking).
+#
+# Required env from -v:
+#   EXPERIMENT_CONFIG  path to configs/generate/.../*.yaml
+#   TOTAL_DATASETS     total dataset count for this config (M*T*classes*instances)
+# Optional env (with defaults):
+#   CHUNK_SIZE=200          datasets per subjob (sequential within an array slot)
+#   BATCH_OFFSET=0          dataset offset across batch wrappers
+#   PARALLEL=12             concurrent dataset workers per subjob
+#   PYSPI_JOBS=4            pyspi joblib workers per dataset
+#                           (PARALLEL * PYSPI_JOBS must equal ncpus, default 48)
+
+set -euo pipefail
+
+: "${EXPERIMENT_CONFIG:?EXPERIMENT_CONFIG must be set (e.g. configs/generate/embeddings/foo.yaml)}"
+: "${TOTAL_DATASETS:?TOTAL_DATASETS must be set}"
+CHUNK_SIZE="${CHUNK_SIZE:-200}"
+BATCH_OFFSET="${BATCH_OFFSET:-0}"
+PARALLEL="${PARALLEL:-12}"
+PYSPI_JOBS="${PYSPI_JOBS:-4}"
+
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+START_IDX=$(( BATCH_OFFSET + (ARRAY_ID - 1) * CHUNK_SIZE + 1 ))
+END_IDX=$(( BATCH_OFFSET + ARRAY_ID * CHUNK_SIZE ))
+if [[ $END_IDX -gt $TOTAL_DATASETS ]]; then
+    END_IDX=$TOTAL_DATASETS
+fi
+
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+JOB_LABEL="${PBS_JOBNAME}_o${BATCH_OFFSET}_a${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+module load python3/3.12.1
+
+export UV_CACHE_DIR=/scratch/ql44/we2614/uv-cache
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+export PYSPI_N_JOBS="$PYSPI_JOBS"
+
+# cdt (transitive pyspi import) does ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]).
+unset CUDA_VISIBLE_DEVICES
+
+echo "[INFO] config=$EXPERIMENT_CONFIG  offset=$BATCH_OFFSET  array=$ARRAY_ID"
+echo "[INFO] datasets=${START_IDX}..${END_IDX}  parallel=$PARALLEL  pyspi_jobs=$PYSPI_JOBS"
+echo "[INFO] host=$(hostname)  start=$(date)"
+
+if [[ $START_IDX -gt $TOTAL_DATASETS ]]; then
+    echo "[INFO] start index $START_IDX > total $TOTAL_DATASETS — nothing to do."
+    exit 0
+fi
+
+seq "$START_IDX" "$END_IDX" | \
+    xargs -n 1 -P "$PARALLEL" -I {} \
+        python -m src.run_experiments \
+            --job-index {} \
+            --skip-existing \
+            --experiment-config "$EXPERIMENT_CONFIG" \
+            --threads "$PYSPI_JOBS" \
+            --parquet
+
+echo "[INFO] finished at $(date)"
