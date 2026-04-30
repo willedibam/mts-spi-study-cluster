@@ -30,7 +30,7 @@ mts_classes:
       eps: 0.3
       transients: 2000
       sample_every: 1
-      zscore: true
+      zscore: false
     include_base_variant: false
     variants:
       - { name: "a1p40", params: { alpha: 1.40 } }
@@ -102,7 +102,7 @@ mts_classes:
       alpha: 1.75
       transients: 2000
       sample_every: 1
-      zscore: true
+      zscore: false
     include_base_variant: false
     variants:
       - { name: "e0p00", params: { eps: 0.00 } }

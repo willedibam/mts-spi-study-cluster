@@ -47,7 +47,7 @@ mts_classes:
       eps: 0.00115
       transients: 500
       sample_every: 12
-      zscore: true
+      zscore: false
 
   - name: "Kuramoto-Ring"
     labels: ["nonlinear", "oscillator", "kuramoto", "undirected"]

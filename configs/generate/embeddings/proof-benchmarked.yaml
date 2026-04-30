@@ -143,7 +143,7 @@ mts_classes:
       eps: 0.2
       transients: 2000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "pattern-selection"
     labels: [cml, pattern-selection]
@@ -153,7 +153,7 @@ mts_classes:
       eps: 0.4
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "brownian-defect"
     labels: [cml, brownian-defect]
@@ -163,7 +163,7 @@ mts_classes:
       eps: 0.1
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "defect-turbulence"
     labels: [cml, defect-turbulence]
@@ -173,7 +173,7 @@ mts_classes:
       eps: 0.1
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "sti-i"
     labels: [cml, sti, directed-percolation]
@@ -183,7 +183,7 @@ mts_classes:
       eps: 0.00115
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
       delta: [3, 6, 12]
 
   - name: "sti-ii"
@@ -194,7 +194,7 @@ mts_classes:
       eps: 0.3
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "fdstc"
     labels: [cml, fully-developed-stc]
@@ -204,7 +204,7 @@ mts_classes:
       eps: 0.3
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "traveling-wave"
     labels: [cml, traveling-wave]
@@ -214,7 +214,7 @@ mts_classes:
       eps: 0.5
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "chaotic-traveling-wave"
     labels: [cml, traveling-wave, chaotic]
@@ -224,7 +224,7 @@ mts_classes:
       eps: 0.5
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   - name: "traveling-wave-kaneko67"
     labels: [cml, traveling-wave]
@@ -234,7 +234,7 @@ mts_classes:
       eps: 0.5
       transients: 1000
       sample_every: 1
-      zscore: true
+      zscore: false
 
   # --- Wave equation (1D, Gaussian pulse + bandlimited random IC velocity) ---
   - name: "wave-1d-default"

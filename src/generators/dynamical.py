@@ -16,6 +16,7 @@ def generate_cml_logistic(
     zscore: bool = True,
     init_state: np.ndarray | None = None,
     return_final_state: bool = False,
+    crop_offset: int | None = None,
 ):
     """
     Coupled map lattice of logistic maps with diffusive ring coupling.
@@ -30,6 +31,12 @@ def generate_cml_logistic(
         used to chain runs across parameter values (quasi-static sweep).
     return_final_state: when True, return (data, final_lattice_state) so the
         caller can feed it back as init_state for the next run.
+
+    crop_offset: starting site of the contiguous M-window cropped from the
+        max(M, 100)-site simulation lattice. None (default) → centred crop
+        (lattice_M - M) // 2; otherwise the integer offset must satisfy
+        0 <= crop_offset <= lattice_M - M. Vary across runs to expose
+        window-position sensitivity diagnostically.
     """
     rng = _resolve_rng(None, rng)
     M = int(M)
@@ -47,7 +54,15 @@ def generate_cml_logistic(
         return (1 - epsilon) * fx + (epsilon / 2.0) * (left + right)
 
     lattice_M = max(M, 100)
-    offset = (lattice_M - M) // 2
+    if crop_offset is None:
+        offset = (lattice_M - M) // 2
+    else:
+        offset = int(crop_offset)
+        if not (0 <= offset <= lattice_M - M):
+            raise ValueError(
+                f"crop_offset {offset} out of range for lattice_M={lattice_M}, M={M} "
+                f"(valid: 0..{lattice_M - M})."
+            )
     total_steps = transients + T * sample_every
     states = np.zeros((total_steps, lattice_M), dtype=float)
     if init_state is None:
