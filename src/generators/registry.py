@@ -39,7 +39,7 @@ from .chat import (
     generate_var_chat_c,
     generate_var_chat_d,
 )
-from .pde import generate_wave_1d, generate_wave_2d
+from .pde import generate_wave_1d, generate_wave_1d_pulse, generate_wave_2d
 from .topology import (
     generate_topology_chain,
     generate_topology_clustered,
@@ -73,6 +73,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "cauchy_noise": generate_cauchy_noise,
     "exponential_noise": generate_exponential_noise,
     "wave_1d": generate_wave_1d,
+    "wave_1d_pulse": generate_wave_1d_pulse,
     "wave_2d": generate_wave_2d,
     "case_i": generate_case_i,
     "case_ii": generate_case_ii,

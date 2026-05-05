@@ -247,13 +247,13 @@ mts_classes:
       sample_every: 1
       zscore: false
 
-  # --- Wave equation (1D) ---
+  # --- Wave equation (1D, random multi-mode Fourier IC) ---
   - name: "wave-1d-default"
     labels: [wave, pde, 1d]
     generator: "wave_1d"
     base_params:
       c: 10.0
-      vel_std: 0.2
-      vel_modes: 6
-      vel_decay: 2.0
+      n_modes: 4
+      ic_decay: 1.5
+      noise_std: 0.0
       zscore: true

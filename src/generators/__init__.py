@@ -38,7 +38,7 @@ from .chat import (
     generate_var_chat_c,
     generate_var_chat_d,
 )
-from .pde import generate_wave_1d, generate_wave_2d
+from .pde import generate_wave_1d, generate_wave_1d_pulse, generate_wave_2d
 from .topology import (
     generate_topology_chain,
     generate_topology_clustered,
@@ -87,5 +87,6 @@ __all__ = [
     "generate_var_chat_d",
     "ChatMotifInternals",
     "generate_wave_1d",
+    "generate_wave_1d_pulse",
     "generate_wave_2d",
 ]
