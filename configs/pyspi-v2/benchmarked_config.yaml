@@ -2,19 +2,26 @@
 # Derived from the pyspi-fork superset config.yaml with SPIs heavier than ~5s
 # per invocation at (M=8,T=3200) AND (M=16,T=800) removed.
 #
-# Source: benchmark_spis_ge5s_M8T3200_vs_M16T800.json "both" section (36 SPIs).
-# Expected SPI count: 328 - 36 = 292.
+# Source: benchmark_spis_ge5s_M8T3200_vs_M16T800.json "both" section (36 SPIs)
+# plus precautionary class-level drops for CCM (6 max/diff configs) and
+# Barycenter dtw/sgddtw/softdtw modes (9 configs: 3 stat=max non-squared + 6
+# squared) and dtw-itakura (1).
+# Expected SPI count: 328 - 36 - 6 - 9 - 1 = 276.
 #
-# Dropped whole classes:
+# Dropped whole classes (deleted from body, listed here):
 #   distance:  HellerHellerGorfine, MultiscaleGraphCorrelation,
 #              CrossMultiscaleGraphCorrelation, CrossDistanceCorrelation,
 #              DistanceCorrelation, HilbertSchmidtIndependenceCriterion,
 #              SoftDynamicTimeWarping
 #   causal:    AdditiveNoiseModel
 #   misc:      GPModel
+# Whole class commented out in body (preserved for auditability):
+#   causal:    ConvergentCrossMapping (whole class — see CCM rationale below)
 # Partial drops:
 #   distance:  Barycenter (dropped mode in {dtw,sgddtw,softdtw} x stat=mean, non-squared)
-#   causal:    ConvergentCrossMapping (dropped statistic=mean at every E)
+#              DynamicTimeWarping: commented out global_constraint=itakura
+#                (4.74s on M=16,T=800 — borderline; kept benchmark-flagged
+#                only-M=8 si_kernel and te_kraskov defaults)
 #   infotheory: CausalEntropy (kernel), CrossmapEntropy (kernel+k=10),
 #               DirectedInfo (kernel),
 #               TransferEntropy (kraskov auto-embed +- DCE, and DCE k=1/2 l=1)
@@ -22,6 +29,18 @@
 #               DirectedTransferFunction, GeneralizedPartialDirectedCoherence,
 #               PartialDirectedCoherence}: dropped bare `- fs: 1` (stat=mean)
 #   wavelet:   PhaseSlopeIndex: dropped `- fs: 1` and `- fmin:0,fmax:0.25`
+#
+# CCM rationale: benchmark flagged statistic=mean (313–1713s); statistic=max/diff
+# appeared <5s only because pyspi caches the skill curve across statistic
+# variants within a class — isolated runs would also be heavy. Whole class
+# commented out (see .statistics.causal block).
+#
+# Barycenter rationale: benchmark flagged dtw/sgddtw/softdtw × stat=mean
+# (28–320s on M=8,T=3200; up to 140s on M=16,T=800). The remaining stat=max
+# and squared variants for those modes are likely also heavy in isolation
+# (same within-class caching argument as CCM — barycenter computed once per
+# (mode, pair) and reused across statistic/squared variants). Conservatively
+# commented out all dtw/sgddtw/softdtw entries; only mode=euclidean kept.
 
 .statistics.basic:
   Covariance:
@@ -220,7 +239,7 @@
     dependencies: null
     configs:
     - global_constraint: null
-    - global_constraint: itakura
+    # - global_constraint: itakura  # 4.74s on M=16,T=800 (borderline ≥5s)
     - global_constraint: sakoe_chiba
   CrossPairwiseDistance:
     labels:
@@ -262,36 +281,37 @@
       statistic: mean
     - mode: euclidean
       statistic: max
-    - mode: dtw
-      statistic: max
-    - mode: sgddtw
-      statistic: max
-    - mode: softdtw
-      statistic: max
+    # dtw/sgddtw/softdtw modes commented out — see Barycenter rationale in header.
+    # - mode: dtw
+    #   statistic: max
+    # - mode: sgddtw
+    #   statistic: max
+    # - mode: softdtw
+    #   statistic: max
     - mode: euclidean
       statistic: mean
       squared: true
     - mode: euclidean
       statistic: max
       squared: true
-    - mode: dtw
-      statistic: mean
-      squared: true
-    - mode: dtw
-      statistic: max
-      squared: true
-    - mode: sgddtw
-      statistic: mean
-      squared: true
-    - mode: sgddtw
-      statistic: max
-      squared: true
-    - mode: softdtw
-      statistic: mean
-      squared: true
-    - mode: softdtw
-      statistic: max
-      squared: true
+    # - mode: dtw
+    #   statistic: mean
+    #   squared: true
+    # - mode: dtw
+    #   statistic: max
+    #   squared: true
+    # - mode: sgddtw
+    #   statistic: mean
+    #   squared: true
+    # - mode: sgddtw
+    #   statistic: max
+    #   squared: true
+    # - mode: softdtw
+    #   statistic: mean
+    #   squared: true
+    # - mode: softdtw
+    #   statistic: max
+    #   squared: true
   GromovWasserstainTau:
     labels:
     - unsigned
@@ -320,25 +340,25 @@
     - contemporaneous
     dependencies: null
     configs: null
-  ConvergentCrossMapping:
-    labels:
-    - directed
-    - nonlinear
-    - unsigned
-    - bivariate
-    - time-dependent
-    dependencies: null
-    configs:
-    - statistic: max
-    - statistic: diff
-    - statistic: max
-      embedding_dimension: 1
-    - statistic: diff
-      embedding_dimension: 1
-    - statistic: max
-      embedding_dimension: 10
-    - statistic: diff
-      embedding_dimension: 10
+  # ConvergentCrossMapping:
+  #   labels:
+  #   - directed
+  #   - nonlinear
+  #   - unsigned
+  #   - bivariate
+  #   - time-dependent
+  #   dependencies: null
+  #   configs:
+  #   - statistic: max
+  #   - statistic: diff
+  #   - statistic: max
+  #     embedding_dimension: 1
+  #   - statistic: diff
+  #     embedding_dimension: 1
+  #   - statistic: max
+  #     embedding_dimension: 10
+  #   - statistic: diff
+  #     embedding_dimension: 10
 .statistics.infotheory:
   JointEntropy:
     labels:
