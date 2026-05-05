@@ -1,9 +1,9 @@
 #!/bin/bash
-#PBS -N proof_embed
+#PBS -N proof-embed
 #PBS -l select=1:ncpus=2:mem=24gb
-#PBS -l walltime=02:00:00
+#PBS -l walltime=06:00:00
 #PBS -j oe
-#PBS -J 1-1350
+#PBS -J 1-900
 #PBS -m bea
 #PBS -M wedi0306@uni.sydney.edu.au
 
@@ -38,7 +38,7 @@ echo "[INFO] Starting PBS array index ${ARRAY_ID} at $(date)"
 python -m src.run_experiments \
   --job-index "${ARRAY_ID}" \
   --skip-existing \
-  --experiment-config configs/generate/embeddings/proof.yaml \
+  --experiment-config configs/generate/embeddings/proof-benchmarked.yaml \
   --threads 2 \
   --parquet
 echo "[INFO] Finished at $(date)"

@@ -16,7 +16,8 @@ save_heatmap: true
 threads: 4
 
 defaults:
-  M_values: [5, 10, 20]
+  # M_values: [9, 16, 25]
+  M_values: [5,10,20]
   T_values: [500, 1000, 2000]
   instances: 10
 
@@ -27,22 +28,22 @@ mts_classes:
     generator: "wave_1d"
     base_params:
       c: 10.0
-      n_modes: 4
+      n_modes: 5
       ic_decay: 1.5
       noise_std: 0.01
       zscore: true
 
   # Diamond recreation: localized Gaussian, released at rest, splits into
   # two counter-propagating halves on the periodic ring.
-  # - name: "wave-1d-diamond"
-  #   labels: [wave, pde, 1d, standing]
-  #   generator: "wave_1d_pulse"
-  #   base_params:
-  #     c: 10.0
-  #     sigma_factor: 0.05
-  #     direction: "standing"
-  #     noise_std: 0.0
-  #     zscore: true
+  - name: "wave-1d-diamond"
+    labels: [wave, pde, 1d, standing]
+    generator: "wave_1d_pulse"
+    base_params:
+      c: 10.0
+      sigma_factor: 0.02
+      direction: "standing"
+      noise_std: 0.01
+      zscore: true
 
   # # Simplest possible wave: single Fourier mode (textbook standing wave).
   # - name: "wave-1d-smooth"

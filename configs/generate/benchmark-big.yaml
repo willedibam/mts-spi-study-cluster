@@ -33,7 +33,7 @@ defaults:
   instances: 1
 
 mts_classes:
-  - name: "var1-big-M"
+  - name: "var1_M32_T2000"
     labels: ["benchmark", "wide-M"]
     generator: "var"
     M_values: [32]
@@ -48,7 +48,7 @@ mts_classes:
       topology: "ring-symmetric"
       zscore: true
 
-  - name: "var1-big-T"
+  - name: "var1_M16_T4000"
     labels: ["benchmark", "long-T"]
     generator: "var"
     M_values: [16]
