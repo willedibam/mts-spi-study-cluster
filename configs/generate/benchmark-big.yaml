@@ -1,0 +1,64 @@
+# SPI benchmark — large-(M, T) two-corner probe.
+#
+# CURRENT PIPELINE: scripts/benchmark_spis.py with `--preset scaling_big`.
+#   The PRESETS dict in that script is the live source-of-truth; this YAML
+#   is a documentation mirror of the same two cells, intended to become the
+#   canonical entry point once src/run_experiments.py-driven runs are
+#   timing-aware everywhere (per_spi capture landed -- see commit log).
+#   Until benchmark_spis.py is retired, the PBS jobs/physics/run_benchmark_big.pbs
+#   uses the preset, not this file.
+#
+# Two orthogonal corners of the size regime:
+#
+#   var1-big-M   : (M=32, T=2000)   — stresses pair-count / BLAS-bound SPIs
+#   var1-big-T   : (M=16, T=4000)   — stresses sequence-bound SPIs (DTW, spectral, TE)
+#
+# Two separate mts_classes are needed because the loader does a Cartesian
+# product over (M_values, T_values); putting [16, 32] x [2000, 4000] in one
+# entry would expand to 4 cells, not the desired 2.
+#
+# Goal: take union of "slow on either corner" to inform a drop list for the
+# fastest-80-90% subsetting strategy.
+
+base_output_dir: data/benchmark-big/
+timestamp: false
+pyspi_config: configs/pyspi-v2/config.yaml
+pyspi_subset: default
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 1
+
+defaults:
+  instances: 1
+
+mts_classes:
+  - name: "var1-big-M"
+    labels: ["benchmark", "wide-M"]
+    generator: "var"
+    M_values: [32]
+    T_values: [2000]
+    base_params:
+      phi: 0.6
+      coupling: 0.3
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.2
+      transients: 100
+      topology: "ring-symmetric"
+      zscore: true
+
+  - name: "var1-big-T"
+    labels: ["benchmark", "long-T"]
+    generator: "var"
+    M_values: [16]
+    T_values: [4000]
+    base_params:
+      phi: 0.6
+      coupling: 0.3
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.2
+      transients: 100
+      topology: "ring-symmetric"
+      zscore: true

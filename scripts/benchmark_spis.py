@@ -17,9 +17,12 @@ Usage:
     python scripts/benchmark_spis.py --resume
 
 Presets:
-    headline   two reference points: (M=10, T=500), (M=20, T=1000).
-    scaling    cross-product of M={2,4,8,16,32,64} and T={100,200,400,800,1600,3200}.
-    default    (no preset) use --M / --T arguments as a cross-product.
+    headline       two reference points: (M=10, T=500), (M=20, T=1000).
+    scaling        cross-product of M={2,4,8,16,32,64} and T={100..3200}.
+    scaling_small  M={2,4,8,16} x T={100..3200}      (24 cells)
+    scaling_large  M={32,64}    x T={100..3200}      (12 cells)
+    scaling_big    two corners: (M=32, T=2000), (M=16, T=4000)
+    default        (no preset) use --M / --T arguments as a cross-product.
 
 Results are saved incrementally after each (M, T) combo, so the run is
 interrupt-safe. Use --resume to skip combos already computed at the same
@@ -114,6 +117,12 @@ PRESETS = {
     "scaling_large": {
         "M": [32, 64],
         "T": [100, 200, 400, 800, 1600, 3200],
+    },
+    # Two orthogonal "big" corners for the next round of slow-tail benchmarking:
+    # one wide-M (BLAS/pair-count-bound) + one long-T (DTW/spectral/TE-bound).
+    # Index 1 -> (M=32, T=2000); index 2 -> (M=16, T=4000).
+    "scaling_big": {
+        "points": [(32, 2000), (16, 4000)],
     },
 }
 

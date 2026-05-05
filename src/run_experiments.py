@@ -207,7 +207,10 @@ def main(argv: List[str] | None = None) -> None:
                 "calc_csv": "calc.csv",
                 "calc_parquet": "calc.parquet" if args.parquet else "",
                 "spi_archive": "spi_mpis.npz",
-                "per_spi": {},
+                "per_spi": {
+                    name: round(float(t), 6)
+                    for name, t in (result.timings or {}).items()
+                },
                 "heatmaps": heatmap_paths,
             },
             compute_seconds=compute_seconds,
