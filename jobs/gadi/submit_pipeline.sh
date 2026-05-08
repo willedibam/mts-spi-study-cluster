@@ -47,10 +47,13 @@ for (( b=0; b<N_BATCHES; b++ )); do
         SUBJOBS=$NEEDED
     fi
     echo "[INFO] submitting batch $((b+1))/$N_BATCHES  offset=$OFFSET  subjobs=$SUBJOBS"
-    qsub \
-        -J "1-${SUBJOBS}" \
-        -v "EXPERIMENT_CONFIG=${EXPERIMENT_CONFIG},TOTAL_DATASETS=${TOTAL_DATASETS},CHUNK_SIZE=${CHUNK_SIZE},BATCH_OFFSET=${OFFSET},PARALLEL=${PARALLEL},PYSPI_JOBS=${PYSPI_JOBS}" \
-        "$PBS_SCRIPT"
+    VARS="EXPERIMENT_CONFIG=${EXPERIMENT_CONFIG},TOTAL_DATASETS=${TOTAL_DATASETS},CHUNK_SIZE=${CHUNK_SIZE},BATCH_OFFSET=${OFFSET},PARALLEL=${PARALLEL},PYSPI_JOBS=${PYSPI_JOBS}"
+    if [[ $SUBJOBS -le 1 ]]; then
+        # PBS rejects -J 1-1; submit as a single non-array job (PBS script defaults PBS_ARRAY_INDEX to 1).
+        qsub -v "$VARS" "$PBS_SCRIPT"
+    else
+        qsub -J "1-${SUBJOBS}" -v "$VARS" "$PBS_SCRIPT"
+    fi
 done
 
 echo "[INFO] submitted $N_BATCHES array job(s). monitor with: qstat -tu \$USER"
