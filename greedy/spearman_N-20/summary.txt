@@ -1,0 +1,16 @@
+# Greedy forward SPI selection
+timestamp: 2026-05-06 12:21:32
+data_path: data/embeddings/proof_benchmarked_260505
+n_samples: 810 (train=648, test=162)
+n_spis_total: 252
+n_spis_pool: 190  (constancy threshold 0.1)
+anchor: cov_EmpiricalCovariance
+final_|S|: 19
+stopped_early: True
+final_S: ['cov_EmpiricalCovariance', 'corr_pearson_tau-1', 'xcorr_max_sig-True', 'cov_EllipticEnvelope', 'corr_pearson_tau-10', 'phi_star_t-1_norm-1', 'prec_ShrunkCovariance', 'sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1', 'pdist_euclidean', 'dtw', 'corr_spearman_tau-4', 'si_gaussian_k-1', 'bary-sq_euclidean_mean', 'corr_kendall_tau-4', 'tlmi_gaussian', 'ce_gaussian', 'te_kraskov_NN-4_k-1_kt-1_l-1_lt-1', 'corr_pearson_tau-1-sq', 'corr_kendall_tau-10']
+
+# Holdout evaluation on final_S:
+  LR: log_loss=0.0104 acc=0.9938
+  RF: log_loss=0.0567 acc=0.9877
+
+stopping rule: mean Δlog-loss last 3 = 0.00089

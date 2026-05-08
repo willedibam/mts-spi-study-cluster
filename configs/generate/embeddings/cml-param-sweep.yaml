@@ -3,17 +3,17 @@
 #   - cml-alpha-sweep: eps=0.3 fixed, alpha in [1.40, 2.00] step 0.01 (61 variants)
 #   - cml-eps-sweep:   alpha=1.75 fixed, eps in [0.00, 0.60] step 0.01 (61 variants)
 # 20 instances per variant -> (61 + 61) * 20 = 2,440 datasets.
-# SPI set: benchmarked_config.yaml (292 SPIs, ~5s-per-SPI threshold).
+# SPI set: benchmarked90_amortized_config.yaml (292 SPIs, ~5s-per-SPI threshold).
 #
 # Downstream: meta.json per dataset stores generator.params.{alpha,eps},
 # variant.{name,params}, instance_index. This is sufficient to reconstruct
 # the (alpha, eps, instance) coordinate of every frame at aggregation time.
-base_output_dir: data/embeddings/cml_param_sweep_260423/
+base_output_dir: data/embeddings/cml_param_sweep_260508/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked_config.yaml
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
 pyspi_subset: default
 normalise: false
-rng_seed: 260423
+rng_seed: 110305
 save_heatmap: true
 threads: 4
 
@@ -33,26 +33,26 @@ mts_classes:
       zscore: false
     include_base_variant: false
     variants:
-      - { name: "a1p40", params: { alpha: 1.40 } }
-      - { name: "a1p41", params: { alpha: 1.41 } }
-      - { name: "a1p42", params: { alpha: 1.42 } }
-      - { name: "a1p43", params: { alpha: 1.43 } }
-      - { name: "a1p44", params: { alpha: 1.44 } }
-      - { name: "a1p45", params: { alpha: 1.45 } }
-      - { name: "a1p46", params: { alpha: 1.46 } }
-      - { name: "a1p47", params: { alpha: 1.47 } }
-      - { name: "a1p48", params: { alpha: 1.48 } }
-      - { name: "a1p49", params: { alpha: 1.49 } }
-      - { name: "a1p50", params: { alpha: 1.50 } }
-      - { name: "a1p51", params: { alpha: 1.51 } }
-      - { name: "a1p52", params: { alpha: 1.52 } }
-      - { name: "a1p53", params: { alpha: 1.53 } }
-      - { name: "a1p54", params: { alpha: 1.54 } }
-      - { name: "a1p55", params: { alpha: 1.55 } }
-      - { name: "a1p56", params: { alpha: 1.56 } }
-      - { name: "a1p57", params: { alpha: 1.57 } }
-      - { name: "a1p58", params: { alpha: 1.58 } }
-      - { name: "a1p59", params: { alpha: 1.59 } }
+      # - { name: "a1p40", params: { alpha: 1.40 } }
+      # - { name: "a1p41", params: { alpha: 1.41 } }
+      # - { name: "a1p42", params: { alpha: 1.42 } }
+      # - { name: "a1p43", params: { alpha: 1.43 } }
+      # - { name: "a1p44", params: { alpha: 1.44 } }
+      # - { name: "a1p45", params: { alpha: 1.45 } }
+      # - { name: "a1p46", params: { alpha: 1.46 } }
+      # - { name: "a1p47", params: { alpha: 1.47 } }
+      # - { name: "a1p48", params: { alpha: 1.48 } }
+      # - { name: "a1p49", params: { alpha: 1.49 } }
+      # - { name: "a1p50", params: { alpha: 1.50 } }
+      # - { name: "a1p51", params: { alpha: 1.51 } }
+      # - { name: "a1p52", params: { alpha: 1.52 } }
+      # - { name: "a1p53", params: { alpha: 1.53 } }
+      # - { name: "a1p54", params: { alpha: 1.54 } }
+      # - { name: "a1p55", params: { alpha: 1.55 } }
+      # - { name: "a1p56", params: { alpha: 1.56 } }
+      # - { name: "a1p57", params: { alpha: 1.57 } }
+      # - { name: "a1p58", params: { alpha: 1.58 } }
+      # - { name: "a1p59", params: { alpha: 1.59 } }
       - { name: "a1p60", params: { alpha: 1.60 } }
       - { name: "a1p61", params: { alpha: 1.61 } }
       - { name: "a1p62", params: { alpha: 1.62 } }
@@ -95,74 +95,74 @@ mts_classes:
       - { name: "a1p99", params: { alpha: 1.99 } }
       - { name: "a2p00", params: { alpha: 2.00 } }
 
-  - name: "cml-eps-sweep"
-    labels: [cml, eps-sweep]
-    generator: "cml_logistic"
-    base_params:
-      alpha: 1.75
-      transients: 2000
-      sample_every: 1
-      zscore: false
-    include_base_variant: false
-    variants:
-      - { name: "e0p00", params: { eps: 0.00 } }
-      - { name: "e0p01", params: { eps: 0.01 } }
-      - { name: "e0p02", params: { eps: 0.02 } }
-      - { name: "e0p03", params: { eps: 0.03 } }
-      - { name: "e0p04", params: { eps: 0.04 } }
-      - { name: "e0p05", params: { eps: 0.05 } }
-      - { name: "e0p06", params: { eps: 0.06 } }
-      - { name: "e0p07", params: { eps: 0.07 } }
-      - { name: "e0p08", params: { eps: 0.08 } }
-      - { name: "e0p09", params: { eps: 0.09 } }
-      - { name: "e0p10", params: { eps: 0.10 } }
-      - { name: "e0p11", params: { eps: 0.11 } }
-      - { name: "e0p12", params: { eps: 0.12 } }
-      - { name: "e0p13", params: { eps: 0.13 } }
-      - { name: "e0p14", params: { eps: 0.14 } }
-      - { name: "e0p15", params: { eps: 0.15 } }
-      - { name: "e0p16", params: { eps: 0.16 } }
-      - { name: "e0p17", params: { eps: 0.17 } }
-      - { name: "e0p18", params: { eps: 0.18 } }
-      - { name: "e0p19", params: { eps: 0.19 } }
-      - { name: "e0p20", params: { eps: 0.20 } }
-      - { name: "e0p21", params: { eps: 0.21 } }
-      - { name: "e0p22", params: { eps: 0.22 } }
-      - { name: "e0p23", params: { eps: 0.23 } }
-      - { name: "e0p24", params: { eps: 0.24 } }
-      - { name: "e0p25", params: { eps: 0.25 } }
-      - { name: "e0p26", params: { eps: 0.26 } }
-      - { name: "e0p27", params: { eps: 0.27 } }
-      - { name: "e0p28", params: { eps: 0.28 } }
-      - { name: "e0p29", params: { eps: 0.29 } }
-      - { name: "e0p30", params: { eps: 0.30 } }
-      - { name: "e0p31", params: { eps: 0.31 } }
-      - { name: "e0p32", params: { eps: 0.32 } }
-      - { name: "e0p33", params: { eps: 0.33 } }
-      - { name: "e0p34", params: { eps: 0.34 } }
-      - { name: "e0p35", params: { eps: 0.35 } }
-      - { name: "e0p36", params: { eps: 0.36 } }
-      - { name: "e0p37", params: { eps: 0.37 } }
-      - { name: "e0p38", params: { eps: 0.38 } }
-      - { name: "e0p39", params: { eps: 0.39 } }
-      - { name: "e0p40", params: { eps: 0.40 } }
-      - { name: "e0p41", params: { eps: 0.41 } }
-      - { name: "e0p42", params: { eps: 0.42 } }
-      - { name: "e0p43", params: { eps: 0.43 } }
-      - { name: "e0p44", params: { eps: 0.44 } }
-      - { name: "e0p45", params: { eps: 0.45 } }
-      - { name: "e0p46", params: { eps: 0.46 } }
-      - { name: "e0p47", params: { eps: 0.47 } }
-      - { name: "e0p48", params: { eps: 0.48 } }
-      - { name: "e0p49", params: { eps: 0.49 } }
-      - { name: "e0p50", params: { eps: 0.50 } }
-      - { name: "e0p51", params: { eps: 0.51 } }
-      - { name: "e0p52", params: { eps: 0.52 } }
-      - { name: "e0p53", params: { eps: 0.53 } }
-      - { name: "e0p54", params: { eps: 0.54 } }
-      - { name: "e0p55", params: { eps: 0.55 } }
-      - { name: "e0p56", params: { eps: 0.56 } }
-      - { name: "e0p57", params: { eps: 0.57 } }
-      - { name: "e0p58", params: { eps: 0.58 } }
-      - { name: "e0p59", params: { eps: 0.59 } }
-      - { name: "e0p60", params: { eps: 0.60 } }
+  # - name: "cml-eps-sweep"
+  #   labels: [cml, eps-sweep]
+  #   generator: "cml_logistic"
+  #   base_params:
+  #     alpha: 1.75
+  #     transients: 2000
+  #     sample_every: 1
+  #     zscore: false
+  #   include_base_variant: false
+  #   variants:
+  #     - { name: "e0p00", params: { eps: 0.00 } }
+  #     - { name: "e0p01", params: { eps: 0.01 } }
+  #     - { name: "e0p02", params: { eps: 0.02 } }
+  #     - { name: "e0p03", params: { eps: 0.03 } }
+  #     - { name: "e0p04", params: { eps: 0.04 } }
+  #     - { name: "e0p05", params: { eps: 0.05 } }
+  #     - { name: "e0p06", params: { eps: 0.06 } }
+  #     - { name: "e0p07", params: { eps: 0.07 } }
+  #     - { name: "e0p08", params: { eps: 0.08 } }
+  #     - { name: "e0p09", params: { eps: 0.09 } }
+  #     - { name: "e0p10", params: { eps: 0.10 } }
+  #     - { name: "e0p11", params: { eps: 0.11 } }
+  #     - { name: "e0p12", params: { eps: 0.12 } }
+  #     - { name: "e0p13", params: { eps: 0.13 } }
+  #     - { name: "e0p14", params: { eps: 0.14 } }
+  #     - { name: "e0p15", params: { eps: 0.15 } }
+  #     - { name: "e0p16", params: { eps: 0.16 } }
+  #     - { name: "e0p17", params: { eps: 0.17 } }
+  #     - { name: "e0p18", params: { eps: 0.18 } }
+  #     - { name: "e0p19", params: { eps: 0.19 } }
+  #     - { name: "e0p20", params: { eps: 0.20 } }
+  #     - { name: "e0p21", params: { eps: 0.21 } }
+  #     - { name: "e0p22", params: { eps: 0.22 } }
+  #     - { name: "e0p23", params: { eps: 0.23 } }
+  #     - { name: "e0p24", params: { eps: 0.24 } }
+  #     - { name: "e0p25", params: { eps: 0.25 } }
+  #     - { name: "e0p26", params: { eps: 0.26 } }
+  #     - { name: "e0p27", params: { eps: 0.27 } }
+  #     - { name: "e0p28", params: { eps: 0.28 } }
+  #     - { name: "e0p29", params: { eps: 0.29 } }
+  #     - { name: "e0p30", params: { eps: 0.30 } }
+  #     - { name: "e0p31", params: { eps: 0.31 } }
+  #     - { name: "e0p32", params: { eps: 0.32 } }
+  #     - { name: "e0p33", params: { eps: 0.33 } }
+  #     - { name: "e0p34", params: { eps: 0.34 } }
+  #     - { name: "e0p35", params: { eps: 0.35 } }
+  #     - { name: "e0p36", params: { eps: 0.36 } }
+  #     - { name: "e0p37", params: { eps: 0.37 } }
+  #     - { name: "e0p38", params: { eps: 0.38 } }
+  #     - { name: "e0p39", params: { eps: 0.39 } }
+  #     - { name: "e0p40", params: { eps: 0.40 } }
+  #     - { name: "e0p41", params: { eps: 0.41 } }
+  #     - { name: "e0p42", params: { eps: 0.42 } }
+  #     - { name: "e0p43", params: { eps: 0.43 } }
+  #     - { name: "e0p44", params: { eps: 0.44 } }
+  #     - { name: "e0p45", params: { eps: 0.45 } }
+  #     - { name: "e0p46", params: { eps: 0.46 } }
+  #     - { name: "e0p47", params: { eps: 0.47 } }
+  #     - { name: "e0p48", params: { eps: 0.48 } }
+  #     - { name: "e0p49", params: { eps: 0.49 } }
+  #     - { name: "e0p50", params: { eps: 0.50 } }
+  #     - { name: "e0p51", params: { eps: 0.51 } }
+  #     - { name: "e0p52", params: { eps: 0.52 } }
+  #     - { name: "e0p53", params: { eps: 0.53 } }
+  #     - { name: "e0p54", params: { eps: 0.54 } }
+  #     - { name: "e0p55", params: { eps: 0.55 } }
+  #     - { name: "e0p56", params: { eps: 0.56 } }
+  #     - { name: "e0p57", params: { eps: 0.57 } }
+  #     - { name: "e0p58", params: { eps: 0.58 } }
+  #     - { name: "e0p59", params: { eps: 0.59 } }
+  #     - { name: "e0p60", params: { eps: 0.60 } }
