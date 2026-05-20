@@ -37,6 +37,10 @@ def run_pyspi(
     config_path: Path,
     subset: str = "default",
     normalise: bool = False,
+    n_jobs: int | None = None,
+    checkpoint_dir: Path | None = None,
+    resume: bool = True,
+    mp_context: str | None = None,
 ) -> ComputeResult:
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
@@ -47,7 +51,12 @@ def run_pyspi(
         configfile=str(config_path),
         normalise=normalise,
     )
-    calc.compute()
+    calc.compute(
+        n_jobs=n_jobs,
+        checkpoint_dir=checkpoint_dir,
+        resume=resume,
+        mp_context=mp_context,
+    )
     info_map = _load_spi_info(config_path, calc.spis)
     spi_names = _extract_spi_names(calc.table)
     matrices: Dict[str, np.ndarray] = {}

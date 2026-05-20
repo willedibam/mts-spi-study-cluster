@@ -54,7 +54,25 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--threads",
         type=int,
-        help="Override worker count (sets PYSPI_N_JOBS). BLAS threads must be pinned to 1 in the shell.",
+        help="Deprecated alias for --n-jobs (still sets PYSPI_N_JOBS env var). BLAS threads must be pinned to 1 in the shell.",
+    )
+    parser.add_argument(
+        "--n-jobs",
+        type=int,
+        dest="n_jobs",
+        help="PySPI worker process count. Passed directly to Calculator.compute(n_jobs=...). Overrides --threads.",
+    )
+    parser.add_argument(
+        "--checkpoint-dir",
+        type=Path,
+        dest="checkpoint_dir",
+        help="If set, per-SPI .npy checkpoints are written under <dataset_dir>/<checkpoint_dir>/. Enables resume across runs.",
+    )
+    parser.add_argument(
+        "--mp-context",
+        choices=["spawn", "fork", "forkserver"],
+        dest="mp_context",
+        help="Multiprocessing start method for PySPI workers (default: spawn).",
     )
     parser.add_argument(
         "--normalise",
@@ -161,7 +179,10 @@ def main(argv: List[str] | None = None) -> None:
                 f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
             )
             continue
+        # Explicit --n-jobs wins; otherwise --threads (legacy) or spec.threads
+        # sets PYSPI_N_JOBS as a fallback for the kwarg default in compute().
         _configure_threading(args.threads or spec.threads)
+        effective_n_jobs = args.n_jobs if args.n_jobs is not None else (args.threads or spec.threads)
         data, ts_path, gen_extras = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
         if args.mts_only:
             if args.heatmap or spec.save_heatmap:
@@ -170,12 +191,16 @@ def main(argv: List[str] | None = None) -> None:
 
         data = data.astype(np.float64, copy=False)
         dataset_dir = ts_path.parent
+        cp_dir = (dataset_dir / args.checkpoint_dir) if args.checkpoint_dir else None
         compute_start = time.perf_counter()
         result = run_pyspi(
             data,
             config_path=spec.pyspi_config,
             subset=spec.pyspi_subset,
             normalise=spec.normalise,
+            n_jobs=effective_n_jobs,
+            checkpoint_dir=cp_dir,
+            mp_context=args.mp_context,
         )
         compute_seconds = time.perf_counter() - compute_start
         csv_path = dataset_dir / "calc.csv"
