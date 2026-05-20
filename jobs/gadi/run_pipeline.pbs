@@ -2,7 +2,7 @@
 #PBS -N pipeline
 #PBS -P ql44
 #PBS -q normal
-#PBS -l walltime=06:00:00
+#PBS -l walltime=12:00:00
 #PBS -l ncpus=48
 #PBS -l mem=190GB
 #PBS -l jobfs=20GB
@@ -18,14 +18,21 @@
 # cap by chunking).
 #
 # Required env from -v:
-#   EXPERIMENT_CONFIG  path to configs/generate/.../*.yaml
-#   TOTAL_DATASETS     total dataset count for this config (M*T*classes*instances)
+#   EXPERIMENT_CONFIG   path to configs/generate/.../*.yaml
+#   TOTAL_DATASETS      total dataset count for this config (M*T*classes*instances)
 # Optional env (with defaults):
-#   CHUNK_SIZE=200          datasets per subjob (sequential within an array slot)
-#   BATCH_OFFSET=0          dataset offset across batch wrappers
-#   PARALLEL=12             concurrent dataset workers per subjob
-#   PYSPI_JOBS=4            pyspi joblib workers per dataset
-#                           (PARALLEL * PYSPI_JOBS must equal ncpus, default 48)
+#   CHUNK_SIZE=200             datasets per subjob (sequential within an array slot)
+#   BATCH_OFFSET=0             dataset offset across batch wrappers
+#   CONCURRENT_DATASETS=48     datasets processed concurrently per subjob
+#   CORES_PER_DATASET=1        pyspi worker processes per dataset
+#
+# CONCURRENT_DATASETS and CORES_PER_DATASET are INDEPENDENT knobs:
+#   - Lower CONCURRENT_DATASETS only if per-dataset memory would OOM the node
+#     (idle cores are accepted as the price of memory headroom).
+#   - Raise CORES_PER_DATASET only if a single dataset would bust walltime.
+#   Default (48 x 1) is the efficient allocation: one core per dataset, 48
+#   datasets in flight. Their product need not equal ncpus; if it exceeds
+#   ncpus the script prints a warning (cores will be oversubscribed).
 
 set -euo pipefail
 
@@ -33,8 +40,13 @@ set -euo pipefail
 : "${TOTAL_DATASETS:?TOTAL_DATASETS must be set}"
 CHUNK_SIZE="${CHUNK_SIZE:-200}"
 BATCH_OFFSET="${BATCH_OFFSET:-0}"
-PARALLEL="${PARALLEL:-12}"
-PYSPI_JOBS="${PYSPI_JOBS:-4}"
+CONCURRENT_DATASETS="${CONCURRENT_DATASETS:-48}"
+CORES_PER_DATASET="${CORES_PER_DATASET:-1}"
+
+NCPUS=48
+if [[ $(( CONCURRENT_DATASETS * CORES_PER_DATASET )) -gt $NCPUS ]]; then
+    echo "[WARN] CONCURRENT_DATASETS*CORES_PER_DATASET = $(( CONCURRENT_DATASETS * CORES_PER_DATASET )) > ncpus=$NCPUS — cores will be oversubscribed."
+fi
 
 ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
 START_IDX=$(( BATCH_OFFSET + (ARRAY_ID - 1) * CHUNK_SIZE + 1 ))
@@ -60,13 +72,12 @@ export MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export KMP_DUPLICATE_LIB_OK=TRUE
-export PYSPI_N_JOBS="$PYSPI_JOBS"
 
 # cdt (transitive pyspi import) does ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]).
 unset CUDA_VISIBLE_DEVICES
 
 echo "[INFO] config=$EXPERIMENT_CONFIG  offset=$BATCH_OFFSET  array=$ARRAY_ID"
-echo "[INFO] datasets=${START_IDX}..${END_IDX}  parallel=$PARALLEL  pyspi_jobs=$PYSPI_JOBS"
+echo "[INFO] datasets=${START_IDX}..${END_IDX}  concurrent_datasets=$CONCURRENT_DATASETS  cores_per_dataset=$CORES_PER_DATASET"
 echo "[INFO] host=$(hostname)  start=$(date)"
 
 if [[ $START_IDX -gt $TOTAL_DATASETS ]]; then
@@ -75,12 +86,12 @@ if [[ $START_IDX -gt $TOTAL_DATASETS ]]; then
 fi
 
 seq "$START_IDX" "$END_IDX" | \
-    xargs -n 1 -P "$PARALLEL" -I {} \
+    xargs -n 1 -P "$CONCURRENT_DATASETS" -I {} \
         python -m src.run_experiments \
             --job-index {} \
             --skip-existing \
             --experiment-config "$EXPERIMENT_CONFIG" \
-            --threads "$PYSPI_JOBS" \
+            --n-jobs "$CORES_PER_DATASET" \
             --parquet
 
 echo "[INFO] finished at $(date)"
