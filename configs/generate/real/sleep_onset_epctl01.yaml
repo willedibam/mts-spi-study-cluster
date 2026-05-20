@@ -1,0 +1,22 @@
+base_output_dir: data/sleep_onset/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_subset: default
+normalise: false          # data is already z-scored per channel (full recording)
+rng_seed: 0
+save_heatmap: false
+threads: 1                # one pyspi worker per dataset; parallelism is across epochs
+
+# Real EEG: M=38 channels, T=500 samples (5 s @ 100 Hz), one dataset per epoch.
+# timeseries.npy files are written by src/prep_sleep_onset.py — the aeon
+# package/dataset_name below is a fail-loud sentinel and is never downloaded
+# while those files exist. 168 epochs -> 168 PBS array jobs.
+
+mts_classes:
+  - name: "epctl01"
+    labels: ["eeg", "sleep-onset", "epctl01", "m38"]
+    package: "aeon"
+    dataset_name: "EPCTL01_M38"   # not a real aeon dataset; see note above
+    classes: ["epctl01"]
+    zscore: false                 # already z-scored by src/prep_sleep_onset.py
+    instances: 168
