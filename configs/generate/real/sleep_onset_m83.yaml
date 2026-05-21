@@ -1,0 +1,42 @@
+base_output_dir: data/sleep_onset/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_subset: default
+normalise: false          # data is already z-scored per channel (full recording)
+rng_seed: 0
+save_heatmap: false
+threads: 1                # one pyspi worker per dataset; parallelism is across epochs
+
+# Real EEG, M=83 channels (full montage), T=500 (5 s @ 100 Hz), one dataset per
+# epoch. timeseries.npy files are written by src/prep_sleep_onset.py with
+# --scored-only (leading Unscored blocks dropped; `instance` is compacted while
+# manifest `epoch` keeps the original recording index):
+#   python -m src.prep_sleep_onset --subject EPCTL02 --tensor EEGonly_zscore \
+#       --label epctl02-m83 --scored-only
+#   python -m src.prep_sleep_onset --subject EPCTL03 --tensor EEGonly_zscore \
+#       --label epctl03-m83 --scored-only
+# EPCTL01 (168 epochs, fully scored, already computed) is in
+# sleep_onset_epctl01_m83.yaml. The aeon package/dataset_name below is a
+# fail-loud sentinel and is never downloaded while timeseries.npy files exist.
+#
+# Total datasets: 222 + 132 = 354 -> job-index 1..222 epctl02, 223..354 epctl03.
+# M83 ~82 min/dataset single-core (measured on the EPCTL01 run). Submit as
+# 8 subjobs of 48 -> 8 nodes, one concurrent wave each, ~1.5 h wall:
+#   bash jobs/gadi/submit_pipeline.sh configs/generate/real/sleep_onset_m83.yaml 354 48
+
+mts_classes:
+  - name: "epctl02-m83"
+    labels: ["eeg", "sleep-onset", "epctl02", "m83"]
+    package: "aeon"
+    dataset_name: "EPCTL02_EEGonly"   # not a real aeon dataset; see note above
+    classes: ["epctl02-m83"]
+    zscore: false                     # already z-scored by src/prep_sleep_onset.py
+    instances: 222
+
+  - name: "epctl03-m83"
+    labels: ["eeg", "sleep-onset", "epctl03", "m83"]
+    package: "aeon"
+    dataset_name: "EPCTL03_EEGonly"   # not a real aeon dataset; see note above
+    classes: ["epctl03-m83"]
+    zscore: false                     # already z-scored by src/prep_sleep_onset.py
+    instances: 132

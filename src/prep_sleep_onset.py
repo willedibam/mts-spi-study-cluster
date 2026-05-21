@@ -15,18 +15,22 @@ Run once per tensor variant, from the project root:
     python -m src.prep_sleep_onset --subject EPCTL01 --tensor M38
     python -m src.prep_sleep_onset --subject EPCTL01 --tensor EEGonly_zscore \\
         --label epctl01-m83
+    python -m src.prep_sleep_onset --subject EPCTL02 --tensor EEGonly_zscore \\
+        --label epctl02-m83 --scored-only
 
 Output layout (mirrors run_experiments.py real-data paths):
 
-    <output-dir>/<label>/class<label>_I{n}/timeseries.npy   (n = 0 .. E-1)
+    <output-dir>/<label>/class<label>_I{n}/timeseries.npy   (n = 0 .. N-1)
     <output-dir>/<label>/manifest.csv        per-epoch labels (instance->stage)
     <output-dir>/<label>/dataset_meta.json   channel names + dims + onset
 
 The two label files retain everything from the source EEG that the SPI
 pipeline itself does not carry: manifest.csv maps each instance (= PBS array
 index - 1) to its hypnogram stage and the onset flag, and dataset_meta.json
-records the channel-name order and recording dimensions. Join either against
-the per-dataset meta.json / calc.csv outputs on the instance index.
+records the channel-name order and recording dimensions. With --scored-only,
+Unscored epochs are dropped and `instance` is a compacted 0..N-1 index while
+the manifest `epoch` column keeps the original recording index. Join either
+file against the per-dataset meta.json / calc.csv outputs on the instance index.
 Existing timeseries.npy files are skipped (safe to re-run after a partial run).
 """
 
@@ -66,31 +70,40 @@ def _load_tensor(npz_path: Path):
 def _write_epochs(
     data, hypnogram, channel_names, onset_epoch, *,
     subject: str, tensor: str, label: str, out_root: Path,
+    scored_only: bool = False,
 ) -> None:
     E, M, T = data.shape
     class_dir = out_root / class_dir_name(label)
-    written = skipped = 0
+    written = skipped = dropped = 0
     rows = []
-    for instance in range(E):
+    instance = 0  # compacted dataset index; == epoch unless --scored-only drops epochs
+    for epoch in range(E):
+        stage_code = int(hypnogram[epoch])
+        stage = _STAGE_NAMES.get(stage_code, "Unknown")
+        if scored_only and stage == "Unscored":
+            dropped += 1
+            continue
         dest = class_dir / f"class{label}_I{instance}"
         ts_path = dest / "timeseries.npy"
-        stage_code = int(hypnogram[instance])
         rows.append(
             {
                 "instance": instance,
-                "epoch": instance,
+                "epoch": epoch,
                 "hypnogram": stage_code,
-                "stage": _STAGE_NAMES.get(stage_code, "Unknown"),
-                "is_onset_epoch": int(instance == onset_epoch),
+                "stage": stage,
+                "is_onset_epoch": int(epoch == onset_epoch),
             }
         )
         if ts_path.exists():
             skipped += 1
-            continue
-        series = np.ascontiguousarray(data[instance].T, dtype=np.float32)  # (T, M)
-        dest.mkdir(parents=True, exist_ok=True)
-        np.save(ts_path, series)
-        written += 1
+        else:
+            series = np.ascontiguousarray(data[epoch].T, dtype=np.float32)  # (T, M)
+            dest.mkdir(parents=True, exist_ok=True)
+            np.save(ts_path, series)
+            written += 1
+        instance += 1
+
+    n_datasets = instance  # epochs kept = pyspi datasets written for this subject
 
     manifest_path = class_dir / "manifest.csv"
     with manifest_path.open("w", newline="") as fh:
@@ -105,17 +118,20 @@ def _write_epochs(
         "label": label,
         "M": M,
         "T": T,
-        "n_epochs": E,
+        "n_epochs": n_datasets,           # pyspi datasets written (use as config `instances`)
+        "n_epochs_recording": E,          # epochs in the source tensor
+        "scored_only": scored_only,
         "fs_hz": 100,
         "epoch_seconds": T / 100,
-        "onset_epoch": onset_epoch,
+        "onset_epoch": onset_epoch,       # index into the source recording (manifest `epoch`)
         "channel_names": channel_names,
         "stage_legend": _STAGE_NAMES,
     }
     with meta_path.open("w") as fh:
         json.dump(meta, fh, indent=2)
 
-    print(f"[INFO] {class_dir}: written {written}, skipped {skipped} (total {E} epochs)")
+    print(f"[INFO] {class_dir}: written {written}, skipped {skipped}, "
+          f"dropped {dropped} (unscored) -> {n_datasets} datasets from {E} epochs")
     print(f"[INFO] Wrote per-epoch labels    -> {manifest_path}")
     print(f"[INFO] Wrote channel/dim metadata -> {meta_path}")
 
@@ -151,6 +167,13 @@ def main():
         default=project_root() / "data" / "sleep_onset",
         help="Root output directory (default: data/sleep_onset).",
     )
+    parser.add_argument(
+        "--scored-only",
+        action="store_true",
+        help="Drop epochs whose hypnogram stage is Unscored (code 8). Kept "
+        "epochs are re-indexed 0..N-1 as `instance`; the manifest `epoch` "
+        "column retains the original recording index.",
+    )
     args = parser.parse_args()
 
     label = slugify(args.label) if args.label else slugify(args.subject)
@@ -159,7 +182,7 @@ def main():
     _write_epochs(
         data, hypnogram, channel_names, onset_epoch,
         subject=args.subject, tensor=args.tensor, label=label,
-        out_root=args.output_dir,
+        out_root=args.output_dir, scored_only=args.scored_only,
     )
     print("[INFO] Done.")
 
