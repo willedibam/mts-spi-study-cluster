@@ -1,0 +1,132 @@
+base_output_dir: data/embeddings/proof_benchmarked90_260603/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 1
+
+defaults:
+  M_values: [5, 10, 20]
+  T_values: [500, 1000, 2000]
+  instances: 10
+
+mts_classes:
+  # --- VAR(1) ring-symmetric ---
+  - name: "var-phi-0.95_cpl-0.4"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.95
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-phi-0.2_cpl-0.4"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.2
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  - name: "var-phi-0.2_cpl-0.8"
+    labels: [var, linear, ring-symmetric]
+    generator: "varma"
+    base_params:
+      phi: 0.2
+      coupling: 0.8
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: "ring-symmetric"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto (fast-omega all-to-all, per user spec) ---
+  # omega_std = 3.0 / sqrt(3) (uniform-std moment match for U(0, 2*3)).
+  - name: "kuramoto_omega-fast"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 3.0
+      omega_std: 1.73205
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Kuramoto (slow-omega pyclustering port, unchanged from proof.yaml) ---
+  - name: "kuramoto_omega-slow"
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: "kuramoto"
+    base_params:
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 0.025
+      omega_std: 0.01443
+      eta: 0.0
+      output: "sin"
+      connectivity: "all-to-all"
+      transients: 100
+      zscore: true
+
+  # --- Null models ---
+  - name: "cauchy-noise"
+    labels: [noise, null, cauchy]
+    generator: "cauchy_noise"
+    base_params:
+      zscore: false
+
+  - name: "gaussian-noise"
+    labels: [noise, null, gaussian]
+    generator: "gaussian_noise"
+    base_params:
+      zscore: true
+
+  # --- Coupled Map Lattice : selected regimes ---
+  - name: "defect-turbulence"
+    labels: [cml, defect-turbulence]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: "sti-i"
+    labels: [cml, sti, directed-percolation]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: false
+      delta: [3, 6, 12]
+
+  # --- Wave equation (1D, random multi-mode Fourier IC) ---
+  # Each instance draws independent mode amplitudes/phases, so instances
+  # are not circular shifts of one another.
+  - name: "wave-1d"
+    labels: [wave, pde, 1d]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      n_modes: 5
+      ic_decay: 1.5
+      noise_std: 0.01
+      zscore: true
