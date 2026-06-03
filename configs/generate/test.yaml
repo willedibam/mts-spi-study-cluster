@@ -1,10 +1,9 @@
 base_output_dir: data/test/blended_config
 pyspi_config: configs/pyspi-v2/blended_config.yaml
-pyspi_subset: default
 normalise: false
 rng_seed: 110305
 save_heatmap: false
-threads: 4
+threads: 1
 timestamp: false
 
 defaults:

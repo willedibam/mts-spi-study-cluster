@@ -1,9 +1,5 @@
-# CML logistic lattice parameter sweep for embedding-space animation.
-# Two perpendicular sweeps through (alpha, eps) space, at fixed M=10, T=1000:
-#   - cml-alpha-sweep: eps=0.3 fixed, alpha in [1.40, 2.00] step 0.01 (61 variants)
-#   - cml-eps-sweep:   alpha=1.75 fixed, eps in [0.00, 0.60] step 0.01 (61 variants)
-# 20 instances per variant -> (61 + 61) * 20 = 2,440 datasets.
-# SPI set: benchmarked90_amortized_config.yaml (292 SPIs, ~5s-per-SPI threshold).
+# CML logistic lattice parameter sweep for embedding-space animation or other analysis.
+# SPI set: benchmarked90_amortized_config.yaml 
 #
 # Downstream: meta.json per dataset stores generator.params.{alpha,eps},
 # variant.{name,params}, instance_index. This is sufficient to reconstruct
@@ -11,14 +7,13 @@
 base_output_dir: data/embeddings/cml_param_sweep_260508/
 timestamp: false
 pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
-pyspi_subset: default
 normalise: false
 rng_seed: 110305
 save_heatmap: true
-threads: 4
+threads: 1
 
 defaults:
-  M_values: [10]
+  M_values: [20]
   T_values: [1000]
   instances: 20
 

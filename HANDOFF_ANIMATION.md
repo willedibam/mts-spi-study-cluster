@@ -4,7 +4,7 @@ Build two animations (α-sweep and ε-sweep) of CML parameter trajectories in a 
 
 ## Inputs
 
-Both use [configs/pyspi-v2/benchmarked_config.yaml](configs/pyspi-v2/benchmarked_config.yaml) (292 SPIs) at M=10, T=1000. Same SPI config → feature columns align.
+Both use [configs/pyspi-v2/benchmarked90_amortized_config.yaml](configs/pyspi-v2/benchmarked90_amortized_config.yaml) (295 SPIs) at M=10, T=1000. Same SPI config → feature columns align. (Historical: anchors were originally generated against `benchmarked_config.yaml`, 292 SPIs; that config has since been replaced by the cache-aware amortized cut.)
 
 | Dataset | Path | Count | Notes |
 |---|---|---|---|

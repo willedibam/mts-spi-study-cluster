@@ -1,11 +1,10 @@
 base_output_dir: data/embeddings/proof_260420/
 timestamp: false
-pyspi_config: configs/pyspi-v2/blended_sonnet_config.yaml
-pyspi_subset: default
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true
-threads: 4
+threads: 1
 
 defaults:
   M_values: [5, 10, 20]

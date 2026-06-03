@@ -1,0 +1,155 @@
+#!/bin/bash
+#PBS -N pyspi_run
+#PBS -l select=1:ncpus=4:mem=8gb
+#PBS -l walltime=04:00:00
+#PBS -j oe
+#PBS -m bea
+#PBS -M wedi0306@uni.sydney.edu.au
+
+# Generic single-experiment PBS array runner for the USYD Physics cluster.
+# One dataset per array index (--job-index $PBS_ARRAY_INDEX). Replaces the
+# 11 near-identical run_*.pbs scripts so the env block can never drift.
+#
+# Required:
+#   -v CONFIG=<experiment-config path>   experiment YAML
+#   -J <range>                           one index per dataset (set at submit)
+# Optional:
+#   -v CORES_PER_DATASET=N   pyspi worker processes per dataset (default 1).
+#                            Raise above 1 only if one dataset busts walltime.
+#   -v PYSPI_CONFIG=<path>   pyspi config override (passed as --pyspi-config).
+#
+# The #PBS directives above are sane defaults; qsub command-line flags
+# override them, so the submitter sets -J / -l walltime / -l select per
+# experiment. ncpus stays at 4 — one core per concurrent dataset is the
+# efficient allocation; CORES_PER_DATASET>1 only when walltime forces it.
+#
+# ---------------------------------------------------------------------------
+# Ready-to-run qsub one-liners (run from the project root). Each preserves the
+# config path, -J range, walltime and ncpus of the script it replaces.
+#
+#   # cml (was run_cml.pbs)
+#   qsub -J 1-900 -l walltime=04:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/embeddings/cml.yaml jobs/physics/run.pbs
+#
+#   # cml_alpha_sweep (was run_cml_alpha_sweep.pbs)
+#   qsub -J 1-123 -l walltime=01:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/embeddings/cml_alpha_sweep.yaml jobs/physics/run.pbs
+#
+#   # cml_small (was run_cml_small.pbs)
+#   qsub -J 1-900 -l walltime=02:00:00 -l select=1:ncpus=2:mem=24gb \
+#       -v CONFIG=configs/generate/embeddings/cml-small.yaml jobs/physics/run.pbs
+#
+#   # dtw_euclidean (was run_dtw_euclidean.pbs)
+#   qsub -J 1-150 -l walltime=04:00:00 -l select=1:ncpus=4:mem=4gb \
+#       -v CONFIG=configs/generate/dtw_euclidean/260313_lagged.yaml jobs/physics/run.pbs
+#
+#   # eeml (was run_eeml.pbs)
+#   qsub -J 1-3000 -l walltime=04:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/eeml.yaml jobs/physics/run.pbs
+#
+#   # proof (was run_proof.pbs)
+#   qsub -J 1-900 -l walltime=06:00:00 -l select=1:ncpus=2:mem=24gb \
+#       -v CONFIG=configs/generate/embeddings/proof-benchmarked.yaml jobs/physics/run.pbs
+#
+#   # r_rho_mi (was run_r_rho_mi.pbs)
+#   qsub -J 1-90 -l walltime=04:00:00 -l select=1:ncpus=4:mem=4gb \
+#       -v CONFIG=configs/generate/r_rho_mi/260305_tanh-sin.yaml jobs/physics/run.pbs
+#
+#   # r_rho_mi_param_sweep (was run_r_rho_mi_param_sweep.pbs) — one qsub per sweep config:
+#   qsub -J 1-900 -l walltime=04:00:00 -l select=1:ncpus=4:mem=4gb \
+#       -v CONFIG=configs/generate/r_rho_mi/sweep_260323/a_0.5.yaml jobs/physics/run.pbs
+#   # ...or loop the manifest:
+#   while IFS= read -r cfg; do
+#     qsub -J 1-900 -l walltime=04:00:00 -l select=1:ncpus=4:mem=4gb \
+#       -v CONFIG="$cfg" jobs/physics/run.pbs
+#   done < configs/generate/r_rho_mi/sweep_260323/manifest.txt
+#
+#   # selfreg (was run_selfreg.pbs) — run src/prep_selfreg.py once first
+#   qsub -J 1-561 -l walltime=04:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/selfreg.yaml jobs/physics/run.pbs
+#
+#   # test (was run_test.pbs) — needs the pyspi test config
+#   qsub -J 1-16 -l walltime=00:30:00 -l select=1:ncpus=2:mem=2gb \
+#       -v CONFIG=configs/generate/test.yaml,PYSPI_CONFIG=configs/pyspi/test_config.yaml \
+#       jobs/physics/run.pbs
+#
+#   # uea (was run_uea.pbs) — generic per-UEA-dataset, -J range from prep_uea.py:
+#   qsub -J 1-80   -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/basicmotions.yaml jobs/physics/run.pbs
+#   qsub -J 1-408  -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/handmovementdirection.yaml jobs/physics/run.pbs
+#   qsub -J 1-259  -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/eigenworms.yaml jobs/physics/run.pbs
+#   qsub -J 1-575  -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/articularywordrecognition.yaml jobs/physics/run.pbs
+#   qsub -J 1-180  -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/cricket.yaml jobs/physics/run.pbs
+#   qsub -J 1-6668 -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/phonemespectra.yaml jobs/physics/run.pbs
+#   qsub -J 1-360  -l walltime=08:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/natops.yaml jobs/physics/run.pbs
+#   qsub -J 1-378  -l walltime=24:00:00 -l select=1:ncpus=4:mem=8gb \
+#       -v CONFIG=configs/generate/motorimagery.yaml jobs/physics/run.pbs
+#       # ^ MotorImagery: M=64, ~4096 pairs — needs extra walltime
+# ---------------------------------------------------------------------------
+
+set -euo pipefail
+
+if [[ -z "${PBS_O_WORKDIR:-}" ]]; then
+  echo "[ERROR] PBS_O_WORKDIR not set — must be submitted via qsub."
+  exit 1
+fi
+
+if [[ -z "${CONFIG:-}" ]]; then
+  echo "[ERROR] CONFIG not set. Use: qsub -v CONFIG=path/to/experiment.yaml ..."
+  exit 1
+fi
+
+cd "$PBS_O_WORKDIR"
+
+if [[ ! -f "$CONFIG" ]]; then
+  echo "[ERROR] Experiment config not found: $CONFIG"
+  exit 1
+fi
+
+CORES_PER_DATASET="${CORES_PER_DATASET:-1}"
+
+LOG_DIR="$PBS_O_WORKDIR/logs"
+mkdir -p "$LOG_DIR"
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+CFG_LABEL=$(basename "$CONFIG" .yaml)
+JOB_LABEL="${PBS_JOBNAME}_${CFG_LABEL}_${ARRAY_ID}"
+exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
+
+module purge
+source .venv/bin/activate
+
+# Pin BLAS threads to 1 — BLAS otherwise detects the host's physical core
+# count and oversubscribes the cgroup PBS assigned across concurrent processes.
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+
+# cdt (imported transitively by pyspi.statistics.causal) does
+# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time.
+# On PBS compute nodes the var is set to an empty string, which crashes
+# literal_eval with SyntaxError. Unsetting forces cdt's fallback path.
+unset CUDA_VISIBLE_DEVICES
+
+PYSPI_CONFIG_ARGS=()
+if [[ -n "${PYSPI_CONFIG:-}" ]]; then
+  PYSPI_CONFIG_ARGS=(--pyspi-config "$PYSPI_CONFIG")
+fi
+
+echo "[INFO] config=$CONFIG  array index=$ARRAY_ID  cores_per_dataset=$CORES_PER_DATASET"
+echo "[INFO] started=$(date) on $(hostname)"
+python -m src.run_experiments \
+  --job-index "$ARRAY_ID" \
+  --skip-existing \
+  --experiment-config "$CONFIG" \
+  "${PYSPI_CONFIG_ARGS[@]}" \
+  --n-jobs "$CORES_PER_DATASET" \
+  --parquet
+echo "[INFO] Finished at $(date)"

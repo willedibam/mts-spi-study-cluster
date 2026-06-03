@@ -1,20 +1,19 @@
-base_output_dir: data/embeddings/proof_benchmarked_260505/
+base_output_dir: data/embeddings/proof_benchmarked95_260603/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_config.yaml
-pyspi_subset: default
+pyspi_config: configs/pyspi-v2/benchmarked95_amortized_config.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true
-threads: 4
+threads: 1
 
 defaults:
-  M_values: [4, 10, 20]
+  M_values: [5, 10, 20]
   T_values: [500, 1000, 2000]
   instances: 10
 
 mts_classes:
   # --- VAR(1) ring-symmetric ---
-  - name: "var-ring-sym_phi-0.95_cpl-0.4"
+  - name: "var-phi-0.95_cpl-0.4"
     labels: [var, linear, ring-symmetric]
     generator: "varma"
     base_params:
@@ -27,7 +26,7 @@ mts_classes:
       transients: 100
       zscore: true
 
-  - name: "var-ring-sym_phi-0.2_cpl-0.4"
+  - name: "var-phi-0.2_cpl-0.4"
     labels: [var, linear, ring-symmetric]
     generator: "varma"
     base_params:
@@ -40,7 +39,7 @@ mts_classes:
       transients: 100
       zscore: true
 
-  - name: "var-ring-sym_phi-0.2_cpl-0.8"
+  - name: "var-phi-0.2_cpl-0.8"
     labels: [var, linear, ring-symmetric]
     generator: "varma"
     base_params:

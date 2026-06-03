@@ -1,11 +1,10 @@
 base_output_dir: data/embeddings/cml-small/
 timestamp: false
 pyspi_config: configs/pyspi-v2/blended_config.yaml
-pyspi_subset: default
 normalise: false
 rng_seed: 110305
 save_heatmap: true
-threads: 4
+threads: 1
 
 defaults:
   M_values: [4]

@@ -1,7 +1,6 @@
 base_output_dir: data/selfreg/
 timestamp: false
 pyspi_config: configs/pyspi-v2/cases/eeml.yaml
-pyspi_subset: default
 normalise: false
 rng_seed: 110305
 save_heatmap: false

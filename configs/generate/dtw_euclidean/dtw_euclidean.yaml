@@ -1,6 +1,5 @@
 base_output_dir: data/dtw_euclidean_1.2/
 pyspi_config: configs/pyspi-v2/cases/dtw_euclidean.yaml
-pyspi_subset: default
 normalise: false
 rng_seed: 42
 save_heatmap: false

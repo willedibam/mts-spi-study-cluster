@@ -9,11 +9,10 @@
 base_output_dir: data/embeddings/waves_260424/
 timestamp: false
 pyspi_config: configs/pyspi-v2/blended_sonnet_config.yaml
-pyspi_subset: default
 normalise: false
 rng_seed: 110305
 save_heatmap: true
-threads: 4
+threads: 1
 
 defaults:
   # M_values: [9, 16, 25]
