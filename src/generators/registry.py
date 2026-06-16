@@ -16,6 +16,7 @@ from .dynamical import (
     generate_kuramoto,
     generate_kuramoto_all_to_all,
     generate_kuramoto_bidirectional_list,
+    generate_kuramoto_explosive,
     generate_kuramoto_grid_four,
     generate_mackey_glass,
 )
@@ -68,6 +69,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "kuramoto": generate_kuramoto,
     "kuramoto_all_to_all": generate_kuramoto_all_to_all,
     "kuramoto_bidirectional_list": generate_kuramoto_bidirectional_list,
+    "kuramoto_explosive": generate_kuramoto_explosive,
     "kuramoto_grid_four": generate_kuramoto_grid_four,
     "gaussian_noise": generate_gaussian_noise,
     "cauchy_noise": generate_cauchy_noise,

@@ -1,0 +1,22 @@
+[
+  "cov_EmpiricalCovariance",
+  "corr_pearson_tau-1",
+  "corr_spearman_tau-1",
+  "xcorr_max_sig-True",
+  "corr_spearman_tau-5",
+  "prec-sq_ShrunkCovariance",
+  "pdist_euclidean",
+  "corr_spearman_tau-2",
+  "xme_gaussian_k1",
+  "corr_pearson_tau-5-sq",
+  "dtw",
+  "ce_gaussian",
+  "corr_pearson_tau-2-sq",
+  "xme_gaussian_k10",
+  "cov_MinCovDet",
+  "bary-sq_euclidean_mean",
+  "tlmi_gaussian",
+  "corr_pearson_tau-5",
+  "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10",
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1"
+]

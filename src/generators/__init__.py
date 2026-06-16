@@ -11,6 +11,7 @@ from .dynamical import (
     generate_kuramoto,
     generate_kuramoto_all_to_all,
     generate_kuramoto_bidirectional_list,
+    generate_kuramoto_explosive,
     generate_kuramoto_grid_four,
     generate_mackey_glass,
 )
@@ -66,6 +67,7 @@ __all__ = [
     "generate_kuramoto",
     "generate_kuramoto_all_to_all",
     "generate_kuramoto_bidirectional_list",
+    "generate_kuramoto_explosive",
     "generate_kuramoto_grid_four",
     "generate_mackey_glass",
     "generate_mts_master",

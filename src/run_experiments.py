@@ -19,7 +19,9 @@ from .generators.chat import generate_var_chat_a, generate_var_chat_b, generate_
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
-from .utils import dump_json, ensure_dir, project_root, slugify, timestamp, to_relative
+from .utils import dump_json, ensure_dir, load_json, project_root, slugify, timestamp, to_relative
+
+import inspect
 
 
 def _resolve_path(path_value: str) -> Path:
@@ -398,7 +400,29 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             T=spec.T,
             **generator_params,
         )
+    gen_extras.setdefault("resolved_params", _resolve_generator_params(spec.generator, generator_params))
     return data, gen_extras
+
+
+def _resolve_generator_params(generator: str | None, provided: dict) -> dict:
+    """Full effective parameter set: generator-signature defaults overlaid with
+    provided params. Records what actually ran, including unspecified defaults.
+    Best-effort: returns just `provided` if the signature can't be introspected.
+    """
+    skip = {"M", "T", "rng", "seed", "return_internals", "return_final_state", "init_state"}
+    try:
+        fn = generate.GENERATOR_REGISTRY.get(generator)
+        sig = inspect.signature(fn)
+        resolved: dict = {}
+        for name, p in sig.parameters.items():
+            if name in skip or p.kind in (p.VAR_POSITIONAL, p.VAR_KEYWORD):
+                continue
+            if p.default is not inspect._empty:
+                resolved[name] = p.default
+        resolved.update(provided)
+        return resolved
+    except (TypeError, ValueError):
+        return dict(provided)
 
 
 def _load_existing_timeseries(spec) -> tuple[np.ndarray, Path] | None:
@@ -673,6 +697,14 @@ def _build_metadata(
                 **(gen_extras or {}),
             }
         )
+        # Fold in pre-seed provenance (e.g. adiabatic-continuation network_seed,
+        # branch, dK) when the timeseries was produced outside the harness.
+        prov_path = Path(spec.dataset_dir) / "gen_provenance.json"
+        if prov_path.exists():
+            try:
+                source_block["preseed"] = load_json(prov_path)
+            except (ValueError, OSError):
+                pass
     elif spec.source == "real":
         source_block.update(
             {

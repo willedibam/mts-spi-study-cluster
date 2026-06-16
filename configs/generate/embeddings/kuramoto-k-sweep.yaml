@@ -1,0 +1,93 @@
+# Kuramoto all-to-all synchronization sweep (coupling K) for SPI-SPI order-parameter inference.
+# SPI set: benchmarked90_amortized_config.yaml
+#
+# WHY THIS EXPERIMENT: the all-to-all Kuramoto model has an EXACT, textbook
+# second-order phase transition with order parameter r = |<e^{i theta}>| and a
+# known critical coupling K_c = 2/(pi g(0)) ~= 1.596*sigma for Gaussian natural
+# frequencies (sigma = omega_std). This gives unambiguous ground truth to test
+# whether the unsupervised SPI-SPI embedding recovers a genuine order parameter
+# (validated empirically: dynamical.py reproduces K_c ~= 1.6, r ~ 1/sqrt(N) below,
+# r -> 1 above; transition sharpens with N).
+#
+# TOPOLOGY: all-to-all (mean-field) is the ONLY connectivity with a sharp
+# synchronization transition. 1D ring (bidirectional-list) has NO transition in
+# the thermodynamic limit (short-range 1D -> no long-range order) -> do not use.
+#
+# M = system size N (NOT an observation window). Small N -> strong finite-size
+# rounding (r floor ~ 1/sqrt(N)). M=64 gives a clean transition + 2016 SPI edges.
+# For finite-size scaling (the strongest validation) regenerate with
+# M_values: [16, 32, 64, 128] (compute ~ O(M^2) per dataset).
+#
+# omega_mean=1.0 keeps the synchronized cluster rotating (oscillatory signals,
+# non-degenerate SPIs); K_c is invariant to omega_mean (verified).
+#
+# Downstream: meta.json stores generator.params.{K,omega_std,...}, variant, instance.
+base_output_dir: data/embeddings/kuramoto_k_sweep_260616/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 1
+
+defaults:
+  M_values: [32]          # system size N; FSS later: [16, 32, 64, 128]
+  T_values: [2000]        # 100 time units @ dt=0.05 ~= 16 natural periods
+  instances: 10
+
+mts_classes:
+  - name: "kuramoto-k-sweep"
+    labels: [kuramoto, k-sweep, all-to-all]
+    generator: "kuramoto"
+    base_params:
+      connectivity: "all-to-all"
+      omega_mean: 1.0
+      omega_std: 1.0       # K_c = 1.596 * omega_std ~= 1.60
+      dt: 0.05
+      transients: 4000     # 200 time units (covers critical slowing near K_c)
+      eta: 0.05            # phase noise: breaks synced rank-2 degeneracy, keeps K_c
+      output: "sin"
+      zscore: false
+    include_base_variant: false
+    variants:
+      - { name: "k0p00", params: { K: 0.00 } }
+      - { name: "k0p10", params: { K: 0.10 } }
+      - { name: "k0p20", params: { K: 0.20 } }
+      - { name: "k0p30", params: { K: 0.30 } }
+      - { name: "k0p40", params: { K: 0.40 } }
+      - { name: "k0p50", params: { K: 0.50 } }
+      - { name: "k0p60", params: { K: 0.60 } }
+      - { name: "k0p70", params: { K: 0.70 } }
+      - { name: "k0p80", params: { K: 0.80 } }
+      - { name: "k0p90", params: { K: 0.90 } }
+      - { name: "k1p00", params: { K: 1.00 } }
+      - { name: "k1p10", params: { K: 1.10 } }
+      - { name: "k1p20", params: { K: 1.20 } }
+      - { name: "k1p30", params: { K: 1.30 } }
+      - { name: "k1p40", params: { K: 1.40 } }
+      - { name: "k1p50", params: { K: 1.50 } }
+      - { name: "k1p60", params: { K: 1.60 } }
+      - { name: "k1p70", params: { K: 1.70 } }
+      - { name: "k1p80", params: { K: 1.80 } }
+      - { name: "k1p90", params: { K: 1.90 } }
+      - { name: "k2p00", params: { K: 2.00 } }
+      - { name: "k2p10", params: { K: 2.10 } }
+      - { name: "k2p20", params: { K: 2.20 } }
+      - { name: "k2p30", params: { K: 2.30 } }
+      - { name: "k2p40", params: { K: 2.40 } }
+      - { name: "k2p50", params: { K: 2.50 } }
+      - { name: "k2p60", params: { K: 2.60 } }
+      - { name: "k2p70", params: { K: 2.70 } }
+      - { name: "k2p80", params: { K: 2.80 } }
+      - { name: "k2p90", params: { K: 2.90 } }
+      - { name: "k3p00", params: { K: 3.00 } }
+      - { name: "k3p10", params: { K: 3.10 } }
+      - { name: "k3p20", params: { K: 3.20 } }
+      - { name: "k3p30", params: { K: 3.30 } }
+      - { name: "k3p40", params: { K: 3.40 } }
+      - { name: "k3p50", params: { K: 3.50 } }
+      - { name: "k3p60", params: { K: 3.60 } }
+      - { name: "k3p70", params: { K: 3.70 } }
+      - { name: "k3p80", params: { K: 3.80 } }
+      - { name: "k3p90", params: { K: 3.90 } }
+      - { name: "k4p00", params: { K: 4.00 } }

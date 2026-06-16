@@ -1,0 +1,138 @@
+# Explosive (first-order) Kuramoto synchronization sweep on a BA scale-free network.
+# SPI set: benchmarked90_amortized_config.yaml
+#
+# FIRST-ORDER / HYSTERETIC transition (Gomez-Gardenes et al., PRL 2011): omega_i ∝ degree_i
+# on a Barabasi-Albert net yields a discontinuous r jump + a hysteresis loop. Validated with
+# this generator (M=32, dt=0.01, sample_every=4, eta=0.05): forward jumps ~K=1.10, backward
+# drops ~K=0.90, bistable window K in [0.90, 1.10]; random-IC samples only the lower branch
+# (=> continuation required). eta=0.05 breaks the rank-2 collinearity of the fully-synced state
+# (synced corr-rank 2->32), keeping pairwise SPIs well-defined without shifting the loop.
+#
+# *** THIS CONFIG IS NOT SELF-GENERATING ***
+# Hysteresis needs quasi-static continuation (each K seeded from the previous K's final state),
+# which is sequential and cannot be produced by the harness's independent random-IC generation.
+# WORKFLOW:
+#   1. python -m src.preseed_explosive --config configs/generate/embeddings/kuramoto-explosive-sweep.yaml
+#        -> runs forward+backward adiabatic sweeps per instance, writes timeseries.npy into each
+#           dataset dir (forward: K ascending from random IC; backward: K descending from synced IC).
+#   2. run the standard harness (run_experiments) -> it finds the cached timeseries.npy, SKIPS
+#      regeneration, and runs pyspi in parallel as usual.
+#   3. process_features as usual.
+#
+# dK=0.05 is REQUIRED: dK=0.1 fails to resolve the ~0.20-wide loop (verified). The located
+# K_fwd/K_bwd depend on dK and the per-step settle (transients); these are experiment parameters.
+#
+# M = system size N. Network fixed per instance (network_seed=instance), shared by fwd+bwd.
+# Datasets: 41 K x 2 branches x instances. FSS: regenerate with M_values [16,32,64,128].
+# Recorded span = T * sample_every * dt = 2000*4*0.01 = 80 time units (~38 cycles of the
+# slowest, omega=degree_min=3) so phase/coherence SPIs see enough oscillation cycles.
+base_output_dir: data/embeddings/kuramoto_explosive_260616/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 1
+
+defaults:
+  M_values: [32]          # system size N; FSS later: [16, 32, 64, 128]
+  T_values: [2000]
+  instances: 10
+
+mts_classes:
+  - name: "kuramoto-explosive-sweep"
+    labels: [kuramoto, explosive, k-sweep, scale-free, hysteresis]
+    generator: "kuramoto_explosive"
+    base_params:
+      m_ba: 3
+      omega_scale: 1.0
+      dt: 0.01
+      sample_every: 4       # record every 4th step -> 80 t.u. span (~38 cycles of slowest)
+      eta: 0.05             # phase noise: breaks synced rank-2 degeneracy, keeps K_c
+      transients: 4000      # per-step settle for adiabatic continuation (40 t.u. @ dt=0.01)
+      output: "sin"
+      zscore: false
+    include_base_variant: false
+    variants:
+      - { name: "k0p00_for", params: { K: 0.00, branch: "forward" } }
+      - { name: "k0p05_for", params: { K: 0.05, branch: "forward" } }
+      - { name: "k0p10_for", params: { K: 0.10, branch: "forward" } }
+      - { name: "k0p15_for", params: { K: 0.15, branch: "forward" } }
+      - { name: "k0p20_for", params: { K: 0.20, branch: "forward" } }
+      - { name: "k0p25_for", params: { K: 0.25, branch: "forward" } }
+      - { name: "k0p30_for", params: { K: 0.30, branch: "forward" } }
+      - { name: "k0p35_for", params: { K: 0.35, branch: "forward" } }
+      - { name: "k0p40_for", params: { K: 0.40, branch: "forward" } }
+      - { name: "k0p45_for", params: { K: 0.45, branch: "forward" } }
+      - { name: "k0p50_for", params: { K: 0.50, branch: "forward" } }
+      - { name: "k0p55_for", params: { K: 0.55, branch: "forward" } }
+      - { name: "k0p60_for", params: { K: 0.60, branch: "forward" } }
+      - { name: "k0p65_for", params: { K: 0.65, branch: "forward" } }
+      - { name: "k0p70_for", params: { K: 0.70, branch: "forward" } }
+      - { name: "k0p75_for", params: { K: 0.75, branch: "forward" } }
+      - { name: "k0p80_for", params: { K: 0.80, branch: "forward" } }
+      - { name: "k0p85_for", params: { K: 0.85, branch: "forward" } }
+      - { name: "k0p90_for", params: { K: 0.90, branch: "forward" } }
+      - { name: "k0p95_for", params: { K: 0.95, branch: "forward" } }
+      - { name: "k1p00_for", params: { K: 1.00, branch: "forward" } }
+      - { name: "k1p05_for", params: { K: 1.05, branch: "forward" } }
+      - { name: "k1p10_for", params: { K: 1.10, branch: "forward" } }
+      - { name: "k1p15_for", params: { K: 1.15, branch: "forward" } }
+      - { name: "k1p20_for", params: { K: 1.20, branch: "forward" } }
+      - { name: "k1p25_for", params: { K: 1.25, branch: "forward" } }
+      - { name: "k1p30_for", params: { K: 1.30, branch: "forward" } }
+      - { name: "k1p35_for", params: { K: 1.35, branch: "forward" } }
+      - { name: "k1p40_for", params: { K: 1.40, branch: "forward" } }
+      - { name: "k1p45_for", params: { K: 1.45, branch: "forward" } }
+      - { name: "k1p50_for", params: { K: 1.50, branch: "forward" } }
+      - { name: "k1p55_for", params: { K: 1.55, branch: "forward" } }
+      - { name: "k1p60_for", params: { K: 1.60, branch: "forward" } }
+      - { name: "k1p65_for", params: { K: 1.65, branch: "forward" } }
+      - { name: "k1p70_for", params: { K: 1.70, branch: "forward" } }
+      - { name: "k1p75_for", params: { K: 1.75, branch: "forward" } }
+      - { name: "k1p80_for", params: { K: 1.80, branch: "forward" } }
+      - { name: "k1p85_for", params: { K: 1.85, branch: "forward" } }
+      - { name: "k1p90_for", params: { K: 1.90, branch: "forward" } }
+      - { name: "k1p95_for", params: { K: 1.95, branch: "forward" } }
+      - { name: "k2p00_for", params: { K: 2.00, branch: "forward" } }
+      - { name: "k2p00_bac", params: { K: 2.00, branch: "backward" } }
+      - { name: "k1p95_bac", params: { K: 1.95, branch: "backward" } }
+      - { name: "k1p90_bac", params: { K: 1.90, branch: "backward" } }
+      - { name: "k1p85_bac", params: { K: 1.85, branch: "backward" } }
+      - { name: "k1p80_bac", params: { K: 1.80, branch: "backward" } }
+      - { name: "k1p75_bac", params: { K: 1.75, branch: "backward" } }
+      - { name: "k1p70_bac", params: { K: 1.70, branch: "backward" } }
+      - { name: "k1p65_bac", params: { K: 1.65, branch: "backward" } }
+      - { name: "k1p60_bac", params: { K: 1.60, branch: "backward" } }
+      - { name: "k1p55_bac", params: { K: 1.55, branch: "backward" } }
+      - { name: "k1p50_bac", params: { K: 1.50, branch: "backward" } }
+      - { name: "k1p45_bac", params: { K: 1.45, branch: "backward" } }
+      - { name: "k1p40_bac", params: { K: 1.40, branch: "backward" } }
+      - { name: "k1p35_bac", params: { K: 1.35, branch: "backward" } }
+      - { name: "k1p30_bac", params: { K: 1.30, branch: "backward" } }
+      - { name: "k1p25_bac", params: { K: 1.25, branch: "backward" } }
+      - { name: "k1p20_bac", params: { K: 1.20, branch: "backward" } }
+      - { name: "k1p15_bac", params: { K: 1.15, branch: "backward" } }
+      - { name: "k1p10_bac", params: { K: 1.10, branch: "backward" } }
+      - { name: "k1p05_bac", params: { K: 1.05, branch: "backward" } }
+      - { name: "k1p00_bac", params: { K: 1.00, branch: "backward" } }
+      - { name: "k0p95_bac", params: { K: 0.95, branch: "backward" } }
+      - { name: "k0p90_bac", params: { K: 0.90, branch: "backward" } }
+      - { name: "k0p85_bac", params: { K: 0.85, branch: "backward" } }
+      - { name: "k0p80_bac", params: { K: 0.80, branch: "backward" } }
+      - { name: "k0p75_bac", params: { K: 0.75, branch: "backward" } }
+      - { name: "k0p70_bac", params: { K: 0.70, branch: "backward" } }
+      - { name: "k0p65_bac", params: { K: 0.65, branch: "backward" } }
+      - { name: "k0p60_bac", params: { K: 0.60, branch: "backward" } }
+      - { name: "k0p55_bac", params: { K: 0.55, branch: "backward" } }
+      - { name: "k0p50_bac", params: { K: 0.50, branch: "backward" } }
+      - { name: "k0p45_bac", params: { K: 0.45, branch: "backward" } }
+      - { name: "k0p40_bac", params: { K: 0.40, branch: "backward" } }
+      - { name: "k0p35_bac", params: { K: 0.35, branch: "backward" } }
+      - { name: "k0p30_bac", params: { K: 0.30, branch: "backward" } }
+      - { name: "k0p25_bac", params: { K: 0.25, branch: "backward" } }
+      - { name: "k0p20_bac", params: { K: 0.20, branch: "backward" } }
+      - { name: "k0p15_bac", params: { K: 0.15, branch: "backward" } }
+      - { name: "k0p10_bac", params: { K: 0.10, branch: "backward" } }
+      - { name: "k0p05_bac", params: { K: 0.05, branch: "backward" } }
+      - { name: "k0p00_bac", params: { K: 0.00, branch: "backward" } }

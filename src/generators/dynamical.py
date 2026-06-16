@@ -251,6 +251,101 @@ def generate_kuramoto_grid_four(*args, k: float, **kwargs) -> np.ndarray:
     return generate_kuramoto(*args, k=k, connectivity="grid-four", **kwargs)
 
 
+def _barabasi_albert_adjacency(M: int, m_ba: int, seed: int) -> np.ndarray:
+    """Symmetric BA scale-free adjacency on M nodes (deterministic in `seed`).
+
+    The network is seeded independently of the dynamics RNG so it can be held
+    FIXED while the coupling K is swept (required for hysteresis continuation).
+    """
+    if m_ba < 1 or m_ba >= M:
+        raise ValueError(f"m_ba must satisfy 1 <= m_ba < M (got m_ba={m_ba}, M={M}).")
+    rng = np.random.default_rng(seed)
+    A = np.zeros((M, M), dtype=float)
+    for i in range(m_ba + 1):  # seed clique
+        for j in range(i + 1, m_ba + 1):
+            A[i, j] = A[j, i] = 1.0
+    deg = A.sum(1)
+    for new in range(m_ba + 1, M):
+        probs = deg[:new] / deg[:new].sum()
+        for t in rng.choice(new, size=m_ba, replace=False, p=probs):
+            A[new, t] = A[t, new] = 1.0
+        deg = A.sum(1)
+    return A
+
+
+def generate_kuramoto_explosive(
+    M: int,
+    T: int,
+    dt: float = 0.005,
+    K: float = 1.0,
+    m_ba: int = 3,
+    omega_scale: float = 1.0,
+    transients: int = 3000,
+    sample_every: int = 1,
+    eta: float = 0.0,
+    output: str = "sin",
+    network_seed: int = 0,
+    init_state: np.ndarray | None = None,
+    return_final_state: bool = False,
+    rng=None,
+    zscore: bool = True,
+    **_ignored,  # tolerate sweep-only params (e.g. branch) passed through generator_params
+) -> np.ndarray:
+    """Explosive (first-order) Kuramoto synchronization on a BA scale-free network.
+
+    Frequency-degree correlation omega_i = omega_scale * degree_i (Gomez-Gardenes
+    et al., PRL 2011) produces a discontinuous, hysteretic synchronization
+    transition. Coupling is unnormalised: dtheta_i = omega_i + K * sum_j A_ij
+    sin(theta_j - theta_i) + eta * sqrt(dt) * N(0,1).
+
+    eta: phase-noise amplitude (Euler-Maruyama). A small eta>0 breaks the rank-2
+        collinearity of the fully-synchronized state, keeping pairwise SPIs
+        well-defined, without shifting the transition.
+    sample_every: integrate at `dt` but record every `sample_every`-th step, so the
+        recorded span (T * sample_every * dt time units) covers enough oscillation
+        cycles without a tiny dt forcing a short window.
+
+    HYSTERESIS requires quasi-static continuation: pass the previous K's final
+    phases via `init_state` (use `return_final_state=True` to chain). With a fresh
+    random IC (init_state=None) you sample one branch, not the loop. The network is
+    fixed by `network_seed` and must be held constant across the K-sweep.
+    """
+    rng = _resolve_rng(None, rng)
+    M = int(M); T = int(T)
+    transients = max(0, int(transients))
+    sample_every = max(1, int(sample_every))
+    sqrt_dt = np.sqrt(dt)
+    A = _barabasi_albert_adjacency(M, int(m_ba), int(network_seed))
+    omega = float(omega_scale) * A.sum(1)
+
+    if init_state is None:
+        theta = rng.uniform(0.0, 2.0 * np.pi, size=M)
+    else:
+        theta = np.mod(np.asarray(init_state, dtype=float).reshape(M), 2.0 * np.pi)
+
+    def _step(th):
+        cpl = (A * np.sin(th[None, :] - th[:, None])).sum(axis=1)
+        noise = eta * sqrt_dt * rng.standard_normal(M) if eta else 0.0
+        return np.mod(th + (omega + K * cpl) * dt + noise, 2.0 * np.pi)
+
+    for _ in range(transients):
+        theta = _step(theta)
+    Y = np.zeros((T, M), dtype=float)
+    for t in range(T):
+        for _ in range(sample_every):
+            theta = _step(theta)
+        if output == "cos":
+            Y[t] = np.cos(theta)
+        elif output == "phase":
+            Y[t] = theta
+        else:
+            Y[t] = np.sin(theta)
+    result = _maybe_zscore(Y, zscore=zscore)
+    if return_final_state:
+        return result, theta.copy()
+    return result
+
+
 def generate_mackey_glass(
     M: int,
     T: int,
