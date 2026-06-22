@@ -917,3 +917,126 @@ def generate_sin_mts_mother(
 
     return _maybe_zscore(data, zscore=zscore)
 
+
+@dataclass
+class FilterRollInternals:
+    """Internals returned by generate_filter_roll_mts when return_internals=True."""
+    types: list             # (M,) per-channel filter family: linear|monotonic|non-monotonic
+    betas: np.ndarray       # (M,) sigmoid gain (np.nan unless monotonic)
+    noise_stds: np.ndarray  # (M,) per-channel noise std (sets SNR on unit-variance signal)
+    mother: np.ndarray      # (T,) standardised AR(1) mother shared by all channels
+
+
+def _sigmoid(x: np.ndarray) -> np.ndarray:
+    return 1.0 / (1.0 + np.exp(-x))
+
+
+def generate_filter_roll_mts(
+    M: int,
+    T: int,
+    n_linear: int | None = None,
+    n_monotonic: int | None = None,
+    n_nonmonotonic: int | None = None,
+    beta: float = 4.0,
+    noise_std: float = 0.1,
+    noise_std_variable: bool = True,
+    noise_std_scale: float = 2.0,
+    ar1_a: float = 0.8,
+    ar1_noise_std: float = 1.0,
+    zscore: bool = True,
+    rng=None,
+    mother: np.ndarray | None = None,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, FilterRollInternals]:
+    """
+    M-channel MTS where each channel is a filtered copy of one shared AR(1) mother z,
+    standardised to unit variance, plus per-channel Gaussian noise.
+
+    The channel filter family g is "rolled" per channel to span the functional-form
+    hierarchy probed by the {r, rho, MI} case study:
+        "linear"        g(z) = z
+        "monotonic"     g(z) = sigmoid(beta * z)        (monotone nonlinear)
+        "non-monotonic" g(z) = (z - mean(z))^2 = z^2    (symmetric -> r = rho = 0)
+
+    Each g is standardised to unit variance BEFORE noise, so filter shape (which SPIs can
+    detect a pairwise relationship) is decoupled from SNR (how strongly):
+        - filter family -> shape of the channel-channel curve  (SPI disagreement axis)
+        - noise_std     -> thickness/SNR of that curve = 1/noise_std^2 (strength axis)
+    The per-channel noise_std spread (noise_std_variable) gives the SPI matrices the
+    across-pair variance the corr(SPI_i, SPI_j) meta-feature needs.
+
+    Channel assignment is ordered: first n_linear linear, next n_monotonic monotonic,
+    remaining n_nonmonotonic non-monotonic. The three case-study iterations are encoded
+    as separate experiment classes via these counts:
+        iter 1 {L}       : n_linear=M
+        iter 2 {L,M}     : n_linear=M//2, n_monotonic=M-M//2
+        iter 3 {L,M,+NM} : small n_nonmonotonic minority (keeps NM-NM degeneracy negligible)
+
+    Parameters
+    ----------
+    M, T            : channels, time steps
+    n_linear, n_monotonic, n_nonmonotonic : channel counts (must sum to M; default all linear)
+    beta            : sigmoid gain for monotonic channels. Moderate beta maximises the r-rho
+                      separation while keeping rho high; very large beta binarises (ties) and
+                      drops rho too. See the beta-sweep in notebooks/exploration/r_rho_mi_260622.ipynb.
+    noise_std       : base per-channel noise std (on unit-variance signal; SNR = 1/std^2)
+    noise_std_variable : if True, channel i std = noise_std * Geom(1/noise_std_scale)
+    noise_std_scale : per-channel noise multiplier spread (E[kappa] = noise_std_scale)
+    ar1_a           : AR(1) coefficient of the mother (smoothness, NOT signal strength)
+    ar1_noise_std   : driving noise std of the AR(1) mother
+    zscore          : z-score the final (T, M) output
+    rng             : RNG instance or int seed
+    mother          : optional 1D array length T used instead of a fresh AR(1) mother
+    return_internals : if True, also return FilterRollInternals
+
+    Returns shape (T, M), or ((T, M), FilterRollInternals).
+    """
+    rng = _resolve_rng(None, rng)
+
+    nl = M if n_linear is None else int(n_linear)
+    nm = 0 if n_monotonic is None else int(n_monotonic)
+    nnm = 0 if n_nonmonotonic is None else int(n_nonmonotonic)
+    if nl + nm + nnm != M:
+        raise ValueError(
+            f"n_linear ({nl}) + n_monotonic ({nm}) + n_nonmonotonic ({nnm}) != M ({M})."
+        )
+    types = ["linear"] * nl + ["monotonic"] * nm + ["non-monotonic"] * nnm
+
+    # Shared mother, standardised to zero mean / unit variance.
+    if mother is not None:
+        m = np.asarray(mother, dtype=float)
+        if m.ndim != 1 or len(m) != T:
+            raise ValueError(f"mother must be 1D of length T={T}, got shape {m.shape}")
+    else:
+        m = np.zeros(T)
+        for t in range(1, T):
+            m[t] = ar1_a * m[t - 1] + rng.normal(0, ar1_noise_std)
+    msd = m.std()
+    z = (m - m.mean()) / msd if msd > 1e-12 else np.zeros(T)
+
+    noise_stds = _resolve_channel_noise_stds(
+        noise_std, M, noise_std_variable=noise_std_variable,
+        noise_std_scale=noise_std_scale, rng=rng,
+    )
+
+    betas = np.full(M, np.nan)
+    data = np.empty((T, M))
+    for i, fam in enumerate(types):
+        if fam == "linear":
+            g = z
+        elif fam == "monotonic":
+            g = _sigmoid(beta * z)
+            betas[i] = beta
+        else:  # non-monotonic
+            g = z ** 2
+        gsd = g.std()
+        g = (g - g.mean()) / gsd if gsd > 1e-12 else np.zeros(T)
+        data[:, i] = g + rng.normal(0, noise_stds[i], T)
+
+    result = _maybe_zscore(data, zscore=zscore)
+    if return_internals:
+        return result, FilterRollInternals(
+            types=types, betas=betas, noise_stds=noise_stds, mother=z,
+        )
+    return result
+

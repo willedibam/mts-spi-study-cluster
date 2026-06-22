@@ -14,7 +14,7 @@ from scipy.stats import zscore
 import pandas as pd
 
 from . import generators as generate
-from .generators import generate_sin_mts_smooth, generate_lagged_mts, generate_lagged_warping_mts
+from .generators import generate_sin_mts_smooth, generate_lagged_mts, generate_lagged_warping_mts, generate_filter_roll_mts
 from .generators.chat import generate_var_chat_a, generate_var_chat_b, generate_var_chat_c, generate_var_chat_d
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
@@ -372,6 +372,19 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             **generator_params,
         )
         gen_extras = {"lags": internals.lags.tolist()}
+    elif spec.generator == "filter_roll_mts":
+        data, internals = generate_filter_roll_mts(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            **generator_params,
+        )
+        gen_extras = {
+            "types": internals.types,
+            "betas": [None if np.isnan(b) else float(b) for b in internals.betas],
+            "noise_stds": internals.noise_stds.tolist(),
+        }
     elif spec.generator in ("var_chat_a", "var_chat_b", "var_chat_c", "var_chat_d"):
         _chat_gen = {
             "var_chat_a": generate_var_chat_a,

@@ -1,0 +1,67 @@
+# Functional-form case study (2026-06-22): filter-roll generator.
+# Three iterations as classes, each a progressive filtration of channel filter families:
+#   iter1_L     : all linear                       -> r, rho, MI all agree
+#   iter2_LM    : half linear, half monotone(sig)  -> corr(r,rho) drops; corr(rho,MI) stays high
+#   iter3_LMNM  : + small non-monotone minority     -> corr(.,MI) drops; corr(r,rho) recovers
+# Shared AR(1) mother per MTS; per-channel SNR spread (noise_std_variable) populates the MPI.
+# beta=4.0 from the MTS-level beta sweep (notebooks/exploration/r_rho_mi_260622.ipynb):
+#   corr(r,rho) falls monotonically with beta, corr(rho,MI) stays ~0.92.
+base_output_dir: data/r_rho_mi/260622_g-roll/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/r_rho_mi.yaml
+normalise: false
+rng_seed: 260622
+save_heatmap: true
+threads: 1
+
+defaults:
+  M_values: [20]
+  T_values: [2000]
+  instances: 10
+
+mts_classes:
+
+  - name: "iter1_L"
+    labels: [filter-roll, linear]
+    generator: "filter_roll_mts"
+    base_params:
+      n_linear: 20
+      n_monotonic: 0
+      n_nonmonotonic: 0
+      beta: 4.0
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "iter2_LM"
+    labels: [filter-roll, linear, monotonic]
+    generator: "filter_roll_mts"
+    base_params:
+      n_linear: 10
+      n_monotonic: 10
+      n_nonmonotonic: 0
+      beta: 4.0
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: true
+
+  - name: "iter3_LMNM"
+    labels: [filter-roll, linear, monotonic, non-monotonic]
+    generator: "filter_roll_mts"
+    base_params:
+      n_linear: 9
+      n_monotonic: 9
+      n_nonmonotonic: 2
+      beta: 4.0
+      noise_std: 0.1
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.8
+      ar1_noise_std: 1.0
+      zscore: true

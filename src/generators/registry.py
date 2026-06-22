@@ -23,6 +23,7 @@ from .dynamical import (
 from .linear import (
     generate_cauchy_noise,
     generate_exponential_noise,
+    generate_filter_roll_mts,
     generate_gaussian_noise,
     generate_gbm,
     generate_lagged_mts,
@@ -56,6 +57,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "sin_mts": generate_sin_mts,
     "sin_mts_mother": generate_sin_mts_mother,
     "sin_mts_smooth": generate_sin_mts_smooth,
+    "filter_roll_mts": generate_filter_roll_mts,
     "warping_mts": generate_warping_mts,
     "lagged_mts": generate_lagged_mts,
     "lagged_warping_mts": generate_lagged_warping_mts,
