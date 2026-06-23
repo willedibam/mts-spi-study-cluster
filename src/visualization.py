@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
 
 import json
@@ -2199,44 +2200,28 @@ def plot_spi_corr_meta(
 # Channel-type marker constants for plot_spi_space_individual_embed_properties
 # ---------------------------------------------------------------------------
 _CHANNEL_TAGS = ["linear", "monotonic", "non-monotonic"]
-
-# Unordered pair → (label, marker)
-# _PAIR_STYLES: dict[tuple[str, str], tuple[str, str]] = {
-#     ("linear",       "linear"):        ("L–L",  "o"),
-#     ("linear",       "monotonic"):     ("L–M",  "^"),
-#     ("linear",       "non-monotonic"): ("L–NM", "s"),
-#     ("monotonic",    "monotonic"):     ("M–M",  "*"),
-#     ("monotonic",    "non-monotonic"): ("M–NM", "P"),
-#     ("non-monotonic","non-monotonic"): ("NM–NM","X"),
-# }
-
-_PAIR_STYLES: dict[tuple[str, str], tuple[str, str]] = {
-    ("linear",       "linear"):        ("linear–linear",  "o"),
-    ("linear",       "monotonic"):     ("linear–monotonic",  "^"),
-    ("linear",       "non-monotonic"): ("linear–non-monotonic", "s"),
-    ("monotonic",    "monotonic"):     ("monotonic–monotonic",  "*"),
-    ("monotonic",    "non-monotonic"): ("monotonic–non-monotonic", "P"),
-    ("non-monotonic","non-monotonic"): ("non-monotonic–non-monotonic","X"),
+_CHANNEL_ABBREVIATIONS = {
+    "linear": "L",
+    "monotonic": "M",
+    "non-monotonic": "NM",
 }
 
-_PAIR_COLORS = [
-    "#B47CC7",  # L–L      purple
-    "#4878CF",  # L–M      blue
-    "#77BEDB",  # L–NM     cyan
-    "#6ACC65",  # M–M      green
-    "#C4AD66",  # M–NM     gold
-    # "#D65F5F",  # NM–NM    red
-    "#CC79A7",  # NM–NM    rose/magenta
-]
+_PAIR_MARKERS: dict[tuple[str, str], str] = {
+    ("linear",       "linear"):        "o",
+    ("linear",       "monotonic"):     "^",
+    ("linear",       "non-monotonic"): "s",
+    ("monotonic",    "monotonic"):     "*",
+    ("monotonic",    "non-monotonic"): "P",
+    ("non-monotonic","non-monotonic"): "X",
+}
 
-# _PAIR_COLORS = [
-#     "#A58AD6",  # L–L      indigo/purple
-#     "#7EA6E0",  # L–M      blue
-#     "#8FD1A3",  # L–NM     green
-#     "#EAD98B",  # M–M      yellow
-#     "#E9B27A",  # M–NM     orange
-#     "#D98B8B",  # NM–NM    red
-# ]
+_MIXED_PAIR_COLORS: dict[tuple[str, str], str] = {
+    ("linear",       "monotonic"):     "#0072B2",  # blue
+    ("linear",       "non-monotonic"): "#D55E00",  # vermillion
+    ("monotonic",    "non-monotonic"): "#009E73",  # bluish green
+}
+
+_SAME_TYPE_PAIR_COLOR = "#8a8a8a"
 
 
 def _tag_channel(a: float, thresh_linear: float, thresh_monotonic: float) -> str:
@@ -2253,6 +2238,17 @@ def _pair_key(tag_i: str, tag_j: str) -> tuple[str, str]:
     return (tag_i, tag_j) if order[tag_i] <= order[tag_j] else (tag_j, tag_i)
 
 
+def _is_same_type_pair(pair_key: tuple[str, str]) -> bool:
+    return pair_key[0] == pair_key[1]
+
+
+def _pair_label(pair_key: tuple[str, str], *, count: int | None = None) -> str:
+    prefix = "same" if _is_same_type_pair(pair_key) else "mixed"
+    pair = "-".join(_CHANNEL_ABBREVIATIONS[tag] for tag in pair_key)
+    label = f"{prefix} {pair}"
+    return f"{label} (n={count})" if count is not None else label
+
+
 def plot_spi_space_individual_embed_properties(
     dataset_path: str,
     spis: list[str],
@@ -2260,12 +2256,18 @@ def plot_spi_space_individual_embed_properties(
     *,
     thresh_linear: float = np.pi / 8,
     thresh_monotonic: float = np.pi / 2,
-    color_by_type: bool = True,
+    color_mixed_pairs: bool = True,
+    hollow_same_type_pairs: bool = True,
+    same_type_color: str = _SAME_TYPE_PAIR_COLOR,
+    mixed_pair_colors: Mapping[tuple[str, str], str] | None = None,
+    label_pair_counts: bool = False,
     s: float = 25.0,
     alpha: float = 0.4,
     main_spines: bool = True,
     metric: str = "spearman",
-    identity: bool = True,
+    trend: bool = True,
+    trend_color: str = "#333333",
+    identity: bool = False,
     show_dataset: bool = False,
 ) -> None:
     """
@@ -2287,12 +2289,28 @@ def plot_spi_space_individual_embed_properties(
         M–NM  filled+ 'P'
         NM–NM filled× 'X'
 
+    The default visual hierarchy treats same-type channel pairs as context
+    (neutral hollow markers) and mixed-type pairs as the comparison signal
+    (filled colorblind-safe markers).
+
     Parameters
     ----------
     thresh_linear    : a threshold below which a channel is "linear" (default π/8)
     thresh_monotonic : a threshold below which a channel is "monotonic" (default π/2)
-    color_by_type    : if True, each pair type gets a distinct color; if False, all '#1f77b4'
-    identity         : if True (default), draw a y=x reference line
+    color_mixed_pairs     : if True, mixed channel-type pairs get distinct colors
+                            while same-type pairs are neutral grey; if False, all
+                            pairs are grey
+    hollow_same_type_pairs: if True, same-type channel pairs are drawn hollow
+    same_type_color        : neutral color for same-type pairs
+    mixed_pair_colors      : optional overrides for mixed-pair colors, keyed by
+                             canonical channel-type tuples, e.g.
+                             ("linear", "non-monotonic")
+    label_pair_counts      : if True, append each pair-type count to legend labels
+    trend                  : if True, draw a fitted regression line
+    trend_color            : color for the trend line and correlation label frame
+    identity               : if True, draw a y=x reference line. Only use this
+                             when both axes are directly comparable and on the
+                             same numeric scale.
     """
     if len(spis) != 2:
         raise ValueError("Expects exactly two SPI names.")
@@ -2345,33 +2363,64 @@ def plot_spi_space_individual_embed_properties(
     upper_i, upper_j = upper_i[valid], upper_j[valid]
     x_vals, y_vals = x_vals[valid], y_vals[valid]
 
+    if x_vals.size == 0:
+        raise ValueError(f"No finite paired SPI values found in {archive}")
+
     if metric == "pearson":
         corr = float(np.corrcoef(x_vals, y_vals)[0, 1])
         corr_label = f"$r={corr:.2f}$"
-    else:
+    elif metric == "spearman":
         corr, _ = spearmanr(x_vals, y_vals)
         corr_label = f"$\\rho={corr:.2f}$"
+    else:
+        raise ValueError("metric must be either 'pearson' or 'spearman'")
     title_slug = "/".join(dataset_dir.parts[-2:]) if show_dataset else dataset_dir.parts[-2]
 
     apply_plot_style()
 
     pair_keys = [_pair_key(tags[i], tags[j]) for i, j in zip(upper_i, upper_j)]
-    style_order = list(_PAIR_STYLES.keys())
+    style_order = list(_PAIR_MARKERS.keys())
+    mixed_colors = dict(_MIXED_PAIR_COLORS)
+    if mixed_pair_colors is not None:
+        mixed_colors.update(mixed_pair_colors)
 
-    for k, (key, color) in enumerate(zip(style_order, _PAIR_COLORS)):
-        label, marker = _PAIR_STYLES[key]
+    for key in style_order:
+        marker = _PAIR_MARKERS[key]
         mask = np.array([pk == key for pk in pair_keys])
         if not mask.any():
             continue
-        c = color if color_by_type else "#1f77b4"
+        is_same_type = _is_same_type_pair(key)
+        c = (
+            same_type_color
+            if is_same_type or not color_mixed_pairs
+            else mixed_colors[key]
+        )
+        marker_style = (
+            {"facecolors": "none", "edgecolors": c, "linewidths": 0.8}
+            if is_same_type and hollow_same_type_pairs
+            else {"facecolors": c, "edgecolors": c, "linewidths": 0.3}
+        )
         ax.scatter(
             x_vals[mask], y_vals[mask],
-            marker=marker, s=s, alpha=alpha, color=c,
-            label=label, linewidths=0.3,
+            marker=marker, s=s, alpha=alpha,
+            label=_pair_label(
+                key,
+                count=int(mask.sum()) if label_pair_counts else None,
+            ),
+            zorder=1 if is_same_type else 2,
+            **marker_style,
         )
 
-    # "#d62728" red line color
-    sns.regplot(x=x_vals, y=y_vals, ax=ax, scatter=False, color="red", line_kws={"lw":"1.0"} , ci=None)
+    if trend:
+        sns.regplot(
+            x=x_vals,
+            y=y_vals,
+            ax=ax,
+            scatter=False,
+            color=trend_color,
+            line_kws={"lw": 1.0, "alpha": 0.8, "zorder": 3},
+            ci=None,
+        )
     if identity:
         lim = [min(x_vals.min(), y_vals.min()), max(x_vals.max(), y_vals.max())]
         ax.plot(lim, lim, color="gray", linewidth=0.8, linestyle="--", zorder=0)
@@ -2379,8 +2428,15 @@ def plot_spi_space_individual_embed_properties(
     ax.set_ylabel(spi_y)
     ax.set_title(title_slug)
     ax.set_box_aspect(1)
-    at = AnchoredText(corr_label, loc="upper left", frameon=True, prop=dict(size=15), pad=0.3, borderpad=0.3)
-    at.patch.set(facecolor="none", edgecolor="red", lw=0.7, alpha=0.7)
+    at = AnchoredText(
+        corr_label,
+        loc="upper left",
+        frameon=True,
+        prop=dict(size=15),
+        pad=0.3,
+        borderpad=0.3,
+    )
+    at.patch.set(facecolor="none", edgecolor=trend_color, lw=0.7, alpha=0.7)
     ax.add_artist(at)
     if not main_spines:
         ax.spines[["top", "right"]].set_visible(False)
