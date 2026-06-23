@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="24.797869pt" height="22.363881pt" viewBox="0 0 24.797869 22.363881" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-06-18T09:24:18.675054</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.8, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 22.363881 
+L 24.797869 22.363881 
+L 24.797869 0 
+L 0 0 
+L 0 22.363881 
+z
+" style="fill: none"/>
+  </g>
+  <g id="text_1">
+   <!-- $\Rightarrow$ -->
+   <g transform="translate(1.44 16.660693) scale(0.22 -0.22)">
+    <defs>
+     <path id="CMSY10-29" d="M 4646 2107 
+C 4915 1869 5242 1699 5453 1600 
+C 5223 1495 4909 1323 4646 1093 
+L 582 1093 
+C 474 1093 352 1093 352 965 
+C 352 837 467 837 576 837 
+L 4358 837 
+C 4051 543 3718 -20 3718 -104 
+C 3718 -174 3802 -174 3840 -174 
+C 3891 -174 3936 -174 3962 -123 
+C 4096 122 4275 465 4691 839 
+C 5133 1232 5562 1406 5894 1503 
+C 6003 1542 6010 1549 6022 1562 
+C 6035 1568 6035 1587 6035 1600 
+C 6035 1613 6035 1626 6029 1638 
+L 6010 1651 
+C 5997 1658 5990 1665 5869 1703 
+C 5005 1961 4365 2549 4006 3239 
+C 3936 3368 3930 3374 3840 3374 
+C 3802 3374 3718 3374 3718 3304 
+C 3718 3220 4045 2664 4358 2363 
+L 576 2363 
+C 467 2363 352 2363 352 2235 
+C 352 2107 474 2107 582 2107 
+L 4646 2107 
+z
+" transform="scale(0.015625)"/>
+    </defs>
+    <use xlink:href="#CMSY10-29" transform="scale(0.996264)"/>
+   </g>
+  </g>
+ </g>
+</svg>
