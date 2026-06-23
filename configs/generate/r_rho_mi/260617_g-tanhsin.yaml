@@ -1,0 +1,29 @@
+base_output_dir: data/r_rho_mi/260617_g-tanhsin_a-0.95_k-2pi_noise-0.05/
+timestamp: false
+pyspi_config: configs/pyspi-v2/cases/r_rho_mi.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [7]
+  T_values: [100]
+  instances: 10
+
+mts_classes:
+
+  # v00: A = 0.0982 (0.031π)
+  - name: "A-pi_L"
+    labels: [sinusoidal-mother, smooth]
+    generator: "sin_mts_smooth"
+    base_params:
+      A: 3.142
+      k: 6.283
+      linspace: true
+      noise_std: 0.05
+      noise_std_variable: true
+      noise_std_scale: 2.0
+      ar1_a: 0.95
+      ar1_noise_std: 1.0
+      zscore: true
