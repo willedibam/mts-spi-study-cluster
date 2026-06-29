@@ -1,0 +1,122 @@
+# cml-embedding.yaml
+# Within-class CML regime discrimination via SPI-SPI features f_ij = corr(SPI_i, SPI_j).
+# 6 regimes: 5 non-wave + the single best-separating wave (chaotic-traveling-wave).
+#
+# Goal: show distinct CML regimes separate in the (K choose 2)-D SPI-SPI space AND
+# that the same regime observed at different (M,T) co-locates -- the dimension/length
+# invariance that conventional feature-based MTS methods cannot provide. We therefore
+# sweep M and T deliberately (M=[8,16,32], T=[500,1000,2000]).
+#
+# --- Regime evidence (5-fold 5-NN recall on the existing 187-SPI cml-small run) ----
+#   fdstc 1.00, frozen-chaos 0.98, defect-turbulence 0.96, brownian-defect 0.89,
+#   sti-i 0.87. Dropped pattern-selection (0.59) and sti-ii (0.63) as weaker/redundant.
+#   WAVE: with one wave class in the set, tested each variant against the 5 non-wave
+#   regimes -> chaotic-traveling-wave (alpha=1.69) wins: 6-class wave-recall 1.00 at
+#   M>=10 (0.91 all-M), zero confusion. alpha=1.47 traveling-wave was WORST (bleeds
+#   into frozen-chaos); traveling-wave-kaneko67 (alpha=1.67) a close second.
+#
+# --- Representativeness (contiguous-crop concern) ----------------------------------
+# generate_cml_logistic simulates on lattice_M = max(M, 100) and crops a contiguous
+# centred M-window. We KEEP the fixed large lattice (not lattice=M): an M-site lattice
+# is a different finite-size system and would break the dimension-invariance claim.
+# Spatial correlation length xi ~ 1-4 sites for all 6 regimes, so M>=8 windows span
+# many xi and bulk pairwise statistics are representative. CAVEAT: at M=8 there are
+# only C(8,2)=28 channel-pairs; f_ij is correspondingly low-rank/noisier (the M=5
+# corner of cml-small, 10 pairs, showed within-class kNN purity 0.81 vs 0.93 at M>=10
+# from edge-matrix rank-collapse + saturation). Keep M=8 as the dimension-invariance
+# STRESS corner; M=16 (120 pairs) and M=32 (496 pairs) are the clean anchors.
+#
+# --- Order-parameter bonus ---------------------------------------------------------
+# sti-i (alpha=1.7522, eps~0, DP/STI critical point) and defect-turbulence
+# (alpha=1.895, eps=0.1) bracket the alpha-axis turbulence route at small eps -- kept
+# adjacent for a later single-parameter sweep (turbulent-fraction order parameter).
+# NOT swept in this run.
+#
+# --- z-score ---------------------------------------------------------------------
+# zscore: false (kept). For a spatially-homogeneous CML the per-channel marginals are
+# near-identical, so per-channel z-scoring is ~a no-op for correlation/rank/spectral
+# SPIs (affine-invariant) and only mildly affects covariance/distance SPIs, while
+# discarding the small spatial-amplitude signal. Crucially, the regime screening that
+# justified these choices was run zscore=false; changing it would invalidate that
+# screen. pyspi internal normalise is also false (top-level), matching the validated
+# multi_benchmarked90 pipeline.
+
+base_output_dir: data/embeddings/cml-embedding/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [500, 1000, 2000]
+  instances: 10            # 15-20 sharpens cluster density if Gadi budget allows
+
+# Coupled map lattice of logistic maps f(x) = 1 - alpha x^2 with diffusive
+# nearest-neighbour coupling on a 1D periodic lattice. The generator simulates on
+# max(M, 100) sites then crops a contiguous centred window of M channels; pyspi runs
+# on the cropped window only. `delta` is a heatmap-stride visualisation field.
+
+mts_classes:
+  - name: "frozen-chaos"
+    labels: [cml, frozen-chaos]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.45
+      eps: 0.2
+      transients: 2000
+      sample_every: 1
+      zscore: false
+
+  - name: "brownian-defect"
+    labels: [cml, brownian-defect]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.85
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: "defect-turbulence"
+    labels: [cml, defect-turbulence]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: "sti-i"
+    labels: [cml, sti, directed-percolation]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: false
+      delta: [3, 6, 12]
+
+  - name: "fdstc"
+    labels: [cml, fully-developed-stc]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 2.0
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: "chaotic-traveling-wave"
+    labels: [cml, traveling-wave, chaotic]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.69
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: false

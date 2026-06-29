@@ -327,6 +327,9 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
         start = time.perf_counter()
         data, gen_extras = generate_synthetic_from_spec(spec)
         np.save(ts_path, data.astype(np.float32))
+        mother = gen_extras.pop("_mother", None)   # not JSON-serialisable -> save alongside, keep out of meta
+        if mother is not None:
+            np.save(dataset_dir / "mother.npy", np.asarray(mother, dtype=np.float32))
         duration = time.perf_counter() - start
         print(
             f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
@@ -384,6 +387,8 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             "types": internals.types,
             "betas": [None if np.isnan(b) else float(b) for b in internals.betas],
             "noise_stds": internals.noise_stds.tolist(),
+            # transient: persisted to mother.npy by _ensure_timeseries, popped before meta.json
+            "_mother": internals.mother,
         }
     elif spec.generator in ("var_chat_a", "var_chat_b", "var_chat_c", "var_chat_d"):
         _chat_gen = {
