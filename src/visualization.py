@@ -2572,3 +2572,100 @@ def plot_spi_space_individual_embed_lags(
     if not main_spines:
         ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(labelbottom=True, labelleft=True)
+
+
+def _raincloud_half_violin(ax, data, pos, color, half_w=0.09, side="right"):
+    """One-sided violin at x=pos. Skipped when degenerate (n<2 or ~0 variance)."""
+    data = np.asarray(data, float)
+    data = data[np.isfinite(data)]
+    if len(data) < 2 or np.std(data) < 1e-9:
+        return
+    for b in ax.violinplot([data], positions=[pos], widths=half_w * 2,
+                           showextrema=False)["bodies"]:
+        v = b.get_paths()[0].vertices
+        if side == "right":
+            v[:, 0] = np.clip(v[:, 0], pos, np.inf)
+        else:
+            v[:, 0] = np.clip(v[:, 0], -np.inf, pos)
+        b.set_facecolor(color)
+        b.set_alpha(0.35)
+        b.set_edgecolor("none")
+
+
+def plot_raincloud(
+    groups,
+    labels=None,
+    colors=None,
+    positions=None,
+    ax=None,
+    point_hue=None,
+    point_cmap="viridis",
+    point_sizes=None,
+    half_width=0.09,
+    box_width=0.04,
+    point_size=12,
+    jitter=0.015,
+    rng=0,
+):
+    """Raincloud (half-violin + box + jittered raw-point strip), one column per group.
+
+    Returns ``ax`` (creates a figure only if ``ax is None``) so it embeds as a subplot.
+
+    groups:      list of 1D arrays, one distribution per category.
+    labels:      x tick labels (len == n groups).
+    colors:      per-group colour; defaults to tab10.
+    positions:   x positions; defaults to 0..n-1.
+    point_hue:   optional list (parallel to groups) of per-point scalar arrays
+                 (e.g. M) -> strip points coloured by ``point_cmap`` with a colourbar.
+                 When None, points take the group colour.
+    point_sizes: optional list (parallel to groups) of per-point sizes (e.g. M-scaled).
+    n=10 caveat: the violin/KDE is illustrative at small n; the strip + box are the
+                 honest summary (matches the r_rho_mi staggered raincloud).
+    """
+    n = len(groups)
+    if ax is None:
+        _, ax = plt.subplots(figsize=(1.6 * n + 2, 4.8), dpi=DEFAULT_DPI)
+    if positions is None:
+        positions = list(range(n))
+    if colors is None:
+        colors = list(sns.color_palette("tab10", n))
+    rstate = np.random.default_rng(rng)
+
+    norm = sc = None
+    if point_hue is not None:
+        allh = np.concatenate([np.asarray(h, float) for h in point_hue])
+        norm = Normalize(vmin=np.nanmin(allh), vmax=np.nanmax(allh))
+
+    for i, data in enumerate(groups):
+        data = np.asarray(data, float)
+        finite = np.isfinite(data)
+        data = data[finite]
+        pos, col = positions[i], colors[i]
+        _raincloud_half_violin(ax, data, pos, col, half_w=half_width, side="right")
+        if len(data):
+            ax.boxplot([data], positions=[pos], widths=box_width, showfliers=False,
+                       patch_artist=True,
+                       boxprops=dict(facecolor="white", edgecolor=col, lw=1),
+                       medianprops=dict(color=col, lw=1.4),
+                       whiskerprops=dict(color=col), capprops=dict(color=col))
+            jit = pos - box_width - 0.005 - np.abs(rstate.normal(0, jitter, len(data)))
+            s = point_size
+            if point_sizes is not None:
+                s = np.asarray(point_sizes[i], float)[finite]
+            if point_hue is not None:
+                hv = np.asarray(point_hue[i], float)[finite]
+                sc = ax.scatter(jit, data, s=s, c=hv, cmap=point_cmap, norm=norm,
+                                alpha=0.8, linewidths=0, zorder=3)
+            else:
+                ax.scatter(jit, data, s=s, color=col, alpha=0.75, linewidths=0, zorder=3)
+        if labels is None:
+            ax.scatter([], [], color=col, label=str(i))
+
+    ax.set_xticks(positions)
+    if labels is not None:
+        ax.set_xticklabels(labels)
+    ax.set_xlim(min(positions) - 0.6, max(positions) + 0.4)
+    ax.grid(True, axis="y", alpha=0.3)
+    if point_hue is not None and sc is not None:
+        ax.figure.colorbar(sc, ax=ax, fraction=0.046, pad=0.04, label="point hue")
+    return ax
