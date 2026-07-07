@@ -3,7 +3,7 @@
 # CML classes (defect-turbulence, sti-i) are directly comparable across the two runs.
 # NB: new base_output_dir -- do NOT reuse .../260603 (that holds M=5/10/20; mixing
 # M grids in one dir would corrupt both the data and the feature matrix).
-base_output_dir: data/embeddings/proof_benchmarked90_260701/
+base_output_dir: data/embeddings/multi_p90_260701/
 timestamp: false
 pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
 normalise: false
@@ -106,7 +106,7 @@ mts_classes:
   # zscore=false, benchmarked90 SPI set, M=[8,16,32], T=[500,1000,2000], 10 inst).
   # Reuse those runs when building the feature matrix -- copy/symlink the two class dirs
   #   data/embeddings/cml-embedding/{defect-turbulence,sti-i}
-  # into data/embeddings/proof_benchmarked90_260701/ before process_features (see note).
+  # into data/embeddings/multi_p90_260701/ before process_features (see note).
   # - name: "defect-turbulence"
   #   labels: [cml, defect-turbulence]
   #   generator: "cml_logistic"
