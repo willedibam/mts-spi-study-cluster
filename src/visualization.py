@@ -2604,6 +2604,8 @@ def plot_raincloud(
     half_width=0.09,
     box_width=0.04,
     point_size=12,
+    point_alpha=0.75,
+    point_linewidths=0.2,
     jitter=0.015,
     rng=0,
 ):
@@ -2655,9 +2657,9 @@ def plot_raincloud(
             if point_hue is not None:
                 hv = np.asarray(point_hue[i], float)[finite]
                 sc = ax.scatter(jit, data, s=s, c=hv, cmap=point_cmap, norm=norm,
-                                alpha=0.8, linewidths=0, zorder=3)
+                                alpha=point_alpha, linewidths=point_linewidths, zorder=3)
             else:
-                ax.scatter(jit, data, s=s, color=col, alpha=0.75, linewidths=0, zorder=3)
+                ax.scatter(jit, data, s=s, color=col, alpha=point_alpha, linewidths=point_linewidths, zorder=3)
         if labels is None:
             ax.scatter([], [], color=col, label=str(i))
 
