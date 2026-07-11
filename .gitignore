@@ -31,6 +31,8 @@ Thumbs.db
 # markdowns and notebooks
 playing.ipynb
 jupyter/
+# notebook-local caches (regeneratable)
+notebooks/**/_*_cache.npz
 
 # logs
 logs/
