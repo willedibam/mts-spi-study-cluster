@@ -422,3 +422,119 @@ def generate_var_chat_d(
         )
         return data, internals
     return data
+
+
+# ---------------------------------------------------------------------------
+# Generator E: nonlinear-directed motifs (R1 of the multi-regime study)
+# ---------------------------------------------------------------------------
+
+_CHAT_E_CLASSES = {
+    0: "chain",     # 0→1→2
+    1: "fork",      # 0→1, 0→2
+    2: "collider",  # 1→0, 2→0
+}
+
+
+def generate_var_nonlinear_a(
+    M: int,
+    T: int,
+    motif_class: int = 0,
+    alpha_lo: float = 0.3,
+    alpha_hi: float = 0.7,
+    rho_nuisance: float = 0.8,
+    noise_std: float = 0.1,
+    gain: float = 2.0,
+    coupling: str = "square",
+    transients: int = 200,
+    rng=None,
+    zscore: bool = True,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, ChatMotifInternals]:
+    """
+    Generator E (R1): the var_chat_a motifs with a NONLINEAR directed coupling.
+
+    Identical topology, embedding and nuisance structure to generate_var_chat_a
+    -- only the coupling function changes:
+
+        child(t) = rho*child(t-1) + alpha*tanh(gain * parent(t-1)) + noise
+
+    Purpose. On the linear VAR (var_chat_a), a Granger-family statistic MUST
+    win: linear autoregression is exactly what GC detects, so "w recovers GC"
+    is confirmation, not discovery. Here the directed dependence is monotone
+    but nonlinear and saturating, so linear GC is mis-specified while
+    transfer entropy / directed information are not.
+
+    Pre-registered prediction: within the causal family, TE / directed-info
+    (kraskov estimators) should outrank linear GC. If linear GC still wins,
+    the method cannot see nonlinear direction -- a real, falsifiable failure.
+
+    coupling:
+      "square" (default) -- child gets alpha * (parent(t-1))**2. NON-monotone,
+          so Pearson/linear-GC on parent->child is ~0 by symmetry while the
+          dependence is total. This is the sharp test.
+      "tanh" -- child gets alpha * tanh(gain * parent(t-1)). Monotone and
+          saturating; measured on this generator it leaves linear GC almost
+          as good as a nonlinear measure (corr gap < 0.02 even at gain 40),
+          so it is a WEAK test of nonlinear-direction sensitivity. Kept for
+          completeness; do not use it as the headline R1 regime.
+
+    `gain` applies to the tanh variant only.
+    """
+    if coupling not in ("square", "tanh"):
+        raise ValueError(f"coupling must be 'square' or 'tanh', got {coupling!r}")
+    if M < 3:
+        raise ValueError(f"M must be >= 3 for a 3-node motif, got {M}")
+    rng = _resolve_rng(None, rng)
+
+    edges = _chat_a_motif_edges(motif_class)
+    alpha = float(rng.uniform(alpha_lo, alpha_hi))
+
+    # Parents of each motif node, in local (pre-permutation) space.
+    parents: dict[int, list[int]] = {0: [], 1: [], 2: []}
+    for src, dst in edges:
+        parents[dst].append(src)
+
+    # Stationary variance of the AR(1) baseline, used to normalise the
+    # quadratic drive to unit scale.
+    _sigma2 = noise_std ** 2 / max(1.0 - rho_nuisance ** 2, 1e-6)
+
+    steps = transients + T
+    X_motif = np.zeros((steps, 3))
+    for t in range(1, steps):
+        for node in range(3):
+            if coupling == "square":
+                # Non-monotone: linear GC cannot see it, TE can. The square is
+                # centred and scaled by the stationary AR(1) variance so the
+                # drive is O(1) rather than O(sigma^2) -- otherwise the signal
+                # is swamped by the noise term and BOTH linear and nonlinear
+                # measures see nothing (measured: MI 0.03 nats unnormalised).
+                drive = sum(
+                    (X_motif[t - 1, p] ** 2 - _sigma2) / _sigma2
+                    for p in parents[node]
+                )
+            else:
+                drive = sum(np.tanh(gain * X_motif[t - 1, p]) for p in parents[node])
+            X_motif[t, node] = (
+                rho_nuisance * X_motif[t - 1, node]
+                + alpha * drive
+                + rng.normal(0, noise_std)
+            )
+    X_motif = X_motif[transients:]
+
+    X_nuisance = _ar1_nuisance(T, M - 3, rho_nuisance, noise_std, rng)
+
+    data, motif_indices, edges_permuted = _permute_and_merge(
+        X_motif, X_nuisance, edges, rng
+    )
+    data = _maybe_zscore(data, zscore=zscore)
+
+    if return_internals:
+        internals = ChatMotifInternals(
+            motif_node_indices=motif_indices,
+            motif_edges=edges_permuted,
+            class_label=_CHAT_E_CLASSES[motif_class],
+            coupling_values={"alpha": alpha, "gain": gain,
+                             "rho": rho_nuisance, "coupling": coupling},
+        )
+        return data, internals
+    return data
