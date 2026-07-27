@@ -1,0 +1,75 @@
+# TIMING PROBE: eeml-r1-nonlinear at FULL M/T (20/1000) but 3
+# instances/class. Purpose: measure real per-instance cost before
+# committing 4500 datasets. The demo ran at M=10/T=300 and is NOT a
+# valid basis for extrapolation (pairs scale 4x, T scales 3-11x
+# depending on whether an SPI is O(T) or O(T^2)).
+# R1: nonlinear-directed motifs (multi-regime study)
+#
+# Same task as the abstract's var_chat_a (chain / fork / collider embedded in
+# nuisance AR(1)), but the parent->child coupling is a centred, variance-
+# normalised SQUARE rather than a linear lag. That coupling is non-monotone,
+# so linear Granger causality is blind to it while information-theoretic
+# measures are not (measured on the generator, parent->child lag 1, T=8000:
+# |pearson| 0.020, MI 0.296 nats).
+#
+# Pre-registered prediction: within the causal family, transfer-entropy /
+# directed-information estimators outrank linear GC. If linear GC still wins,
+# the method cannot read nonlinear direction -- a genuine falsification.
+#
+# M=20 (not 10) is deliberate: with top_d=5, M=10 retains 5/9 = 56% of edges,
+# so "learned sparsification" barely sparsifies and fixed-spi ties spi-mpnn by
+# construction. At M=20 the same top_d keeps 26%, making topology learning a
+# real test.
+#
+# DEMO: set instances to 3 and M_values to [10] for the smoke run (see
+# docs/gadi/README in the eeml repo).
+
+base_output_dir: data/260727_r1_probe/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [20]
+  T_values: [1000]
+  instances: 3
+
+mts_classes:
+  - name: "r1-nl-chain"
+    labels: ["r1", "nonlinear"]
+    generator: "var_nonlinear_a"
+    base_params:
+      motif_class: 0
+      coupling: "square"
+      alpha_lo: 0.3
+      alpha_hi: 0.7
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "r1-nl-fork"
+    labels: ["r1", "nonlinear"]
+    generator: "var_nonlinear_a"
+    base_params:
+      motif_class: 1
+      coupling: "square"
+      alpha_lo: 0.3
+      alpha_hi: 0.7
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "r1-nl-collider"
+    labels: ["r1", "nonlinear"]
+    generator: "var_nonlinear_a"
+    base_params:
+      motif_class: 2
+      coupling: "square"
+      alpha_lo: 0.3
+      alpha_hi: 0.7
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true

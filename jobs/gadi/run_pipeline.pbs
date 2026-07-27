@@ -63,7 +63,7 @@ fi
 
 LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
-JOB_LABEL="${PBS_JOBNAME}_o${BATCH_OFFSET}_a${ARRAY_ID}"
+JOB_LABEL="${PBS_JOBNAME}_${PBS_JOBID%%.*}_o${BATCH_OFFSET}_a${ARRAY_ID}"
 exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 
 module purge
