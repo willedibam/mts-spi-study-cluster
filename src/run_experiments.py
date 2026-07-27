@@ -106,6 +106,16 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     )
     parser.set_defaults(heatmap=True)
     parser.add_argument(
+        "--no-csv",
+        dest="csv",
+        action="store_false",
+        help="Skip calc.csv. The Calculator table is ~0.6 MB/dataset (parquet "
+             "~2.7 MB) versus ~0.2 MB for spi_mpis.npz, which is the only one "
+             "the downstream GNN pipeline reads. Use for runs whose sole "
+             "consumer is training.",
+    )
+    parser.set_defaults(csv=True)
+    parser.add_argument(
         "--parquet",
         action="store_true",
         help="Also export calc.parquet alongside calc.csv.",
@@ -206,7 +216,8 @@ def main(argv: List[str] | None = None) -> None:
         )
         compute_seconds = time.perf_counter() - compute_start
         csv_path = dataset_dir / "calc.csv"
-        result.table.to_csv(csv_path, index=True)
+        if args.csv:
+            result.table.to_csv(csv_path, index=True)
         if args.parquet:
             _safe_write_parquet(result.table, dataset_dir / "calc.parquet")
         npz_path = dataset_dir / "spi_mpis.npz"
@@ -231,7 +242,7 @@ def main(argv: List[str] | None = None) -> None:
             result=result,
             paths={
                 "timeseries": "",
-                "calc_csv": "calc.csv",
+                "calc_csv": "calc.csv" if args.csv else "",
                 "calc_parquet": "calc.parquet" if args.parquet else "",
                 "spi_archive": "spi_mpis.npz",
                 "per_spi": {
@@ -777,9 +788,11 @@ def _build_metadata(
 
 
 def _dataset_complete(dataset_dir: Path) -> bool:
+    # calc.csv is deliberately NOT required: --no-csv runs are complete
+    # without it, and requiring it would make --skip-existing recompute every
+    # dataset on resume.
     required = [
         dataset_dir / "meta.json",
-        dataset_dir / "calc.csv",
         dataset_dir / "spi_mpis.npz",
         dataset_dir / "timeseries.npy",
     ]

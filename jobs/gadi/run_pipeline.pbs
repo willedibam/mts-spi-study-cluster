@@ -42,12 +42,15 @@ CHUNK_SIZE="${CHUNK_SIZE:-200}"
 BATCH_OFFSET="${BATCH_OFFSET:-0}"
 CONCURRENT_DATASETS="${CONCURRENT_DATASETS:-48}"
 CORES_PER_DATASET="${CORES_PER_DATASET:-1}"
-# PARQUET=0 skips calc.parquet/calc.csv. Those are ~3.2 MB/instance versus the
-# ~0.2 MB spi_mpis.npz that downstream training actually reads, i.e. ~90% of
-# the storage. Default stays 1 so existing experiments are unaffected.
-PARQUET="${PARQUET:-1}"
-PARQUET_FLAG=""
-[[ "$PARQUET" == "1" ]] && PARQUET_FLAG="--parquet"
+# calc.parquet (~2.7 MB) and calc.csv (~0.6 MB) per dataset vs ~0.2 MB for
+# spi_mpis.npz, which is the only file the GNN pipeline reads -- ~94% of
+# per-dataset storage. Both now default OFF; set PARQUET=1 / CSV=1 to restore.
+# Heatmaps stay on: ~14 kB, not worth losing the visual check.
+PARQUET="${PARQUET:-0}"
+CSV="${CSV:-0}"
+TABLE_FLAGS=""
+[[ "$PARQUET" == "1" ]] && TABLE_FLAGS="$TABLE_FLAGS --parquet"
+[[ "$CSV" == "1" ]] || TABLE_FLAGS="$TABLE_FLAGS --no-csv"
 
 NCPUS=48
 if [[ $(( CONCURRENT_DATASETS * CORES_PER_DATASET )) -gt $NCPUS ]]; then
@@ -98,6 +101,6 @@ seq "$START_IDX" "$END_IDX" | \
             --skip-existing \
             --experiment-config "$EXPERIMENT_CONFIG" \
             --n-jobs "$CORES_PER_DATASET" \
-            $PARQUET_FLAG
+            $TABLE_FLAGS
 
 echo "[INFO] finished at $(date)"
