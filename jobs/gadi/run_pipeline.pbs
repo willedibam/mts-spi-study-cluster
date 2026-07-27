@@ -42,6 +42,12 @@ CHUNK_SIZE="${CHUNK_SIZE:-200}"
 BATCH_OFFSET="${BATCH_OFFSET:-0}"
 CONCURRENT_DATASETS="${CONCURRENT_DATASETS:-48}"
 CORES_PER_DATASET="${CORES_PER_DATASET:-1}"
+# PARQUET=0 skips calc.parquet/calc.csv. Those are ~3.2 MB/instance versus the
+# ~0.2 MB spi_mpis.npz that downstream training actually reads, i.e. ~90% of
+# the storage. Default stays 1 so existing experiments are unaffected.
+PARQUET="${PARQUET:-1}"
+PARQUET_FLAG=""
+[[ "$PARQUET" == "1" ]] && PARQUET_FLAG="--parquet"
 
 NCPUS=48
 if [[ $(( CONCURRENT_DATASETS * CORES_PER_DATASET )) -gt $NCPUS ]]; then
@@ -92,6 +98,6 @@ seq "$START_IDX" "$END_IDX" | \
             --skip-existing \
             --experiment-config "$EXPERIMENT_CONFIG" \
             --n-jobs "$CORES_PER_DATASET" \
-            --parquet
+            $PARQUET_FLAG
 
 echo "[INFO] finished at $(date)"
