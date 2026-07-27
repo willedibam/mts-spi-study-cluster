@@ -1,0 +1,60 @@
+# R0-297: the ANCHOR run. Identical task/size to the abstract's VAR dataset
+# (var_chat_a, M=10, T=500), but computed with the 297-SPI benchmarked90
+# config instead of the ~136-SPI eeml config.
+#
+# Purpose: isolate the effect of the vocabulary alone. Everything else --
+# generator, M, T, instances, seed -- matches data/260326_eeml, so any change
+# in accuracy or in the recovered signature is attributable to the larger,
+# faster SPI set. This is the control that licenses using benchmarked90 for
+# R1 and TUH.
+#
+# Expect: accuracy unchanged (the task is already solved at ~0.99); the
+# interesting readout is whether the recovered module still centres on the
+# directed/Granger modules (M05/M06) once 297 SPIs compete.
+
+base_output_dir: data/260727_r0_297/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [10]
+  T_values: [500]
+  instances: 1000
+
+mts_classes:
+  - name: "var-chain"
+    labels: ["var", "chain"]
+    generator: "var_chat_a"
+    base_params:
+      motif_class: 0
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "var-fork"
+    labels: ["var", "fork"]
+    generator: "var_chat_a"
+    base_params:
+      motif_class: 1
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "var-collider"
+    labels: ["var", "collider"]
+    generator: "var_chat_a"
+    base_params:
+      motif_class: 2
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
