@@ -27,6 +27,11 @@ EXPERIMENT_CONFIG="${1:-${EXPERIMENT_CONFIG:?need EXPERIMENT_CONFIG (arg 1 or en
 TOTAL_DATASETS="${2:-${TOTAL_DATASETS:?need TOTAL_DATASETS (arg 2 or env)}}"
 CHUNK_SIZE="${3:-${CHUNK_SIZE:-200}}"
 SUBJOBS_PER_ARRAY="${SUBJOBS_PER_ARRAY:-10}"
+# Optional qsub -l overrides (CLI wins over the #PBS directives in the script).
+# Short walltimes schedule sooner on Gadi, so size WALLTIME to CHUNK_SIZE.
+QSUB_OVERRIDES=""
+[[ -n "${WALLTIME:-}" ]] && QSUB_OVERRIDES="$QSUB_OVERRIDES -l walltime=${WALLTIME}"
+[[ -n "${MEM:-}" ]]      && QSUB_OVERRIDES="$QSUB_OVERRIDES -l mem=${MEM}"
 CONCURRENT_DATASETS="${CONCURRENT_DATASETS:-48}"
 CORES_PER_DATASET="${CORES_PER_DATASET:-1}"
 PBS_SCRIPT="${PBS_SCRIPT:-jobs/gadi/run_pipeline.pbs}"
@@ -52,9 +57,9 @@ for (( b=0; b<N_BATCHES; b++ )); do
     VARS="EXPERIMENT_CONFIG=${EXPERIMENT_CONFIG},TOTAL_DATASETS=${TOTAL_DATASETS},CHUNK_SIZE=${CHUNK_SIZE},BATCH_OFFSET=${OFFSET},CONCURRENT_DATASETS=${CONCURRENT_DATASETS},CORES_PER_DATASET=${CORES_PER_DATASET},PARQUET=${PARQUET:-0},CSV=${CSV:-0}"
     if [[ $SUBJOBS -le 1 ]]; then
         # PBS rejects -J 1-1; submit as a single non-array job (PBS script defaults PBS_ARRAY_INDEX to 1).
-        qsub -v "$VARS" "$PBS_SCRIPT"
+        qsub $QSUB_OVERRIDES -v "$VARS" "$PBS_SCRIPT"
     else
-        qsub -J "1-${SUBJOBS}" -v "$VARS" "$PBS_SCRIPT"
+        qsub $QSUB_OVERRIDES -J "1-${SUBJOBS}" -v "$VARS" "$PBS_SCRIPT"
     fi
 done
 
