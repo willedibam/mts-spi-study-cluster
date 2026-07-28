@@ -1,0 +1,73 @@
+# R2-lag2: the ORDER dose-response. Identical to R0-297 in every respect
+# except the coupling delay: X[t] = A X[t-2] + e, so the correct
+# autoregressive model order for this process is exactly 2.
+#
+# Purpose: test a prediction, not describe a dataset. On R0 (lag=1) the learned
+# weights prefer `sgc_parametric` at order-1 over the SAME estimator at order-20
+# by ~8.6x, in 10/10 lambda runs, with estimator, statistic and frequency band
+# matched (6 SPIs per arm). Order-1 is correctly specified for a VAR(1) and
+# order-20 is 20x overparameterised, so the reading is that the probe recovered
+# a STATISTICAL EFFICIENCY property -- something the generator does not encode,
+# unlike "Granger wins on a VAR".
+#
+# Prediction: as lag rises, |w| must shift from the order-1 arm toward the
+# higher-order arms, because order-1 becomes misspecified. A preference that
+# stays on order-1 regardless of lag FALSIFIES that reading, and the
+# order-specificity result would have to be withdrawn.
+#
+# Everything else -- M, T, instances, alpha, noise, rng_seed, pyspi config --
+# matches R0-297 exactly, so lag is the only free variable.
+#
+# Validity gates still apply: run node-only and shuffled before reading any
+# signature. A longer delay changes each node's autocorrelation, which is
+# exactly the kind of thing that leaked the motif through the marginals in R1.
+
+base_output_dir: data/260729_r2_lag2/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [10]
+  T_values: [500]
+  instances: 1000
+
+mts_classes:
+  - name: "r2lag2-chain"
+    labels: ["var", "lag2", "chain"]
+    generator: "var_chat_a"
+    base_params:
+      lag: 2
+      motif_class: 0
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "r2lag2-fork"
+    labels: ["var", "lag2", "fork"]
+    generator: "var_chat_a"
+    base_params:
+      lag: 2
+      motif_class: 1
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "r2lag2-collider"
+    labels: ["var", "lag2", "collider"]
+    generator: "var_chat_a"
+    base_params:
+      lag: 2
+      motif_class: 2
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
