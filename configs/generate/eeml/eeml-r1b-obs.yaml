@@ -1,0 +1,86 @@
+# R1b: linear VAR dynamics observed through a NON-MONOTONE transform.
+#
+# Replaces R1 (var_nonlinear_a), which is CONFOUNDED: injecting the
+# nonlinearity into the update changes each node's AR structure by its
+# in-degree, and the motifs differ there (chain/fork [0,1,1] vs collider
+# [2,0,0]). Node features alone then separate chain from collider at 0.91
+# (chance 0.5), driven by lag-1 autocorrelation -- so the task is solvable
+# with no pairwise information at all.
+#
+# Here the nonlinearity is applied at observation, identically to every
+# channel and motif, so it cannot encode the class. Validated with node
+# features alone: 0.47 / 0.49 vs chance 0.50.
+#
+# Honest limitation: linear statistics are mis-specified, not blind --
+# for Gaussian latents corr(x_i^2,x_j^2) = 2*corr^2. The prediction is a
+# RELATIVE shift toward nonlinear/information-theoretic measures.
+# R1: nonlinear-directed motifs (multi-regime study)
+#
+# Same task as the abstract's var_chat_a (chain / fork / collider embedded in
+# nuisance AR(1)), but the parent->child coupling is a centred, variance-
+# normalised SQUARE rather than a linear lag. That coupling is non-monotone,
+# so linear Granger causality is blind to it while information-theoretic
+# measures are not (measured on the generator, parent->child lag 1, T=8000:
+# |pearson| 0.020, MI 0.296 nats).
+#
+# Pre-registered prediction: within the causal family, transfer-entropy /
+# directed-information estimators outrank linear GC. If linear GC still wins,
+# the method cannot read nonlinear direction -- a genuine falsification.
+#
+# M=20 (not 10) is deliberate: with top_d=5, M=10 retains 5/9 = 56% of edges,
+# so "learned sparsification" barely sparsifies and fixed-spi ties spi-mpnn by
+# construction. At M=20 the same top_d keeps 26%, making topology learning a
+# real test.
+#
+# DEMO: set instances to 3 and M_values to [10] for the smoke run (see
+# docs/gadi/README in the eeml repo).
+
+base_output_dir: data/260728_r1b_obs/
+timestamp: false
+pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 4
+
+defaults:
+  M_values: [20]
+  T_values: [1000]
+  instances: 1500
+
+mts_classes:
+  - name: "r1b-chain"
+    labels: ["r1", "nonlinear"]
+    generator: "var_obs_nonlinear_a"
+    base_params:
+      motif_class: 0
+      observation: "square"
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "r1b-fork"
+    labels: ["r1", "nonlinear"]
+    generator: "var_obs_nonlinear_a"
+    base_params:
+      motif_class: 1
+      observation: "square"
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true
+
+  - name: "r1b-collider"
+    labels: ["r1", "nonlinear"]
+    generator: "var_obs_nonlinear_a"
+    base_params:
+      motif_class: 2
+      observation: "square"
+      alpha_lo: 0.2
+      alpha_hi: 0.8
+      rho_nuisance: 0.8
+      noise_std: 0.1
+      zscore: true

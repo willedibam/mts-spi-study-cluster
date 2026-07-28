@@ -38,6 +38,7 @@ from .linear import (
 from .chat import (
     generate_var_chat_a,
     generate_var_nonlinear_a,
+    generate_var_obs_nonlinear_a,
     generate_var_chat_b,
     generate_var_chat_c,
     generate_var_chat_d,
@@ -94,6 +95,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "var_lattice": generate_var_lattice,
     "var_chat_a": generate_var_chat_a,
     "var_nonlinear_a": generate_var_nonlinear_a,
+    "var_obs_nonlinear_a": generate_var_obs_nonlinear_a,
     "var_chat_b": generate_var_chat_b,
     "var_chat_c": generate_var_chat_c,
     "var_chat_d": generate_var_chat_d,

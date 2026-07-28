@@ -424,6 +424,31 @@ def generate_var_chat_d(
     return data
 
 
+def _match_ar1(X: np.ndarray, rho_target: float) -> np.ndarray:
+    """Give every column the same lag-1 autocorrelation, preserving coupling.
+
+    Whitens each channel with its own estimated AR(1) coefficient, then
+    re-colours with `rho_target`. Per-channel filtering leaves the cross-channel
+    dependence structure in place while removing the marginal signature that
+    would otherwise let node-level features identify the motif.
+    """
+    out = np.empty_like(X)
+    for j in range(X.shape[1]):
+        x = X[:, j] - X[:, j].mean()
+        c0 = float(x @ x)
+        a = float(x[:-1] @ x[1:]) / c0 if c0 > 1e-12 else 0.0
+        a = float(np.clip(a, -0.99, 0.99))
+        w = np.empty_like(x)
+        w[0] = x[0]
+        w[1:] = x[1:] - a * x[:-1]            # whiten
+        y = np.empty_like(w)
+        y[0] = w[0]
+        for t in range(1, len(w)):            # re-colour to the shared target
+            y[t] = rho_target * y[t - 1] + w[t]
+        out[:, j] = y
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Generator E: nonlinear-directed motifs (R1 of the multi-regime study)
 # ---------------------------------------------------------------------------
@@ -445,6 +470,7 @@ def generate_var_nonlinear_a(
     noise_std: float = 0.1,
     gain: float = 2.0,
     coupling: str = "square",
+    match_marginals: bool = False,
     transients: int = 200,
     rng=None,
     zscore: bool = True,
@@ -482,6 +508,26 @@ def generate_var_nonlinear_a(
     """
     if coupling not in ("square", "tanh"):
         raise ValueError(f"coupling must be 'square' or 'tanh', got {coupling!r}")
+
+    # match_marginals: equalise every channel's lag-1 autocorrelation to a
+    # common target, so per-channel dynamics cannot identify the motif.
+    #
+    # Needed because a squared drive changes a node's effective AR structure by
+    # an amount that depends on its in-degree, and the motifs differ there:
+    # chain and fork both have degrees [0,1,1] but the collider is [2,0,0] --
+    # one node absorbs two squared drives. Measured on the unfixed generator
+    # (M=10, T=1000, 60 draws), the top-3 lag-1 AC profile is a fingerprint:
+    #   chain    [0.974, 0.945, 0.821]
+    #   fork     [0.947, 0.946, 0.821]
+    #   collider [0.948, 0.824, 0.812]
+    # and a logistic regression on node features alone separates chain from
+    # collider at 0.83 (chance 0.5), driven almost entirely by lag-1 AC (0.85).
+    # That makes the classification solvable WITHOUT any pairwise coupling,
+    # which would invalidate any claim about the recovered coupling signature.
+    #
+    # The correction whitens each channel with its own estimated AR(1)
+    # coefficient and re-colours with the shared target, which removes the
+    # motif-dependent marginal while leaving cross-channel structure intact.
     if M < 3:
         raise ValueError(f"M must be >= 3 for a 3-node motif, got {M}")
     rng = _resolve_rng(None, rng)
@@ -521,6 +567,9 @@ def generate_var_nonlinear_a(
             )
     X_motif = X_motif[transients:]
 
+    if match_marginals:
+        X_motif = _match_ar1(X_motif, rho_nuisance)
+
     X_nuisance = _ar1_nuisance(T, M - 3, rho_nuisance, noise_std, rng)
 
     data, motif_indices, edges_permuted = _permute_and_merge(
@@ -536,5 +585,73 @@ def generate_var_nonlinear_a(
             coupling_values={"alpha": alpha, "gain": gain,
                              "rho": rho_nuisance, "coupling": coupling},
         )
+        return data, internals
+    return data
+
+
+# ---------------------------------------------------------------------------
+# Generator F: linear VAR with a NON-MONOTONE static observation (R1b)
+# ---------------------------------------------------------------------------
+
+def generate_var_obs_nonlinear_a(
+    M: int,
+    T: int,
+    motif_class: int = 0,
+    observation: str = "square",
+    alpha_lo: float = 0.2,
+    alpha_hi: float = 0.8,
+    rho_nuisance: float = 0.8,
+    noise_std: float = 0.1,
+    transients: int = 200,
+    rng=None,
+    zscore: bool = True,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, ChatMotifInternals]:
+    """R1b: var_chat_a dynamics, observed through a non-monotone transform.
+
+    Latent dynamics are the LINEAR VAR of generate_var_chat_a; only the
+    observation is nonlinear, and the same transform is applied to every
+    channel of every motif.
+
+    Why this rather than a nonlinear coupling. generate_var_nonlinear_a injects
+    the nonlinearity into the update, which changes each node's effective AR
+    structure by an amount that depends on its in-degree -- and the motifs
+    differ there (chain and fork are [0,1,1] but the collider is [2,0,0]). The
+    marginals then identify the motif on their own: measured with node features
+    alone, chain vs collider is separable at 0.91 (chance 0.5), so the task can
+    be solved with NO pairwise information and any claim about a recovered
+    coupling signature is void.
+
+    Applying the nonlinearity at the observation stage cannot leak, because it
+    is motif-independent by construction. Measured the same way:
+        R0 linear VAR (clean reference)  0.54 / 0.54
+        R1  nonlinear coupling           0.91 / 0.58   <- confounded
+        R1b linear VAR + x^2 observation 0.47 / 0.49   <- at chance
+
+    Trade-off, stated honestly: linear statistics are MIS-SPECIFIED here rather
+    than blind. For jointly Gaussian latents, corr(x_i^2, x_j^2) = 2*corr^2, so
+    linear measures still detect coupling, only attenuated. The prediction is
+    therefore that nonlinear/information-theoretic measures gain RELATIVE
+    weight, not that linear ones collapse to zero -- a weaker claim than the
+    confounded design appeared to support, but one that survives its controls.
+
+    observation: "square" (x^2, non-monotone) or "abs" (|x|).
+    """
+    if observation not in ("square", "abs"):
+        raise ValueError(f"observation must be 'square' or 'abs', got {observation!r}")
+
+    out = generate_var_chat_a(
+        M=M, T=T, motif_class=motif_class,
+        alpha_lo=alpha_lo, alpha_hi=alpha_hi,
+        rho_nuisance=rho_nuisance, noise_std=noise_std,
+        transients=transients, rng=rng, zscore=False,
+        return_internals=return_internals,
+    )
+    data, internals = (out if return_internals else (out, None))
+    data = np.square(data) if observation == "square" else np.abs(data)
+    data = _maybe_zscore(data, zscore=zscore)
+
+    if return_internals:
+        internals.coupling_values["observation"] = observation
         return data, internals
     return data
