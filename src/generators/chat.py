@@ -112,6 +112,7 @@ def generate_var_chat_a(
     M: int,
     T: int,
     motif_class: int = 0,
+    lag: int = 1,
     alpha_lo: float = 0.25,
     alpha_hi: float = 0.8,
     rho_nuisance: float = 0.5,
@@ -131,6 +132,17 @@ def generate_var_chat_a(
 
     Coupling strength α is drawn from Uniform(alpha_lo, alpha_hi) per sample.
     Couplings are positive. Remaining M-3 nodes are independent AR(1).
+
+    `lag` sets the delay of the coupling: X[t] = A X[t-lag] + e, so the CORRECT
+    autoregressive model order for this process is exactly `lag`. Default 1
+    reproduces every existing dataset byte-for-byte.
+
+    This exists to test a prediction the probe makes. On R0 (lag=1) the learned
+    weights prefer `sgc_parametric` at order-1 over the SAME estimator at
+    order-20 by ~8.6x, in 10/10 lambda runs -- a statistical-efficiency property
+    (order-1 is correctly specified) that the generator does not encode. If that
+    reading is right, raising `lag` must move the preference toward the higher
+    orders. A preference that stays on order-1 regardless of `lag` falsifies it.
 
     Returns shape (T, M), or (data, ChatMotifInternals) if return_internals=True.
     """
@@ -154,8 +166,8 @@ def generate_var_chat_a(
     # Simulate motif
     steps = transients + T
     X_motif = np.zeros((steps, 3))
-    for t in range(1, steps):
-        X_motif[t] = A @ X_motif[t - 1] + rng.normal(0, noise_std, size=3)
+    for t in range(lag, steps):
+        X_motif[t] = A @ X_motif[t - lag] + rng.normal(0, noise_std, size=3)
     X_motif = X_motif[transients:]
 
     # Nuisance nodes
@@ -247,8 +259,8 @@ def generate_var_chat_b(
     # Simulate motif
     steps = transients + T
     X_motif = np.zeros((steps, 3))
-    for t in range(1, steps):
-        X_motif[t] = A @ X_motif[t - 1] + rng.normal(0, noise_std, size=3)
+    for t in range(lag, steps):
+        X_motif[t] = A @ X_motif[t - lag] + rng.normal(0, noise_std, size=3)
     X_motif = X_motif[transients:]
 
     # Nuisance nodes
