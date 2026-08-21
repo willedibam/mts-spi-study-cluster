@@ -1,0 +1,61 @@
+#!/bin/bash
+#PBS -N spi-farm
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=8GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+
+: "${EXPERIMENT_CONFIG:?set EXPERIMENT_CONFIG}"
+: "${END_INDEX:?set END_INDEX}"
+START_INDEX="${START_INDEX:-1}"
+PYSPI_CONFIG="${PYSPI_CONFIG:-configs/pyspi/benchmarked_p90.yaml}"
+
+cd "${PBS_O_WORKDIR:?}"
+test -f "$EXPERIMENT_CONFIG"
+test -f "$PYSPI_CONFIG"
+
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export PYSPI_N_JOBS=1
+unset CUDA_VISIBLE_DEVICES
+
+python -c 'import src, pyspi'
+
+commands="$PBS_JOBFS/dataset-commands.txt"
+mkdir -p logs
+
+job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+status="$PBS_O_WORKDIR/logs/${job_stem}.status"
+exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
+
+for ((i=START_INDEX; i<=END_INDEX; i++)); do
+    printf 'python -m src.run_experiments --job-index %d --experiment-config %s --pyspi-config %s --n-jobs 1 --skip-existing --no-csv --no-heatmap\n' \
+        "$i" "$EXPERIMENT_CONFIG" "$PYSPI_CONFIG" >> "$commands"
+done
+
+task_count=$((END_INDEX - START_INDEX + 1))
+workers=$PBS_NCPUS
+(( workers > task_count )) && workers=$task_count
+
+echo "[INFO] datasets=$START_INDEX..$END_INDEX workers=$workers p90=$PYSPI_CONFIG"
+set +e
+mpirun -np "$workers" --map-by node:PE=1 \
+    nci-parallel --verbose --input-file "$commands" \
+    --status "$status"
+rc=$?
+set -e
+exit "$rc"
