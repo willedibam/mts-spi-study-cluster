@@ -1,0 +1,59 @@
+base_output_dir: data/order_parameter/kinetic_ising_feature_scout
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 610247
+save_heatmap: false
+threads: 1
+
+defaults:
+  instances: 12
+
+mts_classes:
+  - name: kinetic-ising-feature-scout
+    labels: [kinetic-ising, order-parameter, feature-scout, raw]
+    generator: kinetic_ising
+    seed_scope: instance
+    M_values: [20]
+    T_values: [500, 1000, 2000]
+    base_params: &primary
+      lattice_side: 64
+      equilibration_sweeps: 200
+      kinetic_burn_sweeps: 0
+      future_truth_T: 20000
+      patch_shape: [4, 5]
+      sample_every: 1
+      zscore: false
+      store_full_spins: false
+    include_base_variant: false
+    variants: &stress_grid
+      - {name: iso-u0p85, params: {reduced_coupling: 0.85, J_x: 1.0, J_y: 1.0}}
+      - {name: iso-u1p0, params: {reduced_coupling: 1.0, J_x: 1.0, J_y: 1.0}}
+      - {name: iso-u1p2, params: {reduced_coupling: 1.2, J_x: 1.0, J_y: 1.0}}
+      - {name: aniso-u0p85, params: {reduced_coupling: 0.85, J_x: 1.0, J_y: 0.5}}
+      - {name: aniso-u1p0, params: {reduced_coupling: 1.0, J_x: 1.0, J_y: 0.5}}
+      - {name: aniso-u1p2, params: {reduced_coupling: 1.2, J_x: 1.0, J_y: 0.5}}
+
+  - name: kinetic-ising-feature-scout
+    labels: [kinetic-ising, order-parameter, feature-scout, raw, spatial-ablation]
+    generator: kinetic_ising
+    seed_scope: instance
+    M_values: [10]
+    T_values: [1000]
+    base_params:
+      <<: *primary
+      patch_shape: [2, 5]
+    include_base_variant: false
+    variants: *stress_grid
+
+  - name: kinetic-ising-feature-scout
+    labels: [kinetic-ising, order-parameter, feature-scout, raw, spatial-ablation]
+    generator: kinetic_ising
+    seed_scope: instance
+    M_values: [32]
+    T_values: [1000]
+    base_params:
+      <<: *primary
+      patch_shape: [4, 8]
+    include_base_variant: false
+    variants: *stress_grid

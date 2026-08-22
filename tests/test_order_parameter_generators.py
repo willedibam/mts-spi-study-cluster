@@ -237,6 +237,49 @@ def test_anisotropic_ising_coordinate_and_hidden_future() -> None:
     assert np.isclose(internals.reduced_coupling, 1.2)
 
 
+def test_kinetic_ising_views_are_exactly_nested() -> None:
+    common = dict(
+        reduced_coupling=1.0,
+        lattice_side=12,
+        equilibration_sweeps=4,
+        return_internals=True,
+    )
+    small, small_info = generate_kinetic_ising(
+        M=10,
+        T=20,
+        patch_shape=[2, 5],
+        rng=np.random.default_rng(31),
+        **common,
+    )
+    primary, primary_info = generate_kinetic_ising(
+        M=20,
+        T=30,
+        patch_shape=[4, 5],
+        rng=np.random.default_rng(31),
+        **common,
+    )
+    large, large_info = generate_kinetic_ising(
+        M=32,
+        T=30,
+        patch_shape=[4, 8],
+        rng=np.random.default_rng(31),
+        **common,
+    )
+    for observed, info in ((small, small_info), (large, large_info)):
+        primary_columns = {
+            tuple(index): column
+            for column, index in enumerate(primary_info.patch_indices)
+        }
+        observed_columns = {
+            tuple(index): column for column, index in enumerate(info.patch_indices)
+        }
+        shared = sorted(set(primary_columns) & set(observed_columns))
+        np.testing.assert_array_equal(
+            primary[: len(observed), [primary_columns[index] for index in shared]],
+            observed[:, [observed_columns[index] for index in shared]],
+        )
+
+
 def test_spin_generator_harness_records_compact_truth_and_semantics(tmp_path: Path) -> None:
     config_path = tmp_path / "spin-compact.yaml"
     config_path.write_text(
@@ -325,6 +368,22 @@ def test_dataset_seed_does_not_depend_on_clone_path(tmp_path: Path) -> None:
     assert _derive_dataset_seed(base_seed=config.rng_seed, spec=spec) == _derive_dataset_seed(
         base_seed=config.rng_seed, spec=moved
     )
+
+
+def test_ising_feature_scout_mapping_is_paired_and_m20_primary() -> None:
+    config = ExperimentConfig.from_file(
+        Path("configs/generate/order_parameter/kinetic-ising-feature-scout.yaml")
+    )
+    mapping = DatasetMapping(config)
+    assert len(mapping.specs) == 360
+    assert {spec.M for spec in mapping.specs} == {10, 20, 32}
+    assert all(spec.M == 20 for spec in mapping.specs if spec.T != 1000)
+    for instance in range(12):
+        seeds = {spec.rng_seed for spec in mapping.specs if spec.instance == instance}
+        assert len(seeds) == 1
+    primary = [spec for spec in mapping.specs if spec.M == 20 and spec.T == 1000]
+    assert len(primary) == 72
+    assert all(spec.generator_params["patch_shape"] == [4, 5] for spec in primary)
 
 
 def test_claim_benchmark_mapping_and_split_invariants() -> None:

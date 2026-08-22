@@ -12,14 +12,14 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 
 ## Prospective benchmarks
 
-### Miller--Huse (primary new benchmark)
+### Miller--Huse (secondary benchmark)
 
-- Dynamics: `x'=(1-4g)f_mu(x)+g sum_nn f_mu(x_nn)` on a periodic 2-D lattice. Primary path is the original `mu=3`; `mu=1.9` is exploratory until long-run coarsening/pinning checks pass.
+- Dynamics: `x'=(1-4g)f_mu(x)+g sum_nn f_mu(x_nn)` on a periodic 2-D lattice. The original `mu=3` path passes start-state convergence; `mu=1.9` does not and is excluded from confirmatory evidence.
 - Define `s_r=+1` for `x_r>=0`, otherwise `-1`; `m_s=L^-2 sum_r s_r`. The canonical finite-size target is `Q_MH=<|m_s|>_future`; `sqrt(<m_s^2>)` is a second-moment sensitivity. Never average signed `m_s` across symmetry flips.
 - SPI sees only a contiguous `4x5` (`M=20`) field patch. The target uses a disjoint future full lattice; patch-excluded future magnetization is the anti-self-inclusion sensitivity.
 - Generator now supports rectangular patches, general `mu`, future truth, hidden complement, hot/cold/random starts and compact storage. Full field movies are off by default.
 
-### Kinetic Ising (independent replication)
+### Kinetic Ising (primary new benchmark)
 
 - Zero-field anisotropic square Ising, `H=-Jx sum_x sisj-Jy sum_y sisj`, equilibrated with Wolff clusters then observed under checkerboard heat-bath updates. Fully simultaneous updates are not substituted.
 - Primary target is `Q_Ising=<|m|>_future`; RMS magnetization is a sensitivity. Use isotropic `(Jx,Jy)=(1,1)` and anisotropic `(1,.5)` paths matched by `u=sinh(2 beta Jx)sinh(2 beta Jy)`.
@@ -30,9 +30,9 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 
 - Smoke configs and the full `benchmarked_p90.yaml` pipeline pass locally. Smoke contrasts are not physics validation.
 - Dataset-scoped seed derivation is clone-invariant: absolute output paths were removed from the seed payload after the first Gadi smoke exposed local/cluster trajectory mismatch. Every dataset still records its resolved seed.
-- Primary scouts: `configs/scout/miller-huse-physics-primary.yaml` (480 tasks) and `kinetic-ising-physics-primary.yaml` (624 tasks), run by `scripts/spin_order_parameter_scout.py`. They store small JSON parts; aggregation produces compressed numeric arrays and a concise diagnostic figure.
-- Before pyspi require: future-block repeatability small relative to `Q` range; hot/cold/random agreement; expected Binder/susceptibility/finite-size behavior; and useful held-out local-to-global observability. Add `L={32,64,128}` and burn/equilibration audits after the coarse scout identifies the transition region.
-- Miller--Huse starts at `L=64`, burn `200k`, exposed `T=4000`, four future blocks of 4000, 24 seeds/cell. Kinetic Ising starts at `L=64`, 200 Wolff-equivalent equilibration sweeps, exposed `T=4000`, four future blocks of 5000, 24 seeds/cell. These are hypotheses to validate, not fixed production values.
+- Coarse and convergence scouts completed on Gadi. Ising used `L={32,64,128}`, three initial states, two anisotropy paths, 80k future steps and 864 tasks. Initial-state mean spread was median `.0061`, max `.0282`; matched-path gap mean `.0059`, max `.0214`; hidden/full target p95 gap `.00027`. Finite-size rounding and critical slowing are visible as expected.
+- The per-realization Ising future target remains noisy near `u=1` (20k-block difference p95 up to about `.14` at `L=64`). The primary physical target is therefore an independently estimated cell/ensemble `Q_L=<|m|>`; per-realization future truth is a sensitivity. Do not call within-cell failure evidence against representation if the target itself is unreliable.
+- Miller--Huse `mu=3` showed small initial-state spreads (max `.044` in the audited cells) and the expected size-dependent transition. `mu=1.9` retained invariant ordered basins: initial-state mean spread reached `.943`. Exclude `mu=1.9`; retain `mu=3` only as a single-path secondary benchmark.
 - `M=20` remains fixed unless local observability fails. Choose production `T`, `L` and burn only after the scouts; do not substitute computation volume for construct validity.
 
 ## Frozen representation contract to write before confirmation
@@ -45,6 +45,8 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 - Derive target noise `e_truth` from disjoint future blocks and local-oracle error `e_crop` from physics-only data. Freeze an absolute accuracy margin before SPI confirmation; repeatability is an error floor, not by itself a scientific success threshold.
 - Keep physics scout, representation scout, calibration, and untouched confirmation masters disjoint. Split/bootstrap by master; include paired paths and independent-cell samples.
 - Negative control: independently circular-shift channels, preserving marginal spectra but destroying collective alignment; apply the frozen representation without refitting.
+- Ising representation scout is development-only: 12 paired masters, two paths, three stress controls, `M=20` at `T={500,1000,2000}`, and nested `M={10,32}` brackets at `T=1000`. `M=32` is an upper convergence diagnostic; production remains `M=20`.
+- Select a zero-failure SPI core on every `M>=10` stress row. Fit unwhitened PC1 at `M=20,T=1000` with meta-feature SD threshold `.05`. Require exact trajectory nesting, worst-path bootstrap stability, and master-bootstrap/leave-one-out loading and score stability before production.
 
 ## Claim ladder
 
@@ -57,5 +59,5 @@ Control-only, local physical oracle, mean `|r|`, raw-correlation PC1 and develop
 
 ## Operational state
 
-- Local authoritative branch: `refactor-lagged-warping`; user notebook changes remain untouched. Gadi repositories were clean at main `0c2ff27`, pyspi-v3 `65317c9`; allocation available `25.71 KSU`, Scratch inode headroom about `20.25k` at last check.
-- Next: commit only generator/scout/test/context changes; fast-forward Gadi; run two-dataset p90 smoke; submit physics scouts; audit results before any representation or production farm.
+- Local authoritative branch: `refactor-lagged-warping`; user notebook changes remain untouched. Gadi physics jobs `177032284/177032287` finished successfully. Available allocation was `25.68 KSU`; Scratch inode headroom about `20.25k` at last check.
+- Next: run a tiny Ising p90 feature-scout subset, then the 360-dataset target-blind scout. Submit confirmation only if its frozen stability gates pass. Miller--Huse `mu=3` representation work follows as secondary evidence; `mu=1.9` is closed.
