@@ -907,7 +907,14 @@ def _build_metadata(
             "n_spis": len(result.metadata),
             "errors": result.errors or {},
             "spis": [
-                {"name": info.name, "directed": info.directed, "labels": info.labels}
+                {
+                    "name": info.name,
+                    "directed": info.directed,
+                    "labels": info.labels,
+                    "family": info.family,
+                    "module": info.module,
+                    "class_name": info.class_name,
+                }
                 for info in result.metadata
             ],
         },

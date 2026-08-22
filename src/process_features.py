@@ -17,7 +17,7 @@ from typing import Dict, List, Literal, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr, ConstantInputWarning
+from scipy.stats import rankdata, spearmanr, ConstantInputWarning
 
 from .utils import load_json, project_root
 
@@ -118,21 +118,17 @@ def _edge_vectors(
         mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
         return [(name, mat[mask])]
     upper_mask = np.triu(np.ones(mat.shape, dtype=bool), k=1)
-    lower_mask = np.tril(np.ones(mat.shape, dtype=bool), k=-1)
     return [
         (f"{name}__ij", mat[upper_mask]),
-        (f"{name}__ji", mat[lower_mask]),
+        # Transpose before applying the same mask so both vectors enumerate
+        # the same unordered dyads: (0,1), (0,2), ..., (M-2,M-1).
+        (f"{name}__ji", mat.T[upper_mask]),
     ]
 
 
 def _rankdata(arr: np.ndarray) -> np.ndarray:
-    """Vectorized ranking along axis 1 (rows)."""
-    n = arr.shape[1]
-    order = np.argsort(arr, axis=1)
-    ranks = np.empty_like(order, dtype=np.float64)
-    rows = np.arange(arr.shape[0])[:, None]
-    ranks[rows, order] = np.arange(1, n + 1)
-    return ranks
+    """Average-tie ranks along rows; invalid rows remain invalid."""
+    return rankdata(arr, axis=1, method="average", nan_policy="propagate")
 
 
 def _pearson_corr_matrix(V: np.ndarray) -> np.ndarray:
