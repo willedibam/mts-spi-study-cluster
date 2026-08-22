@@ -14,8 +14,34 @@ mts_classes:
     labels: [kuramoto, order-parameter, gaussian, feature-scout, raw]
     generator: kuramoto_order_parameter
     seed_scope: instance
-    M_values: [8, 20, 32]
+    M_values: [20]
     T_values: [500, 1000, 2000]
+    base_params:
+      N_full: 256
+      dt: 0.02
+      sample_dt: 0.10
+      burn_time: 100.0
+      omega_mean: 1.0
+      omega_std: 1.0
+      frequency_distribution: gaussian
+      frequency_sampling: random
+      output: cos
+      sensor_phase_std: 0.0
+      zscore: false
+    include_base_variant: false
+    variants:
+      - {name: raw-kappa0p8, params: {K: 1.276615297285}}
+      - {name: raw-kappa1p0, params: {K: 1.595769121606}}
+      - {name: raw-kappa1p4, params: {K: 2.234076770248}}
+
+  # A small spatial-convergence bracket around the primary M=20 view.
+  # M=32 is an upper comparator only, not a production observation size.
+  - name: kuramoto-gaussian-feature-scout
+    labels: [kuramoto, order-parameter, gaussian, feature-scout, raw, spatial-ablation]
+    generator: kuramoto_order_parameter
+    seed_scope: instance
+    M_values: [8, 32]
+    T_values: [1000]
     base_params:
       N_full: 256
       dt: 0.02

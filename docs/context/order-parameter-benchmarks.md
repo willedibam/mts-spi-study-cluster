@@ -53,6 +53,7 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 - Halving the RK4 step from `.02` to `.01` changes paired mean `R_N` by median `5.8e-9`, p95 `9.9e-4`, maximum `.00305`; `.02` is adequate.
 - Doubled-burn job `177019359` compared burn `100` with `200` for 160 paired near-onset realizations: signed mean change `7.6e-5`, mean absolute change `.00156`, p95 `.00434`, and Spearman `.99961`. Burn `100` is adequate for this benchmark.
 - Therefore `N=256, M=20, T=1000, dt=.02, sample_dt=.1, burn=100` is physically defensible. `T=1000` remains provisional until the p90 SPI--SPI feature-convergence scout passes.
+- The feature scout keeps `M=20` primary: it tests `T in {500,1000,2000}` at `M=20`, with `M in {8,32}` only at `T=1000` as a lower/upper spatial-convergence bracket. The `M=32` arm is a 12-dataset diagnostic, not a production observation size. Including the paired `M=20,T=1000` z-score ablation gives 72 datasets total.
 - Corrected p90 pilot `177019354`: 6/6 `M=20,T=1000` datasets completed with 289 SPIs; median pyspi time `603 s`, maximum `774 s`, and 233 SPIs were finite/nonconstant in all six. The exact-GP additive-noise-model SPI was removed after cancelled pilot `177018028` spent more than 18 CPU-minutes per dataset inside that SPI alone. This pilot validates execution and filtering, not the order-parameter result.
 
 ## Claim ladder

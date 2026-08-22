@@ -82,9 +82,9 @@ def _view_summary(frame: pd.DataFrame, X: np.ndarray, q: np.ndarray) -> pd.DataF
     frame = frame.copy()
     frame["q"] = q
     keys = ["kappa", "instance"]
-    reference = frame[(frame["M"] == 32) & (frame["T"] == 2000)].sort_values(keys)
+    reference = frame[(frame["M"] == 20) & (frame["T"] == 1000)].sort_values(keys)
     if len(reference) != frame.groupby(["M", "T"]).size().max():
-        raise RuntimeError("reference M32/T2000 view is incomplete")
+        raise RuntimeError("primary M20/T1000 view is incomplete")
     reference_indices = reference.index.to_numpy()
     q_reference = reference["q"].to_numpy()
     distance_reference = pdist(X[reference_indices])
@@ -135,7 +135,7 @@ def main() -> int:
     frame = _records(args.data_dir).reset_index(drop=True)
     raw = frame[~frame["zscore"]].copy().reset_index(drop=True)
     zscored = frame[frame["zscore"]].copy().reset_index(drop=True)
-    expected_raw = 3 * 3 * 3 * 4
+    expected_raw = 3 * 5 * 4
     expected_zscored = 3 * 4
     if len(raw) != expected_raw or len(zscored) != expected_zscored:
         raise RuntimeError(
@@ -154,7 +154,7 @@ def main() -> int:
     )
     raw_X = X[~frame["zscore"].to_numpy()]
     z_X = X[frame["zscore"].to_numpy()]
-    fit_mask = (raw["M"] == 32) & (raw["T"] == 2000)
+    fit_mask = (raw["M"] == 20) & (raw["T"] == 1000)
     q_raw, keep, pca = _fit_coordinate(
         raw_X[fit_mask], raw_X, variance_threshold=args.variance_threshold
     )
@@ -181,7 +181,10 @@ def main() -> int:
         _rho(q_no_phase[fit_mask], raw.loc[fit_mask, "kappa"].to_numpy())
     ) or 1.0
 
-    views.to_csv(args.data_dir / "feature_scout_views.csv", index=False)
+    np.savez_compressed(
+        args.data_dir / "feature_scout_views.npz",
+        **{column: views[column].to_numpy() for column in views.columns},
+    )
     (args.data_dir / "stable_spis.txt").write_text(
         "\n".join(stable) + "\n", encoding="utf-8"
     )
