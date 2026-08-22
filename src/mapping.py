@@ -259,6 +259,7 @@ class DatasetSpec:
     normalise: bool
     save_heatmap: bool
     rng_seed: int
+    seed_scope: str
     threads: int | None
     heatmap_deltas: List[int]
     tickers: List[str] = field(default_factory=list)
@@ -271,6 +272,13 @@ class DatasetSpec:
     def name(self) -> str:
         return f"{self.mts_class}_{self.dataset_slug}"
 
+    @property
+    def seed_group_id(self) -> str:
+        """Identifier for datasets that share one stochastic master draw."""
+        if self.seed_scope == "instance":
+            return f"{self.mts_class}:I{self.instance}"
+        return self.name
+
     def to_summary(self) -> dict[str, Any]:
         return {
             "index": self.index,
@@ -279,6 +287,8 @@ class DatasetSpec:
             "M": self.M,
             "T": self.T,
             "instance": self.instance,
+            "seed_scope": self.seed_scope,
+            "seed_group_id": self.seed_group_id,
             "pyspi_config": str(self.pyspi_config),
             "dataset_dir": str(self.dataset_dir),
         }
@@ -428,6 +438,7 @@ class DatasetMapping:
                                 normalise=normalise,
                                 save_heatmap=save_heatmap,
                                 rng_seed=base_seed,
+                                seed_scope=class_entry.seed_scope,
                                 threads=threads,
                                 heatmap_deltas=[1],
                                 tickers=class_entry.tickers,
@@ -477,6 +488,7 @@ class DatasetMapping:
                                     normalise=normalise,
                                     save_heatmap=save_heatmap,
                                     rng_seed=base_seed,
+                                    seed_scope=class_entry.seed_scope,
                                     threads=threads,
                                     heatmap_deltas=[1],
                                     tickers=class_entry.tickers,
@@ -546,6 +558,7 @@ class DatasetMapping:
                                     normalise=normalise,
                                     save_heatmap=save_heatmap,
                                     rng_seed=0,
+                                    seed_scope=class_entry.seed_scope,
                                     threads=threads,
                                     heatmap_deltas=[1],
                                 )
@@ -589,6 +602,7 @@ class DatasetMapping:
                             normalise=spec.normalise,
                             save_heatmap=spec.save_heatmap,
                             rng_seed=0,
+                            seed_scope=spec.seed_scope,
                             threads=spec.threads,
                             heatmap_deltas=[1],
                         )

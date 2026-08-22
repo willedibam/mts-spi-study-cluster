@@ -27,6 +27,16 @@ from src.order_parameter_features import (  # noqa: E402
 from src.utils import load_json  # noqa: E402
 
 
+CONVERGENCE_THRESHOLDS = {
+    "time_q_spearman": 0.90,
+    "time_geometry_spearman": 0.85,
+    "time_feature_correlation": 0.90,
+    "spatial_q_spearman": 0.85,
+    "spatial_geometry_spearman": 0.80,
+    "spatial_feature_correlation": 0.85,
+}
+
+
 def _rho(x: np.ndarray, y: np.ndarray) -> float:
     if len(x) < 3 or np.unique(x).size < 2 or np.unique(y).size < 2:
         return float("nan")
@@ -76,6 +86,12 @@ def _fit_coordinate(
         raise RuntimeError("no finite varying meta-features remain")
     pca = PCA(n_components=1, svd_solver="full").fit(X_fit[:, keep])
     return pca.transform(X[:, keep])[:, 0], keep, pca
+
+
+def _deterministic_pc_sign(pca: PCA) -> float:
+    loading = pca.components_[0]
+    pivot = int(np.argmax(np.abs(loading)))
+    return 1.0 if loading[pivot] >= 0.0 else -1.0
 
 
 def _view_summary(frame: pd.DataFrame, X: np.ndarray, q: np.ndarray) -> pd.DataFrame:
@@ -158,7 +174,7 @@ def main() -> int:
     q_raw, keep, pca = _fit_coordinate(
         raw_X[fit_mask], raw_X, variance_threshold=args.variance_threshold
     )
-    orientation = np.sign(_rho(q_raw[fit_mask], raw.loc[fit_mask, "kappa"].to_numpy())) or 1.0
+    orientation = _deterministic_pc_sign(pca)
     q_raw *= orientation
     views = _view_summary(raw, raw_X[:, keep], q_raw)
 
@@ -177,9 +193,27 @@ def main() -> int:
     q_no_phase, keep_no_phase, pca_no_phase = _fit_coordinate(
         X_no_phase[fit_mask], X_no_phase, variance_threshold=args.variance_threshold
     )
-    q_no_phase *= np.sign(
-        _rho(q_no_phase[fit_mask], raw.loc[fit_mask, "kappa"].to_numpy())
-    ) or 1.0
+    q_no_phase *= np.sign(_rho(q_no_phase[fit_mask], q_raw[fit_mask])) or 1.0
+
+    by_view = views.set_index(["M", "T"])
+    time_upper = by_view.loc[(20, 2000)]
+    spatial_upper = by_view.loc[(32, 1000)]
+    time_passed = bool(
+        time_upper["q_vs_reference_spearman"]
+        >= CONVERGENCE_THRESHOLDS["time_q_spearman"]
+        and time_upper["geometry_vs_reference_spearman"]
+        >= CONVERGENCE_THRESHOLDS["time_geometry_spearman"]
+        and time_upper["median_feature_vector_correlation"]
+        >= CONVERGENCE_THRESHOLDS["time_feature_correlation"]
+    )
+    spatial_passed = bool(
+        spatial_upper["q_vs_reference_spearman"]
+        >= CONVERGENCE_THRESHOLDS["spatial_q_spearman"]
+        and spatial_upper["geometry_vs_reference_spearman"]
+        >= CONVERGENCE_THRESHOLDS["spatial_geometry_spearman"]
+        and spatial_upper["median_feature_vector_correlation"]
+        >= CONVERGENCE_THRESHOLDS["spatial_feature_correlation"]
+    )
 
     np.savez_compressed(
         args.data_dir / "feature_scout_views.npz",
@@ -211,12 +245,19 @@ def main() -> int:
         "max_compute_seconds": float(frame["compute_seconds"].max()),
         "max_errors_per_dataset": int(frame["n_errors"].max()),
         "minimum_spi_validity_rate": float(min(rates.values())),
+        "convergence_gate": {
+            "thresholds": CONVERGENCE_THRESHOLDS,
+            "time_M20_T1000_vs_T2000_passed": time_passed,
+            "spatial_M20_vs_M32_T1000_passed": spatial_passed,
+            "production_M20_T1000_passed": time_passed and spatial_passed,
+            "note": "Operational representation-stability thresholds, not physical critical-scaling criteria.",
+        },
     }
     (args.data_dir / "feature_scout_summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
-    return 0
+    return 0 if time_passed and spatial_passed else 2
 
 
 if __name__ == "__main__":

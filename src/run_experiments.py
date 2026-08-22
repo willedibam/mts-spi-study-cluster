@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import subprocess
 from datetime import datetime
 from hashlib import blake2s, sha256
 import sys
@@ -67,6 +68,27 @@ def _file_sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _repository_provenance() -> Dict[str, Any]:
+    """Best-effort identity for the generator/runner source tree."""
+    root = project_root()
+    try:
+        commit = subprocess.check_output(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+        dirty = bool(
+            subprocess.check_output(
+                ["git", "-C", str(root), "status", "--porcelain"],
+                text=True,
+                stderr=subprocess.DEVNULL,
+            ).strip()
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return {"git_commit": "unknown", "git_dirty": None}
+    return {"git_commit": commit, "git_dirty": dirty}
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -194,6 +216,11 @@ def main(argv: List[str] | None = None) -> None:
             config.base_output_dir.name + f"_{_run_ts}"
         )
     mapping = DatasetMapping(config)
+    experiment_provenance = {
+        "config": to_relative(config_path),
+        "config_sha256": _file_sha256(config_path),
+        **_repository_provenance(),
+    }
     if args.list:
         print(f"[INFO] Listing {len(mapping)} dataset combinations from {to_relative(config_path)}.")
         for summary in mapping.summaries():
@@ -284,6 +311,7 @@ def main(argv: List[str] | None = None) -> None:
             },
             compute_seconds=compute_seconds,
             gen_extras=gen_extras,
+            experiment_provenance=experiment_provenance,
         )
         dump_json(dataset_dir / "meta.json", meta)
         print(
@@ -403,13 +431,17 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
         ground_truth = gen_extras.pop("_ground_truth", None)
         if ground_truth is not None:
             arrays = {name: np.asarray(values) for name, values in ground_truth.items()}
-            np.savez(ground_truth_path, **arrays)
+            np.savez_compressed(ground_truth_path, **arrays)
             gen_extras["ground_truth"] = _ground_truth_descriptor(ground_truth_path)
         duration = time.perf_counter() - start
         print(
             f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
             f"in {duration:.2f}s -> {to_relative(ts_path)}"
         )
+    gen_extras.setdefault(
+        "resolved_params",
+        _resolve_generator_params(spec.generator, dict(spec.generator_params)),
+    )
     return data.astype(np.float64, copy=False), ts_path, gen_extras
 
 
@@ -524,30 +556,34 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
         gen_extras = {"_full_lattice": full_lattice}
     elif spec.generator == "kuramoto_order_parameter":
         generator_params.pop("return_internals", None)
-        generator_params.pop("store_full_phases", None)
+        store_full_phases = bool(generator_params.pop("store_full_phases", True))
         data, internals = generate.generate_kuramoto_order_parameter(
             M=spec.M,
             T=spec.T,
             rng=np.random.default_rng(spec.rng_seed),
             return_internals=True,
-            store_full_phases=True,
+            store_full_phases=store_full_phases,
             **generator_params,
         )
-        if internals.full_phases is None:  # defensive; forced above
-            raise RuntimeError("Kuramoto full phases were not retained")
+        ground_truth = {
+            "r_full": internals.r_full.astype(np.float32),
+            "r_observed": internals.r_observed.astype(np.float32),
+            "r_unobserved": internals.r_unobserved.astype(np.float32),
+            "frequencies": internals.frequencies.astype(np.float32),
+            "observation_indices": internals.observation_indices.astype(np.int32),
+            "sensor_offsets": internals.sensor_offsets.astype(np.float32),
+            "initial_phases": internals.initial_phases.astype(np.float32),
+            "final_phases": internals.final_phases.astype(np.float32),
+            "critical_coupling": np.array(internals.critical_coupling),
+        }
+        if internals.full_phases is not None:
+            ground_truth["full_phases"] = internals.full_phases.astype(np.float32)
         gen_extras = {
-            "_ground_truth": {
-                "full_phases": internals.full_phases.astype(np.float32),
-                "r_full": internals.r_full.astype(np.float32),
-                "r_observed": internals.r_observed.astype(np.float32),
-                "r_unobserved": internals.r_unobserved.astype(np.float32),
-                "frequencies": internals.frequencies.astype(np.float32),
-                "observation_indices": internals.observation_indices.astype(np.int32),
-                "sensor_offsets": internals.sensor_offsets.astype(np.float32),
-                "initial_phases": internals.initial_phases.astype(np.float32),
-                "final_phases": internals.final_phases.astype(np.float32),
-                "critical_coupling": np.array(internals.critical_coupling),
-            }
+            "_ground_truth": ground_truth,
+            "resolved_params": _resolve_generator_params(
+                spec.generator,
+                {**generator_params, "store_full_phases": store_full_phases},
+            ),
         }
         if internals.r_full_future.size:
             gen_extras["_ground_truth"].update(
@@ -859,6 +895,41 @@ def save_mts_heatmap(data: np.ndarray, path: Path) -> None:
     print(f"[INFO] Wrote heatmap to {to_relative(out_path)}")
 
 
+def _kuramoto_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
+    params = dict(gen_extras.get("resolved_params") or spec.generator_params)
+    distribution = str(params.get("frequency_distribution", "gaussian"))
+    omega_std = float(params.get("omega_std", 1.0))
+    critical = float(
+        (gen_extras.get("ground_truth") or {}).get(
+            "critical_coupling",
+            generate.kuramoto_critical_coupling(distribution, omega_std),
+        )
+    )
+    coupling = float(params.get("K", critical))
+    future_truth = int(params.get("future_truth_T", 0)) > 0
+    return {
+        "control": {
+            "name": "K",
+            "value": coupling,
+            "continuum_critical_value": critical,
+            "reduced_name": "kappa",
+            "reduced_value": coupling / critical,
+        },
+        "order_parameter": {
+            "name": "Kuramoto phase coherence",
+            "definition": "R_N(t)=abs(mean_j(exp(i*theta_j(t))))",
+            "canonical_full_array": "r_full",
+            "primary_analysis_array": "r_full_future" if future_truth else "r_full",
+            "hidden_complement_sensitivity_array": (
+                "r_unobserved_future" if future_truth else "r_unobserved"
+            ),
+            "observed_subset_diagnostic_array": "r_observed",
+            "future_truth_disjoint_from_input_window": future_truth,
+            "included_in_timeseries_input": False,
+        },
+    }
+
+
 def _build_metadata(
     *,
     spec,
@@ -866,6 +937,7 @@ def _build_metadata(
     paths: Dict[str, Any],
     compute_seconds: float,
     gen_extras: Dict[str, Any] | None = None,
+    experiment_provenance: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     variant_block = None
     if spec.variant:
@@ -876,14 +948,17 @@ def _build_metadata(
         }
     source_block: Dict[str, Any] = {"type": spec.source}
     if spec.source == "synthetic":
+        extras = gen_extras or {}
         source_block.update(
             {
                 "name": spec.generator,
                 "params": spec.generator_params,
                 "seed": spec.rng_seed,
-                **(gen_extras or {}),
+                **extras,
             }
         )
+        if spec.generator == "kuramoto_order_parameter":
+            source_block.update(_kuramoto_semantics(spec, extras))
         # Fold in pre-seed provenance (e.g. adiabatic-continuation network_seed,
         # branch, dK) when the timeseries was produced outside the harness.
         prov_path = Path(spec.dataset_dir) / "gen_provenance.json"
@@ -921,6 +996,18 @@ def _build_metadata(
         "M": spec.M,
         "T": spec.T,
         "instance_index": spec.instance,
+        "experiment": experiment_provenance or {},
+        "sampling_design": {
+            "seed_scope": spec.seed_scope,
+            "seed_group_id": spec.seed_group_id,
+            "role": (
+                "paired-control-path"
+                if "paired" in spec.class_labels
+                else "independent-cell"
+                if "independent-cell" in spec.class_labels
+                else "unspecified"
+            ),
+        },
         "variant": variant_block,
         "normalise": spec.normalise,
         "timestamp": timestamp(),

@@ -1,4 +1,5 @@
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 
@@ -9,6 +10,11 @@ from src.generators.order_parameter import (
     miller_huse_map,
 )
 from src.mapping import DatasetMapping, ExperimentConfig
+from src.run_experiments import (
+    _build_metadata,
+    _kuramoto_semantics,
+    generate_synthetic_from_spec,
+)
 
 
 def test_supported_kuramoto_critical_couplings() -> None:
@@ -67,20 +73,84 @@ def test_kuramoto_generator_reproduces_basic_synchronization_contrast() -> None:
 
 
 def test_kuramoto_future_truth_is_not_exposed_in_the_mts() -> None:
-    observed, info = generate_kuramoto_order_parameter(
+    common = dict(
         M=4,
         T=20,
-        future_truth_T=15,
         N_full=24,
         burn_time=2.0,
-        rng=np.random.default_rng(19),
         return_internals=True,
+    )
+    current_only, current_info = generate_kuramoto_order_parameter(
+        future_truth_T=0, rng=np.random.default_rng(19), **common
+    )
+    observed, info = generate_kuramoto_order_parameter(
+        future_truth_T=15, rng=np.random.default_rng(19), **common
     )
     assert observed.shape == (20, 4)
     assert info.full_phases.shape == (20, 24)
     assert info.r_full.shape == (20,)
     assert info.r_full_future.shape == (15,)
     assert info.r_unobserved_future.shape == (15,)
+    np.testing.assert_array_equal(observed, current_only)
+    np.testing.assert_array_equal(info.r_full, current_info.r_full)
+    np.testing.assert_array_equal(info.r_unobserved, current_info.r_unobserved)
+
+
+def test_experiment_harness_can_omit_full_phase_movie(tmp_path: Path) -> None:
+    config_path = tmp_path / "compact.yaml"
+    config_path.write_text(
+        """
+base_output_dir: data/test-compact
+pyspi_config: configs/pyspi/test.yaml
+defaults: {instances: 1}
+mts_classes:
+  - name: compact
+    generator: kuramoto_order_parameter
+    M_values: [4]
+    T_values: [20]
+    base_params:
+      N_full: 24
+      burn_time: 2.0
+      future_truth_T: 5
+      store_full_phases: false
+""",
+        encoding="utf-8",
+    )
+    spec = DatasetMapping(ExperimentConfig.from_file(config_path)).specs[0]
+    observed, extras = generate_synthetic_from_spec(spec)
+    assert observed.shape == (20, 4)
+    assert "full_phases" not in extras["_ground_truth"]
+    assert extras["_ground_truth"]["r_full_future"].shape == (5,)
+    assert extras["resolved_params"]["store_full_phases"] is False
+    semantics = _kuramoto_semantics(spec, extras)
+    assert semantics["control"]["reduced_name"] == "kappa"
+    assert np.isclose(
+        semantics["control"]["reduced_value"],
+        spec.generator_params.get("K", np.sqrt(8.0 / np.pi))
+        / np.sqrt(8.0 / np.pi),
+    )
+    assert semantics["order_parameter"]["primary_analysis_array"] == "r_full_future"
+    assert semantics["order_parameter"]["included_in_timeseries_input"] is False
+    meta = _build_metadata(
+        spec=spec,
+        result=SimpleNamespace(metadata=[], errors={}),
+        paths={},
+        compute_seconds=1.0,
+        gen_extras={
+            "resolved_params": extras["resolved_params"],
+            "ground_truth": {"critical_coupling": np.sqrt(8.0 / np.pi)},
+        },
+        experiment_provenance={
+            "config": "compact.yaml",
+            "config_sha256": "abc",
+            "git_commit": "def",
+            "git_dirty": False,
+        },
+    )
+    assert meta["sampling_design"]["seed_scope"] == "dataset"
+    assert meta["sampling_design"]["seed_group_id"] == spec.name
+    assert meta["experiment"]["config_sha256"] == "abc"
+    assert meta["generator"]["control"]["reduced_name"] == "kappa"
 
 
 def test_miller_huse_map_and_patch_shapes() -> None:
@@ -133,3 +203,37 @@ mts_classes:
         by_instance.setdefault(spec.instance, set()).add(spec.rng_seed)
     assert all(len(seeds) == 1 for seeds in by_instance.values())
     assert next(iter(by_instance[0])) != next(iter(by_instance[1]))
+
+
+def test_claim_benchmark_mapping_and_split_invariants() -> None:
+    config = ExperimentConfig.from_file(
+        Path("configs/generate/order_parameter/kuramoto-order-benchmark.yaml")
+    )
+    mapping = DatasetMapping(config)
+    assert len(mapping.specs) == 880
+    assert len({spec.dataset_dir for spec in mapping.specs}) == 880
+    seen_seeds: set[int] = set()
+    for class_name in (
+        "kuramoto-gaussian-paired",
+        "kuramoto-logistic-paired",
+    ):
+        paired = [spec for spec in mapping.specs if spec.mts_class == class_name]
+        assert all(spec.seed_scope == "instance" for spec in paired)
+        for instance in range(32):
+            master = [spec for spec in paired if spec.instance == instance]
+            assert len({spec.rng_seed for spec in master}) == 1
+            assert len({spec.seed_group_id for spec in master}) == 1
+            assert len({spec.instance < 16 for spec in master}) == 1
+            seen_seeds.add(master[0].rng_seed)
+    for class_name in (
+        "kuramoto-gaussian-cell",
+        "kuramoto-logistic-cell",
+    ):
+        cell = [spec for spec in mapping.specs if spec.mts_class == class_name]
+        assert all(spec.seed_scope == "dataset" for spec in cell)
+        assert len({spec.rng_seed for spec in cell}) == len(cell)
+        assert len({spec.seed_group_id for spec in cell}) == len(cell)
+        seen_seeds.update(spec.rng_seed for spec in cell)
+    assert len(seen_seeds) == 64 + 80 + 96
+    assert all(spec.generator_params["future_truth_T"] == 1000 for spec in mapping.specs)
+    assert all(spec.generator_params["store_full_phases"] is False for spec in mapping.specs)

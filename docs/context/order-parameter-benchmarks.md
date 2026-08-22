@@ -23,7 +23,7 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 
 - Mean-field `O(N)` coupling and RK4; separate `N_full` from observed `M`; no dynamical or measurement noise in the primary result.
 - Observe `cos(theta)` with a common carrier frequency so locked channels keep oscillating. Add `sin(theta)` and fixed per-sensor phase offsets only as observation-map ablations; avoid wrapped phase as a scalar input.
-- Save clean full phases, `R_N(t)`, observed-subset `R_M(t)`, hidden-complement `R_{N-M}(t)`, frequencies, observation indices, initial state, seeds, integrator settings, and frequency-sampling scheme. For the claim-bearing run, also save a subsequent hidden-only `R` window (`future_truth_T`) while exposing only the first `T` samples to SPI. SPI sees none of the hidden artifacts.
+- Save `R_N(t)`, observed-subset `R_M(t)`, hidden-complement `R_{N-M}(t)`, frequencies, observation indices, initial/final states, seeds, integrator settings, and frequency-sampling scheme. Full clean phase movies are useful for small validation runs but optional in production once these quantities are computed directly. For the claim-bearing run, also save a subsequent hidden-only `R` window (`future_truth_T`) while exposing only the first `T` samples to SPI. SPI sees none of the hidden artifacts.
 - Generate paired master realizations across `K`; split and bootstrap by master ID. Also retain a smaller independently resampled-per-cell validation so pairing cannot manufacture smooth trajectories.
 - Generate long masters and derive nested `T` and `M` views. Dataset identity must keep every view of one master in the same evaluation split.
 
@@ -45,6 +45,17 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 - Run all SPIs and an ablation excluding explicit phase/synchronization SPIs. Constant/failure patterns must not become synchronized-regime labels.
 - Report overall and within-control association, seed-clustered uncertainty, held-out cross-path calibration error/data collapse, matched-`R`/different-path and matched-`kappa`/different-`R` contrasts, and `M x T` degradation. Use staggered logistic control values so transfer is not a lookup on the Gaussian grid.
 
+## Frozen claim benchmark
+
+- The gated production config contains 880 `M=20,T=1000` datasets: 32 paired masters per Gaussian/logistic path plus eight independently resampled realizations per control cell. Gaussian masters 0--15 are development-only; Gaussian masters 16--31, every logistic master, and all independent-cell samples are evaluation-only.
+- The canonical primary target is the disjoint-future full-system `R_N`. Disjoint-future `R_{N-M}` is the anti-self-inclusion sensitivity target; current/future and full/complement reliability are reported together.
+- Gaussian uses `kappa in {.6,.8,.9,.95,1,1.05,1.1,1.2,1.4,1.6}`. Logistic uses `{.7,.8,.875,.925,.975,1,1.025,1.075,1.15,1.2,1.4,1.5}`: most controls are staggered, while four shared anchors permit matched-control contrasts.
+- Freeze SPI validity, meta-feature variance filtering, missing-value imputation and PC1 on Gaussian development masters only. Evaluation missingness must pass the predeclared max/p95/target-association gate; an evaluation-complete feature set is a target-blind sensitivity, never the primary representation.
+- Cross-path collapse is assessed as a conditional path effect in calibrated-`R` units, with a Gaussian split-half noise floor and master-clustered uncertainty. Independent-cell uncertainty is resampled within each control cell, not clustered by reused instance labels.
+- The individual-SPI comparator is explicitly the best development-selected scalar summary among predeclared mean, mean-absolute, dispersion and leading-eigenvalue-fraction reductions. It is not described as the universally best individual SPI.
+- Store only the observed MTS, compact physical truth and SPI matrices. Full phase movies are unnecessary for production because `R_N`, `R_M`, `R_{N-M}` and future targets are saved directly.
+- Each dataset records `K`, continuum `K_c`, reduced coupling `kappa`, canonical/sensitivity truth-array roles, RNG seed scope and shared-master ID, resolved generator parameters, experiment and pyspi config hashes, and clean generator-code commit. Downstream analysis validates these fields rather than inferring the design from directory names.
+
 ## Validated physics scout (2026-08-22)
 
 - Gaussian job `177017823`: 960/960 completed; logistic job `177018021`: 320/320 completed; timestep job `177017824`: 96/96 completed.
@@ -54,6 +65,7 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 - Doubled-burn job `177019359` compared burn `100` with `200` for 160 paired near-onset realizations: signed mean change `7.6e-5`, mean absolute change `.00156`, p95 `.00434`, and Spearman `.99961`. Burn `100` is adequate for this benchmark.
 - Therefore `N=256, M=20, T=1000, dt=.02, sample_dt=.1, burn=100` is physically defensible. `T=1000` remains provisional until the p90 SPI--SPI feature-convergence scout passes.
 - The feature scout keeps `M=20` primary: it tests `T in {500,1000,2000}` at `M=20`, with `M in {8,32}` only at `T=1000` as a lower/upper spatial-convergence bracket. The `M=32` arm is a 12-dataset diagnostic, not a production observation size. Including the paired `M=20,T=1000` z-score ablation gives 72 datasets total.
+- Before inspecting the completed scout, the operational upper-bracket gate was fixed as follows: `M20,T1000` versus `M20,T2000` must have latent-rank Spearman at least `.90`, geometry Spearman at least `.85`, and median feature-vector correlation at least `.90`; `M20` versus `M32` at `T1000` must reach `.85`, `.80`, and `.85`, respectively. These are representation-stability thresholds, not critical-scaling criteria.
 - Corrected p90 pilot `177019354`: 6/6 `M=20,T=1000` datasets completed with 289 SPIs; median pyspi time `603 s`, maximum `774 s`, and 233 SPIs were finite/nonconstant in all six. The exact-GP additive-noise-model SPI was removed after cancelled pilot `177018028` spent more than 18 CPU-minutes per dataset inside that SPI alone. This pilot validates execution and filtering, not the order-parameter result.
 - Feature-scout corner gates passed 6/6: `M=20,T=2000` job `177020665` took `1396--1716 s` per dataset and peaked at 13.6 GB across three tasks; `M=32,T=1000` job `177020346` took `1475--1908 s` and peaked at 9.46 GB across three tasks. Use 8 GB/core for these two high-cost classes and 4 GB/core elsewhere. High-synchrony cells were the runtime and failure-count tail.
 

@@ -1,0 +1,96 @@
+base_output_dir: data/order_parameter/kuramoto_order_benchmark
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 149023
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [20]
+  T_values: [1000]
+
+mts_classes:
+  - name: kuramoto-gaussian-paired
+    labels: [kuramoto, order-parameter, gaussian, paired]
+    generator: kuramoto_order_parameter
+    seed_scope: instance
+    instances: 32
+    base_params: &gaussian
+      N_full: 256
+      dt: 0.02
+      sample_dt: 0.10
+      burn_time: 100.0
+      future_truth_T: 1000
+      omega_mean: 1.0
+      omega_std: 1.0
+      frequency_distribution: gaussian
+      frequency_sampling: random
+      output: cos
+      sensor_phase_std: 0.0
+      zscore: false
+      store_full_phases: false
+    include_base_variant: false
+    variants: &gaussian_grid
+      - {name: kappa0p6,  params: {K: 0.957461472963}}
+      - {name: kappa0p8,  params: {K: 1.276615297285}}
+      - {name: kappa0p9,  params: {K: 1.436192209445}}
+      - {name: kappa0p95, params: {K: 1.515980665525}}
+      - {name: kappa1p0,  params: {K: 1.595769121606}}
+      - {name: kappa1p05, params: {K: 1.675557577686}}
+      - {name: kappa1p1,  params: {K: 1.755346033766}}
+      - {name: kappa1p2,  params: {K: 1.914922945927}}
+      - {name: kappa1p4,  params: {K: 2.234076770248}}
+      - {name: kappa1p6,  params: {K: 2.553230594569}}
+
+  - name: kuramoto-gaussian-cell
+    labels: [kuramoto, order-parameter, gaussian, independent-cell]
+    generator: kuramoto_order_parameter
+    seed_scope: dataset
+    instances: 8
+    base_params: *gaussian
+    include_base_variant: false
+    variants: *gaussian_grid
+
+  - name: kuramoto-logistic-paired
+    labels: [kuramoto, order-parameter, logistic, paired]
+    generator: kuramoto_order_parameter
+    seed_scope: instance
+    instances: 32
+    base_params: &logistic
+      N_full: 256
+      dt: 0.02
+      sample_dt: 0.10
+      burn_time: 100.0
+      future_truth_T: 1000
+      omega_mean: 1.0
+      omega_std: 1.0
+      frequency_distribution: logistic
+      frequency_sampling: random
+      output: cos
+      sensor_phase_std: 0.0
+      zscore: false
+      store_full_phases: false
+    include_base_variant: false
+    variants: &logistic_grid
+      - {name: kappa0p7,   params: {K: 0.982763252529}}
+      - {name: kappa0p8,   params: {K: 1.123158002890}}
+      - {name: kappa0p875, params: {K: 1.228454065661}}
+      - {name: kappa0p925, params: {K: 1.298651440841}}
+      - {name: kappa0p975, params: {K: 1.368848816022}}
+      - {name: kappa1p0,   params: {K: 1.403947503612}}
+      - {name: kappa1p025, params: {K: 1.439046191203}}
+      - {name: kappa1p075, params: {K: 1.509243566383}}
+      - {name: kappa1p15,  params: {K: 1.614539629154}}
+      - {name: kappa1p2,   params: {K: 1.684737004335}}
+      - {name: kappa1p4,   params: {K: 1.965526505057}}
+      - {name: kappa1p5,   params: {K: 2.105921255419}}
+
+  - name: kuramoto-logistic-cell
+    labels: [kuramoto, order-parameter, logistic, independent-cell]
+    generator: kuramoto_order_parameter
+    seed_scope: dataset
+    instances: 8
+    base_params: *logistic
+    include_base_variant: false
+    variants: *logistic_grid
