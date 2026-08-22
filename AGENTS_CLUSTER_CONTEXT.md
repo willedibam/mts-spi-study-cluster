@@ -15,7 +15,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Local repositories are authoritative during development. Commit the intended files, push, then fetch/fast-forward the matching Gadi branches; never pull over uncommitted work.
 - Gadi tracks main-repo branch `refactor-lagged-warping` and pyspi branch `v3`. Verify both commits before each production submission.
 - The active Scratch Python 3.12 environment has editable main/pyspi-v3 installs. The obsolete broken v2 environment was removed on 2026-08-22. Require `import src, pyspi`, the fast tests, and a one-dataset smoke test after any rebuild.
-- These experiments use `configs/pyspi/benchmarked_p90.yaml` and one pyspi worker per dataset.
+- These experiments use `configs/pyspi/benchmarked_p90.yaml` (289 SPIs) and one pyspi worker per dataset. The exact-GP additive-noise-model SPI is intentionally disabled: six `M=20,T=1000` tasks each exceeded 18 minutes inside it in job `177018028`.
 
 ## Compute allocation and charging
 
@@ -34,6 +34,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Set `TASK_TIMEOUT` for homogeneous production farms after measuring the representative runtime tail; the status file identifies timed-out indices, and a resubmission skips completed outputs via `--skip-existing`. Leave it unset for heterogeneous timing scouts.
 - Batch pyspi runs keep Calculator INFO/progress output off; warnings, errors and per-SPI timings remain in metadata. Do not multiplex hundreds of progress bars through `nci-parallel`.
 - Keep generated artifacts numeric: `timeseries.npy`, compressed `spi_mpis.npz`, compressed `ground_truth.npz`, and small JSON/log files. Do not generate heatmaps or CSV tables for farms.
+- Measured `M=20,T=1000` p90 pilot `177019354`: median `603 s`, maximum `774 s` per dataset; six tasks peaked at 11.4 GB total. Keep 4 GB/core until the larger `M,T` scout is measured.
 
 ## Operational checks
 

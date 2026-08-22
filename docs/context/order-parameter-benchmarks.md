@@ -51,7 +51,9 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 - `N=256` retains finite-size variation but gives a stable macroscopic curve. At `M=20`, within-`kappa` Spearman between `R_M` and `R_N` is `0.664` (Gaussian) and `0.690` (logistic): informative but far from an oracle.
 - For `N=256`, the `T=1000` mean-`R_N` error against `T=4000` has p95 `0.00926` (Gaussian) and `0.00903` (logistic). First/last-block drift has p95 about `0.029` with negligible signed mean.
 - Halving the RK4 step from `.02` to `.01` changes paired mean `R_N` by median `5.8e-9`, p95 `9.9e-4`, maximum `.00305`; `.02` is adequate.
+- Doubled-burn job `177019359` compared burn `100` with `200` for 160 paired near-onset realizations: signed mean change `7.6e-5`, mean absolute change `.00156`, p95 `.00434`, and Spearman `.99961`. Burn `100` is adequate for this benchmark.
 - Therefore `N=256, M=20, T=1000, dt=.02, sample_dt=.1, burn=100` is physically defensible. `T=1000` remains provisional until the p90 SPI--SPI feature-convergence scout passes.
+- Corrected p90 pilot `177019354`: 6/6 `M=20,T=1000` datasets completed with 289 SPIs; median pyspi time `603 s`, maximum `774 s`, and 233 SPIs were finite/nonconstant in all six. The exact-GP additive-noise-model SPI was removed after cancelled pilot `177018028` spent more than 18 CPU-minutes per dataset inside that SPI alone. This pilot validates execution and filtering, not the order-parameter result.
 
 ## Claim ladder
 
