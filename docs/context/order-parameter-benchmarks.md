@@ -50,12 +50,14 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 
 ## Claim ladder
 
-1. **Tracks Q:** eligible frozen coordinate has strong held-out association and calibrated error within a physics-derived margin.
-2. **Inference beyond control:** additionally recovers within-control variation, hidden-complement truth and conditional information beyond the control value. This is the minimum for “performs unsupervised data-driven inference of a changing order parameter.”
-3. **Path-general coordinate:** calibration transfers and matched-`Q` path differences satisfy a predeclared equivalence margin.
-4. **Replicated capability:** analogous success on Miller--Huse and kinetic Ising.
+1. **Tracks Q:** eligible frozen coordinate has strong held-out cell-level association with independently estimated finite-size ensemble `Q_L`.
+2. **Infers a changing order coordinate:** target-blind PC1 plus calibration held out by both control value and physical path predicts `Q_L` within a physics-derived margin. This supports the requested phrase at the ensemble-coordinate level, not realization-specific inference.
+3. **Path-general coordinate:** calibration transfers and matched-`Q` path differences satisfy a frozen finite-size tolerance (`.04` for the Ising design).
+4. **Replicated capability:** analogous success on another canonical system.
 
-Control-only, local physical oracle, mean `|r|`, raw-correlation PC1 and development-selected individual SPI are mandatory comparators. They need not be worse; superiority is a separate claim.
+For ensemble order parameters, replicates in one control cell share one target. Analyze cell means, jointly bootstrap independent truth chains and MTS masters, and treat the number of cells as the effective sample size. Do not claim within-control recovery. Control-only, local physical oracle, mean `|r|`, raw-correlation PC1 and development-selected individual SPI remain mandatory comparators; they need not be worse.
+
+The independent Ising truth bank uses 24 Wolff-equilibrated chains per path/control cell and 80k hidden heat-bath steps. Its SE is computed across chain means, not raw time points.
 
 ## Operational state
 
