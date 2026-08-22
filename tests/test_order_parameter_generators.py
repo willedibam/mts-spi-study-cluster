@@ -506,3 +506,41 @@ def test_kuramoto_confirmation_uses_new_controls_and_both_sampling_designs() -> 
     )
     assert all(spec.generator_params["future_truth_T"] == 1000 for spec in confirmation.specs)
     assert all(spec.generator_params["store_full_phases"] is False for spec in confirmation.specs)
+
+
+def test_terminal_kuramoto_confirmation_is_independent_and_preserves_hard_paths() -> None:
+    mappings = [
+        DatasetMapping(ExperimentConfig.from_file(Path(path)))
+        for path in (
+            "configs/generate/order_parameter/kuramoto-order-benchmark.yaml",
+            "configs/generate/order_parameter/kuramoto-confirmation.yaml",
+            "configs/generate/order_parameter/kuramoto-final-confirmation.yaml",
+        )
+    ]
+    final = mappings[2]
+    assert len(final.specs) == 1536
+    assert {spec.M for spec in final.specs} == {20}
+    assert {spec.T for spec in final.specs} == {1000}
+    controls = [
+        {round(float(spec.generator_params["K"]), 10) for spec in mapping.specs}
+        for mapping in mappings
+    ]
+    assert controls[2].isdisjoint(controls[0])
+    assert controls[2].isdisjoint(controls[1])
+    assert {
+        (
+            spec.generator_params["frequency_distribution"],
+            spec.generator_params["frequency_sampling"],
+            spec.seed_scope,
+        )
+        for spec in final.specs
+    } == {
+        ("gaussian", "random", "instance"),
+        ("gaussian", "random", "dataset"),
+        ("gaussian", "regular", "instance"),
+        ("logistic", "random", "instance"),
+        ("logistic", "random", "dataset"),
+        ("logistic", "regular", "instance"),
+    }
+    assert all(spec.generator_params["future_truth_T"] == 1000 for spec in final.specs)
+    assert all(spec.generator_params["store_full_phases"] is False for spec in final.specs)

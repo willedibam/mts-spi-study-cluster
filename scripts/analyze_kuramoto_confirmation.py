@@ -41,6 +41,14 @@ EXPECTED = {
     "kuramoto-confirm-logistic-cell": 96,
     "kuramoto-confirm-logistic-regular": 96,
 }
+FINAL_EXPECTED = {
+    "kuramoto-final-gaussian-paired": 512,
+    "kuramoto-final-gaussian-cell": 128,
+    "kuramoto-final-gaussian-regular": 128,
+    "kuramoto-final-logistic-paired": 512,
+    "kuramoto-final-logistic-cell": 128,
+    "kuramoto-final-logistic-regular": 128,
+}
 N_BOOTSTRAPS = 2000
 
 
@@ -52,7 +60,9 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _records(data_dir: Path) -> pd.DataFrame:
+def _records(
+    data_dir: Path, expected: dict[str, int] | None = None
+) -> pd.DataFrame:
     rows = []
     for meta_path in sorted(data_dir.glob("*/*/meta.json")):
         meta = load_json(meta_path)
@@ -82,7 +92,8 @@ def _records(data_dir: Path) -> pd.DataFrame:
             }
         )
     frame = pd.DataFrame(rows)
-    if frame.groupby("class_name").size().to_dict() != EXPECTED:
+    expected_counts = EXPECTED if expected is None else expected
+    if frame.groupby("class_name").size().to_dict() != expected_counts:
         raise RuntimeError("confirmation bank is incomplete or has unexpected classes")
     if frame["config_sha256"].nunique() != 1 or frame["computation_version"].nunique() != 1:
         raise RuntimeError("confirmation pyspi configuration/version mismatch")
@@ -157,6 +168,12 @@ def main() -> int:
         type=Path,
         default=ROOT / "data/order_parameter/kuramoto_confirmation_contract",
     )
+    parser.add_argument(
+        "--profile",
+        choices=("original", "final"),
+        default="original",
+        help="Expected class/count profile.",
+    )
     args = parser.parse_args()
 
     representation_path = args.contract_dir / "representation_model.npz"
@@ -170,7 +187,8 @@ def main() -> int:
     if _sha256(readout_path) != readout_contract["readout_model_sha256"]:
         raise RuntimeError("frozen readout hash mismatch")
 
-    frame = _records(args.data_dir)
+    expected = EXPECTED if args.profile == "original" else FINAL_EXPECTED
+    frame = _records(args.data_dir, expected=expected)
     model_archive = np.load(representation_path, allow_pickle=False)
     core_spis = model_archive["core_spis"].astype(str).tolist()
     catalog = validate_spi_catalogs(frame["path"].tolist())
