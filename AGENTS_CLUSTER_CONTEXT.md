@@ -31,7 +31,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Keep farms reasonably homogeneous in expected M/T/config cost; use separate farms or index ranges when task classes have materially different runtimes.
 - Default progression: 2-dataset/2-core smoke test; representative 48-core node test; then choose 192, 480, 960, 2,016, or more cores from measured runtime variance, memory, queueing and remaining KSU. Maximum concurrency is not automatically minimum time-to-result.
 - Use `jobs/gadi/submit_dataset_farm.sh`; its PBS worker is `jobs/gadi/run_dataset_farm.pbs`. The launcher defaults to p90, one core/task, no CSV/heatmaps, resumable `--skip-existing`, and persistent job log/status files.
-- Set `TASK_TIMEOUT` for homogeneous production farms after measuring the representative runtime tail; timed-out indices remain resumable through the status file and `--skip-existing`. Leave it unset for heterogeneous timing scouts.
+- Set `TASK_TIMEOUT` for homogeneous production farms after measuring the representative runtime tail; the status file identifies timed-out indices, and a resubmission skips completed outputs via `--skip-existing`. Leave it unset for heterogeneous timing scouts.
 - Batch pyspi runs keep Calculator INFO/progress output off; warnings, errors and per-SPI timings remain in metadata. Do not multiplex hundreds of progress bars through `nci-parallel`.
 - Keep generated artifacts numeric: `timeseries.npy`, compressed `spi_mpis.npz`, compressed `ground_truth.npz`, and small JSON/log files. Do not generate heatmaps or CSV tables for farms.
 
