@@ -6,15 +6,15 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 
 - Login: `we2614@gadi.nci.org.au`; project/default group: `ql44`.
 - Repositories: `/home/562/we2614/mts-spi-study-cluster` and sibling `../pyspi-fork`.
-- Main links: `.venv -> /scratch/ql44/we2614/venvs/mts-spi`, `data -> /scratch/ql44/we2614/mts-spi-data`, `logs -> /scratch/ql44/we2614/mts-spi-logs`.
-- Allocation: Scratch 1 TiB / 202k inodes; gdata 100 GiB / 70k inodes. Scratch currently uses about 71 GiB and 139k inodes. Keep durable code in Git; Scratch is working storage.
+- Main links: `.venv -> /scratch/ql44/we2614/venvs/mts-spi-v3-631de27`, `data -> /scratch/ql44/we2614/mts-spi-data`, `logs -> /scratch/ql44/we2614/mts-spi-logs`.
+- Allocation: Scratch 1 TiB / 202k inodes; gdata 100 GiB / 70k inodes. Python environments consume tens of thousands of inodes, so check both byte and inode headroom before a large farm. Keep durable code in Git; Scratch is working storage.
 - Passwordless public-key SSH is configured. Compute nodes have no internet; synchronise Git from a login node before submission.
 
 ## Git and environment
 
 - Local repositories are authoritative during development. Commit the intended files, push, then fetch/fast-forward the matching Gadi branches; never pull over uncommitted work.
-- Gadi was on main-repo branch `refactor-lagged-warping` and pyspi branch `v2`; local pyspi development is on `v3`. Verify branches each time.
-- The existing Scratch Python 3.12 environment currently has broken editable installs. Rebuild it after repository sync and require `import src, pyspi` plus a one-dataset smoke test before PBS production.
+- Gadi tracks main-repo branch `refactor-lagged-warping` and pyspi branch `v3`. Verify both commits before each production submission.
+- The active Scratch Python 3.12 environment has editable main/pyspi-v3 installs. The obsolete broken v2 environment was removed on 2026-08-22. Require `import src, pyspi`, the fast tests, and a one-dataset smoke test after any rebuild.
 - These experiments use `configs/pyspi/benchmarked_p90.yaml` and one pyspi worker per dataset.
 
 ## Compute allocation and charging
@@ -27,9 +27,9 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 ## Dataset-level parallelism
 
 - Use one multi-node PBS allocation with `nci-parallel`, not thousands of one-core PBS jobs or the old array wrappers. Each command processes one dataset with `--n-jobs 1`; pin BLAS/OpenMP threads to one.
-- `nci-parallel` dynamically assigns the next dataset to a free core. Request fewer workers than datasets when runtimes vary, avoiding an expensive long-tail of idle nodes. NCI specifically recommends no more than about 200 concurrent workers for 2,000 heterogeneous tasks; scale beyond that only after a representative timing/memory pilot (and be generous with resource allocation).
+- `nci-parallel` dynamically assigns the next dataset to a free core. For homogeneous tasks lasting minutes, concurrency can approach the task count (rounded to whole 48-core nodes above one node); for heterogeneous tasks, use measured runtime tails to avoid paying for many idle cores near completion.
 - Keep farms reasonably homogeneous in expected M/T/config cost; use separate farms or index ranges when task classes have materially different runtimes.
-- Default progression: 2-dataset/2-core smoke test; representative 48-core node test; then choose 192, 480, 960, or more cores (be generous) from measured runtime variance, memory, scheduling and remaining KSU. Maximum concurrency is not automatically minimum time-to-result.
+- Default progression: 2-dataset/2-core smoke test; representative 48-core node test; then choose 192, 480, 960, 2,016, or more cores from measured runtime variance, memory, queueing and remaining KSU. Maximum concurrency is not automatically minimum time-to-result.
 - Use `jobs/gadi/submit_dataset_farm.sh`; its PBS worker is `jobs/gadi/run_dataset_farm.pbs`. The launcher defaults to p90, one core/task, no CSV/heatmaps, resumable `--skip-existing`, and persistent job log/status files.
 
 ## Operational checks

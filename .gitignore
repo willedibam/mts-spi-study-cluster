@@ -44,8 +44,10 @@ media/
 # PowerShell scripts
 *.ps1
 
-# Weird cluster outputs
+# PBS outputs (jobs also write durable logs under the ignored logs symlink)
 spi_array.*
+*.o[0-9]*
+*.e[0-9]*
 
 # Random things
 data_backup.tar.gz

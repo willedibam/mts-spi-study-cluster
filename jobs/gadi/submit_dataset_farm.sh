@@ -27,7 +27,7 @@ jobfs_gb="${JOBFS_GB:-10}"
 pyspi_config="${PYSPI_CONFIG:-configs/pyspi/benchmarked_p90.yaml}"
 test -f "$pyspi_config"
 
-echo "[INFO] config=$config datasets=$start..$end/$total ncpus=$ncpus mem=${mem_gb}GB walltime=$walltime"
+echo "[INFO] config=$config datasets=$start..$end/$total ncpus=$ncpus mem=${mem_gb}GB walltime=$walltime" >&2
 qsub \
     -l "ncpus=$ncpus,mem=${mem_gb}GB,walltime=$walltime,jobfs=${jobfs_gb}GB" \
     -v "EXPERIMENT_CONFIG=$config,START_INDEX=$start,END_INDEX=$end,PYSPI_CONFIG=$pyspi_config" \
