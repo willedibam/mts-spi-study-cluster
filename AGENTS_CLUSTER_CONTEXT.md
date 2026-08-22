@@ -19,7 +19,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 
 ## Compute allocation and charging
 
-- `nci_account` reports the spendable quarterly allocation. Last live check: 43.8 KSU granted, 17.0 KSU used, 26.8 KSU available for 2026.q3. A confirmed allocation request raises the q3 total to 143 KSU, but it is not spendable until the next NCI allocation sync appears in `nci_account`; do not budget against the email alone.
+- `nci_account` reports the spendable quarterly allocation. Last live check: 43.8 KSU granted, 18.09 KSU used, 25.71 KSU available for 2026.q3. A confirmed allocation request raises the q3 total to 143 KSU, but it is not spendable until the next NCI allocation sync appears in `nci_account`; do not budget against the email alone.
 - `normal` has 48 cores and 192 GiB per Cascade Lake node, 4 GiB/core, 2 SU/core-hour, and a 20,736-core maximum request. Requests above one node use whole 48-core nodes.
 - Charge is based on actual walltime and the greater of requested CPU or memory-equivalent cores, but PBS must be able to reserve the requested maximum before starting. A 2,016-core job costs about 4.032 KSU per wall-hour before any memory uplift.
 - Live PBS: `max_array_size=10`; `normal` allows 1,000 queued jobs/project, with scheduling thresholds of 300/project and 200/user. These job-count limits are not useful dataset-level parallelism.
@@ -35,6 +35,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Batch pyspi runs keep Calculator INFO/progress output off; warnings, errors and per-SPI timings remain in metadata. Do not multiplex hundreds of progress bars through `nci-parallel`.
 - Keep generated artifacts numeric: `timeseries.npy`, compressed `spi_mpis.npz`, compressed `ground_truth.npz`, and small JSON/log files. Do not generate heatmaps or CSV tables for farms.
 - Measured `M=20,T=1000` p90 pilot `177019354`: median `603 s`, maximum `774 s` per dataset; six tasks peaked at 11.4 GB total. Corner gates `177020665` and `177020346` measured maxima of `1716 s` for `M=20,T=2000` and `1908 s` for `M=32,T=1000`, with three-task peak memory of 13.6 and 9.46 GB respectively. Request 8 GB/core for those two classes and 4 GB/core for `M=20,T<=1000` and `M=8`; `M=20` remains the production observation size.
+- Production job `177026144` used one 1,776-core allocation for 880 concurrent `M=20,T=1000` commands, requested 7,104 GB, and finished in `00:17:04` with `177:41:03` CPU time and 936 GiB peak aggregate memory. Per-dataset runtime was `617/686/834/866/908/1004 s` at min/median/p90/p95/p99/max. The 880 outputs occupy about 750 MiB and 4,401 inodes. This validates the farm architecture, but repeat submissions should account for the current Scratch allocation headroom of only about 20.25k inodes.
 
 ## Operational checks
 
