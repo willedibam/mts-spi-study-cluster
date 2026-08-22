@@ -158,7 +158,18 @@ print(f"Diffusion-map available: {summary['diffusion_map_available']}; rank agre
 if shift is None:
     print("Circular-shift sensitivity not yet present.")
 else:
-    display(pd.DataFrame(shift["comparisons"]).T.round(3))
+    shift_rows = []
+    for dist, values in shift["comparisons"].items():
+        shift_rows.append({
+            "distribution": dist,
+            "raw overall": values["raw_overall_absolute_spearman"],
+            "shifted overall": values["shifted_overall_absolute_spearman"],
+            "overall difference CI": "[%.3f, %.3f]" % tuple(values["raw_minus_shifted_overall_absolute_spearman_ci95"]),
+            "raw within": values["raw_within_kappa_absolute_spearman"],
+            "shifted within": values["shifted_within_kappa_absolute_spearman"],
+            "within difference CI": "[%.3f, %.3f]" % tuple(values["raw_minus_shifted_within_kappa_absolute_spearman_ci95"]),
+        })
+    display(pd.DataFrame(shift_rows).round(3))
     print(
         "Shift sensitivity: all frozen features finite = "
         f"{shift['all_frozen_meta_features_finite']}; maximum selected-feature "
@@ -168,7 +179,7 @@ else:
         nbformat.v4.new_markdown_cell(
             r"""## Interpretation
 
-The defensible claim depends on the frozen gates above. A pass supports: **in this finite-$N$ Kuramoto benchmark, a prospectively frozen non-phase SPI–SPI PC1 learned without coupling or order-parameter labels recovered, up to a monotone transformation, changes in the canonical phase-coherence order parameter from partial observations on untouched controls and random-frequency realizations under Gaussian and logistic frequency laws.** The numerical $R_N$ estimate uses a separately supervised calibration. Both frequency laws appeared during target-free representation development, so this is not unseen-path transfer. Independent channel shifts attenuated association, but also induced feature failures, so that sensitivity does not isolate collective alignment as the mechanism. This is a proof of capability, not evidence that SPI–SPI is uniquely optimal or universally recovers order parameters."""
+The defensible claim depends on the frozen gates above. A pass supports: **in this finite-$N$ Kuramoto benchmark, a prospectively frozen non-phase SPI–SPI PC1 learned without coupling or order-parameter labels recovered, up to a monotone transformation, changes in the canonical phase-coherence order parameter from partial observations on untouched controls and random-frequency realizations under Gaussian and logistic frequency laws.** The numerical $R_N$ estimate uses a separately supervised calibration. Both frequency laws appeared during target-free representation development, so this is not unseen-path transfer. Independent channel shifts substantially reduced overall association, consistent with cross-channel temporal alignment contributing to the representation; shift-induced estimator failures and retained association prevent clean causal attribution. This is a proof of capability, not evidence that SPI–SPI is uniquely optimal or universally recovers order parameters."""
         ),
     ]
     notebook = nbformat.v4.new_notebook(cells=cells)
