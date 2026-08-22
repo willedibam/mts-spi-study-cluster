@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -N kuramoto-shift
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4
+#PBS -l mem=16GB
+#PBS -l walltime=01:30:00
+#PBS -l jobfs=4GB
+#PBS -l storage=scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+: "${END_INDEX:?set END_INDEX}"
+START_INDEX="${START_INDEX:-1}"
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 PYSPI_N_JOBS=1
+mkdir -p logs
+commands="$PBS_JOBFS/shift-commands.txt"
+for ((i=START_INDEX; i<=END_INDEX; i++)); do
+    printf 'python scripts/compute_kuramoto_shift_control.py --job-index %d --skip-existing\n' "$i" >>"$commands"
+done
+workers="${WORKERS:-$PBS_NCPUS}"
+tasks=$((END_INDEX - START_INDEX + 1))
+(( workers > tasks )) && workers=$tasks
+exec >"logs/${PBS_JOBNAME}_${PBS_JOBID%%.*}.log" 2>&1
+mpirun -np "$workers" --map-by node:PE=1 nci-parallel --verbose --input-file "$commands"
