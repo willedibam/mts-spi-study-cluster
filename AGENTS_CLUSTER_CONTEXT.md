@@ -34,7 +34,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Set `TASK_TIMEOUT` for homogeneous production farms after measuring the representative runtime tail; the status file identifies timed-out indices, and a resubmission skips completed outputs via `--skip-existing`. Leave it unset for heterogeneous timing scouts.
 - Batch pyspi runs keep Calculator INFO/progress output off; warnings, errors and per-SPI timings remain in metadata. Do not multiplex hundreds of progress bars through `nci-parallel`.
 - Keep generated artifacts numeric: `timeseries.npy`, compressed `spi_mpis.npz`, compressed `ground_truth.npz`, and small JSON/log files. Do not generate heatmaps or CSV tables for farms.
-- Measured `M=20,T=1000` p90 pilot `177019354`: median `603 s`, maximum `774 s` per dataset; six tasks peaked at 11.4 GB total. Keep 4 GB/core until the bounded `M=32,T=1000` convergence arm is measured; `M=20` remains the production observation size.
+- Measured `M=20,T=1000` p90 pilot `177019354`: median `603 s`, maximum `774 s` per dataset; six tasks peaked at 11.4 GB total. Corner gates `177020665` and `177020346` measured maxima of `1716 s` for `M=20,T=2000` and `1908 s` for `M=32,T=1000`, with three-task peak memory of 13.6 and 9.46 GB respectively. Request 8 GB/core for those two classes and 4 GB/core for `M=20,T<=1000` and `M=8`; `M=20` remains the production observation size.
 
 ## Operational checks
 

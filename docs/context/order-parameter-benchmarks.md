@@ -55,6 +55,7 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 - Therefore `N=256, M=20, T=1000, dt=.02, sample_dt=.1, burn=100` is physically defensible. `T=1000` remains provisional until the p90 SPI--SPI feature-convergence scout passes.
 - The feature scout keeps `M=20` primary: it tests `T in {500,1000,2000}` at `M=20`, with `M in {8,32}` only at `T=1000` as a lower/upper spatial-convergence bracket. The `M=32` arm is a 12-dataset diagnostic, not a production observation size. Including the paired `M=20,T=1000` z-score ablation gives 72 datasets total.
 - Corrected p90 pilot `177019354`: 6/6 `M=20,T=1000` datasets completed with 289 SPIs; median pyspi time `603 s`, maximum `774 s`, and 233 SPIs were finite/nonconstant in all six. The exact-GP additive-noise-model SPI was removed after cancelled pilot `177018028` spent more than 18 CPU-minutes per dataset inside that SPI alone. This pilot validates execution and filtering, not the order-parameter result.
+- Feature-scout corner gates passed 6/6: `M=20,T=2000` job `177020665` took `1396--1716 s` per dataset and peaked at 13.6 GB across three tasks; `M=32,T=1000` job `177020346` took `1475--1908 s` and peaked at 9.46 GB across three tasks. Use 8 GB/core for these two high-cost classes and 4 GB/core elsewhere. High-synchrony cells were the runtime and failure-count tail.
 
 ## Claim ladder
 
