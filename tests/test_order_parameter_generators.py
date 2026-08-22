@@ -472,3 +472,32 @@ def test_claim_benchmark_mapping_and_split_invariants() -> None:
     assert len(seen_seeds) == 64 + 80 + 96
     assert all(spec.generator_params["future_truth_T"] == 1000 for spec in mapping.specs)
     assert all(spec.generator_params["store_full_phases"] is False for spec in mapping.specs)
+
+
+def test_kuramoto_confirmation_uses_new_controls_and_both_sampling_designs() -> None:
+    old = DatasetMapping(
+        ExperimentConfig.from_file(
+            Path("configs/generate/order_parameter/kuramoto-order-benchmark.yaml")
+        )
+    )
+    confirmation = DatasetMapping(
+        ExperimentConfig.from_file(
+            Path("configs/generate/order_parameter/kuramoto-confirmation.yaml")
+        )
+    )
+    assert len(confirmation.specs) == 1152
+    assert {spec.M for spec in confirmation.specs} == {20}
+    assert {spec.T for spec in confirmation.specs} == {1000}
+    old_controls = {
+        round(float(spec.generator_params["K"]), 10) for spec in old.specs
+    }
+    new_controls = {
+        round(float(spec.generator_params["K"]), 10) for spec in confirmation.specs
+    }
+    assert old_controls.isdisjoint(new_controls)
+    assert {spec.generator_params["frequency_sampling"] for spec in confirmation.specs} == {
+        "random",
+        "regular",
+    }
+    assert all(spec.generator_params["future_truth_T"] == 1000 for spec in confirmation.specs)
+    assert all(spec.generator_params["store_full_phases"] is False for spec in confirmation.specs)
