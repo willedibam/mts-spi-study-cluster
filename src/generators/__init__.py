@@ -34,6 +34,14 @@ from .linear import (
     LaggedWarpingInternals,
     SmoothSinInternals,
 )
+from .order_parameter import (
+    KuramotoOrderInternals,
+    MillerHuseInternals,
+    generate_kuramoto_order_parameter,
+    generate_miller_huse,
+    kuramoto_critical_coupling,
+    miller_huse_map,
+)
 from .chat import (
     ChatMotifInternals,
     generate_var_chat_a,
@@ -73,7 +81,9 @@ __all__ = [
     "generate_kuramoto_bidirectional_list",
     "generate_kuramoto_explosive",
     "generate_kuramoto_grid_four",
+    "generate_kuramoto_order_parameter",
     "generate_mackey_glass",
+    "generate_miller_huse",
     "generate_mts_master",
     "generate_series",
     "generate_sin_mts",
@@ -95,4 +105,8 @@ __all__ = [
     "generate_wave_1d",
     "generate_wave_1d_pulse",
     "generate_wave_2d",
+    "kuramoto_critical_coupling",
+    "miller_huse_map",
+    "KuramotoOrderInternals",
+    "MillerHuseInternals",
 ]

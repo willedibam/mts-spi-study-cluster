@@ -31,7 +31,8 @@ export MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export PYSPI_N_JOBS=1
-unset CUDA_VISIBLE_DEVICES
+# (the old `unset CUDA_VISIBLE_DEVICES` guarded cdt's import-time
+# ast.literal_eval of it; pyspi 3.0 dropped cdt, so it is gone)
 
 python -c 'import src, pyspi'
 

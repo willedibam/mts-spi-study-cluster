@@ -1,0 +1,52 @@
+# Canonical order-parameter benchmarks
+
+## Decision
+
+- Primary benchmark: deterministic all-to-all Kuramoto, with the full-system phase coherence `R_N(t)` hidden from SPI--SPI and only a random `M`-oscillator scalar observation exposed.
+- Spatial generalization: scout Miller--Huse, a deterministic 2-D chaotic CML with Ising symmetry and order coordinate `|m|`; do not assume a small patch is informative until measured.
+- Keep the quadratic Kaneko CML as exploratory regime discovery, not the canonical order-parameter proof.
+- Stop production work on the `k=3.1` sine-circle branch. The printed recurrence does not preserve the paper's stated `theta<1/2` absorbing set under conventional modulo, and direct simulation failed to reproduce its reported absorption. Resume only with a reproducible reference implementation or independently verified convention.
+
+Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; finite-frequency-sampling effects, <https://doi.org/10.1103/PhysRevE.92.022122>; sine-circle inconsistency source, <https://arxiv.org/html/nlin/0210034v1>; Miller--Huse model, <https://doi.org/10.1103/PhysRevE.48.2528>.
+
+## What the Kuramoto experiment establishes
+
+- `K` is the control parameter. `R_N=|N^-1 sum_j exp(i theta_j)|` is the independently defined canonical order parameter.
+- A monotone latent curve along one `K` sweep can still be control-parameter decoding. It supports only “tracks progression through the synchronization transition and covaries with `R_N`.”
+- Realization-level latent--`R_N` association after removing each `K`-cell mean breaks that simple confound.
+- Strong claim-bearing evidence requires a representation/calibration frozen on one frequency-distribution path and evaluated on unseen master seeds, control values, and a second smooth unimodal distribution with overlapping `R_N`.
+- Gaussian-width variation is only a scale-invariance check: after rescaling time, fixed-shape dynamics depend on `K/sigma`. Use a different distribution shape for genuinely different microdynamics.
+- The representation is unsupervised; any fitted map from latent coordinate to `R_N` is supervised calibration and must be described separately.
+
+## Required generator semantics
+
+- Mean-field `O(N)` coupling and RK4; separate `N_full` from observed `M`; no dynamical or measurement noise in the primary result.
+- Observe `cos(theta)` with a common carrier frequency so locked channels keep oscillating. Add `sin(theta)` and fixed per-sensor phase offsets only as observation-map ablations; avoid wrapped phase as a scalar input.
+- Save clean full phases, `R_N(t)`, observed-subset `R_M(t)`, frequencies, observation indices, initial state, seeds, integrator settings, and frequency-sampling scheme. SPI sees none of the hidden artifacts.
+- Generate paired master realizations across `K`; split and bootstrap by master ID. Also retain a smaller independently resampled-per-cell validation so pairing cannot manufacture smooth trajectories.
+- Generate long masters and derive nested `T` and `M` views. Dataset identity must keep every view of one master in the same evaluation split.
+
+## Physics scout before pyspi
+
+- Gaussian first: `N in {128,256,512}`, `kappa=K/Kc in {.6,.8,.9,.95,1,1.05,1.1,1.2,1.4,1.6}`, initially 32 master seeds. For unit-variance Gaussian frequencies, `Kc=sqrt(8/pi)` only in the infinite-`N` limit.
+- Start `dt=.02`, sample every `.1`, and compare `.02` with `.01` below/near/above the transition. Numerical differences must be negligible relative to realization variation.
+- Record 4,000 samples after an empirically validated burn and analyze nested `T in {250,500,1000,2000,4000}` and `M in {8,16,20,32,64}`.
+- Select the smallest `N` whose doubling does not change the intended conclusion; the smallest `M` for which `R_M` contains useful but imperfect information about `R_N`; and `T` only after both physical and SPI--SPI feature convergence checks.
+- Treat 32 seeds as a starting point. Check uncertainty under 16/32/64 and allocate extra seeds where `R_N` changes, rather than uniformly oversampling trivial endpoints.
+
+## Representation test and controls
+
+- Use `configs/pyspi/benchmarked_p90.yaml`, one dataset per CPU and no internal pyspi parallelism.
+- Freeze the unsupervised transform without target access. Pre-specify PC1/first nontrivial coordinate, or select on discovery data and freeze before evaluation; searching dimensions for maximum target correlation is supervised selection.
+- Primary natural coordinates are raw and clean. Channel z-scoring and fixed-scale observation noise are paired mechanism/robustness ablations, not default preprocessing.
+- Compare with `R_M`, raw Pearson/covariance structure, basic marginal/temporal summaries, PCA1, and the best individual SPI. A generic representation need not beat purpose-built `R_M`; it must add defensible model-agnostic information.
+- Run all SPIs and an ablation excluding explicit phase/synchronization SPIs. Constant/failure patterns must not become synchronized-regime labels.
+- Report overall and within-control association, seed-clustered uncertainty, held-out cross-path calibration error/data collapse, and `M x T` degradation.
+
+## Claim ladder
+
+1. One sweep only: “SPI--SPI learns an unsupervised latent coordinate that tracks the synchronization transition and covaries with the known order parameter.”
+2. Within-`K` evidence: “The representation contains a latent coordinate that tracks realization-level variation in an independently defined macroscopic order parameter.”
+3. Held-out cross-distribution generalization: “SPI--SPI supports data-driven discovery of an order-parameter coordinate from partial multivariate observations, generalizing across distinct microscopic routes to synchronization.”
+
+Do not use the unqualified sentence “SPI--SPI performs unsupervised inference of the order parameter” unless levels 2 and 3 survive the frozen evaluation and baselines.

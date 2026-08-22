@@ -1,6 +1,6 @@
 base_output_dir: data/sleep_onset/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false          # data is already z-scored per channel (full recording)
 rng_seed: 0
 save_heatmap: false

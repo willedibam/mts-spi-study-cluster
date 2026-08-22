@@ -1,0 +1,16 @@
+output_dir: data/order_parameter/kuramoto_physics_dt
+base_seed: 110305
+seed_pairing: paired
+frequency_distributions: [gaussian]
+frequency_sampling: random
+omega_mean: 1.0
+omega_std: 1.0
+N_full: [256]
+kappa: [0.80, 1.00, 1.40]
+dt: [0.02, 0.01]
+sample_dt: 0.10
+burn_time: 100.0
+T: [250, 500, 1000, 2000]
+M: [8, 16, 20, 32, 64]
+instances: 16
+stationarity_blocks: 8

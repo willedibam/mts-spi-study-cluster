@@ -1,5 +1,5 @@
 # Explosive (first-order) Kuramoto synchronization sweep on a BA scale-free network.
-# SPI set: benchmarked90_amortized_config.yaml
+# SPI set: benchmarked_p90.yaml
 #
 # FIRST-ORDER / HYSTERETIC transition (Gomez-Gardenes et al., PRL 2011): omega_i ∝ degree_i
 # on a Barabasi-Albert net yields a discontinuous r jump + a hysteresis loop. Validated with
@@ -28,7 +28,7 @@
 # slowest, omega=degree_min=3) so phase/coherence SPIs see enough oscillation cycles.
 base_output_dir: data/embeddings/kuramoto_explosive_260616/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true

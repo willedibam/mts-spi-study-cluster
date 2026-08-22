@@ -23,7 +23,7 @@
 #       bash jobs/gadi/submit_cml_param_sweep.sh
 base_output_dir: data/embeddings/proof_benchmarked_full_260424/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true

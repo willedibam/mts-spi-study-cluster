@@ -1,6 +1,6 @@
 base_output_dir: data/dtw_euclidean/260330_lagged-warping_rmse_T1000/
 timestamp: false
-pyspi_config: configs/pyspi-v2/cases/dtw_euclidean_norm.yaml
+pyspi_config: configs/pyspi/cases/dtw_euclidean_norm.yaml
 normalise: false
 rng_seed: 42
 save_heatmap: false

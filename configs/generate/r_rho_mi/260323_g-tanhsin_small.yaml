@@ -1,6 +1,6 @@
 base_output_dir: data/r_rho_mi/260323_g-tanhsin_k-2pi_noise_0.02_a-0.95_T2000/
 timestamp: false
-pyspi_config: configs/pyspi-v2/cases/r_rho_mi.yaml
+pyspi_config: configs/pyspi/cases/r_rho_mi.yaml
 normalise: false
 rng_seed: 42
 save_heatmap: false

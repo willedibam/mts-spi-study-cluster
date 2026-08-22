@@ -1,6 +1,6 @@
 base_output_dir: data/260328_eeml_kuramoto/
 timestamp: false
-pyspi_config: configs/pyspi-v2/cases/eeml.yaml
+pyspi_config: configs/pyspi/cases/eeml.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: false

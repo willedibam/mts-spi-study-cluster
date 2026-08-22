@@ -17,6 +17,8 @@ def generate_cml_logistic(
     init_state: np.ndarray | None = None,
     return_final_state: bool = False,
     crop_offset: int | None = None,
+    lattice_size: int | None = None,
+    return_full_lattice: bool = False,
 ):
     """
     Coupled map lattice of logistic maps with diffusive ring coupling.
@@ -27,20 +29,33 @@ def generate_cml_logistic(
         chaotic timescale would swamp the slower spatial coupling signal.
 
     init_state: optional lattice state to seed the simulation with (shape
-        (max(M, 100),)). When provided the random initialisation is skipped;
+        (`lattice_size`,) when provided, otherwise (max(M, 100),)). When
+        provided the random initialisation is skipped;
         used to chain runs across parameter values (quasi-static sweep).
     return_final_state: when True, return (data, final_lattice_state) so the
         caller can feed it back as init_state for the next run.
 
     crop_offset: starting site of the contiguous M-window cropped from the
-        max(M, 100)-site simulation lattice. None (default) → centred crop
+        physical simulation lattice. None (default) → centred crop
         (lattice_M - M) // 2; otherwise the integer offset must satisfy
         0 <= crop_offset <= lattice_M - M. Vary across runs to expose
         window-position sensitivity diagnostically.
+
+    lattice_size: physical ring size, independent of the observed channel
+        count M. None preserves the historical lattice_M=max(M, 100) rule.
+        Setting this explicitly is required for finite-size studies in which
+        M changes but the physical system must not.
+
+    return_full_lattice: when True, also return the retained T x lattice_size
+        physical field before observation cropping. This field remains on the
+        raw dynamical scale even when zscore=True. If return_final_state is also
+        True, the return value is (observed, full_lattice, final_state).
     """
     rng = _resolve_rng(None, rng)
     M = int(M)
     T = int(T)
+    if M <= 0 or T <= 0:
+        raise ValueError(f"M and T must be positive, got M={M}, T={T}")
     transients = max(0, int(transients))
     sample_every = max(1, int(sample_every))
 
@@ -53,7 +68,11 @@ def generate_cml_logistic(
         right = np.roll(fx, -1)
         return (1 - epsilon) * fx + (epsilon / 2.0) * (left + right)
 
-    lattice_M = max(M, 100)
+    lattice_M = max(M, 100) if lattice_size is None else int(lattice_size)
+    if lattice_M < M:
+        raise ValueError(
+            f"lattice_size must be at least the observed M, got lattice_size={lattice_M}, M={M}"
+        )
     if crop_offset is None:
         offset = (lattice_M - M) // 2
     else:
@@ -64,24 +83,37 @@ def generate_cml_logistic(
                 f"(valid: 0..{lattice_M - M})."
             )
     total_steps = transients + T * sample_every
-    states = np.zeros((total_steps, lattice_M), dtype=float)
     if init_state is None:
-        states[0] = rng.random(lattice_M)
+        state = rng.random(lattice_M)
     else:
         init = np.asarray(init_state, dtype=float)
         if init.shape != (lattice_M,):
             raise ValueError(
                 f"init_state must have shape ({lattice_M},), got {init.shape}"
             )
-        states[0] = init
+        state = init.copy()
     f = lambda x: logistic(x, alpha)
-    for t in range(1, total_steps):
-        states[t] = iterate_map(states[t - 1], eps, f)
-    cropped = states[transients:, offset : offset + M]
-    usable = cropped[::sample_every][:T]
-    result = _maybe_zscore(usable, zscore=zscore)
+    observed = np.empty((T, M), dtype=float)
+    full_lattice = np.empty((T, lattice_M), dtype=float) if return_full_lattice else None
+    sample_index = 0
+    for step in range(total_steps):
+        if step >= transients and (step - transients) % sample_every == 0:
+            observed[sample_index] = state[offset : offset + M]
+            if full_lattice is not None:
+                full_lattice[sample_index] = state
+            sample_index += 1
+        if step + 1 < total_steps:
+            state = iterate_map(state, eps, f)
+    if sample_index != T:  # defensive: guards future changes to sampling semantics
+        raise RuntimeError(f"recorded {sample_index} CML samples, expected {T}")
+
+    result = _maybe_zscore(observed, zscore=zscore)
+    if return_full_lattice and return_final_state:
+        return result, full_lattice, state.copy()
+    if return_full_lattice:
+        return result, full_lattice
     if return_final_state:
-        return result, states[-1].copy()
+        return result, state.copy()
     return result
 
 

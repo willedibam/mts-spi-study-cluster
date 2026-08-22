@@ -31,6 +31,36 @@ def _resolve_path(path_value: str) -> Path:
     return project_root() / path
 
 
+def _pyspi_version() -> Dict[str, str]:
+    """pyspi identity, recorded per dataset.
+
+    pyspi 3.0 changed the *values* of ~70 SPIs relative to 2.x (kernel and
+    symbolic estimators moved from bits to nats, the kraskov input policy
+    changed, dcoh/xcorr/gd/ccm/coint_aeg/psi_wavelet/phase were corrected, and
+    six directed spectral SPIs are transposed). Runs from different versions
+    must not be pooled into one feature matrix, and nothing else in a dataset
+    directory records which one produced it.
+
+    Two fields, because they can disagree. `dist` is the installed
+    distribution's metadata, which goes stale on an editable install whose
+    version was bumped without reinstalling. `computation` is pyspi's own
+    COMPUTATION_VERSION, read from the live source: it is what pyspi bumps
+    whenever a change can alter a valid SPI output, and what its checkpoint
+    manifests are keyed on, so it is the field to compare before pooling.
+    """
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        dist = version("pyspi")
+    except PackageNotFoundError:  # editable install without metadata
+        dist = "unknown"
+    try:
+        from pyspi._parallel import COMPUTATION_VERSION as computation
+    except Exception:
+        computation = "unknown"
+    return {"dist": dist, "computation": str(computation)}
+
+
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run PySPI experiments for a single dataset specification."
@@ -48,10 +78,6 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--pyspi-config",
         help="Override PySPI config path.",
-    )
-    parser.add_argument(
-        "--pyspi-subset",
-        help="Override PySPI subset name.",
     )
     parser.add_argument(
         "--threads",
@@ -150,8 +176,6 @@ def main(argv: List[str] | None = None) -> None:
     config = ExperimentConfig.from_file(config_path)
     if args.pyspi_config:
         config.pyspi_config = _resolve_path(args.pyspi_config)
-    if args.pyspi_subset:
-        config.pyspi_subset = args.pyspi_subset
     if args.normalise is not None:
         config.normalise = bool(args.normalise)
     if args.threads:
@@ -185,7 +209,7 @@ def main(argv: List[str] | None = None) -> None:
         if args.dry_run:
             print(_describe_dataset(spec))
             continue
-        if args.skip_existing and _dataset_complete(spec.dataset_dir):
+        if args.skip_existing and _dataset_complete(spec):
             print(
                 f"[INFO] Skipping dataset {spec.name} "
                 f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
@@ -208,7 +232,6 @@ def main(argv: List[str] | None = None) -> None:
         result = run_pyspi(
             data,
             config_path=spec.pyspi_config,
-            subset=spec.pyspi_subset,
             normalise=spec.normalise,
             n_jobs=effective_n_jobs,
             checkpoint_dir=cp_dir,
@@ -330,9 +353,29 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
 
     dataset_dir = ensure_dir(spec.dataset_dir)
     ts_path = dataset_dir / "timeseries.npy"
+    full_path = dataset_dir / "full_lattice.npy"
+    ground_truth_path = dataset_dir / "ground_truth.npz"
+    wants_full_lattice = bool(
+        spec.generator == "cml_logistic"
+        and spec.generator_params.get("return_full_lattice", False)
+    )
+    wants_ground_truth = spec.generator in {
+        "kuramoto_order_parameter",
+        "miller_huse",
+    }
     gen_extras: dict = {}
-    if ts_path.exists() and not regenerate:
+    if (
+        ts_path.exists()
+        and not regenerate
+        and (not wants_full_lattice or full_path.exists())
+        and (not wants_ground_truth or ground_truth_path.exists())
+    ):
         data = np.load(ts_path).astype(np.float64, copy=False)
+        if wants_full_lattice:
+            full_shape = list(np.load(full_path, mmap_mode="r").shape)
+            gen_extras["full_lattice"] = {"path": full_path.name, "shape": full_shape}
+        if wants_ground_truth:
+            gen_extras["ground_truth"] = _ground_truth_descriptor(ground_truth_path)
         print(f"[INFO] Loaded cached timeseries: {to_relative(ts_path)}")
     else:
         start = time.perf_counter()
@@ -341,12 +384,41 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
         mother = gen_extras.pop("_mother", None)   # not JSON-serialisable -> save alongside, keep out of meta
         if mother is not None:
             np.save(dataset_dir / "mother.npy", np.asarray(mother, dtype=np.float32))
+        full_lattice = gen_extras.pop("_full_lattice", None)
+        if full_lattice is not None:
+            full_array = np.asarray(full_lattice, dtype=np.float32)
+            np.save(full_path, full_array)
+            gen_extras["full_lattice"] = {
+                "path": full_path.name,
+                "shape": list(full_array.shape),
+            }
+        ground_truth = gen_extras.pop("_ground_truth", None)
+        if ground_truth is not None:
+            arrays = {name: np.asarray(values) for name, values in ground_truth.items()}
+            np.savez(ground_truth_path, **arrays)
+            gen_extras["ground_truth"] = _ground_truth_descriptor(ground_truth_path)
         duration = time.perf_counter() - start
         print(
             f"[INFO] Generated timeseries ({data.shape[0]}x{data.shape[1]}) "
             f"in {duration:.2f}s -> {to_relative(ts_path)}"
         )
     return data.astype(np.float64, copy=False), ts_path, gen_extras
+
+
+def _ground_truth_descriptor(path: Path) -> dict:
+    with np.load(path, allow_pickle=False) as archive:
+        descriptor: dict = {
+            "path": path.name,
+            "arrays": {name: list(archive[name].shape) for name in archive.files},
+        }
+        for name in ("r_full", "r_observed", "magnetization", "spin_magnetization"):
+            if name in archive.files:
+                values = np.asarray(archive[name], dtype=np.float64)
+                descriptor[f"{name}_mean"] = float(values.mean())
+                descriptor[f"{name}_std"] = float(values.std())
+        if "critical_coupling" in archive.files:
+            descriptor["critical_coupling"] = float(archive["critical_coupling"])
+    return descriptor
 
 
 def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
@@ -420,6 +492,68 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             "motif_edges": [list(e) for e in internals.motif_edges],
             "class_label": internals.class_label,
             "coupling_values": internals.coupling_values,
+        }
+    elif spec.generator == "cml_logistic" and generator_params.get("return_full_lattice", False):
+        if generator_params.get("return_final_state", False):
+            raise ValueError(
+                "The experiment harness cannot persist both CML return_full_lattice "
+                "and return_final_state; use direct generator calls for continuation."
+            )
+        data, full_lattice = generate.generate_cml_logistic(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            **generator_params,
+        )
+        gen_extras = {"_full_lattice": full_lattice}
+    elif spec.generator == "kuramoto_order_parameter":
+        generator_params.pop("return_internals", None)
+        generator_params.pop("store_full_phases", None)
+        data, internals = generate.generate_kuramoto_order_parameter(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            store_full_phases=True,
+            **generator_params,
+        )
+        if internals.full_phases is None:  # defensive; forced above
+            raise RuntimeError("Kuramoto full phases were not retained")
+        gen_extras = {
+            "_ground_truth": {
+                "full_phases": internals.full_phases.astype(np.float32),
+                "r_full": internals.r_full.astype(np.float32),
+                "r_observed": internals.r_observed.astype(np.float32),
+                "frequencies": internals.frequencies.astype(np.float32),
+                "observation_indices": internals.observation_indices.astype(np.int32),
+                "sensor_offsets": internals.sensor_offsets.astype(np.float32),
+                "initial_phases": internals.initial_phases.astype(np.float32),
+                "final_phases": internals.final_phases.astype(np.float32),
+                "critical_coupling": np.array(internals.critical_coupling),
+            }
+        }
+    elif spec.generator == "miller_huse":
+        generator_params.pop("return_internals", None)
+        generator_params.pop("store_full_field", None)
+        data, internals = generate.generate_miller_huse(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            store_full_field=True,
+            **generator_params,
+        )
+        if internals.full_field is None:  # defensive; forced above
+            raise RuntimeError("Miller--Huse full field was not retained")
+        gen_extras = {
+            "_ground_truth": {
+                "full_field": internals.full_field.astype(np.float32),
+                "magnetization": internals.magnetization.astype(np.float32),
+                "spin_magnetization": internals.spin_magnetization.astype(np.float32),
+                "patch_indices": internals.patch_indices.astype(np.int32),
+                "initial_field": internals.initial_field.astype(np.float32),
+                "final_field": internals.final_field.astype(np.float32),
+            }
         }
     else:
         data = generate.generate_series(
@@ -769,8 +903,9 @@ def _build_metadata(
         "generator": source_block,
         "pyspi": {
             "config": to_relative(spec.pyspi_config),
-            "subset": spec.pyspi_subset,
+            "version": _pyspi_version(),
             "n_spis": len(result.metadata),
+            "errors": result.errors or {},
             "spis": [
                 {"name": info.name, "directed": info.directed, "labels": info.labels}
                 for info in result.metadata
@@ -787,15 +922,23 @@ def _build_metadata(
     }
 
 
-def _dataset_complete(dataset_dir: Path) -> bool:
+def _dataset_complete(spec) -> bool:
     # calc.csv is deliberately NOT required: --no-csv runs are complete
     # without it, and requiring it would make --skip-existing recompute every
     # dataset on resume.
+    dataset_dir = Path(spec.dataset_dir)
     required = [
         dataset_dir / "meta.json",
         dataset_dir / "spi_mpis.npz",
         dataset_dir / "timeseries.npy",
     ]
+    if spec.generator in {"kuramoto_order_parameter", "miller_huse"}:
+        required.append(dataset_dir / "ground_truth.npz")
+    if (
+        spec.generator == "cml_logistic"
+        and spec.generator_params.get("return_full_lattice", False)
+    ):
+        required.append(dataset_dir / "full_lattice.npy")
     return all(path.exists() for path in required)
 
 

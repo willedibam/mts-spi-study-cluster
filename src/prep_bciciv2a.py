@@ -216,7 +216,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--config-out", type=Path, default=None)
-    parser.add_argument("--pyspi-config", default="configs/pyspi-v2/cases/eeml.yaml")
+    parser.add_argument("--pyspi-config", default="configs/pyspi/cases/eeml.yaml")
     parser.add_argument("--threads", type=int, default=4)
     parser.add_argument("--rng-seed", type=int, default=110305)
     args = parser.parse_args()

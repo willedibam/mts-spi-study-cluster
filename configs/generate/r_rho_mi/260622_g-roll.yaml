@@ -9,7 +9,7 @@
 #   -- a saturation/ties confound. pi keeps M cleanly monotone. See notebooks/presentation/r_rho_mi_figure_plan.md.
 base_output_dir: data/r_rho_mi/260624_g-roll/
 timestamp: false
-pyspi_config: configs/pyspi-v2/cases/r_rho_mi.yaml
+pyspi_config: configs/pyspi/cases/r_rho_mi.yaml
 normalise: false
 rng_seed: 260622
 save_heatmap: true

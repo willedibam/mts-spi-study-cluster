@@ -19,7 +19,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 
 ## Compute allocation and charging
 
-- `nci_account` reports the spendable quarterly allocation. For 2026.q3: 43.8 KSU granted, 17.0 KSU used, 26.8 KSU available; 2026.q2 had a separate 70.43 KSU grant and q4 currently reports zero. The reported roughly 173 KSU annual entitlement is not presently available as one pool.
+- `nci_account` reports the spendable quarterly allocation. Last live check: 43.8 KSU granted, 17.0 KSU used, 26.8 KSU available for 2026.q3. A confirmed allocation request raises the q3 total to 143 KSU, but it is not spendable until the next NCI allocation sync appears in `nci_account`; do not budget against the email alone.
 - `normal` has 48 cores and 192 GiB per Cascade Lake node, 4 GiB/core, 2 SU/core-hour, and a 20,736-core maximum request. Requests above one node use whole 48-core nodes.
 - Charge is based on actual walltime and the greater of requested CPU or memory-equivalent cores, but PBS must be able to reserve the requested maximum before starting. A 2,016-core job costs about 4.032 KSU per wall-hour before any memory uplift.
 - Live PBS: `max_array_size=10`; `normal` allows 1,000 queued jobs/project, with scheduling thresholds of 300/project and 200/user. These job-count limits are not useful dataset-level parallelism.
@@ -27,9 +27,9 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 ## Dataset-level parallelism
 
 - Use one multi-node PBS allocation with `nci-parallel`, not thousands of one-core PBS jobs or the old array wrappers. Each command processes one dataset with `--n-jobs 1`; pin BLAS/OpenMP threads to one.
-- `nci-parallel` dynamically assigns the next dataset to a free core. Request fewer workers than datasets when runtimes vary, avoiding an expensive long-tail of idle nodes. NCI specifically recommends no more than about 200 concurrent workers for 2,000 heterogeneous tasks; scale beyond that only after a representative timing/memory pilot.
+- `nci-parallel` dynamically assigns the next dataset to a free core. Request fewer workers than datasets when runtimes vary, avoiding an expensive long-tail of idle nodes. NCI specifically recommends no more than about 200 concurrent workers for 2,000 heterogeneous tasks; scale beyond that only after a representative timing/memory pilot (and be generous with resource allocation).
 - Keep farms reasonably homogeneous in expected M/T/config cost; use separate farms or index ranges when task classes have materially different runtimes.
-- Default progression: 2-dataset/2-core smoke test; representative 48-core node test; then choose 192, 480, 960, or more cores from measured runtime variance, memory, scheduling and remaining KSU. Maximum concurrency is not automatically minimum time-to-result.
+- Default progression: 2-dataset/2-core smoke test; representative 48-core node test; then choose 192, 480, 960, or more cores (be generous) from measured runtime variance, memory, scheduling and remaining KSU. Maximum concurrency is not automatically minimum time-to-result.
 - Use `jobs/gadi/submit_dataset_farm.sh`; its PBS worker is `jobs/gadi/run_dataset_farm.pbs`. The launcher defaults to p90, one core/task, no CSV/heatmaps, resumable `--skip-existing`, and persistent job log/status files.
 
 ## Operational checks

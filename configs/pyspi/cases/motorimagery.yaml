@@ -147,9 +147,10 @@
         k_history: 1
         l_history: 1
 
-      - estimator: symbolic
-        k_history: 1
-        l_history: 1
+      # Removed in pyspi 3.0: l_history is not used by estimator="symbolic"
+      # (one ordinal-pattern length at unit delay, source and destination
+      # alike), and k_history=1 gives a single symbol, so the transfer entropy
+      # is identically zero. Rejected at construction.
 
 .statistics.spectral:
   CoherencePhase:
@@ -166,14 +167,10 @@
         fmax: 0.25
       - fmin: 0.25
         fmax: 0.5
-      - fs: 1
-        statistic: max
-      - fmin: 0
-        fmax: 0.25
-        statistic: max
-      - fmin: 0.25
-        fmax: 0.5
-        statistic: max
+      # Removed in pyspi 3.0: CoherencePhase(statistic="max") is refused at
+      # construction. An ordinary maximum of wrapped angles depends on the
+      # branch cut, and was exactly pi off-diagonal on the VAR fixture. The
+      # circular `mean` variants above are the supported summaries.
 
   CoherenceMagnitude:
     labels:

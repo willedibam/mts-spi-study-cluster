@@ -1,0 +1,16 @@
+output_dir: data/order_parameter/kuramoto_physics_smoke
+base_seed: 110305
+seed_pairing: paired
+frequency_distributions: [gaussian]
+frequency_sampling: random
+omega_mean: 1.0
+omega_std: 1.0
+N_full: [64]
+kappa: [0.80, 1.40]
+dt: [0.02]
+sample_dt: 0.10
+burn_time: 10.0
+T: [250, 500]
+M: [8, 16]
+instances: 2
+stationarity_blocks: 5

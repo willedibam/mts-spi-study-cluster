@@ -8,6 +8,7 @@
       - unsigned
       - bivariate
       - contemporaneous
+      - M14
     dependencies:
     configs:
       - estimator: EmpiricalCovariance
@@ -20,6 +21,7 @@
       - unsigned
       - bivariate 
       - time-dependent
+      - M10
     dependencies:
     configs:
       - global_constraint: itakura
@@ -31,10 +33,13 @@
       - unsigned
       - bivariate
       - time-dependent
+      - M14
     dependencies:
     configs:
       - mode: dtw
         statistic: mean
+        labels:
+          - M09
 
 .statistics.causal:
 
@@ -46,6 +51,7 @@
       - unsigned
       - bivariate
       - contemporaneous
+      - M02
     dependencies:
     configs:
 
@@ -59,10 +65,18 @@
       - unsigned
       - bivariate
       - time-dependent
-    dependencies:
-      - java
+      - M03
     configs:
       - estimator: gaussian
+      # Disabled: composing directed information from four separately-estimated
+      # entropies leaves each with its own dimension-dependent bias, and they do
+      # not cancel. On independent data the kernel variant sat at 3.8-4.4 for
+      # every T from 100 to 8000 (a fixed bandwidth in ~11 dimensions does not
+      # improve with sample size) and kozachenko returned negatives, for a
+      # quantity bounded below by zero. Use estimator: kraskov, which estimates
+      # each conditional-MI term directly.
+      # - estimator: kernel
+      # - estimator: kozachenko
 
   # Transfer entropy
   TransferEntropy:
@@ -72,8 +86,7 @@
       - unsigned
       - bivariate
       - time-dependent
-    dependencies:
-      - java
+      - M04
     configs:
       - estimator: kraskov
         prop_k: 4
@@ -82,6 +95,26 @@
         tau_search_max: 4
         dyn_corr_excl: AUTO
   
+      # Disabled: k_history=1 gives a single ordinal symbol, so the transfer
+      # entropy is identically zero. Rejected at construction; kept here as a
+      # record of what was dropped.
+      # - estimator: symbolic
+      #   k_history: 1
+      #   l_history: 1
+      #   labels:
+      #     - M05
+      #
+      # Disabled: severely undersampled and unvalidated at T=100. 10! symbols
+      # against ~91 usable samples: on var1 and cml every joint count is 1, so
+      # the value tracks sample size rather than dependence, but that does not
+      # hold universally (kuramoto: 3 of 42 pairs). Still constructible, and
+      # defensible for long series where the symbol space is populated.
+      # - estimator: symbolic
+      #   k_history: 10
+      #   l_history: 1
+      #   labels:
+      #     - M05
+
   # Integrated information
   IntegratedInformation:
     labels:
@@ -90,8 +123,8 @@
       - unsigned
       - bivariate
       - time-dependent
+      - M05
     dependencies: 
-      - octave
     configs:
       - phitype: 'star'
 
@@ -105,18 +138,19 @@
       - unsigned
       - bivariate
       - frequency-dependent
+      - M12
     dependencies:
     configs:
       - fs: 1
 
   PhaseSlopeIndex:
     labels:
-      - directed
       - linear/nonlinear
       - unsigned
       - bivariate
       - frequency-dependent
       - time-frequency dependent
+      - M01
     dependencies:
     configs:
       - fmin: 0
@@ -124,11 +158,11 @@
 
   PhaseLagIndex:
     labels:
-      - undirected
       - linear
       - unsigned
       - bivariate
       - frequency-dependent
+      - M07
     dependencies:
     configs:
       - fs: 1
@@ -142,6 +176,7 @@
       - unsigned
       - bivariate
       - frequency-dependent
+      - M06
     dependencies:
     configs:
       - method: nonparametric
@@ -153,12 +188,12 @@
 .statistics.wavelet:
   PhaseSlopeIndex:
     labels:
-      - directed
       - linear/nonlinear
       - unsigned
       - bivariate
       - frequency-dependent
       - time-frequency dependent
+      - M08
     dependencies:
     configs:
       - fs: 1
@@ -167,11 +202,11 @@
   # Cointegration
   Cointegration:
     labels:
-      - undirected
       - linear
       - unsigned
       - bivariate
       - time-dependent
+      - M13
     dependencies:
     configs:
       - method: aeg
@@ -188,6 +223,7 @@
       - unsigned
       - bivariate
       - time-dependent
+      - M11
     dependencies:
     configs:
       - orth: False

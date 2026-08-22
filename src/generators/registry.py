@@ -35,6 +35,7 @@ from .linear import (
     generate_varma_shuffled,
     generate_warping_mts,
 )
+from .order_parameter import generate_kuramoto_order_parameter, generate_miller_huse
 from .chat import (
     generate_var_chat_a,
     generate_var_nonlinear_a,
@@ -75,6 +76,8 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "kuramoto_bidirectional_list": generate_kuramoto_bidirectional_list,
     "kuramoto_explosive": generate_kuramoto_explosive,
     "kuramoto_grid_four": generate_kuramoto_grid_four,
+    "kuramoto_order_parameter": generate_kuramoto_order_parameter,
+    "miller_huse": generate_miller_huse,
     "gaussian_noise": generate_gaussian_noise,
     "cauchy_noise": generate_cauchy_noise,
     "exponential_noise": generate_exponential_noise,

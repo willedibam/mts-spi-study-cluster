@@ -95,19 +95,18 @@ class ClassSpec:
     variants: List[VariantSpec]
     include_base_variant: bool
     pyspi_config: Path | None = None
-    pyspi_subset: str | None = None
     zscore_data: bool = False
     normalise: bool | None = None
     save_heatmap: bool | None = None
     threads: int | None = None
     rng_seed: int | None = None
+    seed_scope: str = "dataset"
 
 
 @dataclass
 class ExperimentConfig:
     base_output_dir: Path
     pyspi_config: Path
-    pyspi_subset: str
     normalise: bool
     rng_seed: int
     save_heatmap: bool
@@ -123,7 +122,6 @@ class ExperimentConfig:
         data = load_yaml(path)
         base_output_dir = _as_path(data.get("base_output_dir", "data"))
         pyspi_config = _as_path(data["pyspi_config"])
-        pyspi_subset = data.get("pyspi_subset", "default")
         normalise = bool(data.get("normalise", False))
         rng_seed = int(data.get("rng_seed", 0))
         save_heatmap = bool(data.get("save_heatmap", False))
@@ -142,7 +140,6 @@ class ExperimentConfig:
         return cls(
             base_output_dir=base_output_dir,
             pyspi_config=pyspi_config,
-            pyspi_subset=pyspi_subset,
             normalise=normalise,
             rng_seed=rng_seed,
             save_heatmap=save_heatmap,
@@ -202,6 +199,12 @@ def _parse_class(
     m_assets = int(m_assets) if m_assets is not None else None
     if m_assets is None and tickers:
         m_assets = len(tickers)
+    seed_scope = str(entry.get("seed_scope", "dataset")).strip().lower()
+    if seed_scope not in {"dataset", "instance"}:
+        raise ValueError(
+            f"Unsupported seed_scope {seed_scope!r} for '{entry.get('name')}'. "
+            "Expected 'dataset' or 'instance'."
+        )
     return ClassSpec(
         name=entry["name"],
         generator=generator,
@@ -221,12 +224,12 @@ def _parse_class(
         variants=variants,
         include_base_variant=entry.get("include_base_variant", True),
         pyspi_config=_as_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
-        pyspi_subset=entry.get("pyspi_subset"),
         zscore_data=bool(entry.get("zscore", False)),
         normalise=entry.get("normalise"),
         save_heatmap=entry.get("save_heatmap"),
         threads=entry.get("threads"),
         rng_seed=int(entry["rng_seed"]) if "rng_seed" in entry and entry["rng_seed"] is not None else None,
+        seed_scope=seed_scope,
     )
 
 
@@ -253,7 +256,6 @@ class DatasetSpec:
     T: int
     instance: int
     pyspi_config: Path
-    pyspi_subset: str
     normalise: bool
     save_heatmap: bool
     rng_seed: int
@@ -317,18 +319,29 @@ def _apply_dataset_slug(spec: DatasetSpec) -> None:
         )
 
 
-def _derive_dataset_seed(*, base_seed: int, spec: DatasetSpec) -> int:
-    variant_slug = spec.variant.slug if spec.variant else ""
-    components = [
-        str(base_seed),
-        str(spec.base_output_dir),
-        spec.mts_class,
-        spec.dataset_slug,
-        variant_slug,
-        f"M{spec.M}",
-        f"T{spec.T}",
-        f"I{spec.instance}",
-    ]
+def _derive_dataset_seed(
+    *, base_seed: int, spec: DatasetSpec, seed_scope: str = "dataset"
+) -> int:
+    if seed_scope == "instance":
+        components = [
+            str(base_seed),
+            spec.mts_class,
+            f"I{spec.instance}",
+        ]
+    elif seed_scope == "dataset":
+        variant_slug = spec.variant.slug if spec.variant else ""
+        components = [
+            str(base_seed),
+            str(spec.base_output_dir),
+            spec.mts_class,
+            spec.dataset_slug,
+            variant_slug,
+            f"M{spec.M}",
+            f"T{spec.T}",
+            f"I{spec.instance}",
+        ]
+    else:  # guarded by config parsing; retained for direct callers
+        raise ValueError(f"unsupported seed_scope {seed_scope!r}")
     payload = "|".join(components).encode("utf-8")
     digest = hashlib.blake2s(payload, digest_size=8).digest()
     seed = int.from_bytes(digest, "big") % 2147483647
@@ -361,7 +374,6 @@ class DatasetMapping:
                 instances = class_entry.instances or self.config.default_instances or [0]
                 class_dir = class_dir_name(class_entry.name)
                 pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
-                pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
                 normalise = (
                     class_entry.normalise
                     if class_entry.normalise is not None
@@ -413,7 +425,6 @@ class DatasetMapping:
                                 T=0,
                                 instance=instance,
                                 pyspi_config=pyspi_config,
-                                pyspi_subset=pyspi_subset,
                                 normalise=normalise,
                                 save_heatmap=save_heatmap,
                                 rng_seed=base_seed,
@@ -463,7 +474,6 @@ class DatasetMapping:
                                     T=0,
                                     instance=instance,
                                     pyspi_config=pyspi_config,
-                                    pyspi_subset=pyspi_subset,
                                     normalise=normalise,
                                     save_heatmap=save_heatmap,
                                     rng_seed=base_seed,
@@ -499,7 +509,6 @@ class DatasetMapping:
                                 for k, v in class_entry.base_params.items()
                             }
                             pyspi_config = class_entry.pyspi_config or self.config.pyspi_config
-                            pyspi_subset = class_entry.pyspi_subset or self.config.pyspi_subset
                             normalise = (
                                 class_entry.normalise
                                 if class_entry.normalise is not None
@@ -534,7 +543,6 @@ class DatasetMapping:
                                     T=T,
                                     instance=instance,
                                     pyspi_config=pyspi_config,
-                                    pyspi_subset=pyspi_subset,
                                     normalise=normalise,
                                     save_heatmap=save_heatmap,
                                     rng_seed=0,
@@ -578,7 +586,6 @@ class DatasetMapping:
                             T=spec.T,
                             instance=spec.instance,
                             pyspi_config=spec.pyspi_config,
-                            pyspi_subset=spec.pyspi_subset,
                             normalise=spec.normalise,
                             save_heatmap=spec.save_heatmap,
                             rng_seed=0,
@@ -604,7 +611,11 @@ class DatasetMapping:
                 spec.generator_params.pop("delta", None)
             for spec in class_specs:
                 _apply_dataset_slug(spec)
-                spec.rng_seed = _derive_dataset_seed(base_seed=base_seed, spec=spec)
+                spec.rng_seed = _derive_dataset_seed(
+                    base_seed=base_seed,
+                    spec=spec,
+                    seed_scope=class_entry.seed_scope,
+                )
                 spec.index = len(specs) + 1
                 specs.append(spec)
         return specs

@@ -10,8 +10,6 @@ import pandas as pd
 
 from pyspi.calculator import Calculator
 
-from .utils import load_yaml
-
 
 @dataclass
 class SPIInfo:
@@ -29,13 +27,16 @@ class ComputeResult:
     matrices: Dict[str, np.ndarray]
     metadata: List[SPIInfo]
     timings: Dict[str, float] | None = None
+    # {identifier: "ExcType: message"} for SPIs that failed. A failed SPI still
+    # occupies its column, filled with NaN, so without this a dead column is
+    # indistinguishable from a legitimately undefined statistic.
+    errors: Dict[str, str] | None = None
 
 
 def run_pyspi(
     timeseries: np.ndarray,
     *,
     config_path: Path,
-    subset: str = "default",
     normalise: bool = False,
     n_jobs: int | None = None,
     checkpoint_dir: Path | None = None,
@@ -45,11 +46,14 @@ def run_pyspi(
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]
+    # pyspi 3.0: `subset`/`configfile` collapsed into `config=` (a bundled name
+    # or a path), and `normalise=` became `zscore=` (same per-process z-score
+    # along time; the old name collided with the per-SPI `normalise` arguments
+    # in pyspi.statistics.distance).
     calc = Calculator(
         dataset=timeseries.T,
-        subset=subset,
-        configfile=str(config_path),
-        normalise=normalise,
+        config=str(config_path),
+        zscore=normalise,
     )
     calc.compute(
         n_jobs=n_jobs,
@@ -57,7 +61,7 @@ def run_pyspi(
         resume=resume,
         mp_context=mp_context,
     )
-    info_map = _load_spi_info(config_path, calc.spis)
+    info_map = _spi_info(calc.spis)
     spi_names = _extract_spi_names(calc.table)
     matrices: Dict[str, np.ndarray] = {}
     metadata: List[SPIInfo] = []
@@ -79,29 +83,39 @@ def run_pyspi(
             family=family, module=module, class_name=class_name,
         ))
     spi_timings = getattr(calc, 'timings', None)
-    return ComputeResult(table=calc.table.copy(), matrices=matrices, metadata=metadata, timings=spi_timings)
+    return ComputeResult(
+        table=calc.table.copy(), matrices=matrices, metadata=metadata,
+        timings=spi_timings, errors=dict(getattr(calc, "errors", {}) or {}),
+    )
 
 
-def _load_spi_info(
-    config_path: Path, spis: Mapping[str, Any]
-) -> Dict[str, Dict[str, Any]]:
-    cfg = load_yaml(config_path) or {}
-    labels_by_origin: Dict[tuple[str, str], List[str]] = {}
-    for module_name, group in cfg.items():
-        module_key = module_name.lstrip(".")
-        for spi_name, entry in (group or {}).items():
-            labels = entry.get("labels") or []
-            labels_by_origin[(module_key, spi_name)] = labels
+# Structural traits that mean "the matrix is not symmetric, do not fold it".
+# `antisymmetric` (gd_*, phase_*, pli/wpli/psi, ccm_*_diff) is the one that
+# bites: folding an antisymmetric matrix with 0.5*(A + A.T) returns zeros.
+_NON_SYMMETRIC_LABELS = {"directed", "antisymmetric", "asymmetric"}
+
+
+def _spi_info(spis: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """Read each SPI's labels off the instance, not off the config YAML.
+
+    pyspi 3.0 makes the class's own structural traits authoritative: exactly
+    one of directed/undirected/antisymmetric/asymmetric survives the merge of
+    class, family and per-config labels, and `issigned()` overrides any
+    declared signed/unsigned. A config that declares `undirected` over an
+    antisymmetric measure -- which the hand-written case configs here do for
+    CoherencePhase -- is corrected by the loader, so `spi.labels` is the only
+    reading that matches the matrix that was actually computed.
+    """
     info: Dict[str, Dict[str, Any]] = {}
     for identifier, spi in spis.items():
-        module_key = spi.__module__.split("pyspi.")[-1].lstrip(".")
-        class_name = spi.__class__.__name__
-        labels = labels_by_origin.get((module_key, class_name), [])
-        directed = any(label.lower() == "directed" for label in labels)
-        family = spi.__module__.split(".")[-1]
+        labels = [str(lbl) for lbl in getattr(spi, "labels", [])]
+        lowered = {lbl.lower() for lbl in labels}
         info[identifier] = {
-            "labels": labels, "directed": directed, "family": family,
-            "module": spi.__module__, "class_name": class_name,
+            "labels": labels,
+            "directed": bool(lowered & _NON_SYMMETRIC_LABELS),
+            "family": spi.__module__.split(".")[-1],
+            "module": spi.__module__,
+            "class_name": spi.__class__.__name__,
         }
     return info
 

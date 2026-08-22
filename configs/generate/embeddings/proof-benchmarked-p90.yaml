@@ -5,7 +5,7 @@
 # M grids in one dir would corrupt both the data and the feature matrix).
 base_output_dir: data/embeddings/multi_p90_260701/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true

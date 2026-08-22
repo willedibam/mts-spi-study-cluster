@@ -5,10 +5,10 @@
 ### Local
 ```
 ~/Desktop/2025USYD/USYD/
-├── pyspi-fork/                    # github.com/willedibam/pyspi (branch v2)
+├── pyspi-fork/                    # github.com/willedibam/pyspi (branch v3, pyspi 3.0)
 │   └── pyspi/statistics/          # SPI implementations (numpy, no JIDT)
 └── mts-spi-study-cluster/         # github.com/willedibam/mts-spi-study-cluster (branch refactor)
-    ├── configs/pyspi-v2/          # SPI configs (no java/octave deps)
+    ├── configs/pyspi/             # SPI configs (copies of pyspi 3.0's own)
     ├── src/                       # Pipeline code
     └── jobs/physics/              # PBS scripts
 ```
@@ -31,7 +31,7 @@
 Edit directly in `pyspi-fork/pyspi/`. Editable install means changes are **immediately live**.
 
 - SPIs: `pyspi-fork/pyspi/statistics/<module>.py`
-- Configs: `mts-spi-study-cluster/configs/pyspi-v2/`
+- Configs: `mts-spi-study-cluster/configs/pyspi/`
 
 ## 2. Syncing to cluster
 
@@ -95,6 +95,10 @@ python -m src.run_experiments \
 
 ## Notes
 
-- No JVM/JIDT needed with pyspi-v2 configs.
-- `auto_embed_method: MAX_CORR_AIS` commented out in v2 (not yet in numpy).
-- JVM may start on import (pyspi `__init__.py`) — harmless, no JIDT calls made.
+- No JVM, JIDT or `jpype` anywhere: pyspi 3.0 removed the Java dependency
+  outright, and nothing starts a JVM on import.
+- `MAX_CORR_AIS` auto-embedding is implemented in numpy and enabled; it now
+  selects the source embedding as well as the destination.
+- `configs/pyspi/*.yaml` are verbatim copies of `pyspi-fork/pyspi/configs/*.yaml`.
+  Re-copy them after any change to the fork's configs; `cases/` and `test.yaml`
+  are this repo's own and have no upstream counterpart.

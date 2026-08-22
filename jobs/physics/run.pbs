@@ -70,7 +70,7 @@
 #
 #   # test (was run_test.pbs) — needs the pyspi test config
 #   qsub -J 1-16 -l walltime=00:30:00 -l select=1:ncpus=2:mem=2gb \
-#       -v CONFIG=configs/generate/test.yaml,PYSPI_CONFIG=configs/pyspi/test_config.yaml \
+#       -v CONFIG=configs/generate/test.yaml,PYSPI_CONFIG=configs/pyspi/test.yaml \
 #       jobs/physics/run.pbs
 #
 #   # uea (was run_uea.pbs) — generic per-UEA-dataset, -J range from prep_uea.py:
@@ -132,11 +132,11 @@ export MKL_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export KMP_DUPLICATE_LIB_OK=TRUE
 
-# cdt (imported transitively by pyspi.statistics.causal) does
-# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time.
-# On PBS compute nodes the var is set to an empty string, which crashes
-# literal_eval with SyntaxError. Unsetting forces cdt's fallback path.
-unset CUDA_VISIBLE_DEVICES
+# Historical: cdt, imported transitively by pyspi.statistics.causal, did
+# ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]) at import time and
+# crashed on the empty string PBS compute nodes set. pyspi 3.0 dropped cdt
+# (the four pairwise causal scores are transcribed in pyspi/lib/), so nothing
+# reads that variable any more and the unset is no longer needed.
 
 PYSPI_CONFIG_ARGS=()
 if [[ -n "${PYSPI_CONFIG:-}" ]]; then

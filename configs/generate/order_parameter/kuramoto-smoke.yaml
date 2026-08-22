@@ -1,0 +1,34 @@
+base_output_dir: data/order_parameter/kuramoto_smoke
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [4]
+  T_values: [128]
+  instances: 1
+
+mts_classes:
+  - name: kuramoto-order-smoke
+    labels: [kuramoto, order-parameter, smoke]
+    generator: kuramoto_order_parameter
+    seed_scope: instance
+    base_params:
+      N_full: 64
+      dt: 0.02
+      sample_dt: 0.10
+      burn_time: 10.0
+      omega_mean: 1.0
+      omega_std: 1.0
+      frequency_distribution: gaussian
+      frequency_sampling: random
+      output: cos
+      sensor_phase_std: 0.0
+      zscore: false
+    include_base_variant: false
+    variants:
+      - {name: kappa0p8, params: {K: 1.2766152973}}
+      - {name: kappa1p4, params: {K: 2.2340767706}}

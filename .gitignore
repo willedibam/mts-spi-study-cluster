@@ -22,7 +22,6 @@ data
 results/
 features/
 tar/
-features/
 
 # OS
 .DS_Store
@@ -35,10 +34,12 @@ jupyter/
 notebooks/**/_*_cache.npz
 
 # logs
+log/
 logs/
 
-# figures
+# generated figures / rich-display intermediates
 figures/
+media/
 
 # PowerShell scripts
 *.ps1

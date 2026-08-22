@@ -112,7 +112,6 @@ def _write_yaml_config(
         f"base_output_dir: {out_root}/",
         "timestamp: false",
         f"pyspi_config: {pyspi_config}",
-        "pyspi_subset: default",
         "normalise: false",
         f"rng_seed: {rng_seed}",
         "save_heatmap: false",
@@ -154,7 +153,7 @@ def main():
     )
     parser.add_argument(
         "--pyspi-config",
-        default="configs/pyspi-v2/cases/eeml.yaml",
+        default="configs/pyspi/cases/eeml.yaml",
         help="pyspi config to embed in the generated YAML",
     )
     parser.add_argument("--threads", type=int, default=4)

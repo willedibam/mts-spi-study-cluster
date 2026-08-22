@@ -1,6 +1,6 @@
 base_output_dir: data/embeddings/proof_benchmarked80_260603/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked80_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p80.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true

@@ -1,12 +1,12 @@
 # CML logistic lattice parameter sweep for embedding-space animation or other analysis.
-# SPI set: benchmarked90_amortized_config.yaml 
+# SPI set: benchmarked_p90.yaml
 #
 # Downstream: meta.json per dataset stores generator.params.{alpha,eps},
 # variant.{name,params}, instance_index. This is sufficient to reconstruct
 # the (alpha, eps, instance) coordinate of every frame at aggregation time.
 base_output_dir: data/embeddings/cml_param_sweep_260508/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true

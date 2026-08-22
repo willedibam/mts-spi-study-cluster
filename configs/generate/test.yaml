@@ -1,5 +1,5 @@
-base_output_dir: data/test/blended_config
-pyspi_config: configs/pyspi-v2/blended_config.yaml
+base_output_dir: data/test/benchmarked_p90
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: false

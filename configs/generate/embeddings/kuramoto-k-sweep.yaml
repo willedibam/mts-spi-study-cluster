@@ -1,5 +1,5 @@
 # Kuramoto all-to-all synchronization sweep (coupling K) for SPI-SPI order-parameter inference.
-# SPI set: benchmarked90_amortized_config.yaml
+# SPI set: benchmarked_p90.yaml
 #
 # WHY THIS EXPERIMENT: the all-to-all Kuramoto model has an EXACT, textbook
 # second-order phase transition with order parameter r = |<e^{i theta}>| and a
@@ -24,7 +24,7 @@
 # Downstream: meta.json stores generator.params.{K,omega_std,...}, variant, instance.
 base_output_dir: data/embeddings/kuramoto_k_sweep_260616/
 timestamp: false
-pyspi_config: configs/pyspi-v2/benchmarked90_amortized_config.yaml
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 rng_seed: 110305
 save_heatmap: true

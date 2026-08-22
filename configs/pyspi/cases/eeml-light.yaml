@@ -1,4 +1,4 @@
-# pyspi-v2 EEML case config: no JVM/JIDT dependencies
+# EEML case config (pyspi 3.0: no JVM/JIDT dependency anywhere)
 
 # Basic statistics
 .statistics.basic:

@@ -82,8 +82,8 @@ export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export KMP_DUPLICATE_LIB_OK=TRUE
 
-# cdt (transitive pyspi import) does ast.literal_eval(os.environ["CUDA_VISIBLE_DEVICES"]).
-unset CUDA_VISIBLE_DEVICES
+# The old `unset CUDA_VISIBLE_DEVICES` guarded against cdt's import-time
+# ast.literal_eval of that variable. pyspi 3.0 dropped cdt; no longer needed.
 
 echo "[INFO] config=$EXPERIMENT_CONFIG  offset=$BATCH_OFFSET  array=$ARRAY_ID"
 echo "[INFO] datasets=${START_IDX}..${END_IDX}  concurrent_datasets=$CONCURRENT_DATASETS  cores_per_dataset=$CORES_PER_DATASET"

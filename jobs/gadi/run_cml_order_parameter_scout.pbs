@@ -1,0 +1,79 @@
+#!/bin/bash
+#PBS -N cml-op-scout
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=04:00:00
+#PBS -l ncpus=48
+#PBS -l mem=190GB
+#PBS -l jobfs=20GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -r y
+#PBS -j oe
+
+# Whole-node runner for scripts/cml_order_parameter_scout.py. Each array slot
+# processes a chunk of independent physical-field simulations concurrently.
+
+set -euo pipefail
+
+: "${TOTAL_TASKS:?TOTAL_TASKS must be set}"
+CHUNK_SIZE="${CHUNK_SIZE:-120}"
+BATCH_OFFSET="${BATCH_OFFSET:-0}"
+CONCURRENT_TASKS="${CONCURRENT_TASKS:-48}"
+ALPHAS="${ALPHAS:-1.60:2.00:0.01}"
+EPS_VALUES="${EPS_VALUES:-0.3}"
+LATTICE_SIZES="${LATTICE_SIZES:-128;256}"
+INSTANCES="${INSTANCES:-16}"
+TRANSIENTS="${TRANSIENTS:-65536}"
+RECORD_STEPS="${RECORD_STEPS:-16384}"
+ANALYSIS_PREFIXES="${ANALYSIS_PREFIXES:-2048;8192;16384}"
+STATIONARITY_BLOCKS="${STATIONARITY_BLOCKS:-4}"
+SELECTED_SPATIAL_BAND="${SELECTED_SPATIAL_BAND:-0.25:0.45}"
+PATTERN_WORD_LENGTH="${PATTERN_WORD_LENGTH:-4}"
+LYAPUNOV_STEPS="${LYAPUNOV_STEPS:-4096}"
+OUTPUT_DIR="${OUTPUT_DIR:-results/cml-order-parameter-discovery}"
+
+ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
+START_INDEX=$(( BATCH_OFFSET + (ARRAY_ID - 1) * CHUNK_SIZE + 1 ))
+END_INDEX=$(( BATCH_OFFSET + ARRAY_ID * CHUNK_SIZE ))
+if [[ $END_INDEX -gt $TOTAL_TASKS ]]; then
+    END_INDEX=$TOTAL_TASKS
+fi
+
+mkdir -p logs "$OUTPUT_DIR"
+JOB_LABEL="${PBS_JOBNAME}_${PBS_JOBID%%.*}_o${BATCH_OFFSET}_a${ARRAY_ID}"
+exec >"logs/${JOB_LABEL}.out" 2>"logs/${JOB_LABEL}.err"
+
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+
+echo "[INFO] tasks=${START_INDEX}..${END_INDEX}/${TOTAL_TASKS} host=$(hostname) start=$(date)"
+if [[ $START_INDEX -gt $TOTAL_TASKS ]]; then
+    echo "[INFO] no tasks in this array slot"
+    exit 0
+fi
+
+seq "$START_INDEX" "$END_INDEX" | \
+    xargs -n 1 -P "$CONCURRENT_TASKS" -I {} \
+        python scripts/cml_order_parameter_scout.py \
+            --alphas "$ALPHAS" \
+            --eps "$EPS_VALUES" \
+            --lattice-sizes "$LATTICE_SIZES" \
+            --instances "$INSTANCES" \
+            --transients "$TRANSIENTS" \
+            --record-steps "$RECORD_STEPS" \
+            --analysis-prefixes "$ANALYSIS_PREFIXES" \
+            --stationarity-blocks "$STATIONARITY_BLOCKS" \
+            --selected-spatial-band "$SELECTED_SPATIAL_BAND" \
+            --pattern-word-length "$PATTERN_WORD_LENGTH" \
+            --lyapunov-steps "$LYAPUNOV_STEPS" \
+            --output-dir "$OUTPUT_DIR" \
+            --task-index {}
+
+echo "[INFO] finished=$(date)"

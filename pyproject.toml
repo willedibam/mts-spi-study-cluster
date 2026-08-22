@@ -11,12 +11,12 @@ dependencies = [
     # pyspi itself is NOT listed here; it ships as a sister repo at ../pyspi-fork
     # and MUST be installed editable after creating the venv:
     #   uv pip install -e ../pyspi-fork
-    # Required at runtime by pyEDM (transitive via pyspi-fork): Python 3.12 venvs
-    # no longer bundle setuptools by default (PEP 632), but pyEDM/LoadData.py still
-    # does `import pkg_resources`, which lives inside setuptools. Upper bound <80
-    # because setuptools>=80 removed pkg_resources from the default install
-    # (pyEDM has not migrated to importlib.metadata yet).
-    "setuptools>=68,<80",
+    # The old `setuptools<80` cap existed because pyEDM/LoadData.py imported
+    # pkg_resources, which setuptools 80 removed from the default install.
+    # pyspi 3.0 requires pyEDM>=2.5, which dropped that import, so the cap is
+    # gone. setuptools stays listed only because Python 3.12 venvs no longer
+    # bundle it (PEP 632).
+    "setuptools>=68",
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "scikit-learn>=1.4",
@@ -24,7 +24,7 @@ dependencies = [
     "tqdm>=4.66",
     "psutil>=5.9",
     "pyarrow>=15.0",
-    # "JPype1>=1.5",  # no longer needed — JIDT eliminated in pyspi-v2
+    # JPype1 is not needed: pyspi 3.0 has no Java/JIDT dependency at all.
     "pyclustering>=0.10.1",
     "xarray",
     "dtaidistance==2.3.13",
@@ -39,10 +39,11 @@ dependencies = [
 
 [project.optional-dependencies]
 # aeon/sktime/yfinance are safe to install alongside pyspi.
-# mne and moabb are NOT: moabb>=1.0 requires mne>=1.0, but pyspi/statistics/wavelet.py
-# uses mne.connectivity which was removed in mne 1.0.  Install [prep] in a separate
-# environment (or temporarily) only when running src/prep_bciciv2a.py; downgrade
-# back to mne<1.0 before submitting PBS jobs.
+# The old warning here said mne must be held below 1.0 because
+# pyspi/statistics/wavelet.py used the `mne.connectivity` module removed in
+# mne 1.0. That is obsolete and now actively harmful: pyspi 3.0 imports
+# `mne_connectivity` and *requires* mne>=1.6 and mne-connectivity>=0.5.
+# Do not downgrade mne before submitting PBS jobs.
 real = ["sktime>=0.30.0", "aeon>=0.11.0", "yfinance"]
 prep = ["mne>=1.6.0", "moabb>=1.0.0"]
 dtw = ["dtw-python", "fastdtw", "dtaidistance"]
