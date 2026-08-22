@@ -27,13 +27,20 @@ jobfs_gb="${JOBFS_GB:-10}"
 pyspi_config="${PYSPI_CONFIG:-configs/pyspi/benchmarked_p90.yaml}"
 test -f "$pyspi_config"
 task_timeout="${TASK_TIMEOUT:-}"
+workers="${WORKERS:-}"
+if [[ -n "$workers" ]]; then
+    (( workers >= 1 && workers <= ncpus ))
+fi
 
 variables="EXPERIMENT_CONFIG=$config,START_INDEX=$start,END_INDEX=$end,PYSPI_CONFIG=$pyspi_config"
 if [[ -n "$task_timeout" ]]; then
     variables+=",TASK_TIMEOUT=$task_timeout"
 fi
+if [[ -n "$workers" ]]; then
+    variables+=",WORKERS=$workers"
+fi
 
-echo "[INFO] config=$config datasets=$start..$end/$total ncpus=$ncpus mem=${mem_gb}GB walltime=$walltime task_timeout=${task_timeout:-none}" >&2
+echo "[INFO] config=$config datasets=$start..$end/$total ncpus=$ncpus workers=${workers:-$ncpus} mem=${mem_gb}GB walltime=$walltime task_timeout=${task_timeout:-none}" >&2
 qsub \
     -l "ncpus=$ncpus,mem=${mem_gb}GB,walltime=$walltime,jobfs=${jobfs_gb}GB" \
     -v "$variables" \

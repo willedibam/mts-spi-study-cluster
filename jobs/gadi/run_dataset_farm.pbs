@@ -49,7 +49,8 @@ for ((i=START_INDEX; i<=END_INDEX; i++)); do
 done
 
 task_count=$((END_INDEX - START_INDEX + 1))
-workers=$PBS_NCPUS
+workers="${WORKERS:-$PBS_NCPUS}"
+(( workers >= 1 && workers <= PBS_NCPUS ))
 (( workers > task_count )) && workers=$task_count
 
 echo "[INFO] datasets=$START_INDEX..$END_INDEX workers=$workers p90=$PYSPI_CONFIG"
