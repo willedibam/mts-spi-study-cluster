@@ -1,6 +1,11 @@
 import numpy as np
 
-from src.process_features import _edge_vectors, _rankdata, _spearman_corr_matrix
+from src.process_features import (
+    _edge_vectors,
+    _pearson_corr_matrix,
+    _rankdata,
+    _spearman_corr_matrix,
+)
 
 
 def test_rankdata_uses_average_ranks_for_ties() -> None:
@@ -19,6 +24,19 @@ def test_spearman_matrix_handles_ties_and_invalid_rows() -> None:
     result = _spearman_corr_matrix(values)
     assert np.isclose(result[0, 1], -1.0)
     assert np.isnan(result[0, 2])
+
+
+def test_pearson_matrix_marks_constant_rows_invalid() -> None:
+    values = np.array(
+        [
+            [1.0, 2.0, 3.0, 4.0],
+            [3.0, 3.0, 3.0, 3.0],
+        ]
+    )
+    result = _pearson_corr_matrix(values)
+    assert np.isclose(result[0, 0], 1.0)
+    assert np.isnan(result[0, 1])
+    assert np.isnan(result[1, 1])
 
 
 def test_split_directed_vectors_share_dyad_order() -> None:

@@ -54,12 +54,14 @@ def run_pyspi(
         dataset=timeseries.T,
         config=str(config_path),
         zscore=normalise,
+        verbose=False,
     )
     calc.compute(
         n_jobs=n_jobs,
         checkpoint_dir=checkpoint_dir,
         resume=resume,
         mp_context=mp_context,
+        progress=False,
     )
     info_map = _spi_info(calc.spis)
     spi_names = _extract_spi_names(calc.table)

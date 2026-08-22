@@ -13,6 +13,9 @@ class KuramotoOrderInternals:
     full_phases: np.ndarray | None
     r_full: np.ndarray
     r_observed: np.ndarray
+    r_unobserved: np.ndarray
+    r_full_future: np.ndarray
+    r_unobserved_future: np.ndarray
     frequencies: np.ndarray
     observation_indices: np.ndarray
     sensor_offsets: np.ndarray
@@ -116,6 +119,7 @@ def generate_kuramoto_order_parameter(
     frequency_sampling: str = "random",
     output: str = "cos",
     sensor_phase_std: float = 0.0,
+    future_truth_T: int = 0,
     rng=None,
     zscore: bool = False,
     return_internals: bool = False,
@@ -138,7 +142,8 @@ def generate_kuramoto_order_parameter(
     burn_time = float(burn_time)
     coupling = float(K)
     sensor_phase_std = float(sensor_phase_std)
-    if M <= 0 or T <= 0 or N_full < M:
+    future_truth_T = int(future_truth_T)
+    if M <= 0 or T <= 0 or N_full < M or future_truth_T < 0:
         raise ValueError(f"require 0 < M <= N_full and T > 0; got M={M}, N_full={N_full}, T={T}")
     if dt <= 0 or sample_dt < dt or burn_time < 0:
         raise ValueError(
@@ -173,13 +178,15 @@ def generate_kuramoto_order_parameter(
     for _ in range(burn_steps):
         theta = _kuramoto_rk4_step(theta, frequencies, coupling, dt)
 
-    phases = np.empty((T, N_full), dtype=np.float64)
-    for sample in range(T):
+    phases = np.empty((T + future_truth_T, N_full), dtype=np.float64)
+    for sample in range(T + future_truth_T):
         for _ in range(sample_every):
             theta = _kuramoto_rk4_step(theta, frequencies, coupling, dt)
         phases[sample] = theta
 
-    observed_phase = phases[:, observation_indices]
+    current_phases = phases[:T]
+    future_phases = phases[T:]
+    observed_phase = current_phases[:, observation_indices]
     sensor_offsets = sensor_offsets_full[observation_indices]
     measured_phase = observed_phase + sensor_offsets[None, :]
     output_key = output.strip().lower()
@@ -195,10 +202,22 @@ def generate_kuramoto_order_parameter(
 
     if not return_internals:
         return observed
+    hidden_indices = np.setdiff1d(np.arange(N_full), observation_indices)
     internals = KuramotoOrderInternals(
-        full_phases=phases if store_full_phases else None,
-        r_full=_phase_coherence(phases),
+        full_phases=current_phases if store_full_phases else None,
+        r_full=_phase_coherence(current_phases),
         r_observed=_phase_coherence(observed_phase),
+        r_unobserved=(
+            _phase_coherence(current_phases[:, hidden_indices])
+            if hidden_indices.size
+            else np.full(T, np.nan)
+        ),
+        r_full_future=_phase_coherence(future_phases),
+        r_unobserved_future=(
+            _phase_coherence(future_phases[:, hidden_indices])
+            if hidden_indices.size
+            else np.full(future_truth_T, np.nan)
+        ),
         frequencies=frequencies,
         observation_indices=observation_indices,
         sensor_offsets=sensor_offsets,

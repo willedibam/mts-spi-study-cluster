@@ -411,7 +411,15 @@ def _ground_truth_descriptor(path: Path) -> dict:
             "path": path.name,
             "arrays": {name: list(archive[name].shape) for name in archive.files},
         }
-        for name in ("r_full", "r_observed", "magnetization", "spin_magnetization"):
+        for name in (
+            "r_full",
+            "r_observed",
+            "r_unobserved",
+            "r_full_future",
+            "r_unobserved_future",
+            "magnetization",
+            "spin_magnetization",
+        ):
             if name in archive.files:
                 values = np.asarray(archive[name], dtype=np.float64)
                 descriptor[f"{name}_mean"] = float(values.mean())
@@ -524,6 +532,7 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
                 "full_phases": internals.full_phases.astype(np.float32),
                 "r_full": internals.r_full.astype(np.float32),
                 "r_observed": internals.r_observed.astype(np.float32),
+                "r_unobserved": internals.r_unobserved.astype(np.float32),
                 "frequencies": internals.frequencies.astype(np.float32),
                 "observation_indices": internals.observation_indices.astype(np.int32),
                 "sensor_offsets": internals.sensor_offsets.astype(np.float32),
@@ -532,6 +541,13 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
                 "critical_coupling": np.array(internals.critical_coupling),
             }
         }
+        if internals.r_full_future.size:
+            gen_extras["_ground_truth"].update(
+                {
+                    "r_full_future": internals.r_full_future.astype(np.float32),
+                    "r_unobserved_future": internals.r_unobserved_future.astype(np.float32),
+                }
+            )
     elif spec.generator == "miller_huse":
         generator_params.pop("return_internals", None)
         generator_params.pop("store_full_field", None)

@@ -14,6 +14,7 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 - `K` is the control parameter. `R_N=|N^-1 sum_j exp(i theta_j)|` is the independently defined canonical order parameter.
 - A monotone latent curve along one `K` sweep can still be control-parameter decoding. It supports only “tracks progression through the synchronization transition and covaries with `R_N`.”
 - Realization-level latent--`R_N` association after removing each `K`-cell mean breaks that simple confound.
+- Also test against `R_{N-M}`, computed from the hidden complement of the observed channels. This removes the small mechanical self-inclusion path present because `R_N` contains the observed `M` oscillators.
 - Strong claim-bearing evidence requires a representation/calibration frozen on one frequency-distribution path and evaluated on unseen master seeds, control values, and a second smooth unimodal distribution with overlapping `R_N`.
 - Gaussian-width variation is only a scale-invariance check: after rescaling time, fixed-shape dynamics depend on `K/sigma`. Use a different distribution shape for genuinely different microdynamics.
 - The representation is unsupervised; any fitted map from latent coordinate to `R_N` is supervised calibration and must be described separately.
@@ -22,7 +23,7 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 
 - Mean-field `O(N)` coupling and RK4; separate `N_full` from observed `M`; no dynamical or measurement noise in the primary result.
 - Observe `cos(theta)` with a common carrier frequency so locked channels keep oscillating. Add `sin(theta)` and fixed per-sensor phase offsets only as observation-map ablations; avoid wrapped phase as a scalar input.
-- Save clean full phases, `R_N(t)`, observed-subset `R_M(t)`, frequencies, observation indices, initial state, seeds, integrator settings, and frequency-sampling scheme. SPI sees none of the hidden artifacts.
+- Save clean full phases, `R_N(t)`, observed-subset `R_M(t)`, hidden-complement `R_{N-M}(t)`, frequencies, observation indices, initial state, seeds, integrator settings, and frequency-sampling scheme. For the claim-bearing run, also save a subsequent hidden-only `R` window (`future_truth_T`) while exposing only the first `T` samples to SPI. SPI sees none of the hidden artifacts.
 - Generate paired master realizations across `K`; split and bootstrap by master ID. Also retain a smaller independently resampled-per-cell validation so pairing cannot manufacture smooth trajectories.
 - Generate long masters and derive nested `T` and `M` views. Dataset identity must keep every view of one master in the same evaluation split.
 
@@ -38,10 +39,19 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 
 - Use `configs/pyspi/benchmarked_p90.yaml`, one dataset per CPU and no internal pyspi parallelism.
 - Freeze the unsupervised transform without target access. Pre-specify PC1/first nontrivial coordinate, or select on discovery data and freeze before evaluation; searching dimensions for maximum target correlation is supervised selection.
+- Use the established Pearson correlation-of-SPIs meta-feature and a discovery-fitted linear PC1 first. PCA10 plus Isomap is unnecessary for this benchmark unless the pre-specified linear coordinate fails; any later coordinate search is model selection and needs untouched confirmation data.
 - Primary natural coordinates are raw and clean. Channel z-scoring and fixed-scale observation noise are paired mechanism/robustness ablations, not default preprocessing.
-- Compare with `R_M`, raw Pearson/covariance structure, basic marginal/temporal summaries, PCA1, and the best individual SPI. A generic representation need not beat purpose-built `R_M`; it must add defensible model-agnostic information.
+- Compare with `R_M` (a phase-oracle comparator, not an input-only baseline), mean absolute input correlation, covariance leading-eigenvalue fraction, analytic-phase coherence from the cosine observations, basic marginal/temporal summaries, raw-correlation PCA1, the best individual SPI selected on training only, and a control-only `kappa -> R` calibration. A generic representation need not beat purpose-built `R_M`; it must add defensible model-agnostic information.
 - Run all SPIs and an ablation excluding explicit phase/synchronization SPIs. Constant/failure patterns must not become synchronized-regime labels.
-- Report overall and within-control association, seed-clustered uncertainty, held-out cross-path calibration error/data collapse, and `M x T` degradation.
+- Report overall and within-control association, seed-clustered uncertainty, held-out cross-path calibration error/data collapse, matched-`R`/different-path and matched-`kappa`/different-`R` contrasts, and `M x T` degradation. Use staggered logistic control values so transfer is not a lookup on the Gaussian grid.
+
+## Validated physics scout (2026-08-22)
+
+- Gaussian job `177017823`: 960/960 completed; logistic job `177018021`: 320/320 completed; timestep job `177017824`: 96/96 completed.
+- `N=256` retains finite-size variation but gives a stable macroscopic curve. At `M=20`, within-`kappa` Spearman between `R_M` and `R_N` is `0.664` (Gaussian) and `0.690` (logistic): informative but far from an oracle.
+- For `N=256`, the `T=1000` mean-`R_N` error against `T=4000` has p95 `0.00926` (Gaussian) and `0.00903` (logistic). First/last-block drift has p95 about `0.029` with negligible signed mean.
+- Halving the RK4 step from `.02` to `.01` changes paired mean `R_N` by median `5.8e-9`, p95 `9.9e-4`, maximum `.00305`; `.02` is adequate.
+- Therefore `N=256, M=20, T=1000, dt=.02, sample_dt=.1, burn=100` is physically defensible. `T=1000` remains provisional until the p90 SPI--SPI feature-convergence scout passes.
 
 ## Claim ladder
 

@@ -43,7 +43,11 @@ def test_kuramoto_views_are_nested_and_ground_truth_is_hidden() -> None:
     assert short.shape == (20, 4)
     assert short_info.full_phases.shape == (20, 32)
     assert short_info.r_full.shape == (20,)
+    assert short_info.r_observed.shape == (20,)
+    assert short_info.r_unobserved.shape == (20,)
     assert np.all((short_info.r_full >= 0.0) & (short_info.r_full <= 1.0))
+    assert np.all((short_info.r_observed >= 0.0) & (short_info.r_observed <= 1.0))
+    assert np.all((short_info.r_unobserved >= 0.0) & (short_info.r_unobserved <= 1.0))
 
 
 def test_kuramoto_generator_reproduces_basic_synchronization_contrast() -> None:
@@ -60,6 +64,23 @@ def test_kuramoto_generator_reproduces_basic_synchronization_contrast() -> None:
     _, above = generate_kuramoto_order_parameter(K=2.4, **common)
     assert below.r_full.mean() < 0.3
     assert above.r_full.mean() > 0.7
+
+
+def test_kuramoto_future_truth_is_not_exposed_in_the_mts() -> None:
+    observed, info = generate_kuramoto_order_parameter(
+        M=4,
+        T=20,
+        future_truth_T=15,
+        N_full=24,
+        burn_time=2.0,
+        rng=np.random.default_rng(19),
+        return_internals=True,
+    )
+    assert observed.shape == (20, 4)
+    assert info.full_phases.shape == (20, 24)
+    assert info.r_full.shape == (20,)
+    assert info.r_full_future.shape == (15,)
+    assert info.r_unobserved_future.shape == (15,)
 
 
 def test_miller_huse_map_and_patch_shapes() -> None:

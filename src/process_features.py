@@ -27,6 +27,7 @@ warnings.simplefilter("ignore", ConstantInputWarning)
 LOGGER = logging.getLogger(__name__)
 
 MetricType = Literal["spearman", "pearson", "mi"]
+NonFinitePolicy = Literal["zero", "nan", "raise"]
 
 
 def load_spi_subset(path: str | Path) -> tuple[list[str], str]:
@@ -134,10 +135,14 @@ def _rankdata(arr: np.ndarray) -> np.ndarray:
 def _pearson_corr_matrix(V: np.ndarray) -> np.ndarray:
     """Compute Pearson correlation matrix for row vectors."""
     V = V - V.mean(axis=1, keepdims=True)
-    norms = np.linalg.norm(V, axis=1, keepdims=True)
-    norms[norms < 1e-12] = 1.0
-    V = V / norms
-    return V @ V.T
+    norms = np.linalg.norm(V, axis=1)
+    valid = np.isfinite(V).all(axis=1) & np.isfinite(norms) & (norms >= 1e-12)
+    normalized = np.zeros_like(V, dtype=np.float64)
+    normalized[valid] = V[valid] / norms[valid, None]
+    corr = normalized @ normalized.T
+    corr[~valid, :] = np.nan
+    corr[:, ~valid] = np.nan
+    return corr
 
 
 def _spearman_corr_matrix(V: np.ndarray) -> np.ndarray:
@@ -191,6 +196,7 @@ def build_spi_spi_features(
     *,
     split_directed: bool = False,
     metric: MetricType = "spearman",
+    nonfinite_policy: NonFinitePolicy = "zero",
 ) -> tuple[np.ndarray, List[str]]:
     with np.load(sample["path"] / "spi_mpis.npz") as npz:
         mpis = {k: npz[k] for k in npz.files}
@@ -214,7 +220,16 @@ def build_spi_spi_features(
     else:
         raise ValueError(f"Unknown metric: {metric}")
     
-    corr = np.where(np.isfinite(corr), corr, 0.0).astype(np.float32)
+    if nonfinite_policy == "raise" and not np.isfinite(corr).all():
+        invalid = int((~np.isfinite(corr)).sum())
+        raise ValueError(f"SPI-SPI matrix contains {invalid} non-finite values")
+    if nonfinite_policy == "zero":
+        corr = np.where(np.isfinite(corr), corr, 0.0)
+    elif nonfinite_policy != "nan":
+        raise ValueError(
+            f"unknown nonfinite_policy {nonfinite_policy!r}; expected 'zero', 'nan' or 'raise'"
+        )
+    corr = corr.astype(np.float32)
     iu = np.triu_indices(n, k=1)
     return corr[iu], names
 
