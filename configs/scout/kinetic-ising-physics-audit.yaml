@@ -1,0 +1,21 @@
+output_dir: data/order_parameter/kinetic_ising_physics_audit
+model: kinetic_ising
+base_seed: 816239
+seed_pairing: paired
+lattice_side: [32, 64, 128]
+instances: 8
+initial_states: [random, positive, negative]
+patch_shape: [4, 5]
+record_T: 4000
+truth_block_T: 20000
+truth_blocks: 4
+equilibration_sweeps: 200
+kinetic_burn_sweeps: 0
+sample_every: 1
+paths:
+  - name: isotropic
+    params: {J_x: 1.0, J_y: 1.0}
+    controls: [0.92, 0.98, 1.0, 1.01, 1.05, 1.2]
+  - name: anisotropic
+    params: {J_x: 1.0, J_y: 0.5}
+    controls: [0.92, 0.98, 1.0, 1.01, 1.05, 1.2]

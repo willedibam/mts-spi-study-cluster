@@ -1,0 +1,20 @@
+output_dir: data/order_parameter/miller_huse_physics_audit
+model: miller_huse
+base_seed: 305177
+seed_pairing: paired
+lattice_side: [32, 64, 128]
+instances: 8
+initial_states: [random, positive, negative]
+patch_shape: [4, 5]
+record_T: 4000
+truth_block_T: 10000
+truth_blocks: 4
+transients: 400000
+sample_every: 1
+paths:
+  - name: mu3
+    params: {mu: 3.0}
+    controls: [0.2, 0.2025, 0.205, 0.2075, 0.21]
+  - name: mu1p9
+    params: {mu: 1.9}
+    controls: [0.16, 0.165, 0.1675, 0.17, 0.18]

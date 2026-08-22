@@ -31,13 +31,31 @@ def _finite_or_none(value: float) -> float | None:
     return float(value) if np.isfinite(value) else None
 
 
-def _cell_residual(values: np.ndarray, paths: np.ndarray, controls: np.ndarray) -> np.ndarray:
+def _cell_residual(values: np.ndarray, *groups: np.ndarray) -> np.ndarray:
     residual = np.empty_like(values, dtype=np.float64)
-    for path in np.unique(paths):
-        for control in np.unique(controls[paths == path]):
-            mask = (paths == path) & (controls == control)
-            residual[mask] = values[mask] - np.mean(values[mask])
+    keys = list(zip(*groups, strict=True))
+    for key in dict.fromkeys(keys):
+        mask = np.asarray([candidate == key for candidate in keys])
+        residual[mask] = values[mask] - np.mean(values[mask])
     return residual
+
+
+def _group_mean_spread(
+    values: np.ndarray,
+    varying: np.ndarray,
+    *conditioning: np.ndarray,
+) -> list[float]:
+    spreads: list[float] = []
+    keys = list(zip(*conditioning, strict=True))
+    for key in dict.fromkeys(keys):
+        group_mask = np.asarray([candidate == key for candidate in keys])
+        means = [
+            float(np.mean(values[group_mask & (varying == level)]))
+            for level in np.unique(varying[group_mask])
+        ]
+        if len(means) > 1:
+            spreads.append(max(means) - min(means))
+    return spreads
 
 
 def main() -> int:
@@ -55,13 +73,24 @@ def main() -> int:
     path_names = np.asarray([record["path"] for record in records])
     controls = np.asarray([record["control"] for record in records], dtype=np.float64)
     sides = np.asarray([record["lattice_side"] for record in records], dtype=np.int32)
+    initial_states = np.asarray([record["initial_state"] for record in records])
     instances = np.asarray([record["instance"] for record in records], dtype=np.int32)
+    seeds = np.asarray([record["seed"] for record in records], dtype=np.uint32)
     q = np.asarray([record["q_future_abs"] for record in records], dtype=np.float64)
     q_rms = np.asarray([record["q_future_rms"] for record in records], dtype=np.float64)
     q_hidden = np.asarray(
         [record["q_future_hidden_abs"] for record in records], dtype=np.float64
     )
     q_current = np.asarray([record["q_current_abs"] for record in records], dtype=np.float64)
+    q_current_rms = np.asarray(
+        [record["q_current_rms"] for record in records], dtype=np.float64
+    )
+    q_blocks = np.asarray(
+        [record["q_future_abs_blocks"] for record in records], dtype=np.float64
+    )
+    q_hidden_blocks = np.asarray(
+        [record["q_future_hidden_abs_blocks"] for record in records], dtype=np.float64
+    )
     binder = np.asarray(
         [np.nan if record["binder_cumulant"] is None else record["binder_cumulant"] for record in records],
         dtype=np.float64,
@@ -75,15 +104,22 @@ def main() -> int:
     )
     elapsed = np.asarray([record["elapsed_seconds"] for record in records])
     block_pairs = []
-    for record in records:
-        blocks = np.asarray(record["q_future_abs_blocks"], dtype=np.float64)
+    for blocks in q_blocks:
         block_pairs.extend(np.abs(np.diff(blocks)).tolist())
     block_pairs = np.asarray(block_pairs, dtype=np.float64)
 
     q_range = float(np.ptp(q))
     repeat_p95 = float(np.quantile(block_pairs, 0.95)) if block_pairs.size else float("nan")
-    q_residual = _cell_residual(q, path_names, controls)
-    patch_residual = _cell_residual(patch_q, path_names, controls)
+    q_residual = _cell_residual(q, path_names, controls, sides, initial_states)
+    patch_residual = _cell_residual(
+        patch_q, path_names, controls, sides, initial_states
+    )
+    initial_state_spreads = _group_mean_spread(
+        q, initial_states, path_names, controls, sides
+    )
+    finite_size_spreads = _group_mean_spread(
+        q, sides, path_names, controls, initial_states
+    )
     summary = {
         "model": str(config["model"]),
         "expected_parts": expected,
@@ -106,15 +142,37 @@ def main() -> int:
         "constant_channel_fraction_max": float(np.max(constant_fraction)),
         "elapsed_seconds_median": float(np.median(elapsed)),
         "elapsed_seconds_p95": float(np.quantile(elapsed, 0.95)),
+        "initial_state_mean_spread_max": (
+            max(initial_state_spreads) if initial_state_spreads else None
+        ),
+        "initial_state_mean_spread_median": (
+            float(np.median(initial_state_spreads)) if initial_state_spreads else None
+        ),
+        "finite_size_mean_spread_max": (
+            max(finite_size_spreads) if finite_size_spreads else None
+        ),
+        "finite_size_mean_spread_median": (
+            float(np.median(finite_size_spreads)) if finite_size_spreads else None
+        ),
     }
     if str(config["model"]) == "kinetic_ising" and len(np.unique(path_names)) == 2:
         matched = []
         first, second = np.unique(path_names)
-        shared_controls = np.intersect1d(controls[path_names == first], controls[path_names == second])
-        for control in shared_controls:
-            first_mean = q[(path_names == first) & (controls == control)].mean()
-            second_mean = q[(path_names == second) & (controls == control)].mean()
-            matched.append(abs(float(first_mean - second_mean)))
+        for side in np.unique(sides):
+            for initial_state in np.unique(initial_states):
+                subset = (sides == side) & (initial_states == initial_state)
+                shared_controls = np.intersect1d(
+                    controls[subset & (path_names == first)],
+                    controls[subset & (path_names == second)],
+                )
+                for control in shared_controls:
+                    first_mean = q[
+                        subset & (path_names == first) & (controls == control)
+                    ].mean()
+                    second_mean = q[
+                        subset & (path_names == second) & (controls == control)
+                    ].mean()
+                    matched.append(abs(float(first_mean - second_mean)))
         summary["matched_control_path_gap_max"] = max(matched) if matched else None
         summary["matched_control_path_gap_mean"] = float(np.mean(matched)) if matched else None
 
@@ -123,11 +181,16 @@ def main() -> int:
         path=path_names,
         control=controls,
         lattice_side=sides,
+        initial_state=initial_states,
         instance=instances,
+        seed=seeds,
         q_future_abs=q,
         q_future_rms=q_rms,
         q_future_hidden_abs=q_hidden,
         q_current_abs=q_current,
+        q_current_rms=q_current_rms,
+        q_future_abs_blocks=q_blocks,
+        q_future_hidden_abs_blocks=q_hidden_blocks,
         binder_cumulant=binder,
         susceptibility=susceptibility,
         patch_q_rms=patch_q,
@@ -136,6 +199,21 @@ def main() -> int:
         constant_channel_fraction=constant_fraction,
         elapsed_seconds=elapsed,
         future_block_pair_differences=block_pairs,
+        exact_spontaneous_magnetization=np.asarray(
+            [
+                record["resolved"].get("exact_spontaneous_magnetization", np.nan)
+                for record in records
+            ],
+            dtype=np.float64,
+        ),
+        beta=np.asarray(
+            [record["resolved"].get("beta", np.nan) for record in records],
+            dtype=np.float64,
+        ),
+        mu=np.asarray(
+            [record["resolved"].get("mu", np.nan) for record in records],
+            dtype=np.float64,
+        ),
     )
     (output_dir / "physics_summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
