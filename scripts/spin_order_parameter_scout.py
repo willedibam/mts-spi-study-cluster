@@ -160,6 +160,7 @@ def run_one(config: dict, job: dict) -> dict:
     second = float(np.mean(future**2))
     fourth = float(np.mean(future**4))
     binder = float(1.0 - fourth / (3.0 * second**2)) if second > 0.0 else None
+    q_future_abs = float(np.mean(np.abs(future)))
     record = {
         "model": model,
         **job,
@@ -171,16 +172,27 @@ def run_one(config: dict, job: dict) -> dict:
         "truth_block_T": truth_block_T,
         "truth_blocks": truth_blocks,
         "resolved": resolved,
+        "q_current_abs": float(np.mean(np.abs(current))),
         "q_current_rms": _rms(current),
+        "q_future_abs": q_future_abs,
         "q_future_rms": _rms(future),
-        "q_future_abs": float(np.mean(np.abs(future))),
+        "q_future_hidden_abs": float(np.mean(np.abs(future_hidden))),
         "q_future_hidden_rms": _rms(future_hidden),
-        "q_future_blocks": [_rms(block) for block in future_blocks],
-        "q_future_hidden_blocks": [_rms(block) for block in hidden_blocks],
-        "susceptibility": float(job["lattice_side"] ** 2 * np.var(future)),
+        "q_future_abs_blocks": [float(np.mean(np.abs(block))) for block in future_blocks],
+        "q_future_rms_blocks": [_rms(block) for block in future_blocks],
+        "q_future_hidden_abs_blocks": [
+            float(np.mean(np.abs(block))) for block in hidden_blocks
+        ],
+        "q_future_hidden_rms_blocks": [_rms(block) for block in hidden_blocks],
+        "magnetization_m2": second,
+        "magnetization_m4": fourth,
+        "susceptibility": float(job["lattice_side"] ** 2 * (second - q_future_abs**2)),
         "binder_cumulant": binder,
         "first_last_current_block_difference": float(
-            abs(_rms(current[: record_T // 2]) - _rms(current[record_T // 2 :]))
+            abs(
+                np.mean(np.abs(current[: record_T // 2]))
+                - np.mean(np.abs(current[record_T // 2 :]))
+            )
         ),
         "patch": _patch_summaries(observed, patch_shape),
         "elapsed_seconds": time.perf_counter() - start,
@@ -215,7 +227,7 @@ def main() -> int:
         print(
             f"[{index}/{len(jobs)}] {record['model']} {record['path']} "
             f"L={record['lattice_side']} control={record['control']:.5g} "
-            f"I={record['instance']} Q={record['q_future_rms']:.4f}"
+            f"I={record['instance']} Q={record['q_future_abs']:.4f}"
         )
     return 0
 

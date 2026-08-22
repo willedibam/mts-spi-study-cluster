@@ -15,14 +15,14 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 ### Miller--Huse (primary new benchmark)
 
 - Dynamics: `x'=(1-4g)f_mu(x)+g sum_nn f_mu(x_nn)` on a periodic 2-D lattice. Primary path is the original `mu=3`; `mu=1.9` is exploratory until long-run coarsening/pinning checks pass.
-- Define `s_r=+1` for `x_r>=0`, otherwise `-1`; `m_s=L^-2 sum_r s_r`. Finite-system target is `Q_MH=sqrt(<m_s^2>_future)`, with `<|m_s|>` as sensitivity. Never average signed `m_s` across symmetry flips.
+- Define `s_r=+1` for `x_r>=0`, otherwise `-1`; `m_s=L^-2 sum_r s_r`. The canonical finite-size target is `Q_MH=<|m_s|>_future`; `sqrt(<m_s^2>)` is a second-moment sensitivity. Never average signed `m_s` across symmetry flips.
 - SPI sees only a contiguous `4x5` (`M=20`) field patch. The target uses a disjoint future full lattice; patch-excluded future magnetization is the anti-self-inclusion sensitivity.
 - Generator now supports rectangular patches, general `mu`, future truth, hidden complement, hot/cold/random starts and compact storage. Full field movies are off by default.
 
 ### Kinetic Ising (independent replication)
 
 - Zero-field anisotropic square Ising, `H=-Jx sum_x sisj-Jy sum_y sisj`, equilibrated with Wolff clusters then observed under checkerboard heat-bath updates. Fully simultaneous updates are not substituted.
-- Primary target is `Q_Ising=sqrt(<m^2>_future)`. Use isotropic `(Jx,Jy)=(1,1)` and anisotropic `(1,.5)` paths matched by `u=sinh(2 beta Jx)sinh(2 beta Jy)`.
+- Primary target is `Q_Ising=<|m|>_future`; RMS magnetization is a sensitivity. Use isotropic `(Jx,Jy)=(1,1)` and anisotropic `(1,.5)` paths matched by `u=sinh(2 beta Jx)sinh(2 beta Jy)`.
 - The exact critical line is `u=1`; thermodynamic `m=0` for `u<=1` and `(1-u^-2)^(1/8)` otherwise. Equal `u` therefore gives the same exact macroscopic magnetization but different spatial microstructure.
 - SPI sees a `4x5` binary patch. Continuous estimators legitimately fail on ties; the target-blind stress scout must remove them rather than jittering the data.
 

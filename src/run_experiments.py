@@ -476,15 +476,26 @@ def _ground_truth_descriptor(path: Path) -> dict:
             "q_spin_rms",
             "q_spin_abs",
             "q_spin_rms_unobserved",
+            "q_spin_abs_unobserved",
+            "spin_m2",
+            "spin_m4",
+            "spin_binder_cumulant",
+            "spin_susceptibility",
             "q_magnetization_rms",
             "q_magnetization_abs",
             "q_magnetization_rms_unobserved",
+            "q_magnetization_abs_unobserved",
+            "magnetization_m2",
+            "magnetization_m4",
+            "magnetization_binder_cumulant",
+            "magnetization_susceptibility",
             "beta",
             "reduced_coupling",
             "exact_spontaneous_magnetization",
         ):
             if name in archive.files:
-                descriptor[name] = float(archive[name])
+                value = float(archive[name])
+                descriptor[name] = value if np.isfinite(value) else None
     return descriptor
 
 
@@ -632,6 +643,12 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             if internals.spin_magnetization_unobserved_future.size
             else internals.spin_magnetization_unobserved
         )
+        second = float(np.mean(primary**2))
+        fourth = float(np.mean(primary**4))
+        binder = 1.0 - fourth / (3.0 * second**2) if second > 0.0 else np.nan
+        susceptibility = internals.final_field.size * (
+            second - float(np.mean(np.abs(primary))) ** 2
+        )
         ground_truth = {
             "magnetization": internals.magnetization.astype(np.float32),
             "spin_magnetization": internals.spin_magnetization.astype(np.float32),
@@ -650,6 +667,13 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             "q_spin_rms_unobserved": np.array(
                 np.sqrt(np.mean(hidden**2)), dtype=np.float32
             ),
+            "q_spin_abs_unobserved": np.array(
+                np.mean(np.abs(hidden)), dtype=np.float32
+            ),
+            "spin_m2": np.array(second, dtype=np.float32),
+            "spin_m4": np.array(fourth, dtype=np.float32),
+            "spin_binder_cumulant": np.array(binder, dtype=np.float32),
+            "spin_susceptibility": np.array(susceptibility, dtype=np.float32),
             "patch_indices": internals.patch_indices.astype(np.int32),
             "initial_field": internals.initial_field.astype(np.float32),
             "final_field": internals.final_field.astype(np.float32),
@@ -684,6 +708,12 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             if internals.magnetization_unobserved_future.size
             else internals.magnetization_unobserved
         )
+        second = float(np.mean(primary**2))
+        fourth = float(np.mean(primary**4))
+        binder = 1.0 - fourth / (3.0 * second**2) if second > 0.0 else np.nan
+        susceptibility = internals.final_spins.size * (
+            second - float(np.mean(np.abs(primary))) ** 2
+        )
         ground_truth = {
             "magnetization": internals.magnetization.astype(np.float32),
             "magnetization_unobserved": internals.magnetization_unobserved.astype(np.float32),
@@ -698,6 +728,13 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             "q_magnetization_rms_unobserved": np.array(
                 np.sqrt(np.mean(hidden**2)), dtype=np.float32
             ),
+            "q_magnetization_abs_unobserved": np.array(
+                np.mean(np.abs(hidden)), dtype=np.float32
+            ),
+            "magnetization_m2": np.array(second, dtype=np.float32),
+            "magnetization_m4": np.array(fourth, dtype=np.float32),
+            "magnetization_binder_cumulant": np.array(binder, dtype=np.float32),
+            "magnetization_susceptibility": np.array(susceptibility, dtype=np.float32),
             "patch_indices": internals.patch_indices.astype(np.int32),
             "initial_spins": internals.initial_spins.astype(np.int8),
             "final_spins": internals.final_spins.astype(np.int8),
@@ -1044,18 +1081,18 @@ def _miller_huse_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
         "order_parameter": {
             "name": "Miller--Huse spin magnetization",
             "definition": "m_s(t)=mean_r(1[x_r(t)>=0]-1[x_r(t)<0])",
-            "finite_system_scalar": "sqrt(mean_t(m_s(t)^2))",
+            "finite_system_scalar": "mean_t(abs(m_s(t)))",
             "primary_analysis_array": (
                 "spin_magnetization_future" if future_truth else "spin_magnetization"
             ),
-            "primary_scalar": "q_spin_rms",
+            "primary_scalar": "q_spin_abs",
             "hidden_complement_sensitivity_array": (
                 "spin_magnetization_unobserved_future"
                 if future_truth
                 else "spin_magnetization_unobserved"
             ),
-            "hidden_complement_scalar": "q_spin_rms_unobserved",
-            "absolute_magnetization_sensitivity_scalar": "q_spin_abs",
+            "hidden_complement_scalar": "q_spin_abs_unobserved",
+            "rms_magnetization_sensitivity_scalar": "q_spin_rms",
             "future_truth_disjoint_from_input_window": future_truth,
             "included_in_timeseries_input": False,
         },
@@ -1082,17 +1119,18 @@ def _kinetic_ising_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]
         "order_parameter": {
             "name": "Ising magnetization",
             "definition": "m(t)=L^-2 sum_i s_i(t)",
-            "finite_system_scalar": "sqrt(mean_t(m(t)^2))",
+            "finite_system_scalar": "mean_t(abs(m(t)))",
             "primary_analysis_array": (
                 "magnetization_future" if future_truth else "magnetization"
             ),
-            "primary_scalar": "q_magnetization_rms",
+            "primary_scalar": "q_magnetization_abs",
             "hidden_complement_sensitivity_array": (
                 "magnetization_unobserved_future"
                 if future_truth
                 else "magnetization_unobserved"
             ),
-            "hidden_complement_scalar": "q_magnetization_rms_unobserved",
+            "hidden_complement_scalar": "q_magnetization_abs_unobserved",
+            "rms_magnetization_sensitivity_scalar": "q_magnetization_rms",
             "thermodynamic_reference_scalar": "exact_spontaneous_magnetization",
             "future_truth_disjoint_from_input_window": future_truth,
             "included_in_timeseries_input": False,

@@ -56,11 +56,12 @@ def main() -> int:
     controls = np.asarray([record["control"] for record in records], dtype=np.float64)
     sides = np.asarray([record["lattice_side"] for record in records], dtype=np.int32)
     instances = np.asarray([record["instance"] for record in records], dtype=np.int32)
-    q = np.asarray([record["q_future_rms"] for record in records], dtype=np.float64)
+    q = np.asarray([record["q_future_abs"] for record in records], dtype=np.float64)
+    q_rms = np.asarray([record["q_future_rms"] for record in records], dtype=np.float64)
     q_hidden = np.asarray(
-        [record["q_future_hidden_rms"] for record in records], dtype=np.float64
+        [record["q_future_hidden_abs"] for record in records], dtype=np.float64
     )
-    q_current = np.asarray([record["q_current_rms"] for record in records], dtype=np.float64)
+    q_current = np.asarray([record["q_current_abs"] for record in records], dtype=np.float64)
     binder = np.asarray(
         [np.nan if record["binder_cumulant"] is None else record["binder_cumulant"] for record in records],
         dtype=np.float64,
@@ -75,7 +76,7 @@ def main() -> int:
     elapsed = np.asarray([record["elapsed_seconds"] for record in records])
     block_pairs = []
     for record in records:
-        blocks = np.asarray(record["q_future_blocks"], dtype=np.float64)
+        blocks = np.asarray(record["q_future_abs_blocks"], dtype=np.float64)
         block_pairs.extend(np.abs(np.diff(blocks)).tolist())
     block_pairs = np.asarray(block_pairs, dtype=np.float64)
 
@@ -123,9 +124,10 @@ def main() -> int:
         control=controls,
         lattice_side=sides,
         instance=instances,
-        q_future_rms=q,
-        q_future_hidden_rms=q_hidden,
-        q_current_rms=q_current,
+        q_future_abs=q,
+        q_future_rms=q_rms,
+        q_future_hidden_abs=q_hidden,
+        q_current_abs=q_current,
         binder_cumulant=binder,
         susceptibility=susceptibility,
         patch_q_rms=patch_q,
@@ -163,7 +165,7 @@ def main() -> int:
             axes[0, 1].plot(unique_controls, binder_means, "-o", ms=3, label=label)
             axes[1, 0].plot(unique_controls, susceptibility_means, "-o", ms=3, label=label)
     axes[1, 1].scatter(patch_q, q, c=controls, s=12, alpha=0.7)
-    axes[0, 0].set(xlabel="control", ylabel=r"$Q=\sqrt{\langle m^2\rangle}$", title="Order curve")
+    axes[0, 0].set(xlabel="control", ylabel=r"$Q=\langle |m|\rangle$", title="Order curve")
     axes[0, 1].set(xlabel="control", ylabel="Binder cumulant", title="Finite-size diagnostic")
     axes[1, 0].set(xlabel="control", ylabel="susceptibility", title="Fluctuation diagnostic")
     axes[1, 1].set(xlabel="local patch Q", ylabel="future full-system Q", title="Local observability")

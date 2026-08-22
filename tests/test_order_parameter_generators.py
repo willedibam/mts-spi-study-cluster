@@ -267,18 +267,18 @@ mts_classes:
     mh_observed, mh_extras = generate_synthetic_from_spec(mh_spec)
     assert mh_observed.shape == (20, 20)
     assert "full_field" not in mh_extras["_ground_truth"]
-    assert mh_extras["_ground_truth"]["q_spin_rms"].shape == ()
+    assert mh_extras["_ground_truth"]["q_spin_abs"].shape == ()
     mh_semantics = _miller_huse_semantics(mh_spec, mh_extras)
-    assert mh_semantics["order_parameter"]["primary_scalar"] == "q_spin_rms"
+    assert mh_semantics["order_parameter"]["primary_scalar"] == "q_spin_abs"
 
     ising_spec = next(spec for spec in specs if spec.generator == "kinetic_ising")
     ising_observed, ising_extras = generate_synthetic_from_spec(ising_spec)
     assert ising_observed.shape == (20, 20)
     assert "full_spins" not in ising_extras["_ground_truth"]
-    assert ising_extras["_ground_truth"]["q_magnetization_rms"].shape == ()
+    assert ising_extras["_ground_truth"]["q_magnetization_abs"].shape == ()
     ising_semantics = _kinetic_ising_semantics(ising_spec, ising_extras)
     assert ising_semantics["control"]["critical_value"] == 1.0
-    assert ising_semantics["order_parameter"]["primary_scalar"] == "q_magnetization_rms"
+    assert ising_semantics["order_parameter"]["primary_scalar"] == "q_magnetization_abs"
 
 
 def test_instance_seed_scope_pairs_variants_and_nested_views(tmp_path: Path) -> None:
