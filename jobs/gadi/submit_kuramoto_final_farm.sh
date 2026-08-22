@@ -2,6 +2,9 @@
 set -euo pipefail
 
 config="configs/generate/order_parameter/kuramoto-final-confirmation.yaml"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
 total=$(python -m src.run_experiments --experiment-config "$config" --count-only)
 chunk=48
 
