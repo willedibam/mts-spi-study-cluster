@@ -55,7 +55,7 @@ mts_classes:
     variants: *gaussian_grid
 
   - name: kuramoto-confirm-gaussian-regular
-    labels: [kuramoto, confirmation, gaussian, regular-frequencies, sensitivity]
+    labels: [kuramoto, confirmation, gaussian, regular-frequencies, paired, sensitivity]
     generator: kuramoto_order_parameter
     seed_scope: instance
     instances: 8
@@ -109,7 +109,7 @@ mts_classes:
     variants: *logistic_grid
 
   - name: kuramoto-confirm-logistic-regular
-    labels: [kuramoto, confirmation, logistic, regular-frequencies, sensitivity]
+    labels: [kuramoto, confirmation, logistic, regular-frequencies, paired, sensitivity]
     generator: kuramoto_order_parameter
     seed_scope: instance
     instances: 8

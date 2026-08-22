@@ -60,6 +60,8 @@ def _records(data_dir: Path) -> pd.DataFrame:
         sampling = meta["sampling_design"]
         experiment = meta["experiment"]
         role = str(sampling["role"])
+        if role not in {"paired-control-path", "independent-cell"}:
+            raise RuntimeError(f"{meta_path}: unsupported sampling role {role!r}")
         design = "paired" if role == "paired-control-path" else "cell"
         rows.append(
             {

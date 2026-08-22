@@ -499,5 +499,10 @@ def test_kuramoto_confirmation_uses_new_controls_and_both_sampling_designs() -> 
         "random",
         "regular",
     }
+    assert all(
+        "paired" in spec.class_labels
+        for spec in confirmation.specs
+        if spec.generator_params["frequency_sampling"] == "regular"
+    )
     assert all(spec.generator_params["future_truth_T"] == 1000 for spec in confirmation.specs)
     assert all(spec.generator_params["store_full_phases"] is False for spec in confirmation.specs)
