@@ -59,6 +59,15 @@ For ensemble order parameters, replicates in one control cell share one target. 
 
 The independent Ising truth bank uses 24 Wolff-equilibrated chains per path/control cell and 80k hidden heat-bath steps. All 624 chains completed; maximum cell SE across independent chain means was `.0056`, and matched-path gaps were mean `.0037`, max `.0128`. SE is never computed from raw correlated time points.
 
+### Frozen Ising confirmation margins
+
+- The physics-only local oracle is the cell mean of patch RMS magnetization, calibrated to independent cell `Q_L` by isotonic regression. It is model-specific and therefore a comparator, not part of SPI--SPI.
+- Calibration uses isotropic controls `u={.75,.92,.98,1.005,1.025,1.1,1.4}`. Held-control evaluation uses the other six isotropic controls; held-path evaluation uses the anisotropic path. These sets are frozen before exposing an Ising SPI coordinate to `Q_L`.
+- Across the 26 truth-bank cells, the local oracle has Spearman `.993`. A 5,000-draw within-cell chain bootstrap gave 95th-percentile MAE `.051` for held isotropic controls, `.045` for the complete held path, and `.059` where both path and control were held out. The bootstrap already propagates truth-chain uncertainty.
+- Freeze `.06` as the stringent absolute numerical-recovery margin. Freeze absolute Spearman lower confidence bound `.80` as the separate tracking gate. A result may track the order parameter without passing numerical recovery.
+- Freeze `.04` as the matched-`u` path-equivalence tolerance, conservatively above the observed finite-size path gap (`.0128`) and the earlier maximum convergence-audit start spread (`.0282`).
+- These margins do not require SPI--SPI to beat the purpose-built local oracle or other simple baselines. Any advantage claim requires a paired uncertainty interval and is logically separate from recovery.
+
 ## Operational state
 
 - Local authoritative branch: `refactor-lagged-warping`; user notebook changes remain untouched. Gadi physics jobs `177032284/177032287` finished successfully. Available allocation was `25.68 KSU`; Scratch inode headroom about `20.25k` at last check.
