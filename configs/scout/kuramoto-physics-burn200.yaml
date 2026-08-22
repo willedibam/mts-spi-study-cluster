@@ -1,0 +1,16 @@
+output_dir: data/order_parameter/kuramoto_physics_burn200
+base_seed: 110305
+seed_pairing: paired
+frequency_distributions: [gaussian]
+frequency_sampling: random
+omega_mean: 1.0
+omega_std: 1.0
+N_full: [256]
+kappa: [0.90, 0.95, 1.00, 1.05, 1.10]
+dt: [0.02]
+sample_dt: 0.10
+burn_time: 200.0
+T: [250, 500, 1000, 2000, 4000]
+M: [20]
+instances: 32
+stationarity_blocks: 8

@@ -53,10 +53,13 @@ workers=$PBS_NCPUS
 (( workers > task_count )) && workers=$task_count
 
 echo "[INFO] datasets=$START_INDEX..$END_INDEX workers=$workers p90=$PYSPI_CONFIG"
+nci_args=(--verbose --input-file "$commands" --status "$status")
+if [[ -n "${TASK_TIMEOUT:-}" ]]; then
+    nci_args+=(--timeout "$TASK_TIMEOUT")
+fi
 set +e
 mpirun -np "$workers" --map-by node:PE=1 \
-    nci-parallel --verbose --input-file "$commands" \
-    --status "$status"
+    nci-parallel "${nci_args[@]}"
 rc=$?
 set -e
 exit "$rc"
