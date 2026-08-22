@@ -62,4 +62,24 @@ mpirun -np "$workers" --map-by node:PE=1 \
     nci-parallel "${nci_args[@]}"
 rc=$?
 set -e
+if (( rc == 0 )); then
+    python - "$EXPERIMENT_CONFIG" "$START_INDEX" "$END_INDEX" <<'PY'
+import sys
+
+from src.mapping import DatasetMapping, ExperimentConfig
+from src.run_experiments import _dataset_complete
+
+config, start, end = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+mapping = DatasetMapping(ExperimentConfig.from_file(config))
+missing = [
+    index
+    for index in range(start, end + 1)
+    if not _dataset_complete(mapping.spec_for_index(index))
+]
+if missing:
+    preview = ",".join(map(str, missing[:20]))
+    raise SystemExit(f"incomplete dataset outputs ({len(missing)}): {preview}")
+PY
+    rc=$?
+fi
 exit "$rc"

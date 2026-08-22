@@ -57,7 +57,7 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 
 For ensemble order parameters, replicates in one control cell share one target. Analyze cell means, jointly bootstrap independent truth chains and MTS masters, and treat the number of cells as the effective sample size. Do not claim within-control recovery. Control-only, local physical oracle, mean `|r|`, raw-correlation PC1 and development-selected individual SPI remain mandatory comparators; they need not be worse.
 
-The independent Ising truth bank uses 24 Wolff-equilibrated chains per path/control cell and 80k hidden heat-bath steps. Its SE is computed across chain means, not raw time points.
+The independent Ising truth bank uses 24 Wolff-equilibrated chains per path/control cell and 80k hidden heat-bath steps. All 624 chains completed; maximum cell SE across independent chain means was `.0056`, and matched-path gaps were mean `.0037`, max `.0128`. SE is never computed from raw correlated time points.
 
 ## Operational state
 
