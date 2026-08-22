@@ -1,3 +1,4 @@
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -13,7 +14,7 @@ from src.generators.order_parameter import (
     kuramoto_critical_coupling,
     miller_huse_map,
 )
-from src.mapping import DatasetMapping, ExperimentConfig
+from src.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
 from src.run_experiments import (
     _build_metadata,
     _kinetic_ising_semantics,
@@ -309,6 +310,21 @@ mts_classes:
         by_instance.setdefault(spec.instance, set()).add(spec.rng_seed)
     assert all(len(seeds) == 1 for seeds in by_instance.values())
     assert next(iter(by_instance[0])) != next(iter(by_instance[1]))
+
+
+def test_dataset_seed_does_not_depend_on_clone_path(tmp_path: Path) -> None:
+    config = ExperimentConfig.from_file(
+        Path("configs/generate/order_parameter/spin-order-smoke.yaml")
+    )
+    spec = DatasetMapping(config).specs[0]
+    moved = replace(
+        spec,
+        base_output_dir=tmp_path / "another-clone" / "data",
+        dataset_dir=tmp_path / "another-clone" / "data" / spec.class_dir / spec.dataset_slug,
+    )
+    assert _derive_dataset_seed(base_seed=config.rng_seed, spec=spec) == _derive_dataset_seed(
+        base_seed=config.rng_seed, spec=moved
+    )
 
 
 def test_claim_benchmark_mapping_and_split_invariants() -> None:

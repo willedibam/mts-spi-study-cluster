@@ -342,7 +342,6 @@ def _derive_dataset_seed(
         variant_slug = spec.variant.slug if spec.variant else ""
         components = [
             str(base_seed),
-            str(spec.base_output_dir),
             spec.mts_class,
             spec.dataset_slug,
             variant_slug,

@@ -29,6 +29,7 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 ## Physics-first contract
 
 - Smoke configs and the full `benchmarked_p90.yaml` pipeline pass locally. Smoke contrasts are not physics validation.
+- Dataset-scoped seed derivation is clone-invariant: absolute output paths were removed from the seed payload after the first Gadi smoke exposed local/cluster trajectory mismatch. Every dataset still records its resolved seed.
 - Primary scouts: `configs/scout/miller-huse-physics-primary.yaml` (480 tasks) and `kinetic-ising-physics-primary.yaml` (624 tasks), run by `scripts/spin_order_parameter_scout.py`. They store small JSON parts; aggregation produces compressed numeric arrays and a concise diagnostic figure.
 - Before pyspi require: future-block repeatability small relative to `Q` range; hot/cold/random agreement; expected Binder/susceptibility/finite-size behavior; and useful held-out local-to-global observability. Add `L={32,64,128}` and burn/equilibration audits after the coarse scout identifies the transition region.
 - Miller--Huse starts at `L=64`, burn `200k`, exposed `T=4000`, four future blocks of 4000, 24 seeds/cell. Kinetic Ising starts at `L=64`, 200 Wolff-equivalent equilibration sweeps, exposed `T=4000`, four future blocks of 5000, 24 seeds/cell. These are hypotheses to validate, not fixed production values.
