@@ -84,3 +84,12 @@ The independent Ising truth bank uses 24 Wolff-equilibrated chains per path/cont
 
 - Local authoritative branch: `refactor-lagged-warping`; user notebook changes remain untouched. The Ising physics, truth-bank, feature-scout and untouched `T=2000` validation runs are complete. Ising confirmation is ineligible under the frozen contract.
 - Next: freeze the zero-failure, non-phase Kuramoto development core and its target-blind PC1, then apply it once to new untouched Gaussian and logistic-frequency datasets. Miller--Huse `mu=3` remains a secondary independent benchmark; `mu=1.9` is closed.
+
+### Prospective Kuramoto confirmation
+
+- Treat all 880 existing Kuramoto rows as disclosed development data: their outcomes have been seen, although the new representation fit reads no target or control values. The confirmation bank is wholly new.
+- Freeze the exact 197-SPI non-phase core whose 19,306 pair features were finite across every development row. Equal-weight, unwhitened PC1 uses only features with development SD `>=.05`; its center, loading, ordered features and hashes are immutable.
+- Confirmation uses `M=20,T=1000,N=256`, clean `cos(theta)` observations and a disjoint `T=1000` full-system future target. Twelve reduced-coupling midpoints absent from development are crossed with Gaussian/logistic frequency laws: 32 paired masters plus 8 independent-cell draws per path. Eight regular-frequency masters per path are an unseen finite-population sensitivity.
+- Before reading confirmation `R`, every frozen pair feature and PC1 score must be finite. Primary tracking gates on each random-frequency path are clustered 95% lower bounds `|rho_S|>=.70` overall and `>=.30` within coupling, repeated against the hidden-complement target.
+- A Gaussian-development isotonic `q -> R` map is frozen only after PC1; it is a supervised readout of an unsupervised representation. Numerical inference additionally requires each path's bootstrap MAE upper bound `<=.10` and a paired MAE improvement over the frozen intercept. Kappa and simple input statistics are comparators, not advantage gates.
+- Diffusion maps are a non-rescuing sensitivity: development-centred unwhitened PCA (first dimension reaching 90% variance, capped at 20), alpha-1 diffusion map with `floor(sqrt(n))` neighbours and median kNN bandwidth, first nontrivial eigenfunction, frozen Nyström extension. It is reported unavailable unless target-free bootstrap rank stability is `>=.90`.
