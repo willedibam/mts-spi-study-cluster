@@ -164,6 +164,16 @@ def main() -> int:
     (args.contract_dir / "shift_control_summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
+    np.savez_compressed(
+        args.contract_dir / "shift_control_results.npz",
+        distribution=frame["distribution"].to_numpy(dtype=str),
+        kappa=frame["kappa"].to_numpy(dtype=np.float64),
+        instance=frame["instance"].to_numpy(dtype=np.int64),
+        raw_coordinate=raw_coordinate,
+        shifted_coordinate=shifted_coordinate,
+        target_full_future_R=target,
+        selected_feature_missingness=missingness,
+    )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 

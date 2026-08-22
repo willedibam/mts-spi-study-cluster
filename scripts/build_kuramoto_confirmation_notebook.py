@@ -37,6 +37,7 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 import seaborn as sns
 from scipy.stats import spearmanr
 
@@ -59,7 +60,9 @@ print(f"status={summary['status']}; rows={len(frame)}; target opened={eligibilit
         nbformat.v4.new_markdown_cell(
             r"""## Assay and frozen gates
 
-The first prospective bank is retained as a disclosed eligibility null: three rows made the original 197-SPI core non-finite, and no $R_N$ was read. Exactly one target-blind redesign was allowed. It retained SPIs finite and nonconstant on every old plus eligibility-null input row; this terminal bank permits no further redesign."""
+The first prospective bank is retained as a disclosed eligibility null: three rows made the original 197-SPI core non-finite, and no $R_N$ was read. Exactly one target-blind redesign was allowed. It retained SPIs finite and nonconstant on every old plus eligibility-null input row; this terminal bank permits no further redesign.
+
+The terminal analysis wrote and passed eligibility before loading targets. Its eligibility JSON was subsequently updated to record target access rather than preserving an immutable pre-read copy; the code ordering is auditable, and future runs now create a separate exclusive pre-read artifact."""
         ),
         nbformat.v4.new_code_cell(
             r"""gate_table = pd.DataFrame({
@@ -131,8 +134,12 @@ for dist in ("gaussian", "logistic"):
         rows.append({"distribution": dist, "method": name.replace("_", " "), "overall": abs(values["overall_spearman"]), "within kappa": abs(values["within_kappa_spearman"])})
 comparison = pd.DataFrame(rows)
 plot = comparison.melt(id_vars=["distribution", "method"], var_name="association", value_name="absolute Spearman")
-g = sns.catplot(data=plot, y="method", x="absolute Spearman", hue="association", col="distribution", kind="bar", height=4.2, aspect=1.0, legend_out=False)
-g.set(xlim=(0, 1)); g.set_titles("{col_name}"); sns.despine()
+g = sns.catplot(data=plot, y="method", x="absolute Spearman", hue="association", col="distribution", kind="bar", height=4.2, aspect=1.0, legend=False)
+g.set(xlim=(0, 1)); g.set_titles("{col_name}")
+handles = [Patch(facecolor=sns.color_palette()[0]), Patch(facecolor=sns.color_palette()[1])]
+labels = ["overall", "within kappa"]
+g.fig.legend(handles, labels, loc="upper center", ncol=2, frameon=False, bbox_to_anchor=(.55, 1.02))
+g.fig.subplots_adjust(top=.87); sns.despine()
 plt.show()
 display(comparison.round(3))"""
         ),
@@ -151,12 +158,17 @@ print(f"Diffusion-map available: {summary['diffusion_map_available']}; rank agre
 if shift is None:
     print("Circular-shift sensitivity not yet present.")
 else:
-    display(pd.DataFrame(shift["comparisons"]).T.round(3))"""
+    display(pd.DataFrame(shift["comparisons"]).T.round(3))
+    print(
+        "Shift sensitivity: all frozen features finite = "
+        f"{shift['all_frozen_meta_features_finite']}; maximum selected-feature "
+        f"missingness = {shift['maximum_selected_feature_missingness']:.3f}."
+    )"""
         ),
         nbformat.v4.new_markdown_cell(
             r"""## Interpretation
 
-The defensible claim depends on the frozen gates above. A pass supports: **SPI–SPI meta-features yield an unsupervised, data-driven coordinate that recovers the changing canonical finite-$N$ Kuramoto order parameter up to a monotone transformation on untouched controls, seeds, and a second frequency law.** The numerical $R_N$ estimate uses a separately supervised calibration. This is a proof of capability, not evidence that SPI–SPI is uniquely optimal or universally recovers order parameters."""
+The defensible claim depends on the frozen gates above. A pass supports: **in this finite-$N$ Kuramoto benchmark, a prospectively frozen non-phase SPI–SPI PC1 learned without coupling or order-parameter labels recovered, up to a monotone transformation, changes in the canonical phase-coherence order parameter from partial observations on untouched controls and random-frequency realizations under Gaussian and logistic frequency laws.** The numerical $R_N$ estimate uses a separately supervised calibration. Both frequency laws appeared during target-free representation development, so this is not unseen-path transfer. Independent channel shifts attenuated association, but also induced feature failures, so that sensitivity does not isolate collective alignment as the mechanism. This is a proof of capability, not evidence that SPI–SPI is uniquely optimal or universally recovers order parameters."""
         ),
     ]
     notebook = nbformat.v4.new_notebook(cells=cells)

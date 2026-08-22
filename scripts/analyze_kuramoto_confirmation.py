@@ -186,6 +186,10 @@ def main() -> int:
         raise RuntimeError("frozen representation hash mismatch")
     if _sha256(readout_path) != readout_contract["readout_model_sha256"]:
         raise RuntimeError("frozen readout hash mismatch")
+    eligibility_path = args.contract_dir / "confirmation_eligibility.json"
+    pre_read_path = args.contract_dir / "confirmation_eligibility_pre_read.json"
+    if eligibility_path.exists() or pre_read_path.exists():
+        raise RuntimeError("confirmation analysis is single-use; eligibility artifact already exists")
 
     expected = EXPECTED if args.profile == "original" else FINAL_EXPECTED
     frame = _records(args.data_dir, expected=expected)
@@ -225,8 +229,10 @@ def main() -> int:
         and eligibility["all_coordinates_finite"]
     )
     args.contract_dir.mkdir(parents=True, exist_ok=True)
-    eligibility_path = args.contract_dir / "confirmation_eligibility.json"
-    eligibility_path.write_text(json.dumps(eligibility, indent=2, sort_keys=True) + "\n")
+    eligibility_payload = json.dumps(eligibility, indent=2, sort_keys=True) + "\n"
+    eligibility_path.write_text(eligibility_payload)
+    with pre_read_path.open("x", encoding="utf-8") as handle:
+        handle.write(eligibility_payload)
     if not eligibility["passed"]:
         print(json.dumps(eligibility, indent=2, sort_keys=True))
         return 2
