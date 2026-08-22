@@ -4,15 +4,21 @@ from types import SimpleNamespace
 import numpy as np
 
 from src.generators.order_parameter import (
+    generate_kinetic_ising,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
+    ising_beta_from_reduced_coupling,
+    ising_exact_spontaneous_magnetization,
+    ising_reduced_coupling,
     kuramoto_critical_coupling,
     miller_huse_map,
 )
 from src.mapping import DatasetMapping, ExperimentConfig
 from src.run_experiments import (
     _build_metadata,
+    _kinetic_ising_semantics,
     _kuramoto_semantics,
+    _miller_huse_semantics,
     generate_synthetic_from_spec,
 )
 
@@ -158,21 +164,121 @@ def test_miller_huse_map_and_patch_shapes() -> None:
     mapped = miller_huse_map(values)
     np.testing.assert_allclose(miller_huse_map(-values), -mapped, atol=1e-14)
     assert np.max(np.abs(mapped)) <= 1.0 + 1e-14
+    mapped_19 = miller_huse_map(values, mu=1.9)
+    np.testing.assert_allclose(miller_huse_map(-values, mu=1.9), -mapped_19, atol=1e-14)
 
     observed, internals = generate_miller_huse(
-        M=25,
+        M=20,
         T=30,
         coupling=0.2,
         lattice_side=16,
         transients=100,
+        future_truth_T=20,
         rng=np.random.default_rng(3),
         return_internals=True,
     )
-    assert observed.shape == (30, 25)
-    assert internals.full_field.shape == (30, 16, 16)
-    assert internals.patch_indices.shape == (25, 2)
-    assert np.max(np.abs(internals.full_field)) <= 1.0 + 1e-12
+    assert observed.shape == (30, 20)
+    assert internals.full_field is None
+    assert internals.patch_indices.shape == (20, 2)
+    assert internals.spin_magnetization_future.shape == (20,)
+    assert internals.spin_magnetization_unobserved_future.shape == (20,)
     assert np.all(np.abs(internals.spin_magnetization) <= 1.0)
+
+
+def test_miller_huse_future_truth_is_not_exposed() -> None:
+    common = dict(
+        M=20,
+        T=25,
+        coupling=0.205,
+        lattice_side=12,
+        transients=50,
+        return_internals=True,
+    )
+    current, current_info = generate_miller_huse(
+        future_truth_T=0, rng=np.random.default_rng(23), **common
+    )
+    observed, info = generate_miller_huse(
+        future_truth_T=30, rng=np.random.default_rng(23), **common
+    )
+    np.testing.assert_array_equal(observed, current)
+    np.testing.assert_array_equal(info.spin_magnetization, current_info.spin_magnetization)
+    assert info.spin_magnetization_future.shape == (30,)
+
+
+def test_anisotropic_ising_coordinate_and_hidden_future() -> None:
+    isotropic_beta = ising_beta_from_reduced_coupling(1.0, 1.0, 1.0)
+    assert np.isclose(isotropic_beta, np.log(1.0 + np.sqrt(2.0)) / 2.0)
+    anisotropic_beta = ising_beta_from_reduced_coupling(1.0, 1.0, 0.5)
+    assert anisotropic_beta > isotropic_beta
+    assert np.isclose(ising_reduced_coupling(anisotropic_beta, 1.0, 0.5), 1.0)
+    assert ising_exact_spontaneous_magnetization(1.0) == 0.0
+    assert ising_exact_spontaneous_magnetization(1.4) > 0.0
+
+    observed, internals = generate_kinetic_ising(
+        M=20,
+        T=40,
+        reduced_coupling=1.2,
+        J_x=1.0,
+        J_y=0.5,
+        lattice_side=12,
+        equilibration_sweeps=4,
+        kinetic_burn_sweeps=2,
+        future_truth_T=30,
+        rng=np.random.default_rng(29),
+        return_internals=True,
+    )
+    assert observed.shape == (40, 20)
+    assert set(np.unique(observed)) <= {-1.0, 1.0}
+    assert internals.full_spins is None
+    assert internals.patch_indices.shape == (20, 2)
+    assert internals.magnetization_future.shape == (30,)
+    assert internals.magnetization_unobserved_future.shape == (30,)
+    assert np.isclose(internals.reduced_coupling, 1.2)
+
+
+def test_spin_generator_harness_records_compact_truth_and_semantics(tmp_path: Path) -> None:
+    config_path = tmp_path / "spin-compact.yaml"
+    config_path.write_text(
+        """
+base_output_dir: data/test-spin-compact
+pyspi_config: configs/pyspi/test.yaml
+defaults: {instances: 1, M_values: [20], T_values: [20]}
+mts_classes:
+  - name: mh
+    generator: miller_huse
+    base_params:
+      lattice_side: 10
+      transients: 10
+      future_truth_T: 10
+      store_full_field: false
+  - name: ising
+    generator: kinetic_ising
+    base_params:
+      lattice_side: 10
+      equilibration_sweeps: 2
+      future_truth_T: 10
+      reduced_coupling: 1.2
+      store_full_spins: false
+""",
+        encoding="utf-8",
+    )
+    specs = DatasetMapping(ExperimentConfig.from_file(config_path)).specs
+    mh_spec = next(spec for spec in specs if spec.generator == "miller_huse")
+    mh_observed, mh_extras = generate_synthetic_from_spec(mh_spec)
+    assert mh_observed.shape == (20, 20)
+    assert "full_field" not in mh_extras["_ground_truth"]
+    assert mh_extras["_ground_truth"]["q_spin_rms"].shape == ()
+    mh_semantics = _miller_huse_semantics(mh_spec, mh_extras)
+    assert mh_semantics["order_parameter"]["primary_scalar"] == "q_spin_rms"
+
+    ising_spec = next(spec for spec in specs if spec.generator == "kinetic_ising")
+    ising_observed, ising_extras = generate_synthetic_from_spec(ising_spec)
+    assert ising_observed.shape == (20, 20)
+    assert "full_spins" not in ising_extras["_ground_truth"]
+    assert ising_extras["_ground_truth"]["q_magnetization_rms"].shape == ()
+    ising_semantics = _kinetic_ising_semantics(ising_spec, ising_extras)
+    assert ising_semantics["control"]["critical_value"] == 1.0
+    assert ising_semantics["order_parameter"]["primary_scalar"] == "q_magnetization_rms"
 
 
 def test_instance_seed_scope_pairs_variants_and_nested_views(tmp_path: Path) -> None:

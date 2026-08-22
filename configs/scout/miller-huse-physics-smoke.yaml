@@ -1,0 +1,20 @@
+output_dir: data/order_parameter/miller_huse_physics_smoke
+model: miller_huse
+base_seed: 305177
+seed_pairing: paired
+lattice_side: [16]
+instances: 1
+initial_states: [random]
+patch_shape: [4, 5]
+record_T: 100
+truth_block_T: 100
+truth_blocks: 2
+transients: 100
+sample_every: 1
+paths:
+  - name: mu3
+    params: {mu: 3.0}
+    controls: [0.18, 0.22]
+  - name: mu1p9
+    params: {mu: 1.9}
+    controls: [0.15, 0.19]

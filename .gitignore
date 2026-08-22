@@ -27,10 +27,9 @@ tar/
 .DS_Store
 Thumbs.db
 
-# markdowns and notebooks
+# Local notebooks and caches
 playing.ipynb
 jupyter/
-# notebook-local caches (regeneratable)
 notebooks/**/_*_cache.npz
 
 # logs
@@ -49,13 +48,11 @@ spi_array.*
 *.o[0-9]*
 *.e[0-9]*
 
-# Random things
+# Local archives and scratch trees
 data_backup.tar.gz
 Random/
 random/
 *.tar.gz
-# .python-version
-WORKDLOW.md
 
 # Editor / recovery
 .vscode/

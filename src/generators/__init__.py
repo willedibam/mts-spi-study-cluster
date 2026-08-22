@@ -35,10 +35,15 @@ from .linear import (
     SmoothSinInternals,
 )
 from .order_parameter import (
+    KineticIsingInternals,
     KuramotoOrderInternals,
     MillerHuseInternals,
+    generate_kinetic_ising,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
+    ising_beta_from_reduced_coupling,
+    ising_exact_spontaneous_magnetization,
+    ising_reduced_coupling,
     kuramoto_critical_coupling,
     miller_huse_map,
 )
@@ -82,6 +87,7 @@ __all__ = [
     "generate_kuramoto_explosive",
     "generate_kuramoto_grid_four",
     "generate_kuramoto_order_parameter",
+    "generate_kinetic_ising",
     "generate_mackey_glass",
     "generate_miller_huse",
     "generate_mts_master",
@@ -106,7 +112,11 @@ __all__ = [
     "generate_wave_1d_pulse",
     "generate_wave_2d",
     "kuramoto_critical_coupling",
+    "ising_beta_from_reduced_coupling",
+    "ising_exact_spontaneous_magnetization",
+    "ising_reduced_coupling",
     "miller_huse_map",
+    "KineticIsingInternals",
     "KuramotoOrderInternals",
     "MillerHuseInternals",
 ]

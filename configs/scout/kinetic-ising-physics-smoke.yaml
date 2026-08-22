@@ -1,0 +1,21 @@
+output_dir: data/order_parameter/kinetic_ising_physics_smoke
+model: kinetic_ising
+base_seed: 816239
+seed_pairing: paired
+lattice_side: [16]
+instances: 1
+initial_states: [random]
+patch_shape: [4, 5]
+record_T: 100
+truth_block_T: 100
+truth_blocks: 2
+equilibration_sweeps: 4
+kinetic_burn_sweeps: 2
+sample_every: 1
+paths:
+  - name: isotropic
+    params: {J_x: 1.0, J_y: 1.0}
+    controls: [0.8, 1.2]
+  - name: anisotropic
+    params: {J_x: 1.0, J_y: 0.5}
+    controls: [0.8, 1.2]
