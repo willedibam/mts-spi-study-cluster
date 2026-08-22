@@ -21,7 +21,7 @@ from src.run_experiments import _file_sha256, _pyspi_version  # noqa: E402
 from src.utils import dump_json, ensure_dir, load_json  # noqa: E402
 
 
-def selected_sources(config_path: Path):
+def selected_sources(config_path: Path, expected_count: int):
     mapping = DatasetMapping(ExperimentConfig.from_file(config_path))
     selected = [
         spec
@@ -30,8 +30,10 @@ def selected_sources(config_path: Path):
         and "paired" in spec.class_labels
         and spec.instance < 8
     ]
-    if len(selected) != 192:
-        raise RuntimeError(f"expected 192 preselected shift controls, found {len(selected)}")
+    if len(selected) != expected_count:
+        raise RuntimeError(
+            f"expected {expected_count} preselected shift controls, found {len(selected)}"
+        )
     return selected
 
 
@@ -58,9 +60,11 @@ def main() -> int:
         default=ROOT / "data/order_parameter/kuramoto_confirmation_shifted",
     )
     parser.add_argument("--skip-existing", action="store_true")
+    parser.add_argument("--expected-count", type=int, default=192)
+    parser.add_argument("--store-transformed", action="store_true")
     args = parser.parse_args()
 
-    sources = selected_sources(args.experiment_config)
+    sources = selected_sources(args.experiment_config, args.expected_count)
     if not 1 <= args.job_index <= len(sources):
         raise ValueError(f"job index must lie in [1,{len(sources)}]")
     source = sources[args.job_index - 1]
@@ -80,8 +84,8 @@ def main() -> int:
     shifted = np.column_stack(
         [np.roll(data[:, channel], int(offsets[channel])) for channel in range(data.shape[1])]
     )
-    np.save(destination / "timeseries.npy", shifted.astype(np.float32))
-    np.save(destination / "channel_offsets.npy", offsets.astype(np.int32))
+    if args.store_transformed:
+        np.save(destination / "timeseries.npy", shifted.astype(np.float32))
 
     start = time.perf_counter()
     result = run_pyspi(
@@ -98,6 +102,8 @@ def main() -> int:
         {
             "transform": "independent nonzero circular shift per observed channel",
             "transform_seed": seed,
+            "channel_offsets": offsets.astype(int).tolist(),
+            "transformed_timeseries_saved": bool(args.store_transformed),
             "source_path": str(source.dataset_dir),
             "source_class_name": source.mts_class,
             "source_instance": source.instance,

@@ -20,7 +20,7 @@ from src.order_parameter_features import build_meta_feature_matrix, validate_spi
 from src.utils import load_json  # noqa: E402
 
 
-def _records(data_dir: Path) -> pd.DataFrame:
+def _records(data_dir: Path, expected_count: int = 192) -> pd.DataFrame:
     rows = []
     for meta_path in sorted(data_dir.glob("*/*/meta.json")):
         meta = load_json(meta_path)
@@ -35,7 +35,7 @@ def _records(data_dir: Path) -> pd.DataFrame:
             }
         )
     frame = pd.DataFrame(rows)
-    if len(frame) != 192 or frame["outcomes_read"].any():
+    if len(frame) != expected_count or frame["outcomes_read"].any():
         raise RuntimeError("shift-control bank is incomplete or contains outcome leakage")
     frame["kappa_group"] = frame["kappa"].round(6).astype(str)
     return frame.reset_index(drop=True)
@@ -97,9 +97,10 @@ def main() -> int:
         type=Path,
         default=ROOT / "data/order_parameter/kuramoto_confirmation_contract",
     )
+    parser.add_argument("--expected-count", type=int, default=192)
     args = parser.parse_args()
 
-    frame = _records(args.shift_dir)
+    frame = _records(args.shift_dir, expected_count=args.expected_count)
     archive = np.load(args.contract_dir / "representation_model.npz", allow_pickle=False)
     core_spis = archive["core_spis"].astype(str).tolist()
     catalog = validate_spi_catalogs(frame["path"].tolist())

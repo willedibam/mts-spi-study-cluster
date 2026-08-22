@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -N kuramoto-final-shift-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=32GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+mkdir -p logs
+exec >"logs/${PBS_JOBNAME}_${PBS_JOBID%%.*}.log" 2>&1
+python scripts/analyze_kuramoto_shift_control.py \
+  --shift-dir data/order_parameter/kuramoto_final_confirmation_shifted \
+  --contract-dir data/order_parameter/kuramoto_final_confirmation_contract \
+  --expected-count 256
