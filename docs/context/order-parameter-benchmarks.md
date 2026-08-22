@@ -75,4 +75,6 @@ Primary sources: Kuramoto review, <https://doi.org/10.1103/RevModPhys.77.137>; f
 2. Within-`K` evidence: “The representation contains a latent coordinate that tracks realization-level variation in an independently defined macroscopic order parameter.”
 3. Held-out cross-distribution generalization: “SPI--SPI supports data-driven discovery of an order-parameter coordinate from partial multivariate observations, generalizing across distinct microscopic routes to synchronization.”
 
+Before production results were inspected, the claim rule was frozen: level 1 requires the primary missingness gate and held-out overall association intervals excluding zero on both frequency-distribution paths; level 2 additionally requires within-control full-system and hidden-complement intervals excluding zero on both paths; level 3 additionally requires the Gaussian-trained SPI--SPI calibration to beat the control-only `kappa` calibration on logistic data (the clustered 95% MAE-difference interval lies below zero), while the no-explicit-phase-SPI representation passes its missingness and association criteria. Purpose-built phase or simple input statistics are reported but need not be worse than SPI--SPI.
+
 Do not use the unqualified sentence “SPI--SPI performs unsupervised inference of the order parameter” unless levels 2 and 3 survive the frozen evaluation and baselines.

@@ -3,6 +3,7 @@ import pandas as pd
 
 from scripts.analyze_kuramoto_order_benchmark import (
     _conditional_path_gap,
+    _ci_excludes_zero,
     _curve_rmse,
     _joint_path_noise_bootstrap,
     _paired_cell_bootstrap,
@@ -168,3 +169,10 @@ def test_truth_result_payload_preserves_full_and_complement_targets() -> None:
     assert not np.array_equal(
         payload["r_full_future"], payload["r_unobserved_future"]
     )
+
+
+def test_claim_interval_rule_requires_a_strict_one_sided_interval() -> None:
+    assert _ci_excludes_zero([0.01, 0.20])
+    assert _ci_excludes_zero([-0.20, -0.01])
+    assert not _ci_excludes_zero([-0.01, 0.20])
+    assert not _ci_excludes_zero([0.0, 0.20])

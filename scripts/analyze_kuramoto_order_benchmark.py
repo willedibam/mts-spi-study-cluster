@@ -277,6 +277,11 @@ def _json_clean(value):
     return value
 
 
+def _ci_excludes_zero(interval) -> bool:
+    lower, upper = np.asarray(interval, dtype=np.float64)
+    return bool(np.isfinite([lower, upper]).all() and (lower > 0.0 or upper < 0.0))
+
+
 def _model_payload(prefix: str, model) -> dict[str, np.ndarray]:
     return {
         f"{prefix}_feature_indices": model.feature_indices,
@@ -876,6 +881,61 @@ def main() -> int:
     analysis_git_commit = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
     ).strip()
+    held_out_paths = ("gaussian_holdout", "logistic_paired")
+    primary_overall = all(
+        _ci_excludes_zero(
+            association_bootstrap[path]["spi_spi_pc1"]["overall_ci95"]
+        )
+        for path in held_out_paths
+    )
+    primary_within = all(
+        _ci_excludes_zero(
+            association_bootstrap[path]["spi_spi_pc1"]["within_kappa_ci95"]
+        )
+        for path in held_out_paths
+    )
+    complement_within = all(
+        _ci_excludes_zero(
+            sensitivity_association_bootstrap[path]["spi_spi_pc1"][
+                "within_kappa_ci95"
+            ]
+        )
+        for path in held_out_paths
+    )
+    no_phase_association = all(
+        _ci_excludes_zero(
+            association_bootstrap[path]["spi_spi_pc1_no_phase"]["overall_ci95"]
+        )
+        and _ci_excludes_zero(
+            association_bootstrap[path]["spi_spi_pc1_no_phase"][
+                "within_kappa_ci95"
+            ]
+        )
+        for path in held_out_paths
+    )
+    transfer_advantage_ci = bootstrap["logistic_paired"][
+        "spi_spi_pc1_minus_control_kappa"
+    ]["ci95"]
+    level_1 = bool(missingness_gates["spi_spi_pc1"]["passed"] and primary_overall)
+    level_2 = bool(level_1 and primary_within and complement_within)
+    level_3 = bool(
+        level_2
+        and transfer_advantage_ci[1] < 0.0
+        and missingness_gates["spi_spi_pc1_no_phase"]["passed"]
+        and no_phase_association
+    )
+    claim_decision = {
+        "level_1_transition_coordinate": level_1,
+        "level_2_realization_level_order_coordinate": level_2,
+        "level_3_cross_path_order_parameter_inference": level_3,
+        "maximum_supported_level": 3 if level_3 else 2 if level_2 else 1 if level_1 else 0,
+        "criteria": {
+            "level_1": "primary missingness gate passes and held-out overall association CIs exclude zero on both paths",
+            "level_2": "level 1 plus within-kappa full-system and hidden-complement association CIs exclude zero on both paths",
+            "level_3": "level 2 plus Gaussian-trained SPI-SPI calibration beats kappa on logistic data (MAE-difference CI < 0) and the no-phase ablation passes missingness and association criteria",
+        },
+        "logistic_spi_spi_minus_kappa_mae_ci95": transfer_advantage_ci,
+    }
     summary = {
         "datasets": int(len(frame)),
         "development_datasets": int(development.sum()),
@@ -945,6 +1005,7 @@ def main() -> int:
         "conditional_cross_path_effect": conditional_path_effect,
         "matched_kappa_cross_path": matched_kappa,
         "paired_vs_independent_cell_agreement": paired_cell_agreement,
+        "claim_decision": claim_decision,
     }
 
     args.data_dir.mkdir(parents=True, exist_ok=True)
