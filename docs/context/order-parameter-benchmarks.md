@@ -58,6 +58,8 @@ The frozen `M=20,T=1000` gate failed target-blindly. All 360 rows completed and 
 - Keep the already frozen missingness gates: p99 `<=.01`, maximum `<=.10`, and rank agreement `>=.95` with the validation zero-failure subset.
 - Failure is the `T=2000` representation null. Success permits untouched order-parameter confirmation; it does not itself evidence magnetization recovery.
 
+The untouched `T=2000` validation also failed. All 192/192 datasets completed, the frozen 217-SPI core had zero missingness, and validation PC loadings were stable (minimum cosine `.989`; between-block cosine `.996`). The median row-correlation lower bound passed (`.938 >= .90`), but the worst-path lower bounds for direct coordinate agreement (`.821 < .90`) and pairwise geometry (`.655 < .85`) failed. No magnetization/order-parameter values were read. This closes Ising as a target-blind representation null under the frozen contract; confirmation was not launched.
+
 ## Claim ladder
 
 1. **Tracks Q:** eligible frozen coordinate has strong held-out cell-level association with independently estimated finite-size ensemble `Q_L`.
@@ -80,5 +82,5 @@ The independent Ising truth bank uses 24 Wolff-equilibrated chains per path/cont
 
 ## Operational state
 
-- Local authoritative branch: `refactor-lagged-warping`; user notebook changes remain untouched. Gadi physics jobs `177032284/177032287` finished successfully. Available allocation was `25.68 KSU`; Scratch inode headroom about `20.25k` at last check.
-- Next: run a tiny Ising p90 feature-scout subset, then the 360-dataset target-blind scout. Submit confirmation only if its frozen stability gates pass. Miller--Huse `mu=3` representation work follows as secondary evidence; `mu=1.9` is closed.
+- Local authoritative branch: `refactor-lagged-warping`; user notebook changes remain untouched. The Ising physics, truth-bank, feature-scout and untouched `T=2000` validation runs are complete. Ising confirmation is ineligible under the frozen contract.
+- Next: freeze the zero-failure, non-phase Kuramoto development core and its target-blind PC1, then apply it once to new untouched Gaussian and logistic-frequency datasets. Miller--Huse `mu=3` remains a secondary independent benchmark; `mu=1.9` is closed.
