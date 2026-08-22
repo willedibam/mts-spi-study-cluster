@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 from datetime import datetime
-from hashlib import blake2s
+from hashlib import blake2s, sha256
 import sys
 import time
 from pathlib import Path
@@ -59,6 +59,14 @@ def _pyspi_version() -> Dict[str, str]:
     except Exception:
         computation = "unknown"
     return {"dist": dist, "computation": str(computation)}
+
+
+def _file_sha256(path: Path) -> str:
+    digest = sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -919,6 +927,7 @@ def _build_metadata(
         "generator": source_block,
         "pyspi": {
             "config": to_relative(spec.pyspi_config),
+            "config_sha256": _file_sha256(spec.pyspi_config),
             "version": _pyspi_version(),
             "n_spis": len(result.metadata),
             "errors": result.errors or {},
