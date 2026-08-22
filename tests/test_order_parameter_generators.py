@@ -17,11 +17,25 @@ from src.generators.order_parameter import (
 from src.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
 from src.run_experiments import (
     _build_metadata,
+    _ground_truth_descriptor,
     _kinetic_ising_semantics,
     _kuramoto_semantics,
     _miller_huse_semantics,
     generate_synthetic_from_spec,
 )
+
+
+def test_ground_truth_descriptor_skips_empty_future_arrays(tmp_path: Path) -> None:
+    path = tmp_path / "ground_truth.npz"
+    np.savez_compressed(
+        path,
+        magnetization=np.asarray([0.25, -0.5]),
+        magnetization_future=np.asarray([], dtype=np.float32),
+    )
+    descriptor = _ground_truth_descriptor(path)
+    assert descriptor["magnetization_mean"] == -0.125
+    assert "magnetization_future_mean" not in descriptor
+    assert descriptor["arrays"]["magnetization_future"] == [0]
 
 
 def test_supported_kuramoto_critical_couplings() -> None:
@@ -384,6 +398,46 @@ def test_ising_feature_scout_mapping_is_paired_and_m20_primary() -> None:
     primary = [spec for spec in mapping.specs if spec.M == 20 and spec.T == 1000]
     assert len(primary) == 72
     assert all(spec.generator_params["patch_shape"] == [4, 5] for spec in primary)
+
+
+def test_ising_t2000_validation_mapping_has_paired_disjoint_blocks() -> None:
+    config = ExperimentConfig.from_file(
+        Path("configs/generate/order_parameter/kinetic-ising-t2000-validation.yaml")
+    )
+    mapping = DatasetMapping(config)
+    assert len(mapping.specs) == 192
+    assert len({spec.dataset_dir for spec in mapping.specs}) == 192
+    for instance in range(16):
+        master = [spec for spec in mapping.specs if spec.instance == instance]
+        assert len(master) == 12
+        assert len({spec.rng_seed for spec in master}) == 1
+        assert {spec.generator_params["kinetic_burn_sweeps"] for spec in master} == {
+            0,
+            4000,
+        }
+        assert all(spec.M == 20 and spec.T == 2000 for spec in master)
+
+
+def test_kinetic_ising_burn_selects_exact_later_block() -> None:
+    common = dict(
+        M=4,
+        reduced_coupling=1.0,
+        lattice_side=8,
+        equilibration_sweeps=5,
+        patch_shape=(2, 2),
+        future_truth_T=0,
+    )
+    full = generate_kinetic_ising(
+        T=12, kinetic_burn_sweeps=0, rng=np.random.default_rng(808), **common
+    )
+    first = generate_kinetic_ising(
+        T=4, kinetic_burn_sweeps=0, rng=np.random.default_rng(808), **common
+    )
+    second = generate_kinetic_ising(
+        T=4, kinetic_burn_sweeps=8, rng=np.random.default_rng(808), **common
+    )
+    np.testing.assert_array_equal(first, full[:4])
+    np.testing.assert_array_equal(second, full[8:12])
 
 
 def test_claim_benchmark_mapping_and_split_invariants() -> None:

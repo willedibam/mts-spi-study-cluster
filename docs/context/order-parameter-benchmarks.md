@@ -48,6 +48,16 @@ Primary evidence: `notebooks/embeddings/kuramoto-order-parameter-benchmark.ipynb
 - Ising representation scout is development-only: 12 paired masters, two paths, three stress controls, `M=20` at `T={500,1000,2000}`, and nested `M={10,32}` brackets at `T=1000`. `M=32` is an upper convergence diagnostic; production remains `M=20`.
 - Select a zero-failure SPI core on every `M>=10` stress row. Fit unwhitened PC1 at `M=20,T=1000` with meta-feature SD threshold `.05`. Require exact trajectory nesting, worst-path bootstrap stability, and master-bootstrap/leave-one-out loading and score stability before production.
 
+The frozen `M=20,T=1000` gate failed target-blindly. All 360 rows completed and 217/289 SPIs formed a zero-failure core; PC1 explained `.619` and its master-bootstrap loading/score lower bounds were `.988/.997`. `M=32` passed, but temporal geometry did not: lower-bound worst-path geometry was `.712` at `T=500` and `.711` at `T=2000`; the `T=2000` coordinate lower bound was `.828`. This is a clean null for the `T=1000` candidate and may not be relabelled a pass.
+
+### Frozen target-blind `T=2000` refinement
+
+- Existing `T=2000` rows are development data for a new candidate; no order-parameter values are read. Fit PC1 on their frozen 217-SPI core with the same `.05` meta-feature SD threshold.
+- Validation uses 16 new masters at the same two paths and three stress controls. Each master supplies two `M=20,T=2000` blocks from the same equilibrated trajectory: sweeps 1--2000 and 4001--6000, leaving a 2000-sweep gap. PySPI is computed separately per block; a single `T=4000` feature vector is not a reproducibility test.
+- Keep the original worst-path lower-bootstrap gates unchanged: coordinate `.90`, geometry `.85`, median row correlation `.90`. Also require `.90` for development bootstrap/LOO loading and coordinate stability and for validation-block loading/coordinate agreement.
+- Keep the already frozen missingness gates: p99 `<=.01`, maximum `<=.10`, and rank agreement `>=.95` with the validation zero-failure subset.
+- Failure is the `T=2000` representation null. Success permits untouched order-parameter confirmation; it does not itself evidence magnetization recovery.
+
 ## Claim ladder
 
 1. **Tracks Q:** eligible frozen coordinate has strong held-out cell-level association with independently estimated finite-size ensemble `Q_L`.

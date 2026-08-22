@@ -469,6 +469,8 @@ def _ground_truth_descriptor(path: Path) -> dict:
         ):
             if name in archive.files:
                 values = np.asarray(archive[name], dtype=np.float64)
+                if values.size == 0:
+                    continue
                 descriptor[f"{name}_mean"] = float(values.mean())
                 descriptor[f"{name}_std"] = float(values.std())
         for name in (

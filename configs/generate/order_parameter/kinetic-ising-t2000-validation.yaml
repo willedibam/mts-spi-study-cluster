@@ -1,0 +1,53 @@
+base_output_dir: data/order_parameter/kinetic_ising_t2000_validation
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 782341
+save_heatmap: false
+threads: 1
+
+defaults:
+  instances: 16
+
+mts_classes:
+  - name: kinetic-ising-t2000-validation
+    labels: [kinetic-ising, order-parameter, representation-validation, raw, block-1]
+    generator: kinetic_ising
+    seed_scope: instance
+    M_values: [20]
+    T_values: [2000]
+    base_params: &block_1
+      lattice_side: 64
+      equilibration_sweeps: 200
+      kinetic_burn_sweeps: 0
+      future_truth_T: 0
+      patch_shape: [4, 5]
+      sample_every: 1
+      zscore: false
+      store_full_spins: false
+    include_base_variant: false
+    variants:
+      - {name: iso-u0p85-b1, params: {reduced_coupling: 0.85, J_x: 1.0, J_y: 1.0}}
+      - {name: iso-u1p0-b1, params: {reduced_coupling: 1.0, J_x: 1.0, J_y: 1.0}}
+      - {name: iso-u1p2-b1, params: {reduced_coupling: 1.2, J_x: 1.0, J_y: 1.0}}
+      - {name: aniso-u0p85-b1, params: {reduced_coupling: 0.85, J_x: 1.0, J_y: 0.5}}
+      - {name: aniso-u1p0-b1, params: {reduced_coupling: 1.0, J_x: 1.0, J_y: 0.5}}
+      - {name: aniso-u1p2-b1, params: {reduced_coupling: 1.2, J_x: 1.0, J_y: 0.5}}
+
+  - name: kinetic-ising-t2000-validation
+    labels: [kinetic-ising, order-parameter, representation-validation, raw, block-2]
+    generator: kinetic_ising
+    seed_scope: instance
+    M_values: [20]
+    T_values: [2000]
+    base_params:
+      <<: *block_1
+      kinetic_burn_sweeps: 4000
+    include_base_variant: false
+    variants:
+      - {name: iso-u0p85-b2, params: {reduced_coupling: 0.85, J_x: 1.0, J_y: 1.0}}
+      - {name: iso-u1p0-b2, params: {reduced_coupling: 1.0, J_x: 1.0, J_y: 1.0}}
+      - {name: iso-u1p2-b2, params: {reduced_coupling: 1.2, J_x: 1.0, J_y: 1.0}}
+      - {name: aniso-u0p85-b2, params: {reduced_coupling: 0.85, J_x: 1.0, J_y: 0.5}}
+      - {name: aniso-u1p0-b2, params: {reduced_coupling: 1.0, J_x: 1.0, J_y: 0.5}}
+      - {name: aniso-u1p2-b2, params: {reduced_coupling: 1.2, J_x: 1.0, J_y: 0.5}}
