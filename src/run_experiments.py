@@ -152,7 +152,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         "--heatmap",
         dest="heatmap",
         action="store_true",
-        help="Generate mts_heatmap.png (default behaviour).",
+        help="Generate mts_heatmap.png, overriding the experiment config.",
     )
     parser.add_argument(
         "--no-heatmap",
@@ -160,7 +160,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         action="store_false",
         help="Disable heatmap generation.",
     )
-    parser.set_defaults(heatmap=True)
+    parser.set_defaults(heatmap=None)
     parser.add_argument(
         "--no-csv",
         dest="csv",
@@ -256,7 +256,7 @@ def main(argv: List[str] | None = None) -> None:
         effective_n_jobs = args.n_jobs if args.n_jobs is not None else (args.threads or spec.threads)
         data, ts_path, gen_extras = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
         if args.mts_only:
-            if args.heatmap or spec.save_heatmap:
+            if _heatmap_enabled(args.heatmap, spec.save_heatmap):
                 save_mts_heatmap(data, ts_path.parent / "mts_heatmap.png")
             continue
 
@@ -281,7 +281,7 @@ def main(argv: List[str] | None = None) -> None:
         npz_path = dataset_dir / "spi_mpis.npz"
         np.savez_compressed(npz_path, **result.matrices)
         heatmap_paths: list[str] = []
-        if args.heatmap or spec.save_heatmap:
+        if _heatmap_enabled(args.heatmap, spec.save_heatmap):
             deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
             base_filename = "mts_heatmap.png"
             base_path = dataset_dir / base_filename
@@ -337,6 +337,12 @@ def _configure_threading(threads: int | None) -> None:
                 f"[WARN] {var}={os.environ.get(var)} — expected 1 to avoid BLAS oversubscription "
                 f"when PYSPI_N_JOBS>1. Set it in your shell/PBS script before launching python."
             )
+
+
+def _heatmap_enabled(cli_value: bool | None, config_value: bool) -> bool:
+    """Resolve the explicit CLI override against the dataset configuration."""
+
+    return bool(config_value if cli_value is None else cli_value)
 
 
 def _safe_write_parquet(table: pd.DataFrame, path: Path) -> None:
