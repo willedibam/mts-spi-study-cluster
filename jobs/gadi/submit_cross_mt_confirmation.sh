@@ -9,7 +9,7 @@ test -f "$config"
 actual_manifest_sha=$(sha256sum "$manifest" | awk '{print $1}')
 [[ "$actual_manifest_sha" == "$expected_manifest_sha" ]]
 
-python - "$manifest" configs/analysis/cross-mt-transfer-260824.yaml <<'PY'
+python3 - "$manifest" configs/analysis/cross-mt-transfer-260824.yaml <<'PY'
 import hashlib
 import json
 import sys
