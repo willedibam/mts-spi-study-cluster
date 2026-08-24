@@ -33,5 +33,5 @@ Active workstream as of 2026-08-24. Facts are marked **verified**. The Pearson d
 
 ## Remaining gate
 
-- Commit the audited manifest before any confirmation submission. Then run a tiny instances-`10:11` confirmation smoke and verify provenance/output policy before releasing the nine homogeneous 280-row farms.
-- Confirmation runtime/memory caps use the measured development-cell timings. No confirmation PBS job has yet been submitted.
+- **Verified:** the audited manifest was committed in `8fcb086`. Two-dataset smoke `177256967` (instances `10:11`, `M=8,T=500`) exited 0 with exact current-v3 provenance and no tables/heatmaps.
+- The nine 280-row homogeneous confirmation farms are `177257654/658/662/663/667/671/688/694/699`; each uses one core per selected dataset. Pearson feature reconstruction `177257703` depends on all nine, and frozen analysis `177257704` depends on reconstruction. These jobs are active/pending and are not yet evidence of transfer.
