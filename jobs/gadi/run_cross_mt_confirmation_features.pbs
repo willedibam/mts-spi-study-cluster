@@ -30,6 +30,6 @@ python -m src.process_features \
     --data-path "$confirmation_root" \
     --output "$feature_root/confirmation.npz" \
     --feature-contract direction_preserving_v2 \
-    --metric spearman \
+    --metric pearson \
     --workers "$PBS_NCPUS" \
     --recompute

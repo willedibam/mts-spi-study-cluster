@@ -1,6 +1,6 @@
 study_id: cross_mt_transfer_260824_v1
 feature_contract: direction_preserving_v2
-metric: spearman
+metric: pearson
 expected_pyspi_computation: 3.0.0.r7
 expected_pyspi_config_sha256: bc4bafa16b4add8bb6283db490a9fa3d8dde4fde47093147d32579b989397965
 
