@@ -16,6 +16,7 @@ from concurrent.futures import ProcessPoolExecutor
 import hashlib
 import json
 import logging
+from multiprocessing import get_context
 from pathlib import Path
 import subprocess
 from typing import Dict, List, Literal, Sequence, Tuple
@@ -439,7 +440,10 @@ def build_direction_preserving_feature_matrix(
         results = map(_build_direction_preserving_sample, tasks)
         executor = None
     else:
-        executor = ProcessPoolExecutor(max_workers=workers)
+        executor = ProcessPoolExecutor(
+            max_workers=workers,
+            mp_context=get_context("spawn"),
+        )
         results = executor.map(_build_direction_preserving_sample, tasks)
     try:
         for index, result in enumerate(results, start=1):
