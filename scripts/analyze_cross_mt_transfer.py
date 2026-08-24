@@ -118,12 +118,14 @@ def _cell_eta(coordinates: np.ndarray, cells: np.ndarray) -> float:
 
 
 def _retrieval_null(gallery_size: int, relevant: int) -> dict[str, float]:
+    if gallery_size < 1 or not 1 <= relevant <= gallery_size:
+        raise ValueError("retrieval null requires 1 <= relevant <= gallery_size")
     harmonic = float(np.sum(1.0 / np.arange(1, gallery_size + 1)))
-    expected_ap = harmonic / gallery_size + (
+    expected_ap = 1.0 if gallery_size == 1 else harmonic / gallery_size + (
         (relevant - 1) * (gallery_size - harmonic) / (gallery_size * (gallery_size - 1))
     )
     no_relevant_top5 = 1.0
-    for offset in range(5):
+    for offset in range(min(5, gallery_size)):
         no_relevant_top5 *= (gallery_size - relevant - offset) / (gallery_size - offset)
     return {
         "mean_average_precision": expected_ap,
