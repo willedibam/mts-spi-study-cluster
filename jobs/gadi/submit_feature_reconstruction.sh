@@ -14,6 +14,10 @@ if [[ -n "${SPI_SUBSET:-}" ]]; then
     test -f "$SPI_SUBSET"
     variables+=",SPI_SUBSET=$SPI_SUBSET"
 fi
+if [[ -n "${DATASET_LIMIT:-}" ]]; then
+    (( DATASET_LIMIT >= 1 ))
+    variables+=",DATASET_LIMIT=$DATASET_LIMIT"
+fi
 if [[ "${RECOMPUTE:-0}" == 1 ]]; then
     variables+=",RECOMPUTE=1"
 fi
