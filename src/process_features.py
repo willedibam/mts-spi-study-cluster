@@ -1,18 +1,23 @@
 """
 Compute and cache SPI-SPI feature matrices for downstream analysis.
 
-- Loads datasets under a provided data path (e.g., data/full), enforcing consistent SPI ordering/flags.
-- Directed SPIs can be split into two pseudo-SPIs (i->j upper triangle, j->i lower triangle) via --split-directed.
-- Without splitting, directed SPIs are symmetrized and treated as a single SPI.
-- Features are pairwise similarities between pseudo-SPI edge vectors (upper triangle of the SPI-SPI matrix).
+- ``legacy_symmetrized_v1`` exactly preserves the historical construction.
+- ``direction_preserving_v2`` emits a frozen ``z_sym`` block plus a
+  channel-permutation-invariant directional block over ordered off-diagonals.
+- Canonical v2 artifacts retain undefined correlations as NaN and never apply
+  corpus-wide variance filtering.
 - Supports optional SPI name subset via --spi-subset (txt, one per line).
 - Supports different metrics via --metric (comma-separated): spearman, pearson, mi (mutual information).
 """
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ProcessPoolExecutor
+import hashlib
+import json
 import logging
 from pathlib import Path
+import subprocess
 from typing import Dict, List, Literal, Sequence, Tuple
 
 import numpy as np
@@ -20,6 +25,13 @@ import pandas as pd
 from scipy.stats import rankdata, spearmanr, ConstantInputWarning
 
 from .utils import load_json, project_root
+from .spi_spi_contract import (
+    CONTRACT_VERSION,
+    LEGACY_CONTRACT_VERSION,
+    FeatureSpec,
+    build_feature_blocks,
+    schema_sha256,
+)
 
 import warnings
 
@@ -28,6 +40,7 @@ LOGGER = logging.getLogger(__name__)
 
 MetricType = Literal["spearman", "pearson", "mi"]
 NonFinitePolicy = Literal["zero", "nan", "raise"]
+FeatureContract = Literal["legacy_symmetrized_v1", "direction_preserving_v2"]
 
 
 def load_spi_subset(path: str | Path) -> tuple[list[str], str]:
@@ -94,6 +107,14 @@ def load_samples_with_flags(
                     "path": ds_dir,
                     "variant": (meta.get("variant") or {}).get("name", "") if isinstance(meta.get("variant"), dict) else (meta.get("variant") or ""),
                     "instance": meta.get("instance_index"),
+                    "meta_path": meta_path,
+                    "pyspi_provenance": {
+                        "config": meta.get("pyspi", {}).get("config"),
+                        "config_sha256": meta.get("pyspi", {}).get("config_sha256"),
+                        "version": meta.get("pyspi", {}).get("version"),
+                        "normalise": meta.get("normalise"),
+                    },
+                    "experiment_provenance": meta.get("experiment", {}),
                 }
             )
             if limit and len(samples) >= limit:
@@ -103,6 +124,108 @@ def load_samples_with_flags(
     if spi_order is None or directed_flags is None:
         raise RuntimeError(f"No datasets found for data_path={data_path}")
     return samples, spi_order, directed_flags
+
+
+def _file_sha256(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _canonical_json(value: object) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str)
+
+
+def _repository_state() -> dict[str, object]:
+    root = project_root()
+    try:
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        dirty = bool(
+            subprocess.run(
+                ["git", "status", "--porcelain"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+        )
+    except (OSError, subprocess.CalledProcessError):
+        commit, dirty = "unknown", None
+    return {"git_commit": commit, "git_dirty": dirty}
+
+
+def validate_source_provenance(samples: Sequence[Dict]) -> dict[str, object]:
+    """Validate computation-level provenance before datasets are pooled."""
+
+    if not samples:
+        raise ValueError("samples is empty")
+    fields = ("config_sha256", "config", "version", "normalise")
+    signatures: dict[str, set[str]] = {field: set() for field in fields}
+    incomplete: set[str] = set()
+    for sample in samples:
+        provenance = sample.get("pyspi_provenance", {})
+        for field in fields:
+            value = provenance.get(field)
+            if value is None:
+                incomplete.add(field)
+            else:
+                signatures[field].add(_canonical_json(value))
+
+    # A hash is authoritative when available; a config path is only a fallback
+    # identity for older archives that did not record content hashes.
+    authoritative_config = (
+        signatures["config_sha256"]
+        if signatures["config_sha256"]
+        else signatures["config"]
+    )
+    if len(authoritative_config) > 1:
+        raise ValueError("pooled datasets have different pyspi configurations")
+    if len(signatures["version"]) > 1:
+        raise ValueError("pooled datasets have different pyspi computation versions")
+    if len(signatures["normalise"]) > 1:
+        raise ValueError("pooled datasets have different pyspi normalization settings")
+
+    return {
+        "config_sha256": sorted(signatures["config_sha256"]),
+        "config": sorted(signatures["config"]),
+        "version": sorted(signatures["version"]),
+        "normalise": sorted(signatures["normalise"]),
+        "status": "incomplete" if incomplete else "complete",
+        "missing_fields": sorted(incomplete),
+    }
+
+
+def build_source_manifest(samples: Sequence[Dict]) -> dict[str, object]:
+    """Build a content-addressed identity for metadata and MPI inputs."""
+
+    entries: list[dict[str, object]] = []
+    for sample in samples:
+        dataset_path = Path(sample["path"])
+        meta_path = Path(sample.get("meta_path", dataset_path / "meta.json"))
+        mpi_path = dataset_path / "spi_mpis.npz"
+        if not mpi_path.exists():
+            raise FileNotFoundError(f"MPI archive not found: {mpi_path}")
+        entries.append(
+            {
+                "dataset_path": str(dataset_path.resolve()),
+                "meta_sha256": _file_sha256(meta_path),
+                "mpi_sha256": _file_sha256(mpi_path),
+                "experiment": sample.get("experiment_provenance", {}),
+            }
+        )
+    manifest_json = _canonical_json(entries)
+    return {
+        "entries": entries,
+        "sha256": hashlib.sha256(manifest_json.encode("utf-8")).hexdigest(),
+    }
 
 
 def _edge_vectors(
@@ -282,6 +405,106 @@ def build_feature_matrix(
     return X, y, pairs, dataset_paths, variants, Ms, Ts, instances
 
 
+def build_direction_preserving_feature_matrix(
+    samples: List[Dict],
+    spi_order: List[str],
+    directed_flags: List[bool],
+    *,
+    metric: MetricType = "pearson",
+    include_reciprocity: bool = True,
+    workers: int = 1,
+) -> dict[str, object]:
+    """Build the complete v2 schema without corpus-dependent filtering."""
+
+    sym_rows: list[np.ndarray] = []
+    dir_rows: list[np.ndarray] = []
+    sym_valid_rows: list[np.ndarray] = []
+    dir_valid_rows: list[np.ndarray] = []
+    invalid_reasons: list[str] = []
+    sym_schema_ref: tuple[FeatureSpec, ...] | None = None
+    dir_schema_ref: tuple[FeatureSpec, ...] | None = None
+    tasks = [
+        (
+            str(sample["path"]),
+            tuple(spi_order),
+            tuple(directed_flags),
+            metric,
+            include_reciprocity,
+        )
+        for sample in samples
+    ]
+    if workers < 1:
+        raise ValueError("workers must be at least one")
+    if workers == 1:
+        results = map(_build_direction_preserving_sample, tasks)
+        executor = None
+    else:
+        executor = ProcessPoolExecutor(max_workers=workers)
+        results = executor.map(_build_direction_preserving_sample, tasks)
+    try:
+        for index, result in enumerate(results, start=1):
+            if sym_schema_ref is None:
+                sym_schema_ref = result.sym_schema
+                dir_schema_ref = result.dir_schema
+            elif (
+                result.sym_schema != sym_schema_ref
+                or result.dir_schema != dir_schema_ref
+            ):
+                raise ValueError("feature schema mismatch across datasets")
+            sym_rows.append(result.z_sym)
+            dir_rows.append(result.z_dir)
+            sym_valid_rows.append(result.sym_valid)
+            dir_valid_rows.append(result.dir_valid)
+            invalid_reasons.append(_canonical_json(result.invalid_reasons))
+            if index % 10 == 0 or index == len(samples):
+                LOGGER.info(
+                    "direction-preserving features: %d/%d (%.0f%%)",
+                    index,
+                    len(samples),
+                    100 * index / len(samples),
+                )
+    finally:
+        if executor is not None:
+            executor.shutdown()
+    if sym_schema_ref is None or dir_schema_ref is None:
+        raise RuntimeError("No features computed")
+
+    z_sym = np.vstack(sym_rows)
+    z_dir = np.vstack(dir_rows) if dir_rows[0].size else np.empty((len(samples), 0), dtype=np.float32)
+    sym_valid = np.vstack(sym_valid_rows)
+    dir_valid = (
+        np.vstack(dir_valid_rows)
+        if dir_valid_rows[0].size
+        else np.empty((len(samples), 0), dtype=bool)
+    )
+    schema = sym_schema_ref + dir_schema_ref
+    return {
+        "X_sym": z_sym,
+        "X_dir": z_dir,
+        "sym_validity_mask": sym_valid,
+        "dir_validity_mask": dir_valid,
+        "invalid_reasons_json": np.asarray(invalid_reasons, dtype=object),
+        "schema": schema,
+        "sym_schema": sym_schema_ref,
+        "dir_schema": dir_schema_ref,
+    }
+
+
+def _build_direction_preserving_sample(
+    task: tuple[str, tuple[str, ...], tuple[bool, ...], MetricType, bool],
+):
+    dataset_path, spi_order, directed_flags, metric, include_reciprocity = task
+    with np.load(Path(dataset_path) / "spi_mpis.npz") as archive:
+        mpis = {name: archive[name] for name in spi_order}
+    return build_feature_blocks(
+        mpis,
+        spi_order,
+        directed_flags,
+        metric=metric,
+        include_reciprocity=include_reciprocity,
+    )
+
+
 def cache_path(
     data_path: str,
     limit: int | None,
@@ -290,21 +513,84 @@ def cache_path(
     split_directed: bool = False,
     metric: MetricType = "spearman",
     output_dir: str | None = None,
+    feature_contract: FeatureContract = LEGACY_CONTRACT_VERSION,
 ) -> Path:
     suffix = f"_limit{limit}" if limit else ""
     subset_suffix = f"_{subset_label}" if subset_label else ""
     split_suffix = "_split" if split_directed else ""
     metric_suffix = f"_{metric}"
+    contract_suffix = (
+        "" if feature_contract == LEGACY_CONTRACT_VERSION else "_direction-v2"
+    )
     safe = data_path.replace("\\", "-").replace("/", "-").strip("-")
     base_dir = Path(output_dir) if output_dir else project_root() / "features"
-    return base_dir / f"{safe}{split_suffix}{metric_suffix}{subset_suffix}{suffix}.npz"
+    return base_dir / f"{safe}{contract_suffix}{split_suffix}{metric_suffix}{subset_suffix}{suffix}.npz"
 
 
-def load_cached_features(path: Path, recompute: bool) -> dict | None:
+def load_cached_features(
+    path: Path,
+    recompute: bool,
+    *,
+    expected_cache_identity: str | None = None,
+) -> dict | None:
     if recompute or not path.exists():
         return None
     data = np.load(path, allow_pickle=True)
-    return {k: data[k] for k in data.files}
+    payload = {k: data[k] for k in data.files}
+    if expected_cache_identity is not None:
+        actual = payload.get("cache_identity_json")
+        if actual is None:
+            raise ValueError(
+                f"cache {path} predates validated cache identity; use --recompute"
+            )
+        actual_text = str(np.asarray(actual).item())
+        if actual_text != expected_cache_identity:
+            raise ValueError(
+                f"cache identity mismatch for {path}; use --recompute or a new output"
+            )
+    contract_value = payload.get("feature_contract")
+    contract = str(np.asarray(contract_value).item()) if contract_value is not None else None
+    if contract == CONTRACT_VERSION:
+        required = (
+            "X_sym",
+            "X_dir",
+            "sym_validity_mask",
+            "dir_validity_mask",
+            "feature_block",
+            "feature_relation",
+            "feature_spi_a",
+            "feature_spi_b",
+            "schema_sha256",
+        )
+        missing = [name for name in required if name not in payload]
+        if missing:
+            raise ValueError(f"cache {path} missing required fields: {', '.join(missing)}")
+        schema = tuple(
+            FeatureSpec(str(block), str(relation), str(first), str(second))
+            for block, relation, first, second in zip(
+                payload["feature_block"],
+                payload["feature_relation"],
+                payload["feature_spi_a"],
+                payload["feature_spi_b"],
+            )
+        )
+        expected_schema_hash = str(np.asarray(payload["schema_sha256"]).item())
+        if schema_sha256(schema) != expected_schema_hash:
+            raise ValueError(f"cache {path} has a corrupt feature schema hash")
+        feature_count = payload["X_sym"].shape[1] + payload["X_dir"].shape[1]
+        if feature_count != len(schema):
+            raise ValueError(f"cache {path} feature matrix/schema dimensions disagree")
+        if payload["sym_validity_mask"].shape != payload["X_sym"].shape:
+            raise ValueError(f"cache {path} symmetric validity mask dimensions disagree")
+        if payload["dir_validity_mask"].shape != payload["X_dir"].shape:
+            raise ValueError(f"cache {path} directional validity mask dimensions disagree")
+        if not np.array_equal(
+            payload["sym_validity_mask"], np.isfinite(payload["X_sym"])
+        ) or not np.array_equal(
+            payload["dir_validity_mask"], np.isfinite(payload["X_dir"])
+        ):
+            raise ValueError(f"cache {path} validity masks do not match stored values")
+    return payload
 
 
 def save_cached_features(path: Path, payload: dict) -> None:
@@ -332,6 +618,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--spi-subset", type=str, default=None, help="Path to txt file listing SPI names (one per line).")
     parser.add_argument("--recompute", action="store_true", help="Recompute even if cache exists.")
     parser.add_argument(
+        "--feature-contract",
+        choices=(LEGACY_CONTRACT_VERSION, CONTRACT_VERSION),
+        default=LEGACY_CONTRACT_VERSION,
+        help=(
+            "Feature contract. The legacy default preserves existing commands; "
+            "new analyses must request direction_preserving_v2 explicitly."
+        ),
+    )
+    parser.add_argument(
         "--split-directed",
         action="store_true",
         help="Split directed SPIs into two pseudo-SPIs (upper/lower). Default: off (symmetrize into one).",
@@ -351,8 +646,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--var-threshold",
         type=float,
-        default=1e-8,
-        help="Drop feature columns with std below this threshold (default: 1e-8). Set to 0 to keep all.",
+        default=None,
+        help=(
+            "Legacy-only corpus variance filter. Omit for v2; fit filtering on "
+            "development data downstream. Historical default was 1e-8."
+        ),
+    )
+    parser.add_argument(
+        "--no-reciprocity",
+        action="store_true",
+        help="Omit directed-SPI self-reciprocity from the v2 sensitivity block.",
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Dataset-level worker processes for v2 reconstruction (default: 1).",
     )
     return parser.parse_args(argv)
 
@@ -397,32 +706,27 @@ def main(argv: Sequence[str] | None = None) -> None:
     else:
         LOGGER.info("Using all SPIs")
     
+    contract: FeatureContract = args.feature_contract
+    if contract == CONTRACT_VERSION and args.split_directed:
+        raise ValueError(
+            "--split-directed is a legacy fixed-label construction and is not "
+            "valid under direction_preserving_v2"
+        )
+    if contract == CONTRACT_VERSION and args.var_threshold is not None:
+        raise ValueError(
+            "direction_preserving_v2 never applies a corpus variance filter; "
+            "fit filtering downstream on development rows"
+        )
+    if contract == LEGACY_CONTRACT_VERSION and args.no_reciprocity:
+        raise ValueError("--no-reciprocity applies only to direction_preserving_v2")
+    if args.workers < 1:
+        raise ValueError("--workers must be at least one")
+    if contract == LEGACY_CONTRACT_VERSION and args.workers != 1:
+        raise ValueError("--workers currently applies only to direction_preserving_v2")
+
     metrics = _parse_metrics(args.metric)
     multi_metric = len(metrics) > 1
     LOGGER.info("Using metric(s): %s", ", ".join(metrics))
-
-    targets: List[tuple[MetricType, Path]] = []
-    for metric in metrics:
-        cache_file = (
-            _output_path_for_metric(args.output, metric, multi_metric)
-            if args.output
-            else cache_path(
-                args.data_path,
-                args.dataset_limit,
-                subset_label,
-                split_directed=args.split_directed,
-                metric=metric,
-                output_dir=args.output_dir,
-            )
-        )
-        cached = load_cached_features(cache_file, recompute=args.recompute)
-        if cached:
-            LOGGER.info("Cache exists, skipping computation: %s", cache_file)
-        else:
-            targets.append((metric, cache_file))
-
-    if not targets:
-        return
 
     mts_classes = (
         [part.strip() for part in args.mts_classes.split(",") if part.strip()]
@@ -435,47 +739,153 @@ def main(argv: Sequence[str] | None = None) -> None:
         subset_names=subset_names,
         mts_classes=mts_classes,
     )
-    for metric, cache_file in targets:
-        LOGGER.info("Computing features (metric=%s)", metric)
-        X_raw, y, pairs, dataset_paths, variants, Ms, Ts, instances = build_feature_matrix(
-            samples,
-            spi_order,
-            directed_flags,
-            split_directed=args.split_directed,
-            metric=metric,
-        )
-        # drop near-zero-variance features
-        pairs_arr = np.array(pairs, dtype=object)
-        if args.var_threshold > 0:
-            col_std = np.std(X_raw, axis=0)
-            keep = col_std >= args.var_threshold
-            n_dropped = (~keep).sum()
-            if n_dropped:
-                LOGGER.info("Dropping %d/%d features with std < %g", n_dropped, X_raw.shape[1], args.var_threshold)
-                X_raw = X_raw[:, keep]
-                pairs_arr = pairs_arr[keep]
+    pyspi_provenance = validate_source_provenance(samples)
+    source_manifest = build_source_manifest(samples)
+    repository = _repository_state()
+    builder_identity = {
+        "process_features_sha256": _file_sha256(Path(__file__)),
+        "spi_spi_contract_sha256": _file_sha256(
+            Path(__file__).with_name("spi_spi_contract.py")
+        ),
+        **repository,
+    }
 
-        sample_labels = [s.get("labels", []) for s in samples]
-        payload = {
-            "X": X_raw.astype(np.float32),
-            "y": y,  # mts_class labels
-            "labels": np.array(sample_labels, dtype=object),
-            "pairs": pairs_arr,
-            "spi_order": np.array(spi_order, dtype=object),
-            "directed_flags": np.array(directed_flags, dtype=bool),
-            "dataset_paths": np.array(dataset_paths, dtype=object),
-            "variant": np.array(variants, dtype=object),
-            "M": np.array(Ms, dtype=object),
-            "T": np.array(Ts, dtype=object),
-            "instance": np.array(instances, dtype=object),
+    targets: List[tuple[MetricType, Path, str]] = []
+    for metric in metrics:
+        cache_file = (
+            _output_path_for_metric(args.output, metric, multi_metric)
+            if args.output
+            else cache_path(
+                args.data_path,
+                args.dataset_limit,
+                subset_label,
+                split_directed=args.split_directed,
+                metric=metric,
+                output_dir=args.output_dir,
+                feature_contract=contract,
+            )
+        )
+        cache_identity = _canonical_json(
+            {
+                "feature_contract": contract,
+                "metric": metric,
+                "nonfinite_policy": (
+                    "nan" if contract == CONTRACT_VERSION else "zero"
+                ),
+                "split_directed": bool(args.split_directed),
+                "include_reciprocity": (
+                    not args.no_reciprocity if contract == CONTRACT_VERSION else None
+                ),
+                "legacy_var_threshold": (
+                    args.var_threshold
+                    if args.var_threshold is not None
+                    else 1e-8
+                    if contract == LEGACY_CONTRACT_VERSION
+                    else None
+                ),
+                "spi_order_sha256": hashlib.sha256(
+                    _canonical_json(spi_order).encode("utf-8")
+                ).hexdigest(),
+                "directed_flags_sha256": hashlib.sha256(
+                    _canonical_json(directed_flags).encode("utf-8")
+                ).hexdigest(),
+                "source_manifest_sha256": source_manifest["sha256"],
+                "pyspi": pyspi_provenance,
+                "builder": builder_identity,
+            }
+        )
+        cached = load_cached_features(
+            cache_file,
+            recompute=args.recompute,
+            expected_cache_identity=cache_identity,
+        )
+        if cached:
+            LOGGER.info("Validated cache exists, skipping computation: %s", cache_file)
+        else:
+            targets.append((metric, cache_file, cache_identity))
+
+    sample_payload = {
+        "y": np.asarray([sample["label"] for sample in samples]),
+        "labels": np.asarray([sample.get("labels", []) for sample in samples], dtype=object),
+        "dataset_paths": np.asarray([str(sample["path"]) for sample in samples], dtype=object),
+        "variant": np.asarray([sample.get("variant", "") for sample in samples], dtype=object),
+        "M": np.asarray([sample.get("M") for sample in samples], dtype=object),
+        "T": np.asarray([sample.get("T") for sample in samples], dtype=object),
+        "instance": np.asarray([sample.get("instance") for sample in samples], dtype=object),
+    }
+    for metric, cache_file, cache_identity in targets:
+        LOGGER.info("Computing %s features (metric=%s)", contract, metric)
+        common_payload = {
+            **sample_payload,
+            "spi_order": np.asarray(spi_order, dtype=object),
+            "directed_flags": np.asarray(directed_flags, dtype=bool),
             "mode": args.data_path,
             "dataset_limit": args.dataset_limit if args.dataset_limit is not None else -1,
             "spi_subset": subset_label or "",
-            "split_directed": bool(args.split_directed),
             "metric": metric,
+            "feature_contract": contract,
+            "cache_identity_json": cache_identity,
+            "source_manifest_json": _canonical_json(source_manifest),
+            "pyspi_provenance_json": _canonical_json(pyspi_provenance),
+            "builder_provenance_json": _canonical_json(builder_identity),
         }
+        if contract == LEGACY_CONTRACT_VERSION:
+            X_raw, _, pairs, _, _, _, _, _ = build_feature_matrix(
+                samples,
+                spi_order,
+                directed_flags,
+                split_directed=args.split_directed,
+                metric=metric,
+            )
+            pairs_arr = np.asarray(pairs, dtype=object)
+            threshold = args.var_threshold if args.var_threshold is not None else 1e-8
+            if threshold > 0:
+                keep = np.std(X_raw, axis=0) >= threshold
+                X_raw = X_raw[:, keep]
+                pairs_arr = pairs_arr[keep]
+            payload = {
+                **common_payload,
+                "X": X_raw.astype(np.float32),
+                "pairs": pairs_arr,
+                "split_directed": bool(args.split_directed),
+                "legacy_var_threshold": threshold,
+            }
+        else:
+            result = build_direction_preserving_feature_matrix(
+                samples,
+                spi_order,
+                directed_flags,
+                metric=metric,
+                include_reciprocity=not args.no_reciprocity,
+                workers=args.workers,
+            )
+            schema = result.pop("schema")
+            sym_schema = result.pop("sym_schema")
+            dir_schema = result.pop("dir_schema")
+            payload = {
+                **common_payload,
+                **result,
+                "feature_block": np.asarray(
+                    [feature.block for feature in schema], dtype=object
+                ),
+                "feature_relation": np.asarray(
+                    [feature.relation for feature in schema], dtype=object
+                ),
+                "feature_spi_a": np.asarray(
+                    [feature.spi_a for feature in schema], dtype=object
+                ),
+                "feature_spi_b": np.asarray(
+                    [feature.spi_b for feature in schema], dtype=object
+                ),
+                "schema_sha256": schema_sha256(schema),
+                "sym_schema_sha256": schema_sha256(sym_schema),
+                "dir_schema_sha256": schema_sha256(dir_schema),
+                "nonfinite_policy": "nan",
+                "diagonal_policy": "excluded",
+                "ordered_entry_order": "C-row-major-i-ne-j",
+                "include_reciprocity": not args.no_reciprocity,
+            }
         save_cached_features(cache_file, payload)
-        LOGGER.info("Saved features -> %s", cache_file)
 
 
 if __name__ == "__main__":

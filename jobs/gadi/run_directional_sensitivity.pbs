@@ -1,0 +1,53 @@
+#!/bin/bash
+#PBS -N spi-dir-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8
+#PBS -l mem=64GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+: "${ANALYSIS:?set ANALYSIS to proof, cml or kuramoto}"
+
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS="$PBS_NCPUS"
+export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
+export MKL_NUM_THREADS="$PBS_NCPUS"
+
+feature_root="${FEATURE_ROOT:-/scratch/ql44/we2614/spi-spi-direction-v2}"
+output_root="${OUTPUT_ROOT:-results/spi_spi_direction_v2}"
+mkdir -p logs "$output_root"
+job_stem="${PBS_JOBNAME}_${ANALYSIS}_${PBS_JOBID%%.*}"
+exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
+
+case "$ANALYSIS" in
+    proof)
+        python scripts/analyze_direction_preserving_sensitivity.py proof \
+            --features "$feature_root/proof.npz" \
+            --output "$output_root/proof.json"
+        ;;
+    cml)
+        python scripts/analyze_direction_preserving_sensitivity.py cml \
+            --features "$feature_root/cml.npz" \
+            --output "$output_root/cml.json"
+        ;;
+    kuramoto)
+        python scripts/analyze_direction_preserving_sensitivity.py kuramoto \
+            --development-features \
+                "$feature_root/kuramoto_order_benchmark.npz" \
+                "$feature_root/kuramoto_confirmation.npz" \
+            --confirmation-features "$feature_root/kuramoto_final_confirmation.npz" \
+            --output "$output_root/kuramoto.json"
+        ;;
+    *)
+        echo "unknown ANALYSIS=$ANALYSIS" >&2
+        exit 2
+        ;;
+esac
