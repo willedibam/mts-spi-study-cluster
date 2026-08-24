@@ -11,6 +11,7 @@ from typing import Any
 
 import joblib
 import numpy as np
+from sklearn.metrics import balanced_accuracy_score
 
 from src.cross_mt_transfer import (
     FrozenCellModel,
@@ -154,9 +155,8 @@ def freeze(arguments: argparse.Namespace) -> dict[str, Any]:
         "models": {},
     }
     diagnostics: dict[str, Any] = {}
-    for view_name, (values, blocks, balanced, standardize) in _view_specifications(
-        development, baseline_matrices
-    ).items():
+    view_specifications = _view_specifications(development, baseline_matrices)
+    for view_name, (values, blocks, balanced, standardize) in view_specifications.items():
         cell_models: dict[str, FrozenCellModel] = {}
         fold_diagnostics: dict[str, Any] = {}
         for held_cell in bundle["cell_order"]:
@@ -213,6 +213,37 @@ def freeze(arguments: argparse.Namespace) -> dict[str, Any]:
             "shared_pca_variance": float(np.sum(shared_projection.pca.explained_variance_ratio_)),
         }
 
+    cml_config = protocol["development_evidence"]["cml_panel"]
+    cml_member = np.isin(labels, np.asarray(cml_config["classes"], dtype=str))
+    instances = development["instance"].astype(int)
+    cml_training = cml_member & np.isin(
+        instances, np.asarray(cml_config["training_instances"], dtype=int)
+    )
+    cml_evaluation = cml_member & np.isin(
+        instances, np.asarray(cml_config["evaluation_instances"], dtype=int)
+    )
+    cml_evidence: dict[str, Any] = {}
+    for view_name in ("sym", "dir", "augmented_balanced"):
+        values, blocks, balanced, standardize = view_specifications[view_name]
+        projection, coordinates = fit_projection(
+            values[cml_training],
+            blocks,
+            **_projection_parameters(protocol, standardize, balanced),
+        )
+        classifier = fit_logistic_classifier(
+            coordinates, labels[cml_training], **classifier_parameters
+        )
+        prediction = classifier.predict(projection.transform(values[cml_evaluation]))
+        cml_evidence[view_name] = {
+            "training_rows": int(np.sum(cml_training)),
+            "evaluation_rows": int(np.sum(cml_evaluation)),
+            "retained_features": int(projection.feature_transform.keep_indices.size),
+            "pca_variance": float(np.sum(projection.pca.explained_variance_ratio_)),
+            "held_instance_balanced_accuracy": float(
+                balanced_accuracy_score(labels[cml_evaluation], prediction)
+            ),
+        }
+
     model_bundle = Path(arguments.model_bundle)
     model_bundle.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(bundle, model_bundle, compress=3)
@@ -244,6 +275,9 @@ def freeze(arguments: argparse.Namespace) -> dict[str, Any]:
         "baseline_cache": {"path": str(baseline_cache), "sha256": file_sha256(baseline_cache)},
         "model_bundle": {"path": str(model_bundle), "sha256": file_sha256(model_bundle)},
         "diagnostics": diagnostics,
+        "development_evidence": {
+            "cml_panel_current_pyspi_v3": cml_evidence,
+        },
     }
     output = Path(arguments.output)
     output.parent.mkdir(parents=True, exist_ok=True)

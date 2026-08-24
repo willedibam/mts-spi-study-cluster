@@ -91,3 +91,9 @@ illustration:
     min_dist: 0.1
     metric: euclidean
     random_state: 260824
+
+development_evidence:
+  cml_panel:
+    classes: [defect-turbulence, sti-i, frozen-chaos, brownian-defect, fdstc, chaotic-traveling-wave]
+    training_instances: [0, 1, 2, 3, 4, 5]
+    evaluation_instances: [6, 7, 8, 9]
