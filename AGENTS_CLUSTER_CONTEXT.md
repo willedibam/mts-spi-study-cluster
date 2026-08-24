@@ -7,7 +7,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Login: `we2614@gadi.nci.org.au`; project/default group: `ql44`.
 - Repositories: `/home/562/we2614/mts-spi-study-cluster` and sibling `../pyspi-fork`.
 - Main links: `.venv -> /scratch/ql44/we2614/venvs/mts-spi-v3-631de27`, `data -> /scratch/ql44/we2614/mts-spi-data`, `logs -> /scratch/ql44/we2614/mts-spi-logs`.
-- Allocation: Scratch 1 TiB / 202k inodes; gdata 100 GiB / 70k inodes. Python environments consume tens of thousands of inodes, so check both byte and inode headroom before a large farm. Keep durable code in Git; Scratch is working storage.
+- Allocation: Scratch 1 TiB / 202k inodes; gdata 100 GiB / 70k inodes. On 2026-08-24 Scratch was at 201.5k/202k inodes while gdata was effectively empty. New multi-file corpora must use gdata (optionally exposed through a dataset-directory symlink under `data`) until Scratch inode usage is reduced; feature `.npz` files may remain on Scratch. Python environments consume tens of thousands of inodes, so check both byte and inode headroom before a large farm. Keep durable code in Git; Scratch is working storage.
 - Passwordless public-key SSH is configured. Compute nodes have no internet; synchronise Git from a login node before submission.
 
 ## Git and environment
@@ -19,7 +19,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 
 ## Compute allocation and charging
 
-- `nci_account` reports the spendable quarterly allocation. Last live check: 43.8 KSU granted, 18.09 KSU used, 25.71 KSU available for 2026.q3. A confirmed allocation request raises the q3 total to 143 KSU, but it is not spendable until the next NCI allocation sync appears in `nci_account`; do not budget against the email alone.
+- `nci_account` reports the spendable quarterly allocation. Live check on 2026-08-24: 43.8 KSU granted, 21.93 KSU used, 21.87 KSU available for 2026.q3. A confirmed allocation request raises the q3 total to 143 KSU, but it is not spendable until the next NCI allocation sync appears in `nci_account`; do not budget against the email alone.
 - `normal` has 48 cores and 192 GiB per Cascade Lake node, 4 GiB/core, 2 SU/core-hour, and a 20,736-core maximum request. Requests above one node use whole 48-core nodes.
 - Charge is based on actual walltime and the greater of requested CPU or memory-equivalent cores, but PBS must be able to reserve the requested maximum before starting. A 2,016-core job costs about 4.032 KSU per wall-hour before any memory uplift.
 - Live PBS: `max_array_size=10`; `normal` allows 1,000 queued jobs/project, with scheduling thresholds of 300/project and 200/user. These job-count limits are not useful dataset-level parallelism.
