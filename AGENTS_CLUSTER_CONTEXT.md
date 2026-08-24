@@ -7,7 +7,7 @@ Verified live on 2026-08-22. Recheck queue/allocation values before a production
 - Login: `we2614@gadi.nci.org.au`; project/default group: `ql44`.
 - Repositories: `/home/562/we2614/mts-spi-study-cluster` and sibling `../pyspi-fork`.
 - Main links: `.venv -> /scratch/ql44/we2614/venvs/mts-spi-v3-631de27`, `data -> /scratch/ql44/we2614/mts-spi-data`, `logs -> /scratch/ql44/we2614/mts-spi-logs`.
-- Allocation: Scratch 1 TiB / 202k inodes; gdata 100 GiB / 70k inodes. On 2026-08-24 Scratch was at 201.5k/202k inodes while gdata was effectively empty. New multi-file corpora must use gdata (optionally exposed through a dataset-directory symlink under `data`) until Scratch inode usage is reduced; feature `.npz` files may remain on Scratch. Python environments consume tens of thousands of inodes, so check both byte and inode headroom before a large farm. Keep durable code in Git; Scratch is working storage.
+- Allocation: Scratch 1 TiB / 202k inodes; gdata 100 GiB / 70k inodes. After removing archived calc tables/heatmaps and obsolete TUH/sleep-onset corpora on 2026-08-24, live use was Scratch 24.97 GiB/151,481 inodes and gdata 2.03 GiB/6,745 inodes. Verified legacy proof-v2 banks are archived under `/g/data/ql44/we2614/mts-spi-archives/legacy-proof-v2/`. New multi-file corpora should still prefer gdata (optionally exposed through a dataset-directory symlink under `data`); compact feature `.npz` files may remain on Scratch. Python environments consume tens of thousands of inodes, so check both byte and inode headroom before a large farm. Keep durable code in Git; Scratch is working storage.
 - Passwordless public-key SSH is configured. Compute nodes have no internet; synchronise Git from a login node before submission.
 
 ## Git and environment
