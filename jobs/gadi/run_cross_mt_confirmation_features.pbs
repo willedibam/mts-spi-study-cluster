@@ -1,0 +1,35 @@
+#!/bin/bash
+#PBS -N cross-mt-features
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48
+#PBS -l mem=192GB
+#PBS -l walltime=02:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+
+feature_root=/scratch/ql44/we2614/spi-spi-cross-mt-260824
+confirmation_root=/g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_confirmation_260824
+mkdir -p "$feature_root" logs
+job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
+
+python -m src.process_features \
+    --data-path "$confirmation_root" \
+    --output "$feature_root/confirmation.npz" \
+    --feature-contract direction_preserving_v2 \
+    --metric spearman \
+    --workers "$PBS_NCPUS" \
+    --recompute

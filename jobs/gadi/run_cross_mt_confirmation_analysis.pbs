@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -N cross-mt-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48
+#PBS -l mem=192GB
+#PBS -l walltime=06:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS="$PBS_NCPUS"
+export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
+export MKL_NUM_THREADS="$PBS_NCPUS"
+export NUMEXPR_NUM_THREADS="$PBS_NCPUS"
+
+feature_root=/scratch/ql44/we2614/spi-spi-cross-mt-260824
+study_root=/g/data/ql44/we2614/mts-spi-cross-mt-260824
+mkdir -p "$study_root" logs
+job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
+
+python -m scripts.analyze_cross_mt_transfer \
+    --protocol configs/analysis/cross-mt-transfer-260824.yaml \
+    --manifest "$study_root/development-manifest.json" \
+    --model-bundle "$study_root/development-models.joblib" \
+    --confirmation-features "$feature_root/confirmation.npz" \
+    --baseline-cache "$study_root/confirmation-baselines.npz" \
+    --coordinates-output "$study_root/confirmation-coordinates.npz" \
+    --output "$study_root/confirmation-results.json" \
+    --workers "$PBS_NCPUS"
