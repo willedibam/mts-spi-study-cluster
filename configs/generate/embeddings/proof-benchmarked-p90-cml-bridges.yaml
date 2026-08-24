@@ -1,0 +1,36 @@
+# Current-pyspi rebuild of the two CML bridge classes omitted from the main
+# proof config. Both configs intentionally share one output root and catalogue.
+base_output_dir: data/embeddings/multi_p90_260701/
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [500, 1000, 2000]
+  instances: 10
+
+mts_classes:
+  - name: "defect-turbulence"
+    labels: [cml, defect-turbulence]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: "sti-i"
+    labels: [cml, sti, directed-percolation]
+    generator: "cml_logistic"
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: false
+      delta: [3, 6, 12]
