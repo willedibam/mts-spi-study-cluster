@@ -19,6 +19,7 @@ source .venv/bin/activate
 feature_root=/scratch/ql44/we2614/spi-spi-cross-mt-260824
 study_root=/g/data/ql44/we2614/mts-spi-cross-mt-260824
 development_root=/g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_cml_development_260824
+proof_root=data/embeddings/multi_p90_260701
 mkdir -p "$feature_root" "$study_root" logs
 job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
 exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
@@ -27,6 +28,14 @@ export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
+python -m src.process_features \
+    --data-path "$proof_root" \
+    --output "$feature_root/proof-development-spearman.npz" \
+    --feature-contract direction_preserving_v2 \
+    --metric spearman \
+    --workers "$PBS_NCPUS" \
+    --recompute
+
 python -m src.process_features \
     --data-path "$development_root" \
     --output "$feature_root/cml-development.npz" \
@@ -41,7 +50,7 @@ export MKL_NUM_THREADS="$PBS_NCPUS"
 export NUMEXPR_NUM_THREADS="$PBS_NCPUS"
 python -m scripts.freeze_cross_mt_protocol \
     --protocol configs/analysis/cross-mt-transfer-260824.yaml \
-    --proof-features /scratch/ql44/we2614/spi-spi-direction-v2/proof.npz \
+    --proof-features "$feature_root/proof-development-spearman.npz" \
     --cml-development-features "$feature_root/cml-development.npz" \
     --baseline-cache "$study_root/development-baselines.npz" \
     --model-bundle "$study_root/development-models.joblib" \
