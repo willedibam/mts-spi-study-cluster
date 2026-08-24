@@ -1,6 +1,6 @@
 # Cross-M,T transfer
 
-Active workstream as of 2026-08-24. Facts are marked **verified**; the implemented protocol remains a prespecification until its development manifest is committed. This study tests quantitative transfer, not mathematical invariance.
+Active workstream as of 2026-08-24. Facts are marked **verified**. The Pearson development protocol is frozen; this study tests quantitative transfer, not mathematical invariance.
 
 ## Verified starting state
 
@@ -14,7 +14,7 @@ Active workstream as of 2026-08-24. Facts are marked **verified**; the implement
 
 - Development additions: `configs/generate/embeddings/cross-mt-cml-development-260824.yaml`, instances `0:9`, 360 rows under gdata. Confirmation: `cross-mt-confirmation-260824.yaml`, instances `10:29`, 2,520 rows under a separate gdata root. Overlapping generator parameters exactly match the original proof config.
 - Explicit instance lists preserve the untouched split. Gadi farms are selected by one `(M,T)` cell, use one core/dataset, and emit only `timeseries.npy`, `spi_mpis.npz`, `meta.json` and logs. Confirmation generation must not begin until the common schema and analysis manifest pass development checks and are committed.
-- **Verified:** one-row smoke `177231878` completed in 126.5 s with 289 SPIs, exact config/version provenance and no table/heatmap. Development farms `177242178/191/194/198/203/216/227/234/238` covered the nine homogeneous 40-row cells and all exited 0. Initial freeze job `177247167` correctly rejected a Pearson/Spearman mismatch; Spearman freeze `177252878` completed but was superseded before confirmation. Confirmation remains unsubmitted.
+- **Verified:** one-row smoke `177231878` completed in 126.5 s with 289 SPIs, exact config/version provenance and no table/heatmap. Development farms `177242178/191/194/198/203/216/227/234/238` covered the nine homogeneous 40-row cells and all exited 0. Initial freeze job `177247167` correctly rejected a Pearson/Spearman mismatch; Spearman freeze `177252878` completed but was superseded before confirmation. Authoritative Pearson freeze `177255809` exited 0. Confirmation remains unsubmitted.
 
 ## Implemented protocol before confirmation
 
@@ -24,7 +24,14 @@ Active workstream as of 2026-08-24. Facts are marked **verified**; the implement
 - Three fixed-dimensional raw-data baselines pool channelwise temporal/marginal summaries (50 features), pairwise-dependence distributions (32), or both (82); their scaling/models use development rows only.
 - The implementation fixes PCA50, multinomial logistic regression (`C=1`), 1,000 stratified bootstrap replicates and 1,000 held-label permutations. `scripts/freeze_cross_mt_protocol.py` serializes every development-fitted fold/shared model; `analyze_cross_mt_transfer.py` consumes that bundle without refitting. No confirmation label may tune any choice.
 
-## Open until frozen
+## Frozen development state
 
-- Development feature reconstruction must verify the proof schema exactly, after which the content-addressed manifest/model bundle must be copied locally, audited and committed.
-- Confirmation runtime/memory caps still require representative timing from these development cells. No confirmation PBS job has been submitted.
+- **Verified:** the 1,260-row grid is exact and unique across 14 classes, nine `(M,T)` cells and instances `0:9`. Both source artifacts have Pearson metric, schema `803abbe5…`, 289 SPIs/111 directed, 41,616 symmetric and 32,079 directional features, and complete current-v3 provenance.
+- The content-addressed manifest is tracked at `results/cross_mt_transfer_260824/development-manifest.json`, SHA-256 `775d0fc37a817cee4e332ee9a468d0dd5b8050f8e5ea8bacbd10c604f6f7f978`. Its status is `development_frozen_confirmation_unseen`; protocol, model-bundle and baseline-cache hashes were independently verified.
+- Development filtering retains 21,280–22,567 symmetric, 12,608–13,900 directional and 33,888–36,467 balanced-augmented features across held-cell folds. PCA50 explains 88.8–90.7%, 89.4–91.2% and 88.6–90.5% respectively.
+- The updated six-class current-v3 CML development check uses instances `0:5` for fitting and `6:9` for evaluation: balanced accuracy is 0.981 for `z_sym`, 0.981 for `z_dir`, and 0.968 for balanced augmentation. These are development diagnostics, not confirmation evidence.
+
+## Remaining gate
+
+- Commit the audited manifest before any confirmation submission. Then run a tiny instances-`10:11` confirmation smoke and verify provenance/output policy before releasing the nine homogeneous 280-row farms.
+- Confirmation runtime/memory caps use the measured development-cell timings. No confirmation PBS job has yet been submitted.
