@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
 
 def _cell(cell_type: str, source: str) -> dict:
-    cell = {"cell_type": cell_type, "metadata": {}, "source": source.splitlines(keepends=True)}
+    cell = {
+        "cell_type": cell_type,
+        "id": hashlib.sha256(f"{cell_type}\0{source}".encode()).hexdigest()[:12],
+        "metadata": {},
+        "source": source.splitlines(keepends=True),
+    }
     if cell_type == "code":
         cell.update({"execution_count": None, "outputs": []})
     return cell
@@ -30,6 +36,7 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from IPython.display import Markdown, display
 
 ROOT = Path.cwd().resolve()
 while not (ROOT / "src").exists() and ROOT != ROOT.parent:
@@ -59,16 +66,21 @@ print(f"development={manifest['rows']:,}; confirmation={result['rows']:,}; schem
         ),
         _cell(
             "code",
-            """display_names = {
-    "sym": r"$z_{sym}$ (primary)",
-    "dir": r"$z_{dir}$",
-    "augmented_balanced": r"balanced $z_{aug}$",
+            r"""display_names = {
+    "sym": r"$z_{\mathrm{sym}}$ (primary)",
+    "dir": r"$z_{\mathrm{dir}}$",
+    "augmented_balanced": r"balanced $z_{\mathrm{aug}}$",
     "pooled_univariate": "pooled univariate",
     "pooled_dependence": "pooled dependence",
     "pooled_combined": "pooled combined",
 }
+names = [
+    "sym", "dir", "augmented_balanced",
+    "pooled_univariate", "pooled_dependence", "pooled_combined",
+]
 rows = []
-for name, values in result["results"].items():
+for name in names:
+    values = result["results"][name]
     rows.append({
         "representation": display_names[name],
         "balanced_accuracy": values["classification"]["balanced_accuracy"]["estimate"],
@@ -85,8 +97,40 @@ summary
         ),
         _cell(
             "code",
-            r"""names = list(result["results"])
-x = np.arange(len(names))
+            r'''primary = result["results"]["sym"]
+ba = primary["classification"]["balanced_accuracy"]
+hard_map = primary["retrieval"]["both_M_and_T_changed"]["mean_average_precision"]
+hard_null = primary["retrieval"]["both_M_and_T_changed"]["random_ranking_null"]["mean_average_precision"]
+cell_leak = primary["size_leakage"]["cell"]
+minimum_ba = min(row["balanced_accuracy"] for row in primary["folds"].values())
+minimum_map = min(row["hard_mean_average_precision"] for row in primary["folds"].values())
+best_baseline_ba = max(
+    result["results"][name]["classification"]["balanced_accuracy"]["estimate"]
+    for name in names[3:]
+)
+best_baseline_map = max(
+    result["results"][name]["retrieval"]["both_M_and_T_changed"]["mean_average_precision"]["estimate"]
+    for name in names[3:]
+)
+
+display(Markdown(
+    f"**Held-out result.** $z_{{\\mathrm{{sym}}}}$ achieved balanced accuracy "
+    f"{ba['estimate']:.3f} (95% CI {ba['confidence_interval'][0]:.3f}–{ba['confidence_interval'][1]:.3f}; "
+    f"permutation $p={ba['permutation_p_value']:.3g}$) and hard cross-size mAP {hard_map['estimate']:.3f} "
+    f"(95% CI {hard_map['confidence_interval'][0]:.3f}–{hard_map['confidence_interval'][1]:.3f}; "
+    f"random-ranking expectation {hard_null:.3f}). The worst held cell retained accuracy {minimum_ba:.3f} "
+    f"and mAP {minimum_map:.3f}. These estimates are descriptively above the best pooled baselines "
+    f"({best_baseline_ba:.3f} accuracy; {best_baseline_map:.3f} mAP), but the frozen protocol did not "
+    f"include paired baseline-difference inference, so this is not a formal superiority claim. "
+    f"Joint $(M,T)$ remained decodable within class at {cell_leak['estimate']:.3f} "
+    f"(chance $1/9$; $p={cell_leak['permutation_p_value']:.3g}$): the evidence supports quantitative "
+    f"cross-size transfer, not representation invariance."
+))
+''',
+        ),
+        _cell(
+            "code",
+            r"""x = np.arange(len(names))
 fig, axes = plt.subplots(1, 4, figsize=(16, 3.8), dpi=150)
 
 def estimate_and_error(path):
@@ -134,17 +178,18 @@ plt.show()
         ),
         _cell(
             "code",
-            """folds = result["results"]["sym"]["folds"]
+            r"""folds = result["results"]["sym"]["folds"]
 fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), dpi=150)
 for M in (8, 16, 32):
     cells = [f"M{M}_T{T}" for T in (500, 1000, 2000)]
     axes[0].plot((500, 1000, 2000), [folds[cell]["balanced_accuracy"] for cell in cells], "-o", label=f"M={M}")
     axes[1].plot((500, 1000, 2000), [folds[cell]["hard_mean_average_precision"] for cell in cells], "-o", label=f"M={M}")
-axes[0].set(title=r"$z_{sym}$ classification by held cell", ylabel="balanced accuracy")
-axes[1].set(title=r"$z_{sym}$ hard retrieval by held cell", ylabel="mAP")
+axes[0].set(title=r"$z_{\mathrm{sym}}$ classification by held cell", ylabel="balanced accuracy")
+axes[1].set(title=r"$z_{\mathrm{sym}}$ hard retrieval by held cell", ylabel="mAP")
 for ax in axes:
     ax.set(xlabel="T", xscale="log")
     ax.set_xticks((500, 1000, 2000), ("500", "1000", "2000"))
+    ax.minorticks_off()
     ax.spines[["top", "right"]].set_visible(False)
 axes[0].legend(frameon=False)
 fig.tight_layout()
