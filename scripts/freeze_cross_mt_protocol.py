@@ -272,6 +272,16 @@ def freeze(arguments: argparse.Namespace) -> dict[str, Any]:
             "symmetric_features": int(development["X_sym"].shape[1]),
             "directional_features": int(development["X_dir"].shape[1]),
         },
+        "baseline_schema": {
+            name: {
+                "features": names,
+                "feature_count": len(names),
+                "schema_sha256": hashlib.sha256(
+                    _canonical_json(names).encode()
+                ).hexdigest(),
+            }
+            for name, names in baseline_names.items()
+        },
         "baseline_cache": {"path": str(baseline_cache), "sha256": file_sha256(baseline_cache)},
         "model_bundle": {"path": str(model_bundle), "sha256": file_sha256(model_bundle)},
         "diagnostics": diagnostics,

@@ -135,6 +135,10 @@ def _retrieval_null(gallery_size: int, relevant: int) -> dict[str, float]:
 def analyze(arguments: argparse.Namespace) -> dict[str, Any]:
     protocol = load_yaml(arguments.protocol)
     manifest = json.loads(Path(arguments.manifest).read_text(encoding="utf-8"))
+    if manifest.get("status") != "development_frozen_confirmation_unseen":
+        raise ValueError("development manifest is not in its frozen pre-confirmation state")
+    if manifest.get("study_id") != protocol["study_id"]:
+        raise ValueError("development manifest has the wrong study identity")
     if file_sha256(arguments.protocol) != manifest["protocol_sha256"]:
         raise ValueError("protocol differs from the development-frozen manifest")
     if file_sha256(arguments.model_bundle) != manifest["model_bundle"]["sha256"]:
@@ -149,6 +153,9 @@ def analyze(arguments: argparse.Namespace) -> dict[str, Any]:
     baseline_matrices, baseline_names, timeseries_hashes = build_pooled_baseline_matrices(
         confirmation["dataset_paths"].astype(str), workers=arguments.workers
     )
+    for name, names in baseline_names.items():
+        if names != manifest["baseline_schema"][name]["features"]:
+            raise ValueError(f"confirmation baseline schema mismatch for {name}")
     baseline_cache = Path(arguments.baseline_cache)
     baseline_cache.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
