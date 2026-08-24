@@ -120,7 +120,9 @@ def fit_frozen_pc1(
         block_balanced=block_balanced,
     )
     fitted = transform.transform(development)
-    pca = PCA(n_components=1, svd_solver="randomized", random_state=0).fit(fitted)
+    # Match the frozen Kuramoto pipeline exactly; randomized SVD is reserved
+    # for the explicitly exploratory higher-dimensional proof/CML reductions.
+    pca = PCA(n_components=1, svd_solver="full").fit(fitted)
     component = np.asarray(pca.components_[0], dtype=np.float64)
     anchor = int(np.argmax(np.abs(component)))
     if component[anchor] < 0:

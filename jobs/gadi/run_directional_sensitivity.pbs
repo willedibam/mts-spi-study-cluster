@@ -30,8 +30,8 @@ exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
 case "$ANALYSIS" in
     proof)
         python scripts/analyze_direction_preserving_sensitivity.py proof \
-            --features "$feature_root/proof.npz" \
-            --output "$output_root/proof.json"
+            --features "${FEATURE_FILE:-$feature_root/proof.npz}" \
+            --output "$output_root/${RESULT_NAME:-proof}.json"
         ;;
     cml)
         python scripts/analyze_direction_preserving_sensitivity.py cml \

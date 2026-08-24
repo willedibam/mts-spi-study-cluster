@@ -67,6 +67,9 @@ def test_common_channel_permutation_leaves_both_blocks_unchanged() -> None:
     np.testing.assert_allclose(transformed.z_dir, original.z_dir, atol=1e-7)
     assert transformed.sym_schema == original.sym_schema
     assert transformed.dir_schema == original.dir_schema
+    assert original.z_sym.size == 3 * 2 // 2
+    assert original.z_dir.size == 2 * 3
+    assert len(set(original.augmented_schema)) == len(original.augmented_schema)
 
 
 def test_transpose_one_directed_spi_swaps_parallel_and_reverse() -> None:
