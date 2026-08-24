@@ -14,7 +14,7 @@ Active workstream as of 2026-08-24. Facts are marked **verified**. The Pearson d
 
 - Development additions: `configs/generate/embeddings/cross-mt-cml-development-260824.yaml`, instances `0:9`, 360 rows under gdata. Confirmation: `cross-mt-confirmation-260824.yaml`, instances `10:29`, 2,520 rows under a separate gdata root. Overlapping generator parameters exactly match the original proof config.
 - Explicit instance lists preserve the untouched split. Gadi farms are selected by one `(M,T)` cell, use one core/dataset, and emit only `timeseries.npy`, `spi_mpis.npz`, `meta.json` and logs. Confirmation generation must not begin until the common schema and analysis manifest pass development checks and are committed.
-- **Verified:** one-row smoke `177231878` completed in 126.5 s with 289 SPIs, exact config/version provenance and no table/heatmap. Development farms `177242178/191/194/198/203/216/227/234/238` covered the nine homogeneous 40-row cells and all exited 0. Initial freeze job `177247167` correctly rejected a Pearson/Spearman mismatch; Spearman freeze `177252878` completed but was superseded before confirmation. Authoritative Pearson freeze `177255809` exited 0. Confirmation remains unsubmitted.
+- **Verified:** one-row smoke `177231878` completed in 126.5 s with 289 SPIs, exact config/version provenance and no table/heatmap. Development farms `177242178/191/194/198/203/216/227/234/238` covered the nine homogeneous 40-row cells and all exited 0. Initial freeze job `177247167` correctly rejected a Pearson/Spearman mismatch; Spearman freeze `177252878` completed but was superseded before confirmation. Authoritative Pearson freeze `177255809` exited 0.
 
 ## Implemented protocol before confirmation
 
@@ -34,4 +34,5 @@ Active workstream as of 2026-08-24. Facts are marked **verified**. The Pearson d
 ## Remaining gate
 
 - **Verified:** the audited manifest was committed in `8fcb086`. Two-dataset smoke `177256967` (instances `10:11`, `M=8,T=500`) exited 0 with exact current-v3 provenance and no tables/heatmaps.
-- The nine 280-row homogeneous confirmation farms are `177257654/658/662/663/667/671/688/694/699`; each uses one core per selected dataset. Pearson feature reconstruction `177257703` depends on all nine, and frozen analysis `177257704` depends on reconstruction. These jobs are active/pending and are not yet evidence of transfer.
+- The nine 280-row homogeneous confirmation farms were `177257654/658/662/663/667/671/688/694/699`; each used one core per selected dataset. The first eight exited 0. Job `177257699` completed 248/280 rows for `M=32,T=2000` before exiting 1 at 02:10:06; its final validator reported the exact 32 missing indices, while completed artifacts remained intact.
+- Recovery `177270330` uses 48 one-core workers, skips the 248 complete rows and allows four hours for the 32 slow rows. Replacement Pearson reconstruction `177270338` depends on recovery; frozen analysis `177270341` depends on reconstruction. The obsolete held jobs `177257703/704` were deleted. None of these active/pending jobs is transfer evidence.
