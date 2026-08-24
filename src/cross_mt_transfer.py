@@ -12,6 +12,7 @@ from scipy.special import xlogy
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import pairwise_distances
+from threadpoolctl import threadpool_limits
 
 from .spi_spi_analysis import FrozenFeatureTransform, fit_feature_transform
 
@@ -327,7 +328,8 @@ def pooled_baseline_features(timeseries: np.ndarray) -> dict[str, tuple[np.ndarr
 
 def _baseline_row(path: str) -> tuple[dict[str, np.ndarray], dict[str, list[str]], str]:
     timeseries_path = Path(path) / "timeseries.npy"
-    features = pooled_baseline_features(np.load(timeseries_path))
+    with threadpool_limits(limits=1):
+        features = pooled_baseline_features(np.load(timeseries_path))
     return (
         {name: value[0] for name, value in features.items()},
         {name: value[1] for name, value in features.items()},
