@@ -1,0 +1,53 @@
+base_output_dir: /g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_cml_development_260824/
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [500, 1000, 2000]
+  instances: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+mts_classes:
+  - name: frozen-chaos
+    labels: [cml, frozen-chaos]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.45
+      eps: 0.2
+      transients: 2000
+      sample_every: 1
+      zscore: false
+
+  - name: brownian-defect
+    labels: [cml, brownian-defect]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.85
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: fdstc
+    labels: [cml, fully-developed-stc]
+    generator: cml_logistic
+    base_params:
+      alpha: 2.0
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: chaotic-traveling-wave
+    labels: [cml, traveling-wave, chaotic]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.69
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: false

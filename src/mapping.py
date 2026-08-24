@@ -61,6 +61,25 @@ def _parse_delta_list(value: Any) -> List[int]:
     return parsed or [1]
 
 
+def _parse_instances(value: Any) -> List[int]:
+    """Accept either a count or an explicit list of non-negative instances."""
+
+    if value is None:
+        return []
+    if isinstance(value, int):
+        if value < 0:
+            raise ValueError("instances count must be non-negative")
+        return list(range(value))
+    if not isinstance(value, (list, tuple)):
+        raise ValueError("instances must be a non-negative count or an explicit list")
+    parsed = [int(item) for item in value]
+    if any(item < 0 for item in parsed):
+        raise ValueError("instance indices must be non-negative")
+    if len(set(parsed)) != len(parsed):
+        raise ValueError("instance indices must be unique")
+    return parsed
+
+
 @dataclass(frozen=True)
 class VariantSpec:
     name: str | None
@@ -130,7 +149,7 @@ class ExperimentConfig:
         defaults = data.get("defaults") or {}
         default_M = [int(v) for v in (defaults.get("M_values") or [])]
         default_T = [int(v) for v in (defaults.get("T_values") or [])]
-        default_instances = list(range(int(defaults["instances"]))) if "instances" in defaults else []
+        default_instances = _parse_instances(defaults.get("instances"))
         classes_raw = data.get("mts_classes") or []
         classes: List[ClassSpec] = []
         for entry in classes_raw:
@@ -189,7 +208,11 @@ def _parse_class(
         return vals
     M_values = [int(v) for v in _resolve_list(entry.get("M_values"), default_M)]
     T_values = [int(v) for v in _resolve_list(entry.get("T_values"), default_T)]
-    instances = list(range(int(entry["instances"]))) if "instances" in entry else list(default_instances)
+    instances = (
+        _parse_instances(entry["instances"])
+        if "instances" in entry
+        else list(default_instances)
+    )
     target_classes = list(entry.get("classes", []))
     tickers = [str(t).upper() for t in entry.get("tickers", [])]
     market = entry.get("market")

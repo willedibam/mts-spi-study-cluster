@@ -37,18 +37,26 @@ export PYSPI_N_JOBS=1
 python -c 'import src, pyspi'
 
 commands="$PBS_JOBFS/dataset-commands.txt"
+indices="$PBS_JOBFS/dataset-indices.txt"
 mkdir -p logs
 
 job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
 status="$PBS_O_WORKDIR/logs/${job_stem}.status"
 exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
 
-for ((i=START_INDEX; i<=END_INDEX; i++)); do
+selector=("$EXPERIMENT_CONFIG" --start "$START_INDEX" --end "$END_INDEX")
+[[ -n "${FILTER_M:-}" ]] && selector+=(--M "$FILTER_M")
+[[ -n "${FILTER_T:-}" ]] && selector+=(--T "$FILTER_T")
+[[ -n "${INSTANCE_MIN:-}" ]] && selector+=(--instance-min "$INSTANCE_MIN")
+[[ -n "${INSTANCE_MAX:-}" ]] && selector+=(--instance-max "$INSTANCE_MAX")
+python -m scripts.select_dataset_indices "${selector[@]}" > "$indices"
+
+while IFS= read -r i; do
     printf 'python -m src.run_experiments --job-index %d --experiment-config %s --pyspi-config %s --n-jobs 1 --skip-existing --no-csv --no-heatmap\n' \
         "$i" "$EXPERIMENT_CONFIG" "$PYSPI_CONFIG" >> "$commands"
-done
+done < "$indices"
 
-task_count=$((END_INDEX - START_INDEX + 1))
+task_count=$(wc -l < "$indices")
 workers="${WORKERS:-$PBS_NCPUS}"
 (( workers >= 1 && workers <= PBS_NCPUS ))
 (( workers > task_count )) && workers=$task_count
@@ -64,17 +72,19 @@ mpirun -np "$workers" --map-by node:PE=1 \
 rc=$?
 set -e
 if (( rc == 0 )); then
-    python - "$EXPERIMENT_CONFIG" "$START_INDEX" "$END_INDEX" <<'PY'
+    python - "$EXPERIMENT_CONFIG" "$indices" <<'PY'
 import sys
 
 from src.mapping import DatasetMapping, ExperimentConfig
 from src.run_experiments import _dataset_complete
 
-config, start, end = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+config, index_path = sys.argv[1], sys.argv[2]
 mapping = DatasetMapping(ExperimentConfig.from_file(config))
+with open(index_path, encoding="utf-8") as handle:
+    indices = [int(line) for line in handle if line.strip()]
 missing = [
     index
-    for index in range(start, end + 1)
+    for index in indices
     if not _dataset_complete(mapping.spec_for_index(index))
 ]
 if missing:

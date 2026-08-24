@@ -1,0 +1,144 @@
+base_output_dir: /g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_confirmation_260824/
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 110305
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [500, 1000, 2000]
+  instances: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+
+mts_classes:
+  - name: var-phi-0.95_cpl-0.4
+    labels: [var, linear, ring-symmetric]
+    generator: varma
+    base_params: &var_strong_self
+      phi: 0.95
+      coupling: 0.4
+      ma_phi: 0.0
+      ma_coupling: 0.0
+      noise_std: 0.1
+      topology: ring-symmetric
+      transients: 100
+      zscore: false
+
+  - name: var-phi-0.2_cpl-0.4
+    labels: [var, linear, ring-symmetric]
+    generator: varma
+    base_params:
+      <<: *var_strong_self
+      phi: 0.2
+
+  - name: var-phi-0.2_cpl-0.8
+    labels: [var, linear, ring-symmetric]
+    generator: varma
+    base_params:
+      <<: *var_strong_self
+      phi: 0.2
+      coupling: 0.8
+
+  - name: kuramoto_omega-fast
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: kuramoto
+    base_params: &kuramoto_common
+      K: -4.0
+      dt: 0.00625
+      omega_mean: 3.0
+      omega_std: 1.73205
+      eta: 0.0
+      output: sin
+      connectivity: all-to-all
+      transients: 100
+      zscore: false
+
+  - name: kuramoto_omega-slow
+    labels: [kuramoto, nonlinear, all-to-all, pyclustering-port]
+    generator: kuramoto
+    base_params:
+      <<: *kuramoto_common
+      omega_mean: 0.025
+      omega_std: 0.01443
+
+  - name: cauchy-noise
+    labels: [noise, null, cauchy]
+    generator: cauchy_noise
+    base_params: {zscore: false}
+
+  - name: gaussian-noise
+    labels: [noise, null, gaussian]
+    generator: gaussian_noise
+    base_params: {zscore: false}
+
+  - name: wave-1d
+    labels: [wave, pde, 1d]
+    generator: wave_1d
+    base_params:
+      c: 10.0
+      n_modes: 5
+      ic_decay: 1.5
+      noise_std: 0.01
+      zscore: false
+
+  - name: defect-turbulence
+    labels: [cml, defect-turbulence]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.895
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: sti-i
+    labels: [cml, sti, directed-percolation]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.7522
+      eps: 0.00115
+      transients: 1000
+      sample_every: 1
+      zscore: false
+      delta: [3, 6, 12]
+
+  - name: frozen-chaos
+    labels: [cml, frozen-chaos]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.45
+      eps: 0.2
+      transients: 2000
+      sample_every: 1
+      zscore: false
+
+  - name: brownian-defect
+    labels: [cml, brownian-defect]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.85
+      eps: 0.1
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: fdstc
+    labels: [cml, fully-developed-stc]
+    generator: cml_logistic
+    base_params:
+      alpha: 2.0
+      eps: 0.3
+      transients: 1000
+      sample_every: 1
+      zscore: false
+
+  - name: chaotic-traveling-wave
+    labels: [cml, traveling-wave, chaotic]
+    generator: cml_logistic
+    base_params:
+      alpha: 1.69
+      eps: 0.5
+      transients: 1000
+      sample_every: 1
+      zscore: false

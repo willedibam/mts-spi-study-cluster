@@ -544,3 +544,30 @@ def test_terminal_kuramoto_confirmation_is_independent_and_preserves_hard_paths(
     }
     assert all(spec.generator_params["future_truth_T"] == 1000 for spec in final.specs)
     assert all(spec.generator_params["store_full_phases"] is False for spec in final.specs)
+
+
+def test_explicit_instance_indices_are_preserved(tmp_path: Path) -> None:
+    config_path = tmp_path / "explicit-instances.yaml"
+    config_path.write_text(
+        """
+base_output_dir: data/test-explicit-instances
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 7
+save_heatmap: false
+defaults:
+  M_values: [8]
+  T_values: [500]
+  instances: [10, 12, 29]
+mts_classes:
+  - name: gaussian-noise
+    generator: gaussian_noise
+    base_params: {zscore: false}
+""",
+        encoding="utf-8",
+    )
+
+    mapping = DatasetMapping(ExperimentConfig.from_file(config_path))
+
+    assert [spec.instance for spec in mapping.specs] == [10, 12, 29]
