@@ -26,7 +26,12 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   per-dataset input files. Source and outputs belong on gdata via a dataset symlink.
 - Local/Gadi contract tests and full source validation pass. Gadi smoke job
   `177419496` (9 heterogeneous datasets) and stratified scout `177420118` (48,
-  non-overlapping) establish runtime/eligibility before measured production binning.
+  non-overlapping) both audited complete. Measured runtime was 34--1,593 s and
+  peak memory was 42.4 GB across 48 tasks.
+- Production is partitioned by the transparent measured proxy `M^2*T`: fast
+  `<100k` (807 datasets, 288 cores/6 nodes), medium `100k..<400k` (203,
+  96 cores/2 nodes), slow `>=400k` (43, 48 cores/1 node). Corresponding index
+  files are under `configs/corpora/`; `--skip-existing` validates/reuses 57 pilots.
 
 ## Analysis boundary
 
