@@ -7,7 +7,7 @@ from src.process_features import (
     _pearson_corr_matrix,
     _spearman_corr_matrix,
 )
-from src.spi_spi_contract import build_feature_blocks
+from src.spi_spi_contract import build_feature_blocks, build_unified_features
 
 
 def _schema_index(result, relation: str, first: str, second: str) -> int:
@@ -191,3 +191,61 @@ def test_undefined_correlations_remain_nan_with_reasons() -> None:
         "sym": "constant",
         "ordered": "constant",
     }
+
+
+def test_unified_contract_has_exactly_one_feature_per_spi_pair() -> None:
+    mpis = _example_mpis()
+    order = ["u", "d1", "d2"]
+    result = build_unified_features(mpis, order)
+
+    assert result.z.shape == (3,)
+    assert result.valid.shape == (3,)
+    assert [(item.block, item.relation) for item in result.schema] == [
+        ("unified", "ordered"),
+        ("unified", "ordered"),
+        ("unified", "ordered"),
+    ]
+    assert [(item.spi_a, item.spi_b) for item in result.schema] == [
+        ("u", "d1"),
+        ("u", "d2"),
+        ("d1", "d2"),
+    ]
+
+
+def test_unified_contract_is_invariant_to_common_channel_permutation() -> None:
+    mpis = _example_mpis()
+    order = ["u", "d1", "d2"]
+    original = build_unified_features(mpis, order)
+    permutation = np.array([2, 0, 3, 1])
+    permuted = {
+        name: matrix[np.ix_(permutation, permutation)]
+        for name, matrix in mpis.items()
+    }
+    transformed = build_unified_features(permuted, order)
+
+    np.testing.assert_allclose(transformed.z, original.z, atol=1e-7)
+    assert transformed.schema == original.schema
+
+
+def test_unified_contract_preserves_aligned_directional_comparison() -> None:
+    first = np.array(
+        [[0.0, 1.0, 2.0], [-1.0, 0.0, 4.0], [-2.0, -4.0, 0.0]]
+    )
+    second = 3.0 * first + np.eye(3)
+    result = build_unified_features({"a": first, "b": second}, ["a", "b"])
+
+    np.testing.assert_allclose(result.z, [1.0], atol=1e-7)
+
+
+def test_unified_contract_marks_invalid_spi_pairs_nan() -> None:
+    result = build_unified_features(
+        {
+            "constant": np.ones((3, 3), dtype=float),
+            "varying": np.arange(9, dtype=float).reshape(3, 3),
+        },
+        ["constant", "varying"],
+    )
+
+    assert np.isnan(result.z[0])
+    assert not result.valid[0]
+    assert result.invalid_reasons == {"constant": {"ordered": "constant"}}

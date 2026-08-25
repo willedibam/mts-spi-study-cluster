@@ -3,9 +3,14 @@ import numpy as np
 from src.process_features import (
     _edge_vectors,
     _pearson_corr_matrix,
+    _parse_metrics,
     _rankdata,
     _spearman_corr_matrix,
 )
+
+
+def test_default_metric_is_pearson() -> None:
+    assert _parse_metrics(None) == ["pearson"]
 
 
 def test_rankdata_uses_average_ranks_for_ties() -> None:

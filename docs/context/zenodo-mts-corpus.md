@@ -1,6 +1,6 @@
 # Zenodo MTS corpus map
 
-Active workstream as of 2026-08-25. This is exploratory representation analysis;
+Active workstream as of 2026-08-26. This is exploratory representation analysis;
 proximity is SPI interaction-profile similarity, not established mechanistic identity.
 
 ## Verified source
@@ -35,10 +35,16 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 
 ## Analysis boundary
 
-- Primary reconstruction is Pearson `direction_preserving_v2`: retain raw `X_sym`
-  (`1053 x 41,616` for 289 SPIs) and `X_dir` (`1053 x 32,079` for 111 directed SPIs),
-  with masks/schema/provenance. Direction cannot be represented faithfully by only a
-  single `K choose 2` upper triangle.
+- Primary reconstruction is Pearson `unified_ordered_v3`: correlate complete aligned
+  ordered off-diagonal MPI entries for every SPI pair, producing one raw
+  `1053 x 41,616` matrix for 289 SPIs plus validity mask/schema/provenance. This
+  preserves aligned direction for directed--directed comparisons. Reverse-edge
+  comparison and per-SPI self-reciprocity belong only in an optional v2 sensitivity,
+  not the primary `K choose 2` atlas.
+- The 57-pilot real-data smoke artifact has the exact `57 x 41,616` shape. Its raw
+  row-validity range is `.478--.952`; 16,419 features are valid in at least 95% of
+  pilot rows and 25,451 in at least 90%. Re-estimate all missingness gates on the
+  complete corpus; preserve NaNs and compare 90/95/100% feature-validity sensitivity.
 - Fit clustering in a preprocessed PCA/meta-feature space, never in t-SNE coordinates.
   UMAP/t-SNE are visualizations. Compare stable GMM, HDBSCAN and graph/consensus
   solutions using resampling stability and method-appropriate criteria, not appearance.
@@ -48,4 +54,4 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   validation. The broad atlas claim is already false: [Navarro et al. (PMLR
   2023)](https://proceedings.mlr.press/v224/navarro23a.html) projected 94
   heterogeneous MTS datasets in aggregated Catch22 meta-feature space; only the
-  direction-preserving SPI--SPI construction/scale is a plausible novelty.
+  SPI interaction-profile construction/scale is a plausible narrower novelty.

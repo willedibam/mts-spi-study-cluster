@@ -2,6 +2,8 @@
 Compute and cache SPI-SPI feature matrices for downstream analysis.
 
 - ``legacy_symmetrized_v1`` exactly preserves the historical construction.
+- ``unified_ordered_v3`` (default) emits one ordered-entry correlation per
+  unordered SPI pair: exactly ``K choose 2`` features.
 - ``direction_preserving_v2`` emits a frozen ``z_sym`` block plus a
   channel-permutation-invariant directional block over ordered off-diagonals.
 - Canonical v2 artifacts retain undefined correlations as NaN and never apply
@@ -29,10 +31,13 @@ from scipy.stats import rankdata, spearmanr, ConstantInputWarning
 
 from .utils import load_json, project_root
 from .spi_spi_contract import (
-    CONTRACT_VERSION,
+    DIRECTIONAL_CONTRACT_VERSION,
     LEGACY_CONTRACT_VERSION,
+    UNIFIED_CONTRACT_VERSION,
     FeatureSpec,
     build_feature_blocks,
+    build_unified_feature_values,
+    build_unified_schema,
     schema_sha256,
 )
 
@@ -43,7 +48,11 @@ LOGGER = logging.getLogger(__name__)
 
 MetricType = Literal["spearman", "pearson", "mi"]
 NonFinitePolicy = Literal["zero", "nan", "raise"]
-FeatureContract = Literal["legacy_symmetrized_v1", "direction_preserving_v2"]
+FeatureContract = Literal[
+    "legacy_symmetrized_v1",
+    "direction_preserving_v2",
+    "unified_ordered_v3",
+]
 
 
 def load_spi_subset(path: str | Path) -> tuple[list[str], str]:
@@ -321,7 +330,7 @@ def build_spi_spi_features(
     directed_flags: List[bool],
     *,
     split_directed: bool = False,
-    metric: MetricType = "spearman",
+    metric: MetricType = "pearson",
     nonfinite_policy: NonFinitePolicy = "zero",
 ) -> tuple[np.ndarray, List[str]]:
     with np.load(sample["path"] / "spi_mpis.npz") as npz:
@@ -496,6 +505,59 @@ def build_direction_preserving_feature_matrix(
     }
 
 
+def build_unified_feature_matrix(
+    samples: List[Dict],
+    spi_order: List[str],
+    *,
+    metric: MetricType = "pearson",
+    workers: int = 1,
+) -> dict[str, object]:
+    """Build the unified, complete ``K choose 2`` feature matrix."""
+
+    rows: list[np.ndarray] = []
+    valid_rows: list[np.ndarray] = []
+    invalid_reasons: list[str] = []
+    schema = build_unified_schema(spi_order)
+    tasks = [
+        (str(sample["path"]), tuple(spi_order), metric)
+        for sample in samples
+    ]
+    if workers < 1:
+        raise ValueError("workers must be at least one")
+    if workers == 1:
+        results = map(_build_unified_sample, tasks)
+        executor = None
+    else:
+        executor = ProcessPoolExecutor(
+            max_workers=workers,
+            mp_context=get_context("spawn"),
+        )
+        results = executor.map(_build_unified_sample, tasks)
+    try:
+        for index, (values, valid, reasons) in enumerate(results, start=1):
+            rows.append(values)
+            valid_rows.append(valid)
+            invalid_reasons.append(_canonical_json(reasons))
+            if index % 10 == 0 or index == len(samples):
+                LOGGER.info(
+                    "unified features: %d/%d (%.0f%%)",
+                    index,
+                    len(samples),
+                    100 * index / len(samples),
+                )
+    finally:
+        if executor is not None:
+            executor.shutdown()
+    if not rows:
+        raise RuntimeError("No features computed")
+    return {
+        "X": np.vstack(rows),
+        "validity_mask": np.vstack(valid_rows),
+        "invalid_reasons_json": np.asarray(invalid_reasons),
+        "schema": schema,
+    }
+
+
 def _build_direction_preserving_sample(
     task: tuple[str, tuple[str, ...], tuple[bool, ...], MetricType, bool],
 ):
@@ -511,6 +573,15 @@ def _build_direction_preserving_sample(
     )
 
 
+def _build_unified_sample(
+    task: tuple[str, tuple[str, ...], MetricType],
+):
+    dataset_path, spi_order, metric = task
+    with np.load(Path(dataset_path) / "spi_mpis.npz") as archive:
+        mpis = {name: archive[name] for name in spi_order}
+    return build_unified_feature_values(mpis, spi_order, metric=metric)
+
+
 def cache_path(
     data_path: str,
     limit: int | None,
@@ -519,15 +590,17 @@ def cache_path(
     split_directed: bool = False,
     metric: MetricType = "spearman",
     output_dir: str | None = None,
-    feature_contract: FeatureContract = LEGACY_CONTRACT_VERSION,
+    feature_contract: FeatureContract = UNIFIED_CONTRACT_VERSION,
 ) -> Path:
     suffix = f"_limit{limit}" if limit else ""
     subset_suffix = f"_{subset_label}" if subset_label else ""
     split_suffix = "_split" if split_directed else ""
     metric_suffix = f"_{metric}"
-    contract_suffix = (
-        "" if feature_contract == LEGACY_CONTRACT_VERSION else "_direction-v2"
-    )
+    contract_suffix = {
+        LEGACY_CONTRACT_VERSION: "",
+        DIRECTIONAL_CONTRACT_VERSION: "_direction-v2",
+        UNIFIED_CONTRACT_VERSION: "_unified-v3",
+    }[feature_contract]
     safe = data_path.replace("\\", "-").replace("/", "-").strip("-")
     base_dir = Path(output_dir) if output_dir else project_root() / "features"
     return base_dir / f"{safe}{contract_suffix}{split_suffix}{metric_suffix}{subset_suffix}{suffix}.npz"
@@ -556,7 +629,7 @@ def load_cached_features(
             )
     contract_value = payload.get("feature_contract")
     contract = str(np.asarray(contract_value).item()) if contract_value is not None else None
-    if contract == CONTRACT_VERSION:
+    if contract == DIRECTIONAL_CONTRACT_VERSION:
         required = (
             "X_sym",
             "X_dir",
@@ -596,6 +669,37 @@ def load_cached_features(
             payload["dir_validity_mask"], np.isfinite(payload["X_dir"])
         ):
             raise ValueError(f"cache {path} validity masks do not match stored values")
+    elif contract == UNIFIED_CONTRACT_VERSION:
+        required = (
+            "X",
+            "validity_mask",
+            "feature_block",
+            "feature_relation",
+            "feature_spi_a",
+            "feature_spi_b",
+            "schema_sha256",
+        )
+        missing = [name for name in required if name not in payload]
+        if missing:
+            raise ValueError(f"cache {path} missing required fields: {', '.join(missing)}")
+        schema = tuple(
+            FeatureSpec(str(block), str(relation), str(first), str(second))
+            for block, relation, first, second in zip(
+                payload["feature_block"],
+                payload["feature_relation"],
+                payload["feature_spi_a"],
+                payload["feature_spi_b"],
+            )
+        )
+        expected_schema_hash = str(np.asarray(payload["schema_sha256"]).item())
+        if schema_sha256(schema) != expected_schema_hash:
+            raise ValueError(f"cache {path} has a corrupt feature schema hash")
+        if payload["X"].shape[1] != len(schema):
+            raise ValueError(f"cache {path} feature matrix/schema dimensions disagree")
+        if payload["validity_mask"].shape != payload["X"].shape:
+            raise ValueError(f"cache {path} validity mask dimensions disagree")
+        if not np.array_equal(payload["validity_mask"], np.isfinite(payload["X"])):
+            raise ValueError(f"cache {path} validity mask does not match stored values")
     return payload
 
 
@@ -640,11 +744,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--recompute", action="store_true", help="Recompute even if cache exists.")
     parser.add_argument(
         "--feature-contract",
-        choices=(LEGACY_CONTRACT_VERSION, CONTRACT_VERSION),
-        default=LEGACY_CONTRACT_VERSION,
+        choices=(
+            LEGACY_CONTRACT_VERSION,
+            DIRECTIONAL_CONTRACT_VERSION,
+            UNIFIED_CONTRACT_VERSION,
+        ),
+        default=UNIFIED_CONTRACT_VERSION,
         help=(
-            "Feature contract. The legacy default preserves existing commands; "
-            "new analyses must request direction_preserving_v2 explicitly."
+            "Feature contract. Default: unified_ordered_v3, with exactly one "
+            "ordered-entry similarity per unordered SPI pair."
         ),
     )
     parser.add_argument(
@@ -661,16 +769,16 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--metric",
         type=str,
-        default="spearman",
-        help="Comma-separated metrics to compute: spearman (default), pearson, mi.",
+        default="pearson",
+        help="Comma-separated metrics to compute: pearson (default), spearman, mi.",
     )
     parser.add_argument(
         "--var-threshold",
         type=float,
         default=None,
         help=(
-            "Legacy-only corpus variance filter. Omit for v2; fit filtering on "
-            "development data downstream. Historical default was 1e-8."
+            "Legacy-only corpus variance filter. Omit for unified/v2; fit "
+            "filtering downstream. Historical default was 1e-8."
         ),
     )
     parser.add_argument(
@@ -682,17 +790,17 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--workers",
         type=int,
         default=1,
-        help="Dataset-level worker processes for v2 reconstruction (default: 1).",
+        help="Dataset-level worker processes for unified/v2 reconstruction (default: 1).",
     )
     return parser.parse_args(argv)
 
 
 def _parse_metrics(raw: str | None) -> List[MetricType]:
     if not raw:
-        return ["spearman"]
+        return ["pearson"]
     metrics = [m.strip().lower() for m in raw.split(",") if m.strip()]
     if not metrics:
-        return ["spearman"]
+        return ["pearson"]
     allowed = {"spearman", "pearson", "mi"}
     unknown = [m for m in metrics if m not in allowed]
     if unknown:
@@ -728,22 +836,22 @@ def main(argv: Sequence[str] | None = None) -> None:
         LOGGER.info("Using all SPIs")
     
     contract: FeatureContract = args.feature_contract
-    if contract == CONTRACT_VERSION and args.split_directed:
+    if contract != LEGACY_CONTRACT_VERSION and args.split_directed:
         raise ValueError(
             "--split-directed is a legacy fixed-label construction and is not "
-            "valid under direction_preserving_v2"
+            "valid under unified/v2 contracts"
         )
-    if contract == CONTRACT_VERSION and args.var_threshold is not None:
+    if contract != LEGACY_CONTRACT_VERSION and args.var_threshold is not None:
         raise ValueError(
-            "direction_preserving_v2 never applies a corpus variance filter; "
+            "unified/v2 contracts never apply a corpus variance filter; "
             "fit filtering downstream on development rows"
         )
-    if contract == LEGACY_CONTRACT_VERSION and args.no_reciprocity:
+    if contract != DIRECTIONAL_CONTRACT_VERSION and args.no_reciprocity:
         raise ValueError("--no-reciprocity applies only to direction_preserving_v2")
     if args.workers < 1:
         raise ValueError("--workers must be at least one")
     if contract == LEGACY_CONTRACT_VERSION and args.workers != 1:
-        raise ValueError("--workers currently applies only to direction_preserving_v2")
+        raise ValueError("--workers currently applies only to unified/v2 contracts")
 
     metrics = _parse_metrics(args.metric)
     multi_metric = len(metrics) > 1
@@ -791,11 +899,13 @@ def main(argv: Sequence[str] | None = None) -> None:
                 "feature_contract": contract,
                 "metric": metric,
                 "nonfinite_policy": (
-                    "nan" if contract == CONTRACT_VERSION else "zero"
+                    "zero" if contract == LEGACY_CONTRACT_VERSION else "nan"
                 ),
                 "split_directed": bool(args.split_directed),
                 "include_reciprocity": (
-                    not args.no_reciprocity if contract == CONTRACT_VERSION else None
+                    not args.no_reciprocity
+                    if contract == DIRECTIONAL_CONTRACT_VERSION
+                    else None
                 ),
                 "legacy_var_threshold": (
                     args.var_threshold
@@ -871,7 +981,7 @@ def main(argv: Sequence[str] | None = None) -> None:
                 "split_directed": bool(args.split_directed),
                 "legacy_var_threshold": threshold,
             }
-        else:
+        elif contract == DIRECTIONAL_CONTRACT_VERSION:
             result = build_direction_preserving_feature_matrix(
                 samples,
                 spi_order,
@@ -905,6 +1015,34 @@ def main(argv: Sequence[str] | None = None) -> None:
                 "diagonal_policy": "excluded",
                 "ordered_entry_order": "C-row-major-i-ne-j",
                 "include_reciprocity": not args.no_reciprocity,
+            }
+        else:
+            result = build_unified_feature_matrix(
+                samples,
+                spi_order,
+                metric=metric,
+                workers=args.workers,
+            )
+            schema = result.pop("schema")
+            payload = {
+                **common_payload,
+                **result,
+                "feature_block": np.asarray(
+                    [feature.block for feature in schema], dtype=object
+                ),
+                "feature_relation": np.asarray(
+                    [feature.relation for feature in schema], dtype=object
+                ),
+                "feature_spi_a": np.asarray(
+                    [feature.spi_a for feature in schema], dtype=object
+                ),
+                "feature_spi_b": np.asarray(
+                    [feature.spi_b for feature in schema], dtype=object
+                ),
+                "schema_sha256": schema_sha256(schema),
+                "nonfinite_policy": "nan",
+                "diagonal_policy": "excluded",
+                "ordered_entry_order": "C-row-major-i-ne-j",
             }
         save_cached_features(cache_file, payload)
 

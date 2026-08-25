@@ -1,10 +1,9 @@
-"""Versioned, direction-preserving SPI--SPI feature construction.
+"""Versioned SPI--SPI feature construction.
 
-The legacy symmetrized block is retained exactly (apart from the explicit
-``NaN`` representation of undefined correlations).  The directional block
-uses complete ordered off-diagonal MPI entries, which makes it invariant to a
-common permutation of channel labels while retaining relationships between
-opposite edge orientations.
+The primary unified contract compares complete ordered off-diagonal MPI
+entries and emits exactly one value per unordered SPI pair.  The older
+direction-expanded and legacy symmetrized contracts remain available for
+sensitivity analyses and reproduction.
 """
 from __future__ import annotations
 
@@ -17,16 +16,19 @@ import numpy as np
 from scipy.stats import rankdata
 
 
-CONTRACT_VERSION = "direction_preserving_v2"
 LEGACY_CONTRACT_VERSION = "legacy_symmetrized_v1"
+DIRECTIONAL_CONTRACT_VERSION = "direction_preserving_v2"
+UNIFIED_CONTRACT_VERSION = "unified_ordered_v3"
+# Backwards-compatible alias for code that used CONTRACT_VERSION for v2.
+CONTRACT_VERSION = DIRECTIONAL_CONTRACT_VERSION
 
 Metric = Literal["pearson", "spearman", "mi"]
 
 
 @dataclass(frozen=True)
 class FeatureSpec:
-    block: Literal["sym", "dir"]
-    relation: Literal["sym", "parallel", "reverse", "reciprocity"]
+    block: Literal["sym", "dir", "unified"]
+    relation: Literal["sym", "parallel", "reverse", "reciprocity", "ordered"]
     spi_a: str
     spi_b: str
 
@@ -56,6 +58,14 @@ class FeatureBlocks:
     @property
     def augmented_schema(self) -> tuple[FeatureSpec, ...]:
         return self.sym_schema + self.dir_schema
+
+
+@dataclass(frozen=True)
+class UnifiedFeatures:
+    z: np.ndarray
+    schema: tuple[FeatureSpec, ...]
+    valid: np.ndarray
+    invalid_reasons: Mapping[str, Mapping[str, str]]
 
 
 def schema_json(schema: Sequence[FeatureSpec]) -> str:
@@ -179,6 +189,82 @@ def _similarity_matrix(vectors: np.ndarray, metric: Metric) -> np.ndarray:
     if metric == "mi":
         return _mutual_information_matrix(vectors)
     raise ValueError(f"unknown metric: {metric}")
+
+
+def build_unified_features(
+    mpis: Mapping[str, np.ndarray],
+    spi_order: Sequence[str],
+    *,
+    metric: Metric = "pearson",
+) -> UnifiedFeatures:
+    """Return one aligned ordered-edge similarity per unordered SPI pair.
+
+    Every MPI contributes ``A[i,j]`` for all ``i != j`` in row-major order.
+    Comparing the same ordered positions preserves aligned direction for two
+    directed SPIs, while treating directed and symmetric SPIs under one
+    schema.  A common permutation of channel labels leaves all values
+    unchanged.  Reverse-direction and self-reciprocity relations are not part
+    of this contract.
+    """
+
+    z, valid, invalid_reasons = build_unified_feature_values(
+        mpis,
+        spi_order,
+        metric=metric,
+    )
+    return UnifiedFeatures(
+        z=z,
+        schema=build_unified_schema(spi_order),
+        valid=valid,
+        invalid_reasons=invalid_reasons,
+    )
+
+
+def build_unified_schema(spi_order: Sequence[str]) -> tuple[FeatureSpec, ...]:
+    """Construct the dataset-independent unified feature schema once."""
+
+    if len(set(spi_order)) != len(spi_order):
+        raise ValueError("spi_order contains duplicate names")
+    return tuple(
+        FeatureSpec("unified", "ordered", spi_order[first], spi_order[second])
+        for first in range(len(spi_order))
+        for second in range(first + 1, len(spi_order))
+    )
+
+
+def build_unified_feature_values(
+    mpis: Mapping[str, np.ndarray],
+    spi_order: Sequence[str],
+    *,
+    metric: Metric = "pearson",
+) -> tuple[np.ndarray, np.ndarray, Mapping[str, Mapping[str, str]]]:
+    """Compute unified values without rebuilding the shared feature schema."""
+
+    if len(set(spi_order)) != len(spi_order):
+        raise ValueError("spi_order contains duplicate names")
+    missing = [name for name in spi_order if name not in mpis]
+    if missing:
+        raise KeyError(f"missing MPI(s): {', '.join(missing)}")
+
+    matrices: list[np.ndarray] = []
+    dimension: int | None = None
+    for name in spi_order:
+        matrix = _validate_mpi(name, mpis[name], dimension)
+        dimension = matrix.shape[0]
+        matrices.append(matrix)
+
+    ordered_vectors = np.vstack(
+        [_ordered_off_diagonal(matrix) for matrix in matrices]
+    )
+    correlations = _similarity_matrix(ordered_vectors, metric)
+    upper = np.triu_indices(len(spi_order), k=1)
+    z = correlations[upper].astype(np.float32)
+    invalid_reasons: dict[str, dict[str, str]] = {}
+    for name, vector in zip(spi_order, ordered_vectors):
+        reason = _vector_invalid_reason(vector)
+        if reason is not None:
+            invalid_reasons[name] = {"ordered": reason}
+    return z, np.isfinite(z), invalid_reasons
 
 
 def build_feature_blocks(

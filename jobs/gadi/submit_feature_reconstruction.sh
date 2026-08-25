@@ -9,7 +9,12 @@ ncpus="${NCPUS:-48}"
 (( ncpus >= 1 && ncpus <= 48 ))
 mem_gb="${MEM_GB:-192}"
 walltime="${WALLTIME:-01:00:00}"
-variables="DATA_PATH=$data_path,OUTPUT=$output,WORKERS=${WORKERS:-$ncpus},METRIC=${METRIC:-pearson}"
+feature_contract="${FEATURE_CONTRACT:-unified_ordered_v3}"
+case "$feature_contract" in
+    unified_ordered_v3|direction_preserving_v2|legacy_symmetrized_v1) ;;
+    *) echo "unknown FEATURE_CONTRACT: $feature_contract" >&2; exit 2 ;;
+esac
+variables="DATA_PATH=$data_path,OUTPUT=$output,WORKERS=${WORKERS:-$ncpus},METRIC=${METRIC:-pearson},FEATURE_CONTRACT=$feature_contract"
 if [[ -n "${SPI_SUBSET:-}" ]]; then
     test -f "$SPI_SUBSET"
     variables+=",SPI_SUBSET=$SPI_SUBSET"

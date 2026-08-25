@@ -97,14 +97,44 @@ def test_v2_artifact_has_frozen_complete_schema_and_validated_cache(tmp_path: Pa
         main(arguments)
 
 
-def test_v2_rejects_corpus_variance_filter(tmp_path: Path) -> None:
-    with pytest.raises(ValueError, match="never applies a corpus variance filter"):
+def test_default_unified_artifact_has_k_choose_two_schema(tmp_path: Path) -> None:
+    data_root = tmp_path / "data"
+    _write_sample(data_root / "contract-test" / "sample-0", 0, constant_directed=False)
+    _write_sample(data_root / "contract-test" / "sample-1", 1, constant_directed=True)
+    output = tmp_path / "features.npz"
+
+    arguments = [
+        "--data-path",
+        str(data_root),
+        "--metric",
+        "pearson",
+        "--output",
+        str(output),
+    ]
+    main(arguments)
+    with np.load(output, allow_pickle=True) as archive:
+        assert archive["feature_contract"].item() == "unified_ordered_v3"
+        assert archive["X"].shape == (2, 3)
+        assert archive["validity_mask"].shape == (2, 3)
+        assert archive["feature_block"].tolist() == ["unified"] * 3
+        assert archive["feature_relation"].tolist() == ["ordered"] * 3
+        assert list(zip(archive["feature_spi_a"], archive["feature_spi_b"])) == [
+            ("u1", "d"),
+            ("u1", "u2"),
+            ("d", "u2"),
+        ]
+        assert np.array_equal(archive["validity_mask"], np.isfinite(archive["X"]))
+
+    # The complete source and builder identity are validated on reuse.
+    main(arguments)
+
+
+def test_unified_rejects_corpus_variance_filter(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="never apply a corpus variance filter"):
         main(
             [
                 "--data-path",
                 str(tmp_path),
-                "--feature-contract",
-                "direction_preserving_v2",
                 "--var-threshold",
                 "1e-8",
             ]

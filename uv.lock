@@ -1800,6 +1800,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+atlas = [
+    { name = "pycatch22" },
+]
 dtw = [
     { name = "dtaidistance" },
     { name = "dtw-python" },
@@ -1839,12 +1842,13 @@ requires-dist = [
     { name = "plotly", specifier = ">=6.7.0" },
     { name = "psutil", specifier = ">=5.9" },
     { name = "pyarrow", specifier = ">=15.0" },
+    { name = "pycatch22", marker = "extra == 'atlas'", specifier = ">=0.5.0" },
     { name = "pyclustering", specifier = ">=0.10.1" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "scikit-learn", specifier = ">=1.4" },
     { name = "scipy", specifier = ">=1.11" },
     { name = "seaborn", specifier = ">=0.13" },
-    { name = "setuptools", specifier = ">=68,<80" },
+    { name = "setuptools", specifier = ">=68" },
     { name = "sktime", marker = "extra == 'real'", specifier = ">=0.30.0" },
     { name = "torch", specifier = ">=2.1.0" },
     { name = "torch", marker = "extra == 'graph'", specifier = ">=2.0" },
@@ -1855,7 +1859,7 @@ requires-dist = [
     { name = "xarray" },
     { name = "yfinance", marker = "extra == 'real'" },
 ]
-provides-extras = ["real", "prep", "dtw", "graph"]
+provides-extras = ["real", "prep", "dtw", "graph", "atlas"]
 
 [[package]]
 name = "multidict"
@@ -2875,6 +2879,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/e7/35/6b61dcca1386b14d3
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7d/7e/0041e56e455d26d5fb644dde3976cffa135e658ac5572c2ca7ab40245af2/pybv-0.7.6-py3-none-any.whl", hash = "sha256:5b2816b3547035c8b806fcca7705c67f8be5c6ca5fee26486754bd492f180139", size = 16211, upload-time = "2024-11-25T20:52:37.684Z" },
 ]
+
+[[package]]
+name = "pycatch22"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/19/404a583ce6a804435101a4a5946a5c85d7326d68dc427013f641da47202a/pycatch22-0.5.0.tar.gz", hash = "sha256:9a2de6f5fa4b23080e4e3a162d20f29a02f88a8afb9c2c6caf0a7f40c09d1899", size = 22215965, upload-time = "2026-08-06T02:05:17.432Z" }
 
 [[package]]
 name = "pyclustering"

@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N spi-feature-v2
+#PBS -N spi-feature
 #PBS -P ql44
 #PBS -q normal
 #PBS -l ncpus=48
@@ -34,7 +34,7 @@ args=(
     --data-path "$DATA_PATH"
     --output "$OUTPUT"
     --metric "${METRIC:-pearson}"
-    --feature-contract direction_preserving_v2
+    --feature-contract "${FEATURE_CONTRACT:-unified_ordered_v3}"
     --workers "${WORKERS:-$PBS_NCPUS}"
 )
 if [[ -n "${SPI_SUBSET:-}" ]]; then

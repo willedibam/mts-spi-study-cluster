@@ -1,10 +1,16 @@
 # SPI–SPI representation evaluation
 
-Authoritative handoff as of 2026-08-24. Repository: `~/Code/mts-spi-study-cluster`, branch `refactor-lagged-warping`; feature/analysis implementation baseline `fbbb9036de4ae72f9f4d50e08692e27982a13cad`, with latest committed evidence/operations baseline `2a5c6902847c79b2141773ac08574cfa8b838b6f`. Facts below were checked against code, artifacts or PBS state; proposals are labelled.
+Authoritative handoff as of 2026-08-26. Repository: `~/Code/mts-spi-study-cluster`, branch `refactor-lagged-warping`. Facts below were checked against code, artifacts or PBS state; proposals are labelled.
+
+## Current primary contract
+
+- `src/process_features.py` now defaults to `unified_ordered_v3`: every MPI is vectorized over all ordered off-diagonal entries and the same-position Pearson/Spearman/MI similarity is recorded once for every unordered SPI pair. This gives exactly `K choose 2` features, preserves aligned direction for directed--directed pairs, and is invariant to a common channel permutation.
+- Reverse-edge comparison asks a separate orientation question; self-reciprocity is a per-SPI property rather than an SPI-pair similarity. Both remain available through explicit `direction_preserving_v2` sensitivity runs but are excluded from the primary unified representation.
+- Undefined values remain NaN with a validity mask. The schema and content/provenance-aware cache identity are frozen in the artifact; corpus missingness/variance filtering remains downstream.
 
 ## Verified legacy behaviour and defects
 
-- `src/process_features.py` still defaults to `legacy_symmetrized_v1` so old commands remain reproducible. For each MPI it uses the strict upper triangle of `(A+A.T)/2`; `build_spi_spi_features` correlates these edge vectors and flattens SPI-pair upper triangles. MPI diagonals and SPI self-pairs are excluded.
+- Explicit `legacy_symmetrized_v1` remains reproducible. For each MPI it uses the strict upper triangle of `(A+A.T)/2`; `build_spi_spi_features` correlates these edge vectors and flattens SPI-pair upper triangles. MPI diagonals and SPI self-pairs are excluded.
 - Consequently, direction is discarded by default and a purely antisymmetric MPI becomes zero. Legacy `--split-directed` retains fixed-label upper/lower vectors, but is not invariant to arbitrary channel relabelling.
 - Legacy `nonfinite_policy="zero"` conflates undefined correlation with zero association and can break the correlation-Gram interpretation. Its corpus-wide `std >= 1e-8` filter makes the schema depend on all analysed rows, including test rows.
 - Legacy cache identity omitted variance threshold, contract version, pyspi configuration/version/normalization, source hashes and repository revision. Old caches are therefore evidence for their archived calculation, not automatically interchangeable with current computations.
@@ -12,7 +18,7 @@ Authoritative handoff as of 2026-08-24. Repository: `~/Code/mts-spi-study-cluste
 
 ## Frozen v2 feature contract — implemented and tested
 
-- Core commit `77ba664` introduced `src/spi_spi_contract.py`; final analysis alignment is `fbbb903`. New analyses must explicitly request `direction_preserving_v2`.
+- Core commit `77ba664` introduced `src/spi_spi_contract.py`; final historical analysis alignment is `fbbb903`. Reproduction and directional sensitivities explicitly request `direction_preserving_v2`.
 - For SPI MPI `A_a`, `z_sym[a,b] = corr(u_a,u_b)`, where `u_a` is the strict upper triangle of `(A_a+A_a.T)/2`. This exactly reproduces the legacy NaN-valued subspace for Pearson/Spearman and valid histogram-MI cases.
 - Let `v_a=(A_a[i,j]: i != j)` in C row-major order. `z_dir` contains: parallel `corr(v_a,v_b)` for every SPI pair involving at least one directed SPI; reverse `corr(v_a,v_b^T)` for each directed–directed pair; and self-reciprocity `corr(v_a,v_a^T)` for every directed SPI. Undirected–undirected duplicates are omitted.
 - With `K` SPIs and `D` directed SPIs, `dim(z_sym)=K(K-1)/2` and `dim(z_dir)=DK`. Both are invariant to a common channel permutation. Transposing one directed MPI swaps its directed–directed parallel/reverse relations; pure antisymmetry remains visible through reciprocity `-1`.
@@ -50,7 +56,7 @@ Proof main/bridge farms `177205470/177205481` initially produced 710/720 and 180
 ## Unresolved questions
 
 - What source→target convention and estimator-validity conditions hold for every directed SPI family under the pinned pyspi version?
-- Should reciprocity remain inside primary `z_dir` or be a separately reported sensitivity? How should blocks or SPI families be regularized without post-hoc target tuning?
+- How should optional reverse-direction and reciprocity diagnostics be summarized without conflating them with the primary SPI-pair atlas?
 - No evaluated pipeline shows incremental directional value. Retain direction for representational correctness and possible direction-specific future tasks; do not market a demonstrated performance gain.
 - Which exact common SPI catalogue survives estimator failures without inducing corpus-specific schemas, and which fitted transform should be shared across proof panels?
 - Does direction remain stable at small `M`, where ordered dyads are dependent and MPI vectors can be low-rank/singular?

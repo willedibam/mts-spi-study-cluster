@@ -48,6 +48,7 @@ real = ["sktime>=0.30.0", "aeon>=0.11.0", "yfinance"]
 prep = ["mne>=1.6.0", "moabb>=1.0.0"]
 dtw = ["dtw-python", "fastdtw", "dtaidistance"]
 graph = ["torch>=2.0", "torch-geometric>=2.5"]
+atlas = ["pycatch22>=0.5.0"]
 
 [project.scripts]
 run-experiment = "src.run_experiments:main"
