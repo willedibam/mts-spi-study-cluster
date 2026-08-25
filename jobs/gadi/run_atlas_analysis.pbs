@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -N spi-atlas
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=12
+#PBS -l mem=48GB
+#PBS -l walltime=02:00:00
+#PBS -l jobfs=2GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+
+: "${ATLAS_CONFIG:?set ATLAS_CONFIG}"
+
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+
+export OMP_NUM_THREADS="${THREADS:-$PBS_NCPUS}"
+export OPENBLAS_NUM_THREADS="${THREADS:-$PBS_NCPUS}"
+export MKL_NUM_THREADS="${THREADS:-$PBS_NCPUS}"
+export NUMEXPR_NUM_THREADS="${THREADS:-$PBS_NCPUS}"
+
+mkdir -p logs
+job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
+
+python -m src.run_atlas_analysis --config "$ATLAS_CONFIG"

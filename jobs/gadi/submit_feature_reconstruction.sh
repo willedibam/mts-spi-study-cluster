@@ -5,10 +5,10 @@ data_path="${1:?usage: $0 DATA_PATH OUTPUT}"
 output="${2:?usage: $0 DATA_PATH OUTPUT}"
 test -d "$data_path"
 
-ncpus="${NCPUS:-48}"
+ncpus="${NCPUS:-8}"
 (( ncpus >= 1 && ncpus <= 48 ))
-mem_gb="${MEM_GB:-192}"
-walltime="${WALLTIME:-01:00:00}"
+mem_gb="${MEM_GB:-32}"
+walltime="${WALLTIME:-00:30:00}"
 feature_contract="${FEATURE_CONTRACT:-unified_ordered_v3}"
 case "$feature_contract" in
     unified_ordered_v3|direction_preserving_v2|legacy_symmetrized_v1) ;;

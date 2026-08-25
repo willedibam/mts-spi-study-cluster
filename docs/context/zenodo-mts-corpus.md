@@ -34,7 +34,9 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   files are under `configs/corpora/`; `--skip-existing` validates/reuses 57 pilots.
 - Production jobs `177423444/475/512` exited 0 in 6:51/12:01/23:06 with
   807/807, 203/203 and 43/43 outputs. A combined audit validated all 1,053 with
-  no failures. Unified feature reconstruction job `177427052` is queued.
+  no failures. Unified reconstruction job `177427052` exited 0 in 43 s, peaking
+  at 10 GB; its artifact is 119 MB and exactly `1053 x 41,616`. The old
+  48-core/192-GB reconstruction default was reduced to 8 cores/32 GB.
 
 ## Analysis boundary
 
@@ -48,6 +50,9 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   row-validity range is `.478--.952`; 16,419 features are valid in at least 95% of
   pilot rows and 25,451 in at least 90%. Re-estimate all missingness gates on the
   complete corpus; preserve NaNs and compare 90/95/100% feature-validity sensitivity.
+- Full-corpus raw row validity is `.464--.966` (median `.841`); 24,956/23,782/10,878
+  features meet 90/95/100% validity before variance gating. Missing SPIs are retained
+  as NaN provenance and are not interpreted as failed MTS datasets.
 - Fit clustering in a preprocessed PCA/meta-feature space, never in t-SNE coordinates.
   UMAP/t-SNE are visualizations. Compare stable GMM, HDBSCAN and graph/consensus
   solutions using resampling stability and method-appropriate criteria, not appearance.
@@ -58,6 +63,9 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   UMAP/t-SNE grids. BIC selects GMM form only within a fixed PCA dimension;
   resampling stability selects/validates dimension and partitions. Pilot smoke
   passes; its GMM solution is correctly flagged unvalidated at ARI `.415`.
+- `src/run_catch22_corpus.py` implements the 94-corpus precedent's 22-per-channel,
+  min/Q1/mean/Q3/max aggregation as a 110-feature control. All 1,053 local datasets
+  completed with finite values and no channel errors.
 - Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series
   baselines. Treat tag enrichment as post-hoc characterization with multiplicity control.
 - Do not claim novelty or mechanistic discovery without a literature audit and external
