@@ -1,5 +1,5 @@
-feature_artifact: data/zenodo_7118947/features/pearson-unified-v3.npz
-output_dir: results/zenodo_7118947/atlas
+feature_artifact: data/zenodo_7118947/features/pearson-unified-v3-seed1729.npz
+output_dir: results/zenodo_7118947/atlas-seed1729
 random_state: 1729
 threads: 12
 
