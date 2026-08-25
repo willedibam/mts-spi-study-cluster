@@ -85,15 +85,27 @@ def load_samples_with_flags(
     if not base.exists():
         raise FileNotFoundError(f"Data path not found: {base}")
     class_dirs = sorted([p for p in base.iterdir() if p.is_dir()])
-    if mts_classes:
-        allowed = set(mts_classes)
-        class_dirs = [p for p in class_dirs if p.name in allowed]
-    for class_dir in class_dirs:
-        for ds_dir in sorted(p for p in class_dir.iterdir() if p.is_dir()):
+    direct_layout = bool(class_dirs) and any(
+        (directory / "meta.json").is_file() for directory in class_dirs
+    )
+    if direct_layout:
+        grouped_dirs = [(base, class_dirs)]
+    else:
+        if mts_classes:
+            allowed = set(mts_classes)
+            class_dirs = [p for p in class_dirs if p.name in allowed]
+        grouped_dirs = [
+            (class_dir, sorted(p for p in class_dir.iterdir() if p.is_dir()))
+            for class_dir in class_dirs
+        ]
+    for _, dataset_dirs in grouped_dirs:
+        for ds_dir in dataset_dirs:
             meta_path = ds_dir / "meta.json"
             if not meta_path.exists():
                 continue
             meta = load_json(meta_path)
+            if direct_layout and mts_classes and meta.get("mts_class") not in mts_classes:
+                continue
             spis = meta["pyspi"]["spis"]
             if subset_names:
                 by_name = {s["name"]: s for s in spis}

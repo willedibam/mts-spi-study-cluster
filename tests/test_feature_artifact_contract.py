@@ -129,6 +129,29 @@ def test_default_unified_artifact_has_k_choose_two_schema(tmp_path: Path) -> Non
     main(arguments)
 
 
+def test_unified_accepts_direct_external_corpus_layout(tmp_path: Path) -> None:
+    data_root = tmp_path / "external-experiment"
+    _write_sample(data_root / "0001-first", 0, constant_directed=False)
+    _write_sample(data_root / "0002-second", 1, constant_directed=True)
+    output = tmp_path / "features.npz"
+
+    main(
+        [
+            "--data-path",
+            str(data_root),
+            "--metric",
+            "pearson",
+            "--mts-classes",
+            "contract-test",
+            "--output",
+            str(output),
+        ]
+    )
+    with np.load(output, allow_pickle=True) as archive:
+        assert archive["X"].shape == (2, 3)
+        assert archive["y"].tolist() == ["contract-test", "contract-test"]
+
+
 def test_unified_rejects_corpus_variance_filter(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="never apply a corpus variance filter"):
         main(
