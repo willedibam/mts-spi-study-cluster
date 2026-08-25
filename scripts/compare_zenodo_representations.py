@@ -78,18 +78,14 @@ def run(
     if not np.isfinite(catch_values).all():
         raise ValueError("Catch22 control contains non-finite values")
 
-    spi_dimension = min(
-        len(spi_variance), int(np.searchsorted(np.cumsum(spi_variance), 0.95) + 1)
-    )
+    comparison_dimension = min(50, len(spi_variance), catch_values.shape[1])
+    spi_dimension = comparison_dimension
     scaled_catch = StandardScaler().fit_transform(catch_values)
     catch_pca = PCA(
-        n_components=min(100, len(catch_values) - 1, catch_values.shape[1]),
+        n_components=comparison_dimension,
         svd_solver="full",
     ).fit(scaled_catch)
-    catch_dimension = min(
-        catch_pca.n_components_,
-        int(np.searchsorted(np.cumsum(catch_pca.explained_variance_ratio_), 0.95) + 1),
-    )
+    catch_dimension = comparison_dimension
     catch_scores = catch_pca.transform(scaled_catch)[:, :catch_dimension]
     spi_scores = spi_scores[:, :spi_dimension]
 
@@ -127,14 +123,10 @@ def run(
     }
     result: dict[str, object] = {
         "n_datasets": len(spi_dataset),
+        "comparison_pca_dimensions": comparison_dimension,
         "spi_preprocessing": "95%-valid features, median imputation, mean centring, covariance PCA",
         "catch22_preprocessing": "per-feature z-score, covariance PCA",
-        "spi_pca_dimensions_used": spi_dimension,
         "spi_variance_retained": float(spi_variance[:spi_dimension].sum()),
-        "spi_variance_target_95pct_achieved": bool(
-            spi_variance[:spi_dimension].sum() >= 0.95
-        ),
-        "catch22_pca_dimensions_used": catch_dimension,
         "catch22_variance_retained": float(
             catch_pca.explained_variance_ratio_[:catch_dimension].sum()
         ),

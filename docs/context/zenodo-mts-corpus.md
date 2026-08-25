@@ -74,7 +74,7 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 - `src/run_catch22_corpus.py` implements the 94-corpus precedent's 22-per-channel,
   min/Q1/mean/Q3/max aggregation as a 110-feature control. All 1,053 local datasets
   completed with finite values and no channel errors. Against the provisional atlas,
-  pairwise-distance Spearman was `.379` and 15-NN overlap `.312` versus `.014` random;
+  pairwise-distance Spearman was `.385` and 15-NN overlap `.320` versus `.014` random;
   the spaces are related but non-equivalent, and Catch22 had slightly greater source-tag
   neighbourhood homogeneity, so the current evidence is not a superiority result.
 - Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series
