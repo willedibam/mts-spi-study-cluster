@@ -1,0 +1,14 @@
+name: zenodo-7118947-p90-zscore
+
+source:
+  format: named-npz-v1
+  archive: data/zenodo_7118947/database.npz
+  sha256: 928ce41fc8f97b19ac6225c02e0665ddcd228b23ee947365face64ca7b77ba84
+  axis_order: [process, observation]
+
+base_output_dir: data/zenodo_7118947/runs/p90-zscore
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+
+# This corpus mixes arbitrary physical units and gains. Preserve raw source
+# arrays, but standardise each process inside pyspi before computing SPIs.
+normalise: true

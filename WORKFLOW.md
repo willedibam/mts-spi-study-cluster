@@ -7,7 +7,7 @@
 ~/Desktop/2025USYD/USYD/
 ├── pyspi-fork/                    # github.com/willedibam/pyspi (branch v3, pyspi 3.0)
 │   └── pyspi/statistics/          # SPI implementations (numpy, no JIDT)
-└── mts-spi-study-cluster/         # github.com/willedibam/mts-spi-study-cluster (branch refactor)
+└── mts-spi-study-cluster/         # github.com/willedibam/mts-spi-study-cluster (branch refactor-lagged-warping)
     ├── configs/pyspi/             # SPI configs (copies of pyspi 3.0's own)
     ├── src/                       # Pipeline code
     └── jobs/physics/              # PBS scripts
@@ -15,15 +15,13 @@
 
 ### Cluster (Physics PBS)
 ```
-/suphys/wedi0306/                              # NFS home (code lives here)
-├── pyspi-fork/                                # fork, editable-installed
-└── mts-spi-study-cluster/
-    ├── .venv -> /taiji1/.../mts-spi-study-cluster/.venv   # symlink
-    └── data  -> /taiji1/.../mts-spi-study-cluster/data    # symlink
+/suphys/wedi0306/
+├── pyspi-fork/                                # branch v3, editable-installed
+└── mts-spi-study-cluster -> /import/taiji1/wedi0306/mts-spi-study-cluster
 
-/taiji1/wedi0306/mts-spi-study-cluster/        # bulk storage (107T)
-├── .venv/                                     # actual venv (heavy)
-└── data/                                      # experiment output
+/import/taiji1/wedi0306/mts-spi-study-cluster/ # main repo and bulk storage
+├── .venv/
+└── data/
 ```
 
 ## 1. Editing pyspi
@@ -38,42 +36,33 @@ Edit directly in `pyspi-fork/pyspi/`. Editable install means changes are **immed
 ### Push locally, pull on cluster — both repos:
 ```bash
 # --- Local ---
-cd pyspi-fork && git add -A && git commit -m "msg" && git push origin v2
-cd ../mts-spi-study-cluster && git add -A && git commit -m "msg" && git push origin refactor
+cd pyspi-fork && git add -A && git commit -m "msg" && git push origin v3
+cd ../mts-spi-study-cluster && git add -A && git commit -m "msg" && git push origin refactor-lagged-warping
 
 # --- Cluster ---
-cd /suphys/wedi0306/pyspi-fork && git pull origin v2
-cd /suphys/wedi0306/mts-spi-study-cluster && git pull origin refactor
+cd /suphys/wedi0306/pyspi-fork && git fetch --prune && git merge --ff-only origin/v3
+cd /suphys/wedi0306/mts-spi-study-cluster && git fetch --prune && git merge --ff-only origin/refactor-lagged-warping
 ```
 
 After pulling, changes are live (editable install). No reinstall unless `pyproject.toml` changed.
 
 ### First-time cluster setup
 ```bash
-cd /suphys/wedi0306
-
-# 1. Clone both repos
-git clone https://github.com/willedibam/mts-spi-study-cluster.git
-cd mts-spi-study-cluster
-git checkout refactor
-
+# 1. Put the main repo on bulk storage and pyspi in home
+git clone --branch refactor-lagged-warping \
+  https://github.com/willedibam/mts-spi-study-cluster.git \
+  /import/taiji1/wedi0306/mts-spi-study-cluster
+ln -s /import/taiji1/wedi0306/mts-spi-study-cluster /suphys/wedi0306/mts-spi-study-cluster
 cd /suphys/wedi0306
 git clone https://github.com/willedibam/pyspi.git pyspi-fork
 cd pyspi-fork
-git checkout v2
+git checkout v3
 
-# 2. Create venv directly on taiji1, symlink back to NFS
-mkdir -p /taiji1/wedi0306/mts-spi-study-cluster
-cd /taiji1/wedi0306/mts-spi-study-cluster
-uv venv .venv --python 3.12
-ln -s /taiji1/wedi0306/mts-spi-study-cluster/.venv /suphys/wedi0306/mts-spi-study-cluster/.venv
-
-# 3. Symlink data output to taiji1
-mkdir -p /taiji1/wedi0306/mts-spi-study-cluster/data
-ln -s /taiji1/wedi0306/mts-spi-study-cluster/data /suphys/wedi0306/mts-spi-study-cluster/data
-
-# 4. Install
+# 2. Create the venv inside the bulk-backed main repo
 cd /suphys/wedi0306/mts-spi-study-cluster
+uv venv .venv --python 3.12
+
+# 3. Install both repositories editable
 source .venv/bin/activate
 uv pip install -e .                       # install mts-spi-study-cluster
 uv pip install -e /suphys/wedi0306/pyspi-fork  # editable install of fork

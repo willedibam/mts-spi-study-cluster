@@ -1,0 +1,84 @@
+#!/bin/bash
+#PBS -N external-spi-farm
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=8GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+
+: "${CORPUS_CONFIG:?set CORPUS_CONFIG}"
+
+cd "${PBS_O_WORKDIR:?}"
+test -f "$CORPUS_CONFIG"
+
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export PYSPI_N_JOBS=1
+
+python -c 'import src, pyspi'
+python -m src.run_external_corpus --config "$CORPUS_CONFIG" --validate-source
+
+total=$(python -m src.run_external_corpus --config "$CORPUS_CONFIG" --count-only)
+indices="$PBS_JOBFS/dataset-indices.txt"
+if [[ -n "${INDEX_FILE:-}" ]]; then
+    test -f "$INDEX_FILE"
+    cp "$INDEX_FILE" "$indices"
+else
+    start="${START_INDEX:-1}"
+    end="${END_INDEX:-$total}"
+    (( start >= 1 && end >= start && end <= total ))
+    seq "$start" "$end" > "$indices"
+fi
+if (( $(sort "$indices" | uniq -d | wc -l) != 0 )); then
+    echo "index file contains duplicates: ${INDEX_FILE:-generated range}" >&2
+    exit 2
+fi
+
+commands="$PBS_JOBFS/dataset-commands.txt"
+while IFS= read -r index; do
+    [[ "$index" =~ ^[0-9]+$ ]] || { echo "invalid index: $index" >&2; exit 2; }
+    (( index >= 1 && index <= total )) || { echo "out-of-range index: $index" >&2; exit 2; }
+    printf 'python -m src.run_external_corpus --config %s --job-index %d --n-jobs 1 --skip-existing\n' \
+        "$CORPUS_CONFIG" "$index" >> "$commands"
+done < "$indices"
+
+task_count=$(wc -l < "$indices")
+(( task_count >= 1 ))
+workers="${WORKERS:-$PBS_NCPUS}"
+(( workers >= 1 && workers <= PBS_NCPUS ))
+(( workers > task_count )) && workers=$task_count
+
+mkdir -p logs
+job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+status="$PBS_O_WORKDIR/logs/${job_stem}.status"
+exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1
+
+echo "[INFO] corpus=$CORPUS_CONFIG tasks=$task_count workers=$workers"
+nci_args=(--verbose --input-file "$commands" --status "$status")
+if [[ -n "${TASK_TIMEOUT:-}" ]]; then
+    nci_args+=(--timeout "$TASK_TIMEOUT")
+fi
+
+set +e
+mpirun -np "$workers" --map-by node:PE=1 nci-parallel "${nci_args[@]}"
+rc=$?
+set -e
+if (( rc == 0 )); then
+    python -m src.run_external_corpus \
+        --config "$CORPUS_CONFIG" --audit --index-file "$indices"
+    rc=$?
+fi
+exit "$rc"
