@@ -10,10 +10,9 @@ from typing import Sequence
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.patches import Ellipse, Polygon
+from matplotlib.patches import Ellipse
 import numpy as np
 import pandas as pd
-from scipy.spatial import ConvexHull
 from scipy.stats import spearmanr
 import seaborn as sns
 
@@ -54,29 +53,37 @@ def _save(fig: plt.Figure, output_dir: Path, stem: str) -> None:
     plt.close(fig)
 
 
-def _hulls(ax: plt.Axes, coordinates: np.ndarray, labels: np.ndarray) -> None:
+def _cluster_overlays(
+    ax: plt.Axes, coordinates: np.ndarray, labels: np.ndarray
+) -> None:
     for label in np.unique(labels):
         if label < 0:
             continue
         points = coordinates[labels == label]
         if len(points) < 3:
             continue
-        try:
-            vertices = ConvexHull(points).vertices
-        except Exception:
+        center = np.median(points, axis=0)
+        covariance = np.cov(points - center, rowvar=False)
+        eigenvalues, eigenvectors = np.linalg.eigh(covariance)
+        if not np.isfinite(eigenvalues).all() or eigenvalues.max() <= 0:
             continue
+        order = np.argsort(eigenvalues)[::-1]
+        eigenvalues, eigenvectors = eigenvalues[order], eigenvectors[:, order]
+        angle = np.degrees(np.arctan2(eigenvectors[1, 0], eigenvectors[0, 0]))
+        scale = 1.6
         ax.add_patch(
-            Polygon(
-                points[vertices],
-                closed=True,
+            Ellipse(
+                center,
+                width=2 * scale * np.sqrt(max(eigenvalues[0], 0)),
+                height=2 * scale * np.sqrt(max(eigenvalues[1], 0)),
+                angle=angle,
                 facecolor="0.45",
                 edgecolor="0.25",
                 linewidth=0.5,
-                alpha=0.08,
+                alpha=0.07,
                 zorder=0,
             )
         )
-        center = np.median(points, axis=0)
         ax.text(
             center[0],
             center[1],
@@ -106,7 +113,7 @@ def plot_embedding_overview(
 
     fig, axes = plt.subplots(1, 3, figsize=(10.2, 3.25), constrained_layout=True)
     for ax, (name, xy) in zip(axes, coordinates):
-        _hulls(ax, xy, labels)
+        _cluster_overlays(ax, xy, labels)
         ax.scatter(xy[:, 0], xy[:, 1], s=8, c="0.12", alpha=0.62, linewidths=0, zorder=2)
         for color, tag in zip(palette, highlight_tags):
             member = np.asarray([tag in row for row in tag_rows])
@@ -127,7 +134,7 @@ def plot_embedding_overview(
         ax.text(
             0.01,
             0.99,
-            f"faint hulls: {overlay_name}",
+            f"faint covariance ellipses: projected {overlay_name}",
             transform=ax.transAxes,
             ha="left",
             va="top",
