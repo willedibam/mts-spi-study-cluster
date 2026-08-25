@@ -314,11 +314,19 @@ def plot_selected_feature_matrices(
     selected = selected.head(6)
     if selected.empty:
         return
-    columns = 3
+    columns = min(3, len(selected))
     rows = int(np.ceil(len(selected) / columns))
-    fig, axes = plt.subplots(rows, columns, figsize=(9.2, 3.0 * rows), constrained_layout=True, squeeze=False)
+    fig, axes = plt.subplots(
+        rows,
+        columns,
+        figsize=(3.2 * columns + 0.7, 3.0 * rows),
+        constrained_layout=True,
+        squeeze=False,
+    )
     image = None
+    visible_axes: list[plt.Axes] = []
     for ax, (_, exemplar) in zip(axes.flat, selected.iterrows()):
+        visible_axes.append(ax)
         index = int(exemplar["dataset_index"])
         matrix = _pair_matrix(feature, feature["X"][index])
         image = ax.imshow(matrix, cmap="vlag", vmin=-1, vmax=1, interpolation="nearest", rasterized=True)
@@ -328,8 +336,17 @@ def plot_selected_feature_matrices(
     for ax in axes.flat[len(selected) :]:
         ax.axis("off")
     if image is not None:
-        fig.colorbar(image, ax=axes, shrink=0.75, label="Pearson SPI–SPI similarity")
-    fig.suptitle("Observed cluster medoids: complete 289 × 289 SPI similarity matrices", y=1.01)
+        fig.colorbar(
+            image,
+            ax=visible_axes,
+            shrink=0.75,
+            pad=0.02,
+            label="Pearson SPI–SPI similarity",
+        )
+    fig.suptitle(
+        "Observed cluster medoids: complete 289 × 289 SPI similarity matrices",
+        y=1.08,
+    )
     _save(fig, output_dir, "atlas-medoid-feature-matrices")
 
 
