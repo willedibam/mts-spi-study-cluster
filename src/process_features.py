@@ -17,8 +17,10 @@ import hashlib
 import json
 import logging
 from multiprocessing import get_context
+import os
 from pathlib import Path
 import subprocess
+import tempfile
 from typing import Dict, List, Literal, Sequence, Tuple
 
 import numpy as np
@@ -539,8 +541,8 @@ def load_cached_features(
 ) -> dict | None:
     if recompute or not path.exists():
         return None
-    data = np.load(path, allow_pickle=True)
-    payload = {k: data[k] for k in data.files}
+    with np.load(path, allow_pickle=True) as data:
+        payload = {k: data[k] for k in data.files}
     if expected_cache_identity is not None:
         actual = payload.get("cache_identity_json")
         if actual is None:
@@ -599,7 +601,22 @@ def load_cached_features(
 
 def save_cached_features(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(path, **payload)
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary = Path(handle.name)
+            np.savez_compressed(handle, **payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
     LOGGER.info("Cached features -> %s", path)
 
 
