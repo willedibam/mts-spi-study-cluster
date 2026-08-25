@@ -20,6 +20,9 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 - `src/run_external_corpus.py` and `configs/corpora/zenodo-7118947-p90.yaml` provide
   a dedicated YAML API. Each task reads one member directly from the shared NPZ,
   transposes to `T x M`, preserves source data and asks pyspi to z-score each process.
+- The config requires an explicit RNG seed and the runner pins/restores NumPy/Python
+  global state per dataset. Feature reconstruction accepts both legacy class/dataset
+  and direct experiment/dataset layouts, but never mixes experiment banks.
 - Output is one atomic `spi_mpis.npz` plus `meta.json` per dataset; completion checks
   bind source/config/runner/compute/pyspi identities and validate MPI shape/catalogue.
 - Gadi uses one process/core/dataset through `nci-parallel`; no PBS array and no copied
@@ -32,11 +35,12 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   `<100k` (807 datasets, 288 cores/6 nodes), medium `100k..<400k` (203,
   96 cores/2 nodes), slow `>=400k` (43, 48 cores/1 node). Corresponding index
   files are under `configs/corpora/`; `--skip-existing` validates/reuses 57 pilots.
-- Production jobs `177423444/475/512` exited 0 in 6:51/12:01/23:06 with
-  807/807, 203/203 and 43/43 outputs. A combined audit validated all 1,053 with
-  no failures. Unified reconstruction job `177427052` exited 0 in 43 s, peaking
-  at 10 GB; its artifact is 119 MB and exactly `1053 x 41,616`. The old
-  48-core/192-GB reconstruction default was reduced to 8 cores/32 GB.
+- Seeded production jobs `177429006/007/010` exited 0 in 6:30/12:05/27:41 with
+  807/807, 203/203 and 43/43 outputs; all 1,053 audit clean. Maximum allocation
+  was 432 cores on 9 nodes (427 useful workers); observed aggregate memory was
+  about 344 GiB against 1.69 TiB requested. Reconstruction job `177430243` exited
+  0 in 33 s at 5.7 GiB; the final 119-MB artifact is exactly `1053 x 41,616`,
+  records seed 1729 and has SHA-256 `dc28dfd3...21500634`.
 
 ## Analysis boundary
 
@@ -53,14 +57,17 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 - Full-corpus raw row validity is `.464--.966` (median `.841`); 24,956/23,782/10,878
   features meet 90/95/100% validity before variance gating. Missing SPIs are retained
   as NaN provenance and are not interpreted as failed MTS datasets.
-- The first complete atlas retained 21,788 varying features at the 95% gate. Its
-  only strongly stable partition was a coarse PCA80 K-means split (`k=2`, subsample
-  ARI `.971`); finer GMM (`k=10`, ARI `.614`) and HDBSCAN (`k=7`, ARI `.620`) views
-  were not validated, and method agreement was low. Treat these results as provisional:
-  the exact `sim1`/`sim21` source duplicate exposed 12/289 RNG-dependent SPIs. The
-  runner now pins and records corpus-wide seed 1729, restores caller RNG state, and
-  writes to the seed-labelled experiment directory; the duplicate smoke test is
-  bit-identical across all 289 MPIs. Rerun before final interpretation.
+- The unseeded duplicate control exposed 12 RNG-dependent SPIs. Seeded `sim1`/`sim21`
+  and a repeated ill-conditioned wave dataset are bit-identical across all 289 MPIs.
+  Relative to the provisional artifact, seeded 50-PC distance Spearman is `.9999`
+  and 15-NN overlap `.972`; residual changes in 23 spectral SPIs occur on only 1--5
+  ill-conditioned wave rows and are reproducible under the seeded runner.
+- Final atlas job `177430329` exited 0 in 14:15 (1:29:49 CPU, 2.22 GiB peak) and
+  retained 21,788 varying features at the 95% gate. Stable K-means resolutions are
+  PCA10 `k=8` (subsample ARI `.955`) and PCA80 `k=2` (`.971`); the configured
+  near-tie/parsimony rule selects the former. GMM PCA10/full `k=13` (`.587`) and
+  HDBSCAN `k=2` (`.511`) fail the `.70` stability gate. There is no unique inferred
+  cluster count; GMM/HDBSCAN are diagnostic views.
 - Fit clustering in a preprocessed PCA/meta-feature space, never in t-SNE coordinates.
   UMAP/t-SNE are visualizations. Compare stable GMM, HDBSCAN and graph/consensus
   solutions using resampling stability and method-appropriate criteria, not appearance.
@@ -73,7 +80,7 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   passes; its GMM solution is correctly flagged unvalidated at ARI `.415`.
 - `src/run_catch22_corpus.py` implements the 94-corpus precedent's 22-per-channel,
   min/Q1/mean/Q3/max aggregation as a 110-feature control. All 1,053 local datasets
-  completed with finite values and no channel errors. Against the provisional atlas,
+  completed with finite values and no channel errors. Against the final atlas,
   pairwise-distance Spearman was `.385` and 15-NN overlap `.320` versus `.014` random;
   the spaces are related but non-equivalent, and Catch22 had slightly greater source-tag
   neighbourhood homogeneity, so the current evidence is not a superiority result.

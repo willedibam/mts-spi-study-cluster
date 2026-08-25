@@ -107,7 +107,15 @@ def plot_embedding_overview(
     coordinates = (("PCA", pca), ("UMAP", results["umap"]), ("t-SNE", results["tsne"]))
     validated_gmm = bool(np.asarray(results["gmm_validated"]).item())
     labels = results["gmm_labels"] if validated_gmm else results["kmeans_labels"]
-    overlay_name = "validated GMM" if validated_gmm else "stable K-means sensitivity"
+    overlay_name = (
+        "validated GMM"
+        if validated_gmm
+        else (
+            "stable K-means sensitivity "
+            f"(k={int(np.asarray(results['kmeans_clusters']).item())}, "
+            f"PCA-{int(np.asarray(results['kmeans_dimension']).item())})"
+        )
+    )
     tag_rows = [set(map(str, row)) for row in results["labels"]]
     palette = sns.color_palette("colorblind", n_colors=max(1, len(highlight_tags)))
 
@@ -318,6 +326,7 @@ def plot_selected_feature_matrices(
     selected = exemplars[
         (exemplars["method"] == primary_method) & (exemplars["role"] == "medoid")
     ]
+    exemplar_count = len(selected)
     selected = selected.head(6)
     if selected.empty:
         return
@@ -351,7 +360,8 @@ def plot_selected_feature_matrices(
             label="Pearson SPI–SPI similarity",
         )
     fig.suptitle(
-        "Observed cluster medoids: complete 289 × 289 SPI similarity matrices",
+        f"Selected observed cluster medoids ({len(selected)} of {exemplar_count}): "
+        "complete 289 × 289 SPI similarity matrices",
         y=1.08,
     )
     _save(fig, output_dir, "atlas-medoid-feature-matrices")
