@@ -23,6 +23,7 @@ def _write_sample(path: Path, instance: int, *, constant_directed: bool) -> None
         "T": 20,
         "instance_index": instance,
         "normalise": False,
+        "random_seed": 1729,
         "experiment": {
             "config_sha256": "experiment-sha",
             "git_commit": "generation-commit",
@@ -82,6 +83,7 @@ def test_v2_artifact_has_frozen_complete_schema_and_validated_cache(tmp_path: Pa
         ]
         provenance = json.loads(archive["pyspi_provenance_json"].item())
         assert provenance["status"] == "complete"
+        assert provenance["random_seed"] == ["1729"]
 
     # An unchanged source and builder must validate and reuse the artifact.
     main(arguments)
