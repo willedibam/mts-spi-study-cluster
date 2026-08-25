@@ -415,7 +415,11 @@ def run(config_path: str | Path) -> dict[str, Any]:
             h_samples = int(primary_hdbscan_row["min_samples"])
             hdbscan_stability = density_subsample_stability(
                 scores[:, :h_dimension],
-                lambda: HDBSCAN(min_cluster_size=h_size, min_samples=h_samples),
+                lambda: HDBSCAN(
+                    min_cluster_size=h_size,
+                    min_samples=h_samples,
+                    copy=False,
+                ),
                 seeds=stability_seeds,
                 fraction=fraction,
             )

@@ -19,6 +19,7 @@ from importlib.metadata import PackageNotFoundError, version
 import json
 import os
 from pathlib import Path
+import random
 import subprocess
 import tempfile
 import time
@@ -96,6 +97,7 @@ class ExternalCorpusConfig:
     base_output_dir: Path
     pyspi_config: Path
     normalise: bool
+    random_seed: int
 
     @classmethod
     def from_file(cls, path: str | Path) -> "ExternalCorpusConfig":
@@ -121,6 +123,9 @@ class ExternalCorpusConfig:
             raise ValueError("config requires a non-empty name")
         if not isinstance(payload.get("normalise"), bool):
             raise ValueError("normalise must be an explicit YAML boolean")
+        random_seed = payload.get("random_seed")
+        if not isinstance(random_seed, int) or isinstance(random_seed, bool) or random_seed < 0:
+            raise ValueError("random_seed must be an explicit non-negative integer")
         return cls(
             path=config_path,
             name=name,
@@ -130,6 +135,7 @@ class ExternalCorpusConfig:
             base_output_dir=_resolve_path(payload["base_output_dir"]),
             pyspi_config=_resolve_path(payload["pyspi_config"]),
             normalise=payload["normalise"],
+            random_seed=random_seed,
         )
 
     @property
@@ -342,6 +348,8 @@ def completion_error(
             return f"execution identity mismatch: {key}"
     if meta.get("normalise") is not config.normalise:
         return "normalisation mismatch"
+    if meta.get("random_seed") != config.random_seed:
+        return "random seed mismatch"
     spi_names = [item.get("name") for item in meta.get("pyspi", {}).get("spis", [])]
     if not spi_names or any(not isinstance(name, str) for name in spi_names):
         return "missing SPI catalogue"
@@ -379,6 +387,7 @@ def _metadata(
         "T": entry.T,
         "instance_index": entry.index - 1,
         "normalise": config.normalise,
+        "random_seed": config.random_seed,
         "timestamp": timestamp(),
         "source": {
             "type": "external_archive",
@@ -451,12 +460,20 @@ def run_dataset(
         return dataset_dir
     data, source = load_timeseries(config, entry)
     start = time.perf_counter()
-    result = run_pyspi(
-        data,
-        config_path=config.pyspi_config,
-        normalise=config.normalise,
-        n_jobs=n_jobs,
-    )
+    numpy_state = np.random.get_state()
+    python_state = random.getstate()
+    try:
+        np.random.seed(config.random_seed)
+        random.seed(config.random_seed)
+        result = run_pyspi(
+            data,
+            config_path=config.pyspi_config,
+            normalise=config.normalise,
+            n_jobs=n_jobs,
+        )
+    finally:
+        np.random.set_state(numpy_state)
+        random.setstate(python_state)
     elapsed = time.perf_counter() - start
     _atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
     meta = _metadata(config, entry, result, source, identity, elapsed)

@@ -45,6 +45,7 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path]:
                 f"base_output_dir: {tmp_path / 'outputs'}",
                 f"pyspi_config: {pyspi_config}",
                 "normalise: true",
+                "random_seed: 1729",
                 "",
             ]
         ),
@@ -93,6 +94,7 @@ def test_run_transposes_source_and_writes_compatible_metadata(
     assert observed == {"shape": (5, 3), "normalise": True, "n_jobs": 1}
     meta = json.loads((output / "meta.json").read_text(encoding="utf-8"))
     assert meta["mts_class"] == "first dataset"
+    assert meta["random_seed"] == 1729
     assert meta["labels"] == ["synthetic", "var"]
     assert meta["source"]["source_shape"] == [3, 5]
     assert meta["pyspi"]["spis"][0]["name"] == "pearson"
@@ -110,3 +112,51 @@ def test_source_hash_mismatch_is_rejected(tmp_path: Path) -> None:
         handle.write(b"changed")
     with pytest.raises(ValueError, match="SHA-256 mismatch"):
         validate_source(config)
+
+
+def test_runner_pins_and_restores_global_random_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config_path, _ = _fixture(tmp_path)
+    config = ExternalCorpusConfig.from_file(config_path)
+    entry = load_inventory(config)[0]
+    observed: list[tuple[float, float]] = []
+
+    def fake_run_pyspi(data, *, config_path, normalise, n_jobs):
+        observed.append((float(np.random.random()), random.random()))
+        spi = SPIInfo(
+            name="pearson",
+            directed=False,
+            labels=["undirected"],
+            family="basic",
+            module="pyspi.statistics.basic",
+            class_name="PearsonR",
+        )
+        return ComputeResult(
+            table=None,  # type: ignore[arg-type]
+            matrices={"pearson": np.eye(3)},
+            metadata=[spi],
+            timings={},
+            errors={},
+        )
+
+    import random
+
+    monkeypatch.setattr("src.run_external_corpus.run_pyspi", fake_run_pyspi)
+    np.random.seed(23)
+    random.seed(23)
+    expected_numpy = np.random.random()
+    expected_python = random.random()
+    np.random.seed(23)
+    random.seed(23)
+    run_dataset(config, entry)
+    after_numpy = np.random.random()
+    after_python = random.random()
+    run_dataset(config, entry)
+
+    np.random.seed(1729)
+    random.seed(1729)
+    assert observed[0] == (float(np.random.random()), random.random())
+    assert observed[0] == observed[1]
+    assert after_numpy == expected_numpy
+    assert after_python == expected_python

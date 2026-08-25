@@ -326,6 +326,7 @@ def hdbscan_grid(
                     min_samples=min_samples,
                     cluster_selection_method="eom",
                     allow_single_cluster=False,
+                    copy=False,
                 ).fit(values)
                 labels = model.labels_
                 retained = labels >= 0

@@ -1,4 +1,4 @@
-name: zenodo-7118947-p90-zscore
+name: zenodo-7118947-p90-zscore-seed1729
 
 source:
   format: named-npz-v1
@@ -12,3 +12,8 @@ pyspi_config: configs/pyspi/benchmarked_p90.yaml
 # This corpus mixes arbitrary physical units and gains. Preserve raw source
 # arrays, but standardise each process inside pyspi before computing SPIs.
 normalise: true
+
+# Several robust-covariance and stochastic-DTW implementations consume the
+# process-global RNG. One fixed corpus-wide seed makes exact duplicate inputs
+# exact computational controls.
+random_seed: 1729

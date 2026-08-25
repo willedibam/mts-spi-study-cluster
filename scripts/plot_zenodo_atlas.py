@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 import sys
 from typing import Sequence
@@ -20,7 +21,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.atlas_analysis import cluster_tag_enrichment, load_unified_artifact  # noqa: E402
+from src.atlas_analysis import (  # noqa: E402
+    cluster_medoids,
+    cluster_tag_enrichment,
+    load_unified_artifact,
+)
 
 
 def _style() -> None:
@@ -300,9 +305,12 @@ def plot_selected_feature_matrices(
 ) -> None:
     if "method" not in exemplars:
         exemplars = exemplars.assign(method="gmm")
-    selected = exemplars[(exemplars["method"] == "gmm") & (exemplars["role"] == "medoid")]
-    if selected.empty:
-        selected = exemplars[(exemplars["method"] == "kmeans") & (exemplars["role"] == "medoid")]
+    primary_method = (
+        "gmm" if bool(np.asarray(results["gmm_validated"]).item()) else "kmeans"
+    )
+    selected = exemplars[
+        (exemplars["method"] == primary_method) & (exemplars["role"] == "medoid")
+    ]
     selected = selected.head(6)
     if selected.empty:
         return
@@ -325,6 +333,77 @@ def plot_selected_feature_matrices(
     _save(fig, output_dir, "atlas-medoid-feature-matrices")
 
 
+def _complete_exemplars(results: dict[str, np.ndarray]) -> pd.DataFrame:
+    """Reconstruct all method exemplars for artifacts made before that table existed."""
+
+    scores = np.asarray(results["pca_scores"])
+    datasets = np.asarray(results["dataset"], dtype=object)
+    paths = np.asarray(results["dataset_paths"], dtype=object)
+    rows: list[dict[str, object]] = []
+
+    gmm_labels = np.asarray(results["gmm_labels"])
+    probability = np.asarray(results["gmm_probability"])
+    gmm_dimension = int(np.asarray(results["gmm_dimension"]).item())
+    if gmm_dimension and probability.shape[1]:
+        for cluster, index in cluster_medoids(scores[:, :gmm_dimension], gmm_labels).items():
+            rows.append(
+                {
+                    "method": "gmm",
+                    "cluster": cluster,
+                    "role": "medoid",
+                    "dataset_index": index,
+                    "dataset": datasets[index],
+                    "dataset_path": paths[index],
+                    "posterior": float(probability[index, cluster]),
+                }
+            )
+            representative = int(np.argmax(probability[:, cluster]))
+            rows.append(
+                {
+                    "method": "gmm",
+                    "cluster": cluster,
+                    "role": "highest-posterior member",
+                    "dataset_index": representative,
+                    "dataset": datasets[representative],
+                    "dataset_path": paths[representative],
+                    "posterior": float(probability[representative, cluster]),
+                }
+            )
+
+    for method, label_key, dimension in (
+        (
+            "kmeans",
+            "kmeans_labels",
+            int(np.asarray(results["kmeans_dimension"]).item()),
+        ),
+        (
+            "hdbscan",
+            "hdbscan_labels",
+            int(
+                (json.loads(str(np.asarray(results["summary_json"]).item())).get("primary_hdbscan") or {}).get(
+                    "dimensions", 0
+                )
+            ),
+        ),
+    ):
+        labels = np.asarray(results[label_key])
+        if not dimension or not np.any(labels >= 0):
+            continue
+        for cluster, index in cluster_medoids(scores[:, :dimension], labels).items():
+            rows.append(
+                {
+                    "method": method,
+                    "cluster": cluster,
+                    "role": "medoid",
+                    "dataset_index": index,
+                    "dataset": datasets[index],
+                    "dataset_path": paths[index],
+                    "posterior": np.nan,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
 def run(
     feature_path: Path,
     results_path: Path,
@@ -338,7 +417,8 @@ def run(
     with np.load(results_path, allow_pickle=True) as archive:
         results = {name: archive[name] for name in archive.files}
     model_grid = pd.read_csv(analysis_dir / "cluster-model-grid.csv")
-    exemplars = pd.read_csv(analysis_dir / "cluster-exemplars.csv")
+    exemplars = _complete_exemplars(results)
+    exemplars.to_csv(analysis_dir / "cluster-exemplars.csv", index=False)
     enrichment_tables = [
         cluster_tag_enrichment(results["gmm_labels"], results["labels"].tolist(), method="gmm"),
         cluster_tag_enrichment(results["kmeans_labels"], results["labels"].tolist(), method="kmeans"),

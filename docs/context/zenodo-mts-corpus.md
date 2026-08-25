@@ -53,6 +53,14 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 - Full-corpus raw row validity is `.464--.966` (median `.841`); 24,956/23,782/10,878
   features meet 90/95/100% validity before variance gating. Missing SPIs are retained
   as NaN provenance and are not interpreted as failed MTS datasets.
+- The first complete atlas retained 21,788 varying features at the 95% gate. Its
+  only strongly stable partition was a coarse PCA80 K-means split (`k=2`, subsample
+  ARI `.971`); finer GMM (`k=10`, ARI `.614`) and HDBSCAN (`k=7`, ARI `.620`) views
+  were not validated, and method agreement was low. Treat these results as provisional:
+  the exact `sim1`/`sim21` source duplicate exposed 12/289 RNG-dependent SPIs. The
+  runner now pins and records corpus-wide seed 1729, restores caller RNG state, and
+  writes to the seed-labelled experiment directory; the duplicate smoke test is
+  bit-identical across all 289 MPIs. Rerun before final interpretation.
 - Fit clustering in a preprocessed PCA/meta-feature space, never in t-SNE coordinates.
   UMAP/t-SNE are visualizations. Compare stable GMM, HDBSCAN and graph/consensus
   solutions using resampling stability and method-appropriate criteria, not appearance.
@@ -65,7 +73,10 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   passes; its GMM solution is correctly flagged unvalidated at ARI `.415`.
 - `src/run_catch22_corpus.py` implements the 94-corpus precedent's 22-per-channel,
   min/Q1/mean/Q3/max aggregation as a 110-feature control. All 1,053 local datasets
-  completed with finite values and no channel errors.
+  completed with finite values and no channel errors. Against the provisional atlas,
+  pairwise-distance Spearman was `.379` and 15-NN overlap `.312` versus `.014` random;
+  the spaces are related but non-equivalent, and Catch22 had slightly greater source-tag
+  neighbourhood homogeneity, so the current evidence is not a superiority result.
 - Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series
   baselines. Treat tag enrichment as post-hoc characterization with multiplicity control.
 - Do not claim novelty or mechanistic discovery without a literature audit and external
