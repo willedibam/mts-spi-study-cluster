@@ -1,0 +1,29 @@
+feature_artifact: data/zenodo_7118947/features/pilot57-pearson-unified-v3.npz
+output_dir: results/zenodo_7118947/atlas-pilot
+random_state: 1729
+threads: 4
+validity_thresholds: [0.90, 0.95]
+primary_validity_threshold: 0.95
+variance_threshold: 1.0e-8
+pca:
+  max_components: 40
+clustering:
+  pca_dimensions: [10, 20, 40]
+  minimum_clusters: 1
+  maximum_clusters: 6
+  gmm_covariance_types: [diag, tied, full]
+  hdbscan_min_cluster_size: [5, 10]
+  hdbscan_min_samples: [3, 5]
+  stability_seeds: [11, 23, 47]
+  subsample_fraction: 0.80
+  minimum_subsample_stability: 0.70
+embeddings:
+  input_pca_dimensions: 30
+  seeds: [1729, 2718]
+  umap:
+    n_neighbors: [15, 30]
+    min_dist: [0.05, 0.20]
+    metric: [euclidean, cosine]
+  tsne:
+    perplexity: [15, 30]
+    max_iter: 750

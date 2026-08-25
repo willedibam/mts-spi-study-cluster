@@ -32,6 +32,9 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   `<100k` (807 datasets, 288 cores/6 nodes), medium `100k..<400k` (203,
   96 cores/2 nodes), slow `>=400k` (43, 48 cores/1 node). Corresponding index
   files are under `configs/corpora/`; `--skip-existing` validates/reuses 57 pilots.
+- Production jobs `177423444/475/512` exited 0 in 6:51/12:01/23:06 with
+  807/807, 203/203 and 43/43 outputs. A combined audit validated all 1,053 with
+  no failures. Unified feature reconstruction job `177427052` is queued.
 
 ## Analysis boundary
 
@@ -48,6 +51,13 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 - Fit clustering in a preprocessed PCA/meta-feature space, never in t-SNE coordinates.
   UMAP/t-SNE are visualizations. Compare stable GMM, HDBSCAN and graph/consensus
   solutions using resampling stability and method-appropriate criteria, not appearance.
+- `src/run_atlas_analysis.py` is configured by
+  `configs/analysis/zenodo-7118947-atlas.yaml`. It compares 90/95/100% validity
+  gates; covariance PCA at 10/20/40/80 dimensions; GMM `k=1..15` with
+  diagonal/tied/full covariance where estimable; K-means and HDBSCAN; and seeded
+  UMAP/t-SNE grids. BIC selects GMM form only within a fixed PCA dimension;
+  resampling stability selects/validates dimension and partitions. Pilot smoke
+  passes; its GMM solution is correctly flagged unvalidated at ARI `.415`.
 - Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series
   baselines. Treat tag enrichment as post-hoc characterization with multiplicity control.
 - Do not claim novelty or mechanistic discovery without a literature audit and external
