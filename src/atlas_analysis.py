@@ -9,6 +9,7 @@ from typing import Callable, Sequence
 import numpy as np
 import pandas as pd
 from scipy.spatial import procrustes
+from scipy.stats import fisher_exact
 from sklearn.cluster import HDBSCAN, KMeans
 from sklearn.decomposition import PCA
 from sklearn.manifold import trustworthiness
@@ -372,3 +373,63 @@ def cluster_medoids(values: np.ndarray, labels: np.ndarray) -> dict[int, int]:
         )
         result[int(label)] = int(members[np.argmin(distances.sum(axis=1))])
     return result
+
+
+def cluster_tag_enrichment(
+    labels: np.ndarray,
+    tag_rows: Sequence[Sequence[str]],
+    *,
+    method: str,
+    minimum_tag_count: int = 5,
+) -> pd.DataFrame:
+    """One-sided Fisher enrichment with Benjamini--Hochberg correction."""
+
+    assignments = np.asarray(labels, dtype=int)
+    if len(assignments) != len(tag_rows):
+        raise ValueError("labels and tag_rows have different lengths")
+    tag_sets = [set(map(str, row)) for row in tag_rows]
+    tag_counts: dict[str, int] = {}
+    for row in tag_sets:
+        for tag in row:
+            tag_counts[tag] = tag_counts.get(tag, 0) + 1
+    tags = sorted(tag for tag, count in tag_counts.items() if count >= minimum_tag_count)
+    rows: list[dict[str, float | int | str]] = []
+    for cluster in np.unique(assignments):
+        if cluster < 0:
+            continue
+        member = assignments == cluster
+        for tag in tags:
+            tagged = np.asarray([tag in row for row in tag_sets])
+            inside_tag = int(np.sum(member & tagged))
+            inside_other = int(np.sum(member & ~tagged))
+            outside_tag = int(np.sum(~member & tagged))
+            outside_other = int(np.sum(~member & ~tagged))
+            odds, p_value = fisher_exact(
+                [[inside_tag, inside_other], [outside_tag, outside_other]],
+                alternative="greater",
+            )
+            rows.append(
+                {
+                    "method": method,
+                    "cluster": int(cluster),
+                    "tag": tag,
+                    "tagged_in_cluster": inside_tag,
+                    "cluster_size": int(member.sum()),
+                    "tagged_total": tag_counts[tag],
+                    "odds_ratio": float(odds),
+                    "p_value": float(p_value),
+                }
+            )
+    result = pd.DataFrame(rows)
+    if result.empty:
+        result["q_value"] = np.asarray([], dtype=float)
+        return result
+    order = np.argsort(result["p_value"].to_numpy())
+    ranked = result["p_value"].to_numpy()[order]
+    adjusted = np.minimum.accumulate(
+        (ranked * len(ranked) / np.arange(1, len(ranked) + 1))[::-1]
+    )[::-1]
+    q_values = np.empty_like(adjusted)
+    q_values[order] = np.minimum(adjusted, 1.0)
+    result["q_value"] = q_values
+    return result.sort_values(["q_value", "p_value", "cluster", "tag"])

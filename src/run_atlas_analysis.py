@@ -20,6 +20,7 @@ from umap import UMAP
 
 from .atlas_analysis import (
     cluster_medoids,
+    cluster_tag_enrichment,
     density_subsample_stability,
     embedding_quality,
     fit_atlas_pca,
@@ -525,6 +526,49 @@ def run(config_path: str | Path) -> dict[str, Any]:
                 "posterior": float(gmm_probability[representative, cluster]),
             }
         )
+    for cluster, index in cluster_medoids(
+        scores[:, :k_dimension], kmeans_labels
+    ).items():
+        medoid_rows.append(
+            {
+                "cluster": cluster,
+                "role": "medoid",
+                "method": "kmeans",
+                "dataset_index": index,
+                "dataset": dataset_names[index],
+                "dataset_path": dataset_paths[index],
+                "posterior": np.nan,
+            }
+        )
+    if primary_hdbscan_row is not None:
+        for cluster, index in cluster_medoids(
+            scores[:, :h_dimension], hdbscan_labels
+        ).items():
+            medoid_rows.append(
+                {
+                    "cluster": cluster,
+                    "role": "medoid",
+                    "method": "hdbscan",
+                    "dataset_index": index,
+                    "dataset": dataset_names[index],
+                    "dataset_path": dataset_paths[index],
+                    "posterior": np.nan,
+                }
+            )
+
+    # GMM rows predate the multi-method table construction above.
+    for row in medoid_rows:
+        row.setdefault("method", "gmm")
+    tag_rows = artifact["labels"].tolist()
+    enrichment_tables = [
+        cluster_tag_enrichment(gmm_labels, tag_rows, method="gmm"),
+        cluster_tag_enrichment(kmeans_labels, tag_rows, method="kmeans"),
+    ]
+    if primary_hdbscan_row is not None:
+        enrichment_tables.append(
+            cluster_tag_enrichment(hdbscan_labels, tag_rows, method="hdbscan")
+        )
+    enrichment = pd.concat(enrichment_tables, ignore_index=True)
 
     pd.DataFrame(sensitivity).to_csv(output_dir / "validity-pca-sensitivity.csv", index=False)
     pd.concat((gmm_table, kmeans_table, hdbscan_table), ignore_index=True).to_csv(
@@ -534,6 +578,7 @@ def run(config_path: str | Path) -> dict[str, Any]:
     kmeans_winners_table.to_csv(output_dir / "kmeans-dimension-winners.csv", index=False)
     embedding_trials.to_csv(output_dir / "embedding-grid.csv", index=False)
     pd.DataFrame(medoid_rows).to_csv(output_dir / "cluster-exemplars.csv", index=False)
+    enrichment.to_csv(output_dir / "cluster-tag-enrichment.csv", index=False)
 
     summary = {
         "feature_artifact": str(feature_path),

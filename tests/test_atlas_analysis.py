@@ -4,6 +4,7 @@ import numpy as np
 
 from src.atlas_analysis import (
     cluster_medoids,
+    cluster_tag_enrichment,
     density_subsample_stability,
     fit_atlas_pca,
     fit_atlas_transform,
@@ -94,3 +95,17 @@ def test_density_stability_on_separated_groups() -> None:
         seeds=(1, 2, 3),
     )
     assert score == 1.0
+
+
+def test_cluster_tag_enrichment_finds_overrepresented_tag() -> None:
+    labels = np.asarray([0] * 10 + [1] * 10)
+    tags = [["oscillator"] if index < 9 else ["other"] for index in range(20)]
+    table = cluster_tag_enrichment(
+        labels,
+        tags,
+        method="test",
+        minimum_tag_count=1,
+    )
+    row = table[(table["cluster"] == 0) & (table["tag"] == "oscillator")].iloc[0]
+    assert row["tagged_in_cluster"] == 9
+    assert row["q_value"] < 0.01
