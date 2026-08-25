@@ -198,11 +198,11 @@ def load_inventory(config: ExternalCorpusConfig) -> list[CorpusEntry]:
     return entries
 
 
-def load_timeseries(
-    config: ExternalCorpusConfig, entry: CorpusEntry
+def _source_to_timeseries(
+    config: ExternalCorpusConfig,
+    entry: CorpusEntry,
+    source: np.ndarray,
 ) -> tuple[np.ndarray, dict[str, Any]]:
-    with np.load(config.archive, allow_pickle=False) as archive:
-        source = np.asarray(archive[entry.name])
     expected_source_shape = (
         (entry.M, entry.T)
         if config.source_axis_order == ("process", "observation")
@@ -224,6 +224,14 @@ def load_timeseries(
     }
 
 
+def load_timeseries(
+    config: ExternalCorpusConfig, entry: CorpusEntry
+) -> tuple[np.ndarray, dict[str, Any]]:
+    with np.load(config.archive, allow_pickle=False) as archive:
+        source = np.asarray(archive[entry.name])
+    return _source_to_timeseries(config, entry, source)
+
+
 def validate_source(config: ExternalCorpusConfig) -> dict[str, Any]:
     actual_hash = _file_sha256(config.archive)
     if actual_hash != config.archive_sha256:
@@ -232,10 +240,13 @@ def validate_source(config: ExternalCorpusConfig) -> dict[str, Any]:
         )
     entries = load_inventory(config)
     dtype_counts: dict[str, int] = {}
-    for entry in entries:
-        _, source = load_timeseries(config, entry)
-        dtype = source["source_dtype"]
-        dtype_counts[dtype] = dtype_counts.get(dtype, 0) + 1
+    # One archive open matters on shared filesystems: reopening the ZIP for every
+    # member turns a 39 MB validation into 1,053 metadata scans on gdata.
+    with np.load(config.archive, allow_pickle=False) as archive:
+        for entry in entries:
+            _, source = _source_to_timeseries(config, entry, np.asarray(archive[entry.name]))
+            dtype = source["source_dtype"]
+            dtype_counts[dtype] = dtype_counts.get(dtype, 0) + 1
     return {
         "archive": str(config.archive),
         "sha256": actual_hash,
