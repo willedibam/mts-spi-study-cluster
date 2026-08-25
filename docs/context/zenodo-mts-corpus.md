@@ -24,8 +24,9 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
   bind source/config/runner/compute/pyspi identities and validate MPI shape/catalogue.
 - Gadi uses one process/core/dataset through `nci-parallel`; no PBS array and no copied
   per-dataset input files. Source and outputs belong on gdata via a dataset symlink.
-- Local contract tests and full source validation pass. No Gadi job from this workstream
-  had been submitted when this entry was written.
+- Local/Gadi contract tests and full source validation pass. Gadi smoke job
+  `177419496` (9 heterogeneous datasets) and stratified scout `177420118` (48,
+  non-overlapping) establish runtime/eligibility before measured production binning.
 
 ## Analysis boundary
 
@@ -39,4 +40,7 @@ proximity is SPI interaction-profile similarity, not established mechanistic ide
 - Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series
   baselines. Treat tag enrichment as post-hoc characterization with multiplicity control.
 - Do not claim novelty or mechanistic discovery without a literature audit and external
-  validation.
+  validation. The broad atlas claim is already false: [Navarro et al. (PMLR
+  2023)](https://proceedings.mlr.press/v224/navarro23a.html) projected 94
+  heterogeneous MTS datasets in aggregated Catch22 meta-feature space; only the
+  direction-preserving SPI--SPI construction/scale is a plausible novelty.
