@@ -19,6 +19,8 @@ def generate_cml_logistic(
     crop_offset: int | None = None,
     lattice_size: int | None = None,
     return_full_lattice: bool = False,
+    observation_mode: str = "crop",
+    return_observation_indices: bool = False,
 ):
     """
     Coupled map lattice of logistic maps with diffusive ring coupling.
@@ -50,6 +52,11 @@ def generate_cml_logistic(
         physical field before observation cropping. This field remains on the
         raw dynamical scale even when zscore=True. If return_final_state is also
         True, the return value is (observed, full_lattice, final_state).
+
+    observation_mode: ``crop`` preserves the contiguous historical view;
+        ``distributed`` uses a frozen random ordering of sites so views are
+        exactly nested as M increases. ``return_observation_indices`` appends
+        that index vector to the return tuple.
     """
     rng = _resolve_rng(None, rng)
     M = int(M)
@@ -73,15 +80,22 @@ def generate_cml_logistic(
         raise ValueError(
             f"lattice_size must be at least the observed M, got lattice_size={lattice_M}, M={M}"
         )
-    if crop_offset is None:
-        offset = (lattice_M - M) // 2
-    else:
-        offset = int(crop_offset)
-        if not (0 <= offset <= lattice_M - M):
-            raise ValueError(
-                f"crop_offset {offset} out of range for lattice_M={lattice_M}, M={M} "
-                f"(valid: 0..{lattice_M - M})."
-            )
+    observation_key = str(observation_mode).strip().lower()
+    if observation_key not in {"crop", "distributed"}:
+        raise ValueError(
+            f"unsupported observation_mode {observation_mode!r}; expected crop or distributed"
+        )
+    if observation_key == "crop":
+        if crop_offset is None:
+            offset = (lattice_M - M) // 2
+        else:
+            offset = int(crop_offset)
+            if not (0 <= offset <= lattice_M - M):
+                raise ValueError(
+                    f"crop_offset {offset} out of range for lattice_M={lattice_M}, M={M} "
+                    f"(valid: 0..{lattice_M - M})."
+                )
+        observation_indices = np.arange(offset, offset + M, dtype=np.int32)
     total_steps = transients + T * sample_every
     if init_state is None:
         state = rng.random(lattice_M)
@@ -92,13 +106,15 @@ def generate_cml_logistic(
                 f"init_state must have shape ({lattice_M},), got {init.shape}"
             )
         state = init.copy()
+    if observation_key == "distributed":
+        observation_indices = rng.permutation(lattice_M)[:M].astype(np.int32)
     f = lambda x: logistic(x, alpha)
     observed = np.empty((T, M), dtype=float)
     full_lattice = np.empty((T, lattice_M), dtype=float) if return_full_lattice else None
     sample_index = 0
     for step in range(total_steps):
         if step >= transients and (step - transients) % sample_every == 0:
-            observed[sample_index] = state[offset : offset + M]
+            observed[sample_index] = state[observation_indices]
             if full_lattice is not None:
                 full_lattice[sample_index] = state
             sample_index += 1
@@ -108,12 +124,15 @@ def generate_cml_logistic(
         raise RuntimeError(f"recorded {sample_index} CML samples, expected {T}")
 
     result = _maybe_zscore(observed, zscore=zscore)
-    if return_full_lattice and return_final_state:
-        return result, full_lattice, state.copy()
+    returned = [result]
     if return_full_lattice:
-        return result, full_lattice
+        returned.append(full_lattice)
     if return_final_state:
-        return result, state.copy()
+        returned.append(state.copy())
+    if return_observation_indices:
+        returned.append(observation_indices.copy())
+    if len(returned) > 1:
+        return tuple(returned)
     return result
 
 

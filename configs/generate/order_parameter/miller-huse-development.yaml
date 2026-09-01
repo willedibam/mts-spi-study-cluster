@@ -1,0 +1,43 @@
+base_output_dir: data/order_parameter/miller_huse_development
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 305177
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [100, 500, 1000]
+  instances: 8
+
+mts_classes:
+  - name: miller-huse-distributed
+    labels: [miller-huse, order-parameter, partial-observation, paired]
+    generator: miller_huse
+    seed_scope: instance
+    base_params:
+      mu: 3.0
+      lattice_side: 128
+      transients: 400000
+      sample_every: 1
+      truth_start_T: 1000
+      future_truth_T: 200000
+      observation_mode: distributed
+      initial_state: random
+      zscore: false
+      store_full_field: false
+    include_base_variant: false
+    variants:
+      - {name: g0p18000, params: {coupling: 0.18000}}
+      - {name: g0p19000, params: {coupling: 0.19000}}
+      - {name: g0p20000, params: {coupling: 0.20000}}
+      - {name: g0p20250, params: {coupling: 0.20250}}
+      - {name: g0p20400, params: {coupling: 0.20400}}
+      - {name: g0p20500, params: {coupling: 0.20500}}
+      - {name: g0p20534, params: {coupling: 0.20534}}
+      - {name: g0p20600, params: {coupling: 0.20600}}
+      - {name: g0p20750, params: {coupling: 0.20750}}
+      - {name: g0p21000, params: {coupling: 0.21000}}
+      - {name: g0p22000, params: {coupling: 0.22000}}
+      - {name: g0p23000, params: {coupling: 0.23000}}

@@ -592,13 +592,23 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
                 "The experiment harness cannot persist both CML return_full_lattice "
                 "and return_final_state; use direct generator calls for continuation."
             )
-        data, full_lattice = generate.generate_cml_logistic(
+        generated = generate.generate_cml_logistic(
             M=spec.M,
             T=spec.T,
             rng=np.random.default_rng(spec.rng_seed),
             **generator_params,
         )
-        gen_extras = {"_full_lattice": full_lattice}
+        if generator_params.get("return_observation_indices", False):
+            data, full_lattice, observation_indices = generated
+            gen_extras = {
+                "_full_lattice": full_lattice,
+                "observation_indices": np.asarray(
+                    observation_indices, dtype=np.int32
+                ).tolist(),
+            }
+        else:
+            data, full_lattice = generated
+            gen_extras = {"_full_lattice": full_lattice}
     elif spec.generator == "kuramoto_order_parameter":
         generator_params.pop("return_internals", None)
         store_full_phases = bool(generator_params.pop("store_full_phases", True))

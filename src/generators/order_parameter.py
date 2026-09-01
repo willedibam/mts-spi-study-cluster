@@ -305,6 +305,7 @@ def generate_miller_huse(
     transients: int = 100_000,
     sample_every: int = 1,
     future_truth_T: int = 0,
+    truth_start_T: int | None = None,
     patch_shape: tuple[int, int] | list[int] | None = None,
     patch_row: int | None = None,
     patch_col: int | None = None,
@@ -324,6 +325,7 @@ def generate_miller_huse(
     transients = int(transients)
     sample_every = int(sample_every)
     future_truth_T = int(future_truth_T)
+    truth_start = T if truth_start_T is None else int(truth_start_T)
     observation_key = str(observation_mode).strip().lower()
     if observation_key not in {"patch", "distributed"}:
         raise ValueError(
@@ -340,6 +342,7 @@ def generate_miller_huse(
         or transients < 0
         or sample_every <= 0
         or future_truth_T < 0
+        or truth_start < T
     ):
         raise ValueError(
             f"invalid sizes: M={M}, T={T}, lattice_side={side}, "
@@ -385,7 +388,7 @@ def generate_miller_huse(
     for _ in range(transients):
         state = step(state)
 
-    total_samples = T + future_truth_T
+    total_samples = truth_start + future_truth_T
     observed = np.empty((T, M), dtype=np.float64)
     full_field = np.empty((T, side, side), dtype=np.float64) if store_full_field else None
     magnetization = np.empty(T, dtype=np.float64)
@@ -413,8 +416,8 @@ def generate_miller_huse(
             spin_magnetization_unobserved[sample] = hidden_spin_mean
             if full_field is not None:
                 full_field[sample] = state
-        else:
-            future_index = sample - T
+        elif sample >= truth_start:
+            future_index = sample - truth_start
             magnetization_future[future_index] = float(state.mean())
             spin_magnetization_future[future_index] = spin_mean
             spin_magnetization_unobserved_future[future_index] = hidden_spin_mean

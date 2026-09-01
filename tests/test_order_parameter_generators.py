@@ -239,6 +239,30 @@ def test_miller_huse_distributed_observations_are_nested() -> None:
     np.testing.assert_array_equal(small_info.final_field, large_info.final_field)
 
 
+def test_miller_huse_prefixes_share_fixed_future_truth() -> None:
+    common = dict(
+        M=8,
+        coupling=0.205,
+        lattice_side=12,
+        transients=50,
+        observation_mode="distributed",
+        truth_start_T=40,
+        future_truth_T=30,
+        return_internals=True,
+    )
+    short, short_info = generate_miller_huse(
+        T=20, rng=np.random.default_rng(37), **common
+    )
+    long, long_info = generate_miller_huse(
+        T=40, rng=np.random.default_rng(37), **common
+    )
+    np.testing.assert_array_equal(short, long[:20])
+    np.testing.assert_array_equal(
+        short_info.spin_magnetization_future,
+        long_info.spin_magnetization_future,
+    )
+
+
 def test_spin_generator_harness_records_compact_truth_and_semantics(tmp_path: Path) -> None:
     config_path = tmp_path / "spin-compact.yaml"
     config_path.write_text(

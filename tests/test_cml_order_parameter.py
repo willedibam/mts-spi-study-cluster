@@ -75,6 +75,29 @@ def test_explicit_lattice_size_returns_matching_crop() -> None:
     assert np.array_equal(observed, full[:, 60:67])
 
 
+def test_distributed_cml_observations_are_nested() -> None:
+    common = dict(
+        T=20,
+        alpha=1.8,
+        eps=0.3,
+        transients=50,
+        lattice_size=64,
+        observation_mode="distributed",
+        return_full_lattice=True,
+        return_observation_indices=True,
+        zscore=False,
+    )
+    small, small_full, small_indices = generate_cml_logistic(
+        M=8, rng=np.random.default_rng(67), **common
+    )
+    large, large_full, large_indices = generate_cml_logistic(
+        M=16, rng=np.random.default_rng(67), **common
+    )
+    np.testing.assert_array_equal(small_full, large_full)
+    np.testing.assert_array_equal(small_indices, large_indices[:8])
+    np.testing.assert_array_equal(small, large[:, :8])
+
+
 def test_streaming_generator_preserves_historical_sampling() -> None:
     observed = generate_cml_logistic(
         M=7,
