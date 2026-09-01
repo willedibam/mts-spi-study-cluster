@@ -46,7 +46,11 @@ For `M,T` transfer, keep physical `N` fixed, take nested channel views and prefi
 
 Current sample-length contract is `T={100,500,1000}` for the selected robustness system: fit the primary transform on `T>=500` and apply it to `T=100` as a stress cell. Use paired `T=2000` only to test whether it materially improves feature/coordinate stability. Existing p90 validity gains from 1000 to 2000 are small; precision remains to be measured by paired prefixes.
 
+Stuart--Landau is the selected full `M x T` robustness system. Initial Miller--Huse and quadratic-CML p90 development uses `T=1000` across `M={8,16,32}`; add shorter prefixes only after a useful coordinate is demonstrated.
+
 Claim-bearing p90 sweeps are one-dimensional by default. A cheap two-control physics map may validate an intercept (already done for Stuart--Landau), but do not expand it to the full `control x M x T x instance` design unless no one-dimensional path separates the relevant regimes.
+
+The quadratic-CML two-million-burn gate completed `10 alpha x 3 N x 8 seeds`. Four consecutive 5k truth blocks are stable away from the reorganization; the pooled physical-diagnostic prefix error (absolute error normalized by full-record IQR) falls from p95 `.184` at `T=100` to `.096/.075` at `T=500/1000`. At `alpha=1.75,N=512`, five seeds occupy the low-temporal-entropy patterned branch and three remain high-entropy; do not average this coexistence into a scalar truth. Use fixed `N=512,M={8,16,32}` as the main observation arm and separate `M=N={8,16,32}` finite-size arms. The predeclared physical vector is temporal spectral entropy, dynamical spatial-pattern entropy, selected-band power and period-two residual.
 
 ## Minimum figures
 

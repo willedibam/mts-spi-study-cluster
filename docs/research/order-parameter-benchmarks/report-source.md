@@ -52,12 +52,20 @@ Current recommendation:
   one-way coupling, change dimension/topology, follow different weak-coupling
   paths, or change initial basin/size/time. Those are different models or
   protocols, not contradictory measurements of one phase plane.
-- There is no canonical scalar across the plane. Use a predeclared diagnostic
-  vector led by spatial spectral concentration and dynamical pattern entropy;
-  promote a scalar only if stable to N, seed, block and diagnostic choice.
-- Primary: fixed `N=256` with `N={128,512}` sensitivities and nested dispersed
-  `M={8,16,32}` views. `M=N={8,16,32}` is a separate finite-size arm and must
-  not be pooled. A 2-million-burn physics scout is active.
+- There is no canonical scalar across the plane. Use the predeclared vector
+  given below; promote a scalar only if stable to N, seed, block and diagnostic
+  choice.
+- Primary p90 observation uses fixed `N=512` and nested dispersed
+  `M={8,16,32}` views. `M=N={8,16,32}` are separate finite-size arms that must
+  not be pooled.
+- The `10 alpha x 3 N x 8 seed` scout is stable over four consecutive 5k
+  blocks away from the main reorganization. Pooled physical-diagnostic prefix
+  error, normalized by full-record IQR, has p95 `.184,.096,.075` at
+  `T=100,500,1000`. The `alpha=1.75,N=512` cell is branch-dependent: five
+  seeds are low-temporal-entropy patterned states and three remain high
+  entropy after the burn. Preserve this coexistence. The predeclared physical
+  vector is temporal spectral entropy, dynamical spatial-pattern entropy,
+  selected-band power and period-two residual.
 
 ### Stuart--Landau population
 
@@ -115,7 +123,9 @@ Current recommendation:
   assays.
 - Primary robustness cells are `M={8,16,32}`, `T={100,500,1000}`. Fit the
   claim-bearing shared transform on `T>=500`; apply it to `T=100` as a stress
-  cell. Promote T=100 only if missingness and coordinate stability pass.
+  cell. Promote T=100 only if missingness and coordinate stability pass. This
+  complete grid is assigned to Stuart--Landau; initial Miller--Huse and
+  quadratic-CML p90 development uses `T=1000` across the three M values.
 - Existing 2,520-row p90 evidence retains `12,720`, `13,499`, and `13,855`
   99%-valid meta-features at `T=500,1000,2000`. Thus 1000-to-2000 does not rescue
   many features. A same-trajectory prefix pilot must decide precision.
