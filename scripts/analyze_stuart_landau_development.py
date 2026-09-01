@@ -91,7 +91,9 @@ def _frame(payload: dict[str, np.ndarray], data_root: Path) -> pd.DataFrame:
                 "instance": int(meta["instance_index"]),
                 "gamma": float(params["frequency_half_width"]),
                 "coupling": float(params["coupling"]),
-                "N_full": int(params["N_full"]),
+                "N_full": int(
+                    meta["M"] if params.get("N_full") is None else params["N_full"]
+                ),
                 "seed_group": str(meta["sampling_design"]["seed_group_id"]),
                 "Q_R_mean": q_mean,
                 "Q_R_sd": q_sd,
