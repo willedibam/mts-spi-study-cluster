@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS -N sl-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8
+#PBS -l mem=64GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+: "${FEATURE_PATH:?set FEATURE_PATH}"
+: "${DATA_ROOT:?set DATA_ROOT}"
+: "${OUTPUT_DIR:?set OUTPUT_DIR}"
+ANALYSIS_SCRIPT="${ANALYSIS_SCRIPT:-scripts/analyze_stuart_landau_development.py}"
+
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS="$PBS_NCPUS"
+export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
+export MKL_NUM_THREADS="$PBS_NCPUS"
+export NUMEXPR_NUM_THREADS="$PBS_NCPUS"
+
+mkdir -p "$OUTPUT_DIR" logs
+python "$ANALYSIS_SCRIPT" \
+    --features "$FEATURE_PATH" \
+    --data-root "$DATA_ROOT" \
+    --output-dir "$OUTPUT_DIR"
