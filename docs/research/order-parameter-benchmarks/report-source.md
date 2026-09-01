@@ -60,14 +60,16 @@ Current recommendation:
   `M=N={8,16,32}` use ten control anchors as separate finite-size arms that
   must not be pooled. A focused dense physics gate over `alpha=1.71:0.01:1.80`
   precedes p90.
-- The `10 alpha x 3 N x 8 seed` scout is stable over four consecutive 5k
-  blocks away from the main reorganization. Pooled physical-diagnostic prefix
-  error, normalized by full-record IQR, has p95 `.184,.096,.075` at
-  `T=100,500,1000`. The `alpha=1.75,N=512` cell is branch-dependent: five
-  seeds are low-temporal-entropy patterned states and three remain high
-  entropy after the burn. Preserve this coexistence. The predeclared physical
-  vector is temporal spectral entropy, dynamical spatial-pattern entropy,
-  selected-band power and period-two residual.
+- The `10 alpha x 3 N x 8 seed` scout and dense `N=512`,
+  `alpha=1.71:0.01:1.80` extension are stable over four consecutive 5k blocks
+  away from the reorganization. Merged pooled physical-diagnostic prefix-error
+  p95, normalized by full-record IQR, is `.194,.119,.096` at
+  `T=100,500,1000`. All eight dense-path seeds are low-temporal-entropy through
+  `alpha=.73`; coexistence occurs over `.74-.76`; all eight are high-entropy by
+  `.77`. At `.75`, five are low- and three high-entropy. Preserve this branch
+  structure. The predeclared physical vector is temporal spectral entropy,
+  dynamical spatial-pattern entropy, selected-band power and period-two
+  residual. The p90 physics gate passed.
 
 ### Stuart--Landau population
 

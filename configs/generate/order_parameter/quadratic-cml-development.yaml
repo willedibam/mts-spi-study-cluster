@@ -29,7 +29,7 @@ mts_classes:
       zscore: false
       store_truth_field: false
     include_base_variant: false
-    variants: &alpha_grid_dense
+    variants:
       - {name: alpha1p60, params: {alpha: 1.60}}
       - {name: alpha1p61, params: {alpha: 1.61}}
       - {name: alpha1p62, params: {alpha: 1.62}}
