@@ -95,6 +95,16 @@ Current recommendation:
 - First p90 path excludes amplitude death because exactly constant channels are
   genuine input degeneracy. Use physical vector `(mean R, sd R, mean |z|^2)`;
   the primary scalar-order coordinate remains `mean R`.
+- Full-p90 development used all 289 SPIs. Target-blind hygiene retained 24,466
+  pairs spanning 234 SPIs; PC1 explained `.661` and had loading cosine
+  `.977-.987` across all `M x T>=500` source fits. Held per-cell mean
+  `rho(q,Q)=.85-.99`; the pooled gamma-mean curve has `.976`, while raw pooled
+  rows have `.756`. `T=100` remains a cell-level stress result: paired q-rank
+  agreement with `T=1000` is `.628/.740/.944` for full `M=8/16/32`; at `T=500`
+  it is `.777/.909/.957`. Within-gamma recovery is weak. Analytic phase
+  coherence is a stronger baseline (`rho=.932`, within-gamma `.779`), so do not
+  make a superiority or microscopic-fluctuation claim. Independent new-seed,
+  interleaved-gamma confirmation is active; no `T=2000` extension is needed.
 
 ### Deferred candidates
 
