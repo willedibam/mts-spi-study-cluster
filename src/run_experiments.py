@@ -404,6 +404,7 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
     wants_ground_truth = spec.generator in {
         "kuramoto_order_parameter",
         "miller_huse",
+        "quadratic_cml_order_parameter",
         "stuart_landau",
     }
     gen_extras: dict = {}
@@ -507,6 +508,11 @@ def _ground_truth_descriptor(path: Path) -> dict:
             "q_R_mean",
             "q_R_std",
             "q_activity_mean",
+            "q_temporal_spectral_entropy",
+            "q_dynamical_spatial_pattern_entropy",
+            "q_selected_band_power",
+            "q_period2_activity",
+            "q_turbulent_fraction_0p05",
         ):
             if name in archive.files:
                 value = float(archive[name])
@@ -762,6 +768,62 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             "resolved_params": _resolve_generator_params(
                 spec.generator,
                 {**generator_params, "store_full_states": store_full_states},
+            ),
+        }
+    elif spec.generator == "quadratic_cml_order_parameter":
+        generator_params.pop("return_internals", None)
+        store_truth_field = bool(generator_params.pop("store_truth_field", False))
+        data, internals = generate.generate_quadratic_cml_order_parameter(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            store_truth_field=store_truth_field,
+            **generator_params,
+        )
+        summary = internals.truth_summary
+        turbulent_fraction = summary["turbulent_fraction"]
+        ground_truth = {
+            "q_temporal_spectral_entropy": np.array(
+                summary["temporal_spectral_entropy"], dtype=np.float32
+            ),
+            "q_dynamical_spatial_pattern_entropy": np.array(
+                summary["dynamical_spatial_pattern_entropy"], dtype=np.float32
+            ),
+            "q_selected_band_power": np.array(
+                summary["selected_band_power"], dtype=np.float32
+            ),
+            "q_period2_activity": np.array(
+                summary["period2_activity"], dtype=np.float32
+            ),
+            "q_turbulent_fraction_0p05": np.array(
+                turbulent_fraction["0.05"], dtype=np.float32
+            ),
+            "q_regime_vector": np.array(
+                [
+                    summary["temporal_spectral_entropy"],
+                    summary["dynamical_spatial_pattern_entropy"],
+                    summary["selected_band_power"],
+                    summary["period2_activity"],
+                ],
+                dtype=np.float32,
+            ),
+            "spatial_power_distribution": np.asarray(
+                summary["spatial_power_distribution"], dtype=np.float32
+            ),
+            "spatial_correlation": np.asarray(
+                summary["spatial_correlation"], dtype=np.float32
+            ),
+            "observation_indices": internals.observation_indices.astype(np.int32),
+            "final_state": internals.final_state.astype(np.float32),
+        }
+        if internals.truth_field is not None:
+            ground_truth["truth_field"] = internals.truth_field.astype(np.float32)
+        gen_extras = {
+            "_ground_truth": ground_truth,
+            "resolved_params": _resolve_generator_params(
+                spec.generator,
+                {**generator_params, "store_truth_field": store_truth_field},
             ),
         }
     else:
@@ -1135,6 +1197,36 @@ def _stuart_landau_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]
     }
 
 
+def _quadratic_cml_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
+    params = dict(gen_extras.get("resolved_params") or spec.generator_params)
+    return {
+        "control": {
+            "name": "alpha",
+            "value": float(params.get("alpha", 1.8)),
+            "path_parameter": "eps",
+            "path_value": float(params.get("eps", 0.3)),
+        },
+        "order_parameter": {
+            "name": "quadratic-CML physical regime-coordinate vector",
+            "canonical_scalar_order_parameter": False,
+            "definition": (
+                "(temporal spectral entropy, dynamical spatial-pattern entropy, "
+                "selected-band power, period-two residual) on a disjoint "
+                "future full-lattice window"
+            ),
+            "primary_vector": "q_regime_vector",
+            "scalar_diagnostics": [
+                "q_temporal_spectral_entropy",
+                "q_dynamical_spatial_pattern_entropy",
+                "q_selected_band_power",
+                "q_period2_activity",
+            ],
+            "future_truth_disjoint_from_input_window": True,
+            "included_in_timeseries_input": False,
+        },
+    }
+
+
 def _build_metadata(
     *,
     spec,
@@ -1168,6 +1260,8 @@ def _build_metadata(
             source_block.update(_miller_huse_semantics(spec, extras))
         elif spec.generator == "stuart_landau":
             source_block.update(_stuart_landau_semantics(spec, extras))
+        elif spec.generator == "quadratic_cml_order_parameter":
+            source_block.update(_quadratic_cml_semantics(spec, extras))
         # Fold in pre-seed provenance (e.g. adiabatic-continuation network_seed,
         # branch, dK) when the timeseries was produced outside the harness.
         prov_path = Path(spec.dataset_dir) / "gen_provenance.json"
@@ -1260,7 +1354,12 @@ def _dataset_complete(spec) -> bool:
         dataset_dir / "spi_mpis.npz",
         dataset_dir / "timeseries.npy",
     ]
-    if spec.generator in {"kuramoto_order_parameter", "miller_huse", "stuart_landau"}:
+    if spec.generator in {
+        "kuramoto_order_parameter",
+        "miller_huse",
+        "quadratic_cml_order_parameter",
+        "stuart_landau",
+    }:
         required.append(dataset_dir / "ground_truth.npz")
     if (
         spec.generator == "cml_logistic"

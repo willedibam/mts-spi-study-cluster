@@ -37,7 +37,9 @@ from .linear import (
 from .order_parameter import (
     KuramotoOrderInternals,
     MillerHuseInternals,
+    QuadraticCMLInternals,
     StuartLandauInternals,
+    generate_quadratic_cml_order_parameter,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
     generate_stuart_landau,
@@ -86,6 +88,7 @@ __all__ = [
     "generate_kuramoto_order_parameter",
     "generate_mackey_glass",
     "generate_miller_huse",
+    "generate_quadratic_cml_order_parameter",
     "generate_stuart_landau",
     "generate_mts_master",
     "generate_series",
@@ -112,5 +115,6 @@ __all__ = [
     "miller_huse_map",
     "KuramotoOrderInternals",
     "MillerHuseInternals",
+    "QuadraticCMLInternals",
     "StuartLandauInternals",
 ]

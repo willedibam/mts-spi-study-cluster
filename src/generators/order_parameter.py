@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.special import ndtri
 
+from ..cml_order_parameter import summarize_field
 from ._common import _maybe_zscore, _resolve_rng
 
 
@@ -255,6 +256,14 @@ class StuartLandauInternals:
     observation_indices: np.ndarray
     initial_state: np.ndarray
     final_state: np.ndarray
+
+
+@dataclass
+class QuadraticCMLInternals:
+    truth_summary: dict[str, object]
+    observation_indices: np.ndarray
+    final_state: np.ndarray
+    truth_field: np.ndarray | None
 
 
 def miller_huse_map(values: np.ndarray, mu: float = 3.0) -> np.ndarray:
@@ -562,4 +571,101 @@ def generate_stuart_landau(
         observation_indices=observation_indices,
         initial_state=initial_state,
         final_state=state.copy(),
+    )
+
+
+def generate_quadratic_cml_order_parameter(
+    M: int,
+    T: int,
+    alpha: float = 1.8,
+    eps: float = 0.3,
+    lattice_size: int = 512,
+    transients: int = 2_000_000,
+    sample_every: int = 1,
+    truth_start_T: int = 1000,
+    future_truth_T: int = 20_000,
+    observation_mode: str = "distributed",
+    selected_spatial_band: tuple[float, float] = (0.25, 0.45),
+    pattern_word_length: int = 4,
+    rng=None,
+    zscore: bool = False,
+    return_internals: bool = False,
+    store_truth_field: bool = False,
+):
+    """Quadratic CML with fixed-large-lattice observations and future truth.
+
+    The MTS and full-field diagnostic window come from the same deterministic
+    trajectory. ``truth_start_T`` fixes the future window across paired T
+    prefixes, so every prefix has identical full-lattice physical truth.
+    """
+
+    from .dynamical import generate_cml_logistic
+
+    rng = _resolve_rng(None, rng)
+    M = int(M)
+    T = int(T)
+    lattice_size = int(lattice_size)
+    truth_start_T = int(truth_start_T)
+    future_truth_T = int(future_truth_T)
+    if (
+        M <= 0
+        or T <= 0
+        or lattice_size < M
+        or truth_start_T < T
+        or future_truth_T < 3
+    ):
+        raise ValueError(
+            "require 0 < M <= lattice_size, truth_start_T >= T and "
+            f"future_truth_T >= 3; got M={M}, T={T}, lattice_size={lattice_size}, "
+            f"truth_start_T={truth_start_T}, future_truth_T={future_truth_T}"
+        )
+    generated = generate_cml_logistic(
+        M=M,
+        T=T,
+        alpha=alpha,
+        eps=eps,
+        transients=transients,
+        sample_every=sample_every,
+        lattice_size=lattice_size,
+        observation_mode=observation_mode,
+        return_final_state=True,
+        return_observation_indices=True,
+        rng=rng,
+        zscore=zscore,
+    )
+    observed, input_final_state, observation_indices = generated
+
+    # The first record has time index zero and input_final_state has index T-1.
+    # Skipping truth_start_T-T+1 updates therefore starts truth at the fixed
+    # time index truth_start_T for every paired input prefix.
+    truth_gap = (truth_start_T - T) * int(sample_every) + 1
+    generated_truth = generate_cml_logistic(
+        M=M,
+        T=future_truth_T,
+        alpha=alpha,
+        eps=eps,
+        transients=truth_gap,
+        sample_every=sample_every,
+        lattice_size=lattice_size,
+        observation_mode=observation_mode,
+        init_state=input_final_state,
+        return_full_lattice=True,
+        return_final_state=True,
+        rng=rng,
+        zscore=False,
+    )
+    _, truth_field, final_state = generated_truth
+    summary = summarize_field(
+        truth_field,
+        max_spatial_lag=min(64, lattice_size // 2),
+        selected_spatial_band=selected_spatial_band,
+        pattern_word_length=pattern_word_length,
+    )
+    if not return_internals:
+        return observed
+    return observed, QuadraticCMLInternals(
+        truth_summary=summary,
+        observation_indices=np.asarray(observation_indices, dtype=np.int32),
+        final_state=np.asarray(final_state, dtype=np.float64),
+        truth_field=truth_field if store_truth_field else None,
     )

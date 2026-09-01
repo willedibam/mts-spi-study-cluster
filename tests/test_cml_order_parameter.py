@@ -16,6 +16,7 @@ from src.cml_order_parameter import (
     turbulent_fraction,
 )
 from src.generators.dynamical import generate_cml_logistic
+from src.generators.order_parameter import generate_quadratic_cml_order_parameter
 
 
 def test_period_two_field_has_zero_activity() -> None:
@@ -116,3 +117,41 @@ def test_streaming_generator_preserves_historical_sampling() -> None:
         ]
     )
     np.testing.assert_allclose(observed[:2, :3], expected_start, rtol=0, atol=5e-9)
+
+
+def test_quadratic_cml_future_truth_is_shared_across_nested_prefixes() -> None:
+    common = dict(
+        alpha=1.8,
+        eps=0.3,
+        lattice_size=32,
+        transients=40,
+        sample_every=2,
+        truth_start_T=20,
+        future_truth_T=60,
+        observation_mode="distributed",
+        return_internals=True,
+        zscore=False,
+    )
+    short, short_info = generate_quadratic_cml_order_parameter(
+        M=4,
+        T=10,
+        rng=np.random.default_rng(187),
+        **common,
+    )
+    long, long_info = generate_quadratic_cml_order_parameter(
+        M=8,
+        T=20,
+        rng=np.random.default_rng(187),
+        **common,
+    )
+    np.testing.assert_array_equal(short, long[:10, :4])
+    np.testing.assert_array_equal(
+        short_info.observation_indices, long_info.observation_indices[:4]
+    )
+    for name in (
+        "temporal_spectral_entropy",
+        "dynamical_spatial_pattern_entropy",
+        "selected_band_power",
+        "period2_activity",
+    ):
+        assert short_info.truth_summary[name] == long_info.truth_summary[name]

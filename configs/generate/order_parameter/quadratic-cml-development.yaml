@@ -1,0 +1,77 @@
+base_output_dir: data/order_parameter/quadratic_cml_development
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 355974
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [100, 500, 1000]
+  instances: 8
+
+mts_classes:
+  - name: quadratic-cml-large-lattice
+    labels: [quadratic-cml, order-parameter, partial-observation, paired]
+    generator: quadratic_cml_order_parameter
+    seed_scope: instance
+    base_params: &large_lattice
+      eps: 0.3
+      lattice_size: 512
+      transients: 2000000
+      sample_every: 1
+      truth_start_T: 1000
+      future_truth_T: 20000
+      observation_mode: distributed
+      selected_spatial_band: [0.25, 0.45]
+      pattern_word_length: 4
+      zscore: false
+      store_truth_field: false
+    include_base_variant: false
+    variants: &alpha_grid
+      - {name: alpha1p60, params: {alpha: 1.60}}
+      - {name: alpha1p65, params: {alpha: 1.65}}
+      - {name: alpha1p70, params: {alpha: 1.70}}
+      - {name: alpha1p75, params: {alpha: 1.75}}
+      - {name: alpha1p80, params: {alpha: 1.80}}
+      - {name: alpha1p85, params: {alpha: 1.85}}
+      - {name: alpha1p88, params: {alpha: 1.88}}
+      - {name: alpha1p90, params: {alpha: 1.90}}
+      - {name: alpha1p95, params: {alpha: 1.95}}
+      - {name: alpha2p00, params: {alpha: 2.00}}
+
+  # These small M=N systems are finite-size sensitivities, not substitutes for
+  # the physically adequate lattice above and not pooled with it as replicates.
+  - name: quadratic-cml-full-M8
+    labels: [quadratic-cml, order-parameter, full-observation, finite-size]
+    generator: quadratic_cml_order_parameter
+    seed_scope: instance
+    M_values: [8]
+    base_params:
+      <<: *large_lattice
+      lattice_size: 8
+    include_base_variant: false
+    variants: *alpha_grid
+
+  - name: quadratic-cml-full-M16
+    labels: [quadratic-cml, order-parameter, full-observation, finite-size]
+    generator: quadratic_cml_order_parameter
+    seed_scope: instance
+    M_values: [16]
+    base_params:
+      <<: *large_lattice
+      lattice_size: 16
+    include_base_variant: false
+    variants: *alpha_grid
+
+  - name: quadratic-cml-full-M32
+    labels: [quadratic-cml, order-parameter, full-observation, finite-size]
+    generator: quadratic_cml_order_parameter
+    seed_scope: instance
+    M_values: [32]
+    base_params:
+      <<: *large_lattice
+      lattice_size: 32
+    include_base_variant: false
+    variants: *alpha_grid

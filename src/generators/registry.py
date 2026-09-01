@@ -38,6 +38,7 @@ from .linear import (
 from .order_parameter import (
     generate_kuramoto_order_parameter,
     generate_miller_huse,
+    generate_quadratic_cml_order_parameter,
     generate_stuart_landau,
 )
 from .chat import (
@@ -82,6 +83,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "kuramoto_grid_four": generate_kuramoto_grid_four,
     "kuramoto_order_parameter": generate_kuramoto_order_parameter,
     "miller_huse": generate_miller_huse,
+    "quadratic_cml_order_parameter": generate_quadratic_cml_order_parameter,
     "stuart_landau": generate_stuart_landau,
     "gaussian_noise": generate_gaussian_noise,
     "cauchy_noise": generate_cauchy_noise,
