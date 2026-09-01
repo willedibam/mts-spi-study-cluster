@@ -191,6 +191,31 @@ def _source_stability(
     return rows
 
 
+def _paired_prefix_stability(
+    frame: pd.DataFrame,
+    held_mask: np.ndarray,
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    for (arm, M), group in frame.loc[held_mask].groupby(["arm", "M"]):
+        pivot = group.pivot(index=["gamma", "instance"], columns="T", values="q")
+        if 1000 not in pivot:
+            continue
+        for T in (100, 500):
+            if T not in pivot:
+                continue
+            rows.append(
+                {
+                    "arm": str(arm),
+                    "M": int(M),
+                    "T": int(T),
+                    "reference_T": 1000,
+                    "paired_spearman": safe_spearman(pivot[T], pivot[1000]),
+                    "paired_mae": float(np.mean(np.abs(pivot[T] - pivot[1000]))),
+                }
+            )
+    return rows
+
+
 def _input_baselines(paths: list[Path]) -> pd.DataFrame:
     rows = []
     for path in paths:
@@ -294,6 +319,7 @@ def main() -> int:
         frame[column] = baseline[column].to_numpy()
 
     held = frame.loc[held_primary]
+    held_full_gamma_means = held.groupby("gamma")[["q", "Q_R_mean"]].mean()
     baseline_associations = {
         name: _association(
             held[name].to_numpy(),
@@ -336,6 +362,9 @@ def main() -> int:
             held["Q_R_mean"].to_numpy(),
             held["gamma_group"].to_numpy(),
         ),
+        "held_full_pooled_gamma_mean_spearman": safe_spearman(
+            held_full_gamma_means["q"], held_full_gamma_means["Q_R_mean"]
+        ),
         "held_partial_association": _association(
             frame.loc[check_mask & frame["arm"].eq("partial"), "q"].to_numpy(),
             frame.loc[
@@ -357,6 +386,9 @@ def main() -> int:
             components[0],
             args.seed + 100,
         ),
+        "held_target_free_paired_prefix_stability": _paired_prefix_stability(
+            frame, check_mask
+        ),
         "exploratory_oracle_pc": oracle_pc,
         "held_full_input_baselines": baseline_associations,
     }
@@ -368,6 +400,10 @@ def main() -> int:
     )
     np.savez_compressed(
         args.output_dir / "fitted_target_blind_model.npz",
+        feature_contract=np.asarray("unified_ordered_v3"),
+        metric=np.asarray("pearson"),
+        schema_sha256=np.asarray(payload["schema_sha256"]),
+        spi_order=np.asarray(payload["spi_order"], dtype=str),
         keep_indices=transform.keep_indices,
         impute_values=transform.impute_values,
         center=transform.center,
@@ -377,6 +413,8 @@ def main() -> int:
         q_center=np.asarray(q_center),
         q_scale=np.asarray(q_scale),
         pc1_display_sign=np.asarray(display_sign),
+        minimum_valid_fraction=np.asarray(args.minimum_valid_fraction),
+        variance_threshold=np.asarray(args.variance_threshold),
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0

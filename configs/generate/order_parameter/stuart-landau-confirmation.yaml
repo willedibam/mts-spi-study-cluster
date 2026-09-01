@@ -1,0 +1,50 @@
+base_output_dir: data/order_parameter/stuart_landau_confirmation
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 991377
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [100, 500, 1000]
+  instances: 8
+
+mts_classes:
+  - name: stuart-landau-full-observation-confirmation
+    labels: [stuart-landau, order-parameter, full-observation, confirmation, paired]
+    generator: stuart_landau
+    seed_scope: instance
+    base_params: &common
+      coupling: 0.8
+      omega_mean: 2.0
+      dt: 0.02
+      sample_dt: 0.1
+      burn_time: 200.0
+      truth_start_T: 1000
+      future_truth_T: 2000
+      output: real
+      zscore: false
+      store_full_states: false
+    include_base_variant: false
+    variants: &interleaved_gamma_grid
+      - {name: gamma0p55, params: {frequency_half_width: 0.55}}
+      - {name: gamma0p65, params: {frequency_half_width: 0.65}}
+      - {name: gamma0p725, params: {frequency_half_width: 0.725}}
+      - {name: gamma0p775, params: {frequency_half_width: 0.775}}
+      - {name: gamma0p85, params: {frequency_half_width: 0.85}}
+      - {name: gamma0p95, params: {frequency_half_width: 0.95}}
+      - {name: gamma1p05, params: {frequency_half_width: 1.05}}
+      - {name: gamma1p15, params: {frequency_half_width: 1.15}}
+      - {name: gamma1p25, params: {frequency_half_width: 1.25}}
+
+  - name: stuart-landau-partial-observation-confirmation
+    labels: [stuart-landau, order-parameter, partial-observation, confirmation, paired]
+    generator: stuart_landau
+    seed_scope: instance
+    base_params:
+      <<: *common
+      N_full: 800
+    include_base_variant: false
+    variants: *interleaved_gamma_grid

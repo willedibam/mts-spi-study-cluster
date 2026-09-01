@@ -10,8 +10,8 @@ a known dynamical boundary. Verify exact model variants before scaling.
 
 Current recommendation:
 
-1. Miller--Huse `mu=3` is the cleanest next canonical benchmark, conditional on
-   extending near-critical truth records.
+1. Miller--Huse `mu=3` is the cleanest next canonical benchmark; its focused
+   two-million-step truth gate passed with uncertainty retained explicitly.
 2. The original uniform-frequency Stuart--Landau population is accepted as the
    best additional system. Repository pilots reproduce its published phase path
    and coarse control plane.
@@ -31,8 +31,11 @@ Current recommendation:
   `nu=.887(18)`, suggesting a synchronous-update class while not excluding a
   very slow Ising crossover. Do not claim established Ising universality.
 - Existing `L={32,64,128}` scouts reproduce the order rise and susceptibility
-  peak, but 40k-step truth blocks vary too much near `g=.205`. An active 200k
-  truth/stationarity scout measures block agreement and autocorrelation ESS.
+  peak. A focused `L=128`, two-million-step future-truth audit gives p05
+  effective samples `63.2` and adjacent 250k-block-difference p95 `.099`.
+  At the hardest `g=.205` cell, median block-mean SE is about `.021` on a total
+  Q range near `.8`. This passes development with uncertainty shown. Store the
+  long-run scalars and eight block summaries, not the redundant future series.
 - Physical `N=L^2`. Adequate `L=128` means `N=16,384`; full-p90 `M=N` is
   infeasible because dense MPI memory is quadratic in M. Primary observation is
   one frozen dispersed ordering with `M={8,16,32}`; patches are sensitivities.

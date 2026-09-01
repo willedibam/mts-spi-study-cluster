@@ -656,6 +656,9 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
     elif spec.generator == "miller_huse":
         generator_params.pop("return_internals", None)
         store_full_field = bool(generator_params.pop("store_full_field", False))
+        persist_future_truth_series = bool(
+            generator_params.pop("persist_future_truth_series", True)
+        )
         data, internals = generate.generate_miller_huse(
             M=spec.M,
             T=spec.T,
@@ -680,27 +683,37 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
         susceptibility = internals.final_field.size * (
             second - float(np.mean(np.abs(primary))) ** 2
         )
+        truth_block_count = min(8, len(primary))
+        primary_blocks = np.asarray(
+            [
+                np.mean(np.abs(block))
+                for block in np.array_split(primary, truth_block_count)
+            ],
+            dtype=np.float32,
+        )
+        hidden_blocks = np.asarray(
+            [
+                np.mean(np.abs(block))
+                for block in np.array_split(hidden, truth_block_count)
+            ],
+            dtype=np.float32,
+        )
         ground_truth = {
             "magnetization": internals.magnetization.astype(np.float32),
             "spin_magnetization": internals.spin_magnetization.astype(np.float32),
             "spin_magnetization_unobserved": (
                 internals.spin_magnetization_unobserved.astype(np.float32)
             ),
-            "magnetization_future": internals.magnetization_future.astype(np.float32),
-            "spin_magnetization_future": (
-                internals.spin_magnetization_future.astype(np.float32)
-            ),
-            "spin_magnetization_unobserved_future": (
-                internals.spin_magnetization_unobserved_future.astype(np.float32)
-            ),
             "q_spin_rms": np.array(np.sqrt(np.mean(primary**2)), dtype=np.float32),
             "q_spin_abs": np.array(np.mean(np.abs(primary)), dtype=np.float32),
+            "q_spin_abs_blocks": primary_blocks,
             "q_spin_rms_unobserved": np.array(
                 np.sqrt(np.mean(hidden**2)), dtype=np.float32
             ),
             "q_spin_abs_unobserved": np.array(
                 np.mean(np.abs(hidden)), dtype=np.float32
             ),
+            "q_spin_abs_unobserved_blocks": hidden_blocks,
             "spin_m2": np.array(second, dtype=np.float32),
             "spin_m4": np.array(fourth, dtype=np.float32),
             "spin_binder_cumulant": np.array(binder, dtype=np.float32),
@@ -709,13 +722,31 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
             "initial_field": internals.initial_field.astype(np.float32),
             "final_field": internals.final_field.astype(np.float32),
         }
+        if persist_future_truth_series:
+            ground_truth.update(
+                {
+                    "magnetization_future": internals.magnetization_future.astype(
+                        np.float32
+                    ),
+                    "spin_magnetization_future": (
+                        internals.spin_magnetization_future.astype(np.float32)
+                    ),
+                    "spin_magnetization_unobserved_future": (
+                        internals.spin_magnetization_unobserved_future.astype(np.float32)
+                    ),
+                }
+            )
         if internals.full_field is not None:
             ground_truth["full_field"] = internals.full_field.astype(np.float32)
         gen_extras = {
             "_ground_truth": ground_truth,
             "resolved_params": _resolve_generator_params(
                 spec.generator,
-                {**generator_params, "store_full_field": store_full_field},
+                {
+                    **generator_params,
+                    "store_full_field": store_full_field,
+                    "persist_future_truth_series": persist_future_truth_series,
+                },
             ),
         }
     elif spec.generator == "stuart_landau":
@@ -1156,15 +1187,19 @@ def _miller_huse_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
             "definition": "m_s(t)=mean_r(1[x_r(t)>=0]-1[x_r(t)<0])",
             "finite_system_scalar": "mean_t(abs(m_s(t)))",
             "primary_analysis_array": (
-                "spin_magnetization_future" if future_truth else "spin_magnetization"
+                "spin_magnetization_future"
+                if future_truth and bool(params.get("persist_future_truth_series", True))
+                else None
             ),
             "primary_scalar": "q_spin_abs",
+            "primary_block_summary": "q_spin_abs_blocks",
             "hidden_complement_sensitivity_array": (
                 "spin_magnetization_unobserved_future"
                 if future_truth
                 else "spin_magnetization_unobserved"
             ),
             "hidden_complement_scalar": "q_spin_abs_unobserved",
+            "hidden_complement_block_summary": "q_spin_abs_unobserved_blocks",
             "rms_magnetization_sensitivity_scalar": "q_spin_rms",
             "future_truth_disjoint_from_input_window": future_truth,
             "included_in_timeseries_input": False,

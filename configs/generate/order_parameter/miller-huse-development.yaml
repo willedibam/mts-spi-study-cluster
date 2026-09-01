@@ -22,7 +22,8 @@ mts_classes:
       transients: 400000
       sample_every: 1
       truth_start_T: 1000
-      future_truth_T: 200000
+      future_truth_T: 2000000
+      persist_future_truth_series: false
       observation_mode: distributed
       initial_state: random
       zscore: false
