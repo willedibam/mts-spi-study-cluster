@@ -29,16 +29,47 @@ mts_classes:
       zscore: false
       store_truth_field: false
     include_base_variant: false
-    variants: &alpha_grid
+    variants: &alpha_grid_dense
       - {name: alpha1p60, params: {alpha: 1.60}}
+      - {name: alpha1p61, params: {alpha: 1.61}}
+      - {name: alpha1p62, params: {alpha: 1.62}}
+      - {name: alpha1p63, params: {alpha: 1.63}}
+      - {name: alpha1p64, params: {alpha: 1.64}}
       - {name: alpha1p65, params: {alpha: 1.65}}
+      - {name: alpha1p66, params: {alpha: 1.66}}
+      - {name: alpha1p67, params: {alpha: 1.67}}
+      - {name: alpha1p68, params: {alpha: 1.68}}
+      - {name: alpha1p69, params: {alpha: 1.69}}
       - {name: alpha1p70, params: {alpha: 1.70}}
+      - {name: alpha1p71, params: {alpha: 1.71}}
+      - {name: alpha1p72, params: {alpha: 1.72}}
+      - {name: alpha1p73, params: {alpha: 1.73}}
+      - {name: alpha1p74, params: {alpha: 1.74}}
       - {name: alpha1p75, params: {alpha: 1.75}}
+      - {name: alpha1p76, params: {alpha: 1.76}}
+      - {name: alpha1p77, params: {alpha: 1.77}}
+      - {name: alpha1p78, params: {alpha: 1.78}}
+      - {name: alpha1p79, params: {alpha: 1.79}}
       - {name: alpha1p80, params: {alpha: 1.80}}
+      - {name: alpha1p81, params: {alpha: 1.81}}
+      - {name: alpha1p82, params: {alpha: 1.82}}
+      - {name: alpha1p83, params: {alpha: 1.83}}
+      - {name: alpha1p84, params: {alpha: 1.84}}
       - {name: alpha1p85, params: {alpha: 1.85}}
+      - {name: alpha1p86, params: {alpha: 1.86}}
+      - {name: alpha1p87, params: {alpha: 1.87}}
       - {name: alpha1p88, params: {alpha: 1.88}}
+      - {name: alpha1p89, params: {alpha: 1.89}}
       - {name: alpha1p90, params: {alpha: 1.90}}
+      - {name: alpha1p91, params: {alpha: 1.91}}
+      - {name: alpha1p92, params: {alpha: 1.92}}
+      - {name: alpha1p93, params: {alpha: 1.93}}
+      - {name: alpha1p94, params: {alpha: 1.94}}
       - {name: alpha1p95, params: {alpha: 1.95}}
+      - {name: alpha1p96, params: {alpha: 1.96}}
+      - {name: alpha1p97, params: {alpha: 1.97}}
+      - {name: alpha1p98, params: {alpha: 1.98}}
+      - {name: alpha1p99, params: {alpha: 1.99}}
       - {name: alpha2p00, params: {alpha: 2.00}}
 
   # These small M=N systems are finite-size sensitivities, not substitutes for
@@ -52,7 +83,17 @@ mts_classes:
       <<: *large_lattice
       lattice_size: 8
     include_base_variant: false
-    variants: *alpha_grid
+    variants: &alpha_grid_coarse
+      - {name: alpha1p60, params: {alpha: 1.60}}
+      - {name: alpha1p65, params: {alpha: 1.65}}
+      - {name: alpha1p70, params: {alpha: 1.70}}
+      - {name: alpha1p75, params: {alpha: 1.75}}
+      - {name: alpha1p80, params: {alpha: 1.80}}
+      - {name: alpha1p85, params: {alpha: 1.85}}
+      - {name: alpha1p88, params: {alpha: 1.88}}
+      - {name: alpha1p90, params: {alpha: 1.90}}
+      - {name: alpha1p95, params: {alpha: 1.95}}
+      - {name: alpha2p00, params: {alpha: 2.00}}
 
   - name: quadratic-cml-full-M16
     labels: [quadratic-cml, order-parameter, full-observation, finite-size]
@@ -63,7 +104,7 @@ mts_classes:
       <<: *large_lattice
       lattice_size: 16
     include_base_variant: false
-    variants: *alpha_grid
+    variants: *alpha_grid_coarse
 
   - name: quadratic-cml-full-M32
     labels: [quadratic-cml, order-parameter, full-observation, finite-size]
@@ -74,4 +115,4 @@ mts_classes:
       <<: *large_lattice
       lattice_size: 32
     include_base_variant: false
-    variants: *alpha_grid
+    variants: *alpha_grid_coarse

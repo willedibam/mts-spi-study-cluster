@@ -177,7 +177,17 @@ def main() -> int:
         frame["arm"].eq("large") & frame["instance"].ge(4)
     ).to_numpy()
     held_all = frame["instance"].ge(4).to_numpy()
-    if len(frame) != 480 or int(fit_mask.sum()) != 120 or int(held_large.sum()) != 120:
+    large_controls = frame.loc[frame["arm"].eq("large"), "alpha"].nunique()
+    small_controls = frame.loc[frame["arm"].eq("small-full"), "alpha"].nunique()
+    expected_fit = 3 * 4 * large_controls
+    expected_rows = 3 * 8 * (large_controls + small_controls)
+    if (
+        large_controls != 41
+        or small_controls != 10
+        or len(frame) != expected_rows
+        or int(fit_mask.sum()) != expected_fit
+        or int(held_large.sum()) != expected_fit
+    ):
         raise ValueError("unexpected quadratic-CML development design")
 
     # The SPI representation is fitted without alpha or the physical vector.

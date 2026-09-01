@@ -55,9 +55,11 @@ Current recommendation:
 - There is no canonical scalar across the plane. Use the predeclared vector
   given below; promote a scalar only if stable to N, seed, block and diagnostic
   choice.
-- Primary p90 observation uses fixed `N=512` and nested dispersed
-  `M={8,16,32}` views. `M=N={8,16,32}` are separate finite-size arms that must
-  not be pooled.
+- Primary p90 observation uses fixed `N=512`, nested dispersed
+  `M={8,16,32}` views and the original `alpha=1.60:0.01:2.00` path.
+  `M=N={8,16,32}` use ten control anchors as separate finite-size arms that
+  must not be pooled. A focused dense physics gate over `alpha=1.71:0.01:1.80`
+  precedes p90.
 - The `10 alpha x 3 N x 8 seed` scout is stable over four consecutive 5k
   blocks away from the main reorganization. Pooled physical-diagnostic prefix
   error, normalized by full-record IQR, has p95 `.184,.096,.075` at
