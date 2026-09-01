@@ -51,13 +51,20 @@ from src.generators.order_parameter import generate_stuart_landau
 RESULTS = ROOT / "data/order_parameter/stuart_landau_development_analysis"
 summary = json.loads((RESULTS / "summary.json").read_text())
 scores = pd.read_csv(RESULTS / "scores.csv")
+CONFIRMATION = ROOT / "data/order_parameter/stuart_landau_confirmation_analysis"
+confirmation_available = (CONFIRMATION / "summary.json").exists()
+if confirmation_available:
+    confirmation_summary = json.loads((CONFIRMATION / "summary.json").read_text())
+    confirmation_eligibility = json.loads((CONFIRMATION / "eligibility_pre_outcome.json").read_text())
+    confirmation_scores = pd.read_csv(CONFIRMATION / "scores.csv")
 sns.set_theme(style="whitegrid", context="notebook")
 print(
     f"rows={summary['rows']}; catalogue={summary['spi_count']} SPIs / "
     f"{summary['meta_feature_count']:,} pairs; retained="
     f"{summary['selected_meta_feature_count']:,}; "
     f"represented SPIs={summary['represented_spi_count']}"
-)"""
+)
+print("independent confirmation available:", confirmation_available)"""
         ),
         nbformat.v4.new_markdown_cell(
             "## Brief physical orientation\n\n"
@@ -86,6 +93,45 @@ plt.show()"""
             r"""## Leakage-controlled development assay
 
 The feature-validity gate, imputation, centring and PCA use only full-observation rows with $T\ge500$ and instances 0–3. Neither $\gamma$ nor any physical target enters those fits. Instances 4–7 are the internal held-seed check. $T=100$ is applied after fitting as a stress cell. This remains development analysis; a later bank with new seeds and interleaved controls is the independent confirmation."""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""## Independent confirmation
+
+The confirmation bank uses eight new seeds and nine interleaved $\gamma$ values. The frozen feature schema, mask, imputation, centre, scale and PC1 are applied before any confirmation target is read. An immutable pre-outcome eligibility record must pass first. Numerical $q\mapsto\widehat Q$ and control-only readouts remain supervised and separate."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""if not confirmation_available:
+    print("Confirmation results are not yet present.")
+else:
+    confirmed = confirmation_scores.query("arm == 'full'").copy()
+    physical_confirmed = confirmed.query("T == 1000")
+    fig, axes = plt.subplots(1, 3, figsize=(13.3, 3.9), constrained_layout=True)
+    palette_confirm = dict(zip([8, 16, 32], sns.color_palette("viridis", 3)))
+    for M, group in physical_confirmed.groupby("M"):
+        curve = group.groupby("gamma").Q_R_mean.agg(["mean", "std"]).reset_index()
+        axes[0].fill_between(curve.gamma, curve["mean"]-curve["std"], curve["mean"]+curve["std"], color=palette_confirm[M], alpha=.12)
+        axes[0].plot(curve.gamma, curve["mean"], "-o", ms=3, color=palette_confirm[M], label=f"M=N={M}")
+    axes[0].set(xlabel=r"new interleaved $\gamma$", ylabel=r"future $Q=\langle R\rangle_t$", title="A  Physical confirmation path")
+    axes[0].legend(frameon=False, fontsize=8)
+    p = axes[1].scatter(confirmed.q, confirmed.Q_R_mean, c=confirmed.gamma, cmap="magma", s=15, alpha=.55, linewidth=0)
+    fig.colorbar(p, ax=axes[1], label=r"$\gamma$")
+    axes[1].set(xlabel=r"prospectively frozen $q$", ylabel=r"future physical $Q$", title="B  Unsupervised recovery")
+    axes[2].scatter(confirmed.Q_R_mean, confirmed.Q_hat_q, c=confirmed.gamma, cmap="magma", s=15, alpha=.55, linewidth=0)
+    limits = [confirmed.Q_R_mean.min(), confirmed.Q_R_mean.max()]
+    axes[2].plot(limits, limits, color=".3", ls="--", lw=1)
+    axes[2].set(xlabel=r"future physical $Q$", ylabel=r"supervised $\widehat Q(q)$", title="C  Separate readout")
+    sns.despine(fig)
+    plt.show()
+    display(pd.DataFrame({
+        "quantity": ["eligible before target read", "overall rho", "overall 95% CI", "within-gamma rho", "pooled gamma-mean rho", "q readout MAE", "control-only MAE", "max selected missingness"],
+        "value": [confirmation_eligibility["status"] == "eligible", confirmation_summary["full_association"]["overall_spearman"], confirmation_summary["full_association"]["overall_ci95"], confirmation_summary["full_association"]["within_gamma_spearman"], confirmation_summary["full_pooled_gamma_mean_spearman"], confirmation_summary["supervised_q_readout"]["mae"], confirmation_summary["control_only_readout"]["mae"], confirmation_summary["maximum_selected_missingness"]],
+    }))
+    display(pd.DataFrame(confirmation_summary["input_baselines"]).T.round(3))"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            "## Development and M/T robustness\n\n"
+            "The following panels are development evidence, retained to diagnose "
+            "sample length, observation size and source stability."
         ),
         nbformat.v4.new_code_cell(
             r"""held = scores.query("instance >= 4").copy()
