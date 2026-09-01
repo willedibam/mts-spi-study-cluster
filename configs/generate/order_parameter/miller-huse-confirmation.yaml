@@ -1,0 +1,41 @@
+base_output_dir: data/order_parameter/miller_huse_confirmation
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 725911
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [8, 16, 32]
+  T_values: [1000]
+  instances: 8
+
+mts_classes:
+  - name: miller-huse-distributed-confirmation
+    labels: [miller-huse, order-parameter, partial-observation, confirmation, paired]
+    generator: miller_huse
+    seed_scope: instance
+    base_params:
+      mu: 3.0
+      lattice_side: 128
+      transients: 400000
+      sample_every: 1
+      truth_start_T: 1000
+      future_truth_T: 2000000
+      persist_future_truth_series: false
+      observation_mode: distributed
+      initial_state: random
+      zscore: false
+      store_full_field: false
+    include_base_variant: false
+    variants:
+      - {name: g0p18500, params: {coupling: 0.18500}}
+      - {name: g0p19500, params: {coupling: 0.19500}}
+      - {name: g0p20125, params: {coupling: 0.20125}}
+      - {name: g0p20325, params: {coupling: 0.20325}}
+      - {name: g0p20470, params: {coupling: 0.20470}}
+      - {name: g0p20517, params: {coupling: 0.20517}}
+      - {name: g0p20570, params: {coupling: 0.20570}}
+      - {name: g0p20875, params: {coupling: 0.20875}}
+      - {name: g0p22500, params: {coupling: 0.22500}}

@@ -274,6 +274,48 @@ def main() -> int:
     for column in baselines[0]:
         frame[column] = [row[column] for row in baselines]
 
+    baseline_columns = ["mean_abs_correlation", "temporal_spectral_entropy"]
+    baseline_fit = frame.loc[fit_mask, baseline_columns].to_numpy()
+    baseline_center = baseline_fit.mean(axis=0)
+    baseline_scale = baseline_fit.std(axis=0)
+    baseline_scale[baseline_scale == 0] = 1.0
+    baseline_standard = (
+        frame[baseline_columns].to_numpy() - baseline_center
+    ) / baseline_scale
+    baseline_decoder = Ridge(alpha=1.0).fit(
+        baseline_standard[fit_mask], Q_standard[fit_mask]
+    )
+    baseline_hat = baseline_decoder.predict(baseline_standard)
+    frame["Q_hat_input_baseline_mae"] = np.mean(
+        np.abs(baseline_hat - Q_standard), axis=1
+    )
+
+    # Same-control development means form an explicit labelled control-only
+    # comparator. It is evaluation, never part of the q representation.
+    fit_control = frame.loc[fit_mask, "alpha"].to_numpy()
+    control_grid = np.unique(fit_control)
+    control_truth = np.stack(
+        [Q_standard[fit_mask][fit_control == alpha].mean(axis=0) for alpha in control_grid]
+    )
+    control_hat = np.column_stack(
+        [
+            np.interp(frame["alpha"].to_numpy(), control_grid, control_truth[:, index])
+            for index in range(len(Q_COLUMNS))
+        ]
+    )
+    frame["Q_hat_control_mae"] = np.mean(
+        np.abs(control_hat - Q_standard), axis=1
+    )
+
+    baseline_associations = {
+        column: _association(
+            frame.loc[held_large, column].to_numpy(),
+            frame.loc[held_large, "Q_phys1"].to_numpy(),
+            held_groups,
+        )
+        for column in baseline_columns
+    }
+
     summary = {
         "status": "development_only_noncanonical_vector_Q",
         "representation_fit_uses_controls_or_physical_targets": False,
@@ -292,11 +334,25 @@ def main() -> int:
             Q_pca.explained_variance_ratio_.tolist()
         ),
         "held_large_q_component_associations": q_component_associations,
+        "held_large_q1_vs_physical_pc1": _association(
+            q_scores[held_large, 0],
+            frame.loc[held_large, "Q_phys1"].to_numpy(),
+            held_groups,
+        ),
+        "held_large_input_baseline_associations_with_physical_pc1": (
+            baseline_associations
+        ),
         "held_large_two_dimensional_geometry": _distance_association(
             q_scores[held_large, :2], Q_standard[held_large], held_groups
         ),
         "held_large_supervised_vector_mae": float(
             frame.loc[held_large, "Q_hat_mae"].mean()
+        ),
+        "held_large_input_baseline_vector_mae": float(
+            frame.loc[held_large, "Q_hat_input_baseline_mae"].mean()
+        ),
+        "held_large_control_only_vector_mae": float(
+            frame.loc[held_large, "Q_hat_control_mae"].mean()
         ),
         "held_large_by_M": by_M,
         "target_free_loading_stability_by_M": _source_stability(

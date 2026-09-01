@@ -15,8 +15,8 @@ Current recommendation:
 2. The original uniform-frequency Stuart--Landau population is accepted as the
    best additional system. Repository pilots reproduce its published phase path
    and coarse control plane.
-3. The quadratic CML is a strong secondary regime-coordinate example, not a
-   canonical scalar-order-parameter headline.
+3. The quadratic CML is an informative secondary/negative regime-coordinate
+   stress test, not a canonical scalar-order-parameter headline.
 4. Defer Vicsek, CGLE and neural application bridges until these pass full p90.
 
 This is a gated portfolio, not an open-ended model search. Retain two or three
@@ -58,6 +58,16 @@ controls.
 - Physical `N=L^2`. Adequate `L=128` means `N=16,384`; full-p90 `M=N` is
   infeasible because dense MPI memory is quadratic in M. Primary observation is
   one frozen dispersed ordering with `M={8,16,32}`; patches are sensitivities.
+- Full-p90 development completed 288 rows and all 289 SPIs. Target-blind
+  hygiene retained 32,836/41,616 pairs; PC1 explained `.2443` and had loading
+  cosine `.976-.994` across M-specific fits. Held instances 4--7 gave row-level
+  `rho(q,Q)=.9125`, pooled control-mean `.9650`, and per-M cell-mean
+  `.9650-.9860`; within-control rho was only `.2381`. Long-truth block-mean SE
+  was median `.00072`, p95 `.0193`. Temporal spectral entropy was stronger
+  overall (`rho=.9607`) and control-only MAE `.00325` was far below q-readout
+  `.0892`. This is strong canonical order-coordinate development evidence, not
+  predictive superiority; independent controls/seeds are still required for a
+  confirmation claim.
 
 ### Quadratic/Kaneko CML
 
@@ -92,6 +102,16 @@ controls.
   structure. The predeclared physical vector is temporal spectral entropy,
   dynamical spatial-pattern entropy, selected-band power and period-two
   residual. The p90 physics gate passed.
+- Full-p90 development completed 1,224 rows with all 289 SPIs; target-blind
+  hygiene retained 15,673/41,616 pairs and q-PC1 explained `.4107`. The
+  predeclared four-observable physical vector is `.9519` one-dimensional on
+  this intercept. Held q1 versus physical-PC1 has `rho=-.7332`; 2-D distance
+  geometry is `.6669` overall and `-.2325` within alpha. Mean absolute
+  correlation and temporal spectral entropy are much stronger
+  (`|rho|=.9306/.9501`). Supervised q-vector MAE `.1518` only slightly improves
+  on the two-input baseline `.1603` and is far worse than control-only `.0630`.
+  Keep this as a secondary/negative stress test and do not spend a confirmation
+  run trying to rescue it.
 
 ### Stuart--Landau population
 
