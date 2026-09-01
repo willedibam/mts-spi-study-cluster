@@ -103,6 +103,14 @@ def main() -> int:
         [record["patch"]["constant_channel_fraction"] for record in records]
     )
     elapsed = np.asarray([record["elapsed_seconds"] for record in records])
+    tau = np.asarray(
+        [record.get("q_future_abs_tau_int", np.nan) for record in records],
+        dtype=np.float64,
+    )
+    effective_samples = np.asarray(
+        [record.get("q_future_abs_effective_samples", np.nan) for record in records],
+        dtype=np.float64,
+    )
     block_pairs = []
     for blocks in q_blocks:
         block_pairs.extend(np.abs(np.diff(blocks)).tolist())
@@ -142,6 +150,10 @@ def main() -> int:
         "constant_channel_fraction_max": float(np.max(constant_fraction)),
         "elapsed_seconds_median": float(np.median(elapsed)),
         "elapsed_seconds_p95": float(np.quantile(elapsed, 0.95)),
+        "q_abs_tau_int_p95": _finite_or_none(np.nanquantile(tau, 0.95)),
+        "q_abs_effective_samples_p05": _finite_or_none(
+            np.nanquantile(effective_samples, 0.05)
+        ),
         "initial_state_mean_spread_max": (
             max(initial_state_spreads) if initial_state_spreads else None
         ),
@@ -155,27 +167,6 @@ def main() -> int:
             float(np.median(finite_size_spreads)) if finite_size_spreads else None
         ),
     }
-    if str(config["model"]) == "kinetic_ising" and len(np.unique(path_names)) == 2:
-        matched = []
-        first, second = np.unique(path_names)
-        for side in np.unique(sides):
-            for initial_state in np.unique(initial_states):
-                subset = (sides == side) & (initial_states == initial_state)
-                shared_controls = np.intersect1d(
-                    controls[subset & (path_names == first)],
-                    controls[subset & (path_names == second)],
-                )
-                for control in shared_controls:
-                    first_mean = q[
-                        subset & (path_names == first) & (controls == control)
-                    ].mean()
-                    second_mean = q[
-                        subset & (path_names == second) & (controls == control)
-                    ].mean()
-                    matched.append(abs(float(first_mean - second_mean)))
-        summary["matched_control_path_gap_max"] = max(matched) if matched else None
-        summary["matched_control_path_gap_mean"] = float(np.mean(matched)) if matched else None
-
     np.savez_compressed(
         output_dir / "physics_records.npz",
         path=path_names,
@@ -198,18 +189,9 @@ def main() -> int:
         patch_flip_rate=flip_rate,
         constant_channel_fraction=constant_fraction,
         elapsed_seconds=elapsed,
+        q_future_abs_tau_int=tau,
+        q_future_abs_effective_samples=effective_samples,
         future_block_pair_differences=block_pairs,
-        exact_spontaneous_magnetization=np.asarray(
-            [
-                record["resolved"].get("exact_spontaneous_magnetization", np.nan)
-                for record in records
-            ],
-            dtype=np.float64,
-        ),
-        beta=np.asarray(
-            [record["resolved"].get("beta", np.nan) for record in records],
-            dtype=np.float64,
-        ),
         mu=np.asarray(
             [record["resolved"].get("mu", np.nan) for record in records],
             dtype=np.float64,

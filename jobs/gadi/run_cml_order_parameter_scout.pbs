@@ -32,6 +32,8 @@ SELECTED_SPATIAL_BAND="${SELECTED_SPATIAL_BAND:-0.25:0.45}"
 PATTERN_WORD_LENGTH="${PATTERN_WORD_LENGTH:-4}"
 LYAPUNOV_STEPS="${LYAPUNOV_STEPS:-4096}"
 OUTPUT_DIR="${OUTPUT_DIR:-results/cml-order-parameter-discovery}"
+SEED_PAIRING="${SEED_PAIRING:-independent}"
+SCOUT_SCRIPT="${SCOUT_SCRIPT:-scripts/cml_order_parameter_scout.py}"
 
 ARRAY_ID="${PBS_ARRAY_INDEX:-1}"
 START_INDEX=$(( BATCH_OFFSET + (ARRAY_ID - 1) * CHUNK_SIZE + 1 ))
@@ -47,6 +49,8 @@ exec >"logs/${JOB_LABEL}.out" 2>"logs/${JOB_LABEL}.err"
 module purge
 module load python3/3.12.1
 source .venv/bin/activate
+export MTS_SPI_REPO_ROOT="$PBS_O_WORKDIR"
+export PYTHONPATH="$PBS_O_WORKDIR${PYTHONPATH:+:$PYTHONPATH}"
 
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
@@ -61,7 +65,7 @@ fi
 
 seq "$START_INDEX" "$END_INDEX" | \
     xargs -n 1 -P "$CONCURRENT_TASKS" -I {} \
-        python scripts/cml_order_parameter_scout.py \
+        python "$SCOUT_SCRIPT" \
             --alphas "$ALPHAS" \
             --eps "$EPS_VALUES" \
             --lattice-sizes "$LATTICE_SIZES" \
@@ -73,6 +77,7 @@ seq "$START_INDEX" "$END_INDEX" | \
             --selected-spatial-band "$SELECTED_SPATIAL_BAND" \
             --pattern-word-length "$PATTERN_WORD_LENGTH" \
             --lyapunov-steps "$LYAPUNOV_STEPS" \
+            --seed-pairing "$SEED_PAIRING" \
             --output-dir "$OUTPUT_DIR" \
             --task-index {}
 

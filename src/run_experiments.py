@@ -404,7 +404,7 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
     wants_ground_truth = spec.generator in {
         "kuramoto_order_parameter",
         "miller_huse",
-        "kinetic_ising",
+        "stuart_landau",
     }
     gen_extras: dict = {}
     if (
@@ -472,6 +472,10 @@ def _ground_truth_descriptor(path: Path) -> dict:
             "spin_magnetization_unobserved_future",
             "magnetization_unobserved",
             "magnetization_unobserved_future",
+            "order_parameter_R",
+            "order_parameter_R_future",
+            "mean_activity",
+            "mean_activity_future",
         ):
             if name in archive.files:
                 values = np.asarray(archive[name], dtype=np.float64)
@@ -500,6 +504,9 @@ def _ground_truth_descriptor(path: Path) -> dict:
             "beta",
             "reduced_coupling",
             "exact_spontaneous_magnetization",
+            "q_R_mean",
+            "q_R_std",
+            "q_activity_mean",
         ):
             if name in archive.files:
                 value = float(archive[name])
@@ -695,70 +702,56 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
                 {**generator_params, "store_full_field": store_full_field},
             ),
         }
-    elif spec.generator == "kinetic_ising":
+    elif spec.generator == "stuart_landau":
         generator_params.pop("return_internals", None)
-        store_full_spins = bool(generator_params.pop("store_full_spins", False))
-        data, internals = generate.generate_kinetic_ising(
+        store_full_states = bool(generator_params.pop("store_full_states", False))
+        data, internals = generate.generate_stuart_landau(
             M=spec.M,
             T=spec.T,
             rng=np.random.default_rng(spec.rng_seed),
             return_internals=True,
-            store_full_spins=store_full_spins,
+            store_full_states=store_full_states,
             **generator_params,
         )
-        primary = (
-            internals.magnetization_future
-            if internals.magnetization_future.size
-            else internals.magnetization
+        primary_order = (
+            internals.order_parameter_future
+            if internals.order_parameter_future.size
+            else internals.order_parameter
         )
-        hidden = (
-            internals.magnetization_unobserved_future
-            if internals.magnetization_unobserved_future.size
-            else internals.magnetization_unobserved
-        )
-        second = float(np.mean(primary**2))
-        fourth = float(np.mean(primary**4))
-        binder = 1.0 - fourth / (3.0 * second**2) if second > 0.0 else np.nan
-        susceptibility = internals.final_spins.size * (
-            second - float(np.mean(np.abs(primary))) ** 2
+        primary_activity = (
+            internals.mean_activity_future
+            if internals.mean_activity_future.size
+            else internals.mean_activity
         )
         ground_truth = {
-            "magnetization": internals.magnetization.astype(np.float32),
-            "magnetization_unobserved": internals.magnetization_unobserved.astype(np.float32),
-            "magnetization_future": internals.magnetization_future.astype(np.float32),
-            "magnetization_unobserved_future": (
-                internals.magnetization_unobserved_future.astype(np.float32)
-            ),
-            "q_magnetization_rms": np.array(
-                np.sqrt(np.mean(primary**2)), dtype=np.float32
-            ),
-            "q_magnetization_abs": np.array(np.mean(np.abs(primary)), dtype=np.float32),
-            "q_magnetization_rms_unobserved": np.array(
-                np.sqrt(np.mean(hidden**2)), dtype=np.float32
-            ),
-            "q_magnetization_abs_unobserved": np.array(
-                np.mean(np.abs(hidden)), dtype=np.float32
-            ),
-            "magnetization_m2": np.array(second, dtype=np.float32),
-            "magnetization_m4": np.array(fourth, dtype=np.float32),
-            "magnetization_binder_cumulant": np.array(binder, dtype=np.float32),
-            "magnetization_susceptibility": np.array(susceptibility, dtype=np.float32),
-            "patch_indices": internals.patch_indices.astype(np.int32),
-            "initial_spins": internals.initial_spins.astype(np.int8),
-            "final_spins": internals.final_spins.astype(np.int8),
-            "beta": np.array(internals.beta),
-            "reduced_coupling": np.array(internals.reduced_coupling),
-            "exact_spontaneous_magnetization": np.array(
-                internals.exact_spontaneous_magnetization
-            ),
+            "order_parameter_R": np.abs(internals.order_parameter).astype(np.float32),
+            "order_parameter_phase": np.angle(internals.order_parameter).astype(np.float32),
+            "mean_activity": internals.mean_activity.astype(np.float32),
+            "order_parameter_R_future": np.abs(
+                internals.order_parameter_future
+            ).astype(np.float32),
+            "order_parameter_phase_future": np.angle(
+                internals.order_parameter_future
+            ).astype(np.float32),
+            "mean_activity_future": internals.mean_activity_future.astype(np.float32),
+            "q_R_mean": np.array(np.mean(np.abs(primary_order)), dtype=np.float32),
+            "q_R_std": np.array(np.std(np.abs(primary_order)), dtype=np.float32),
+            "q_activity_mean": np.array(np.mean(primary_activity), dtype=np.float32),
+            "frequencies": internals.frequencies.astype(np.float32),
+            "observation_indices": internals.observation_indices.astype(np.int32),
+            "initial_state_real": internals.initial_state.real.astype(np.float32),
+            "initial_state_imag": internals.initial_state.imag.astype(np.float32),
+            "final_state_real": internals.final_state.real.astype(np.float32),
+            "final_state_imag": internals.final_state.imag.astype(np.float32),
         }
-        if internals.full_spins is not None:
-            ground_truth["full_spins"] = internals.full_spins.astype(np.int8)
+        if internals.full_states is not None:
+            ground_truth["full_states_real"] = internals.full_states.real.astype(np.float32)
+            ground_truth["full_states_imag"] = internals.full_states.imag.astype(np.float32)
         gen_extras = {
             "_ground_truth": ground_truth,
             "resolved_params": _resolve_generator_params(
                 spec.generator,
-                {**generator_params, "store_full_spins": store_full_spins},
+                {**generator_params, "store_full_states": store_full_states},
             ),
         }
     else:
@@ -1107,39 +1100,25 @@ def _miller_huse_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _kinetic_ising_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
+def _stuart_landau_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
     params = dict(gen_extras.get("resolved_params") or spec.generator_params)
-    truth = gen_extras.get("ground_truth") or {}
     future_truth = int(params.get("future_truth_T", 0)) > 0
-    beta = truth.get("beta", params.get("beta"))
-    reduced = truth.get("reduced_coupling", params.get("reduced_coupling"))
     return {
         "control": {
-            "name": "reduced_coupling",
-            "value": None if reduced is None else float(reduced),
-            "critical_value": 1.0,
-            "beta": None if beta is None else float(beta),
-            "path_parameters": {
-                "J_x": float(params.get("J_x", 1.0)),
-                "J_y": float(params.get("J_y", 1.0)),
-            },
+            "name": "frequency_half_width",
+            "value": float(params.get("frequency_half_width", 0.8)),
+            "plane_parameter": "coupling",
+            "plane_value": float(params.get("coupling", 0.8)),
         },
         "order_parameter": {
-            "name": "Ising magnetization",
-            "definition": "m(t)=L^-2 sum_i s_i(t)",
-            "finite_system_scalar": "mean_t(abs(m(t)))",
+            "name": "Stuart--Landau complex mean field",
+            "definition": "Z(t)=mean_j(z_j(t)); R(t)=abs(Z(t))",
             "primary_analysis_array": (
-                "magnetization_future" if future_truth else "magnetization"
+                "order_parameter_R_future" if future_truth else "order_parameter_R"
             ),
-            "primary_scalar": "q_magnetization_abs",
-            "hidden_complement_sensitivity_array": (
-                "magnetization_unobserved_future"
-                if future_truth
-                else "magnetization_unobserved"
-            ),
-            "hidden_complement_scalar": "q_magnetization_abs_unobserved",
-            "rms_magnetization_sensitivity_scalar": "q_magnetization_rms",
-            "thermodynamic_reference_scalar": "exact_spontaneous_magnetization",
+            "primary_scalar": "q_R_mean",
+            "variability_scalar": "q_R_std",
+            "activity_scalar": "q_activity_mean",
             "future_truth_disjoint_from_input_window": future_truth,
             "included_in_timeseries_input": False,
         },
@@ -1177,8 +1156,8 @@ def _build_metadata(
             source_block.update(_kuramoto_semantics(spec, extras))
         elif spec.generator == "miller_huse":
             source_block.update(_miller_huse_semantics(spec, extras))
-        elif spec.generator == "kinetic_ising":
-            source_block.update(_kinetic_ising_semantics(spec, extras))
+        elif spec.generator == "stuart_landau":
+            source_block.update(_stuart_landau_semantics(spec, extras))
         # Fold in pre-seed provenance (e.g. adiabatic-continuation network_seed,
         # branch, dK) when the timeseries was produced outside the harness.
         prov_path = Path(spec.dataset_dir) / "gen_provenance.json"
@@ -1271,7 +1250,7 @@ def _dataset_complete(spec) -> bool:
         dataset_dir / "spi_mpis.npz",
         dataset_dir / "timeseries.npy",
     ]
-    if spec.generator in {"kuramoto_order_parameter", "miller_huse", "kinetic_ising"}:
+    if spec.generator in {"kuramoto_order_parameter", "miller_huse", "stuart_landau"}:
         required.append(dataset_dir / "ground_truth.npz")
     if (
         spec.generator == "cml_logistic"

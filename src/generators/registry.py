@@ -36,9 +36,9 @@ from .linear import (
     generate_warping_mts,
 )
 from .order_parameter import (
-    generate_kinetic_ising,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
+    generate_stuart_landau,
 )
 from .chat import (
     generate_var_chat_a,
@@ -82,7 +82,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "kuramoto_grid_four": generate_kuramoto_grid_four,
     "kuramoto_order_parameter": generate_kuramoto_order_parameter,
     "miller_huse": generate_miller_huse,
-    "kinetic_ising": generate_kinetic_ising,
+    "stuart_landau": generate_stuart_landau,
     "gaussian_noise": generate_gaussian_noise,
     "cauchy_noise": generate_cauchy_noise,
     "exponential_noise": generate_exponential_noise,

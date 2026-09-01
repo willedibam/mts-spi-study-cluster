@@ -14,8 +14,11 @@ set -euo pipefail
 : "${SCOUT_CONFIG:?set SCOUT_CONFIG}"
 : "${END_INDEX:?set END_INDEX}"
 START_INDEX="${START_INDEX:-1}"
+SCOUT_SCRIPT="${SCOUT_SCRIPT:-scripts/spin_order_parameter_scout.py}"
 
 cd "${PBS_O_WORKDIR:?}"
+export MTS_SPI_REPO_ROOT="$PBS_O_WORKDIR"
+export PYTHONPATH="$PBS_O_WORKDIR${PYTHONPATH:+:$PYTHONPATH}"
 module purge
 module load python3/3.12.1 nci-parallel/1.0.0a
 source .venv/bin/activate
@@ -23,8 +26,8 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_TH
 
 commands="$PBS_JOBFS/spin-physics-commands.txt"
 for ((i=START_INDEX; i<=END_INDEX; i++)); do
-    printf 'python scripts/spin_order_parameter_scout.py --config %s --task-index %d\n' \
-        "$SCOUT_CONFIG" "$i" >> "$commands"
+    printf 'python %q --config %q --task-index %d\n' \
+        "$SCOUT_SCRIPT" "$SCOUT_CONFIG" "$i" >> "$commands"
 done
 tasks=$((END_INDEX - START_INDEX + 1))
 workers=$PBS_NCPUS

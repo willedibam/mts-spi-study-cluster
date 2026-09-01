@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-from scipy.optimize import brentq
 from scipy.special import ndtri
 
 from ._common import _maybe_zscore, _resolve_rng
@@ -245,6 +244,19 @@ class MillerHuseInternals:
     final_field: np.ndarray
 
 
+@dataclass
+class StuartLandauInternals:
+    full_states: np.ndarray | None
+    order_parameter: np.ndarray
+    mean_activity: np.ndarray
+    order_parameter_future: np.ndarray
+    mean_activity_future: np.ndarray
+    frequencies: np.ndarray
+    observation_indices: np.ndarray
+    initial_state: np.ndarray
+    final_state: np.ndarray
+
+
 def miller_huse_map(values: np.ndarray, mu: float = 3.0) -> np.ndarray:
     """Odd piecewise-linear Miller--Huse family on ``[-1, 1]``."""
 
@@ -296,6 +308,7 @@ def generate_miller_huse(
     patch_shape: tuple[int, int] | list[int] | None = None,
     patch_row: int | None = None,
     patch_col: int | None = None,
+    observation_mode: str = "patch",
     initial_state: str = "random",
     rng=None,
     zscore: bool = False,
@@ -311,10 +324,19 @@ def generate_miller_huse(
     transients = int(transients)
     sample_every = int(sample_every)
     future_truth_T = int(future_truth_T)
-    patch_height, patch_width = _rectangular_patch_shape(M, patch_shape)
+    observation_key = str(observation_mode).strip().lower()
+    if observation_key not in {"patch", "distributed"}:
+        raise ValueError(
+            f"unsupported observation_mode {observation_mode!r}; expected patch or distributed"
+        )
+    if observation_key == "patch":
+        patch_height, patch_width = _rectangular_patch_shape(M, patch_shape)
+    else:
+        patch_height, patch_width = 1, M
     if (
         T <= 0
-        or side < max(patch_height, patch_width)
+        or (observation_key == "patch" and side < max(patch_height, patch_width))
+        or (observation_key == "distributed" and side * side < M)
         or transients < 0
         or sample_every <= 0
         or future_truth_T < 0
@@ -340,11 +362,15 @@ def generate_miller_huse(
             f"unsupported initial_state {initial_state!r}; expected random, positive or negative"
         )
     initial_field = state.copy()
-    row = int(rng.integers(side)) if patch_row is None else int(patch_row) % side
-    col = int(rng.integers(side)) if patch_col is None else int(patch_col) % side
-    rows = (row + np.arange(patch_height)) % side
-    cols = (col + np.arange(patch_width)) % side
-    patch_indices = np.array(np.meshgrid(rows, cols, indexing="ij")).reshape(2, -1).T
+    if observation_key == "patch":
+        row = int(rng.integers(side)) if patch_row is None else int(patch_row) % side
+        col = int(rng.integers(side)) if patch_col is None else int(patch_col) % side
+        rows = (row + np.arange(patch_height)) % side
+        cols = (col + np.arange(patch_width)) % side
+        patch_indices = np.array(np.meshgrid(rows, cols, indexing="ij")).reshape(2, -1).T
+    else:
+        flat_indices = rng.permutation(side * side)[:M]
+        patch_indices = np.column_stack(np.divmod(flat_indices, side))
 
     def step(field: np.ndarray) -> np.ndarray:
         mapped = miller_huse_map(field, mu=mu)
@@ -372,7 +398,7 @@ def generate_miller_huse(
     for sample in range(total_samples):
         for _ in range(sample_every):
             state = step(state)
-        patch = state[np.ix_(rows, cols)].reshape(-1)
+        patch = state[patch_indices[:, 0], patch_indices[:, 1]]
         spins = _spin_field(state)
         spin_mean = float(spins.mean())
         hidden_spin_mean = (
@@ -410,254 +436,127 @@ def generate_miller_huse(
     )
 
 
-@dataclass
-class KineticIsingInternals:
-    full_spins: np.ndarray | None
-    magnetization: np.ndarray
-    magnetization_unobserved: np.ndarray
-    magnetization_future: np.ndarray
-    magnetization_unobserved_future: np.ndarray
-    patch_indices: np.ndarray
-    initial_spins: np.ndarray
-    final_spins: np.ndarray
-    beta: float
-    reduced_coupling: float
-    exact_spontaneous_magnetization: float
+def _stuart_landau_rhs(
+    state: np.ndarray,
+    frequencies: np.ndarray,
+    coupling: float,
+) -> np.ndarray:
+    mean_field = np.mean(state)
+    return (
+        1.0 + 1j * frequencies - np.abs(state) ** 2
+    ) * state + coupling * (mean_field - state)
 
 
-def ising_reduced_coupling(beta: float, J_x: float = 1.0, J_y: float = 1.0) -> float:
-    """Anisotropic square-Ising coordinate ``sinh(2 beta Jx)sinh(2 beta Jy)``."""
-
-    beta = float(beta)
-    J_x = float(J_x)
-    J_y = float(J_y)
-    if beta < 0.0 or J_x <= 0.0 or J_y <= 0.0:
-        raise ValueError(f"require beta >= 0 and J_x,J_y > 0; got {beta}, {J_x}, {J_y}")
-    return float(np.sinh(2.0 * beta * J_x) * np.sinh(2.0 * beta * J_y))
-
-
-def ising_beta_from_reduced_coupling(
-    reduced_coupling: float,
-    J_x: float = 1.0,
-    J_y: float = 1.0,
-) -> float:
-    """Solve the exact anisotropic-Ising reduced-coupling relation for beta."""
-
-    target = float(reduced_coupling)
-    if target < 0.0 or J_x <= 0.0 or J_y <= 0.0:
-        raise ValueError(
-            f"require reduced_coupling >= 0 and J_x,J_y > 0; got {target}, {J_x}, {J_y}"
-        )
-    if target == 0.0:
-        return 0.0
-    upper = 1.0
-    while ising_reduced_coupling(upper, J_x, J_y) < target:
-        upper *= 2.0
-    return float(
-        brentq(
-            lambda value: ising_reduced_coupling(value, J_x, J_y) - target,
-            0.0,
-            upper,
-        )
-    )
+def _stuart_landau_step(
+    state: np.ndarray,
+    frequencies: np.ndarray,
+    coupling: float,
+    dt: float,
+) -> np.ndarray:
+    k1 = _stuart_landau_rhs(state, frequencies, coupling)
+    k2 = _stuart_landau_rhs(state + 0.5 * dt * k1, frequencies, coupling)
+    k3 = _stuart_landau_rhs(state + 0.5 * dt * k2, frequencies, coupling)
+    k4 = _stuart_landau_rhs(state + dt * k3, frequencies, coupling)
+    return state + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
 
 
-def ising_exact_spontaneous_magnetization(reduced_coupling: float) -> float:
-    """Yang's thermodynamic-limit magnetization for the anisotropic square Ising model."""
-
-    value = float(reduced_coupling)
-    if value <= 1.0:
-        return 0.0
-    return float((1.0 - value**-2.0) ** 0.125)
-
-
-def _wolff_equilibrate(
-    spins: np.ndarray,
-    *,
-    beta: float,
-    J_x: float,
-    J_y: float,
-    equivalent_sweeps: int,
-    rng,
-) -> None:
-    """In-place Wolff equilibration, counted by total flipped lattice volumes."""
-
-    if equivalent_sweeps <= 0:
-        return
-    side = spins.shape[0]
-    target_flips = equivalent_sweeps * spins.size
-    flips = 0
-    p_x = 1.0 - np.exp(-2.0 * beta * J_x)
-    p_y = 1.0 - np.exp(-2.0 * beta * J_y)
-    while flips < target_flips:
-        start_row = int(rng.integers(side))
-        start_col = int(rng.integers(side))
-        phase = spins[start_row, start_col]
-        members = [(start_row, start_col)]
-        stack = [(start_row, start_col)]
-        included = np.zeros_like(spins, dtype=bool)
-        included[start_row, start_col] = True
-        while stack:
-            row, col = stack.pop()
-            for d_row, d_col, probability in (
-                (-1, 0, p_y),
-                (1, 0, p_y),
-                (0, -1, p_x),
-                (0, 1, p_x),
-            ):
-                neighbour = ((row + d_row) % side, (col + d_col) % side)
-                if (
-                    not included[neighbour]
-                    and spins[neighbour] == phase
-                    and rng.random() < probability
-                ):
-                    included[neighbour] = True
-                    members.append(neighbour)
-                    stack.append(neighbour)
-        member_rows, member_cols = np.asarray(members, dtype=np.int32).T
-        spins[member_rows, member_cols] *= -1
-        flips += len(members)
-
-
-def generate_kinetic_ising(
+def generate_stuart_landau(
     M: int,
     T: int,
-    reduced_coupling: float | None = 1.0,
-    beta: float | None = None,
-    J_x: float = 1.0,
-    J_y: float = 1.0,
-    lattice_side: int = 64,
-    equilibration_sweeps: int = 200,
-    kinetic_burn_sweeps: int = 0,
-    sample_every: int = 1,
+    coupling: float = 0.8,
+    frequency_half_width: float = 0.8,
+    N_full: int | None = None,
+    omega_mean: float = 2.0,
+    dt: float = 0.02,
+    sample_dt: float = 0.1,
+    burn_time: float = 200.0,
     future_truth_T: int = 0,
-    patch_shape: tuple[int, int] | list[int] | None = None,
-    patch_row: int | None = None,
-    patch_col: int | None = None,
-    initial_state: str = "random",
+    truth_start_T: int | None = None,
+    output: str = "real",
     rng=None,
     zscore: bool = False,
     return_internals: bool = False,
-    store_full_spins: bool = False,
+    store_full_states: bool = False,
 ):
-    """Equilibrium anisotropic Ising field observed under checkerboard heat-bath dynamics."""
+    """Mean-field Stuart--Landau population from Matthews--Strogatz (1990).
+
+    Relative frequencies are evenly spaced on ``[-gamma, gamma]`` and randomly
+    assigned to oscillators. ``omega_mean`` restores a laboratory-frame carrier;
+    it changes only the common rotation and leaves the published phase diagram
+    in ``(coupling, frequency_half_width)`` unchanged.
+    """
 
     rng = _resolve_rng(None, rng)
     M = int(M)
     T = int(T)
-    side = int(lattice_side)
-    equilibration_sweeps = int(equilibration_sweeps)
-    kinetic_burn_sweeps = int(kinetic_burn_sweeps)
-    sample_every = int(sample_every)
+    N = M if N_full is None else int(N_full)
     future_truth_T = int(future_truth_T)
-    patch_height, patch_width = _rectangular_patch_shape(M, patch_shape)
-    if (
-        T <= 0
-        or side < max(patch_height, patch_width)
-        or equilibration_sweeps < 0
-        or kinetic_burn_sweeps < 0
-        or sample_every <= 0
-        or future_truth_T < 0
-    ):
+    truth_start = T if truth_start_T is None else int(truth_start_T)
+    coupling = float(coupling)
+    gamma = float(frequency_half_width)
+    dt = float(dt)
+    sample_dt = float(sample_dt)
+    burn_time = float(burn_time)
+    if M <= 0 or T <= 0 or N < M or future_truth_T < 0 or truth_start < T:
+        raise ValueError(f"require 0 < M <= N_full and T > 0; got M={M}, N_full={N}, T={T}")
+    if coupling < 0.0 or gamma < 0.0:
         raise ValueError(
-            f"invalid sizes or sweep counts: M={M}, T={T}, lattice_side={side}, "
-            f"equilibration_sweeps={equilibration_sweeps}, "
-            f"kinetic_burn_sweeps={kinetic_burn_sweeps}, sample_every={sample_every}, "
-            f"future_truth_T={future_truth_T}"
+            f"coupling and frequency_half_width must be non-negative, got {coupling}, {gamma}"
         )
-    if beta is not None and reduced_coupling is not None:
-        raise ValueError("specify either beta or reduced_coupling, not both")
-    if beta is None:
-        if reduced_coupling is None:
-            raise ValueError("one of beta or reduced_coupling is required")
-        beta_value = ising_beta_from_reduced_coupling(reduced_coupling, J_x, J_y)
-    else:
-        beta_value = float(beta)
-    u_value = ising_reduced_coupling(beta_value, J_x, J_y)
-
-    initial_key = str(initial_state).strip().lower()
-    if initial_key == "random":
-        spins = rng.choice(np.array([-1, 1], dtype=np.int8), size=(side, side))
-    elif initial_key in {"positive", "ordered_positive"}:
-        spins = np.ones((side, side), dtype=np.int8)
-    elif initial_key in {"negative", "ordered_negative"}:
-        spins = -np.ones((side, side), dtype=np.int8)
-    else:
+    if dt <= 0.0 or sample_dt < dt or burn_time < 0.0:
         raise ValueError(
-            f"unsupported initial_state {initial_state!r}; expected random, positive or negative"
+            f"require dt > 0, sample_dt >= dt and burn_time >= 0; "
+            f"got dt={dt}, sample_dt={sample_dt}, burn_time={burn_time}"
         )
-    initial_spins = spins.copy()
-    row = int(rng.integers(side)) if patch_row is None else int(patch_row) % side
-    col = int(rng.integers(side)) if patch_col is None else int(patch_col) % side
-    rows = (row + np.arange(patch_height)) % side
-    cols = (col + np.arange(patch_width)) % side
-    patch_indices = np.array(np.meshgrid(rows, cols, indexing="ij")).reshape(2, -1).T
+    sample_every = int(round(sample_dt / dt))
+    burn_steps = int(round(burn_time / dt))
+    if not np.isclose(sample_every * dt, sample_dt, rtol=0.0, atol=1e-12):
+        raise ValueError(f"sample_dt={sample_dt} must be an integer multiple of dt={dt}")
+    if not np.isclose(burn_steps * dt, burn_time, rtol=0.0, atol=1e-12):
+        raise ValueError(f"burn_time={burn_time} must be an integer multiple of dt={dt}")
 
-    _wolff_equilibrate(
-        spins,
-        beta=beta_value,
-        J_x=float(J_x),
-        J_y=float(J_y),
-        equivalent_sweeps=equilibration_sweeps,
-        rng=rng,
-    )
-    row_grid, col_grid = np.indices((side, side))
-    checkerboards = ((row_grid + col_grid) % 2 == 0, (row_grid + col_grid) % 2 == 1)
+    relative = np.linspace(-gamma, gamma, N, dtype=np.float64)
+    frequencies = float(omega_mean) + relative[rng.permutation(N)]
+    state = rng.uniform(-1.0, 1.0, N) + 1j * rng.uniform(-1.0, 1.0, N)
+    initial_state = state.copy()
+    observation_indices = rng.permutation(N)[:M]
+    for _ in range(burn_steps):
+        state = _stuart_landau_step(state, frequencies, coupling, dt)
 
-    def heat_bath_sweep() -> None:
-        for mask in checkerboards:
-            local_field = float(J_x) * (
-                np.roll(spins, 1, axis=1) + np.roll(spins, -1, axis=1)
-            ) + float(J_y) * (
-                np.roll(spins, 1, axis=0) + np.roll(spins, -1, axis=0)
-            )
-            p_plus = 1.0 / (1.0 + np.exp(-2.0 * beta_value * local_field))
-            draws = rng.random(spins.shape)
-            spins[mask] = np.where(draws[mask] < p_plus[mask], 1, -1)
-
-    for _ in range(kinetic_burn_sweeps):
-        heat_bath_sweep()
-
-    total_samples = T + future_truth_T
-    observed = np.empty((T, M), dtype=np.float64)
-    full_spins = np.empty((T, side, side), dtype=np.int8) if store_full_spins else None
-    magnetization = np.empty(T, dtype=np.float64)
-    magnetization_unobserved = np.empty(T, dtype=np.float64)
-    magnetization_future = np.empty(future_truth_T, dtype=np.float64)
-    magnetization_unobserved_future = np.empty(future_truth_T, dtype=np.float64)
-    hidden_count = side * side - M
+    total_samples = truth_start + future_truth_T
+    states = np.empty((total_samples, N), dtype=np.complex128)
     for sample in range(total_samples):
         for _ in range(sample_every):
-            heat_bath_sweep()
-        patch = spins[np.ix_(rows, cols)].reshape(-1)
-        mean = float(spins.mean())
-        hidden_mean = (
-            float((spins.sum() - patch.sum()) / hidden_count) if hidden_count else np.nan
-        )
-        if sample < T:
-            observed[sample] = patch
-            magnetization[sample] = mean
-            magnetization_unobserved[sample] = hidden_mean
-            if full_spins is not None:
-                full_spins[sample] = spins
-        else:
-            future_index = sample - T
-            magnetization_future[future_index] = mean
-            magnetization_unobserved_future[future_index] = hidden_mean
+            state = _stuart_landau_step(state, frequencies, coupling, dt)
+        states[sample] = state
 
+    current = states[:T]
+    future = states[truth_start:]
+    observed_state = current[:, observation_indices]
+    output_key = str(output).strip().lower()
+    if output_key == "real":
+        observed = observed_state.real
+    elif output_key == "imag":
+        observed = observed_state.imag
+    elif output_key == "amplitude":
+        observed = np.abs(observed_state)
+    elif output_key == "phase":
+        observed = np.angle(observed_state)
+    else:
+        raise ValueError(
+            f"unsupported output {output!r}; expected real, imag, amplitude or phase"
+        )
     observed = _maybe_zscore(observed, zscore=zscore)
     if not return_internals:
         return observed
-    return observed, KineticIsingInternals(
-        full_spins=full_spins,
-        magnetization=magnetization,
-        magnetization_unobserved=magnetization_unobserved,
-        magnetization_future=magnetization_future,
-        magnetization_unobserved_future=magnetization_unobserved_future,
-        patch_indices=patch_indices,
-        initial_spins=initial_spins,
-        final_spins=spins.copy(),
-        beta=beta_value,
-        reduced_coupling=u_value,
-        exact_spontaneous_magnetization=ising_exact_spontaneous_magnetization(u_value),
+    return observed, StuartLandauInternals(
+        full_states=current if store_full_states else None,
+        order_parameter=np.mean(current, axis=1),
+        mean_activity=np.mean(np.abs(current) ** 2, axis=1),
+        order_parameter_future=np.mean(future, axis=1),
+        mean_activity_future=np.mean(np.abs(future) ** 2, axis=1),
+        frequencies=frequencies,
+        observation_indices=observation_indices,
+        initial_state=initial_state,
+        final_state=state.copy(),
     )

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from itertools import product
 from pathlib import Path
 import sys
@@ -18,7 +19,9 @@ from typing import Iterable
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(
+    os.environ.get("MTS_SPI_REPO_ROOT", Path(__file__).resolve().parents[1])
+).resolve()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -68,8 +71,20 @@ def parse_integer_list(text: str) -> list[int]:
     return sorted(set(values))
 
 
-def stable_seed(base_seed: int, alpha: float, eps: float, lattice_size: int, instance: int) -> int:
-    payload = f"{base_seed}|{alpha:.12g}|{eps:.12g}|{lattice_size}|{instance}".encode()
+def stable_seed(
+    base_seed: int,
+    alpha: float,
+    eps: float,
+    lattice_size: int,
+    instance: int,
+    pairing: str = "independent",
+) -> int:
+    parts = [str(base_seed), str(lattice_size), str(instance)]
+    if pairing == "independent":
+        parts.extend([f"{alpha:.12g}", f"{eps:.12g}"])
+    elif pairing != "paired":
+        raise ValueError(f"unsupported seed pairing {pairing!r}")
+    payload = "|".join(parts).encode()
     digest = hashlib.blake2s(payload, digest_size=8).digest()
     return int.from_bytes(digest, "big") % (2**32 - 1) or 1
 
@@ -96,7 +111,14 @@ def run_one(
     instance: int,
     args: argparse.Namespace,
 ) -> dict:
-    seed = stable_seed(args.base_seed, alpha, eps, lattice_size, instance)
+    seed = stable_seed(
+        args.base_seed,
+        alpha,
+        eps,
+        lattice_size,
+        instance,
+        pairing=args.seed_pairing,
+    )
     field = generate_cml_logistic(
         M=lattice_size,
         T=args.record_steps,
@@ -148,6 +170,7 @@ def run_one(
         "lattice_size": lattice_size,
         "instance": instance,
         "seed": seed,
+        "seed_pairing": args.seed_pairing,
         "transients": args.transients,
         "record_steps": args.record_steps,
         "sample_every": args.sample_every,
@@ -187,6 +210,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-spatial-lag", type=int, default=64)
     parser.add_argument("--lyapunov-steps", type=int, default=0)
     parser.add_argument("--base-seed", type=int, default=110305)
+    parser.add_argument(
+        "--seed-pairing",
+        choices=("paired", "independent"),
+        default="independent",
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("results/cml-order-parameter-scout"))
     parser.add_argument("--task-index", type=int, help="1-based combination index, e.g. PBS_ARRAY_INDEX")
     parser.add_argument("--list", action="store_true", help="print combination count and exit")

@@ -5,12 +5,9 @@ from types import SimpleNamespace
 import numpy as np
 
 from src.generators.order_parameter import (
-    generate_kinetic_ising,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
-    ising_beta_from_reduced_coupling,
-    ising_exact_spontaneous_magnetization,
-    ising_reduced_coupling,
+    generate_stuart_landau,
     kuramoto_critical_coupling,
     miller_huse_map,
 )
@@ -18,9 +15,9 @@ from src.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
 from src.run_experiments import (
     _build_metadata,
     _ground_truth_descriptor,
-    _kinetic_ising_semantics,
     _kuramoto_semantics,
     _miller_huse_semantics,
+    _stuart_landau_semantics,
     generate_synthetic_from_spec,
 )
 
@@ -220,78 +217,26 @@ def test_miller_huse_future_truth_is_not_exposed() -> None:
     assert info.spin_magnetization_future.shape == (30,)
 
 
-def test_anisotropic_ising_coordinate_and_hidden_future() -> None:
-    isotropic_beta = ising_beta_from_reduced_coupling(1.0, 1.0, 1.0)
-    assert np.isclose(isotropic_beta, np.log(1.0 + np.sqrt(2.0)) / 2.0)
-    anisotropic_beta = ising_beta_from_reduced_coupling(1.0, 1.0, 0.5)
-    assert anisotropic_beta > isotropic_beta
-    assert np.isclose(ising_reduced_coupling(anisotropic_beta, 1.0, 0.5), 1.0)
-    assert ising_exact_spontaneous_magnetization(1.0) == 0.0
-    assert ising_exact_spontaneous_magnetization(1.4) > 0.0
-
-    observed, internals = generate_kinetic_ising(
-        M=20,
-        T=40,
-        reduced_coupling=1.2,
-        J_x=1.0,
-        J_y=0.5,
-        lattice_side=12,
-        equilibration_sweeps=4,
-        kinetic_burn_sweeps=2,
-        future_truth_T=30,
-        rng=np.random.default_rng(29),
-        return_internals=True,
-    )
-    assert observed.shape == (40, 20)
-    assert set(np.unique(observed)) <= {-1.0, 1.0}
-    assert internals.full_spins is None
-    assert internals.patch_indices.shape == (20, 2)
-    assert internals.magnetization_future.shape == (30,)
-    assert internals.magnetization_unobserved_future.shape == (30,)
-    assert np.isclose(internals.reduced_coupling, 1.2)
-
-
-def test_kinetic_ising_views_are_exactly_nested() -> None:
+def test_miller_huse_distributed_observations_are_nested() -> None:
     common = dict(
-        reduced_coupling=1.0,
+        T=20,
+        coupling=0.205,
         lattice_side=12,
-        equilibration_sweeps=4,
+        transients=50,
+        observation_mode="distributed",
         return_internals=True,
     )
-    small, small_info = generate_kinetic_ising(
-        M=10,
-        T=20,
-        patch_shape=[2, 5],
-        rng=np.random.default_rng(31),
-        **common,
+    small, small_info = generate_miller_huse(
+        M=8, rng=np.random.default_rng(29), **common
     )
-    primary, primary_info = generate_kinetic_ising(
-        M=20,
-        T=30,
-        patch_shape=[4, 5],
-        rng=np.random.default_rng(31),
-        **common,
+    large, large_info = generate_miller_huse(
+        M=16, rng=np.random.default_rng(29), **common
     )
-    large, large_info = generate_kinetic_ising(
-        M=32,
-        T=30,
-        patch_shape=[4, 8],
-        rng=np.random.default_rng(31),
-        **common,
+    np.testing.assert_array_equal(small, large[:, :8])
+    np.testing.assert_array_equal(
+        small_info.patch_indices, large_info.patch_indices[:8]
     )
-    for observed, info in ((small, small_info), (large, large_info)):
-        primary_columns = {
-            tuple(index): column
-            for column, index in enumerate(primary_info.patch_indices)
-        }
-        observed_columns = {
-            tuple(index): column for column, index in enumerate(info.patch_indices)
-        }
-        shared = sorted(set(primary_columns) & set(observed_columns))
-        np.testing.assert_array_equal(
-            primary[: len(observed), [primary_columns[index] for index in shared]],
-            observed[:, [observed_columns[index] for index in shared]],
-        )
+    np.testing.assert_array_equal(small_info.final_field, large_info.final_field)
 
 
 def test_spin_generator_harness_records_compact_truth_and_semantics(tmp_path: Path) -> None:
@@ -309,14 +254,6 @@ mts_classes:
       transients: 10
       future_truth_T: 10
       store_full_field: false
-  - name: ising
-    generator: kinetic_ising
-    base_params:
-      lattice_side: 10
-      equilibration_sweeps: 2
-      future_truth_T: 10
-      reduced_coupling: 1.2
-      store_full_spins: false
 """,
         encoding="utf-8",
     )
@@ -329,14 +266,98 @@ mts_classes:
     mh_semantics = _miller_huse_semantics(mh_spec, mh_extras)
     assert mh_semantics["order_parameter"]["primary_scalar"] == "q_spin_abs"
 
-    ising_spec = next(spec for spec in specs if spec.generator == "kinetic_ising")
-    ising_observed, ising_extras = generate_synthetic_from_spec(ising_spec)
-    assert ising_observed.shape == (20, 20)
-    assert "full_spins" not in ising_extras["_ground_truth"]
-    assert ising_extras["_ground_truth"]["q_magnetization_abs"].shape == ()
-    ising_semantics = _kinetic_ising_semantics(ising_spec, ising_extras)
-    assert ising_semantics["control"]["critical_value"] == 1.0
-    assert ising_semantics["order_parameter"]["primary_scalar"] == "q_magnetization_abs"
+
+def test_stuart_landau_nested_views_and_collective_regimes() -> None:
+    common = dict(
+        coupling=0.8,
+        N_full=64,
+        dt=0.02,
+        sample_dt=0.1,
+        burn_time=80.0,
+        return_internals=True,
+    )
+    short, short_info = generate_stuart_landau(
+        M=8,
+        T=150,
+        frequency_half_width=0.6,
+        rng=np.random.default_rng(41),
+        **common,
+    )
+    long, long_info = generate_stuart_landau(
+        M=16,
+        T=300,
+        frequency_half_width=0.6,
+        rng=np.random.default_rng(41),
+        **common,
+    )
+    np.testing.assert_allclose(short, long[:150, :8], rtol=0, atol=0)
+    np.testing.assert_array_equal(
+        short_info.observation_indices, long_info.observation_indices[:8]
+    )
+    np.testing.assert_allclose(short_info.frequencies, long_info.frequencies, rtol=0, atol=0)
+    assert np.abs(short_info.order_parameter).mean() > 0.6
+
+    _, incoherent = generate_stuart_landau(
+        M=16,
+        T=300,
+        frequency_half_width=1.2,
+        rng=np.random.default_rng(41),
+        **common,
+    )
+    assert np.abs(incoherent.order_parameter).mean() < 0.25
+
+
+def test_stuart_landau_harness_records_vector_truth(tmp_path: Path) -> None:
+    config_path = tmp_path / "stuart-landau.yaml"
+    config_path.write_text(
+        """
+base_output_dir: data/test-stuart-landau
+pyspi_config: configs/pyspi/test.yaml
+defaults: {instances: 1, M_values: [8], T_values: [40]}
+mts_classes:
+  - name: sl
+    generator: stuart_landau
+    base_params:
+      N_full: 16
+      coupling: 0.8
+      frequency_half_width: 0.8
+      burn_time: 5.0
+      future_truth_T: 20
+      store_full_states: false
+""",
+        encoding="utf-8",
+    )
+    spec = DatasetMapping(ExperimentConfig.from_file(config_path)).specs[0]
+    observed, extras = generate_synthetic_from_spec(spec)
+    assert observed.shape == (40, 8)
+    assert "full_states_real" not in extras["_ground_truth"]
+    assert extras["_ground_truth"]["order_parameter_R_future"].shape == (20,)
+    semantics = _stuart_landau_semantics(spec, extras)
+    assert semantics["order_parameter"]["primary_scalar"] == "q_R_mean"
+    assert semantics["order_parameter"]["activity_scalar"] == "q_activity_mean"
+
+
+def test_stuart_landau_prefixes_share_fixed_future_truth() -> None:
+    common = dict(
+        M=8,
+        N_full=32,
+        coupling=0.8,
+        frequency_half_width=0.8,
+        burn_time=20.0,
+        truth_start_T=100,
+        future_truth_T=40,
+        return_internals=True,
+    )
+    short, short_info = generate_stuart_landau(
+        T=30, rng=np.random.default_rng(53), **common
+    )
+    long, long_info = generate_stuart_landau(
+        T=100, rng=np.random.default_rng(53), **common
+    )
+    np.testing.assert_array_equal(short, long[:30])
+    np.testing.assert_array_equal(
+        short_info.order_parameter_future, long_info.order_parameter_future
+    )
 
 
 def test_instance_seed_scope_pairs_variants_and_nested_views(tmp_path: Path) -> None:
@@ -382,62 +403,6 @@ def test_dataset_seed_does_not_depend_on_clone_path(tmp_path: Path) -> None:
     assert _derive_dataset_seed(base_seed=config.rng_seed, spec=spec) == _derive_dataset_seed(
         base_seed=config.rng_seed, spec=moved
     )
-
-
-def test_ising_feature_scout_mapping_is_paired_and_m20_primary() -> None:
-    config = ExperimentConfig.from_file(
-        Path("configs/generate/order_parameter/kinetic-ising-feature-scout.yaml")
-    )
-    mapping = DatasetMapping(config)
-    assert len(mapping.specs) == 360
-    assert {spec.M for spec in mapping.specs} == {10, 20, 32}
-    assert all(spec.M == 20 for spec in mapping.specs if spec.T != 1000)
-    for instance in range(12):
-        seeds = {spec.rng_seed for spec in mapping.specs if spec.instance == instance}
-        assert len(seeds) == 1
-    primary = [spec for spec in mapping.specs if spec.M == 20 and spec.T == 1000]
-    assert len(primary) == 72
-    assert all(spec.generator_params["patch_shape"] == [4, 5] for spec in primary)
-
-
-def test_ising_t2000_validation_mapping_has_paired_disjoint_blocks() -> None:
-    config = ExperimentConfig.from_file(
-        Path("configs/generate/order_parameter/kinetic-ising-t2000-validation.yaml")
-    )
-    mapping = DatasetMapping(config)
-    assert len(mapping.specs) == 192
-    assert len({spec.dataset_dir for spec in mapping.specs}) == 192
-    for instance in range(16):
-        master = [spec for spec in mapping.specs if spec.instance == instance]
-        assert len(master) == 12
-        assert len({spec.rng_seed for spec in master}) == 1
-        assert {spec.generator_params["kinetic_burn_sweeps"] for spec in master} == {
-            0,
-            4000,
-        }
-        assert all(spec.M == 20 and spec.T == 2000 for spec in master)
-
-
-def test_kinetic_ising_burn_selects_exact_later_block() -> None:
-    common = dict(
-        M=4,
-        reduced_coupling=1.0,
-        lattice_side=8,
-        equilibration_sweeps=5,
-        patch_shape=(2, 2),
-        future_truth_T=0,
-    )
-    full = generate_kinetic_ising(
-        T=12, kinetic_burn_sweeps=0, rng=np.random.default_rng(808), **common
-    )
-    first = generate_kinetic_ising(
-        T=4, kinetic_burn_sweeps=0, rng=np.random.default_rng(808), **common
-    )
-    second = generate_kinetic_ising(
-        T=4, kinetic_burn_sweeps=8, rng=np.random.default_rng(808), **common
-    )
-    np.testing.assert_array_equal(first, full[:4])
-    np.testing.assert_array_equal(second, full[8:12])
 
 
 def test_claim_benchmark_mapping_and_split_invariants() -> None:
