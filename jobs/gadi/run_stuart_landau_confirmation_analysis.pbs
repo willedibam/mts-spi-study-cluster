@@ -39,4 +39,7 @@ analysis_args=(
 if [[ -n "${ANALYSIS_ARM:-}" ]]; then
     analysis_args+=(--analysis-arm "$ANALYSIS_ARM")
 fi
+if [[ "${EXCLUDE_HIGH_MISSINGNESS:-0}" == 1 ]]; then
+    analysis_args+=(--exclude-rows-above-missingness)
+fi
 python "$ANALYSIS_SCRIPT" "${analysis_args[@]}"

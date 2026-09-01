@@ -72,6 +72,7 @@ def main() -> int:
     parser.add_argument("--development-scores", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--maximum-selected-missingness", type=float, default=0.05)
+    parser.add_argument("--exclude-rows-above-missingness", action="store_true")
     parser.add_argument("--bootstraps", type=int, default=2000)
     args = parser.parse_args()
 
@@ -105,6 +106,7 @@ def main() -> int:
     frame["q"] = (q_raw - float(model["q_center"])) / float(model["q_scale"])
     frame["selected_missingness"] = missingness
 
+    excluded_rows: list[dict[str, object]] = []
     design_valid = (
         len(frame) == 216
         and set(frame["M"]) == {8, 16, 32}
@@ -124,6 +126,24 @@ def main() -> int:
             "experiment_dirty",
         )
     ) and not bool(frame["experiment_dirty"].iloc[0])
+    if args.exclude_rows_above_missingness:
+        exclude = frame["selected_missingness"].gt(
+            args.maximum_selected_missingness
+        )
+        excluded_rows = [
+            {
+                "dataset": path.name,
+                "M": int(M),
+                "instance": int(instance),
+                "g": float(g),
+                "selected_missingness": float(row_missingness),
+            }
+            for path, M, instance, g, row_missingness in frame.loc[
+                exclude, ["path", "M", "instance", "g", "selected_missingness"]
+            ].itertuples(index=False, name=None)
+        ]
+        frame = frame.loc[~exclude].reset_index(drop=True)
+        missingness = frame["selected_missingness"].to_numpy()
     gates = {
         "schema_matches_frozen_model": bool(schema_matches),
         "spi_order_matches_frozen_model": bool(spi_order_matches),
@@ -135,9 +155,14 @@ def main() -> int:
         ),
     }
     eligibility = {
-        "status": "eligible" if all(gates.values()) else "ineligible",
+        "status": (
+            "eligible_target_blind_exclusion_sensitivity"
+            if all(gates.values()) and args.exclude_rows_above_missingness
+            else "eligible" if all(gates.values()) else "ineligible"
+        ),
         "outcomes_read": False,
         "rows": int(len(frame)),
+        "excluded_rows": excluded_rows,
         "gates": gates,
         "maximum_selected_missingness": float(missingness.max()),
         "p99_selected_missingness": float(np.quantile(missingness, 0.99)),
@@ -215,9 +240,14 @@ def main() -> int:
     )
     pooled = frame.groupby("g")[["q", "Q_spin_abs"]].mean()
     summary = {
-        "status": "independent_confirmation",
+        "status": (
+            "independent_confirmation_target_blind_exclusion_sensitivity_after_global_gate_failure"
+            if args.exclude_rows_above_missingness
+            else "independent_confirmation"
+        ),
         "eligibility_precedes_outcome_access": True,
         "rows": int(len(frame)),
+        "excluded_rows": excluded_rows,
         "association": {
             **_association(
                 frame["q"].to_numpy(),

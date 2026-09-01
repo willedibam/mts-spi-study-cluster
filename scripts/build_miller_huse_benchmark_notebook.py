@@ -57,8 +57,17 @@ physics = np.load(PHYSICS / "physics_records.npz", allow_pickle=False)
 physics_summary = json.loads((PHYSICS / "physics_summary.json").read_text())
 summary = json.loads((RESULTS / "summary.json").read_text())
 scores = pd.read_csv(RESULTS / "scores.csv")
+CONFIRMATION = ROOT / "data/order_parameter/miller_huse_confirmation_analysis"
+STRICT_GATE = ROOT / "data/order_parameter/miller_huse_confirmation_strict_gate"
+confirmation_available = (CONFIRMATION / "summary.json").exists()
+strict_gate_available = (STRICT_GATE / "eligibility_pre_outcome.json").exists()
+if confirmation_available:
+    confirmation_summary = json.loads((CONFIRMATION / "summary.json").read_text())
+    confirmation_eligibility = json.loads((CONFIRMATION / "eligibility_pre_outcome.json").read_text())
+    confirmation_scores = pd.read_csv(CONFIRMATION / "scores.csv")
 sns.set_theme(style="whitegrid", context="notebook")
-print(summary["status"], f"rows={summary['rows']}", f"retained pairs={summary['selected_meta_feature_count']:,}")"""
+print(summary["status"], f"rows={summary['rows']}", f"retained pairs={summary['selected_meta_feature_count']:,}")
+print("independent confirmation available:", confirmation_available)"""
         ),
         nbformat.v4.new_markdown_cell(
             "## Brief physical orientation\n\n"
@@ -106,6 +115,46 @@ ax.legend(frameon=False)
 sns.despine(fig)
 plt.show()
 display(pd.DataFrame({"value": physics_summary}).T[["future_block_repeatability_p95", "q_abs_effective_samples_p05", "q_abs_tau_int_p95"]].round(3))"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""## Confirmation sensitivity
+
+Eight new seeds and nine interleaved $g$ values are evaluated with the frozen development schema, feature mask, imputation, scale and PC1. The original strict bank stopped before outcome access because one of 216 rows had 5.96% selected-feature missingness. The result below is explicitly a target-blind sensitivity after excluding that row at the unchanged 5% threshold; it is not presented as a pristine confirmation. The supervised $q\mapsto\widehat Q$ and control-only readouts are separate comparators."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""if not confirmation_available:
+    print("Confirmation results are not yet present.")
+else:
+    if strict_gate_available:
+        strict_gate = json.loads((STRICT_GATE / "eligibility_pre_outcome.json").read_text())
+        print("original strict-bank eligibility:", strict_gate["status"], strict_gate["gates"])
+    confirmed = confirmation_scores.copy()
+    palette_confirm = dict(zip([8, 16, 32], sns.color_palette("viridis", 3)))
+    fig, axes = plt.subplots(1, 3, figsize=(13.2, 3.8), constrained_layout=True)
+    physical_axis = axes[0].twinx()
+    for M, group in confirmed.groupby("M"):
+        curve_q = group.groupby("g").q.mean()
+        curve_Q = group.groupby("g").Q_spin_abs.mean()
+        axes[0].plot(curve_q.index, curve_q.values, "-o", ms=3, color=palette_confirm[M], lw=1.7, label=f"q, M={M}")
+        physical_axis.plot(curve_Q.index, curve_Q.values, "--", color=palette_confirm[M], lw=1.0, alpha=.75)
+    axes[0].axvline(.20534, color=".25", ls=":", lw=1)
+    axes[0].set(xlabel=r"new interleaved $g$", ylabel=r"frozen $q$", title="A  Frozen q and physical Q")
+    physical_axis.set_ylabel(r"future $Q_{\rm MH}$")
+    axes[0].legend(frameon=False, fontsize=7)
+    p = axes[1].scatter(confirmed.q, confirmed.Q_spin_abs, c=confirmed.g, cmap="magma", s=17, alpha=.58, linewidth=0)
+    fig.colorbar(p, ax=axes[1], label=r"$g$")
+    axes[1].set(xlabel=r"prospectively frozen $q$", ylabel=r"future $Q_{\rm MH}$", title="B  Unsupervised recovery")
+    axes[2].scatter(confirmed.Q_spin_abs, confirmed.Q_hat_q, c=confirmed.g, cmap="magma", s=17, alpha=.58, linewidth=0)
+    limits = [confirmed.Q_spin_abs.min(), confirmed.Q_spin_abs.max()]
+    axes[2].plot(limits, limits, color=".3", ls="--", lw=1)
+    axes[2].set(xlabel=r"future $Q_{\rm MH}$", ylabel=r"supervised $\widehat Q(q)$", title="C  Separate readout")
+    sns.despine(fig)
+    plt.show()
+    display(pd.DataFrame({
+        "quantity": ["sensitivity eligible before target read", "excluded rows", "overall rho", "overall 95% CI", "within-g rho", "pooled-g-mean rho", "q readout MAE", "control-only MAE", "max retained missingness"],
+        "value": [confirmation_eligibility["status"].startswith("eligible"), len(confirmation_summary["excluded_rows"]), confirmation_summary["association"]["overall_spearman"], confirmation_summary["association"]["overall_ci95"], confirmation_summary["association"]["within_gamma_spearman"], confirmation_summary["pooled_g_mean_spearman"], confirmation_summary["supervised_q_readout"]["mae"], confirmation_summary["control_only_readout"]["mae"], confirmation_summary["maximum_selected_missingness"]],
+    }))
+    display(pd.DataFrame(confirmation_summary["input_baselines"]).T.round(3))"""
         ),
         nbformat.v4.new_markdown_cell(
             r"""## Target-blind SPI–SPI development

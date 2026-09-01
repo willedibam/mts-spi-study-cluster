@@ -10,14 +10,17 @@ a known dynamical boundary. Verify exact model variants before scaling.
 
 Current recommendation:
 
-1. Miller--Huse `mu=3` is the cleanest next canonical benchmark; its focused
-   two-million-step truth gate passed with uncertainty retained explicitly.
-2. The original uniform-frequency Stuart--Landau population is accepted as the
-   best additional system. Repository pilots reproduce its published phase path
-   and coarse control plane.
+1. Miller--Huse `mu=3` is the cleanest canonical benchmark. Its full-p90
+   development and interleaved-control sensitivity recover the known order path
+   with long-truth uncertainty retained explicitly.
+2. The original uniform-frequency Stuart--Landau population is the full `M x T`
+   robustness system. Its frozen full-observation coordinate replicated on new
+   seeds and interleaved controls after the joint partial-observation gate failed.
 3. The quadratic CML is an informative secondary/negative regime-coordinate
    stress test, not a canonical scalar-order-parameter headline.
-4. Defer Vicsek, CGLE and neural application bridges until these pass full p90.
+4. Do not add another model for the current paper section unless a distinct
+   canonical confirmation is needed; the present systems already expose both
+   feasibility and limitations.
 
 This is a gated portfolio, not an open-ended model search. Retain two or three
 systems only when they contribute distinct evidence: Miller--Huse as the
@@ -68,6 +71,15 @@ controls.
   `.0892`. This is strong canonical order-coordinate development evidence, not
   predictive superiority; independent controls/seeds are still required for a
   confirmation claim.
+- The sealed 216-row interleaved-control confirmation stopped before outcome
+  access because one `M=8,g=.225` row had `.0596` selected-feature missingness;
+  the bank p99 was zero. A separately sealed target-blind sensitivity excluded
+  that row at the unchanged 5% threshold and gave `rho=.8885` (95% CI
+  `.8476-.9204`), pooled control-mean `.9500`, per-M cell-mean `.9500-1.0`, and
+  within-control `.0148`. Temporal spectral entropy remained stronger
+  (`rho=.9406`), while q-readout MAE `.0744` was far above control-only `.0136`.
+  Treat this as strong robustness evidence after a failed strict gate, not a
+  pristine independent confirmation.
 
 ### Quadratic/Kaneko CML
 
@@ -181,6 +193,12 @@ controls.
   measure, so it is not a clean first p90 benchmark.
 
 ## Observation and sample-length contract
+
+The all-bank maximum-missingness rule proved too brittle in both confirmation
+banks: a few near-constant ordered/sensor views invalidated otherwise clean
+designs. Preserve those failures. Future preregistration should use a
+target-blind per-row exclusion threshold plus a maximum excluded fraction and
+minimum retained coverage per control/M/T cell.
 
 - Use `M=N` where the published finite-population dynamics remains meaningful;
   also show small-N effects rather than concealing them. For spatial/large-N
