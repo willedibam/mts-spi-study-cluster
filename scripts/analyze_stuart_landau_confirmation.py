@@ -125,6 +125,7 @@ def main() -> int:
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--development-scores", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--analysis-arm", choices=("both", "full"), default="both")
     parser.add_argument("--maximum-selected-missingness", type=float, default=0.05)
     parser.add_argument("--bootstraps", type=int, default=2000)
     args = parser.parse_args()
@@ -156,9 +157,18 @@ def main() -> int:
     frame["q"] = (q_raw - float(model["q_center"])) / float(model["q_scale"])
     frame["selected_missingness"] = missingness
 
+    if args.analysis_arm == "full":
+        frame = frame.loc[frame["arm"].eq("full")].reset_index(drop=True)
+        missingness = frame["selected_missingness"].to_numpy()
+
+    expected_arms = (
+        {"full", "partial"} if args.analysis_arm == "both" else {"full"}
+    )
+    expected_rows = 1296 if args.analysis_arm == "both" else 648
+
     design_valid = (
-        len(frame) == 1296
-        and set(frame["arm"]) == {"full", "partial"}
+        len(frame) == expected_rows
+        and set(frame["arm"]) == expected_arms
         and set(frame["M"]) == {8, 16, 32}
         and set(frame["T"]) == {100, 500, 1000}
         and set(frame["instance"]) == set(range(8))
@@ -188,6 +198,7 @@ def main() -> int:
     eligibility = {
         "status": "eligible" if all(gates.values()) else "ineligible",
         "outcomes_read": False,
+        "analysis_arm": args.analysis_arm,
         "rows": int(len(frame)),
         "gates": gates,
         "maximum_selected_missingness": float(missingness.max()),
@@ -285,21 +296,29 @@ def main() -> int:
             ),
         }
     summary = {
-        "status": "independent_confirmation",
+        "status": (
+            "independent_confirmation"
+            if args.analysis_arm == "both"
+            else "independent_confirmation_full_arm_after_global_gate_failure"
+        ),
         "eligibility_precedes_outcome_access": True,
         "rows": int(len(frame)),
         "confirmation_controls": sorted(frame["gamma"].unique().tolist()),
         "full_association": _bootstrap_association(
             frame, full, bootstraps=args.bootstraps, seed=8201
         ),
-        "partial_association": _bootstrap_association(
-            frame, partial, bootstraps=args.bootstraps, seed=8202
+        "partial_association": (
+            _bootstrap_association(
+                frame, partial, bootstraps=args.bootstraps, seed=8202
+            )
+            if partial.any()
+            else None
         ),
         "full_pooled_gamma_mean_spearman": safe_spearman(
             pooled["q"], pooled["Q_R_mean"]
         ),
         "full_cell_summary": _cell_summary(frame, full),
-        "partial_cell_summary": _cell_summary(frame, partial),
+        "partial_cell_summary": _cell_summary(frame, partial) if partial.any() else None,
         "target_free_paired_prefix_stability": _paired_prefix_stability(
             frame, np.ones(len(frame), dtype=bool)
         ),

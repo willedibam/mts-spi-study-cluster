@@ -20,6 +20,7 @@ cd "${PBS_O_WORKDIR:?}"
 module purge
 module load python3/3.12.1
 source .venv/bin/activate
+export PYTHONPATH="$PBS_O_WORKDIR${PYTHONPATH:+:$PYTHONPATH}"
 export OMP_NUM_THREADS="$PBS_NCPUS"
 export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
 export MKL_NUM_THREADS="$PBS_NCPUS"

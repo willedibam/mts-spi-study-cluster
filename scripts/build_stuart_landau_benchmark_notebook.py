@@ -52,7 +52,9 @@ RESULTS = ROOT / "data/order_parameter/stuart_landau_development_analysis"
 summary = json.loads((RESULTS / "summary.json").read_text())
 scores = pd.read_csv(RESULTS / "scores.csv")
 CONFIRMATION = ROOT / "data/order_parameter/stuart_landau_confirmation_analysis"
+JOINT_GATE = ROOT / "data/order_parameter/stuart_landau_confirmation_joint_gate"
 confirmation_available = (CONFIRMATION / "summary.json").exists()
+joint_gate_available = (JOINT_GATE / "eligibility_pre_outcome.json").exists()
 if confirmation_available:
     confirmation_summary = json.loads((CONFIRMATION / "summary.json").read_text())
     confirmation_eligibility = json.loads((CONFIRMATION / "eligibility_pre_outcome.json").read_text())
@@ -97,12 +99,15 @@ The feature-validity gate, imputation, centring and PCA use only full-observatio
         nbformat.v4.new_markdown_cell(
             r"""## Independent confirmation
 
-The confirmation bank uses eight new seeds and nine interleaved $\gamma$ values. The frozen feature schema, mask, imputation, centre, scale and PC1 are applied before any confirmation target is read. An immutable pre-outcome eligibility record must pass first. Numerical $q\mapsto\widehat Q$ and control-only readouts remain supervised and separate."""
+The confirmation bank uses eight new seeds and nine interleaved $\gamma$ values. The frozen feature schema, mask, imputation, centre, scale and PC1 are applied before any confirmation target is read. The original joint full/partial gate stopped before outcome access because 14 of 1,296 secondary partial-observation rows exceeded 5% selected-feature missingness. All 648 primary full-observation rows passed the same gate, so the figures below are explicitly an arm-specific confirmation after the global gate failure. Numerical $q\mapsto\widehat Q$ and control-only readouts remain supervised and separate."""
         ),
         nbformat.v4.new_code_cell(
             r"""if not confirmation_available:
     print("Confirmation results are not yet present.")
 else:
+    if joint_gate_available:
+        joint_gate = json.loads((JOINT_GATE / "eligibility_pre_outcome.json").read_text())
+        print("original joint-bank eligibility:", joint_gate["status"], joint_gate["gates"])
     confirmed = confirmation_scores.query("arm == 'full'").copy()
     physical_confirmed = confirmed.query("T == 1000")
     fig, axes = plt.subplots(1, 3, figsize=(13.3, 3.9), constrained_layout=True)

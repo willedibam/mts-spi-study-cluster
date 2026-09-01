@@ -19,6 +19,25 @@ Current recommendation:
    canonical scalar-order-parameter headline.
 4. Defer Vicsek, CGLE and neural application bridges until these pass full p90.
 
+This is a gated portfolio, not an open-ended model search. Retain two or three
+systems only when they contribute distinct evidence: Miller--Huse as the
+canonical nonequilibrium transition, Stuart--Landau as the published collective
+oscillator path and `M x T` robustness assay, and quadratic CML only if its
+branch-structured regime coordinate is recoverable without target-guided
+selection. Do not add another system merely because a run fails. The strongest
+canonical fallback is periodically driven kinetic Ising, but the prior request
+to delete Ising-family work takes precedence unless explicitly revised.
+
+The current one-control grids are evidence-led. Stuart--Landau fixes the
+published `K=.8` intercept and uses interleaved confirmation values spanning the
+four Fig. 1 regimes. Miller--Huse uses coarse ordered/disordered anchors and a
+dense bracket around the refined `g_c=.20534(2)`. Quadratic CML preserves the
+established/current `eps=.3, alpha=1.60:.01:2.00` development path; its long-run
+physics gate localizes branch coexistence to roughly `alpha=.74-.76`. If that
+system warrants an independent confirmation, use coarse regime anchors plus a
+dense `alpha=1.70:.01:1.82` window rather than repeating all 41 development
+controls.
+
 ## Audited systems
 
 ### Miller--Huse CML
@@ -103,8 +122,18 @@ Current recommendation:
   agreement with `T=1000` is `.628/.740/.944` for full `M=8/16/32`; at `T=500`
   it is `.777/.909/.957`. Within-gamma recovery is weak. Analytic phase
   coherence is a stronger baseline (`rho=.932`, within-gamma `.779`), so do not
-  make a superiority or microscopic-fluctuation claim. Independent new-seed,
-  interleaved-gamma confirmation is active; no `T=2000` extension is needed.
+  make a superiority or microscopic-fluctuation claim. The sealed 1,296-row
+  joint confirmation stopped before outcome access: 14 secondary
+  partial-observation rows exceeded the predeclared 5% selected-feature
+  missingness gate (max `.0785`, p99 `.0526`). All 648 primary full-observation
+  rows pass the same gate (max `.0266`). Their separately sealed arm-specific
+  result gives row-level `rho=.7485` (95% CI `.7356-.7607`), within-gamma
+  `.3306`, pooled gamma-mean `rho=1.0`, and cell-mean `rho=.833-1.0`. Analytic
+  phase coherence remains stronger (`rho=.9299`, within-gamma `.7521`), while
+  frozen-q isotonic MAE `.0407` is worse than control-only `.0334` (bootstrap
+  difference CI `.0056-.0091`). Preserve the joint failure artifact and claim
+  feasibility of order-coordinate recovery, not superiority or information
+  beyond the known control. No `T=2000` extension is needed.
 
 ### Deferred candidates
 
