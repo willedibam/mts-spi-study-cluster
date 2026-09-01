@@ -1,0 +1,17 @@
+output_dir: data/order_parameter/miller_huse_physics_long_truth
+model: miller_huse
+base_seed: 305177
+seed_pairing: paired
+lattice_side: [128]
+instances: 8
+initial_states: [random]
+patch_shape: [4, 5]
+record_T: 1000
+truth_block_T: 250000
+truth_blocks: 8
+transients: 400000
+sample_every: 1
+paths:
+  - name: mu3
+    params: {mu: 3.0}
+    controls: [0.20, 0.2025, 0.204, 0.205, 0.20534, 0.206, 0.2075, 0.21]
