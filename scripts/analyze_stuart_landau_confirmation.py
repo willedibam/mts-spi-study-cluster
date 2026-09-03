@@ -31,7 +31,7 @@ from src.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_spearman,
     safe_spearman,
 )
-from src.utils import load_json  # noqa: E402
+from src.utils import load_json, load_yaml  # noqa: E402
 
 
 EXPECTED_GAMMAS = {0.55, 0.65, 0.725, 0.775, 0.85, 0.95, 1.05, 1.15, 1.25}
@@ -136,12 +136,41 @@ def main() -> int:
     parser.add_argument("--expected-T-values", default="100,500,1000")
     parser.add_argument("--expected-instances", type=int, default=8)
     parser.add_argument("--status-label")
+    parser.add_argument("--analysis-contract", type=Path)
     parser.add_argument("--maximum-selected-missingness", type=float, default=0.05)
     parser.add_argument("--exclude-rows-above-missingness", action="store_true")
     parser.add_argument("--maximum-excluded-fraction", type=float, default=0.02)
     parser.add_argument("--minimum-retained-per-control", type=int, default=6)
     parser.add_argument("--bootstraps", type=int, default=2000)
     args = parser.parse_args()
+
+    if args.analysis_contract is not None:
+        contract = load_yaml(args.analysis_contract)
+        design = contract["expected_design"]
+        eligibility_contract = contract["eligibility"]
+        args.analysis_arm = str(design["arm"])
+        args.expected_gammas = ",".join(
+            map(str, design["frequency_half_widths"])
+        )
+        args.expected_M_values = ",".join(map(str, design["M"]))
+        args.expected_T_values = ",".join(map(str, design["T"]))
+        args.expected_instances = int(design["instances"])
+        args.maximum_selected_missingness = float(
+            eligibility_contract["maximum_selected_feature_missingness_per_row"]
+        )
+        args.exclude_rows_above_missingness = bool(
+            eligibility_contract["target_blind_row_exclusion"]
+        )
+        args.maximum_excluded_fraction = float(
+            eligibility_contract["maximum_excluded_fraction"]
+        )
+        args.minimum_retained_per_control = int(
+            eligibility_contract["minimum_retained_instances_per_control"]
+        )
+        args.status_label = (
+            args.status_label
+            or "fine_boundary_independent_confirmation"
+        )
 
     payload = _load_artifact(args.features)
     values = np.asarray(payload["X"], dtype=np.float32)

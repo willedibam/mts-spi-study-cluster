@@ -36,6 +36,9 @@ analysis_args=(
     --development-scores "$DEVELOPMENT_SCORES"
     --output-dir "$OUTPUT_DIR"
 )
+if [[ -n "${ANALYSIS_CONTRACT:-}" ]]; then
+    analysis_args+=(--analysis-contract "$ANALYSIS_CONTRACT")
+fi
 if [[ -n "${ANALYSIS_ARM:-}" ]]; then
     analysis_args+=(--analysis-arm "$ANALYSIS_ARM")
 fi
