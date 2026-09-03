@@ -74,6 +74,7 @@ def _metadata_frame(payload: dict[str, np.ndarray], data_root: Path) -> pd.DataF
                 "theta": float(params["theta"]),
                 "sigma_m": float(params["sigma_m"]),
                 "nu": float(params["nu"]),
+                "integration_scheme": str(params["integration_scheme"]),
                 "experiment_commit": str(meta["experiment"]["git_commit"]),
                 "experiment_config_sha256": str(
                     meta["experiment"]["config_sha256"]
@@ -228,6 +229,7 @@ def main() -> int:
         and set(frame["theta"]) == {4.0}
         and set(frame["sigma_m"]) == {0.8}
         and set(frame["nu"]) == {0.5}
+        and set(frame["integration_scheme"]) == {"milstein"}
         and set(frame.loc[frame["arm"].eq("mean_field"), "N_full"]) == {12000}
         and set(frame.loc[frame["arm"].eq("finite_N32"), "N_full"]) == {32}
         and set(frame.loc[frame["arm"].eq("mean_field"), "observation"]) == {"partial"}

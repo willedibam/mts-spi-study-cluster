@@ -318,6 +318,29 @@ def test_desai_zwanzig_prefixes_and_future_truth_are_fixed() -> None:
     )
 
 
+def test_desai_zwanzig_accepts_published_and_euler_schemes() -> None:
+    common = dict(
+        M=4,
+        T=10,
+        N_full=8,
+        sigma=1.8,
+        burn_time=0.1,
+        return_internals=False,
+    )
+    milstein = generate_desai_zwanzig(
+        integration_scheme="milstein", rng=np.random.default_rng(62), **common
+    )
+    euler = generate_desai_zwanzig(
+        integration_scheme="euler_maruyama", rng=np.random.default_rng(62), **common
+    )
+    assert milstein.shape == euler.shape == (10, 4)
+    assert not np.array_equal(milstein, euler)
+    with np.testing.assert_raises_regex(ValueError, "integration_scheme"):
+        generate_desai_zwanzig(
+            integration_scheme="runge_kutta", rng=np.random.default_rng(62), **common
+        )
+
+
 def test_desai_zwanzig_reproduces_order_disorder_contrast() -> None:
     common = dict(
         M=16,

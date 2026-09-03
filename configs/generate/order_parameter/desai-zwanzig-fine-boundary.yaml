@@ -23,6 +23,7 @@ mts_classes:
       sigma_m: 0.8
       nu: 0.5
       dt: 0.005
+      integration_scheme: milstein
       sample_dt: 0.05
       burn_time: 100.0
       truth_start_T: 1000

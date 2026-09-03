@@ -34,6 +34,7 @@ instances: 4
 initial_std: 0.1
 
 dt: 0.005
+integration_scheme: milstein
 sample_dt: 0.05
 burn_time: 100.0
 T: 1000

@@ -65,6 +65,7 @@ def _run_one(config: dict, job: dict) -> dict:
         sigma_m=float(config["sigma_m"]),
         nu=float(config["nu"]),
         dt=float(config["dt"]),
+        integration_scheme=str(config["integration_scheme"]),
         sample_dt=float(config["sample_dt"]),
         burn_time=float(config["burn_time"]),
         truth_start_T=int(config["truth_start_T"]),
@@ -174,6 +175,7 @@ def _aggregate(config: dict) -> int:
 
     summary = {
         "status": "complete_finite_size_scout",
+        "integration_scheme": str(config["integration_scheme"]),
         "expected_parts": expected,
         "reference_mean_field_sigma_c": float(config["reference_sigma_c"]),
         "boundary_by_population_size": boundary_by_size,

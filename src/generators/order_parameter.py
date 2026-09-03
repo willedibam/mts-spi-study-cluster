@@ -477,6 +477,7 @@ def generate_desai_zwanzig(
     truth_start_T: int | None = None,
     initial_mean: float = 1.0,
     initial_std: float = 0.1,
+    integration_scheme: str = "milstein",
     rng=None,
     zscore: bool = False,
     return_internals: bool = False,
@@ -495,7 +496,8 @@ def generate_desai_zwanzig(
     Their canonical parameters are ``alpha=1``, ``theta=4``,
     ``sigma_m=0.8`` and ``nu=1/2``. In the mean-field limit the first moment
     ``M1=mean_i(x_i)`` undergoes a continuous pitchfork at
-    ``sigma ~= 1.890``. Finite systems can switch between the two branches,
+    ``sigma ~= 1.890``. The default Milstein discretization matches the
+    published finite-particle simulations. Finite systems can switch between the two branches,
     so the benchmark scalar is the time mean of ``abs(M1)`` on a disjoint
     future window.
     """
@@ -512,6 +514,7 @@ def generate_desai_zwanzig(
     sample_dt = float(sample_dt)
     burn_time = float(burn_time)
     initial_std = float(initial_std)
+    integration_scheme = str(integration_scheme).strip().lower()
     if M <= 0 or T <= 0 or N < M or future_truth_T < 0 or truth_start < T:
         raise ValueError(
             f"require 0 < M <= N_full, T > 0 and truth_start_T >= T; "
@@ -526,6 +529,11 @@ def generate_desai_zwanzig(
         raise ValueError(
             f"require dt > 0, sample_dt >= dt and burn_time >= 0; "
             f"got dt={dt}, sample_dt={sample_dt}, burn_time={burn_time}"
+        )
+    if integration_scheme not in {"milstein", "euler_maruyama"}:
+        raise ValueError(
+            "integration_scheme must be 'milstein' or 'euler_maruyama', "
+            f"got {integration_scheme!r}"
         )
     sample_every = int(round(sample_dt / dt))
     burn_steps = int(round(burn_time / dt))
@@ -545,10 +553,15 @@ def generate_desai_zwanzig(
         mean_field = float(values.mean())
         drift = -values**3 + linear * values - coupling * (values - mean_field)
         diffusion = np.sqrt(sigma**2 + sigma_m**2 * values**2)
-        updated = values + drift * dt + diffusion * noise_scale * rng.standard_normal(N)
+        brownian_increment = noise_scale * rng.standard_normal(N)
+        updated = values + drift * dt + diffusion * brownian_increment
+        if integration_scheme == "milstein":
+            updated += 0.5 * sigma_m**2 * values * (
+                brownian_increment**2 - dt
+            )
         if not np.isfinite(updated).all():
             raise FloatingPointError(
-                "Desai--Zwanzig Euler--Maruyama path became non-finite; "
+                f"Desai--Zwanzig {integration_scheme} path became non-finite; "
                 "reduce dt or change the seed"
             )
         return updated

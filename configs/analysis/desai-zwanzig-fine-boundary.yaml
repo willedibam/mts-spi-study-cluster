@@ -52,6 +52,7 @@ eligibility:
 physics:
   canonical_order_parameter: M1(t)=mean_i(x_i(t))
   finite_system_scalar: mean_t(abs(M1(t)))
+  integration_scheme: milstein
   reference_mean_field_sigma_c: 1.890
   distinguish_reference_boundary_from_finite_time_steepest_interval: true
 evaluation:
