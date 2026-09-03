@@ -31,8 +31,8 @@ This notebook is the paper-facing comparison. It asks whether the same target-bl
 
 The systems are not presented as equally strong:
 
-1. **Miller--Huse:** canonical nonequilibrium symmetry-breaking benchmark.
-2. **Stuart--Landau:** published collective-oscillator phase diagram and the main $M\times T$ robustness benchmark.
+1. **Stuart--Landau:** published collective-oscillator phase diagram, the main $M\times T$ robustness benchmark, and a clean independent fine-boundary confirmation.
+2. **Miller--Huse:** canonical nonequilibrium symmetry-breaking benchmark.
 3. **Kuramoto:** canonical but comparatively easy synchronization baseline; the available full-catalogue result is retrospective.
 4. **Quadratic CML:** noncanonical regime-coordinate stress test and useful negative result.
 
@@ -131,7 +131,7 @@ def bootstrap_curve(frame, control, value, *, bootstraps=2000, seed=1701):
         rows.append((level, values.mean(), *np.quantile(boot_means, [.025, .975])))
     return pd.DataFrame(rows, columns=[control, "mean", "lower", "upper"])
 
-def dual_tracking(ax, frame, *, control, Q, q, q_sign=1.0, q_color="#2b6cb0", boundary=None, title=""):
+def dual_tracking(ax, frame, *, control, Q, q, q_sign=1.0, q_color="#2b6cb0", boundary=None, title="", Q_label=r"physical $Q$"):
     q_axis = ax.twinx()
     physical = bootstrap_curve(frame, control, Q, seed=2711)
     learned = bootstrap_curve(frame, control, q, seed=3613)
@@ -139,7 +139,7 @@ def dual_tracking(ax, frame, *, control, Q, q, q_sign=1.0, q_color="#2b6cb0", bo
     if q_sign < 0:
         learned[["lower", "upper"]] = learned[["upper", "lower"]].to_numpy()
 
-    line_Q, = ax.plot(physical[control], physical["mean"], color=Q_COLOR, lw=1.8, marker="o", ms=2.8, label=r"physical $Q$")
+    line_Q, = ax.plot(physical[control], physical["mean"], color=Q_COLOR, lw=1.8, marker="o", ms=2.8, label=Q_label)
     ax.fill_between(physical[control], physical["lower"], physical["upper"], color=Q_FILL, alpha=.16, linewidth=0)
     line_q, = q_axis.plot(learned[control], learned["mean"], color=q_color, lw=1.7, marker="s", ms=2.6, label=r"frozen $q$")
     q_axis.fill_between(learned[control], learned["lower"], learned["upper"], color=q_color, alpha=.16, linewidth=0)
@@ -192,6 +192,7 @@ def spearman(x, y):
 
 KURAMOTO_ROOT = ROOT / "data/order_parameter/kuramoto_full_catalogue_reanalysis"
 SL_ROOT = ROOT / "data/order_parameter/stuart_landau_confirmation_analysis"
+SL_FINE_ROOT = ROOT / "data/order_parameter/stuart_landau_locking_boundary_confirmation_analysis"
 MH_ROOT = ROOT / "data/order_parameter/miller_huse_confirmation_analysis"
 CML_ROOT = ROOT / "data/order_parameter/quadratic_cml_development_analysis"
 
@@ -209,6 +210,10 @@ kuramoto["M"] = 20
 sl_summary = json.loads((SL_ROOT / "summary.json").read_text())
 sl = pd.read_csv(SL_ROOT / "scores.csv")
 sl_primary = sl.query("T == 1000").copy()
+sl_fine_eligibility = json.loads((SL_FINE_ROOT / "eligibility_pre_outcome.json").read_text())
+sl_fine_summary = json.loads((SL_FINE_ROOT / "summary.json").read_text())
+sl_fine = pd.read_csv(SL_FINE_ROOT / "scores.csv")
+assert sl_fine_eligibility["status"] == "eligible"
 with np.load(ROOT / "data/order_parameter/stuart_landau_phase_plane/physics_records.npz") as archive:
     sl_plane = {key: archive[key] for key in archive.files}
 sl_plane_summary = json.loads((ROOT / "data/order_parameter/stuart_landau_phase_plane/physics_summary.json").read_text())
@@ -220,7 +225,7 @@ cml_summary = json.loads((CML_ROOT / "summary.json").read_text())
 cml = pd.read_csv(CML_ROOT / "scores.csv")
 cml_held = cml.query("arm == 'large' and instance >= 4").copy()
 
-print("Loaded:", {"Kuramoto": len(kuramoto), "Stuart--Landau": len(sl), "Miller--Huse": len(mh), "quadratic CML held": len(cml_held)})"""
+print("Loaded:", {"Kuramoto": len(kuramoto), "Stuart--Landau": len(sl), "Stuart--Landau fine boundary": len(sl_fine), "Miller--Huse": len(mh), "quadratic CML held": len(cml_held)})"""
         ),
         nbformat.v4.new_markdown_cell(
             r"""## Observation contracts: do any experiments have $M=N$?
@@ -371,6 +376,62 @@ for ax, M in zip(axes, [8, 16, 32], strict=True):
 fig.suptitle(r"Sample-length sensitivity within each full-observation size")
 # fig.savefig(FIGURE_DIR / "stuart_landau_T_lines_by_M.svg")
 plt.show()"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""### Fine locking-to-unsteady boundary confirmation
+
+The broad sweep above tests recovery across several collective regimes. This independent test asks the narrower question motivating the present study: can the already-frozen target-blind coordinate resolve one documented local boundary?
+
+We retain the published $K=0.8$ intercept and finely sweep $\gamma=0.680,0.685,\ldots,0.770$ using eight new matched seeds, full observation $M=N=32$, and $T=1000$. No representation component, feature mask, scaling choice or sign is refitted on these rows. A prior physics-only finite-size scout located the steepest $\langle R\rangle$ interval at $0.72$--$0.73$ for $N=32$, $0.73$--$0.74$ for $N=64$, and $0.74$--$0.75$ for both $N=128$ and $N=800$. Thus any $N=32$ displacement is an expected finite-size effect, not a portable thermodynamic critical value.
+
+The primary physical quantity remains $Q=\langle R\rangle_t$. The temporal standard deviation $\operatorname{sd}_t(R)$ is shown only as a boundary-sensitive diagnostic: it distinguishes steady locking from the onset of unsteady collective motion and is not substituted for the canonical mean-field amplitude.
+
+**Held-out result.** All eligibility gates passed and all 152 rows were retained. The frozen $q$ tracks $\langle R\rangle$ with $\rho=0.886$ (95% CI $[0.882,0.893]$); the correlation of realization means across $\gamma$ is $0.896$. Most importantly, the steepest interval is exactly $\gamma=0.720$--$0.725$ for $q$, $\langle R\rangle$, and $\operatorname{sd}_t(R)$. The latter rises as coherence falls, hence $\rho(q,\operatorname{sd}_t(R))=-0.933$. Within fixed $\gamma$, $q$ does not recover realization-level $Q$ fluctuations ($\rho=-0.220$), so this supports macroscopic transition tracking and localization, not microscopic state estimation. Analytic phase coherence is slightly stronger overall ($\rho=0.915$)."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""localization = sl_fine_summary["fine_boundary_localization"]
+q_interval = localization["q"]["interval"]
+Q_interval = localization["Q_R_mean"]["interval"]
+Q_sd_interval = localization["Q_R_sd"]["interval"]
+
+fig, axes = plt.subplots(1, 3, figsize=(12.4, 3.35), constrained_layout=True)
+dual_tracking(
+    axes[0], sl_fine, control="gamma", Q="Q_R_mean", q="q", q_sign=1,
+    q_color=COLORS[32], title=r"A\quad Fine physical-order-parameter recovery",
+)
+axes[0].axvspan(*Q_interval, color=Q_COLOR, alpha=.10, linewidth=0)
+axes[0].axvspan(*q_interval, color=COLORS[32], alpha=.10, linewidth=0)
+
+dual_tracking(
+    axes[1], sl_fine, control="gamma", Q="Q_R_sd", q="q", q_sign=1,
+    q_color=COLORS[32], title=r"B\quad Boundary-sensitive variability",
+    Q_label=r"physical $\mathrm{sd}_t(R)$",
+)
+axes[1].set_ylabel(r"physical $\mathrm{sd}_t(R)$")
+axes[1].axvspan(*Q_sd_interval, color=Q_COLOR, alpha=.10, linewidth=0)
+axes[1].axvspan(*q_interval, color=COLORS[32], alpha=.10, linewidth=0)
+
+points = recovery_scatter(
+    axes[2], sl_fine, Q="Q_R_mean", q="q", control="gamma", q_sign=1,
+    title=r"C\quad Held-out local recovery",
+)
+fig.colorbar(points, ax=axes[2], label=r"frequency half-width $\gamma$")
+fig.suptitle(r"Frozen SPI--SPI coordinate across the locking-to-unsteady boundary ($M=N=32,T=1000$)")
+# fig.savefig(FIGURE_DIR / "stuart_landau_fine_boundary.svg")
+plt.show()
+
+fine_metrics = pd.DataFrame([
+    {
+        "overall rho(q, mean R)": sl_fine_summary["full_association"]["overall_spearman"],
+        "within-gamma rho": sl_fine_summary["full_association"]["within_gamma_spearman"],
+        "gamma-mean rho": sl_fine_summary["full_pooled_gamma_mean_spearman"],
+        "rho(q, sd R)": sl_fine_summary["full_R_sd_association"]["overall_spearman"],
+        "q steepest interval": tuple(q_interval),
+        "mean R steepest interval": tuple(Q_interval),
+        "sd R steepest interval": tuple(Q_sd_interval),
+    }
+])
+display(fine_metrics.round(4))"""
         ),
         nbformat.v4.new_markdown_cell(
             r"""# 3. Miller--Huse chaotic coupled-map lattice
@@ -532,6 +593,16 @@ comparison = pd.DataFrame([
         "strongest simple |rho|": max(abs(v["overall_spearman"]) for v in sl_summary["input_baselines"].values()),
     },
     {
+        "system": "Stuart--Landau fine boundary",
+        "evidence": "independent frozen-coordinate confirmation",
+        "overall |rho|": abs(sl_fine_summary["full_association"]["overall_spearman"]),
+        "within-control |rho|": abs(sl_fine_summary["full_association"]["within_gamma_spearman"]),
+        "cell-mean |rho|": abs(sl_fine_summary["full_pooled_gamma_mean_spearman"]),
+        "q decoder MAE": sl_fine_summary["supervised_q_readout"]["mae"],
+        "control-only MAE": sl_fine_summary["control_only_readout"]["mae"],
+        "strongest simple |rho|": max(abs(v["overall_spearman"]) for v in sl_fine_summary["input_baselines"].values()),
+    },
+    {
         "system": "Miller--Huse",
         "evidence": "one-row-exclusion confirmation sensitivity",
         "overall |rho|": abs(mh_summary["association"]["overall_spearman"]),
@@ -574,6 +645,17 @@ display(comparison.round(3))"""
             kernel_name="python3",
             resources={"metadata": {"path": str(root)}},
         ).execute()
+        errors = [
+            output
+            for cell in notebook.cells
+            for output in cell.get("outputs", [])
+            if output.get("output_type") == "error"
+        ]
+        if errors:
+            raise RuntimeError(
+                f"notebook execution produced {len(errors)} error output(s): "
+                f"{errors[0].get('ename')}: {errors[0].get('evalue')}"
+            )
     nbformat.write(notebook, args.output)
     print(args.output)
     return 0

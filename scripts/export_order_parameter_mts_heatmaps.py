@@ -50,7 +50,7 @@ def export_kuramoto() -> None:
 
 
 def export_stuart_landau() -> None:
-    for gamma in (0.55, 0.775, 1.25):
+    for gamma in (0.55, 0.68, 0.725, 0.77, 0.775, 1.25):
         values = generate_stuart_landau(
             M=32,
             T=1000,
