@@ -9,6 +9,7 @@ from scripts.analyze_kuramoto_order_benchmark import (
     _paired_cell_bootstrap,
     _truth_result_payload,
 )
+from scripts.analyze_stuart_landau_confirmation import _steepest_interval
 
 from src.order_parameter_analysis import (
     clustered_bootstrap_difference,
@@ -84,6 +85,14 @@ def test_group_residuals_and_cluster_bootstrap() -> None:
     )
     assert np.nanmedian(overall) > 0.8
     assert np.nanmedian(within) > 0.8
+
+
+def test_steepest_interval_localizes_absolute_change() -> None:
+    curve = pd.Series([0.0, 0.1, 1.1, 1.2], index=[0.0, 0.2, 0.4, 0.6])
+    result = _steepest_interval(curve)
+    assert result["interval"] == [0.2, 0.4]
+    assert np.isclose(result["midpoint"], 0.3)
+    assert np.isclose(result["maximum_absolute_slope"], 5.0)
 
 
 def test_conditional_path_gap_recovers_zero_and_known_shift() -> None:

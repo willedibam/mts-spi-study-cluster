@@ -91,6 +91,20 @@ def _load_targets(paths: list[Path]) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _steepest_interval(curve: pd.Series) -> dict[str, object]:
+    curve = curve.sort_index()
+    controls = curve.index.to_numpy(dtype=float)
+    values = curve.to_numpy(dtype=float)
+    slopes = np.abs(np.diff(values) / np.diff(controls))
+    index = int(np.argmax(slopes))
+    interval = [float(controls[index]), float(controls[index + 1])]
+    return {
+        "interval": interval,
+        "midpoint": float(np.mean(interval)),
+        "maximum_absolute_slope": float(slopes[index]),
+    }
+
+
 def _bootstrap_association(
     frame: pd.DataFrame,
     mask: np.ndarray,
@@ -341,6 +355,10 @@ def main() -> int:
     full = frame["arm"].eq("full").to_numpy()
     partial = frame["arm"].eq("partial").to_numpy()
     pooled = frame.loc[full].groupby("gamma")[["q", "Q_R_mean"]].mean()
+    pooled_all = frame.loc[full].groupby("gamma")[["q", "Q_R_mean", "Q_R_sd"]].mean()
+    q_boundary = _steepest_interval(pooled_all["q"])
+    Q_mean_boundary = _steepest_interval(pooled_all["Q_R_mean"])
+    Q_sd_boundary = _steepest_interval(pooled_all["Q_R_sd"])
     full_q_mae = float(np.mean(np.abs(frame.loc[full, "Q_hat_q"] - frame.loc[full, "Q_R_mean"])))
     full_control_mae = float(
         np.mean(
@@ -412,6 +430,17 @@ def main() -> int:
             frame.loc[full].groupby("gamma")["q"].mean(),
             frame.loc[full].groupby("gamma")["Q_R_sd"].mean(),
         ),
+        "fine_boundary_localization": {
+            "q": q_boundary,
+            "Q_R_mean": Q_mean_boundary,
+            "Q_R_sd": Q_sd_boundary,
+            "q_minus_Q_R_mean_midpoint": float(
+                q_boundary["midpoint"] - Q_mean_boundary["midpoint"]
+            ),
+            "q_minus_Q_R_sd_midpoint": float(
+                q_boundary["midpoint"] - Q_sd_boundary["midpoint"]
+            ),
+        },
         "full_cell_summary": _cell_summary(frame, full),
         "partial_cell_summary": _cell_summary(frame, partial) if partial.any() else None,
         "target_free_paired_prefix_stability": _paired_prefix_stability(
