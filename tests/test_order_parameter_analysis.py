@@ -12,6 +12,7 @@ from scripts.analyze_kuramoto_order_benchmark import (
     _truth_result_payload,
 )
 from scripts.analyze_desai_zwanzig_fine_boundary import (
+    _association as _desai_association,
     _normalized_maximum_adjacent_change,
     _paired_sharpness_bootstrap,
 )
@@ -132,6 +133,25 @@ def test_paired_sharpness_bootstrap_preserves_identical_curves() -> None:
         seed=71,
     )
     np.testing.assert_allclose(draws, 0.0, atol=1e-15)
+
+
+def test_desai_association_ignores_only_degenerate_bootstrap_draws() -> None:
+    frame = pd.DataFrame(
+        {
+            "instance": np.repeat(np.arange(4), 3),
+            "sigma_group": np.tile(["low", "mid", "high"], 4),
+            "sigma": np.tile([1.0, 1.1, 1.2], 4),
+            "q": np.tile([0.0, 0.4, 1.0], 4)
+            + np.repeat([0.00, 0.02, -0.01, 0.01], 3),
+            "Q_mean_abs": np.tile([0.0, 0.5, 1.0], 4)
+            + np.repeat([0.00, -0.01, 0.02, 0.01], 3),
+        }
+    )
+    result = _desai_association(
+        frame, np.ones(len(frame), dtype=bool), "q"
+    )
+    assert np.isfinite(result["within_sigma_ci95"]).all()
+    assert 0.0 < result["within_sigma_finite_bootstrap_fraction"] <= 1.0
 
 
 def test_stuart_landau_metadata_arm_uses_labels(tmp_path) -> None:

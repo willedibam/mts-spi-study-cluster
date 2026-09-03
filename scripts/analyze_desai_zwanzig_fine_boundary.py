@@ -140,14 +140,28 @@ def _association(frame: pd.DataFrame, mask: np.ndarray, value: str) -> dict[str,
     target = selected["Q_mean_abs"].to_numpy()
     groups = selected["sigma_group"].to_numpy()
     cell = selected.groupby("sigma")[[value, "Q_mean_abs"]].mean()
+    finite_overall = overall[np.isfinite(overall)]
+    finite_within = within[np.isfinite(within)]
+    if not finite_overall.size or not finite_within.size:
+        raise RuntimeError("association bootstrap produced no finite draws")
     return {
         "overall_spearman": safe_spearman(q, target),
-        "overall_ci95": np.quantile(overall, [0.025, 0.975]).tolist(),
+        "overall_ci95": np.quantile(
+            finite_overall, [0.025, 0.975]
+        ).tolist(),
+        "overall_finite_bootstrap_fraction": float(
+            finite_overall.size / overall.size
+        ),
         "within_sigma_spearman": safe_spearman(
             residualize_by_group(q, groups),
             residualize_by_group(target, groups),
         ),
-        "within_sigma_ci95": np.quantile(within, [0.025, 0.975]).tolist(),
+        "within_sigma_ci95": np.quantile(
+            finite_within, [0.025, 0.975]
+        ).tolist(),
+        "within_sigma_finite_bootstrap_fraction": float(
+            finite_within.size / within.size
+        ),
         "control_mean_spearman": safe_spearman(cell[value], cell["Q_mean_abs"]),
     }
 
