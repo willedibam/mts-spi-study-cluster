@@ -1,0 +1,35 @@
+output_dir: data/order_parameter/stuart_landau_locking_boundary
+base_seed: 826731
+coupling: 0.8
+frequency_half_widths:
+  - 0.60
+  - 0.61
+  - 0.62
+  - 0.63
+  - 0.64
+  - 0.65
+  - 0.66
+  - 0.67
+  - 0.68
+  - 0.69
+  - 0.70
+  - 0.71
+  - 0.72
+  - 0.73
+  - 0.74
+  - 0.75
+  - 0.76
+  - 0.77
+  - 0.78
+  - 0.79
+  - 0.80
+  - 0.81
+  - 0.82
+population_sizes: [32, 64, 128, 800]
+instances: 3
+dt: 0.02
+sample_dt: 0.1
+burn_time: 200.0
+record_T: 2000
+blocks: 4
+omega_mean: 2.0

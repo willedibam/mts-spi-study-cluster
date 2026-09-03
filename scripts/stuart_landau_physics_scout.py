@@ -107,19 +107,57 @@ def _aggregate(config: dict) -> int:
         return _aggregate_plane(config, arrays, block_means, expected)
     def _cell_mean(key: str, value: float) -> float:
         return float(np.mean(arrays[key][large & np.isclose(gamma, value)]))
-    anchors = {str(value): {key: _cell_mean(key, value) for key in ("R_mean", "R_std", "activity_mean")} for value in (0.6, 0.8, 1.0, 1.2)}
+    requested_anchors = tuple(config.get("published_anchor_gammas", (0.6, 0.8, 1.0, 1.2)))
+    available = np.unique(gamma[large])
+    anchors = {
+        str(value): {
+            key: _cell_mean(key, value)
+            for key in ("R_mean", "R_std", "activity_mean")
+        }
+        for value in requested_anchors
+        if np.any(np.isclose(available, value))
+    }
+    boundary_by_size = {}
+    for size in config["population_sizes"]:
+        size_mask = arrays["N"] == size
+        controls = np.unique(gamma[size_mask])
+        means = np.asarray([
+            np.mean(arrays["R_mean"][size_mask & np.isclose(gamma, value)])
+            for value in controls
+        ])
+        sd_means = np.asarray([
+            np.mean(arrays["R_std"][size_mask & np.isclose(gamma, value)])
+            for value in controls
+        ])
+        slopes = np.abs(np.diff(means) / np.diff(controls))
+        steepest = int(np.argmax(slopes))
+        unsteady = np.flatnonzero(sd_means >= float(config.get("unsteady_R_std_threshold", 0.02)))
+        boundary_by_size[str(size)] = {
+            "steepest_R_mean_interval": [
+                float(controls[steepest]), float(controls[steepest + 1])
+            ],
+            "maximum_abs_R_mean_slope": float(slopes[steepest]),
+            "first_R_std_threshold_crossing": (
+                float(controls[unsteady[0]]) if unsteady.size else None
+            ),
+        }
     block_range = np.ptp(block_means, axis=1)
+    has_published_gate = all(str(value) in anchors for value in (0.6, 0.8, 1.0, 1.2))
     summary = {
-        "status": "pass" if (
-            anchors["0.6"]["R_mean"] > 0.6
+        "status": (
+            "pass"
+            if has_published_gate
+            and anchors["0.6"]["R_mean"] > 0.6
             and anchors["0.6"]["R_std"] < 0.02
             and anchors["0.8"]["R_std"] > 0.08
             and anchors["1.2"]["R_mean"] < 0.12
             and anchors["1.2"]["activity_mean"] > 0.1
-        ) else "fail",
+            else "fail" if has_published_gate else "complete_fine_boundary_scout"
+        ),
         "expected_parts": expected,
         "large_population": int(max(config["population_sizes"])),
         "published_path_anchors": anchors,
+        "boundary_by_population_size": boundary_by_size,
         "R_block_range_p95": float(np.quantile(block_range, 0.95)),
         "elapsed_seconds_median": float(np.median(arrays["elapsed_seconds"])),
         "elapsed_seconds_p95": float(np.quantile(arrays["elapsed_seconds"], 0.95)),
