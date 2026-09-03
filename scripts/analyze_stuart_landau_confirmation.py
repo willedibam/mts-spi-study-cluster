@@ -95,13 +95,14 @@ def _bootstrap_association(
     frame: pd.DataFrame,
     mask: np.ndarray,
     *,
+    target: str = "Q_R_mean",
     bootstraps: int,
     seed: int,
 ) -> dict[str, object]:
     selected = frame.loc[mask]
     overall, within = clustered_bootstrap_spearman(
         selected["q"],
-        selected["Q_R_mean"],
+        selected[target],
         selected["gamma_group"],
         selected["instance"],
         n_resamples=bootstraps,
@@ -110,7 +111,7 @@ def _bootstrap_association(
     return {
         **_association(
             selected["q"].to_numpy(),
-            selected["Q_R_mean"].to_numpy(),
+            selected[target].to_numpy(),
             selected["gamma_group"].to_numpy(),
         ),
         "overall_ci95": np.quantile(overall, [0.025, 0.975]).tolist(),
@@ -126,6 +127,15 @@ def main() -> int:
     parser.add_argument("--development-scores", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--analysis-arm", choices=("both", "full"), default="both")
+    parser.add_argument(
+        "--expected-gammas",
+        default=",".join(map(str, sorted(EXPECTED_GAMMAS))),
+        help="comma-separated confirmation controls",
+    )
+    parser.add_argument("--expected-M-values", default="8,16,32")
+    parser.add_argument("--expected-T-values", default="100,500,1000")
+    parser.add_argument("--expected-instances", type=int, default=8)
+    parser.add_argument("--status-label")
     parser.add_argument("--maximum-selected-missingness", type=float, default=0.05)
     parser.add_argument("--bootstraps", type=int, default=2000)
     args = parser.parse_args()
@@ -164,16 +174,30 @@ def main() -> int:
     expected_arms = (
         {"full", "partial"} if args.analysis_arm == "both" else {"full"}
     )
-    expected_rows = 1296 if args.analysis_arm == "both" else 648
+    expected_gammas = {float(value) for value in args.expected_gammas.split(",")}
+    expected_M = {int(value) for value in args.expected_M_values.split(",")}
+    expected_T = {int(value) for value in args.expected_T_values.split(",")}
+    expected_instances = set(range(args.expected_instances))
+    expected_rows = (
+        len(expected_arms)
+        * len(expected_gammas)
+        * len(expected_M)
+        * len(expected_T)
+        * len(expected_instances)
+    )
 
     design_valid = (
         len(frame) == expected_rows
         and set(frame["arm"]) == expected_arms
-        and set(frame["M"]) == {8, 16, 32}
-        and set(frame["T"]) == {100, 500, 1000}
-        and set(frame["instance"]) == set(range(8))
-        and set(frame["gamma"]) == EXPECTED_GAMMAS
+        and set(frame["M"]) == expected_M
+        and set(frame["T"]) == expected_T
+        and set(frame["instance"]) == expected_instances
+        and set(frame["gamma"]) == expected_gammas
         and set(frame["coupling"]) == {0.8}
+        and np.all(
+            frame.loc[frame["arm"].eq("full"), "N_full"]
+            == frame.loc[frame["arm"].eq("full"), "M"]
+        )
     )
     provenance_valid = all(
         frame[column].nunique() == 1
@@ -296,7 +320,7 @@ def main() -> int:
             ),
         }
     summary = {
-        "status": (
+        "status": args.status_label or (
             "independent_confirmation"
             if args.analysis_arm == "both"
             else "independent_confirmation_full_arm_after_global_gate_failure"
@@ -316,6 +340,17 @@ def main() -> int:
         ),
         "full_pooled_gamma_mean_spearman": safe_spearman(
             pooled["q"], pooled["Q_R_mean"]
+        ),
+        "full_R_sd_association": _bootstrap_association(
+            frame,
+            full,
+            target="Q_R_sd",
+            bootstraps=args.bootstraps,
+            seed=8203,
+        ),
+        "full_pooled_gamma_mean_R_sd_spearman": safe_spearman(
+            frame.loc[full].groupby("gamma")["q"].mean(),
+            frame.loc[full].groupby("gamma")["Q_R_sd"].mean(),
         ),
         "full_cell_summary": _cell_summary(frame, full),
         "partial_cell_summary": _cell_summary(frame, partial) if partial.any() else None,

@@ -39,6 +39,21 @@ analysis_args=(
 if [[ -n "${ANALYSIS_ARM:-}" ]]; then
     analysis_args+=(--analysis-arm "$ANALYSIS_ARM")
 fi
+if [[ -n "${EXPECTED_GAMMAS:-}" ]]; then
+    analysis_args+=(--expected-gammas "$EXPECTED_GAMMAS")
+fi
+if [[ -n "${EXPECTED_M_VALUES:-}" ]]; then
+    analysis_args+=(--expected-M-values "$EXPECTED_M_VALUES")
+fi
+if [[ -n "${EXPECTED_T_VALUES:-}" ]]; then
+    analysis_args+=(--expected-T-values "$EXPECTED_T_VALUES")
+fi
+if [[ -n "${EXPECTED_INSTANCES:-}" ]]; then
+    analysis_args+=(--expected-instances "$EXPECTED_INSTANCES")
+fi
+if [[ -n "${STATUS_LABEL:-}" ]]; then
+    analysis_args+=(--status-label "$STATUS_LABEL")
+fi
 if [[ "${EXCLUDE_HIGH_MISSINGNESS:-0}" == 1 ]]; then
     analysis_args+=(--exclude-rows-above-missingness)
 fi
