@@ -25,6 +25,7 @@ from scripts.analyze_stuart_landau_development import (  # noqa: E402
 )
 from scripts.analyze_stuart_landau_confirmation import _steepest_interval  # noqa: E402
 from src.order_parameter_analysis import (  # noqa: E402
+    clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
     input_only_features,
@@ -162,6 +163,33 @@ def _normalized_maximum_adjacent_change(curve: pd.Series) -> dict[str, object]:
         "fraction_of_total_range": float(changes[index]),
         "interval": [float(controls[index]), float(controls[index + 1])],
     }
+
+
+def _paired_sharpness_bootstrap(
+    frame: pd.DataFrame,
+    mask: np.ndarray,
+    *,
+    bootstraps: int,
+    seed: int,
+) -> np.ndarray:
+    selected = frame.loc[mask]
+    instances = np.sort(selected["instance"].unique())
+    rng = np.random.default_rng(seed)
+    differences = np.empty(bootstraps, dtype=float)
+    for draw in range(bootstraps):
+        sampled = rng.choice(instances, size=len(instances), replace=True)
+        resample = pd.concat(
+            [selected.loc[selected["instance"].eq(instance)] for instance in sampled],
+            ignore_index=True,
+        )
+        curve = resample.groupby("sigma")[["q_display", "Q_mean_abs"]].mean()
+        q_change = _normalized_maximum_adjacent_change(curve["q_display"])
+        Q_change = _normalized_maximum_adjacent_change(curve["Q_mean_abs"])
+        differences[draw] = (
+            q_change["fraction_of_total_range"]
+            - Q_change["fraction_of_total_range"]
+        )
+    return differences
 
 
 def _pca_stability(
@@ -392,13 +420,32 @@ def main() -> int:
     decoder = IsotonicRegression(increasing="auto", out_of_bounds="clip").fit(
         frame.loc[fit, "q_display"], frame.loc[fit, "Q_mean_abs"]
     )
+    control_decoder = IsotonicRegression(
+        increasing="auto", out_of_bounds="clip"
+    ).fit(frame.loc[fit, "sigma"], frame.loc[fit, "Q_mean_abs"])
     frame["Q_hat_q"] = decoder.predict(frame["q_display"])
+    frame["Q_hat_control"] = control_decoder.predict(frame["sigma"])
     mae_draws = clustered_bootstrap_mae(
         frame.loc[mean_field_confirmation, "Q_mean_abs"],
         frame.loc[mean_field_confirmation, "Q_hat_q"],
         frame.loc[mean_field_confirmation, "instance"],
         n_resamples=2000,
         seed=29501,
+    )
+    control_mae_draws = clustered_bootstrap_mae(
+        frame.loc[mean_field_confirmation, "Q_mean_abs"],
+        frame.loc[mean_field_confirmation, "Q_hat_control"],
+        frame.loc[mean_field_confirmation, "instance"],
+        n_resamples=2000,
+        seed=29503,
+    )
+    q_minus_control_mae = clustered_bootstrap_difference(
+        frame.loc[mean_field_confirmation, "Q_mean_abs"],
+        frame.loc[mean_field_confirmation, "Q_hat_q"],
+        frame.loc[mean_field_confirmation, "Q_hat_control"],
+        frame.loc[mean_field_confirmation, "instance"],
+        n_resamples=2000,
+        seed=29507,
     )
 
     primary_curve = frame.loc[mean_field_confirmation].groupby("sigma")[["q_display", "Q_mean_abs"]].mean()
@@ -407,6 +454,12 @@ def main() -> int:
     Q_boundary = _steepest_interval(primary_curve["Q_mean_abs"])
     q_sharpness = _normalized_maximum_adjacent_change(primary_curve["q_display"])
     Q_sharpness = _normalized_maximum_adjacent_change(primary_curve["Q_mean_abs"])
+    sharpness_difference = _paired_sharpness_bootstrap(
+        frame,
+        mean_field_confirmation,
+        bootstraps=2000,
+        seed=29509,
+    )
     reference = float(contract["physics"]["reference_mean_field_sigma_c"])
     summary = {
         "status": "independent_seed_confirmation_after_target_blind_local_fit",
@@ -450,6 +503,12 @@ def main() -> int:
                 q_sharpness["fraction_of_total_range"]
                 - Q_sharpness["fraction_of_total_range"]
             ),
+            "q_minus_Q_ci95": np.quantile(
+                sharpness_difference, [0.025, 0.975]
+            ).tolist(),
+            "bootstrap_probability_q_sharper_than_Q": float(
+                np.mean(sharpness_difference > 0.0)
+            ),
         },
         "finite_N32_boundary_localization": {
             "q": _steepest_interval(finite_curve["q_display"]),
@@ -466,6 +525,22 @@ def main() -> int:
             ),
             "mae_ci95": np.quantile(mae_draws, [0.025, 0.975]).tolist(),
         },
+        "control_only_readout": {
+            "mae": float(
+                np.mean(
+                    np.abs(
+                        frame.loc[mean_field_confirmation, "Q_hat_control"]
+                        - frame.loc[mean_field_confirmation, "Q_mean_abs"]
+                    )
+                )
+            ),
+            "mae_ci95": np.quantile(
+                control_mae_draws, [0.025, 0.975]
+            ).tolist(),
+        },
+        "q_minus_control_mae_difference_ci95": np.quantile(
+            q_minus_control_mae, [0.025, 0.975]
+        ).tolist(),
         "mean_field_input_baselines": baseline_summary,
         "future_Q_block_range_p95": float(frame["Q_block_range"].quantile(0.95)),
         "eligibility_precedes_outcome_access": True,

@@ -65,6 +65,8 @@ evaluation:
     - steepest_interval_and_distance_to_reference_boundary
     - finite_N32_transfer_sensitivity
     - supervised_isotonic_readout_mae
+    - control_only_isotonic_readout_mae
+    - paired_sharpness_difference_ci95
   sharpness_bonus_is_evaluative_not_part_of_q_construction: true
   not_claimed:
     - exact_thermodynamic_critical_point_from_finite_N_data

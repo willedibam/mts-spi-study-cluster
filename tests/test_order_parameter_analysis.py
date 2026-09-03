@@ -13,6 +13,7 @@ from scripts.analyze_kuramoto_order_benchmark import (
 )
 from scripts.analyze_desai_zwanzig_fine_boundary import (
     _normalized_maximum_adjacent_change,
+    _paired_sharpness_bootstrap,
 )
 from scripts.analyze_stuart_landau_confirmation import (
     _metadata_frame,
@@ -113,6 +114,24 @@ def test_normalized_maximum_adjacent_change_is_scale_free() -> None:
     assert np.isclose(
         result["fraction_of_total_range"], scaled["fraction_of_total_range"]
     )
+
+
+def test_paired_sharpness_bootstrap_preserves_identical_curves() -> None:
+    frame = pd.DataFrame(
+        {
+            "instance": np.repeat(np.arange(4), 4),
+            "sigma": np.tile([1.0, 1.1, 1.2, 1.3], 4),
+            "q_display": np.tile([1.0, 0.9, 0.2, 0.1], 4),
+            "Q_mean_abs": np.tile([1.0, 0.9, 0.2, 0.1], 4),
+        }
+    )
+    draws = _paired_sharpness_bootstrap(
+        frame,
+        np.ones(len(frame), dtype=bool),
+        bootstraps=50,
+        seed=71,
+    )
+    np.testing.assert_allclose(draws, 0.0, atol=1e-15)
 
 
 def test_stuart_landau_metadata_arm_uses_labels(tmp_path) -> None:
