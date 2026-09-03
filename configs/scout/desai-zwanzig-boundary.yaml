@@ -1,0 +1,42 @@
+output_dir: data/order_parameter/desai_zwanzig_boundary_scout
+base_seed: 947231
+
+# Canonical parameters and mean-field boundary from Evangelou et al.
+alpha: 1.0
+theta: 4.0
+sigma_m: 0.8
+nu: 0.5
+reference_sigma_c: 1.890
+
+population_sizes: [32, 128, 512, 2048, 12000]
+sigmas:
+  - 1.60
+  - 1.65
+  - 1.70
+  - 1.725
+  - 1.75
+  - 1.775
+  - 1.80
+  - 1.825
+  - 1.85
+  - 1.875
+  - 1.89
+  - 1.90
+  - 1.925
+  - 1.95
+  - 1.975
+  - 2.00
+  - 2.05
+  - 2.10
+  - 2.20
+initial_means: [-1.0, 1.0]
+instances: 4
+initial_std: 0.1
+
+dt: 0.005
+sample_dt: 0.05
+burn_time: 100.0
+T: 1000
+truth_start_T: 1000
+future_truth_T: 2000
+blocks: 8

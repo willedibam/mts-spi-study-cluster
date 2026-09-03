@@ -1,0 +1,34 @@
+#!/bin/bash
+#PBS -N dz-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8
+#PBS -l mem=64GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -j oe
+
+set -euo pipefail
+: "${FEATURE_PATH:?set FEATURE_PATH}"
+: "${DATA_ROOT:?set DATA_ROOT}"
+: "${ANALYSIS_CONTRACT:?set ANALYSIS_CONTRACT}"
+: "${OUTPUT_DIR:?set OUTPUT_DIR}"
+test ! -e "$OUTPUT_DIR"
+
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export PYTHONPATH="$PBS_O_WORKDIR${PYTHONPATH:+:$PYTHONPATH}"
+export OMP_NUM_THREADS="$PBS_NCPUS"
+export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
+export MKL_NUM_THREADS="$PBS_NCPUS"
+export NUMEXPR_NUM_THREADS="$PBS_NCPUS"
+
+python scripts/analyze_desai_zwanzig_fine_boundary.py \
+    --features "$FEATURE_PATH" \
+    --data-root "$DATA_ROOT" \
+    --analysis-contract "$ANALYSIS_CONTRACT" \
+    --output-dir "$OUTPUT_DIR"

@@ -36,6 +36,7 @@ from .linear import (
     generate_warping_mts,
 )
 from .order_parameter import (
+    generate_desai_zwanzig,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
     generate_quadratic_cml_order_parameter,
@@ -82,6 +83,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "kuramoto_explosive": generate_kuramoto_explosive,
     "kuramoto_grid_four": generate_kuramoto_grid_four,
     "kuramoto_order_parameter": generate_kuramoto_order_parameter,
+    "desai_zwanzig": generate_desai_zwanzig,
     "miller_huse": generate_miller_huse,
     "quadratic_cml_order_parameter": generate_quadratic_cml_order_parameter,
     "stuart_landau": generate_stuart_landau,

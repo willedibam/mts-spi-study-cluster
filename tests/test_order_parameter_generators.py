@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from src.generators.order_parameter import (
+    generate_desai_zwanzig,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
     generate_stuart_landau,
@@ -14,6 +15,7 @@ from src.generators.order_parameter import (
 from src.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
 from src.run_experiments import (
     _build_metadata,
+    _desai_zwanzig_semantics,
     _ground_truth_descriptor,
     _kuramoto_semantics,
     _miller_huse_semantics,
@@ -289,6 +291,81 @@ mts_classes:
     assert mh_extras["_ground_truth"]["q_spin_abs"].shape == ()
     mh_semantics = _miller_huse_semantics(mh_spec, mh_extras)
     assert mh_semantics["order_parameter"]["primary_scalar"] == "q_spin_abs"
+
+
+def test_desai_zwanzig_prefixes_and_future_truth_are_fixed() -> None:
+    common = dict(
+        M=8,
+        N_full=32,
+        sigma=1.8,
+        burn_time=1.0,
+        truth_start_T=50,
+        future_truth_T=20,
+        return_internals=True,
+    )
+    short, short_info = generate_desai_zwanzig(
+        T=20, rng=np.random.default_rng(61), **common
+    )
+    long, long_info = generate_desai_zwanzig(
+        T=50, rng=np.random.default_rng(61), **common
+    )
+    np.testing.assert_array_equal(short, long[:20])
+    np.testing.assert_array_equal(
+        short_info.mean_field_future, long_info.mean_field_future
+    )
+    np.testing.assert_array_equal(
+        short_info.observation_indices, long_info.observation_indices
+    )
+
+
+def test_desai_zwanzig_reproduces_order_disorder_contrast() -> None:
+    common = dict(
+        M=16,
+        T=200,
+        N_full=512,
+        burn_time=30.0,
+        future_truth_T=100,
+        return_internals=True,
+    )
+    _, ordered = generate_desai_zwanzig(
+        sigma=1.5, rng=np.random.default_rng(67), **common
+    )
+    _, disordered = generate_desai_zwanzig(
+        sigma=2.2, rng=np.random.default_rng(67), **common
+    )
+    assert np.mean(np.abs(ordered.mean_field_future)) > 0.5
+    assert np.mean(np.abs(disordered.mean_field_future)) < 0.25
+
+
+def test_desai_zwanzig_harness_records_canonical_truth(tmp_path: Path) -> None:
+    config_path = tmp_path / "desai-zwanzig.yaml"
+    config_path.write_text(
+        """
+base_output_dir: data/test-desai-zwanzig
+pyspi_config: configs/pyspi/test.yaml
+defaults: {instances: 1, M_values: [8], T_values: [40]}
+mts_classes:
+  - name: dz
+    generator: desai_zwanzig
+    base_params:
+      N_full: 16
+      sigma: 1.9
+      burn_time: 1.0
+      future_truth_T: 20
+      store_full_states: false
+""",
+        encoding="utf-8",
+    )
+    spec = DatasetMapping(ExperimentConfig.from_file(config_path)).specs[0]
+    observed, extras = generate_synthetic_from_spec(spec)
+    assert observed.shape == (40, 8)
+    assert "full_states" not in extras["_ground_truth"]
+    assert extras["_ground_truth"]["mean_field_future"].shape == (20,)
+    assert extras["_ground_truth"]["q_mean_abs_blocks"].shape == (8,)
+    semantics = _desai_zwanzig_semantics(spec, extras)
+    assert semantics["control"]["name"] == "sigma"
+    assert semantics["order_parameter"]["primary_scalar"] == "q_mean_abs"
+    assert semantics["order_parameter"]["included_in_timeseries_input"] is False
 
 
 def test_stuart_landau_nested_views_and_collective_regimes() -> None:

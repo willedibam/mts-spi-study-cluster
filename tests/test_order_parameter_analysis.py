@@ -11,6 +11,9 @@ from scripts.analyze_kuramoto_order_benchmark import (
     _paired_cell_bootstrap,
     _truth_result_payload,
 )
+from scripts.analyze_desai_zwanzig_fine_boundary import (
+    _normalized_maximum_adjacent_change,
+)
 from scripts.analyze_stuart_landau_confirmation import (
     _metadata_frame,
     _steepest_interval,
@@ -98,6 +101,18 @@ def test_steepest_interval_localizes_absolute_change() -> None:
     assert result["interval"] == [0.2, 0.4]
     assert np.isclose(result["midpoint"], 0.3)
     assert np.isclose(result["maximum_absolute_slope"], 5.0)
+
+
+def test_normalized_maximum_adjacent_change_is_scale_free() -> None:
+    curve = pd.Series([1.0, 0.8, 0.2, 0.0], index=[1.0, 1.1, 1.2, 1.3])
+    result = _normalized_maximum_adjacent_change(curve)
+    scaled = _normalized_maximum_adjacent_change(7.0 * curve - 4.0)
+    assert result["interval"] == [1.1, 1.2]
+    assert np.isclose(result["fraction_of_total_range"], 0.6)
+    assert result["interval"] == scaled["interval"]
+    assert np.isclose(
+        result["fraction_of_total_range"], scaled["fraction_of_total_range"]
+    )
 
 
 def test_stuart_landau_metadata_arm_uses_labels(tmp_path) -> None:

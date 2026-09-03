@@ -1,0 +1,71 @@
+status: frozen_before_outcome_access
+experiment: configs/generate/order_parameter/desai-zwanzig-fine-boundary.yaml
+representation:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  metric: pearson
+  fit_arm: mean_field
+  fit_instances: [0, 1, 2, 3]
+  confirmation_instances: [4, 5, 6, 7]
+  minimum_valid_fraction: 0.99
+  variance_threshold: 0.05
+  primary_coordinate: target_blind_pc1
+  use_controls_or_physical_targets_in_fit: false
+expected_design:
+  M: 32
+  T: 1000
+  instances: 8
+  arms:
+    mean_field: {N_full: 12000, observation: partial}
+    finite_N32: {N_full: 32, observation: full}
+  sigmas:
+    - 1.750
+    - 1.760
+    - 1.770
+    - 1.780
+    - 1.790
+    - 1.800
+    - 1.810
+    - 1.820
+    - 1.830
+    - 1.840
+    - 1.850
+    - 1.860
+    - 1.870
+    - 1.880
+    - 1.890
+    - 1.900
+    - 1.910
+    - 1.920
+    - 1.930
+    - 1.940
+    - 1.950
+eligibility:
+  require_clean_homogeneous_provenance: true
+  require_frozen_schema_and_spi_order: true
+  maximum_selected_feature_missingness_per_row: 0.05
+  target_blind_row_exclusion: true
+  maximum_excluded_fraction: 0.02
+  minimum_retained_confirmation_instances_per_control_arm: 3
+  minimum_pc1_explained_variance: 0.20
+  minimum_leave_instance_loading_cosine: 0.80
+physics:
+  canonical_order_parameter: M1(t)=mean_i(x_i(t))
+  finite_system_scalar: mean_t(abs(M1(t)))
+  reference_mean_field_sigma_c: 1.890
+  distinguish_reference_boundary_from_finite_time_steepest_interval: true
+evaluation:
+  primary_claim: held_out_macroscopic_order_coordinate_tracking_and_boundary_localization
+  primary_metric: absolute_spearman_q_vs_future_mean_abs_M1
+  supplementary_metrics:
+    - control_mean_spearman
+    - within_control_spearman
+    - normalized_maximum_adjacent_change
+    - steepest_interval_and_distance_to_reference_boundary
+    - finite_N32_transfer_sensitivity
+    - supervised_isotonic_readout_mae
+  sharpness_bonus_is_evaluative_not_part_of_q_construction: true
+  not_claimed:
+    - exact_thermodynamic_critical_point_from_finite_N_data
+    - q_equals_Q_without_monotone_calibration
+    - realization_level_recovery_without_within_control_evidence

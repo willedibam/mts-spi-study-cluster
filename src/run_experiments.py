@@ -402,6 +402,7 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
         and spec.generator_params.get("return_full_lattice", False)
     )
     wants_ground_truth = spec.generator in {
+        "desai_zwanzig",
         "kuramoto_order_parameter",
         "miller_huse",
         "quadratic_cml_order_parameter",
@@ -747,6 +748,52 @@ def generate_synthetic_from_spec(spec) -> tuple[np.ndarray, dict]:
                     "store_full_field": store_full_field,
                     "persist_future_truth_series": persist_future_truth_series,
                 },
+            ),
+        }
+    elif spec.generator == "desai_zwanzig":
+        generator_params.pop("return_internals", None)
+        store_full_states = bool(generator_params.pop("store_full_states", False))
+        data, internals = generate.generate_desai_zwanzig(
+            M=spec.M,
+            T=spec.T,
+            rng=np.random.default_rng(spec.rng_seed),
+            return_internals=True,
+            store_full_states=store_full_states,
+            **generator_params,
+        )
+        primary = (
+            internals.mean_field_future
+            if internals.mean_field_future.size
+            else internals.mean_field
+        )
+        truth_block_count = min(8, len(primary))
+        ground_truth = {
+            "mean_field": internals.mean_field.astype(np.float32),
+            "mean_field_future": internals.mean_field_future.astype(np.float32),
+            "q_mean_abs": np.array(np.mean(np.abs(primary)), dtype=np.float32),
+            "q_mean_rms": np.array(np.sqrt(np.mean(primary**2)), dtype=np.float32),
+            "q_mean_signed": np.array(np.mean(primary), dtype=np.float32),
+            "q_mean_abs_blocks": np.asarray(
+                [
+                    np.mean(np.abs(block))
+                    for block in np.array_split(primary, truth_block_count)
+                ],
+                dtype=np.float32,
+            ),
+            "observation_indices": internals.observation_indices.astype(np.int32),
+            "initial_state": internals.initial_state.astype(np.float32),
+            "final_state": internals.final_state.astype(np.float32),
+            "reference_mean_field_sigma_c": np.array(
+                generate.DESAI_ZWANZIG_REFERENCE_SIGMA_C, dtype=np.float32
+            ),
+        }
+        if internals.full_states is not None:
+            ground_truth["full_states"] = internals.full_states.astype(np.float32)
+        gen_extras = {
+            "_ground_truth": ground_truth,
+            "resolved_params": _resolve_generator_params(
+                spec.generator,
+                {**generator_params, "store_full_states": store_full_states},
             ),
         }
     elif spec.generator == "stuart_landau":
@@ -1207,6 +1254,34 @@ def _miller_huse_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _desai_zwanzig_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
+    params = dict(gen_extras.get("resolved_params") or spec.generator_params)
+    future_truth = int(params.get("future_truth_T", 0)) > 0
+    return {
+        "control": {
+            "name": "sigma",
+            "value": float(params.get("sigma", 1.890)),
+            "plane_parameter": "theta",
+            "plane_value": float(params.get("theta", 4.0)),
+        },
+        "order_parameter": {
+            "name": "Desai--Zwanzig first moment",
+            "definition": "M1(t)=mean_i(x_i(t))",
+            "finite_system_scalar": "mean_t(abs(M1(t)))",
+            "primary_analysis_array": (
+                "mean_field_future" if future_truth else "mean_field"
+            ),
+            "primary_scalar": "q_mean_abs",
+            "primary_block_summary": "q_mean_abs_blocks",
+            "signed_scalar": "q_mean_signed",
+            "rms_sensitivity_scalar": "q_mean_rms",
+            "mean_field_reference_sigma_c": 1.890,
+            "future_truth_disjoint_from_input_window": future_truth,
+            "included_in_timeseries_input": False,
+        },
+    }
+
+
 def _stuart_landau_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]:
     params = dict(gen_extras.get("resolved_params") or spec.generator_params)
     future_truth = int(params.get("future_truth_T", 0)) > 0
@@ -1293,6 +1368,8 @@ def _build_metadata(
             source_block.update(_kuramoto_semantics(spec, extras))
         elif spec.generator == "miller_huse":
             source_block.update(_miller_huse_semantics(spec, extras))
+        elif spec.generator == "desai_zwanzig":
+            source_block.update(_desai_zwanzig_semantics(spec, extras))
         elif spec.generator == "stuart_landau":
             source_block.update(_stuart_landau_semantics(spec, extras))
         elif spec.generator == "quadratic_cml_order_parameter":
@@ -1390,6 +1467,7 @@ def _dataset_complete(spec) -> bool:
         dataset_dir / "timeseries.npy",
     ]
     if spec.generator in {
+        "desai_zwanzig",
         "kuramoto_order_parameter",
         "miller_huse",
         "quadratic_cml_order_parameter",

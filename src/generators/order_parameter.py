@@ -266,6 +266,19 @@ class QuadraticCMLInternals:
     truth_field: np.ndarray | None
 
 
+@dataclass
+class DesaiZwanzigInternals:
+    full_states: np.ndarray | None
+    mean_field: np.ndarray
+    mean_field_future: np.ndarray
+    observation_indices: np.ndarray
+    initial_state: np.ndarray
+    final_state: np.ndarray
+
+
+DESAI_ZWANZIG_REFERENCE_SIGMA_C = 1.890
+
+
 def miller_huse_map(values: np.ndarray, mu: float = 3.0) -> np.ndarray:
     """Odd piecewise-linear Miller--Huse family on ``[-1, 1]``."""
 
@@ -445,6 +458,131 @@ def generate_miller_huse(
         patch_indices=patch_indices,
         initial_field=initial_field,
         final_field=state.copy(),
+    )
+
+
+def generate_desai_zwanzig(
+    M: int,
+    T: int,
+    sigma: float = DESAI_ZWANZIG_REFERENCE_SIGMA_C,
+    N_full: int | None = None,
+    alpha: float = 1.0,
+    theta: float = 4.0,
+    sigma_m: float = 0.8,
+    nu: float = 0.5,
+    dt: float = 0.005,
+    sample_dt: float = 0.05,
+    burn_time: float = 100.0,
+    future_truth_T: int = 0,
+    truth_start_T: int | None = None,
+    initial_mean: float = 1.0,
+    initial_std: float = 0.1,
+    rng=None,
+    zscore: bool = False,
+    return_internals: bool = False,
+    store_full_states: bool = False,
+):
+    r"""Desai--Zwanzig interacting diffusions with multiplicative noise.
+
+    This is Eq. (1) of Evangelou et al. (PRE 110, 014121, 2024),
+
+    .. math::
+
+       dx_i = [-x_i^3 + (\alpha + \nu\sigma_m^2)x_i
+               - \theta(x_i-\bar{x})]dt
+              + \sqrt{\sigma^2+\sigma_m^2x_i^2}\,dW_i.
+
+    Their canonical parameters are ``alpha=1``, ``theta=4``,
+    ``sigma_m=0.8`` and ``nu=1/2``. In the mean-field limit the first moment
+    ``M1=mean_i(x_i)`` undergoes a continuous pitchfork at
+    ``sigma ~= 1.890``. Finite systems can switch between the two branches,
+    so the benchmark scalar is the time mean of ``abs(M1)`` on a disjoint
+    future window.
+    """
+
+    rng = _resolve_rng(None, rng)
+    M = int(M)
+    T = int(T)
+    N = M if N_full is None else int(N_full)
+    future_truth_T = int(future_truth_T)
+    truth_start = T if truth_start_T is None else int(truth_start_T)
+    sigma = float(sigma)
+    sigma_m = float(sigma_m)
+    dt = float(dt)
+    sample_dt = float(sample_dt)
+    burn_time = float(burn_time)
+    initial_std = float(initial_std)
+    if M <= 0 or T <= 0 or N < M or future_truth_T < 0 or truth_start < T:
+        raise ValueError(
+            f"require 0 < M <= N_full, T > 0 and truth_start_T >= T; "
+            f"got M={M}, N_full={N}, T={T}, truth_start_T={truth_start}"
+        )
+    if sigma < 0.0 or sigma_m < 0.0 or float(theta) < 0.0 or initial_std < 0.0:
+        raise ValueError(
+            "sigma, sigma_m, theta and initial_std must be non-negative; "
+            f"got {sigma}, {sigma_m}, {theta}, {initial_std}"
+        )
+    if dt <= 0.0 or sample_dt < dt or burn_time < 0.0:
+        raise ValueError(
+            f"require dt > 0, sample_dt >= dt and burn_time >= 0; "
+            f"got dt={dt}, sample_dt={sample_dt}, burn_time={burn_time}"
+        )
+    sample_every = int(round(sample_dt / dt))
+    burn_steps = int(round(burn_time / dt))
+    if not np.isclose(sample_every * dt, sample_dt, rtol=0.0, atol=1e-12):
+        raise ValueError(f"sample_dt={sample_dt} must be an integer multiple of dt={dt}")
+    if not np.isclose(burn_steps * dt, burn_time, rtol=0.0, atol=1e-12):
+        raise ValueError(f"burn_time={burn_time} must be an integer multiple of dt={dt}")
+
+    state = float(initial_mean) + initial_std * rng.standard_normal(N)
+    initial_state = state.copy()
+    observation_indices = rng.permutation(N)[:M]
+    noise_scale = np.sqrt(dt)
+    linear = float(alpha) + float(nu) * sigma_m**2
+    coupling = float(theta)
+
+    def step(values: np.ndarray) -> np.ndarray:
+        mean_field = float(values.mean())
+        drift = -values**3 + linear * values - coupling * (values - mean_field)
+        diffusion = np.sqrt(sigma**2 + sigma_m**2 * values**2)
+        updated = values + drift * dt + diffusion * noise_scale * rng.standard_normal(N)
+        if not np.isfinite(updated).all():
+            raise FloatingPointError(
+                "Desai--Zwanzig Euler--Maruyama path became non-finite; "
+                "reduce dt or change the seed"
+            )
+        return updated
+
+    for _ in range(burn_steps):
+        state = step(state)
+
+    observed = np.empty((T, M), dtype=np.float64)
+    mean_field = np.empty(T, dtype=np.float64)
+    mean_field_future = np.empty(future_truth_T, dtype=np.float64)
+    full_states = (
+        np.empty((T, N), dtype=np.float64) if store_full_states else None
+    )
+    for sample in range(truth_start + future_truth_T):
+        for _ in range(sample_every):
+            state = step(state)
+        if sample < T:
+            observed[sample] = state[observation_indices]
+            mean_field[sample] = float(state.mean())
+            if full_states is not None:
+                full_states[sample] = state
+        if sample >= truth_start:
+            mean_field_future[sample - truth_start] = float(state.mean())
+
+    observed = _maybe_zscore(observed, zscore=zscore)
+    if not return_internals:
+        return observed
+    return observed, DesaiZwanzigInternals(
+        full_states=full_states,
+        mean_field=mean_field,
+        mean_field_future=mean_field_future,
+        observation_indices=observation_indices,
+        initial_state=initial_state,
+        final_state=state.copy(),
     )
 
 
