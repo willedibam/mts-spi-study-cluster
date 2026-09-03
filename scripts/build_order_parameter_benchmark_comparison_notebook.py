@@ -52,8 +52,8 @@ With all $K=289$ p90 SPIs, $z\in\mathbb R^{41{,}616}$. Development-only validity
 The claims are deliberately distinct:
 
 - **Tracking/recovery:** frozen target-blind $q$ changes monotonically with held-out $Q$. This is assessed primarily by Spearman correlation.
-- **Macroscopic curve recovery:** correlation between control-cell means of $q$ and $Q$. This asks whether the transition curve is recovered after averaging run variability.
-- **Within-control recovery:** association between $q$ and $Q$ after removing control-cell means. This asks whether $q$ captures run-to-run physical fluctuations, not merely the sweep.
+- **Macroscopic curve recovery:** correlation between means of $q$ and $Q$ across realizations at each fixed control value. This asks whether the transition curve is recovered after averaging run variability.
+- **Within-control recovery:** association between $q$ and $Q$ after removing their mean at each fixed control value. This asks whether $q$ captures run-to-run physical fluctuations, not merely the sweep.
 - **Numerical inference/prediction:** a separately supervised decoder $q\mapsto\widehat Q$, assessed by held-out MAE.
 - **Transition localization:** a target-free peak or change in $q$'s variance/susceptibility near a known boundary. This is supplementary.
 
@@ -156,7 +156,7 @@ def recovery_scatter(ax, frame, *, Q, q, control, q_sign=1.0, title=""):
     q_values = q_sign * frame[q].to_numpy(dtype=float)
     points = ax.scatter(q_values, frame[Q], c=frame[control], cmap="viridis", s=15, alpha=.45, edgecolors="none")
     means = frame.assign(_q=q_values).groupby(control)[["_q", Q]].mean().sort_index()
-    ax.plot(means["_q"], means[Q], color="#b2182b", lw=1.2, marker="o", ms=2.8, label="control-cell means")
+    ax.plot(means["_q"], means[Q], color="#b2182b", lw=1.2, marker="o", ms=2.8, label="mean across realizations at fixed control")
     ax.set_xlabel(r"frozen $q$")
     ax.set_ylabel(r"physical $Q$")
     ax.set_title(title)
@@ -314,7 +314,7 @@ dual_tracking(
 )
 points = recovery_scatter(
     axes[1], sl_headline, Q="Q_R_mean", q="q", control="gamma", q_sign=1,
-    title=r"B\quad Frozen-coordinate recovery",
+    title=r"B\quad Held-out order-coordinate recovery",
 )
 fig.colorbar(points, ax=axes[1], label=r"frequency half-width $\gamma$")
 # fig.savefig(FIGURE_DIR / "stuart_landau_headline.svg")
@@ -336,6 +336,36 @@ for ax, T in zip(axes, [100, 500, 1000], strict=True):
     )
 fig.suptitle(r"Sample-length sensitivity under one frozen transform")
 # fig.savefig(FIGURE_DIR / "stuart_landau_by_T_M32.svg")
+plt.show()"""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""fig, axes = plt.subplots(1, 3, figsize=(11.25, 3.15), constrained_layout=True)
+T_ALPHA = {100: .38, 500: .68, 1000: 1.0}
+for ax, M in zip(axes, [8, 16, 32], strict=True):
+    q_axis = ax.twinx()
+    physical = bootstrap_curve(sl.query("M == @M and T == 1000"), "gamma", "Q_R_mean", seed=7211 + M)
+    line_Q, = ax.plot(physical.gamma, physical["mean"], color=Q_COLOR, lw=1.9, marker="o", ms=2.6, label=r"physical $Q$")
+    ax.fill_between(physical.gamma, physical.lower, physical.upper, color=Q_FILL, alpha=.16, linewidth=0)
+    lines = [line_Q]
+    for T in [100, 500, 1000]:
+        learned = bootstrap_curve(sl.query("M == @M and T == @T"), "gamma", "q", seed=8111 + M + T)
+        line_q, = q_axis.plot(
+            learned.gamma, learned["mean"], color=COLORS[M], alpha=T_ALPHA[T],
+            lw=1.7, marker="s", ms=2.4, label=rf"frozen $q$, $T={T}$",
+        )
+        q_axis.fill_between(
+            learned.gamma, learned.lower, learned.upper,
+            color=COLORS[M], alpha=.12 * T_ALPHA[T], linewidth=0,
+        )
+        lines.append(line_q)
+    ax.set(xlabel=CONTROL_LABELS["gamma"], ylabel=r"physical $Q$", title=rf"$M=N={M}$")
+    q_axis.set_ylabel(r"frozen $q$", color=COLORS[M])
+    q_axis.tick_params(axis="y", colors=COLORS[M])
+    paper_axis(ax)
+    paper_axis(q_axis, right=True)
+    ax.legend(lines, [line.get_label() for line in lines], frameon=False, fontsize=7, loc="best")
+fig.suptitle(r"Sample-length sensitivity within each full-observation size")
+# fig.savefig(FIGURE_DIR / "stuart_landau_T_lines_by_M.svg")
 plt.show()"""
         ),
         nbformat.v4.new_markdown_cell(
@@ -384,7 +414,7 @@ dual_tracking(
 )
 points = recovery_scatter(
     axes[1], mh_headline, Q="Q_spin_abs", q="q", control="g", q_sign=1,
-    title=r"B\quad Confirmation sensitivity",
+    title=r"B\quad Held-out recovery sensitivity",
 )
 fig.colorbar(points, ax=axes[1], label=r"coupling $g$")
 # fig.savefig(FIGURE_DIR / "miller_huse_headline.svg")
@@ -452,7 +482,7 @@ dual_tracking(
 axes[0].axvspan(1.74, 1.76, color="#d95f02", alpha=.10, linewidth=0)
 points = recovery_scatter(
     axes[1], cml_headline, Q="Q_phys1", q="q1", control="alpha", q_sign=-1,
-    title=r"B\quad Development-only regime recovery",
+    title=r"B\quad Development-only regime-coordinate association",
 )
 fig.colorbar(points, ax=axes[1], label=r"map nonlinearity $\alpha$")
 # fig.savefig(FIGURE_DIR / "quadratic_cml_headline.svg")
