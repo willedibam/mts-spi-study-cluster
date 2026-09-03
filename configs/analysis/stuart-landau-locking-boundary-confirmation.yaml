@@ -1,0 +1,56 @@
+status: frozen_before_outcome_access
+experiment: configs/generate/order_parameter/stuart-landau-locking-boundary-confirmation.yaml
+representation_model: data/order_parameter/stuart_landau_development_analysis/fitted_target_blind_model.npz
+representation_policy:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  metric: pearson
+  refit_on_fine_boundary_data: false
+expected_design:
+  arm: full
+  M: [32]
+  T: [1000]
+  instances: 8
+  coupling: 0.8
+  frequency_half_widths:
+    - 0.680
+    - 0.685
+    - 0.690
+    - 0.695
+    - 0.700
+    - 0.705
+    - 0.710
+    - 0.715
+    - 0.720
+    - 0.725
+    - 0.730
+    - 0.735
+    - 0.740
+    - 0.745
+    - 0.750
+    - 0.755
+    - 0.760
+    - 0.765
+    - 0.770
+eligibility:
+  require_clean_homogeneous_provenance: true
+  require_frozen_schema_and_spi_order: true
+  maximum_selected_feature_missingness_per_row: 0.05
+  target_blind_row_exclusion: true
+  maximum_excluded_fraction: 0.02
+  minimum_retained_instances_per_control: 6
+outcomes:
+  primary_physical_coordinate: future_time_mean_R
+  boundary_specific_coordinate: future_time_sd_R
+  primary_metric: overall_spearman_q_vs_future_time_mean_R
+  secondary_metrics:
+    - fixed_control_mean_spearman_q_vs_future_time_mean_R
+    - within_control_spearman_q_vs_future_time_mean_R
+    - overall_spearman_q_vs_future_time_sd_R
+    - fixed_control_mean_spearman_q_vs_future_time_sd_R
+claim:
+  primary: held_out_unsupervised_order_coordinate_recovery_across_a_fine_boundary
+  not_claimed:
+    - q_equals_Q_without_monotone_calibration
+    - supervised_numerical_prediction
+    - recovery_of_realization_level_fluctuations_without_within_control_evidence

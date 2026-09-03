@@ -137,6 +137,9 @@ def main() -> int:
     parser.add_argument("--expected-instances", type=int, default=8)
     parser.add_argument("--status-label")
     parser.add_argument("--maximum-selected-missingness", type=float, default=0.05)
+    parser.add_argument("--exclude-rows-above-missingness", action="store_true")
+    parser.add_argument("--maximum-excluded-fraction", type=float, default=0.02)
+    parser.add_argument("--minimum-retained-per-control", type=int, default=6)
     parser.add_argument("--bootstraps", type=int, default=2000)
     args = parser.parse_args()
 
@@ -209,21 +212,45 @@ def main() -> int:
             "experiment_dirty",
         )
     ) and not bool(frame["experiment_dirty"].iloc[0])
+    retained_mask = missingness <= args.maximum_selected_missingness
+    retained_counts = (
+        frame.assign(_retained=retained_mask)
+        .groupby(["arm", "M", "T", "gamma"])["_retained"]
+        .sum()
+    )
+    excluded_fraction = float(np.mean(~retained_mask))
+    if args.exclude_rows_above_missingness:
+        missingness_gate = (
+            excluded_fraction <= args.maximum_excluded_fraction
+            and int(retained_counts.min()) >= args.minimum_retained_per_control
+        )
+    else:
+        missingness_gate = bool(retained_mask.all())
     gates = {
         "schema_matches_frozen_model": bool(schema_matches),
         "spi_order_matches_frozen_model": bool(spi_order_matches),
         "complete_confirmation_design": bool(design_valid),
         "homogeneous_clean_provenance": bool(provenance_valid),
-        "all_coordinates_finite": bool(np.isfinite(frame["q"]).all()),
-        "selected_missingness_within_gate": bool(
-            missingness.max() <= args.maximum_selected_missingness
+        "all_retained_coordinates_finite": bool(
+            np.isfinite(frame.loc[retained_mask, "q"]).all()
         ),
+        "selected_missingness_policy_passes": bool(missingness_gate),
     }
     eligibility = {
         "status": "eligible" if all(gates.values()) else "ineligible",
         "outcomes_read": False,
         "analysis_arm": args.analysis_arm,
         "rows": int(len(frame)),
+        "retained_rows": int(retained_mask.sum()),
+        "excluded_rows": int((~retained_mask).sum()),
+        "excluded_fraction": excluded_fraction,
+        "excluded_row_keys": frame.loc[
+            ~retained_mask, ["arm", "M", "T", "gamma", "instance"]
+        ].to_dict(orient="records"),
+        "minimum_retained_per_control": int(retained_counts.min()),
+        "target_blind_row_exclusion_enabled": bool(
+            args.exclude_rows_above_missingness
+        ),
         "gates": gates,
         "maximum_selected_missingness": float(missingness.max()),
         "p99_selected_missingness": float(np.quantile(missingness, 0.99)),
@@ -241,6 +268,10 @@ def main() -> int:
         handle.write("\n")
     if not all(gates.values()):
         raise RuntimeError(f"confirmation is ineligible: {gates}")
+
+    if args.exclude_rows_above_missingness:
+        frame = frame.loc[retained_mask].reset_index(drop=True)
+        missingness = frame["selected_missingness"].to_numpy()
 
     # Outcome access starts here, after the immutable eligibility artifact.
     targets = _load_targets(frame["path"].tolist())

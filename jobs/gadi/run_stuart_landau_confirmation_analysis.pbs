@@ -57,4 +57,10 @@ fi
 if [[ "${EXCLUDE_HIGH_MISSINGNESS:-0}" == 1 ]]; then
     analysis_args+=(--exclude-rows-above-missingness)
 fi
+if [[ -n "${MAXIMUM_EXCLUDED_FRACTION:-}" ]]; then
+    analysis_args+=(--maximum-excluded-fraction "$MAXIMUM_EXCLUDED_FRACTION")
+fi
+if [[ -n "${MINIMUM_RETAINED_PER_CONTROL:-}" ]]; then
+    analysis_args+=(--minimum-retained-per-control "$MINIMUM_RETAINED_PER_CONTROL")
+fi
 python "$ANALYSIS_SCRIPT" "${analysis_args[@]}"
