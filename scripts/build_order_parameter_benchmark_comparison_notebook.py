@@ -62,6 +62,7 @@ Shaded bands below are nonparametric 95% bootstrap intervals for the **mean acro
         nbformat.v4.new_code_cell(
             r"""from pathlib import Path
 import json
+import shutil
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -75,8 +76,9 @@ while ROOT != ROOT.parent and not (ROOT / "src").exists():
 FIGURE_DIR = ROOT / "notebooks/inference/figures"
 FIGURE_DIR.mkdir(parents=True, exist_ok=True)
 
+USE_TEX = shutil.which("latex") is not None and shutil.which("dvipng") is not None
 mpl.rcParams.update({
-    "text.usetex": True,
+    "text.usetex": USE_TEX,
     "font.family": "serif",
     "font.serif": ["Computer Modern Roman"],
     "font.size": 9,
@@ -90,6 +92,8 @@ mpl.rcParams.update({
     "savefig.dpi": 600,
     "savefig.bbox": "tight",
 })
+if not USE_TEX:
+    print("LaTeX executables are unavailable to this kernel; using Computer Modern mathtext.")
 
 COLORS = {8: "#440154", 16: "#31688e", 20: "#26828e", 32: "#35b779"}
 Q_COLOR = "#222222"
