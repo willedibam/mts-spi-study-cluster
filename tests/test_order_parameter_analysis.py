@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import pandas as pd
 
@@ -9,7 +11,10 @@ from scripts.analyze_kuramoto_order_benchmark import (
     _paired_cell_bootstrap,
     _truth_result_payload,
 )
-from scripts.analyze_stuart_landau_confirmation import _steepest_interval
+from scripts.analyze_stuart_landau_confirmation import (
+    _metadata_frame,
+    _steepest_interval,
+)
 
 from src.order_parameter_analysis import (
     clustered_bootstrap_difference,
@@ -93,6 +98,36 @@ def test_steepest_interval_localizes_absolute_change() -> None:
     assert result["interval"] == [0.2, 0.4]
     assert np.isclose(result["midpoint"], 0.3)
     assert np.isclose(result["maximum_absolute_slope"], 5.0)
+
+
+def test_stuart_landau_metadata_arm_uses_labels(tmp_path) -> None:
+    dataset = tmp_path / "fine-boundary-row"
+    dataset.mkdir()
+    metadata = {
+        "mts_class": "stuart-landau-locking-boundary-confirmation",
+        "labels": ["stuart-landau", "full-observation"],
+        "M": 32,
+        "T": 1000,
+        "instance_index": 0,
+        "generator": {
+            "resolved_params": {
+                "frequency_half_width": 0.74,
+                "coupling": 0.8,
+                "N_full": None,
+            }
+        },
+        "experiment": {
+            "git_commit": "abc123",
+            "config_sha256": "config-hash",
+            "git_dirty": False,
+        },
+        "pyspi": {"config_sha256": "pyspi-hash", "version": "1.0"},
+    }
+    (dataset / "meta.json").write_text(json.dumps(metadata), encoding="utf-8")
+    frame = _metadata_frame(
+        {"dataset_paths": np.asarray([str(dataset)], dtype=object)}, tmp_path
+    )
+    assert frame.loc[0, "arm"] == "full"
 
 
 def test_conditional_path_gap_recovers_zero_and_known_shift() -> None:

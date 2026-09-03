@@ -52,11 +52,20 @@ def _metadata_frame(payload: dict[str, np.ndarray], data_root: Path) -> pd.DataF
         meta = load_json(path / "meta.json")
         params = meta["generator"]["resolved_params"]
         class_name = str(meta["mts_class"])
+        labels = {str(label) for label in meta.get("labels", [])}
+        if "full-observation" in labels or "full-observation" in class_name:
+            arm = "full"
+        elif "partial-observation" in labels or "partial-observation" in class_name:
+            arm = "partial"
+        else:
+            raise ValueError(
+                f"cannot infer observation arm from metadata for {path}"
+            )
         rows.append(
             {
                 "path": path,
                 "class_name": class_name,
-                "arm": "full" if "full-observation" in class_name else "partial",
+                "arm": arm,
                 "M": int(meta["M"]),
                 "T": int(meta["T"]),
                 "instance": int(meta["instance_index"]),
