@@ -35,6 +35,7 @@ The systems are not presented as equally strong:
 2. **Miller--Huse:** canonical nonequilibrium symmetry-breaking benchmark.
 3. **Kuramoto:** canonical but comparatively easy synchronization baseline; the available full-catalogue result is retrospective.
 4. **Quadratic CML:** noncanonical regime-coordinate stress test and useful negative result.
+5. **Desai--Zwanzig:** canonical noise-driven pitchfork with an explicit published phase diagram and a deliberately local boundary sweep.
 
 The detailed system notebooks remain the provenance and diagnostic records, including representative trajectories/fields and robust per-process `icefire` MTS heatmaps: [Kuramoto](kuramoto-order-parameter-confirmation.ipynb), [Stuart--Landau](stuart-landau-order-coordinate.ipynb), [Miller--Huse](miller-huse-order-coordinate.ipynb), and [quadratic CML](quadratic-cml-order-coordinate.ipynb)."""
         ),
@@ -103,6 +104,7 @@ CONTROL_LABELS = {
     "gamma": r"frequency half-width $\gamma$",
     "g": r"coupling $g$",
     "alpha": r"map nonlinearity $\alpha$",
+    "sigma": r"additive-noise amplitude $\sigma$",
 }
 
 def paper_axis(ax, *, right=False):
@@ -238,6 +240,8 @@ Yes. Stuart--Landau's primary confirmation arm has $M=N\in\{8,16,32\}$. Quadrati
     {"system": "Stuart--Landau", "physical N": "8, 16, 32", "observed M": "8, 16, 32", "M=N?": "Yes", "role": "primary full-observation confirmation"},
     {"system": "Stuart--Landau (secondary)", "physical N": 800, "observed M": "8, 16, 32", "M=N?": "No", "role": "information-limited sensitivity; joint gate failed"},
     {"system": "Miller--Huse", "physical N": r"$128^2=16{,}384$", "observed M": "8, 16, 32", "M=N?": "No", "role": "physically adequate lattice with dispersed sensors"},
+    {"system": "Desai--Zwanzig", "physical N": "12,000", "observed M": "32", "M=N?": "No", "role": "claim-bearing mean-field approximation with partial observation"},
+    {"system": "Desai--Zwanzig (sensitivity)", "physical N": "32", "observed M": "32", "M=N?": "Yes", "role": "finite-size rounding and boundary-shift diagnostic"},
     {"system": "Quadratic CML", "physical N": 512, "observed M": "8, 16, 32", "M=N?": "No", "role": "primary stress-test arm"},
     {"system": "Quadratic CML (sensitivity)", "physical N": "8, 16, 32", "observed M": "8, 16, 32", "M=N?": "Yes", "role": "finite-size diagnostic only"},
 ]))"""
@@ -622,10 +626,235 @@ comparison = pd.DataFrame([
         "control-only MAE": cml_summary["held_large_control_only_vector_mae"],
         "strongest simple |rho|": max(abs(v["overall_spearman"]) for v in cml_summary["held_large_input_baseline_associations_with_physical_pc1"].values()),
     },
+    {
+        "system": "Desai--Zwanzig",
+        "evidence": "independent-seed local-boundary confirmation",
+        "overall |rho|": abs(dz_summary["mean_field_confirmation_association"]["overall_spearman"]),
+        "within-control |rho|": abs(dz_summary["mean_field_confirmation_association"]["within_sigma_spearman"]),
+        "cell-mean |rho|": abs(dz_summary["mean_field_confirmation_association"]["control_mean_spearman"]),
+        "q decoder MAE": dz_summary["supervised_q_readout"]["mae"],
+        "control-only MAE": dz_summary["control_only_readout"]["mae"],
+        "strongest simple |rho|": max(abs(v["overall_spearman"]) for v in dz_summary["mean_field_input_baselines"].values()),
+    },
 ])
 display(comparison.round(3))"""
         ),
     ]
+
+    desai_cells = [
+        nbformat.v4.new_markdown_cell(
+            r"""# 5. Desai--Zwanzig noise-driven mean-field transition
+
+### Governing equation
+
+\[
+d x_i=\left[-x_i^3+(\alpha+\nu\sigma_m^2)x_i
+-\theta(x_i-\bar x)\right]dt
++\sqrt{\sigma^2+\sigma_m^2x_i^2}\,dW_i,
+\qquad \bar x=\frac1N\sum_i x_i.
+\]
+
+We use the canonical parameters $\alpha=1$, $\theta=4$, $\sigma_m=0.8$ and $\nu=1/2$, and the same Milstein scheme used for the published finite-particle simulations. The canonical signed order parameter is the first moment $M_1=\bar x$. The mean-field stationary distribution undergoes a continuous pitchfork at additive-noise amplitude $\sigma_c\simeq1.890$: below it, the two stable branches have nonzero $M_1$; above it, the symmetric branch has $M_1=0$. For a finite stochastic population, branch switching can make a long signed average vanish even below the transition, so the finite-run target is
+
+\[
+Q=\langle |M_1(t)|\rangle_t
+\]
+
+on a separate future window. This is a finite-system magnitude of the canonical order parameter, not a new thermodynamic order parameter.
+
+**Verified phase diagram.** Figure 1(a) of [Evangelou et al., Physical Review Research 5, 013078 (2023)](https://doi.org/10.1103/PhysRevResearch.5.013078) gives the stationary mean-field phase diagram and the pitchfork branches for this model. [Evangelou et al., Physical Review E 110, 014121 (2024)](https://doi.org/10.1103/PhysRevE.110.014121) uses the same canonical parameters, identifies $M_1$ as the order parameter, reports $\sigma_c\simeq1.890$, and independently recovers the low-dimensional state using diffusion maps. Accordingly, generic latent-coordinate recovery is not claimed as novel here; the test is whether the common SPI--SPI representation performs it.
+
+The published studies use $N=12{,}000$, which explains our primary population size but does not make it a convergence threshold. A separate logarithmic finite-size gate uses $N\in\{32,100,10^3,10^4,10^5\}$. Its transition steepens and approaches $\sigma_c$, but the $N=10^5$ trajectories regain measurable start-state dependence near the boundary. These are therefore finite-time convergence diagnostics, not a claim of equilibrium finite-size scaling. An attempted $N=10^6$ extension was deferred until the simulation horizon can be scaled to address critical slowing.
+
+**Control, observation and $q$.** We finely sweep $\sigma=1.75,1.76,\ldots,1.95$. The claim-bearing arm simulates $N=12{,}000$ interacting diffusions but exposes only $M=32$ channels for $T=1000$; $Q$ is computed from all $N$ particles over a disjoint 2000-sample future. The full-observation sensitivity uses $M=N=32$. All 289 p90 SPIs enter. Validity handling, scaling and PC1 are fitted without $\sigma$ or $Q$ on primary-arm instances 0--3 and frozen for instances 4--7 and the small-system arm.
+
+**Performance.** All 336 rows passed the sealed eligibility gate. PC1 explains 53.6% of development variance and its leave-one-instance loading cosine is 0.993--0.997. On held primary instances, $\rho(q,Q)=0.947$ (95% CI $[0.901,0.988]$) and control-mean $\rho=0.995$. Both curves identify $\sigma=1.86$--$1.87$ as their steepest interval. The normalized largest step is 0.183 for $q$ and 0.118 for $Q$; their paired-bootstrap difference has 95% CI $[0.041,0.095]$. This supports enhanced transition contrast. It does not imply that $q$ is a more physical order parameter, because a monotone latent coordinate may nonlinearly rescale the curve. Within fixed $\sigma$, recovery is unsupported ($\rho=-0.300$, CI $[-0.909,0.567]$). Pooled input standard deviation is a stronger task-specific baseline ($|\rho|=0.980$), and control-only isotonic prediction (MAE 0.0197) beats supervised q-prediction (MAE 0.0251).
+
+The vertical dotted line is the published mean-field boundary. Shaded vertical intervals mark the empirically steepest adjacent step of the finite confirmation curves; they are not re-labelled as thermodynamic critical points."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""DZ_ROOT = ROOT / "data/order_parameter/desai_zwanzig_fine_boundary_analysis"
+dz_eligibility = json.loads((DZ_ROOT / "eligibility_pre_outcome.json").read_text())
+dz_summary = json.loads((DZ_ROOT / "summary.json").read_text())
+dz = pd.read_csv(DZ_ROOT / "scores.csv")
+assert dz_eligibility["status"] == "eligible"
+
+with np.load(ROOT / "data/order_parameter/desai_zwanzig_finite_size_scaling/physics_records.npz") as archive:
+    dz_physics = pd.DataFrame({
+        key: archive[key]
+        for key in [
+            "N", "sigma", "initial_mean", "Q_mean_abs",
+            "Q_connected_fluctuation",
+        ]
+    })
+
+population_sizes = sorted(dz_physics.N.unique())
+finite_size_colors = dict(zip(
+    population_sizes,
+    plt.cm.viridis(np.linspace(.08, .88, len(population_sizes))),
+    strict=True,
+))
+fig, axes = plt.subplots(1, 3, figsize=(10.8, 3.15), constrained_layout=True, sharex=True)
+for N, group in dz_physics.groupby("N", sort=True):
+    color = finite_size_colors[N]
+    mean_curve = group.groupby("sigma", as_index=False).agg(
+        Q=("Q_mean_abs", "mean"),
+        fluctuation=("Q_connected_fluctuation", "mean"),
+    )
+    start_means = group.groupby(["sigma", "initial_mean"]).Q_mean_abs.mean().unstack()
+    start_range = start_means.max(axis=1) - start_means.min(axis=1)
+    label = rf"$N={int(N):,}$"
+    axes[0].plot(mean_curve.sigma, mean_curve.Q, "-o", color=color, ms=2.1, lw=1.25, label=label)
+    axes[1].plot(start_range.index, start_range, "-o", color=color, ms=2.1, lw=1.25)
+    axes[2].plot(mean_curve.sigma, mean_curve.fluctuation, "-o", color=color, ms=2.1, lw=1.25)
+for ax in axes:
+    ax.axvline(1.890, color="#555555", ls=":", lw=1.0)
+    ax.set_xlabel(CONTROL_LABELS["sigma"])
+    paper_axis(ax)
+axes[0].set(ylabel=r"finite-run $Q=\langle|M_1|\rangle_t$", title=r"A\quad Order-parameter magnitude")
+axes[1].set(ylabel=r"range across initial states", title=r"B\quad Finite-time start sensitivity")
+axes[2].set(ylabel=r"$N\,[\langle M_1^2\rangle_t-\langle|M_1|\rangle_t^2]$", title=r"C\quad Connected fluctuation")
+axes[0].legend(frameon=False, ncol=2, fontsize=7.3)
+# fig.savefig(FIGURE_DIR / "desai_zwanzig_finite_size.svg")
+plt.show()"""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""fig, axes = plt.subplots(1, 3, figsize=(9.0, 2.05), constrained_layout=True)
+for ax, sigma in zip(axes, [1.75, 1.85, 1.95], strict=True):
+    slug = f"{sigma:g}".replace(".", "p")
+    image = plt.imread(FIGURE_DIR / "desai-zwanzig" / f"mts-sigma-{slug}.png")
+    ax.imshow(image, aspect="auto")
+    ax.set_title(rf"$\sigma={sigma:.2f}$")
+    ax.set_axis_off()
+fig.suptitle(r"Representative $M=32,T=1000$ observations; robust per-channel colour scale")
+# fig.savefig(FIGURE_DIR / "desai_zwanzig_mts_examples.svg")
+plt.show()"""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""dz_primary = dz.query("arm == 'mean_field' and instance >= 4")
+dz_small = dz.query("arm == 'finite_N32' and instance >= 4")
+localization = dz_summary["mean_field_boundary_localization"]
+
+fig, axes = plt.subplots(1, 2, figsize=(8.8, 3.35), constrained_layout=True)
+dual_tracking(
+    axes[0], dz_primary, control="sigma", Q="Q_mean_abs", q="q_display",
+    q_sign=1, q_color=COLORS[32], boundary=1.890,
+    title=r"A\quad Local mean-field sweep ($N=12{,}000,M=32$)",
+)
+axes[0].axvspan(*localization["Q"]["interval"], color=Q_COLOR, alpha=.10, linewidth=0)
+axes[0].axvspan(*localization["q"]["interval"], color=COLORS[32], alpha=.10, linewidth=0)
+points = recovery_scatter(
+    axes[1], dz_primary, Q="Q_mean_abs", q="q_display", control="sigma",
+    q_sign=1, title=r"B\quad Held-out order-coordinate recovery",
+)
+fig.colorbar(points, ax=axes[1], label=CONTROL_LABELS["sigma"])
+# fig.savefig(FIGURE_DIR / "desai_zwanzig_headline.svg")
+plt.show()
+
+fig, axes = plt.subplots(1, 2, figsize=(8.8, 3.35), constrained_layout=True)
+dual_tracking(
+    axes[0], dz_small, control="sigma", Q="Q_mean_abs", q="q_display",
+    q_sign=1, q_color="#b2182b", boundary=1.890,
+    title=r"A\quad Full observation but finite $M=N=32$",
+)
+points = recovery_scatter(
+    axes[1], dz_small, Q="Q_mean_abs", q="q_display", control="sigma",
+    q_sign=1, title=r"B\quad Finite-size sensitivity",
+)
+fig.colorbar(points, ax=axes[1], label=CONTROL_LABELS["sigma"])
+# fig.savefig(FIGURE_DIR / "desai_zwanzig_finite_N32.svg")
+plt.show()
+
+display(pd.DataFrame([{
+    "overall rho(q,Q)": dz_summary["mean_field_confirmation_association"]["overall_spearman"],
+    "within-sigma rho": dz_summary["mean_field_confirmation_association"]["within_sigma_spearman"],
+    "control-mean rho": dz_summary["mean_field_confirmation_association"]["control_mean_spearman"],
+    "q steepest interval": tuple(localization["q"]["interval"]),
+    "Q steepest interval": tuple(localization["Q"]["interval"]),
+    "q-Q sharpness": dz_summary["mean_field_normalized_sharpness"]["q_minus_Q_fraction_of_range"],
+    "sharpness CI95": tuple(dz_summary["mean_field_normalized_sharpness"]["q_minus_Q_ci95"]),
+    "q decoder MAE": dz_summary["supervised_q_readout"]["mae"],
+    "control-only MAE": dz_summary["control_only_readout"]["mae"],
+}]).round(4))"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""### Frozen sample-length sensitivity
+
+The $T=500$ and $T=100$ inputs are exact prefixes of the corresponding $T=1000$ trajectories and share the identical future $Q$. The $T=1000$ feature mask, imputation, scaling, PC1 and orientation are applied without refitting.
+
+The original joint $T=\{100,500\}$ gate failed before outcome access: 166/168 $T=100$ rows exceeded 5% selected-feature missingness (median 5.23%, maximum 8.93%), leaving no adequately covered confirmation cell. No $T=100$ q--Q outcome is reported. The separately sealed $T=500$ arm used the unchanged rule and passed all gates with 168/168 rows and zero selected-feature missingness. At $T=500$, held-out $\rho(q,Q)=0.934$ (95% CI $[0.884,0.997]$), control-mean $\rho=1.0$, and paired rank agreement with $q_{T=1000}$ is 0.977. Its steepest interval is $1.85$--$1.86$, one grid step below the $T=1000$ interval $1.86$--$1.87$."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""DZ_T500_ROOT = ROOT / "data/order_parameter/desai_zwanzig_T500_sensitivity_analysis"
+DZ_T_JOINT_ROOT = ROOT / "data/order_parameter/desai_zwanzig_T_sensitivity_analysis"
+dz_T500_eligibility = json.loads((DZ_T500_ROOT / "eligibility_pre_outcome.json").read_text())
+dz_T_joint_eligibility = json.loads((DZ_T_JOINT_ROOT / "eligibility_pre_outcome.json").read_text())
+dz_T500_summary = json.loads((DZ_T500_ROOT / "summary.json").read_text())
+dz_T500 = pd.read_csv(DZ_T500_ROOT / "scores.csv").query("instance >= 4")
+assert dz_T500_eligibility["status"] == "eligible"
+assert dz_T_joint_eligibility["status"] == "ineligible"
+
+fig, ax = plt.subplots(figsize=(6.2, 3.65), constrained_layout=True)
+q_axis = ax.twinx()
+physical = bootstrap_curve(dz_primary, "sigma", "Q_mean_abs", seed=9201)
+line_Q, = ax.plot(
+    physical.sigma, physical["mean"], color=Q_COLOR, lw=1.9,
+    marker="o", ms=2.6, label=r"physical $Q$",
+)
+ax.fill_between(physical.sigma, physical.lower, physical.upper, color=Q_FILL, alpha=.16, linewidth=0)
+lines = [line_Q]
+for T, source, opacity in [(500, dz_T500, .62), (1000, dz_primary, 1.0)]:
+    learned = bootstrap_curve(source, "sigma", "q_display", seed=9301 + T)
+    line_q, = q_axis.plot(
+        learned.sigma, learned["mean"], color=COLORS[32], alpha=opacity,
+        lw=1.8, marker="s", ms=2.5, label=rf"frozen $q$, $T={T}$",
+    )
+    q_axis.fill_between(
+        learned.sigma, learned.lower, learned.upper,
+        color=COLORS[32], alpha=.13 * opacity, linewidth=0,
+    )
+    lines.append(line_q)
+ax.axvline(1.890, color="#666666", lw=.9, ls=":")
+ax.set(xlabel=CONTROL_LABELS["sigma"], ylabel=r"physical $Q$", title=r"Valid frozen-coordinate sample-length sensitivity ($M=32$)")
+q_axis.set_ylabel(r"frozen $q$", color=COLORS[32])
+q_axis.tick_params(axis="y", colors=COLORS[32])
+paper_axis(ax)
+paper_axis(q_axis, right=True)
+ax.legend(lines, [line.get_label() for line in lines], frameon=False, loc="best")
+ax.text(.02, .04, r"$T=100$: failed target-blind missingness gate", transform=ax.transAxes, fontsize=7.5)
+# fig.savefig(FIGURE_DIR / "desai_zwanzig_T_sensitivity.svg")
+plt.show()
+
+display(pd.DataFrame([
+    {
+        "T": 500,
+        "overall rho(q,Q)": dz_T500_summary["associations_by_T"]["500"]["overall_spearman"],
+        "control-mean rho": dz_T500_summary["associations_by_T"]["500"]["control_mean_spearman"],
+        "paired rho(q_T,q_1000)": dz_T500_summary["paired_q_spearman_with_T1000"]["500"],
+        "q steepest interval": tuple(dz_T500_summary["q_steepest_interval_by_T"]["500"]["interval"]),
+    },
+    {
+        "T": 1000,
+        "overall rho(q,Q)": dz_summary["mean_field_confirmation_association"]["overall_spearman"],
+        "control-mean rho": dz_summary["mean_field_confirmation_association"]["control_mean_spearman"],
+        "paired rho(q_T,q_1000)": 1.0,
+        "q steepest interval": tuple(dz_summary["mean_field_boundary_localization"]["q"]["interval"]),
+    },
+]).round(4))"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""**Interpretation.** A high held-out Spearman correlation means the target-blind $q$ orders finite realizations similarly to the physical $Q$, up to an unknown monotone transformation. The control-mean correlation asks only whether the macroscopic transition curve is recovered; the within-$\sigma$ correlation separately tests realization-level fluctuations. Panel B is recovery, not numerical prediction. Numerical inference is reserved for the supervised isotonic $q\mapsto\widehat Q$ readout and its held-out MAE. The control-only MAE states how much predictive value remains once the known sweep coordinate is supplied directly.
+
+Any claim that $q$ is sharper than $Q$ uses the scale-free maximum adjacent change divided by the curve's full range and the paired instance-bootstrap interval shown above. If that interval includes zero, the visual difference is not evidence of sharper detection."""
+        ),
+    ]
+    comparative_index = next(
+        index
+        for index, cell in enumerate(cells)
+        if cell.cell_type == "markdown"
+        and cell.source.startswith("# Comparative interpretation")
+    )
+    cells[comparative_index:comparative_index] = desai_cells
 
     notebook = nbformat.v4.new_notebook(cells=cells)
     notebook["metadata"]["kernelspec"] = {

@@ -106,11 +106,32 @@ def export_quadratic_cml() -> None:
         _save_heatmap(values, "quadratic-cml", "alpha", alpha)
 
 
+def export_desai_zwanzig() -> None:
+    examples = {
+        1.75: "M32_T1000_I0_sigma1p750",
+        1.85: "M32_T1000_I0_sigma1p850",
+        1.95: "M32_T1000_I0_sigma1p950",
+    }
+    source = (
+        ROOT
+        / "data/order_parameter/desai_zwanzig_fine_boundary"
+        / "desai-zwanzig-mean-field-observation"
+    )
+    for sigma, directory in examples.items():
+        _save_heatmap(
+            np.load(source / directory / "timeseries.npy"),
+            "desai-zwanzig",
+            "sigma",
+            sigma,
+        )
+
+
 def main() -> int:
     export_kuramoto()
     export_stuart_landau()
     export_miller_huse()
     export_quadratic_cml()
+    export_desai_zwanzig()
     return 0
 
 
