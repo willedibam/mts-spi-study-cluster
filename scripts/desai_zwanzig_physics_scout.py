@@ -81,6 +81,13 @@ def _run_one(config: dict, job: dict) -> dict:
     signs = np.sign(mean_field)
     nonzero = signs != 0
     sign_changes = int(np.sum(signs[1:][nonzero[1:] & nonzero[:-1]] != signs[:-1][nonzero[1:] & nonzero[:-1]]))
+    second_moment = float(np.mean(mean_field**2))
+    fourth_moment = float(np.mean(mean_field**4))
+    binder_cumulant = (
+        1.0 - fourth_moment / (3.0 * second_moment**2)
+        if second_moment > 0.0
+        else np.nan
+    )
     return {
         **job,
         "seed": seed,
@@ -88,6 +95,12 @@ def _run_one(config: dict, job: dict) -> dict:
         "Q_mean_signed": float(np.mean(mean_field)),
         "Q_rms": float(np.sqrt(np.mean(mean_field**2))),
         "Q_sd": float(np.std(mean_field)),
+        "Q_second_moment": second_moment,
+        "Q_fourth_moment": fourth_moment,
+        "Q_binder_cumulant": binder_cumulant,
+        "Q_connected_fluctuation": float(
+            job["N"] * (second_moment - np.mean(absolute) ** 2)
+        ),
         "Q_mean_abs_blocks": [float(np.mean(block)) for block in blocks],
         "sign_changes": sign_changes,
         "elapsed_seconds": time.perf_counter() - start,
@@ -127,11 +140,28 @@ def _aggregate(config: dict) -> int:
         "Q_mean_signed",
         "Q_rms",
         "Q_sd",
+        "Q_second_moment",
+        "Q_fourth_moment",
+        "Q_binder_cumulant",
+        "Q_connected_fluctuation",
         "sign_changes",
         "elapsed_seconds",
     )
+    new_optional = {
+        "Q_second_moment",
+        "Q_fourth_moment",
+        "Q_binder_cumulant",
+        "Q_connected_fluctuation",
+    }
     arrays = {
-        name: np.asarray([record[name] for record in records])
+        name: np.asarray(
+            [
+                record.get(name, np.nan)
+                if name in new_optional
+                else record[name]
+                for record in records
+            ]
+        )
         for name in scalar_names
     }
     blocks = np.asarray([record["Q_mean_abs_blocks"] for record in records])
@@ -139,6 +169,8 @@ def _aggregate(config: dict) -> int:
 
     boundary_by_size = {}
     branch_gap_by_size = {}
+    start_state_range_by_size = {}
+    fluctuation_peak_by_size = {}
     for size in config["population_sizes"]:
         size_mask = arrays["N"] == size
         controls = np.unique(arrays["sigma"][size_mask])
@@ -170,8 +202,45 @@ def _aggregate(config: dict) -> int:
                 float(controls[steepest]), float(controls[steepest + 1])
             ],
             "maximum_absolute_Q_slope": float(slopes[steepest]),
+            "edge_censored": bool(steepest in {0, len(slopes) - 1}),
         }
         branch_gap_by_size[str(size)] = float(max(branch_gaps))
+        start_state_range_by_size[str(size)] = float(
+            max(
+                np.ptp(
+                    [
+                        np.mean(
+                            arrays["Q_mean_abs"][
+                                size_mask
+                                & np.isclose(arrays["sigma"], control)
+                                & np.isclose(arrays["initial_mean"], start)
+                            ]
+                        )
+                        for start in np.unique(arrays["initial_mean"])
+                    ]
+                )
+                for control in controls
+            )
+        )
+        fluctuation_curve = np.asarray(
+            [
+                np.mean(
+                    arrays["Q_connected_fluctuation"][
+                        size_mask & np.isclose(arrays["sigma"], control)
+                    ]
+                )
+                for control in controls
+            ]
+        )
+        if np.isfinite(fluctuation_curve).any():
+            peak = int(np.nanargmax(fluctuation_curve))
+            fluctuation_peak_by_size[str(size)] = {
+                "sigma": float(controls[peak]),
+                "value": float(fluctuation_curve[peak]),
+                "edge_censored": bool(peak in {0, len(controls) - 1}),
+            }
+        else:
+            fluctuation_peak_by_size[str(size)] = None
 
     summary = {
         "status": "complete_finite_size_scout",
@@ -180,6 +249,8 @@ def _aggregate(config: dict) -> int:
         "reference_mean_field_sigma_c": float(config["reference_sigma_c"]),
         "boundary_by_population_size": boundary_by_size,
         "maximum_initial_branch_Q_gap_by_size": branch_gap_by_size,
+        "maximum_start_state_Q_range_by_size": start_state_range_by_size,
+        "connected_fluctuation_peak_by_size": fluctuation_peak_by_size,
         "Q_block_range_p95_by_size": {
             str(size): float(
                 np.quantile(
@@ -196,13 +267,14 @@ def _aggregate(config: dict) -> int:
         json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 
-    fig, axes = plt.subplots(1, 2, figsize=(8.0, 3.3), dpi=180, constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=(11.5, 3.3), dpi=180, constrained_layout=True)
     for size in config["population_sizes"]:
         mask = arrays["N"] == size
         controls = np.unique(arrays["sigma"][mask])
         for axis, key, label in (
             (axes[0], "Q_mean_abs", r"$Q=\langle|M_1|\rangle_t$"),
-            (axes[1], "Q_sd", r"$\mathrm{sd}_t(M_1)$"),
+            (axes[1], "Q_connected_fluctuation", r"$N(\langle M_1^2\rangle-\langle|M_1|\rangle^2)$"),
+            (axes[2], "Q_binder_cumulant", r"$1-\langle M_1^4\rangle/(3\langle M_1^2\rangle^2)$"),
         ):
             mean = np.asarray(
                 [
@@ -212,10 +284,10 @@ def _aggregate(config: dict) -> int:
             )
             axis.plot(controls, mean, "-o", ms=2.5, label=rf"$N={size}$")
             axis.set(xlabel=r"noise amplitude $\sigma$", ylabel=label)
-            axis.grid(alpha=0.15)
+            axis.grid(False)
     for axis in axes:
         axis.axvline(float(config["reference_sigma_c"]), color="0.35", ls=":", lw=1)
-    axes[0].legend(frameon=False, fontsize=7)
+    axes[0].legend(frameon=False, fontsize=7, ncol=2)
     fig.savefig(output_dir / "physics_scout.png", bbox_inches="tight")
     plt.close(fig)
     print(json.dumps(summary, indent=2, sort_keys=True))
