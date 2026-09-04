@@ -391,6 +391,29 @@ mts_classes:
     assert semantics["order_parameter"]["included_in_timeseries_input"] is False
 
 
+def test_desai_zwanzig_T_sensitivity_reuses_primary_master_seeds() -> None:
+    primary = DatasetMapping(
+        ExperimentConfig.from_file(
+            Path("configs/generate/order_parameter/desai-zwanzig-fine-boundary.yaml")
+        )
+    ).specs
+    sensitivity = DatasetMapping(
+        ExperimentConfig.from_file(
+            Path("configs/generate/order_parameter/desai-zwanzig-T-sensitivity.yaml")
+        )
+    ).specs
+    primary_seeds = {
+        (spec.instance, float(spec.generator_params["sigma"])): spec.rng_seed
+        for spec in primary
+        if spec.mts_class == "desai-zwanzig-mean-field-observation"
+    }
+    assert len(sensitivity) == 336
+    for spec in sensitivity:
+        key = (spec.instance, float(spec.generator_params["sigma"]))
+        assert spec.rng_seed == primary_seeds[key]
+        assert spec.generator_params["truth_start_T"] == 1000
+
+
 def test_stuart_landau_nested_views_and_collective_regimes() -> None:
     common = dict(
         coupling=0.8,

@@ -1,0 +1,57 @@
+base_output_dir: data/order_parameter/desai_zwanzig_T_sensitivity
+timestamp: false
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+rng_seed: 1047293
+save_heatmap: false
+threads: 1
+
+defaults:
+  M_values: [32]
+  T_values: [100, 500]
+  instances: 8
+
+mts_classes:
+  - name: desai-zwanzig-mean-field-observation
+    labels: [desai-zwanzig, order-parameter, fine-boundary, partial-observation, paired-prefix, T-sensitivity]
+    generator: desai_zwanzig
+    seed_scope: instance
+    base_params:
+      N_full: 12000
+      alpha: 1.0
+      theta: 4.0
+      sigma_m: 0.8
+      nu: 0.5
+      dt: 0.005
+      integration_scheme: milstein
+      sample_dt: 0.05
+      burn_time: 100.0
+      truth_start_T: 1000
+      future_truth_T: 2000
+      initial_mean: 1.0
+      initial_std: 0.1
+      zscore: false
+      store_full_states: false
+    include_base_variant: false
+    variants:
+      - {name: sigma1p750, params: {sigma: 1.750}}
+      - {name: sigma1p760, params: {sigma: 1.760}}
+      - {name: sigma1p770, params: {sigma: 1.770}}
+      - {name: sigma1p780, params: {sigma: 1.780}}
+      - {name: sigma1p790, params: {sigma: 1.790}}
+      - {name: sigma1p800, params: {sigma: 1.800}}
+      - {name: sigma1p810, params: {sigma: 1.810}}
+      - {name: sigma1p820, params: {sigma: 1.820}}
+      - {name: sigma1p830, params: {sigma: 1.830}}
+      - {name: sigma1p840, params: {sigma: 1.840}}
+      - {name: sigma1p850, params: {sigma: 1.850}}
+      - {name: sigma1p860, params: {sigma: 1.860}}
+      - {name: sigma1p870, params: {sigma: 1.870}}
+      - {name: sigma1p880, params: {sigma: 1.880}}
+      - {name: sigma1p890, params: {sigma: 1.890}}
+      - {name: sigma1p900, params: {sigma: 1.900}}
+      - {name: sigma1p910, params: {sigma: 1.910}}
+      - {name: sigma1p920, params: {sigma: 1.920}}
+      - {name: sigma1p930, params: {sigma: 1.930}}
+      - {name: sigma1p940, params: {sigma: 1.940}}
+      - {name: sigma1p950, params: {sigma: 1.950}}
