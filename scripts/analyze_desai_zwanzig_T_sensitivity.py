@@ -56,6 +56,9 @@ def main() -> int:
     payload = _load_artifact(args.features)
     values = np.asarray(payload["X"], dtype=np.float32)
     frame = _metadata_frame(payload, args.data_root)
+    analysis_rows = frame["T"].isin(expected_T).to_numpy()
+    frame = frame.loc[analysis_rows].reset_index(drop=True)
+    values = values[analysis_rows]
     with np.load(args.model, allow_pickle=False) as archive:
         model = {name: archive[name] for name in archive.files}
     primary_summary = json.loads(args.primary_summary.read_text())

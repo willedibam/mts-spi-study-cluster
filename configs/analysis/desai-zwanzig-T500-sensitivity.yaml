@@ -1,0 +1,37 @@
+status: sealed_arm_specific_sensitivity_after_joint_target_blind_gate_failure
+selection_provenance:
+  joint_contract: configs/analysis/desai-zwanzig-T-sensitivity.yaml
+  joint_gate_status: ineligible_before_outcome_access
+  reason: T100 excluded 166/168 rows; T500 excluded 0/168 under unchanged missingness rules
+  outcomes_inspected_before_this_contract: false
+experiment: configs/generate/order_parameter/desai-zwanzig-T-sensitivity.yaml
+reference_experiment: configs/generate/order_parameter/desai-zwanzig-fine-boundary.yaml
+representation:
+  model: data/order_parameter/desai_zwanzig_fine_boundary_analysis/fitted_target_blind_model.npz
+  fitted_on_T: 1000
+  refit_on_short_records: false
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  metric: pearson
+expected_design:
+  M: 32
+  N_full: 12000
+  T_values: [500]
+  instances: 8
+  confirmation_instances: [4, 5, 6, 7]
+  sigmas: [1.75, 1.76, 1.77, 1.78, 1.79, 1.80, 1.81, 1.82, 1.83, 1.84, 1.85, 1.86, 1.87, 1.88, 1.89, 1.90, 1.91, 1.92, 1.93, 1.94, 1.95]
+eligibility:
+  require_clean_homogeneous_provenance: true
+  require_frozen_schema_and_spi_order: true
+  require_exact_prefix_of_T1000_input: true
+  maximum_selected_feature_missingness_per_row: 0.05
+  target_blind_row_exclusion: true
+  maximum_excluded_fraction: 0.05
+  minimum_retained_confirmation_instances_per_control_T: 3
+evaluation:
+  primary: frozen_q_tracking_of_identical_future_Q_at_T500
+  supplementary:
+    - paired_rank_agreement_with_T1000_q
+    - control_mean_spearman
+    - steepest_interval
+  no_short_record_refit_or_component_selection: true
