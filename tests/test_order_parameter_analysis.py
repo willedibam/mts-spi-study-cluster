@@ -163,11 +163,12 @@ def test_desai_finite_size_scaling_design_is_log_spaced_and_three_start() -> Non
         Path("configs/scout/desai-zwanzig-finite-size-scaling.yaml")
     )
     jobs = _desai_physics_jobs(config)
-    assert config["population_sizes"] == [32, 100, 1000, 10000, 100000, 1000000]
+    assert config["population_sizes"] == [32, 100, 1000, 10000, 100000]
+    assert config["deferred_population_sizes"] == [1000000]
     assert config["initial_means"] == [-1.0, 0.0, 1.0]
     assert min(config["sigmas"]) < 1.0
     assert 1.89 in config["sigmas"]
-    assert len(jobs) == 6 * 19 * 3 * 4
+    assert len(jobs) == 5 * 19 * 3 * 4
 
 
 def test_stuart_landau_metadata_arm_uses_labels(tmp_path) -> None:
