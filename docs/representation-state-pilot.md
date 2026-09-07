@@ -184,16 +184,29 @@ Reproduce using `scripts/run_representation_state_random_control.py`; results an
 combined plots are in `results/representation_stage_b_260907/random-control-report/`.
 This result makes a win over the end-to-end encoder alone even less persuasive.
 
-At the last successful Gadi check (06:11 UTC), scout 178344541 was running at 38:04 elapsed,
-with peak aggregate memory 8,871,836 kB. Record 1 (M16/T1000) completed in 481 s;
-its 289-entry archive has 268 correlation-valid SPIs and matches the local raw
-input hash exactly. The M32/T1000 record is still computing. Transient SSH failures
-temporarily prevented status checks; connectivity recovered at 06:11 UTC. **Do
-not duplicate the scout.** Inspect existing job/output status before retries, then audit
-the two outputs. The representative 48-record node list is staged, sorted by
-expected M-squared-times-T cost; use 48 CPUs/190GB with about 16 concurrent tasks
-to allow approximately 12GB per worker for the M32 memory peak. Wider extraction
-remains gated on this measurement. Six local `production-M*-T*.txt` lists exclude
-the 48 node records and two initial scouts (622 further records); they have not
-been submitted. The complete statistical feature extraction/fitting/report
-commands are implemented, but no Stage B z performance result exists yet.
+Both Gadi scouts passed: 2/2 records in job 178344541 and 48/48 in job
+178350735. The node scout took 38:38 walltime at 16 concurrent workers, with
+25.7 GiB peak aggregate memory. Median per-record times were approximately
+65/114/217/396/915/1771 seconds for M8/T500, M8/T1000, M16/T500,
+M16/T1000, M32/T500 and M32/T1000 respectively. These are affordable with
+Gadi dataset-level parallelism; comparison with a cheap raw feature pass does
+not make p90 an allocation bottleneck. The staged scouts account for elapsed
+setup time. Fifty records are complete and audited.
+
+The remaining 622 records are submitted in six homogeneous farms,
+178355803–178355808, with 622 workers across 960 reserved CPUs. Larger-M
+farms reserve additional CPU capacity for memory. Source/runtime identity is
+unchanged; job commit 633eff3 adds optional per-record diagnostic logs.
+Submission resources and IDs are in `data/representation_stage_b_260907/production-submissions.tsv`
+and `results/representation_stage_b_260907/execution-status.json`.
+Audit all 672 outputs before building the aligned feature bank. No Stage B z
+performance result exists yet.
+
+Additional post-neural-result controls reuse the existing 82 pooled raw features:
+joint-shift MAE is 0.07891/0.06735/0.05841, or 0.07830/0.06677/0.05803
+when analytic-phase coherence is appended. Neither improves on the two-observable
+ridge. The combined report is `results/representation_stage_b_260907/control-report/`.
+It also separates all six M/T cells: at 64 labels, two-observable MAE is 0.0624
+for M8/T500 and 0.0171 for M32/T500. Their pooled average must not be described
+as invariant performance. Reproduce with `scripts/run_representation_state_raw_control.py`;
+these additions use the same labels, PCA/ridge and source-only fitting rules.

@@ -467,6 +467,37 @@ make a complementarity claim. If g adds value, revisit topology loss. A fixed ne
 distance with a small accuracy gain is usually a sensitivity section; a replicated
 observation-stable representation with meaningful transfer could be a larger paper.
 
+## Attribution boundary for a positive result
+
+A win over seven per-SPI summaries would establish value beyond those summaries,
+not identify cross-statistic interaction organization by itself. This distinction
+is material because the catalogue includes algebraically related statistics.
+For an edge statistic V and its square, the SPI-pair feature is
+
+\[
+\operatorname{corr}(V,V^2)=\frac{\mu_3-\mu_1\mu_2}
+{\sqrt{(\mu_2-\mu_1^2)(\mu_4-\mu_2^2)}},\qquad
+\mu_j=\mathbb E[V^j].
+\]
+
+This is a first-principles identity: this particular z coordinate measures
+higher marginal moments of one underlying edge statistic. It need not indicate
+an interaction between distinct dependence mechanisms. Even if those moments
+are added to m, a linear head need not cheaply recover their nonlinear ratio.
+Consequently an observed gain can reflect a useful precomputed nonlinear basis,
+beyond limited marginal summaries or a restricted readout, as well as genuinely
+informative cross-statistic alignment. All are possible utility claims, but they
+are different explanations.
+
+Before making the stronger organization claim, test richer marginal descriptors
+(including skewness and kurtosis), a comparably tuned nonlinear marginal readout,
+and a catalogue sensitivity removing exact algebraic duplicates. Independent
+SPI-wise edge permutations preserve marginal distributions and destroy alignment;
+a shared permutation preserves z while destroying general graph incidence.
+Neither null alone proves that named SPI mechanisms provide independent physical
+information. These are targeted follow-ups after a useful pilot effect, not a
+reason to expand the current grid indiscriminately.
+
 ## Primary literature
 
 - Cliff et al., 2023: https://arxiv.org/html/2201.11941v2 (existing MPI correlations).

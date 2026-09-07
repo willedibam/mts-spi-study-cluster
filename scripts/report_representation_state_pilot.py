@@ -26,6 +26,8 @@ def report(config_path, data_root, result_roots, output):
     strata = np.asarray([r["coupling_index"] for r in evaluation])
     cells = evaluation_cells(np.asarray([r["M"] for r in evaluation]), np.asarray([r["T"] for r in evaluation]),
                              protocol["observations"]["source"])
+    for m, t in sorted({(r["M"], r["T"]) for r in evaluation}):
+        cells[f"M{m}_T{t}"] = np.asarray([(r["M"], r["T"]) == (m, t) for r in evaluation])
     seeds = protocol["methods"]["subset_seeds"]
     budgets = protocol["sampling"]["labelled_training_masters_per_coupling"]
     predictions, metadata = {}, {}
@@ -70,7 +72,9 @@ def report(config_path, data_root, result_roots, output):
     comparisons = {}
     pairs = [("z", "m"), ("z", "observables"), ("z", "neural"), ("neural", "observables"),
              ("m+z", "m"), ("m+g+z", "m+g"), ("random_encoder", "observables"),
-             ("neural", "random_encoder"), ("z", "random_encoder")]
+             ("neural", "random_encoder"), ("z", "random_encoder"),
+             ("z", "pooled_raw"), ("z", "pooled_raw_phase"),
+             ("pooled_raw", "observables"), ("pooled_raw_phase", "pooled_raw")]
     units = np.unique(groups)
     unit_strata = np.asarray([strata[np.flatnonzero(groups == group)[0]] for group in units])
     for left, right in pairs:
@@ -101,10 +105,11 @@ def report(config_path, data_root, result_roots, output):
     output.mkdir(parents=True, exist_ok=True)
     (output / "results.json").write_text(json.dumps(results, indent=2) + "\n")
     # Keep the figure legible; the table and numeric artifact retain every model.
-    display = [m for m in ("m", "z", "m+g+z", "observables", "phase_direct", "neural", "random_encoder", "validity") if m in methods]
+    display = [m for m in ("m", "z", "m+g+z", "observables", "phase_direct", "neural", "random_encoder", "pooled_raw", "validity") if m in methods]
     names = {"m": "SPI marginals", "z": "SPI–SPI z", "m+g+z": "Marginals + graphs + z",
              "observables": "Coherence + correlation", "phase_direct": "Coherence (no labels)",
-             "neural": "Raw CNN + attention", "random_encoder": "Frozen random encoder + ridge", "validity": "SPI validity"}
+             "neural": "Raw CNN + attention", "random_encoder": "Frozen random encoder + ridge",
+             "pooled_raw": "Pooled raw statistics", "validity": "SPI validity"}
     plt.rcParams.update({"font.family": "serif", "font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.8), sharey=True)
     x = results["labels_total"]
@@ -133,6 +138,12 @@ def report(config_path, data_root, result_roots, output):
     for method in methods:
         vals = summary[primary][method]["MAE"]
         lines.append(f"| {method} | " + " | ".join(f"{v:.4f}" for v in vals) + " |")
+    individual = [name for name in cells if name.startswith("M") and "_T" in name]
+    lines += ["", "Largest label budget, separated by observation shape:", "",
+              "| Method | " + " | ".join(individual) + " |",
+              "|---|" + "---:|" * len(individual)]
+    for method in methods:
+        lines.append(f"| {method} | " + " | ".join(f"{summary[cell][method]['MAE'][-1]:.4f}" for cell in individual) + " |")
     lines += ["", "![Learning curves](learning-curves.png)", "", results["uncertainty"], "",
               "The neural comparator is a small temporal CNN with aligned cross-channel attention and invariant pooling. "
               "Passing this comparison does not establish superiority over tuned pretrained time-series models or transformers generally.", "",
@@ -145,6 +156,10 @@ def report(config_path, data_root, result_roots, output):
                   "It uses the same initial encoder weights for each matched seed, extracts pooled features without training, "
                   "and fits the same training-only PCA/ridge procedure as the statistical features. No pretrained weights "
                   "or extra labels are used; extraction time is stored once per initialization separately from fitting time.", ""]
+    if "pooled_raw" in methods:
+        lines += ["Pooled raw controls are exploratory additions after the initial neural results: 82 existing "
+                  "marginal/dependence features, and a second version appending analytic-phase coherence. "
+                  "They use the same label subsets and training-only PCA/ridge procedure; no extra labels are used.", ""]
     (output / "report.md").write_text("\n".join(lines))
     print(json.dumps({"methods": methods, "primary": summary[primary]}, indent=2))
 

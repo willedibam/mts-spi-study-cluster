@@ -86,6 +86,7 @@ def test_end_to_end_state_pilot_groups_views_and_rejects_changed_data_protocol(t
     from scripts.run_representation_state_pilot import run
     from scripts.report_representation_state_pilot import report
     from scripts.run_representation_state_random_control import run as run_random
+    from scripts.run_representation_state_raw_control import run as run_raw
     from src.representation_state_data import load_state_data
     p = protocol()
     p.pop("data_protocol")
@@ -100,11 +101,18 @@ def test_end_to_end_state_pilot_groups_views_and_rejects_changed_data_protocol(t
     build(config, data)
     run(config, data, tmp_path / "simple", ["mean", "observables"], "cpu")
     run_random(config, data, tmp_path / "random", "cpu")
-    report(config, data, [tmp_path / "simple", tmp_path / "random"], tmp_path / "report")
+    run_raw(config, data, tmp_path / "raw")
+    report(config, data, [tmp_path / "simple", tmp_path / "random", tmp_path / "raw"], tmp_path / "report")
     result = json.loads((tmp_path / "report/results.json").read_text())
     assert result["evaluation_masters"] == 4
     assert len(result["summary"]["both_M_and_T_changed"]["mean"]["MAE"]) == 1
     assert len(result["summary"]["both_M_and_T_changed"]["random_encoder"]["MAE"]) == 1
+    with np.load(tmp_path / "raw/features.npz") as features:
+        assert features["pooled_raw"].shape == (24, 82)
+        assert features["pooled_raw_phase"].shape == (24, 83)
+        np.testing.assert_array_equal(features["pooled_raw_phase"][:, -1], np.load(data / "observables.npy")[:, 1])
+    assert "pooled_raw_phase_minus_pooled_raw" in result["paired_primary_comparisons"]
+    assert "M2_T32" in result["summary"]
     with np.load(tmp_path / "random/initial-features-s11.npz") as features:
         assert features["X"].shape == (24, 128)
     fit = json.loads((tmp_path / "simple/observables-n2-s11.json").read_text())
