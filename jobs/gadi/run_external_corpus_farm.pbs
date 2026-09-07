@@ -48,22 +48,11 @@ if (( $(sort "$indices" | uniq -d | wc -l) != 0 )); then
 fi
 
 commands="$PBS_JOBFS/dataset-commands.txt"
-task_logs=""
-if [[ -n "${TASK_LOG_DIR:-}" ]]; then
-    # A directory per PBS run preserves diagnostics when completed records are
-    # skipped or failed records retried in a subsequent allocation.
-    task_logs="$TASK_LOG_DIR/${PBS_JOBID%%.*}"
-    mkdir -p "$task_logs"
-fi
 while IFS= read -r index; do
     [[ "$index" =~ ^[0-9]+$ ]] || { echo "invalid index: $index" >&2; exit 2; }
     (( index >= 1 && index <= total )) || { echo "out-of-range index: $index" >&2; exit 2; }
-    printf 'python -m src.run_external_corpus --config %q --job-index %d --n-jobs 1 --skip-existing' \
+    printf 'python -m src.run_external_corpus --config %s --job-index %d --n-jobs 1 --skip-existing\n' \
         "$CORPUS_CONFIG" "$index" >> "$commands"
-    if [[ -n "$task_logs" ]]; then
-        printf ' > %q 2>&1' "$task_logs/$index.log" >> "$commands"
-    fi
-    printf '\n' >> "$commands"
 done < "$indices"
 
 task_count=$(wc -l < "$indices")
