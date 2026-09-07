@@ -34,9 +34,21 @@ def select_statistical(bank, view, train, target, strata, methods, seed, head):
     folds = [(train[a],train[b]) for a,b in StratifiedKFold(2,shuffle=True,random_state=seed).split(train,strata[train])]
     scores = [[] for _ in candidates]
     for fit, val in folds:
+        cached = {}
         for ci,(value,alpha) in enumerate(candidates):
-            transform, model = fit_statistical(bank,view,fit,target,methods['preprocessing'],head,value,alpha)
-            pred=np.clip(model.predict(transform.transform(bank,val)).reshape(-1),0,1)
+            if head == 'pca':
+                # Ridge strength does not change preprocessing/PCA. Reuse the
+                # identical fold transform instead of recomputing the large SVD.
+                if value not in cached:
+                    transform, x = fit_view(bank, view, fit,
+                                           {**methods['preprocessing'], 'pca_dimensions': value})
+                    cached[value] = x, transform.transform(bank, val)
+                x, vx = cached[value]
+                model = Ridge(alpha=alpha).fit(x, target[fit])
+            else:
+                transform, model = fit_statistical(bank,view,fit,target,methods['preprocessing'],head,value,alpha)
+                vx = transform.transform(bank,val)
+            pred=np.clip(model.predict(vx).reshape(-1),0,1)
             scores[ci].append(float(abs(pred-target[val]).mean()))
     chosen=min(range(len(candidates)),key=lambda i:np.mean(scores[i]))
     return candidates[chosen],dict(candidates=[dict(components=k,alpha=a,MAE=s) for (k,a),s in zip(candidates,scores)],

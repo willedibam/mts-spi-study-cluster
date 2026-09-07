@@ -14,7 +14,10 @@ See [scientific design](interaction-share-pilot.md) for the target and its limit
   master pairs are nested; four exact simulator replays spanning both splits
   and families verify input/future-label separation. Data manifest binds hashes.
 - Raw controls complete: 30 fits per method (two directions x three label budgets
-  x five subsets). Every validation label counts in the budget. No target-family
+  x five subsets). Every validation label counts in the budget. Raw fits were computed at ea0bf5e.
+  A subsequent fold-PCA cache removes redundant work across ridge strengths;
+  every candidate score and selected setting exactly replays across all 30
+  pooled-raw fits (`pca-cache-verification.json`). No target-family
   labels, unlabelled pretraining or observation augmentation enter training.
 - Neural training-only fit on four source-pool masters achieved MAE 2.52e-6.
   The existing 94,017-parameter temporal/channel encoder is unchanged; its runner
@@ -34,6 +37,10 @@ Primary joint-shift MAE, averaged equally across transfer directions:
 | Calibrated linear estimate | .1485 | .1457 | .1379 |
 | Calibrated linear+tanh estimate | .1483 | .1451 | .1394 |
 | Pooled raw summaries, selected PCA/ridge | .2277 | .2207 | .1806 |
+
+For the linear reference at 40 labels, source-family/source-observation MAE
+averages .0664, family shift alone .0822, and joint shift .1379. This identifies
+observation loss as a substantial part of the task, not merely array compatibility.
 
 The raw models choose ridge fraction from {.0001,.001,.01,.1} using two-fold
 source-only calibration MAE. The strongest regularization is selected in 24/30
@@ -75,7 +82,9 @@ Both isolated local p90 smoke records passed the source/output audit in 116/118s
 Each contains all 289 catalogue entries, 41,616 z coordinates and 6,647 rich
 marginals. Three multitaper group-delay SPIs return no finite edges in each;
 undefined features remain NaN. This is estimator missingness, not a failed farm.
-Full Gadi extraction and statistical fitting follow the normal smoke/node gates.
+Gadi smoke job `178390828` passed both records in 6:10; the dependent 48-record
+node gate `178390842` is running at code ea0bf5e / pyspi 65317c9. All ten applicable non-neural tests
+also pass on Gadi. Full extraction and statistical fitting follow these gates.
 
 ## Reproduction and resumption
 
