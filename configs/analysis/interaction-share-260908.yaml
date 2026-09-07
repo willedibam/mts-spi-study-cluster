@@ -1,0 +1,153 @@
+study_id: interaction-share-260908
+status: fresh_exploratory_pilot_not_confirmation
+generator:
+  name: interaction_share_independent_gain
+  N_full: 32
+  families:
+  - linear
+  - tanh
+  nominal_shares:
+  - 0.1
+  - 0.3
+  - 0.5
+  - 0.7
+  - 0.9
+  gain_uniform:
+  - 0.25
+  - 0.8
+  noise_std: 0.5
+  burn: 300
+  input_T: 1000
+  future_T: 1000
+target:
+  quantity: future off-diagonal drift-Jacobian squared energy / total squared energy
+  bounds:
+  - 0
+  - 1
+observations:
+  source:
+    M: 16
+    T: 1000
+  shift:
+    M: 8
+    T: 500
+  nested: true
+  physical_N_fixed: true
+sampling:
+  master_seed: 26090817
+  training_masters_per_coupling: 12
+  evaluation_masters_per_coupling: 20
+  labelled_training_masters_per_coupling:
+  - 2
+  - 4
+  - 8
+  total_label_budgets:
+  - 10
+  - 20
+  - 40
+  tuning_labels_included: true
+  pretraining: none
+  augmentation: none
+methods:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  preprocessing:
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-08
+    marginal_and_graph_scaling: standard
+    z_scaling: center
+    clip_standard_deviations: 5.0
+    block_balance: unit_total_training_variance_after_clipping
+    pca_dimensions: 32
+    pca_solver: randomized
+    pca_random_state: 1729
+  ridge_alpha_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  subset_seeds:
+  - 11
+  - 23
+  - 47
+  - 71
+  - 101
+  raw_encoder_spec:
+    input: identical unnormalized observed state arrays; no simulator parameters
+    temporal_convolutions:
+    - width: 32
+      kernel: 7
+      stride: 2
+      padding: 3
+    - width: 64
+      kernel: 5
+      stride: 2
+      padding: 2
+    activation: GELU
+    channel_attention_blocks: 2
+    attention_width: 64
+    attention_heads: 4
+    attention_axis: channels_at_each_aligned_time_patch
+    feedforward_width: 128
+    residual_and_layer_normalization: true
+    post_attention_temporal_convolution:
+      width: 64
+      kernel: 3
+      stride: 1
+      padding: 1
+    pooling: concatenate_mean_and_max_over_channels_and_time_after_interaction
+    readout:
+    - 32
+    - 1
+    hidden_readout_activation: GELU
+    dropout: 0.0
+    loss: mean_squared_error
+    optimizer: AdamW
+    learning_rates:
+    - 0.0001
+    - 0.001
+    weight_decays:
+    - 0.0001
+    - 0.01
+    batch_size: 16
+    maximum_epochs: 200
+    early_stopping_metric: validation_MAE
+    early_stopping_patience: 20
+    minimum_epochs: 30
+    final_refit_epochs: median_best_epoch_of_selected_setting_inner_folds
+    initialization_seed: matched_subset_seed
+    sensor_or_duration_augmentation: none_in_first_pilot
+    purpose: Provisional competent small baseline; validate implementation and optimization
+      before interpreting a negative neural result.
+  rich_marginals: true
+  raw_ridge_fractions:
+  - 0.0001
+  - 0.001
+  - 0.01
+  - 0.1
+  pca_caps:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  pls_components:
+  - 1
+  - 2
+  - 4
+  views:
+  - m
+  - z
+  - m+z
+  - validity
+evaluation:
+  primary: held_family_and_reduced_observation
+  directions:
+  - linear_to_tanh
+  - tanh_to_linear
+  metric: MAE
+  aggregate: equal_weight_directions
+  interval_unit: master
+  exploratory: true

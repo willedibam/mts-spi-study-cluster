@@ -2,7 +2,9 @@
 
 Status: target and raw reference audit complete. The fixed-sum prototype had a
 memory shortcut; the revised independent-gain generator is adopted for a focused
-exploratory comparison. No pyspi extraction, z fitting or confirmation run yet.
+exploratory comparison. Fresh data and raw-control curves are complete; neural fitting is running and
+p90 production is being prepared. No z comparison or confirmation result yet.
+See [execution and fresh results](interaction-share-execution.md).
 
 ## Question and scope
 

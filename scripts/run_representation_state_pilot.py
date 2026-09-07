@@ -42,11 +42,14 @@ def select_ridge(bank, view, train, targets, strata, protocol, seed):
     return chosen, {"candidates": {str(k): v for k, v in scores.items()}, "folds": folds}
 
 
-def run(config_path, data_root, output, methods, device, seeds=None, budgets=None, feature_bank=None):
+def run(config_path, data_root, output, methods, device, seeds=None, budgets=None, feature_bank=None, source_family=None):
     protocol = yaml.safe_load(config_path.read_text())
     manifest, masters = load_state_data(data_root, config_path)
     rows = manifest["rows"]
-    pool = np.asarray([i for i, r in enumerate(rows) if r["role"] == "training_pool"])
+    pool = np.asarray([i for i, r in enumerate(rows) if r["role"] == "training_pool"
+                       and (source_family is None or r.get("family") == source_family)])
+    if not len(pool):
+        raise ValueError("empty source training pool")
     evaluation = np.asarray([i for i, r in enumerate(rows) if r["role"] == "evaluation"])
     targets = np.asarray([r["target"] for r in rows])
     strata = np.asarray([r["coupling_index"] for r in rows])
@@ -75,6 +78,8 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                        "data_module_sha256": file_hash(Path("src/representation_state_data.py")),
                        "feature_bank_sha256": None if feature_bank is None else file_hash(feature_bank),
                        "numpy": np.__version__, "sklearn": sklearn.__version__, "python": platform.python_version()}
+    if source_family is not None:
+        common_identity["source_family"] = source_family
     x_source = None
     if "neural" in methods:
         import torch
@@ -191,5 +196,6 @@ if __name__ == "__main__":
     parser.add_argument("--device", choices=["cpu", "mps", "cuda"], default="cpu")
     parser.add_argument("--seeds", nargs="+", type=int)
     parser.add_argument("--budgets", nargs="+", type=int)
+    parser.add_argument("--source-family")
     args = parser.parse_args()
-    run(args.config, args.data, args.output, args.methods, args.device, args.seeds, args.budgets, args.feature_bank)
+    run(args.config, args.data, args.output, args.methods, args.device, args.seeds, args.budgets, args.feature_bank, args.source_family)

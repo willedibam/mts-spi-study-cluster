@@ -8,6 +8,7 @@ import numpy as np
 import yaml
 
 from src.mpi_representation_baselines import summarize_mpis
+from src.representation_attribution import rich_marginals
 from src.representation_state_data import file_hash, load_state_data, observed_view
 from src.run_external_corpus import _array_sha256
 from src.spi_spi_contract import build_unified_features, schema_sha256
@@ -44,6 +45,8 @@ def build(config_path, data_root, mpi_root, output):
             mpis = {name: archive[name] for name in order}
         assert all(a.shape == (row["M"], row["M"]) for a in mpis.values())
         m, g, valid = summarize_mpis(mpis, order)
+        if protocol["methods"].get("rich_marginals", False):
+            m = rich_marginals(mpis, order)
         features = build_unified_features(mpis, order, metric="pearson")
         for name, values in zip(banks, (m, g, features.z, valid), strict=True):
             banks[name].append(values)
@@ -60,7 +63,7 @@ def build(config_path, data_root, mpi_root, output):
                         manifest_sha256=file_hash(data_root / "manifest.json"))
     report = {"artifact_sha256": file_hash(output), "protocol_sha256": file_hash(config_path),
               "builder_sha256": file_hash(Path(__file__)), "catalogue_sha256": catalogue_hash,
-              "modules": {p: file_hash(Path(p)) for p in ("src/mpi_representation_baselines.py", "src/spi_spi_contract.py")},
+              "modules": {p: file_hash(Path(p)) for p in ("src/mpi_representation_baselines.py", "src/spi_spi_contract.py", "src/representation_attribution.py")},
               "pyspi_versions": list(computations), "sources": sources,
               "extraction_seconds": time.perf_counter() - start,
               "summed_pyspi_seconds": sum(s["compute_seconds"] for s in sources),
