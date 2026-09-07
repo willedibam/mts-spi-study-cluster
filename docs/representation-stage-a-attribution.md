@@ -88,3 +88,26 @@ scores, paired intervals, predictions, source hashes and exact replay checks:
 The Stage B final report is
 `results/representation_stage_b_260907/final/report/`; its 90 local statistical
 fits reproduce Gadi to 1.73e-14 with identical selected regularization.
+
+## Follow-up completed: alignment and direct linear estimates
+
+The focused three-class diagnostic is complete; see the
+[clean experiment design](representation-experiment-design.md). At eight labels
+per class, richer marginals score .4750, intact z .6892, independent-dyad nulls
+.3492 (three-run mean), direct VAR estimates 1.0000, validity .3592. Chance is
+1/3. This task refits all methods on all three VAR classes; it is not the previous
+14-class accuracy. Source training subsets are preserved exactly after filtering.
+
+At 2/4/8 labels/class, intact z−null gaps are .34639/.34556/.34000; paired
+conditional95% intervals are [.31500,.37611]/[.32278,.36695]/[.30806,.37222].
+The two-feature VAR baseline is perfect across all nine evaluation M/T cells,
+all five subset seeds and all three budgets. Thus cross-SPI alignment matters,
+but no competitive representation advantage is established on these linear cases.
+This does not rule out general-purpose utility when the model family is unknown.
+
+All 570 MPI and raw inputs match prior source hashes; null validity masks match
+exactly. Shared-permutation maximum difference is 3.99e-16. The model summaries
+recover distinct self-memory ranges consistent with the rescaled generators.
+18 relevant tests pass. Files and paired results:
+`results/representation_stage_a_260907/var-mechanism/`;
+runner `scripts/run_representation_mechanism.py`.

@@ -1,0 +1,26 @@
+study_id: representation-var-mechanism-260907
+status: exploratory_before_mechanism_outcomes
+base_protocol: configs/analysis/representation-stage-a-clipped-260907.yaml
+base_protocol_sha256: 75b5bfc48e9ebcf166e919e5d3c7659a9e050787aaaa2853180d572dfdbdd737
+classes:
+- var-phi-0.95_cpl-0.4
+- var-phi-0.2_cpl-0.4
+- var-phi-0.2_cpl-0.8
+bank: data/representation_stage_a_260907/proof-unified-controls.npz
+rich_bank: data/representation_stage_a_260907/rich-marginals.npz
+manifest: data/representation_stage_a_260907/source-manifest.json
+mpi_mirror: data/representation_stage_a_260907/mpi-mirror
+raw_manifest: data/representation_stage_a_260907/raw-controls.json
+null_seeds:
+- 260907
+- 260908
+- 260909
+shared_seed: 260910
+ridge_fraction: 0.001
+head: logistic
+notes:
+- Filter original full-screen subsets, then refit every method for all three VAR classes.
+- Three null seeds are technical repetitions, not independent systems or ensembles.
+- No new pyspi computation, observations, labels, or parameter search.
+- VAR descriptors are mean diagonal coefficient and mean signed off-diagonal row sum;
+  topology and true parameter values are unavailable to the estimator.
