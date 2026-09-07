@@ -1,0 +1,113 @@
+study_id: representation-stage-a-260907-raw-control-sensitivity
+status: exploratory_raw_control_added_after_initial_results
+feature_contract: unified_ordered_v3
+metric: pearson
+catalogue_config: configs/pyspi/benchmarked_p90.yaml
+catalogue_sha256: bc4bafa16b4add8bb6283db490a9fa3d8dde4fde47093147d32579b989397965
+pyspi_computation: 3.0.0.r7
+source_cell:
+  M: 16
+  T: 1000
+training_instances:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+evaluation_instances:
+- 10
+- 11
+- 12
+- 13
+- 14
+- 15
+- 16
+- 17
+- 18
+- 19
+- 20
+- 21
+- 22
+- 23
+- 24
+- 25
+- 26
+- 27
+- 28
+- 29
+M_values:
+- 8
+- 16
+- 32
+T_values:
+- 500
+- 1000
+- 2000
+labelled_realizations_per_class:
+- 2
+- 4
+- 8
+subset_seeds:
+- 11
+- 23
+- 47
+- 71
+- 101
+representations:
+- u
+- z
+- u+z
+preprocessing:
+  minimum_valid_fraction: 0.95
+  variance_threshold: 1.0e-08
+  marginal_and_graph_scaling: standard
+  z_scaling: center
+  block_balance: unit_total_training_variance
+  pca_dimensions: 32
+  pca_solver: randomized
+  pca_random_state: 1729
+  clip_standard_deviations: 5.0
+classifier:
+  C_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  inner_folds: 2
+  max_iter: 3000
+  tolerance: 0.0001
+  selection_metric: balanced_accuracy
+  tie_break: smallest_C
+evaluation:
+  primary: both_M_and_T_changed
+  secondary:
+  - same_cell
+  - M_only_changed
+  - T_only_changed
+  - any_changed
+  bootstrap_repetitions: 2000
+  bootstrap_seed: 1729
+  bootstrap_unit: class_instance_grouped_across_cells
+  uncertainty_scope: evaluation_sampling_conditional_on_fitted_models
+  paired_comparisons:
+  - - z
+    - u
+  - - u+z
+    - u
+notes:
+- All preprocessing and C selection fit inside each labelled budget; no extra validation
+  labels or unlabelled pretraining.
+- Each training example is one source-cell recording; there are 14 classes.
+- Evaluation reuses previously inspected historical confirmation records and is exploratory.
+- Cross-M results include physical-system-size changes; they do not demonstrate sensor-subsampling
+  robustness.
+- This is a fixed linear/PCA screen, not a comparison of the best possible learner
+  for each representation.
+base_protocol: configs/analysis/representation-stage-a-260907.yaml
+raw_controls: data/representation_stage_a_260907/raw-controls.npz

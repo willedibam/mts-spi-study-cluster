@@ -1,0 +1,12 @@
+name: representation-stage-b-260907
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/representation_stage_b_260907/views.npz
+  sha256: b3065e3421bdae69cca077dff994d0eaecc93ecc8150a7b491f7251739d809c4
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/representation_stage_b_260907/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260907
