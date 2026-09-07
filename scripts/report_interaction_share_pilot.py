@@ -34,6 +34,17 @@ def report(config,data,inputs,output):
                 np.testing.assert_allclose(a['target'],[rows[i]['target'] for i in ix],rtol=0,atol=0)
                 fits[key]=(ix,abs(a['prediction']-a['target']))
             provenance.append(dict(path=str(path),sha256=file_hash(path)))
+    # Average errors across technical surrogate seeds, never ensemble their
+    # predictions or count them as additional independent realizations.
+    for head in ['pca','pls']:
+        for family in families:
+            for n in budgets:
+                for seed in seeds:
+                    keys=[(f'null{s}_z-{head}',family,n,seed) for s in [503,509,521]]
+                    if all(key in fits for key in keys):
+                        indices=fits[keys[0]][0]
+                        assert all(np.array_equal(indices,fits[key][0]) for key in keys)
+                        fits[(f'null_mean-{head}',family,n,seed)]=(indices,np.mean([fits[key][1] for key in keys],axis=0))
     names=sorted({k[0] for k in fits}); expected=len(families)*len(budgets)*len(seeds)
     complete=[name for name in names if sum(k[0]==name for k in fits)==expected]
     incomplete={name:sum(k[0]==name for k in fits) for name in names if name not in complete}
@@ -68,7 +79,12 @@ def report(config,data,inputs,output):
         primary_boot[name]=np.mean(directional_boot,axis=0)
     summary={name:dict(MAE=values.mean(axis=-1).tolist(),conditional_95_CI=np.quantile(primary_boot[name],[.025,.975],axis=-1).T.tolist()) for name,values in primary.items()}
     comparisons={}
-    for left,right in [('z-pca','m-pca'),('m+z-pca','m-pca'),('z-pls','m-pls'),('m+z-pls','m-pls'),('z-pls','z-pca'),('z-pca','linear'),('z-pls','linear'),('z-pca','neural')]:
+    pairs=[('z-pca','m-pca'),('m+z-pca','m-pca'),('z-pls','m-pls'),('m+z-pls','m-pls'),('z-pls','z-pca'),('z-pca','linear'),('z-pls','linear'),('z-pca','neural'),('z-pls','random_encoder')]
+    pairs += [(left+'-'+head,right+'-'+head) for head in ['pca','pls','rbf']
+              for left,right in [('z','shape'),('shape+z','shape'),('shape','m')]]
+    pairs += [(v+'-rbf',v+'-pls') for v in ['m','shape','z']]
+    pairs += [('z-'+head,'null_mean-'+head) for head in ['pca','pls']]
+    for left,right in pairs:
         if left in primary and right in primary:
             delta=primary[left]-primary[right]; boot=primary_boot[left]-primary_boot[right]
             comparisons[left+'_minus_'+right]=dict(MAE_difference=delta.mean(axis=-1).tolist(),conditional_95_CI=np.quantile(boot,[.025,.975],axis=-1).T.tolist())

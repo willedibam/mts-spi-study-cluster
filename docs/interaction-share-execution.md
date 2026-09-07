@@ -2,7 +2,9 @@
 
 Protocol: `configs/analysis/interaction-share-260908.yaml`. This is a fresh
 exploratory comparison following the raw-only generator audit, not confirmation.
-See [scientific design](interaction-share-pilot.md) for the target and its limits.
+See [scientific design](interaction-share-pilot.md) for the target and its limits,
+and [current findings and interpretation](interaction-share-findings.md) for the
+completed comparisons and post-result controls.
 
 ## Completed on 2026-09-08
 
@@ -65,10 +67,15 @@ Beating only the neural baseline would be weaker evidence.
 
 ## Runtime and cluster boundary
 
-Full neural fits are running locally on MPS in
+All 30 neural fits completed locally on MPS in
 `results/interaction_share_260908/neural/{linear,tanh}/`; source-family jobs run
 sequentially. Logs are `logs/interaction-share-neural-{linear,tanh}.log`.
-Thirty final fits are required; partial methods are not ranked by the reporter.
+Joint-shift MAE at 10/20/40 labels is .2370/.2213/.2048, worse than both raw
+model references. Total fitting time was 1,575 seconds; none of 60 selected
+inner folds hit the 200-epoch cap. Two checkpoint CPU replays spanning both
+families and observation shapes agree with MPS within 1.20e-7. This rules out
+those specific implementation concerns, not every possible neural improvement.
+The combined completed-controls report is `pre-spi-report/`.
 
 Initial Gadi login/data-mover attempts timed out. Diagnostic SSH subsequently
 showed successful public-key authentication followed by a stall when the client
@@ -83,8 +90,18 @@ Each contains all 289 catalogue entries, 41,616 z coordinates and 6,647 rich
 marginals. Three multitaper group-delay SPIs return no finite edges in each;
 undefined features remain NaN. This is estimator missingness, not a failed farm.
 Gadi smoke job `178390828` passed both records in 6:10; the dependent 48-record
-node gate `178390842` is running at code ea0bf5e / pyspi 65317c9. All ten applicable non-neural tests
-also pass on Gadi. Full extraction and statistical fitting follow these gates.
+node gate `178390842` passed all 48 records in 6:28 at pyspi 65317c9.
+Per-record seconds were 331/339/358/361 (min/median/p95/max). All ten applicable non-neural tests
+also pass on Gadi. Production source/shift farms `178390998`/`178390999` are submitted with
+288/240 cores, 4 GB/core and 1,200-second per-record limits; the source farm
+reuses 48 completed records. Analysis job `178391005` depends on successful
+audits from both farms and runs at code 2c14bf0. It extracts the bank, fits all
+210 statistical models and writes a statistical-only report. All primary z comparisons are now complete and downloaded. Both farms passed
+(320 source views in6:39,200 shifted views in1:37); analysis completed in9:53.
+The bank has262–282 valid SPIs per record and SHA
+`632b83f62dcb2bbb30bc4e008b11fff4bb27823f3fca82bc7048d05e03a0689f`.
+Total pyspi record time was33.99 hours; bank extraction161.7s. The local combined
+report is `report/`; additional controls are in `followup-report/`.
 
 ## Reproduction and resumption
 
@@ -130,3 +147,19 @@ PCA caps {1,2,4,8,16,32}/ridge grid and PLS components {1,2,4} apply to m, z and
 m+z; PLS follows the same imputation, clipping and block weighting and does not
 rescale coordinates a second time. The reporter preserves all four family/shape
 cells and uses paired master-level bootstrap intervals conditional on fitted models.
+
+## Post-result controls
+
+Frozen-random controls use `scripts/run_representation_state_random_control.py`
+with `--source-family linear` or `tanh`, fresh outputs under `random/`, and the
+same training-selected PCA caps/ridge grid. Normalized shapes use the existing
+pilot runner with `--marginal-mode shape` and methods `m-pca m-pls m+z-pca m+z-pls`;
+reported names are `shape-*`. The RBF control uses methods `m-rbf z-rbf`, with
+`m-rbf --marginal-mode shape` separately. These leave the primary protocol/data
+unchanged and are explicitly post-result analyses. Source code hashes in fits
+identify the actual versions; completed older outputs retain strict resume identities.
+
+`check_interaction_share_linearization.py` verifies the mean-Jacobian approximation
+against simulator replays; its oracle values never enter a fitted predictor.
+`jobs/gadi/run_interaction_share_alignment.pbs` generates three null banks from
+existing MPIs and fits matched PCA/ridge and PLS controls. No new pyspi is needed.

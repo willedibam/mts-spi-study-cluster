@@ -9,13 +9,13 @@ import sklearn
 import yaml
 from sklearn.isotonic import IsotonicRegression
 
-from src.interaction_share_learning import fit_statistical, select_statistical, select_reference
+from src.interaction_share_learning import fit_statistical, select_statistical, select_reference, standardized_marginal_shapes
 from src.representation_screen import training_subsets
 from src.representation_state_data import file_hash, load_state_data
 from src.run_external_corpus import _atomic_json, _atomic_savez
 
 
-def run(config_path,data,output,selected,feature_bank=None):
+def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',method_prefix=''):
     protocol=yaml.safe_load(config_path.read_text())
     manifest,_=load_state_data(data,config_path)
     rows=manifest['rows']; methods=protocol['methods']
@@ -29,10 +29,15 @@ def run(config_path,data,output,selected,feature_bank=None):
             np.testing.assert_array_equal(a['row_id'],[r['row_id'] for r in rows])
             assert a['manifest_sha256'].item()==file_hash(data/'manifest.json')
             bank.update({k:a['X_'+k] for k in ['m','z','validity']})
+    if marginal_mode == 'shape':
+        if feature_bank is None or any(name not in [v+'-'+h for v in ['m','m+z'] for h in ['pca','pls','rbf']] for name in selected):
+            raise ValueError('shape sensitivity requires a feature bank and marginal-containing views')
+        bank['m'] = standardized_marginal_shapes(bank['m'],bank['validity'])
     identity=dict(protocol_sha256=file_hash(config_path),manifest_sha256=file_hash(data/'manifest.json'),
                   feature_bank_sha256=file_hash(feature_bank) if feature_bank else None,
                   numpy=np.__version__,sklearn=sklearn.__version__,
                   code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/interaction_share_learning.py','src/representation_screen.py']})
+    if marginal_mode == 'shape': identity['marginal_mode'] = 'post_result_affine_invariance_control'
     for family in protocol['generator']['families']:
         pool=np.asarray([i for i,r in enumerate(rows) if r['role']=='training_pool' and r['family']==family])
         assert len({rows[i]['master_id'] for i in pool})==len(pool)
@@ -40,8 +45,9 @@ def run(config_path,data,output,selected,feature_bank=None):
         for seed in methods['subset_seeds']:
             for n,train in training_subsets(strata,pool,protocol['sampling']['labelled_training_masters_per_coupling'],seed).items():
                 for name in selected:
-                    stem=output/family/f'{name.replace("+","_")}-n{n}-s{seed}'
-                    ident={**identity,'method':name,'source_family':family,'n_per_coupling':n,'seed':seed}
+                    reported = method_prefix + (name.replace('m','shape',1) if marginal_mode == 'shape' else name)
+                    stem=output/family/f'{reported.replace("+","_")}-n{n}-s{seed}'
+                    ident={**identity,'method':reported,'source_family':family,'n_per_coupling':n,'seed':seed}
                     if stem.with_suffix('.json').exists():
                         old=json.loads(stem.with_suffix('.json').read_text())
                         if old['identity']!=ident or old['predictions_sha256']!=file_hash(stem.with_suffix('.npz')):
@@ -79,4 +85,6 @@ if __name__=='__main__':
     for name in ['config','data','output']: p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--feature-bank',type=Path)
     p.add_argument('--methods',nargs='+',required=True)
-    a=p.parse_args(); run(a.config,a.data,a.output,a.methods,a.feature_bank)
+    p.add_argument('--marginal-mode',choices=['raw','shape'],default='raw')
+    p.add_argument('--method-prefix',default='')
+    a=p.parse_args(); run(a.config,a.data,a.output,a.methods,a.feature_bank,a.marginal_mode,a.method_prefix)
