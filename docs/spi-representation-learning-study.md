@@ -544,4 +544,6 @@ than target information. Supervised compression or independent-source unsupervis
 pretraining remain distinct, untested possibilities. The next proposal is
 [one local-sensitivity property](interaction-share-pilot.md), not another unrestricted
 system catalogue. Its prototype changes no existing generator functions and has
-only raw target feasibility evidence so far.
+raw target and partial-observation reference evidence so far. The initial
+fixed-sum memory shortcut was diagnosed and corrected before z evaluation;
+this establishes a usable probe, not a representation advantage.

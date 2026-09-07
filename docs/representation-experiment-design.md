@@ -10,7 +10,7 @@ of unrelated benchmarks. Learning over z is a separate claim from using fixed z.
 |---|---|---|
 | Utility | Existing broad class screen, plus the synchronization-state pilot | Where z helps and where a simpler observable is sufficient. Retain both results. |
 | Explanation | The focused VAR mechanism check below | Whether edge alignment matters and whether direct dynamics estimates explain the task. |
-| Transfer | A prospective four-cell state-change experiment, if justified | Whether real dynamical changes remain distinguishable from observation changes on a held-out family. |
+| Transfer | The local-sensitivity pilot: family shift x observation shift | Whether one shared dynamical property can be inferred with fewer labels under both shifts. |
 
 ## 1. The completed mechanism experiment
 
@@ -55,38 +55,31 @@ spectral-radius rescaling.
 
 ## 2. The smallest sensible transfer design
 
-This is a **conditional proposal**, not a new benchmark already launched.
-Its motivation is concrete: avoid calling a change in available sensors a change
-in the underlying system. Cross two factors independently:
+The [local-sensitivity pilot](interaction-share-pilot.md) is the active proposal.
+Predict the future share of squared drift-Jacobian sensitivity attributable to
+other channels. Keep physical N=32 fixed; cross two factors:
 
-| | Observation unchanged | Fewer sensors / shorter recording |
+| | Source observation M16/T1000 | Reduced observation M8/T500 |
 |---|---|---|
-| Dynamics unchanged | Reference stability | False alarms from observation changes |
-| Dynamics changed | Sensitivity to a real regime change | Transfer under observation change |
+| Source family, fresh masters | Within-family prediction | Observation shift |
+| Held-out family, fresh masters | Interaction-law shift | Joint shift |
 
-The positive label comes from a specified intervention on the coupling rule, not
-thresholding an SPI. Keep physical population size fixed. Start with one source
-shape and one observation shift; recompute SPIs from the observed channels. Do
-not mix sensor subsampling with resimulating a different physical system.
+The two families use linear or tanh cross-channel interactions. Train in each
+direction, without choosing the more favourable one. Independently varying overall
+contraction removes the initial fixed-sum generator's deterministic memory
+shortcut. This correction was made from raw diagnostics before any z results.
 
-Linear VAR is the model-based anchor. A stochastic nonlinear autoregression is
-a defensible second family **only to test transfer beyond the linear explanation**:
-it can retain discrete time, channel count and observation law. Train on one
-family and test the same change/no-change target on the other, then reverse the
-direction. Two families would be a pilot, not evidence of universality. Additional
-oscillators or dataset names are unnecessary unless they test a distinct failure.
+Compare rich SPI marginals, z, m+z, pooled raw summaries, raw linear/nonlinear
+models and the existing temporal/channel encoder. Include simple memory and
+source-median controls. All learning curves count independent labelled masters,
+including tuning; views never cross master-level splits. Keep noise, time step,
+units and sensor mixing fixed. The pilot specifies the exact target, generator,
+raw audit and remaining comparator calibration.
 
-Compare a small set fixed before evaluation: m, z, m+z, direct dynamics/change
-estimates, and a competent raw encoder. Report false-alarm rate and detection
-quality in all four cells, with learning curves over independent labelled systems.
-Split masters before forming any windows, views or pairs. Keep noise, sampling
-frequency and sensor mixing fixed initially; add a nuisance only when a use case
-requires it. Exposure from pretraining or augmentation must be matched and recorded.
-
-A coupling change may alter strength without altering normalized SPI relationships;
-that is part of the test, not a reason to discard a losing case. Fresh realizations
-are essential after exploratory choices. No real application is established here;
-a real-data claim still needs independent labels and meaningful coverage variation.
+The primary contrast is joint-shift MAE at matched label budgets, with both
+single-shift cells retained for interpretation. This is property inference;
+generic change detection is deferred. No new application, broad family diversity,
+or real annotation-cost saving follows from this controlled synthetic test.
 
 ## 3. Decision now
 
@@ -101,9 +94,9 @@ The next bounded candidate is now specified in the
 [local-sensitivity pilot](interaction-share-pilot.md). It estimates one common
 property across linear and tanh interaction laws at fixed physical N, with one
 observation shift. This restores property inference as the primary objective;
-the generic change-detection table above remains an alternative application.
-Only raw target feasibility has been checked. No new pyspi farm or learned
-representation result exists for that candidate.
+generic change detection remains deferred. The raw reference audit supports
+a nontrivial test after removing the initial memory shortcut. No new pyspi farm
+or z result exists for that candidate.
 
 Geometry belongs in this same test: a useful distance or learned map should
 separate true regime changes from observation changes. A new matrix metric or
