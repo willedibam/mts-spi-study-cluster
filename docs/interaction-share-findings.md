@@ -89,6 +89,57 @@ and `learning-curves.{png,svg}`. Shaded plot intervals resample evaluation maste
 right-panel points show independently sampled training cohorts. The trained
 end-to-end encoder was tested in the pilot below, not rerun in this confirmation.
 
+## Retrospective complementarity check after confirmation
+
+The next bounded question was whether z adds to a stronger dynamical estimator,
+even when it performs worse alone. No additional data or models were fitted.
+We averaged predictions 50/50 on exactly the same labelled cohorts, preserving
+all budgets, directions and observation cells. Both datasets had already been
+evaluated, so this is retrospective, including results on the dataset originally
+generated for confirmation. Neither weights nor budgets were optimized.
+
+Results on the continuous-parameter dataset:
+
+| Predictor or equal-weight prediction average | 10 labels | 20 labels | 40 labels |
+|---|---:|---:|---:|
+| Linear reference alone | .1454 | .1433 | .1427 |
+| Linear + z/PLS | .1333 | .1242 | .1232 |
+| Linear + normalized SPI distributions/PLS | .1331 | .1345 | .1277 |
+| Linear + random encoder/PCA-ridge | .1565 | .1352 | .1228 |
+| Linear + source median | .1553 | .1537 | .1535 |
+| Linear + nonlinear reference | .1459 | .1435 | .1430 |
+
+The linear+z average improves over each component at every budget in both
+datasets, with conditional paired intervals excluding zero. At 40 labels in the
+continuous dataset, its difference from linear alone is -.01954
+[-.02603,-.01322], with improvement in nine of ten source-family/cohort cases.
+The equal-weight source-median control does not explain this gain; it does not
+rule out every alternative shrinkage or calibration strategy.
+
+**Complementarity is not consistently specific to z.** In the original pilot,
+linear+z versus linear+normalized-distributions differs by only
+-.00112/-.00094/-.00245 across budgets, with all intervals including zero. In the
+continuous dataset, the differences are +.00021/-.01035/-.00450; only the
+20-label interval excludes zero ([-.01499,-.00570]). Linear+random matches
+linear+z at 40 labels in both datasets. Thus standalone representation rankings
+do not determine which representation adds the most to a dynamical reference.
+The narrower conclusion is practical complementarity of statistical descriptors;
+a consistent z-specific fusion advantage is not established.
+
+This does not justify a third large run of the same generators. Selecting the
+one favourable budget for another enlarged test would require a stronger
+scientific rationale. Preserve the positive standalone z finding and this limit
+on its incremental value. No new physics, hyperparameter search or cluster jobs
+were added in this follow-up.
+
+Reproduce with `scripts/check_interaction_share_complementarity.py` (execution
+commit `6b3fe2d`) and the same study's `--config`, `--data`, `--results` and a new
+`--output` directory. Results are under each study's `complementarity-controls/`;
+the initial control set remains under `complementarity/`. The audit checks source
+hashes, labels, row ordering and identical training cohorts. Its six standalone
+component curves reproduce the existing report across all eight evaluation cells
+and the primary aggregate (54 checks per study; maximum difference 1.11e-16).
+
 ## Pilot and mechanism controls
 
 Joint-shift MAE, equal weight to linear→tanh and tanh→linear, M16/T1000→M8/T500:
