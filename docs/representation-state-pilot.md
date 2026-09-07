@@ -167,7 +167,7 @@ versus 0.04441 uncorrected. Retained in `sampling-bias-diagnostic.json`; script
 identity check. It uses the known physical N=32 and is not a general real-data
 procedure or an addition to the frozen primary method list.
 
-## Frozen-initialization diagnostic and pending extraction
+## Frozen-initialization diagnostic and extraction history
 
 After the initial neural comparison, a frozen-initialization control extracted
 the 128-dimensional pooled vector before the readout. It uses the same initial
@@ -193,14 +193,13 @@ Gadi dataset-level parallelism; comparison with a cheap raw feature pass does
 not make p90 an allocation bottleneck. The staged scouts account for elapsed
 setup time. Fifty records are complete and audited.
 
-The remaining 622 records are submitted in six homogeneous farms,
+The remaining 622 records were initially submitted in six homogeneous farms,
 178355803–178355808, with 622 workers across 960 reserved CPUs. Larger-M
 farms reserve additional CPU capacity for memory. Source/runtime identity is
 unchanged; job commit 633eff3 adds optional per-record diagnostic logs.
 Submission resources and IDs are in `data/representation_stage_b_260907/production-submissions.tsv`
 and `results/representation_stage_b_260907/execution-status.json`.
-Audit all 672 outputs before building the aligned feature bank. No Stage B z
-performance result exists yet.
+Audit all 672 outputs before building the aligned feature bank. Those submissions later failed; corrected extraction and final results are recorded below.
 
 Additional post-neural-result controls reuse the existing 82 pooled raw features:
 joint-shift MAE is 0.07891/0.06735/0.05841, or 0.07830/0.06677/0.05803
@@ -227,8 +226,9 @@ builds the feature bank, fits all six statistical methods and merges the report.
 Job 178356603 was submitted with afterok dependencies on all six replacement farms. Output root is
 `/g/data/ql44/we2614/representation_stage_b_260907/analysis/`.
 Gadi uses NumPy2.5.2/scikit-learn1.9.0, whereas local controls used 2.3.5/1.7.2;
-identities record these versions. Treat cluster fits as provisional and replay
-statistical fits locally from the downloaded feature bank before final comparison.
+identities record these versions. All 90 statistical fits were subsequently replayed locally: maximum absolute
+prediction difference 1.73e-14 and identical selected alphas. The local report
+is the final comparison; `local-gadi-replay.json` records numerical equivalence.
 
 Scientific decision sequence:
 
@@ -253,3 +253,61 @@ The motivation is to understand when cross-statistic relationships are useful,
 not select only tasks on which z wins. Negative tasks define the scope. Diversity
 of dependence statistics already has precedent (Cliff et al., 2023); incremental
 utility of their relationships is the claim requiring new evidence.
+
+## Completed Stage B result
+
+All 672 MPI outputs passed audit. Recovery jobs 178356467–178356472 and analysis
+178356603 exited 0. The largest farm finished in 37:01; analysis took 5:59.
+Summed per-record pyspi time is 113.68 hours; dataset parallelism makes this
+practical (88.34KSU remained after completion). The feature bank SHA-256 is
+`e95cfc28a4d9c95347b6a2a5918728bb1cf987c3b897ee63f38a5fe07bcb85f0`.
+It is mirrored under `results/representation_stage_b_260907/gadi-analysis/`.
+
+Primary joint-shift MAE at 16/32/64 labels:
+
+| Representation | 16 | 32 | 64 |
+|---|---:|---:|---:|
+| Coherence + correlation | .04259 | .04208 | .03973 |
+| SPI marginals m | .05177 | .04716 | .04467 |
+| z | .07352 | .06515 | .05799 |
+| m+z | .05012 | .04846 | .04356 |
+| m+g | .05051 | .04850 | .04528 |
+| m+g+z | .04951 | .04917 | .04435 |
+
+z is worse than marginals and observables at every budget; all corresponding
+paired conditional 95% difference intervals exclude zero. At 64 labels,
+z−m=.01333 [.00803,.01911], z−observables=.01827 [.01223,.02439].
+Adding z to marginals has inconsistent, small gaps: −.00165/+.00130/−.00111;
+all intervals include zero. At 64 labels the interval is [−.00348,+.00137].
+Graph augmentation likewise supplies no demonstrated incremental z benefit.
+This is a negative pilot for the prespecified shifted-utility claim. It is not
+a proof of equivalence or a universal failure of SPI–SPI.
+
+The full local [report](../results/representation_stage_b_260907/final/report/report.md)
+contains all six observation cells. In-source and M8-only patterns can differ
+from the primary shift; for example m+z at 64 labels gives .0373 in-source
+versus .0461 for observables. Do not select these post hoc cells to reverse
+the primary conclusion. The pure-z result does beat the trained neural model,
+but not clearly the frozen-random or pooled-raw controls. SPI validity alone
+has MAE .1200 at 64 labels versus a .2036 mean predictor, so estimator failures
+carry signal and remain an attribution concern.
+
+Reproduce the final fit locally with the original state-pilot runner, passing
+`--feature-bank results/representation_stage_b_260907/gadi-analysis/features.npz`
+and `--methods m z m+z m+g m+g+z validity`. Use a separate output directory;
+existing results enforce exact resume identities. Merge with all earlier control
+roots using `scripts/report_representation_state_pilot.py`.
+
+The subsequent Stage A marginal/readout attribution is complete under
+`configs/analysis/representation-stage-a-attribution-260907.yaml`: 23 marginal
+descriptors per SPI versus the original seven, crossed with logistic and RBF
+heads, plus z and rich-marginal+z controls. It reuses the same clipping/PCA32,
+label budgets and five-C selection grid. The RBF scale rule is fixed, not tuned.
+This is exploratory reuse of the historical evaluation set; a positive result
+still requires a later fresh confirmation population and alignment controls.
+
+The completed [Stage A attribution analysis](representation-stage-a-attribution.md)
+finds that richer marginals and an RBF readout do not close the z classification
+gap. However, two linear VAR classes supply 76.4% of the net gap at eight labels
+per class. That directs the next mechanism check toward SPI alignment and direct
+linear-dynamics controls, rather than an unsupported nonlinear-coupling account.

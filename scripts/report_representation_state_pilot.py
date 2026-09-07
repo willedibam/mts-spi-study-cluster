@@ -105,8 +105,8 @@ def report(config_path, data_root, result_roots, output):
     output.mkdir(parents=True, exist_ok=True)
     (output / "results.json").write_text(json.dumps(results, indent=2) + "\n")
     # Keep the figure legible; the table and numeric artifact retain every model.
-    display = [m for m in ("m", "z", "m+g+z", "observables", "phase_direct", "neural", "random_encoder", "pooled_raw", "validity") if m in methods]
-    names = {"m": "SPI marginals", "z": "SPI–SPI z", "m+g+z": "Marginals + graphs + z",
+    display = [m for m in ("m", "z", "m+z", "observables", "phase_direct", "neural", "random_encoder", "pooled_raw") if m in methods]
+    names = {"m": "SPI marginals", "z": "SPI–SPI z", "m+z": "SPI marginals + z",
              "observables": "Coherence + correlation", "phase_direct": "Coherence (no labels)",
              "neural": "Raw CNN + attention", "random_encoder": "Frozen random encoder + ridge",
              "pooled_raw": "Pooled raw statistics", "validity": "SPI validity"}

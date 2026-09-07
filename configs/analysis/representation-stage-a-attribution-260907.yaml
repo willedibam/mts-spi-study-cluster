@@ -1,0 +1,24 @@
+study_id: representation-stage-a-attribution-260907
+status: exploratory_after_stage_b
+base_protocol: configs/analysis/representation-stage-a-clipped-260907.yaml
+base_protocol_sha256: 75b5bfc48e9ebcf166e919e5d3c7659a9e050787aaaa2853180d572dfdbdd737
+bank: data/representation_stage_a_260907/proof-unified-controls.npz
+manifest: data/representation_stage_a_260907/source-manifest.json
+mpi_mirror: data/representation_stage_a_260907/mpi-mirror
+rich_bank: data/representation_stage_a_260907/rich-marginals.npz
+views:
+- m
+- m_rich
+- z
+- m_rich+z
+heads:
+- logistic
+- rbf
+notes:
+- Same source/evaluation records, nested label subsets, clipping, PCA32 and C grid
+  as the clipped Stage A screen.
+- RBF SVC fixes gamma=scale and tunes only C; no claim of an optimal nonlinear marginal
+  learner.
+- 'Rich marginals: mean/std/skewness/Pearson kurtosis/quantiles .05:.05:.95.'
+- Protocol specified before new attribution outcomes; historical evaluation data already
+  inspected. No confirmation claim.
