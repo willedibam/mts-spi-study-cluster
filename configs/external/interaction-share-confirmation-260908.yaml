@@ -1,0 +1,12 @@
+name: interaction-share-confirmation-260908
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/interaction_share_confirmation_260908/views.npz
+  sha256: 79615254d951a07cd6f6b866de3c4fb5bbdd3d39b1e08cb4bff18162ed71e06b
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/interaction_share_confirmation_260908/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260908
