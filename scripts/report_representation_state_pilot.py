@@ -149,7 +149,7 @@ def report(config_path, data_root, result_roots, output):
               "Passing this comparison does not establish superiority over tuned pretrained time-series models or transformers generally.", "",
               "Physics supplies a strong simple coherence observable here. A result on this pilot alone does not motivate real label scarcity, "
               "cross-generator transfer, spatial coverage invariance, or a high-tier publication claim.", "",
-              "Fitting timings exclude p90 extraction and data transfer; the feature bank records summed extraction CPU time separately. "
+              "Fitting timings exclude p90 extraction and data transfer; the feature bank records summed per-record extraction time separately. "
               "GPU/CPU timings and pretraining exposure must remain separate in cost comparisons.", ""]
     if "random_encoder" in methods:
         lines += ["The frozen random encoder is an exploratory addition made after seeing the initial neural results. "
