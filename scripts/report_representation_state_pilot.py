@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import NullLocator
 import numpy as np
 import yaml
 
@@ -68,7 +69,8 @@ def report(config_path, data_root, result_roots, output):
     primary = "both_M_and_T_changed"
     comparisons = {}
     pairs = [("z", "m"), ("z", "observables"), ("z", "neural"), ("neural", "observables"),
-             ("m+z", "m"), ("m+g+z", "m+g")]
+             ("m+z", "m"), ("m+g+z", "m+g"), ("random_encoder", "observables"),
+             ("neural", "random_encoder"), ("z", "random_encoder")]
     units = np.unique(groups)
     unit_strata = np.asarray([strata[np.flatnonzero(groups == group)[0]] for group in units])
     for left, right in pairs:
@@ -98,7 +100,11 @@ def report(config_path, data_root, result_roots, output):
                "claim_boundary": protocol["claim_boundary"]}
     output.mkdir(parents=True, exist_ok=True)
     (output / "results.json").write_text(json.dumps(results, indent=2) + "\n")
-    display = [m for m in ("m", "z", "m+z", "m+g", "m+g+z", "correlation", "phase", "observables", "phase_direct", "neural", "validity") if m in methods]
+    # Keep the figure legible; the table and numeric artifact retain every model.
+    display = [m for m in ("m", "z", "m+g+z", "observables", "phase_direct", "neural", "random_encoder", "validity") if m in methods]
+    names = {"m": "SPI marginals", "z": "SPI–SPI z", "m+g+z": "Marginals + graphs + z",
+             "observables": "Coherence + correlation", "phase_direct": "Coherence (no labels)",
+             "neural": "Raw CNN + attention", "random_encoder": "Frozen random encoder + ridge", "validity": "SPI validity"}
     plt.rcParams.update({"font.family": "serif", "font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.8), sharey=True)
     x = results["labels_total"]
@@ -106,11 +112,12 @@ def report(config_path, data_root, result_roots, output):
                                ("Source observation shape", "Changed sensor count", "Changed count and duration"), strict=True):
         for method in display:
             value = summary[cell][method]
-            line, = ax.plot(x, value["MAE"], marker="o", ms=3, label=method)
+            line, = ax.plot(x, value["MAE"], marker="o", ms=3, label=names[method])
             lo, hi = np.asarray(value["conditional_95_CI"]).T
             ax.fill_between(x, lo, hi, color=line.get_color(), alpha=.08)
         ax.set(xscale="log", title=title, xlabel="Independent labelled realizations", xticks=x)
         ax.set_xticklabels(x)
+        ax.xaxis.set_minor_locator(NullLocator())
     axes[0].set_ylabel("Mean absolute error (lower is better)")
     axes[-1].legend(loc="upper left", bbox_to_anchor=(1.02, 1), frameon=False)
     fig.tight_layout()
@@ -133,6 +140,11 @@ def report(config_path, data_root, result_roots, output):
               "cross-generator transfer, spatial coverage invariance, or a high-tier publication claim.", "",
               "Fitting timings exclude p90 extraction and data transfer; the feature bank records summed extraction CPU time separately. "
               "GPU/CPU timings and pretraining exposure must remain separate in cost comparisons.", ""]
+    if "random_encoder" in methods:
+        lines += ["The frozen random encoder is an exploratory addition made after seeing the initial neural results. "
+                  "It uses the same initial encoder weights for each matched seed, extracts pooled features without training, "
+                  "and fits the same training-only PCA/ridge procedure as the statistical features. No pretrained weights "
+                  "or extra labels are used; extraction time is stored once per initialization separately from fitting time.", ""]
     (output / "report.md").write_text("\n".join(lines))
     print(json.dumps({"methods": methods, "primary": summary[primary]}, indent=2))
 

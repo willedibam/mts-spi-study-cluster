@@ -85,6 +85,7 @@ def test_end_to_end_state_pilot_groups_views_and_rejects_changed_data_protocol(t
     from scripts.build_representation_state_data import build
     from scripts.run_representation_state_pilot import run
     from scripts.report_representation_state_pilot import report
+    from scripts.run_representation_state_random_control import run as run_random
     from src.representation_state_data import load_state_data
     p = protocol()
     p.pop("data_protocol")
@@ -98,10 +99,14 @@ def test_end_to_end_state_pilot_groups_views_and_rejects_changed_data_protocol(t
     data = tmp_path / "data"
     build(config, data)
     run(config, data, tmp_path / "simple", ["mean", "observables"], "cpu")
-    report(config, data, [tmp_path / "simple"], tmp_path / "report")
+    run_random(config, data, tmp_path / "random", "cpu")
+    report(config, data, [tmp_path / "simple", tmp_path / "random"], tmp_path / "report")
     result = json.loads((tmp_path / "report/results.json").read_text())
     assert result["evaluation_masters"] == 4
     assert len(result["summary"]["both_M_and_T_changed"]["mean"]["MAE"]) == 1
+    assert len(result["summary"]["both_M_and_T_changed"]["random_encoder"]["MAE"]) == 1
+    with np.load(tmp_path / "random/initial-features-s11.npz") as features:
+        assert features["X"].shape == (24, 128)
     fit = json.loads((tmp_path / "simple/observables-n2-s11.json").read_text())
     assert fit["labels_total"] == 4
     assert set(fit["train_indices"]).isdisjoint(fit["evaluation_indices"])

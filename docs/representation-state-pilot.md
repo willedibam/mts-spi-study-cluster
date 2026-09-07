@@ -68,6 +68,11 @@ was chosen before any held-out pilot neural score had completed. The original
 diagnostics and partial inner-CV log are retained, not used as an additional
 claim-bearing comparison.
 
+A saved MPS checkpoint also reproduced 12 predictions across all observation
+cells on CPU within 1.20e-7. Current checkpoint metadata includes PyTorch's
+`TorchVersion` string subclass: weights-only loading needs the narrow
+`torch.serialization.safe_globals([torch.torch_version.TorchVersion])` context.
+
 Tests cover variable M/T, channel-permutation invariance, genuine cross-channel
 influence before pooling, finite gradients, train-only ridge selection, nested
 views, equal label accounting and grouped report construction. The optimization
@@ -132,3 +137,63 @@ Do not make the benchmark artificially hostile to a known physical observable.
 Cross-generator transfer of a shared property and a credible real observation
 shift are subsequent scientific requirements, not consequences of fitting this
 finite-population pilot.
+
+The generated evaluation masters have hidden past-versus-future coherence MAE
+0.00587. This supports describing the target as a persistent macroscopic state,
+not difficult long-horizon forecasting. Hidden past coherence is a diagnostic
+only, unavailable to predictors and not a lower bound on achievable error.
+
+## Completed neural/simple comparison
+
+All 15 neural refits and 120 inner fits completed in 1,662 seconds on local MPS.
+The model has 94,017 parameters. Joint-shift MAE at 16/32/64 labels is
+0.08899/0.08176/0.07645, versus 0.04259/0.04208/0.03973 for the two-observable
+ridge. Paired conditional differences (neural minus observables) are
+0.04641 [0.04149,0.05100], 0.03968 [0.03468,0.04435], and
+0.03672 [0.03125,0.04203]. The same-cell neural curve is
+0.07419/0.06801/0.06347. Eighteen of 120 candidate folds hit the epoch cap;
+none of the 30 selected folds did. This evaluates one bounded neural pipeline,
+not unrestricted neural learnability or pretrained-model performance.
+
+Artifacts: `results/representation_stage_b_260907/final/neural-simple-report/`
+contains the complete paired report, figure and numeric results.
+
+An additional **post hoc, zero-label physics diagnostic** checked the exact
+unclipped squared-coherence correction under uniform finite-population sampling.
+Using analytic phases, clipping and a square root does not preserve the identity's
+unbiasedness guarantee. It did not improve prediction: joint-shift MAE 0.04648
+versus 0.04441 uncorrected. Retained in `sampling-bias-diagnostic.json`; script
+`check_representation_state_sampling_bias.py` includes an exhaustive subset
+identity check. It uses the known physical N=32 and is not a general real-data
+procedure or an addition to the frozen primary method list.
+
+## Frozen-initialization diagnostic and pending extraction
+
+After the initial neural comparison, a frozen-initialization control extracted
+the 128-dimensional pooled vector before the readout. It uses the same initial
+weights for each matched seed, no pretraining or fitted input transformation, and
+the same train-only PCA/ridge protocol as the statistical controls. All 15 fits
+completed; joint-shift MAE 0.06851/0.06421/0.06015 beats end-to-end neural training
+but loses to the two physical observables. The paired neural-minus-frozen gaps
+are 0.02048 [0.01641,0.02455], 0.01755 [0.01354,0.02150], and
+0.01629 [0.01287,0.01979]. This is a post-result diagnostic, not a retrospectively
+preregistered method. Feature extraction takes about one second per initialization
+for all 672 views; feature banks and exact training subsets are retained.
+
+Reproduce using `scripts/run_representation_state_random_control.py`; results and
+combined plots are in `results/representation_stage_b_260907/random-control-report/`.
+This result makes a win over the end-to-end encoder alone even less persuasive.
+
+At the last successful Gadi check (06:11 UTC), scout 178344541 was running at 38:04 elapsed,
+with peak aggregate memory 8,871,836 kB. Record 1 (M16/T1000) completed in 481 s;
+its 289-entry archive has 268 correlation-valid SPIs and matches the local raw
+input hash exactly. The M32/T1000 record is still computing. Transient SSH failures
+temporarily prevented status checks; connectivity recovered at 06:11 UTC. **Do
+not duplicate the scout.** Inspect existing job/output status before retries, then audit
+the two outputs. The representative 48-record node list is staged, sorted by
+expected M-squared-times-T cost; use 48 CPUs/190GB with about 16 concurrent tasks
+to allow approximately 12GB per worker for the M32 memory peak. Wider extraction
+remains gated on this measurement. Six local `production-M*-T*.txt` lists exclude
+the 48 node records and two initial scouts (622 further records); they have not
+been submitted. The complete statistical feature extraction/fitting/report
+commands are implemented, but no Stage B z performance result exists yet.
