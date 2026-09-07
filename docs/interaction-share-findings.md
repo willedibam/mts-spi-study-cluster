@@ -1,9 +1,95 @@
 # Interaction-share representation findings
 
-Status: fresh pilot and normalization/readout/alignment controls complete. These are exploratory findings, not a confirmed general-purpose
-or neural-superiority result. [Setup and reproduction](interaction-share-execution.md).
+Status: pilot, mechanism controls and prospective continuous-parameter confirmation
+complete. The scoped representation advantage is supported; general-purpose
+or broad neural superiority is not established. [Setup and reproduction](interaction-share-execution.md).
 
-## What has survived the controls
+## Prospective confirmation and present decision
+
+The fresh run uses 800 independent masters, continuous nominal interaction shares
+and five disjoint training cohorts per family, with nested 10/20/40-label budgets.
+Physical N32, linear/tanh maps, M16/T1000 training and M8/T500 joint shift are
+unchanged. All 1,200 MPI records passed their audits. This is a prospective
+extension to a changed parameter distribution, not an identical replication;
+absolute MAEs should not be compared across studies as a learning improvement.
+
+| Representation / readout | 10 labels | 20 labels | 40 labels |
+|---|---:|---:|---:|
+| Rich raw SPI marginals / PLS | .2208 | .2451 | .2453 |
+| Standardized marginal shapes / PLS | .1885 | .1869 | .1853 |
+| z / PCA-ridge | .1769 | .1555 | .1525 |
+| z / PLS | .1723 | .1519 | .1511 |
+| Standardized shapes + z / PLS | .1816 | .1602 | .1569 |
+| Frozen random encoder / PCA-ridge | .2170 | .1881 | .1771 |
+| Frozen random encoder / PLS (supplementary) | .2176 | .1916 | .1845 |
+| Calibrated linear dynamics | .1454 | .1433 | .1427 |
+| Calibrated linear+tanh dynamics | .1466 | .1444 | .1436 |
+| Channel-wise memory | .1978 | .1828 | .1819 |
+| Source median | .2084 | .2047 | .2057 |
+
+**Primary hypothesis supported within this setup.** z/PLS versus shapes/PLS
+improves MAE by .01619/.03498/.03419. At 40 labels this is an 18.5% relative
+reduction; the conditional paired 95% interval for the difference is
+[-.04377,-.02443]. Adding z to shapes improves by .00692/.02671/.02840,
+with all three conditional intervals below zero. Both comparisons favour z
+in all 10 source-family/cohort cases at 20/40 labels; at 10 labels the counts are
+8/10 for z and 7/10 for concatenation. The smallest-budget effect is less stable.
+These are descriptive cohort counts on shared evaluation populations, not
+independent Bernoulli trials. Intervals remain conditional on fitted models.
+
+**Raw-reference comparison remains mixed.** z beats both random-feature readouts
+on average at all budgets with paired intervals below zero; versus random/PCA
+it wins 9/10,9/10,7/10 cohort cases. It does not beat the linear reference overall.
+At 40 labels z-minus-linear is +.00840, interval[-.00263,.01912]; the 20-label
+interval also spans zero, while linear is clearly better at 10. These are not
+equivalence tests. Direction matters: at 40 labels z/linear MAEs are
+.1417/.1553 for linear-to-tanh and .1605/.1301 for tanh-to-linear. The former
+apparent z advantage is unresolved (difference interval[-.02977,.00268]);
+the reverse-direction linear advantage is resolved. Do not promote the favourable
+direction alone or call this a demonstrated win over dynamical estimation.
+
+**The large PLS gain did not replicate in magnitude.** PLS improves z over PCA
+by only .00459/.00362/.00136 here. The first two conditional intervals exclude
+zero, but the 40-label interval does not. PCA is a strong compression baseline;
+the evidence does not support a blanket account of PCA retaining destructive
+noise or of supervised compression being essential. Both changed parameter
+sampling and new training populations could affect the difference; the experiment
+does not isolate which caused it.
+
+The strongest supported statement is: **aligned relationships between SPIs provide
+predictive structure for interaction-share inference under partial observation
+that these individual-SPI distribution descriptors expose less efficiently.**
+The pilot's matched-normalization, bounded-RBF and dyad-alignment controls support
+that interpretation. They do not establish inaccessible raw information, causal
+mechanism identification, or that all possible marginal-based learners fail.
+The target mostly describes a stationary system's interaction balance, not
+within-record state tracking; fixed state units and time step remain essential.
+
+**Stop this experiment here.** The larger run answered two real uncertainty
+questions, so it was justified. Another expansion of the same grid would mainly
+add precision. There is useful evidence for the existing paper, but a standalone
+high-impact ML/Nature Computational Science claim is not established. The missing
+piece is scientific importance or a more general explanatory result, not simply
+more systems or a better leaderboard score. A consequential scientific application
+or a principled result about when these relationships help could change that
+assessment; neither should be assumed from this controlled probe. Earlier negative
+Kuramoto results remain part of the evidence.
+
+No result-invalidating implementation or leakage defect was identified. Twenty
+relevant tests pass; all data/feature hashes and cohort separation checks pass.
+Ten local replays spanning all five statistical pipelines and both source families
+reproduce Gadi's selected settings, all candidate scores and predictions
+(maximum prediction difference 8.22e-15). The meaningful comparator correction
+was to give random features the same PLS option; its supplementary status is
+explicit, and all 20 re-extracted feature banks are exactly unchanged.
+
+Evidence: `results/interaction_share_confirmation_260908/report/`,
+`cohort-summary.json`, `direction-reference-contrasts.json`, `local-gadi-replay.json`
+and `learning-curves.{png,svg}`. Shaded plot intervals resample evaluation masters;
+right-panel points show independently sampled training cohorts. The trained
+end-to-end encoder was tested in the pilot below, not rerun in this confirmation.
+
+## Pilot and mechanism controls
 
 Joint-shift MAE, equal weight to linear→tanh and tanh→linear, M16/T1000→M8/T500:
 
@@ -28,7 +114,7 @@ while retaining no cross-SPI edge correspondence. Constants/invalid SPIs remain
 undefined. Across-record preprocessing and tuning still use source training only.
 This is a post-result control, not a replacement for the original baseline.
 
-At 40 labels, z/PLS improves over shape/PLS by .04650 MAE (conditional paired95%
+At 40 labels, z/PLS improves over shape/PLS by .04650 MAE (conditional paired 95%
 interval −.06231 to −.03070). Shape+z/PLS improves over shape/PLS by .04259
 (−.05347 to −.03214). Both transfer directions favour z over shapes. Normalization
 therefore reduces part of the original marginal gap, but does not remove it.
@@ -55,9 +141,9 @@ were intrinsically low dimensional or pure noise.
   ([ROCKET](https://arxiv.org/abs/1910.13051)); our control uses the existing
   attention encoder, not ROCKET itself.
   A supplementary matched-PLS check gives random-feature MAEs
-  .2080/.1889/.1586; z/PLS improves at10/20 labels with conditional intervals
-  excluding zero, but not at40. With matched PCA/ridge, z's clear advantage is
-  at10 labels. Exact equality of all re-extracted frozen feature banks isolates
+  .2080/.1889/.1586; z/PLS improves at 10/20 labels with conditional intervals
+  excluding zero, but not at 40. With matched PCA/ridge, z's clear advantage is
+  at 10 labels. Exact equality of all re-extracted frozen feature banks isolates
   the readout change. Do not select the worse random readout to inflate a gain.
 - A bounded nonlinear-head check does not close the marginal gap. With fixed
   training-only RBF bandwidth scaling, training-mean target centering and the
@@ -87,7 +173,7 @@ not make our precise normalized ratio an established ecological observable.
 This remains a controlled local-sensitivity probe in fixed units/discrete time.
 Do not make the generator more nonlinear merely to force a linear baseline to lose.
 
-## Next evidence and scale decision
+## Pilot mechanism evidence and original scale decision
 
 Three independent per-SPI dyad permutations preserve edge multisets, reciprocity
 and validity across all 520 records. A shared permutation preserves z to 3.73e-9.
@@ -99,7 +185,7 @@ need not be realizable by raw time series. Null errors are averaged over technic
 seeds, not predictions as an ensemble or extra independent systems. Gadi job
 178391492 exited successfully at code 4932773.
 
-This justifies one [prospective confirmation](interaction-share-confirmation.md)
+This justified the completed [prospective confirmation](interaction-share-confirmation.md)
 with fresh continuous parameter values and disjoint training cohorts, keeping
 the same target, map families, observation cells and frozen comparator set.
 It addresses discrete settings and shared-pool uncertainty rather than broadening

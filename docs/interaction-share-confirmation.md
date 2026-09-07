@@ -96,3 +96,36 @@ Use `run_representation_state_random_control.py --head pls` with a fresh output
 directory; the reporter identifies `random_encoder_pls` as supplementary.
 Verify extracted features equal the existing frozen-random features before
 interpreting the head comparison. No additional neural training or pyspi is used.
+
+## Completed execution
+
+All four Gadi jobs exited 0: smoke 178391739 (6:04), source 178391743 (7:16),
+shift 178391745 (1:44), analysis 178391748 (11:40). Summed pyspi record time 82.69 h;
+feature extraction 327.47 s. About .23 KSU used; 88.02 KSU remains. All 1,200 records
+passed audit,262–282 valid SPIs per record. Bank SHA-256:
+`9a2e6e2b88c1a71e66c37556b757faa56c3100a81ca5066a799ed1a8087abf09`.
+
+Primary execution used 481737c; protocol was committed 6d6af01 before generation.
+Supplementary random/PLS used e4ae669; all 60 prediction archives across pilot and
+confirmation exactly replay the initial implementation with identical settings.
+Legacy per-fit status strings are retained as provenance; the frozen protocol,
+manifest and combined report establish which analyses were prospective.
+
+Local data: `data/interaction_share_confirmation_260908/`; local output:
+`results/interaction_share_confirmation_260908/`. Remote base uses the same stem
+under `/g/data/ql44/we2614/`. The analysis download is `gadi-analysis/`; raw,
+random and supplementary random-PLS are separate directories. Combined report
+contains 330 fits, complete for every included method. [Findings and stopping
+decision](interaction-share-findings.md) separate the prospective evidence from
+pilot/post-protocol controls. No further run is pending.
+
+```sh
+.venv/bin/python -m scripts.report_interaction_share_pilot --config configs/analysis/interaction-share-confirmation-260908.yaml --data data/interaction_share_confirmation_260908 --inputs results/interaction_share_confirmation_260908/raw results/interaction_share_confirmation_260908/random results/interaction_share_confirmation_260908/random-pls results/interaction_share_confirmation_260908/gadi-analysis/statistical results/interaction_share_confirmation_260908/gadi-analysis/shape --output results/interaction_share_confirmation_260908/report
+.venv/bin/python -m scripts.check_interaction_share_fits --config configs/analysis/interaction-share-confirmation-260908.yaml --data data/interaction_share_confirmation_260908 --analysis results/interaction_share_confirmation_260908/gadi-analysis --output results/interaction_share_confirmation_260908/local-gadi-replay.json
+.venv/bin/python -m scripts.plot_interaction_share_results --pilot results/interaction_share_260908/complete-report/results.json --confirmation results/interaction_share_confirmation_260908/report/results.json --output results/interaction_share_confirmation_260908/learning-curves
+```
+
+Use two BLAS threads locally. Ten 40-label replays spanning every statistical
+pipeline and both families preserve all selected settings and candidate scores;
+maximum prediction difference 8.22e-15. Dataset construction/cohort tests: 20 pass.
+The independently repeated frozen-random feature extraction agrees exactly.
