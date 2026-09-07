@@ -44,7 +44,7 @@ if [[ -n "$index_file" ]]; then
 else
     variables+=",START_INDEX=${START_INDEX:-1},END_INDEX=${END_INDEX:-$total}"
 fi
-for name in TASK_TIMEOUT WORKERS; do
+for name in TASK_TIMEOUT WORKERS TASK_LOG_DIR; do
     if [[ -n "${!name:-}" ]]; then
         variables+=",$name=${!name}"
     fi
