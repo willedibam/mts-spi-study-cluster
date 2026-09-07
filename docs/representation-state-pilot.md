@@ -210,3 +210,46 @@ It also separates all six M/T cells: at 64 labels, two-observable MAE is 0.0624
 for M8/T500 and 0.0171 for M32/T500. Their pooled average must not be described
 as invariant performance. Reproduce with `scripts/run_representation_state_raw_control.py`;
 these additions use the same labels, PCA/ridge and source-only fitting rules.
+
+## Recovery and interpretation — 2026-09-07
+
+The first production farms 178355803–178355808 all failed before extraction:
+`nci-parallel` uses `shell: none`, so the added `>`/`2>&1` logging text reached
+Python's argument parser. The completion audits correctly failed. No scientific
+result comes from those jobs. Commit fdabcc9 reverts the logging change to the
+successful scout launcher. Six replacement farms 178356467–178356472 use the
+same records/resources and no per-record shell redirection. Do not duplicate them.
+The complete raw manifest, masters, targets and observables are now hash-verified
+on Gadi. Comparison-fit archives were staged separately from checkpoints.
+
+`jobs/gadi/run_representation_state_analysis.pbs` runs a full output audit,
+builds the feature bank, fits all six statistical methods and merges the report.
+Job 178356603 was submitted with afterok dependencies on all six replacement farms. Output root is
+`/g/data/ql44/we2614/representation_stage_b_260907/analysis/`.
+Gadi uses NumPy2.5.2/scikit-learn1.9.0, whereas local controls used 2.3.5/1.7.2;
+identities record these versions. Treat cluster fits as provisional and replay
+statistical fits locally from the downloaded feature bank before final comparison.
+
+Scientific decision sequence:
+
+1. Complete the unchanged synchronization pilot. Positive Stage A class results
+   and a potentially negative Stage B state result can coexist. This task has a
+   strong known coherence observable and does not isolate complex interaction
+   structure. A weak trained neural result is not evidence for z.
+2. Investigate Stage A attribution with richer per-SPI marginals and a matched
+   nonlinear head, validity controls, and cross-SPI alignment disruptions. Keep
+   development choices separate from a later fresh confirmation population.
+3. Before expanding to another dataset, name an externally meaningful target
+   whose changes should alter relationships among linear/nonlinear/lagged
+   dependence estimates across edges. This is a proposed mechanism, not verified
+   recoverability of coupling laws. Control observable nuisance differences and
+   test a shared target on held-out generator families; generator identity alone
+   cannot supply this test.
+4. Advance a representation-learning paper only if incremental value survives
+   these controls and replication. If simple summaries explain the gains, keep
+   the result as a representation/benchmark section and narrow the novelty claim.
+
+The motivation is to understand when cross-statistic relationships are useful,
+not select only tasks on which z wins. Negative tasks define the scope. Diversity
+of dependence statistics already has precedent (Cliff et al., 2023); incremental
+utility of their relationships is the claim requiring new evidence.
