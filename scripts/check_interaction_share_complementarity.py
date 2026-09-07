@@ -17,7 +17,8 @@ def check(config, data, results, output):
     manifest, _ = load_state_data(data, config)
     rows = manifest['rows']
     expected_evaluation = np.asarray([i for i,row in enumerate(rows) if row['role']=='evaluation'])
-    methods = {'linear': 'raw', 'nonlinear': 'raw',
+    methods = {'linear': 'raw', 'nonlinear': 'raw', 'median': 'raw',
+               'shape-pls': 'gadi-analysis/shape' if (results/'gadi-analysis/shape').is_dir() else 'shape-control',
                'random_encoder': 'random', 'z-pls': 'gadi-analysis/statistical'}
     seeds = protocol['methods']['subset_seeds']
     budgets = protocol['sampling']['labelled_training_masters_per_coupling']
@@ -56,7 +57,7 @@ def check(config, data, results, output):
                 np.testing.assert_array_equal(reference['target'], [rows[i]['target'] for i in indices])
                 if protocol['sampling'].get('disjoint_training_cohorts'):
                     assert all(rows[i]['cohort_index']==seeds.index(seed) for i in train)
-                for companion in ['z-pls','random_encoder','nonlinear']:
+                for companion in ['z-pls','random_encoder','nonlinear','median','shape-pls']:
                     predictions['linear+'+companion] = (predictions['linear']+predictions[companion])/2
                 for method, prediction in predictions.items():
                     assert np.isfinite(prediction).all() and np.all((prediction>=0)&(prediction<=1))
@@ -81,7 +82,7 @@ def check(config, data, results, output):
     primary = {method: np.mean(values,axis=0) for method,values in primary.items()}
     primary_boot = {method: np.mean(values,axis=0) for method,values in primary_boot.items()}
     comparisons = {}
-    for other in ['linear','z-pls','linear+random_encoder','linear+nonlinear']:
+    for other in ['linear','z-pls','linear+random_encoder','linear+nonlinear','linear+median','linear+shape-pls']:
         left = 'linear+z-pls'
         cohort_delta = np.concatenate(cohort_errors[left],axis=1)-np.concatenate(cohort_errors[other],axis=1)
         comparisons[left+'_minus_'+other] = dict(
@@ -90,7 +91,7 @@ def check(config, data, results, output):
             cohort_wins_of_10=(cohort_delta<0).sum(axis=1).tolist(),
             cohort_differences=cohort_delta.tolist())
     report = dict(status='retrospective_fixed_half_half_fusion_not_fresh_confirmation',
-        interpretation='No weights, partners or evaluation cells selected by score. Conditional pointwise intervals; no inaccessible-information claim.',
+        interpretation='No ensemble weight fitted or optimized. Companion set specified after prior results; this is retrospective. Conditional pointwise intervals; no inaccessible-information claim.',
         total_label_budgets=protocol['sampling']['total_label_budgets'],
         primary={method:dict(MAE=values.tolist()) for method,values in primary.items()},
         comparisons=comparisons, cells=cells, provenance=provenance,
