@@ -1,0 +1,25 @@
+study_id: state-pca-dimension-sensitivity-260907
+protocol: configs/analysis/representation-stage-b-260907.yaml
+protocol_sha256: f931c23580ed6b130a7b416c47cdc63664795cc8ffad75f38e2661fc49d22949
+data: data/representation_stage_b_260907
+bank: results/representation_stage_b_260907/gadi-analysis/features.npz
+caps:
+- 1
+- 2
+- 4
+- 8
+- 16
+- 32
+views:
+- m
+- z
+- m+z
+- observables
+status: exploratory_user_requested_dimension_sensitivity
+notes:
+- Both cap and ridge alpha selected within original two-fold label budget; held-out
+  results do not choose dimensions.
+- Effective dimensions are limited by each fitting fold; tied choices prefer smaller
+  cap then stronger ridge.
+- Original fixed-cap results remain primary and unchanged; no new pyspi or neural
+  training.

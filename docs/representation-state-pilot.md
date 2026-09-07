@@ -311,3 +311,35 @@ finds that richer marginals and an RBF readout do not close the z classification
 gap. However, two linear VAR classes supply 76.4% of the net gap at eight labels
 per class. That directs the next mechanism check toward SPI alignment and direct
 linear-dynamics controls, rather than an unsupported nonlinear-coupling account.
+
+## User-requested PCA dimension sensitivity
+
+PCA was already fitted inside each labelled training subset with a 32-component
+cap, further limited by sample count. The primary z fits therefore retained
+15/31/32 dimensions at 16/32/64 labels, not all 41,616 coordinates. Large p/N by
+itself does not establish low population intrinsic dimension or identify noise.
+
+The exploratory sensitivity jointly selects caps {1,2,4,8,16,32} and ridge alpha
+inside the original two-fold label budget for m, z, m+z and observables. All folds
+fit their own transforms; ties favour smaller caps then stronger ridge. No test
+scores select dimensions, no new pyspi computation, and primary results are retained.
+
+Joint-shift MAE at16/32/64 labels:
+
+| View | Original fixed cap | Training-selected cap |
+|---|---|---|
+| m | .05177/.04716/.04467 | .04822/.04453/.04423 |
+| z | .07352/.06515/.05799 | .07822/.06625/.05801 |
+| m+z | .05012/.04846/.04356 | .05379/.04699/.04602 |
+| Observables | .04259/.04208/.03973 | .04238/.04184/.03957 |
+
+Smaller dimensions modestly help marginals at small budgets, but do not rescue z.
+This does not rule out supervised compression or a PCA basis pretrained on a
+larger independent unlabelled source pool. Those are different learning regimes;
+held-out records cannot silently enter preprocessing. Any pretraining exposure
+would need to be matched for comparators and reported separately from label counts.
+
+Protocol: `configs/analysis/state-pca-dimension-sensitivity-260907.yaml`.
+Results, chosen caps and paired intervals:
+`results/representation_stage_b_260907/pca-dimension/`. Seven relevant tests pass,
+including a new check that PCA-cap selection cannot use held-out values or labels.

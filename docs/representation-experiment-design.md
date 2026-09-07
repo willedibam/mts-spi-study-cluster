@@ -91,10 +91,19 @@ a real-data claim still needs independent labels and meaningful coverage variati
 ## 3. Decision now
 
 Preserve the positive class result, the negative synchronization result, and the
-VAR explanation. Do not broaden simulations merely to find a win. The next large
-experiment needs a specified, useful state-change target that the direct linear
-reference cannot already settle; the four-cell design is ready to organize such
-a target, but does not supply its motivation by itself.
+VAR explanation. Purposeful exploration of regimes where an inductive bias helps
+is legitimate research. A correctly specified specialist beating z does not rule
+out general-purpose utility when the model family is unknown. Hypotheses should
+precede new outcomes, and any promising result needs fresh verification matched
+to its scope; neither universal superiority nor an ever-growing benchmark is required.
+
+The next bounded candidate is now specified in the
+[local-sensitivity pilot](interaction-share-pilot.md). It estimates one common
+property across linear and tanh interaction laws at fixed physical N, with one
+observation shift. This restores property inference as the primary objective;
+the generic change-detection table above remains an alternative application.
+Only raw target feasibility has been checked. No new pyspi farm or learned
+representation result exists for that candidate.
 
 Geometry belongs in this same test: a useful distance or learned map should
 separate true regime changes from observation changes. A new matrix metric or

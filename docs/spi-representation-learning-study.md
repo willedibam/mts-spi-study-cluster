@@ -510,3 +510,38 @@ reason to expand the current grid indiscriminately.
 - Wiskott and Sejnowski, 2002: https://www.ini.rub.de/PEOPLE/wiskott/Projects/LearningInvariances.html (slow feature learning).
 - Bardes et al., ICLR 2022: https://arxiv.org/abs/2105.04906 (VICReg).
 - Mardt et al., 2018: https://www.nature.com/articles/s41467-017-02388-1 (VAMPnets; relevant only with genuine time-lagged trajectories, not independently generated parameter sweeps).
+
+## Scoped contribution and publication criteria — clarified 2026-09-07
+
+The aim is to discover and explain a useful regime of inductive bias, not show
+universal superiority. Purposeful exploratory search is legitimate; the separation
+between exploration and fresh verification determines how strong the claim can be.
+A correctly specified VAR reference winning its native task is informative, but
+not grounds to dismiss a representation intended for unknown model families.
+
+A strong scoped contribution could establish an important problem, a non-obvious
+reason cross-statistic relationships help, a practically meaningful gain under
+honest label/pretraining/compute accounting, and replication sufficient for that
+specific claim. A large architecture, formal theorem, real-world dataset and broad
+benchmark are not all mandatory components of every strong paper. Clear writing
+cannot substitute for significance or novelty, but can make a focused contribution
+legible. There is no fixed percentage gain or dataset count that guarantees a venue.
+
+[ICLR 2026's reviewer guide](https://iclr.cc/Conferences/2026/ReviewerGuide) explicitly
+allows impactful new knowledge without state-of-the-art results. [NeurIPS 2026](https://neurips.cc/Conferences/2026/ReviewerGuidelines)
+recognizes insights, efficiency and well-reasoned combinations of existing techniques;
+its use-inspired guidance emphasizes important use cases and non-ML alternatives.
+[JMLR](https://www.jmlr.org/author-info.html) asks for advances in ML understanding
+of broader interest and excludes pure applications. [Nature Computational Science](https://www.nature.com/natcomputsci/natcomputsci/natcomputsci/about/aims)
+emphasizes computational advances and scientific insight or challenging applications.
+These are different contribution profiles, not a ladder of universal benchmark scores.
+No acceptance prediction follows from this guidance.
+
+The PCA objection is partly addressed, not dismissed: PCA32 was already present;
+training-only cap selection now failed to improve z on Stage B. Population
+intrinsic dimension is not established by p>>N, and PCA maximizes variance rather
+than target information. Supervised compression or independent-source unsupervised
+pretraining remain distinct, untested possibilities. The next proposal is
+[one local-sensitivity property](interaction-share-pilot.md), not another unrestricted
+system catalogue. Its prototype changes no existing generator functions and has
+only raw target feasibility evidence so far.

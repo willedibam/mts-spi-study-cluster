@@ -75,6 +75,9 @@ def report(config_path, data_root, result_roots, output):
              ("neural", "random_encoder"), ("z", "random_encoder"),
              ("z", "pooled_raw"), ("z", "pooled_raw_phase"),
              ("pooled_raw", "observables"), ("pooled_raw_phase", "pooled_raw")]
+    pairs += [(m, m.removesuffix("_pca_selected")) for m in methods if m.endswith("_pca_selected")]
+    pairs += [("z_pca_selected", "m_pca_selected"), ("z_pca_selected", "observables_pca_selected"),
+              ("m+z_pca_selected", "m_pca_selected"), ("m+z_pca_selected", "observables_pca_selected")]
     units = np.unique(groups)
     unit_strata = np.asarray([strata[np.flatnonzero(groups == group)[0]] for group in units])
     for left, right in pairs:
@@ -160,6 +163,13 @@ def report(config_path, data_root, result_roots, output):
         lines += ["Pooled raw controls are exploratory additions after the initial neural results: 82 existing "
                   "marginal/dependence features, and a second version appending analytic-phase coherence. "
                   "They use the same label subsets and training-only PCA/ridge procedure; no extra labels are used.", ""]
+    if any(m.endswith("_pca_selected") for m in methods):
+        lines += ["The PCA-selected methods are an exploratory sensitivity after the primary results. "
+                  "PCA caps 1/2/4/8/16/32 and ridge regularization are jointly selected inside the original "
+                  "two-fold label budget. Every fold fits its own preprocessing and PCA. Caps are limited "
+                  "by fitting sample count; numerical ties prefer the smaller cap and stronger ridge. "
+                  "The original fixed-cap results remain unchanged. The figure displays the original methods; "
+                  "tables and paired comparisons include the PCA-selected methods.", ""]
     (output / "report.md").write_text("\n".join(lines))
     print(json.dumps({"methods": methods, "primary": summary[primary]}, indent=2))
 
