@@ -86,3 +86,13 @@ distributions. Do not expand the family/topology/sensor grid based on rankings.
 Even a positive result supports a controlled representation finding, not by
 itself a compelling general-purpose method or a high-impact publication claim.
 
+## Supplementary readout control
+
+After protocol freeze, while MPI production was running and before confirmation
+z results existed, added PLS1/2/4 to the same frozen random encoder. This addresses
+the head mismatch in z/PLS versus random/PCA-ridge: a pipeline gain alone cannot
+be attributed to the representation. The original frozen comparisons are retained.
+Use `run_representation_state_random_control.py --head pls` with a fresh output
+directory; the reporter identifies `random_encoder_pls` as supplementary.
+Verify extracted features equal the existing frozen-random features before
+interpreting the head comparison. No additional neural training or pyspi is used.

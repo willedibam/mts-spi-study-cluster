@@ -17,8 +17,11 @@ from src.representation_state_neural import AlignedChannelEncoder, seed_torch
 from src.run_external_corpus import _atomic_json, _atomic_savez
 
 
-def run(config_path, data, output, device, source_family=None):
+def run(config_path, data, output, device, source_family=None, head='pca'):
     protocol = yaml.safe_load(config_path.read_text())
+    if head not in ('pca','pls') or (head=='pls' and 'pls_components' not in protocol['methods']):
+        raise ValueError('PLS requires an explicit component grid')
+    method = 'random_encoder' if head=='pca' else 'random_encoder_pls'
     manifest, masters = load_state_data(data, config_path)
     rows = manifest["rows"]
     pool = np.asarray([i for i, r in enumerate(rows) if r["role"] == "training_pool"
@@ -35,11 +38,11 @@ def run(config_path, data, output, device, source_family=None):
         identity = {"protocol_sha256": file_hash(config_path), "manifest_sha256": file_hash(data / "manifest.json"),
                     "runner_sha256": file_hash(Path(__file__)), "neural_sha256": file_hash(Path("src/representation_state_neural.py")),
                     "preprocessing_sha256": file_hash(Path("src/representation_screen.py")),
-                    "method": "random_encoder", "seed": seed, "device": device, "torch": str(torch.__version__),
+                    "method": method, "seed": seed, "device": device, "torch": str(torch.__version__),
                     "status": "post_neural_result_exploratory_addition", "pretraining": "none"}
         if source_family is not None:
             identity["source_family"] = source_family
-        if "pca_caps" in protocol["methods"]:
+        if head=='pls' or "pca_caps" in protocol["methods"]:
             identity["selection_sha256"] = file_hash(Path("src/interaction_share_learning.py"))
         seed_torch(seed)
         model = AlignedChannelEncoder(protocol["methods"]["raw_encoder_spec"]).to(device).eval()
@@ -65,19 +68,19 @@ def run(config_path, data, output, device, source_family=None):
         cohort = source_pool_for_seed(rows, pool, protocol, seed)
         for n, train in training_subsets(strata, cohort, budgets, seed).items():
             start = time.perf_counter()
-            if "pca_caps" in protocol["methods"]:
+            if head=='pls' or "pca_caps" in protocol["methods"]:
                 (cap, alpha), details = select_statistical(bank, "u", train, targets, strata,
-                                                          protocol["methods"], seed, "pca")
+                                                          protocol["methods"], seed, head)
                 transform, fitted = fit_statistical(bank, "u", train, targets,
-                    protocol["methods"]["preprocessing"], "pca", cap, alpha)
+                    protocol["methods"]["preprocessing"], head, cap, alpha)
                 scores = transform.transform(bank, train)
-                details["chosen_pca_cap"] = cap
+                details["chosen_pca_cap" if head=='pca' else "chosen_pls_components"] = cap
             else:
                 alpha, details = select_ridge(bank, "u", train, targets, strata, protocol, seed)
                 transform, scores = fit_view(bank, "u", train, protocol["methods"]["preprocessing"])
                 fitted = Ridge(alpha=alpha).fit(scores, targets[train])
-            prediction = np.clip(fitted.predict(transform.transform(bank, evaluation)), 0, 1)
-            stem = output / f"random_encoder-n{n}-s{seed}"
+            prediction = np.clip(fitted.predict(transform.transform(bank, evaluation)).reshape(-1), 0, 1)
+            stem = output / f"{method}-n{n}-s{seed}"
             _atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": targets[evaluation],
                                                     "train_indices": train, "evaluation_indices": evaluation,
                                                     "row_id": np.asarray([rows[i]["row_id"] for i in evaluation])})
@@ -86,7 +89,7 @@ def run(config_path, data, output, device, source_family=None):
             _atomic_json(stem.with_suffix(".json"), {"identity": {**identity, "n_per_coupling": n}, "details": details,
                          "predictions_sha256": file_hash(stem.with_suffix(".npz")), "labels_total": len(train),
                          "train_indices": train.tolist(), "evaluation_indices": evaluation.tolist(),
-                         "training_MAE": float(abs(np.clip(fitted.predict(scores), 0, 1) - targets[train]).mean()),
+                         "training_MAE": float(abs(np.clip(fitted.predict(scores).reshape(-1), 0, 1) - targets[train]).mean()),
                          "evaluation_MAE": float(abs(prediction - targets[evaluation]).mean()),
                          "seconds": time.perf_counter() - start})
         print(f"Completed frozen encoder seed {seed}; extraction {extraction_seconds:.1f}s", flush=True)
@@ -99,5 +102,6 @@ if __name__ == "__main__":
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--device", choices=["cpu", "mps", "cuda"], default="cpu")
     p.add_argument("--source-family")
+    p.add_argument("--head", choices=['pca','pls'], default='pca')
     args = p.parse_args()
-    run(args.config, args.data, args.output, args.device, args.source_family)
+    run(args.config, args.data, args.output, args.device, args.source_family, args.head)

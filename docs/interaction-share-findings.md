@@ -18,6 +18,7 @@ Joint-shift MAE, equal weight to linear→tanh and tanh→linear, M16/T1000→M8
 | Calibrated linear+tanh dynamics | .1483 | .1451 | .1394 |
 | Trained temporal/channel encoder | .2370 | .2213 | .2048 |
 | Frozen random encoder / PCA-ridge | .2234 | .1814 | .1616 |
+| Frozen random encoder / PLS (supplementary) | .2080 | .1889 | .1586 |
 | Source median | .2561 | .2560 | .2560 |
 
 The standardized-shape control retains each SPI's skewness, kurtosis and 19
@@ -53,6 +54,11 @@ were intrinsically low dimensional or pure noise.
   Random convolutional features are established competitive time-series tools
   ([ROCKET](https://arxiv.org/abs/1910.13051)); our control uses the existing
   attention encoder, not ROCKET itself.
+  A supplementary matched-PLS check gives random-feature MAEs
+  .2080/.1889/.1586; z/PLS improves at10/20 labels with conditional intervals
+  excluding zero, but not at40. With matched PCA/ridge, z's clear advantage is
+  at10 labels. Exact equality of all re-extracted frozen feature banks isolates
+  the readout change. Do not select the worse random readout to inflate a gain.
 - A bounded nonlinear-head check does not close the marginal gap. With fixed
   training-only RBF bandwidth scaling, training-mean target centering and the
   same PCA-cap/regularization grid, m/shape/z MAEs at 40 labels are
@@ -114,3 +120,24 @@ Evidence: `results/interaction_share_260908/{report,shape-report,followup-report
 independent evaluation masters within nominal-share strata and are unadjusted
 for multiple comparisons. Five training subsets share a source pool; they are
 not five independent training populations.
+
+## Related-work boundary, checked 2026-09-08
+
+The contribution must be more specific than combining statistical features.
+[Bryant et al. (2024)](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012692)
+already compare local dynamical features, per-SPI connectivity and combinations
+for neuropsychiatric classification. Their spatially indexed representations are
+different from our per-record, spatially pooled cross-SPI representation.
+[Wang et al. (2025)](https://www.nature.com/articles/s42003-025-09165-7)
+correlate univariate feature profiles *between brain regions*: another feature
+similarity construction, with a different unit of comparison from SPIs across
+dyads. Neither paper validates our proposed transfer claim.
+
+[Nguyen et al. (2025)](https://journals.aps.org/prresearch/abstract/10.1103/qnx2-yp4c)
+([accessible preprint](https://arxiv.org/abs/2404.05929)) study dependence mediated
+by temporal features over long timescales. Their feature-based inference gains
+under limited/noisy data illustrate a meaningful constrained-efficiency question;
+the construction and target differ from z. These are precedents for scientifically
+useful representations, not evidence that our present controlled target has
+equivalent practical significance. This targeted check is not an exhaustive
+novelty search. No biological experiment is being added on the basis of it.

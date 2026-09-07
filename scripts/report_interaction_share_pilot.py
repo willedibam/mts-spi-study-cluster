@@ -88,6 +88,7 @@ def report(config,data,inputs,output):
               for left,right in [('z','shape'),('shape+z','shape'),('shape','m')]]
     pairs += [(v+'-rbf',v+'-pls') for v in ['m','shape','z']]
     pairs += [('z-'+head,'null_mean-'+head) for head in ['pca','pls']]
+    pairs += [('z-pls','random_encoder_pls'),('random_encoder_pls','random_encoder'),('z-pca','random_encoder')]
     for left,right in pairs:
         if left in primary and right in primary:
             delta=primary[left]-primary[right]; boot=primary_boot[left]-primary_boot[right]
@@ -95,9 +96,12 @@ def report(config,data,inputs,output):
     output.mkdir(exist_ok=True,parents=True)
     exploratory=p['evaluation'].get('exploratory',True)
     status=('exploratory' if exploratory else 'prospective_confirmation')+'_conditional_on_fitted_models'
+    planned=set(p['methods'].get('confirmation_statistical_methods',[])+p['methods'].get('confirmation_raw_methods',[]))
+    supplementary=sorted(set(complete)-planned) if planned else []
     _atomic_json(output/'results.json',dict(status=status,primary=summary,cells=cells,paired_primary=comparisons,
                  total_label_budgets=p['sampling']['total_label_budgets'],incomplete_methods=incomplete,fit_provenance=provenance,
                  per_source_subset_primary_MAE=per_cohort,disjoint_training_cohorts=p['sampling'].get('disjoint_training_cohorts',False),
+                 supplementary_methods_outside_frozen_protocol=supplementary,
                  report_code_sha256=file_hash(Path(__file__)),protocol_sha256=file_hash(config)))
     lines=['# '+p['study_id'],'', 'Joint shift: held-out family, M16/T1000 to M8/T500; equal weight to both directions.',
            ('Exploratory evaluation.' if exploratory else 'Prospective continuous-parameter confirmation.')+
@@ -105,6 +109,7 @@ def report(config,data,inputs,output):
            '| Method | 10 labels | 20 labels | 40 labels |','|---|---:|---:|---:|']
     for name,item in summary.items(): lines.append('| '+name+' | '+' | '.join(f'{x:.4f}' for x in item['MAE'])+' |')
     lines+=['','Per-direction, per-cohort and per-cell results and paired intervals are in results.json. Intervals resample independent evaluation masters within nominal-share strata, conditional on the fitted models; they are pointwise and unadjusted for multiple comparisons.',f'Incomplete methods (not ranked): {incomplete}','']
+    if supplementary: lines += [f'Supplementary methods outside frozen protocol: {supplementary}','']
     (output/'report.md').write_text('\n'.join(lines)); print('\n'.join(lines))
 
 
