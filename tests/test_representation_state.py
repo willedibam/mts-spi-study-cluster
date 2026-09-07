@@ -12,7 +12,7 @@ from scripts.run_representation_state_pilot import select_ridge
 
 
 def protocol():
-    return yaml.safe_load(Path("configs/analysis/representation-stage-b-proposal-260907.yaml").read_text())
+    return yaml.safe_load(Path("configs/analysis/representation-stage-b-260907.yaml").read_text())
 
 
 def test_views_keep_a_common_endpoint_and_channel_order():
@@ -78,3 +78,41 @@ def test_final_neural_fit_requires_frozen_epoch_count_and_has_gradients():
     fitted, log = fit_encoder(x, y, spec, .001, .0001, 7, epochs=2)
     assert log["epochs_run"] == 2 and log["validation_MAE"] is None
     assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in fitted.parameters())
+
+
+def test_end_to_end_state_pilot_groups_views_and_rejects_changed_data_protocol(tmp_path):
+    import json
+    from scripts.build_representation_state_data import build
+    from scripts.run_representation_state_pilot import run
+    from scripts.report_representation_state_pilot import report
+    from src.representation_state_data import load_state_data
+    p = protocol()
+    p.pop("data_protocol")
+    p["generator"].update(M=4, N_full=4, T=64, future_truth_T=64, burn_time=1., reduced_couplings=[.6, 1.4])
+    p["observations"].update(source={"M": 4, "T": 64}, M_values=[2, 4], T_values=[32, 64])
+    p["sampling"].update(training_masters_per_coupling=4, evaluation_masters_per_coupling=2,
+                         labelled_training_masters_per_coupling=[2], total_label_budgets=[4])
+    p["methods"]["subset_seeds"] = [11]
+    config = tmp_path / "config.yaml"
+    config.write_text(yaml.safe_dump(p))
+    data = tmp_path / "data"
+    build(config, data)
+    run(config, data, tmp_path / "simple", ["mean", "observables"], "cpu")
+    report(config, data, [tmp_path / "simple"], tmp_path / "report")
+    result = json.loads((tmp_path / "report/results.json").read_text())
+    assert result["evaluation_masters"] == 4
+    assert len(result["summary"]["both_M_and_T_changed"]["mean"]["MAE"]) == 1
+    fit = json.loads((tmp_path / "simple/observables-n2-s11.json").read_text())
+    assert fit["labels_total"] == 4
+    assert set(fit["train_indices"]).isdisjoint(fit["evaluation_indices"])
+    # A fitting-only revision can reuse raw masters, a changed observation
+    # protocol cannot silently inherit their provenance.
+    p["data_protocol"] = str(config)
+    p["methods"]["raw_encoder_spec"]["dropout"] = .1
+    revision = tmp_path / "revision.yaml"
+    revision.write_text(yaml.safe_dump(p))
+    load_state_data(data, revision)
+    p["observations"]["source"]["M"] = 2
+    revision.write_text(yaml.safe_dump(p))
+    with pytest.raises(ValueError, match="data construction"):
+        load_state_data(data, revision)

@@ -11,6 +11,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy.signal import hilbert
+import yaml
 
 
 def file_hash(path: Path) -> str:
@@ -36,8 +37,13 @@ def simple_observables(view: np.ndarray) -> np.ndarray:
 
 def load_state_data(root: Path, config_path: Path) -> tuple[dict, np.ndarray]:
     manifest = json.loads((root / "manifest.json").read_text())
-    if manifest["config_sha256"] != file_hash(config_path):
+    protocol = yaml.safe_load(config_path.read_text())
+    data_protocol = Path(protocol.get("data_protocol", config_path))
+    if manifest["config_sha256"] != file_hash(data_protocol):
         raise ValueError("data/protocol hash mismatch")
+    original = yaml.safe_load(data_protocol.read_text())
+    if any(protocol[key] != original[key] for key in ("generator", "target", "observations", "sampling")):
+        raise ValueError("execution protocol changes data construction or sampling")
     for name, digest in manifest["artifacts"].items():
         if file_hash(root / name) != digest:
             raise ValueError(f"data hash mismatch: {name}")

@@ -1,0 +1,207 @@
+study_id: representation-stage-b-260907
+status: exploratory_pilot_execution
+purpose: Isolate observation changes at fixed physical size using an independently
+  measured future macroscopic target.
+claim_boundary: Finite-population synchronization prediction and random sensor subsampling;
+  not a universal state representation or new phase-transition result.
+generator:
+  name: kuramoto_order_parameter
+  N_full: 32
+  M: 32
+  T: 1000
+  future_truth_T: 1000
+  dt: 0.02
+  sample_dt: 0.1
+  burn_time: 100.0
+  frequency_distribution: gaussian
+  frequency_sampling: random
+  omega_mean: 1.0
+  omega_std: 1.0
+  output: cos
+  sensor_phase_std: 0.0
+  zscore: false
+  reduced_couplings:
+  - 0.6
+  - 0.8
+  - 0.95
+  - 1.0
+  - 1.05
+  - 1.2
+  - 1.4
+  - 1.6
+  coupling_scale: sqrt(8/pi)
+target:
+  quantity: mean_full_population_phase_coherence_in_future_window
+  input_end_sample: 1000
+  truth_samples:
+  - 1000
+  - 2000
+  bounds:
+  - 0
+  - 1
+  same_target_for_every_view_of_a_master: true
+  labels_from_hidden_simulator_phases: true
+  controls_and_phases_available_to_predictors: false
+  note: Labels are future averages, not assumed time-constant regimes; all views share
+    the same prediction endpoint.
+observations:
+  source:
+    M: 16
+    T: 1000
+  M_values:
+  - 8
+  - 16
+  - 32
+  T_values:
+  - 500
+  - 1000
+  windows: suffixes_ending_at_the_same_input_endpoint
+  channels: nested_random_subsets_of_one_master_population
+  resimulate_for_each_view: false
+  recompute_spis_for_each_view: true
+  sampling_frequency_shift: false
+  channel_mixing_or_spatial_region_shift: false
+sampling:
+  master_seed: 260907
+  rng_derivation: SeedSequence([master_seed, split_id, coupling_index, replicate_index])
+  training_masters_per_coupling: 12
+  evaluation_masters_per_coupling: 12
+  labelled_training_masters_per_coupling:
+  - 2
+  - 4
+  - 8
+  total_label_budgets:
+  - 16
+  - 32
+  - 64
+  independent_group: master_realization
+  source_views_per_training_master: 1
+  evaluation_views_per_master: 6
+  estimated_mpi_records: 672
+  no_target_adaptation_labels: true
+  unlabelled_pretraining: none_in_first_pilot
+  tuning_labels: included_in_each_label_budget
+methods:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  views:
+  - m
+  - z
+  - m+z
+  - m+g
+  - m+g+z
+  - validity
+  readout: training_only_PCA_and_ridge_regression
+  preprocessing:
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-08
+    marginal_and_graph_scaling: standard
+    z_scaling: center
+    clip_standard_deviations: 5.0
+    block_balance: unit_total_training_variance_after_clipping
+    pca_dimensions: 32
+    pca_solver: randomized
+    pca_random_state: 1729
+  ridge_alpha_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  inner_validation: two_folds_within_label_budget_stratified_by_coupling_grouped_by_master
+  subset_seeds:
+  - 11
+  - 23
+  - 47
+  - 71
+  - 101
+  baseline_observables:
+  - mean_absolute_correlation
+  - analytic_phase_coherence_from_observed_cosines
+  raw_encoder: shared_temporal_CNN_then_aligned_channel_interaction_then_pooling
+  raw_encoder_training: supervised_from_scratch_with_same_label_budget
+  raw_encoder_spec:
+    input: identical_unnormalized_cosine_recordings_as_statistical_frontend
+    temporal_convolutions:
+    - width: 32
+      kernel: 7
+      stride: 2
+      padding: 3
+    - width: 64
+      kernel: 5
+      stride: 2
+      padding: 2
+    activation: GELU
+    channel_attention_blocks: 2
+    attention_width: 64
+    attention_heads: 4
+    attention_axis: channels_at_each_aligned_time_patch
+    feedforward_width: 128
+    residual_and_layer_normalization: true
+    post_attention_temporal_convolution:
+      width: 64
+      kernel: 3
+      stride: 1
+      padding: 1
+    pooling: concatenate_mean_and_max_over_channels_and_time_after_interaction
+    readout:
+    - 32
+    - 1
+    hidden_readout_activation: GELU
+    dropout: 0.0
+    loss: mean_squared_error
+    optimizer: AdamW
+    learning_rates:
+    - 0.0001
+    - 0.001
+    weight_decays:
+    - 0.0001
+    - 0.01
+    batch_size: 16
+    maximum_epochs: 200
+    early_stopping_metric: validation_MAE
+    early_stopping_patience: 20
+    minimum_epochs: 30
+    final_refit_epochs: median_best_epoch_of_selected_setting_inner_folds
+    initialization_seed: matched_subset_seed
+    sensor_or_duration_augmentation: none_in_first_pilot
+    purpose: Provisional competent small baseline; validate implementation and optimization
+      before interpreting a negative neural result.
+  predictions_clipped_to_target_bounds: true
+evaluation:
+  primary_metric: mean_absolute_error
+  primary_shift: both_M_and_T_changed
+  secondary:
+  - same_cell
+  - M_only_changed
+  - T_only_changed
+  - within_coupling_prediction
+  - validity
+  uncertainty_unit: master_realization_grouped_across_observation_views
+  no_p_value_gating: true
+  pilot_resource_gate: Repeated roughly 10_percent_relative_MAE_reduction_vs_strongest_simple_control_or_a_specific_remediable_failure
+  gate_interpretation: Provisional resource-allocation criterion; not established
+    scientific or practical utility.
+before_pyspi:
+- Verify nested observations and identical future target across views using raw-only
+  fixtures.
+- Check finite signals and target variation; compare burn times 100 and 200 on a small
+  independent diagnostic panel.
+- Quantify the strength of the simple observables; current repository evidence already
+  favours them on related tasks.
+- Implement the specified regression/raw-encoder contract and verify validation isolation,
+  tiny-data overfitting, and optimization convergence before claim-bearing comparisons.
+- Run two-dataset and representative-node p90 timing/memory scouts before allocation.
+not_yet_supported:
+- No advantage over simple synchronization measures is expected or asserted.
+- This pilot has cheap synthetic labels; it does not itself motivate real-world label
+  scarcity.
+- All-to-all oscillators have no spatial regions, so regional sensor-coverage transfer
+  needs a later system.
+- No new frozen confirmation population has been generated.
+data_protocol: configs/analysis/representation-stage-b-proposal-260907.yaml
+implementation_revision: 'Dropout removed before claim-bearing comparison: the disjoint
+  tiny-data diagnostic showed train/eval bias with dropout before max pooling (MAE
+  .0728 at lr .001, .0251 at .0001); identical architecture without dropout fit to
+  MAE 5.62e-6. AdamW weight decay remains tuned within the original budget. Preserve
+  original checks and partial original CV log.'
