@@ -24,6 +24,17 @@ def observed_view(master: np.ndarray, m: int, t: int) -> np.ndarray:
     return np.ascontiguousarray(master[-t:, :m])
 
 
+def source_pool_for_seed(rows, pool, protocol, seed):
+    """Optionally use independent training cohorts, retaining nested budgets."""
+    if not protocol['sampling'].get('disjoint_training_cohorts', False):
+        return pool
+    cohort = protocol['methods']['subset_seeds'].index(seed)
+    selected = np.asarray([i for i in pool if rows[i]['cohort_index'] == cohort], dtype=int)
+    if not len(selected):
+        raise ValueError('empty training cohort')
+    return selected
+
+
 def simple_observables(view: np.ndarray) -> np.ndarray:
     correlation = np.corrcoef(view.T)
     mean_absolute = np.abs(correlation[~np.eye(view.shape[1], dtype=bool)]).mean()

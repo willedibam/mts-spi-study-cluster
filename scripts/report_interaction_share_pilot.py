@@ -28,7 +28,9 @@ def report(config,data,inputs,output):
             with np.load(path.with_suffix('.npz'),allow_pickle=False) as a:
                 ix=a['evaluation_indices']; train=a['train_indices']
                 assert all(rows[i]['role']=='training_pool' and rows[i]['family']==key[1] for i in train)
-                assert len(train)==key[2]*5
+                assert len(train)==key[2]*len(p['generator']['nominal_shares'])
+                if p['sampling'].get('disjoint_training_cohorts',False):
+                    assert all(rows[i]['cohort_index']==seeds.index(key[3]) for i in train)
                 assert not {rows[i]['master_id'] for i in train}&{rows[i]['master_id'] for i in ix}
                 np.testing.assert_array_equal(a['row_id'],[rows[i]['row_id'] for i in ix])
                 np.testing.assert_allclose(a['target'],[rows[i]['target'] for i in ix],rtol=0,atol=0)
@@ -49,21 +51,22 @@ def report(config,data,inputs,output):
     complete=[name for name in names if sum(k[0]==name for k in fits)==expected]
     incomplete={name:sum(k[0]==name for k in fits) for name in names if name not in complete}
     if not complete: raise ValueError('No complete method yet')
-    cells={}; primary={}; primary_boot={}
+    cells={}; primary={}; primary_boot={}; per_cohort={}
     for name in complete:
         directional=[]; directional_boot=[]
         for family in families:
             for destination in families:
                 for cell in ['source','shift']:
                     shape=p['observations'][cell]
-                    values=[]
+                    values=[]; cohort_values=[]
                     for n in budgets:
                         errors=[]
                         for seed in seeds:
                             ix,error=fits[(name,family,n,seed)]
                             mask=np.asarray([rows[i]['family']==destination and rows[i]['M']==shape['M'] and rows[i]['T']==shape['T'] for i in ix])
-                            assert mask.sum()==100
+                            assert mask.sum()==p['sampling']['evaluation_masters_per_coupling']*len(p['generator']['nominal_shares'])
                             errors.append(error[mask])
+                        cohort_values.append(np.mean(errors,axis=1).tolist())
                         values.append(np.mean(errors,axis=0))
                     values=np.asarray(values)
                     strata=np.asarray([rows[i]['coupling_index'] for i in ix[mask]])
@@ -74,6 +77,7 @@ def report(config,data,inputs,output):
                     cells.setdefault(key,{})[name]=dict(MAE=values.mean(axis=1).tolist(),
                          conditional_95_CI=np.quantile(boot,[.025,.975],axis=-1).T.tolist())
                     if family!=destination and cell=='shift':
+                        per_cohort.setdefault(name,{})[family]=cohort_values
                         directional.append(values); directional_boot.append(boot)
         primary[name]=np.mean(directional,axis=0)
         primary_boot[name]=np.mean(directional_boot,axis=0)
@@ -89,14 +93,18 @@ def report(config,data,inputs,output):
             delta=primary[left]-primary[right]; boot=primary_boot[left]-primary_boot[right]
             comparisons[left+'_minus_'+right]=dict(MAE_difference=delta.mean(axis=-1).tolist(),conditional_95_CI=np.quantile(boot,[.025,.975],axis=-1).T.tolist())
     output.mkdir(exist_ok=True,parents=True)
-    _atomic_json(output/'results.json',dict(status='exploratory_conditional_on_fitted_models',primary=summary,cells=cells,paired_primary=comparisons,
+    exploratory=p['evaluation'].get('exploratory',True)
+    status=('exploratory' if exploratory else 'prospective_confirmation')+'_conditional_on_fitted_models'
+    _atomic_json(output/'results.json',dict(status=status,primary=summary,cells=cells,paired_primary=comparisons,
                  total_label_budgets=p['sampling']['total_label_budgets'],incomplete_methods=incomplete,fit_provenance=provenance,
+                 per_source_subset_primary_MAE=per_cohort,disjoint_training_cohorts=p['sampling'].get('disjoint_training_cohorts',False),
                  report_code_sha256=file_hash(Path(__file__)),protocol_sha256=file_hash(config)))
-    lines=['# Interaction-share pilot','', 'Joint shift: held-out family, M16/T1000 to M8/T500; equal weight to both directions.',
-           'Fresh exploratory evaluation; five labelled subsets, no pretraining. Lower MAE is better.','',
+    lines=['# '+p['study_id'],'', 'Joint shift: held-out family, M16/T1000 to M8/T500; equal weight to both directions.',
+           ('Exploratory evaluation.' if exploratory else 'Prospective continuous-parameter confirmation.')+
+           ' Five labelled subsets/cohorts, no pretraining. Lower MAE is better.','',
            '| Method | 10 labels | 20 labels | 40 labels |','|---|---:|---:|---:|']
     for name,item in summary.items(): lines.append('| '+name+' | '+' | '.join(f'{x:.4f}' for x in item['MAE'])+' |')
-    lines+=['','Per-direction and per-cell results and paired intervals are in results.json. Intervals resample independent evaluation masters within nominal-share strata, conditional on the fitted models; they are exploratory and unadjusted for multiple comparisons.',f'Incomplete methods (not ranked): {incomplete}','']
+    lines+=['','Per-direction, per-cohort and per-cell results and paired intervals are in results.json. Intervals resample independent evaluation masters within nominal-share strata, conditional on the fitted models; they are pointwise and unadjusted for multiple comparisons.',f'Incomplete methods (not ranked): {incomplete}','']
     (output/'report.md').write_text('\n'.join(lines)); print('\n'.join(lines))
 
 

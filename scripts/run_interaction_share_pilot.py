@@ -11,7 +11,7 @@ from sklearn.isotonic import IsotonicRegression
 
 from src.interaction_share_learning import fit_statistical, select_statistical, select_reference, standardized_marginal_shapes
 from src.representation_screen import training_subsets
-from src.representation_state_data import file_hash, load_state_data
+from src.representation_state_data import file_hash, load_state_data, source_pool_for_seed
 from src.run_external_corpus import _atomic_json, _atomic_savez
 
 
@@ -43,7 +43,8 @@ def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',m
         assert len({rows[i]['master_id'] for i in pool})==len(pool)
         assert not {rows[i]['master_id'] for i in pool}&{rows[i]['master_id'] for i in evaluation}
         for seed in methods['subset_seeds']:
-            for n,train in training_subsets(strata,pool,protocol['sampling']['labelled_training_masters_per_coupling'],seed).items():
+            cohort = source_pool_for_seed(rows,pool,protocol,seed)
+            for n,train in training_subsets(strata,cohort,protocol['sampling']['labelled_training_masters_per_coupling'],seed).items():
                 for name in selected:
                     reported = method_prefix + (name.replace('m','shape',1) if marginal_mode == 'shape' else name)
                     stem=output/family/f'{reported.replace("+","_")}-n{n}-s{seed}'

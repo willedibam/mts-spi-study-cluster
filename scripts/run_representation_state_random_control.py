@@ -12,7 +12,7 @@ import yaml
 from scripts.run_representation_state_pilot import select_ridge
 from src.interaction_share_learning import fit_statistical, select_statistical
 from src.representation_screen import fit_view, training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view
+from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
 from src.representation_state_neural import AlignedChannelEncoder, seed_torch
 from src.run_external_corpus import _atomic_json, _atomic_savez
 
@@ -62,7 +62,8 @@ def run(config_path, data, output, device, source_family=None):
         bank = {"u": values}
         feature_path = output / f"initial-features-s{seed}.npz"
         _atomic_savez(feature_path, {"X": values, "row_id": np.asarray([r["row_id"] for r in rows])})
-        for n, train in training_subsets(strata, pool, budgets, seed).items():
+        cohort = source_pool_for_seed(rows, pool, protocol, seed)
+        for n, train in training_subsets(strata, cohort, budgets, seed).items():
             start = time.perf_counter()
             if "pca_caps" in protocol["methods"]:
                 (cap, alpha), details = select_statistical(bank, "u", train, targets, strata,

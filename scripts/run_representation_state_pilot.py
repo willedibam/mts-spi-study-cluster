@@ -20,7 +20,7 @@ from sklearn.model_selection import StratifiedKFold
 import yaml
 
 from src.representation_screen import fit_view, training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view
+from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
 from src.run_external_corpus import _atomic_json, _atomic_savez
 
 
@@ -94,7 +94,8 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
         pool_lookup = {int(row): i for i, row in enumerate(pool)}
         y_source = torch.as_tensor(targets[pool], dtype=torch.float32, device=device)
     for seed in selected_seeds:
-        subsets = training_subsets(strata, pool, selected_budgets, seed)
+        cohort = source_pool_for_seed(rows, pool, protocol, seed)
+        subsets = training_subsets(strata, cohort, selected_budgets, seed)
         for n, train in subsets.items():
             for method in methods:
                 stem = output / f"{method.replace('+', '_')}-n{n}-s{seed}"

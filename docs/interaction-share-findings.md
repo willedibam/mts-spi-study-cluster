@@ -1,7 +1,6 @@
 # Interaction-share representation findings
 
-Status: fresh pilot, normalization/readout controls complete; alignment control
-being prepared. These are exploratory findings, not a confirmed general-purpose
+Status: fresh pilot and normalization/readout/alignment controls complete. These are exploratory findings, not a confirmed general-purpose
 or neural-superiority result. [Setup and reproduction](interaction-share-execution.md).
 
 ## What has survived the controls
@@ -84,20 +83,22 @@ Do not make the generator more nonlinear merely to force a linear baseline to lo
 
 ## Next evidence and scale decision
 
-Before enlarging the dataset, test cross-SPI dyad correspondence directly using
-three independent per-SPI dyad permutations, preserving edge multisets,
-reciprocity and validity. A shared permutation must leave z unchanged. Average
-null errors as technical replications, not predictions as an ensemble or extra
-independent systems. The perturbed MPI collections need not be realizable by
-raw time series; this is a representation-level mechanism control.
+Three independent per-SPI dyad permutations preserve edge multisets, reciprocity
+and validity across all 520 records. A shared permutation preserves z to 3.73e-9.
+Independent permutations raise z/PLS MAE to .2535 at all three budgets, near the
+.256 median reference, versus aligned .1769/.1641/.1600. This supports the
+predictive role of cross-SPI correspondence beyond marginal distributions.
+It does not prove causal organization recovery: the perturbed MPI collections
+need not be realizable by raw time series. Null errors are averaged over technical
+seeds, not predictions as an ensemble or extra independent systems. Gadi job
+178391492 exited successfully at code 4932773.
 
-A useful subsequent confirmation would use fresh source/evaluation populations
-and a frozen, narrowed comparator set. Simply adding more versions of these two
-related generators would not establish broader dynamics, applied importance or
-novelty. Continuous parameter sampling would specifically test property learning
-beyond the current five nominal-share settings; it would be a distinct prospective
-extension, not an identical-distribution replication. Decide after the mechanism
-control, without rewriting the target to improve the method's ranking.
+This justifies one [prospective confirmation](interaction-share-confirmation.md)
+with fresh continuous parameter values and disjoint training cohorts, keeping
+the same target, map families, observation cells and frozen comparator set.
+It addresses discrete settings and shared-pool uncertainty rather than broadening
+the benchmark to obtain a favourable result. It is a distinct continuous-parameter
+extension, not an identical-distribution replication.
 
 The strongest current claim is a scoped benefit of SPI relationships over tested
 individual-SPI distributions under limited labels and observation/family shifts.
@@ -107,7 +108,7 @@ or high-venue prediction follows. [Cliff et al.](https://www.nature.com/articles
 already studied empirical SPI relationships; novelty must lie in the record-level
 representation's useful behaviour and the insight explaining it.
 
-Evidence: `results/interaction_share_260908/{report,shape-report,followup-report}/`,
+Evidence: `results/interaction_share_260908/{report,shape-report,followup-report,complete-report}/`,
 `linearization-diagnostic.json`, `neural-completion.json` and
 `neural-cpu-verification.json`. Intervals condition on the fitted models, resample
 independent evaluation masters within nominal-share strata and are unadjusted

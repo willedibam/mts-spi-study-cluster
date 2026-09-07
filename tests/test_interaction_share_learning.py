@@ -82,3 +82,38 @@ def test_shared_runner_filters_training_family_and_keeps_both_test_families(tmp_
     with np.load(tmp_path/'random/random_encoder-n2-s11.npz') as a:
         assert all(rows[i]['family']=='linear' and rows[i]['role']=='training_pool' for i in a['train_indices'])
         np.testing.assert_allclose(a['prediction'],.2)
+
+
+def test_independent_training_cohorts_have_disjoint_nested_label_budgets():
+    from src.representation_state_data import source_pool_for_seed
+    from src.representation_screen import training_subsets
+    p=yaml.safe_load(Path('configs/analysis/interaction-share-260908.yaml').read_text())
+    p['sampling']['disjoint_training_cohorts']=True
+    rows=[dict(cohort_index=c,coupling_index=k) for c in range(5) for k in range(5) for r in range(8)]
+    pool=np.arange(len(rows));strata=np.asarray([r['coupling_index'] for r in rows]);used=set()
+    for seed in p['methods']['subset_seeds']:
+        cohort=source_pool_for_seed(rows,pool,p,seed)
+        subsets=training_subsets(strata,cohort,[2,4,8],seed)
+        assert set(subsets[2])<=set(subsets[4])<=set(subsets[8])
+        assert [len(subsets[n]) for n in [2,4,8]]==[10,20,40]
+        assert used.isdisjoint(subsets[8]);used.update(subsets[8])
+    assert used==set(pool)
+
+
+def test_continuous_share_builder_preserves_physical_target_and_cohorts(tmp_path):
+    from scripts.build_interaction_share_data import build
+    p=yaml.safe_load(Path('configs/analysis/interaction-share-260908.yaml').read_text())
+    p['generator'].update(nominal_shares=[.3,.7],nominal_share_bins=[[.2,.4],[.6,.8]])
+    p['sampling'].update(training_masters_per_coupling=2,evaluation_masters_per_coupling=2,
+                        labelled_training_masters_per_coupling=[2],disjoint_training_cohorts=True)
+    p['methods']['subset_seeds']=[11]
+    config=tmp_path/'config.yaml';config.write_text(yaml.safe_dump(p))
+    output=tmp_path/'continuous';build(config,output)
+    manifest=json.loads((output/'manifest.json').read_text())
+    target=np.load(output/'targets.npy')
+    for i,record in enumerate(manifest['masters']):
+        low,high=p['generator']['nominal_share_bins'][record['coupling_index']]
+        assert low<record['nominal_share']<high
+        if record['family']=='linear':np.testing.assert_allclose(target[i],record['nominal_share'],atol=1e-12)
+        assert record['cohort_index']==(0 if record['role']=='training_pool' else None)
+    assert len({r['nominal_share'] for r in manifest['masters']})==len(manifest['masters'])

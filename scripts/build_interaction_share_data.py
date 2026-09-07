@@ -20,6 +20,14 @@ def build(config_path, output):
     config = yaml.safe_load(config_path.read_text())
     if config['generator']['N_full'] != 32:
         raise ValueError('This bounded generator uses physical N=32')
+    cohort_size = max(config['sampling']['labelled_training_masters_per_coupling'])
+    cohorts = config['sampling'].get('disjoint_training_cohorts', False)
+    if cohorts and config['sampling']['training_masters_per_coupling'] != cohort_size * len(config['methods']['subset_seeds']):
+        raise ValueError('training count must allocate one full disjoint cohort per subset seed')
+    bins = config['generator'].get('nominal_share_bins')
+    if bins is not None and (len(bins) != len(config['generator']['nominal_shares']) or
+                            any(not 0 < low < high < 1 for low,high in bins)):
+        raise ValueError('invalid nominal-share bins')
     rows, records, arrays, targets, corpus, raw_features, references, memories = [], [], [], [], {}, [], [], []
     start = time.perf_counter()
     grid = config['methods']['raw_ridge_fractions']
@@ -29,6 +37,8 @@ def build(config_path, output):
             for k, r in enumerate(config['generator']['nominal_shares']):
                 for replicate in range(config['sampling'][count_key]):
                     seed = [config['sampling']['master_seed'], split, fi, k, replicate]
+                    if bins is not None:
+                        r = np.random.default_rng(seed + [3]).uniform(*bins[k])
                     a, b, gain = parameters(r, 'independent_gain', seed + [2])
                     states, jac = simulate(family, a, b, seed + [0])
                     order = np.random.default_rng(seed + [1]).permutation(32)
@@ -41,6 +51,8 @@ def build(config_path, output):
                                         coupling_index=k, replicate=replicate, a=a, b=b, gain=gain,
                                         nominal_share=r, sensor_order=order.tolist(),
                                         past_share=interaction_share(jac[:1000])))
+                    if cohorts:
+                        records[-1]['cohort_index'] = replicate // cohort_size if split == 0 else None
                     arrays.append(raw); targets.append(target)
                     source = config['observations']['source']
                     cells = [source] if split == 0 else [source, config['observations']['shift']]
@@ -52,6 +64,8 @@ def build(config_path, output):
                         rows.append(dict(row_id=name, master_id=master_id, master_index=master_index,
                                          role=role, family=family, coupling_index=k, M=m, T=t,
                                          target=target, corpus_index=len(rows)+1))
+                        if cohorts:
+                            rows[-1]['cohort_index'] = records[-1]['cohort_index']
                         raw_features.append(pooled_baseline_features(view)['pooled_combined'][0])
                         memories.append(own_memory(view))
                         estimates = []
@@ -78,7 +92,7 @@ def build(config_path, output):
     files = ['masters.npy','targets.npy','observables.npy','raw-controls.npz','views.npz']
     manifest = dict(config_sha256=file_hash(config_path), artifacts={p:file_hash(output/p) for p in files},
                     rows=rows, masters=records, seconds=time.perf_counter()-start,
-                    status='fresh_exploratory_pilot_not_confirmation',
+                    status=config.get('status', 'fresh_exploratory_pilot_not_confirmation'),
                     code_sha256={p:file_hash(Path(p)) for p in [__file__,
                         'scripts/check_interaction_share_references.py', 'scripts/check_interaction_share_feasibility.py',
                         'src/interaction_share_reference.py', 'src/cross_mt_transfer.py']})

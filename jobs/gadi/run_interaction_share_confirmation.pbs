@@ -1,0 +1,33 @@
+#!/bin/bash
+#PBS -N interaction-confirm
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4
+#PBS -l mem=16GB
+#PBS -l walltime=02:00:00
+#PBS -l jobfs=2GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
+export NUMEXPR_NUM_THREADS=4 VECLIB_MAXIMUM_THREADS=4
+config=configs/analysis/interaction-share-confirmation-260908.yaml
+base=/g/data/ql44/we2614/interaction_share_confirmation_260908
+output="$base/analysis"
+mkdir -p "$output"
+exec >"$output/analysis-${PBS_JOBID%%.*}.log" 2>&1
+git rev-parse HEAD
+python -m src.run_external_corpus --config configs/external/interaction-share-confirmation-260908.yaml --audit
+python -m scripts.build_representation_state_bank --config "$config" --data "$base" \
+ --mpi-root "$base/mpis/interaction-share-confirmation-260908" --output "$output/features.npz"
+python -m scripts.run_interaction_share_pilot --config "$config" --data "$base" \
+ --output "$output/statistical" --feature-bank "$output/features.npz" --methods m-pls z-pca z-pls
+python -m scripts.run_interaction_share_pilot --config "$config" --data "$base" \
+ --output "$output/shape" --feature-bank "$output/features.npz" --marginal-mode shape --methods m-pls m+z-pls
+python -m scripts.report_interaction_share_pilot --config "$config" --data "$base" \
+ --inputs "$output/statistical" "$output/shape" --output "$output/report"
