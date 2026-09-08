@@ -27,4 +27,4 @@ if [[ ! -f "$base/analysis/features.npz" ]]; then
 fi
 python -m scripts.run_covariance_modulation --config "$config" --data "$base" \
  --output "$base/analysis/statistical" --feature-bank "$base/analysis/features.npz" \
- --methods m-pls shape-pls z-pca z-pls shape+z-pls g-pls validity-pls
+ --methods m-pls m+z-pls shape-pls z-pca z-pls shape+z-pls g-pls validity-pls

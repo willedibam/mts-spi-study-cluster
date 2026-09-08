@@ -4,18 +4,24 @@ import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from src.representation_state_data import file_hash
 
 
 def report(data,inputs,output):
     manifest=json.loads((data/'manifest.json').read_text());rows=manifest['rows']
-    fit_rows=[];losses=[]
+    fit_rows=[];losses=[];training_sets={}
     for item in inputs:
         label,path=item.split('=',1) if '=' in item else ('',item)
         for p in sorted(Path(path).rglob('*.json')):
             info=json.loads(p.read_text())
             if 'identity' not in info or 'labels_total' not in info:continue
             ident=info['identity'];method=label or ident['method'];family=ident['source_family'];seed=ident['seed']
+            assert ident['manifest_sha256']==file_hash(data/'manifest.json')
+            assert info['predictions_sha256']==file_hash(p.with_suffix('.npz'))
             with np.load(p.with_suffix('.npz'),allow_pickle=False) as a:
+                key=(family,seed,info['labels_total'])
+                train=tuple(a['train_indices'].tolist())
+                assert training_sets.setdefault(key,train)==train
                 indices=a['evaluation_indices'];target=a['target'];prediction=a['prediction']
                 np.testing.assert_array_equal(a['row_id'],[rows[i]['row_id'] for i in indices])
                 np.testing.assert_allclose(target,[rows[i]['target'] for i in indices],atol=0,rtol=0)

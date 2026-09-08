@@ -61,7 +61,8 @@ recovery of state timing. Cross-control transfer is not broad generator transfer
   Full-observation and cross-process results are mandatory secondary diagnostics.
 - Full p90 catalogue,289 SPIs, ordered off-diagonal z, training-only preprocessing.
 - Compare rich per-SPI marginals, normalized distribution shapes, z/PCA, z/PLS,
-  shape+z/PLS, graph summaries, validity and the source median.
+  m+z/PLS (listed in the original config's views), shape+z/PLS, graph summaries,
+  validity and the source median.
 - Raw references: marginal moments/memory;165-feature autospectra; covariance
   distribution; fourth-cumulant distributions;25/100-sample windowed covariance
   variance; their combined features; an observed-covariance cluster-based moment
@@ -93,3 +94,27 @@ this follow-up is conditional, not an automatic extra grid.
 P90 is affordable. Scientific informativeness, rather than available12-hour time
 or maximum parallelism, determines whether another run is justified. Keep all
 exploratory results, and leave one-versus-two-paper structure undecided.
+
+## Execution evidence before SPI results
+
+- Protocol/generator frozen c01a96b; main execution ce65d0c/9d67391, pyspi65317c9.
+- All440masters/640views verified; four exact generator replays and10tests pass.
+- Raw144fits and neural36fits complete. At40labels, same-process reduced MAE:
+  moment-calibrated .1261, raw covariance+cumulant+window .1662, pair neural .2329,
+  aligned neural .2295, median .2265. These are not z results.
+- All36neural checkpoints replayed on CPU, eight evaluation records/fit across
+  both process/observation scopes; maximum CPU-MPS error3.58e-7, all splits checked,
+  zero of72selected validation folds reached the200-epoch cap. Four-record pair
+  overfit MAE9.95e-6 checks optimization only, not generalization.
+- Supplementary evaluation of the existing uncalibrated moment estimate needs no
+  labels: mean MAE .0935 full and .1510 reduced. Distinguish this post-raw-result
+  calculation from the originally specified source-calibrated reference.
+- Data mover initially stalled. A task-local AES-CTR/multiplexed connection then
+  completed the archive (SHA952a90c5...3965f3d); causal network diagnosis unproven.
+  Fallback staging job178481436 completed in1min/.07SU: masters and views were
+  bit-identical, targets differed<=1.11e-16. The transferred canonical archive
+  replaced regenerated files and all manifest hashes passed before any extraction.
+- Smoke178481459 completed Exit0 in4:29, peak4.17GiB for two tasks.
+  Node gate178481474 follows afterok; actual progress in the local cluster-state.json.
+- Heartbeat spi-representation-overnight-follow-up checks every15min, ending by
+  2026-09-09 05:30UTC or an evidence-based stopping decision. No duplicate runs.
