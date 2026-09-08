@@ -78,6 +78,8 @@ feature hashes and archive locations remain in this file at commit `6d6af01`.
 
 - Material comparator correction: identical165-feature autospectrumPLS retrospectively run on both originalcorpora (no newdata/p90). JointshiftMAE pilot .1192/.1141/.1069;continuous .1142/.1138/.1075, betterthan z andlinear atallbudgets. Continuous40 spectrum−z=-.04364 CI[-.05511,-.03324],spectrum−linear=-.03524[-.04429,-.02603]. Allpreviousreportmeansreproducedexactly. This weakens broadlabel-efficiency/necessarycrosschannelinformationclaims; z−SPIdistributionadvantage remains. Dedicatedspectrumcontrol was a materialbaselineomission. Results eachstudy`autospectrum-report/`, runner`run_interaction_share_autospectrum.py`;[findings](../interaction-share-findings.md) updated.
 
+- All30newtrainedneuralfits complete;CPUreplay10evalrecords/fit maxerror4.47e-7,0/60selectedfoldshit200epochs. Samefamilyintact/common/independentMAE=.1869/.1876/.1861,weakvsmedian. Audit`check_interaction_share_phase_neural.py` / `neural-verification.json`. Common smoke178431043 Exit0/6min;common48gate178431123running. Independent smoke178431045stillrunning at9min. Analysisworker had underscore/sluggedhyphenpathmismatch, correctedbeforeanalysis submission by deriving`ExternalCorpusConfig.corpus_output_dir`;mustsyncnewcommitaftergatesfinishbeforeproduction/analysis. Noresultaffected.
+
 
 ## Operations and remaining limitations
 

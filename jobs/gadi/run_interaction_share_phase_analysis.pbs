@@ -24,9 +24,11 @@ output="$base/analysis"
 mkdir -p "$output"
 exec >"$output/analysis-${PBS_JOBID%%.*}.log" 2>&1
 git rev-parse HEAD
-python -m src.run_external_corpus --config "configs/external/interaction-share-phase-$PHASE_ARM.yaml" --audit
+corpus_config="configs/external/interaction-share-phase-$PHASE_ARM.yaml"
+python -m src.run_external_corpus --config "$corpus_config" --audit
+mpi_root=$(python -c 'import sys; from src.run_external_corpus import ExternalCorpusConfig; print(ExternalCorpusConfig.from_file(sys.argv[1]).corpus_output_dir)' "$corpus_config")
 python -m scripts.build_representation_state_bank --config "$config" --data "$base" \
- --mpi-root "$base/mpis/interaction-share-phase-$PHASE_ARM" --output "$output/features.npz"
+ --mpi-root "$mpi_root" --output "$output/features.npz"
 python -m scripts.run_interaction_share_pilot --config "$config" --data "$base" \
  --output "$output/statistical" --feature-bank "$output/features.npz" --methods z-pls
 python -m scripts.run_interaction_share_pilot --config "$config" --data "$base" \
