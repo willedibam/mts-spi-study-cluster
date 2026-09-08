@@ -1,0 +1,136 @@
+study_id: oscillatory-coorganization-pilot-260909
+status: fresh_pilot_frozen_before_generation
+generator:
+  name: oscillatory_coorganization
+  N_full: 32
+  input_T: 1000
+  families:
+  - oscillatory
+  conditions:
+  - crossed
+  - aligned
+  source_module: src/oscillatory_coorganization.py
+  unchanged_from_scout: true
+target:
+  quantity: coincident phase and envelope group assignments
+  bounds:
+  - 0
+  - 1
+  type: binary
+observations:
+  source:
+    M: 16
+    T: 1000
+  shift:
+    M: 8
+    T: 500
+sampling:
+  master_seed: 260909211
+  training_masters_per_coupling: 60
+  evaluation_masters_per_coupling: 100
+  labelled_training_masters_per_coupling:
+  - 5
+  - 10
+  - 20
+  total_label_budgets:
+  - 10
+  - 20
+  - 40
+  tuning_labels_included: true
+  pretraining: none
+  augmentation: none
+  disjoint_training_cohorts: true
+  independent_condition_realizations: true
+methods:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  preprocessing:
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-08
+    marginal_and_graph_scaling: standard
+    z_scaling: center
+    clip_standard_deviations: 5.0
+    block_balance: unit_total_training_variance_after_clipping
+    pca_dimensions: 32
+    pca_solver: randomized
+    pca_random_state: 1729
+  ridge_alpha_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  subset_seeds:
+  - 11
+  - 23
+  - 47
+  raw_encoder_spec:
+    architecture: pair_relation
+    input: identical unnormalized observed state arrays; no simulator parameters
+    loss: mean_squared_error
+    optimizer: AdamW
+    learning_rates:
+    - 0.0001
+    - 0.001
+    weight_decays:
+    - 0.0001
+    - 0.01
+    batch_size: 8
+    maximum_epochs: 600
+    early_stopping_metric: validation_unclipped_MAE
+    early_stopping_patience: 20
+    minimum_epochs: 30
+    final_refit_epochs: median_best_epoch_of_selected_setting_inner_folds
+    initialization_seed: matched_subset_seed
+    purpose: Unchanged corrected temporal-pair comparator, trained from scratch on
+      co-organization labels
+    temporal_convolutions:
+    - input: 2
+      width: 16
+      kernel: 7
+      stride: 4
+      padding: 3
+    - width: 32
+      kernel: 5
+      stride: 4
+      padding: 2
+    pooling: mean and SD over time then over ordered dyads;128->32->1 GELU head
+  rich_marginals: true
+  raw_ridge_fractions:
+  - 0.1
+  pca_caps:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  pls_components:
+  - 1
+  - 2
+  - 4
+  views:
+  - m
+  - z
+  - m+z
+  - validity
+  raw_references:
+  - marginal
+  - spectrum
+  - covariance
+  - cumulant
+  - window
+  - phase
+  - envelope
+  - agreement
+evaluation:
+  primary: balanced accuracy at fixed0.5 threshold after M/T reduction
+  secondary:
+  - AUROC
+  - Brier
+  - MAE
+  - original M/T
+  interval_unit: independent evaluation master, conditional on fitted models
+  pretraining: none
+  exploratory: true
+data_protocol: configs/analysis/oscillatory-coorganization-pilot-260909.yaml
