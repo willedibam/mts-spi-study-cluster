@@ -8,6 +8,7 @@ from sklearn.kernel_ridge import KernelRidge
 from sklearn.compose import TransformedTargetRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
+from sklearn.dummy import DummyRegressor
 
 from src.representation_screen import fit_view, fit_block, ViewTransform
 
@@ -39,9 +40,19 @@ def fit_statistical(bank, view, train, target, preprocessing, head, value, alpha
         if np.max(np.std(x, axis=0)) < 1e-12:
             model = Ridge(alpha=1).fit(x, target[train])
         else:
+            centered = x - x.mean(axis=0)
+            centered_y = target[train] - target[train].mean()
+            covariance = centered.T @ centered_y
+            roundoff = (np.finfo(float).eps * max(centered.shape)
+                        * np.linalg.norm(centered) * np.linalg.norm(centered_y))
+            if np.linalg.norm(covariance) <= roundoff:
+                # No linear target direction exists. NIPALS otherwise divides
+                # by a zero score norm, or amplifies BLAS roundoff into a fit.
+                model = DummyRegressor(strategy='mean').fit(x, target[train])
+                return transform, model
             # Binary validity flags can contain several identical columns.
             # Their numerical rank, not column count, limits usable PLS scores.
-            rank = int(np.linalg.matrix_rank(x - x.mean(axis=0)))
+            rank = int(np.linalg.matrix_rank(centered))
             components = min(value, len(train)-1, x.shape[1], rank)
             # Preprocessing already specifies scaling/block weights; PLS must not undo it.
             model = PLSRegression(n_components=components, scale=False, max_iter=500).fit(x, target[train])

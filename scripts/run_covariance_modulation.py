@@ -24,7 +24,7 @@ def run(config,data,output,selected,feature_bank=None):
         with np.load(feature_bank,allow_pickle=False) as a:
             np.testing.assert_array_equal(a['row_id'],[r['row_id'] for r in rows])
             assert a['manifest_sha256'].item()==file_hash(data/'manifest.json')
-            bank={k:a['X_'+k] for k in ['m','g','z','validity']}
+            bank={k:a['X_'+k] for k in ['m','g','z','validity'] if 'X_'+k in a.files}
         shapes=standardized_marginal_shapes(bank['m'],bank['validity'])
     identity=dict(protocol_sha256=file_hash(config),manifest_sha256=file_hash(data/'manifest.json'),
                   feature_bank_sha256=file_hash(feature_bank) if feature_bank else None,
@@ -60,7 +60,7 @@ def run(config,data,output,selected,feature_bank=None):
                                       train_indices=train,evaluation_indices=evaluation,row_id=np.asarray([rows[i]['row_id'] for i in evaluation])))
                     _atomic_json(stem.with_suffix('.json'),dict(identity=ident,details=details,labels_total=len(train),
                                  seconds=time.perf_counter()-start,predictions_sha256=file_hash(stem.with_suffix('.npz')),
-                                 status='prospectively_specified_exploratory_pilot'))
+                                 status=cfg.get('status','exploratory')))
                     print(f'[DONE] {family}/{stem.name}',flush=True)
 
 

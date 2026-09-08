@@ -14,6 +14,14 @@ def test_pls_caps_rank_of_duplicate_validity_columns():
     assert np.isfinite(model.predict(transform.transform({'validity':x},np.arange(5)))).all()
 
 
+def test_pls_uses_exact_mean_when_target_is_orthogonal_to_features():
+    x=np.array([[-1.,-1.],[-1.,1.],[1.,-1.],[1.,1.]])
+    y=np.array([0.,1.,1.,0.])
+    config=dict(minimum_valid_fraction=.95,variance_threshold=1e-8,z_scaling='center',clip_standard_deviations=5.)
+    transform,model=fit_statistical({'validity':x},'validity',np.arange(4),y,config,'pls',4)
+    np.testing.assert_array_equal(model.predict(transform.transform({'validity':x},np.arange(4))),np.full(4,.5))
+
+
 class ConstantPrediction(nn.Module):
     def __init__(self):
         super().__init__();self.bias=nn.Parameter(torch.tensor(-1.))
