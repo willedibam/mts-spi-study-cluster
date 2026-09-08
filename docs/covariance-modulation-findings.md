@@ -1,7 +1,7 @@
 # Covariance-modulation pilot: findings
 
 Status2026-09-09: all640p90 records and144statistical fits complete; corrected
-pointwise neural fits still running; corrected aligned and temporal-pair fits complete. This is an exploratory pilot with three disjoint
+pointwise40label fits complete and verified; one epoch-ceiling extension and lower-label curves are now running. This is an exploratory pilot with three disjoint
 source cohorts per process, not a confirmatory result selected from new data.
 The [protocol](covariance-modulation-pilot.md) states the generator and comparisons.
 
@@ -12,6 +12,7 @@ The principal SPI-SPI utility hypothesis is not supported on this task. At40labe
 | Source median | .2265 | .2265 |
 | Corrected aligned neural encoder | .2273 | .2295 |
 | Corrected temporal-pair neural encoder | .2273 | .2329 |
+| Pointwise pair neural encoder,600epoch ceiling | .1291 | .1641 |
 | z + PCA/ridge | .2196 | .2258 |
 | z + PLS | .2177 | .2375 |
 | Normalized SPI shapes + PLS | .2315 | .2533 |
@@ -139,3 +140,20 @@ PCA/PLS already limit learned dimension, and the small agreement panel does not
 rescue this task. Useful candidate extensions would preserve selected magnitudes
 and address their sample-size sensitivity. No additional tuning grid is warranted
 while the distinct co-organization scout and pointwise diagnostic are pending.
+
+## Completed pointwise diagnostic and bounded continuation
+
+All six40label pointwise fits complete and pass checkpoint/split verification:
+CPU/MPS maximum discrepancy2.38e-7. Same-process original/reduced MAE=.1291/.1641;
+other-process=.1264/.1494. This model substantially improves on the earlier raw
+encoders and z. Its change combines temporal kernels, resolution and parameter
+count; do not attribute the full improvement to a single detail. It has not
+beaten the model-informed moment reference (.0875/.1261 same-process).
+
+The declared same-full MAE<.18 gate passes, authorizing10/20label curves. Two of12
+selected validation folds reached600epochs and improved unclipped MAE by.0283
+and.0477 over the final100epochs. Make one extension to1200epochs, uniformly for
+10/20/40labels, with otherwise identical architecture/grid/source splits. Original
+600epoch results remain separate. Configuration frozen1a3a7ea before extension;
+outputs`neural-pointwise-extended/`, report once complete. Do not keep doubling
+ceilings indefinitely or imply a universal neural optimum from this comparison.
