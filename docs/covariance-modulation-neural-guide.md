@@ -138,3 +138,9 @@ that explicitly handles mismatched channels and recording lengths, using channel
 and positional embeddings. We have not run BIOT. An eventual biosignal claim
 would need an appropriate published/domain baseline; the present simulation
 comparison tests a controlled inductive-bias question with small raw encoders.
+
+PLS means **partial least squares**: it learns a few linear combinations of the
+input features that covary with the training target, then regresses on those
+components. PCA instead chooses directions of large feature variance without
+using the target. Both learn a compression/readout; neither changes the fixed
+SPI extraction. Component selection belongs inside the labelled training budget.

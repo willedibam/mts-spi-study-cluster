@@ -1,7 +1,7 @@
 # Covariance-modulation pilot: findings
 
 Status2026-09-09: all640p90 records and144statistical fits complete; corrected
-neural fits still running. This is an exploratory pilot with three disjoint
+temporal-pair and pointwise neural fits still running; corrected aligned fits complete. This is an exploratory pilot with three disjoint
 source cohorts per process, not a confirmatory result selected from new data.
 The [protocol](covariance-modulation-pilot.md) states the generator and comparisons.
 
@@ -10,6 +10,7 @@ The principal SPI-SPI utility hypothesis is not supported on this task. At40labe
 | Representation/readout | Same process, M16/T1000 | Same process, M8/T500 |
 |---|---:|---:|
 | Source median | .2265 | .2265 |
+| Corrected aligned neural encoder | .2273 | .2295 |
 | z + PCA/ridge | .2196 | .2258 |
 | z + PLS | .2177 | .2375 |
 | Normalized SPI shapes + PLS | .2315 | .2533 |
@@ -87,6 +88,9 @@ exact failure mode of normalized cross-statistic agreement.
   genuine improvement. Corrected stopping uses raw validation MAE and a600epoch
   ceiling; historical scores remain diagnostics. See protocol for the reproduced
   defect and why the joint change is not a clean causal performance attribution.
+- Corrected aligned18fits reproduce the original performance: reduced MAE10/20/40
+  .2324/.2330/.2295. All checkpoint/split checks pass; CPU/MPS error<=3.58e-7,
+  no selected600epochcap. The validation repair did not rescue this architecture.
 - Finish corrected neural comparisons and the prespecified40label pointwise
   gate. A larger identical p90 run is not justified by current results. The
   task demonstrates that dependence-only signal is insufficient to guarantee
