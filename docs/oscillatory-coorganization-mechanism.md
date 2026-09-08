@@ -25,6 +25,11 @@ for the reported original pilot.
    (names starting `plv_`). Use PLS1/2/4 and the same labels. These test the role
    of explicit amplitude-envelope measures and a small mechanism-informed panel.
    They do not establish that other SPI pairs contain no relevant information.
+3. A bounded nonlinear-readout sensitivity for richm, normalizedshapes and fullz:
+   the already implemented PCA/RBF kernel-ridge head, with the same source-only
+   PCA/ridge grids and fixed training-variance bandwidth. No bandwidth search.
+   This checks whether the result is confined to linear access to marginal
+   features; it cannot rule out all nonlinear marginal learners. No new data.
 
 Compare original and reduced observations at all label budgets. Report all three
 null draws separately; they are not additional independent datasets. Keep all
