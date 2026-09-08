@@ -1,0 +1,12 @@
+name: oscillatory-coorganization-scout-260909
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/oscillatory_coorganization_scout_260909/views.npz
+  sha256: fa9a4dc9b664d6cba48586b8867df40eb9ae3440d997929d962f99eb14170d39
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/oscillatory_coorganization_scout_260909/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260909
