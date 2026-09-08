@@ -96,3 +96,26 @@ the earlier observation-transfer interpretation. It needs no new simulation,
 pyspi work, architecture or feature search. Keep it explicitly retrospective,
 separate from the frozen primary comparisons; preserve all earlier results.
 Runner: `scripts/run_interaction_share_autospectrum.py`.
+
+
+## Completion
+
+All three arms and seven methods are complete (210 fits). See
+[findings](interaction-share-findings.md) for the paired phase effect and the
+strong spectral baseline. All1,200 new MPI records passed audits; production
+178435399/178436808 and analysis178437214/178437215 exited0. The intact600 MPI
+rows were reused. Final outputs: `results/interaction_share_phase_260908/report/`.
+
+Reproduce the final comparison with:
+
+```bash
+OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 .venv/bin/python -m scripts.report_interaction_share_phase \
+  --config configs/analysis/interaction-share-phase-260908.yaml \
+  --data data/interaction_share_phase_260908 \
+  --results results/interaction_share_phase_260908 \
+  --output results/interaction_share_phase_260908/report
+```
+
+Checkpoint audit: `python -m scripts.check_interaction_share_phase_neural`.
+For each surrogate arm, use `scripts.check_interaction_share_fits` with
+`--methods z-pls shape-pls`, its data root and downloaded `gadi-analysis` root.

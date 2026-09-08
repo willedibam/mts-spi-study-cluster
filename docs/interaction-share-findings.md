@@ -1,8 +1,86 @@
 # Interaction-share representation findings
 
-Status: the original pilot and continuous-parameter confirmation are complete.
-A new raw phase-control experiment is running; a retrospective autospectral
-comparator materially narrows the current interpretation. [Setup and reproduction](interaction-share-execution.md).
+Status: the pilot, continuous-parameter confirmation and new raw phase-control
+experiment are complete. The phase mechanism is supported; an omitted spectral
+comparator materially limits the representation-utility claim.
+[Setup and reproduction](interaction-share-execution.md).
+
+## Raw phase-control result: dependence sensitivity, not superior prediction
+
+The new [phase experiment](interaction-share-phase-control.md) held M16/T1000 and
+20 labels fixed. It reused 600 intact feature rows, computed 1,200 new surrogate
+p90 records, and fitted every method separately in each arm. The 600 origins,
+400 evaluation origins and five disjoint training cohorts per family are paired
+across conditions. Labels refer to original systems, not surrogate Jacobians.
+All seven predefined methods are complete: 210 fitted models, including 30 new
+trained neural encoders and 30 frozen-random readouts.
+
+Primary same-family MAE, averaged equally over the two families:
+
+| Representation / readout | Intact | Common phase | Independent phase |
+|---|---:|---:|---:|
+| z / PLS | .1029 | .1033 | .1788 |
+| Standardized SPI distribution shapes / PLS | .1451 | .1424 | .1967 |
+| Calibrated linear reference | .0884 | .0883 | .1679 |
+| Pooled autospectra / PLS | .0796 | .0796 | .0796 |
+| Trained temporal/channel-attention encoder | .1869 | .1876 | .1861 |
+| Frozen random encoder / PCA-ridge | .1403 | .1375 | .1413 |
+| Source median | .1975 | .1975 | .1975 |
+
+For z, independent-minus-common MAE is **+.07546**, conditional paired 95%
+interval[+.06813,+.08287]. Common-minus-intact is +.00046[-.00133,+.00229]:
+no resolved loss at this precision, not a formal equivalence claim. Cross-family
+z MAEs are .1081/.1072/.1877; the independent-minus-common difference is
++.08046[+.07248,+.08821]. Independent phases worsen z in all ten family/cohort
+comparisons for both evaluation scopes. These cohort counts share evaluation
+origins and are descriptive, not independent Bernoulli trials.
+
+**Positive mechanism evidence:** the tested z/PLS pipeline benefits from relative
+cross-channel phases beyond the preserved channelwise spectra. The common-phase
+control and within-arm refitting distinguish this from simply deploying a model
+on a perturbed input distribution. This extends the earlier MPI-alignment control
+to realizable raw recordings. It does not establish unique causal organization,
+nonlinear information, or information unavailable to raw-data learners.
+The effect is not unique to z: the linear reference and SPI distribution summaries
+also worsen under independent phases, in all ten cohort comparisons.
+
+**Negative utility evidence for this target:** intact z is worse than autospectra
+by .02328[.01746,.02921] within family and .02548[.01942,.03181] across families.
+The target can be inferred more efficiently here from information the surrogates
+preserve. The trained encoder is weak in every arm; beating it is not evidence
+of superiority to competent raw-data representations generally. Its small phase
+contrasts should not be promoted as important improvements.
+
+The Fourier controls preserve autospectra exactly; common phases preserve the
+full cross-periodogram. Neither preserves exact time-domain histograms, and
+independent phases do not imply complete channel independence. Their per-channel
+surrogate laws conditional on spectra are matched. This is a pipeline-level
+predictive effect, not a mutual-information measurement or an exact per-record
+surrogate significance test. Mean finite-z fractions are .8990/.8992/.8844;
+feature availability is part of the tested pipeline. CIs condition on fitted
+models and resample paired evaluation origins; they are pointwise and unadjusted.
+
+All 1,200 new MPI audits passed. Extraction used 20fd905/pyspi65317c9; final
+cluster analysis used6095c47. Both production jobs exited0 (7:42/6:55 on576cores);
+analysis jobs178437214/215 exited0 (4:21/4:09). Eight local statistical replays
+preserve selected settings and all candidate scores; max prediction difference
+4.55e-15. All30 neural checkpoints replay on10 evaluation records each with
+maxCPU-MPSdifference4.47e-7;0/60 selected validation fits reached200epochs.
+Protocol/data/feature schemas and hashes passed. The analysis-directory slug
+mismatch was caught and corrected before analysis submission; no result was lost.
+
+Evidence: `results/interaction_share_phase_260908/report/` (paired tables,
+family/cohort results, `phase-controls.png` and SVG), `bank-verification.json`,
+`neural-verification.json`, per-arm `local-gadi-replay.json`, and `cluster-state.json`.
+
+**Decision:** keep this as a bounded mechanism-and-limitation section in the
+existing paper. Do not expand this interaction-share task again merely for a
+ranking or precision gain. The distinct phase experiment was worth running:
+it supported the mechanism and exposed a material comparator omission. A strong
+standalone representation-learning claim still needs a consequential target
+where dependence organization adds useful information beyond competent temporal
+and spectral controls. This experiment does not establish such an application;
+it supplies no reason to change this generator solely to favour z.
 
 ## Current update: a strong omitted autospectral comparator
 
@@ -40,7 +118,7 @@ and the linear reference is no longer the best tested standalone method.
 
 Evidence: both datasets' `autospectrum-control/` and `autospectrum-report/`;
 `scripts/run_interaction_share_autospectrum.py`. All sampling and tuning remain
-source-only. The active [phase-control protocol](interaction-share-phase-control.md)
+source-only. The completed [phase-control protocol](interaction-share-phase-control.md)
 asks what information z uses, with no generator change to obtain a favourable ranking.
 The following sections preserve the earlier completed comparisons and their scope.
 

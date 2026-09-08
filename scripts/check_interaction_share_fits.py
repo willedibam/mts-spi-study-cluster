@@ -10,7 +10,9 @@ from src.interaction_share_learning import fit_statistical, select_statistical, 
 from src.representation_state_data import file_hash, load_state_data
 
 
-def check(config,data,analysis,output):
+def check(config,data,analysis,output,methods=None):
+    if methods is not None and (not methods or not set(methods) <= {'m-pls','z-pca','z-pls','shape-pls','shape+z-pls'}):
+        raise ValueError('unknown or empty statistical replay selection')
     p=yaml.safe_load(config.read_text());manifest,_=load_state_data(data,config)
     rows=manifest['rows'];target=np.asarray([r['target'] for r in rows])
     strata=np.asarray([r['coupling_index'] for r in rows])
@@ -29,6 +31,8 @@ def check(config,data,analysis,output):
             ('statistical','z-pls','z','pls',bank),
             ('shape','shape-pls','m','pls',shapes),
             ('shape','shape+z-pls','m+z','pls',shapes)]:
+            if methods is not None and method not in methods:
+                continue
             stem=analysis/directory/family/f'{method.replace("+","_")}-n{n}-s{seed}'
             record=json.loads(stem.with_suffix('.json').read_text())
             assert record['predictions_sha256']==file_hash(stem.with_suffix('.npz'))
@@ -55,4 +59,5 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ['config','data','analysis','output']:
         parser.add_argument('--'+name,type=Path,required=True)
-    args=parser.parse_args();check(args.config,args.data,args.analysis,args.output)
+    parser.add_argument('--methods',nargs='+')
+    args=parser.parse_args();check(args.config,args.data,args.analysis,args.output,args.methods)

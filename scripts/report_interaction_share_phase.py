@@ -184,13 +184,16 @@ def plot(summaries, paired, names, arms, output):
         ax.set_title(scope.replace('_', ' ').capitalize(), loc='left', fontsize=11, fontweight='bold')
         ax.set_yticks(range(len(names)), [labels[name] for name in names])
         ax.set_xlabel('Mean absolute error (lower is better)')
+        ax.set_xlim(.065, .22)
         delta_ax.axvline(0, color='#999999', ls='--', lw=1)
         delta_ax.set_xlabel('MAE: independent − common phase')
+        delta_ax.set_xlim(-.012, .095)
         for panel in [ax, delta_ax]:
             panel.spines[['top', 'right']].set_visible(False)
             panel.grid(axis='x', alpha=.15)
     axes[0, 0].invert_yaxis()
-    axes[0, 0].legend(loc='lower right', fontsize=8, frameon=False)
+    fig.legend(*axes[0, 0].get_legend_handles_labels(), loc='upper center',
+               bbox_to_anchor=(.58, .9), ncol=3, fontsize=9, frameon=False)
     fig.suptitle('Which information supports origin-system inference?', fontsize=14, x=.02, ha='left')
     fig.text(.02, .92, 'M = 16, T = 1000 · 20 labels · 5 disjoint cohorts per family · models refit in each condition', fontsize=10)
     fig.text(.02, .015, '95% intervals resample paired evaluation origins, conditional on fitted models. Labels describe the original systems.', fontsize=8)
