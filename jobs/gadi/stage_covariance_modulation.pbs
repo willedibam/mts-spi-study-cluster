@@ -1,0 +1,39 @@
+#!/bin/bash
+#PBS -N covmod-stage
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=8GB
+#PBS -l walltime=00:10:00
+#PBS -l jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
+base=/g/data/ql44/we2614/covariance_modulation_260909
+python -m scripts.build_covariance_modulation_data --config configs/analysis/covariance-modulation-260909.yaml \
+ --output "$base/staged"
+python - <<'PY'
+import json
+from pathlib import Path
+import numpy as np
+p=Path('/g/data/ql44/we2614/covariance_modulation_260909')
+for f in (p/'staged').iterdir():
+    dest=p/f.name
+    if dest.exists(): raise FileExistsError(dest)
+    f.rename(dest)
+(p/'staged').rmdir()
+m=json.loads((p/'manifest.json').read_text());print(json.dumps(m['artifacts'],indent=2))
+(p/'smoke-indices.txt').write_text('1\n640\n')
+rng=np.random.default_rng(260909);gate=[]
+for count in [16,8]:
+    ids=[r['corpus_index'] for r in m['rows'] if r['M']==count]
+    gate.extend(rng.choice(ids,24,replace=False).tolist())
+    (p/f'M{count}-indices.txt').write_text(''.join(f'{i}\n' for i in ids))
+(p/'gate-indices.txt').write_text(''.join(f'{i}\n' for i in sorted(gate)))
+PY
