@@ -1,0 +1,179 @@
+study_id: interaction-share-phase-260908
+status: paired_phase_mechanism_study_fixed_before_surrogate_generation
+generator:
+  name: interaction_share_independent_gain
+  N_full: 32
+  families:
+  - linear
+  - tanh
+  nominal_shares:
+  - 0.18
+  - 0.34
+  - 0.5
+  - 0.66
+  - 0.82
+  gain_uniform:
+  - 0.25
+  - 0.8
+  noise_std: 0.5
+  burn: 300
+  input_T: 1000
+  future_T: 1000
+  nominal_share_bins:
+  - - 0.1
+    - 0.26
+  - - 0.26
+    - 0.42
+  - - 0.42
+    - 0.58
+  - - 0.58
+    - 0.74
+  - - 0.74
+    - 0.9
+target:
+  quantity: origin-system future off-diagonal drift-Jacobian energy share; not the
+    surrogate Jacobian
+  bounds:
+  - 0
+  - 1
+observations:
+  source:
+    M: 16
+    T: 1000
+  physical_N_fixed: true
+sampling:
+  master_seed: 26090883
+  training_masters_per_coupling: 20
+  evaluation_masters_per_coupling: 40
+  labelled_training_masters_per_coupling:
+  - 4
+  total_label_budgets:
+  - 20
+  tuning_labels_included: true
+  pretraining: none
+  augmentation: none
+  disjoint_training_cohorts: true
+methods:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  preprocessing:
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-08
+    marginal_and_graph_scaling: standard
+    z_scaling: center
+    clip_standard_deviations: 5.0
+    block_balance: unit_total_training_variance_after_clipping
+    pca_dimensions: 32
+    pca_solver: randomized
+    pca_random_state: 1729
+  ridge_alpha_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  subset_seeds:
+  - 11
+  - 23
+  - 47
+  - 71
+  - 101
+  raw_encoder_spec:
+    input: identical unnormalized observed state arrays; no simulator parameters
+    temporal_convolutions:
+    - width: 32
+      kernel: 7
+      stride: 2
+      padding: 3
+    - width: 64
+      kernel: 5
+      stride: 2
+      padding: 2
+    activation: GELU
+    channel_attention_blocks: 2
+    attention_width: 64
+    attention_heads: 4
+    attention_axis: channels_at_each_aligned_time_patch
+    feedforward_width: 128
+    residual_and_layer_normalization: true
+    post_attention_temporal_convolution:
+      width: 64
+      kernel: 3
+      stride: 1
+      padding: 1
+    pooling: concatenate_mean_and_max_over_channels_and_time_after_interaction
+    readout:
+    - 32
+    - 1
+    hidden_readout_activation: GELU
+    dropout: 0.0
+    loss: mean_squared_error
+    optimizer: AdamW
+    learning_rates:
+    - 0.0001
+    - 0.001
+    weight_decays:
+    - 0.0001
+    - 0.01
+    batch_size: 16
+    maximum_epochs: 200
+    early_stopping_metric: validation_MAE
+    early_stopping_patience: 20
+    minimum_epochs: 30
+    final_refit_epochs: median_best_epoch_of_selected_setting_inner_folds
+    initialization_seed: matched_subset_seed
+    sensor_or_duration_augmentation: none_in_first_pilot
+    purpose: Provisional competent small baseline; validate implementation and optimization
+      before interpreting a negative neural result.
+  rich_marginals: true
+  raw_ridge_fractions:
+  - 0.0001
+  - 0.001
+  - 0.01
+  - 0.1
+  pca_caps:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  pls_components:
+  - 1
+  - 2
+  - 4
+  views:
+  - m
+  - z
+  - m+z
+  - validity
+evaluation:
+  primary: same_family_MAE_difference_independent_minus_common_phase
+  secondary: cross_family_MAE_and_intact_reference
+  interval_unit: origin_master
+  exploratory: true
+  interpretation: Refit separately in each arm, matched labels. Conditional paired
+    intervals. Same source-system labels, no claim that surrogates have the original
+    physical Jacobian. Spectra exact; histograms not preserved exactly. Independent
+    phases do not imply full channel independence.
+phase_control:
+  origin_config: configs/analysis/interaction-share-confirmation-260908.yaml
+  origin_data: data/interaction_share_confirmation_260908
+  origin_bank: results/interaction_share_confirmation_260908/gadi-analysis/features.npz
+  seed: 26090897
+  arms:
+  - intact
+  - common_phase
+  - independent_phase
+  surrogates_per_origin_per_arm: 1
+  autospectrum_bins: 32
+  statistical_methods:
+  - z-pls
+  - shape-pls
+  raw_methods:
+  - median
+  - linear
+  - u-pls
+  neural_methods:
+  - neural
+  - random_encoder
