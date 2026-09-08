@@ -70,3 +70,12 @@ without usable decisions, or merely reproduce specialist performance without
 an informative representation result. A positive result warrants a narrowly
 stated contribution and a separately justified next step; it does not establish
 clinical value or independently ensure a top-venue paper.
+
+## Supplementary frozen-encoder control
+
+Declared after the trained-neural results, before full pilotSPI results: both
+trained raw encoders remain near chance. Compare frozen random aligned-encoder
+features with matched PCA/ridge and PLS heads, using the same labels/cohorts and
+no pretraining. This tests whether end-to-end fitting harms already useful
+features. It is supplementary, not part of the original frozen comparison set.
+Existing runner`run_representation_state_random_control.py`; no newdata/p90.
