@@ -107,3 +107,35 @@ Reproduce tables with `scripts/report_covariance_modulation.py`, inputs
 `results/covariance_modulation_260909/{raw,gadi-analysis/statistical-rank-fixed}`;
 authoritative interim output `statistical-raw-report/`. Verification JSON files
 and original/corrected outputs are retained separately under the study root.
+
+## Bounded catalogue attribution after the main result
+
+User asked whether nonlinear SPI values contain signal that their agreements
+lose. A fixed panel of dcorr, biased dcorr, two Kraskov MI configurations and
+kernel MI was compared using the same cohorts/PLS grid. Gaussian MI was excluded
+because it is a function of correlation. This is retrospective attribution,
+not a newly confirmed performance result;72fits in `catalogue-signal/`, report
+`catalogue-signal-report/`, script `check_covariance_catalogue_signal.py`.
+
+At40labels, original-size MAE is .1844 for the five means, .1567 for115rich
+summaries, .2300 for105normalized shape features, and .2194 for their ten
+agreement coordinates. The catalogue is therefore not wholly insensitive to the
+target: retaining distribution location/scale exposes useful signal. This
+supports, but does not prove, information loss through normalization; differences
+in feature dimension, estimation and readout remain. The ten-coordinate panel
+omits relationships with linear SPIs, so its failure does not rule out informative
+coordinates elsewhere in z.
+
+After M/T reduction these errors become .4991/.4986/.2728/.2539. The rich/mean
+readouts often saturate at prediction1; for the first40label cohort, all100iid and
+98/100persistent reduced-view predictions are exactly1. Mean kernel-MI across
+all evaluation recordings shifts .1514→.1982; other estimates also shift.
+Thus full-size signal alone does not establish robustness to observation changes.
+MI Kraskov summaries are finite on584/640records; the other panel summaries on
+all640. Existing training-only validity filtering applies. No newpyspi was needed.
+
+More aggressive regularization of z is not currently established as the remedy:
+PCA/PLS already limit learned dimension, and the small agreement panel does not
+rescue this task. Useful candidate extensions would preserve selected magnitudes
+and address their sample-size sensitivity. No additional tuning grid is warranted
+while the distinct co-organization scout and pointwise diagnostic are pending.
