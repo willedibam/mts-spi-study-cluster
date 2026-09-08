@@ -1,0 +1,12 @@
+name: interaction-share-phase-common_phase
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/interaction_share_phase_260908/common_phase/views.npz
+  sha256: 4db93ea36099a91a89c6122dbd51e426f67c3d443fe3c1dd9b4ec1de5212b2a9
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/interaction_share_phase_260908/common_phase/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260908

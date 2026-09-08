@@ -1,5 +1,7 @@
 # Focused proposal: cross-channel local sensitivity
 
+**Historical design:** the pilot and confirmation are complete; see [current findings](interaction-share-findings.md). The active follow-up is the [raw phase-control experiment](interaction-share-phase-control.md). Historical status statements below describe the original planning stage.
+
 Status: target and raw reference audit complete. The fixed-sum prototype had a
 memory shortcut; the revised independent-gain generator is adopted for a focused
 exploratory comparison. Fresh data and raw-control curves are complete; neural fitting is running and

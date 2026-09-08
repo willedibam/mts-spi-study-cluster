@@ -1,0 +1,12 @@
+name: interaction-share-phase-independent_phase
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/interaction_share_phase_260908/independent_phase/views.npz
+  sha256: c853d7e357407816025f9680aef6ccc0d6ea9a02982e0898d1652d2d3b1be145
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/interaction_share_phase_260908/independent_phase/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260908

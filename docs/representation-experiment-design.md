@@ -1,5 +1,7 @@
 # A focused experiment design for SPI–SPI representations
 
+**Historical design:** the pilot and confirmation are complete; see [current findings](interaction-share-findings.md). The active follow-up is the [raw phase-control experiment](interaction-share-phase-control.md). Historical status statements below describe the original planning stage.
+
 **Question:** when do relationships among dependence measures improve inference
 of a system's dynamics, beyond practical alternatives, under changing observation?
 
