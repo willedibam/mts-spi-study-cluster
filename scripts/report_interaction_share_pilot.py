@@ -14,7 +14,7 @@ def report(config,data,inputs,output):
     p=yaml.safe_load(config.read_text()); manifest,_=load_state_data(data,config)
     rows=manifest['rows']; families=p['generator']['families']; seeds=p['methods']['subset_seeds']
     budgets=p['sampling']['labelled_training_masters_per_coupling']
-    fits={}; provenance=[]
+    fits={}; provenance=[]; retrospective=set()
     for directory in inputs:
         for path in sorted(directory.rglob('*.json')):
             record=json.loads(path.read_text())
@@ -24,6 +24,8 @@ def report(config,data,inputs,output):
             assert ident['manifest_sha256']==file_hash(data/'manifest.json')
             assert record['predictions_sha256']==file_hash(path.with_suffix('.npz'))
             key=(ident['method'],ident['source_family'],ident['n_per_coupling'],ident['seed'])
+            if record.get('status','').startswith('retrospective'):
+                retrospective.add(key[0])
             if key in fits: raise ValueError(f'duplicate fit {key}')
             with np.load(path.with_suffix('.npz'),allow_pickle=False) as a:
                 ix=a['evaluation_indices']; train=a['train_indices']
@@ -97,12 +99,15 @@ def report(config,data,inputs,output):
     output.mkdir(exist_ok=True,parents=True)
     exploratory=p['evaluation'].get('exploratory',True)
     status=('exploratory' if exploratory else 'prospective_confirmation')+'_conditional_on_fitted_models'
+    if retrospective and not exploratory:
+        status='prospective_primary_with_retrospective_controls_conditional_on_fitted_models'
     planned=set(p['methods'].get('confirmation_statistical_methods',[])+p['methods'].get('confirmation_raw_methods',[]))
     supplementary=sorted(set(complete)-planned) if planned else []
     _atomic_json(output/'results.json',dict(status=status,primary=summary,cells=cells,paired_primary=comparisons,
                  total_label_budgets=p['sampling']['total_label_budgets'],incomplete_methods=incomplete,fit_provenance=provenance,
                  per_source_subset_primary_MAE=per_cohort,disjoint_training_cohorts=p['sampling'].get('disjoint_training_cohorts',False),
                  supplementary_methods_outside_frozen_protocol=supplementary,
+                 retrospective_methods=sorted(retrospective),
                  report_code_sha256=file_hash(Path(__file__)),protocol_sha256=file_hash(config)))
     lines=['# '+p['study_id'],'', 'Joint shift: held-out family, M16/T1000 to M8/T500; equal weight to both directions.',
            ('Exploratory evaluation.' if exploratory else 'Prospective continuous-parameter confirmation.')+
@@ -111,6 +116,7 @@ def report(config,data,inputs,output):
     for name,item in summary.items(): lines.append('| '+name+' | '+' | '.join(f'{x:.4f}' for x in item['MAE'])+' |')
     lines+=['','Per-direction, per-cohort and per-cell results and paired intervals are in results.json. Intervals resample independent evaluation masters within nominal-share strata, conditional on the fitted models; they are pointwise and unadjusted for multiple comparisons.',f'Incomplete methods (not ranked): {incomplete}','']
     if supplementary: lines += [f'Supplementary methods outside frozen protocol: {supplementary}','']
+    if retrospective: lines += [f'Retrospective controls added after earlier results: {sorted(retrospective)}. The prospective designation does not apply to these comparisons.','']
     (output/'report.md').write_text('\n'.join(lines)); print('\n'.join(lines))
 
 
