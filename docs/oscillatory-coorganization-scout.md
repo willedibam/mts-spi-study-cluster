@@ -62,3 +62,23 @@ features. A negative finding would separate lack of relevant catalogue coverage,
 estimation problems, and normalization/readout limitations where possible.
 The clinical significance of the exact binary organization remains unestablished;
 do not present a manufactured partition classification as anesthesia prediction.
+
+## Readouts declared after raw gate, before any z result
+
+The original raw protocol is preserved in commit7f8b9ce and its hash in the data
+manifest. Raw gate passes (Pearson agreement AUROC1.000/.9983 atM16/M8). For the
+p90 scout, permute24paired block IDs using seed260909137: first12source blocks,
+last12evaluation blocks. Use nested4/8/12source blocks, i.e.8/16/24labels atM16;
+evaluation uses both observation sizes. Two-fold GroupKFold keeps both conditions
+from each block together. All transformations and tuning fit source-fold records
+only. The raw feasibility inspection has already used these data: this held-out
+fit evaluation is still exploratory, not an untouched confirmatory test.
+
+Use PLS1/2/4 with existing training-only preprocessing for richm, normalizedshape,
+z, m+z, shape+z, graph, validity, raw spectrum, raw moment/memory/window summaries,
+phase/envelope marginal summaries, and direct phase/envelope agreement. Add z
+PCA/ridge caps1/2/4/8/16, ridge100/10/1/.1/.01. Select source-fold clipped MAE;
+report test AUROC, balanced accuracy at.5 and MAE. One fixed scout split; no
+seed-selection or best-SPI-pair claim. Runner`analyze_oscillatory_scout.py` audits
+all raw/MPI/cataloque hashes before feature extraction. Fresh learning pilot and
+neural comparison remain conditional on these exploratory results.
