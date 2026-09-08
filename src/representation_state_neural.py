@@ -66,8 +66,11 @@ class PairRelationEncoder(nn.Module):
     """
     def __init__(self, spec: dict):
         super().__init__()
-        self.temporal = nn.Sequential(nn.Conv1d(2,16,7,stride=4,padding=3), nn.GELU(),
-                                      nn.Conv1d(16,32,5,stride=4,padding=2), nn.GELU())
+        pointwise = spec.get('architecture') == 'pointwise_pair'
+        k1,s1,p1 = (1,1,0) if pointwise else (7,4,3)
+        k2,s2,p2 = (1,1,0) if pointwise else (5,4,2)
+        self.temporal = nn.Sequential(nn.Conv1d(2,16,k1,stride=s1,padding=p1), nn.GELU(),
+                                      nn.Conv1d(16,32,k2,stride=s2,padding=p2), nn.GELU())
         self.head = nn.Sequential(nn.Linear(128,32),nn.GELU(),nn.Linear(32,1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -85,7 +88,7 @@ class PairRelationEncoder(nn.Module):
 def make_encoder(spec: dict) -> nn.Module:
     architecture=spec.get('architecture','aligned_channel')
     if architecture=='aligned_channel': return AlignedChannelEncoder(spec)
-    if architecture=='pair_relation': return PairRelationEncoder(spec)
+    if architecture in ('pair_relation','pointwise_pair'): return PairRelationEncoder(spec)
     raise ValueError(f'Unknown encoder architecture: {architecture}')
 
 

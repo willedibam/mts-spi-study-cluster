@@ -118,3 +118,17 @@ exploratory results, and leave one-versus-two-paper structure undecided.
   Node gate178481474 follows afterok; actual progress in the local cluster-state.json.
 - Heartbeat spi-representation-overnight-follow-up checks every15min, ending by
   2026-09-09 05:30UTC or an evidence-based stopping decision. No duplicate runs.
+
+## Conditional neural diagnostic, before SPI results
+
+Both trained neural architectures remain near the median even at full observation
+(.2273 at40labels for each), and random aligned/PCA also fails to help (.2330).
+Test `covariance-modulation-pointwise-neural-260909.yaml`: replace the pair encoder's
+temporal kernels by1x1 nonlinear layers and retain all time points before pooling.
+This is a4753-parameter instantaneous joint-distribution encoder. Run40labels on
+the same six source cohorts first; complete10/20label curves only if same-process
+full-observation mean MAE falls below .18. Otherwise preserve it as a failed
+diagnostic. No new data or pyspi computation is needed. This checks a specific
+architecture mismatch hypothesis; kernel width, sampling resolution and parameter
+count change together, so success would not isolate a single causal explanation.
+Original neural checkpoints and their source-code identities are retained.
