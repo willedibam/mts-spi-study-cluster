@@ -89,6 +89,7 @@ def report(config,data,inputs,output):
     pairs += [(v+'-rbf',v+'-pls') for v in ['m','shape','z']]
     pairs += [('z-'+head,'null_mean-'+head) for head in ['pca','pls']]
     pairs += [('z-pls','random_encoder_pls'),('random_encoder_pls','random_encoder'),('z-pca','random_encoder')]
+    pairs += [('autospectrum-pls', name) for name in ['z-pls', 'linear', 'shape-pls']]
     for left,right in pairs:
         if left in primary and right in primary:
             delta=primary[left]-primary[right]; boot=primary_boot[left]-primary_boot[right]

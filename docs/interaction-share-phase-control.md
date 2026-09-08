@@ -83,3 +83,16 @@ smokes and representative 48-record node gates for both surrogate arms. Size
 production from those measurements. Fit the neural models locally while Gadi
 computes p90. The user authorizes runs up to 12 hours when useful; available time
 does not dictate corpus size. Preserve the earlier positive and negative results.
+
+## Bounded follow-up declared after the raw-control results
+
+Before surrogate SPI results, the completed spectrum-only control achieved
+same-family MAE .0796 and family-transfer MAE .0826 at fixed M16/T1000. The latter
+must not be compared directly with earlier joint M/T-shift scores. Consequently,
+apply this exact 165-feature map and existing PLS1/2/4 grid to both already-built
+interaction-share corpora, including their original M8/T500 evaluations and
+10/20/40-label cohorts. This checks whether an omitted simple comparator changes
+the earlier observation-transfer interpretation. It needs no new simulation,
+pyspi work, architecture or feature search. Keep it explicitly retrospective,
+separate from the frozen primary comparisons; preserve all earlier results.
+Runner: `scripts/run_interaction_share_autospectrum.py`.

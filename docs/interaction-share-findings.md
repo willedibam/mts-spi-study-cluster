@@ -1,8 +1,65 @@
 # Interaction-share representation findings
 
-Status: pilot, mechanism controls and prospective continuous-parameter confirmation
-complete. The scoped representation advantage is supported; general-purpose
-or broad neural superiority is not established. [Setup and reproduction](interaction-share-execution.md).
+Status: the original pilot and continuous-parameter confirmation are complete.
+A new raw phase-control experiment is running; a retrospective autospectral
+comparator materially narrows the current interpretation. [Setup and reproduction](interaction-share-execution.md).
+
+## Current update: a strong omitted autospectral comparator
+
+The phase-control study introduced a fixed spectrum-only map: 32 log band powers,
+pooled over channels with five summaries, plus channel-mean summaries (165 features).
+It has no cross-channel products and uses the existing PLS1/2/4 source-only grid.
+At M16/T1000 with 20 labels, MAE is .0796 within family and .0826 across families.
+Its inputs and predictions are identical across intact, common-phase and
+independent-phase recordings. Thus this origin-system property can be inferred
+well without relative cross-channel phases; coupling can leave a signature in
+individual-channel spectra.
+
+A bounded follow-up applied the identical map to both existing corpora, preserving
+their original training cohorts, label budgets and joint M/T/family shifts.
+This comparison is **retrospective**, motivated by the new raw-control result;
+it is not a new prospective confirmation or a new simulator run.
+
+| Dataset / method | 10 labels | 20 labels | 40 labels |
+|---|---:|---:|---:|
+| Pilot: autospectra/PLS | .1192 | .1141 | .1069 |
+| Pilot: z/PLS | .1769 | .1641 | .1600 |
+| Pilot: linear reference | .1485 | .1457 | .1379 |
+| Continuous: autospectra/PLS | .1142 | .1138 | .1075 |
+| Continuous: z/PLS | .1723 | .1519 | .1511 |
+| Continuous: linear reference | .1454 | .1433 | .1427 |
+
+The continuous-data 40-label autospectra-minus-z difference is -.04364,
+conditional paired 95% interval[-.05511,-.03324]; versus linear it is -.03524
+[-.04429,-.02603]. These are the original joint-shift evaluations, not the easier
+fixed-M/T phase-study scores. All original report means were reproduced exactly.
+The missing dedicated spectral baseline was a material comparator omission,
+although it does not invalidate the original z-versus-SPI-distribution result.
+A broad label-efficiency or interaction-information necessity claim is weaker,
+and the linear reference is no longer the best tested standalone method.
+
+Evidence: both datasets' `autospectrum-control/` and `autospectrum-report/`;
+`scripts/run_interaction_share_autospectrum.py`. All sampling and tuning remain
+source-only. The active [phase-control protocol](interaction-share-phase-control.md)
+asks what information z uses, with no generator change to obtain a favourable ranking.
+The following sections preserve the earlier completed comparisons and their scope.
+
+The spectral result has a direct explanation in the linear generator. With
+`B = a I + b W` and the symmetric nearest-neighbour ring, mode decay factors are
+`lambda_j = a + b cos(2 pi j/N)`. Up to the chosen spectral-density normalization,
+each channel has autospectrum
+
+\[
+S_{ii}(\omega)=\frac{\sigma^2}{N}\sum_{j=0}^{N-1}
+\frac{1}{1-2\lambda_j\cos\omega+\lambda_j^2}.
+\]
+
+Thus b changes individual-channel spectral shape, while the target is
+`q = (b²/2)/(a²+b²/2)`. This is a derivation for the stationary linear ring with
+independent equal-variance innovations, not a proof that the finite spectral
+summary uniquely identifies q or an exact formula for the tanh system. It
+explains why removing relative phases need not remove target information.
+This information is a legitimate consequence of coupling, not label leakage.
 
 ## Prospective confirmation and present decision
 
