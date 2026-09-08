@@ -58,6 +58,37 @@ class AlignedChannelEncoder(nn.Module):
         return self.head(pooled).squeeze(-1)
 
 
+class PairRelationEncoder(nn.Module):
+    """Shared raw two-channel temporal encoder, then invariant dyad pooling.
+
+    Both orientations of every off-diagonal pair are used. No channel identities,
+    simulator labels, precomputed dependence measures or pair subsampling enter.
+    """
+    def __init__(self, spec: dict):
+        super().__init__()
+        self.temporal = nn.Sequential(nn.Conv1d(2,16,7,stride=4,padding=3), nn.GELU(),
+                                      nn.Conv1d(16,32,5,stride=4,padding=2), nn.GELU())
+        self.head = nn.Sequential(nn.Linear(128,32),nn.GELU(),nn.Linear(32,1))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        b,t,m=x.shape
+        mask=~torch.eye(m,dtype=torch.bool,device=x.device)
+        i,j=mask.nonzero(as_tuple=True)
+        pairs=torch.stack((x[:,:,i],x[:,:,j]),dim=2).permute(0,3,2,1)
+        encoded=self.temporal(pairs.reshape(b*len(i),2,t))
+        per_pair=torch.cat((encoded.mean(-1),torch.sqrt(encoded.var(-1,unbiased=False)+1e-6)),dim=1)
+        per_pair=per_pair.reshape(b,len(i),64)
+        pooled=torch.cat((per_pair.mean(1),torch.sqrt(per_pair.var(1,unbiased=False)+1e-6)),dim=1)
+        return self.head(pooled).squeeze(-1)
+
+
+def make_encoder(spec: dict) -> nn.Module:
+    architecture=spec.get('architecture','aligned_channel')
+    if architecture=='aligned_channel': return AlignedChannelEncoder(spec)
+    if architecture=='pair_relation': return PairRelationEncoder(spec)
+    raise ValueError(f'Unknown encoder architecture: {architecture}')
+
+
 def seed_torch(seed: int) -> None:
     random.seed(seed)
     np.random.seed(seed)
@@ -91,7 +122,7 @@ def fit_encoder(x: torch.Tensor, y: torch.Tensor, spec: dict, lr: float, weight_
     if validation is None and epochs is None:
         raise ValueError("final fitting requires a preselected epoch count")
     seed_torch(seed)
-    model = AlignedChannelEncoder(spec).to(x.device)
+    model = make_encoder(spec).to(x.device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     generator = torch.Generator(device="cpu").manual_seed(seed)
     maximum = spec["maximum_epochs"] if epochs is None else epochs
