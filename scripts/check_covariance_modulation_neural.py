@@ -8,9 +8,8 @@ from src.representation_state_data import observed_view,file_hash
 from src.representation_state_neural import make_encoder,predict
 
 
-def main(tags, expected_fits, output):
+def main(tags, expected_fits, output, root, data):
     torch.set_num_threads(2)
-    root=Path('results/covariance_modulation_260909');data=Path('data/covariance_modulation_260909')
     manifest=json.loads((data/'manifest.json').read_text());rows=manifest['rows']
     masters=np.load(data/'masters.npy',mmap_mode='r');checks=[]
     for tag, expected in zip(tags, expected_fits, strict=True):
@@ -54,4 +53,6 @@ if __name__=='__main__':
     parser.add_argument('--tags',nargs='+',default=['neural-pair','neural-aligned'])
     parser.add_argument('--expected-fits',nargs='+',type=int,default=[18,18])
     parser.add_argument('--output',default='neural-verification.json')
-    args=parser.parse_args();main(args.tags,args.expected_fits,args.output)
+    parser.add_argument('--root',type=Path,default=Path('results/covariance_modulation_260909'))
+    parser.add_argument('--data',type=Path,default=Path('data/covariance_modulation_260909'))
+    args=parser.parse_args();main(args.tags,args.expected_fits,args.output,args.root,args.data)
