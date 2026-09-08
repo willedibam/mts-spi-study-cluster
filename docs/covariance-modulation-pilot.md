@@ -156,5 +156,7 @@ other fold had21columns and rank4. PLS had requested up to4components based on
 column/sample counts. The shared fitter now caps components by numerical rank.
 A duplicate-column regression test verifies the fix. Cached MPI/feature banks
 remain valid. Corrected statistical fits use statistical-rank-fixed; incomplete
-original fits are preserved. Previously completed raw fits require a replay check
-for invariance before combining them with the corrected analysis.
+original fits are preserved. All108 previously completed raw PLS fits and their complete CV candidate scores
+replay exactly after the rank correction; eight MPI re-extractions also match the
+full bank. Verification: `check_covariance_modulation_features.py`. Corrected
+analysis178481788 reuses this bank; no pyspi extraction is repeated.
