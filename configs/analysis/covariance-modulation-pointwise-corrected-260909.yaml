@@ -1,0 +1,164 @@
+study_id: covariance-modulation-260909
+status: corrected_neural_validation_stopping_preserve_original_results
+generator:
+  name: covariance_modulation
+  N_full: 32
+  families:
+  - persistent
+  - iid
+  alpha_bins:
+  - - 0.05
+    - 0.23
+  - - 0.23
+    - 0.41
+  - - 0.41
+    - 0.59
+  - - 0.59
+    - 0.77
+  - - 0.77
+    - 0.95
+  input_T: 1000
+  background_c_uniform:
+  - 0.05
+  - 0.15
+  base_d_uniform:
+  - 0.25
+  - 0.6
+  loading_multiplier_uniform:
+  - 0.8
+  - 1.2
+  state_flip_probability:
+    persistent: 0.05
+    iid: 0.5
+  marginal_law: iid N(0,1) for every individual channel and alpha
+  second_order: population covariance and all cross-lag covariances independent of
+    alpha
+target:
+  quantity: 'alpha: normalized amplitude of latent cross-group covariance modulation'
+  bounds:
+  - 0
+  - 1
+  interpretation: not identified causal coupling or unconditional nonstationarity
+observations:
+  source:
+    M: 16
+    T: 1000
+  shift:
+    M: 8
+    T: 500
+sampling:
+  master_seed: 26090961
+  training_masters_per_coupling: 24
+  evaluation_masters_per_coupling: 20
+  labelled_training_masters_per_coupling:
+  - 2
+  - 4
+  - 8
+  total_label_budgets:
+  - 10
+  - 20
+  - 40
+  tuning_labels_included: true
+  pretraining: none
+  augmentation: none
+  disjoint_training_cohorts: true
+methods:
+  catalogue: configs/pyspi/benchmarked_p90.yaml
+  feature_contract: unified_ordered_v3
+  preprocessing:
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-08
+    marginal_and_graph_scaling: standard
+    z_scaling: center
+    clip_standard_deviations: 5.0
+    block_balance: unit_total_training_variance_after_clipping
+    pca_dimensions: 32
+    pca_solver: randomized
+    pca_random_state: 1729
+  ridge_alpha_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  subset_seeds:
+  - 11
+  - 23
+  - 47
+  raw_encoder_spec:
+    architecture: pointwise_pair
+    input: identical unnormalized observed state arrays; no simulator parameters
+    loss: mean_squared_error
+    optimizer: AdamW
+    learning_rates:
+    - 0.0001
+    - 0.001
+    weight_decays:
+    - 0.0001
+    - 0.01
+    batch_size: 8
+    maximum_epochs: 600
+    early_stopping_metric: validation_unclipped_MAE
+    early_stopping_patience: 20
+    minimum_epochs: 30
+    final_refit_epochs: median_best_epoch_of_selected_setting_inner_folds
+    initialization_seed: matched_subset_seed
+    purpose: Correct early stopping hidden by prediction clipping, with600-epoch ceiling
+      for late-improving fits; report clipped MAE at selected epoch; same data and
+      hyperparameter grid
+    temporal_convolutions:
+    - input: 2
+      width: 16
+      kernel: 1
+      stride: 1
+      padding: 0
+    - width: 32
+      kernel: 1
+      stride: 1
+      padding: 0
+    pooling: mean and SD over time then over ordered dyads;128->32->1 GELU head
+  rich_marginals: true
+  raw_ridge_fractions:
+  - 0.1
+  pca_caps:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  pls_components:
+  - 1
+  - 2
+  - 4
+  views:
+  - m
+  - z
+  - m+z
+  - validity
+  raw_references:
+  - marginal
+  - spectrum
+  - covariance
+  - cumulant
+  - window
+  - moment_proxy
+  - covariance+cumulant+window
+evaluation:
+  primary: same-family prediction after reduced M/T observation; equal family weight
+  secondary: other-family same and reduced observation
+  metric: MAE
+  exploratory: true
+  interpretation: persistent versus iid is a mechanism control, not broad generator-family
+    transfer
+  primary_comparisons:
+  - z-pls versus shape-pls
+  - shape+z-pls versus shape-pls
+  - z-pls versus strong raw references and both neural encoders
+  training_variability: three disjoint 40-label cohorts per family; 10/20/40 budgets
+    nested within cohort
+  interval_unit: independent evaluation master; intervals conditional on fitted models
+  diagnostic_gate: 'First40labels: complete10/20label fits if mean same-process full-observation
+    MAE is below .18; report failure otherwise. No claim this isolates all effects
+    of architecture.'
+data_protocol: configs/analysis/covariance-modulation-260909.yaml

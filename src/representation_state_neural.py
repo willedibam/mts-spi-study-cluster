@@ -116,7 +116,7 @@ def predict(model: nn.Module, x: torch.Tensor, batch_size: int, *, clip: bool = 
 
 def fit_encoder(x: torch.Tensor, y: torch.Tensor, spec: dict, lr: float, weight_decay: float,
                 seed: int, validation: tuple[torch.Tensor, torch.Tensor] | None = None,
-                epochs: int | None = None) -> tuple[AlignedChannelEncoder, dict]:
+                epochs: int | None = None) -> tuple[nn.Module, dict]:
     """Early stop only on an inner fold; final refits receive an epoch count.
 
     No held-out evaluation data are accepted by this function. For final refits
@@ -124,6 +124,9 @@ def fit_encoder(x: torch.Tensor, y: torch.Tensor, spec: dict, lr: float, weight_
     """
     if validation is None and epochs is None:
         raise ValueError("final fitting requires a preselected epoch count")
+    stopping_metric = spec.get('early_stopping_metric', 'validation_MAE')
+    if stopping_metric not in ('validation_MAE', 'validation_unclipped_MAE'):
+        raise ValueError(f'Unknown early stopping metric: {stopping_metric}')
     seed_torch(seed)
     model = make_encoder(spec).to(x.device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
@@ -131,6 +134,7 @@ def fit_encoder(x: torch.Tensor, y: torch.Tensor, spec: dict, lr: float, weight_
     maximum = spec["maximum_epochs"] if epochs is None else epochs
     batch_size = spec["batch_size"]
     best, best_epoch, best_state = float("inf"), 0, None
+    best_reported_mae = None
     history = []
     start = time.perf_counter()
     for epoch in range(1, maximum + 1):
@@ -148,10 +152,16 @@ def fit_encoder(x: torch.Tensor, y: torch.Tensor, spec: dict, lr: float, weight_
         row = {"epoch": epoch, "training_MSE": sum(losses) / len(x)}
         if validation is not None:
             vx, vy = validation
-            mae = float(np.abs(predict(model, vx, batch_size) - vy.detach().cpu().numpy()).mean())
+            raw_prediction = predict(model, vx, batch_size, clip=False)
+            validation_target = vy.detach().cpu().numpy()
+            mae = float(np.abs(np.clip(raw_prediction, 0, 1) - validation_target).mean())
+            raw_mae = float(np.abs(raw_prediction - validation_target).mean())
+            stopping_error = raw_mae if stopping_metric == 'validation_unclipped_MAE' else mae
             row["validation_MAE"] = mae
-            if mae < best:
-                best, best_epoch = mae, epoch
+            row['validation_unclipped_MAE'] = raw_mae
+            if stopping_error < best:
+                best, best_epoch = stopping_error, epoch
+                best_reported_mae = mae
                 best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
             if epoch >= spec["minimum_epochs"] and epoch - best_epoch >= spec["early_stopping_patience"]:
                 history.append(row)
@@ -161,6 +171,8 @@ def fit_encoder(x: torch.Tensor, y: torch.Tensor, spec: dict, lr: float, weight_
         model.load_state_dict(best_state)
     else:
         best_epoch = maximum
-    return model, {"best_epoch": best_epoch, "validation_MAE": best if validation is not None else None,
+    return model, {"best_epoch": best_epoch, "validation_MAE": best_reported_mae,
+                   "stopping_metric": stopping_metric,
+                   "best_stopping_error": best if validation is not None else None,
                    "epochs_run": len(history), "history": history, "seconds": time.perf_counter() - start,
                    "parameter_count": sum(p.numel() for p in model.parameters())}

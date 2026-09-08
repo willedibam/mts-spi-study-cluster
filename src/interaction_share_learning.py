@@ -39,7 +39,10 @@ def fit_statistical(bank, view, train, target, preprocessing, head, value, alpha
         if np.max(np.std(x, axis=0)) < 1e-12:
             model = Ridge(alpha=1).fit(x, target[train])
         else:
-            components = min(value, len(train)-1, x.shape[1])
+            # Binary validity flags can contain several identical columns.
+            # Their numerical rank, not column count, limits usable PLS scores.
+            rank = int(np.linalg.matrix_rank(x - x.mean(axis=0)))
+            components = min(value, len(train)-1, x.shape[1], rank)
             # Preprocessing already specifies scaling/block weights; PLS must not undo it.
             model = PLSRegression(n_components=components, scale=False, max_iter=500).fit(x, target[train])
     else:

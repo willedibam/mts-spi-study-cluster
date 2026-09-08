@@ -132,3 +132,29 @@ diagnostic. No new data or pyspi computation is needed. This checks a specific
 architecture mismatch hypothesis; kernel width, sampling resolution and parameter
 count change together, so success would not isolate a single causal explanation.
 Original neural checkpoints and their source-code identities are retained.
+
+## Verified implementation corrections
+
+The original neural validation metric clipped predictions to[0,1]. In an actual
+pointwise fold, raw MAE improved .7031→.6037 over30epochs while all predictions
+remained negative and clipped MAE stayed .5015. This hid optimizer progress.
+Twenty-four of144 original temporal-pair candidate-fold histories also had flat
+clipped validation with improving training loss; none of144 aligned histories
+had that exact pattern. This is not proof the final rankings will change.
+
+Corrected variants retain the same inputs, cohorts, architecture and LR/decay
+grid. They stop on unclipped validation MAE, report clipped MAE at the selected
+epoch, and allow600epochs because some pointwise fits were still improving near
+200. Original outputs remain historical diagnostics. The interrupted pointwise
+driver is superseded by corrected runs, not silently resumed with changed code.
+The joint correction is not a clean causal estimate of clipping's performance
+effect; the targeted fold replay and regression test isolate that mechanism.
+
+The first statistical job178481583 built the full bank but failed in the
+validity-PLS control. Its offending inner-fold matrix had8columns but rank1; the
+other fold had21columns and rank4. PLS had requested up to4components based on
+column/sample counts. The shared fitter now caps components by numerical rank.
+A duplicate-column regression test verifies the fix. Cached MPI/feature banks
+remain valid. Corrected statistical fits use statistical-rank-fixed; incomplete
+original fits are preserved. Previously completed raw fits require a replay check
+for invariance before combining them with the corrected analysis.

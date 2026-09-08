@@ -83,7 +83,7 @@ It shows raw pair geometry, not a two-channel z experiment. Reproduce with
 
 Both minimize mean squared error using AdamW. The same two learning rates and two
 weight decays are compared by two-fold validation wholly inside the label budget.
-Early stopping uses validation MAE; the selected median best epoch determines the
+Corrected early stopping uses unclipped validation MAE; the selected median best epoch determines the
 final refit on all available source labels. Test recordings are not used for
 preprocessing, tuning or selecting the stopping epoch. Predictions are clipped to
 the target's[0,1] range at evaluation, as for statistical readouts.
@@ -104,3 +104,10 @@ sm70. The V100 gpuvolta option therefore needs a compatible PyTorch build; an
 approved newer-GPU queue would still need an actual CUDA smoke test. No GPU job
 was submitted and no environment changed. Local MPS already completes these
 small fits efficiently, so moving active fits has no demonstrated benefit.
+
+The first runs used clipped validation MAE; this could hide progress below zero.
+A reproduced fold confirmed the issue. Corrected configurations use an unclipped
+stopping signal, keep clipping for reported prediction error, and allow up to600
+epochs. Original scores are retained as diagnostics and are not the final neural
+comparison. A supplementary pointwise pair encoder (4753parameters) tests whether
+instantaneous nonlinear features are better suited to this particular target.

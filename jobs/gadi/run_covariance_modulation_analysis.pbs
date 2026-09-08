@@ -20,11 +20,18 @@ base=/g/data/ql44/we2614/covariance_modulation_260909
 mkdir -p "$base/analysis"
 exec >"$base/analysis/analysis-${PBS_JOBID%%.*}.log" 2>&1
 git rev-parse HEAD
-python -m src.run_external_corpus --config configs/external/covariance-modulation-260909.yaml --audit
 if [[ ! -f "$base/analysis/features.npz" ]]; then
+ python -m src.run_external_corpus --config configs/external/covariance-modulation-260909.yaml --audit
  python -m scripts.build_representation_state_bank --config "$config" --data "$base" \
   --mpi-root "$base/mpis/covariance-modulation-260909" --output "$base/analysis/features.npz"
 fi
+python - <<'PY'
+import json
+from pathlib import Path
+from src.representation_state_data import file_hash
+p=Path('/g/data/ql44/we2614/covariance_modulation_260909/analysis/features.npz')
+assert file_hash(p)==json.loads(p.with_suffix('.json').read_text())['artifact_sha256']
+PY
 python -m scripts.run_covariance_modulation --config "$config" --data "$base" \
- --output "$base/analysis/statistical" --feature-bank "$base/analysis/features.npz" \
+ --output "$base/analysis/statistical-rank-fixed" --feature-bank "$base/analysis/features.npz" \
  --methods m-pls m+z-pls shape-pls z-pca z-pls shape+z-pls g-pls validity-pls
