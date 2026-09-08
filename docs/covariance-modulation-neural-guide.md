@@ -35,6 +35,9 @@ dependence the experiment is trying to measure.
 
 This model can combine many channels in one interaction step. It does not perform
 full attention across all M*T time-channel tokens, which would be much more costly.
+Its set-processing rationale is related to [Deep Sets](https://arxiv.org/abs/1703.06114)
+and [Set Transformer](https://proceedings.mlr.press/v97/lee19d.html); this particular
+CNN/attention implementation is not a reproduction of either architecture.
 
 ## Pair-relation encoder:6,993 parameters
 
@@ -111,3 +114,27 @@ stopping signal, keep clipping for reported prediction error, and allow up to600
 epochs. Original scores are retained as diagnostics and are not the final neural
 comparison. A supplementary pointwise pair encoder (4753parameters) tests whether
 instantaneous nonlinear features are better suited to this particular target.
+
+For this variant, the learned pair representation has the form
+
+\[
+u_{ij}=\left[\operatorname{mean}_t\phi_\theta(x_i(t),x_j(t)),
+                 \operatorname{sd}_t\phi_\theta(x_i(t),x_j(t))\right],\qquad
+\hat\alpha=\rho_\theta\!\left([\operatorname{mean}_{i\ne j}u_{ij},
+                              \operatorname{sd}_{i\ne j}u_{ij}]\right).
+\]
+
+Here phi is a small nonlinear network with shared weights, not a supplied
+covariance or mutual-information function. A learned function resembling
+x_i²x_j² could expose a useful fourth moment after temporal averaging. Whether
+training discovers it from40labels is an empirical question. Temporal pooling
+makes this variant insensitive to a common permutation of time points; it can
+learn instantaneous joint-distribution features but not their temporal ordering.
+Both M and T may vary because averaging yields a fixed number of coordinates.
+This mathematical compatibility does not guarantee accurate estimates or transfer.
+
+[BIOT](https://arxiv.org/abs/2305.10351) is a relevant published biosignal example
+that explicitly handles mismatched channels and recording lengths, using channel
+and positional embeddings. We have not run BIOT. An eventual biosignal claim
+would need an appropriate published/domain baseline; the present simulation
+comparison tests a controlled inductive-bias question with small raw encoders.

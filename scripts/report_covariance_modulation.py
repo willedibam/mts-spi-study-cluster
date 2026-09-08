@@ -49,10 +49,13 @@ def report(data,inputs,output):
         for n in sorted(loss['labels'].unique()):
             subset=loss[(loss.scope==scope)&(loss.labels==n)]
             wide=subset.pivot(index=['source','seed','master','evaluation_family'],columns='method',values='error')
-            if 'z-pls' not in wide:continue
-            for other in ['shape-pls','m-pls','moment-calibrated','raw:covariance+cumulant+window-pls','neural-pair','neural-aligned']:
-                if other not in wide:continue
-                delta=(wide['z-pls']-wide[other]).dropna()
+            pairs=[('z-pls',other) for other in ['shape-pls','m-pls','moment-calibrated',
+                   'raw:covariance+cumulant+window-pls','neural-pair','neural-aligned',
+                   'neural-pointwise','median']]
+            pairs += [('z-pca','median'),('shape+z-pls','shape-pls'),('m+z-pls','m-pls')]
+            for method,other in pairs:
+                if method not in wide or other not in wide:continue
+                delta=(wide[method]-wide[other]).dropna()
                 per_master=delta.groupby(['master','evaluation_family']).mean()
                 rng=np.random.default_rng(260909)
                 boot=[]
@@ -60,7 +63,7 @@ def report(data,inputs,output):
                     values=per_master.xs(fam,level='evaluation_family').to_numpy()
                     boot.append(values[rng.integers(len(values),size=(2000,len(values)))].mean(1))
                 lo,hi=np.quantile(np.mean(boot,axis=0),[.025,.975])
-                comparisons.append(dict(scope=scope,labels=int(n),contrast='z-pls minus '+other,
+                comparisons.append(dict(scope=scope,labels=int(n),contrast=method+' minus '+other,
                                         mean=float(per_master.mean()),low=float(lo),high=float(hi),
                                         matched_fit_predictions=len(delta),independent_evaluation_masters=len(per_master)))
     (output/'paired-contrasts.json').write_text(json.dumps(dict(comparisons=comparisons,

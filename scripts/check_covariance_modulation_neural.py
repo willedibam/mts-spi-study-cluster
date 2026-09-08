@@ -1,4 +1,5 @@
 """Check all pilot neural checkpoints, CPU replays and source-only folds."""
+import argparse
 import json
 from pathlib import Path
 import numpy as np
@@ -7,14 +8,14 @@ from src.representation_state_data import observed_view,file_hash
 from src.representation_state_neural import make_encoder,predict
 
 
-def main():
+def main(tags, expected_fits, output):
     torch.set_num_threads(2)
     root=Path('results/covariance_modulation_260909');data=Path('data/covariance_modulation_260909')
     manifest=json.loads((data/'manifest.json').read_text());rows=manifest['rows']
     masters=np.load(data/'masters.npy',mmap_mode='r');checks=[]
-    for tag in ['neural-pair','neural-aligned']:
+    for tag, expected in zip(tags, expected_fits, strict=True):
         paths=sorted((root/tag).glob('*/*.json'))
-        assert len(paths)==18,(tag,len(paths))
+        assert len(paths)==expected,(tag,len(paths),expected)
         for p in paths:
             info=json.loads(p.read_text());details=info['details'];ident=info['identity']
             assert details['checkpoint_sha256']==file_hash(p.with_suffix('.pt'))
@@ -44,8 +45,13 @@ def main():
                 maximum_difference=max(r['cpu_mps_max_difference'] for r in checks),
                 selected_folds_at_cap=sum(r['selected_folds_at_cap'] for r in checks),checks=checks,
                 checker_sha256=file_hash(Path(__file__)))
-    (root/'neural-verification.json').write_text(json.dumps(result,indent=2)+'\n')
+    (root/output).write_text(json.dumps(result,indent=2)+'\n')
     print({k:v for k,v in result.items() if k!='checks'})
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--tags',nargs='+',default=['neural-pair','neural-aligned'])
+    parser.add_argument('--expected-fits',nargs='+',type=int,default=[18,18])
+    parser.add_argument('--output',default='neural-verification.json')
+    args=parser.parse_args();main(args.tags,args.expected_fits,args.output)
