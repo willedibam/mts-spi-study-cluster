@@ -43,7 +43,7 @@ def main(data,inputs,output,source_data=None):
     output.mkdir(parents=True,exist_ok=True);frame.to_csv(output/'per-fit.csv',index=False);summary.to_csv(output/'summary.csv',index=False)
     all_losses=pd.DataFrame(losses);comparisons=[]
     pairs=[('z-pls','m-pls'),('z-pls','shape-pls'),('m+z-pls','m-pls'),('shape+z-pls','shape-pls'),
-           ('z-pls','neural-aligned'),('z-pls','neural-pair'),('z-pls','raw:agreement-pls'),('z-pls','learned-pooling')]
+           ('z-pls','neural-aligned'),('z-pls','neural-pair'),('z-pls','raw:agreement-pls'),('z-pls','learned-pooling'),('z-pca','learned-pooling'),('z-pca','z-pls')]
     for m in [16,8]:
         for n in [10,20,40]:
             subset=all_losses[(all_losses.M==m)&(all_losses.labels==n)]

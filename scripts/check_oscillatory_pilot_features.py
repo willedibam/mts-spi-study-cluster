@@ -1,4 +1,5 @@
 """Independent sampled MPI-to-bank replay for both classes and observation sizes."""
+import argparse
 import json
 import tarfile
 from pathlib import Path
@@ -10,18 +11,24 @@ from src.run_external_corpus import _array_sha256
 from src.spi_spi_contract import build_unified_features
 
 
-def main():
-    root=Path('results/oscillatory_coorganization_pilot_260909');data=Path('data/oscillatory_coorganization_pilot_260909')
+def main(root,data):
     manifest=json.loads((data/'manifest.json').read_text());rows=manifest['rows'];lookup={r['row_id']:i for i,r in enumerate(rows)}
     replay=root/'replay-mpis';replay.mkdir(exist_ok=True)
-    with tarfile.open(root/'replay-mpis.tar.gz') as archive:archive.extractall(replay,filter='data')
+    if (root/'replay-mpis.tar.gz').exists():
+        with tarfile.open(root/'replay-mpis.tar.gz') as archive:archive.extractall(replay,filter='data')
     bank_path=root/'gadi-analysis/features.npz'
-    assert file_hash(bank_path)==json.loads(bank_path.with_suffix('.json').read_text())['artifact_sha256']
+    bank_meta=json.loads(bank_path.with_suffix('.json').read_text())
+    assert file_hash(bank_path)==bank_meta['artifact_sha256']
+    assert bank_meta['manifest_sha256']==file_hash(data/'manifest.json')
+    sources={a['row_id']:a for a in bank_meta['sources']}
     checks=[]
     with np.load(bank_path,allow_pickle=False) as bank,np.load(data/'views.npz',allow_pickle=False) as raw:
+        np.testing.assert_array_equal(bank['row_id'],[r['row_id'] for r in rows])
         order=bank['spi_order'].tolist();matrices={k:bank['X_'+k] for k in ['m','g','z','validity']}
         for path in sorted(replay.glob('*/meta.json')):
             meta=json.loads(path.read_text());name=meta['dataset_name'];index=lookup[name]
+            assert file_hash(path)==sources[name]['meta_sha256']
+            assert file_hash(path.parent/'spi_mpis.npz')==sources[name]['mpi_sha256']
             assert meta['source']['member_sha256']==_array_sha256(raw[name])
             assert meta['source']['archive_sha256']==manifest['artifacts']['views.npz']
             with np.load(path.parent/'spi_mpis.npz',allow_pickle=False) as a:mpis={k:a[k] for k in order}
@@ -38,4 +45,8 @@ def main():
     print('Eight sampled raw/MPI/feature replays pass')
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--root',type=Path,default=Path('results/oscillatory_coorganization_pilot_260909'))
+    p.add_argument('--data',type=Path,default=Path('data/oscillatory_coorganization_pilot_260909'))
+    a=p.parse_args();main(a.root,a.data)

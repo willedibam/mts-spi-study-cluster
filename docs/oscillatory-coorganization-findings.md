@@ -174,3 +174,28 @@ same catalogue inputs succeeds with20–40labels. This strengthens evidence for
 catalogue-based relational information, and limits a claim of uniquely superior
 Pearson compression or neural inaccessibility. The64dimensional learned embedding
 is a possible extension, not a reason to change the frozen transfer test.
+
+## PCA readout clarification requested by the user
+
+PCA/ridge reducedBA10/20/40=.830/.960/.985 versusPLS.8883/.960/.980 and learned
+pooling.6583/.965/.9883. Original-observation PCA=.9567/.9983/1.0. At10labels,
+PCA minus learned pooling is+17.17percentage points, conditional pointwise95%CI
+[13.33,20.83]; PCA minusPLS=-5.83[-8.34,-3.33]. At20/40labels no substantial
+separation is resolved. These are supplementary contrasts of existing predictions,
+not new fits; `pca-pooling-report/` retains the results and input hashes.
+
+PCA axes ignore targets, but dimension-cap/ridge selection uses source labels;
+this is not an entirely unsupervised model-selection pipeline. PCA is fitted on
+the available training records only, without extra unlabeled exposure. Requested
+caps at10/20/40labels were4/16/(16or32), respectively. The fitter truncates each
+cap to min(training_rows-1,available_features), so inner-fold effective dimensions
+can be smaller than final-refit dimensions. These cap choices do not identify
+an exact intrinsic dimension or directly validate16versus32components in a fold
+that cannot fit that many. This was the declared adaptive-cap algorithm; no test
+leakage follows, and the completed results remain intact. A future fixed-dimension
+claim would require candidates feasible in every inner fold or a separate frozen
+unlabeled basis. No additional PCA sweep is authorized by these results alone.
+
+The user prefers considering PCA, without a concrete decision. Retain both
+prespecified readouts through the frozen dynamics-transfer evaluation; do not
+silently change the primary analysis according to which test result is better.
