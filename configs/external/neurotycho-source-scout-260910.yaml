@@ -2,7 +2,7 @@ name: neurotycho-source-scout-260910
 source:
   format: named-npz-v1
   archive: /g/data/ql44/we2614/neurotycho_source_scout_260910/views.npz
-  sha256: bfbbf35795433c94116dea4c3bc410d43d6ea9a2056e105ce5572d109623e4cc
+  sha256: 68ce3bacfa445cfbd0161014401447523669442f69d89041cd2b4051fcceaf8f
   axis_order:
   - observation
   - process

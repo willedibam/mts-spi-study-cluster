@@ -52,8 +52,9 @@ def main(args):
     if not rows:
         raise ValueError('no source windows')
     arrays.update(__dataset_names__=np.array([r['row_id'] for r in rows]),
-                  __shapes__=np.array([[r['M'], r['T']] for r in rows]),
-                  __labels_json__=np.array(json.dumps([[r['animal'], f'state-{r["target"]}'] for r in rows])))
+                  __shapes__=np.array([[r['T'], r['M']] for r in rows]),
+                  __axis_order__=np.array(['observation', 'process']),
+                  __labels_json__=np.array([json.dumps([r['animal'], f'state-{r["target"]}']) for r in rows]))
     args.output.mkdir(parents=True)
     archive = args.output / 'views.npz'
     np.savez_compressed(archive, **arrays)

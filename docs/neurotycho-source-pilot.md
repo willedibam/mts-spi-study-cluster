@@ -162,7 +162,7 @@ no further spectral grid or Su-threshold search is warranted.
 
 While the remaining source dates download, export the existing128source windows
 and their128reduced views once for a p90 resource/validity gate. A two-task smoke
-uses the first Chibi awake full view and first anaesthetized reduced view (indices
+uses the first George awake full view and first anaesthetized reduced view (indices
 1and34). It measures runtime/memory and checks the289-SPI output contract, not
 classification. Use `neurotycho-source-scout-260910.yaml`, then a representative
 node gate before further extraction. Source-only extraction may proceed without
