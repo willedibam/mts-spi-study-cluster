@@ -24,7 +24,7 @@ def test_bipolar_reference_cancellation_and_frequency_retention():
     pairs = [[0, 1], [2, 3]]
     x, q = preprocess(raw, pairs)
     referenced, _ = preprocess(raw + 2*np.cos(2*np.pi*3*t), pairs)
-    assert q['accepted'] and x.shape == (2, 2000)
+    assert q['accepted'] and x.shape == (2, 2000) and x.dtype == np.float64
     np.testing.assert_allclose(x, referenced, atol=1e-7)
     f = np.fft.rfftfreq(2000, 1/250)
     peaks = f[np.abs(np.fft.rfft(x, axis=1)).argmax(1)]

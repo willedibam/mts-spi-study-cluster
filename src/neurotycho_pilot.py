@@ -62,7 +62,10 @@ def preprocess(raw, pair_indices):
     f, power = signal.welch(bipolar[:, 10000:18000], fs=1000, nperseg=2000, noverlap=1000)
     quality['raw_line_fraction_median'] = float(np.median(
         power[:, (f >= 49) & (f <= 51)].sum(1) / power[:, (f >= .5) & (f <= 100)].sum(1)))
-    return filtered.astype(np.float32), quality
+    # KSG/Kozachenko require tie-free coordinates: float32 rounding can create
+    # exact ties absent from the filtered float64 signal. Preserve this precision
+    # through SPI extraction; neural tensors may be cast at model input later.
+    return filtered, quality
 
 
 def spectral_features(x):

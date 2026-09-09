@@ -169,3 +169,24 @@ node gate before further extraction. Source-only extraction may proceed without
 PF labels or fitting a transfer classifier. Keep exact row/array/catalogue hashes.
 The seven-date extension must exclude previously exported record IDs and verify
 their unchanged hashes; reuse completed source MPI outputs rather than rerun them.
+
+The initial smoke178581189 finished successfully in13:17, peak aggregate8.59GiB;
+M16/T2000 took775.3s, M8/T1000 took172.4s. However, it exposed a **pipeline precision
+error**: filtered float64 signals had been saved asfloat32 before re-expansion for
+SPI extraction. In George's first awake window, two channels then had1999unique
+values among2000samples; the original float64 filtering gives2000unique values in
+every channel. Float32 reconstruction exactly reproduces the saved bank; maximum
+rounding error6.07e−5. This makes11information-estimator configurations fail their
+tie checks. It is an introduced numerical defect, not evidence against these SPIs.
+
+Retain float64 through filtered-window storage and SPI extraction; cast only neural
+inputs when needed. Rebuild window banks from cached raw files into `float64/`,
+preserving initial QC/baseline/bundle results. Stop the old waiting analysis driver,
+continue the raw downloads, and use a corrected driver/cache. Export a new
+`neurotycho-source-f64-scout-260910` bundle and repeat the two-task smoke because
+the numerical observations have changed. No broad extraction used the faulty bank.
+The separate6spectral-Granger configurations hit their automatic-order cap in
+both smoke windows; this alone does not prove overfitting rather than inadequate
+model order for filtered data. Preserve invalid outputs under the catalogue
+contract; do not silently change estimators or add jitter. `precision-diagnostic.json`
+records the numerical finding before the repair.
