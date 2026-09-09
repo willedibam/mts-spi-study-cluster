@@ -14,7 +14,7 @@ def get_range(url, start, length):
         raise ValueError("range outside 64 MiB member budget")
     span = f"-{length}" if start is None else f"{start}-{start + length - 1}"
     result = subprocess.run(
-        ["curl", "-fsSL", "--retry", "2", "--connect-timeout", "20",
+        ["curl", "-fsSL", "--retry", "2", "--retry-all-errors", "--connect-timeout", "20",
          "--max-time", "180", "--max-filesize", str(max(length, 2 * 1024**2)),
          "--range", span, url],
         check=True, capture_output=True,
