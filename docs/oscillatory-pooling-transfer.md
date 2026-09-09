@@ -98,3 +98,11 @@ Set Transformer: https://proceedings.mlr.press/v97/lee19d.html
 The architecture above is a small shared-MLP pooling comparator, not a reproduction
 of Set Transformer. SPI-relationship precedent and claim boundaries are in the
 workstream context and original pilot findings.
+
+## Execution note before learned-pooling results
+
+Use GadiCPU training (three disjoint cohort processes, two threads each) while
+transferring the77MBedge bank for local replay. This avoids making fitting depend
+on a slow download. Architecture, source splits, grid, stopping and seed remain
+unchanged; no local duplicate fits. Device/runtime are recorded per fit; previous
+raw encoders used MPS, so cross-device bitwise training identity is not claimed.
