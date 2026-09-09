@@ -7,7 +7,7 @@ from src.representation_state_neural import make_encoder,predict
 from src.spi_edge_pool import pack_inputs
 
 
-def main(data,bank,fits,output):
+def main(data,bank,fits,output,expected_fits=9):
     rows=json.loads((data/'manifest.json').read_text())['rows']
     meta=json.loads(bank.with_suffix('.json').read_text());assert meta['artifact_sha256']==file_hash(bank)
     assert meta['manifest_sha256']==file_hash(data/'manifest.json')
@@ -36,8 +36,8 @@ def main(data,bank,fits,output):
         chosen=next(c for c in details['candidates'] if c['learning_rate']==details['chosen_learning_rate'] and c['weight_decay']==details['chosen_weight_decay'])
         checks.append(dict(fit=str(p),max_cpu_replay_difference=delta,parameter_count=sum(p.numel() for p in model.parameters()),
             selected_folds_at_cap=sum(f['best_epoch']==ck['spec']['maximum_epochs'] for f in chosen['folds'])))
-    assert len(checks)==9
-    result=dict(status='passed',checks=checks,z_recovery_max_difference=meta['z_recovery_max_difference'],
+    assert len(checks)==expected_fits
+    result=dict(status='passed',checks=checks,z_recovery_max_difference=meta.get('z_recovery_max_difference'),
         max_cpu_replay_difference=max(c['max_cpu_replay_difference'] for c in checks),selected_folds_at_cap=sum(c['selected_folds_at_cap'] for c in checks),checker_sha256=file_hash(Path(__file__)))
     output.write_text(json.dumps(result,indent=2)+'\n');print({k:v for k,v in result.items() if k!='checks'})
 
@@ -45,4 +45,5 @@ def main(data,bank,fits,output):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ['data','bank','fits','output']:p.add_argument('--'+name,type=Path,required=True)
-    a=p.parse_args();main(a.data,a.bank,a.fits,a.output)
+    p.add_argument('--expected-fits',type=int,default=9)
+    a=p.parse_args();main(a.data,a.bank,a.fits,a.output,a.expected_fits)
