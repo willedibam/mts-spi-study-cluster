@@ -1,7 +1,11 @@
 # SPI–SPI representation learning: proposed study
 
-Status: Stage A completed; Stage B implemented and executing, 2026-09-07.
-See [state-pilot execution](representation-state-pilot.md) for the current protocol,
+Status: historical rationale and method menu, updated 2026-09-09. Subsequent
+covariance, co-organization, learned-pooling and faster-regime studies are complete.
+See [current scientific framing](spi-representation-scientific-framing.md) and
+[verified transfer findings](oscillatory-transfer-findings.md) for the present
+claim and next evidence gap. The stage descriptions below preserve the earlier
+design; [state-pilot execution](representation-state-pilot.md) records that pilot's
 neural implementation checks, data contract and reproduction commands.
 This is not a preregistered benchmark or evidence of superiority. The existing
 proof confirmation set has already been inspected; new decisions made using it
@@ -66,10 +70,11 @@ Initial priority: complete Stage A and specify Stage B together. Delay new matri
 metrics, large SPI graph networks, larger M and broad real-data searches until
 they address an observed limitation.
 
-Stage A is complete. Stage B has generated its independent masters, passed
+Historical Stage B checkpoint (superseded by the current findings linked above):
+Stage A was complete. Stage B had generated its independent masters, passed
 implementation checks and completed all matched neural/simple learning curves.
-The two-record Gadi p90 scout has one verified completed record; the larger
-record is still computing after a transient SSH interruption. A post hoc
+The two-record Gadi p90 scout then had one verified completed record; the larger
+record was still computing after a transient SSH interruption. A post hoc
 frozen-initialization encoder plus ridge also beat end-to-end neural training
 but lost to the physical observables; see the execution document. Published encoders and learned geometry remain conditional Stage C work.
 
