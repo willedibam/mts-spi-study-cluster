@@ -118,3 +118,38 @@ Brier. Confirmation generation and source-model references will be frozen in a
 separate configuration before those data are generated. A scout pass is not a
 positive result for z, and a new-mechanism result is not automatically an
 application or cross-task representation-learning claim.
+
+## Scout outcome and confirmation decision
+
+Protocol frozen at `eb2a1d2`; implementation frozen at `dfa2838` before the scout.
+All eight gates pass on all 16 paired nuisance draws. Both reference-half AUROCs
+and both finite-view AUROCs are 1.0; all class-interval checks pass. Minimum latent
+phase/envelope within-minus-between contrasts are .6937/.7668. Maximum step-size
+agreement change is .000780, phase-edge RMSE .001626. With coupling removed, all
+four absolute phase contrasts are below .00220. Maximum absolute change between
+the two half-wise latent phase contrasts is .0604. These establish feasibility,
+not SPI–SPI performance. Five generator/invariance tests pass, including exact
+uncoupled integration and cancellation of coupling in each group-average phase.
+
+Authoritative scout: `results/oscillatory_mechanism_scout_260910/report.json`, SHA
+`e146c14b5db0b42b10f1b9ce42329e678d44dbb48a022a4957bf608d2d62bfda`.
+Raw finite records and reference matrices are saved with hashes; long references
+are reproducible from stored nuisance parameters and independent random streams.
+
+Proceed with `configs/analysis/oscillatory-mechanism-transfer-260910.yaml`: 100
+independent masters/class, 200 total and 400 nested views, new master seed
+260910211, no training records. Both nuisance draws and paths are independent
+across confirmation classes/records, unlike paired scout draws. Preserve the
+predeclared parameter ranges and equations. The configuration binds a manifest
+of all 99 source fits, their prediction hashes and neural checkpoint hashes;
+the evaluator verifies these before use. Existing source preprocessing/settings
+remain fixed; original source predictions must replay before target statistical
+prediction. M16/T1000 is primary, M8/T500 secondary. No target calibration,
+retraining, selected test subsets or new head/grid. No changes to the older
+completed outcomes. Stop after this test and its verification; any further
+extension needs a result-based scientific rationale.
+
+This remains a controlled mechanism change within oscillatory co-organization.
+The strong-coupling limit approaches common phase motion, and amplitude dynamics
+are deliberately retained. A positive result would not establish transfer
+between arbitrary unrelated dynamical systems.

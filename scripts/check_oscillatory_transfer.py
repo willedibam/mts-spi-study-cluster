@@ -1,5 +1,5 @@
 """Audit frozen-model references and replay neural transfer from raw views/MPIs."""
-import json
+import argparse,json
 from pathlib import Path
 import numpy as np,torch
 from src.representation_state_data import file_hash
@@ -7,8 +7,7 @@ from src.representation_state_neural import make_encoder,predict
 from src.spi_edge_pool import standardize_edges,pack_inputs
 
 
-def main():
-    root=Path('results/oscillatory_coorganization_transfer_260909');data=Path('data/oscillatory_coorganization_transfer_260909')
+def main(root, data):
     rows=json.loads((data/'manifest.json').read_text())['rows'];lookup={r['row_id']:i for i,r in enumerate(rows)}
     with np.load(root/'gadi-analysis/normalized-edges.npz',allow_pickle=False) as a:order=a['spi_order'].tolist()
     samples={}
@@ -50,4 +49,8 @@ def main():
     print({k:v for k,v in result.items() if k!='checks'})
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root',type=Path,default=Path('results/oscillatory_coorganization_transfer_260909'))
+    parser.add_argument('--data',type=Path,default=Path('data/oscillatory_coorganization_transfer_260909'))
+    args=parser.parse_args();main(args.root,args.data)

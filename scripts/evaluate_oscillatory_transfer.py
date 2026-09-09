@@ -1,4 +1,4 @@
-"""Apply source-selected models to the prospective faster-regime cohort.
+"""Apply source-selected models to a prospective oscillatory transfer cohort.
 
 Statistical models are reconstructed from source labels and saved settings, with
 an original-test prediction replay before any target prediction. Neural weights
@@ -16,6 +16,12 @@ from src.run_external_corpus import _atomic_json,_atomic_savez
 
 def main(config,source_data,source_root,target_data,target_bank,edge_bank,output):
     cfg=yaml.safe_load(config.read_text());sr=json.loads((source_data/'manifest.json').read_text())['rows']
+    frozen=None
+    if 'frozen_source_models' in cfg:
+        contract=cfg['frozen_source_models'];path=Path(contract['path'])
+        assert file_hash(path)==contract['sha256']
+        frozen=json.loads(path.read_text())
+        assert frozen['source_manifest_sha256']==file_hash(source_data/'manifest.json')
     tr=json.loads((target_data/'manifest.json').read_text())['rows'];n=len(sr);y=np.array([r['target'] for r in sr])
     banks=[]
     order=None
@@ -48,6 +54,11 @@ def main(config,source_data,source_root,target_data,target_bank,edge_bank,output
             if 'identity' not in info:continue
             old=info['identity'];name=alias or old['method']
             if not alias and name not in selected:continue
+            if frozen is not None:
+                entry=frozen['models'][str(p.relative_to(source_root))]
+                assert entry['fit_sha256']==file_hash(p)
+                assert entry['prediction_sha256']==file_hash(p.with_suffix('.npz'))
+                if alias:assert entry['checkpoint_sha256']==file_hash(p.with_suffix('.pt'))
             assert old['manifest_sha256']==file_hash(source_data/'manifest.json')
             assert info['predictions_sha256']==file_hash(p.with_suffix('.npz'))
             with np.load(p.with_suffix('.npz'),allow_pickle=False) as a:
