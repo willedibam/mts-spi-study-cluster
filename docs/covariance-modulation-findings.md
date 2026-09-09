@@ -1,7 +1,8 @@
 # Covariance-modulation pilot: findings
 
-Status2026-09-09: all640p90 records and144statistical fits complete; corrected
-pointwise40label fits complete and verified; one epoch-ceiling extension and lower-label curves are now running. This is an exploratory pilot with three disjoint
+Status2026-09-09: all640p90 records,144statistical fits and the corrected neural
+comparisons are complete. The bounded1200epoch pointwise learning curves are
+complete and verified; no further same-generator runs are justified. This is an exploratory pilot with three disjoint
 source cohorts per process, not a confirmatory result selected from new data.
 The [protocol](covariance-modulation-pilot.md) states the generator and comparisons.
 
@@ -97,8 +98,8 @@ exact failure mode of normalized cross-statistic agreement.
   full=.2265/.2324/.2273. All checkpoints/splits pass; CPU/MPS discrepancy<=1.20e-7,
   no selected600epochcap. The correction makes small10/20label differences but
   does not rescue performance. Combined interim report is `corrected-interim-report/`.
-- Finish the prespecified40label pointwise
-  gate. A larger identical p90 run is not justified by current results. The
+- The prespecified40label pointwise gate passed and its bounded extension is
+  complete (below). A larger identical p90 run is not justified. The
   task demonstrates that dependence-only signal is insufficient to guarantee
   utility for z. Further work should distinguish changing dependence magnitudes
   from changing cross-statistic edge correspondence, with a meaningful target;
@@ -139,7 +140,7 @@ More aggressive regularization of z is not currently established as the remedy:
 PCA/PLS already limit learned dimension, and the small agreement panel does not
 rescue this task. Useful candidate extensions would preserve selected magnitudes
 and address their sample-size sensitivity. No additional tuning grid is warranted
-while the distinct co-organization scout and pointwise diagnostic are pending.
+after the completed co-organization pilot and pointwise diagnostic.
 
 ## Completed pointwise diagnostic and bounded continuation
 
@@ -157,3 +158,44 @@ and.0477 over the final100epochs. Make one extension to1200epochs, uniformly for
 600epoch results remain separate. Configuration frozen1a3a7ea before extension;
 outputs`neural-pointwise-extended/`, report once complete. Do not keep doubling
 ceilings indefinitely or imply a universal neural optimum from this comparison.
+
+## Final pointwise learning curves and stopping decision
+
+The single1200epoch extension completed18fits. Every checkpoint hash, prediction
+hash and source split passes; eight CPU prediction replays per fit agree with MPS
+within2.98e-7. None of the36selected validation folds reaches1200epochs. Unselected
+candidates can reach the cap; this is not proof of universal optimization success.
+
+| MAE, pointwise neural encoder | 10labels | 20labels | 40labels |
+|---|---:|---:|---:|
+| Same process, original observation | .2250 | .1796 | .1289 |
+| Same process, reduced observation | .2256 | .1965 | .1652 |
+| Other process, original observation | .2257 | .1814 | .1259 |
+| Other process, reduced observation | .2263 | .2024 | .1487 |
+
+The40label original/reduced result barely changes from the600epoch .1291/.1641;
+extra training does not materially strengthen it. At10labels the encoder remains
+near the constant baseline, then improves with more labels. At40labels it has
+substantially lower reduced-observation MAE than zPLS (.2375), but the specialist
+moment estimate remains better (.1261). zPLS minus pointwise at40labels is
++.07229, conditional pointwise95%CI[.05706,.08819]; positive means z has more error.
+The pointwise model roughly matches the raw combined summaries (.1662), without
+receiving their explicitly computed features. No equivalence claim is made.
+
+Authoritative consolidated output: `results/covariance_modulation_260909/final-report/`.
+Reproduce with `scripts/report_covariance_modulation.py --data data/covariance_modulation_260909`,
+inputs under the results root: `raw`, `gadi-analysis/statistical-rank-fixed`,
+`neural-aligned=neural-aligned-corrected`, `neural-pair=neural-pair-corrected`,
+`neural-pointwise=neural-pointwise-extended`,
+`neural-pointwise-600=neural-pointwise-corrected`,
+`random-aligned-pca=random-aligned`; use absolute or root-prefixed paths after `=`.
+Verification: `neural-pointwise-extended-verification.json`; protocol1a3a7ea.
+Historical200/600epoch outputs are retained separately, not pooled as extra fits.
+
+Stop this component without another extraction, label-budget expansion or ceiling
+doubling. Together with the [co-organization result](oscillatory-coorganization-findings.md),
+the evidence supports a specific distinction: dependence magnitude is not the
+same target as correspondence among dependence modes. Fullz is not proven
+uninformative in the former, nor universally advantageous in the latter. The
+positive co-organization task remains a controlled common-drive simulation, not
+an established clinical application or broad neural-learning superiority claim.

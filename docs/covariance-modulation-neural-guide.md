@@ -144,3 +144,14 @@ input features that covary with the training target, then regresses on those
 components. PCA instead chooses directions of large feature variance without
 using the target. Both learn a compression/readout; neither changes the fixed
 SPI extraction. Component selection belongs inside the labelled training budget.
+
+## What the completed pointwise experiment showed
+
+The1200epoch-ceiling learning curves are complete: reduced-observation MAE is
+.2256/.1965/.1652 at10/20/40labels; original-observation .2250/.1796/.1289.
+This provides evidence that this architecture can learn useful instantaneous
+joint-distribution features from sufficient labels in this experiment. It does
+not identify the learned features specifically as fourth moments. At40labels it
+beats z but remains worse than the model-informed moment estimate. No selected
+validation fold reaches1200epochs, and extending600to1200 scarcely changes the
+40label result. See the [findings](covariance-modulation-findings.md).
