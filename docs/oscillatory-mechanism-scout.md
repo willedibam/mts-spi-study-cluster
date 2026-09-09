@@ -160,10 +160,14 @@ boundary-index master realizations replay exactly. Four finite scout records and
 their four independent long reference trajectories also replay exactly. Target
 manifest SHA `34e901ecea7aacbaa918a493a4ff5d87b7d2c1829238ec3c05fe4594c3a023d7`;
 views SHA `0b286040216dc6176ef57ffa2b6015a62e2d7aa9a50b12c81a0b99eb409f207e`.
-Gadi validates the same archive/400 records. Smoke `178575173.gadi-pbs` is queued;
-48-record gate `178575197.gadi-pbs` is queued with an after-success dependency.
-The gate reuses completed smoke outputs. Production is not yet submitted; inspect
-the gate's audit and resource use first. State and continuation instructions:
+Gadi validates the same archive/400 records. Smoke `178575173.gadi-pbs` finished
+with exit 0 in 9:02 (4.12 GiB peak); gate `178575197.gadi-pbs` passed all 48 audits
+in 6:25 (39.04 GiB peak), reusing smoke outputs. This supports the planned
+192-core/768-GB homogeneous farms: M16 `178575765.gadi-pbs`, M8
+`178575775.gadi-pbs`, each 200 selected views/24 cached, 1200-second task timeout
+and 30-minute allocation ceiling. Dependent audit/bank job `178575814.gadi-pbs`
+is submitted after success of both. Source extraction code remains `1ab1595`,
+pyspi `65317c9`; no completed records are recomputed. State and continuation instructions:
 `results/oscillatory_mechanism_transfer_260910/cluster-state.json`. The existing
 follow-up monitor is active every 15 minutes and pauses at verified completion
 or the declared 2026-09-10 05:30 UTC deadline. No new z outcome has been inspected.
