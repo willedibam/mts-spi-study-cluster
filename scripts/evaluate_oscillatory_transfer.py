@@ -40,7 +40,7 @@ def main(config,source_data,source_root,target_data,target_bank,edge_bank,output
         ('neural-aligned',source_root/'neural-aligned'),('neural-pair',source_root/'neural-pair'),
         ('learned-pooling',source_root/'learned-pooling')]
     selected={'z-pls','z-pca','m-pls','shape-pls','m+z-pls','shape+z-pls',
-              'raw:agreement-pls','raw:covariance+cumulant+window-pls'}
+              'raw:agreement-pls','raw:marginal+covariance+cumulant+window-pls'}
     output.mkdir(parents=True,exist_ok=True);checks=[]
     for alias,directory in directories:
         for p in sorted(directory.rglob('*.json')):

@@ -34,11 +34,11 @@ def main(data,bank,fits,output):
                 i=idx[pos];tensor=torch.tensor(pack_inputs(x[i:i+1,:lengths[i]],valid[i:i+1]));pred.append(predict(model,tensor,1)[0])
             delta=float(np.max(abs(np.array(pred)-a['prediction'][positions])));assert delta<1e-5
         chosen=next(c for c in details['candidates'] if c['learning_rate']==details['chosen_learning_rate'] and c['weight_decay']==details['chosen_weight_decay'])
-        checks.append(dict(fit=str(p),max_CPU_MPS_difference=delta,parameter_count=sum(p.numel() for p in model.parameters()),
+        checks.append(dict(fit=str(p),max_cpu_replay_difference=delta,parameter_count=sum(p.numel() for p in model.parameters()),
             selected_folds_at_cap=sum(f['best_epoch']==ck['spec']['maximum_epochs'] for f in chosen['folds'])))
     assert len(checks)==9
     result=dict(status='passed',checks=checks,z_recovery_max_difference=meta['z_recovery_max_difference'],
-        max_CPU_MPS_difference=max(c['max_CPU_MPS_difference'] for c in checks),selected_folds_at_cap=sum(c['selected_folds_at_cap'] for c in checks),checker_sha256=file_hash(Path(__file__)))
+        max_cpu_replay_difference=max(c['max_cpu_replay_difference'] for c in checks),selected_folds_at_cap=sum(c['selected_folds_at_cap'] for c in checks),checker_sha256=file_hash(Path(__file__)))
     output.write_text(json.dumps(result,indent=2)+'\n');print({k:v for k,v in result.items() if k!='checks'})
 
 

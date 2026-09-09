@@ -132,3 +132,45 @@ domain-trained or augmented neural comparators remain open. A narrowly motivated
 simulation study can be valuable, but current evidence does not independently
 establish a broad high-impact ML claim. No additional same-generator scale-up is
 justified; finish the separate covariance curve.
+
+
+## Learned aggregation follow-up, completed2026-09-09
+
+The declared [pooling comparison](oscillatory-pooling-transfer.md) uses the same
+record-standardized SPI edge vectors that can reproduce z, plus validity masks.
+A shared per-edge MLP followed by mean/SD pooling learns a64dimensional record
+representation;21,697parameters, same source cohorts/budgets/CV/grid. This model
+can access standardized distribution information beyond correlations; it has the
+same catalogue inputs, not exactly the same compressed information as z. GadiCPU
+training was declared before results, rather than the earlier raw encoders' MPS.
+
+| Reduced-observation balanced accuracy | 10labels | 20labels | 40labels |
+|---|---:|---:|---:|
+| zPLS | 88.8% | 96.0% | 98.0% |
+| Learned SPI edge pooling | 65.8% | 96.5% | 98.8% |
+
+Learned pooling reaches100% original-observation BA at20/40labels. Reduced zPLS
+minus learned pooling is+23.0percentage points at10labels, conditional pointwise
+95%CI[20.0,25.67]; at20/40labels -.50[-2.17,1.00]/-.83[-2.00,.17]. These do not
+establish formal equivalence at larger budgets or a precise label-efficiency ratio.
+At10labels, pooling cohort reducedBA=.520/.605/.850 and AUROC=.7231/.8935/.9440.
+The large training-cohort variability is not captured by a bootstrap conditional
+on those fitted models. Two selected folds, both10label seed23, reach600epochs;
+last100epoch rawvalidationMAE improves .00083/.00567. Retain the declared ceiling
+and disclose this optimization limit; no automatic doubling or claim that more
+training could not improve the10label result.
+
+All9checkpoints/splits pass;72local CPU prediction replays differ by<=4.18e-7.
+Edge bank520record Gram recovery<=1.083e-7; eight MPI replays are bitexact.
+Gadi job178541908 Exit0(1:42,6cores,3.73GiBpeak); no duplicate local fits.
+Results `pooling-report/`, checkpoints `learned-pooling/`, verification
+`learned-pooling-verification.json` under the original pilot result root. Original
+`verified-report/` remains unchanged; supplemental comparison is declared after
+its results. Faster-regime predictions remain pending.
+
+The useful conclusion is explicit statistical relationships expose the target
+under the smallest tested label budget, while learning an aggregation of the
+same catalogue inputs succeeds with20–40labels. This strengthens evidence for
+catalogue-based relational information, and limits a claim of uniquely superior
+Pearson compression or neural inaccessibility. The64dimensional learned embedding
+is a possible extension, not a reason to change the frozen transfer test.
