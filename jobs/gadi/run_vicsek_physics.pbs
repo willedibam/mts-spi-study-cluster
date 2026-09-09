@@ -1,0 +1,58 @@
+#!/bin/bash
+#PBS -N vicsek-physics
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=8GB
+#PBS -l walltime=00:15:00
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44
+#PBS -j oe
+
+# Bounded single-node physics pilot: one process/case, at most four cases.
+# Override resources for long gate: -l ncpus=4,mem=16GB,walltime=02:00:00.
+set -euo pipefail
+: "${EXPECTED_COMMIT:?must pin the committed scout source}"
+: "${SCOUT_CONFIG:?must specify a committed config path}"
+: "${OUTPUT_DIR:?must specify a new absolute output directory}"
+FIRST_CASE=${FIRST_CASE:-0}
+LAST_CASE=${LAST_CASE:-1}
+[[ "$FIRST_CASE" =~ ^[0-9]+$ && "$LAST_CASE" =~ ^[0-9]+$ ]]
+case_count=$((LAST_CASE - FIRST_CASE + 1))
+(( case_count >= 1 && case_count <= 4 && case_count <= PBS_NCPUS ))
+[[ "$OUTPUT_DIR" == /scratch/ql44/we2614/* ]]
+[[ "$SCOUT_CONFIG" == configs/scout/vicsek-*.yaml ]]
+
+repo_dir=/home/562/we2614/mts-spi-study-cluster
+cd "$repo_dir"
+git cat-file -e "$EXPECTED_COMMIT^{commit}"
+mkdir -p "$PBS_JOBFS/vicsek" "$OUTPUT_DIR"
+# Immutable snapshot: unrelated later branch updates cannot change a running job.
+git archive "$EXPECTED_COMMIT" -- scripts/scout_vicsek_streaming.py \
+    scripts/analyze_vicsek_observation_scout.py tests/test_vicsek_streaming.py \
+    tests/test_vicsek_observation_analysis.py "$SCOUT_CONFIG" \
+    | tar -xf - -C "$PBS_JOBFS/vicsek"
+module purge
+module load python3/3.12.1
+source "$repo_dir/.venv/bin/activate"
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"
+cd "$PBS_JOBFS/vicsek"
+printf 'commit=%s job=%s cases=%s-%s config=%s\n' "$EXPECTED_COMMIT" "$PBS_JOBID" "$FIRST_CASE" "$LAST_CASE" "$SCOUT_CONFIG"
+python -c 'import sys,numpy,numba; print(sys.version); print("numpy",numpy.__version__,"numba",numba.__version__)'
+sha256sum scripts/scout_vicsek_streaming.py "$SCOUT_CONFIG"
+python -m pytest -q tests/test_vicsek_streaming.py tests/test_vicsek_observation_analysis.py
+
+pids=()
+for (( i=FIRST_CASE; i<=LAST_CASE; i++ )); do
+    python scripts/scout_vicsek_streaming.py --config "$SCOUT_CONFIG" \
+        --case-index "$i" --output-dir "$OUTPUT_DIR" \
+        >"$OUTPUT_DIR/case-$i.log" 2>&1 &
+    pids+=("$!")
+done
+rc=0
+for pid in "${pids[@]}"; do
+    wait "$pid" || rc=1
+done
+printf 'finished exit=%s\n' "$rc"
+exit "$rc"

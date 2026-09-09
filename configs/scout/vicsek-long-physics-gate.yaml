@@ -1,0 +1,15 @@
+# Next-stage physics-only pilot; NOT launched by the initial local scout.
+# Stride=25 limits stored observations, but every microscopic step is simulated.
+# This does not prescribe the eventual p90 sampling interval.
+simulation:
+  density: 2.0
+  speed: 0.5
+  burn: 20000
+  samples: 4000
+  stride: 25
+  bin_width: 4.0
+cases:
+  - {L: 128, eta: 0.44, start: ordered, seed: 910203}
+  - {L: 128, eta: 0.44, start: random, seed: 910203}
+  - {L: 128, eta: 0.476, start: ordered, seed: 910203}
+  - {L: 128, eta: 0.476, start: random, seed: 910203}

@@ -1,0 +1,15 @@
+# Follow-up to short-window start dependence. No SPI-selected controls.
+simulation:
+  density: 2.0
+  speed: 0.5
+  burn: 5000
+  samples: 8000
+  stride: 1
+  bin_width: 4.0
+cases:
+  - {L: 64, eta: 0.44, start: ordered, seed: 910201}
+  - {L: 64, eta: 0.44, start: random, seed: 910201}
+  - {L: 64, eta: 0.476, start: ordered, seed: 910201}
+  - {L: 64, eta: 0.476, start: random, seed: 910201}
+  - {L: 64, eta: 0.476, start: ordered, seed: 910202}
+  - {L: 64, eta: 0.476, start: random, seed: 910202}
