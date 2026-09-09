@@ -104,3 +104,15 @@ these do not directly identify this macaque ECoG montage. Do not map arbitrary
 ECoG indices to human electrodes and call that a fair unmodified pretrained test.
 Specify any channel-embedding/sampling adaptation and pretraining exposure before
 outcomes. No pretrained weights downloaded or neural architecture selected yet.
+
+## Initial execution result
+
+Su20110527 is staged with all66selected signal/time members verified. All32windows
+(16perstate) pass the numerical gate; timestamp spacing/origin and waveform lengths
+agree. Longest constant raw run is5samples in each state; median raw49–51Hz power
+fraction is.00205awake/.00591anaesthetized. Maximum crest factors8.60/12.52 are
+reported, not silently excluded. The fixed midpoint waveform/PSD inspection in
+`results/neurotycho_source_pilot_260910/su-initial-qc.png` looks plausible, including
+the intended50Hz notch. This does not establish exhaustive artifact freedom or
+classification utility. Remaining scout archives are staging; automatic grouped
+classification waits for all four. `execution.json` records processes and deadline.
