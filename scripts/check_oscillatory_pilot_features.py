@@ -9,6 +9,7 @@ from src.representation_attribution import rich_marginals
 from src.representation_state_data import file_hash
 from src.run_external_corpus import _array_sha256
 from src.spi_spi_contract import build_unified_features
+from src.spi_edge_pool import standardize_edges
 
 
 def main(root,data):
@@ -21,6 +22,13 @@ def main(root,data):
     assert file_hash(bank_path)==bank_meta['artifact_sha256']
     assert bank_meta['manifest_sha256']==file_hash(data/'manifest.json')
     sources={a['row_id']:a for a in bank_meta['sources']}
+    edge_path=root/'gadi-analysis/normalized-edges.npz'
+    edge_meta=json.loads(edge_path.with_suffix('.json').read_text())
+    assert file_hash(edge_path)==edge_meta['artifact_sha256']
+    assert edge_meta['base_bank_sha256']==file_hash(bank_path)
+    with np.load(edge_path,allow_pickle=False) as a:
+        np.testing.assert_array_equal(a['row_id'],[r['row_id'] for r in rows])
+        edges,edge_validity,lengths=a['edges'],a['validity'],a['lengths']
     checks=[]
     with np.load(bank_path,allow_pickle=False) as bank,np.load(data/'views.npz',allow_pickle=False) as raw:
         np.testing.assert_array_equal(bank['row_id'],[r['row_id'] for r in rows])
@@ -32,6 +40,9 @@ def main(root,data):
             assert meta['source']['member_sha256']==_array_sha256(raw[name])
             assert meta['source']['archive_sha256']==manifest['artifacts']['views.npz']
             with np.load(path.parent/'spi_mpis.npz',allow_pickle=False) as a:mpis={k:a[k] for k in order}
+            normalized,normalized_valid=standardize_edges(mpis,order)
+            np.testing.assert_array_equal(normalized,edges[index,:lengths[index]])
+            np.testing.assert_array_equal(normalized_valid,edge_validity[index])
             _,g,valid=summarize_mpis(mpis,order)
             values=dict(m=rich_marginals(mpis,order),g=g,validity=valid,z=build_unified_features(mpis,order,metric='pearson').z)
             errors={}
@@ -41,7 +52,7 @@ def main(root,data):
                 errors[key]=float(finite.max()) if len(finite) else 0.
             checks.append(dict(row_id=name,maximum_differences=errors))
     assert len(checks)==8
-    (root/'feature-verification.json').write_text(json.dumps(dict(status='passed',checks=checks,script_sha256=file_hash(Path(__file__))),indent=2)+'\n')
+    (root/'feature-verification.json').write_text(json.dumps(dict(status='passed',exact_normalized_edge_replays=len(checks),checks=checks,script_sha256=file_hash(Path(__file__))),indent=2)+'\n')
     print('Eight sampled raw/MPI/feature replays pass')
 
 
