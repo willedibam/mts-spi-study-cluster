@@ -1,0 +1,12 @@
+name: oscillatory-mechanism-transfer-260910
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/oscillatory_mechanism_transfer_260910/views.npz
+  sha256: 0b286040216dc6176ef57ffa2b6015a62e2d7aa9a50b12c81a0b99eb409f207e
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/oscillatory_mechanism_transfer_260910/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260909
