@@ -19,7 +19,8 @@ def main(config,data):
         for condition in [0,1]:
             for replicate in range(count):
                 seed=[cfg['sampling']['master_seed'],split,condition,replicate]
-                x,meta=simulate(bool(condition),seed);mid=f's{split}-a{condition}-r{replicate:03d}'
+                x,meta=simulate(bool(condition),seed,ranges=cfg['generator'].get('ranges'))
+                mid=cfg.get('record_prefix','')+f's{split}-a{condition}-r{replicate:03d}'
                 index=len(masters);masters.append(x);cohort=replicate//per_cohort if split==0 else None
                 records.append(dict(master_id=mid,master_index=index,seed_parts=seed,role=role,
                                     target=condition,cohort_index=cohort,**meta))
@@ -42,7 +43,7 @@ def main(config,data):
     manifest=dict(config_sha256=file_hash(config),rows=rows,masters=records,
         artifacts={p:file_hash(data/p) for p in ['masters.npy','observables.npy','raw-references.npz','views.npz']},
         code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/oscillatory_coorganization.py']},
-        status='fresh_pilot_frozen_before_generation_independent_records_no_pretraining')
+        status=cfg.get('status','fresh_pilot_frozen_before_generation_independent_records_no_pretraining'))
     (data/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(dict(masters=len(masters),views=len(rows),sha256=manifest['artifacts']['views.npz']))
 
