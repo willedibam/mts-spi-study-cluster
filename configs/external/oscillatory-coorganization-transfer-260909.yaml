@@ -1,0 +1,12 @@
+name: oscillatory-coorganization-transfer-260909
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/oscillatory_coorganization_transfer_260909/views.npz
+  sha256: 61f2de0fd90ddbf5cb287a852731c847f808c951850b98d6d9add54cb0b024b0
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/oscillatory_coorganization_transfer_260909/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260909
