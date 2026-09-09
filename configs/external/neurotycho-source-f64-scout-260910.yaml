@@ -1,0 +1,12 @@
+name: neurotycho-source-f64-scout-260910
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/neurotycho_source_f64_scout_260910/views.npz
+  sha256: 546eac25b2f5af718c14303f5d81556a2041e3323f9b9ad251d26cdb00100767
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/neurotycho_source_f64_scout_260910/pyspi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260910407
