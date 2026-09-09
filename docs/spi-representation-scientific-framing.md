@@ -1,8 +1,10 @@
 # SPI–SPI: the scientific claim and next evidence gap
 
-Updated 2026-09-09. Decision brief, not a frozen generator protocol. The approved
-pooling and faster-regime experiments are complete; this document does not launch
-or schedule further computation. See the [verified findings](oscillatory-transfer-findings.md).
+Updated 2026-09-10. Scientific decision brief; the subsequent
+[direct phase-mechanism protocol](oscillatory-mechanism-scout.md) now specifies the
+next experiment. Its raw feasibility scout passed and the independent transfer
+cohort is queued for extraction checks on Gadi. The earlier pooling and
+faster-regime experiments are complete; see their [verified findings](oscillatory-transfer-findings.md).
 
 ## Question and reason to care
 

@@ -1,5 +1,5 @@
 """Matched learning curves before and after the prespecified dynamics shift."""
-import json
+import argparse,json
 from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
@@ -9,15 +9,15 @@ import numpy as np,pandas as pd
 from src.representation_state_data import file_hash
 
 
-def main():
+def main(root, target_name):
     source=Path('results/oscillatory_coorganization_pilot_260909/pca-pooling-report')
-    root=Path('results/oscillatory_coorganization_transfer_260909');target=root/'verified-report'
+    target=root/'verified-report'
     styles=[('z-pca','z + PCA/ridge','#7030A0','-'),('z-pls','z + PLS','#AA78BA','--'),
             ('learned-pooling','Learned SPI pooling','#247CA4','-'),('m-pls','Individual-SPI summaries','#C07835','-'),
             ('raw:agreement-pls','Direct phase/envelope agreement','#555555',':')]
     plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False,'svg.fonttype':'none'})
     fig,axes=plt.subplots(2,2,figsize=(10.5,7),sharex=True,sharey=True);handles=[]
-    for row,(directory,name) in enumerate([(source,'Original dynamics'),(target,'Faster dynamics')]):
+    for row,(directory,name) in enumerate([(source,'Original dynamics'),(target,target_name)]):
         s=pd.read_csv(directory/'summary.csv');f=pd.read_csv(directory/'per-fit.csv')
         for col,m in enumerate([16,8]):
             ax=axes[row,col]
@@ -44,4 +44,8 @@ def main():
     plt.close(fig)
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root',type=Path,default=Path('results/oscillatory_coorganization_transfer_260909'))
+    parser.add_argument('--target-name',default='Faster dynamics')
+    args=parser.parse_args();main(args.root,args.target_name)

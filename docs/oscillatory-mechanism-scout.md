@@ -153,3 +153,17 @@ This remains a controlled mechanism change within oscillatory co-organization.
 The strong-coupling limit approaches common phase motion, and amplitude dynamics
 are deliberately retained. A positive result would not establish transfer
 between arbitrary unrelated dynamical systems.
+
+Execution: confirmation frozen at `0f2a227`, extraction configuration at
+`1ab1595`. All 400 views and input artifact hashes pass local verification; four
+boundary-index master realizations replay exactly. Four finite scout records and
+their four independent long reference trajectories also replay exactly. Target
+manifest SHA `34e901ecea7aacbaa918a493a4ff5d87b7d2c1829238ec3c05fe4594c3a023d7`;
+views SHA `0b286040216dc6176ef57ffa2b6015a62e2d7aa9a50b12c81a0b99eb409f207e`.
+Gadi validates the same archive/400 records. Smoke `178575173.gadi-pbs` is queued;
+48-record gate `178575197.gadi-pbs` is queued with an after-success dependency.
+The gate reuses completed smoke outputs. Production is not yet submitted; inspect
+the gate's audit and resource use first. State and continuation instructions:
+`results/oscillatory_mechanism_transfer_260910/cluster-state.json`. The existing
+follow-up monitor is active every 15 minutes and pauses at verified completion
+or the declared 2026-09-10 05:30 UTC deadline. No new z outcome has been inspected.
