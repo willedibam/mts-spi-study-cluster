@@ -89,3 +89,18 @@ downloads), CRC/size checks, SHA256 provenance and cache reuse. Inputs live in
 The scout plan is written before reading waveform bytes. Full source extension,
 if warranted, reuses existing member files and selects all eleven KTMD dates;
 the staging script cannot select propofol waveforms.
+
+## Neural comparator audit (selection still pending)
+
+[BIOT](https://proceedings.neurips.cc/paper_files/paper/2023/hash/f6b30f3e2dd9cb53bbf2024402d02295-Abstract-Conference.html)
+is relevant published variable-channel precedent. Its
+[released implementation](https://github.com/ycq091044/BIOT/blob/main/model/biot.py)
+uses **STFT magnitudes**, channel embeddings and temporal positions before joint
+attention/pooling. Consequently it is a credible spectral biosignal comparator,
+but cannot alone test access to all phase-dependent interactions. A comparison
+claim about dependence learning also needs a raw, temporally aligned encoder.
+The released pretrained models use named human scalp-EEG bipolar channels at200Hz;
+these do not directly identify this macaque ECoG montage. Do not map arbitrary
+ECoG indices to human electrodes and call that a fair unmodified pretrained test.
+Specify any channel-embedding/sampling adaptation and pretraining exposure before
+outcomes. No pretrained weights downloaded or neural architecture selected yet.
