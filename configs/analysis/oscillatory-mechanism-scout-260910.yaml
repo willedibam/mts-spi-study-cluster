@@ -1,0 +1,34 @@
+study_id: oscillatory-mechanism-scout-260910
+status: declared_before_raw_scout
+sampling:
+  seed: 260910101
+  paired_nuisance_draws: 16
+  reference_T: 12000
+  finite_T: 1000
+  convergence_draws: 4
+  uncoupled_draws: 4
+generator:
+  N: 32
+  fs: 100
+  phase_group_size: 8
+  carrier_range: [6.0, 12.0]
+  group_phase_sd_range: [0.10, 0.18]
+  coupling_range: [40.0, 80.0]
+  amp_rho_range: [0.94, 0.98]
+  amp_sd_range: [0.25, 0.55]
+  phase_jitter_range: [0.15, 0.35]
+  noise_range: [0.05, 0.15]
+  integration_dt: 0.001
+  fine_dt: 0.0005
+  burn_seconds: 10.0
+gates:
+  reference_minimum_AUROC: 0.95
+  aligned_minimum_agreement: 0.5
+  crossed_maximum_agreement: 0.25
+  minimum_class_pass_fraction: 0.9
+  minimum_phase_within_between: 0.3
+  minimum_envelope_within_between: 0.3
+  finite_minimum_AUROC: 0.9
+  maximum_step_agreement_difference: 0.03
+  maximum_step_phase_edge_RMSE: 0.02
+  maximum_uncoupled_absolute_phase_contrast: 0.1
