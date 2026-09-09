@@ -2,9 +2,10 @@
 
 Updated 2026-09-10. Scientific decision brief; the subsequent
 [direct phase-mechanism protocol](oscillatory-mechanism-scout.md) now specifies the
-next experiment. Its raw feasibility scout passed and the independent transfer
-cohort is queued for extraction checks on Gadi. The earlier pooling and
-faster-regime experiments are complete; see their [verified findings](oscillatory-transfer-findings.md).
+mechanism experiment. It is now complete, including a bounded post-hoc score
+diagnostic; see the [mechanism-transfer findings](oscillatory-mechanism-transfer-findings.md).
+The earlier pooling and faster-regime experiments are also complete; see their
+[verified findings](oscillatory-transfer-findings.md).
 
 ## Question and reason to care
 
@@ -35,14 +36,15 @@ useful behaviour, not relabelling the problem as transfer learning.
 | Proposition | Current evidence | Missing evidence |
 |---|---|---|
 | Cross-statistic correspondence can carry useful task information. | Co-organization prediction; independent per-SPI dyad shuffling destroys z's useful predictions while preserving each SPI's edge multiset. | This does not establish exclusive access to that information or application usefulness. |
-| Fixed agreement features can reduce the burden of learning. | z/readouts outperform learned SPI pooling at 10 labels under the tested training budget; pooling is competitive at 20–40. | General label-efficiency factors, optimization-independent advantages and comparison with pretrained encoders. |
-| The representation transfers beyond its exact training distribution. | Source-frozen prediction survives a prospective timescale change and reduced observation. | A different mechanism producing the same target property; the faster regime is not demonstrably harder. |
-| Transfer gains involve more than small-data training. | Differences from individual-SPI summaries persist at 40 labels. | At original observation size, those summaries still rank almost perfectly: much of the gap is threshold/score transfer. Reduced observation also has a ranking gap. |
+| Fixed agreement features can reduce the burden of learning. | Several 10-label comparisons favour z/readouts; this advantage is not uniform for PCA under the combined mechanism/observation shift. Pooling is competitive at 20–40 and sometimes better. | General label-efficiency factors, optimization-independent advantages and comparison with pretrained encoders. |
+| The representation transfers beyond its exact training distribution. | Source-frozen discrimination survives prospective timescale and controlled phase-mechanism changes; combined observation reduction exposes score-transfer limits. | Broader mechanisms, independent application utility and cross-task reuse; the faster regime is not demonstrably harder. |
+| Transfer gains involve more than small-data training. | Differences from individual-SPI summaries persist at 40 labels; the controlled mechanism test also reveals ranking gaps. | The earlier faster-regime gap was partly threshold transfer, and z itself develops a score-transfer deficit under the combined mechanism/observation shift. These effects must be distinguished. |
 | Compression has a useful, selective bias. | Co-organization positive and covariance-modulation negative; the latter has an exact two-statistic magnitude-loss example. | A general characterization of when the full catalogue succeeds or fails. |
 
 The present claim is therefore a **useful statistical representation of a specific
-interaction property, with demonstrated within-generator transfer and a scoped
-label-efficiency advantage**. This is more substantial than dimensional
+interaction property, with scoped transfer across timescales and phase-generating
+mechanism, and a label-efficiency advantage that varies with readout and shift**.
+This is more substantial than dimensional
 compatibility, but not yet a general reusable representation of dynamical systems.
 
 The construction of z is fixed. PCA learns axes; its dimension and readout are
@@ -52,7 +54,10 @@ For valid columns, the SPI correlation matrix is a Gram matrix of standardized
 edge profiles. This gives an interpretable geometric construction, not by itself
 a novel geometry method or evidence that manifold machinery would help.
 
-## Next checkpoint: one change in mechanism, the same functional property
+## Completed checkpoint: one change in mechanism, the same functional property
+
+The design below records the rationale for the now-completed checkpoint. The
+linked findings give its outcomes and limits; it is not an outstanding run request.
 
 Prioritize a cross-mechanism test over more training sizes, timescale shifts or
 PCA choices. Keep the current source fits frozen. A candidate target model would

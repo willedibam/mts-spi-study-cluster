@@ -52,3 +52,15 @@ choose a new primary method or launch a prevalence/calibration grid. After this
 check and the consolidated findings, stop the current experiment. A separate
 few-shot adaptation or application study would require an independently motivated
 question and its own data/validation contract.
+
+## Outcome
+
+Complete. At M8/T500 and 40 labels, alternative expected BA is PCA 98.33%, PLS
+97.33%, pooling 97.67%, summaries 73.33%, shapes 71.04%, specialist 95.67%.
+The fixed-threshold PCA/pooling gap largely disappears with the extra batch/prior
+information; the summaries' deficit persists. This supports the score-versus-ranking
+distinction, not a new deployment claim or a retrospectively changed primary
+result. All 99 prediction files are unchanged, and all 198 original per-fit/view
+BA and AUROC values match the primary report. Two tie/permutation tests pass.
+Results: `results/oscillatory_mechanism_transfer_260910/score-diagnostic/`.
+No further calibration variants or new data are warranted for this diagnostic.

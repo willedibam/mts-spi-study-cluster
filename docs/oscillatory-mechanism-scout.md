@@ -171,11 +171,12 @@ with exit 0: M16 in 7:13 (174.09 GiB peak), M8 in 1:53 (130.93 GiB peak); all
 400 outputs pass audit. Banks contain 263–282 valid SPIs per recording, with
 24.659 summed per-record computation hours. Source extraction code remains `1ab1595`,
 pyspi `65317c9`; no completed records are recomputed. State and continuation instructions:
-`results/oscillatory_mechanism_transfer_260910/cluster-state.json`. The existing
-follow-up monitor is active every 15 minutes and pauses at verified completion
-or the declared 2026-09-10 05:30 UTC deadline. No new z outcome has been inspected.
+`results/oscillatory_mechanism_transfer_260910/cluster-state.json`. The follow-up monitor was paused after verified completion. The user renewed
+12 hours of capacity; one bounded score-transfer diagnostic was completed before
+stopping. See the [verified findings](oscillatory-mechanism-transfer-findings.md).
 
-The 132-MB feature/normalized-edge bank download is in progress (session 87010);
-partial NPZ files must not be used. Eight sampled MPIs are already downloaded
-and hash verified. Frozen-model prediction and independent feature/edge replay
-await the complete banks; no extraction or model fitting is to be duplicated.
+The 132-MB bank download (session 87010) completed and both hashes pass. Eight
+independent raw/MPI/feature/edge replays pass. All 99 source references are verified;
+72 original source predictions replay exactly and 27 neural checkpoints replay on
+eight raw/MPI inputs each (maximum difference 4.18e−7). All current work is complete;
+no extraction or training is to be repeated.
