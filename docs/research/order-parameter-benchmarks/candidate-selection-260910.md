@@ -123,7 +123,8 @@ seed 910202 at eta=.476. Output time-pilot/. Analysis script
 scripts/analyze_vicsek_observation_scout.py writes reproducible descriptive
 tables/figures; do not combine unequal horizons into one convergence curve.
 
-Next staged (not launched with the local first pass):
+Next staged (not launched with the local first pass; subsequently submitted as
+Gadi178580950 after a successful scheduler smoke, see overnight-260910.md):
 configs/scout/vicsek-long-physics-gate.yaml uses L=128, burn20000, 100000 further
 microscopic steps, storing every 25th step; eta=.44,.476 and both starts, new
 seed910203. This is physics-only thinning, not a chosen p90 sampling interval.

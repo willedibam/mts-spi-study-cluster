@@ -1,5 +1,11 @@
 # Vicsek first-pass results, 2026-09-10
 
+Follow-up: Gadi smoke178580558 failed at the launcher after all tests passed;
+fixed smoke178580749 passed, and four-case long gate**178580950.gadi-pbs** is
+now submitted from pinned90543f1. Total smoke cost .06 SU; long ceiling16 SU.
+See [execution ledger](overnight-260910.md). The local first-pass results below
+predate these submissions; no new SPI result or long-gate outcome is available.
+
 ## Outcome
 
 Implemented and tested the published angular-noise, forward-streaming model.
