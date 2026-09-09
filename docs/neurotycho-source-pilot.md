@@ -41,6 +41,10 @@ large independent-subject learning curve is supported here.
   anti-alias filtering, then discard context. M16/T2000 is the primary observation.
   M8/final4seconds(T1000) is a predeclared later joint observation shift.
   Do not filter across acquisition boundaries or concatenate discontinuous data.
+  **Access qualification:** these are analysis-window lengths after preprocessing;
+  the filter uses28seconds of raw context for the8-second output, and the nested
+  4-second view inherits that context. This does not test deployment with only
+  4or8seconds of raw recording available. All comparators share that exposure.
 - Save pre-normalization band powers and quality summaries. The SPI/raw neural
   input will be standardized per channel within its observed window. A spectral
   baseline can retain absolute power; show this advantage explicitly rather than
@@ -114,5 +118,37 @@ fraction is.00205awake/.00591anaesthetized. Maximum crest factors8.60/12.52 are
 reported, not silently excluded. The fixed midpoint waveform/PSD inspection in
 `results/neurotycho_source_pilot_260910/su-initial-qc.png` looks plausible, including
 the intended50Hz notch. This does not establish exhaustive artifact freedom or
-classification utility. Remaining scout archives are staging; automatic grouped
-classification waits for all four. `execution.json` records processes and deadline.
+classification utility. `execution.json` records processes and deadline.
+
+The four-source scout subsequently completed:128/128windows accepted, and the
+fixed midpoint waveform/spectral figure was inspected for all four animals.
+All referenced raw/annotation/time hashes pass; four independent raw-window and
+spectral recomputations are exact, as are all four selected classifier predictions.
+Results are exploratory, from one date per animal:
+
+| Held-out animal | Balanced accuracy | AUROC | Brier |
+|---|---:|---:|---:|
+| Chibi |1.000|1.000|.00231|
+| George |.9375|1.000|.02120|
+| Kin2 |1.000|1.000|.00010|
+| Su |.500|.91797|.39003|
+
+Mean balanced accuracy.859375 and mean AUROC.979492. Every Su prediction is below
+.5; the result separates ranking from source-threshold transfer. It does not
+identify the cause (animal, date, montage, physiology or their combination), and
+does not justify tuning a threshold on Su test labels. Original source findings
+remain saved. The declared all-eleven-KTMD extension is now justified by usable
+signals and the need for recording-date replication, **not by a z advantage**;
+reuse the four staged archives and extract the seven remaining dates. Continue
+with the same preprocessing and readout grid. No propofol waveform has been used.
+
+One bounded, **post-hoc source diagnostic** is declared before its results: remove
+the six absolute-power coordinates from each pooled spectral block, leaving40
+relative-power/entropy/spectral-edge features. Repeat the same four grouped folds
+and C grid, saving `relative-spectral-*` separately. Motivation is the mismatch
+between strong ranking and absolute scores in Su, together with uncalibrated
+amplitude units and per-record normalization in the future SPI/neural inputs.
+This checks a simple gain-insensitive baseline, not a guarantee of resolving the
+failure or an isolated causal attribution to gain. Do not change the threshold
+using held-out Su labels. Keep the original70-feature results. Any future choice
+between these spectral views must use source-only inner validation before PF.

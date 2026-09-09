@@ -89,7 +89,7 @@ def fit(x, y, groups, c):
     return model
 
 
-def baseline(output, metadata):
+def baseline(output, metadata, relative_only=False):
     xs, ys, groups, record_ids = [], [], [], []
     for meta in metadata:
         if not meta['usable']:
@@ -100,6 +100,9 @@ def baseline(output, metadata):
         record_ids.extend([f'{r["archive"]}/{r["session"]}/{r["state"]}/{r["window"]}'
                            for r in meta['records'] if r['quality']['accepted']])
     x, y, groups = np.concatenate(xs), np.concatenate(ys), np.array(groups)
+    if relative_only:
+        # Five channel-pooling blocks of 14 features; remove six absolute powers.
+        x = x.reshape(len(x), 5, 14)[:, :, 6:].reshape(len(x), 40)
     if len(np.unique(groups)) != 4:
         raise ValueError('four-animal gate not passed; preserve QC, do not fit incomplete scout')
     reports = []
@@ -122,12 +125,14 @@ def baseline(output, metadata):
             balanced_accuracy=float(balanced_accuracy_score(y[test], p >= .5)),
             auroc=float(roc_auc_score(y[test], p)), brier=float(brier_score_loss(y[test], p)),
             source_only_cv=choices))
-    np.savez_compressed(output / 'spectral-predictions.npz', y=y, probability=predictions,
+    prefix = 'relative-spectral' if relative_only else 'spectral'
+    np.savez_compressed(output / f'{prefix}-predictions.npz', y=y, probability=predictions,
                         animal=groups, record_id=np.array(record_ids))
     report = dict(protocol='docs/neurotycho-source-pilot.md', unit='four held-out animals; exploratory',
+        spectrum_view='relative_power_entropy_edge' if relative_only else 'absolute_and_relative',
         animals=reports, mean_balanced_accuracy=float(np.mean([r['balanced_accuracy'] for r in reports])),
         mean_auroc=float(np.mean([r['auroc'] for r in reports])))
-    (output / 'spectral-report.json').write_text(json.dumps(report, indent=2) + '\n')
+    (output / f'{prefix}-report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2), flush=True)
 
 
@@ -147,7 +152,7 @@ def main(args):
         complete = json.loads((root / 'complete.json').read_text())
         metadata.append(build_archive(root, complete['animal'], plan['montages'][complete['animal']], args.output))
     if not args.qc_only:
-        baseline(args.output, metadata)
+        baseline(args.output, metadata, relative_only=args.relative_spectrum)
 
 
 if __name__ == '__main__':
@@ -156,4 +161,5 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, default=Path('results/neurotycho_source_pilot_260910'))
     parser.add_argument('--plan', default='scout-plan.json')
     parser.add_argument('--qc-only', action='store_true')
+    parser.add_argument('--relative-spectrum', action='store_true')
     main(parser.parse_args())
