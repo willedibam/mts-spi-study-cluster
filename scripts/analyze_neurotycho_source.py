@@ -13,6 +13,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
 from src.neurotycho_pilot import preprocess, spectral_features, window_specs
+from src import neurotycho_pilot
+
+
+def processing_hash():
+    return hashlib.sha256(Path(neurotycho_pilot.__file__).read_bytes()).hexdigest()
 
 
 def numeric_mat(path, key):
@@ -32,6 +37,8 @@ def build_archive(root, animal, montage, output):
     for session in complete['sessions']:
         directory = root / session
         condition = loadmat(directory / 'Condition.mat', simplify_cells=True)
+        for filename in ['Condition.mat', 'ECoGTime.mat']:
+            provenance[str(directory / filename)] = hashlib.sha256((directory / filename).read_bytes()).hexdigest()
         specs = window_specs(condition)
         time = numeric_mat(directory / 'ECoGTime.mat', 'ECoGTime')
         if abs(time[0]) > 1e-8 or not np.allclose(np.diff(time), .001, rtol=0, atol=1e-8):
@@ -62,7 +69,7 @@ def build_archive(root, animal, montage, output):
     np.savez_compressed(output / (root.name + '.npz'), x=np.array(matrices), spectral=np.array(features),
                         y=np.array([r['target'] for r in accepted]))
     metadata = dict(animal=animal, archive=root.name, usable=usable, counts=counts, records=records,
-                    waveform_hashes=provenance, montage=montage)
+                    input_hashes=provenance, montage=montage, processing_sha256=processing_hash())
     (output / (root.name + '.json')).write_text(json.dumps(metadata, indent=2) + '\n')
     print(f'{animal}: accepted{counts}, usable={usable}', flush=True)
     return metadata
@@ -83,13 +90,15 @@ def fit(x, y, groups, c):
 
 
 def baseline(output, metadata):
-    xs, ys, groups = [], [], []
+    xs, ys, groups, record_ids = [], [], [], []
     for meta in metadata:
         if not meta['usable']:
             continue
         bank = np.load(output / (meta['archive'] + '.npz'))
         xs.append(bank['spectral']); ys.append(bank['y'])
         groups.extend([meta['animal']] * len(bank['y']))
+        record_ids.extend([f'{r["archive"]}/{r["session"]}/{r["state"]}/{r["window"]}'
+                           for r in meta['records'] if r['quality']['accepted']])
     x, y, groups = np.concatenate(xs), np.concatenate(ys), np.array(groups)
     if len(np.unique(groups)) != 4:
         raise ValueError('four-animal gate not passed; preserve QC, do not fit incomplete scout')
@@ -113,7 +122,8 @@ def baseline(output, metadata):
             balanced_accuracy=float(balanced_accuracy_score(y[test], p >= .5)),
             auroc=float(roc_auc_score(y[test], p)), brier=float(brier_score_loss(y[test], p)),
             source_only_cv=choices))
-    np.savez_compressed(output / 'spectral-predictions.npz', y=y, probability=predictions, animal=groups)
+    np.savez_compressed(output / 'spectral-predictions.npz', y=y, probability=predictions,
+                        animal=groups, record_id=np.array(record_ids))
     report = dict(protocol='docs/neurotycho-source-pilot.md', unit='four held-out animals; exploratory',
         animals=reports, mean_balanced_accuracy=float(np.mean([r['balanced_accuracy'] for r in reports])),
         mean_auroc=float(np.mean([r['auroc'] for r in reports])))
@@ -129,7 +139,10 @@ def main(args):
         root = args.data / name
         meta_path = args.output / (name + '.json')
         if meta_path.exists():
-            metadata.append(json.loads(meta_path.read_text()))
+            cached = json.loads(meta_path.read_text())
+            if cached.get('processing_sha256') != processing_hash():
+                raise ValueError('stale preprocessing cache; choose a new versioned output')
+            metadata.append(cached)
             continue
         complete = json.loads((root / 'complete.json').read_text())
         metadata.append(build_archive(root, complete['animal'], plan['montages'][complete['animal']], args.output))
