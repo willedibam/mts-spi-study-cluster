@@ -106,3 +106,15 @@ transferring the77MBedge bank for local replay. This avoids making fitting depen
 on a slow download. Architecture, source splits, grid, stopping and seed remain
 unchanged; no local duplicate fits. Device/runtime are recorded per fit; previous
 raw encoders used MPS, so cross-device bitwise training identity is not claimed.
+
+## Additional primary motivation, checked2026-09-09
+
+Siems and Siegel(2020), NeuroImage209:116538, used humanMEG/source reconstruction
+and simulations to show non-redundant cortical phase- and amplitude-coupling
+patterns, accounting for phase-related bias in amplitude-coupling estimation.
+https://pubmed.ncbi.nlm.nih.gov/31935522/
+This supports studying relationships between coupling modes and limits novelty:
+those relationships are already scientifically studied. It does not validate our
+binary latent-partition endpoint, physiological parameter ranges, clinical utility,
+or the absence of estimator bias in our specific synthetic recordings. Our added
+question concerns catalogue-based record representation and constrained learning.
