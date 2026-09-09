@@ -120,24 +120,23 @@ the mechanism argument, but matching group diffusion and retaining amplitude law
 limits its independence; it should not carry a broad cross-system claim.
 
 Treat fixed z and learned SPI aggregation as competing realizations of this
-approach. The current learned-pooling advantage is not evidence against the broader
-representation idea. However, it does not yet establish that the learned model
-uses joint cross-SPI relationships: it also has higher-order marginal shapes and
-validity information. A bounded attribution follow-up should preserve each SPI's
-edge distribution, reciprocal pairing and record-level validity while disrupting
-cross-SPI correspondence, then refit/evaluate the same pooling learner under the
-same source budgets. The existing z intervention does not establish this result
-for the learned model. Specify that experiment before running it; do not add an
-architecture sweep.
+approach. The learned-pooling advantage is not evidence against the broader
+representation idea. The [completed attribution check](oscillatory-pooling-attribution.md)
+now supports a role for cross-SPI correspondence in the learned model: preserving
+each SPI's edge distribution, reciprocal pairing and validity while disrupting
+correspondence reduces accuracy to near chance after matched retraining at40labels.
+That supports the shared statistical prior under this task/training regime; it
+does not prove that Pearson compression is optimal or identify the unique learned
+function. No architecture sweep is warranted by this check.
 
-Prioritize one application audit with an independent outcome and a meaningful
-held-out acquisition or intervention. A candidate is awake/anaesthetized state
-inference across agents and animals using NeuroTycho ECoG. The provider documents
-128-channel recordings, multiple anaesthetic conditions and four macaques;
-the listing currently contains 31 anesthesia/sleep entries, which are not 31
-independent animals. Actual archive access and the animal-by-agent-by-session
-matrix still need checking. Sources: [task documentation](https://wiki.neurotycho.org/Anesthesia_and_Sleep_Task_Details)
-and [record listing](https://neurotycho.org/expdatalist/listview?task=40).
+The [completed NeuroTycho audit](neurotycho-application-audit.md) finds30anesthesia/sleep
+archives, all accessible, with actual condition annotations inspected in six
+animal/agent cells. This supersedes the earlier indexed-page count of31. Only
+Chibi and George have propofol, ketamine-alone and medetomidine-alone data;
+KTMD spans allfour animals. The KTMD/propofol comparison also changes recording
+year. This supports a qualified pilot, not broad subject generalization. Sources:
+[task documentation](https://wiki.neurotycho.org/Anesthesia_and_Sleep_Task_Details)
+and [live catalogue](https://neurotycho.org/data/detail.json).
 
 The original study defined anaesthetic unresponsiveness with behavioural testing,
 with slow waves as additional confirmation; its sleep labels instead used spatial
@@ -176,5 +175,5 @@ without another demonstrated practical benefit. Real data are not logically
 necessary for a strong methods paper, but they are the most direct missing evidence
 for the application-impact ambition here. If that evidence does not materialize,
 the existing learning studies remain a scoped part of the main method paper;
-a separate learning paper should earn an independent contribution. No new jobs or
-data downloads were launched during this strategy assessment.
+a separate learning paper should earn an independent contribution. The subsequent approved pooling attribution and annotation-only application audit
+are complete; no application waveform extraction or full benchmark is running.

@@ -50,3 +50,38 @@ Stop after the nine fits and verification. No new pyspi extraction, generator,
 larger label grid, architecture sweep or additional optimization ceilings.
 Run on local CPU unless resource contention justifies Gadi; this is a bounded
 reuse analysis, and changing device does not change the scientific comparison.
+
+## Verified result
+
+Complete on local CPU. Protocol frozen at `12a2d8e`, implementation `7effbea`.
+The three null banks preserve all 520 records' per-SPI edge distributions,
+reciprocal dyads, validity and padding. All nine null fits have exactly the same
+training and validation indices as their intact 40-label counterparts.
+
+Balanced accuracy, means of the three source cohorts:
+
+| Input | M16/T1000 | M8/T500 |
+|---|---:|---:|
+| Intact correspondence | 100.0% | 98.8% |
+| Independent correspondence, seed 503 | 51.0% | 49.2% |
+| Independent correspondence, seed 509 | 51.7% | 51.2% |
+| Independent correspondence, seed 521 | 49.0% | 50.3% |
+
+Reduced-view AUROCs are .5129,.4963,.4850 for the three nulls, versus .9997 intact.
+Thus the collapse is not just a moved classification threshold. Under the tested
+architecture, training budget and task, the learned model benefits substantially
+from cross-SPI correspondence beyond preserved marginal distributions and validity.
+This does not prove those preserved inputs contain no task information: existing
+individual-SPI summary readouts already demonstrate otherwise. Nor does it prove
+that Pearson correlations are the unique useful relationships learned by pooling.
+
+All nine checkpoints replay on eight held-out inputs each (maximum error6.56e−7).
+Shared permutations preserve the three intact models' predictions within1.20e−7
+on eight inputs/model. No selected null fold reaches the600epoch cap. Two tests
+independently verify matrix/edge permutation equivalence and common-permutation
+model invariance. No original fit or pyspi extraction was repeated.
+
+Results: `results/oscillatory_pooling_attribution_260910/`, including
+`completion-verification.json`, `shared-permutation-and-split-verification.json`,
+and `report/summary.csv`. All permutation/cohort results are retained. Stop this
+attribution check; application validation remains a separate question.
