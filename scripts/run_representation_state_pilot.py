@@ -42,7 +42,7 @@ def select_ridge(bank, view, train, targets, strata, protocol, seed):
     return chosen, {"candidates": {str(k): v for k, v in scores.items()}, "folds": folds}
 
 
-def run(config_path, data_root, output, methods, device, seeds=None, budgets=None, feature_bank=None, source_family=None):
+def run(config_path, data_root, output, methods, device, seeds=None, budgets=None, feature_bank=None, source_family=None, edge_bank=None):
     protocol = yaml.safe_load(config_path.read_text())
     manifest, masters = load_state_data(data_root, config_path)
     rows = manifest["rows"]
@@ -80,6 +80,19 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                        "numpy": np.__version__, "sklearn": sklearn.__version__, "python": platform.python_version()}
     if source_family is not None:
         common_identity["source_family"] = source_family
+    edge_values = edge_validity = edge_lengths = None
+    if edge_bank is not None:
+        from src.spi_edge_pool import pack_inputs
+        assert json.loads(edge_bank.with_suffix('.json').read_text())['artifact_sha256']==file_hash(edge_bank)
+        with np.load(edge_bank,allow_pickle=False) as a:
+            np.testing.assert_array_equal(a['row_id'],[r['row_id'] for r in rows])
+            assert a['manifest_sha256'].item()==file_hash(data_root/'manifest.json')
+            edge_values,edge_validity,edge_lengths=a['edges'],a['validity'],a['lengths']
+        common_identity.update(edge_bank_sha256=file_hash(edge_bank),edge_module_sha256=file_hash(Path('src/spi_edge_pool.py')))
+        def edge_tensor(indices):
+            count=edge_lengths[indices]
+            assert len(np.unique(count))==1
+            return torch.as_tensor(pack_inputs(edge_values[indices,:count[0]],edge_validity[indices]),device=device)
     x_source = None
     if "neural" in methods:
         import torch
@@ -87,9 +100,10 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
         torch.set_num_threads(2)
         if device == "cuda" and not torch.cuda.is_available():
             raise RuntimeError("CUDA explicitly requested but unavailable")
-        x_source = torch.as_tensor(np.stack([observed_view(masters[rows[i]["master_index"]],
+        x_source = (edge_tensor(pool) if edge_bank is not None else
+                    torch.as_tensor(np.stack([observed_view(masters[rows[i]["master_index"]],
                                                           rows[i]["M"], rows[i]["T"]) for i in pool]),
-                                   dtype=torch.float32, device=device)
+                                    dtype=torch.float32, device=device))
         # No input tensors are made from the held-out masters until fitting ends.
         pool_lookup = {int(row): i for i, row in enumerate(pool)}
         y_source = torch.as_tensor(targets[pool], dtype=torch.float32, device=device)
@@ -120,7 +134,7 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                     prediction, training_prediction = simple[evaluation, col], simple[train, col]
                     details["labels_used"] = 0
                 elif method == "neural":
-                    spec = protocol["methods"]["raw_encoder_spec"]
+                    spec = protocol["methods"]["edge_encoder_spec" if edge_bank is not None else "raw_encoder_spec"]
                     cv = StratifiedKFold(2, shuffle=True, random_state=seed)
                     folds = [(train[a], train[b]) for a, b in cv.split(train, strata[train])]
                     candidates = []
@@ -147,8 +161,9 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                     for m, t in cells:
                         positions = np.asarray([j for j, i in enumerate(evaluation) if (rows[i]["M"], rows[i]["T"]) == (m, t)])
                         for chunk in np.array_split(positions, max(1, int(np.ceil(len(positions) / spec["batch_size"])))):
-                            x = torch.as_tensor(np.stack([observed_view(masters[rows[evaluation[j]]["master_index"]], m, t)
-                                                          for j in chunk]), dtype=torch.float32, device=device)
+                            x = (edge_tensor(evaluation[chunk]) if edge_bank is not None else
+                                 torch.as_tensor(np.stack([observed_view(masters[rows[evaluation[j]]["master_index"]], m, t)
+                                                          for j in chunk]), dtype=torch.float32, device=device))
                             prediction[chunk] = predict(fitted, x, spec["batch_size"])
                     training_prediction = predict(fitted, x_source[a], spec["batch_size"])
                     torch.save({"state_dict": {k: v.detach().cpu() for k, v in fitted.state_dict().items()},
@@ -198,5 +213,6 @@ if __name__ == "__main__":
     parser.add_argument("--seeds", nargs="+", type=int)
     parser.add_argument("--budgets", nargs="+", type=int)
     parser.add_argument("--source-family")
+    parser.add_argument("--edge-bank",type=Path)
     args = parser.parse_args()
-    run(args.config, args.data, args.output, args.methods, args.device, args.seeds, args.budgets, args.feature_bank, args.source_family)
+    run(args.config, args.data, args.output, args.methods, args.device, args.seeds, args.budgets, args.feature_bank, args.source_family, args.edge_bank)

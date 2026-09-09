@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -N oscillator-edge-bank
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=8GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
+base=/g/data/ql44/we2614/oscillatory_coorganization_pilot_260909
+python -m scripts.build_spi_edge_bank --data "$base" --mpi-root "$base/mpis/oscillatory-coorganization-pilot-260909" \
+ --bank "$base/analysis/features.npz" --output "$base/analysis/normalized-edges.npz"

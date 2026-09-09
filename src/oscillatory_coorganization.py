@@ -16,9 +16,13 @@ def stationary_ar(rng,t,m,rho):
     return lfilter([1.],[1.,-rho],innovation,axis=0,zi=initial)[0]
 
 
-def simulate(aligned,seed,t=1000):
+def simulate(aligned,seed,t=1000,*,ranges=None):
     rng=np.random.default_rng(seed);n=32;phase_group,amp_group=partitions(aligned)
-    f=rng.uniform(6,12);phase_sd=rng.uniform(.10,.18);rho=rng.uniform(.94,.98)
+    ranges={} if ranges is None else ranges
+    if set(ranges)-{'carrier','phase_sd','amp_rho'}:raise ValueError('unknown regime parameter')
+    f=rng.uniform(*ranges.get('carrier',(6,12)))
+    phase_sd=rng.uniform(*ranges.get('phase_sd',(.10,.18)))
+    rho=rng.uniform(*ranges.get('amp_rho',(.94,.98)))
     amp_sd=rng.uniform(.25,.55);jitter=rng.uniform(.15,.35);noise=rng.uniform(.05,.15)
     theta=rng.uniform(-np.pi,np.pi,4)+np.cumsum(2*np.pi*f/100+phase_sd*rng.normal(size=(t,4)),axis=0)
     global_amp=stationary_ar(rng,t,4,rho);local_amp=stationary_ar(rng,t,n,rho)

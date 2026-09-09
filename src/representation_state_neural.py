@@ -87,6 +87,9 @@ class PairRelationEncoder(nn.Module):
 
 def make_encoder(spec: dict) -> nn.Module:
     architecture=spec.get('architecture','aligned_channel')
+    if architecture=='spi_edge_pool':
+        from src.spi_edge_pool import SPIEdgePool
+        return SPIEdgePool(spec)
     if architecture=='aligned_channel': return AlignedChannelEncoder(spec)
     if architecture in ('pair_relation','pointwise_pair'): return PairRelationEncoder(spec)
     raise ValueError(f'Unknown encoder architecture: {architecture}')
