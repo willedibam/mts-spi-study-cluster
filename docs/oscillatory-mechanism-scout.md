@@ -166,8 +166,16 @@ in 6:25 (39.04 GiB peak), reusing smoke outputs. This supports the planned
 192-core/768-GB homogeneous farms: M16 `178575765.gadi-pbs`, M8
 `178575775.gadi-pbs`, each 200 selected views/24 cached, 1200-second task timeout
 and 30-minute allocation ceiling. Dependent audit/bank job `178575814.gadi-pbs`
-is submitted after success of both. Source extraction code remains `1ab1595`,
+completed with exit 0 in 3:03 (3.70 GiB peak). Both production jobs finished
+with exit 0: M16 in 7:13 (174.09 GiB peak), M8 in 1:53 (130.93 GiB peak); all
+400 outputs pass audit. Banks contain 263–282 valid SPIs per recording, with
+24.659 summed per-record computation hours. Source extraction code remains `1ab1595`,
 pyspi `65317c9`; no completed records are recomputed. State and continuation instructions:
 `results/oscillatory_mechanism_transfer_260910/cluster-state.json`. The existing
 follow-up monitor is active every 15 minutes and pauses at verified completion
 or the declared 2026-09-10 05:30 UTC deadline. No new z outcome has been inspected.
+
+The 132-MB feature/normalized-edge bank download is in progress (session 87010);
+partial NPZ files must not be used. Eight sampled MPIs are already downloaded
+and hash verified. Frozen-model prediction and independent feature/edge replay
+await the complete banks; no extraction or model fitting is to be duplicated.
