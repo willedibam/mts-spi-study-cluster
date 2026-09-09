@@ -131,7 +131,7 @@ distinct generator families, robustness to sensor mixing/geometry, and stronger
 domain-trained or augmented neural comparators remain open. A narrowly motivated
 simulation study can be valuable, but current evidence does not independently
 establish a broad high-impact ML claim. No additional same-generator scale-up is
-justified; finish the separate covariance curve.
+justified. The covariance curve and the approved pooling/transfer follow-ups are now complete.
 
 
 ## Learned aggregation follow-up, completed2026-09-09
@@ -166,7 +166,7 @@ Gadi job178541908 Exit0(1:42,6cores,3.73GiBpeak); no duplicate local fits.
 Results `pooling-report/`, checkpoints `learned-pooling/`, verification
 `learned-pooling-verification.json` under the original pilot result root. Original
 `verified-report/` remains unchanged; supplemental comparison is declared after
-its results. Faster-regime predictions remain pending.
+its results. Faster-regime predictions are now complete; see the [transfer findings](oscillatory-transfer-findings.md).
 
 The useful conclusion is explicit statistical relationships expose the target
 under the smallest tested label budget, while learning an aggregation of the
