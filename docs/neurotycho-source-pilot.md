@@ -152,3 +152,20 @@ This checks a simple gain-insensitive baseline, not a guarantee of resolving the
 failure or an isolated causal attribution to gain. Do not change the threshold
 using held-out Su labels. Keep the original70-feature results. Any future choice
 between these spectral views must use source-only inner validation before PF.
+
+This diagnostic is complete: relative-only balanced accuracy is1/.90625/1/.5
+for Chibi/George/Kin2/Su, mean.85156; Su AUROC falls to.83203. Removing absolute
+power does **not** resolve this source failure. Keep both declared results;
+no further spectral grid or Su-threshold search is warranted.
+
+## Source p90 resource gate
+
+While the remaining source dates download, export the existing128source windows
+and their128reduced views once for a p90 resource/validity gate. A two-task smoke
+uses the first Chibi awake full view and first anaesthetized reduced view (indices
+1and34). It measures runtime/memory and checks the289-SPI output contract, not
+classification. Use `neurotycho-source-scout-260910.yaml`, then a representative
+node gate before further extraction. Source-only extraction may proceed without
+PF labels or fitting a transfer classifier. Keep exact row/array/catalogue hashes.
+The seven-date extension must exclude previously exported record IDs and verify
+their unchanged hashes; reuse completed source MPI outputs rather than rerun them.
