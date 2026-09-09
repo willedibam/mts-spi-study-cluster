@@ -45,7 +45,8 @@ python -m pytest -q tests/test_vicsek_streaming.py tests/test_vicsek_observation
 
 pids=()
 for (( i=FIRST_CASE; i<=LAST_CASE; i++ )); do
-    python scripts/scout_vicsek_streaming.py --config "$SCOUT_CONFIG" \
+    # Module launch keeps snapshot root importable for pytest-populated Numba cache.
+    python -m scripts.scout_vicsek_streaming --config "$SCOUT_CONFIG" \
         --case-index "$i" --output-dir "$OUTPUT_DIR" \
         >"$OUTPUT_DIR/case-$i.log" 2>&1 &
     pids+=("$!")
