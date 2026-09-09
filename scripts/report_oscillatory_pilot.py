@@ -8,8 +8,9 @@ from sklearn.metrics import balanced_accuracy_score,roc_auc_score
 from src.representation_state_data import file_hash
 
 
-def main(data,inputs,output):
+def main(data,inputs,output,source_data=None):
     rows=json.loads((data/'manifest.json').read_text())['rows'];manifest_hash=file_hash(data/'manifest.json')
+    source_rows=rows if source_data is None else json.loads((source_data/'manifest.json').read_text())['rows']
     scores=[];losses=[];training={};identity=[]
     for item in inputs:
         label,directory=item.split('=',1) if '=' in item else ('',item)
@@ -18,11 +19,14 @@ def main(data,inputs,output):
             if 'identity' not in info or 'labels_total' not in info:continue
             ident=info['identity'];name=label or ident['method'];seed=ident['seed'];n=info['labels_total']
             assert ident['manifest_sha256']==manifest_hash and info['predictions_sha256']==file_hash(path.with_suffix('.npz'))
+            if source_data is not None:assert ident['source_manifest_sha256']==file_hash(source_data/'manifest.json')
             identity.append(dict(fit=str(path),sha256=file_hash(path)))
             with np.load(path.with_suffix('.npz'),allow_pickle=False) as a:
                 train=a['train_indices'];evaluation=a['evaluation_indices'];target=a['target'];prediction=a['prediction']
+                assert len(train)==n and len(set(train))==n
                 assert training.setdefault((seed,n),tuple(train))==tuple(train)
-                assert not {rows[i]['master_id'] for i in train}&{rows[i]['master_id'] for i in evaluation}
+                assert all(source_rows[i]['role']=='training_pool' for i in train)
+                assert not {source_rows[i]['master_id'] for i in train}&{rows[i]['master_id'] for i in evaluation}
                 np.testing.assert_array_equal(target,[rows[i]['target'] for i in evaluation])
                 np.testing.assert_array_equal(a['row_id'],[rows[i]['row_id'] for i in evaluation])
                 for m in [16,8]:
@@ -39,7 +43,7 @@ def main(data,inputs,output):
     output.mkdir(parents=True,exist_ok=True);frame.to_csv(output/'per-fit.csv',index=False);summary.to_csv(output/'summary.csv',index=False)
     all_losses=pd.DataFrame(losses);comparisons=[]
     pairs=[('z-pls','m-pls'),('z-pls','shape-pls'),('m+z-pls','m-pls'),('shape+z-pls','shape-pls'),
-           ('z-pls','neural-aligned'),('z-pls','neural-pair'),('z-pls','raw:agreement-pls')]
+           ('z-pls','neural-aligned'),('z-pls','neural-pair'),('z-pls','raw:agreement-pls'),('z-pls','learned-pooling')]
     for m in [16,8]:
         for n in [10,20,40]:
             subset=all_losses[(all_losses.M==m)&(all_losses.labels==n)]
@@ -65,4 +69,5 @@ def main(data,inputs,output):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--data',type=Path,required=True);p.add_argument('--inputs',nargs='+',required=True);p.add_argument('--output',type=Path,required=True)
-    a=p.parse_args();main(a.data,a.inputs,a.output)
+    p.add_argument('--source-data',type=Path)
+    a=p.parse_args();main(a.data,a.inputs,a.output,a.source_data)
