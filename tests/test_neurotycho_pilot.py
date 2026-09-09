@@ -34,3 +34,14 @@ def test_bipolar_reference_cancellation_and_frequency_retention():
     raw[0, 11000:12000] = 0
     rejected, quality = preprocess(raw, pairs)
     assert rejected is None and not quality['accepted']
+
+
+def test_repeated_injections_do_not_make_state_intervals_ambiguous():
+    condition = dict(ConditionLabel=['AnestheticInjection','AnestheticInjection',
+                                     'Anesthetized-Start','Anesthetized-End'],
+                     ConditionIndex=[1001,10001,100001,500001],
+                     ConditionTime=[1.,10.,100.,500.])
+    assert len(window_specs(condition)) == 16
+    condition['ConditionLabel'][1] = 'Anesthetized-Start'
+    with pytest.raises(ValueError, match='ambiguous'):
+        window_specs(condition)

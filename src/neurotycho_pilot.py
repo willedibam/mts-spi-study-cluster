@@ -9,7 +9,12 @@ def window_specs(condition, count=16):
     labels = [str(x) for x in np.atleast_1d(condition['ConditionLabel'])]
     indices = np.atleast_1d(condition['ConditionIndex']).astype(int) - 1
     times = np.atleast_1d(condition['ConditionTime'])
-    if len(set(labels)) != len(labels) or not np.allclose(indices / 1000, times, rtol=0, atol=1e-8):
+    boundaries = {state + suffix for state in ['AwakeEyesClosed', 'Anesthetized']
+                  for suffix in ['-Start', '-End']}
+    # Repeated injections are legitimate events; only selected state boundaries
+    # must be unique for the simple sustained-state window contract.
+    if (any(labels.count(label) > 1 for label in boundaries)
+            or not np.allclose(indices / 1000, times, rtol=0, atol=1e-8)):
         raise ValueError('ambiguous labels or timestamp convention')
     lookup = dict(zip(labels, indices))
     result = []
