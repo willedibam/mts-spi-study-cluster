@@ -1,0 +1,12 @@
+name: neurotycho-target-pf-260910
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/neurotycho_target_pf_260910/views.npz
+  sha256: d6b15943e7cbf2cb2f88d0ecfacae77354ccf93aca63521fc0b52f09b02769ea
+  axis_order:
+  - observation
+  - process
+base_output_dir: /g/data/ql44/we2614/neurotycho_target_pf_260910/pyspi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260910407
