@@ -9,7 +9,7 @@ import numpy as np
 import torch
 import yaml
 
-from src.neurotycho_evaluation import summarize_run
+from src.neurotycho_evaluation import summarize_run, verify_pearson_edges
 from src.neurotycho_learning import predict_binary
 from src.neurotycho_statistical import METHODS, predict_fitted
 from src.representation_state_neural import make_encoder
@@ -34,8 +34,13 @@ def main(args):
     torch.set_num_threads(2)
     provenance = json.loads(args.target_bank.with_suffix('.json').read_text())
     assert 'PF' in provenance['phase'] and sha(args.target_bank) == provenance['sha256']
+    manifest_path = args.target_bank.parent / 'manifest.json'
+    assert sha(manifest_path) == provenance['manifest_sha256']
+    manifest = json.loads(manifest_path.read_text())
+    raw_provenance = {Path(r['metadata']).name: r for r in manifest['sources']}
     with np.load(args.target_bank) as values:
         bank = {key: values[key] for key in values.files}
+    target_gram_error = verify_pearson_edges(bank)
     assert set(bank['animal']) == set(config['target_animals'])
     identities = list(zip(bank['record_id'], bank['M'], bank['T'], strict=True))
     assert len(set(identities)) == len(identities)
@@ -47,12 +52,16 @@ def main(args):
         for key in ['y', 'animal', 'archive']:
             np.testing.assert_array_equal(bank[key], values[key][positions])
         bank['spectral'] = values['spectral'][positions]
-    raw = {}
+    raw, excluded_dates = {}, []
     for path in sorted(args.target_windows.glob('201*.json')):
         meta = json.loads(path.read_text())
         assert 'pf' in meta['archive']
         if not meta['usable']:
+            excluded_dates.append(meta['archive'])
             continue
+        expected = raw_provenance[path.name]
+        assert sha(path) == expected['metadata_sha256']
+        assert sha(path.with_suffix('.npz')) == expected['bank_sha256']
         with np.load(path.with_suffix('.npz')) as values:
             for r in meta['records']:
                 if r['quality']['accepted']:
@@ -133,9 +142,11 @@ def main(args):
         flat['probability'].extend(row['probability'].tolist())
     np.savez_compressed(args.output / 'predictions.npz', **{k: np.asarray(v) for k, v in flat.items()})
     result = dict(protocol_sha256=sha(args.config), target_bank_sha256=sha(args.target_bank),
+        target_pearson_edge_gram_max_difference=target_gram_error,
         target_spectral_sha256=sha(args.spectral), models=audits, scores=scores,
         prediction_sha256=sha(args.output / 'predictions.npz'), evaluation_script_sha256=sha(Path(__file__)),
-        unit='Two target animals/four dates; windows are not independent subjects', threshold=.5,
+        unit=f"{len(set(bank['animal']))} target animals/{len(set(bank['archive']))} dates; windows are not independent subjects",
+        excluded_target_dates=excluded_dates, threshold=.5,
         target_calibration=False, source_model_selection_only=True)
     (args.output / 'report.json').write_text(json.dumps(result, indent=2)+'\n')
     lines = ['# NeuroTycho prospective transfer', '', 'Mean of dates within animal, then animals; neural rows average three initialization results.',

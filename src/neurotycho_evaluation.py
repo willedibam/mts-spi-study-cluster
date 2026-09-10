@@ -5,6 +5,23 @@ from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 from src.neurotycho_learning import balanced_brier
 
 
+def verify_pearson_edges(bank):
+    """Check target feature alignment before any prediction, at stored precision."""
+    upper = np.triu_indices(bank['validity'].shape[1], 1)
+    maximum = 0.
+    for i, length in enumerate(bank['lengths']):
+        assert length == bank['M'][i] * (bank['M'][i] - 1)
+        x = bank['edges'][i, :length].astype(np.float64)
+        valid = bank['validity'][i]
+        pairs = valid[upper[0]] & valid[upper[1]]
+        np.testing.assert_array_equal(np.isfinite(bank['z'][i]), pairs)
+        expected = (x.T @ x / length)[upper]
+        difference = float(np.max(np.abs(expected[pairs] - bank['z'][i, pairs])))
+        assert difference < 2e-6
+        maximum = max(maximum, difference)
+    return maximum
+
+
 def summarize_run(y, probability, animal, archive, m, t):
     if not np.isfinite(probability).all() or np.any((probability < 0) | (probability > 1)):
         raise ValueError('invalid prediction probabilities')
