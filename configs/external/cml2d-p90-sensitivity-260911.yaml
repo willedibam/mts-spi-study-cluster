@@ -1,0 +1,12 @@
+name: sensitivity
+source:
+  format: named-npz-v1
+  archive: data/order_parameter/cml2d_period_doubling_260911/sensitivity/observations.npz
+  sha256: 4de486b8f1e3c5f6ec3597e1b2ff79be8f812c192ef88e6f287202a113786835
+  axis_order:
+  - process
+  - observation
+base_output_dir: data/order_parameter/cml2d_period_doubling_260911/sensitivity/mpi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260911

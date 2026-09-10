@@ -33,3 +33,15 @@ def test_fit_is_target_and_evaluation_blind(tmp_path, monkeypatch):
     with np.load(first / "features.npz", allow_pickle=False) as archive:
         assert archive["row_id"].tolist() == [r["row_id"] for r in rows]
     assert json.loads((first / "geometry.json").read_text())["passes_one_coordinate_gate"]
+    # A new observation arm must retain the original centre and score units,
+    # even if its own development rows have a systematic distribution shift.
+    z += 3
+    third = tmp_path / "frozen"
+    analysis.run(corpus, tmp_path, third, frozen=first)
+    with np.load(first / "model.npz", allow_pickle=False) as a, np.load(third / "model.npz", allow_pickle=False) as b:
+        for key in a.files:
+            np.testing.assert_array_equal(a[key], b[key])
+        expected = ((z[:, a['keep']] - a['center']) @ a['component']) / a['score_scale']
+    import pandas as pd
+    np.testing.assert_allclose(pd.read_csv(third / "scores.csv").q, expected)
+    assert json.loads((first / "summary.json").read_text())["display_sign"] == json.loads((third / "summary.json").read_text())["display_sign"]

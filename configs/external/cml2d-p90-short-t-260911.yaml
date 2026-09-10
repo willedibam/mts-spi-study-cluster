@@ -1,0 +1,12 @@
+name: short-T
+source:
+  format: named-npz-v1
+  archive: data/order_parameter/cml2d_period_doubling_260911/short-T/observations.npz
+  sha256: 488a677ff0de6ee6740353f608e06c8e6da77d26014c421355fc9106afee4a37
+  axis_order:
+  - process
+  - observation
+base_output_dir: data/order_parameter/cml2d_period_doubling_260911/short-T/mpi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260911
