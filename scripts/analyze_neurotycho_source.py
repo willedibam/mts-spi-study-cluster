@@ -28,7 +28,7 @@ def numeric_mat(path, key):
     return value
 
 
-def build_archive(root, animal, montage, output):
+def build_archive(root, animal, montage, output, dense=False):
     complete = json.loads((root / 'complete.json').read_text())
     channels = complete['channels']
     indices = [[channels.index(i), channels.index(j)] for i, j in montage['pairs']]
@@ -40,6 +40,16 @@ def build_archive(root, animal, montage, output):
         for filename in ['Condition.mat', 'ECoGTime.mat']:
             provenance[str(directory / filename)] = hashlib.sha256((directory / filename).read_bytes()).hexdigest()
         specs = window_specs(condition)
+        if dense:
+            dense_specs = []
+            for target in [0, 1]:
+                selected = [s for s in specs if s['target'] == target]
+                if not selected:
+                    continue
+                for i, start in enumerate(range(selected[0]['start'], selected[-1]['start'] + 1, 8000)):
+                    dense_specs.append(dict(state=selected[0]['state'], target=target, window=i,
+                        start=start, context_start=start-10000, context_stop=start+18000))
+            specs = dense_specs
         time = numeric_mat(directory / 'ECoGTime.mat', 'ECoGTime')
         if abs(time[0]) > 1e-8 or not np.allclose(np.diff(time), .001, rtol=0, atol=1e-8):
             raise ValueError('unexpected time origin or nonuniform timestamps')
@@ -69,7 +79,8 @@ def build_archive(root, animal, montage, output):
     np.savez_compressed(output / (root.name + '.npz'), x=np.array(matrices), spectral=np.array(features),
                         y=np.array([r['target'] for r in accepted]))
     metadata = dict(animal=animal, archive=root.name, usable=usable, counts=counts, records=records,
-                    input_hashes=provenance, montage=montage, processing_sha256=processing_hash())
+                    input_hashes=provenance, montage=montage, processing_sha256=processing_hash(),
+                    window_sampling='all_nonoverlapping_8s' if dense else 'fixed16')
     (output / (root.name + '.json')).write_text(json.dumps(metadata, indent=2) + '\n')
     print(f'{animal}: accepted{counts}, usable={usable}', flush=True)
     return metadata
@@ -147,10 +158,13 @@ def main(args):
             cached = json.loads(meta_path.read_text())
             if cached.get('processing_sha256') != processing_hash():
                 raise ValueError('stale preprocessing cache; choose a new versioned output')
+            if cached.get('window_sampling', 'fixed16') != ('all_nonoverlapping_8s' if args.dense_windows else 'fixed16'):
+                raise ValueError('cached window-sampling mode differs')
             metadata.append(cached)
             continue
         complete = json.loads((root / 'complete.json').read_text())
-        metadata.append(build_archive(root, complete['animal'], plan['montages'][complete['animal']], args.output))
+        metadata.append(build_archive(root, complete['animal'], plan['montages'][complete['animal']], args.output,
+                                      dense=args.dense_windows))
     if not args.qc_only:
         baseline(args.output, metadata, relative_only=args.relative_spectrum)
 
@@ -162,4 +176,5 @@ if __name__ == '__main__':
     parser.add_argument('--plan', default='scout-plan.json')
     parser.add_argument('--qc-only', action='store_true')
     parser.add_argument('--relative-spectrum', action='store_true')
+    parser.add_argument('--dense-windows', action='store_true')
     main(parser.parse_args())

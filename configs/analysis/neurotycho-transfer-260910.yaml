@@ -1,0 +1,79 @@
+study_id: neurotycho-transfer-260910
+protocol: docs/neurotycho-transfer-pilot.md
+target_animals:
+- Chibi
+- George
+neural_seeds:
+- 11
+- 23
+- 47
+catalogue: configs/pyspi/benchmarked_p90.yaml
+raw_encoder:
+  temporal_convolutions:
+  - width: 32
+    kernel: 31
+    stride: 4
+    padding: 15
+  - width: 64
+    kernel: 15
+    stride: 4
+    padding: 7
+  attention_width: 64
+  attention_heads: 4
+  feedforward_width: 128
+  channel_attention_blocks: 2
+  post_attention_temporal_convolution:
+    width: 64
+    kernel: 9
+    stride: 1
+    padding: 4
+  readout:
+  - 32
+  - 1
+  dropout: 0.1
+  architecture: aligned_channel
+edge_encoder:
+  architecture: spi_edge_pool
+  input_width: 578
+  edge_width: 32
+  head_width: 32
+neural_training:
+  learning_rates:
+  - 0.0001
+  - 0.001
+  weight_decays:
+  - 0.0001
+  - 0.01
+  batch_size: 16
+  maximum_epochs: 400
+  minimum_epochs: 30
+  patience: 30
+  loss: binary_cross_entropy_with_logits
+  selection: balanced_brier
+  threads: 2
+preprocessing:
+  minimum_valid_fraction: 0.95
+  variance_threshold: 1.0e-08
+  z_scaling: center
+  clip_standard_deviations: 5.0
+  pca_solver: randomized
+  pca_random_state: 1729
+pca_caps:
+- 2
+- 8
+- 32
+ridge_alpha_grid:
+- 0.01
+- 0.1
+- 1.0
+- 10.0
+- 100.0
+pls_components:
+- 1
+- 2
+- 4
+spectral_C_grid:
+- 0.01
+- 0.1
+- 1.0
+- 10.0

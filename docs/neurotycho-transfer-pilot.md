@@ -21,6 +21,9 @@ of the same statistical coordinates is useful. A positive outcome is not assumed
   Train only on full M16/T2000 views. Never divide windows from one animal between
   inner training and validation. For each prospective target animal, exclude all
   its KTMD dates: Chibi leaves9source dates; George leaves8, each from3animals.
+  Both target animals' KTMD data were present in exploratory study development;
+  the exclusion is at model-fitting level, not a claim of animals untouched
+  throughout study design. Their PF recordings remain prospectively unexamined.
 - Targets: both PFdates for Chibi and both PFdates for George. Same16windows/state
   selection and quality rules. No target-label, target-feature-distribution or
   target-batch calibration enters fitting, preprocessing or model selection.
