@@ -1,0 +1,26 @@
+# Prespecified physics-only refinement; no SPI-selected controls or starts.
+# Same N, burn, horizon and thinning as completed long gate178580950.
+simulation:
+  density: 2.0
+  speed: 0.5
+  burn: 20000
+  samples: 4000
+  stride: 25
+  bin_width: 4.0
+cases:
+  - {L: 128, eta: 0.460, start: ordered, seed: 910204}
+  - {L: 128, eta: 0.460, start: random, seed: 910204}
+  - {L: 128, eta: 0.460, start: ordered, seed: 910205}
+  - {L: 128, eta: 0.460, start: random, seed: 910205}
+  - {L: 128, eta: 0.468, start: ordered, seed: 910204}
+  - {L: 128, eta: 0.468, start: random, seed: 910204}
+  - {L: 128, eta: 0.468, start: ordered, seed: 910205}
+  - {L: 128, eta: 0.468, start: random, seed: 910205}
+  - {L: 128, eta: 0.476, start: ordered, seed: 910204}
+  - {L: 128, eta: 0.476, start: random, seed: 910204}
+  - {L: 128, eta: 0.476, start: ordered, seed: 910205}
+  - {L: 128, eta: 0.476, start: random, seed: 910205}
+  - {L: 128, eta: 0.484, start: ordered, seed: 910204}
+  - {L: 128, eta: 0.484, start: random, seed: 910204}
+  - {L: 128, eta: 0.484, start: ordered, seed: 910205}
+  - {L: 128, eta: 0.484, start: random, seed: 910205}
