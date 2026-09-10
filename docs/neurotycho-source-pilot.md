@@ -193,36 +193,29 @@ contract; do not silently change estimators or add jitter. `precision-diagnostic
 records the numerical finding before the repair.
 
 
-## Current execution status — 2026-09-10 09:13 UTC
+## Current execution status — 2026-09-10, source banks verified
 
-All eleven source dates are staged. Corrected float64 preprocessing accepted all
-352 matched windows and 3,556 additional-control windows (the dense set includes
-matched-time coverage; these are not additional independent animals). Results live
-under `results/neurotycho_source_pilot_260910/float64/`.
-Across four held-out source animals, spectral mean balanced accuracy is .872396
-and mean AUROC .989366. Su remains the difficult threshold-transfer case:
-BA .510417, AUROC .957465; removing absolute power does not resolve it.
+All eleven source dates are staged: 352 matched windows and 3,556 dense-control
+windows passed preprocessing. Source spectral mean leave-animal-out BA is .872396
+and AUROC .989366; Su still has weak threshold transfer despite strong ranking.
 
-The corrected two-view p90 smoke and 48-view representative gate passed output
-integrity checks. Float32-induced ties disappeared. Only 48 of the 704 planned
-source views have SPI outputs; production extraction and feature-bank fitting
-are unfinished. The original float32 bundle is diagnostic only.
+All 704 source SPI views and both feature banks are complete. Verification job
+178707287 passed all record identities, MPI/metadata/bank hashes, normalized-edge
+Gram reconstruction for every view, and eight independent direct MPI-correlation
+replays. Maximum direct discrepancy is 2.98e-8, consistent with the intentional
+float32 output format of z; SPI inputs remain float64. Each window has 255–271
+correlation-valid SPIs (median 260); invalid coordinates remain masked. These
+checks establish numerical integrity, not statistical reliability or prediction.
+The initial verifier incorrectly demanded float64 tolerance for float32 z; fixing
+that check required no change to the data, feature banks or extraction.
 
-Two matched raw-neural source fits excluding Chibi (seeds 11 and 23) completed.
-Their selected mean source-validation Brier scores are .01949 and .04556;
-CPU checkpoint replay agrees within 2.98e-7. This demonstrates functioning source
-learning, not propofol transfer or superiority over the spectral baseline.
-Remaining neural fits, learned pooling and statistical transfer evaluation are
-unfinished. No real-data z performance result exists yet.
+Two matched raw-neural source fits excluding Chibi (seeds 11 and 23) are complete,
+with source-validation Brier .01949/.04556 and CPU replay within 2.98e-7. Remaining
+neural/pooling fits and the grouped statistical fitting/evaluation implementation
+are unfinished. PF staging has 45 verified waveform members and no complete
+archives or performance results. The fresh-process download-retry fix is tested.
 
-PF staging has 45 verified waveform members and zero complete archives. No PF
-preprocessing, predictions or performance results have been produced. A failed
-range download exposed curl retries concatenating a partial response with its
-retry; the length guard rejected it. Fresh-process retries now pass a real local
-HTTP regression test; staging was not restarted after the deadline.
-
-The authorized overnight window ended at 07:05 UTC and the follow-up automation
-is paused. No experiment jobs remained on Gadi at the 09:03 check. An already
-running bulk upload was incomplete; inspect it and verify hashes before reuse.
-See `execution.json` for concrete resume state. This is an incomplete application
-comparison, not merely a completed analysis awaiting a report.
+The bounded source extraction/bank follow-up is complete and its monitor stopped.
+The broader predictive/transfer comparison is unfinished; there is still no
+real-data z accuracy or propofol-transfer result. See `execution.json` and
+`bank-verification.json` under `results/neurotycho_source_pilot_260910/`.
