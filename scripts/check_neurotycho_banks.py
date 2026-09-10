@@ -30,11 +30,13 @@ def main():
         with np.load(folder / 'bank.npz') as archive:
             bank = {key: archive[key] for key in archive.files}
         assert bank['z'].shape == (expected, 41616)
+        assert bank['z'].dtype == np.float32
         assert bank['m'].shape == (expected, 289 * 23)
         assert bank['g'].shape == (expected, 289 * 9)
         assert len(set(bank['spi_order'])) == 289
         assert len(provenance['sources']) == expected
         error = 0.0
+        direct_error = 0.0
         for i, row in enumerate(manifest['rows']):
             assert bank['row_id'][i] == row['row_id']
             record = str(bank['record_id'][i])
@@ -71,11 +73,17 @@ def main():
                 direct = np.corrcoef(edges[valid])
                 expected_matrix = np.full((289, 289), np.nan)
                 expected_matrix[np.ix_(indices, indices)] = direct
-                np.testing.assert_allclose(expected_matrix[upper], bank['z'][i], atol=2e-12, rtol=2e-12, equal_nan=True)
+                # The representation contract stores z as float32 after computing
+                # correlations in float64. Allow its rounding, not input rounding.
+                direct_error = max(direct_error, float(np.nanmax(np.abs(expected_matrix[upper] - bank['z'][i]))))
+                np.testing.assert_allclose(expected_matrix[upper], bank['z'][i],
+                                           atol=np.finfo(np.float32).eps / 2,
+                                           rtol=0, equal_nan=True)
         counts = bank['validity'].sum(1)
         reports.append(dict(bundle=tag, rows=expected, sha256=provenance['sha256'],
                             valid_spis_min=int(counts.min()), valid_spis_median=float(np.median(counts)),
                             valid_spis_max=int(counts.max()), max_edge_gram_difference=error,
+                            max_direct_mpi_correlation_difference=direct_error,
                             independent_mpi_correlation_replays=4))
     assert observed == {(r, m, t) for r in references for m, t in [(16, 2000), (8, 1000)]}
     result = dict(status='passed', rows=704, independent_record_ids=352, banks=reports,
