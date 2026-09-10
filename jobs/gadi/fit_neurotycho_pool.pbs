@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -N ecog-pooling
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=12
+#PBS -l mem=48GB
+#PBS -l walltime=04:00:00
+#PBS -l jobfs=5GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+base=/g/data/ql44/we2614
+data=$base/neurotycho_neural_260910
+output=$base/neurotycho_transfer_260910/pooling
+mkdir -p "$output"
+if ! test -f "$data/edges.npz"; then
+    python -u scripts/pack_neurotycho_edges.py --banks "$base/neurotycho_source_f64_scout_260910/bank.npz" "$base/neurotycho_source_f64_extra_260910/bank.npz" --output "$data/edges.npz"
+fi
+commands=$PBS_JOBFS/commands.txt
+for animal in Chibi George; do
+    for seed in 11 23 47; do
+        printf 'python -u scripts/fit_neurotycho_neural.py --data %s --output %s --animal %s --seed %s --kind pool --device cpu > %s/pool-%s-s%s.log 2>&1\n' "$data" "$output" "$animal" "$seed" "$output" "$animal" "$seed" >> "$commands"
+    done
+done
+mpirun -np 6 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm.status"

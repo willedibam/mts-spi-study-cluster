@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -N ecog-statistical
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=28
+#PBS -l mem=112GB
+#PBS -l walltime=02:00:00
+#PBS -l jobfs=5GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+base=/g/data/ql44/we2614
+scout=$base/neurotycho_source_f64_scout_260910/bank.npz
+extra=$base/neurotycho_source_f64_extra_260910/bank.npz
+output=$base/neurotycho_transfer_260910/statistical
+mkdir -p "$output"
+commands=$PBS_JOBFS/commands.txt
+for animal in Chibi George; do
+    for method in m-pca mg-pca z-pca z-pls mz-pca validity-pca spectrum; do
+        printf 'python -u scripts/fit_neurotycho_statistical.py --banks %s %s --spectral %s/neurotycho_neural_260910/spectral.npz --output %s --animal %s --method %s > %s/%s-%s.log 2>&1\n' "$scout" "$extra" "$base" "$output" "$animal" "$method" "$output" "$method" "$animal" >> "$commands"
+    done
+done
+mpirun -np 14 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm.status"
