@@ -1,6 +1,18 @@
 import numpy as np
 import pytest
-from src.neurotycho_evaluation import summarize_run, verify_pearson_edges
+from src.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges
+
+
+def test_cuda_tolerance_requires_matching_source_only_precision_evidence():
+    row = dict(model='model.json', checkpoint_sha256='expected', cuda_saved_max=0.,
+               cpu_saved_threshold_disagreements=0, cpu_double_max=1.4e-7, cpu_saved_max=6.6e-5)
+    audit = dict(target_data_used=False, tf32=False, models=[row])
+    assert audited_cuda_tolerance(audit, 'model.json', 'expected') == 1e-4
+    with pytest.raises(AssertionError):
+        audited_cuda_tolerance(audit, 'model.json', 'different-checkpoint')
+    row['cuda_saved_max'] = .001
+    with pytest.raises(AssertionError):
+        audited_cuda_tolerance(audit, 'model.json', 'expected')
 
 
 def test_equal_date_then_animal_weight_and_fixed_threshold():

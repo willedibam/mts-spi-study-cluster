@@ -9,7 +9,7 @@ import numpy as np
 import torch
 import yaml
 
-from src.neurotycho_evaluation import summarize_run, verify_pearson_edges
+from src.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges
 from src.neurotycho_learning import predict_binary
 from src.neurotycho_statistical import METHODS, predict_fitted
 from src.representation_state_neural import make_encoder
@@ -91,6 +91,8 @@ def main(args):
             store_prediction(method, 0, animal, m, t, ix, predict_fitted(fitted, bank, ix))
         audits.append(dict(model=str(path), report_sha256=sha(path), model_sha256=report['model_sha256']))
     source_cache = {}
+    cuda_audit_path = args.source_data / 'cuda-replay-audit.json'
+    cuda_audit = json.loads(cuda_audit_path.read_text())
     for (kind, animal, seed), path in neural_paths.items():
         report = json.loads(path.read_text())
         assert sha(path.with_suffix('.pt')) == report['checkpoint_sha256']
@@ -111,7 +113,9 @@ def main(args):
             np.testing.assert_array_equal(saved['y'], source['y'][ix])
             replay = predict_binary(model, torch.from_numpy(source['x'][ix]))
             difference = float(np.max(np.abs(replay - saved['probability'])))
-            np.testing.assert_allclose(replay, saved['probability'], atol=2e-5, rtol=0)
+            tolerance = (audited_cuda_tolerance(cuda_audit, path.name, report['checkpoint_sha256'])
+                         if report['identity']['device'] == 'cuda' else 2e-5)
+            np.testing.assert_allclose(replay, saved['probability'], atol=tolerance, rtol=0)
         for m, t in [(16, 2000), (8, 1000)]:
             ix = np.flatnonzero((bank['animal'] == animal) & (bank['M'] == m) & (bank['T'] == t))
             if kind == 'pool':
@@ -122,7 +126,7 @@ def main(args):
             probability = predict_binary(model, torch.from_numpy(x))
             store_prediction(kind, seed, animal, m, t, ix, probability)
         audits.append(dict(model=str(path), report_sha256=sha(path), model_sha256=report['checkpoint_sha256'],
-                           source_cpu_replay_max_difference=difference))
+                           source_cpu_replay_max_difference=difference, source_cpu_replay_tolerance=tolerance))
     scores = []
     for method, seeds in [(m, [0]) for m in METHODS] + [(k, config['neural_seeds']) for k in ['matched', 'enriched', 'pool']]:
         for seed in seeds:
@@ -142,6 +146,7 @@ def main(args):
         flat['probability'].extend(row['probability'].tolist())
     np.savez_compressed(args.output / 'predictions.npz', **{k: np.asarray(v) for k, v in flat.items()})
     result = dict(protocol_sha256=sha(args.config), target_bank_sha256=sha(args.target_bank),
+        source_cuda_precision_audit_sha256=sha(cuda_audit_path),
         target_pearson_edge_gram_max_difference=target_gram_error,
         target_spectral_sha256=sha(args.spectral), models=audits, scores=scores,
         prediction_sha256=sha(args.output / 'predictions.npz'), evaluation_script_sha256=sha(Path(__file__)),

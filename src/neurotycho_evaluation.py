@@ -5,6 +5,18 @@ from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 from src.neurotycho_learning import balanced_brier
 
 
+def audited_cuda_tolerance(audit, model_name, checkpoint_sha256):
+    """Permit measured cross-backend roundoff only for a source-audited model."""
+    assert audit['target_data_used'] is False and audit['tf32'] is False
+    rows = [r for r in audit['models'] if r['model'] == model_name]
+    assert len(rows) == 1
+    row = rows[0]
+    assert row['checkpoint_sha256'] == checkpoint_sha256
+    assert row['cuda_saved_max'] == 0 and row['cpu_saved_threshold_disagreements'] == 0
+    assert row['cpu_double_max'] < 1e-6 and row['cpu_saved_max'] < 1e-4
+    return 1e-4
+
+
 def verify_pearson_edges(bank):
     """Check target feature alignment before any prediction, at stored precision."""
     upper = np.triu_indices(bank['validity'].shape[1], 1)
