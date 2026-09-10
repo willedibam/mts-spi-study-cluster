@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import struct
 import subprocess
+import time
 import zipfile
 import zlib
 
@@ -13,15 +14,21 @@ def get_range(url, start, length):
     if length < 1 or length > 64 * 1024**2:
         raise ValueError("range outside 64 MiB member budget")
     span = f"-{length}" if start is None else f"{start}-{start + length - 1}"
-    result = subprocess.run(
-        ["curl", "-fsSL", "--retry", "2", "--retry-all-errors", "--connect-timeout", "20",
+    command = ["curl", "-fsSL", "--connect-timeout", "20",
          "--max-time", "180", "--max-filesize", str(max(length, 2 * 1024**2)),
-         "--range", span, url],
-        check=True, capture_output=True,
-    ).stdout
-    if len(result) != length:
-        raise ValueError(f"range length mismatch: {len(result)} != {length}")
-    return result
+         "--range", span, url]
+    # curl's internal retries can append partial bodies to captured stdout.
+    # A fresh process per attempt discards partial bytes before retrying.
+    for attempt in range(3):
+        try:
+            result = subprocess.run(command, check=True, capture_output=True).stdout
+            if len(result) != length:
+                raise ValueError(f"range length mismatch: {len(result)} != {length}")
+            return result
+        except (subprocess.CalledProcessError, ValueError):
+            if attempt == 2:
+                raise
+            time.sleep(2**attempt)
 
 
 def directory(url):

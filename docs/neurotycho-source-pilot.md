@@ -2,7 +2,7 @@
 
 Declared 2026-09-10, before any waveform classification. The source-only scout
 uses the four KTMD archives already sampled for annotation audit: Su20110527,
-Kin220110513, George20110112, Chibi20110622. Propofol waveforms remain unopened.
+Kin220110513, George20110112, Chibi20110622. Propofol waveforms were unopened at declaration; see the current status below.
 This is development evidence, not an independent confirmation cohort.
 
 ## Question and progression
@@ -92,9 +92,9 @@ downloads), CRC/size checks, SHA256 provenance and cache reuse. Inputs live in
 `data/neurotycho_source_260910`; metadata in `results/neurotycho_audit_260910`.
 The scout plan is written before reading waveform bytes. Full source extension,
 if warranted, reuses existing member files and selects all eleven KTMD dates;
-the staging script cannot select propofol waveforms.
+later PF staging requires an explicit separate output root and `--propofol`.
 
-## Neural comparator audit (selection still pending)
+## Neural comparator audit (before selection)
 
 [BIOT](https://proceedings.neurips.cc/paper_files/paper/2023/hash/f6b30f3e2dd9cb53bbf2024402d02295-Abstract-Conference.html)
 is relevant published variable-channel precedent. Its
@@ -107,7 +107,8 @@ The released pretrained models use named human scalp-EEG bipolar channels at200H
 these do not directly identify this macaque ECoG montage. Do not map arbitrary
 ECoG indices to human electrodes and call that a fair unmodified pretrained test.
 Specify any channel-embedding/sampling adaptation and pretraining exposure before
-outcomes. No pretrained weights downloaded or neural architecture selected yet.
+outcomes. No pretrained weights were downloaded. The subsequently selected raw architecture
+and fitting contract are specified in [the transfer protocol](neurotycho-transfer-pilot.md).
 
 ## Initial execution result
 
@@ -190,3 +191,38 @@ both smoke windows; this alone does not prove overfitting rather than inadequate
 model order for filtered data. Preserve invalid outputs under the catalogue
 contract; do not silently change estimators or add jitter. `precision-diagnostic.json`
 records the numerical finding before the repair.
+
+
+## Current execution status — 2026-09-10 09:13 UTC
+
+All eleven source dates are staged. Corrected float64 preprocessing accepted all
+352 matched windows and 3,556 additional-control windows (the dense set includes
+matched-time coverage; these are not additional independent animals). Results live
+under `results/neurotycho_source_pilot_260910/float64/`.
+Across four held-out source animals, spectral mean balanced accuracy is .872396
+and mean AUROC .989366. Su remains the difficult threshold-transfer case:
+BA .510417, AUROC .957465; removing absolute power does not resolve it.
+
+The corrected two-view p90 smoke and 48-view representative gate passed output
+integrity checks. Float32-induced ties disappeared. Only 48 of the 704 planned
+source views have SPI outputs; production extraction and feature-bank fitting
+are unfinished. The original float32 bundle is diagnostic only.
+
+Two matched raw-neural source fits excluding Chibi (seeds 11 and 23) completed.
+Their selected mean source-validation Brier scores are .01949 and .04556;
+CPU checkpoint replay agrees within 2.98e-7. This demonstrates functioning source
+learning, not propofol transfer or superiority over the spectral baseline.
+Remaining neural fits, learned pooling and statistical transfer evaluation are
+unfinished. No real-data z performance result exists yet.
+
+PF staging has 45 verified waveform members and zero complete archives. No PF
+preprocessing, predictions or performance results have been produced. A failed
+range download exposed curl retries concatenating a partial response with its
+retry; the length guard rejected it. Fresh-process retries now pass a real local
+HTTP regression test; staging was not restarted after the deadline.
+
+The authorized overnight window ended at 07:05 UTC and the follow-up automation
+is paused. No experiment jobs remained on Gadi at the 09:03 check. An already
+running bulk upload was incomplete; inspect it and verify hashes before reuse.
+See `execution.json` for concrete resume state. This is an incomplete application
+comparison, not merely a completed analysis awaiting a report.
