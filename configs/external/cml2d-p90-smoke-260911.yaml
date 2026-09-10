@@ -1,0 +1,12 @@
+name: p90-smoke
+source:
+  format: named-npz-v1
+  archive: data/order_parameter/cml2d_period_doubling_260911/p90-smoke/observations.npz
+  sha256: 5b9221b6c299111d4c990b99cbd7fcc5d04cef15f9b83592184e485db6076eff
+  axis_order:
+  - process
+  - observation
+base_output_dir: data/order_parameter/cml2d_period_doubling_260911/p90-smoke/mpi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260911

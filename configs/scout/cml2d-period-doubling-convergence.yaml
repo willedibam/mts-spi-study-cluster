@@ -1,0 +1,11 @@
+simulation: {g: 0.2, burn: 200000, record_steps: 402000, observation_steps: 2000, pre_r: 3.75}
+grid:
+  L: [128, 256]
+  r: [3.86212, 3.866]
+  seed: [26091101]
+  pre_steps: [0, 20000]
+cases:
+  - {L: 512, r: 3.858, seed: 26091101, burn: 20000, record_steps: 42000}
+  - {L: 512, r: 3.86212, seed: 26091101, burn: 20000, record_steps: 42000}
+  - {L: 512, r: 3.866, seed: 26091101, burn: 20000, record_steps: 42000}
+  - {L: 512, r: 3.89, seed: 26091101, burn: 20000, record_steps: 42000}
