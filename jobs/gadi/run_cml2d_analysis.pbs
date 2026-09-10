@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -N cml2d-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${SOURCE_DIR:?}" "${MODE:?}" "${INPUT_DIR:?}" "${OUTPUT_DIR:?}"
+cd "$SOURCE_DIR"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+case "$MODE" in
+  physics)
+    python -m scripts.analyze_cml2d_physics --inputs "$INPUT_DIR" --output-dir "$OUTPUT_DIR"
+    ;;
+  export)
+    : "${CORPUS_CONFIG:?}"
+    python -m scripts.prepare_cml2d_corpus --input-dir "$INPUT_DIR" --output-dir "$OUTPUT_DIR" --config "$CORPUS_CONFIG" \
+        --development-seeds 26091111 26091112 26091113 26091114 --M 32 --T 1000
+    ;;
+  spi)
+    : "${MPI_ROOT:?}"
+    python -m scripts.analyze_cml2d_spi --corpus "$INPUT_DIR" --mpi-root "$MPI_ROOT" --output "$OUTPUT_DIR"
+    ;;
+  *) echo "invalid MODE" >&2; exit 2 ;;
+esac

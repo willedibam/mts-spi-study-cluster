@@ -62,3 +62,41 @@ burn plus402k record, and four L512 short size anchors. This is a targeted
 convergence/precision check, not a blanket million-site expansion.
 Two already-generated L256 endpoint views (seed26091101,r3.84/3.89,M32T1000)
 are a p90 runtime/validity smoke only; no q fitting or benchmark scores.
+
+Execution: local smoke2 and physics42 complete; all7 numerical/export tests
+pass. Pinned published-base source d619b02658cbfb704c6450b17f50e01818c66428 on
+`codex/cml2d-period-doubling`; unrelated local commits remain unpushed.
+Isolated remote worktree `/scratch/ql44/we2614/cml2d-source-d619b02` avoids
+changing another task's live checkout. Convergence job178709040 requests
+12cores48GB/30min (maximum12SU). P90 smoke178709102 requests4cores16GB/1h,
+2workers (maximum8SU); input archive SHA
+`5b9221b6c299111d4c990b99cbd7fcc5d04cef15f9b83592184e485db6076eff`.
+No recurring reminder created. Notebook section7 currently contains physics,
+with explicit absence of a SPI result until a primary analysis exists.
+
+## Primary pilot specification (prepared; submission conditional on gates)
+
+Use L256 (N65536): initial size audit resolves the disordered noise floor while
+avoiding the additional relaxation cost of L512. Larger-L anchors remain
+physical sensitivities. For the primary bank, extend the future reference to
+one million steps uniformly across controls, after200k burn and2k observation;
+this targets the measured temporal-reference uncertainty, not larger observed M.
+Nine r controls in `cml2d-period-doubling-primary.yaml`, eight fresh seeds:
+26091111–14 development;26091115–18 evaluation.72 masters; initial p90 only
+M32/T1000 dispersed. All physical outcomes used to plan these settings are from
+the separate physics scouts. This is exploratory held-seed evaluation, not
+prospective independent confirmation of a previously frozen CML2D coordinate.
+
+Freeze before extraction: unified_ordered_v3 Pearson; all289 p90 SPIs;
+development feature finite fraction>=.99 and SD>=.05; median imputation and
+centering only, no per-feature whitening. PC1 is fixed a priori, sign anchored
+to its largest-magnitude loading. Geometry gate EVR1>=.20, EVR1/EVR2>=1.5,
+minimum leave-development-seed-out loading cosine>=.8. Row eligibility selected
+missingness<=.05, excluded fraction<=.10 and at least2 retained records per
+role/control/view/M/T cell. Failed geometry/eligibility is reported, not repaired
+by target-selected components, sensor locations or lower thresholds.
+Primary Q_reference is the common disjoint million-step scalar; Q_window is
+a separate matched-window physical diagnostic. Report both associations plus
+within-control association, raw mean-absolute-correlation and observed-sample
+order baselines. No requirement to beat either baseline. Report no precise
+thermodynamic boundary or instantaneous-tracking claim.

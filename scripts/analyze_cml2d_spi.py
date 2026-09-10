@@ -39,6 +39,7 @@ def assemble(corpus, mpi_root):
         values.append(z);sources.append(dict(row_id=row['row_id'],mpi_sha256=file_hash(folder/'spi_mpis.npz'),
             config_sha256=meta['pyspi']['config_sha256'],execution_identity=meta['execution_identity']))
     assert len({s['config_sha256'] for s in sources})==1
+    assert len({json.dumps(s['execution_identity'],sort_keys=True) for s in sources})==1
     return rows,np.asarray(values),order,sources
 
 
@@ -67,7 +68,7 @@ def run(corpus,mpi_root,output,frozen=None):
             cosines.append(float(abs(v@component)))
         evr=pca.explained_variance_ratio_.tolist()
         geometry=dict(evr=evr,leave_seed_loading_cosines=cosines,
-            passes_one_coordinate_gate=bool(evr[0]>=.2 and evr[0]/evr[1]>=1.5 and min(cosines)>=.8))
+            passes_one_coordinate_gate=bool(evr[0]>=.2 and evr[0]/max(evr[1],np.finfo(float).eps)>=1.5 and min(cosines)>=.8))
     missing=np.mean(~np.isfinite(z[:,keep]),axis=1)
     eligible=missing<=.05
     q=((np.where(np.isfinite(z[:,keep]),z[:,keep],impute)-center)@component)/score_scale
@@ -92,16 +93,26 @@ def run(corpus,mpi_root,output,frozen=None):
             x=raw[row['row_id']].T;c=np.corrcoef(x.T)[np.triu_indices(row['M'],1)];mean=x.mean(axis=1)
             simple.append(dict(mean_abs_correlation=float(abs(c).mean()),sample_Q=float(np.abs(mean[1::2]-mean[::2]).mean())))
     for key in simple[0]:frame[key]=[s[key] for s in simple]
+    if frozen:
+        sign=json.loads((frozen/'summary.json').read_text())['display_sign']
+    else:
+        fit=frame[dev & eligible]
+        sign=-1 if corr(fit.q,fit.Q_reference)<0 else 1
     results=[]
     for keys,group in frame[held & eligible].groupby(['view','M','T']):
         means=group.groupby('r')[['q','Q_reference','Q_window']].mean()
+        controls=means.index.to_numpy()
+        intervals={name:controls[np.argmax(abs(np.diff(means[name])/np.diff(controls))):][:2].tolist()
+                   for name in ['q','Q_reference']} if len(controls)>1 else {}
         residual=group[['q','Q_reference']]-group.groupby('r')[['q','Q_reference']].transform('mean')
         results.append(dict(view=keys[0],M=int(keys[1]),T=int(keys[2]),rows=len(group),
             rho_reference=corr(group.q,group.Q_reference),rho_window=corr(group.q,group.Q_window),
             control_mean_rho=corr(means.q,means.Q_reference),within_r_rho=corr(residual.q,residual.Q_reference),
+            steepest_intervals=intervals,
             raw_correlation_rho=corr(group.mean_abs_correlation,group.Q_reference),sample_Q_rho=corr(group.sample_Q,group.Q_reference)))
     frame.to_csv(output/'scores.csv',index=False)
     summary=dict(status='exploratory; not independent confirmation',rows=len(frame),spis=len(order),
+        display_sign=sign,
         selected_features=len(keep),passes_row_gate=valid_gate,geometry=geometry,results=results,
         maximum_selected_missingness=float(missing.max()),excluded_rows=int((~eligible).sum()))
     (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
@@ -109,8 +120,6 @@ def run(corpus,mpi_root,output,frozen=None):
     fig,axes=plt.subplots(len(groups),2,figsize=(9,3*len(groups)),squeeze=False,constrained_layout=True)
     for (keys,group),axs in zip(groups,axes):
         # Arbitrary PC sign is displayed consistently using development only.
-        fit=frame[dev & eligible]
-        sign=-1 if corr(fit.q,fit.Q_reference)<0 else 1
         means=group.groupby('r')[['q','Q_reference']].mean();ax=axs[0];right=ax.twinx()
         ax.plot(means.index,means.Q_reference,'ko-',label='physical Q');right.plot(means.index,sign*means.q,'s-',color='#31688e',label='q')
         ax.axvline(3.86212,color='.5',ls=':');ax.set(xlabel='r',ylabel='physical Q',title=f'{keys}')
