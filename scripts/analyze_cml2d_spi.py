@@ -76,7 +76,7 @@ def run(corpus,mpi_root,output,frozen=None):
     frame['q']=q;frame['selected_missingness']=missing;frame['eligible']=eligible
     output.mkdir(parents=True)
     np.savez_compressed(output/'model.npz',keep=keep,impute=impute,center=center,component=component,score_scale=score_scale,spi_order=np.array(order))
-    np.savez_compressed(output/'features.npz',z=z,row_id=np.array(frame.row_id),spi_order=np.array(order))
+    np.savez_compressed(output/'features.npz',z=z,row_id=np.asarray(frame.row_id,dtype=str),spi_order=np.array(order))
     (output/'geometry.json').write_text(json.dumps(geometry,indent=2)+'\n')
     # Seal fit/eligibility before reading physical targets into the score table.
     counts=frame.groupby(['role','view','M','T','r']).eligible.agg(['sum','size'])
