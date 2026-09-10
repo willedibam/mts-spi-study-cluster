@@ -22,6 +22,9 @@ def main(args):
         r['row_id']: r['array_sha256'] for r in json.loads(args.exclude_manifest.read_text())['rows']}
     for meta_path in sorted(args.input.glob('201*.json')):
         meta = json.loads(meta_path.read_text())
+        agent = 'ktmd' if args.phase == 'source' else 'pf'
+        if agent not in meta['archive'].lower():
+            raise ValueError('archive does not match declared source/evaluation agent')
         if not meta['usable']:
             continue
         path = meta_path.with_suffix('.npz')
@@ -58,7 +61,7 @@ def main(args):
     args.output.mkdir(parents=True)
     archive = args.output / 'views.npz'
     np.savez_compressed(archive, **arrays)
-    manifest = dict(name=args.name, phase='KTMD source only', rows=rows, sources=sources,
+    manifest = dict(name=args.name, phase='KTMD source only' if args.phase=='source' else 'PF prospective evaluation', rows=rows, sources=sources,
         archive_sha256=sha(archive), catalogue_sha256=sha(Path('configs/pyspi/benchmarked_p90.yaml')),
         exporter_sha256=sha(Path(__file__)),
         excluded_manifest=None if args.exclude_manifest is None else str(args.exclude_manifest),
@@ -82,4 +85,5 @@ if __name__ == '__main__':
     parser.add_argument('--name', required=True)
     parser.add_argument('--remote', type=Path, required=True)
     parser.add_argument('--exclude-manifest', type=Path)
+    parser.add_argument('--phase', choices=['source','evaluation'], default='source')
     main(parser.parse_args())

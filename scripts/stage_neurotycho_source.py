@@ -1,4 +1,4 @@
-"""Stage predefined KTMD source channels; never download propofol waveforms."""
+"""Stage predefined source or explicitly selected prospective PF channels."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
@@ -48,16 +48,21 @@ def montage(path, count=16):
 
 def main(args):
     audit = json.loads((args.audit / 'audit.json').read_text())
-    if args.all_source:
+    if args.propofol:
+        if args.output == Path('data/neurotycho_source_260910'):
+            raise ValueError('propofol evaluation requires a separate explicit output root')
+        records = [r for r in audit['availability'] if r['agent'] == 'PF']
+    elif args.all_source:
         records = [r for r in audit['availability'] if r['agent'] == 'KTMD']
     else:
         records = [r for r in audit['annotation_samples'] if r['agent'] == 'KTMD']
     args.output.mkdir(parents=True, exist_ok=True)
     maps = {animal: montage(args.audit / 'montage' / f'{animal}.zip')
             for animal in sorted({r['animal'] for r in records})}
-    plan = dict(phase='source waveform QC; no PF downloads',
+    plan = dict(phase='prospective PF evaluation; no fitting' if args.propofol else 'source waveform QC; no PF downloads',
                 source_names=[r['name'] for r in records], montages=maps)
-    plan_path = args.output / ('all-source-plan.json' if args.all_source else 'scout-plan.json')
+    plan_path = args.output / ('propofol-plan.json' if args.propofol else
+                               'all-source-plan.json' if args.all_source else 'scout-plan.json')
     if plan_path.exists() and json.loads(plan_path.read_text()) != plan:
         raise ValueError('existing staging plan differs')
     plan_path.write_text(json.dumps(plan, indent=2) + '\n')
@@ -101,5 +106,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--audit', type=Path, default=Path('results/neurotycho_audit_260910'))
     parser.add_argument('--output', type=Path, default=Path('data/neurotycho_source_260910'))
-    parser.add_argument('--all-source', action='store_true')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--all-source', action='store_true')
+    group.add_argument('--propofol', action='store_true')
     main(parser.parse_args())

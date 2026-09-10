@@ -17,11 +17,11 @@ def test_export_obeys_actual_external_corpus_reader(tmp_path, monkeypatch):
     source=tmp_path/'input';source.mkdir()
     x=np.random.default_rng(93).normal(size=(1,16,2000)).astype('float32')
     np.savez_compressed(source/'20110112.npz',x=x)
-    record=dict(quality=dict(accepted=True),array_row=0,archive='20110112',session='Session1',
+    record=dict(quality=dict(accepted=True),array_row=0,archive='20110112ktmd',session='Session1',
                 target=0,window=0,start=100000,animal='George')
-    (source/'20110112.json').write_text(json.dumps(dict(usable=True,records=[record])))
+    (source/'20110112.json').write_text(json.dumps(dict(usable=True,archive='20110112ktmd',records=[record])))
     output=tmp_path/'output'
-    main(SimpleNamespace(input=source,output=output,name='test',remote=tmp_path/'remote',exclude_manifest=None))
+    main(SimpleNamespace(input=source,output=output,name='test',remote=tmp_path/'remote',exclude_manifest=None,phase='source'))
     config=ExternalCorpusConfig.from_file(tmp_path/'configs/external/test.yaml')
     config=replace(config,archive=output/'views.npz',pyspi_config=catalogue)
     entries=load_inventory(config)

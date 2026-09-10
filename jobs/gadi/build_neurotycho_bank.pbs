@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N ecog-bank
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=16GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=5GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${BUNDLE_BASE:?}" "${BUNDLE_NAME:?}"
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+python -u scripts/build_neurotycho_bank.py --data "$BUNDLE_BASE" \
+    --mpi-root "$BUNDLE_BASE/pyspi/$BUNDLE_NAME" --output "$BUNDLE_BASE/bank.npz"
