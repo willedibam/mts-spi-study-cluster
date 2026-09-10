@@ -10,8 +10,9 @@ import yaml
 def file_hash(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def prepare(input_dir, output_dir, config_path, M_values, T_values, views, development_seeds, select_L=None, select_r=None, select_seeds=None):
+def prepare(input_dir, output_dir, config_path, M_values, T_values, views, development_seeds, select_L=None, select_r=None, select_seeds=None, exclude_shapes=()):
     if output_dir.exists() or config_path.exists(): raise FileExistsError('refusing to overwrite corpus/config')
+    excluded = {tuple(shape) for shape in exclude_shapes}
     arrays={}; rows=[]; sources=[]
     for path in sorted(input_dir.glob('case-*.npz')):
         with np.load(path,allow_pickle=False) as a:
@@ -24,6 +25,7 @@ def prepare(input_dir, output_dir, config_path, M_values, T_values, views, devel
                 v=meta['views'].index(view)
                 for M in M_values:
                     for T in T_values:
+                        if (M,T) in excluded: continue
                         if M>observed.shape[2] or T>len(observed) or T%2: raise ValueError('invalid requested view')
                         name=f"r{meta['r']:g}-s{meta['seed']}-{view}-m{M}-t{T}"
                         x=np.ascontiguousarray(observed[:T,v,:M].T)
@@ -46,6 +48,9 @@ def prepare(input_dir, output_dir, config_path, M_values, T_values, views, devel
     manifest=dict(rows=rows,source_archives=sources,archive_sha256=sha,
         exporter_sha256=file_hash(__file__),development_seeds=development_seeds)
     (output_dir/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    for M,T in sorted({(row['M'],row['T']) for row in rows}):
+        indices = [str(row['corpus_index']) for row in rows if (row['M'],row['T']) == (M,T)]
+        (output_dir/f'indices-m{M}-t{T}.txt').write_text('\n'.join(indices)+'\n')
     config=dict(name=output_dir.name,source=dict(format='named-npz-v1',archive=str(output_dir/'observations.npz'),sha256=sha,axis_order=['process','observation']),
         base_output_dir=str(output_dir/'mpi'),pyspi_config='configs/pyspi/benchmarked_p90.yaml',normalise=False,random_seed=260911)
     config_path.parent.mkdir(parents=True,exist_ok=True)
@@ -59,4 +64,5 @@ if __name__=='__main__':
     p.add_argument('--M',type=int,nargs='+',default=[32]);p.add_argument('--T',type=int,nargs='+',default=[1000])
     p.add_argument('--views',nargs='+',default=['dispersed']);p.add_argument('--development-seeds',type=int,nargs='+',required=True)
     p.add_argument('--select-L',type=int);p.add_argument('--select-r',type=float,nargs='+');p.add_argument('--select-seeds',type=int,nargs='+')
-    a=p.parse_args();prepare(a.input_dir,a.output_dir,a.config,a.M,a.T,a.views,a.development_seeds,a.select_L,a.select_r,a.select_seeds)
+    p.add_argument('--exclude-shape',type=int,nargs=2,action='append',default=[],metavar=('M','T'),help='Skip an already-computed M,T pair')
+    a=p.parse_args();prepare(a.input_dir,a.output_dir,a.config,a.M,a.T,a.views,a.development_seeds,a.select_L,a.select_r,a.select_seeds,a.exclude_shape)

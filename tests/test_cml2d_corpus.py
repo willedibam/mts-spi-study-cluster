@@ -32,3 +32,11 @@ def test_export_is_nested_targets_are_disjoint_and_hash_bound(tmp_path):
             assert row['Q_reference']==meta['Q']
             assert row['Q_window']==pytest.approx(np.abs(np.diff(arrays['global_mean'][:row['T']].reshape(-1,2),axis=1)).mean())
     with pytest.raises(FileExistsError):prepare(source,out,config,[8],[4],['dispersed'],[21])
+    sensitivity=tmp_path/'sensitivity'
+    prepare(source,sensitivity,tmp_path/'sensitivity.yaml',[8,16],[4,8],['dispersed'],[21],exclude_shapes=[(16,8)])
+    rows=json.loads((sensitivity/'manifest.json').read_text())['rows']
+    assert len(rows)==3 and {(row['M'],row['T']) for row in rows}=={(8,4),(8,8),(16,4)}
+    selected=[]
+    for path in sensitivity.glob('indices-*.txt'):
+        selected.extend(map(int,path.read_text().split()))
+    assert sorted(selected)==[1,2,3]

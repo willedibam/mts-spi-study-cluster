@@ -25,7 +25,20 @@ case "$MODE" in
     ;;
   spi)
     : "${MPI_ROOT:?}"
-    python -m scripts.analyze_cml2d_spi --corpus "$INPUT_DIR" --mpi-root "$MPI_ROOT" --output "$OUTPUT_DIR"
+    extra=()
+    if [[ -n "${FROZEN_DIR:-}" ]]; then extra=(--frozen "$FROZEN_DIR"); fi
+    python -m scripts.analyze_cml2d_spi --corpus "$INPUT_DIR" --mpi-root "$MPI_ROOT" --output "$OUTPUT_DIR" "${extra[@]}"
+    ;;
+  export-sensitivity)
+    # Submit this mode only after the primary scientific/geometry review.
+    common=(--input-dir "$INPUT_DIR" --development-seeds 26091111 26091112 26091113 26091114)
+    python -m scripts.prepare_cml2d_corpus "${common[@]}" --output-dir "$OUTPUT_DIR/sensitivity" \
+        --config "$OUTPUT_DIR/sensitivity-corpus.yaml" --M 8 16 32 --T 500 1000 --exclude-shape 32 1000
+    python -m scripts.prepare_cml2d_corpus "${common[@]}" --output-dir "$OUTPUT_DIR/short-T" \
+        --config "$OUTPUT_DIR/short-T-corpus.yaml" --M 8 16 32 --T 100
+    python -m scripts.prepare_cml2d_corpus "${common[@]}" --output-dir "$OUTPUT_DIR/contiguous" \
+        --config "$OUTPUT_DIR/contiguous-corpus.yaml" --M 32 --T 1000 --views contiguous \
+        --select-r 3.84 3.858 3.86212 3.866 3.89
     ;;
   *) echo "invalid MODE" >&2; exit 2 ;;
 esac

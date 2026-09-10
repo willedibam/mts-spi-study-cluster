@@ -100,3 +100,19 @@ a separate matched-window physical diagnostic. Report both associations plus
 within-control association, raw mean-absolute-correlation and observed-sample
 order baselines. No requirement to beat either baseline. Report no precise
 thermodynamic boundary or instantaneous-tracking claim.
+
+## Conditional observation sensitivities (specified before primary q results)
+
+If the primary coordinate is useful and passes its frozen gates, reuse exactly
+the72 physical masters and their future targets; do not simulate a new bank.
+The nested sensitivity has360 additional views: M8/16 at T500/1000 and M32
+at T500, excluding the already-computed M32/T1000 primary. A separate216-row
+stress arm has M8/16/32,T100. A bounded40-row contiguous arm has M32/T1000,
+the same eight seeds and r=3.84,3.858,3.86212,3.866,3.89. These anchors were
+chosen before primary q results; there is no best-patch or best-control search.
+Each corpus uses the same frozen primary feature mask, imputation, centre,
+PC1 and score scale, with no per-M/T re-fitting or display rescaling. Row gates
+are reported separately for the main sensitivity, short-T stress and layout
+arms; a failed secondary arm does not invalidate a passed primary pilot.
+Split farms by M,T using generated index files, based on measured runtime and
+memory. No M64 extraction, supervised readout or new geometry search is added.
