@@ -23,12 +23,17 @@ mkdir -p "$output"
 commands=$PBS_JOBFS/commands.txt
 for animal in Chibi George; do
     for method in m-pca mg-pca z-pca z-pls mz-pca validity-pca spectrum; do
+        if test -f "$output/$method-$animal.json"; then
+            continue
+        fi
         printf 'python -u scripts/fit_neurotycho_statistical.py --banks %s %s --spectral %s/neurotycho_neural_260910/spectral.npz --output %s --animal %s --method %s\n' "$scout" "$extra" "$base" "$output" "$animal" "$method" >> "$commands"
     done
 done
-mpirun -np 14 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm-${PBS_JOBID%%.*}.status"
+if test -s "$commands"; then
+    mpirun -np 14 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm-${PBS_JOBID%%.*}.status"
+fi
 python - "$output" <<'PYTHON'
-import json,sys
+import hashlib,json,sys
 from pathlib import Path
 from src.neurotycho_statistical import METHODS
 root=Path(sys.argv[1])
@@ -38,5 +43,7 @@ for animal in ['Chibi','George']:
         report=json.loads(path.read_text())
         assert report['identity']['animal']==animal and report['target_data_used'] is False
         assert path.with_suffix('.joblib').exists() and path.with_suffix('.npz').exists()
+        assert hashlib.sha256(path.with_suffix('.joblib').read_bytes()).hexdigest()==report['model_sha256']
+        assert hashlib.sha256(path.with_suffix('.npz').read_bytes()).hexdigest()==report['predictions_sha256']
 print('All 14 statistical fits completed and audited')
 PYTHON

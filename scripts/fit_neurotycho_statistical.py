@@ -61,11 +61,13 @@ def main(args):
     joblib.dump(fitted, stem.with_suffix('.joblib'))
     probability = predict_fitted(fitted, bank, np.arange(len(bank['y'])))
     replay = predict_fitted(joblib.load(stem.with_suffix('.joblib')), bank, np.arange(len(bank['y'])))
-    np.testing.assert_array_equal(replay, probability)
+    # Reloading may change array layout and the last BLAS rounding bit.
+    np.testing.assert_allclose(replay, probability, atol=1e-12, rtol=0)
     np.savez_compressed(stem.with_suffix('.npz'), training_ids=bank['record_id'], y=bank['y'], probability=probability)
     report.update(identity=identity, model_sha256=sha(stem.with_suffix('.joblib')),
         predictions_sha256=sha(stem.with_suffix('.npz')), training_windows=len(bank['y']),
-        target_data_used=False, seconds=time.perf_counter()-started, saved_model_replay_max_difference=0.)
+        target_data_used=False, seconds=time.perf_counter()-started,
+        saved_model_replay_max_difference=float(np.max(np.abs(replay-probability))))
     stem.with_suffix('.json').write_text(json.dumps(report, indent=2)+'\n')
     print(args.method, args.animal, 'selected', report['selected'], 'source CV Brier',
           report['selected_source_validation_brier'], flush=True)
