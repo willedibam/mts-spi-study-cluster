@@ -1,0 +1,27 @@
+#!/bin/bash
+#PBS -N ecog-transfer-eval
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=16GB
+#PBS -l walltime=02:00:00
+#PBS -l jobfs=5GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+base=/g/data/ql44/we2614
+python -u scripts/evaluate_neurotycho_transfer.py \
+    --target-bank "$base/neurotycho_target_pf_260910/bank.npz" \
+    --target-windows "$base/neurotycho_target_pf_260910/windows" \
+    --spectral "$base/neurotycho_target_pf_260910/spectral.npz" \
+    --statistical "$base/neurotycho_transfer_260910/statistical" \
+    --neural "$base/neurotycho_matched_fits_260910" \
+        "$base/neurotycho_neural_260910/fits" "$base/neurotycho_transfer_260910/pooling" \
+    --source-data "$base/neurotycho_neural_260910" \
+    --output "$base/neurotycho_transfer_260910/evaluation"

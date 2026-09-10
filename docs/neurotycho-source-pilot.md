@@ -209,13 +209,15 @@ checks establish numerical integrity, not statistical reliability or prediction.
 The initial verifier incorrectly demanded float64 tolerance for float32 z; fixing
 that check required no change to the data, feature banks or extraction.
 
-Two matched raw-neural source fits excluding Chibi (seeds 11 and 23) are complete,
-with source-validation Brier .01949/.04556 and CPU replay within 2.98e-7. Remaining
-neural/pooling fits and the grouped statistical fitting/evaluation implementation
-are unfinished. PF staging has 45 verified waveform members and no complete
-archives or performance results. The fresh-process download-retry fix is tested.
+The fourteen statistical fits and six learned-pooling fits are complete. Their
+source-validation splits and saved scores were independently checked. Five matched
+raw-neural fits are complete; the sixth and six enriched H200 fits are in progress.
+All four PF archives are staged and all128target windows pass QC; four raw-window
+replays are exact. The256target SPI views are staged and a two-view smoke is submitted.
+No PF predictions or performance results have been computed.
 
-The bounded source extraction/bank follow-up is complete and its monitor stopped.
-The broader predictive/transfer comparison is unfinished; there is still no
-real-data z accuracy or propofol-transfer result. See `execution.json` and
+The user has authorized completion of the frozen prediction/transfer comparison.
+The active follow-up now continues through evaluation and verification, preserving
+the source-only selection and fixed target threshold. Source CV is preliminary
+model-selection evidence, not a prospective transfer result. See `execution.json` and
 `bank-verification.json` under `results/neurotycho_source_pilot_260910/`.
