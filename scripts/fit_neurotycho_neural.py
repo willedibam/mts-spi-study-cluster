@@ -22,14 +22,14 @@ def main(args):
     torch.set_num_threads(training['threads'])
     if args.animal not in protocol['target_animals'] or args.seed not in protocol['neural_seeds']:
         raise ValueError('fit outside declared protocol')
-    spec=protocol['raw_encoder']
+    spec=protocol['edge_encoder' if args.kind=='pool' else 'raw_encoder']
     args.output.mkdir(parents=True,exist_ok=True)
     stem=args.output/f'{args.kind}-{args.animal}-s{args.seed}'
-    paths=[args.data/'matched.npz']+([args.data/'dense.npz'] if args.kind=='enriched' else [])
+    paths=[args.data/('edges.npz' if args.kind=='pool' else 'matched.npz')]+([args.data/'dense.npz'] if args.kind=='enriched' else [])
     hashes={p.name:sha(p) for p in paths}
     identity=dict(config_sha256=sha(args.config),inputs=hashes,animal=args.animal,seed=args.seed,kind=args.kind,
         modules={str(p):sha(p) for p in [Path(__file__),Path('src/neurotycho_learning.py'),Path('src/representation_state_neural.py')]},
-        torch=torch.__version__,device='cpu',platform=platform.platform())
+        torch=torch.__version__,device=args.device,platform=platform.platform())
     if stem.with_suffix('.json').exists():
         prior=json.loads(stem.with_suffix('.json').read_text())
         if prior['identity']!=identity or sha(stem.with_suffix('.pt'))!=prior['checkpoint_sha256']:
@@ -45,7 +45,7 @@ def main(args):
     # Discard excluded-animal data before any tensor construction or fitting.
     matched_mask=matched['animal']!=args.animal
     matched={k:v[matched_mask] for k,v in matched.items()}
-    sx=torch.from_numpy(source['x']);vx=torch.from_numpy(matched['x'])
+    sx=torch.from_numpy(source['x']).to(args.device);vx=torch.from_numpy(matched['x']).to(args.device)
     groups=sorted(set(source['animal']))
     if len(groups)!=3 or set(groups)!=set(matched['animal']):
         raise ValueError('expected three source animals')
@@ -90,5 +90,6 @@ if __name__=='__main__':
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--animal',required=True)
     parser.add_argument('--seed',type=int,required=True)
-    parser.add_argument('--kind',choices=['matched','enriched'],required=True)
+    parser.add_argument('--kind',choices=['matched','enriched','pool'],required=True)
+    parser.add_argument('--device',choices=['cpu','cuda','mps'],default='cpu')
     main(parser.parse_args())
