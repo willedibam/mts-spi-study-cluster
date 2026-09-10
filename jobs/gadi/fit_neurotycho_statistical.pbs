@@ -23,7 +23,20 @@ mkdir -p "$output"
 commands=$PBS_JOBFS/commands.txt
 for animal in Chibi George; do
     for method in m-pca mg-pca z-pca z-pls mz-pca validity-pca spectrum; do
-        printf 'python -u scripts/fit_neurotycho_statistical.py --banks %s %s --spectral %s/neurotycho_neural_260910/spectral.npz --output %s --animal %s --method %s > %s/%s-%s.log 2>&1\n' "$scout" "$extra" "$base" "$output" "$animal" "$method" "$output" "$method" "$animal" >> "$commands"
+        printf 'python -u scripts/fit_neurotycho_statistical.py --banks %s %s --spectral %s/neurotycho_neural_260910/spectral.npz --output %s --animal %s --method %s\n' "$scout" "$extra" "$base" "$output" "$animal" "$method" >> "$commands"
     done
 done
-mpirun -np 14 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm.status"
+mpirun -np 14 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm-${PBS_JOBID%%.*}.status"
+python - "$output" <<'PYTHON'
+import json,sys
+from pathlib import Path
+from src.neurotycho_statistical import METHODS
+root=Path(sys.argv[1])
+for animal in ['Chibi','George']:
+    for method in METHODS:
+        path=root/f'{method}-{animal}.json'
+        report=json.loads(path.read_text())
+        assert report['identity']['animal']==animal and report['target_data_used'] is False
+        assert path.with_suffix('.joblib').exists() and path.with_suffix('.npz').exists()
+print('All 14 statistical fits completed and audited')
+PYTHON

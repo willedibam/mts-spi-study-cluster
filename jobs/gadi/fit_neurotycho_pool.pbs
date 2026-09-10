@@ -25,7 +25,19 @@ fi
 commands=$PBS_JOBFS/commands.txt
 for animal in Chibi George; do
     for seed in 11 23 47; do
-        printf 'python -u scripts/fit_neurotycho_neural.py --data %s --output %s --animal %s --seed %s --kind pool --device cpu > %s/pool-%s-s%s.log 2>&1\n' "$data" "$output" "$animal" "$seed" "$output" "$animal" "$seed" >> "$commands"
+        printf 'python -u scripts/fit_neurotycho_neural.py --data %s --output %s --animal %s --seed %s --kind pool --device cpu\n' "$data" "$output" "$animal" "$seed" >> "$commands"
     done
 done
-mpirun -np 6 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm.status"
+mpirun -np 6 --map-by slot:PE=2 nci-parallel --input-file "$commands" --status "$output/farm-${PBS_JOBID%%.*}.status"
+python - "$output" <<'PYTHON'
+import json,sys
+from pathlib import Path
+root=Path(sys.argv[1])
+for animal in ['Chibi','George']:
+    for seed in [11,23,47]:
+        path=root/f'pool-{animal}-s{seed}.json'
+        report=json.loads(path.read_text())
+        assert report['identity']['animal']==animal and report['target_data_used'] is False
+        assert path.with_suffix('.pt').exists() and path.with_suffix('.npz').exists()
+print('All 6 pooling fits completed and audited')
+PYTHON
