@@ -30,6 +30,7 @@
 - `docs/context/INDEX.md` is a routing index — one line per workstream, pointing to its context file. Not a diary or task tracker.
 - Write context only for workstreams listed in the index. Unindexed work — exploration, plotting, hygiene — produces no context file; if it yields something worth carrying forward, say so and ask.
 - Put knowledge in its natural version-controlled location. Use `docs/context/<workstream>.md` only for durable cross-artifact state with no better home.
+- Update the existing authoritative document by default. Create a new document only for a distinct deliverable or independently useful protocol/report; link it from the relevant workstream context. Do not create additional status, planning or summary documents that duplicate existing material.
 - A workstream file is a working picture of where things stand: what you are trying to get at, what currently holds and on what evidence, what has been tried and abandoned and why, and what is open or blocking. Not a report and not a task list.
 - Write to it when the picture changes — something is ruled out, a result is surprising, an assumption breaks, a direction is chosen. Write then, not from memory later; compaction destroys the specifics.
 - Rewrite in place before ending substantive work on that workstream, as a backstop for what was not captured during the session.
@@ -40,6 +41,7 @@
 - For consequential or change-sensitive claims, record enough provenance to judge validity; do not add provenance mechanically.
 - Keep it under ~100 lines of live content. Compress or split when it exceeds that. What has been ruled out can outgrow the file — move it to `docs/context/<workstream>-ruled-out.md` and link it.
 - Distilled and information-rich. Rewrite or remove stale summaries; Git provides chronology. Do not duplicate facts obvious from current artifacts, or retain transient activity, routine output, or abandoned speculation.
+- Preserve normal word spacing and readable sentences when condensing notes. Meet length targets by removing redundancy or linking to evidence, never by joining words or packing excessive detail into long lines.
 - Retain bulky outputs only when authoritative, costly, or non-deterministic to reproduce; otherwise record how to regenerate them.
 - Never store secrets or credentials. Preserve conclusions, evidence, assumptions, and concise rationale — not raw transcripts or hidden chain-of-thought.
 
