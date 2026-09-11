@@ -3,6 +3,11 @@
 Updated 11 September 2026 after the verified NeuroTycho pilot and conventional
 library follow-up. This replaces the earlier prospective application plan.
 
+The [complete experimental evidence map](spi-representation-evidence-map.md)
+reconstructs the earlier screens, failures, synthetic confirmations, baselines
+and transfer tests. The synthetic programme is the primary mechanistic evidence;
+the real-data pilot is a separate external check.
+
 ## Central claim
 
 **Relationships among dependence measures provide a useful fixed representation
@@ -128,7 +133,12 @@ a rigid checklist.
 ## Direction
 
 Synthesize the existing mechanistic and transfer evidence before adding more
-benchmarks. The missing link for a stronger application claim is an independently
+benchmarks. A strong synthetic methods result does not require a real-data win.
+One specific gap is that MiniRocket/tsfresh/catch22 and the enriched raw encoder
+were tested only on NeuroTycho, not the central synthetic co-organization task.
+An established multivariate convolutional comparator on the existing synthetic
+core is a more direct next test of the learning claim than another unrelated
+application; this is a recommendation, not a newly launched experiment. The missing link for a stronger application claim is an independently
 motivated use where interaction co-organization matters and z provides a material
 benefit beyond credible simpler/neural controls, ideally evaluated on fresh
 recordings or a genuinely separate cohort. That is a scientific question, not
