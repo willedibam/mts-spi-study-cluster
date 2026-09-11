@@ -158,7 +158,11 @@ stronger paper. A bounded, established multivariate convolutional comparator on
 this existing synthetic core would more directly test the central learning claim
 than another loosely related application. Full-size source/target cells permit
 an unmodified comparator; changing M requires a declared compatible adaptation.
-This is a recommendation, not a newly authorized run.
+The user has now authorized InceptionTime on both this synthetic core and
+NeuroTycho: [bounded follow-up](inceptiontime-followup.md). It reuses all existing
+data and source splits, evaluates full M=16 only, and reports five-member
+ensembles alongside members. Results are pending; do not count it as a completed
+comparison. Conventional feature libraries remain untested on synthetics.
 
 Current status: strong scoped empirical/mechanistic evidence for a statistical
 representation prior; conditional low-label and transfer advantages; incomplete

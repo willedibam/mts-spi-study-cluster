@@ -138,7 +138,9 @@ One specific gap is that MiniRocket/tsfresh/catch22 and the enriched raw encoder
 were tested only on NeuroTycho, not the central synthetic co-organization task.
 An established multivariate convolutional comparator on the existing synthetic
 core is a more direct next test of the learning claim than another unrelated
-application; this is a recommendation, not a newly launched experiment. The missing link for a stronger application claim is an independently
+application. On 2026-09-11 the user authorized [InceptionTime on both existing
+synthetic and NeuroTycho tasks](inceptiontime-followup.md); results are pending.
+The missing link for a stronger application claim is an independently
 motivated use where interaction co-organization matters and z provides a material
 benefit beyond credible simpler/neural controls, ideally evaluated on fresh
 recordings or a genuinely separate cohort. That is a scientific question, not
@@ -152,3 +154,25 @@ may support a broader methodological paper, but cannot be silently counted as
 proof of the representation-learning claim. One versus two papers remains open;
 a separate learning paper needs an independent substantive contribution rather
 than repackaging the same experiments under a different label.
+
+## Workshop assessment, 2026-09-11
+
+Judgment: the current evidence supports a credible submission to a relevant
+NeurIPS/ICML/ICLR workshop on time series, scientific learning or representation
+transfer. The substantive content is a mechanism-motivated descriptor, controlled
+correspondence intervention, source-frozen transfer, informative negative tasks
+and a qualified external example. It need not beat every neural architecture to
+be worth presenting. Acceptance depends on the actual workshop and execution;
+this is not an assessment of main-track acceptance or a claim of established
+major scientific impact. InceptionTime fills a conspicuous comparator gap.
+
+The [ICLR workshop remit](https://iclr.cc/Conferences/2026/CallForWorkshops)
+expressly includes discussion of work in progress; individual workshops set
+their own paper policies. JMLR and the Nature journals are not interchangeable
+workshop destinations. [PMLR](https://proceedings.mlr.press/) is the proceedings
+series formerly called JMLR Workshop and Conference Proceedings; it is distinct
+from a JMLR research article. Nature Computational Science lists journal
+[content types](https://www.nature.com/natcomputsci/content), not a generic
+workshop-paper track. Do not treat a Brief Communication as a lower-evidence
+workshop equivalent. Choosing a focused workshop submission need not decide
+whether the eventual full methodological work is one paper or two.
