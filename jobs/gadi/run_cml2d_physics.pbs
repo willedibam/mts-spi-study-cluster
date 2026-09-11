@@ -24,7 +24,7 @@ export NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"
 cd "$PBS_JOBFS/cml2d"
 python -m pytest -q tests/test_cml2d_period_doubling.py
 total=$(python -m scripts.scout_cml2d_period_doubling --config "$SCOUT_CONFIG" --count-only)
-(( total >= 1 && total <= 128 ))
+(( total >= 1 && total <= 2048 ))
 commands="$PBS_JOBFS/commands.txt"
 for ((i=0;i<total;i++)); do
     printf 'python -m scripts.scout_cml2d_period_doubling --config %s --output-dir %s --case-index %d\n' "$SCOUT_CONFIG" "$OUTPUT_DIR" "$i" >> "$commands"

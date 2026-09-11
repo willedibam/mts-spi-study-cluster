@@ -43,7 +43,7 @@ def assemble(corpus, mpi_root):
     return rows,np.asarray(values),order,sources
 
 
-def run(corpus,mpi_root,output,frozen=None):
+def run(corpus,mpi_root,output,frozen=None,minimum_retained_per_cell=2):
     if output.exists():raise FileExistsError(output)
     rows,z,order,sources=assemble(corpus,mpi_root)
     frame=pd.DataFrame([{k:r[k] for k in ['row_id','r','L','N','seed','M','T','view','role']} for r in rows])
@@ -80,10 +80,10 @@ def run(corpus,mpi_root,output,frozen=None):
     (output/'geometry.json').write_text(json.dumps(geometry,indent=2)+'\n')
     # Seal fit/eligibility before reading physical targets into the score table.
     counts=frame.groupby(['role','view','M','T','r']).eligible.agg(['sum','size'])
-    valid_gate=bool(np.mean(~eligible)<=.1 and (counts['sum']>=2).all())
+    valid_gate=bool(np.mean(~eligible)<=.1 and (counts['sum']>=minimum_retained_per_cell).all())
     identity=dict(contract=UNIFIED_CONTRACT_VERSION,manifest_sha256=file_hash(corpus/'manifest.json'),
         sources=sources,code_sha256=file_hash(__file__),selected_features=len(keep),
-        passes_row_gate=valid_gate,geometry=geometry,
+        passes_row_gate=valid_gate,geometry=geometry,minimum_retained_per_cell=minimum_retained_per_cell,
         fit_uses_targets_or_controls=False,frozen_source=str(frozen) if frozen else None)
     (output/'eligibility.json').write_text(json.dumps(identity,indent=2)+'\n')
     for key in ('Q_reference','Q_window'):frame[key]=[r[key] for r in rows]

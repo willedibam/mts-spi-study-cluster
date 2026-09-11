@@ -1,0 +1,27 @@
+import numpy as np
+import pandas as pd
+import yaml
+from pathlib import Path
+from scripts.cml2d_confirmation import OLD_CONTROLS, confirmation_gate
+from scripts.scout_cml2d_period_doubling import cases_from_config
+
+
+def test_confirmation_is_fresh_interleaved_replication():
+    path = Path(__file__).resolve().parents[1] / "configs/scout/cml2d-period-doubling-confirmation.yaml"
+    config = yaml.safe_load(path.read_text())
+    cases = cases_from_config(config)
+    assert len(cases) == 544
+    controls = sorted({case["r"] for case in cases})
+    expected = sorted(OLD_CONTROLS + [(a+b)/2 for a, b in zip(OLD_CONTROLS[:-1], OLD_CONTROLS[1:])])
+    np.testing.assert_allclose(controls, expected, rtol=0, atol=1e-14)
+    assert {case["seed"] for case in cases} == set(range(260911101, 260911133))
+
+
+def test_gate_requires_replication_and_coverage():
+    frame = pd.DataFrame(dict(view=["dispersed"]*64, M=32, T=1000,
+        r=np.repeat([3.84, 3.89], 32), eligible=True))
+    assert confirmation_gate(frame)["passes"]
+    frame.loc[:5, "eligible"] = False
+    assert confirmation_gate(frame)["passes"]
+    frame.loc[6:8, "eligible"] = False
+    assert not confirmation_gate(frame)["passes"]
