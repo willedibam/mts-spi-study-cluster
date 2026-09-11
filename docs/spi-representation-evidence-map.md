@@ -124,10 +124,14 @@ nonlinear readouts, raw moments/spectra/dynamical estimates, fixed random encode
 small trained raw encoders, task-informed specialists and learned SPI pooling.
 They were not all run on every dataset; reports specify exact coverage.
 
-**MiniRocket, tsfresh and catch22 were only run on NeuroTycho.** The enriched
-neural control also belongs to that application. Their real-data results cannot
-be presented as comparisons on the central synthetic co-organization target.
-No broad pretrained/foundation-model or published-neural benchmark exists there.
+**In this supervised transfer programme, MiniRocket, tsfresh and catch22 were
+only run on NeuroTycho.** The wider heterogeneous-corpus work separately includes
+an exploratory catch22 representation comparison across its mixed real/synthetic
+collection. That is not a supervised co-organization or mechanism-transfer test.
+The enriched neural control also belongs to NeuroTycho. None of these results
+can be presented as comparisons on the central synthetic co-organization target.
+No broad pretrained/foundation-model or completed published-neural benchmark
+exists there.
 
 Two selected10label pooling folds hit the600epoch ceiling and source-cohort
 variability is large. This limits an optimization-independent sample-efficiency
@@ -170,3 +174,9 @@ case for broad neural-learning superiority or major application impact. A focuse
 methods paper has a defensible backbone. A separate high-impact learning paper
 must articulate an independent general lesson beyond the existence of a task
 aligned with the chosen descriptor; venue and paper-split decisions remain open.
+
+The [whole-programme manuscript blueprint](spi-spi-manuscript-blueprint.md)
+connects this learning programme to the construction, cross-dimension proof,
+heterogeneous corpus and physical order-coordinate studies while retaining
+their separate evidential roles. It includes a provisional learning-module
+abstract and figure plan; it does not decide the eventual paper split.
