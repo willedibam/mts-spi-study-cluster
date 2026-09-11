@@ -114,6 +114,47 @@ isolates that contribution or establishes a physiological mechanism.
 
 ## Animal and score behaviour
 
+### Comparator fairness and physiological interpretation
+
+The enriched encoder is the same architecture as the matched encoder, with
+additional eligible source windows and sensor/duration augmentation. It is
+custom code, but not a separate anatomy-specific model supplied with physiological
+targets. Its selection uses source data. The unmatched window exposure prevents
+an equal-record-count comparison, while the unchanged labelled animals/dates
+makes it a legitimate practical control. We cannot dismiss its stronger result
+as "bespoke" or infer poor cross-disciplinary portability without testing that.
+Conversely, it does not establish superiority at the matched-window budget.
+
+z's reusable, fixed statistical coordinate system is a real design property.
+The full z prediction pipeline is nevertheless fitted: feature hygiene,
+dimension reduction, regularization and the readout depend on source data.
+Fixed extraction does not itself imply stronger predictive transfer across
+disciplines. Matched and enriched comparisons answer different resource questions;
+both remain visible. Neither neural nor z cross-disciplinary predictive
+generality follows from this ECoG pilot.
+
+The supported physiological statement is that a source-trained decision rule
+over cross-statistic relationships distinguishes sustained awake and anaesthetized
+recordings after the specified animal/agent/period shift. Earlier work on this
+resource found state-dependent frequency-specific interaction patterns
+([Yanagawa et al. 2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0080845)).
+That motivates the application; it does not identify what drives this z model.
+The present result is not a new mechanism of consciousness, anatomical network
+localization, or evidence for globally increased/decreased coupling.
+
+Plausible explanations include transfer of relative statistical agreement when
+absolute MPI distributions shift, and useful regularization of noisy estimates.
+These remain hypotheses: no ECoG attribution isolates either. Conventional
+spectra's perfect ranking means spectral state changes remain a sufficient
+alternative explanation for practical discrimination by a different learner.
+Estimator validity also carries some state signal. Label definitions do not
+use z, so performance is not a mathematical tautology; sustained-state selection
+and known anaesthesia signatures make the task less surprising than discovering
+previously unrecognized states. Two animals and concentrated between-method
+differences leave sampling variation in the ranking unresolved. New source-led
+attribution or controlled waveform interventions would need a bounded protocol;
+none is launched by this interpretation.
+
 | Model | Full Chibi | Full George | Reduced Chibi | Reduced George |
 |---|---:|---:|---:|---:|
 | Marginals + PCA | 1.0000 | .6719 | .8281 | .5000 |
