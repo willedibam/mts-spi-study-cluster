@@ -1,179 +1,144 @@
-# SPI–SPI: the scientific claim and next evidence gap
+# SPI–SPI: current scientific claim and significance
 
-Updated 2026-09-10. Scientific decision brief; the subsequent
-[direct phase-mechanism protocol](oscillatory-mechanism-scout.md) now specifies the
-mechanism experiment. It is now complete, including a bounded post-hoc score
-diagnostic; see the [mechanism-transfer findings](oscillatory-mechanism-transfer-findings.md).
-The earlier pooling and faster-regime experiments are also complete; see their
-[verified findings](oscillatory-transfer-findings.md).
+Updated 11 September 2026 after the verified NeuroTycho pilot and conventional
+library follow-up. This replaces the earlier prospective application plan.
 
-## Question and reason to care
+## Central claim
 
-**Can relationships among dependence measures provide a transferable representation
-of interaction organization across changes in dynamics and observation?**
+**Relationships among dependence measures provide a useful fixed representation
+of multivariate dynamics. In controlled systems, this representation captures
+interaction co-organization that the tested individual-statistic summaries expose
+less successfully, and supports source-only transfer under specified dynamical
+and observation changes. A small ECoG pilot establishes competitive state-transfer
+performance, with clear limits to superiority and mechanism attribution.**
 
-The practical objective is to recognize comparable organization in recordings
-whose waveforms, timescales and observed channels differ, using a shared statistical
-description. Label efficiency measures how readily that description can be used;
-it is not the whole motivation. Fewer than 20 independent labelled units is a
-credible resource constraint in some applications, not an established universal
-regime or a reason to disregard useful within-unit windows and unlabelled data.
+This is a scoped statistical-representation and domain-generalization claim.
+Applying source-trained predictors without target fitting has established domain
+[generalization precedent](https://proceedings.mlr.press/v28/muandet13.html);
+calling it transfer learning is not itself a contribution.
 
-Here, “organization” means how different kinds of dependence coincide across
-links. It does not mean reconstructing spatial topology or identifying causal
-coupling. The candidate hypothesis is that some properties of this coincidence
-transfer more reliably than individual dependence magnitudes. There is no general
-guarantee: z deliberately removes information that some tasks require.
+## End-to-end content
 
-Zero-target-label application of a source-trained predictor is a domain
-generalization question; target adaptation is a different experiment. This
-distinction has established precedent in [Muandet et al., ICML 2013](https://proceedings.mlr.press/v28/muandet13.html).
-The contribution must be the particular statistical representation, mechanism and
-useful behaviour, not relabelling the problem as transfer learning.
+Each multivariate recording produces 289 p90 MPI matrices. Both directions of all
+off-diagonal links enter aligned edge profiles; their pairwise Pearson correlations
+produce 41,616 named z coordinates. The feature map is fixed. PCA learns a
+projection, PLS learns a supervised projection, and the readout learns prediction.
+The alternative learned SPI-pooling model learns how to aggregate edge-wise
+statistical vectors. No experiment establishes cross-task reuse of one learned
+embedding or information unavailable in principle from the raw recordings.
 
-## Evidence and its limits
+The valid SPI correlation matrix is a Gram matrix of normalized edge profiles:
+its entries compare angles between how statistics vary across links. This is a
+useful geometry and an interpretable statistical prior, not a novel matrix-
+geometry learning algorithm. The construction removes individual-SPI offsets and
+positive scales as well as edge incidence/spatial identity. Its common coordinate
+system handles changing M,T syntactically; empirical robustness to those changes
+requires testing and is not guaranteed by the construction.
 
-| Proposition | Current evidence | Missing evidence |
+The motivation is to describe *how different dependence modes coincide across
+links*, rather than requiring a fixed spatial coordinate system. This can matter
+when the organization of dependence is informative and its absolute scale or
+measurement layout varies. Neither nuisance invariance in general nor unique
+identification of a causal interaction mechanism has been established.
+
+## What each component contributes
+
+| Evidence | Supported contribution | Boundary |
 |---|---|---|
-| Cross-statistic correspondence can carry useful task information. | Co-organization prediction; independent per-SPI dyad shuffling destroys z's useful predictions while preserving each SPI's edge multiset. | This does not establish exclusive access to that information or application usefulness. |
-| Fixed agreement features can reduce the burden of learning. | Several 10-label comparisons favour z/readouts; this advantage is not uniform for PCA under the combined mechanism/observation shift. Pooling is competitive at 20–40 and sometimes better. | General label-efficiency factors, optimization-independent advantages and comparison with pretrained encoders. |
-| The representation transfers beyond its exact training distribution. | Source-frozen discrimination survives prospective timescale and controlled phase-mechanism changes; combined observation reduction exposes score-transfer limits. | Broader mechanisms, independent application utility and cross-task reuse; the faster regime is not demonstrably harder. |
-| Transfer gains involve more than small-data training. | Differences from individual-SPI summaries persist at 40 labels; the controlled mechanism test also reveals ranking gaps. | The earlier faster-regime gap was partly threshold transfer, and z itself develops a score-transfer deficit under the combined mechanism/observation shift. These effects must be distinguished. |
-| Compression has a useful, selective bias. | Co-organization positive and covariance-modulation negative; the latter has an exact two-statistic magnitude-loss example. | A general characterization of when the full catalogue succeeds or fails. |
+| Controlled phase/envelope co-organization | Cross-statistic correspondence can be predictive beyond the tested individual-SPI distributions; disrupting correspondence while retaining those distributions destroys z/pooling performance. | Constructed functional property; a direct phase/envelope specialist is strong; does not establish brain mechanism. |
+| Fresh cohorts and 10/20/40-label curves | Simple predictors exploit this representation with few independent source realizations in specified settings. | Advantages vary with readout, source cohort and shift; no general sample-complexity or clinical label-efficiency factor. |
+| Direct-coupling mechanism transfer | The same functional property remains recognizable when shared phase drivers are replaced by direct Kuramoto coupling. | Amplitude/observation laws are retained and diffusion is matched; not arbitrary cross-system generalization. |
+| Covariance-modulation negative | Dependence-sensitive input statistics do not ensure that their normalized agreement retains the target; a two-statistic identity illustrates magnitude loss. | Not a proof that the entire catalogue is uninformative or that all empirical errors have one cause. |
+| NeuroTycho transfer | z supports awake/anaesthetized discrimination across fitted-animal exclusion and agent/period change; the reduced view retains useful performance. | Two target animals/four dates; physiology versus acquisition/confounding not isolated; enriched raw encoder wins. |
+| MiniRocket/tsfresh/catch22 follow-up | z has higher full-size fixed-threshold BA than these specified feature+logistic pipelines. | Added after PF inspection; ranking is nearly perfect for all; small gains over MiniRocket, no whole-library superiority. |
 
-The present claim is therefore a **useful statistical representation of a specific
-interaction property, with scoped transfer across timescales and phase-generating
-mechanism, and a label-efficiency advantage that varies with readout and shift**.
-This is more substantial than dimensional
-compatibility, but not yet a general reusable representation of dynamical systems.
+References: [co-organization](oscillatory-coorganization-findings.md),
+[correspondence attribution](oscillatory-pooling-attribution.md),
+[mechanism transfer](oscillatory-mechanism-transfer-findings.md),
+[covariance negative](covariance-modulation-findings.md),
+[NeuroTycho](neurotycho-transfer-findings.md),
+[library follow-up](neurotycho-library-followup-findings.md).
 
-The construction of z is fixed. PCA learns axes; its dimension and readout are
-selected using source labels in the current pipeline. Learned SPI pooling learns
-a task-dependent embedding. None of these facts establishes transfer to new tasks.
-For valid columns, the SPI correlation matrix is a Gram matrix of standardized
-edge profiles. This gives an interpretable geometric construction, not by itself
-a novel geometry method or evidence that manifold machinery would help.
+## AUROC and what the real-data result means
 
-## Completed checkpoint: one change in mechanism, the same functional property
+AUROC is the fraction of positive-negative score pairs correctly ordered, with
+half credit for ties. Our primary AUROC is computed per date and averaged over
+animals/dates. It need not imply a single successful threshold or comparable
+score levels across recordings and animal-specific fitted models.
 
-The design below records the rationale for the now-completed checkpoint. The
-linked findings give its outcomes and limits; it is not an outstanding run request.
+For z-PCA on George's 31 July PF date, awake scores span .3505–.6965 and
+anaesthetized scores .9174–1: AUROC1 with five false positives at threshold.5.
+Across all dates, z-PCA also has pooled AUROC1; its overall largest awake score
+is .6965 and smallest anaesthetized score .7363. Thus perfect ranking is real
+on these sampled observations. Its nine errors arise from applying the frozen
+threshold, not from overlapping class-score rankings. A threshold chosen from
+these target labels would violate the source-only comparison.
 
-Prioritize a cross-mechanism test over more training sizes, timescale shifts or
-PCA choices. Keep the current source fits frozen. A candidate target model would
-produce phase coordination through direct oscillator interactions rather than
-the current shared phase drivers, with a separately specified amplitude process.
-This is a candidate model class, not a claim that another simulator automatically
-constitutes an independent application.
+Other models do show aggregation effects: catch22 has date-wise AUROC1 but pooled
+AUROC.9392. Pooling different animal-specific fitted models is a score-comparability
+diagnostic, not a replacement primary endpoint. See the recorded
+`results/neurotycho_library_followup_260911/report/auc-diagnostic.json`.
 
-Before any new p90 extraction, resolve one crucial issue: **the target must refer
-to the same functional property in both mechanisms**. Identical versus crossed
-coupling graphs do not automatically imply identical versus crossed observed
-phase/envelope dependence networks. Check that correspondence using independent
-long reference trajectories, separate from the finite recordings used for
-prediction. Define the property without SPI–SPI or a fitted classifier; use the
-direct phase/envelope observable as a reference competitor, never as evidence of
-z's special ability. Check stationarity, numerical resolution, observable
-variation and whether the proposed partitions actually generate the intended
-functional organization. Do not select parameters using z performance.
+The likely reason for widespread ceiling discrimination is the relatively coarse
+contrast between sustained awake and anaesthetized conditions, with substantial
+spectral/waveform differences. The successful spectral control supports sufficiency
+of that kind of signal here; it does not isolate a causal explanation or rule out
+acquisition/time-within-session confounds. These are not near-transition labels,
+continuous consciousness measurements, or 128 independent subjects. The original
+[recording study](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0080845)
+provides the task/label background; our checks validate the implemented split and
+numeric results, not every possible biological or recording confound.
 
-The model equation, parameter ranges, reference criterion, scout size and acceptance
-rule must be written and frozen before that feasibility scout. A scout can reject
-an unobservable or physically incoherent target; it cannot validate a learning
-claim. If the shared-property premise fails, repair the model for a documented
-scientific reason or stop this extension, rather than search for a favourable z
-result. Any repair creates a new exploratory protocol and requires fresh
-confirmation data.
+The z advantage over MiniRocket is 3.125 BA points for PCA and 4.6875 for PLS,
+equivalent to four and six fewer errors in 128 balanced windows. All these feature
+pipelines score perfectly on Chibi, so gains concern George. The enriched neural
+control remains strongest and conventional spectra already rank perfectly.
+These are useful transfer results but do not establish additional inaccessible
+state information or unique dependence-based physiological utility.
 
-If the premise passes, freeze one independent target test, with M16/T1000 primary
-and the existing M8/T500 view secondary. Reuse all existing source model fits and
-10/20/40 budgets: z PCA/ridge, z PLS, individual-SPI summaries, normalized shapes,
-fusion, learned SPI pooling, raw controls and raw encoders. Retain the direct
-specialist. No target fitting, feature selection or threshold adjustment. Report
-balanced accuracy, AUROC and Brier separately to distinguish discriminability
-from decision-score transfer. Existing test-cohort bootstrap intervals remain
-conditional on the trained source cohorts.
+## Significance assessment
 
-Success would extend the claim to a second mechanistic realization of one
-functional property. Failure with a successful direct reference would identify
-a transfer limit; failure of the reference/property check would make that target
-unsuitable for the proposed inference. Neither outcome requires changing the
-completed positive or negative studies. An application and cross-task reuse remain
-distinct possible later contributions, not additional axes of this experiment.
+**Scientific interest:** the strongest contribution is the selective statistical
+prior: agreement can preserve functional co-organization across some changes,
+while discarding magnitudes can remove other targets. Positive interventions,
+mechanism transfer and the negative case make this more than a feature leaderboard.
 
-## Paper significance
+**Methodological maturity:** there is a credible focused methods-paper foundation,
+with functioning software, explicit information budgets, multiple controls and
+verified results. Related work matters: [Cliff et al. 2023](https://www.nature.com/articles/s43588-023-00519-x)
+already studies relationships among diverse SPIs. Novelty must concern the
+record-level representation and demonstrated capability, not merely calculating
+relationships among statistics or proposing a shared feature space.
 
-A focused, well-explained result can be significant without universal superiority
-or a new neural architecture. A stronger paper would show why the representation
-works, where it loses information, and why the transferable property matters
-beyond its construction. The present positive/negative pair and intervention
-already support that explanation. A second synthetic mechanism would strengthen
-scope, but cannot by itself establish real-world impact or guarantee a particular
-venue. Do not split or combine papers merely to match fashionable terminology.
+**Practical materiality:** useful in the tested cases, but a consequential real-world
+advantage is not yet established. Better fixed-threshold transfer can matter when
+new labels/calibration are unavailable; its demonstrated magnitude here is modest,
+concentrated in one of two target animals, and does not beat the stronger-exposure
+neural control. The conventional alternatives are inexpensive. Cost superiority,
+clinical utility and general subject-level label savings remain unproven.
 
-## Recommended direction after the completed tests
+**High-impact ambition:** focused work can be important without universal dominance
+or new neural machinery. The present evidence supports a defensible contribution;
+it does not yet establish a broad new representation-learning capability with
+clear scientific consequences. Venue names should not substitute for assessing
+that capability. I would not infer ICLR/ICML/NeurIPS/Nature-level impact from these
+accuracy gains alone, nor conclude those venues are impossible on the basis of
+a rigid checklist.
 
-The next contribution should be transferable inference of an independently
-defined scientific state using statistically grounded representations. Label
-efficiency is supporting evidence. The controlled direct-coupling test strengthens
-the mechanism argument, but matching group diffusion and retaining amplitude laws
-limits its independence; it should not carry a broad cross-system claim.
+## Direction
 
-Treat fixed z and learned SPI aggregation as competing realizations of this
-approach. The learned-pooling advantage is not evidence against the broader
-representation idea. The [completed attribution check](oscillatory-pooling-attribution.md)
-now supports a role for cross-SPI correspondence in the learned model: preserving
-each SPI's edge distribution, reciprocal pairing and validity while disrupting
-correspondence reduces accuracy to near chance after matched retraining at40labels.
-That supports the shared statistical prior under this task/training regime; it
-does not prove that Pearson compression is optimal or identify the unique learned
-function. No architecture sweep is warranted by this check.
+Synthesize the existing mechanistic and transfer evidence before adding more
+benchmarks. The missing link for a stronger application claim is an independently
+motivated use where interaction co-organization matters and z provides a material
+benefit beyond credible simpler/neural controls, ideally evaluated on fresh
+recordings or a genuinely separate cohort. That is a scientific question, not
+permission to search targets until z wins. Alternatively, a general, testable
+characterization of when this compression helps could strengthen the methods
+contribution; a theorem is not mandatory.
 
-The [completed NeuroTycho audit](neurotycho-application-audit.md) finds30anesthesia/sleep
-archives, all accessible, with actual condition annotations inspected in six
-animal/agent cells. This supersedes the earlier indexed-page count of31. Only
-Chibi and George have propofol, ketamine-alone and medetomidine-alone data;
-KTMD spans allfour animals. The KTMD/propofol comparison also changes recording
-year. This supports a qualified pilot, not broad subject generalization. Sources:
-[task documentation](https://wiki.neurotycho.org/Anesthesia_and_Sleep_Task_Details)
-and [live catalogue](https://neurotycho.org/data/detail.json).
-
-The original study defined anaesthetic unresponsiveness with behavioural testing,
-with slow waves as additional confirmation; its sleep labels instead used spatial
-slow-wave synchrony. Thus sleep is unsuitable as an independent validation of an
-interaction marker without separate label evidence. Propofol covered only two
-animals in that study. Do not infer that the released archive supports an arbitrary
-cross-animal/cross-agent split or equate unresponsiveness with subjective
-consciousness. Audit actual annotations before defining the target.
-[Yanagawa et al. 2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0080845).
-
-If this candidate passes, choose one primary transfer question, subject/session
-grouping, baseline family and untouched evaluation partition. Include spectra,
-appropriate established state markers, individual-SPI summaries, z with the
-existing simple heads, learned pooling and one competent published raw-data
-baseline. Permit legitimate within-unit training windows and report pretraining
-exposure; scarcity concerns independent units, not an artificial prohibition on
-using their recordings. Sensor coverage is a secondary robustness test unless
-the application audit establishes it as the primary need. Variable-channel
-learning already exists: [BIOT, NeurIPS 2023](https://proceedings.neurips.cc/paper_files/paper/2023/hash/f6b30f3e2dd9cb53bbf2024402d02295-Abstract-Conference.html)
-is precedent, not an automatically suitable ECoG comparator without adaptation
-and exposure checks.
-
-Related work also limits novelty: [Santoro et al. 2026](https://www.nature.com/articles/s41467-026-75959-w)
-compares information-theoretic/topological higher-order metrics on HCP fMRI,
-their relationships and functional utility. That is a different construction from
-record-level SPI–SPI features, but mapping relationships among interaction metrics
-is not an untouched idea. Our claim must concern a specific transferable capability
-and its mechanism; a meta-statistic is not automatically a direct estimator of
-genuine higher-order dependence.
-
-A convincing outcome would be reproducible transfer or practical complementarity
-beyond strong spectral/domain controls and neural baselines, with attribution to
-interaction relationships. Reject an application if the labels or splits cannot
-support that claim, or if simpler features solve the relevant task equally well
-without another demonstrated practical benefit. Real data are not logically
-necessary for a strong methods paper, but they are the most direct missing evidence
-for the application-impact ambition here. If that evidence does not materialize,
-the existing learning studies remain a scoped part of the main method paper;
-a separate learning paper should earn an independent contribution. The subsequent approved pooling attribution and annotation-only application audit
-are complete; no application waveform extraction or full benchmark is running.
+The construction/embeddings/corpus/order-parameter work belongs to linked
+workstreams and must be assessed on its own verified evidence. Those components
+may support a broader methodological paper, but cannot be silently counted as
+proof of the representation-learning claim. One versus two papers remains open;
+a separate learning paper needs an independent substantive contribution rather
+than repackaging the same experiments under a different label.

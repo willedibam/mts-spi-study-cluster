@@ -92,6 +92,21 @@ without choosing the better layout on PF.
 
 ## Interpretation
 
+The reported AUROC is computed within each date, then averaged within animal and
+between animals. An AUROC of 1 means every anaesthetized window outranks every
+awake window within those dates, not that threshold .5 classifies them all
+correctly. For example, on George's 31 July date, z-PCA awake scores span
+.3505–.6965 and anaesthetized scores .9174–1.0: perfect ordering, but five awake
+false positives at .5. Across all four dates, the largest z-PCA awake score is
+.6965 and the smallest anaesthetized score is .7363; even its pooled AUROC is 1.
+No threshold is changed on the basis of these inspected target scores.
+
+Date-wise averaging can hide shifts between recordings: catch22's reported AUROC
+is 1, whereas pooling all its predictions gives .9392. Since each target animal
+uses a different fitted model, pooled AUROC is a diagnostic of score comparability,
+not a replacement primary metric. Exact ranges and pooled values are saved in
+`report/auc-diagnostic.json`; original reports/predictions remain unchanged.
+
 This is favourable evidence for **competitive transfer of a source-trained
 decision rule using z**, beyond the earlier comparison with SPI marginals and a
 custom raw encoder. However, conventional feature representations already rank
