@@ -25,3 +25,12 @@ def test_gate_requires_replication_and_coverage():
     assert confirmation_gate(frame)["passes"]
     frame.loc[6:8, "eligible"] = False
     assert not confirmation_gate(frame)["passes"]
+
+
+def test_launcher_uses_archive_runner_and_shape_index_files():
+    source = (Path(__file__).resolve().parents[1] / "jobs/gadi/submit_cml2d_confirmation.sh").read_text()
+    assert "jobs/gadi/run_dataset_farm.pbs" not in source
+    assert source.count("jobs/gadi/run_external_corpus_farm.pbs") == 4
+    for shape in ("m16-t500", "m16-t1000", "m32-t500"):
+        assert f"indices-{shape}.txt" in source
+    assert "--validate-source" in source and "CORPUS_CONFIG=" in source
