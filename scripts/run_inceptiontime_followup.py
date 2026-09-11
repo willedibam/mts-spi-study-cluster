@@ -193,6 +193,9 @@ def metrics(y, p):
 def evaluate(args):
     config = yaml.safe_load(CONFIG.read_text()); manifest = json.loads((args.root/'manifest.json').read_text())
     assert manifest['config_sha256'] == sha(CONFIG)
+    # Match seed_torch's training precision before any checkpoint replay.
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
     # Global source-fit barrier before opening a target pack.
     frozen = {}
     for case in manifest['cases']:
@@ -247,6 +250,8 @@ def evaluate(args):
                 summaries.append(dict(case=case['name'],dataset=dataset,member=member,**score,groups=dates))
     write_json(output/'report.json',dict(config_sha256=sha(CONFIG),manifest_sha256=sha(args.root/'manifest.json'),
         frozen=frozen,scores=summaries,source_replays=audits,device=args.device,
+        precision=dict(cuda_matmul_allow_tf32=torch.backends.cuda.matmul.allow_tf32,
+                       cudnn_allow_tf32=torch.backends.cudnn.allow_tf32),
         prediction_hashes={p.name:sha(p) for p in sorted(output.glob('*.npz'))}))
     print('Completed evaluation',output,flush=True)
 

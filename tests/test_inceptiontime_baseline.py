@@ -52,3 +52,24 @@ def test_optimizer_can_fit_source_signal():
     model,report=fit_network(x,y,None,config['architecture'],training,.001,0,11,epochs=20)
     assert report['history'][-1]['training_bce']<report['history'][0]['training_bce']*.5
     assert np.mean((predict_binary(model,x)>=.5)==y)==1
+
+
+def test_evaluation_requires_source_fits_before_loading_target_and_matches_precision(tmp_path, monkeypatch):
+    import json
+    from types import SimpleNamespace
+    import scripts.run_inceptiontime_followup as runner
+    (tmp_path/'manifest.json').write_text(json.dumps(dict(config_sha256=runner.sha(runner.CONFIG),
+        cases=[dict(name='missing-source-case')])))
+    def forbidden_load(path):
+        raise AssertionError('Data were opened before all frozen source fits existed')
+    monkeypatch.setattr(runner,'load_npz',forbidden_load)
+    previous=(torch.backends.cuda.matmul.allow_tf32,torch.backends.cudnn.allow_tf32)
+    try:
+        torch.backends.cuda.matmul.allow_tf32=True
+        torch.backends.cudnn.allow_tf32=True
+        with pytest.raises(FileNotFoundError):
+            runner.evaluate(SimpleNamespace(root=tmp_path,device='cpu'))
+        assert torch.backends.cuda.matmul.allow_tf32 is False
+        assert torch.backends.cudnn.allow_tf32 is False
+    finally:
+        torch.backends.cuda.matmul.allow_tf32,torch.backends.cudnn.allow_tf32=previous
