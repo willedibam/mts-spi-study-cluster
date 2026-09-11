@@ -1,0 +1,72 @@
+#!/bin/bash
+#PBS -N inception-time
+#PBS -P ql44
+#PBS -q gpuhopper
+#PBS -l ncpus=12
+#PBS -l ngpus=1
+#PBS -l mem=96GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${RUN_ROOT:?}"
+cd "$CODE_SNAPSHOT"
+module purge
+module load python3/3.12.1
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export PYTHONPATH="$CODE_SNAPSHOT" OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+python -u - <<'PY'
+import hashlib,json,os,time
+from pathlib import Path
+import numpy as np,torch,yaml
+from src.inceptiontime_baseline import InceptionNetwork
+from src.representation_state_neural import seed_torch
+root=Path(os.environ['RUN_ROOT'])
+config=yaml.safe_load(Path('configs/analysis/inceptiontime-followup-260911.yaml').read_text())
+torch.set_num_threads(2);seed_torch(1729)
+assert torch.cuda.is_available()
+timings={}
+for domain in ['synthetic','neurotycho']:
+    path=root/f'source-{domain}.npz'
+    manifest=json.loads((root/'manifest.json').read_text())
+    assert hashlib.sha256(path.read_bytes()).hexdigest()==manifest['artifacts'][path.name]
+    with np.load(path) as data:
+        x=torch.from_numpy(data['x'][:16]).cuda()
+        y=torch.tensor(data['y'][:16],dtype=torch.float32,device='cuda')
+    model=InceptionNetwork(config['architecture']).cuda()
+    optimizer=torch.optim.AdamW(model.parameters(),lr=.001,eps=1e-7)
+    result={}
+    for batch in [4,8,16]:
+        for mode in ['train','predict']:
+            def step():
+                if mode=='train':
+                    model.train();optimizer.zero_grad(set_to_none=True)
+                    loss=torch.nn.functional.binary_cross_entropy_with_logits(model(x[:batch]),y[:batch])
+                    loss.backward();optimizer.step();float(loss.detach())
+                else:
+                    model.eval()
+                    with torch.no_grad():
+                        model(x[:batch]).sigmoid().cpu().numpy()
+            for _ in range(3):step()
+            torch.cuda.synchronize();started=time.perf_counter()
+            for _ in range(10):step()
+            torch.cuda.synchronize()
+            result[f'{mode}{batch}']=(time.perf_counter()-started)/10
+    timings[domain]=result
+    print(domain,result,flush=True)
+    del model,optimizer,x,y
+s=timings['synthetic'];n=timings['neurotycho']
+# Source CV can run to all 1500 epochs; these are compute estimates, not learning results.
+synthetic=5*4*2*1500*(s['train16']+s['train4']+s['predict16']+s['predict4'])
+synthetic+=5*1500*(2*s['train16']+s['train8'])
+# Conservative ECoG fold bound: every fold fits <=256 source windows and validates <=128.
+neuro=5*4*3*1500*(16*n['train16']+8*n['predict16'])+5*1500*18*n['train16']
+report=dict(purpose='source-only scheduling timing; no fitted comparator or target access',
+    torch=torch.__version__,device=torch.cuda.get_device_name(0),threads=2,timings=timings,
+    all_epochs_compute_seconds=dict(synthetic=synthetic,neurotycho=neuro),
+    suggested_wall_seconds_with_margin=dict(synthetic=1.5*synthetic+300,neurotycho=1.5*neuro+300),
+    code_snapshot=os.environ['CODE_SNAPSHOT'])
+(root/'gpu-scheduling-timing.json').write_text(json.dumps(report,indent=2)+'\n')
+print(report,flush=True)
+PY
