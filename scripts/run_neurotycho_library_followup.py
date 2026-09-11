@@ -80,7 +80,7 @@ def extract_one(task):
             default_fc_parameters=EfficientFCParameters(), n_jobs=0, disable_progressbar=True, show_warnings=False)
     fresh = fresh.reindex(index=np.arange(16), columns=sorted(fresh.columns))
     np.savez_compressed(path, catch22=catch_values, tsfresh=fresh.to_numpy(),
-        catch22_names=np.asarray(catch[0]['names']), tsfresh_names=np.asarray(fresh.columns),
+        catch22_names=np.asarray(catch[0]['names']), tsfresh_names=np.asarray(fresh.columns, dtype=str),
         input_sha256=digest, script_sha256=sha(Path(__file__)), seconds=time.perf_counter()-started)
     return index, round(time.perf_counter()-started, 3)
 
