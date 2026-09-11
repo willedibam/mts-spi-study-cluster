@@ -22,7 +22,11 @@ if [[ "$RUN_STAGE" == smoke ]]; then
         python -u scripts/run_inceptiontime_followup.py fit --root "$RUN_ROOT" --case "$item" --device cuda --smoke
     done
 elif [[ "$RUN_STAGE" == fit ]]; then
-    python -u scripts/run_inceptiontime_followup.py fit --root "$RUN_ROOT" --case "${FIT_CASE:?}" --device cuda
+    args=(fit --root "$RUN_ROOT" --case "${FIT_CASE:?}" --device cuda)
+    if [[ -n "${FIT_MEMBER:-}" ]]; then
+        args+=(--member-seeds "$FIT_MEMBER")
+    fi
+    python -u scripts/run_inceptiontime_followup.py "${args[@]}"
 elif [[ "$RUN_STAGE" == evaluate ]]; then
     python -u scripts/run_inceptiontime_followup.py evaluate --root "$RUN_ROOT" --device cuda
 else

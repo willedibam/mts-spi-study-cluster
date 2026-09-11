@@ -114,6 +114,9 @@ def pack(args):
 
 def fit_case(args):
     config = yaml.safe_load(CONFIG.read_text()); training = config['training']
+    member_seeds = config['member_seeds'] if args.member_seeds is None else args.member_seeds
+    if not member_seeds or len(set(member_seeds)) != len(member_seeds) or not set(member_seeds) <= set(config['member_seeds']):
+        raise ValueError('member selection must be a nonempty unique subset of the declared seeds')
     manifest = json.loads((args.root / 'manifest.json').read_text())
     assert manifest['config_sha256'] == sha(CONFIG)
     case = next(c for c in manifest['cases'] if c['name'] == args.case)
@@ -142,7 +145,7 @@ def fit_case(args):
         write_json(folder/'smoke.json', dict(identity=identity, report=report, replay_delta=delta,
             seconds=time.perf_counter()-started, input_shape=list(x.shape)))
         print('SMOKE', args.case, report['seconds'], delta, flush=True); return
-    for member_seed in config['member_seeds']:
+    for member_seed in member_seeds:
         stem = folder / f'member-{member_seed}'
         if stem.with_suffix('.json').exists():
             report = json.loads(stem.with_suffix('.json').read_text())
@@ -253,6 +256,7 @@ if __name__ == '__main__':
     parser.add_argument('stage', choices=['pack','fit','evaluate'])
     parser.add_argument('--root',type=Path,default=Path('results/inceptiontime_followup_260911'))
     parser.add_argument('--case')
+    parser.add_argument('--member-seeds',type=int,nargs='+',help='Fit only these declared ensemble members; supports independent scheduling')
     parser.add_argument('--device',choices=['cpu','cuda'],default='cpu')
     parser.add_argument('--smoke',action='store_true')
     args = parser.parse_args()
