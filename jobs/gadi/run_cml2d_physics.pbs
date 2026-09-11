@@ -14,24 +14,58 @@ repo_dir=/home/562/we2614/mts-spi-study-cluster
 [[ "$OUTPUT_DIR" == /scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_* ]]
 [[ "$SCOUT_CONFIG" == configs/scout/cml2d-*.yaml ]]
 cd "$repo_dir"
-mkdir -p "$PBS_JOBFS/cml2d" "$OUTPUT_DIR"
-git archive "$EXPECTED_COMMIT" -- scripts/scout_cml2d_period_doubling.py tests/test_cml2d_period_doubling.py "$SCOUT_CONFIG" | tar -xf - -C "$PBS_JOBFS/cml2d"
+mkdir -p "$OUTPUT_DIR"
+# JobFS is node-local: all MPI workers must see the immutable source snapshot.
+snapshot=$(mktemp -d "$OUTPUT_DIR/source-${PBS_JOBID%%.*}.XXXXXX")
+git archive "$EXPECTED_COMMIT" -- scripts/scout_cml2d_period_doubling.py tests/test_cml2d_period_doubling.py "$SCOUT_CONFIG" | tar -xf - -C "$snapshot"
 module purge
 module load python3/3.12.1 nci-parallel/1.0.0a
 source "$repo_dir/.venv/bin/activate"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 export NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"
-cd "$PBS_JOBFS/cml2d"
+cd "$snapshot"
+export PYTHONPATH="$snapshot${PYTHONPATH:+:$PYTHONPATH}"
+mpirun -np "${PBS_NNODES:-1}" --map-by ppr:1:node python -c 'import scripts.scout_cml2d_period_doubling; print("source import OK", flush=True)'
 python -m pytest -q tests/test_cml2d_period_doubling.py
 total=$(python -m scripts.scout_cml2d_period_doubling --config "$SCOUT_CONFIG" --count-only)
 (( total >= 1 && total <= 2048 ))
 commands="$PBS_JOBFS/commands.txt"
-for ((i=0;i<total;i++)); do
+python - "$OUTPUT_DIR" "$SCOUT_CONFIG" "${RESUME:-0}" > "$PBS_JOBFS/pending.txt" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+import numpy as np
+import yaml
+from scripts.scout_cml2d_period_doubling import cases_from_config
+output, config, resume = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3] == '1'
+spec = yaml.safe_load(config.read_text()); cases = cases_from_config(spec)
+source_hash = hashlib.sha256(Path('scripts/scout_cml2d_period_doubling.py').read_bytes()).hexdigest()
+config_hash = hashlib.sha256(config.read_bytes()).hexdigest()
+for index, case in enumerate(cases):
+    path = output / f'case-{index:03d}.npz'
+    if not path.exists():
+        print(index); continue
+    assert resume, f'existing output requires RESUME=1: {path}'
+    params = {**spec['simulation'], **case}
+    with np.load(path, allow_pickle=False) as archive:
+        meta = json.loads(str(archive['metadata_json']))
+        assert meta['case_index'] == index and all(meta[k] == v for k, v in params.items())
+        assert meta['source_sha256'] == source_hash and meta['config_sha256'] == config_hash
+        assert archive['global_mean'].shape == (params['record_steps'],)
+        assert archive['observed'].shape == (params['observation_steps'], 2, 64)
+        for key in ('global_mean', 'observed', 'final_state'):
+            a = archive[key]
+            assert np.isfinite(a).all() and (a >= 0).all() and (a <= 1).all()
+PY
+while IFS= read -r i; do
     printf 'python -m scripts.scout_cml2d_period_doubling --config %s --output-dir %s --case-index %d\n' "$SCOUT_CONFIG" "$OUTPUT_DIR" "$i" >> "$commands"
-done
+done < "$PBS_JOBFS/pending.txt"
+pending=$(wc -l < "$PBS_JOBFS/pending.txt")
+echo "Validated reuse: $((total-pending)); missing cases: $pending"
 workers=$PBS_NCPUS
-(( workers > total )) && workers=$total
+(( workers > pending )) && workers=$pending
+if (( pending > 0 )); then
 mpirun -np "$workers" --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$OUTPUT_DIR/job-${PBS_JOBID}.status"
+fi
 python - "$OUTPUT_DIR" "$total" <<'PY'
 import sys,numpy as np
 from pathlib import Path

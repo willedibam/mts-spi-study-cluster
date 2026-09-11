@@ -9,8 +9,18 @@ test -z "$(git -C /home/562/we2614/pyspi-fork status --porcelain)"
 physics_dir=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911/physics
 confirm_root=/g/data/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911
 frozen_dir=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_period_doubling_260911/primary-analysis
-test ! -e "$physics_dir"
-test ! -e "$confirm_root"
+resume=${RESUME:-0}
+if [[ "$resume" == 1 ]]; then
+    test -d "$physics_dir"
+    test -f "$confirm_root/submission.json"
+    # Only a failed physics-stage attempt can be resumed by this launcher.
+    test ! -e "$confirm_root/primary"
+    test ! -e "$confirm_root/sensitivity"
+    test ! -e "$confirm_root/submission-retry.json"
+else
+    test ! -e "$physics_dir"
+    test ! -e "$confirm_root"
+fi
 module purge
 module load python3/3.12.1
 source .venv/bin/activate
@@ -19,8 +29,10 @@ test "$(python -m scripts.scout_cml2d_period_doubling --config configs/scout/cml
 python -m pytest -q tests/test_cml2d_period_doubling.py tests/test_cml2d_corpus.py tests/test_cml2d_spi.py tests/test_cml2d_confirmation.py
 mkdir -p "$confirm_root" logs
 
-physics=$(qsub -N cml2d-confirm-physics -l ncpus=576,mem=2280GB,walltime=00:40:00 \
-    -v "EXPECTED_COMMIT=$EXPECTED_COMMIT,SCOUT_CONFIG=configs/scout/cml2d-period-doubling-confirmation.yaml,OUTPUT_DIR=$physics_dir" jobs/gadi/run_cml2d_physics.pbs)
+dependency=()
+[[ -n "${PHYSICS_DEPENDENCY:-}" ]] && dependency=(-W "depend=afterok:$PHYSICS_DEPENDENCY")
+physics=$(qsub -N cml2d-confirm-physics "${dependency[@]}" -l ncpus=576,mem=2280GB,walltime=00:40:00 \
+    -v "EXPECTED_COMMIT=$EXPECTED_COMMIT,SCOUT_CONFIG=configs/scout/cml2d-period-doubling-confirmation.yaml,OUTPUT_DIR=$physics_dir,RESUME=$resume" jobs/gadi/run_cml2d_physics.pbs)
 stage_vars="SOURCE_DIR=$source_dir,EXPECTED_COMMIT=$EXPECTED_COMMIT,CONFIRM_ROOT=$confirm_root,PHYSICS_DIR=$physics_dir,FROZEN_DIR=$frozen_dir"
 export_job=$(qsub -N cml2d-confirm-export -W "depend=afterok:$physics" \
     -v "$stage_vars,STAGE=export" jobs/gadi/run_cml2d_confirmation_stage.pbs)
@@ -40,12 +52,13 @@ primary_report=$(qsub -N cml2d-confirm-primary-report -W "depend=afterok:$primar
     -v "$stage_vars,STAGE=primary" jobs/gadi/run_cml2d_confirmation_stage.pbs)
 secondary_report=$(qsub -N cml2d-confirm-MT-report -W "depend=afterok:$m16t500:$m16t1000:$m32t500" \
     -v "$stage_vars,STAGE=sensitivity" jobs/gadi/run_cml2d_confirmation_stage.pbs)
-python - "$confirm_root" "$EXPECTED_COMMIT" "$physics" "$export_job" "$primary" "$m16t500" "$m16t1000" "$m32t500" "$primary_report" "$secondary_report" <<'PY'
+python - "$confirm_root" "$EXPECTED_COMMIT" "$resume" "$physics" "$export_job" "$primary" "$m16t500" "$m16t1000" "$m32t500" "$primary_report" "$secondary_report" <<'PY'
 import json, sys
 from pathlib import Path
 keys=['physics','export','primary_p90','m16t500_p90','m16t1000_p90','m32t500_p90','primary_report','secondary_report']
-record=dict(source_commit=sys.argv[2], jobs=dict(zip(keys,sys.argv[3:],strict=True)))
-with (Path(sys.argv[1])/'submission.json').open('x') as handle:
+record=dict(source_commit=sys.argv[2], resumed_physics=sys.argv[3]=='1', jobs=dict(zip(keys,sys.argv[4:],strict=True)))
+name='submission-retry.json' if record['resumed_physics'] else 'submission.json'
+with (Path(sys.argv[1])/name).open('x') as handle:
     json.dump(record,handle,indent=2)
 print(json.dumps(record,indent=2))
 PY
