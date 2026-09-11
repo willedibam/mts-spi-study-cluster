@@ -1,0 +1,39 @@
+study_id: inceptiontime-followup-260911
+status: post_result_comparator_followup
+scope: full_M16_observations_only
+member_seeds: [11, 23, 47, 71, 101]
+cohort_seeds: [11, 23, 47]
+synthetic_label_budgets: [10, 20, 40]
+target_animals: [Chibi, George]
+architecture:
+  input_channels: 16
+  filters: 32
+  bottleneck: 32
+  kernels: [40, 20, 10]
+  depth: 6
+  residual_every: 3
+  batch_norm_epsilon: 0.001
+  batch_norm_update_fraction: 0.01
+  output_classes: 2
+training:
+  learning_rates: [0.001, 0.0001]
+  weight_decays: [0.0, 0.0001]
+  optimizer: AdamW
+  adam_epsilon: 0.0000001
+  batch_size: 16
+  maximum_epochs: 1500
+  minimum_epochs: 100
+  patience: 100
+  selection: source_validation_balanced_brier
+  scheduler: training_loss_plateau_factor0.5_patience50_min_lr0.0001
+  threads: 2
+ensemble: arithmetic_mean_of_five_member_probabilities
+pretraining: none
+augmentation: none
+synthetic_input: unchanged_raw_observations_float32
+neurotycho_input: existing_matched_per_record_per_channel_standardized_float32
+evaluation:
+  threshold: 0.5
+  metrics: [balanced_accuracy, auroc, brier]
+  synthetic: [original, faster_dynamics, direct_mechanism]
+  neurotycho: held_out_animal_propofol

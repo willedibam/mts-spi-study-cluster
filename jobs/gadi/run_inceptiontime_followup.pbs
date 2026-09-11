@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -N inceptiontime
+#PBS -P ql44
+#PBS -q gpuhopper
+#PBS -l ncpus=12
+#PBS -l ngpus=1
+#PBS -l mem=96GB
+#PBS -l walltime=06:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${RUN_ROOT:?}" "${RUN_STAGE:?}"
+cd "$CODE_SNAPSHOT"
+module purge
+module load python3/3.12.1
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export PYTHONPATH="$CODE_SNAPSHOT" OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+python -c 'import src, torch; print(src.__file__, torch.__version__, torch.cuda.get_device_name(0)); assert torch.cuda.is_available()'
+if [[ "$RUN_STAGE" == smoke ]]; then
+    for item in synthetic-n40-c11 neurotycho-Chibi; do
+        python -u scripts/run_inceptiontime_followup.py fit --root "$RUN_ROOT" --case "$item" --device cuda --smoke
+    done
+elif [[ "$RUN_STAGE" == fit ]]; then
+    python -u scripts/run_inceptiontime_followup.py fit --root "$RUN_ROOT" --case "${FIT_CASE:?}" --device cuda
+elif [[ "$RUN_STAGE" == evaluate ]]; then
+    python -u scripts/run_inceptiontime_followup.py evaluate --root "$RUN_ROOT" --device cuda
+else
+    echo "Unknown stage" >&2
+    exit 2
+fi
