@@ -1,5 +1,8 @@
 # NeuroTycho transfer pilot: verified findings
 
+A subsequent [conventional-library comparison](neurotycho-library-followup-findings.md)
+adds MiniRocket, tsfresh and catch22 after inspection of this pilot.
+
 Completed 10 September 2026 UTC. Frozen [protocol](neurotycho-transfer-pilot.md),
 [model guide](neurotycho-models-technical-guide.md), and
 [configuration](../configs/analysis/neurotycho-transfer-260910.yaml).

@@ -33,6 +33,16 @@ def main():
     assert len(p['y'])==640 and len(set(zip(p['method'],p['seed'],p['record_id'])))==640
     with np.load(ROOT/'source/bank.npz') as d:source={k:d[k] for k in ['record_id','animal','y']}
     with np.load(ROOT/'evaluation/bank.npz') as d:target={k:d[k] for k in ['record_id','animal','archive','y','x','tsfresh','catch22']}
+    feature_check_max=0.
+    with np.load(ROOT/'source/bank.npz') as s, np.load(ROOT/'evaluation/bank.npz') as t:
+        for method in ['catch22','tsfresh']:
+            np.testing.assert_array_equal(s[method+'_names'],t[method+'_names'])
+        for d in [s,t]:
+            names=d['tsfresh_names'].tolist();x=d['x'];features=d['tsfresh']
+            for name,expected in [('mean',x.mean(-1)),('variance',x.var(-1)),('standard_deviation',x.std(-1))]:
+                actual=features[:,:,names.index('value__'+name)]
+                np.testing.assert_allclose(actual,expected,rtol=1e-12,atol=1e-12)
+                feature_check_max=max(feature_check_max,float(np.max(np.abs(actual-expected))))
     labels={}
     for path in Path('results/neurotycho_target_pilot_260910').glob('201*.json'):
         for r in json.loads(path.read_text())['records']:
@@ -83,6 +93,7 @@ def main():
     assert maximum<1e-12 and source_cv_max<1e-12 and replay_max<1e-12
     result=dict(status='passed',models=10,target_predictions=640,metric_max_difference=maximum,
         source_cv_max_difference=source_cv_max,target_serialized_replay_max_difference=replay_max,
+        source_target_feature_names_match=True,tsfresh_basic_feature_max_difference=feature_check_max,
         original_report_unchanged=True,report_sha256=sha(ROOT/'report/report.json'))
     (ROOT/'report/verification.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
 
