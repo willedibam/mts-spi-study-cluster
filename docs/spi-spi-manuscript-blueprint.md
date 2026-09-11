@@ -167,6 +167,42 @@ short method origin and cite those capabilities rather than duplicate their
 principal results. The eventual split should follow distinct contributions and
 clarity after synthesis, not a predetermined venue ambition.
 
+### Provisional assessment of a two-paper structure
+
+The user asks for an early assessment, explicitly not a decision. Structurally,
+two connected papers are a plausible cleaner destination if the learning work
+matures into an independent contribution. Both are representation research;
+the useful boundary is **comparative geometry and scientific discovery** versus
+**statistical learning behaviour and transfer**, not method versus representation.
+
+Paper A would establish a common interaction-based description of recordings:
+construction/intuition, quantitative cross-size comparison, heterogeneous-corpus
+organization and physical order-coordinate inference. Its conclusion must survive
+removing supervised co-organization/NeuroTycho results. Corpus cluster appearance
+alone is insufficient; quantitative validation and physical benchmarks give the
+method scientific content. Preserve simple-baseline wins and layout failures.
+
+Paper B would explain and test when cross-statistic correspondence helps infer
+a common state with limited source labels and changing observations/mechanisms.
+It needs a self-contained construction and one short mechanistic prelude, then
+learning curves, correspondence interventions, learned aggregation, negative
+controls and transfer/application evidence. It should not repeat the entire
+atlas, original case studies or physical-benchmark programme. A useful test is
+whether its central conclusion remains interesting to a reader already familiar
+with Paper A. Adding readouts and benchmark tables alone may not pass that test;
+the correspondence mechanism and conditional transfer lesson are the candidate
+independent contribution. A new neural architecture is not mandatory.
+
+Both papers need distinct positioning relative to
+[Cliff et al. 2023](https://www.nature.com/articles/s43588-023-00519-x), which already
+assembled the SPI library and analyzed the same 1,053-record corpus. Paper A's
+new contribution cannot be the existence of that library/corpus; Paper B's
+cannot simply be that diverse dependence measures can aid classification.
+The methodological and learning stories may ultimately strengthen one integrated
+paper if neither is independently persuasive, or if most decisive evidence must
+be duplicated to support both. Working with separable modules preserves that
+choice. Do not freeze a split around the outcome of one InceptionTime comparison.
+
 ## Immediate work and decision boundaries
 
 InceptionTime: finish the already-declared 11 cases and all 55 source refits;
