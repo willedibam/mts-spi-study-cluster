@@ -1,0 +1,17 @@
+study_id: neurotycho-library-followup-260911
+scope: post-PF-inspection follow-up, full M16 T2000 only
+target_animals: [Chibi, George]
+methods: [catch22, tsfresh, minirocket]
+minirocket_seeds: [11, 23, 47]
+minirocket_kernels: 10000
+minirocket_max_dilations: 32
+feature_layouts: [pooled, channels]
+logistic_C: [0.01, 0.1, 1.0, 10.0]
+minimum_finite_fraction: 0.95
+variance_threshold: 1.0e-8
+logistic_max_iter: 2000
+tsfresh_parameters: EfficientFCParameters
+packages:
+  aeon: 1.5.0
+  tsfresh: 0.21.2
+  pycatch22: 0.5.0
