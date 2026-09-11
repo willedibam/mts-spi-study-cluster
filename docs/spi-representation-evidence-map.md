@@ -130,8 +130,7 @@ an exploratory catch22 representation comparison across its mixed real/synthetic
 collection. That is not a supervised co-organization or mechanism-transfer test.
 The enriched neural control also belongs to NeuroTycho. None of these results
 can be presented as comparisons on the central synthetic co-organization target.
-No broad pretrained/foundation-model or completed published-neural benchmark
-exists there.
+A completed InceptionTime comparison now covers full M=16 synthetic targets; no broad pretrained/foundation-model comparison is established.
 
 Two selected10label pooling folds hit the600epoch ceiling and source-cohort
 variability is large. This limits an optimization-independent sample-efficiency
@@ -158,15 +157,12 @@ not validation of this synthetic binary target as a consequential application.
 
 A strong synthetic methods contribution does **not** logically require a real-data
 win. The earlier assessment overweighted the application as the only route to a
-stronger paper. A bounded, established multivariate convolutional comparator on
-this existing synthetic core would more directly test the central learning claim
-than another loosely related application. Full-size source/target cells permit
+stronger paper. The completed bounded convolutional comparison tests the central learning claim more directly than another loosely related application. Full-size source/target cells permit
 an unmodified comparator; changing M requires a declared compatible adaptation.
 The user has now authorized InceptionTime on both this synthetic core and
 NeuroTycho: [bounded follow-up](inceptiontime-followup.md). It reuses all existing
 data and source splits, evaluates full M=16 only, and reports five-member
-ensembles alongside members. Results are pending; do not count it as a completed
-comparison. Conventional feature libraries remain untested on synthetics.
+ensembles alongside members. The comparison is now independently verified: all 55 source models, 174 metric rows and 200 sampled CPU replays pass. At 40 labels, full-size InceptionTime ensemble BA is 50.33% in each synthetic regime versus 100% for z-PCA/PLS; ensemble AUROCs remain near chance. On matched NeuroTycho data its ensemble reaches 95.31% BA, exceeding z-PCA 92.97% and z-PLS 94.53%. Four selected 10-label source folds hit the epoch limit; none do at 20/40 labels. See the linked follow-up for individual members, source generalization, hashes and limitations. Conventional feature libraries remain untested on synthetics.
 
 Current status: strong scoped empirical/mechanistic evidence for a statistical
 representation prior; conditional low-label and transfer advantages; incomplete

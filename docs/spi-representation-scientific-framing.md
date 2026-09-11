@@ -136,10 +136,8 @@ Synthesize the existing mechanistic and transfer evidence before adding more
 benchmarks. A strong synthetic methods result does not require a real-data win.
 One specific gap is that MiniRocket/tsfresh/catch22 and the enriched raw encoder
 were tested only on NeuroTycho, not the central synthetic co-organization task.
-An established multivariate convolutional comparator on the existing synthetic
-core is a more direct next test of the learning claim than another unrelated
-application. On 2026-09-11 the user authorized [InceptionTime on both existing
-synthetic and NeuroTycho tasks](inceptiontime-followup.md); results are pending.
+The completed convolutional comparison on the existing synthetic core directly tests the learning claim alongside the qualified application evidence. On 2026-09-11 the user authorized [InceptionTime on both existing
+synthetic and NeuroTycho tasks](inceptiontime-followup.md); the comparison is complete and independently verified. InceptionTime stays near chance on the synthetic targets at 10–40 labels, while its matched-data NeuroTycho ensemble achieves 95.31% BA, slightly exceeding z-PCA/PLS. This strengthens the scoped synthetic prior result and narrows the real-data neural claim; four selected 10-label folds hit the epoch ceiling, and this is not an optimization-independent impossibility result.
 The missing link for a stronger application claim is an independently
 motivated use where interaction co-organization matters and z provides a material
 benefit beyond credible simpler/neural controls, ideally evaluated on fresh
@@ -164,7 +162,7 @@ correspondence intervention, source-frozen transfer, informative negative tasks
 and a qualified external example. It need not beat every neural architecture to
 be worth presenting. Acceptance depends on the actual workshop and execution;
 this is not an assessment of main-track acceptance or a claim of established
-major scientific impact. InceptionTime fills a conspicuous comparator gap.
+major scientific impact. The completed InceptionTime study fills that comparator gap at full M=16; it does not close reduced-channel or synthetic conventional-library coverage.
 
 The [ICLR workshop remit](https://iclr.cc/Conferences/2026/CallForWorkshops)
 expressly includes discussion of work in progress; individual workshops set

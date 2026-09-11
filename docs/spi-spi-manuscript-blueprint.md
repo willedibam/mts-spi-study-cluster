@@ -3,7 +3,7 @@
 Working synthesis, 2026-09-11. This preserves the overall programme while making
 the representation/transfer contribution independently assessable. It does not
 choose one paper versus two, declare a venue, or authorize new experiments.
-Numbers below come from the linked completed reports; InceptionTime is pending.
+Numbers below come from the linked completed reports; InceptionTime is now independently verified; its synthetic failure and stronger real-data ensemble narrow the claim in different ways.
 
 ## Central question and motivation
 
@@ -40,7 +40,7 @@ Its biological motivation does not establish a validated clinical target.
 | Controlled class embeddings and cross-M/T study | Test comparability and retrieval | Frozen 14-class, 2,520-record confirmation: primary held-cell BA .9913 and cross-M/T retrieval mAP .8177 | Residual observation-size information remains; physical-size changes differ from fixed-population sensor subsampling; later geometry selection is post-confirmation exploration |
 | 1,053-record heterogeneous corpus | Demonstrate exploratory breadth | Complete seeded p90 representation, reproducibility/validity audits, stable partitions at specified resolutions | Similarity is not shared mechanism; tags are not mutually exclusive truths; duplicate/nested records complicate independence; historical visualization recipes differ from the primary analysis |
 | Unsupervised physical order coordinates | Test scientific state organization without state-label fitting | Several system-specific coordinates track known order trends; independent CML2D confirmation is a particularly well-supported example | Across-control tracking is not microscopic fluctuation prediction, numerical calibration, formula discovery or a new critical-point estimate; simple observables can be better |
-| Supervised co-organization and transfer | Test access to a specified interaction property | Few-label benefits over tested SPI summaries, source-frozen dynamics/mechanism transfer and correspondence interventions | Research-level target selection remains; specialist and learned-pooling successes limit exclusivity; published convolutional comparison pending |
+| Supervised co-organization and transfer | Test access to a specified interaction property | Few-label benefits over tested SPI summaries, source-frozen dynamics/mechanism transfer and correspondence interventions | Research-level target selection remains; specialist and learned-pooling successes limit exclusivity; InceptionTime is near chance at full size under the tested label budgets; four 10-label folds hit the epoch ceiling |
 | NeuroTycho | External feasibility and transfer | Source-animal-excluded, cross-agent state prediction; z adds value over several declared pipelines | Two target animals, drug/year confounding, ranking saturation and stronger enriched neural performance prevent broad application superiority |
 
 Evidence routes: [cross-M/T](context/cross-mt-transfer.md),
@@ -155,7 +155,7 @@ Suggested argument order:
 | Item | Question answered | Evidence and essential control |
 |---|---|---|
 | Figure 1: representation and correspondence | What changes in z while separate SPI distributions stay fixed? | Mathematical illustration plus already-completed independent-dyad permutation intervention; identify feature-space intervention versus realizable raw-data surrogate |
-| Figure 2: labels and transfer | At what label budgets does the representation help, and what transfers? | Original/faster/direct learning curves, matched dimensions, cohort variability; PCA, PLS, rich m, learned pooling, specialist, raw encoders and pending InceptionTime |
+| Figure 2: labels and transfer | At what label budgets does the representation help, and what transfers? | Original/faster/direct learning curves, matched dimensions, cohort variability; PCA, PLS, rich m, learned pooling, specialist, raw encoders and verified full-size InceptionTime |
 | Figure 3: limits of compression | Why is the prior selective? | Covariance-modulation failure and the established scalar-invariance example; avoid extrapolating a two-statistic example to the whole catalogue |
 | Figure 4: external state transfer | Is there useful behaviour on real recordings? | NeuroTycho per-animal/date results, fixed-threshold BA alongside AUROC/Brier; matched/enriched neural exposure and library pipelines explicit |
 | Main methods table | What information and training did each comparator receive? | Input, invariance, learned stage, source label/recording budget, validation groups, pretraining, target access and extraction/training cost |
@@ -205,12 +205,7 @@ choice. Do not freeze a split around the outcome of one InceptionTime comparison
 
 ## Immediate work and decision boundaries
 
-InceptionTime: finish the already-declared 11 cases and all 55 source refits;
-inspect convergence, source-selected epoch ceilings and runtime; freeze before
-target evaluation; independently verify predictions and metrics. Full M=16 only.
-The first two production cases establish runtime before the remaining nine are
-released. Queue delay is not a scientific failure and does not justify duplicate
-submissions. No further pyspi or generator work is needed.
+InceptionTime is complete: 55 source fits, 174 independently checked metric rows and 200 CPU replays. Full-size synthetic ensemble BA stays near 50% while z remains strong; the matched NeuroTycho ensemble reaches 95.31%, slightly above z-PCA/PLS. Preserve the four selected 10-label epoch ceilings, individual-member variability and distinction between ensemble and seed-mean metrics. See [verified findings](inceptiontime-followup.md). No further fits, pyspi extraction or generator work are warranted by this result.
 
 After this comparison, decide whether a conventional MiniRocket/ridge synthetic
 control is necessary to close the fixed-feature baseline gap. Choose on the
