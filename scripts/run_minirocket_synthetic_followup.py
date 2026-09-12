@@ -1,5 +1,6 @@
 """Bounded native MiniRocket/ridge comparison on frozen full-size synthetic data."""
 import hashlib
+import argparse
 import importlib.metadata
 import json
 from pathlib import Path
@@ -42,7 +43,7 @@ def metric(y, score):
                 auroc=float((rankdata(score)[positive].sum() - n1*(n1+1)/2) / (n1*n0)))
 
 
-def main():
+def main(evaluate_only=False):
     ROOT.mkdir(exist_ok=True)
     fits = ROOT / 'fits'; fits.mkdir(exist_ok=True)
     manifest = json.loads((DATA / 'manifest.json').read_text())
@@ -57,7 +58,13 @@ def main():
     identity = dict(script_sha256=sha(Path(__file__)), protocol_sha256=sha(PROTOCOL),
                     manifest_sha256=sha(DATA / 'manifest.json'), source_sha256=sha(source_path), versions=versions)
     if (ROOT / 'identity.json').exists():
-        assert json.loads((ROOT / 'identity.json').read_text()) == identity
+        original = json.loads((ROOT / 'identity.json').read_text())
+        if evaluate_only:
+            assert {k:v for k,v in original.items() if k != 'script_sha256'} == {k:v for k,v in identity.items() if k != 'script_sha256'}
+            assert all((fits / f'{case["name"]}-s{seed}.json').exists() for case in cases for seed in SEEDS)
+            identity = original  # Preserve original source code identity; no refits.
+        else:
+            assert original == identity
     else:
         write(ROOT / 'identity.json', identity)
     for case in cases:
@@ -70,6 +77,7 @@ def main():
                 assert saved['identity'] == identity and saved['case'] == case
                 assert sha(stem.with_suffix('.joblib')) == saved['model_sha256']
                 continue
+            assert not evaluate_only
             started = time.perf_counter()
             model = MiniRocketClassifier(n_kernels=10000, max_dilations_per_kernel=32, n_jobs=2, random_state=seed)
             model.fit(source['x'][ix], source['y'][ix])
@@ -110,8 +118,10 @@ def main():
             for seed in SEEDS:
                 stem = fits / f'{case["name"]}-s{seed}'
                 model = joblib.load(stem.with_suffix('.joblib'))
-                score = model.pipeline_.decision_function(target['x'])
-                labels = model.predict(target['x'])
+                features = model._transformer.transform(target['x'])
+                scaled = model._scaler.transform(features)
+                score = model._estimator.decision_function(scaled)
+                labels = model._estimator.predict(scaled)
                 np.testing.assert_array_equal(labels, (score > 0).astype(int))
                 scores = metric(target['y'], score)
                 # Separate implementation of the reported metrics.
@@ -119,10 +129,16 @@ def main():
                 assert abs(scores['balanced_accuracy'] - balanced_accuracy_score(target['y'], labels)) < 1e-12
                 assert abs(scores['auroc'] - roc_auc_score(target['y'], score)) < 1e-12
                 name = f'{stem.name}-{dataset}.npz'
+                if (output / name).exists():
+                    with np.load(output / name) as old:
+                        np.testing.assert_array_equal(old['score'], score)
                 np.savez_compressed(output / name, record_id=target['record_id'], y=target['y'], score=score, prediction=labels)
                 sample = np.r_[np.flatnonzero(target['y'] == 0)[:4], np.flatnonzero(target['y'] == 1)[:4]]
+                np.testing.assert_array_equal(model._transformer.transform(target['x'][sample]), features[sample])
+                score64 = (scaled.astype(np.float64) @ model._estimator.coef_.astype(np.float64).T + model._estimator.intercept_).ravel()
+                assert np.max(np.abs(score64 - score)) < 1e-5
                 delta = float(np.abs(model.pipeline_.decision_function(target['x'][sample]) - score[sample]).max())
-                assert delta < 1e-10
+                assert delta < 1e-5  # Float32 BLAS batch-size variation; features above remain exact.
                 replays.append(delta)
                 rows.append(dict(case=case['name'], labels=case['labels'], cohort=case['cohort_seed'],
                                  seed=seed, dataset=dataset, prediction_file=name, **scores))
@@ -130,7 +146,7 @@ def main():
     summaries = [dict(dataset=dataset, labels=n, **{metric: float(np.mean([row[metric] for row in rows if row['dataset'] == dataset and row['labels'] == n])) for metric in ['balanced_accuracy', 'auroc']})
                  for dataset in TARGETS for n in [10, 20, 40]]
     assert len(rows) == 81 and len(frozen) == 27
-    write(output / 'report.json', dict(identity=identity, frozen=frozen, scores=rows, summary=summaries,
+    write(output / 'report.json', dict(identity=identity, evaluation_script_sha256=sha(Path(__file__)), frozen=frozen, scores=rows, summary=summaries,
           prediction_hashes={p.name: sha(p) for p in output.glob('*.npz')},
           sampled_prediction_replays=len(replays), maximum_replay_error=max(replays),
           aggregation='Mean metrics over three source cohorts and three transform seeds; no ensemble',
@@ -139,4 +155,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--evaluate-only', action='store_true', help='Require all original source fits; allow evaluator-only changes')
+    main(parser.parse_args().evaluate_only)
