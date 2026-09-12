@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N hcp-audit
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${RUN_ROOT:?}"
+module load python3/3.12.1
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+python -u "$CODE_SNAPSHOT/scripts/audit_hcp_continuous.py" --root "$RUN_ROOT"
