@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -N hcp-download
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -l walltime=04:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${RUN_ROOT:?}" "${AUTH_FILE:?}"
+module load python3/3.12.1
+python3 -u "$CODE_SNAPSHOT/scripts/download_hcp_gadi.py" \
+    --manifest "$RUN_ROOT/download-manifest.json" --auth "$AUTH_FILE" --root "$RUN_ROOT"
