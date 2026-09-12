@@ -54,8 +54,7 @@ synthesis does not silently recompute or relabel their results.
 Coverage clarification: the corpus study already has an exploratory catch22
 comparison on its mixed real/synthetic collection. Statements that the three
 conventional libraries were tested "only on NeuroTycho" refer to the supervised
-transfer programme, not the entire repository. No conventional-library result
-on the central synthetic co-organization/transfer target has yet been reported.
+transfer programme, not the entire repository. Native MiniRocket/ridge has now been verified on the central full-size synthetic tasks and remains near chance; tsfresh/catch22 have not been tested on that core.
 
 In particular, distinguish the historical one-dimensional quadratic-CML
 epsilon=.3 archive and its operational spectral-order coordinate from the
@@ -102,7 +101,7 @@ readout comparisons support more specific empirical claims.
 Provisional title: **Cross-statistic correspondence for transferable inference
 of interaction organization**.
 
-Provisional abstract, excluding pending InceptionTime results:
+Provisional abstract, to incorporate the completed InceptionTime and MiniRocket comparisons:
 
 Multivariate recordings can differ in sensor coverage and duration, making
 direct comparison of their interaction patterns difficult. We investigate a
@@ -127,7 +126,7 @@ state inference, with benefits contingent on the target, observations and
 learning constraints.
 
 This is a working abstract, not a submission-ready claim of neural superiority.
-Complete the declared published-architecture comparator before finalizing it.
+Incorporate the completed published-architecture and fixed-feature comparisons before finalizing it.
 State clearly that extraction is fixed, PCA is learned without labels, PLS and
 readouts use labels, and learned SPI pooling learns a different aggregation.
 
@@ -224,3 +223,9 @@ testable account of which targets benefit from correspondence. Neither a larger
 saturated sample nor a more elaborate encoder automatically answers that.
 There is enough material to draft now; importance and venue readiness remain
 judgments to substantiate, not qualities guaranteed by preserving scope.
+
+## Scope reaffirmation and execution policy, 2026-09-12
+
+HCP working-memory MEG is one candidate external-validity experiment within the representation/transfer component. It does not replace the construction/geometry, cross-dimension embeddings, heterogeneous corpus, physical order-coordinate studies, controlled co-organization learning, correspondence interventions, mechanism/observation transfer, negative tasks or existing NeuroTycho evidence. Those distinct evidential roles remain the programme. HCP feasibility or failure must not determine the entire paper narrative, and success would not automatically justify turning the work into a neuroscience application paper. The possible two-paper structure remains conditional on independent contributions.
+
+Keep methodological synthesis progressing while external data are audited. For this research stream, download and process large raw external datasets directly on Gadi; retain small manifests, audits, figures and compact results locally. The initial local HCP waveform attempt failed and has been replaced with a direct S3-to-Gadi copyq transfer. This change concerns data logistics, not authorization to enlarge the scientific benchmark grid or rerun completed comparisons.
