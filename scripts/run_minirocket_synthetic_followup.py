@@ -27,7 +27,11 @@ def write(path, value):
 
 def load(path):
     with np.load(path) as data:
-        return {key: data[key] for key in data.files}
+        bank = {key: data[key] for key in data.files}
+    # Frozen neural packs are N,T,M; aeon requires N,M,T.
+    assert bank['x'].ndim == 3 and bank['x'].shape[1:] == (1000, 16)
+    bank['x'] = np.ascontiguousarray(bank['x'].transpose(0, 2, 1))
+    return bank
 
 
 def metric(y, score):
