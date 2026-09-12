@@ -124,8 +124,7 @@ nonlinear readouts, raw moments/spectra/dynamical estimates, fixed random encode
 small trained raw encoders, task-informed specialists and learned SPI pooling.
 They were not all run on every dataset; reports specify exact coverage.
 
-**In this supervised transfer programme, MiniRocket, tsfresh and catch22 were
-only run on NeuroTycho.** The wider heterogeneous-corpus work separately includes
+**In this supervised transfer programme, tsfresh and catch22 have only been run on NeuroTycho; MiniRocket now also has a completed full-size synthetic comparison.** The wider heterogeneous-corpus work separately includes
 an exploratory catch22 representation comparison across its mixed real/synthetic
 collection. That is not a supervised co-organization or mechanism-transfer test.
 The enriched neural control also belongs to NeuroTycho. None of these results
@@ -162,7 +161,7 @@ an unmodified comparator; changing M requires a declared compatible adaptation.
 The user has now authorized InceptionTime on both this synthetic core and
 NeuroTycho: [bounded follow-up](inceptiontime-followup.md). It reuses all existing
 data and source splits, evaluates full M=16 only, and reports five-member
-ensembles alongside members. The comparison is now independently verified: all 55 source models, 174 metric rows and 200 sampled CPU replays pass. At 40 labels, full-size InceptionTime ensemble BA is 50.33% in each synthetic regime versus 100% for z-PCA/PLS; ensemble AUROCs remain near chance. On matched NeuroTycho data its ensemble reaches 95.31% BA, exceeding z-PCA 92.97% and z-PLS 94.53%. Four selected 10-label source folds hit the epoch limit; none do at 20/40 labels. See the linked follow-up for individual members, source generalization, hashes and limitations. Conventional feature libraries remain untested on synthetics.
+ensembles alongside members. The comparison is now independently verified: all 55 source models, 174 metric rows and 200 sampled CPU replays pass. At 40 labels, full-size InceptionTime ensemble BA is 50.33% in each synthetic regime versus 100% for z-PCA/PLS; ensemble AUROCs remain near chance. On matched NeuroTycho data its ensemble reaches 95.31% BA, exceeding z-PCA 92.97% and z-PLS 94.53%. Four selected 10-label source folds hit the epoch limit; none do at 20/40 labels. See the linked follow-up for individual members, source generalization, hashes and limitations. MiniRocket/ridge is now also verified on the full-size synthetic tasks (follow-up below); tsfresh/catch22 remain untested on this core.
 
 Current status: strong scoped empirical/mechanistic evidence for a statistical
 representation prior; conditional low-label and transfer advantages; incomplete
@@ -176,3 +175,17 @@ connects this learning programme to the construction, cross-dimension proof,
 heterogeneous corpus and physical order-coordinate studies while retaining
 their separate evidential roles. It includes a provisional learning-module
 abstract and figure plan; it does not decide the eventual paper split.
+
+## Native MiniRocket/ridge follow-up, 2026-09-12
+
+The [frozen protocol](minirocket-synthetic-followup.md) adds the native aeon 1.5.0 multivariate MiniRocket/scaler/RidgeClassifierCV pipeline. Same nine source cohorts/budgets and three full-size targets; three transform seeds, 27 source models frozen before target access. This uses the native internal ridge selection, not the earlier two-fold transform-refit protocol; no target tuning or calibration. Primary metrics average cohorts and seeds, not an ensemble.
+
+| Target | BA, 10 labels | BA, 20 labels | BA, 40 labels | AUROC, 40 labels |
+|---|---:|---:|---:|---:|
+| Original | 52.00% | 51.67% | 52.72% | .5471 |
+| Faster dynamics | 53.06% | 51.17% | 50.00% | .4945 |
+| Direct mechanism | 47.11% | 48.33% | 46.89% | .4660 |
+
+All 27 model/source-ID/frozen-report checks and 81 target metric rows independently verified, including rank-pair AUROC and class-wise BA. Report SHA `ad660e2aa3b1f5a19d4503ec62d94b5629d565e53b6158fd4bb300b3cd6e20dd`; outputs `results/minirocket_synthetic_followup_260912/evaluation/{report.json,independent-verification.json}`. Source commit 32fbb41; evaluator-only repair 46dc9b8 retains all source models and partial scores. First preflight caught time-major versus channel-major layout before any fit. Initial 1e-10 target batch-replay tolerance was too strict for float32 BLAS: extracted/scaled features were exactly equal, diagnostic float64 batch difference 1.33e-15. Final evaluation checks features exactly, scores against float64 and batch replay below 1e-5 (observed maximum 5.72e-6). No retraining or score calibration.
+
+The generic fixed transform does not recover the target under this native recipe. This strengthens the specified comparison without establishing failure of the whole Rocket family or all fixed representations. Ridge alpha selection reaches grid endpoints, which limits any optimum claim; report native settings rather than searching target-informed grids. MultiRocket's additional pooling and differencing provide a principled stronger control, already discussed before inspecting these results. The choice of MiniRocket first was representative coverage and continuity with the NeuroTycho baseline, not an exhaustive or uniquely optimal baseline set.
