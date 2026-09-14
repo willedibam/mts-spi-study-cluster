@@ -1,0 +1,122 @@
+study_id: hcp-working-memory-transfer-260915
+status: neural_candidates_declared_before_HCP_predictions
+protocol: docs/hcp-working-memory-transfer-protocol.md
+unresolved_before_training:
+- eligible cohort and legitimate family grouping
+- frozen source/target participant manifest
+- primary T2000 or T4000 from feasibility, not prediction
+input:
+  axis_order:
+  - record
+  - time
+  - channel
+  channels: 32
+  sampling_hz: 250
+  durations_samples:
+  - 2000
+  - 4000
+  pretraining: none
+  augmentation: none in primary matched-input comparison
+  precision: float32
+  allow_tf32: false
+selection:
+  groups: family
+  inner_folds: 4
+  metric: mean_participant_balanced_brier
+  threshold: 0.5
+  refit_epochs: median selected epoch across source folds
+  target_data_used: false
+aligned_channel:
+  architecture:
+    temporal_convolutions:
+    - width: 32
+      kernel: 31
+      stride: 4
+      padding: 15
+    - width: 64
+      kernel: 15
+      stride: 4
+      padding: 7
+    attention_width: 64
+    attention_heads: 4
+    feedforward_width: 128
+    channel_attention_blocks: 2
+    post_attention_temporal_convolution:
+      width: 64
+      kernel: 9
+      stride: 1
+      padding: 4
+    readout:
+    - 32
+    - 1
+    dropout: 0.1
+    architecture: aligned_channel
+  training:
+    learning_rates:
+    - 0.0001
+    - 0.001
+    weight_decays:
+    - 0.0001
+    - 0.01
+    batch_size: 16
+    maximum_epochs: 400
+    minimum_epochs: 30
+    patience: 30
+    loss: binary_cross_entropy_with_logits
+    selection: mean_participant_balanced_brier
+    threads: 2
+  seeds:
+  - 11
+  - 23
+  - 47
+  primary_aggregation: arithmetic mean of three member probabilities
+inceptiontime:
+  architecture:
+    input_channels: 32
+    filters: 32
+    bottleneck: 32
+    kernels:
+    - 40
+    - 20
+    - 10
+    depth: 6
+    residual_every: 3
+    batch_norm_epsilon: 0.001
+    batch_norm_update_fraction: 0.01
+    output_classes: 2
+  training:
+    learning_rates:
+    - 0.001
+    - 0.0001
+    weight_decays:
+    - 0.0
+    - 0.0001
+    optimizer: AdamW
+    adam_epsilon: 1.0e-07
+    batch_size: 16
+    maximum_epochs: 1500
+    minimum_epochs: 100
+    patience: 100
+    selection: mean_participant_balanced_brier
+    scheduler: training_loss_plateau_factor0.5_patience50_min_lr0.0001
+    threads: 2
+  seeds:
+  - 11
+  - 23
+  - 47
+  - 71
+  - 101
+  primary_aggregation: arithmetic_mean_of_five_member_probabilities
+source_configs_sha256:
+  configs/analysis/neurotycho-transfer-260910.yaml: b73932cae9d64233809134689cd713b370cccad51a44eb34ec48d49402af6547
+  configs/analysis/inceptiontime-followup-260911.yaml: 6c0d791d8a8645810d781561ba73c114cfbaac3459083f6c51d66648ac40375f
+notes:
+- Architectures/candidate grids reuse existing verified implementations; no HCP neural
+  fitting has occurred.
+- Family/participant weighting and grouped-CV adapter must be implemented and verified
+  before fitting.
+- No equal-compute claim; report tuning/fitting costs and selected epoch ceilings.
+- Statistical and MiniRocket comparison manifests remain to be frozen with the common
+  data contract.
+- 'HCP adaptation: validation selection averages participant-level balanced Brier
+  scores, unlike the earlier pooled-validation metric.'
