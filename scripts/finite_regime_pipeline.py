@@ -28,6 +28,16 @@ def write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2) + '\n')
 
 
+def physics_identities(physics):
+    return {p.name:digest(p) for p in sorted(physics.glob('case-*'))
+            if p.suffix in ('.npz','.json')}
+
+
+def verify_physics_identity(physics, gate):
+    if gate.get('master_identities') != physics_identities(physics):
+        raise ValueError('physics identities differ or legacy gate lacks hashes; recompute gate into a fresh output directory')
+
+
 def rossler_physics(physics, output):
     """Prospective pilot gates, not a proof of an asymptotic phase threshold."""
     records = []
@@ -84,7 +94,7 @@ def rossler_physics(physics, output):
         maximum_anchor_dt_difference=float(max(dt_errors)),
         control_mean_Q=means.to_dict(), source_sha256=next(iter(source_hashes)),
         interpretation='finite-time frequency entrainment; no exact asymptotic locking threshold claimed',
-        gate_source_sha256=digest(__file__))
+        gate_source_sha256=digest(__file__),master_identities=physics_identities(physics))
     output.mkdir(parents=True, exist_ok=False)
     frame.to_csv(output/'physics.csv', index=False)
     write_json(output/'physics-gate.json', result)
@@ -94,6 +104,7 @@ def rossler_physics(physics, output):
 
 def export_rossler(physics, gate_dir, output, T=1000):
     gate = json.loads((gate_dir/'physics-gate.json').read_text())
+    verify_physics_identity(physics,gate)
     if not gate['passes']:
         raise ValueError('physics gate failed; no corpus exported')
     if T not in (500, 1000, 2000):
@@ -198,13 +209,14 @@ def tasep_physics(physics, output):
     frame.to_csv(output/'physics.csv',index=False)
     result = dict(system='tasep',arms=arms,records=len(frame),source_sha256=next(iter(source_hashes)),
         interpretation='finite-size density crossover across exact thermodynamic coexistence line; no finite-N discontinuity',
-        gate_source_sha256=digest(__file__))
+        gate_source_sha256=digest(__file__),master_identities=physics_identities(physics))
     write_json(output/'physics-gate.json',result)
     print(json.dumps(result,indent=2))
 
 
 def export_tasep(physics, gate_dir, output, N, T=1000):
     gate = json.loads((gate_dir/'physics-gate.json').read_text())
+    verify_physics_identity(physics,gate)
     if not gate['arms'][str(N)]['passes']:
         raise ValueError('physical arm failed; no corpus exported')
     rows, arrays = [], {}
@@ -284,6 +296,7 @@ def analyze(corpus, mpi_root, output, frozen=None):
             passes=False, reason=str(error), rows=len(rows), sources=sources))
         return
     eligible = missing <= .05
+    q[~eligible] = np.nan
     frame['q'] = q
     frame['selected_missingness'] = missing
     frame['eligible'] = eligible

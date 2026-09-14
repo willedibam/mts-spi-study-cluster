@@ -1,6 +1,7 @@
 import numpy as np
-from scripts.finite_regime_pipeline import apply_coordinate, fit_coordinate, export_arrays
+from scripts.finite_regime_pipeline import apply_coordinate, fit_coordinate, export_arrays, physics_identities, verify_physics_identity
 import json
+import pytest
 
 
 def test_coordinate_ignores_evaluation_features_and_has_frozen_scale():
@@ -31,3 +32,12 @@ def test_export_has_named_full_state_arrays(tmp_path):
     with np.load(out/'observations.npz') as a:
         assert a['__axis_order__'].tolist() == ['process','observation']
         assert a['row-0'].shape == (6,1000)
+
+
+def test_physics_gate_rejects_changed_master(tmp_path):
+    np.savez(tmp_path/'case-0000.npz', X=np.ones((3,10)))
+    gate = dict(master_identities=physics_identities(tmp_path))
+    verify_physics_identity(tmp_path,gate)
+    np.savez(tmp_path/'case-0000.npz', X=np.zeros((3,10)))
+    with pytest.raises(ValueError,match='identities differ'):
+        verify_physics_identity(tmp_path,gate)

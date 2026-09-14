@@ -1,0 +1,34 @@
+#!/bin/bash
+#PBS -N finite-stage
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=24GB
+#PBS -l walltime=01:00:00
+#PBS -l jobfs=4GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${SOURCE_DIR:?}" "${EXPECTED_COMMIT:?}" "${RESULT_ROOT:?}" "${ARM_ROOT:?}" "${STAGE:?}" "${CANDIDATE:?}"
+cd "$SOURCE_DIR"
+test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export PYTHONPATH="$SOURCE_DIR${PYTHONPATH:+:$PYTHONPATH}"
+gate_dir="${GATE_DIR:-$RESULT_ROOT/physics-analysis}"
+if [[ "$STAGE" == physics-audit ]]; then
+    python -m scripts.finite_regime_pipeline "${CANDIDATE}-physics" --physics "$RESULT_ROOT/physics" --output "$gate_dir"
+elif [[ "$STAGE" == analyze ]]; then
+    python -m scripts.finite_regime_pipeline analyze --corpus "$ARM_ROOT" --mpi-root "$ARM_ROOT/mpi/finite-regime" --output "$ARM_ROOT/analysis"
+elif [[ "$STAGE" == export ]]; then
+    case "$CANDIDATE" in
+        rossler) python -m scripts.finite_regime_pipeline rossler-export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" ;;
+        tasep) python -m scripts.finite_regime_pipeline tasep-export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" --N "${PHYSICAL_N:?}" ;;
+        lorenz96) python -m scripts.lorenz96_crisis_pipeline export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" ;;
+        *) exit 2 ;;
+    esac
+else
+    exit 2
+fi
