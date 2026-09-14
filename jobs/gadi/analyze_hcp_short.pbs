@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -N hcp-short-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -l walltime=00:30:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${ANALYSIS_SNAPSHOT:?}" "${SHORT_ROOT:?}"
+module load python3/3.12.1
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export PYTHONPATH="$ANALYSIS_SNAPSHOT"
+cd "$ANALYSIS_SNAPSHOT"
+expected=2b12b877867886e4b0345575fdaf80c086da1b1320ef3e41a8dc3d3bd399151c
+actual=$(sha256sum scripts/analyze_hcp_short.py | cut -d ' ' -f 1)
+test "$actual" = "$expected"
+if ! test -f "$SHORT_ROOT/analysis/report.json"; then
+    python -u -m scripts.analyze_hcp_short --root "$SHORT_ROOT"
+fi
+python -u "$CODE_SNAPSHOT/scripts/verify_hcp_short_analysis.py" --root "$SHORT_ROOT"
