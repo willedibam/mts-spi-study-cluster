@@ -7,6 +7,14 @@ primary:
   probability_threshold: 0.5
   secondary_metrics: [auroc, balanced_brier]
   final_participant_split: pending
+uncertainty:
+  method: paired whole-family percentile bootstrap of target participant scores
+  replicates: 2000
+  seed: 260915731
+  confidence: 0.95
+  estimand: mean participant score
+  source_model_refitting: false
+  simultaneous_intervals: false
 schedule_diagnostics:
   evidence: results/hcp_working_memory_audit_260912/cohort-stage/order-audit.json
   source_only_control: block_position_lookup
