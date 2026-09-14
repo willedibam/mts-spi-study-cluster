@@ -51,7 +51,8 @@ for index, case in enumerate(cases):
         assert meta['case_index'] == index and all(meta[k] == v for k, v in params.items())
         assert meta['source_sha256'] == source_hash and meta['config_sha256'] == config_hash
         assert archive['global_mean'].shape == (params['record_steps'],)
-        assert archive['observed'].shape == (params['observation_steps'], 2, 64)
+        expected_view = (1, params['L']**2) if params.get('observation_layout') == 'full' else (2, 64)
+        assert archive['observed'].shape == (params['observation_steps'], *expected_view)
         for key in ('global_mean', 'observed', 'final_state'):
             a = archive[key]
             assert np.isfinite(a).all() and (a >= 0).all() and (a <= 1).all()

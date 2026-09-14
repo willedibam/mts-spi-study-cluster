@@ -37,7 +37,7 @@ def evolve(state, r, g, burn, record_steps, observation_steps, indices):
     mapped = np.empty_like(state)
     output = np.empty_like(state)
     means = np.empty(record_steps)
-    observed = np.empty((observation_steps, 2, indices.shape[1]))
+    observed = np.empty((observation_steps, indices.shape[0], indices.shape[1]))
     side = state.shape[0]
     for t in range(burn + record_steps):
         step(state, mapped, output, r, g)
@@ -46,7 +46,7 @@ def evolve(state, r, g, burn, record_steps, observation_steps, indices):
         if k >= 0:
             means[k] = np.mean(state)
             if k < observation_steps:
-                for view in range(2):
+                for view in range(indices.shape[0]):
                     for sensor in range(indices.shape[1]):
                         index = indices[view, sensor]
                         observed[k, view, sensor] = state[index // side, index % side]
@@ -90,11 +90,14 @@ def simulate(case, simulation):
     params = {**simulation, **case}
     side, r, g = int(params['L']), float(params['r']), float(params['g'])
     burn, steps, obs = (int(params[k]) for k in ('burn','record_steps','observation_steps'))
-    if side < 8 or not 0 < r <= 4 or not 0 <= g <= .25 or burn < 0 or not 0 < obs < steps or steps % 2 or obs % 2:
+    full = params.get('observation_layout', 'nested') == 'full'
+    if params.get('observation_layout', 'nested') not in ('full', 'nested'):
+        raise ValueError('unknown observation layout')
+    if side < (3 if full else 8) or not 0 < r <= 4 or not 0 <= g <= .25 or burn < 0 or not 0 < obs < steps or steps % 2 or obs % 2:
         raise ValueError('invalid lattice, map, coupling or time contract')
     seeds = np.random.SeedSequence(int(params['seed'])).generate_state(2)
     state = np.random.default_rng(int(seeds[0])).random((side,side))
-    indices = sensor_indices(side, int(seeds[1]))
+    indices = np.arange(side**2).reshape(1, -1) if full else sensor_indices(side, int(seeds[1]))
     start = time.perf_counter()
     pre_steps = int(params.get('pre_steps', 0))
     if pre_steps:
@@ -103,7 +106,7 @@ def simulate(case, simulation):
     for array in (means, observed, final_state):
         if not np.isfinite(array).all() or np.any(array < 0) or np.any(array > 1):
             raise ValueError('state left invariant interval [0,1]')
-    meta = {**params, 'N': side**2, 'stride': 1, 'views':['dispersed','contiguous'],
+    meta = {**params, 'N': side**2, 'stride': 1, 'views':['full'] if full else ['dispersed','contiguous'],
         'elapsed_seconds':time.perf_counter()-start,
         'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'order_definition':'mean(abs(global_mean[2t+1]-global_mean[2t]))',

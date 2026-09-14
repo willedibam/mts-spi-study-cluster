@@ -49,3 +49,17 @@ def test_simulation_reproducible_and_grid():
     assert meta['N']==64 and a['observed'].dtype==np.float64
     assert len(cases_from_config({'grid':{'L':[8,16],'r':[3.8,3.9]},'cases':[case]}))==5
     with pytest.raises(ValueError): simulate({**case,'g':.3},cfg)
+
+
+@pytest.mark.parametrize('side', [6, 8])
+def test_full_observation_is_entire_lattice_and_matches_global_mean(side):
+    cfg=dict(g=.2,burn=8,record_steps=24,observation_steps=8,observation_layout='full')
+    a,meta=simulate(dict(L=side,r=3.85,seed=123),cfg)
+    assert a['observed'].shape == (8,1,side**2)
+    np.testing.assert_array_equal(a['sensor_indices'][0],np.arange(side**2))
+    np.testing.assert_allclose(a['observed'][:,0].mean(axis=1),a['global_mean'][:8],atol=1e-15)
+    assert meta['views']==['full'] and meta['N']==side**2
+    if side == 8:
+        nested,_=simulate(dict(L=side,r=3.85,seed=123),{k:v for k,v in cfg.items() if k!='observation_layout'})
+        np.testing.assert_array_equal(a['global_mean'],nested['global_mean'])
+        np.testing.assert_array_equal(a['final_state'],nested['final_state'])
