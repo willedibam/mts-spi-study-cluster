@@ -15,6 +15,7 @@ case "$candidate" in
     rossler) physics_module=scripts.rossler_phase_sync; physics_test=tests/test_rossler_phase_sync.py ;;
     tasep) physics_module=scripts.tasep_phase_boundary; physics_test=tests/test_tasep_phase_boundary.py ;;
     lorenz96) physics_module=scripts.lorenz96_crisis; physics_test=tests/test_lorenz96_crisis.py ;;
+    hindmarsh-rose) physics_module=scripts.hindmarsh_rose_spike_adding; physics_test=tests/test_hindmarsh_rose_spike_adding.py ;;
     *) exit 2 ;;
 esac
 cd "$SOURCE_DIR"
@@ -39,6 +40,8 @@ mpirun -np "$PBS_NCPUS" --map-by node:PE=1 nci-parallel --input-file "$commands"
 if [[ "${SMOKE:-0}" != 1 ]]; then
     if [[ "$candidate" == lorenz96 ]]; then
         python -m scripts.lorenz96_crisis_pipeline physics --physics "$RESULT_ROOT/physics" --output "$RESULT_ROOT/physics-analysis"
+    elif [[ "$candidate" == hindmarsh-rose ]]; then
+        python -m scripts.hindmarsh_rose_pipeline physics --physics "$RESULT_ROOT/physics" --output "$RESULT_ROOT/physics-analysis"
     else
         python -m scripts.finite_regime_pipeline "${candidate}-physics" --physics "$RESULT_ROOT/physics" --output "$RESULT_ROOT/physics-analysis"
     fi

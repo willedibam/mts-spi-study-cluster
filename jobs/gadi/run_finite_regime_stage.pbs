@@ -27,6 +27,7 @@ elif [[ "$STAGE" == export ]]; then
         rossler) python -m scripts.finite_regime_pipeline rossler-export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" ;;
         tasep) python -m scripts.finite_regime_pipeline tasep-export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" --N "${PHYSICAL_N:?}" ;;
         lorenz96) python -m scripts.lorenz96_crisis_pipeline export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" ;;
+        hindmarsh-rose) python -m scripts.hindmarsh_rose_pipeline export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" ;;
         *) exit 2 ;;
     esac
 else
