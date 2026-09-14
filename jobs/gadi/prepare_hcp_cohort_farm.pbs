@@ -1,0 +1,27 @@
+#!/bin/bash
+#PBS -N hcp-cohort-prep
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48
+#PBS -l mem=186GB
+#PBS -l walltime=01:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${AUDIT_ROOT:?}" "${COHORT_ROOT:?}" "${CASE_FILE:?}"
+module load python3/3.12.1 nci-parallel/1.0.0a
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+cd "$CODE_SNAPSHOT"
+commands="$PBS_JOBFS/hcp-prepare-commands.txt"
+while read -r subject run; do
+    [[ "$subject" =~ ^[0-9]{6}$ && "$run" =~ ^[67]-Wrkmem$ ]] || exit 2
+    printf 'python -u -m scripts.prepare_hcp_cohort_run --cohort-root %q --metadata-root %q --output-root %q --subject %q --run %q\n' \
+        "$COHORT_ROOT" "$AUDIT_ROOT/cohort-metadata" "$AUDIT_ROOT/cohort-prepared" "$subject" "$run" >> "$commands"
+done < "$CASE_FILE"
+workers="${WORKERS:-46}"
+(( workers >= 1 && workers <= PBS_NCPUS ))
+mkdir -p "$AUDIT_ROOT/logs"
+mpirun -np "$workers" --map-by node:PE=1 nci-parallel --verbose --input-file "$commands" \
+    --status "$AUDIT_ROOT/logs/cohort-prep-${PBS_JOBID%%.*}.status"
