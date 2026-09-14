@@ -153,11 +153,12 @@ def export_arrays(output, arrays, rows, description):
         base_output_dir=str(output/'mpi'), pyspi_config='configs/pyspi/benchmarked_p90.yaml',
         normalise=False, random_seed=260915)
     (output/'corpus.yaml').write_text(yaml.safe_dump(config, sort_keys=False))
-    # Fixed low/high-control development smoke rows; no Q-based selection.
+    # Deterministic endpoint smoke rows; confirmation-only corpora keep their roles.
     development = [r for r in rows if r['role'] == 'development']
-    smoke = [development[0]['corpus_index'], development[-1]['corpus_index']]
+    timing_pool = development or rows
+    smoke = list(dict.fromkeys([timing_pool[0]['corpus_index'], timing_pool[-1]['corpus_index']]))
     (output/'smoke-indices.txt').write_text('\n'.join(map(str, smoke))+'\n')
-    candidates = [r['corpus_index'] for r in development if r['corpus_index'] not in smoke]
+    candidates = [r['corpus_index'] for r in timing_pool if r['corpus_index'] not in smoke]
     node = [candidates[i] for i in np.linspace(0,len(candidates)-1,min(48,len(candidates)),dtype=int)]
     (output/'node-indices.txt').write_text('\n'.join(map(str,node))+'\n')
     print(json.dumps(dict(rows=len(rows), config=str(output/'corpus.yaml'))))

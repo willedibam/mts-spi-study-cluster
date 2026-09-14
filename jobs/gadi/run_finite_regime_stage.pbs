@@ -21,7 +21,9 @@ gate_dir="${GATE_DIR:-$RESULT_ROOT/physics-analysis}"
 if [[ "$STAGE" == physics-audit ]]; then
     python -m scripts.finite_regime_pipeline "${CANDIDATE}-physics" --physics "$RESULT_ROOT/physics" --output "$gate_dir"
 elif [[ "$STAGE" == analyze ]]; then
-    python -m scripts.finite_regime_pipeline analyze --corpus "$ARM_ROOT" --mpi-root "$ARM_ROOT/mpi/finite-regime" --output "$ARM_ROOT/analysis"
+    args=(analyze --corpus "$ARM_ROOT" --mpi-root "$ARM_ROOT/mpi/finite-regime" --output "$ARM_ROOT/analysis")
+    if [[ -n "${FROZEN:-}" ]]; then args+=(--frozen "$FROZEN"); fi
+    python -m scripts.finite_regime_pipeline "${args[@]}"
 elif [[ "$STAGE" == export ]]; then
     case "$CANDIDATE" in
         rossler) python -m scripts.finite_regime_pipeline rossler-export --physics "$RESULT_ROOT/physics" --gate-dir "$gate_dir" --output "$ARM_ROOT" ;;

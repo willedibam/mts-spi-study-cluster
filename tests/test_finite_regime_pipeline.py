@@ -41,3 +41,15 @@ def test_physics_gate_rejects_changed_master(tmp_path):
     np.savez(tmp_path/'case-0000.npz', X=np.zeros((3,10)))
     with pytest.raises(ValueError,match='identities differ'):
         verify_physics_identity(tmp_path,gate)
+
+
+def test_confirmation_export_keeps_all_evaluation_roles(tmp_path):
+    rows = [dict(row_id=f'row-{i}', corpus_index=i+1, M=3, T=10,
+        system='test', view='full-state', role='evaluation') for i in range(4)]
+    arrays = {row['row_id']:np.ones((3,10))*i for i,row in enumerate(rows)}
+    out = tmp_path/'confirmation'
+    export_arrays(out,arrays,rows,dict(system='test'))
+    manifest = json.loads((out/'manifest.json').read_text())
+    assert all(row['role'] == 'evaluation' for row in manifest['rows'])
+    assert (out/'smoke-indices.txt').read_text().splitlines() == ['1','4']
+    assert (out/'node-indices.txt').read_text().splitlines() == ['2','3']
