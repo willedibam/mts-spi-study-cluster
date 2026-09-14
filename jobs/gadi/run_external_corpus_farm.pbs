@@ -48,11 +48,13 @@ if (( $(sort "$indices" | uniq -d | wc -l) != 0 )); then
 fi
 
 commands="$PBS_JOBFS/dataset-commands.txt"
+runner="${CORPUS_RUNNER:-src.run_external_corpus}"
+[[ "$runner" == src.run_external_corpus || "$runner" == scripts.run_hcp_bounded_corpus ]] || exit 2
 while IFS= read -r index; do
     [[ "$index" =~ ^[0-9]+$ ]] || { echo "invalid index: $index" >&2; exit 2; }
     (( index >= 1 && index <= total )) || { echo "out-of-range index: $index" >&2; exit 2; }
-    printf 'python -m src.run_external_corpus --config %s --job-index %d --n-jobs 1 --skip-existing\n' \
-        "$CORPUS_CONFIG" "$index" >> "$commands"
+    printf 'python -m %s --config %s --job-index %d --n-jobs 1 --skip-existing\n' \
+        "$runner" "$CORPUS_CONFIG" "$index" >> "$commands"
 done < "$indices"
 
 task_count=$(wc -l < "$indices")
