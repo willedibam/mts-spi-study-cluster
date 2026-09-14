@@ -1,0 +1,39 @@
+# HCP working-memory representation and transfer protocol
+
+This protocol separates the current implementation scout from the intended multi-participant experiment. The scientific design below is declared before HCP predictive results. Final participant eligibility, family grouping and the primary duration remain pending; no cohort split or model fit is yet frozen. Operational evidence lives in `results/hcp_working_memory_audit_260912/` and the existing representation context.
+
+## Question and scope
+
+Can relationships among dependence measures support working-memory-load inference in new people and a different stimulus category, beyond separate dependence summaries and spectra, under a limited number of labelled source families? This is an external test of the broader interaction-organization representation hypothesis. It is not a consciousness experiment, a physical phase-transition claim, or a claim that neural models cannot represent the information.
+
+The one-person scout has 16 continuous task blocks and 64 derived views: M32, two coordinate-only sensor selections, and central 16/8-second windows at 250 Hz. Its purposes are successful preprocessing/extraction, runtime and memory measurement, validity coverage and sensitivity to observation choices. A favourable one-person classification result is not a prerequisite for cohort inclusion or defining the main experiment. The frozen PC1 diagnostic is supplementary and uses no additional extraction grid.
+
+## Cohort and split contract
+
+The availability inventory contains 83 participants with two raw/config/E-Prime working-memory runs each. Availability is not eligibility. Audit run-specific bad channels, bad intervals, ICA annotations, event alignment and the four load/category cells without examining any model's predictive performance. Keep an exclusion ledger with concrete reasons. The implementation participant 105923 is development-only; exclude its family from confirmation when grouping is available.
+
+Family membership is restricted HCP information. Obtain legitimately approved grouping or an official unrelated-participant subset; do not infer relatedness from identifiers or obtain restricted metadata from public mirrors. Keep restricted mappings outside Git and publish only permissible aggregate/split information. The [current BALSA project](https://balsa.wustl.edu/project?project=HCP_YA) explains restricted access, and the [HCP access table](https://www.humanconnectome.org/study/hcp-young-adult/document/quick-reference-open-access-vs-restricted-data) identifies family membership as restricted. Open-data preprocessing can proceed before this is resolved.
+
+Assign complete families to development or confirmation using a deterministic seeded shuffle, with approximately one third reserved for confirmation. All runs, blocks, sensor selections and window lengths from a family follow it. Source-only hyperparameter selection also uses family-separated folds. Freeze the actual split and eligible input hashes before evaluating target predictions. Do not substitute random block splitting for participant transfer.
+
+Use two declared category-transfer directions: fit using face blocks and evaluate tool blocks from confirmation participants, then reverse. Same-category confirmation provides a diagnostic of the additional category shift. The prediction target is 0-back versus 2-back. Match all methods on participants, source labels, source/target windows and preprocessing; report actual family, participant and block counts separately.
+
+## Representations and learners
+
+The primary fixed statistical comparisons are full-p90 SPI–SPI z with PCA or PLS and a regularized simple readout, rich per-SPI summaries with an equally tuned readout, spectral summaries, and m+z as a complementarity control. Fit validity filtering, imputation, scaling and learned projections exclusively to source training data in every fold. The SPI catalogue remains `configs/pyspi/benchmarked_p90.yaml`, with both ordered off-diagonal directions retained in z.
+
+Include MiniRocket as the conventional fixed convolutional-feature baseline. Include the existing shared temporal/interaction encoder and the InceptionTime implementation already verified on the synthetic and NeuroTycho studies. Freeze architecture, optimization, early stopping, ensembles/seeds and hyperparameter budgets in a machine-readable manifest before cohort fitting. Report extraction, fitting and tuning cost; do not describe unequal compute as matched compute. Any augmentation or extra within-recording exposure must be separately declared and available to the relevant competing methods; the earlier enriched NeuroTycho comparison is not automatically inherited as an HCP primary baseline.
+
+Learning curves should count independent source families, with actual participant/block counts alongside them. A compact candidate schedule is 4/8/16 source families in nested sets across three predetermined source-order seeds, provided cohort eligibility supports this. These counts and the confirmation allocation must be finalized before fitting; fewer usable families require an explicit protocol amendment rather than silent changes. Neural comparisons begin once the common cohort and preprocessing are ready, not after a favourable z result.
+
+## Observation protocol and outcomes
+
+Choose the primary T2000 or T4000 setting from extraction feasibility and predeclared representation-validity/stability diagnostics, not target classification accuracy. Keep sampling rate fixed at 250 Hz in this scout to avoid conflating duration with sample-lag semantics. Record the 1–100 Hz filter, 60 Hz notch, reference regression, five explicitly labelled cardiac/ocular ICA removals, physical sensor coordinates, standardization and window boundaries. These are approximate artifact corrections, not guarantees of purely neural signals. Whole-block and nested-window inputs are retained for provenance, not concatenated across gaps.
+
+The primary prediction outcome is balanced accuracy at a source-selected threshold under category/participant transfer. Report AUROC and Brier score to distinguish discrimination from threshold/calibration transfer. Aggregate at participant level and use family-respecting uncertainty estimates. Report paired method differences, all declared directions and source budgets, and uncertainty rather than interpreting a small positive point estimate as superiority. No claim of practical deployment follows automatically from accurate classification of experimentally assigned memory load.
+
+The secondary label-blind coordinate q is the first PCA component of source-fitted z; its sign is fixed without labels, and no component is selected for matching load. Compare with similarly fitted individual-SPI and spectral coordinates. For the one-person scout, eight fit/eight held blocks provide descriptive diagnostics only. A task association or plotted jump does not establish an order parameter, transition onset, or a uniquely SPI–SPI mechanism.
+
+## Progression and stopping
+
+Finish the current runtime/memory diagnosis before large extraction. The T4000 two-input job exceeded 32 GB after 2:27; T2000 runs separately. A one-record instrumented diagnostic preserves completed SPI matrices and records the failing/slow computation without pruning the catalogue or altering its estimators. Once a viable observation contract exists, use measured dataset-level parallelism for the cohort. Keep the study focused: no new anaesthesia/marmoset programme or additional generator grid is required for this HCP experiment. A negative HCP comparison narrows application utility while leaving the completed synthetic evidence intact.
