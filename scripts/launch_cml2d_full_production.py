@@ -26,11 +26,11 @@ def resource_plan(seconds, tasks=680):
         median_task_seconds=median, maximum_task_seconds=peak)
 
 
-def launch(root, source, commit):
+def launch(root, source, commit, sizes=(6, 8)):
     actual = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'], text=True).strip()
     assert actual == commit
     plans = {}
-    for L in (6,8):
+    for L in sizes:
         arm = root / f'L{L}'
         expected = set(map(int, (arm/'smoke-indices.txt').read_text().split()))
         expected.update(map(int, (arm/'node-indices.txt').read_text().split()))
@@ -45,15 +45,16 @@ def launch(root, source, commit):
         assert set(times)==expected and len(expected)==24
         plans[str(L)] = resource_plan(list(times.values()))
     # Atomic one-shot guard; retain it after failures for manual reconciliation.
-    (root/'production-launch-lock').mkdir()
+    tag = '-'.join(f'L{L}' for L in sizes)
+    (root/f'production-launch-lock-{tag}').mkdir()
     record = dict(source_commit=commit, plans=plans, jobs={})
-    ledger = root/'production-submission.json'
+    ledger = root/f'production-submission-{tag}.json'
     def save():
         ledger.write_text(json.dumps(record,indent=2)+'\n')
     def qsub(args):
         return subprocess.check_output(['qsub',*args],cwd=source,text=True).strip()
     save()
-    for L in (6,8):
+    for L in sizes:
         plan = plans[str(L)]
         arm = root / f'L{L}'
         hours, remainder = divmod(plan['wall_seconds'],3600)
@@ -79,5 +80,7 @@ if __name__=='__main__':
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--source',type=Path,required=True)
     p.add_argument('--commit',required=True)
+    p.add_argument('--L',type=int,nargs='+',choices=[6,8],default=[6,8])
     a=p.parse_args()
-    launch(a.root,a.source,a.commit)
+    if len(set(a.L)) != len(a.L):p.error('duplicate lattice size')
+    launch(a.root,a.source,a.commit,tuple(a.L))
