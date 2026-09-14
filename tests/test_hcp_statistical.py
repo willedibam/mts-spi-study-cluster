@@ -43,3 +43,16 @@ def test_source_grouping_and_prediction_on_random_inputs(method):
     # Prediction must use the frozen source fit, not labels in the evaluation bank.
     changed = {**bank, 'y': 1-bank['y']}
     np.testing.assert_array_equal(predict(fitted, changed), probability)
+
+
+def test_primary_ridge_has_balanced_prior_when_features_have_no_information():
+    config = yaml.safe_load(Path('configs/analysis/hcp-statistical-candidates-260915.yaml').read_text())
+    config['pca_caps'] = [2]
+    config['ridge_alpha_grid'] = [1.]
+    config['selection']['folds'] = 2
+    bank = dict(y=np.tile([0, 0, 0, 1], 4), participant=np.repeat(['a', 'b', 'c', 'd'], 4),
+                family=np.repeat(['a', 'b', 'c', 'd'], 4), record_id=np.array([f'r{i}' for i in range(16)]),
+                z=np.ones((16, 21)))
+    fitted, report = fit_source(bank, 'z-pca', config, 151)
+    np.testing.assert_allclose(predict(fitted, bank), .5, atol=1e-12)
+    np.testing.assert_allclose(report['candidates'][0]['oof_probability'], .5, atol=1e-12)

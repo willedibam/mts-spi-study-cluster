@@ -2,9 +2,10 @@
 import itertools
 
 import numpy as np
+from sklearn.linear_model import Ridge
 
 from src.hcp_grouping import family_folds, participant_balanced_brier, participant_state_weights
-from src.interaction_share_learning import fit_statistical, ridge_readout
+from src.interaction_share_learning import fit_statistical
 from src.neurotycho_library_baselines import fit_head, make_rocket, standardized
 from src.representation_screen import fit_view
 
@@ -61,7 +62,8 @@ def fit_source(bank, method, config, fold_seed, *, member_seed=11, threads=2):
                     transform, tx = fit_view(bank, view, train, {**config['preprocessing'], 'pca_dimensions': k})
                     cache[k] = tx, transform.transform(bank, valid)
                 tx, vx = cache[k]
-                model = ridge_readout(tx, y[train], head, choice['alpha'])
+                model = Ridge(alpha=choice['alpha']).fit(tx, y[train],
+                    sample_weight=participant_state_weights(y[train], people[train]))
                 probability = np.clip(model.predict(vx).reshape(-1), 0, 1)
             else:
                 transform, model = fit_statistical(bank, view, train, y, config['preprocessing'], head, choice['components'])
@@ -83,6 +85,11 @@ def fit_source(bank, method, config, fold_seed, *, member_seed=11, threads=2):
         tx = bank['spectra']
     if method in {'spectra', 'minirocket'}:
         fitted['model'] = fit_head(tx, y, people, choice['C'], config['linear_classification'])
+    elif head == 'pca':
+        fitted['transform'], tx = fit_view(bank, view, np.arange(len(y)),
+            {**config['preprocessing'], 'pca_dimensions': choice['components']})
+        fitted['model'] = Ridge(alpha=choice['alpha']).fit(tx, y,
+            sample_weight=participant_state_weights(y, people))
     else:
         fitted['transform'], fitted['model'] = fit_statistical(bank, view, np.arange(len(y)), y,
             config['preprocessing'], head, choice['components'], choice.get('alpha'))

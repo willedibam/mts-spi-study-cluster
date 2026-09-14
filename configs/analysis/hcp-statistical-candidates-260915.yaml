@@ -41,9 +41,9 @@ selection:
   target_data_used: false
 notes:
 - Reuses prior NeuroTycho statistical and MiniRocket candidate grids.
-- PCA and PLS preprocessing and fits retain their canonical unweighted implementations;
+- PCA preprocessing and PLS fits retain their canonical unweighted implementations;
   their matched m/z comparisons use identical algorithms and grids.
-- Neural and logistic losses use equal participant/class sample weights. All model
+- Ridge, neural and logistic losses use equal participant/class sample weights. All model
   selection and evaluation average participant-level scores.
 - PLS uses scale=false and numerical-rank caps; PCA caps are limited by source-fold size.
 - Ridge and PLS predictions are clipped to [0,1] without target recalibration.
@@ -51,6 +51,9 @@ notes:
   separately inside each source-family fold, then refitted using all source records.
 - Spectra reuse the frozen scout definition; there is no new frequency-band search.
 - Primary duration, eligible cohort and actual split manifest remain pending.
+- Before any HCP model fits, primary ridge weighting was aligned with neural/logistic
+  weighting after run QC confirmed unequal class/block counts. PLS remains a standard
+  unweighted secondary sensitivity comparison; no weighted-PLS claim.
 source_configs_sha256:
   configs/analysis/neurotycho-transfer-260910.yaml: b73932cae9d64233809134689cd713b370cccad51a44eb34ec48d49402af6547
   configs/analysis/neurotycho-library-followup-260911.yaml: a765331a1fccf47357419a0ceb7b94ac4b4e707055e1752a0137388b410d5f30
