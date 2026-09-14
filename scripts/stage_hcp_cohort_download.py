@@ -32,6 +32,10 @@ def main(root, profile):
     assert len(people) == 24 and '105923' not in people
     rows = [row for row in payload['objects'] if row['subject'] in people]
     assert len(rows) == 192 and len({(row['subject'], row['run']) for row in rows}) == 48
+    # One directory per participant avoids duplicating the deep S3 hierarchy
+    # under Gadi's tight inode quota; the original object key is retained.
+    rows = [dict(row, relative_path=f"{row['subject']}/{row['run']}_{Path(row['key']).name}") for row in rows]
+    assert len({row['relative_path'] for row in rows}) == len(rows)
     by_person = {person: [row for row in rows if row['subject'] == person] for person in people}
     packs = [dict(subjects=[], objects=[], bytes=0) for _ in range(4)]
     for person in sorted(people, key=lambda p: (-sum(row['size'] for row in by_person[p]), p)):
