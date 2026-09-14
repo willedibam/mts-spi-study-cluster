@@ -1,0 +1,56 @@
+study_id: hcp-working-memory-transfer-260915
+status: candidates_declared_before_HCP_predictions
+protocol: docs/hcp-working-memory-transfer-protocol.md
+primary_representation_comparison: [m-pca, z-pca, mz-pca]
+supervised_projection_sensitivity: [m-pls, z-pls]
+other_comparators: [spectra, minirocket]
+preprocessing:
+  minimum_valid_fraction: 0.95
+  variance_threshold: 1.0e-08
+  z_scaling: center
+  clip_standard_deviations: 5.0
+  pca_solver: randomized
+  pca_random_state: 1729
+pca_caps: [2, 8, 32]
+ridge_alpha_grid: [0.01, 0.1, 1.0, 10.0, 100.0]
+pls_components: [1, 2, 4]
+spectra:
+  sampling_hz: 250
+  welch_nperseg: 1000
+  bands_hz: [[1, 4], [4, 8], [8, 13], [13, 30], [30, 45], [65, 100]]
+  normalization: channel power summed over 1 through 100 Hz
+  sensor_quantiles: [0.1, 0.5, 0.9]
+  features: 18
+linear_classification:
+  logistic_C: [0.01, 0.1, 1.0, 10.0]
+  minimum_finite_fraction: 0.95
+  variance_threshold: 1.0e-08
+  logistic_max_iter: 2000
+minirocket:
+  package: aeon
+  version: 1.5.0
+  minirocket_kernels: 10000
+  minirocket_max_dilations: 32
+  seeds: [11, 23, 47]
+  aggregation: mean member probabilities
+selection:
+  folds: 4
+  groups: family
+  metric: pooled out-of-fold mean-participant balanced Brier
+  threshold: 0.5
+  target_data_used: false
+notes:
+- Reuses prior NeuroTycho statistical and MiniRocket candidate grids.
+- PCA and PLS preprocessing and fits retain their canonical unweighted implementations;
+  their matched m/z comparisons use identical algorithms and grids.
+- Neural and logistic losses use equal participant/class sample weights. All model
+  selection and evaluation average participant-level scores.
+- PLS uses scale=false and numerical-rank caps; PCA caps are limited by source-fold size.
+- Ridge and PLS predictions are clipped to [0,1] without target recalibration.
+- MiniRocket biases, validity filtering, imputers, scales and projections are fitted
+  separately inside each source-family fold, then refitted using all source records.
+- Spectra reuse the frozen scout definition; there is no new frequency-band search.
+- Primary duration, eligible cohort and actual split manifest remain pending.
+source_configs_sha256:
+  configs/analysis/neurotycho-transfer-260910.yaml: b73932cae9d64233809134689cd713b370cccad51a44eb34ec48d49402af6547
+  configs/analysis/neurotycho-library-followup-260911.yaml: a765331a1fccf47357419a0ceb7b94ac4b4e707055e1752a0137388b410d5f30
