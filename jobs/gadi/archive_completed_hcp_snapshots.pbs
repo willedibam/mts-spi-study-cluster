@@ -9,13 +9,18 @@
 #PBS -l wd
 #PBS -j oe
 set -euo pipefail
-# Only completed HCP snapshots. The active hcp-bounded-0271381 is excluded.
+# Only completed HCP snapshots. Active extraction/analysis snapshots are excluded.
 base=/g/data/ql44/we2614/code-snapshots
 destination="$base/hcp-completed-archives"
 mkdir -p "$destination"
-for name in hcp-audit-f616caf hcp-download-1298f68 hcp-dimension-cf61964 \
-    hcp-m32-f052e7a hcp-profile-6747759 hcp-profile-802a9e3 \
-    hcp-psi-114a570 hcp-short-14f4482; do
+case "${HCP_ARCHIVE_SCOPE:-scout}" in
+    scout) names=(hcp-audit-f616caf hcp-download-1298f68 hcp-dimension-cf61964
+                   hcp-m32-f052e7a hcp-profile-6747759 hcp-profile-802a9e3
+                   hcp-psi-114a570 hcp-short-14f4482) ;;
+    cohort) names=(hcp-cohort-7a315c7) ;;
+    *) echo 'Unknown archival scope' >&2; exit 2 ;;
+esac
+for name in "${names[@]}"; do
     source="$base/$name"
     archive="$destination/$name.tar.gz"
     test -d "$source" && test ! -L "$source"
