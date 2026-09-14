@@ -1,0 +1,30 @@
+study_id: hcp-working-memory-transfer-260915
+status: declared_before_HCP_waveform_predictions
+primary:
+  directions: [faces_to_tools, tools_to_faces]
+  split_unit: family
+  metric: mean_participant_balanced_accuracy
+  probability_threshold: 0.5
+  secondary_metrics: [auroc, balanced_brier]
+  final_participant_split: pending
+schedule_diagnostics:
+  evidence: results/hcp_working_memory_audit_260912/cohort-stage/order-audit.json
+  source_only_control: block_position_lookup
+  missing_source_position_probability: 0.5
+  control_uses_waveforms: false
+  control_is_a_matched_input_competitor: false
+  discordant_block_ids: [1, 10, 13, 22]
+  evaluation_subset: all retained target observations at discordant positions, restricted
+    to participants with both load classes in that subset
+  same_subset_for_all_methods: true
+  fit_additional_waveform_models: false
+  report_excluded_participant_and_block_counts: true
+interpretation:
+- All staged participants share one condition sequence per run; the two run sequences
+  agree in load at 12 of 16 positions and swap it at four positions.
+- Participant/category transfer does not on its own prove that a score is specific
+  to memory load rather than schedule-associated physiology.
+- Success on discordant positions tests the simplest shared-position template;
+  it does not establish a unique neural mechanism or rule out every confound.
+- The metadata-only control has different information access from waveform learners;
+  it is a diagnostic, not an accuracy target that every useful method must beat.
