@@ -26,6 +26,8 @@ selection:
   threshold: 0.5
   refit_epochs: median selected epoch across source folds
   target_data_used: false
+  candidate_score: pooled out-of-fold mean-participant balanced Brier
+  training_weights: equal participant, then equal class within participant
 aligned_channel:
   architecture:
     temporal_convolutions:
@@ -113,8 +115,8 @@ source_configs_sha256:
 notes:
 - Architectures/candidate grids reuse existing verified implementations; no HCP neural
   fitting has occurred.
-- Family/participant weighting and grouped-CV adapter must be implemented and verified
-  before fitting.
+- Source-only grouped adapter src/hcp_learning.py is verified on random inputs; the
+  cohort/data-loading driver and actual splits remain pending.
 - No equal-compute claim; report tuning/fitting costs and selected epoch ceilings.
 - Statistical and MiniRocket comparison manifests remain to be frozen with the common
   data contract.
