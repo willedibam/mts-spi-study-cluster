@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -N hcp-cohort-prep-smoke
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=16GB
+#PBS -l walltime=01:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${AUDIT_ROOT:?}" "${COHORT_ROOT:?}"
+module load python3/3.12.1
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+cd "$CODE_SNAPSHOT"
+# First participant plus the MEG2-named E-Prime corner case; no outcome selection.
+python -u -m scripts.prepare_hcp_cohort_run --cohort-root "$COHORT_ROOT" \
+    --metadata-root "$AUDIT_ROOT/cohort-metadata" --output-root "$AUDIT_ROOT/cohort-prepared" \
+    --subject 112920 --run 6-Wrkmem &
+first=$!
+python -u -m scripts.prepare_hcp_cohort_run --cohort-root "$COHORT_ROOT" \
+    --metadata-root "$AUDIT_ROOT/cohort-metadata" --output-root "$AUDIT_ROOT/cohort-prepared" \
+    --subject 599671 --run 7-Wrkmem &
+second=$!
+status=0
+wait "$first" || status=1
+wait "$second" || status=1
+exit "$status"

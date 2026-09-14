@@ -3,7 +3,6 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import re
 
 import mne
 import numpy as np
@@ -14,6 +13,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 import yaml
+from src.hcp_run_audit import eprime_events, ica_projection
 
 
 def farthest_sensors(positions, first, count=32):
@@ -31,7 +31,7 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main(root):
+def main(root, subject='105923', run='6-Wrkmem'):
     output = root / 'm32-spatial'
     output.mkdir(exist_ok=True)
     assert not (output / 'views.npz').exists(), 'Keep existing prepared corpus immutable'
@@ -43,16 +43,9 @@ def main(root):
     ica_file = Path(ica_download['files'][0]['path'])
     assert sha(ica_file) == ica_download['files'][0]['sha256']
     comp = loadmat(ica_file, simplify_cells=True)['comp_class']
-    labels = np.asarray(comp['topolabel']).tolist()
-    mixing, unmixing = np.asarray(comp['topo']), np.asarray(comp['unmixing'])
-    assert mixing.shape == unmixing.T.shape and mixing.shape[0] == len(labels)
-    identity_error = float(np.max(np.abs(unmixing @ mixing - np.eye(unmixing.shape[0]))))
-    assert identity_error < 1e-5
-    annotation = (root / 'metadata/105923_MEG_6-Wrkmem_icaclass_vs.txt').read_text()
+    annotation = (root / f'metadata/{subject}_MEG_{run}_icaclass_vs.txt').read_text()
     # Remove only explicitly identified cardiac/ocular components for this feasibility stage.
-    excluded = np.asarray([int(v)-1 for v in re.search(r'vs.ecg_eog_ic = \[([^]]*)\]', annotation)[1].split()])
-    projection = np.eye(len(labels)) - mixing[:, excluded] @ unmixing[excluded]
-    assert np.max(np.abs(unmixing[excluded] @ projection)) < 1e-5 * max(1, np.max(np.abs(unmixing)))
+    labels, projection, excluded, identity_error = ica_projection(comp, annotation)
     raw = mne.io.read_raw_bti(files['c,rfDC'], config_fname=files['config'], head_shape_fname=None,
                             convert=False, rename_channels=False, sort_by_ch_name=False,
                             preload=False, verbose='ERROR')
@@ -74,9 +67,11 @@ def main(root):
                             max_distance_to_selected_m=radius)
     blocks = sorted(audit['blocks'], key=lambda b: b['start_sample'])
     assert all(b['bad_segment_overlap_seconds'] == 0 for b in blocks)
-    frame = pd.read_csv(files['105923_MEG_Wrkmem_run1.tab'], sep='\t')
-    onset = pd.to_numeric(frame['Stim.OnsetTime'], errors='coerce')
-    events = frame[onset.notna() & (onset > 0)].assign(onset=onset).sort_values('onset')
+    eprime_files = [path for name, path in files.items() if name.endswith('.tab')]
+    assert len(eprime_files) == 1, 'Use the verified E-Prime object for this run'
+    frame = pd.read_csv(eprime_files[0], sep='\t')
+    events = eprime_events(frame)
+    events = events[events['block_id'].isin([b['block'] for b in blocks])]
     assert events['BlockType'].tolist() == [({1:'0-Back', 2:'2-Back'}[b['memory_type']]) for b in blocks for _ in range(10)]
     assert events['StimType'].tolist() == [({1:'Face', 2:'Tools'}[b['image_type']]) for b in blocks for _ in range(10)]
     # HCP/MNE-HCP reference regression, fit to sparsely sampled task data across this run.
@@ -110,7 +105,7 @@ def main(root):
             # Explicit per-channel standardisation, consistent across all comparator inputs.
             x -= x.mean(axis=1, keepdims=True)
             x /= x.std(axis=1, keepdims=True)
-            name = f"105923_run6_block{b['block']:02d}_{tag}"
+            name = f"{subject}_run{run.split('-')[0]}_block{b['block']:02d}_{tag}"
             arrays[name] = x.T
             entries.append(dict(name=name, block=b['block'], layout=tag, memory=b['memory_type'], image=b['image_type'], M=32, T=length))
         print('prepared block', b['block'], 'T', length, flush=True)
@@ -138,4 +133,7 @@ def main(root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
-    main(parser.parse_args().root)
+    parser.add_argument('--subject', default='105923')
+    parser.add_argument('--run', choices=['6-Wrkmem', '7-Wrkmem'], default='6-Wrkmem')
+    args = parser.parse_args()
+    main(args.root, args.subject, args.run)
