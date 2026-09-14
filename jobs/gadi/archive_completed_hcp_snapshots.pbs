@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS -N hcp-archive-snapshots
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -l walltime=00:20:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+# Only completed HCP snapshots. The active hcp-bounded-0271381 is excluded.
+base=/g/data/ql44/we2614/code-snapshots
+destination="$base/hcp-completed-archives"
+mkdir -p "$destination"
+for name in hcp-audit-f616caf hcp-download-1298f68 hcp-dimension-cf61964 \
+    hcp-m32-f052e7a hcp-profile-6747759 hcp-profile-802a9e3 \
+    hcp-psi-114a570 hcp-short-14f4482; do
+    source="$base/$name"
+    archive="$destination/$name.tar.gz"
+    test -d "$source" && test ! -L "$source"
+    test ! -e "$archive" && test ! -e "$archive.part"
+    tar -czf "$archive.part" -C "$base" "$name"
+    # Compare file contents, links and metadata against the retained original.
+    # Any discrepancy exits before removal; tar never follows the venv symlink.
+    tar -dzf "$archive.part" -C "$base"
+    mv "$archive.part" "$archive"
+    sha256sum "$archive" >> "$destination/SHA256SUMS"
+    rm -rf -- "$source"
+    echo "ARCHIVED_AND_VERIFIED $name"
+done
+echo 'Restore a snapshot with: tar -xzf ARCHIVE -C /g/data/ql44/we2614/code-snapshots'
