@@ -13,4 +13,5 @@ module purge
 module load python3/3.12.1
 args=(--root "$DIAGNOSTIC_ROOT" --source "$SOURCE_DIR" --commit "$EXPECTED_COMMIT")
 [[ -n "${L:-}" ]] && args+=(--L "$L")
-python "$CONTROLLER_FILE" "${args[@]}"
+[[ -n "${MEMORY_PER_WORKER_GB:-}" ]] && args+=(--memory-per-worker-gb "$MEMORY_PER_WORKER_GB")
+python3 "$CONTROLLER_FILE" "${args[@]}"

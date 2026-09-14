@@ -23,3 +23,6 @@ def test_farm_plan_is_bounded_and_respects_memory():
         assert plan['workers'] in (336,680)
     with pytest.raises(ValueError):resource_plan([1.]*23)
     with pytest.raises(ValueError):resource_plan([30000.]*24)
+    measured=resource_plan([1000.]*24,memory_per_worker_gb=12)
+    assert measured['memory_gb']>=12*measured['workers']
+    with pytest.raises(ValueError):resource_plan([1000.]*24,memory_per_worker_gb=0)

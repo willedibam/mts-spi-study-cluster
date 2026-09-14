@@ -11,22 +11,25 @@ import statistics
 import subprocess
 
 
-def resource_plan(seconds, tasks=680):
+def resource_plan(seconds, tasks=680, memory_per_worker_gb=8):
     if len(seconds) != 24 or min(seconds) <= 0:
         raise ValueError('24 successful representative timings required')
     median = statistics.median(seconds)
     peak = max(seconds)
     workers = 680 if peak / median <= 2 else 336
-    nodes = math.ceil(workers * 8 / 190)  # 8 GB per concurrent recording
+    if memory_per_worker_gb <= 0:
+        raise ValueError('positive memory per worker required')
+    nodes = math.ceil(workers * memory_per_worker_gb / 190)
     wall = max(1800, math.ceil((1.5*peak*math.ceil(tasks/workers)+600)/900)*900)
     if wall > 8*3600:
         raise ValueError('runtime tail requires manual review before production')
     return dict(workers=workers, ncpus=48*nodes, memory_gb=190*nodes,
         wall_seconds=wall, task_timeout=math.ceil(1.5*peak+300),
-        median_task_seconds=median, maximum_task_seconds=peak)
+        median_task_seconds=median, maximum_task_seconds=peak,
+        memory_per_worker_gb=memory_per_worker_gb)
 
 
-def launch(root, source, commit, sizes=(6, 8)):
+def launch(root, source, commit, sizes=(6, 8), memory_per_worker_gb=8):
     actual = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'], text=True).strip()
     assert actual == commit
     plans = {}
@@ -43,7 +46,7 @@ def launch(root, source, commit, sizes=(6, 8)):
                 assert meta['M']==L*L and meta['T']==1000
                 times[index] = meta['job']['compute_seconds']
         assert set(times)==expected and len(expected)==24
-        plans[str(L)] = resource_plan(list(times.values()))
+        plans[str(L)] = resource_plan(list(times.values()),memory_per_worker_gb=memory_per_worker_gb)
     # Atomic one-shot guard; retain it after failures for manual reconciliation.
     tag = '-'.join(f'L{L}' for L in sizes)
     (root/f'production-launch-lock-{tag}').mkdir()
@@ -81,6 +84,7 @@ if __name__=='__main__':
     p.add_argument('--source',type=Path,required=True)
     p.add_argument('--commit',required=True)
     p.add_argument('--L',type=int,nargs='+',choices=[6,8],default=[6,8])
+    p.add_argument('--memory-per-worker-gb',type=float,default=8)
     a=p.parse_args()
     if len(set(a.L)) != len(a.L):p.error('duplicate lattice size')
-    launch(a.root,a.source,a.commit,tuple(a.L))
+    launch(a.root,a.source,a.commit,tuple(a.L),a.memory_per_worker_gb)
