@@ -4,7 +4,6 @@ protocol: docs/hcp-working-memory-transfer-protocol.md
 unresolved_before_training:
 - eligible cohort and legitimate family grouping
 - frozen source/target participant manifest
-- primary T2000 or T4000 from feasibility, not prediction
 input:
   axis_order:
   - record
@@ -12,6 +11,7 @@ input:
   - channel
   channels: 32
   sampling_hz: 250
+  primary_duration_samples: 4000
   durations_samples:
   - 2000
   - 4000
@@ -118,7 +118,7 @@ notes:
 - Source-only grouped adapter src/hcp_learning.py is verified on random inputs; the
   cohort/data-loading driver and actual splits remain pending.
 - No equal-compute claim; report tuning/fitting costs and selected epoch ceilings.
-- Statistical and MiniRocket comparison manifests remain to be frozen with the common
-  data contract.
+- Statistical and MiniRocket candidates are declared in hcp-statistical-candidates-260915.yaml.
+- T4000 is primary from completed scout feasibility/stability; no HCP cohort predictions.
 - 'HCP adaptation: validation selection averages participant-level balanced Brier
   scores, unlike the earlier pooled-validation metric.'
