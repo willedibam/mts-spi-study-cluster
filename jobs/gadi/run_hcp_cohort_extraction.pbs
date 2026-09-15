@@ -1,0 +1,73 @@
+#!/bin/bash
+#PBS -N hcp-cohort-smoke
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=16GB
+#PBS -l walltime=06:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUNNER_SNAPSHOT:?}" "${EXTRACTION_PLAN:?}" "${AUDIT_ROOT:?}"
+export MODE="${MODE:-smoke}"
+[[ "$MODE" == smoke || "$MODE" == remaining ]] || exit 2
+module load python3/3.12.1 nci-parallel/1.0.0a
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYSPI_N_JOBS=1
+export PYTHONPATH="$RUNNER_SNAPSHOT"
+cd "$RUNNER_SNAPSHOT"
+export COMMANDS="$PBS_JOBFS/hcp-commands.txt"
+export SELECTED="$PBS_JOBFS/hcp-selected.json"
+export EXTRACTION_PLAN
+python - <<'PY'
+import hashlib, json, os, shlex
+from pathlib import Path
+from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
+path = Path(os.environ['EXTRACTION_PLAN'])
+plan = json.loads(path.read_text())
+assert plan['status'] == 'frozen_extraction_inputs' and plan['layout'] == 'coverage_a'
+offsets = plan['smoke_task_offsets'] if os.environ['MODE'] == 'smoke' else range(len(plan['tasks']))
+selected, commands, cache = [], [], {}
+for offset in offsets:
+    task = plan['tasks'][offset]
+    if task['config'] not in cache:
+        config = ExternalCorpusConfig.from_file(task['config'])
+        manifest = json.loads((Path(task['config']).parent/'manifest.json').read_text())
+        source = next(s for s in plan['sources'] if s['config'] == task['config'])
+        assert hashlib.sha256((Path(task['config']).parent/'manifest.json').read_bytes()).hexdigest() == source['manifest_sha256']
+        assert hashlib.sha256(Path(task['config']).read_bytes()).hexdigest() == manifest['external_config_sha256']
+        assert config.archive_sha256 == source['archive_sha256']
+        cache[task['config']] = config, load_inventory(config)
+    config, entries = cache[task['config']]
+    entry = entries[task['job_index']-1]
+    assert entry.name == task['name'] and entry.M == plan['M'] and entry.T == plan['T']
+    error = completion_error(config, entry)
+    if error is not None and (entry.output_dir(config)/'meta.json').exists():
+        raise RuntimeError(f'Existing output needs review: {entry.name}: {error}')
+    selected.append(task)
+    if error is not None:
+        commands.append(shlex.join(['python', '-u', '-m', 'scripts.run_hcp_bounded_corpus',
+                                   '--config', task['config'], '--job-index', str(entry.index),
+                                   '--n-jobs', '1', '--skip-existing']))
+Path(os.environ['COMMANDS']).write_text('\n'.join(commands)+ ('\n' if commands else ''))
+Path(os.environ['SELECTED']).write_text(json.dumps(selected))
+print(json.dumps(dict(selected=len(selected), pending=len(commands), plan_sha256=hashlib.sha256(path.read_bytes()).hexdigest())), flush=True)
+PY
+mkdir -p "$AUDIT_ROOT/logs"
+if test -s "$COMMANDS"; then
+    workers="${WORKERS:-2}"
+    (( workers >= 1 && workers <= PBS_NCPUS ))
+    mpirun -np "$workers" --map-by node:PE=1 nci-parallel --verbose --input-file "$COMMANDS" \
+        --status "$AUDIT_ROOT/logs/cohort-${MODE}-${PBS_JOBID%%.*}.status"
+fi
+python - <<'PY'
+import json, os
+from pathlib import Path
+from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
+for task in json.loads(Path(os.environ['SELECTED']).read_text()):
+    config = ExternalCorpusConfig.from_file(task['config'])
+    error = completion_error(config, load_inventory(config)[task['job_index']-1])
+    assert error is None, (task['name'], error)
+print('All selected cohort outputs passed completion audit', flush=True)
+PY

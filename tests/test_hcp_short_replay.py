@@ -5,9 +5,10 @@ from scripts.analyze_hcp_short import frozen_pc1
 from scripts.verify_hcp_short_analysis import replay_pc1
 
 
-def test_independent_replay_and_held_data_independence():
+@pytest.mark.parametrize('dtype', [np.float32, np.float64])
+def test_independent_replay_and_held_data_independence(dtype):
     rng = np.random.default_rng(49)
-    features = rng.normal(size=(64, 120))
+    features = rng.normal(size=(64, 120)).astype(dtype)
     features[:, 0] = 3.
     features[0, 1] = np.nan
     features[:2, 2] = np.nan

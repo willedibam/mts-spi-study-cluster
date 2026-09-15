@@ -23,6 +23,8 @@ def close(actual, expected):
 
 def replay_pc1(features, train, model):
     """Check source-only preprocessing and the leading eigenvalue via the Gram matrix."""
+    # The frozen analysis promotes stored float32 z to float64 before fitting.
+    features = np.asarray(features, dtype=np.float64)
     train = np.asarray(train)
     mask = np.isfinite(features[train]).sum(0) >= len(train)-1
     np.testing.assert_array_equal(model['mask'], mask)

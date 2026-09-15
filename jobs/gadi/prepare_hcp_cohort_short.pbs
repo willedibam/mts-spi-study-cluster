@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -N hcp-cohort-short
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8
+#PBS -l mem=32GB
+#PBS -l walltime=00:20:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${CODE_SNAPSHOT:?}" "${RUNNER_SNAPSHOT:?}" "${AUDIT_ROOT:?}" "${LENGTH:?}"
+[[ "$LENGTH" == 2000 || "$LENGTH" == 4000 ]] || exit 2
+module load python3/3.12.1 nci-parallel/1.0.0a
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export PYTHONPATH="$CODE_SNAPSHOT:$RUNNER_SNAPSHOT"
+cd "$CODE_SNAPSHOT"
+commands="$PBS_JOBFS/short-commands.txt"
+python - "$AUDIT_ROOT" "$LENGTH" "$commands" <<'PY'
+import json, shlex, sys
+from pathlib import Path
+root, length, output = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
+audit = root/'cohort-prepared-audit.json'
+report = json.loads(audit.read_text())
+assert report['status'] == 'verified' and not report['errors']
+lines = []
+for r in report['runs']:
+    case = root/'cohort-prepared'/f"{r['subject']}_{r['run']}"
+    lines.append(shlex.join(['python', '-u', '-m', 'scripts.prepare_hcp_cohort_short',
+                            '--root', str(case), '--audit', str(audit), '--length', length]))
+output.write_text('\n'.join(lines)+'\n')
+PY
+mkdir -p "$AUDIT_ROOT/logs"
+mpirun -np 8 --map-by node:PE=1 nci-parallel --verbose --input-file "$commands" \
+    --status "$AUDIT_ROOT/logs/cohort-short-${PBS_JOBID%%.*}.status"
+python -u "$CODE_SNAPSHOT/scripts/plan_hcp_cohort_extraction.py" --root "$AUDIT_ROOT" --length "$LENGTH"
