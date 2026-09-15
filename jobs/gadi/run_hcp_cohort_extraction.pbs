@@ -17,6 +17,11 @@ source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYSPI_N_JOBS=1
 export PYTHONPATH="$RUNNER_SNAPSHOT"
 cd "$RUNNER_SNAPSHOT"
+# Check the immutable shared runtime once on every allocated node before
+# starting any long extraction. No node-local snapshot paths are used.
+export RUNNER_SNAPSHOT
+mpirun -np "${PBS_NNODES:-1}" --map-by ppr:1:node python -c \
+    'import os, pathlib, src, pyspi; from scripts import run_hcp_bounded_corpus; expected=pathlib.Path(os.environ["RUNNER_SNAPSHOT"]).resolve(); assert pathlib.Path(src.__file__).resolve().is_relative_to(expected); assert pathlib.Path(run_hcp_bounded_corpus.__file__).resolve().is_relative_to(expected); print("Verified shared HCP runtime", flush=True)'
 export COMMANDS="$PBS_JOBFS/hcp-commands.txt"
 export SELECTED="$PBS_JOBFS/hcp-selected.json"
 export EXTRACTION_PLAN
