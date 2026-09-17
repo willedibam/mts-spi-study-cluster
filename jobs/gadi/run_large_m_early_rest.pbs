@@ -1,0 +1,70 @@
+#!/bin/bash
+# User-authorized speculative overlap of the existing 13-record continuation.
+# Extraction source, inputs, catalogue and final acceptance checks stay frozen.
+#PBS -N pair-large-early-rest
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=144
+#PBS -l mem=570GB
+#PBS -l walltime=48:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${SOURCE_DIR:?}" "${EXPECTED_COMMIT:?}" "${RESULT_ROOT:?}"
+cd "$SOURCE_DIR"
+test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+test "$(git -C /home/562/we2614/pyspi-fork rev-parse HEAD)" = 65317c9c1fd5f12358b8ede09b7576ef001a76dd
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+export PYTHONPATH="$SOURCE_DIR${PYTHONPATH:+:$PYTHONPATH}"
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export PYSPI_N_JOBS=1 PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"
+exec >"$RESULT_ROOT/logs/early-rest-large-${PBS_JOBID}.log" 2>&1
+mpirun -np "${PBS_NNODES:-1}" --map-by ppr:1:node python -c 'import src, pyspi, scripts.large_m_pair_baselines; print(src.__file__,pyspi.__file__,flush=True)'
+# Lower-size smoke checks have already passed. The large smoke is explicitly
+# allowed to be pending, not declared passed, while these disjoint jobs run.
+python -m scripts.large_m_pair_baselines gate --root "$RESULT_ROOT" --group m64
+python -m scripts.large_m_pair_baselines gate --root "$RESULT_ROOT" --group m100
+python - <<'PY'
+import os
+from pathlib import Path
+from src import run_external_corpus as corpus
+root = Path(os.environ['RESULT_ROOT'])
+smoke = [int(i) for i in (root/'large-smoke.txt').read_text().split()]
+rest = [int(i) for i in (root/'large-rest.txt').read_text().split()]
+assert len(smoke) == 3 and len(rest) == len(set(rest)) == 13
+assert set(smoke).isdisjoint(rest) and sorted(smoke+rest) == list(range(1,17))
+config = corpus.ExternalCorpusConfig.from_file(root/'large.yaml')
+entries = corpus.load_inventory(config)
+assert len(entries) == 16
+for index in rest:
+    assert corpus.completion_error(config, entries[index-1]) is not None, 'Do not duplicate completed output'
+print('EARLY_START_AUTHORIZED; large smoke not yet accepted', flush=True)
+PY
+commands="$PBS_JOBFS/commands.txt"
+while IFS= read -r index; do
+    printf 'python -m scripts.large_m_pair_baselines extract --root %s --group large --index %d\n' "$RESULT_ROOT" "$index" >> "$commands"
+done < "$RESULT_ROOT/large-rest.txt"
+mpirun -np 13 --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$RESULT_ROOT/large-early-rest.status"
+python - <<'PY'
+import os
+from pathlib import Path
+from src import run_external_corpus as corpus
+from scripts.large_m_pair_baselines import gate
+root = Path(os.environ['RESULT_ROOT'])
+config = corpus.ExternalCorpusConfig.from_file(root/'large.yaml')
+entries = corpus.load_inventory(config)
+rest = [int(i) for i in (root/'large-rest.txt').read_text().split()]
+for index in rest:
+    assert corpus.completion_error(config, entries[index-1]) is None
+smoke = [int(i) for i in (root/'large-smoke.txt').read_text().split()]
+if all((root/f'large-resource-{i:02d}.json').exists() for i in smoke):
+    gate(root, 'large')
+    for entry in entries:
+        assert corpus.completion_error(config, entry) is None
+    print('ALL_16_COMPLETE_AND_ORIGINAL_SMOKE_GATE_PASS', flush=True)
+else:
+    print('13_REST_COMPLETE; SMOKE_PENDING; FULL_PANEL_ACCEPTANCE_PENDING', flush=True)
+PY
