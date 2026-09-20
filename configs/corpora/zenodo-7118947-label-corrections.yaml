@@ -1,0 +1,9 @@
+# Local metadata additions; the original Zenodo archive remains byte-for-byte intact.
+# HCP task-state and resting-state fMRI are real recordings, not simulations.
+add_tags:
+  - pattern: hcp_tfMRI_*
+    tags: [real]
+    reason: User-confirmed HCP task-state fMRI recordings; archive omitted the origin tag.
+  - pattern: hcp_rsfMRI_*
+    tags: [real]
+    reason: Companion HCP resting-state fMRI recordings; same missing origin tag.

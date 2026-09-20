@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N cml2d-confirm-audit
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${AUDIT_COMMIT:?}"
+source_dir=/scratch/ql44/we2614/cml2d-confirm-source-5f76768
+cd "$source_dir"
+test "$(git rev-parse HEAD)" = e9cf5ccfae6d2e2f739fa5d712c98c645b258bfe
+git show "$AUDIT_COMMIT:scripts/audit_cml2d_confirmation.py" > "$PBS_JOBFS/audit_cml2d_confirmation.py"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export PYTHONPATH="$source_dir" OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+python "$PBS_JOBFS/audit_cml2d_confirmation.py" \
+    --root /g/data/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911 \
+    --pilot /scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_period_doubling_260911

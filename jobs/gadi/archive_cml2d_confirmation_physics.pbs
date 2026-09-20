@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N cml2d-confirm-archive
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+parent=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911
+archive=/g/data/ql44/we2614/mts-spi-archives/cml2d_confirmation_260911_physics.tar
+test -d "$parent/physics"
+test ! -e "$archive"
+test "$(find "$parent/physics" -maxdepth 1 -name 'case-*.npz' | wc -l)" = 544
+tar -C "$parent" -cf "$archive" physics
+tar -C "$parent" --compare -f "$archive"
+sha256sum "$archive"
+ls -lh "$archive"
+# Keep the originals; corpora and analysis already reside on gdata.

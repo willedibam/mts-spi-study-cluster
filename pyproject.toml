@@ -49,6 +49,7 @@ prep = ["mne>=1.6.0", "moabb>=1.0.0"]
 dtw = ["dtw-python", "fastdtw", "dtaidistance"]
 graph = ["torch>=2.0", "torch-geometric>=2.5"]
 atlas = ["pycatch22>=0.5.0"]
+interactive = ["anywidget>=0.9", "ipywidgets>=8.1"]
 
 [project.scripts]
 run-experiment = "src.run_experiments:main"
@@ -57,10 +58,11 @@ feature-selection = "src.feature_selection:main"
 run-dtw-ed = "src.run_dtw_ed:main"
 find-distributions = "src.find_non_overlapping_distributions:main"
 graph-pipeline = "src.graph_pipeline:main"
+corpus-geometry = "src.run_corpus_geometry:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*"]
+include = ["src*", "scripts*"]
 
 
 [build-system]

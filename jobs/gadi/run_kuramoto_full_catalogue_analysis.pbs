@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -N kur-full-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=01:00:00
+#PBS -l ncpus=8
+#PBS -l mem=32GB
+#PBS -l jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -r y
+#PBS -j oe
+
+set -euo pipefail
+
+repo_dir=/home/562/we2614/mts-spi-study-cluster
+feature_dir=/scratch/ql44/we2614/spi-spi-unified-v3
+result_dir=/scratch/ql44/we2614/kuramoto-full-catalogue-reanalysis
+analysis_script=${ANALYSIS_SCRIPT:?ANALYSIS_SCRIPT must identify the staged analysis script}
+
+cd "$repo_dir"
+source .venv/bin/activate
+mkdir -p "$result_dir"
+
+export OMP_NUM_THREADS=8
+export OPENBLAS_NUM_THREADS=8
+export MKL_NUM_THREADS=8
+export NUMEXPR_NUM_THREADS=8
+
+python "$analysis_script" \
+  --benchmark-features "$feature_dir/kuramoto_benchmark_gaussian_random.npz" \
+  --eligibility-null-features "$feature_dir/kuramoto_eligibility_null_gaussian_random.npz" \
+  --terminal-features "$feature_dir/kuramoto_terminal_gaussian_random.npz" \
+  --output-dir "$result_dir" \
+  --minimum-valid-fraction 0.99 \
+  --variance-threshold 0.05 \
+  --bootstraps 2000

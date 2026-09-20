@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import sys
 
 import nbformat
 from nbclient import NotebookClient
@@ -22,6 +23,9 @@ def main() -> int:
     parser.add_argument("--no-execute", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    from scripts.cml2d_notebook_cells import build_cells as cml2d_cells
 
     cells = [
         nbformat.v4.new_markdown_cell(
@@ -36,6 +40,8 @@ The systems are not presented as equally strong:
 3. **Kuramoto:** canonical but comparatively easy synchronization baseline; the available full-catalogue result is retrospective.
 4. **Quadratic CML:** noncanonical regime-coordinate stress test and useful negative result.
 5. **Desai--Zwanzig:** canonical noise-driven pitchfork with an explicit published phase diagram and a deliberately local boundary sweep.
+6. **Vicsek:** completed large-population physics/observation audit only; no SPI--SPI coordinate has been computed. Its results are kept separate from the recovery comparisons.
+7. **2D collective-period-doubling CML:** a distinct, explicitly defined temporal order parameter; staged physics and SPI results are reported separately from the old 1D sweep.
 
 The detailed system notebooks remain the provenance and diagnostic records, including representative trajectories/fields and robust per-process `icefire` MTS heatmaps: [Kuramoto](kuramoto-order-parameter-confirmation.ipynb), [Stuart--Landau](stuart-landau-order-coordinate.ipynb), [Miller--Huse](miller-huse-order-coordinate.ipynb), and [quadratic CML](quadratic-cml-order-coordinate.ipynb)."""
         ),
@@ -105,6 +111,7 @@ CONTROL_LABELS = {
     "g": r"coupling $g$",
     "alpha": r"map nonlinearity $\alpha$",
     "sigma": r"additive-noise amplitude $\sigma$",
+    "r": r"logistic parameter $r$",
 }
 
 def paper_axis(ax, *, right=False):
@@ -244,6 +251,8 @@ Yes. Stuart--Landau's primary confirmation arm has $M=N\in\{8,16,32\}$. Quadrati
     {"system": "Desai--Zwanzig (sensitivity)", "physical N": "32", "observed M": "32", "M=N?": "Yes", "role": "finite-size rounding and boundary-shift diagnostic"},
     {"system": "Quadratic CML", "physical N": 512, "observed M": "8, 16, 32", "M=N?": "No", "role": "primary stress-test arm"},
     {"system": "Quadratic CML (sensitivity)", "physical N": "8, 16, 32", "observed M": "8, 16, 32", "M=N?": "Yes", "role": "finite-size diagnostic only"},
+    {"system": "Vicsek", "physical N": "32,768", "observed M": "8, 16, 32", "M=N?": "No", "role": "physics only; tracked particles or aggregate spatial bins"},
+    {"system": "2D logistic CML", "physical N": "65,536", "observed M": "8, 16, 32", "M=N?": "No", "role": "exploratory collective-period-doubling benchmark; dispersed sites"},
 ]))"""
         ),
         nbformat.v4.new_markdown_cell(
@@ -571,7 +580,7 @@ plt.show()"""
 
 Spearman correlation is the primary recovery metric because $q$'s scale is arbitrary and the scientific question is whether it orders dynamical regimes consistently. Cell-mean correlation isolates the macroscopic sweep. Within-control correlation is stricter: it tests whether $q$ captures realization-level fluctuations after the control trend is removed. MAE belongs only to a separately supervised decoder and should not be described as unsupervised discovery.
 
-The decisive limitation is common across the benchmarks: a target-blind SPI--SPI coordinate can track a changing physical order parameter, but simple task-specific observables often track it better, and knowing the control parameter can predict $Q$ more accurately. The contribution is a common, system-agnostic representation—not universal optimality."""
+The interpretation is consistent across the benchmarks: a target-blind SPI--SPI coordinate can track a changing physical order parameter, but simple task-specific observables often track it better. Where supervised prediction was evaluated, knowing the control parameter can predict $Q$ more accurately. The contribution is a common, system-agnostic representation—not universal optimality."""
         ),
         nbformat.v4.new_code_cell(
             r"""cml_means = cml_held.groupby("alpha")[["q1", "Q_phys1"]].mean()
@@ -637,6 +646,24 @@ comparison = pd.DataFrame([
         "strongest simple |rho|": max(abs(v["overall_spearman"]) for v in dz_summary["mean_field_input_baselines"].values()),
     },
 ])
+if (CML2D_SPI / "summary.json").exists() and cml2d_spi_summary["results"]:
+    result = cml2d_spi_summary["results"][0]
+    passed = cml2d_spi_summary["passes_row_gate"] and cml2d_spi_summary["geometry"]["passes_one_coordinate_gate"]
+    evidence = "exploratory held-seed pilot; gates " + ("passed" if passed else "failed")
+    if "primary" in cml2d_confirm_reports:
+        passed = cml2d_confirm_reports["primary"]["gate"]["passes"]
+        evidence = "independent fresh-seed/interleaved-control confirmation; gate " + ("passed" if passed else "failed")
+        result = cml2d_confirm_summary["results"][0] if cml2d_confirm_summary["results"] else dict.fromkeys(
+            ["rho_reference","within_r_rho","control_mean_rho","raw_correlation_rho","sample_Q_rho"],np.nan)
+    comparison = pd.concat([comparison, pd.DataFrame([{
+        "system": "2D logistic CML",
+        "evidence": evidence,
+        "overall |rho|": abs(result["rho_reference"]),
+        "within-control |rho|": abs(result["within_r_rho"]),
+        "cell-mean |rho|": abs(result["control_mean_rho"]),
+        "q decoder MAE": np.nan, "control-only MAE": np.nan,
+        "strongest simple |rho|": max(abs(result["raw_correlation_rho"]),abs(result["sample_Q_rho"])),
+    }])],ignore_index=True)
 display(comparison.round(3))"""
         ),
     ]
@@ -662,7 +689,7 @@ Q=\langle |M_1(t)|\rangle_t
 
 on a separate future window. This is a finite-system magnitude of the canonical order parameter, not a new thermodynamic order parameter.
 
-**Verified phase diagram.** Figure 1(a) of [Evangelou et al., Physical Review Research 5, 013078 (2023)](https://doi.org/10.1103/PhysRevResearch.5.013078) gives the stationary mean-field phase diagram and the pitchfork branches for this model. [Evangelou et al., Physical Review E 110, 014121 (2024)](https://doi.org/10.1103/PhysRevE.110.014121) uses the same canonical parameters, identifies $M_1$ as the order parameter, reports $\sigma_c\simeq1.890$, and independently recovers the low-dimensional state using diffusion maps. Accordingly, generic latent-coordinate recovery is not claimed as novel here; the test is whether the common SPI--SPI representation performs it.
+**Verified phase diagram.** Figure 1(a) of [Zagli et al., Physical Review Research 5, 013078 (2023)](https://doi.org/10.1103/PhysRevResearch.5.013078) gives the stationary mean-field phase diagram and the pitchfork branches for this model. [Evangelou et al., Physical Review E 110, 014121 (2024)](https://doi.org/10.1103/PhysRevE.110.014121) uses the same canonical parameters, identifies $M_1$ as the order parameter, reports $\sigma_c\simeq1.890$, and independently recovers the low-dimensional state using diffusion maps. Accordingly, generic latent-coordinate recovery is not claimed as novel here; the test is whether the common SPI--SPI representation performs it.
 
 The published studies use $N=12{,}000$, which explains our primary population size but does not make it a convergence threshold. A separate logarithmic finite-size gate uses $N\in\{32,100,10^3,10^4,10^5\}$. Its transition steepens and approaches $\sigma_c$, but the $N=10^5$ trajectories regain measurable start-state dependence near the boundary. These are therefore finite-time convergence diagnostics, not a claim of equilibrium finite-size scaling. An attempted $N=10^6$ extension was deferred until the simulation horizon can be scaled to address critical slowing.
 
@@ -854,7 +881,141 @@ Any claim that $q$ is sharper than $Q$ uses the scale-free maximum adjacent chan
         if cell.cell_type == "markdown"
         and cell.source.startswith("# Comparative interpretation")
     )
-    cells[comparative_index:comparative_index] = desai_cells
+    vicsek_cells = [
+        nbformat.v4.new_markdown_cell(
+            r"""# 6. Vicsek collective motion: physics audit, not SPI--SPI recovery
+
+**Status:** all 16 narrow-control runs completed and their archives passed source/configuration, metadata, shape and finite-array checks. No p90 or SPI--SPI coordinate was computed for this cohort. The plots below show physical order, not $q$.
+
+### Model, order parameter and observation
+
+The angular-noise, forward-streaming model aligns headings within unit distance (including self), then moves particles using their new headings:
+
+\[
+\theta_i(t+1)=\arg\!\sum_{j:\,d_{ij}(t)\leq1} e^{i\theta_j(t)}
++\xi_i(t),\quad \xi_i(t)\sim U[-\pi\eta,\pi\eta],
+\qquad \mathbf r_i(t+1)=\mathbf r_i(t)+v_0(\cos\theta_i(t+1),\sin\theta_i(t+1)).
+\]
+
+The canonical polarization and its finite-record average are
+
+\[
+\phi(t)=\left|\frac1N\sum_i e^{i\theta_i(t)}\right|,
+\qquad Q=\langle\phi(t)\rangle_t.
+\]
+
+We use a periodic square $L=128$, density 2, $N=32{,}768$, speed $v_0=0.5$, and vary only angular noise $\eta\in\{.460,.468,.476,.484\}$. Each control has two seed labels and ordered/random initial headings. Every run has 20,000 burn steps and 100,000 recording steps, saved every 25 steps ($T_{\rm saved}=4000$). The reference is [Chaté et al., PRE 77, 046113 (2008)](https://arxiv.org/abs/0712.2062). This finite-size, finite-time audit does not independently establish the thermodynamic discontinuity or a precise critical noise.
+
+Nested $M=8,16,32$ observations comprise dispersed or initially local **tracked particles**, and dispersed or contiguous **fixed spatial bins**. Initially local particles disperse; they are not a permanent spatial patch. Bins measure aggregates (mean occupancy 32 at width 4), not individual particles. Velocity/current components are separate $M$-channel arms, not $2M$ channels.
+
+Unlike the recovery plots above, every seed/start curve is shown explicitly, without a bootstrap band. The tabulated minimum/maximum is a **run range, not a confidence interval**; starts and controls sharing a seed are paired."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""VICSEK_ROOT = ROOT / "data/order_parameter/vicsek_observation_260910"
+vicsek_validation = json.loads((VICSEK_ROOT / "narrow-analysis/validation.json").read_text())
+vicsek_observations = pd.read_csv(VICSEK_ROOT / "narrow-analysis/observation_checks.csv")
+assert vicsek_validation["verified_archives"] == 16
+assert vicsek_validation["SPI_computed"] is False
+vicsek_paths = sorted((VICSEK_ROOT / "gadi-narrow-eade8c2").glob("case-*.npz"))
+assert len(vicsek_paths) == 16
+vicsek_rows, vicsek_traces = [], {}
+for path in vicsek_paths:
+    with np.load(path, allow_pickle=False) as archive:
+        meta = json.loads(str(archive["metadata_json"]))
+        phi = archive["phi"].copy()
+    assert meta["script_sha256"] == vicsek_validation["source_sha256"]
+    assert meta["config_sha256"] == vicsek_validation["config_sha256"]
+    assert meta["N"] == 32768 and meta["stride"] == 25 and meta["burn"] == 20000
+    assert phi.shape == (4000,) and np.isfinite(phi).all()
+    np.testing.assert_allclose(phi.mean(), meta["phi_mean"], atol=1e-12, rtol=0)
+    key = (meta["eta"], meta["seed"], meta["start"])
+    assert key not in vicsek_traces
+    vicsek_traces[key] = phi
+    vicsek_rows.append(dict(eta=key[0], seed=key[1], start=key[2], Q=phi.mean(),
+        block_range=np.ptp([block.mean() for block in np.array_split(phi, 8)])))
+vicsek = pd.DataFrame(vicsek_rows)
+vicsek_controls = [.460, .468, .476, .484]
+vicsek_colors = {910204: "#31688e", 910205: "#b35d2f"}
+assert set(vicsek_traces) == {(eta, seed, start) for eta in vicsek_controls
+    for seed in vicsek_colors for start in ("ordered", "random")}
+vicsek_means = vicsek.groupby("eta").agg(
+    mean_Q=("Q", "mean"), minimum_run_Q=("Q", "min"), maximum_run_Q=("Q", "max"),
+    maximum_block_range=("block_range", "max"))
+display(vicsek_means.round(6))
+
+fig, ax = plt.subplots(figsize=(6.2, 3.3), constrained_layout=True)
+for (seed, start), group in vicsek.groupby(["seed", "start"]):
+    group = group.sort_values("eta")
+    assert np.all(np.diff(group.Q) < 0)
+    ax.plot(group.eta, group.Q, "o-" if start == "ordered" else "s--",
+            color=vicsek_colors[seed], ms=3, label=f"{seed}, {start}")
+ax.set(xlabel=r"angular noise $\eta$", ylabel=r"physical $Q=\langle\phi\rangle_t$",
+       title=r"Vicsek: all seed/start curves, $N=32{,}768$")
+ax.legend(frameon=False)
+paper_axis(ax)
+plt.show()
+print(f"Mean polarization falls {100 * (1 - vicsek_means.mean_Q.iloc[-1] / vicsek_means.mean_Q.iloc[0]):.2f}% across the tested interval.")"""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""fig, axes = plt.subplots(2, 4, figsize=(11.8, 5.1), constrained_layout=True)
+for column, eta in enumerate(vicsek_controls):
+    for seed, color in vicsek_colors.items():
+        for start in ("ordered", "random"):
+            phi = vicsek_traces[eta, seed, start]
+            style = "-" if start == "ordered" else "--"
+            axes[0, column].plot(np.arange(1, 9),
+                [block.mean() for block in np.array_split(phi, 8)],
+                style, color=color, lw=1, label=f"{seed}, {start}")
+            axes[1, column].hist(phi, bins=np.linspace(0, .45, 46), density=True,
+                histtype="step", linestyle=style, color=color, lw=1)
+    axes[0, column].set(title=rf"$\eta={eta:.3f}$", ylim=(0, .4),
+        xlabel="12,500-step block", xticks=[2, 4, 6, 8])
+    axes[1, column].set(xlabel=r"polarization $\phi(t)$", xlim=(0, .45))
+    for ax in axes[:, column]:
+        paper_axis(ax)
+axes[0, 0].set_ylabel(r"block mean of $\phi$")
+axes[1, 0].set_ylabel("time-occupancy density")
+axes[0, -1].legend(frameon=False, fontsize=6)
+plt.show()
+
+# Show all intermediate-control traces; no representative-run selection.
+fig, axes = plt.subplots(2, 2, figsize=(9.2, 4.1), constrained_layout=True, sharex=True, sharey=True)
+for ax, (seed, start) in zip(axes.flat,
+        [(s, a) for s in vicsek_colors for a in ("ordered", "random")], strict=True):
+    phi = vicsek_traces[.468, seed, start]
+    ax.plot(25 * np.arange(1, len(phi) + 1) / 1000, phi,
+            color=vicsek_colors[seed], lw=.5, alpha=.75)
+    ax.set(title=f"{seed}, {start}", xlabel="recording time (thousand steps)",
+           ylabel=r"$\phi(t)$", ylim=(0, .45))
+    paper_axis(ax)
+fig.suptitle(r"Intermediate noise $\eta=.468$: order varies within each run")
+plt.show()"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""### What this establishes—and what remains untested
+
+All four seed/start curves decrease, with mean $Q$ falling from 0.344 to 0.077 over the tested interval. Near $\eta=.468$, the time-occupancy distributions have two visible peaks and the trajectories show lower-/higher-order episodes. Their differing occupancy is precisely the information compressed by a whole-record mean. Block variation or a two-peaked finite histogram alone does not establish stationarity, phase coexistence, or a thermodynamic jump.
+
+This supports retaining Vicsek as a **physical candidate** for a future window-level SPI--SPI tracking test, including variation at fixed noise. It does not demonstrate that a small observed subset contains enough information for $z$ to recover the hidden global quantity. No $q$ curve, recovery correlation, or decoder score exists for this cohort, so Vicsek is excluded from the comparative recovery table below.
+
+The raw observation audit checks temporal variation across all $M\in\{8,16,32\}$ and prefix $T\in\{100,500,1000,2000\}$ views. At stride 25, $T=100,500,1000$ spans 2,500, 12,500 and 25,000 microscopic steps: future inference must state this temporal resolution. The nested views/windows are paired, not independent trials. Zero constant channels is only a basic prerequisite; it is **not** a full-p90 validity or information-sufficiency pass. No sampling layout is declared the winner."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""assert len(vicsek_observations) == 1920
+display(vicsek_observations.groupby(["M", "T"]).agg(
+    view_checks=("constant_fraction", "size"),
+    maximum_constant_channel_fraction=("constant_fraction", "max"),
+).reset_index())
+print("Constant-channel threshold: temporal SD <= 1e-8; all tested channels exceed it.")
+print("No SPI extraction or simulation is performed by this notebook.")"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            """**Provenance and stopping.** Narrow job `178628828` completed in 56m11s, costing 29.96 SU; all overnight cluster stages totalled 37.17 SU. All 16 archives were collected, and the scheduled reminder was deleted. No further job is implied by these results. [Detailed audit and reproduction](../../docs/research/order-parameter-benchmarks/vicsek-narrow-results-260910.md), [frozen protocol](../../docs/research/order-parameter-benchmarks/vicsek-narrow-protocol-260910.md), [execution ledger](../../docs/research/order-parameter-benchmarks/overnight-260910.md)."""
+        ),
+    ]
+    cells[comparative_index:comparative_index] = desai_cells + vicsek_cells + cml2d_cells()
+    from scripts.finite_regime_notebook_cells import build_cells as finite_regime_cells
+    cells.extend(finite_regime_cells())
 
     notebook = nbformat.v4.new_notebook(cells=cells)
     notebook["metadata"]["kernelspec"] = {

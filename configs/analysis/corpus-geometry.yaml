@@ -1,0 +1,29 @@
+output_dir: results/corpus_geometry
+random_state: 1729
+threads: 8
+
+studies:
+  proof_p90:
+    reference_artifacts:
+      - data/proof_p90_260824/features/development-base.npz
+      - data/proof_p90_260824/features/development-cml.npz
+    query_artifacts:
+      - data/proof_p90_260824/features/confirmation.npz
+    matrix_key: X_sym
+    recipes: [legacy, center, standard, robust]
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-8
+    legacy_minimum_feature_valid_fraction: 0.90
+    legacy_minimum_row_valid_fraction: 0.80
+    pca_dimensions: 50
+
+  zenodo_1053:
+    reference_artifacts:
+      - data/zenodo_7118947/features/pearson-unified-v3-seed1729.npz
+    matrix_key: X
+    recipes: [legacy, center, standard, robust]
+    minimum_valid_fraction: 0.95
+    variance_threshold: 1.0e-8
+    legacy_minimum_feature_valid_fraction: 0.90
+    legacy_minimum_row_valid_fraction: 0.80
+    pca_dimensions: 50

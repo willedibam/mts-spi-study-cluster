@@ -1,0 +1,35 @@
+#!/bin/bash
+#PBS -N spi-array
+#PBS -q defaultQ
+#PBS -l select=1:ncpus=1:mem=4gb
+#PBS -l walltime=02:00:00
+#PBS -j oe
+
+# Submit from the repository root:
+# qsub -J 1-100 -v CONFIG=<experiment.yaml> jobs/physics/run_array.pbs
+# Physics permits at most 950 indices per array. For larger workloads submit
+# non-overlapping ranges such as 1-950, 951-1900, then the remainder.
+
+set -euo pipefail
+
+: "${CONFIG:?submit with -v CONFIG=<experiment.yaml> and -J <range>}"
+: "${PBS_ARRAY_INDEX:?submit this file with qsub -J <range>}"
+
+cd "${PBS_O_WORKDIR:?submit this file with qsub}"
+test -f "$CONFIG"
+source scripts/activate.sh
+
+pyspi_args=()
+if [[ -n "${PYSPI_CONFIG:-}" ]]; then
+    test -f "$PYSPI_CONFIG"
+    pyspi_args=(--pyspi-config "$PYSPI_CONFIG")
+fi
+
+python -m src.run_experiments \
+    --experiment-config "$CONFIG" \
+    --job-index "$PBS_ARRAY_INDEX" \
+    --n-jobs "${PBS_NCPUS:-1}" \
+    --skip-existing \
+    --no-csv \
+    --no-heatmap \
+    "${pyspi_args[@]}"

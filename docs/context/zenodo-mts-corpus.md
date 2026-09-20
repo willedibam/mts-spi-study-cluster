@@ -1,93 +1,42 @@
 # Zenodo MTS corpus map
 
-Active workstream as of 2026-08-26. This is exploratory representation analysis;
-proximity is SPI interaction-profile similarity, not established mechanistic identity.
+Active workstream as of 2026-09-17. This is exploratory representation analysis; proximity is SPI interaction-profile similarity, not established mechanistic identity.
 
 ## Verified source
 
-- Zenodo 7118947 v1.1 contains 1,053 named `M x T` arrays. The verified local,
-  pickle-free archive is `data/zenodo_7118947/database.npz`, SHA-256
-  `928ce41f...b77ba84`; metadata is in the adjacent `manifest.json`.
-- Observed ranges are `M=5..29`, `T=30..3000`; 1,052 arrays are float64 and one is
-  int64. There are no non-finite values or constant channels. `sim1` and `sim21`
-  are exact duplicates.
-- Labels comprise 548 real, 487 synthetic and 18 HCP fMRI rows without a
-  real/synthetic tag. Source tags are multi-label and must not be treated as one
-  mutually exclusive ground truth.
+- Zenodo 7118947 v1.1 contains 1,053 named `M x T` arrays. The verified local, pickle-free archive is `data/zenodo_7118947/database.npz`, SHA-256 `928ce41f...b77ba84`; metadata is in the adjacent `manifest.json`.
+- Ranges: `M=5..29`, `T=30..3000`; 1,052 float64/one int64 array. No non-finite values or constant channels; `sim1`/`sim21` are exact duplicates.
+- Original archive tags comprise 548 real, 487 synthetic and 18 HCP fMRI rows without an origin tag. Local corrections in `configs/corpora/zenodo-7118947-label-corrections.yaml` append real to 10 task-state and 8 resting-state HCP recordings; v2 now displays 566 real / 487 synthetic and exports original/corrected tags in `dataset-metadata.csv`. Original archive/feature-bank hashes are preserved. Source tags are multi-label, not one mutually exclusive class ground truth.
 
 ## Implemented boundary
 
-- `src/run_external_corpus.py` and `configs/corpora/zenodo-7118947-p90.yaml` provide
-  a dedicated YAML API. Each task reads one member directly from the shared NPZ,
-  transposes to `T x M`, preserves source data and asks pyspi to z-score each process.
-- The config requires an explicit RNG seed and the runner pins/restores NumPy/Python
-  global state per dataset. Feature reconstruction accepts both legacy class/dataset
-  and direct experiment/dataset layouts, but never mixes experiment banks.
-- Output is one atomic `spi_mpis.npz` plus `meta.json` per dataset; completion checks
-  bind source/config/runner/compute/pyspi identities and validate MPI shape/catalogue.
-- Gadi uses one process/core/dataset through `nci-parallel`; no PBS array and no copied
-  per-dataset input files. Source and outputs belong on gdata via a dataset symlink.
-- Local/Gadi contract tests and full source validation pass. Gadi smoke job
-  `177419496` (9 heterogeneous datasets) and stratified scout `177420118` (48,
-  non-overlapping) both audited complete. Measured runtime was 34--1,593 s and
-  peak memory was 42.4 GB across 48 tasks.
-- Production is partitioned by the transparent measured proxy `M^2*T`: fast
-  `<100k` (807 datasets, 288 cores/6 nodes), medium `100k..<400k` (203,
-  96 cores/2 nodes), slow `>=400k` (43, 48 cores/1 node). Corresponding index
-  files are under `configs/corpora/`; `--skip-existing` validates/reuses 57 pilots.
-- Seeded production jobs `177429006/007/010` exited 0 in 6:30/12:05/27:41 with
-  807/807, 203/203 and 43/43 outputs; all 1,053 audit clean. Maximum allocation
-  was 432 cores on 9 nodes (427 useful workers); observed aggregate memory was
-  about 344 GiB against 1.69 TiB requested. Reconstruction job `177430243` exited
-  0 in 33 s at 5.7 GiB; the final 119-MB artifact is exactly `1053 x 41,616`,
-  records seed 1729 and has SHA-256 `dc28dfd3...21500634`.
+- `src/run_external_corpus.py` and `configs/corpora/zenodo-7118947-p90.yaml` provide a dedicated YAML API. Each task reads one member directly from the shared NPZ, transposes to `T x M`, preserves source data and asks pyspi to z-score each process.
+- The config requires an explicit RNG seed and the runner pins/restores NumPy/Python global state per dataset. Feature reconstruction accepts both legacy class/dataset and direct experiment/dataset layouts, but never mixes experiment banks.
+- Output is one atomic `spi_mpis.npz` plus `meta.json` per dataset; completion checks bind source/config/runner/compute/pyspi identities and validate MPI shape/catalogue.
+- Gadi uses one process/core/dataset through `nci-parallel`; no PBS array and no copied per-dataset input files. Source and outputs belong on gdata via a dataset symlink.
+- Local/Gadi tests and full source validation pass. Smoke `177419496` (9 datasets) and scout `177420118` (48) audited complete; runtime 34--1,593 s, peak 42.4 GB.
+- Production partitions `M^2*T` at 100k/400k: 807/203/43 datasets on 288/96/48 cores. Indices are under `configs/corpora/`; validated outputs reuse the 57 pilots.
+- Seeded production jobs `177429006/007/010` exited 0 in 6:30/12:05/27:41 with 807/807, 203/203 and 43/43 outputs; all 1,053 audit clean. Maximum allocation was 432 cores on 9 nodes (427 useful workers); observed aggregate memory was about 344 GiB against 1.69 TiB requested. Reconstruction job `177430243` exited 0 in 33 s at 5.7 GiB; the final 119-MB artifact is exactly `1053 x 41,616`, records seed 1729 and has SHA-256 `dc28dfd3...21500634`.
 
 ## Analysis boundary
 
-- Primary reconstruction is Pearson `unified_ordered_v3`: correlate complete aligned
-  ordered off-diagonal MPI entries for every SPI pair, producing one raw
-  `1053 x 41,616` matrix for 289 SPIs plus validity mask/schema/provenance. This
-  preserves aligned direction for directed--directed comparisons. Reverse-edge
-  comparison and per-SPI self-reciprocity belong only in an optional v2 sensitivity,
-  not the primary `K choose 2` atlas.
-- The 57-pilot real-data smoke artifact has the exact `57 x 41,616` shape. Its raw
-  row-validity range is `.478--.952`; 16,419 features are valid in at least 95% of
-  pilot rows and 25,451 in at least 90%. Re-estimate all missingness gates on the
-  complete corpus; preserve NaNs and compare 90/95/100% feature-validity sensitivity.
-- Full-corpus raw row validity is `.464--.966` (median `.841`); 24,956/23,782/10,878
-  features meet 90/95/100% validity before variance gating. Missing SPIs are retained
-  as NaN provenance and are not interpreted as failed MTS datasets.
-- The unseeded duplicate control exposed 12 RNG-dependent SPIs. Seeded `sim1`/`sim21`
-  and a repeated ill-conditioned wave dataset are bit-identical across all 289 MPIs.
-  Relative to the provisional artifact, seeded 50-PC distance Spearman is `.9999`
-  and 15-NN overlap `.972`; residual changes in 23 spectral SPIs occur on only 1--5
-  ill-conditioned wave rows and are reproducible under the seeded runner.
-- Final atlas job `177430329` exited 0 in 14:15 (1:29:49 CPU, 2.22 GiB peak) and
-  retained 21,788 varying features at the 95% gate. Stable K-means resolutions are
-  PCA10 `k=8` (subsample ARI `.955`) and PCA80 `k=2` (`.971`); the configured
-  near-tie/parsimony rule selects the former. GMM PCA10/full `k=13` (`.587`) and
-  HDBSCAN `k=2` (`.511`) fail the `.70` stability gate. There is no unique inferred
-  cluster count; GMM/HDBSCAN are diagnostic views.
-- Fit clustering in a preprocessed PCA/meta-feature space, never in t-SNE coordinates.
-  UMAP/t-SNE are visualizations. Compare stable GMM, HDBSCAN and graph/consensus
-  solutions using resampling stability and method-appropriate criteria, not appearance.
-- `src/run_atlas_analysis.py` is configured by
-  `configs/analysis/zenodo-7118947-atlas.yaml`. It compares 90/95/100% validity
-  gates; covariance PCA at 10/20/40/80 dimensions; GMM `k=1..15` with
-  diagonal/tied/full covariance where estimable; K-means and HDBSCAN; and seeded
-  UMAP/t-SNE grids. BIC selects GMM form only within a fixed PCA dimension;
-  resampling stability selects/validates dimension and partitions. Pilot smoke
-  passes; its GMM solution is correctly flagged unvalidated at ARI `.415`.
-- `src/run_catch22_corpus.py` implements the 94-corpus precedent's 22-per-channel,
-  min/Q1/mean/Q3/max aggregation as a 110-feature control. All 1,053 local datasets
-  completed with finite values and no channel errors. Against the final atlas,
-  pairwise-distance Spearman was `.385` and 15-NN overlap `.320` versus `.014` random;
-  the spaces are related but non-equivalent, and Catch22 had slightly greater source-tag
-  neighbourhood homogeneity, so the current evidence is not a superiority result.
-- Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series
-  baselines. Treat tag enrichment as post-hoc characterization with multiplicity control.
-- Do not claim novelty or mechanistic discovery without a literature audit and external
-  validation. The broad atlas claim is already false: [Navarro et al. (PMLR
-  2023)](https://proceedings.mlr.press/v224/navarro23a.html) projected 94
-  heterogeneous MTS datasets in aggregated Catch22 meta-feature space; only the
-  SPI interaction-profile construction/scale is a plausible narrower novelty.
+- Primary reconstruction is Pearson `unified_ordered_v3`: correlate complete aligned ordered off-diagonal MPI entries for every SPI pair, producing one raw `1053 x 41,616` matrix for 289 SPIs plus validity mask/schema/provenance. This preserves aligned direction for directed--directed comparisons. Reverse-edge comparison and per-SPI self-reciprocity belong only in an optional v2 sensitivity, not the primary `K choose 2` atlas.
+- Full-corpus raw row validity is `.464--.966` (median `.841`); 24,956/23,782/10,878 features meet 90/95/100% validity before variance gating. Missing SPIs are retained as NaN provenance and are not interpreted as failed MTS datasets.
+- The unseeded duplicate control exposed 12 RNG-dependent SPIs. Seeded `sim1`/`sim21` and a repeated ill-conditioned wave dataset are bit-identical across all 289 MPIs. Relative to the provisional artifact, seeded 50-PC distance Spearman is `.9999` and 15-NN overlap `.972`; residual changes in 23 spectral SPIs occur on only 1--5 ill-conditioned wave rows and are reproducible under the seeded runner.
+- Final atlas job `177430329` exited 0 in 14:15 (1:29:49 CPU, 2.22 GiB peak) and retained 21,788 varying features at the 95% gate. Stable K-means resolutions are PCA10 `k=8` (subsample ARI `.955`) and PCA80 `k=2` (`.971`); the configured near-tie/parsimony rule selects the former. GMM PCA10/full `k=13` (`.587`) and HDBSCAN `k=2` (`.511`) fail the `.70` stability gate. There is no unique inferred cluster count; GMM/HDBSCAN are diagnostic views.
+- Primary clustering uses preprocessed PCA/meta-feature space, with full-feature distance checks; UMAP/t-SNE display those memberships. Map-based clustering is retained separately for descriptive regions/historical reproduction, not independent evidence of full-feature separation. The user approved v2 without GMM; no unique natural cluster count is asserted.
+- `src/run_atlas_analysis.py` uses `configs/analysis/zenodo-7118947-atlas.yaml`. BIC selects GMM form only within a fixed PCA dimension; resampling stability compares partitions. Pilot GMM was correctly flagged unvalidated at ARI `.415`.
+- Archived Catch22 control: 110 features, 1,053 finite rows, distance Spearman .385; its higher tag homogeneity does not support SPI-space superiority. Outside current scope.
+- Quantify `M,T`, estimator-validity and broad-tag leakage; compare simple raw-series baselines. Treat tag enrichment as post-hoc characterization with multiplicity control.
+- [Navarro et al. (2023)](https://proceedings.mlr.press/v224/navarro23a.html) embedded 94 heterogeneous MTS datasets with Catch22. Novelty must concern the SPI interaction representation/scale; mechanistic claims require external validation.
+- `corpus-geometry` compares historical/centre/standard/robust geometries. The old distance-recipe adapter drops 30 rows; fitted recipes retain all. Gadi smoke `177659962` passed on 64 rows (config SHA `6e6bda59...1aef6e27`).
+- Figure 4--5 exploration: [usage/data/methods](../zenodo-visual-exploration.md), `scripts/explore_zenodo_geometry.py`, `configs/analysis/zenodo-visual-exploration.yaml`. The executed `notebooks/embeddings/zenodo_1053_geometry.ipynb` includes 32 embedding views and 40 partitions. Local `results/zenodo_7118947/visual-exploration/index.html` supports manual subsets/labels; all 1,053 MTS have per-process robust PNG/SVG assets. Benchmark formatting and grey KDE contours replace the original broad ellipses.
+- Important correction: Figure 4--5 preprocessing uses `get_feature_matrix()` defaults (duplicate features removed; 20% row/80% column validity; raw zero-fill), not the standardized distance-matrix script. On our bank this retains 28,066 features; direct t-SNE p10/seed42 + contrib HDBSCAN size5 gives 45 clusters, 138 noise rows. Draft uses Spearman similarities; our Pearson catalogue/environment differs.
+- Historical display audit: `old/plot_clusters.py:114` filters out label −1 before KDE/scatter; `old/plot_dataspace.py` sets `plot_nas=False` (`old/utils.py:537`). V2 intentionally keeps these rows visible. The original figure cannot establish full assignment from its appearance; historical algorithm adaptation is not an exact copy of that display policy. Gray values in the old cluster plot were random per-cluster colors, not origin labels.
+- Higher-k extension: `scripts/refine_zenodo_clusters.py` adds k80/120/160/200 on PCA20/50/100 and leaf-map variants. Start local inspection at PCA100/k80: median size10, 4% of rows in groups<5; k200 has median4 and about 24% in groups<5. Historical HDBSCAN EOM45/noise138 becomes leaf61/noise366. Counts are resolutions.
+- `shortlist.html` (configured in `zenodo-cluster-shortlist.json`) shows seven complete groups. ForEx/walking/wave-2D/LEGION are stronger source examples; wave/hysteresis and articulation/EigenWorms are candidates; financial/Brownian/HCP remains weaker. Composition (homogeneous/heterogeneous) and origin (real/synthetic/mixed) are separate, with explicit classes. Member/outsider dynamics qualify appearances: financial group shares trends, but fMRI lag1=.80 vs .99--1.00. No shared mechanism is established.
+- Per-group five-subsample Jaccard holds PCA fixed. Waves remain separated on 9,313 fully observed varying features, but exact raw checks find nested windows: excluded wave-1D M16/T100 is a prefix of included T500/T1000. Future resampling must group parent series; these rows are not independent simulations.
+- Display: PCA50/t-SNE p30, full-feature recall .492. New neighbour metrics remove self correctly; original helper dropped nearest non-self. Gallery validates statically; browser file-URL policy blocked UI testing. Open HTML in a normal browser.
+- V2 is separate: `scripts/explore_zenodo_v2.py`, `scripts/zenodo_gallery_v2.html`, `configs/analysis/zenodo-visual-exploration-v2.yaml`; methods/reproduction instructions are in [the existing guide](../zenodo-visual-exploration.md#explorer-v2). It preserves v1 and reuses its heatmaps. Exact SVD supplies PCA50/100/200 and full-rank coordinates verified distance-equivalent to all retained features. Historical p10 is pinned unchanged; optional k200 medoids is explicitly NumPy compatibility, not the historical binary. Fit spaces and map mismatches are displayed, with seed sensitivity distinct from recording-level stability.
+- V2 executed locally: 29 embeddings / 39 partitions, all 1,053 rows; PCA200 retains 88.53% variance and 86.39% of full-feature 15-neighbour memberships. `visual-exploration-v2/exploration.npz` is 46.9 MiB, including full distances and scores. Historical coordinates and EOM labels are exactly equal to v1. Browser checks verified point/hull inspection, view changes retaining feature-space memberships, historical map switching/mismatch warnings, search/selection, and actual CSV/SVG/PNG downloads. Group hull shading is optional/off by default, not a density estimate. Local preview can use `.venv/bin/python -m http.server 8765 --bind 127.0.0.1 --directory results/zenodo_7118947`; the HTML also has no network/data-fetch dependency.
+- V2 group shading now offers None / KDE / Convex hulls. `scripts/zenodo_kde.js` is embedded offline: Gaussian KDE, Scott ×1.2, 48×48 grid, approximate 80/50% mass contours per assigned group; negative labels excluded before fitting. Browser verified 90 contours for historical EOM's 45 groups, none for noise. Unassigned point clicks select the unassigned group as requested; that group still has no KDE. Synthetic fill is #969696; all points have white outlines. These are display-only changes; details/tests are in the guide and `tests/test_zenodo_v2.py`.

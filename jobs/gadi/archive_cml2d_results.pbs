@@ -1,0 +1,25 @@
+#!/bin/bash
+#PBS -N cml2d-archive
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -l walltime=00:15:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+
+# Preserve the costly cluster outputs without removing their working copies.
+cml_parent=/scratch/ql44/we2614/mts-spi-data/order_parameter
+cml_name=cml2d_period_doubling_260911
+cml_archive=/g/data/ql44/we2614/mts-spi-archives/cml2d_period_doubling_260911.tar
+test -d "$cml_parent/$cml_name"
+test -d /g/data/ql44/we2614/mts-spi-archives
+test ! -e "$cml_archive"
+for cml_arm in primary sensitivity short-T contiguous; do
+    test -f "$cml_parent/$cml_name/$cml_arm-analysis/summary.json"
+done
+tar -C "$cml_parent" -cf "$cml_archive" "$cml_name"
+tar -C "$cml_parent" --compare -f "$cml_archive"
+sha256sum "$cml_archive"
+ls -lh "$cml_archive"

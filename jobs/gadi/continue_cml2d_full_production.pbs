@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N cml2d-full-continue
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -l walltime=00:05:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${CONTROLLER_FILE:?}" "${SOURCE_DIR:?}" "${EXPECTED_COMMIT:?}" "${DIAGNOSTIC_ROOT:?}"
+module purge
+module load python3/3.12.1
+args=(--root "$DIAGNOSTIC_ROOT" --source "$SOURCE_DIR" --commit "$EXPECTED_COMMIT")
+[[ -n "${L:-}" ]] && args+=(--L "$L")
+[[ -n "${MEMORY_PER_WORKER_GB:-}" ]] && args+=(--memory-per-worker-gb "$MEMORY_PER_WORKER_GB")
+python3 "$CONTROLLER_FILE" "${args[@]}"

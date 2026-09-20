@@ -1,0 +1,17 @@
+# Exploratory sensitivity panels, not a search for an aesthetically optimal taxonomy.
+features: data/zenodo_7118947/features/pearson-unified-v3-seed1729.npz
+database: data/zenodo_7118947/database.npz
+atlas: results/zenodo_7118947/atlas-seed1729/atlas-results.npz
+output: results/zenodo_7118947/visual-exploration
+seed: 1729
+threads: 8
+pca_dimensions: [20, 50, 100]
+tsne_perplexities: [10, 30, 50]
+tsne_iterations: 1500
+umap_neighbors: [15, 30, 60]
+umap_min_dist: 0.1
+umap_min_dist_sensitivity: [0.0, 0.5]
+kmeans_clusters: [8, 20, 40, 60]
+gmm_clusters: [8, 20, 40]
+hdbscan_min_cluster_sizes: [5, 10, 20]
+stability_seeds: [11, 23, 47]

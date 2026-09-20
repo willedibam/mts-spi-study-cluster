@@ -1,0 +1,23 @@
+[
+  {"id":"foreign-exchange", "partition":"kmeans-pca50-k80", "cluster":25,
+   "title":"Foreign-exchange return series", "composition":"homogeneous", "origin":"real", "classes":["ForEx log returns"],
+   "note":"Five source-labelled ForEx log-return windows. Shared source and a stable feature-space group; windows need not be statistically independent."},
+  {"id":"walking", "partition":"kmeans-pca100-k80", "cluster":72,
+   "title":"BasicMotions walking recordings", "composition":"homogeneous", "origin":"real", "classes":["BasicMotions/walking"],
+   "note":"All ten source-labelled walking instances. This group separates cleanly at PCA100/k80; increasing k on PCA20 did not reliably remove running/standing mixtures."},
+  {"id":"wave-2d", "partition":"kmeans-pca20-k40", "cluster":9,
+   "title":"Two-dimensional wave simulations", "composition":"homogeneous", "origin":"synthetic", "classes":["wave-2D"],
+   "note":"Six wave-2D series across different M and T, with recurring spatial/temporal texture visible in all members. Already coherent at k40: higher k is not needed here. Only 79% of retained entries are observed, but separation strengthens using fully observed features. Its boundary is not perfectly isolated."},
+  {"id":"legion", "partition":"kmeans-pca50-k80", "cluster":33,
+   "title":"LEGION oscillator parameter variants", "composition":"homogeneous", "origin":"synthetic", "classes":["LEGION"],
+   "note":"Five source-labelled LEGION series with different parameter sets and lengths. Shared generator family is known from source identifiers; a shared dynamical regime has not been independently established."},
+  {"id":"wave-hysteresis", "partition":"kmeans-pca50-k160", "cluster":52,
+   "title":"Wave-1D and hysteresis-model series", "composition":"heterogeneous", "origin":"synthetic", "classes":["wave-1D","hysteresis oscillator"],
+   "note":"Four wave-1D series and one hysteresis-oscillator series. Repeated oscillatory patterns are visible, although spatial patterns and waveforms differ. Only 63% of retained entries are observed; separation remains positive on fully observed features. This supports inspecting the cross-model association, not mechanistic equivalence."},
+  {"id":"articulation-worm", "partition":"kmeans-pca100-k160", "cluster":118,
+   "title":"ArticularyWordRecognition and EigenWorms", "composition":"heterogeneous", "origin":"real", "classes":["ArticularyWordRecognition","EigenWorms"],
+   "note":"Eight articulatory recordings plus one EigenWorms recording. All are smooth in sample units, but median linear-trend R2 is 0.21-0.60 in the articulatory series versus 0.015 in the worm recording. Membership is reproducible, but the shared mechanism remains unexplained; recording durations and sampling rates differ or are unknown."},
+  {"id":"finance-brownian", "partition":"kmeans-pca50-k120", "cluster":81,
+   "title":"Financial levels, Brownian simulations and HCP fMRI", "composition":"heterogeneous", "origin":"mixed", "classes":["stock-market levels","arithmetic Brownian motion","HCP task fMRI"],
+   "note":"Two financial series, three arithmetic-Brownian simulations and one HCP task-fMRI series (without a real/synthetic source tag). All have strong linear trends (median channel R2 0.55-0.88); fMRI lag-1 correlation is 0.80 versus 0.99-1.00 for the other members. Shared trend structure is a plausible explanation, but dynamical equivalence is not supported."}
+]

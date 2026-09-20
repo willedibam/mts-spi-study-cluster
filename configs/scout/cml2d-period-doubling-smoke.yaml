@@ -1,0 +1,5 @@
+simulation: {g: 0.2, burn: 2000, record_steps: 4000, observation_steps: 2000}
+grid:
+  L: [64]
+  r: [3.84, 3.89]
+  seed: [26091101]

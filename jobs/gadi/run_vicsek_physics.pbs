@@ -9,7 +9,7 @@
 #PBS -l storage=scratch/ql44
 #PBS -j oe
 
-# Bounded single-node physics pilot: one process/case, at most four cases.
+# Bounded single-node physics pilot: one process/case, at most sixteen cases.
 # Override resources for long gate: -l ncpus=4,mem=16GB,walltime=02:00:00.
 set -euo pipefail
 : "${EXPECTED_COMMIT:?must pin the committed scout source}"
@@ -19,7 +19,7 @@ FIRST_CASE=${FIRST_CASE:-0}
 LAST_CASE=${LAST_CASE:-1}
 [[ "$FIRST_CASE" =~ ^[0-9]+$ && "$LAST_CASE" =~ ^[0-9]+$ ]]
 case_count=$((LAST_CASE - FIRST_CASE + 1))
-(( case_count >= 1 && case_count <= 4 && case_count <= PBS_NCPUS ))
+(( case_count >= 1 && case_count <= 16 && case_count <= PBS_NCPUS ))
 [[ "$OUTPUT_DIR" == /scratch/ql44/we2614/* ]]
 [[ "$SCOUT_CONFIG" == configs/scout/vicsek-*.yaml ]]
 

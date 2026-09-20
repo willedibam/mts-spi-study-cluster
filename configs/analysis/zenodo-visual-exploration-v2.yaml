@@ -1,0 +1,17 @@
+features: data/zenodo_7118947/features/pearson-unified-v3-seed1729.npz
+database: data/zenodo_7118947/database.npz
+label_corrections: configs/corpora/zenodo-7118947-label-corrections.yaml
+previous: results/zenodo_7118947/visual-exploration
+output: results/zenodo_7118947/visual-exploration-v2
+seed: 1729
+threads: 8
+pca_dimensions: [50, 100, 200]
+tsne_perplexities: [10, 30, 50]
+tsne_iterations: 1500
+historical_perplexities: [10, 30, 50]
+kmeans_clusters: [40, 80, 120, 160]
+hdbscan_dimensions: [50, 100]
+hdbscan_min_cluster_sizes: [5, 10, 20]
+umap_neighbors: [15, 30, 60]
+stability_seeds: [11, 23, 47]
+embedding_seeds: [2718, 3141]

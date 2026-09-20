@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N cml2d-confirm-stage
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=16GB
+#PBS -l walltime=00:30:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${SOURCE_DIR:?}" "${EXPECTED_COMMIT:?}" "${STAGE:?}" "${CONFIRM_ROOT:?}" "${PHYSICS_DIR:?}" "${FROZEN_DIR:?}"
+cd "$SOURCE_DIR"
+test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+python -m scripts.cml2d_confirmation "$STAGE" --root "$CONFIRM_ROOT" --physics "$PHYSICS_DIR" --frozen "$FROZEN_DIR"

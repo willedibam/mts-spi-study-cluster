@@ -1,0 +1,60 @@
+#!/bin/bash
+#PBS -N kur-full-p90
+#PBS -P ql44
+#PBS -q normal
+#PBS -l walltime=02:00:00
+#PBS -l ncpus=48
+#PBS -l mem=190GB
+#PBS -l jobfs=10GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -r y
+#PBS -j oe
+
+set -euo pipefail
+
+repo_dir=/home/562/we2614/mts-spi-study-cluster
+feature_dir=/scratch/ql44/we2614/spi-spi-unified-v3
+result_dir=/scratch/ql44/we2614/kuramoto-full-catalogue-reanalysis
+analysis_script=${ANALYSIS_SCRIPT:-$repo_dir/scripts/analyze_kuramoto_full_catalogue.py}
+
+cd "$repo_dir"
+source .venv/bin/activate
+mkdir -p "$feature_dir" "$result_dir" logs
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+
+python -m src.process_features \
+  --data-path data/order_parameter/kuramoto_order_benchmark \
+  --mts-classes kuramoto-gaussian-paired,kuramoto-gaussian-cell \
+  --output "$feature_dir/kuramoto_benchmark_gaussian_random.npz" \
+  --feature-contract unified_ordered_v3 \
+  --metric pearson \
+  --workers 48
+
+python -m src.process_features \
+  --data-path data/order_parameter/kuramoto_confirmation \
+  --mts-classes kuramoto-confirm-gaussian-paired,kuramoto-confirm-gaussian-cell \
+  --output "$feature_dir/kuramoto_eligibility_null_gaussian_random.npz" \
+  --feature-contract unified_ordered_v3 \
+  --metric pearson \
+  --workers 48
+
+python -m src.process_features \
+  --data-path data/order_parameter/kuramoto_final_confirmation \
+  --mts-classes kuramoto-final-gaussian-paired,kuramoto-final-gaussian-cell \
+  --output "$feature_dir/kuramoto_terminal_gaussian_random.npz" \
+  --feature-contract unified_ordered_v3 \
+  --metric pearson \
+  --workers 48
+
+python "$analysis_script" \
+  --benchmark-features "$feature_dir/kuramoto_benchmark_gaussian_random.npz" \
+  --eligibility-null-features "$feature_dir/kuramoto_eligibility_null_gaussian_random.npz" \
+  --terminal-features "$feature_dir/kuramoto_terminal_gaussian_random.npz" \
+  --output-dir "$result_dir" \
+  --minimum-valid-fraction 0.99 \
+  --variance-threshold 0.05 \
+  --bootstraps 2000

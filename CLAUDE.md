@@ -15,6 +15,7 @@
 - Where required, be extremely academically informed, intelligent and literature aware.
 - Be concise and direct. Prefer the simplest implementation that fully solves the problem. If a local fix would add brittle complexity, flag the underlying refactor instead of layering on a workaround.
 - Make surgical edits. Do not touch unrelated code; mention unrelated dead code or cleanup opportunities instead of removing them.
+- Write Markdown prose with one logical paragraph per physical line. Do not hard-wrap prose to a fixed column width. Preserve intentional line breaks and structured Markdown.
 
 ## Durable project context
 

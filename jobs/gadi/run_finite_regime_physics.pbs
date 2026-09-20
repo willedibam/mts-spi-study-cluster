@@ -1,0 +1,48 @@
+#!/bin/bash
+#PBS -N finite-physics
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48
+#PBS -l mem=190GB
+#PBS -l walltime=00:30:00
+#PBS -l jobfs=4GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -j oe
+set -euo pipefail
+: "${SOURCE_DIR:?}" "${EXPECTED_COMMIT:?}" "${RESULT_ROOT:?}"
+candidate="${CANDIDATE:-rossler}"
+case "$candidate" in
+    rossler) physics_module=scripts.rossler_phase_sync; physics_test=tests/test_rossler_phase_sync.py ;;
+    tasep) physics_module=scripts.tasep_phase_boundary; physics_test=tests/test_tasep_phase_boundary.py ;;
+    lorenz96) physics_module=scripts.lorenz96_crisis; physics_test=tests/test_lorenz96_crisis.py ;;
+    hindmarsh-rose) physics_module=scripts.hindmarsh_rose_spike_adding; physics_test=tests/test_hindmarsh_rose_spike_adding.py ;;
+    *) exit 2 ;;
+esac
+cd "$SOURCE_DIR"
+test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"
+export PYTHONPATH="$SOURCE_DIR${PYTHONPATH:+:$PYTHONPATH}"
+mkdir -p "$RESULT_ROOT" logs
+exec >"logs/finite-physics-${candidate}-${PBS_JOBID}.log" 2>&1
+python -m pytest -q "$physics_test" tests/test_finite_regime_pipeline.py
+mpirun -np "${PBS_NNODES:-1}" --map-by ppr:1:node python -c "import $physics_module; print('shared source OK',flush=True)"
+total=$(python -m "$physics_module" --count-only)
+commands="$PBS_JOBFS/commands.txt"
+for ((i=0;i<total;i++)); do
+    if [[ "${SMOKE:-0}" == 1 ]] && (( i != 0 && i != 160 )); then continue; fi
+    printf 'python -m %s --case-index %d --output-dir %s/physics\n' "$physics_module" "$i" "$RESULT_ROOT" >> "$commands"
+done
+mpirun -np "$PBS_NCPUS" --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$RESULT_ROOT/physics-${PBS_JOBID}.status"
+if [[ "${SMOKE:-0}" != 1 ]]; then
+    if [[ "$candidate" == lorenz96 ]]; then
+        python -m scripts.lorenz96_crisis_pipeline physics --physics "$RESULT_ROOT/physics" --output "$RESULT_ROOT/physics-analysis"
+    elif [[ "$candidate" == hindmarsh-rose ]]; then
+        python -m scripts.hindmarsh_rose_pipeline physics --physics "$RESULT_ROOT/physics" --output "$RESULT_ROOT/physics-analysis"
+    else
+        python -m scripts.finite_regime_pipeline "${candidate}-physics" --physics "$RESULT_ROOT/physics" --output "$RESULT_ROOT/physics-analysis"
+    fi
+fi

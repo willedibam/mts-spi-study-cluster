@@ -1,10 +1,6 @@
 # Covariance-modulation pilot: findings
 
-Status2026-09-09: all640p90 records,144statistical fits and the corrected neural
-comparisons are complete. The bounded1200epoch pointwise learning curves are
-complete and verified; no further same-generator runs are justified. This is an exploratory pilot with three disjoint
-source cohorts per process, not a confirmatory result selected from new data.
-The [protocol](covariance-modulation-pilot.md) states the generator and comparisons.
+Status2026-09-09: all640p90 records,144statistical fits and the corrected neural comparisons are complete. The bounded1200epoch pointwise learning curves are complete and verified; no further same-generator runs are justified. This is an exploratory pilot with three disjoint source cohorts per process, not a confirmatory result selected from new data. The [protocol](covariance-modulation-pilot.md) states the generator and comparisons.
 
 The principal SPI-SPI utility hypothesis is not supported on this task. At40labels:
 
@@ -23,36 +19,17 @@ The principal SPI-SPI utility hypothesis is not supported on this task. At40labe
 | Raw covariance/cumulant/window summaries + PLS | .1355 | .1662 |
 | Observed-data moment estimate + source calibration | .0875 | .1261 |
 
-The moment reference uses knowledge of the model form, but estimates groups and
-loadings from observed data; it does not receive latent groups or parameters.
-Uncalibrated supplementary evaluation needs zero labels and obtains .0935/.1510.
-This establishes an accessible raw-data signal, not a universal estimation bound.
+The moment reference uses knowledge of the model form, but estimates groups and loadings from observed data; it does not receive latent groups or parameters. Uncalibrated supplementary evaluation needs zero labels and obtains .0935/.1510. This establishes an accessible raw-data signal, not a universal estimation bound.
 
-Reduced-observation z-PLS MAE10/20/40=.2456/.2306/.2375; z-PCA=.2289/.2286/.2258.
-At40labels z-PCA minus median=-.00069, conditional95%CI[-.00776,.00622]; z-PLS
-minus median=+.01104[-.00187,.02344]. Neither resolves an advantage. The z-PLS
-advantage over normalized SPI shapes is -.01582[-.02810,-.00328], but both are
-worse than the median in mean error. Fusion improves weak SPI baselines without
-establishing useful absolute performance. Intervals resample independent test
-masters within process and condition on the six fitted cohort models; pointwise,
-not selection-adjusted. Preserve all scopes/cohort results, not just this table.
+Reduced-observation z-PLS MAE10/20/40=.2456/.2306/.2375; z-PCA=.2289/.2286/.2258. At40labels z-PCA minus median=-.00069, conditional95%CI[-.00776,.00622]; z-PLS minus median=+.01104[-.00187,.02344]. Neither resolves an advantage. The z-PLS advantage over normalized SPI shapes is -.01582[-.02810,-.00328], but both are worse than the median in mean error. Fusion improves weak SPI baselines without establishing useful absolute performance. Intervals resample independent test masters within process and condition on the six fitted cohort models; pointwise, not selection-adjusted. Preserve all scopes/cohort results, not just this table.
 
-Covariance-only and spectral controls remain weak, consistent with the deliberately
-matched population second-order laws. Window summaries perform better for the
-persistent source (full MAE.1189) than iid (.1834), while cumulants work in both
-(.1472/.1393). The strong instantaneous moment reference works across the process
-change too (other-process full/reduced .0906/.1292). Thus successful target
-prediction here does not require learning temporal state persistence.
+Covariance-only and spectral controls remain weak, consistent with the deliberately matched population second-order laws. Window summaries perform better for the persistent source (full MAE.1189) than iid (.1834), while cumulants work in both (.1472/.1393). The strong instantaneous moment reference works across the process change too (other-process full/reduced .0906/.1292). Thus successful target prediction here does not require learning temporal state persistence.
 
 ## A narrow explanation of Pearson compression
 
-After seeing these results, we checked a population-level special case using
-Pearson correlation and the fourth cross-cumulant. This is an explanatory
-diagnostic, not another predictive benchmark or a proof about all289SPIs.
+After seeing these results, we checked a population-level special case using Pearson correlation and the fourth cross-cumulant. This is an explanatory diagnostic, not another predictive benchmark or a proof about all289SPIs.
 
-For fixed background/loading parameters and group assignment, let R denote the
-population correlation MPI and K the fourth cross-cumulant MPI. Conditional
-Gaussian moments give
+For fixed background/loading parameters and group assignment, let R denote the population correlation MPI and K the fourth cross-cumulant MPI. Conditional Gaussian moments give
 
 \[
 K_{ij}=\operatorname{cum}(X_i,X_i,X_j,X_j)
@@ -67,104 +44,40 @@ R is independent of alpha. Therefore, for alpha>0,
                      \operatorname{offdiag}(K/\alpha^2))
 \]
 
-is also independent of alpha. K's magnitude carries the target while this
-agreement coordinate removes it. Both directed off-diagonal orientations are
-included; the argument does not depend on discarding direction.
+is also independent of alpha. K's magnitude carries the target while this agreement coordinate removes it. Both directed off-diagonal orientations are included; the argument does not depend on discarding direction.
 
-`scripts/check_covariance_modulation_population.py` verifies this over100fixed
-nuisance draws and19alpha values: maximum agreement change1.11e-15, while mean
-cumulant magnitude changes361-fold. True groups/loadings are used only for this
-population identity check, not for fitted baselines. Other catalogue statistics
-can respond non-affinely to alpha, so this does **not** prove fullz is invariant
-or establish why every empirical readout failed. It demonstrates a relevant,
-exact failure mode of normalized cross-statistic agreement.
+`scripts/check_covariance_modulation_population.py` verifies this over100fixed nuisance draws and19alpha values: maximum agreement change1.11e-15, while mean cumulant magnitude changes361-fold. True groups/loadings are used only for this population identity check, not for fitted baselines. Other catalogue statistics can respond non-affinely to alpha, so this does **not** prove fullz is invariant or establish why every empirical readout failed. It demonstrates a relevant, exact failure mode of normalized cross-statistic agreement.
 
 ## Validation and decision
 
-- All640extractions completed; corrected Gadi analysis178481788 exited0 in2:43.
-  Eight local MPI feature replays match the bank. Eighteen local statistical
-  replays cover every method/both processes and the former rank-one failure;
-  maximum prediction/CV discrepancies1.57e-14/1.11e-15.
-- First analysis failed when validityPLS requested4components from a rank1matrix.
-  Rank capping fixes this; all108previous raw PLS fits/CV scores reproduce exactly.
-- Original neural validation clipped negative predictions, sometimes hiding
-  genuine improvement. Corrected stopping uses raw validation MAE and a600epoch
-  ceiling; historical scores remain diagnostics. See protocol for the reproduced
-  defect and why the joint change is not a clean causal performance attribution.
-- Corrected aligned18fits reproduce the original performance: reduced MAE10/20/40
-  .2324/.2330/.2295. All checkpoint/split checks pass; CPU/MPS error<=3.58e-7,
-  no selected600epochcap. The validation repair did not rescue this architecture.
-- Corrected temporal-pair18fits complete: reduced MAE10/20/40=.2274/.2372/.2329,
-  full=.2265/.2324/.2273. All checkpoints/splits pass; CPU/MPS discrepancy<=1.20e-7,
-  no selected600epochcap. The correction makes small10/20label differences but
-  does not rescue performance. Combined interim report is `corrected-interim-report/`.
-- The prespecified40label pointwise gate passed and its bounded extension is
-  complete (below). A larger identical p90 run is not justified. The
-  task demonstrates that dependence-only signal is insufficient to guarantee
-  utility for z. Further work should distinguish changing dependence magnitudes
-  from changing cross-statistic edge correspondence, with a meaningful target;
-  that is a research requirement, not an instruction to manufacture a win.
+- All640extractions completed; corrected Gadi analysis178481788 exited0 in2:43. Eight local MPI feature replays match the bank. Eighteen local statistical replays cover every method/both processes and the former rank-one failure; maximum prediction/CV discrepancies1.57e-14/1.11e-15.
+- First analysis failed when validityPLS requested4components from a rank1matrix. Rank capping fixes this; all108previous raw PLS fits/CV scores reproduce exactly.
+- Original neural validation clipped negative predictions, sometimes hiding genuine improvement. Corrected stopping uses raw validation MAE and a600epoch ceiling; historical scores remain diagnostics. See protocol for the reproduced defect and why the joint change is not a clean causal performance attribution.
+- Corrected aligned18fits reproduce the original performance: reduced MAE10/20/40 .2324/.2330/.2295. All checkpoint/split checks pass; CPU/MPS error<=3.58e-7, no selected600epochcap. The validation repair did not rescue this architecture.
+- Corrected temporal-pair18fits complete: reduced MAE10/20/40=.2274/.2372/.2329, full=.2265/.2324/.2273. All checkpoints/splits pass; CPU/MPS discrepancy<=1.20e-7, no selected600epochcap. The correction makes small10/20label differences but does not rescue performance. Combined interim report is `corrected-interim-report/`.
+- The prespecified40label pointwise gate passed and its bounded extension is complete (below). A larger identical p90 run is not justified. The task demonstrates that dependence-only signal is insufficient to guarantee utility for z. Further work should distinguish changing dependence magnitudes from changing cross-statistic edge correspondence, with a meaningful target; that is a research requirement, not an instruction to manufacture a win.
 
-Reproduce tables with `scripts/report_covariance_modulation.py`, inputs
-`results/covariance_modulation_260909/{raw,gadi-analysis/statistical-rank-fixed}`;
-authoritative interim output `statistical-raw-report/`. Verification JSON files
-and original/corrected outputs are retained separately under the study root.
+Reproduce tables with `scripts/report_covariance_modulation.py`, inputs `results/covariance_modulation_260909/{raw,gadi-analysis/statistical-rank-fixed}`; authoritative interim output `statistical-raw-report/`. Verification JSON files and original/corrected outputs are retained separately under the study root.
 
 ## Bounded catalogue attribution after the main result
 
-User asked whether nonlinear SPI values contain signal that their agreements
-lose. A fixed panel of dcorr, biased dcorr, two Kraskov MI configurations and
-kernel MI was compared using the same cohorts/PLS grid. Gaussian MI was excluded
-because it is a function of correlation. This is retrospective attribution,
-not a newly confirmed performance result;72fits in `catalogue-signal/`, report
-`catalogue-signal-report/`, script `check_covariance_catalogue_signal.py`.
+User asked whether nonlinear SPI values contain signal that their agreements lose. A fixed panel of dcorr, biased dcorr, two Kraskov MI configurations and kernel MI was compared using the same cohorts/PLS grid. Gaussian MI was excluded because it is a function of correlation. This is retrospective attribution, not a newly confirmed performance result;72fits in `catalogue-signal/`, report `catalogue-signal-report/`, script `check_covariance_catalogue_signal.py`.
 
-At40labels, original-size MAE is .1844 for the five means, .1567 for115rich
-summaries, .2300 for105normalized shape features, and .2194 for their ten
-agreement coordinates. The catalogue is therefore not wholly insensitive to the
-target: retaining distribution location/scale exposes useful signal. This
-supports, but does not prove, information loss through normalization; differences
-in feature dimension, estimation and readout remain. The ten-coordinate panel
-omits relationships with linear SPIs, so its failure does not rule out informative
-coordinates elsewhere in z.
+At40labels, original-size MAE is .1844 for the five means, .1567 for115rich summaries, .2300 for105normalized shape features, and .2194 for their ten agreement coordinates. The catalogue is therefore not wholly insensitive to the target: retaining distribution location/scale exposes useful signal. This supports, but does not prove, information loss through normalization; differences in feature dimension, estimation and readout remain. The ten-coordinate panel omits relationships with linear SPIs, so its failure does not rule out informative coordinates elsewhere in z.
 
-After M/T reduction these errors become .4991/.4986/.2728/.2539. The rich/mean
-readouts often saturate at prediction1; for the first40label cohort, all100iid and
-98/100persistent reduced-view predictions are exactly1. Mean kernel-MI across
-all evaluation recordings shifts .1514→.1982; other estimates also shift.
-Thus full-size signal alone does not establish robustness to observation changes.
-MI Kraskov summaries are finite on584/640records; the other panel summaries on
-all640. Existing training-only validity filtering applies. No newpyspi was needed.
+After M/T reduction these errors become .4991/.4986/.2728/.2539. The rich/mean readouts often saturate at prediction1; for the first40label cohort, all100iid and 98/100persistent reduced-view predictions are exactly1. Mean kernel-MI across all evaluation recordings shifts .1514→.1982; other estimates also shift. Thus full-size signal alone does not establish robustness to observation changes. MI Kraskov summaries are finite on584/640records; the other panel summaries on all640. Existing training-only validity filtering applies. No newpyspi was needed.
 
-More aggressive regularization of z is not currently established as the remedy:
-PCA/PLS already limit learned dimension, and the small agreement panel does not
-rescue this task. Useful candidate extensions would preserve selected magnitudes
-and address their sample-size sensitivity. No additional tuning grid is warranted
-after the completed co-organization pilot and pointwise diagnostic.
+More aggressive regularization of z is not currently established as the remedy: PCA/PLS already limit learned dimension, and the small agreement panel does not rescue this task. Useful candidate extensions would preserve selected magnitudes and address their sample-size sensitivity. No additional tuning grid is warranted after the completed co-organization pilot and pointwise diagnostic.
 
 ## Completed pointwise diagnostic and bounded continuation
 
-All six40label pointwise fits complete and pass checkpoint/split verification:
-CPU/MPS maximum discrepancy2.38e-7. Same-process original/reduced MAE=.1291/.1641;
-other-process=.1264/.1494. This model substantially improves on the earlier raw
-encoders and z. Its change combines temporal kernels, resolution and parameter
-count; do not attribute the full improvement to a single detail. It has not
-beaten the model-informed moment reference (.0875/.1261 same-process).
+All six40label pointwise fits complete and pass checkpoint/split verification: CPU/MPS maximum discrepancy2.38e-7. Same-process original/reduced MAE=.1291/.1641; other-process=.1264/.1494. This model substantially improves on the earlier raw encoders and z. Its change combines temporal kernels, resolution and parameter count; do not attribute the full improvement to a single detail. It has not beaten the model-informed moment reference (.0875/.1261 same-process).
 
-The declared same-full MAE<.18 gate passes, authorizing10/20label curves. Two of12
-selected validation folds reached600epochs and improved unclipped MAE by.0283
-and.0477 over the final100epochs. Make one extension to1200epochs, uniformly for
-10/20/40labels, with otherwise identical architecture/grid/source splits. Original
-600epoch results remain separate. Configuration frozen1a3a7ea before extension;
-outputs`neural-pointwise-extended/`, report once complete. Do not keep doubling
-ceilings indefinitely or imply a universal neural optimum from this comparison.
+The declared same-full MAE<.18 gate passes, authorizing10/20label curves. Two of12 selected validation folds reached600epochs and improved unclipped MAE by.0283 and.0477 over the final100epochs. Make one extension to1200epochs, uniformly for 10/20/40labels, with otherwise identical architecture/grid/source splits. Original 600epoch results remain separate. Configuration frozen1a3a7ea before extension; outputs`neural-pointwise-extended/`, report once complete. Do not keep doubling ceilings indefinitely or imply a universal neural optimum from this comparison.
 
 ## Final pointwise learning curves and stopping decision
 
-The single1200epoch extension completed18fits. Every checkpoint hash, prediction
-hash and source split passes; eight CPU prediction replays per fit agree with MPS
-within2.98e-7. None of the36selected validation folds reaches1200epochs. Unselected
-candidates can reach the cap; this is not proof of universal optimization success.
+The single1200epoch extension completed18fits. Every checkpoint hash, prediction hash and source split passes; eight CPU prediction replays per fit agree with MPS within2.98e-7. None of the36selected validation folds reaches1200epochs. Unselected candidates can reach the cap; this is not proof of universal optimization success.
 
 | MAE, pointwise neural encoder | 10labels | 20labels | 40labels |
 |---|---:|---:|---:|
@@ -173,29 +86,11 @@ candidates can reach the cap; this is not proof of universal optimization succes
 | Other process, original observation | .2257 | .1814 | .1259 |
 | Other process, reduced observation | .2263 | .2024 | .1487 |
 
-The40label original/reduced result barely changes from the600epoch .1291/.1641;
-extra training does not materially strengthen it. At10labels the encoder remains
-near the constant baseline, then improves with more labels. At40labels it has
-substantially lower reduced-observation MAE than zPLS (.2375), but the specialist
-moment estimate remains better (.1261). zPLS minus pointwise at40labels is
-+.07229, conditional pointwise95%CI[.05706,.08819]; positive means z has more error.
-The pointwise model roughly matches the raw combined summaries (.1662), without
-receiving their explicitly computed features. No equivalence claim is made.
+The40label original/reduced result barely changes from the600epoch .1291/.1641; extra training does not materially strengthen it. At10labels the encoder remains near the constant baseline, then improves with more labels. At40labels it has substantially lower reduced-observation MAE than zPLS (.2375), but the specialist moment estimate remains better (.1261). zPLS minus pointwise at40labels is +.07229, conditional pointwise95%CI[.05706,.08819]; positive means z has more error. The pointwise model roughly matches the raw combined summaries (.1662), without receiving their explicitly computed features. No equivalence claim is made.
 
 Authoritative consolidated output: `results/covariance_modulation_260909/final-report/`.
-Reproduce with `scripts/report_covariance_modulation.py --data data/covariance_modulation_260909`,
-inputs under the results root: `raw`, `gadi-analysis/statistical-rank-fixed`,
-`neural-aligned=neural-aligned-corrected`, `neural-pair=neural-pair-corrected`,
-`neural-pointwise=neural-pointwise-extended`,
-`neural-pointwise-600=neural-pointwise-corrected`,
-`random-aligned-pca=random-aligned`; use absolute or root-prefixed paths after `=`.
+Reproduce with `scripts/report_covariance_modulation.py --data data/covariance_modulation_260909`, inputs under the results root: `raw`, `gadi-analysis/statistical-rank-fixed`, `neural-aligned=neural-aligned-corrected`, `neural-pair=neural-pair-corrected`, `neural-pointwise=neural-pointwise-extended`, `neural-pointwise-600=neural-pointwise-corrected`, `random-aligned-pca=random-aligned`; use absolute or root-prefixed paths after `=`.
 Verification: `neural-pointwise-extended-verification.json`; protocol1a3a7ea.
 Historical200/600epoch outputs are retained separately, not pooled as extra fits.
 
-Stop this component without another extraction, label-budget expansion or ceiling
-doubling. Together with the [co-organization result](oscillatory-coorganization-findings.md),
-the evidence supports a specific distinction: dependence magnitude is not the
-same target as correspondence among dependence modes. Fullz is not proven
-uninformative in the former, nor universally advantageous in the latter. The
-positive co-organization task remains a controlled common-drive simulation, not
-an established clinical application or broad neural-learning superiority claim.
+Stop this component without another extraction, label-budget expansion or ceiling doubling. Together with the [co-organization result](oscillatory-coorganization-findings.md), the evidence supports a specific distinction: dependence magnitude is not the same target as correspondence among dependence modes. Fullz is not proven uninformative in the former, nor universally advantageous in the latter. The positive co-organization task remains a controlled common-drive simulation, not an established clinical application or broad neural-learning superiority claim.

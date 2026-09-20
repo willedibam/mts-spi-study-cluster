@@ -1,0 +1,225 @@
+- {file: ./database/kuramoto/k--4-conn-all-M20-T1500-I0.npy, name: k--4-conn-all-M20-T1500-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T1500-I1.npy, name: k--4-conn-all-M20-T1500-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T1500-I2.npy, name: k--4-conn-all-M20-T1500-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T1250-I0.npy, name: k--4-conn-all-M20-T1250-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T1250-I1.npy, name: k--4-conn-all-M20-T1250-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T1250-I2.npy, name: k--4-conn-all-M20-T1250-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T750-I0.npy, name: k--4-conn-all-M20-T750-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T750-I1.npy, name: k--4-conn-all-M20-T750-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T750-I2.npy, name: k--4-conn-all-M20-T750-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T500-I0.npy, name: k--4-conn-all-M20-T500-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T500-I1.npy, name: k--4-conn-all-M20-T500-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T500-I2.npy, name: k--4-conn-all-M20-T500-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T250-I0.npy, name: k--4-conn-all-M20-T250-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T250-I1.npy, name: k--4-conn-all-M20-T250-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M20-T250-I2.npy, name: k--4-conn-all-M20-T250-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T1500-I0.npy, name: k--4-conn-all-M10-T1500-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T1500-I1.npy, name: k--4-conn-all-M10-T1500-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T1500-I2.npy, name: k--4-conn-all-M10-T1500-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T1250-I0.npy, name: k--4-conn-all-M10-T1250-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T1250-I1.npy, name: k--4-conn-all-M10-T1250-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T1250-I2.npy, name: k--4-conn-all-M10-T1250-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T750-I0.npy, name: k--4-conn-all-M10-T750-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T750-I1.npy, name: k--4-conn-all-M10-T750-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T750-I2.npy, name: k--4-conn-all-M10-T750-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T500-I0.npy, name: k--4-conn-all-M10-T500-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T500-I1.npy, name: k--4-conn-all-M10-T500-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T500-I2.npy, name: k--4-conn-all-M10-T500-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T250-I0.npy, name: k--4-conn-all-M10-T250-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T250-I1.npy, name: k--4-conn-all-M10-T250-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M10-T250-I2.npy, name: k--4-conn-all-M10-T250-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T1500-I0.npy, name: k--4-conn-all-M5-T1500-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T1500-I1.npy, name: k--4-conn-all-M5-T1500-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T1500-I2.npy, name: k--4-conn-all-M5-T1500-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T1250-I0.npy, name: k--4-conn-all-M5-T1250-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T1250-I1.npy, name: k--4-conn-all-M5-T1250-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T1250-I2.npy, name: k--4-conn-all-M5-T1250-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T750-I0.npy, name: k--4-conn-all-M5-T750-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T750-I1.npy, name: k--4-conn-all-M5-T750-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T750-I2.npy, name: k--4-conn-all-M5-T750-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T500-I0.npy, name: k--4-conn-all-M5-T500-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T500-I1.npy, name: k--4-conn-all-M5-T500-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T500-I2.npy, name: k--4-conn-all-M5-T500-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T250-I0.npy, name: k--4-conn-all-M5-T250-I0, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T250-I1.npy, name: k--4-conn-all-M5-T250-I1, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/kuramoto/k--4-conn-all-M5-T250-I2.npy, name: k--4-conn-all-M5-T250-I2, dim_order: sp, labels: [oscillator,kuramoto,coupled ODE] }
+- {file: ./database/VAR/var_M5_T250_I0.npy, name: var_M5_T250_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T250_I1.npy, name: var_M5_T250_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T250_I2.npy, name: var_M5_T250_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T500_I0.npy, name: var_M5_T500_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T500_I1.npy, name: var_M5_T500_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T500_I2.npy, name: var_M5_T500_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T750_I0.npy, name: var_M5_T750_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T750_I1.npy, name: var_M5_T750_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T750_I2.npy, name: var_M5_T750_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T1000_I0.npy, name: var_M5_T1000_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T1000_I1.npy, name: var_M5_T1000_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T1000_I2.npy, name: var_M5_T1000_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T1250_I0.npy, name: var_M5_T1250_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T1250_I1.npy, name: var_M5_T1250_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M5_T1250_I2.npy, name: var_M5_T1250_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T250_I0.npy, name: var_M10_T250_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T250_I1.npy, name: var_M10_T250_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T250_I2.npy, name: var_M10_T250_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T500_I0.npy, name: var_M10_T500_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T500_I1.npy, name: var_M10_T500_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T500_I2.npy, name: var_M10_T500_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T750_I0.npy, name: var_M10_T750_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T750_I1.npy, name: var_M10_T750_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T750_I2.npy, name: var_M10_T750_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T1000_I0.npy, name: var_M10_T1000_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T1000_I1.npy, name: var_M10_T1000_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T1000_I2.npy, name: var_M10_T1000_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T1250_I0.npy, name: var_M10_T1250_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T1250_I1.npy, name: var_M10_T1250_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M10_T1250_I2.npy, name: var_M10_T1250_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T250_I0.npy, name: var_M20_T250_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T250_I1.npy, name: var_M20_T250_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T250_I2.npy, name: var_M20_T250_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T500_I0.npy, name: var_M20_T500_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T500_I1.npy, name: var_M20_T500_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T500_I2.npy, name: var_M20_T500_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T750_I0.npy, name: var_M20_T750_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T750_I1.npy, name: var_M20_T750_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T750_I2.npy, name: var_M20_T750_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T1000_I0.npy, name: var_M20_T1000_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T1000_I1.npy, name: var_M20_T1000_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T1000_I2.npy, name: var_M20_T1000_I2, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T1250_I0.npy, name: var_M20_T1250_I0, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T1250_I1.npy, name: var_M20_T1250_I1, dim_order: sp, labels: [var] }
+- {file: ./database/VAR/var_M20_T1250_I2.npy, name: var_M20_T1250_I2, dim_order: sp, labels: [var] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T250_I0.npy, name: alpha-1-7522_epsilon-0-00115_M5_T250_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T250_I1.npy, name: alpha-1-7522_epsilon-0-00115_M5_T250_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T250_I2.npy, name: alpha-1-7522_epsilon-0-00115_M5_T250_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T500_I0.npy, name: alpha-1-7522_epsilon-0-00115_M5_T500_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T500_I1.npy, name: alpha-1-7522_epsilon-0-00115_M5_T500_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T500_I2.npy, name: alpha-1-7522_epsilon-0-00115_M5_T500_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T750_I0.npy, name: alpha-1-7522_epsilon-0-00115_M5_T750_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T750_I1.npy, name: alpha-1-7522_epsilon-0-00115_M5_T750_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T750_I2.npy, name: alpha-1-7522_epsilon-0-00115_M5_T750_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T1250_I0.npy, name: alpha-1-7522_epsilon-0-00115_M5_T1250_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T1250_I1.npy, name: alpha-1-7522_epsilon-0-00115_M5_T1250_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T1250_I2.npy, name: alpha-1-7522_epsilon-0-00115_M5_T1250_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T1500_I0.npy, name: alpha-1-7522_epsilon-0-00115_M5_T1500_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T1500_I1.npy, name: alpha-1-7522_epsilon-0-00115_M5_T1500_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M5_T1500_I2.npy, name: alpha-1-7522_epsilon-0-00115_M5_T1500_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T250_I0.npy, name: alpha-1-7522_epsilon-0-00115_M10_T250_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T250_I1.npy, name: alpha-1-7522_epsilon-0-00115_M10_T250_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T250_I2.npy, name: alpha-1-7522_epsilon-0-00115_M10_T250_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T500_I0.npy, name: alpha-1-7522_epsilon-0-00115_M10_T500_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T500_I1.npy, name: alpha-1-7522_epsilon-0-00115_M10_T500_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T500_I2.npy, name: alpha-1-7522_epsilon-0-00115_M10_T500_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T750_I0.npy, name: alpha-1-7522_epsilon-0-00115_M10_T750_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T750_I1.npy, name: alpha-1-7522_epsilon-0-00115_M10_T750_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T750_I2.npy, name: alpha-1-7522_epsilon-0-00115_M10_T750_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T1250_I0.npy, name: alpha-1-7522_epsilon-0-00115_M10_T1250_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T1250_I1.npy, name: alpha-1-7522_epsilon-0-00115_M10_T1250_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T1250_I2.npy, name: alpha-1-7522_epsilon-0-00115_M10_T1250_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T1500_I0.npy, name: alpha-1-7522_epsilon-0-00115_M10_T1500_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T1500_I1.npy, name: alpha-1-7522_epsilon-0-00115_M10_T1500_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M10_T1500_I2.npy, name: alpha-1-7522_epsilon-0-00115_M10_T1500_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T250_I0.npy, name: alpha-1-7522_epsilon-0-00115_M20_T250_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T250_I1.npy, name: alpha-1-7522_epsilon-0-00115_M20_T250_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T250_I2.npy, name: alpha-1-7522_epsilon-0-00115_M20_T250_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T500_I0.npy, name: alpha-1-7522_epsilon-0-00115_M20_T500_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T500_I1.npy, name: alpha-1-7522_epsilon-0-00115_M20_T500_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T500_I2.npy, name: alpha-1-7522_epsilon-0-00115_M20_T500_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T750_I0.npy, name: alpha-1-7522_epsilon-0-00115_M20_T750_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T750_I1.npy, name: alpha-1-7522_epsilon-0-00115_M20_T750_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T750_I2.npy, name: alpha-1-7522_epsilon-0-00115_M20_T750_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T1250_I0.npy, name: alpha-1-7522_epsilon-0-00115_M20_T1250_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T1250_I1.npy, name: alpha-1-7522_epsilon-0-00115_M20_T1250_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T1250_I2.npy, name: alpha-1-7522_epsilon-0-00115_M20_T1250_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T1500_I0.npy, name: alpha-1-7522_epsilon-0-00115_M20_T1500_I0, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T1500_I1.npy, name: alpha-1-7522_epsilon-0-00115_M20_T1500_I1, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/CML/alpha-1-7522_epsilon-0-00115_M20_T1500_I2.npy, name: alpha-1-7522_epsilon-0-00115_M20_T1500_I2, dim_order: sp, labels: [coupled map lattice,spatiotemporal intermittency,coupled map] }
+- {file: ./database/noise/noise_cauchy_M5_T250_I0.npy, name: noise_cauchy_M5_T250_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T250_I1.npy, name: noise_cauchy_M5_T250_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T250_I2.npy, name: noise_cauchy_M5_T250_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T500_I0.npy, name: noise_cauchy_M5_T500_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T500_I1.npy, name: noise_cauchy_M5_T500_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T500_I2.npy, name: noise_cauchy_M5_T500_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T750_I0.npy, name: noise_cauchy_M5_T750_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T750_I1.npy, name: noise_cauchy_M5_T750_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T750_I2.npy, name: noise_cauchy_M5_T750_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T1000_I0.npy, name: noise_cauchy_M5_T1000_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T1000_I1.npy, name: noise_cauchy_M5_T1000_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T1000_I2.npy, name: noise_cauchy_M5_T1000_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T1250_I0.npy, name: noise_cauchy_M5_T1250_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T1250_I1.npy, name: noise_cauchy_M5_T1250_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M5_T1250_I2.npy, name: noise_cauchy_M5_T1250_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T250_I0.npy, name: noise_cauchy_M10_T250_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T250_I1.npy, name: noise_cauchy_M10_T250_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T250_I2.npy, name: noise_cauchy_M10_T250_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T500_I0.npy, name: noise_cauchy_M10_T500_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T500_I1.npy, name: noise_cauchy_M10_T500_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T500_I2.npy, name: noise_cauchy_M10_T500_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T750_I0.npy, name: noise_cauchy_M10_T750_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T750_I1.npy, name: noise_cauchy_M10_T750_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T750_I2.npy, name: noise_cauchy_M10_T750_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T1000_I0.npy, name: noise_cauchy_M10_T1000_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T1000_I1.npy, name: noise_cauchy_M10_T1000_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T1000_I2.npy, name: noise_cauchy_M10_T1000_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T1250_I0.npy, name: noise_cauchy_M10_T1250_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T1250_I1.npy, name: noise_cauchy_M10_T1250_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M10_T1250_I2.npy, name: noise_cauchy_M10_T1250_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T250_I0.npy, name: noise_cauchy_M20_T250_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T250_I1.npy, name: noise_cauchy_M20_T250_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T250_I2.npy, name: noise_cauchy_M20_T250_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T500_I0.npy, name: noise_cauchy_M20_T500_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T500_I1.npy, name: noise_cauchy_M20_T500_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T500_I2.npy, name: noise_cauchy_M20_T500_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T750_I0.npy, name: noise_cauchy_M20_T750_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T750_I1.npy, name: noise_cauchy_M20_T750_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T750_I2.npy, name: noise_cauchy_M20_T750_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T1000_I0.npy, name: noise_cauchy_M20_T1000_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T1000_I1.npy, name: noise_cauchy_M20_T1000_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T1000_I2.npy, name: noise_cauchy_M20_T1000_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T1250_I0.npy, name: noise_cauchy_M20_T1250_I0, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T1250_I1.npy, name: noise_cauchy_M20_T1250_I1, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_cauchy_M20_T1250_I2.npy, name: noise_cauchy_M20_T1250_I2, dim_order: sp, labels: [noise,cauchy] }
+- {file: ./database/noise/noise_normal_M5_T250_I0.npy, name: noise_normal_M5_T250_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T250_I1.npy, name: noise_normal_M5_T250_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T250_I2.npy, name: noise_normal_M5_T250_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T500_I0.npy, name: noise_normal_M5_T500_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T500_I1.npy, name: noise_normal_M5_T500_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T500_I2.npy, name: noise_normal_M5_T500_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T750_I0.npy, name: noise_normal_M5_T750_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T750_I1.npy, name: noise_normal_M5_T750_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T750_I2.npy, name: noise_normal_M5_T750_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T1000_I0.npy, name: noise_normal_M5_T1000_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T1000_I1.npy, name: noise_normal_M5_T1000_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T1000_I2.npy, name: noise_normal_M5_T1000_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T1250_I0.npy, name: noise_normal_M5_T1250_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T1250_I1.npy, name: noise_normal_M5_T1250_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M5_T1250_I2.npy, name: noise_normal_M5_T1250_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T250_I0.npy, name: noise_normal_M10_T250_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T250_I1.npy, name: noise_normal_M10_T250_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T250_I2.npy, name: noise_normal_M10_T250_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T500_I0.npy, name: noise_normal_M10_T500_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T500_I1.npy, name: noise_normal_M10_T500_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T500_I2.npy, name: noise_normal_M10_T500_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T750_I0.npy, name: noise_normal_M10_T750_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T750_I1.npy, name: noise_normal_M10_T750_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T750_I2.npy, name: noise_normal_M10_T750_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T1000_I0.npy, name: noise_normal_M10_T1000_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T1000_I1.npy, name: noise_normal_M10_T1000_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T1000_I2.npy, name: noise_normal_M10_T1000_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T1250_I0.npy, name: noise_normal_M10_T1250_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T1250_I1.npy, name: noise_normal_M10_T1250_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M10_T1250_I2.npy, name: noise_normal_M10_T1250_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T250_I0.npy, name: noise_normal_M20_T250_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T250_I1.npy, name: noise_normal_M20_T250_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T250_I2.npy, name: noise_normal_M20_T250_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T500_I0.npy, name: noise_normal_M20_T500_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T500_I1.npy, name: noise_normal_M20_T500_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T500_I2.npy, name: noise_normal_M20_T500_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T750_I0.npy, name: noise_normal_M20_T750_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T750_I1.npy, name: noise_normal_M20_T750_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T750_I2.npy, name: noise_normal_M20_T750_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T1000_I0.npy, name: noise_normal_M20_T1000_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T1000_I1.npy, name: noise_normal_M20_T1000_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T1000_I2.npy, name: noise_normal_M20_T1000_I2, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T1250_I0.npy, name: noise_normal_M20_T1250_I0, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T1250_I1.npy, name: noise_normal_M20_T1250_I1, dim_order: sp, labels: [noise,normal] }
+- {file: ./database/noise/noise_normal_M20_T1250_I2.npy, name: noise_normal_M20_T1250_I2, dim_order: sp, labels: [noise,normal] }

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Zenodo MTS cluster inspection</title>
+<style>
+body{font:15px Georgia,serif;color:#222;background:white;max-width:1450px;margin:30px auto;padding:0 24px}
+h1{font-size:25px;font-weight:normal}p{line-height:1.5;max-width:1050px}
+label{display:inline-block;margin:6px 14px 6px 0}select,input,button{font:14px system-ui;padding:7px;border:1px solid #bbb;border-radius:3px;background:white}
+button{cursor:pointer}a{color:#36536b}#map{width:min(650px,100%);background:white}#map circle{cursor:pointer}
+.layout{display:grid;grid-template-columns:minmax(350px,650px) 1fr;gap:28px}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:24px;margin-top:24px}
+.card{min-width:0;overflow-wrap:anywhere}.card img{width:100%;height:auto;max-height:190px;object-fit:fill;image-rendering:auto}.card small{display:block;color:#666;margin:6px 0}.card input{margin-right:7px}
+.links{line-height:2}#detail img{width:100%;max-height:240px;object-fit:fill}#status{color:#555}
+@media(max-width:850px){.layout{display:block}}
+</style>
+<h1>1,053 multivariate time series: inspect and label subsets</h1>
+<p>Each point is one MTS. Choose an embedding and an independently fitted partition.
+<em>map-</em> partitions describe clusters in 2D; the others were fitted in PCA space.
+Cluster IDs have meaning only within their partition. Noise is −1; rows excluded by historical filtering are −2.
+Source-based shortlist titles are provisional; underlying dataset names are unchanged.</p>
+<p id="review-link" hidden><a href="shortlist.html">Reviewed groups and complete MTS sheets</a> · <a href="figures/high-k-resolutions.svg">Higher-k comparisons</a> · <a href="figures/historical-leaf-comparison.svg">Historical EOM/leaf comparison</a> · <a href="full-feature-medoids.csv">Full-feature medoids (all partitions)</a></p>
+<div class="links"><a href="figures/historical-controls.svg">Historical comparison</a> ·
+<a href="figures/tsne-sensitivity.svg">t-SNE settings</a> · <a href="figures/umap-sensitivity.svg">UMAP settings</a> ·
+<a href="figures/cluster-resolutions.svg">Cluster resolutions</a> ·
+<a href="figures/scaling-and-spacing.svg">Scaling / spacing</a> ·
+<a href="figures/seed-sensitivity.svg">Seed sensitivity</a> ·
+<a href="memberships.csv">All memberships</a> · <a href="medoids.csv">Medoids</a></div>
+<label>Embedding <select id="embedding"></select></label>
+<label>Partition <select id="partition"></select></label>
+<label>Cluster <select id="cluster"></select></label>
+<label id="review-control" hidden>Reviewed group <select id="review"><option value="">Choose a group</option></select></label>
+<label>Dataset name <input id="search" placeholder="Filter names"></label>
+<p id="status"></p>
+<div class="layout"><svg id="map" viewBox="0 0 650 520" role="img" aria-label="Clickable MTS embedding"></svg>
+<div><div id="detail">Click a point to inspect its series and cluster.</div>
+<p>Heatmaps use per-process median / (IQR / 1.349), symmetric clipping at the 99th percentile of absolute scaled values within each MTS. Time runs left to right. Every sample is retained in the exported image; image widths on screen are normalized for browsing. Original (M,T) are shown below each series.</p>
+<label>Post-hoc label <input id="label" placeholder="Your interpretation"></label>
+<p><button id="choose">Select visible series</button> <button id="clear">Clear selection</button>
+<button id="download">Download selected rows + label</button></p>
+<small>Selections are kept during this page session; download the CSV to preserve them. Each series links to a PNG and an SVG containing that raster, ready for figure assembly.</small>
+</div></div>
+<div class="cards" id="cards"></div>
+<script>
+const data=__CORPUS_DATA__;
+const $=id=>document.getElementById(id), selected=new Set();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+for(const id of ['embedding','partition']){
+ const keys=Object.keys(data[id==='embedding'?'embeddings':'partitions']);
+ for(const k of keys){const o=document.createElement('option');o.value=k;o.textContent=k;$(id).appendChild(o)}
+}
+$('embedding').value='historical';$('partition').value='map-historical';
+function clusterOptions(){
+ const labels=data.partitions[$('partition').value], counts={};
+ for(const c of labels)counts[c]=(counts[c]||0)+1;
+ $('cluster').innerHTML='<option value="all">All clusters</option>';
+ for(const c of Object.keys(counts).map(Number).sort((a,b)=>a-b)){
+  const o=document.createElement('option');o.value=c;o.textContent=`${c<0?(c===-1?'Noise':'Excluded'):'Cluster '+c} (${counts[c]})`;$('cluster').appendChild(o)
+ }
+}
+function visibleRows(){const labels=data.partitions[$('partition').value], c=$('cluster').value, term=$('search').value.toLowerCase();
+ return data.rows.filter(r=>(c==='all'||labels[r.row]===Number(c))&&r.dataset.toLowerCase().includes(term))}
+function draw(){
+ const e=data.embeddings[$('embedding').value], visible=new Set(visibleRows().map(r=>r.row));
+ const xs=e.xy.map(p=>p[0]),ys=e.xy.map(p=>p[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];
+ const scale=Math.min(560/(hi[0]-lo[0]||1),420/(hi[1]-lo[1]||1));
+ const x=v=>325+scale*(v-(lo[0]+hi[0])/2),y=v=>265-scale*(v-(lo[1]+hi[1])/2);
+ $('map').innerHTML='<path d="M45 40 V475 H615" fill="none" stroke="#777" stroke-width=".8"/>';
+ e.xy.forEach((p,i)=>{const row=e.rows[i],c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx',x(p[0]));c.setAttribute('cy',y(p[1]));c.setAttribute('r',selected.has(row)?4:2.5);
+  c.setAttribute('fill',selected.has(row)?'#31688e':'#222');c.setAttribute('opacity',visible.has(row)?'.85':'.1');
+  const title=document.createElementNS('http://www.w3.org/2000/svg','title');title.textContent=data.rows[row].dataset;c.appendChild(title);
+  c.onclick=()=>{const r=data.rows[row];$('cluster').value=data.partitions[$('partition').value][row];
+   $('detail').innerHTML=`<p>${esc(r.dataset)} · M=${r.M}, T=${r.T}</p><img src="${r.png}" alt="${esc(r.dataset)}"><p><a href="${r.svg}">SVG</a> · <a href="${r.png}">PNG</a></p>`;render()};$('map').appendChild(c)
+ });
+}
+function render(){const rows=visibleRows(), labels=data.partitions[$('partition').value];
+ $('status').textContent=`${rows.length} matching datasets; ${selected.size} selected for export; ${data.embeddings[$('embedding').value].rows.length} points in this map.`;
+ $('cards').innerHTML=rows.map(r=>`<div class="card"><label><input type="checkbox" data-row="${r.row}" ${selected.has(r.row)?'checked':''}>${esc(r.dataset)}</label><img loading="lazy" src="${r.png}" alt="${esc(r.dataset)}"><small>Cluster ${labels[r.row]} · M=${r.M}, T=${r.T} · colour limit ±${r.display_limit.toPrecision(3)}</small><a href="${r.svg}">SVG</a> · <a href="${r.png}">PNG</a></div>`).join('');
+ document.querySelectorAll('[data-row]').forEach(e=>e.onchange=()=>{const i=Number(e.dataset.row);e.checked?selected.add(i):selected.delete(i);draw();$('status').textContent=`${rows.length} matching datasets; ${selected.size} selected for export.`});draw()
+}
+$('partition').onchange=()=>{clusterOptions();render()};$('embedding').onchange=render;$('cluster').onchange=render;$('search').oninput=render;
+$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
+$('download').onclick=()=>{
+ const q=s=>'"'+String(s).replaceAll('"','""')+'"', labels=data.partitions[$('partition').value];
+ const lines=[['row','dataset','partition','cluster','embedding','user_label','svg','png'],...[...selected].sort((a,b)=>a-b).map(i=>[i,data.rows[i].dataset,$('partition').value,labels[i],$('embedding').value,$('label').value,data.rows[i].svg,data.rows[i].png])];
+ const url=URL.createObjectURL(new Blob([lines.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
+ const a=document.createElement('a');a.href=url;a.download='selected-mts.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
+};clusterOptions();
+const query=new URLSearchParams(location.search);
+if(data.embeddings[query.get('embedding')])$('embedding').value=query.get('embedding');
+if(data.partitions[query.get('partition')]){$('partition').value=query.get('partition');clusterOptions()}
+if([...$('cluster').options].some(o=>o.value===query.get('cluster')))$('cluster').value=query.get('cluster');
+if(data.shortlist?.length){
+ $('review-link').hidden=false;$('review-control').hidden=false;
+ for(const [i,r] of data.shortlist.entries()){const o=document.createElement('option');o.value=i;o.textContent=r.title;$('review').appendChild(o)}
+ $('review').onchange=()=>{if($('review').value==='')return;const r=data.shortlist[Number($('review').value)];
+  $('partition').value=r.partition;clusterOptions();$('cluster').value=r.cluster;$('embedding').value='tsne-pca50-p30';$('search').value='';render()}
+}render();
+</script></html>

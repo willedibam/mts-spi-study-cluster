@@ -1,0 +1,12 @@
+name: primary
+source:
+  format: named-npz-v1
+  archive: data/order_parameter/cml2d_period_doubling_260911/primary/observations.npz
+  sha256: 84445f8908a209cddac932f94b1d557842c8d3ea016282fa342e01472f5653dd
+  axis_order:
+  - process
+  - observation
+base_output_dir: data/order_parameter/cml2d_period_doubling_260911/primary/mpi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260911

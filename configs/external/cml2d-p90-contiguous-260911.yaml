@@ -1,0 +1,12 @@
+name: contiguous
+source:
+  format: named-npz-v1
+  archive: data/order_parameter/cml2d_period_doubling_260911/contiguous/observations.npz
+  sha256: d139bbedb5040425cd18f512bcc2d06384b21421c8de8f28fe83dcbdd11980ba
+  axis_order:
+  - process
+  - observation
+base_output_dir: data/order_parameter/cml2d_period_doubling_260911/contiguous/mpi
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 260911

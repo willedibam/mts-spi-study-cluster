@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTS corpus · explorer v2</title>
+<style>
+:root{color-scheme:light;--ink:#242424;--muted:#666;--accent:#31688e}
+*{box-sizing:border-box}body{font:15px Georgia,serif;color:var(--ink);background:#fff;max-width:1450px;margin:28px auto;padding:0 24px}h1{font-size:26px;font-weight:normal;margin:0 0 10px}p{line-height:1.5;margin:10px 0}a{color:#315875;text-underline-offset:3px}small,.muted{color:var(--muted);line-height:1.5}button,select,input{font:13px system-ui;color:var(--ink);padding:7px;border:1px solid #bbb;border-radius:3px;background:#fff}button{cursor:pointer}button:hover{background:#f4f4f4}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:13px system-ui}select{max-width:100%}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;border-top:1px solid #ddd;padding-top:12px;margin-top:12px}.layout{display:grid;grid-template-columns:minmax(350px,1.15fr) minmax(300px,1fr);gap:28px;margin-top:12px}#map{width:100%;aspect-ratio:1;display:block;touch-action:none;background:#fff}#map circle,#map polygon{cursor:pointer}#map circle:focus{outline:none;stroke:white;stroke-width:1.2}#detail{min-height:210px;overflow-wrap:anywhere}#detail img{width:100%;max-height:240px;object-fit:contain}#detail h2{font-size:17px;font-weight:normal}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;margin:20px 0}.card{min-width:0;overflow-wrap:anywhere;border-top:1px solid #e4e4e4;padding-top:10px}.card label{align-items:flex-start;font:14px Georgia,serif}.card img{width:100%;height:135px;object-fit:contain}.card small{display:block;margin:5px 0}.pager{display:flex;align-items:center;gap:12px}.facts{font:13px/1.6 system-ui;margin-top:8px}#partition-note{padding:8px 0;border-bottom:1px solid #ddd}.warning{color:#785422}details{margin:12px 0}summary{cursor:pointer}.controls-bottom{margin-top:12px}.controls-bottom button{margin:3px 3px 3px 0}#search{width:200px}#cluster{max-width:260px}.map-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}#status{font:13px/1.6 system-ui}#selection-status{font:13px system-ui}#mode{font-weight:600}#inspector-help{max-width:1100px}footer{margin-top:25px;padding-top:14px;border-top:1px solid #ddd;font-size:13px}
+@media(max-width:850px){body{padding:0 14px;margin-top:18px}.layout{display:block}#map{max-height:none}label{max-width:100%}.toolbar label{display:flex;width:100%}.toolbar select{flex:1;min-width:0}}
+</style>
+<h1>MTS corpus <span class="muted">/ explorer v2</span></h1>
+<p id="inspector-help">1,053 time series. Click a point or shaded group to inspect its members. Change the map without changing feature-space memberships. No automatic dynamical labels.</p>
+<div class="toolbar">
+ <label>View <select id="mode"><option value="preferred">Feature-space analysis</option><option value="historical">Historical recipe</option><option value="pca">PCA only</option><option value="umap">UMAP · curiosity</option></select></label>
+ <label>Embedding <select id="embedding"></select></label>
+</div>
+<div>
+ <label>Partition type <select id="family"><option value="feature">Feature-space groups</option><option value="map">Map regions · descriptive</option></select></label>
+ <label>Partition <select id="partition"></select></label>
+ <label><input type="checkbox" id="cross-map">Compare partitions from other maps</label>
+</div>
+<div id="partition-note" class="facts"></div>
+<div class="toolbar">
+ <button id="prev-cluster" aria-label="Previous cluster">←</button>
+ <label>Cluster <select id="cluster"></select></label>
+ <button id="next-cluster" aria-label="Next cluster">→</button>
+ <label>Find MTS <input id="search" type="search" placeholder="Dataset name"></label>
+ <button id="all">Show all</button>
+ <label><input id="only-selected" type="checkbox">Selected only</label>
+</div>
+<div class="layout">
+ <div>
+  <svg id="map" viewBox="0 0 680 680" role="img" aria-label="Interactive MTS embedding"></svg>
+  <div class="map-tools"><button id="reset-view">Reset zoom</button><label><input type="checkbox" id="origin" checked>Real / synthetic shading</label><label>Group shading <select id="shading"><option value="none">None</option><option value="kde">KDE</option><option value="hulls">Convex hulls</option></select></label><button id="export-svg">Save current map SVG</button><button id="export-png">Save current map PNG</button></div>
+  <p class="muted"><small>Larger dots mean more processes (M); the size scale is fixed across views. Scroll to zoom; drag to pan. KDE shades approximate 80%/50% probability-mass regions; hulls outline outer members. Neither is a confidence bound. Unassigned points never contribute to group shading. Dark gray = real; light gray = synthetic; hollow = unlabelled in the source archive. Blue marks your selection.</small></p>
+  <div id="embedding-note" class="facts"></div>
+  <p><a id="figure-svg" target="_blank" rel="noopener">Neutral map SVG</a> · <a id="figure-png" target="_blank" rel="noopener">PNG</a></p>
+ </div>
+ <div>
+  <div id="detail"><p>Click a point to see its MTS. Click its image or PNG/SVG link to inspect at full size.</p></div>
+  <p id="group-note" class="facts"></p>
+  <div class="controls-bottom">
+   <label>Post-hoc label <input id="label" placeholder="Your interpretation"></label>
+   <p id="selection-status"></p>
+   <button id="choose">Select all matching MTS</button><button id="clear">Clear selection</button>
+   <button id="download">Export selection CSV</button><button id="permalink">Copy view link</button>
+  </div>
+  <small>Selection survives view changes during this session. Export to preserve it; the CSV includes current coordinates, memberships and your label.</small>
+ </div>
+</div>
+<p id="status" aria-live="polite"></p>
+<div class="pager"><button id="previous-page">Previous page</button><span id="page-status"></span><button id="next-page">Next page</button></div>
+<div class="cards" id="cards"></div>
+<details><summary>Methods, interpretation and files</summary>
+ <p>Primary: ≥95% finite features, median imputation, drop near-constant features, mean centring; no feature z-scoring or PCA whitening. 21,788 retained features. “Full” clustering uses exact full-rank PCA coordinates whose corpus Euclidean distances were checked against all retained features; it is not truncated PCA.</p>
+ <p id="pca-quality"></p><p id="historical-note"></p>
+ <p>Historical p10 coordinates and memberships are preserved from v1. Other perplexities are explicitly variations. Optional K-medoids k200 uses a NumPy compatibility implementation of heuristic initialization / alternate updates, not the unavailable original binary.</p>
+ <p>Feature-space partitions stay fixed when the embedding changes. Map-region partitions are precomputed for their named map; changing the map never silently refits them. Default map-region choices correspond to the displayed map; enable the comparison checkbox to inspect mismatches.</p>
+ <p>Silhouettes and representative medoids use the full primary geometry. HDBSCAN silhouettes cover assigned rows only; do not rank them against full-coverage K-means without accounting for coverage. Seed ARI measures K-means initialization sensitivity, not resampling stability. Parent recordings/nested windows are not independent replicates.</p>
+ <p>Heatmaps: each process is centred by its temporal median and scaled by IQR/1.349, then clipped symmetrically at the per-MTS 99th percentile of absolute values. Widths are normalized for browsing; original M×T is shown. Colours are not absolute amplitude comparisons. SVG heatmaps contain the native raster.</p>
+ <p>Origin annotations use archive tags plus documented local corrections: HCP task-state and resting-state fMRI are real recordings. The source archive and feature bank are unchanged. The historical plotting scripts hid HDBSCAN label −1 before drawing; this explorer deliberately retains those unassigned datasets.</p>
+ <p><a href="manifest.json">Settings / provenance</a> · <a href="dataset-metadata.csv">Dataset tags / corrections</a> · <a href="embedding-metrics.csv">Embedding metrics</a> · <a href="cluster-metrics.csv">Partition metrics</a> · <a href="pca-sensitivity.csv">PCA sensitivity</a> · <a href="memberships.csv">All memberships</a> · <a href="exploration.npz">Coordinates, transforms & distances (.npz)</a></p>
+</details>
+<footer><a href="../visual-exploration/index.html">Original explorer (unchanged)</a> · <a href="../visual-exploration/shortlist.html">Earlier reviewed groups</a></footer>
+<script>
+__KDE_SCRIPT__
+const data=__CORPUS_DATA__;
+const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg', selected=new Set();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let page=0, focused=null, viewport=[0,0,680,680], drag=null, dragged=false;
+const pageSize=24;
+let kdeCache={key:null,groups:{}};
+function option(select,value,text){const o=document.createElement('option');o.value=value;o.textContent=text;select.appendChild(o)}
+function currentEmbedding(){return data.embeddings[$('embedding').value]}
+function currentPartition(){return data.partitions[$('partition').value]}
+function embeddingOptions(preferred){$('embedding').replaceChildren();for(const [id,e] of Object.entries(data.embeddings))if(e.section===$('mode').value)option($('embedding'),id,e.title);if(data.embeddings[preferred]?.section===$('mode').value)$('embedding').value=preferred}
+function partitionOptions(preferred){
+ const isMap=$('family').value==='map';$('cross-map').disabled=!isMap;
+ $('partition').replaceChildren();option($('partition'),'','None · inspect points');
+ for(const [id,p] of Object.entries(data.partitions)){
+  if(Boolean(p.map_id)!==isMap)continue;
+  if(isMap&&!$('cross-map').checked&&p.map_id!==$('embedding').value)continue;
+  option($('partition'),id,`${p.method} · ${p.map_id||p.space.toUpperCase()} · ${p.parameters.n_clusters?'k='+p.parameters.n_clusters:p.parameters.cluster_selection_method+', min='+p.parameters.min_cluster_size}`)
+ }
+ if([...$('partition').options].some(o=>o.value===preferred))$('partition').value=preferred;
+ else $('partition').selectedIndex=$('partition').options.length>1?1:0;
+ clusterOptions();
+}
+function clusterOptions(preferred='all'){
+ $('cluster').replaceChildren();option($('cluster'),'all','All clusters');const p=currentPartition();
+ if(p){const counts={};for(const n of p.labels)counts[n]=(counts[n]||0)+1;for(const c of Object.keys(counts).map(Number).sort((a,b)=>a-b))option($('cluster'),String(c),`${c<0?(c===-1?'Unassigned':'Excluded'):'Cluster '+c} · ${counts[c]} MTS`)}
+ if([...$('cluster').options].some(o=>o.value===preferred))$('cluster').value=preferred;
+}
+function visibleRows(){const p=currentPartition(), c=$('cluster').value,term=$('search').value.toLowerCase();const included=new Set(currentEmbedding().rows);return data.rows.filter(r=>included.has(r.row)&&(!p||c==='all'||p.labels[r.row]===Number(c))&&r.dataset.toLowerCase().includes(term)&&(!$('only-selected').checked||selected.has(r.row)))}
+function convexHull(points){
+ const p=points.map(x=>x.slice()).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);if(p.length<3)return [];
+ const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+ const chain=a=>{const h=[];for(const x of a){while(h.length>1&&cross(h[h.length-2],h[h.length-1],x)<=0)h.pop();h.push(x)}return h};
+ const a=chain(p),b=chain([...p].reverse());return [...a.slice(0,-1),...b.slice(0,-1)];
+}
+function svgElement(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e}
+function selectCluster(c){$('cluster').value=String(c);$('search').value='';$('only-selected').checked=false;page=0;render()}
+function inspect(row){focused=row;const p=currentPartition();if(p)$('cluster').value=String(p.labels[row]);$('search').value='';$('only-selected').checked=false;page=0;render()}
+function draw(){
+ const e=currentEmbedding(),p=currentPartition(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row));svg.replaceChildren();
+ const xs=e.xy.map(v=>v[0]),ys=e.xy.map(v=>v[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];
+ const scale=Math.min(570/(hi[0]-lo[0]||1),570/(hi[1]-lo[1]||1));
+ const xy=e.xy.map(v=>[350+scale*(v[0]-(lo[0]+hi[0])/2),325-scale*(v[1]-(lo[1]+hi[1])/2)]);
+ svg.appendChild(svgElement('path',{d:'M60 35 V615 H640 V35 Z',fill:'none',stroke:'#777','stroke-width':'.8'}));
+ svg.appendChild(svgElement('text',{x:350,y:655,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},e.axis_labels[0]));
+ svg.appendChild(svgElement('text',{x:18,y:325,transform:'rotate(-90 18 325)','text-anchor':'middle','font-family':'Georgia, serif','font-size':13},e.axis_labels[1]));
+ data.size_legend.forEach((item,i)=>{const x=390+i*85;svg.appendChild(svgElement('circle',{cx:x,cy:18,r:item.radius,fill:'#222',stroke:'white','stroke-width':.55}));svg.appendChild(svgElement('text',{x:x+10,y:22,'font-family':'Georgia, serif','font-size':12},`M = ${item.M}`))});
+ if($('origin').checked)Object.entries(data.origin_counts).filter(([,n])=>n>0).forEach(([origin],i)=>{const style=data.origin_styles[origin],x=75+i*95;svg.appendChild(svgElement('circle',{cx:x,cy:18,r:3,fill:style.fill,stroke:style.stroke,'stroke-width':.9}));svg.appendChild(svgElement('text',{x:x+9,y:22,'font-family':'Georgia, serif','font-size':12},origin))});
+ if(p&&$('shading').value==='hulls'){const groups=assignedGroups(xy,e.rows,p.labels);for(const [c,points] of Object.entries(groups)){
+   const hull=convexHull(points);if(hull.length<3)continue;
+   const active=$('cluster').value==='all'||$('cluster').value===c;
+   const poly=svgElement('polygon',{points:hull.map(x=>x.join(',')).join(' '),fill:'#777','fill-opacity':active?.09:.025,stroke:'#777','stroke-opacity':active?.22:.04,'stroke-width':.6});
+   poly.appendChild(svgElement('title',{},`Cluster ${c} · ${points.length} MTS · click to inspect`));poly.onclick=()=>{if(!dragged)selectCluster(c)};svg.appendChild(poly);
+ }}
+ if(p&&$('shading').value==='kde'){
+  const key=$('embedding').value+'|'+$('partition').value;
+  if(kdeCache.key!==key){const groups=assignedGroups(xy,e.rows,p.labels);kdeCache={key,groups:Object.fromEntries(Object.entries(groups).map(([c,points])=>[c,densityContours(points)]))}}
+  const defs=svgElement('defs'),clip=svgElement('clipPath',{id:'kde-clip'});
+  clip.appendChild(svgElement('rect',{x:60,y:35,width:580,height:580}));defs.appendChild(clip);svg.appendChild(defs);
+  const layer=svgElement('g',{'clip-path':'url(#kde-clip)'});
+  for(const [c,levels] of Object.entries(kdeCache.groups)){
+   const active=$('cluster').value==='all'||$('cluster').value===c;
+   for(const level of levels){const path=svgElement('path',{d:level.path,fill:'#777','fill-rule':'evenodd','fill-opacity':(level.mass===.8?.07:.10)*(active?1:.15),'data-kde-cluster':c,style:'cursor:pointer'});
+    path.appendChild(svgElement('title',{},`Cluster ${c} · KDE ${Math.round(100*level.mass)}% mass`));path.onclick=()=>{if(!dragged)selectCluster(c)};layer.appendChild(path)
+   }
+  }svg.appendChild(layer)
+ }
+ e.rows.forEach((row,i)=>{const r=data.rows[row],style=$('origin').checked?data.origin_styles[r.origin]:{fill:'#222',stroke:'none'},circle=svgElement('circle',{cx:xy[i][0],cy:xy[i][1],r:r.marker_radius,
+   fill:selected.has(row)?'#31688e':style.fill,opacity:visible.has(row)?.85:.1,stroke:'#ffffff','stroke-width':focused===row?1.1:.55,tabindex:0,role:'button','aria-label':r.dataset});
+   circle.appendChild(svgElement('title',{},`${r.dataset} · M=${r.M} · ${r.origin}${p?' · cluster '+p.labels[row]:''}`));circle.onclick=()=>{if(!dragged)inspect(row)};circle.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();inspect(row)}};svg.appendChild(circle)
+ });svg.setAttribute('viewBox',viewport.join(' '));
+}
+function detail(){if(focused===null)return;const r=data.rows[focused],p=currentPartition();$('detail').innerHTML=`<h2>${esc(r.dataset)}</h2><p class="muted">M=${r.M} · T=${r.T} · ${r.origin}${p?' · cluster '+p.labels[focused]:''}</p><a href="${r.png}" target="_blank" rel="noopener"><img src="${r.png}" alt="${esc(r.dataset)}"></a><p><a href="${r.svg}" target="_blank" rel="noopener">SVG</a> · <a href="${r.png}" target="_blank" rel="noopener">PNG</a> · <button id="select-focused">${selected.has(focused)?'Deselect':'Select'} this MTS</button></p>`;$('select-focused').onclick=()=>{selected.has(focused)?selected.delete(focused):selected.add(focused);render()}}
+function stateHash(){const q=new URLSearchParams();for(const k of ['mode','embedding','family','partition','cluster','search'])q.set(k,$(k).value);q.set('origin',$('origin').checked?'1':'0');q.set('shading',$('shading').value);if($('cross-map').checked)q.set('cross','1');return '#'+q.toString()}
+function render(){
+ const e=currentEmbedding(),p=currentPartition(),rows=visibleRows();page=Math.max(0,Math.min(page,Math.ceil(rows.length/pageSize)-1));
+ const mismatch=p?.map_id&&p.map_id!==$('embedding').value;
+ $('partition-note').className='facts'+(mismatch?' warning':'');
+ $('partition-note').textContent=p?`Partition fitted on ${p.map_id?'2D '+p.map_id:p.space==='full'?'FULL retained-feature geometry':p.space.toUpperCase()} · ${p.clusters} groups · ${(100*p.coverage).toFixed(1)}% assigned${p.stability_seed_ARI!==null?' · seed ARI '+p.stability_seed_ARI.toFixed(3):''}${mismatch?' · Different map shown: labels have NOT been refitted.':''}`:'No partition. Points are individual datasets.';
+ $('embedding-note').textContent=`Map: ${e.title} · full-feature 15-neighbour recall ${(100*e.knn15_full).toFixed(1)}%${e.cached_v1?' · cached historical coordinates':e.seconds_fit!==null?' · fit '+e.seconds_fit.toFixed(2)+' s':''}`;
+ $('figure-svg').href=`figures/${$('embedding').value}.svg`;$('figure-png').href=`figures/${$('embedding').value}.png`;
+ const g=p?.groups[$('cluster').value];$('group-note').replaceChildren();
+ if(g){$('group-note').textContent=`${g.size} members · mean full-feature silhouette ${g.silhouette===null?'undefined':g.silhouette.toFixed(3)} · `;const b=document.createElement('button');b.textContent='Inspect full-feature medoid';b.onclick=()=>inspect(g.medoid);$('group-note').appendChild(b)}
+ $('selection-status').textContent=`${selected.size} MTS selected for export.`;$('download').disabled=!selected.size;
+ $('status').textContent=`${rows.length} matching MTS · ${e.rows.length} points in map${p?' · '+p.labels.filter(c=>c===-1).length+' unassigned in partition':''}.`;
+ $('cards').innerHTML=rows.slice(page*pageSize,(page+1)*pageSize).map(r=>`<article class="card"><label><input type="checkbox" data-select="${r.row}" ${selected.has(r.row)?'checked':''}>${esc(r.dataset)}</label><a href="${r.png}" target="_blank" rel="noopener"><img loading="lazy" src="${r.png}" alt="${esc(r.dataset)}"></a><small>${p?'Cluster '+p.labels[r.row]+' · ':''}M=${r.M}, T=${r.T} · ${r.origin} · colour limit ±${r.display_limit.toPrecision(3)}</small><a href="${r.svg}" target="_blank" rel="noopener">SVG</a> · <a href="${r.png}" target="_blank" rel="noopener">PNG</a> · <button data-inspect="${r.row}">Inspect</button></article>`).join('');
+ document.querySelectorAll('[data-select]').forEach(b=>b.onchange=()=>{const r=Number(b.dataset.select);b.checked?selected.add(r):selected.delete(r);render()});
+ document.querySelectorAll('[data-inspect]').forEach(b=>b.onclick=()=>inspect(Number(b.dataset.inspect)));
+ $('page-status').textContent=rows.length?`${page*pageSize+1}–${Math.min(rows.length,(page+1)*pageSize)} of ${rows.length}`:'No matching datasets';
+ $('previous-page').disabled=page===0;$('next-page').disabled=(page+1)*pageSize>=rows.length;
+ $('prev-cluster').disabled=$('cluster').selectedIndex<=0;$('next-cluster').disabled=$('cluster').selectedIndex===$('cluster').options.length-1;
+ detail();draw();try{history.replaceState(null,'',stateHash())}catch{}
+}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$('mode').onchange=()=>{const mode=$('mode').value,priorPartition=$('partition').value,priorCluster=$('cluster').value,keepFeature=$('family').value==='feature'&&mode!=='historical';embeddingOptions({preferred:'tsne-pca100-p30',historical:'historical-p10',pca:'pc1-pc2',umap:'umap-pca100-n15'}[mode]);$('family').value=mode==='historical'?'map':'feature';partitionOptions(mode==='historical'?'map-historical-p10-eom':keepFeature?priorPartition:'kmeans-pca100-k80');if(keepFeature)clusterOptions(priorCluster);page=0;viewport=[0,0,680,680];render()};
+$('embedding').onchange=()=>{const p=$('partition').value,c=$('cluster').value;partitionOptions(p);if($('partition').value===p)clusterOptions(c);viewport=[0,0,680,680];page=0;render()};
+$('family').onchange=$('cross-map').onchange=()=>{partitionOptions($('partition').value);page=0;render()};
+$('partition').onchange=()=>{clusterOptions();page=0;render()};$('cluster').onchange=$('search').oninput=$('only-selected').onchange=()=>{page=0;render()};
+$('prev-cluster').onclick=()=>{if($('cluster').selectedIndex>0){$('cluster').selectedIndex--;page=0;render()}};
+$('next-cluster').onclick=()=>{if($('cluster').selectedIndex<$('cluster').options.length-1){$('cluster').selectedIndex++;page=0;render()}};
+$('all').onclick=()=>{$('cluster').value='all';$('search').value='';$('only-selected').checked=false;page=0;render()};
+$('origin').onchange=render;$('shading').onchange=render;$('reset-view').onclick=()=>{viewport=[0,0,680,680];draw()};
+$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
+$('previous-page').onclick=()=>{page--;render()};$('next-page').onclick=()=>{page++;render()};
+$('download').onclick=()=>{const e=currentEmbedding(),p=currentPartition(),lookup=new Map(e.rows.map((r,i)=>[r,e.xy[i]]));const q=x=>'"'+String(x??'').replaceAll('"','""')+'"';
+ const records=[['row','dataset','M','T','origin','embedding','x','y','partition','fitted_space','cluster','user_label','svg','png'],...[...selected].sort((a,b)=>a-b).map(i=>{const r=data.rows[i],xy=lookup.get(i)||['',''];return [i,r.dataset,r.M,r.T,r.origin,$('embedding').value,...xy,$('partition').value,p?.map_id||p?.space||'',p?.labels[i]??'',$('label').value,r.svg,r.png]})];download(new Blob([records.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),'mts-selection.csv')};
+$('permalink').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('permalink').textContent='Copied';setTimeout(()=>$('permalink').textContent='Copy view link',1400)}catch{window.prompt('Copy this view link',location.href)}};
+function mapBlob(){const clone=$('map').cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width','1360');clone.setAttribute('height','1360');clone.querySelectorAll('[tabindex]').forEach(x=>x.removeAttribute('tabindex'));const title=svgElement('title',{},`${currentEmbedding().title}; partition ${$('partition').value||'none'}; cluster ${$('cluster').value}`);clone.prepend(title);return new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'})}
+$('export-svg').onclick=()=>download(mapBlob(),'mts-map.svg');$('export-png').onclick=()=>{const url=URL.createObjectURL(mapBlob()),img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=2040;c.height=2040;const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(b=>{if(b)download(b,'mts-map.png')});URL.revokeObjectURL(url)};img.onerror=()=>{URL.revokeObjectURL(url);$('status').textContent='PNG export failed; use SVG instead.'};img.src=url};
+function svgPoint(event){return new DOMPoint(event.clientX,event.clientY).matrixTransform($('map').getScreenCTM().inverse())}
+$('map').addEventListener('wheel',event=>{event.preventDefault();const p=svgPoint(event),factor=event.deltaY>0?1.12:1/1.12;if(viewport[2]*factor<35||viewport[2]*factor>4000)return;viewport=[p.x+(viewport[0]-p.x)*factor,p.y+(viewport[1]-p.y)*factor,viewport[2]*factor,viewport[3]*factor];$('map').setAttribute('viewBox',viewport.join(' '))},{passive:false});
+$('map').onpointerdown=event=>{dragged=false;drag={x:event.clientX,y:event.clientY,view:[...viewport]}};
+window.addEventListener('pointermove',event=>{if(!drag)return;const rect=$('map').getBoundingClientRect(),dx=event.clientX-drag.x,dy=event.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)dragged=true;if(dragged){viewport=[drag.view[0]-dx*drag.view[2]/rect.width,drag.view[1]-dy*drag.view[3]/rect.height,drag.view[2],drag.view[3]];$('map').setAttribute('viewBox',viewport.join(' '))}});
+window.addEventListener('pointerup',()=>{drag=null});window.addEventListener('pointercancel',()=>{drag=null});
+$('pca-quality').textContent='PCA retained variance / full-feature 15-neighbour overlap: '+data.pca_metrics.map(p=>`${p.dimensions} PCs: ${(p.variance*100).toFixed(1)}% / ${(p.knn15_full*100).toFixed(1)}%`).join('; ')+'.';$('historical-note').textContent=data.historical_note;
+const initial=new URLSearchParams(location.hash.slice(1));if(['none','kde','hulls'].includes(initial.get('shading')))$('shading').value=initial.get('shading');$('origin').checked=initial.get('origin')!=='0';if([...$('mode').options].some(o=>o.value===initial.get('mode')))$('mode').value=initial.get('mode');
+embeddingOptions(initial.get('embedding')||({preferred:'tsne-pca100-p30',historical:'historical-p10',pca:'pc1-pc2',umap:'umap-pca100-n15'}[$('mode').value]));
+$('family').value=initial.get('family')==='map'||(!initial.has('family')&&$('mode').value==='historical')?'map':'feature';$('cross-map').checked=initial.get('cross')==='1';partitionOptions(initial.get('partition')??($('family').value==='map'?'map-historical-p10-eom':'kmeans-pca100-k80'));clusterOptions(initial.get('cluster')||'all');$('search').value=initial.get('search')||'';render();
+</script>
+</html>

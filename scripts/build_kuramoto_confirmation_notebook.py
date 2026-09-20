@@ -15,7 +15,7 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("notebooks/embeddings/kuramoto-order-parameter-confirmation.ipynb"),
+        default=Path("notebooks/inference/kuramoto-order-parameter-confirmation.ipynb"),
     )
     parser.add_argument("--no-execute", action="store_true")
     args = parser.parse_args()
@@ -41,7 +41,9 @@ from matplotlib.patches import Patch
 import seaborn as sns
 from scipy.stats import spearmanr
 
-ROOT = Path.cwd()
+ROOT = Path.cwd().resolve()
+while ROOT != ROOT.parent and not (ROOT / "src").exists():
+    ROOT = ROOT.parent
 CONTRACT = ROOT / "data/order_parameter/kuramoto_final_confirmation_contract"
 summary = json.loads((CONTRACT / "confirmation_summary.json").read_text())
 representation = json.loads((CONTRACT / "representation_contract.json").read_text())
@@ -182,6 +184,158 @@ else:
 The defensible claim depends on the frozen gates above. A pass supports: **in this finite-$N$ Kuramoto benchmark, a prospectively frozen non-phase SPI–SPI PC1 learned without coupling or order-parameter labels recovered, up to a monotone transformation, changes in the canonical phase-coherence order parameter from partial observations on untouched controls and random-frequency realizations under Gaussian and logistic frequency laws.** The numerical $R_N$ estimate uses a separately supervised calibration. Both frequency laws appeared during target-free representation development, so this is not unseen-path transfer. Independent channel shifts substantially reduced overall association, consistent with cross-channel temporal alignment contributing to the representation; shift-induced estimator failures and retained association prevent clean causal attribution. This is a proof of capability, not evidence that SPI–SPI is uniquely optimal or universally recovers order parameters."""
         ),
     ]
+    historical_cells = cells
+    historical_cells[0] = nbformat.v4.new_markdown_cell(
+        r"""### Historical assay definition
+
+The prospective assay below used a frozen 164-SPI non-phase core, Gaussian and logistic frequency laws, and partial observation of a hidden larger population. Its result remains valid under that contract, but it is now retained as a restricted-core robustness/provenance analysis rather than the primary presentation."""
+    )
+    full_catalogue_cells = [
+        nbformat.v4.new_markdown_cell(
+            r"""# Unsupervised SPI–SPI recovery of the Kuramoto order parameter
+
+**Primary full-catalogue reanalysis.** Every one of the 289 SPIs produced by `benchmarked_p90.yaml` enters the unified ordered SPI–SPI construction, giving 41,616 candidate meta-features before ordinary development-only validity and variance filtering. The physical model is restricted to one Gaussian random-frequency population. PC1 is fitted without coupling or order-parameter values.
+
+This reconstruction uses the already disclosed terminal bank, so it is a **retrospective reanalysis**, not a new prospective confirmation. Its scientific purpose is to test the intended full-catalogue representation. The original prospectively frozen 164-SPI assay is preserved below a divider for provenance."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""from pathlib import Path
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import spearmanr
+
+ROOT = Path.cwd().resolve()
+while ROOT != ROOT.parent and not (ROOT / "src").exists():
+    ROOT = ROOT.parent
+FULL = ROOT / "data/order_parameter/kuramoto_full_catalogue_reanalysis"
+full_summary = json.loads((FULL / "summary.json").read_text())
+full_archive = np.load(FULL / "results.npz", allow_pickle=False)
+full_frame = pd.DataFrame({name: full_archive[name] for name in (
+    "class_name", "design", "kappa", "instance", "coordinate_pc1",
+    "target_full_future_R", "selected_feature_missingness",
+    "mean_abs_correlation", "analytic_phase_coherence",
+    "temporal_spectral_entropy",
+)})
+primary_rows = full_archive["primary_row_indices"].astype(int)
+full_frame["prediction_R"] = np.nan
+full_frame.loc[primary_rows, "prediction_R"] = full_archive["prediction_primary"]
+sns.set_theme(style="whitegrid", context="notebook")
+print(
+    f"{full_summary['catalogue_spis']} SPIs -> "
+    f"{full_summary['catalogue_meta_features']:,} candidate pairs -> "
+    f"{full_summary['retained_meta_features']:,} retained meta-features; "
+    f"represented SPIs={full_summary['represented_spis']}"
+)
+print(
+    f"development rows={full_summary['development_rows']}; "
+    f"terminal rows={full_summary['terminal_rows']}; "
+    f"PC1 variance={full_summary['pc1_explained_variance_ratio']:.3f}"
+)"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""## Full-catalogue order-coordinate recovery
+
+PC1 sign is arbitrary. It is oriented against $R_N$ only for display; the representation fit and all feature hygiene are target-free. The paired random-frequency design is primary and independent-cell rows are a sensitivity."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""primary_full = full_frame.query("design == 'paired'").copy()
+display_sign = np.sign(spearmanr(primary_full.coordinate_pc1, primary_full.target_full_future_R).statistic) or 1.0
+full_frame["q"] = display_sign * full_frame.coordinate_pc1
+primary_full = full_frame.query("design == 'paired'").copy()
+
+def standardized(values):
+    values = np.asarray(values, dtype=float)
+    return (values - values.mean()) / values.std()
+
+primary_full["q_standardized"] = standardized(primary_full.q)
+primary_full["R_standardized"] = standardized(primary_full.target_full_future_R)
+curve = primary_full.groupby("kappa").agg(
+    Q=("target_full_future_R", "mean"), Q_sd=("target_full_future_R", "std"),
+    q=("q_standardized", "mean"), q_sd=("q_standardized", "std"),
+    Rz=("R_standardized", "mean"), Rz_sd=("R_standardized", "std"),
+).reset_index()
+q_variance = primary_full.groupby("kappa").q.var()
+
+fig, axes = plt.subplots(2, 2, figsize=(12.4, 8.3), constrained_layout=True)
+axes[0, 0].fill_between(curve.kappa, curve.Rz-curve.Rz_sd, curve.Rz+curve.Rz_sd, color="C0", alpha=.12)
+axes[0, 0].fill_between(curve.kappa, curve.q-curve.q_sd, curve.q+curve.q_sd, color="C1", alpha=.12)
+axes[0, 0].plot(curve.kappa, curve.Rz, "-o", ms=3, color="C0", label=r"physical $R_N$")
+axes[0, 0].plot(curve.kappa, curve.q, "-o", ms=3, color="C1", label=r"full-p90 PC1 $q$")
+axes[0, 0].axvline(1, color=".35", ls="--", lw=1)
+axes[0, 0].set(xlabel=r"reduced coupling $\kappa=K/K_c$", ylabel="standardized coordinate", title="A  Changing order coordinates")
+axes[0, 0].legend(frameon=False)
+
+points = axes[0, 1].scatter(primary_full.q, primary_full.target_full_future_R, c=primary_full.kappa, cmap="viridis", s=13, alpha=.55, linewidth=0)
+fig.colorbar(points, ax=axes[0, 1], label=r"$\kappa$")
+axes[0, 1].set(xlabel=r"full-p90 SPI–SPI PC1 $q$", ylabel=r"future global $\bar R_N$", title="B  Retrospective held-bank recovery")
+
+axes[1, 0].plot(q_variance.index, q_variance.values, "-o", ms=3, color="C2")
+axes[1, 0].axvline(full_summary["target_free_q_variance_peak_kappa"], color=".35", ls="--", lw=1)
+axes[1, 0].set(xlabel=r"$\kappa$", ylabel=r"across-master $\mathrm{Var}(q)$", title="C  Target-free transition-localization sensitivity")
+
+axes[1, 1].scatter(primary_full.target_full_future_R, primary_full.prediction_R, s=13, alpha=.48, color="C3")
+limits = [primary_full.target_full_future_R.min(), primary_full.target_full_future_R.max()]
+axes[1, 1].plot(limits, limits, color=".25", ls="--", lw=1)
+axes[1, 1].set(xlabel=r"observed $\bar R_N$", ylabel=r"supervised $\widehat R_N(q)$", title="D  Separate isotonic readout")
+sns.despine(fig)
+plt.show()
+
+display(pd.DataFrame({
+    "quantity": [
+        "overall Spearman", "overall 95% CI", "within-kappa Spearman",
+        "within-kappa 95% CI", "isotonic MAE", "isotonic MAE 95% CI",
+        "maximum selected-feature missingness", "p99 selected-feature missingness",
+    ],
+    "value": [
+        full_summary["primary_association"]["overall_spearman"],
+        full_summary["primary_association"]["overall_ci95"],
+        full_summary["primary_association"]["within_kappa_spearman"],
+        full_summary["primary_association"]["within_kappa_ci95"],
+        full_summary["supervised_isotonic_readout"]["mae"],
+        full_summary["supervised_isotonic_readout"]["mae_ci95"],
+        full_summary["terminal_selected_feature_missingness_max"],
+        full_summary["terminal_selected_feature_missingness_p99"],
+    ],
+}))"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""## Baselines and interpretation
+
+The comparison below is descriptive. The full-catalogue result demonstrates whether the intended unsupervised estimator-geometry contains a stable changing order coordinate; it does not require SPI–SPI to outperform purpose-built synchronization summaries."""
+        ),
+        nbformat.v4.new_code_cell(
+            r"""baseline_rows = [{
+    "method": "full-p90 SPI–SPI PC1",
+    "overall |rho|": abs(full_summary["primary_association"]["overall_spearman"]),
+    "within-kappa |rho|": abs(full_summary["primary_association"]["within_kappa_spearman"]),
+}]
+for name, values in full_summary["baseline_associations"].items():
+    baseline_rows.append({
+        "method": name.replace("_", " "),
+        "overall |rho|": abs(values["overall_spearman"]),
+        "within-kappa |rho|": abs(values["within_kappa_spearman"]),
+    })
+display(pd.DataFrame(baseline_rows).set_index("method").round(3))
+display(pd.DataFrame(full_summary["source_stability"]).T.round(3))
+print(
+    "Interpretation: all 289 SPIs entered the feature construction; only "
+    "development-fitted meta-feature validity and variance gates were applied. "
+    "Because terminal outcomes had already been disclosed, this is a retrospective "
+    "full-catalogue recovery result rather than a new prospective confirmation."
+)"""
+        ),
+        nbformat.v4.new_markdown_cell(
+            r"""---
+
+## Historical prospective restricted-core assay
+
+Everything below this divider is retained for provenance. It used 164 deliberately non-phase SPIs, two frequency laws, and partial observation of a hidden $N=256$ population. It is no longer the primary workflow."""
+        ),
+    ]
+    cells = full_catalogue_cells + historical_cells
     notebook = nbformat.v4.new_notebook(cells=cells)
     notebook["metadata"]["kernelspec"] = {
         "display_name": "Python 3",
