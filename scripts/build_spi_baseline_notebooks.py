@@ -1,5 +1,6 @@
 """Build the lean baseline notebook and its separate descriptive corpus appendix."""
 from pathlib import Path
+import argparse
 import nbformat as nbf
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,11 +30,11 @@ pd.set_option("display.max_colwidth", 60)
 '''
 
 
-def build():
+def build(include_zenodo=True):
     cells = [
 ("md", r"""# What does SPI–SPI add beyond simple summaries?
 
-A focused exploratory comparison: an exactly specified intuition example, the proof-of-concept inter-class and CML embeddings, and two headline physical-order benchmarks. All p90 MPIs are reused from existing runs. Only the small, two-statistic VAR illustration is newly simulated. Original notebooks and frozen SPI–SPI coordinates are preserved.
+A focused exploratory comparison: an exactly specified intuition example, the proof-of-concept inter-class and CML embeddings, and headline results for all six system families in the lean order-parameter notebook. All p90 MPIs are reused from existing runs. Only the small, two-statistic VAR illustration is newly simulated. Original reference notebooks and frozen SPI–SPI coordinates are preserved.
 
 **Question:** do relationships among dependence measures add useful structure beyond the average level or distribution of each measure? This is an empirical question. A more elaborate representation need not win.
 
@@ -49,7 +50,7 @@ For an off-diagonal edge vector $a_k$ from SPI $k$, define $m_k=\mathrm{mean}(a_
 
 | Representation | What it tests | What it omits |
 |:--|:--|:--|
-| Mean Pearson $r$ and mean $|r|$ | Is elementary average linear dependence sufficient? | Most temporal and nonlinear structure |
+| Mean Pearson $r$ and mean $\lvert r\rvert$ | Is elementary average linear dependence sufficient? | Most temporal and nonlinear structure |
 | One mean per SPI | Is the catalogue's average response sufficient? | Within-SPI distributions and cross-SPI correspondence |
 | Seven summaries per SPI: mean, SD, 10/25/50/75/90th percentiles | Does a gain survive retaining distribution shape? | Which values from different SPIs belong to the same pair |
 | SPI–SPI | Does the relationship between different dependence profiles help? | Per-SPI means, positive scales and edge incidence |
@@ -93,27 +94,40 @@ These fits pool all development sizes. They do **not** reproduce the original le
 Paired intervals resample class–instance groups, keeping their nine observation cells together, with 2,000 class-stratified bootstrap draws. They condition on the fitted development models; they do not include development-sample uncertainty or multiplicity correction. Brownian-defect and other weak classes must not be removed to improve the headline score. Exact per-record outcomes and the complete paired table are retained alongside the notebook."""),
 ("md", r"""## 3. Does the order-coordinate require SPI–SPI?
 
-Two existing examples are reused, chosen to span synchronization and a different kind of collective order:
+All six system families from the [lean benchmark notebook](../inference/order-parameter-benchmarks-lean.ipynb) are shown at their headline observation sizes. The Stuart–Landau fine sweep and the second Kaneko diagnostic are retained as additional panels. Original model fitting and evaluation divisions are preserved:
 
 - **Kuramoto:** $\dot\theta_i=\omega_i+K N^{-1}\sum_j\sin(\theta_j-\theta_i)$; $M=N=32$, cosine observations, $T=1000$. Physical $Q$ is future mean global phase coherence $\langle|N^{-1}\sum_j e^{i\theta_j}|\rangle$. Use the original 128 development and 128 held recordings. Its original SPI–SPI PC1 misses the prechosen dominance screen; the reported association remains exploratory held-seed evidence.
 - **2D coupled logistic maps:** $x_i(t+1)=(1-4g)f_r(x_i(t))+g\sum_{j\sim i}f_r(x_j(t))$, $f_r(x)=rx(1-x)$, $g=.2$, periodic $256\times256$ lattice. Physical $Q$ is the long-run absolute difference between successive even/odd spatial-mean states. Only 32 dispersed sites and 1,000 samples are observed. Baselines fit the original 36 development recordings and are applied unchanged to all 544 independent-confirmation recordings. The original frozen SPI–SPI coordinate is preserved. See the [original comparison notebook](../inference/order-parameter-benchmark-comparison.ipynb) for physical definitions, convergence checks and qualifications.
 
-New **unsupervised** coordinates use PC1 of the means, PC1 of the seven-summary block, and PC1 of combined means and the original selected SPI–SPI features. Filtering/scaling/centering/PCA use development observations only; neither Q nor control values select features or components. Fusion uses unit total development variance per block before PCA. The original SPI–SPI q is independently reconstructed from its stored model and checked against the original scores. All primary evaluation rows pass the common eligibility check.
+- **Stuart–Landau:** globally coupled complex oscillators; Q is mean collective amplitude. The original 240 full-observation development rows (all three M, T≥500, instances 0–3) fit each baseline once. Evaluate the 72 broad-sweep and 152 fine-sweep confirmation recordings at M=32, T=1000 with that same fitted model. The original full-arm qualification is retained; the failed partial-arm global gate is not erased.
+- **Miller–Huse:** a two-dimensional chaotic coupled-map lattice with sign-domain ordering; Q is mean absolute spatial sign magnetization. Fit the original 144 development rows and evaluate the 72 M=32 confirmation recordings. The broader original confirmation required an exclusion sensitivity; this status is retained even though its excluded M=8 row is outside this headline slice.
+- **Quadratic/Kaneko CML:** nearest-neighbour quadratic maps at fixed coupling .3. Fit the original 492 large-lattice development rows (instances 0–3, all three M), then evaluate the same 164 held M=32 recordings against selected spatial-band power and temporal spectral entropy. These are operational diagnostics, not a discovered canonical scalar order parameter. The same baseline coordinate is used for both targets; only its arbitrary display sign may differ.
+- **Rössler:** two coupled oscillators with all six state coordinates observed; Q is mean-frequency mismatch. Fit the original 84 development recordings and evaluate all 672 independent-confirmation recordings, with the original q unchanged.
+
+New **unsupervised** coordinates use PC1 of the means and PC1 of the seven-summary block. Filtering/scaling/centering/PCA use development observations only; neither Q nor control values select features or components. The earlier Kuramoto/2D CML fusion and standardized-z sensitivities are preserved separately. Original q values are retained; the initial two q models were reconstructed, and the extension joins the original score tables to their hashed MPI sources. Every new mean/distribution coordinate is independently replayed by NumPy SVD. Coverage is reported below.
+
+This is a headline comparison, not every M/T/layout arm reproduced. Small 2D lattices remain diagnostic failures: L=6 failed coordinate stability; L=8 stopped on constant-channel inputs and has no valid q to compare. The original notebook retains these diagnostics and the partial-observation Kuramoto arm. They are not silently reclassified as successful inference.
 
 Black curves show Q in physical units. Coloured learned coordinates use development SD units on the right axis. Their arbitrary signs are oriented using **development Q for display only**; this changes neither fitted representations nor absolute-rank scores. The direct mean-|r| baseline retains its raw units. Bands are 95% bootstrap intervals for the across-seed mean at each control. Dotted lines mark published boundary references, not exact finite-system thresholds."""),
-("code", "fig = plots.inference()\nplt.show()"),
-("code", "display(plots.inference_table())"),
+("code", "fig = plots.inference(('Kuramoto', 'StuartLandau', 'MillerHuse'), filename='inference-families-1')\nplt.show()"),
+("code", "fig = plots.inference(('KanekoBand', 'CML2D', 'Rossler'), filename='inference-families-2')\nplt.show()"),
+("code", "fig = plots.inference(('StuartLandauFine', 'KanekoEntropy'), filename='inference-additional-targets')\nplt.show()"),
+("code", "display(plots.inference_table(compact=True))\ndisplay(plots.inference_paired_table())"),
 ("code", "intervals = pd.read_csv(OUT / 'inference-transition-intervals.csv')\nintervals['steepest interval'] = [f'[{a:g}, {b:g}]' for a,b in zip(intervals.interval_start, intervals.interval_end)]\ndisplay(intervals.pivot(index='method', columns='system', values='steepest interval'))"),
-("md", r"""Associations use individual held recordings, not just control means. Intervals use 2,000 paired seed-cluster bootstrap draws, preserving each seed's control sweep. The difference columns are baseline minus original q; these retrospective intervals are unadjusted. The within-control column removes each control's mean before computing association and must not be read as longitudinal fluctuation tracking.
+("md", r"""Associations use individual held recordings, not just control means. The first table gives absolute Spearman association; the second gives the mean/distribution-PC1 difference from original q with 95% intervals from 2,000 paired seed-cluster bootstrap draws. Each seed's control sweep stays together. These retrospective intervals are unadjusted. Full metrics, including direct spectral/variability baselines and within-control residual associations, are retained in the two inference-metrics CSVs. Residual associations are not longitudinal fluctuation tracking.
 
-The full mean-SPI PC1 tracks Q strongly in both examples, and combining it with SPI–SPI does not improve on the mean coordinate. Thus these headline order-tracking results do not establish a need for SPI–SPI under these readouts. A weak first component does not prove the full z vector lacks useful information, and a leading variance direction is not automatically a physical order parameter.
+In the initial Kuramoto and 2D CML examples, mean-SPI PC1 tracks Q strongly and combining it with SPI–SPI does not improve on that coordinate. The added systems broaden this check rather than assuming that the same outcome must recur. A weak first component does not prove the full z vector lacks useful information, and a leading variance direction is not automatically a physical order parameter.
 
-**Preprocessing sensitivity:** the table also gives PC1 of standardized z, using the same 95% validity, development SD scaling and ±5-SD clipping as the mean baseline. This check was added after observing the primary baseline results because preprocessing is a potential confound. It does not replace the frozen q or erase its original gate outcome. All methods remain retrospective and target-blind in fitting. Any advantage of one coordinate describes that representation/preprocessing combination, not every possible readout of its input.
+**Added-system results:** Stuart–Landau distribution-PC1 has somewhat higher association than q in both sweeps; its mean-PC1 comparison is unresolved in the paired intervals. Miller–Huse's small mean/distribution differences are also unresolved. Rössler slightly favours q: its mean-PC1 difference is unresolved, while distribution-PC1 is lower. These are conditional, unadjusted comparisons of the specified pipelines.
+
+**Kaneko coverage qualification:** the new marginal baselines retain 140/164 held recordings under the fixed 5% selected-feature-missingness rule. All three methods are compared on those same 140 rows; the very high marginal associations apply to this subset, not the complete sweep. Original q's full-164 associations remain .809 (band power) and .804 (entropy), compared with .721/.715 on the common subset. No q values were refitted or changed. The new marginal baselines have incomplete coverage, so this is not a whole-grid success. Only four independent held seeds support these retrospective intervals.
+
+**Preprocessing sensitivity for the initial two systems:** PC1 of standardized z uses the same 95% validity, development SD scaling and ±5-SD clipping as the mean baseline. This check was added after observing the primary baseline results because preprocessing is a potential confound. It does not replace the frozen q or erase its original gate outcome. All methods remain retrospective and target-blind in fitting. Any advantage of one coordinate describes that representation/preprocessing combination, not every possible readout of its input.
 
 Standardizing z improves association to .964 (Kuramoto) and .941 (CML), still below the mean coordinate (.994/.973). This sensitivity shows why the original PC1 result must not be equated with all information in z. **Rank association and transition localization are different:** on CML, q, distribution-PC1 and fusion share Q's steepest sampled interval; mean-PC1 and mean-|r| peak in the adjacent earlier interval. The interval table reports the largest absolute slope of each control-mean curve on the existing nonuniform grid, not a fitted critical point or a statistical test of localization. Kuramoto's finite-population Q interval also differs from the continuum reference and the baselines' interval. No single correlation score settles every scientific objective.
 
 Simple coherence baselines have a physical motivation here. For phase measurements, $R^2=N^{-2}\sum_{ij}\cos(\theta_i-\theta_j)$, so average pairwise phase alignment is directly related to global synchronization. Time-series Pearson correlation of cosine observations can approximate phase alignment under suitable oscillatory/window conditions, but is not identically that observable in general. Hilbert coherence is a domain-sensitive comparator; for CML, the sampled period-two proxy uses the physical observable's form and is a model-informed comparator, not a generic baseline."""),
-("code", "diagnostics = json.loads((OUT / 'inference-provenance.json').read_text())['diagnostics']\nrows = [dict(system=s, representation=k, **v) for s, d in diagnostics.items() for k, v in d.items() if k in ['mean','distribution','mean+z']]\ndisplay(pd.DataFrame(rows).round(3))"),
+("code", "metrics, diagnostics = plots.inference_results()\ncoverage = [dict(system=s, development=d['development_rows'], held=d['common_eligible_evaluation_rows'], available=int(metrics.query('system == @s').evaluated_available.iloc[0]), held_seed_groups=int(metrics.query('system == @s').seeds.iloc[0]), mean_PC1_EVR=d['mean']['evr1'], mean_loading_stability=d['mean']['minimum_leave_seed_loading_cosine']) for s,d in diagnostics.items()]\ndisplay(pd.DataFrame(coverage).round(3))"),
 ("md", """The loading-stability diagnostic leaves out each development seed with preprocessing held fixed, matching the style of the existing SPI–SPI diagnostic. It is not a full refit uncertainty estimate, and these new baselines are not passed through a retrospectively chosen physical-discovery gate.
 
 ## What this first pass can establish
@@ -127,8 +141,11 @@ Interpret gains by task and class, preserve the simple-baseline wins, and do not
 This notebook renders the compact results produced by `scripts/spi_baseline_exploration.py`; it does not silently recompute p90. Protocol: `configs/analysis/spi-baseline-exploration-260921.yaml`. Input inventory: `data/spi_baseline_exploration_260921/proof-inputs.json`. All proof, Kuramoto and CML MPI archives are checked against their earlier recorded SHA-256 values. Source hashes and original-q replay are retained in the output provenance JSONs.
 
 From the repository root, use the project Python to run `python -m scripts.spi_baseline_exploration toy`, `extract-proof`, `proof`, `inference`, and optionally `zenodo`. Missing cached proof files can be inventoried with `scripts/prepare_spi_baseline_data.py`; the resulting rsync list is for Gadi data-mover retrieval, not simulation. The original notebooks are unchanged. The separate corpus appendix is descriptive and transductive. Static figure files, scores, per-record outcomes and provenance live in `results/spi_baseline_exploration_260921/`."""),
+("md", """The six-system extension is reproduced with `python -m scripts.extend_spi_baseline_inference prepare`, `extract`, and `analyze`, using the cached-file transfer list produced by `prepare`. Its protocol is `configs/analysis/spi-baseline-lean-extension-260921.yaml`; fitted states, source hashes and independent SVD replay errors are retained with the extension outputs. The reference lean notebook and figure-style document had user edits when this update began; those edits are preserved."""),
     ]
     notebook(cells, ROOT / "notebooks/embeddings/spi_baseline_exploration_260921.ipynb")
+    if not include_zenodo:
+        return
     notebook([
 ("md", """# Per-SPI baselines on the 1,053-record corpus
 
@@ -153,4 +170,6 @@ Reproduce with `python -m scripts.spi_baseline_exploration zenodo` from the repo
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--main-only", action="store_true", help="Preserve the existing Zenodo companion notebook")
+    build(include_zenodo=not parser.parse_args().main_only)

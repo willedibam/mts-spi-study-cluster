@@ -1,0 +1,40 @@
+status: retrospective_extension_requested_by_user
+new_p90: false
+features: [per_SPI_mean, per_SPI_mean_std_q10_q25_q50_q75_q90]
+preprocessing: development_only_95percent_validity_median_imputation_SD_scaling_clip_5SD
+coordinate: first_principal_component_no_target_or_control_selection
+display_sign: development_Q_only_not_used_for_fitting
+eligibility: original_q_eligibility_and_at_most_5percent_missing_selected_marginal_features
+systems:
+  StuartLandau:
+    development: original_full_arm_T_at_least_500_instances_0_to_3
+    expected_development_rows: 240
+    evaluation: original_confirmation_M32_T1000
+  StuartLandauFine:
+    development: same_240_rows_as_broad_StuartLandau
+    evaluation: original_fine_confirmation_M32_T1000
+  MillerHuse:
+    development: original_instances_0_to_3_all_three_M
+    expected_development_rows: 144
+    evaluation: original_confirmation_M32_T1000
+    qualification: preserve_original_exclusion_sensitivity_status
+  Kaneko:
+    development: original_large_lattice_instances_0_to_3_all_three_M
+    expected_development_rows: 492
+    evaluation: large_lattice_M32_instances_4_to_7
+    targets: [Q_selected_band_power, Q_temporal_entropy]
+    qualification: operational_diagnostics_not_canonical_scalar_order_parameters
+  Rossler:
+    development: original_primary_development_seeds
+    expected_development_rows: 84
+    evaluation: original_672_independent_confirmation_records
+evaluation:
+  metric: absolute_individual_record_Spearman
+  paired_bootstrap: 2000_seed_cluster_draws_seed260921
+  uncertainty: conditional_on_fitted_models_unadjusted
+  additional: within_control_residual_association
+scope:
+  - Extend all six system families in the lean notebook at headline observation sizes.
+  - Include both Stuart-Landau sweeps and both Kaneko diagnostics.
+  - Preserve earlier Kuramoto and 2D CML results and original reference notebooks.
+  - Small-lattice failures remain explicitly qualified; no manufactured valid q for L8.

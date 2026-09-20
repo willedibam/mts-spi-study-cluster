@@ -1,0 +1,166 @@
+{
+  "diagnostics": {
+    "StuartLandau": {
+      "mean": {
+        "evr1": 0.6234614633225938,
+        "evr_ratio": 7.849101459722676,
+        "minimum_leave_seed_loading_cosine": 0.9995551987374574,
+        "features": 237,
+        "independent_replay_max_error": 0.0
+      },
+      "distribution": {
+        "evr1": 0.5494224439533948,
+        "evr_ratio": 5.222247956540017,
+        "minimum_leave_seed_loading_cosine": 0.9992978241511721,
+        "features": 1681,
+        "independent_replay_max_error": 0.0
+      },
+      "display_signs_from_development_Q": {
+        "q": 1,
+        "mean_PC1": 1,
+        "distribution_PC1": 1
+      },
+      "development_rows": 240,
+      "evaluation_rows": 72,
+      "common_eligible_evaluation_rows": 72,
+      "target": "Q_R_mean",
+      "original_q_all_evaluation_abs_rho": 0.9682195871248116
+    },
+    "StuartLandauFine": {
+      "mean": {
+        "evr1": 0.6234614633225938,
+        "evr_ratio": 7.849101459722676,
+        "minimum_leave_seed_loading_cosine": 0.9995551987374574,
+        "features": 237,
+        "independent_replay_max_error": 0.0
+      },
+      "distribution": {
+        "evr1": 0.5494224439533948,
+        "evr_ratio": 5.222247956540017,
+        "minimum_leave_seed_loading_cosine": 0.9992978241511721,
+        "features": 1681,
+        "independent_replay_max_error": 0.0
+      },
+      "display_signs_from_development_Q": {
+        "q": 1,
+        "mean_PC1": 1,
+        "distribution_PC1": 1
+      },
+      "development_rows": 240,
+      "evaluation_rows": 152,
+      "common_eligible_evaluation_rows": 152,
+      "target": "Q_R_mean",
+      "original_q_all_evaluation_abs_rho": 0.8860179180337685
+    },
+    "MillerHuse": {
+      "mean": {
+        "evr1": 0.47115566646891777,
+        "evr_ratio": 3.8034116802486624,
+        "minimum_leave_seed_loading_cosine": 0.997141047792587,
+        "features": 265,
+        "independent_replay_max_error": 0.0
+      },
+      "distribution": {
+        "evr1": 0.4731888114554762,
+        "evr_ratio": 6.36844218791057,
+        "minimum_leave_seed_loading_cosine": 0.9974279643692502,
+        "features": 1891,
+        "independent_replay_max_error": 0.0
+      },
+      "display_signs_from_development_Q": {
+        "q": 1,
+        "mean_PC1": -1,
+        "distribution_PC1": -1
+      },
+      "development_rows": 144,
+      "evaluation_rows": 72,
+      "common_eligible_evaluation_rows": 72,
+      "target": "Q_spin_abs",
+      "original_q_all_evaluation_abs_rho": 0.9314103800887519
+    },
+    "KanekoBand": {
+      "mean": {
+        "evr1": 0.6586791540799579,
+        "evr_ratio": 5.366858191813253,
+        "minimum_leave_seed_loading_cosine": 0.9992984010193332,
+        "features": 227,
+        "independent_replay_max_error": 0.0
+      },
+      "distribution": {
+        "evr1": 0.6820311618330226,
+        "evr_ratio": 9.555858669734508,
+        "minimum_leave_seed_loading_cosine": 0.9996225623743419,
+        "features": 1612,
+        "independent_replay_max_error": 0.0
+      },
+      "display_signs_from_development_Q": {
+        "q": -1,
+        "mean_PC1": -1,
+        "distribution_PC1": -1
+      },
+      "development_rows": 492,
+      "evaluation_rows": 164,
+      "common_eligible_evaluation_rows": 140,
+      "target": "Q_selected_band_power",
+      "original_q_all_evaluation_abs_rho": 0.8093371240460869
+    },
+    "KanekoEntropy": {
+      "mean": {
+        "evr1": 0.6586791540799579,
+        "evr_ratio": 5.366858191813253,
+        "minimum_leave_seed_loading_cosine": 0.9992984010193332,
+        "features": 227,
+        "independent_replay_max_error": 0.0
+      },
+      "distribution": {
+        "evr1": 0.6820311618330226,
+        "evr_ratio": 9.555858669734508,
+        "minimum_leave_seed_loading_cosine": 0.9996225623743419,
+        "features": 1612,
+        "independent_replay_max_error": 0.0
+      },
+      "display_signs_from_development_Q": {
+        "q": 1,
+        "mean_PC1": 1,
+        "distribution_PC1": 1
+      },
+      "development_rows": 492,
+      "evaluation_rows": 164,
+      "common_eligible_evaluation_rows": 140,
+      "target": "Q_temporal_entropy",
+      "original_q_all_evaluation_abs_rho": 0.8043040006529457
+    },
+    "Rossler": {
+      "mean": {
+        "evr1": 0.5836369464794584,
+        "evr_ratio": 4.0083933406079835,
+        "minimum_leave_seed_loading_cosine": 0.9989543747226843,
+        "features": 249,
+        "independent_replay_max_error": 0.0
+      },
+      "distribution": {
+        "evr1": 0.4503071359550289,
+        "evr_ratio": 3.277783949028563,
+        "minimum_leave_seed_loading_cosine": 0.9977583078529502,
+        "features": 1776,
+        "independent_replay_max_error": 0.0
+      },
+      "display_signs_from_development_Q": {
+        "q": 1,
+        "mean_PC1": -1,
+        "distribution_PC1": -1
+      },
+      "development_rows": 84,
+      "evaluation_rows": 672,
+      "common_eligible_evaluation_rows": 672,
+      "target": "Q_reference",
+      "original_q_all_evaluation_abs_rho": 0.848393634962217
+    }
+  },
+  "status": "retrospective extension to existing lean benchmark systems; no new p90",
+  "protocol_sha256": "b8e9ac32914979cf242412798e19fc07350433d979e5d81dc014545e7cbb2d68",
+  "code_sha256": "c0788b0ee4dab0343124870f3510bef480953fbfdb8720ab5ad8a8075566cf26",
+  "summaries_sha256": "d13746db89e7443d67255734bcb6e315336402b7935a8a74b4017bd8f324b40b",
+  "scores_sha256": "6b085dfc6fce4e255478645a168264819b274472c88d13c98859de4adbc564bd",
+  "sources_sha256": "0397960e03338c562f41a6d377ee6173b0e8da14d197f5555042ddda3952ffb2"
+}

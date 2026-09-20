@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "coverage": {
+    "StuartLandau": {
+      "available": 72,
+      "retained": 72
+    },
+    "StuartLandauFine": {
+      "available": 152,
+      "retained": 152
+    },
+    "MillerHuse": {
+      "available": 72,
+      "retained": 72
+    },
+    "KanekoBand": {
+      "available": 164,
+      "retained": 140
+    },
+    "KanekoEntropy": {
+      "available": 164,
+      "retained": 140
+    },
+    "Rossler": {
+      "available": 672,
+      "retained": 672
+    }
+  },
+  "identical_fitted_states": [
+    [
+      "StuartLandau",
+      "StuartLandauFine"
+    ],
+    [
+      "KanekoBand",
+      "KanekoEntropy"
+    ]
+  ],
+  "preserved_files": {
+    "notebooks/inference/order-parameter-benchmarks-lean.ipynb": "76545eaaa8ce3093ddaaeb7e6d39bdcb6bf6a1274cc2a8ebc03d95c39b711e21",
+    "docs/figure-style.md": "93f0deccb247506a00a2eacc7fcf8f4af1f0bc83880936d141943288dd2345af",
+    "notebooks/embeddings/spi_baseline_zenodo_260921.ipynb": "42587f42a6a9efb24dbb03b49c2342c28551da33f02f575d57b25fb284982ae6"
+  },
+  "validated_cached_MPI_count": 2092,
+  "notebook_cells": 24,
+  "executed_code_cells": 13,
+  "embedded_figures": 6,
+  "artifact_sha256": {
+    "notebooks/embeddings/spi_baseline_exploration_260921.ipynb": "5783826d340416b150d5940d0f9d13127498ae051311bd1e403fb983b26d57f6",
+    "results/spi_baseline_exploration_260921/inference-extra-metrics.csv": "b7af7b2381ca11e93cf9ca08bf203623d9a88518b336ed58d627fccabf7a0c2d",
+    "results/spi_baseline_exploration_260921/inference-extra-provenance.json": "059b962e7c5a0da3a6822a9bb4c0feddcc5c80848133718426342b5dd9e834dd"
+  },
+  "code_sha256": "69d899e73c525ff89b602688a2f6ff082235ca9ca8bc5055f33bd2fae26f9610"
+}
