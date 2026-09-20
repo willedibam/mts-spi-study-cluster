@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "checks": {
+    "independent_MPI_and_raw_replays": 40,
+    "existing_ordered_mean_bank_replays": 2660,
+    "Zenodo_prior_MPI_and_metadata_hashes": 1053,
+    "independent_hard_retrieval_replays": 144,
+    "original_proof_z_projection": "exact normalized replay",
+    "Kuramoto_independent_PC1_max_errors": {
+      "mean": 1.3322676295501878e-14,
+      "distribution": 3.552713678800501e-15
+    },
+    "CML2D_independent_PC1_max_errors": {
+      "mean": 8.881784197001252e-16,
+      "distribution": 8.881784197001252e-16
+    },
+    "original_notebooks_unchanged": [
+      "notebooks/embeddings/proof_p90_260824.ipynb",
+      "notebooks/embeddings/zenodo_1053_geometry.ipynb",
+      "notebooks/inference/order-parameter-benchmark-comparison.ipynb",
+      "notebooks/inference/order-parameter-benchmarks-lean.ipynb",
+      "notebooks/inference/order-parameter-benchmarks-baselines.ipynb"
+    ],
+    "primary_protocol_preserved": true
+  },
+  "outputs": {
+    "inference-CML2D.csv": "a9a707233683bf1ab17891366b891090a3cafb35c31a58339ee4fb02b4577cfe",
+    "inference-Kuramoto.csv": "44e8d782c0f826f635a747389a695f3c4e21c507b674659c272cc24e36ea1464",
+    "inference-metrics.csv": "0f07761462653635b6ee7abc74243dff855c373d668f818472028db0c7fdc83c",
+    "inference-transition-intervals.csv": "2758ac8066713b36acf18ce7f60d426b09e43fda789ccbf82bf39f99f51ddb9d",
+    "intuition-population.csv": "303c83766a97390a7fd7373fce225f8c514260361e27d3caa757a179d90d928e",
+    "intuition-samples.csv": "4a6a251a7218c3cbef84ea85cace6d2115cd0fc064609a4feb33e0397e17b9d1",
+    "proof-individual.csv": "972563ec2bdc0604a6f7bb8e09a7c41380ad058526e05f0e1e5cf5aa678d3611",
+    "proof-metrics.csv": "951dcdc71152b477052122de740fa6bfd1ca85758a3b1349f65f15e27b0e7e73",
+    "proof-paired.csv": "4db0a50f9cd967396d53abf306ec6da8f11e44dac1c2af8f971102d796836d92",
+    "zenodo-descriptive.csv": "afa696e58d98be54b11daab64c7d3c76c1239c6c1549d41d13147f0264c034c8"
+  },
+  "source_sha256": {
+    "scripts/spi_baseline_exploration.py": "897c2002c78c72ee76cf84c3617f61abc0f487cded814944624eafe706e07484",
+    "scripts/prepare_spi_baseline_data.py": "72bfa07357cac31cd0994e3e8e58d268c10ddbe0ab4b8b4c9be1945bb682acec",
+    "scripts/audit_spi_baseline_exploration.py": "290040d51f089ff591eb7c5f45a13af2237cded097f9212c416b8d6b2f82bfed",
+    "scripts/plot_spi_baseline_exploration.py": "6d17329d64aa54cba2f9f8268147b50c9fb71bd67c9b99ab5c84556e4826b6ec",
+    "scripts/build_spi_baseline_notebooks.py": "9fbb51a64495a4b1b636e2546622f1aaf4e371e6f6fe61fc25a27a5eb703accf",
+    "configs/analysis/spi-baseline-exploration-260921.yaml": "711eb458f7c641db8643da5f4a2f0a825dda64d36819433937cc15af0197f026"
+  }
+}

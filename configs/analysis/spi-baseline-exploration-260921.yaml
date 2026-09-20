@@ -1,0 +1,50 @@
+study: spi-baseline-exploration-260921
+status: exploratory_reuse_of_previously_inspected_data
+seed: 260921
+representations: [pearson, mean, distribution, z, mean+z, distribution+z]
+distribution_statistics: [mean, std, q10, q25, median, q75, q90]
+preprocessing:
+  minimum_valid_fraction: 0.95
+  variance_threshold: 1.0e-8
+  marginal_scaling: development_standard_deviation
+  marginal_clip_standard_deviations: 5
+  z_scaling: center
+  pca_dimensions: 50
+  fusion: equal_total_development_variance_per_PCA_block_then_PCA50
+proof:
+  development_instances: [0, 9]
+  evaluation_instances: [10, 29]
+  exclude_from_display_only: brownian-defect
+  z: original_frozen_symmetrized_PCA50
+  marginal_edges: symmetrized_upper_triangle
+  classifier: logistic_C1_no_tuning
+  retrieval: development_gallery_with_both_M_and_T_different
+  bootstrap_unit: class_instance_grouped_across_observation_cells
+  bootstrap_repetitions: 2000
+  UMAP: {n_neighbors: 30, min_dist: 0.1, metric: euclidean, random_state: 260824}
+inference:
+  systems: [kuramoto_full_observation_260916, cml2d_confirmation_260911]
+  fitting: original_development_records_only
+  held: original_evaluation_records_with_common_eligibility
+  reference: original_frozen_q
+  new_coordinates: [mean_PC1, distribution_PC1, mean+z_PC1]
+  preprocessing_sensitivity: standardized_z_PC1_with_same_95percent_gate_and_5SD_clipping_as_marginals
+  sensitivity_rationale: added_after_primary_baseline_results_to_check_preprocessing_confound_not_to_replace_frozen_q
+  target_or_control_used_in_coordinate_fit: false
+  PC_sign: largest_absolute_loading_positive
+  association: absolute_Spearman_individual_recordings
+  uncertainty: paired_seed_cluster_bootstrap_2000
+  qualification: original_q_gates_preserved_new_PC1_coordinates_are_exploratory
+intuition:
+  system: stationary_Gaussian_VAR1_with_prescribed_covariance_and_lag_covariance
+  M: 6
+  T: 6000
+  realizations_per_cell: 24
+  controls: [mean_zero_lag_correlation, zero_lag_vs_lag_profile_correspondence]
+  interpretation: analytic_information_example_not_a_competitive_benchmark
+zenodo:
+  scope: descriptive_common_space_only_no_superiority_score
+  catalogue: seeded_1729
+  views: [mean, distribution, z]
+  fitting: transductive_all_1053
+  UMAP: {n_neighbors: 30, min_dist: 0.1, metric: euclidean, random_state: 260824}

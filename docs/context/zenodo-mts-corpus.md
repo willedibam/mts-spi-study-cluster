@@ -2,6 +2,8 @@
 
 Active workstream as of 2026-09-17. This is exploratory representation analysis; proximity is SPI interaction-profile similarity, not established mechanistic identity.
 
+2026-09-21 [lean baseline appendix](../../notebooks/embeddings/spi_baseline_zenodo_260921.ipynb) compares per-SPI means, seven distribution summaries/SPI and z on the same 1,053 seed1729 MPI archives, all verified against historical MPI/metadata hashes. All-row transductive 95% validity/median imputation; standardized ±5-SD-clipped marginals versus centred z, PCA50/UMAP with 30 neighbours and seed260824. Origin/duration-coloured maps and PC1/M/T diagnostics are descriptive; no cluster-based superiority criterion or new natural partition is claimed. Existing explorer remains unchanged; this z map is a declared new recipe, not every historical view reproduced. Runner `scripts/spi_baseline_exploration.py zenodo`; results/provenance/audit under `results/spi_baseline_exploration_260921/`. No new p90 or source data changes.
+
 ## Verified source
 
 - Zenodo 7118947 v1.1 contains 1,053 named `M x T` arrays. The verified local, pickle-free archive is `data/zenodo_7118947/database.npz`, SHA-256 `928ce41f...b77ba84`; metadata is in the adjacent `manifest.json`.

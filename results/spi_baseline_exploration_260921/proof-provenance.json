@@ -1,0 +1,30 @@
+{
+  "projections": {
+    "pearson": {
+      "retained": 2,
+      "pca_dimensions": 2,
+      "explained_variance": 0.9999999999999993
+    },
+    "mean": {
+      "retained": 239,
+      "pca_dimensions": 50,
+      "explained_variance": 0.9880703299348423
+    },
+    "distribution": {
+      "retained": 1661,
+      "pca_dimensions": 50,
+      "explained_variance": 0.9614842446725598
+    },
+    "z": {
+      "source": "results/cross_mt_transfer_260824/confirmation-coordinates.npz",
+      "source_sha256": "80494478bf78039d702b84da3965ec9db289e5e16e904aacad11b33ad3975850",
+      "pca_dimensions": 50,
+      "original_frozen_projection": true
+    }
+  },
+  "config_sha256": "dcb4ce05b471fb21271b3df45aa0a757a027d07c84f4cbeccb21fdd1324f82b4",
+  "summaries_sha256": "0e1aa0da05f08460cdc18700666af09d18fcad949e9d8613bf7d7c1f217e19d5",
+  "development": 1260,
+  "evaluation": 2520,
+  "claim": "exploratory new baseline comparison; pooled sizes, not original leave-cell-out validation"
+}
