@@ -49,9 +49,24 @@ def check(roots):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, help='Also require this output to be inside a canonical scientific workstream or dev folder.')
     parser.add_argument('--roots', nargs='+', type=Path, default=[Path('/scratch/ql44/we2614'), Path('/g/data/ql44/we2614')])
     args = parser.parse_args()
     errors = check(args.roots)
+    if args.output is not None:
+        output = args.output.resolve()
+        allowed = {'proof', 'order-parameter-inference', 'zenodo', 'representation', 'dev'}
+        valid = False
+        for root in args.roots:
+            try:
+                relative = output.relative_to((root / 'mts-spi-study').resolve())
+                valid = bool(relative.parts) and relative.parts[0] in allowed
+            except ValueError:
+                continue
+            if valid:
+                break
+        if not valid:
+            errors.append(f'Output is outside canonical scientific workstreams: {output}')
     if errors:
         print('\n'.join(errors))
         raise SystemExit(1)
