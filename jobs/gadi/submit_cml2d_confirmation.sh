@@ -6,9 +6,9 @@ source_dir=$PWD
 test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
 test "$(git -C /home/562/we2614/pyspi-fork rev-parse HEAD)" = 65317c9c1fd5f12358b8ede09b7576ef001a76dd
 test -z "$(git -C /home/562/we2614/pyspi-fork status --porcelain)"
-physics_dir=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911/physics
-confirm_root=/g/data/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911
-frozen_dir=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_period_doubling_260911/primary-analysis
+physics_dir=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_confirmation_260911/physics
+confirm_root=/g/data/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_confirmation_260911
+frozen_dir=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_period_doubling_260911/primary-analysis
 resume=${RESUME:-0}
 if [[ "$resume" == p90 ]]; then
     test -f "$confirm_root/primary-corpus.yaml"

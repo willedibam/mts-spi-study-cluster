@@ -88,6 +88,9 @@ def intuition():
     axes[1,2].set(xlabel="Sorted ordered-pair index", ylabel="Population lagged correlation",
                   title="Entire marginal distributions match")
     axes[1,2].legend()
+    for i in range(0, 3):
+        axes[0,i].spines["top"].set_visible(True)
+        axes[0,i].spines["right"].set_visible(True)
     handles, labels = axes[1,1].get_legend_handles_labels()
     fig.legend(handles, labels, loc="outside lower center", ncol=4)
     return export(fig, "intuition")

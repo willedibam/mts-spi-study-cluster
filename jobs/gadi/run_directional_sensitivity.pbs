@@ -21,7 +21,14 @@ export OMP_NUM_THREADS="$PBS_NCPUS"
 export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
 export MKL_NUM_THREADS="$PBS_NCPUS"
 
-feature_root="${FEATURE_ROOT:-/scratch/ql44/we2614/spi-spi-direction-v2}"
+study_root=/scratch/ql44/we2614/mts-spi-study
+case "$ANALYSIS" in
+    proof) default_features="$study_root/proof/features/direction-v2" ;;
+    cml) default_features="$study_root/order-parameter-inference/quadratic-cml/features/direction-v2" ;;
+    kuramoto) default_features="$study_root/order-parameter-inference/kuramoto/features/direction-v2" ;;
+    *) echo "unknown ANALYSIS=$ANALYSIS" >&2; exit 2 ;;
+esac
+feature_root="${FEATURE_ROOT:-$default_features}"
 output_root="${OUTPUT_ROOT:-results/spi_spi_direction_v2}"
 mkdir -p logs "$output_root"
 job_stem="${PBS_JOBNAME}_${ANALYSIS}_${PBS_JOBID%%.*}"

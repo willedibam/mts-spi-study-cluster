@@ -14,7 +14,7 @@ set -euo pipefail
 
 repo_dir=/home/562/we2614/mts-spi-study-cluster
 feature_dir=/scratch/ql44/we2614/spi-spi-unified-v3
-result_dir=/scratch/ql44/we2614/kuramoto-full-catalogue-reanalysis
+result_dir=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/kuramoto/analysis/kuramoto-full-catalogue-reanalysis
 analysis_script=${ANALYSIS_SCRIPT:?ANALYSIS_SCRIPT must identify the staged analysis script}
 
 cd "$repo_dir"

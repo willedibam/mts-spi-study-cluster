@@ -17,7 +17,7 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
-base=/g/data/ql44/we2614/neurotycho_neural_260910
+base=/g/data/ql44/we2614/mts-spi-study/representation/empirical/neurotycho/models/neurotycho_neural_260910
 mkdir -p "$base/fits"
 nvidia-smi
 python -c 'import torch; print(torch.__version__, torch.cuda.get_device_name(0)); assert torch.cuda.is_available()'

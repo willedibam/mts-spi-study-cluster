@@ -9,7 +9,7 @@
 #PBS -j oe
 set -euo pipefail
 : "${AUDIT_COMMIT:?}"
-source_dir=/scratch/ql44/we2614/cml2d-confirm-source-5f76768
+source_dir=/scratch/ql44/we2614/mts-spi-study/operations/sources/registered-worktrees/cml2d-confirm-source-5f76768
 cd "$source_dir"
 test "$(git rev-parse HEAD)" = e9cf5ccfae6d2e2f739fa5d712c98c645b258bfe
 git show "$AUDIT_COMMIT:scripts/audit_cml2d_confirmation.py" > "$PBS_JOBFS/audit_cml2d_confirmation.py"
@@ -18,5 +18,5 @@ module load python3/3.12.1
 source .venv/bin/activate
 export PYTHONPATH="$source_dir" OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 python "$PBS_JOBFS/audit_cml2d_confirmation.py" \
-    --root /g/data/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911 \
-    --pilot /scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_period_doubling_260911
+    --root /g/data/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_confirmation_260911 \
+    --pilot /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_period_doubling_260911

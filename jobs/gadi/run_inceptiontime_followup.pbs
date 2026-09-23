@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$CODE_SNAPSHOT"
 module purge
 module load python3/3.12.1
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export PYTHONPATH="$CODE_SNAPSHOT" OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
 python -c 'import src, torch; print(src.__file__, torch.__version__, torch.cuda.get_device_name(0)); assert torch.cuda.is_available()'
 if [[ "$RUN_STAGE" == smoke ]]; then

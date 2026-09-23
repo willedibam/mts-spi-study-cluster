@@ -6,6 +6,10 @@ For the diffusively coupled quadratic map `x_i(t+1)=(1-eps)f_alpha(x_i)+eps/2[f_
 
 The user restricted this stage to the existing alpha sweep and precomputed SPI features. No pyspi or new trajectories are computed. Full-lattice validation is a later cluster recommendation, not current evidence.
 
+## Gadi storage, 2026-09-22
+
+The [storage audit](../operations/gadi-storage-audit-260922.md) identifies the 820-row `cml_param_sweep_260508` as a current 289-SPI p90 bank generated on August 24 despite its old name. On September 23 the user explicitly authorised deletion of that short-burn data bank; the derived `cml.npz` and prior analyses are retained, but full replay of its raw inputs/MPIs will no longer be available from Gadi. This does not apply to the distinct long-burn N512 development bank or CML2D. Canonical paths use `mts-spi-study/order-parameter-inference/quadratic-cml/`; old root aliases were retired in favour of the [storage index and historical path resolver](../operations/gadi-storage-layout.md).
+
 ## Verified archive and split
 
 - Alpha `1.60:0.01:2.00`; 20 independent alpha-specific seeds; observed `M=20`, `T=1000`; physical `N=100`; central crop; burn-in 2000; 820/820 datasets complete.

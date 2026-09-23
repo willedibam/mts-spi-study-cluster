@@ -8,8 +8,8 @@
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -j oe
 set -euo pipefail
-parent=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_confirmation_260911
-archive=/g/data/ql44/we2614/mts-spi-archives/cml2d_confirmation_260911_physics.tar
+parent=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_confirmation_260911
+archive=/g/data/ql44/we2614/mts-spi-study/archives/order-parameter-inference/cml2d/cml2d_confirmation_260911_physics.tar
 test -d "$parent/physics"
 test ! -e "$archive"
 test "$(find "$parent/physics" -maxdepth 1 -name 'case-*.npz' | wc -l)" = 544

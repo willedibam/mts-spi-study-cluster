@@ -271,10 +271,10 @@ The figures support a common feature space with strong held-out class organizati
 
 **Gadi**
 
-- Raw confirmation MTS and MPI artifacts: `/g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_confirmation_260824/`
-- Full confirmation feature bank: `/scratch/ql44/we2614/spi-spi-cross-mt-260824/confirmation.npz`
-- Current 900-row development/proof bank: `/scratch/ql44/we2614/spi-spi-direction-v2/proof.npz`
-- Four additional CML development classes: `/scratch/ql44/we2614/spi-spi-cross-mt-260824/cml-development.npz`
+- Raw confirmation MTS and MPI artifacts: `/g/data/ql44/we2614/mts-spi-study/representation/cross-mt/data/confirmation/cross_mt_confirmation_260824/`
+- Full confirmation feature bank: `/scratch/ql44/we2614/mts-spi-study/representation/cross-mt/features/cross-mt-260824/confirmation.npz`
+- Current 900-row development/proof bank: `/scratch/ql44/we2614/mts-spi-study/proof/features/direction-v2/proof.npz`
+- Four additional CML development classes: `/scratch/ql44/we2614/mts-spi-study/representation/cross-mt/features/cross-mt-260824/cml-development.npz`
 
 **Local compact artifacts**
 

@@ -1,4 +1,4 @@
-base_output_dir: data/order_parameter/kuramoto_order_benchmark
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/kuramoto/runs/kuramoto_order_benchmark
 timestamp: false
 pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false

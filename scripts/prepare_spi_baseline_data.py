@@ -7,6 +7,8 @@ from pathlib import Path
 import json
 import numpy as np
 
+from scripts.gadi_storage_path import resolve_path
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data/spi_baseline_exploration_260921"
 
@@ -15,6 +17,7 @@ def prepare():
     DATA.mkdir(parents=True, exist_ok=True)
     mirror = ROOT / "data/representation_stage_a_260907/mpi-mirror"
     downloads = DATA / "downloads"
+    path_map = json.loads((ROOT / 'docs/operations/gadi-storage-path-map-260923.json').read_text())
     records, requests, sources = [], set(), []
     order = None
     for tag in ("development-base", "development-cml", "confirmation"):
@@ -29,17 +32,20 @@ def prepare():
             for i, name in enumerate(bank["dataset_paths"].astype(str)):
                 suffix = "/".join(name.split("/")[-2:])
                 original = lookup[suffix]
-                remote = original["dataset_path"].lstrip("/")
-                folder = mirror / remote
+                historical = original["dataset_path"].lstrip("/")
+                remote = resolve_path(original["dataset_path"], path_map).lstrip("/")
+                candidates = [mirror / historical, downloads / historical, downloads / remote]
+                folder = next((p for p in candidates if (p / "spi_mpis.npz").exists()), downloads / remote)
                 if not (folder / "spi_mpis.npz").exists():
-                    folder = downloads / remote
                     requests.update(f"{remote}/{f}" for f in ("spi_mpis.npz", "meta.json"))
                 if tag == "confirmation":
                     raw = ROOT / "data/proof_p90_260824/raw/confirmation" / suffix / "timeseries.npy"
                     assert raw.exists()
                 else:
-                    raw = downloads / remote / "timeseries.npy"
-                    requests.add(f"{remote}/timeseries.npy")
+                    old_raw = downloads / historical / "timeseries.npy"
+                    raw = old_raw if old_raw.exists() else downloads / remote / "timeseries.npy"
+                    if not raw.exists():
+                        requests.add(f"{remote}/timeseries.npy")
                 label, m, t, instance = str(bank["y"][i]), int(bank["M"][i]), int(bank["T"][i]), int(bank["instance"][i])
                 records.append(dict(label=label, M=m, T=t, instance=instance,
                     row_id=f"{label}|M{m}|T{t}|I{instance}", bank=tag, bank_index=i,

@@ -1,12 +1,12 @@
 name: neurotycho-source-scout-260910
 source:
   format: named-npz-v1
-  archive: /g/data/ql44/we2614/neurotycho_source_scout_260910/views.npz
+  archive: /g/data/ql44/we2614/mts-spi-study/representation/empirical/neurotycho/legacy-float32-scout/neurotycho_source_scout_260910/views.npz
   sha256: 68ce3bacfa445cfbd0161014401447523669442f69d89041cd2b4051fcceaf8f
   axis_order:
   - observation
   - process
-base_output_dir: /g/data/ql44/we2614/neurotycho_source_scout_260910/pyspi
+base_output_dir: /g/data/ql44/we2614/mts-spi-study/representation/empirical/neurotycho/legacy-float32-scout/neurotycho_source_scout_260910/pyspi
 pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false
 random_seed: 260910407

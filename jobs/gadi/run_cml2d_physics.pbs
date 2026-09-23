@@ -11,7 +11,7 @@
 set -euo pipefail
 : "${EXPECTED_COMMIT:?pin source}" "${SCOUT_CONFIG:?config}" "${OUTPUT_DIR:?new output}"
 repo_dir=/home/562/we2614/mts-spi-study-cluster
-[[ "$OUTPUT_DIR" == /scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_* ]]
+[[ "$OUTPUT_DIR" == /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_* ]]
 [[ "$SCOUT_CONFIG" == configs/scout/cml2d-*.yaml ]]
 cd "$repo_dir"
 mkdir -p "$OUTPUT_DIR"

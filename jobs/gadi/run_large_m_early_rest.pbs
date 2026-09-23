@@ -17,7 +17,7 @@ test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
 test "$(git -C /home/562/we2614/pyspi-fork rev-parse HEAD)" = 65317c9c1fd5f12358b8ede09b7576ef001a76dd
 module purge
 module load python3/3.12.1 nci-parallel/1.0.0a
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export PYTHONPATH="$SOURCE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 export PYSPI_N_JOBS=1 PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"

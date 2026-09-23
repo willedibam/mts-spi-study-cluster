@@ -15,7 +15,7 @@ test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
 test "$(git -C /home/562/we2614/pyspi-fork rev-parse HEAD)" = 65317c9c1fd5f12358b8ede09b7576ef001a76dd
 module purge
 module load python3/3.12.1 nci-parallel/1.0.0a
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export PYTHONPATH="$SOURCE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 export PYSPI_N_JOBS=1 PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR="$PBS_JOBFS/numba-cache"
@@ -24,7 +24,7 @@ exec >"$RESULT_ROOT/logs/${STAGE}-${GROUP:-all}-${PBS_JOBID}.log" 2>&1
 mpirun -np "${PBS_NNODES:-1}" --map-by ppr:1:node python -c 'import src, pyspi, scripts.large_m_var_replacement; print(src.__file__,pyspi.__file__,flush=True)'
 if [[ "$STAGE" == prepare ]]; then
     python -m pytest -q -p no:cacheprovider tests/test_large_m_var_replacement.py tests/test_hcp_spectral_memory.py
-    python -m scripts.large_m_var_replacement --original /g/data/ql44/we2614/large_m_pair_baselines_260917 --output "$RESULT_ROOT"
+    python -m scripts.large_m_var_replacement --original /g/data/ql44/we2614/mts-spi-study/pyspi-optimisation/large-m-260917 --output "$RESULT_ROOT"
     for group in m64 m100 large; do
         python -m src.run_external_corpus --config "$RESULT_ROOT/$group.yaml" --validate-source
         python -m src.run_external_corpus --config "$RESULT_ROOT/$group.yaml" --job-index 1 --dry-run

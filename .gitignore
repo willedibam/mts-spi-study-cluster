@@ -57,3 +57,9 @@ random/
 # Editor / recovery
 .vscode/
 .git.broken/
+
+# Disposable local review/render artifacts
+/tmp/
+
+# Generated analysis caches (existing tracked historical snapshots remain)
+/analysis/feature_cache/

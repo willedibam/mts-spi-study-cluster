@@ -16,6 +16,6 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
-base=/g/data/ql44/we2614/neurotycho_neural_260910
+base=/g/data/ql44/we2614/mts-spi-study/representation/empirical/neurotycho/models/neurotycho_neural_260910
 python -u scripts/check_neurotycho_cuda_replay.py --data "$base" \
     --fits "$base/fits" --output "$base/cuda-replay-audit.json"

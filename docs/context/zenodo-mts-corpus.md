@@ -4,6 +4,10 @@ Active workstream as of 2026-09-17. This is exploratory representation analysis;
 
 2026-09-21 [lean baseline appendix](../../notebooks/embeddings/spi_baseline_zenodo_260921.ipynb) compares per-SPI means, seven distribution summaries/SPI and z on the same 1,053 seed1729 MPI archives, all verified against historical MPI/metadata hashes. All-row transductive 95% validity/median imputation; standardized ±5-SD-clipped marginals versus centred z, PCA50/UMAP with 30 neighbours and seed260824. Origin/duration-coloured maps and PC1/M/T diagnostics are descriptive; no cluster-based superiority criterion or new natural partition is claimed. Existing explorer remains unchanged; this z map is a declared new recipe, not every historical view reproduced. Runner `scripts/spi_baseline_exploration.py zenodo`; results/provenance/audit under `results/spi_baseline_exploration_260921/`. No new p90 or source data changes.
 
+## Storage cleanup, 2026-09-23
+
+Both Gadi stores now expose `mts-spi-study/zenodo/7118947/`. The authoritative live bank is `runs/authoritative-seed1729/`; historical paths resolve through the project path map rather than root aliases. The provisional unseeded bank used the same 1,053 stored source-member hashes but different estimator RNG handling. It was archived, compared against source and SHA-256 recorded, then 3,160 loose entries and its obsolete alias removed. The initial archival inferred broader scope from layout approval; after clarification on 23 September, the user explicitly selected ‘Keep its verified archive only’. Recovery archive: `/g/data/ql44/we2614/mts-spi-study/archives/zenodo/7118947/unseeded-p90-260825.tar.zst`, SHA `b10e689b0544e22822a492032bd72aea4b1d38892ff602c710f2a16efe78e7e7`. `runs/ARCHIVED-UNSEEDED.md` explains restoration. Historical unseeded reproduction now requires extraction. [Full audit and iteration guide](../operations/gadi-storage-audit-260922.md).
+
 ## Verified source
 
 - Zenodo 7118947 v1.1 contains 1,053 named `M x T` arrays. The verified local, pickle-free archive is `data/zenodo_7118947/database.npz`, SHA-256 `928ce41f...b77ba84`; metadata is in the adjacent `manifest.json`.

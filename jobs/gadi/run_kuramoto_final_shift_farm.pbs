@@ -21,7 +21,7 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_TH
 mkdir -p logs
 commands="$PBS_JOBFS/shift-commands.txt"
 for ((i=START_INDEX; i<=END_INDEX; i++)); do
-    printf 'python scripts/compute_kuramoto_shift_control.py --job-index %d --experiment-config configs/generate/order_parameter/kuramoto-final-confirmation.yaml --output-dir data/order_parameter/kuramoto_final_confirmation_shifted --expected-count 256 --skip-existing\n' "$i" >>"$commands"
+    printf 'python scripts/compute_kuramoto_shift_control.py --job-index %d --experiment-config configs/generate/order_parameter/kuramoto-final-confirmation.yaml --output-dir /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/kuramoto/runs/kuramoto_final_confirmation_shifted --expected-count 256 --skip-existing\n' "$i" >>"$commands"
 done
 workers=$((END_INDEX - START_INDEX + 1))
 exec >"logs/${PBS_JOBNAME}_${PBS_JOBID%%.*}.log" 2>&1

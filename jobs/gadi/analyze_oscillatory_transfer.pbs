@@ -14,7 +14,7 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
-base=${TRANSFER_BASE:-/g/data/ql44/we2614/oscillatory_coorganization_transfer_260909}
+base=${TRANSFER_BASE:-/g/data/ql44/we2614/mts-spi-study/representation/synthetic/oscillatory-coorganization/transfer-faster/oscillatory_coorganization_transfer_260909}
 study=${TRANSFER_STUDY:-oscillatory-coorganization-transfer-260909}
 python -m src.run_external_corpus --config "configs/external/$study.yaml" --audit
 python -m scripts.build_representation_state_bank --config "configs/analysis/$study.yaml" \

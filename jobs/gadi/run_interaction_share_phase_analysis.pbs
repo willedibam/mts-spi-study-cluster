@@ -19,7 +19,7 @@ source .venv/bin/activate
 export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
 export NUMEXPR_NUM_THREADS=4 VECLIB_MAXIMUM_THREADS=4
 config=configs/analysis/interaction-share-phase-260908.yaml
-base=/g/data/ql44/we2614/interaction_share_phase_260908/$PHASE_ARM
+base=/g/data/ql44/we2614/mts-spi-study/representation/synthetic/interaction-share/controls/interaction_share_phase_260908/$PHASE_ARM
 output="$base/analysis"
 mkdir -p "$output"
 exec >"$output/analysis-${PBS_JOBID%%.*}.log" 2>&1

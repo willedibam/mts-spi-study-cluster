@@ -161,7 +161,7 @@ from src.corpus_visualization import interactive_embedding_browser
 
 CONFIRMATION_FEATURES = ROOT / 'data' / 'proof_p90_260824' / 'features' / 'confirmation.npz'
 RAW_ROOT = ROOT / 'data' / 'proof_p90_260824' / 'raw' / 'confirmation'
-REMOTE_ROOT = Path('/g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_confirmation_260824')
+REMOTE_ROOT = Path('/g/data/ql44/we2614/mts-spi-study/representation/cross-mt/data/confirmation/cross_mt_confirmation_260824')
 with np.load(CONFIRMATION_FEATURES, allow_pickle=True) as archive:
     remote_paths = archive['dataset_paths'].astype(str)
 path_by_row = dict(zip(center['query_names'].astype(str), remote_paths))
@@ -489,7 +489,7 @@ labelled subsets. Heatmap filenames map to dataset names in `heatmap-index.csv`.
 The canonical feature bank is local at
 `data/zenodo_7118947/features/pearson-unified-v3-seed1729.npz` (`X`, validity mask,
 SPI-pair schema, metadata/provenance); raw MTS are in `data/zenodo_7118947/database.npz`.
-The recorded Gadi mirror is `/g/data/ql44/we2614/mts-spi-data/zenodo_7118947/`.
+The recorded Gadi mirror is `/g/data/ql44/we2614/mts-spi-study/zenodo/7118947/`.
 The raw matrix occupies 167 MiB as float32; local analysis suffices.
 Run `.venv/bin/python -m scripts.explore_zenodo_geometry` to reproduce, or append
 `--figures-only` to render cached results. The script requires `hdbscan==0.8.44`.

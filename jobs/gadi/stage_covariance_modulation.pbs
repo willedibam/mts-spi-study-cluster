@@ -15,14 +15,14 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 export OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
-base=/g/data/ql44/we2614/covariance_modulation_260909
+base=/g/data/ql44/we2614/mts-spi-study/representation/synthetic/covariance-modulation/covariance_modulation_260909
 python -m scripts.build_covariance_modulation_data --config configs/analysis/covariance-modulation-260909.yaml \
  --output "$base/staged"
 python - <<'PY'
 import json
 from pathlib import Path
 import numpy as np
-p=Path('/g/data/ql44/we2614/covariance_modulation_260909')
+p=Path('/g/data/ql44/we2614/mts-spi-study/representation/synthetic/covariance-modulation/covariance_modulation_260909')
 for f in (p/'staged').iterdir():
     dest=p/f.name
     if dest.exists(): raise FileExistsError(dest)

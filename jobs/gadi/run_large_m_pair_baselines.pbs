@@ -15,7 +15,7 @@ test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
 test "$(git -C /home/562/we2614/pyspi-fork rev-parse HEAD)" = 65317c9c1fd5f12358b8ede09b7576ef001a76dd
 module purge
 module load python3/3.12.1 nci-parallel/1.0.0a
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export PYTHONPATH="$SOURCE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 export PYSPI_N_JOBS=1 PYTHONDONTWRITEBYTECODE=1
@@ -27,7 +27,7 @@ commands="$PBS_JOBFS/commands.txt"
 if [[ "$STAGE" == prepare ]]; then
     python -m pytest -q -p no:cacheprovider tests/test_large_m_pair_baselines.py tests/test_hcp_spectral_memory.py tests/test_tasep_phase_boundary.py tests/test_cml2d_period_doubling.py
     for ((i=0;i<25;i++)); do
-        printf 'python -m scripts.large_m_pair_baselines prepare --root %s --hcp-root /g/data/ql44/we2614/hcp_working_memory_audit_260912 --index %d\n' "$RESULT_ROOT" "$i" >> "$commands"
+        printf 'python -m scripts.large_m_pair_baselines prepare --root %s --hcp-root /g/data/ql44/we2614/mts-spi-study/representation/empirical/hcp-working-memory/processed/hcp_working_memory_audit_260912 --index %d\n' "$RESULT_ROOT" "$i" >> "$commands"
     done
     mpirun -np 25 --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$RESULT_ROOT/preparation.status"
     python -m scripts.large_m_pair_baselines assemble --root "$RESULT_ROOT"

@@ -19,6 +19,6 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_TH
 mkdir -p logs
 exec >"logs/${PBS_JOBNAME}_${PBS_JOBID%%.*}.log" 2>&1
 python scripts/analyze_kuramoto_shift_control.py \
-  --shift-dir data/order_parameter/kuramoto_final_confirmation_shifted \
-  --contract-dir data/order_parameter/kuramoto_final_confirmation_contract \
+  --shift-dir /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/kuramoto/runs/kuramoto_final_confirmation_shifted \
+  --contract-dir /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/kuramoto/runs/kuramoto_final_confirmation_contract \
   --expected-count 256

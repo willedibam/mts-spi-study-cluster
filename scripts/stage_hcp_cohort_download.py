@@ -13,7 +13,7 @@ import subprocess
 import boto3
 
 
-REMOTE = '/scratch/ql44/we2614/hcp_working_memory_cohort_260915'
+REMOTE = '/scratch/ql44/we2614/mts-spi-study/representation/empirical/hcp-working-memory/raw/hcp_working_memory_cohort_260915'
 SSH = ['ssh', '-4', '-o', 'BatchMode=yes', '-o', 'IPQoS=none', '-o', 'ConnectTimeout=10',
        '-o', 'ControlMaster=no', '-o', 'ControlPath=none', 'we2614@gadi.nci.org.au']
 

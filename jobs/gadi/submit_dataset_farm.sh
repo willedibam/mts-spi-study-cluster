@@ -8,6 +8,15 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 
+# Reject layout drift and accidental output into retired roots before submission.
+output_dir=$(python - "$config" <<'PYCONFIG'
+import sys
+from src.mapping import ExperimentConfig
+print(ExperimentConfig.from_file(sys.argv[1]).base_output_dir)
+PYCONFIG
+)
+python scripts/check_gadi_storage_layout.py --output "$output_dir"
+
 total=$(python -m src.run_experiments --experiment-config "$config" --count-only)
 start="${START_INDEX:-1}"
 end="${END_INDEX:-$total}"

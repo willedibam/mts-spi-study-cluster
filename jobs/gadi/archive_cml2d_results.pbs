@@ -10,11 +10,11 @@
 set -euo pipefail
 
 # Preserve the costly cluster outputs without removing their working copies.
-cml_parent=/scratch/ql44/we2614/mts-spi-data/order_parameter
+cml_parent=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs
 cml_name=cml2d_period_doubling_260911
-cml_archive=/g/data/ql44/we2614/mts-spi-archives/cml2d_period_doubling_260911.tar
+cml_archive=/g/data/ql44/we2614/mts-spi-study/archives/order-parameter-inference/cml2d/cml2d_period_doubling_260911.tar
 test -d "$cml_parent/$cml_name"
-test -d /g/data/ql44/we2614/mts-spi-archives
+test -d /g/data/ql44/we2614/mts-spi-study/archives/order-parameter-inference/cml2d
 test ! -e "$cml_archive"
 for cml_arm in primary sensitivity short-T contiguous; do
     test -f "$cml_parent/$cml_name/$cml_arm-analysis/summary.json"

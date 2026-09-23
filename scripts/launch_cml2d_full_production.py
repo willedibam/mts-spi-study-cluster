@@ -70,8 +70,8 @@ def launch(root, source, commit, sizes=(6, 8), memory_per_worker_gb=8):
         save()
         report = qsub(['-N',f'cml2d-full-L{L}-report','-W',f'depend=afterok:{job}','-v',
             f'SOURCE_DIR={source},EXPECTED_COMMIT={commit},STAGE=report,L={L},DIAGNOSTIC_ROOT={root},'
-            'PHYSICS_DIR=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_full_observation_260914/physics,'
-            'FROZEN_DIR=/scratch/ql44/we2614/mts-spi-data/order_parameter/cml2d_period_doubling_260911/primary-analysis',
+            'PHYSICS_DIR=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_full_observation_260914/physics,'
+            'FROZEN_DIR=/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cml2d/runs/cml2d_period_doubling_260911/primary-analysis',
             'jobs/gadi/run_cml2d_full_observation_stage.pbs'])
         record['jobs'][f'L{L}_report']=report
         save()

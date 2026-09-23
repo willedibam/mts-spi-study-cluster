@@ -11,7 +11,7 @@
 set -euo pipefail
 : "${CODE_SNAPSHOT:?}" "${RUNNER_SNAPSHOT:?}" "${AUDIT_ROOT:?}"
 module load python3/3.12.1
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 export PYTHONPATH="$RUNNER_SNAPSHOT"
 cd "$RUNNER_SNAPSHOT"

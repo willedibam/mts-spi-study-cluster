@@ -20,7 +20,7 @@ LAST_CASE=${LAST_CASE:-1}
 [[ "$FIRST_CASE" =~ ^[0-9]+$ && "$LAST_CASE" =~ ^[0-9]+$ ]]
 case_count=$((LAST_CASE - FIRST_CASE + 1))
 (( case_count >= 1 && case_count <= 16 && case_count <= PBS_NCPUS ))
-[[ "$OUTPUT_DIR" == /scratch/ql44/we2614/* ]]
+[[ "$OUTPUT_DIR" == /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/vicsek/* ]]
 [[ "$SCOUT_CONFIG" == configs/scout/vicsek-*.yaml ]]
 
 repo_dir=/home/562/we2614/mts-spi-study-cluster
