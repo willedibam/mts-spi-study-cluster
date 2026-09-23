@@ -1,6 +1,6 @@
 # Cluster context
 
-**Account sections are pre-filled and verified — treat them as current until the stated date ages out.** **Repo sections are `<placeholders>` — fill them on drop-in.** Anything that would stay true for a different repo on the same cluster belongs in an account section; anything that changes with the checkout, environment or workload belongs in a repo section. Re-date a section in the session you change it; when a live query contradicts this file, fix the file. 
+**Account sections are pre-filled and verified — treat them as current until the stated date ages out.** **Repo sections are `<placeholders>` — fill them on drop-in.** Anything that would stay true for a different repo on the same cluster belongs in an account section; anything that changes with the checkout, environment or workload belongs in a repo section. Re-date a section in the session you change it; when a live query contradicts this file, fix the file.
 
 ## Fill on drop-in
 

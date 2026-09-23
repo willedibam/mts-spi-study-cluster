@@ -21,7 +21,7 @@ Storage audited on 2026-09-22; queue/allocation values below were last verified 
 ## Git and environment
 
 - Local repositories are authoritative during development. Commit the intended files, push, then fetch/fast-forward the matching Gadi branches; never pull over uncommitted work.
-- Storage-path updates were deployed from `codex/gadi-storage-layout` (`8fc2bc1`, based on prior Gadi commit `18ef949`) into the existing cluster checkout. Matching edits are in the local working tree; integrate that migration lineage before the next cluster fast-forward, preserving unrelated local changes. Do not force-reset.
+- Storage-path updates were deployed from `codex/gadi-storage-layout` (`8fc2bc1`, based on prior Gadi commit `18ef949`) into the existing cluster checkout. The migration lineage was integrated into the local `refactor-lagged-warping` branch on September 23, preserving the newer local code and user notebook removals. Future cluster updates can follow that merged history; do not force-reset.
 - Gadi tracks main-repo branch `refactor-lagged-warping` and pyspi branch `v3`. Verify both commits before each production submission.
 - The active Scratch Python 3.12 environment has editable main/pyspi-v3 installs. The obsolete broken v2 environment was removed on 2026-08-22. Require `import src, pyspi`, the fast tests, and a one-dataset smoke test after any rebuild.
 - These experiments use `configs/pyspi/benchmarked_p90.yaml` (289 SPIs) and one pyspi worker per dataset. The exact-GP additive-noise-model SPI is intentionally disabled: six `M=20,T=1000` tasks each exceeded 18 minutes inside it in job `177018028`.
