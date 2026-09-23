@@ -11,7 +11,7 @@
 set -euo pipefail
 # Only completed HCP snapshots. Active extraction/analysis snapshots are excluded.
 base=/g/data/ql44/we2614/mts-spi-study/operations/sources/code-snapshots
-destination="$base/hcp-completed-archives"
+destination=/g/data/ql44/we2614/mts-spi-study/archives/representation/hcp-working-memory/sources
 mkdir -p "$destination"
 case "${HCP_ARCHIVE_SCOPE:-scout}" in
     scout) names=(hcp-audit-f616caf hcp-download-1298f68 hcp-dimension-cf61964
