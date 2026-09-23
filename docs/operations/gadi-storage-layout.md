@@ -9,7 +9,8 @@ Use `/scratch/ql44/we2614/mts-spi-study` for working storage and `/g/data/ql44/w
 | `proof/` | Shared multi-system proof input banks and proof-specific features |
 | `order-parameter-inference/<system>/` | CML2D, quadratic CML, Miller–Huse, Stuart–Landau, Kuramoto, Desai–Zwanzig, Vicsek and finite-regime studies |
 | `zenodo/7118947/` | Zenodo inputs, authoritative seed1729 MPI bank and features |
-| `representation/` | Synthetic and empirical representation studies, cross-M/T, pair sampling and model comparisons |
+| `representation/` | Synthetic and empirical representation studies, cross-M/T, model comparisons |
+| `pyspi-optimisation/large-m-260917/` | Large-M estimator/runtime and pair-baseline work |
 | `archives/<workstream>/` | Verified inactive scientific archives, physically on gdata |
 | `operations/{sources,logs,maintenance}/` | Frozen source worktrees, execution records and storage-maintenance evidence |
 | `environments/` | One shared uv-created MTS environment, physically on Scratch; checkout `.venv` links reference it |
@@ -22,7 +23,7 @@ EEML, Baseten and TUSZ are sibling projects. Each owns its own archives and envi
 ## Rules for people and agents
 
 1. Read this document and the relevant `docs/context/INDEX.md` entry before cluster work. Consult the storage index before scanning an entire filesystem or creating a new folder.
-2. Put each run under its workstream, then its role: `data/` or existing `runs/`, `features/`, `analysis/`, `models/`, `configs/`. Preserve pilot, development, confirmation and control distinctions. Do not introduce synonyms for existing categories.
+2. Put each run under its workstream, then its role: `data/` or existing `runs/`, `features/`, `analysis/`, `models/`, `configs/`. Preserve pilot, development, confirmation and control distinctions. Create a new workstream or subfolder when its purpose differs; these categories are examples, not a closed schema. Prefer a simple move over additional navigation links or custom migration machinery.
 3. Give a run a stable descriptive ID with a date. Record purpose, generator/config and code revision, seed, input dataset IDs, SPI catalogue hash, output location and whether it extends or supersedes another run. Existing metadata remain authoritative; do not rewrite them merely to change storage paths.
 4. Keep one physical copy of each artifact. Use explicit shared-input paths or the index for cross-workstream access. Avoid blanket mirrors and links back and forth between the two stores. Each intentional link must resolve directly to its canonical target.
 5. Launch with an explicit output path inside the project. Production SPIs use `configs/pyspi/benchmarked_p90.yaml`; alternate catalogues require an explicit experiment decision and separate labelling. Physics-only validation is not an SPI catalogue violation.
@@ -32,3 +33,5 @@ EEML, Baseten and TUSZ are sibling projects. Each owns its own archives and envi
 9. Keep operational scripts in Git. Historical snapshots may contain old paths: resolve them with `python scripts/gadi_storage_path.py OLD_PATH`, then use a current launcher or a separately recorded replay configuration. Never edit frozen metadata or snapshot source in place to disguise a historical path change.
 
 A directory layout cannot prevent clutter by itself. The enforceable habits are explicit output paths, stable run identities, a small maintained index, one physical owner, and a completion/retirement decision for every experiment. Do not create periodic cleanup automation that deletes scientific data without an explicit retention policy.
+
+Keep source checkouts only in `operations/sources/`. Do not add per-system source links or checkout `data` links back to the entire project: these create recursive, misleading folder views. New scientifically appropriate workstream names are allowed without changing the validator.

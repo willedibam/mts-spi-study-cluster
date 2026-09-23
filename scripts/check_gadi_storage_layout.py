@@ -4,10 +4,6 @@ import argparse
 import csv
 from pathlib import Path
 
-PROJECT_DIRS = {'proof', 'order-parameter-inference', 'zenodo', 'representation',
-                'archives', 'operations', 'environments', 'dev', 'documentation',
-                'legacy-non-p90'}
-ROOT_ENTRIES = {'mts-spi-study', 'eeml-2026-application', 'baseten-research', 'tusz', '.cache', '.vscode', 'tmp', 'MTS-SPI-STORAGE.md'}
 OLD_ROOTS = {'mts-spi-data', 'mts-spi-data-v2', 'mts-spi-archives', 'mts-spi-logs',
              'venvs', 'environments', 'archives', 'order-parameter-inference',
              'order-parameter-models', 'spi-spi-direction-v2', 'spi-spi-unified-v3'}
@@ -22,15 +18,12 @@ def check(roots):
         for item in root.iterdir():
             if item.name in OLD_ROOTS or item.name.startswith(('cml2d-', 'finite-regime-source-', 'spi-spi-cross-mt', 'mts-spi-cross-mt')):
                 errors.append(f'Obsolete root entry: {item}')
-            elif item.name not in ROOT_ENTRIES:
-                errors.append(f'Unregistered root entry (classify before adding a project): {item}')
+
         project = root / 'mts-spi-study'
         if not project.is_dir():
             errors.append(f'Missing project: {project}')
             continue
         for item in project.iterdir():
-            if item.is_dir() and item.name not in PROJECT_DIRS:
-                errors.append(f'Unrecognised project category: {item}')
             if item.is_symlink() and not item.exists():
                 errors.append(f'Broken project link: {item}')
         index = project / 'documentation/storage-index.csv'
@@ -56,18 +49,18 @@ def check(roots):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, help='Also require this output to be inside a canonical scientific workstream or dev folder.')
+    parser.add_argument('--output', type=Path, help='Also require this output to be inside a project workstream; new workstream names are allowed.')
     parser.add_argument('--roots', nargs='+', type=Path, default=[Path('/scratch/ql44/we2614'), Path('/g/data/ql44/we2614')])
     args = parser.parse_args()
     errors = check(args.roots)
     if args.output is not None:
         output = args.output.resolve()
-        allowed = {'proof', 'order-parameter-inference', 'zenodo', 'representation', 'dev'}
+        protected = {'archives', 'environments', 'documentation', 'operations', 'legacy-non-p90'}
         valid = False
         for root in args.roots:
             try:
                 relative = output.relative_to((root / 'mts-spi-study').resolve())
-                valid = bool(relative.parts) and relative.parts[0] in allowed
+                valid = len(relative.parts) >= 2 and relative.parts[0] not in protected
             except ValueError:
                 continue
             if valid:
@@ -77,7 +70,7 @@ def main():
     if errors:
         print('\n'.join(errors))
         raise SystemExit(1)
-    print('Storage layout OK: project categories, indexed artifacts, shared uv environment.')
+    print('Storage layout OK: no retired roots, indexed artifacts, shared uv environment.')
 
 
 if __name__ == '__main__':
