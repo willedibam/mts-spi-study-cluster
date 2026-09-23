@@ -7,6 +7,7 @@ from pathlib import Path
 PROJECT_DIRS = {'proof', 'order-parameter-inference', 'zenodo', 'representation',
                 'archives', 'operations', 'environments', 'dev', 'documentation',
                 'legacy-non-p90'}
+ROOT_ENTRIES = {'mts-spi-study', 'eeml-2026-application', 'baseten-research', 'tusz', '.cache', '.vscode', 'tmp', 'MTS-SPI-STORAGE.md'}
 OLD_ROOTS = {'mts-spi-data', 'mts-spi-data-v2', 'mts-spi-archives', 'mts-spi-logs',
              'venvs', 'environments', 'archives', 'order-parameter-inference',
              'order-parameter-models', 'spi-spi-direction-v2', 'spi-spi-unified-v3'}
@@ -21,6 +22,8 @@ def check(roots):
         for item in root.iterdir():
             if item.name in OLD_ROOTS or item.name.startswith(('cml2d-', 'finite-regime-source-', 'spi-spi-cross-mt', 'mts-spi-cross-mt')):
                 errors.append(f'Obsolete root entry: {item}')
+            elif item.name not in ROOT_ENTRIES:
+                errors.append(f'Unregistered root entry (classify before adding a project): {item}')
         project = root / 'mts-spi-study'
         if not project.is_dir():
             errors.append(f'Missing project: {project}')
@@ -36,10 +39,14 @@ def check(roots):
         else:
             with index.open() as handle:
                 for row in csv.DictReader(handle):
-                    if row['status'] == 'live' and not Path(row['physical_path']).exists():
+                    if row['status'] in {'live', 'archived'} and not Path(row['physical_path']).exists():
                         errors.append(f'Missing indexed artifact: {row["physical_path"]}')
     envs = [r / 'mts-spi-study/environments/mts-spi-v3-631de27' for r in roots]
     physical = {p.resolve() for p in envs if p.exists()}
+    for root in roots:
+        directory = root / 'mts-spi-study/environments'
+        if directory.is_dir():
+            physical.update(p.resolve() for p in directory.iterdir() if (p / 'pyvenv.cfg').is_file())
     if len(physical) != 1:
         errors.append(f'Expected one shared MTS environment, found {len(physical)}')
     elif 'uv = ' not in (next(iter(physical)) / 'pyvenv.cfg').read_text():
