@@ -9,7 +9,7 @@ OLD_ROOTS = {'mts-spi-data', 'mts-spi-data-v2', 'mts-spi-archives', 'mts-spi-log
              'order-parameter-models', 'spi-spi-direction-v2', 'spi-spi-unified-v3'}
 
 
-def check(roots):
+def check(roots, check_index=False):
     errors = []
     for root in roots:
         if not root.is_dir():
@@ -26,14 +26,15 @@ def check(roots):
         for item in project.iterdir():
             if item.is_symlink() and not item.exists():
                 errors.append(f'Broken project link: {item}')
-        index = project / 'documentation/storage-index.csv'
-        if not index.exists():
-            errors.append(f'Missing index: {index}')
-        else:
-            with index.open() as handle:
-                for row in csv.DictReader(handle):
-                    if row['status'] in {'live', 'archived'} and not Path(row['physical_path']).exists():
-                        errors.append(f'Missing indexed artifact: {row["physical_path"]}')
+        if check_index:
+            index = project / 'documentation/storage-index.csv'
+            if not index.exists():
+                errors.append(f'Missing index: {index}')
+            else:
+                with index.open() as handle:
+                    for row in csv.DictReader(handle):
+                        if row['status'] in {'live', 'archived'} and not Path(row['physical_path']).exists():
+                            errors.append(f'Missing indexed artifact: {row["physical_path"]}')
     envs = [r / 'mts-spi-study/environments/mts-spi-v3-631de27' for r in roots]
     physical = {p.resolve() for p in envs if p.exists()}
     for root in roots:
@@ -49,10 +50,11 @@ def check(roots):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--check-index', action='store_true', help='Validate the migration inventory snapshot as an explicit audit.')
     parser.add_argument('--output', type=Path, help='Also require this output to be inside a project workstream; new workstream names are allowed.')
     parser.add_argument('--roots', nargs='+', type=Path, default=[Path('/scratch/ql44/we2614'), Path('/g/data/ql44/we2614')])
     args = parser.parse_args()
-    errors = check(args.roots)
+    errors = check(args.roots, args.check_index)
     if args.output is not None:
         output = args.output.resolve()
         protected = {'archives', 'environments', 'documentation', 'operations', 'legacy-non-p90'}
@@ -70,7 +72,7 @@ def main():
     if errors:
         print('\n'.join(errors))
         raise SystemExit(1)
-    print('Storage layout OK: no retired roots, indexed artifacts, shared uv environment.')
+    print('Storage layout OK: no retired roots; one shared uv environment; output placement checked when supplied.')
 
 
 if __name__ == '__main__':
