@@ -11,7 +11,7 @@
 set -euo pipefail
 : "${CODE_SNAPSHOT:?}" "${RUN_ROOT:?}"
 module load python3/3.12.1
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 cd "$CODE_SNAPSHOT"
 python -u -m scripts.profile_hcp_catalogue --config "$RUN_ROOT/m32-short/external.yaml" --index "${PROFILE_INDEX:-1}" --output "$RUN_ROOT/${PROFILE_NAME:-profile-T4000}"

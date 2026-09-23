@@ -2,7 +2,7 @@
 set -euo pipefail
 
 expected_manifest_sha="${1:?usage: $0 EXPECTED_DEVELOPMENT_MANIFEST_SHA256}"
-manifest=/g/data/ql44/we2614/mts-spi-cross-mt-260824/development-manifest.json
+manifest=/g/data/ql44/we2614/mts-spi-study/representation/cross-mt/analysis/cross-mt-260824/development-manifest.json
 config=configs/generate/embeddings/cross-mt-confirmation-260824.yaml
 test -f "$manifest"
 test -f "$config"

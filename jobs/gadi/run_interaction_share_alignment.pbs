@@ -16,7 +16,7 @@ module load python3/3.12.1
 source .venv/bin/activate
 export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
 export NUMEXPR_NUM_THREADS=4 VECLIB_MAXIMUM_THREADS=4
-base=/g/data/ql44/we2614/interaction_share_260908
+base=/g/data/ql44/we2614/mts-spi-study/representation/synthetic/interaction-share/pilot/interaction_share_260908
 config=configs/analysis/interaction-share-260908.yaml
 output="$base/alignment"
 mkdir -p "$output"

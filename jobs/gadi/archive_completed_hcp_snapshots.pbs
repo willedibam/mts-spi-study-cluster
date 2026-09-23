@@ -10,7 +10,7 @@
 #PBS -j oe
 set -euo pipefail
 # Only completed HCP snapshots. Active extraction/analysis snapshots are excluded.
-base=/g/data/ql44/we2614/code-snapshots
+base=/g/data/ql44/we2614/mts-spi-study/operations/sources/code-snapshots
 destination="$base/hcp-completed-archives"
 mkdir -p "$destination"
 case "${HCP_ARCHIVE_SCOPE:-scout}" in
@@ -34,4 +34,4 @@ for name in "${names[@]}"; do
     rm -rf -- "$source"
     echo "ARCHIVED_AND_VERIFIED $name"
 done
-echo 'Restore a snapshot with: tar -xzf ARCHIVE -C /g/data/ql44/we2614/code-snapshots'
+echo 'Restore a snapshot with: tar -xzf ARCHIVE -C /g/data/ql44/we2614/mts-spi-study/operations/sources/code-snapshots'

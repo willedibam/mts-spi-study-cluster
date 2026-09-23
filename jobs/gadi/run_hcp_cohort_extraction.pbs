@@ -13,7 +13,7 @@ set -euo pipefail
 export MODE="${MODE:-smoke}"
 [[ "$MODE" == smoke || "$MODE" == remaining ]] || exit 2
 module load python3/3.12.1 nci-parallel/1.0.0a
-source /scratch/ql44/we2614/venvs/mts-spi-v3-631de27/bin/activate
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYSPI_N_JOBS=1
 export PYTHONPATH="$RUNNER_SNAPSHOT"
 cd "$RUNNER_SNAPSHOT"

@@ -20,8 +20,8 @@ export OPENBLAS_NUM_THREADS="$PBS_NCPUS"
 export MKL_NUM_THREADS="$PBS_NCPUS"
 export NUMEXPR_NUM_THREADS="$PBS_NCPUS"
 
-feature_root=/scratch/ql44/we2614/spi-spi-cross-mt-260824
-study_root=/g/data/ql44/we2614/mts-spi-cross-mt-260824
+feature_root=/scratch/ql44/we2614/mts-spi-study/representation/cross-mt/features/cross-mt-260824
+study_root=/g/data/ql44/we2614/mts-spi-study/representation/cross-mt/analysis/cross-mt-260824
 mkdir -p "$study_root" logs
 job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
 exec >"$PBS_O_WORKDIR/logs/${job_stem}.log" 2>&1

@@ -15,7 +15,7 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 NUMEXPR_NUM_THREADS=4
-base=/g/data/ql44/we2614/oscillatory_coorganization_pilot_260909
+base=/g/data/ql44/we2614/mts-spi-study/representation/synthetic/oscillatory-coorganization/pilot/oscillatory_coorganization_pilot_260909
 config=configs/analysis/oscillatory-coorganization-mechanism-260909.yaml
 exec >"$base/analysis/mechanism-${PBS_JOBID%%.*}.log" 2>&1
 python -m scripts.build_interaction_share_nulls --config "$config" --data "$base" \

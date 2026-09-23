@@ -1,4 +1,4 @@
-base_output_dir: /g/data/ql44/we2614/mts-spi-data-v2/embeddings/cross_mt_cml_development_260824/
+base_output_dir: /g/data/ql44/we2614/mts-spi-study/representation/cross-mt/data/development/cross_mt_cml_development_260824/
 timestamp: false
 pyspi_config: configs/pyspi/benchmarked_p90.yaml
 normalise: false

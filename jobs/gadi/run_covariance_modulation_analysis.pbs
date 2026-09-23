@@ -16,7 +16,7 @@ module load python3/3.12.1
 source .venv/bin/activate
 export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 NUMEXPR_NUM_THREADS=4
 config=configs/analysis/covariance-modulation-260909.yaml
-base=/g/data/ql44/we2614/covariance_modulation_260909
+base=/g/data/ql44/we2614/mts-spi-study/representation/synthetic/covariance-modulation/covariance_modulation_260909
 mkdir -p "$base/analysis"
 exec >"$base/analysis/analysis-${PBS_JOBID%%.*}.log" 2>&1
 git rev-parse HEAD
@@ -29,7 +29,7 @@ python - <<'PY'
 import json
 from pathlib import Path
 from src.representation_state_data import file_hash
-p=Path('/g/data/ql44/we2614/covariance_modulation_260909/analysis/features.npz')
+p=Path('/g/data/ql44/we2614/mts-spi-study/representation/synthetic/covariance-modulation/covariance_modulation_260909/analysis/features.npz')
 assert file_hash(p)==json.loads(p.with_suffix('.json').read_text())['artifact_sha256']
 PY
 python -m scripts.run_covariance_modulation --config "$config" --data "$base" \
