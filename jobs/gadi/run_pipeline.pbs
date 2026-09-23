@@ -72,7 +72,7 @@ exec >"$LOG_DIR/${JOB_LABEL}.out" 2>"$LOG_DIR/${JOB_LABEL}.err"
 module purge
 module load python3/3.12.1
 
-export UV_CACHE_DIR=/scratch/ql44/we2614/uv-cache
+export UV_CACHE_DIR=/scratch/ql44/we2614/.cache/uv
 source .venv/bin/activate
 
 export OMP_NUM_THREADS=1
