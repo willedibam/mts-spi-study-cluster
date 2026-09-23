@@ -61,5 +61,5 @@ random/
 # Disposable local review/render artifacts
 /tmp/
 
-# Generated analysis caches (existing tracked historical snapshots remain)
+# Retired analysis-cache location
 /analysis/feature_cache/

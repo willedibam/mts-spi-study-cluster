@@ -8,4 +8,4 @@ Research code, experiments and notebooks for SPI–SPI representations and order
 - `notebooks/cases/`, `notebooks/optimization/`, `notebooks/benchmark/` and `notebooks/presentation/`: examples, optimisation, benchmarks and presentation material.
 - `src/`, `scripts/`, `configs/`, `jobs/` and `tests/`: implementation, runners, experiment definitions, cluster launchers and tests.
 
-Local `data/`, `features/` and `results/` are excluded from Git; a clone does not include those artifacts. Temporary review/render output belongs in ignored `tmp/`.
+Local datasets and feature banks live together under `data/`; see the [data layout](data/README.md). Analysis outputs live under `results/` with matching study groups. These directories are ignored apart from explicitly tracked documentation and selected results; a clone does not include the full datasets. Temporary review/render output belongs in ignored `tmp/`.
