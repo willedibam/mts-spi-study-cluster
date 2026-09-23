@@ -9,14 +9,24 @@ DEFAULT_MAP = Path('/g/data/ql44/we2614/mts-spi-study/documentation/path-map.jso
 
 def resolve_path(path: str, mapping: dict) -> str:
     """Apply the longest path-prefix match; mappings contain final destinations."""
-    path = path.rstrip('/')
-    for old in sorted(mapping['paths'], key=len, reverse=True):
-        if path == old or path.startswith(old + '/'):
-            entry = mapping['paths'][old]
-            if entry['status'] != 'live':
-                raise ValueError(f"{entry['status']}: {old}; {entry.get('note', '')}")
-            return entry['path'] + path[len(old):]
-    return path
+    path = path.rstrip('/') or '/'
+    seen = set()
+    keys = sorted(mapping['paths'], key=len, reverse=True)
+    while path not in seen:
+        seen.add(path)
+        for old in keys:
+            if path == old or path.startswith(old + '/'):
+                entry = mapping['paths'][old]
+                if entry['status'] != 'live':
+                    raise ValueError(f"{entry['status']}: {old}; {entry.get('note', '')}")
+                target = entry['path'] + path[len(old):]
+                if target == path:
+                    return path
+                path = target
+                break
+        else:
+            return path
+    raise ValueError(f'Cycle in historical path map: {path}')
 
 
 def main():
