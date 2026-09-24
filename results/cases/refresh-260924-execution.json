@@ -73,5 +73,9 @@
       "status": "submitted"
     }
   ],
-  "target_case_instances_per_condition": 100
+  "case_instances_per_condition": {
+    "r-rho-mi": 50,
+    "dtw": 50
+  },
+  "extension_decision": "User selected 50 per condition for both cases. Add only DTW instances 30-49; no r-rho-mi extension."
 }
