@@ -8,26 +8,79 @@ proof:
   feature_metric: pearson
   feature_contract: direction_preserving_v2
   displayed_block: sym
-  rationale: Preserve the original proof's symmetrized MPI-edge definition for this refresh.
-  inter_class_exclude: [frozen-chaos, fdstc]
-  within_cml: [frozen-chaos, sti-i, defect-turbulence, fdstc]
-  preprocessing: {minimum_finite_fraction: 0.95, variance_threshold: 1.0e-8, imputation: median, scaling: center, pca_components: 50}
-  embedding_scope: Independent unsupervised fits per panel; illustrative, not an invariance test.
-  umap: {n_neighbors: 25, min_dist: 0.25, metric: euclidean, random_state: 260924}
-  feature_selection_instances: [0, 1, 2, 3, 4, 5]
-  raincloud_display_instances: [6, 7, 8, 9]
-  feature_selection: Largest absolute deviation of training AUC from 0.5; freeze orientation for display AUC.
-  raincloud_scope: All six pairs among four CML regimes, plus Gaussian/Cauchy and all three VAR class pairs.
-  qualification: Exploratory instance split; generator families and earlier outcomes have already been inspected.
+  rationale: Preserve the original proof's symmetrized MPI-edge definition for this
+    refresh.
+  inter_class_exclude:
+  - frozen-chaos
+  - fdstc
+  within_cml:
+  - frozen-chaos
+  - sti-i
+  - defect-turbulence
+  - fdstc
+  preprocessing:
+    minimum_finite_fraction: 0.95
+    variance_threshold: 1.0e-08
+    imputation: median
+    scaling: center
+    pca_components: 50
+  embedding_scope: Independent unsupervised fits per panel; illustrative, not an invariance
+    test.
+  umap:
+    n_neighbors: 25
+    min_dist: 0.25
+    metric: euclidean
+    random_state: 260924
+  feature_selection_instances:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  raincloud_display_instances:
+  - 6
+  - 7
+  - 8
+  - 9
+  feature_selection: Largest absolute deviation of training AUC from 0.5; freeze orientation
+    for display AUC.
+  raincloud_scope: All six pairs among four CML regimes, plus Gaussian/Cauchy and
+    all three VAR class pairs.
+  qualification: Exploratory instance split; generator families and earlier outcomes
+    have already been inspected.
+  var_design:
+    topology: ring-symmetric
+    self_total_neighbour:
+    - - 0.7
+      - 0.2
+    - - 0.2
+      - 0.2
+    - - 0.2
+      - 0.7
+    spectral_radii:
+    - 0.9
+    - 0.4
+    - 0.9
+    stability_rescaling: false
+    innovation_std: 0.1
+    burn_in: 100
 r_rho_mi:
   generation: configs/generate/r_rho_mi/260924_beta.yaml
   expected_datasets: 350
   spi_config: configs/pyspi/cases/r_rho_mi_260924.yaml
   expected_spis: 4
-  primary: [cov_EmpiricalCovariance, spearmanr, mi_kraskov_NN-4]
+  primary:
+  - cov_EmpiricalCovariance
+  - spearmanr
+  - mi_kraskov_NN-4
   sensitivity: mi_kraskov_NN-4_DCE-AUTO
-  betas: [3.141592653589793, 5.0, 6.283185307179586]
-  seed_design: Mother and noise matched across beta within each class/instance; classes have independent seeds.
+  betas:
+  - 3.141592653589793
+  - 5.0
+  - 6.283185307179586
+  seed_design: Mother and noise matched across beta within each class/instance; classes
+    have independent seeds.
   linear_baseline: Computed once and shared across beta panels.
   outer_correlation: Pearson across unique unordered channel pairs, raw MI in nats.
   uncertainty_unit: Independent MTS instance, never individual channel pair.
@@ -38,5 +91,7 @@ dtw:
   expected_spis: 3
   outer_correlation: Pearson across unique unordered channel pairs.
   normalization: Distances divided by sqrt(T), not by sqrt(warping-path length).
-  qualification: Distance hierarchy is structural; optimal global lag need not equal the generating lag under warping.
-input_storage: New synthetic inputs saved at float64, identical to the arrays passed to pyspi.
+  qualification: Distance hierarchy is structural; optimal global lag need not equal
+    the generating lag under warping.
+input_storage: New synthetic inputs saved at float64, identical to the arrays passed
+  to pyspi.

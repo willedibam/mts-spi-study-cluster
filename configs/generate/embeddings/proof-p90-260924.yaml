@@ -1,4 +1,5 @@
-# Fresh extraction; historical generators and seeds, ten coarse classes plus two cleanest-four CML additions.
+# Fresh extraction. VAR coefficients are literal: phi=self, coupling=weight PER neighbour.
+# Total ring coupling is twice the per-neighbour weight; no stability rescaling is triggered.
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/proof/refresh-260924/data
 timestamp: false
 pyspi_config: configs/pyspi/benchmarked_p90.yaml
@@ -17,22 +18,22 @@ defaults:
   - 2000
   instances: 10
 mts_classes:
-- name: var-phi-0.95_cpl-0.4
+- name: var-self-0.7_total-0.2
   labels:
   - var
   - linear
   - ring-symmetric
   generator: varma
   base_params:
-    phi: 0.95
-    coupling: 0.4
+    phi: 0.7
+    coupling: 0.1
     ma_phi: 0.0
     ma_coupling: 0.0
     noise_std: 0.1
     topology: ring-symmetric
     transients: 100
     zscore: false
-- name: var-phi-0.2_cpl-0.4
+- name: var-self-0.2_total-0.2
   labels:
   - var
   - linear
@@ -40,14 +41,14 @@ mts_classes:
   generator: varma
   base_params:
     phi: 0.2
-    coupling: 0.4
+    coupling: 0.1
     ma_phi: 0.0
     ma_coupling: 0.0
     noise_std: 0.1
     topology: ring-symmetric
     transients: 100
     zscore: false
-- name: var-phi-0.2_cpl-0.8
+- name: var-self-0.2_total-0.7
   labels:
   - var
   - linear
@@ -55,7 +56,7 @@ mts_classes:
   generator: varma
   base_params:
     phi: 0.2
-    coupling: 0.8
+    coupling: 0.35
     ma_phi: 0.0
     ma_coupling: 0.0
     noise_std: 0.1
