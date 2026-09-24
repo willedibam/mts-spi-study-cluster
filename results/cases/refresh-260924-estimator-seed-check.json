@@ -1,0 +1,32 @@
+{
+  "shape": [
+    100,
+    3
+  ],
+  "input_seed": 917,
+  "estimator_seeds": [
+    721,
+    722
+  ],
+  "full_vs_focused_exact": [
+    "bary_sgddtw_mean",
+    "bary_sgddtw_max",
+    "bary-sq_sgddtw_mean",
+    "bary-sq_sgddtw_max",
+    "cov_EllipticEnvelope",
+    "cov-sq_EllipticEnvelope",
+    "prec_EllipticEnvelope",
+    "prec-sq_EllipticEnvelope",
+    "cov_MinCovDet",
+    "cov-sq_MinCovDet",
+    "prec_MinCovDet",
+    "prec-sq_MinCovDet"
+  ],
+  "changed_between_seeds": [
+    "bary_sgddtw_mean",
+    "bary_sgddtw_max",
+    "bary-sq_sgddtw_mean",
+    "bary-sq_sgddtw_max"
+  ],
+  "other_matrices_unchanged": 277
+}

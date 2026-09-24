@@ -20,10 +20,10 @@ config=configs/generate/embeddings/proof-p90-260924.yaml
 job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
 exec >"logs/$job_stem.log" 2>&1
 nodes=$(sort -u "${PBS_NODEFILE:?}" | wc -l)
-mpirun -np "$nodes" --map-by ppr:1:node python -c 'import scripts.replay_proof_sgddtw, pyspi'
+mpirun -np "$nodes" --map-by ppr:1:node python -c 'import scripts.replay_proof_stochastic, pyspi'
 commands="$PBS_JOBFS/commands.txt"
 for ((i=${START_INDEX:-1}; i<=${END_INDEX:-1080}; i++)); do
-    printf 'python -m scripts.replay_proof_sgddtw --experiment-config %s --job-index %d\n' "$config" "$i" >> "$commands"
+    printf 'python -m scripts.replay_proof_stochastic --experiment-config %s --job-index %d\n' "$config" "$i" >> "$commands"
 done
 mpirun -np "${WORKERS:-$PBS_NCPUS}" --map-by node:PE=1 \
     nci-parallel --input-file "$commands" --status "$PBS_O_WORKDIR/logs/$job_stem.status" --verbose

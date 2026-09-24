@@ -8,15 +8,15 @@ cells=[md(r'''# SPI–SPI proof of concept — p90, 2026-09-24
 
 Fresh extraction with the current 289-SPI catalogue. The figures compare ten generator classes, then four CML regimes, and finally individual SPI–SPI coordinates that distinguish pairs of classes. These embeddings illustrate organisation; they do not establish invariance to channel count or recording length.'''),
 code('''from pathlib import Path
-import sys, json
+import sys, json, os
 import matplotlib.pyplot as plt
 ROOT = Path.cwd().resolve()
 while not (ROOT / 'src').is_dir() and ROOT != ROOT.parent:
     ROOT = ROOT.parent
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from scripts.refresh_proof_figures import (load_bank, embeddings, rank_features, plot_embedding, plot_discriminative)
-BANK = ROOT / 'data/proof/refresh-260924/features.npz'
-OUT = ROOT / 'results/proof/refresh-260924'
+BANK = Path(os.environ.get('PROOF_REFRESH_BANK', ROOT / 'data/proof/refresh-260924/features.npz'))
+OUT = Path(os.environ.get('PROOF_REFRESH_OUTPUT', ROOT / 'results/proof/refresh-260924'))
 bank = load_bank(BANK)
 OUT.mkdir(parents=True, exist_ok=True)
 print(f"{len(bank['y'])} datasets; {len(bank['spi_order'])} SPIs; {bank['X_sym'].shape[1]:,} coordinates")'''),
@@ -35,6 +35,6 @@ md(r'''Discriminative coordinates. For each class pair, select the SPI pair with
 code("fig = plot_discriminative(bank, ranked, 'cml', OUT)\nplt.show()"),
 md('Coarse contrasts use the same selection rule for Gaussian versus Cauchy noise and all three VAR class pairs.'),
 code("fig = plot_discriminative(bank, ranked, 'coarse', OUT)\nplt.show()"),
-md('Generation and analysis settings are recorded in `configs/analysis/proof-cases-refresh-260924.yaml`. The fresh bank retains invalid-coordinate masks and extraction provenance. Plot helpers save SVG figures and PNG previews under the result directory. Earlier notebooks and banks are preserved.')]
+md('Generation and analysis settings are recorded in `configs/analysis/proof-cases-refresh-260924.yaml`. The twelve stochastic robust-covariance and SGD-barycentre summaries are replayed with each dataset’s recorded seed; per-dataset sidecars preserve the original values and repair provenance. Other SPI matrices are unchanged. The fresh bank retains invalid-coordinate masks and extraction provenance. Plot helpers save SVG figures and PNG previews under the result directory. Earlier notebooks and banks are preserved.')]
 nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})
 path=ROOT/'notebooks/embeddings/proof_p90_260924.ipynb';nbf.write(nb,path);print(path)

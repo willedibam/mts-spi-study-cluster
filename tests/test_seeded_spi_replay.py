@@ -6,14 +6,22 @@ import numpy as np
 import pytest
 
 from src.compute import run_pyspi, seeded_estimator_rng
-from scripts.replay_proof_sgddtw import CONFIG, NAMES, replay
+from scripts.replay_proof_stochastic import CONFIG, NAMES, replay
 
 
-def test_seeded_sgd_is_repeatable_and_rng_is_restored():
+def test_seeded_sgd_is_repeatable_and_rng_is_restored(monkeypatch):
     data = np.random.default_rng(14).normal(size=(30, 3))
     state = np.random.get_state()
     python_state = random.getstate()
     first = run_pyspi(data, config_path=CONFIG, n_jobs=1, random_seed=17)
+    # Earlier catalogue entries may consume the global RNG. The SGD result
+    # must still agree with its focused replay.
+    from pyspi.calculator import Calculator
+    original_compute = Calculator.compute
+    def compute_after_other_rng_consumption(self, **kwargs):
+        np.random.random(128)
+        return original_compute(self, **kwargs)
+    monkeypatch.setattr(Calculator, "compute", compute_after_other_rng_consumption)
     second = run_pyspi(data, config_path=CONFIG, n_jobs=1, random_seed=17)
     assert set(first.matrices) == set(NAMES)
     for name in NAMES:
@@ -51,5 +59,5 @@ def test_partial_replay_preserves_other_values_and_resumes(tmp_path):
         for name in NAMES:
             np.testing.assert_array_equal(archive[name], np.full((3, 3), 2.))
     assert json.loads(meta_path.read_text())["pyspi"]["errors"] == {"untouched": "original"}
-    with np.load(tmp_path / "sgddtw-seeded-replay.npz") as archive:
+    with np.load(tmp_path / "stochastic-seeded-replay.npz") as archive:
         np.testing.assert_array_equal(archive[f"original_{NAMES[0]}"], original[NAMES[0]])

@@ -1,4 +1,4 @@
-"""Seed the four shared SGD-barycentre summaries without rerunning p90.
+"""Seed the twelve stochastic p90 summaries without rerunning p90.
 
 Run only after the original dataset writer has finished. A durable sidecar
 preserves the original matrices and allows recovery between atomic writes.
@@ -18,8 +18,10 @@ from src.run_experiments import _file_sha256, _repository_provenance, _pyspi_ver
 from src.utils import project_root, timestamp
 
 NAMES = ("bary_sgddtw_mean", "bary_sgddtw_max", "bary-sq_sgddtw_mean", "bary-sq_sgddtw_max")
-POLICY = "isolated-sgddtw-numpy-python-seed-v1"
-CONFIG = project_root() / "configs/pyspi/cases/proof_sgddtw_replay.yaml"
+NAMES += tuple(f"{prefix}_{estimator}" for estimator in ("EllipticEnvelope", "MinCovDet")
+               for prefix in ("cov", "cov-sq", "prec", "prec-sq"))
+POLICY = "isolated-stochastic-numpy-python-seed-v1"
+CONFIG = project_root() / "configs/pyspi/cases/proof_stochastic_replay.yaml"
 
 
 def _write_npz(path, arrays):
@@ -33,7 +35,7 @@ def replay(directory: Path, *, compute=run_pyspi):
     mpi_path, meta_path = directory / "spi_mpis.npz", directory / "meta.json"
     meta = json.loads(meta_path.read_text())
     seed = int(meta["generator"]["seed"])
-    receipt_path = directory / "sgddtw-seeded-replay.npz"
+    receipt_path = directory / "stochastic-seeded-replay.npz"
     with np.load(mpi_path) as archive:
         matrices = {name: archive[name] for name in archive.files}
     if not all(name in matrices for name in NAMES):

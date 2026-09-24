@@ -65,7 +65,10 @@ if [[ -n "$workers" ]]; then
 fi
 
 echo "[INFO] config=$config selected=$tasks/$total ncpus=$ncpus workers=${workers:-$ncpus} mem=${mem_gb}GB walltime=$walltime task_timeout=${task_timeout:-none}" >&2
+dependency_args=()
+[[ -n "${DEPENDENCY:-}" ]] && dependency_args=(-W "depend=$DEPENDENCY")
 qsub \
+    "${dependency_args[@]}" \
     -l "ncpus=$ncpus,mem=${mem_gb}GB,walltime=$walltime,jobfs=${jobfs_gb}GB" \
     -v "$variables" \
     jobs/gadi/run_dataset_farm.pbs

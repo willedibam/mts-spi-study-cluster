@@ -1,0 +1,34 @@
+# Exact stochastic p90 variants; shared caches minimise replay cost.
+.statistics.basic:
+  Covariance:
+    dependencies:
+    configs:
+      - estimator: EllipticEnvelope
+      - estimator: MinCovDet
+      - estimator: EllipticEnvelope
+        squared: true
+      - estimator: MinCovDet
+        squared: true
+  Precision:
+    dependencies:
+    configs:
+      - estimator: EllipticEnvelope
+      - estimator: MinCovDet
+      - estimator: EllipticEnvelope
+        squared: true
+      - estimator: MinCovDet
+        squared: true
+.statistics.distance:
+  Barycenter:
+    dependencies:
+    configs:
+      - mode: sgddtw
+        statistic: mean
+      - mode: sgddtw
+        statistic: max
+      - mode: sgddtw
+        statistic: mean
+        squared: true
+      - mode: sgddtw
+        statistic: max
+        squared: true

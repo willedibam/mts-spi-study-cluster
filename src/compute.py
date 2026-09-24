@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from contextlib import contextmanager
+from functools import partial
 import random
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
@@ -27,6 +28,11 @@ def seeded_estimator_rng(seed: int | None):
     finally:
         np.random.set_state(numpy_state)
         random.setstate(python_state)
+
+
+def _seeded_call(function, seed, *args, **kwargs):
+    with seeded_estimator_rng(seed):
+        return function(*args, **kwargs)
 
 
 @dataclass
@@ -77,6 +83,19 @@ def run_pyspi(
         zscore=normalise,
         verbose=False,
     )
+    if random_seed is not None:
+        # This pyspi version does not expose tslearn's random_state argument.
+        # Isolate SGD from RNG consumption by earlier SPIs, so a focused replay
+        # and full-catalogue extraction agree. All four summaries share its cache.
+        from pyspi.statistics.distance import Barycenter
+        from pyspi.statistics.basic import Estimators
+        for spi in calc.spis.values():
+            if isinstance(spi, Barycenter) and spi._mode == "sgddtw":
+                spi._fn = partial(spi._fn, random_state=np.random.RandomState(random_seed))
+            elif isinstance(spi, Estimators) and spi._estimator in {"MinCovDet", "EllipticEnvelope"}:
+                # These sklearn fits also use random initial subsets. Preserve
+                # pyspi's cache and its normal per-SPI failure handling.
+                spi._from_cache = partial(_seeded_call, spi._from_cache, random_seed)
     with seeded_estimator_rng(random_seed):
         calc.compute(
             n_jobs=n_jobs,

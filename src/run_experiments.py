@@ -315,7 +315,7 @@ def main(argv: List[str] | None = None) -> None:
             experiment_provenance=experiment_provenance,
         )
         meta["pyspi"]["estimator_rng"] = {
-            "policy": "numpy-python-global-serial-v1" if effective_n_jobs == 1 else "uncontrolled",
+            "policy": "serial-global-and-isolated-stochastic-v1" if effective_n_jobs == 1 else "uncontrolled",
             "seed": spec.rng_seed if effective_n_jobs == 1 else None,
             "n_jobs": effective_n_jobs,
         }
