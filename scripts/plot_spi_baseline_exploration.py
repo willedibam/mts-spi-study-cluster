@@ -22,21 +22,25 @@ SYSTEMS = {
     "Kuramoto": ("Kuramoto", r"Reduced coupling $\kappa$", 1),
     "CML2D": ("2D logistic CML", r"Map parameter $r$", 3.86212),
     "StuartLandau": ("Stuart–Landau: broad", r"Frequency half-width $\gamma$", None),
-    "StuartLandauFine": ("Stuart–Landau: fine", r"Frequency half-width $\gamma$", None),
+    "StuartLandauFine": ("Stuart–Landau: local sweep", r"Frequency half-width $\gamma$", None),
     "MillerHuse": ("Miller–Huse", r"Coupling $g$", .20534),
     "KanekoBand": ("Kaneko: band power", r"Map parameter $\alpha$", None),
     "KanekoEntropy": ("Kaneko: temporal entropy", r"Map parameter $\alpha$", None),
     "Rossler": ("Rössler: entrainment", r"Coupling $C$", None),
 }
+HEADLINE_SYSTEMS = ("Kuramoto", "StuartLandauFine", "MillerHuse", "KanekoBand", "CML2D", "Rossler", "KanekoEntropy")
 
 
-def inference_results():
+def inference_results(systems=None):
     metrics = pd.read_csv(OUT / "inference-metrics.csv")
     info = json.loads((OUT / "inference-provenance.json").read_text())["diagnostics"]
     extra = OUT / "inference-extra-metrics.csv"
     if extra.exists():
         metrics = pd.concat([metrics, pd.read_csv(extra)], ignore_index=True)
         info.update(json.loads((OUT / "inference-extra-provenance.json").read_text())["diagnostics"])
+    if systems is not None:
+        metrics = metrics[metrics.system.isin(systems)].copy()
+        info = {s: info[s] for s in systems}
     return metrics, info
 
 
@@ -179,8 +183,8 @@ def inference(systems=("Kuramoto", "CML2D"), filename="inference-headlines"):
     return export(fig, filename)
 
 
-def inference_table(compact=False):
-    frame, _ = inference_results()
+def inference_table(compact=False, systems=None):
+    frame, _ = inference_results(systems)
     if compact:
         selected = ["q", "mean_PC1", "distribution_PC1", "mean_correlation", "mean_abs_correlation"]
         table = frame.pivot(index="system", columns="method", values="abs_rho")[selected]
@@ -191,8 +195,8 @@ def inference_table(compact=False):
     return frame[["system","Representation","Association (95% CI)","Difference from q (95% CI)","within_control_abs_rho"]].round(3)
 
 
-def inference_paired_table():
-    frame, _ = inference_results()
+def inference_paired_table(systems=None):
+    frame, _ = inference_results(systems)
     frame = frame[frame.method.isin(["mean_PC1", "distribution_PC1"])].copy()
     frame["Difference (95% CI)"] = [f"{r.difference_vs_q:+.3f} [{r.difference_low:+.3f}, {r.difference_high:+.3f}]" for r in frame.itertuples()]
     return frame.pivot(index="system", columns="method", values="Difference (95% CI)").rename(

@@ -25,8 +25,8 @@ from src.representation_screen import bootstrap_group_means
 from scripts.order_parameter_simple_baselines import input_statistics
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data/spi_baseline_exploration_260921"
-OUT = ROOT / "results/spi_baseline_exploration_260921"
+DATA = ROOT / "data/baseline-comparison_260921"
+OUT = ROOT / "results/baseline-comparison_260921"
 CONFIG = ROOT / "configs/analysis/spi-baseline-exploration-260921.yaml"
 STATS = ("mean", "std", "q10", "q25", "median", "q75", "q90")
 VIEWS = ("pearson", "mean", "distribution", "z", "mean+z", "distribution+z")
