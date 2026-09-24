@@ -17,7 +17,7 @@ proof:
   feature_selection_instances: [0, 1, 2, 3, 4, 5]
   raincloud_display_instances: [6, 7, 8, 9]
   feature_selection: Largest absolute deviation of training AUC from 0.5; freeze orientation for display AUC.
-  raincloud_scope: All six pairs among four CML regimes, plus Gaussian/Cauchy and the two low-self-coupling VAR classes.
+  raincloud_scope: All six pairs among four CML regimes, plus Gaussian/Cauchy and all three VAR class pairs.
   qualification: Exploratory instance split; generator families and earlier outcomes have already been inspected.
 r_rho_mi:
   generation: configs/generate/r_rho_mi/260924_beta.yaml

@@ -1,0 +1,56 @@
+{
+  "study": "proof-cases-refresh-260924",
+  "source_commit": "f3c1b11",
+  "pyspi_commit": "65317c9",
+  "proof_status": "not submitted; VAR coefficients under discussion",
+  "case_jobs": [
+    {
+      "job": "179750177",
+      "case": "r-rho-mi",
+      "stage": "two-dataset smoke",
+      "indices": [
+        51,
+        52
+      ],
+      "status": "passed",
+      "spi_seconds": [
+        53.0,
+        59.0
+      ]
+    },
+    {
+      "job": "179750180",
+      "case": "dtw",
+      "stage": "two-dataset smoke",
+      "indices": [
+        181,
+        182
+      ],
+      "status": "passed",
+      "spi_seconds": [
+        48.1,
+        48.1
+      ]
+    },
+    {
+      "job": "179751400",
+      "case": "r-rho-mi",
+      "stage": "48-core pilot",
+      "index_range": [
+        51,
+        98
+      ],
+      "status": "submitted"
+    },
+    {
+      "job": "179751406",
+      "case": "dtw",
+      "stage": "48-core pilot",
+      "index_range": [
+        151,
+        198
+      ],
+      "status": "submitted"
+    }
+  ]
+}
