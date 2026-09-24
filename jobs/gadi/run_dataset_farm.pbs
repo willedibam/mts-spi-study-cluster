@@ -62,6 +62,13 @@ workers="${WORKERS:-$PBS_NCPUS}"
 (( workers > task_count )) && workers=$task_count
 
 echo "[INFO] datasets=$START_INDEX..$END_INDEX workers=$workers p90=$PYSPI_CONFIG"
+# Verify the shared editable installs on every allocated node before dispatch.
+# A head-node-only import check misses node-local source/path mistakes.
+nodes=$(sort -u "${PBS_NODEFILE:?}" | wc -l)
+if (( nodes > 1 )); then
+    mpirun -np "$nodes" --map-by ppr:1:node \
+        python -c 'import socket, src, pyspi; print("[IMPORT OK]", socket.gethostname(), src.__file__, pyspi.__file__)'
+fi
 nci_args=(--verbose --input-file "$commands" --status "$status")
 if [[ -n "${TASK_TIMEOUT:-}" ]]; then
     nci_args+=(--timeout "$TASK_TIMEOUT")
