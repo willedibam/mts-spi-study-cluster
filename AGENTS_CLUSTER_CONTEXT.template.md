@@ -19,7 +19,7 @@ Repo path on each cluster; symlink targets for `.venv`/`data`/`logs`; tracked br
 
   | Filesystem | Bytes | Inodes |
   |---|---|---|
-  | scratch | 211.23 GiB / 1.00 TiB | **141,948 / 202,000** (hard 212,100) |
+  | scratch | 211.86 GiB / 1.00 TiB | **148,322 / 202,000** (hard 212,100) |
   | gdata | 35.84 GiB / 100 GiB | **61,086 / 70,000** (hard 73,500) |
 
 - **Inodes bind on this account long before bytes.** Check both before any farm. Typical composition: bulk data ~3 inodes per unit of work (`.npz`+`.json`+`.npy`), each Python venv ~40k, `uv` cache ~39k, and other projects' checkouts on the same scratch count against this quota.
@@ -29,7 +29,7 @@ Repo path on each cluster; symlink targets for `.venv`/`data`/`logs`; tracked br
 
 ## Queues, nodes and charging
 
-- Budget `nci_account`, 2026.q3, checked 2026-09-24: **124.51 KSU granted, 85.49 used, 39.02 available**, zero reserved. The grant is revised within a period — re-read it, never subtract remembered spend.
+- Budget `nci_account`, 2026.q3, checked 2026-09-24: **124.51 KSU granted, 85.78 used, 35.56 available**, 3.17 KSU reserved. The grant is revised within a period — re-read it, never subtract remembered spend.
 - Charging: walltime × max(requested cores, memory-equivalent cores). PBS must reserve the requested maximum before starting, so oversizing delays as well as costs. Above one node, requests round to whole nodes.
 - **`server max_array_size = 10`** — arrays are not viable parallelism here. `normal` allows 1,000 queued jobs/project. Use a task farm instead.
 - CPU node inventory (`pbsnodes -a`): 3,274 × 48c (Cascade Lake, `normal`, 192 GB / 190 GB requestable, 4 GB/core, 2 SU/resource-hour); 732 × 104c (Sapphire Rapids, `normalsr`); 814 × 28c (Broadwell, `normalbw`); 203 × 32c (`normalsl`). **`normal` is the default, not automatically the best fit** — `normalsr` more than doubles cores per node.

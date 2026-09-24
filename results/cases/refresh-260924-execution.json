@@ -1,7 +1,7 @@
 {
   "study": "proof-cases-refresh-260924",
   "pyspi_commit": "65317c9",
-  "proof_status": "small smoke passed; large-corner smoke running; 48-dataset pilot submitted",
+  "proof_status": "All nine production cells submitted; five cells complete, larger cells running/queued. Seeded stochastic replay and notebook construction queued with dependencies.",
   "case_jobs": [
     {
       "job": "179750177",
@@ -107,7 +107,144 @@
     {
       "job": "179756850",
       "stage": "M16 T1000 48-dataset pilot",
+      "status": "passed"
+    },
+    {
+      "job": "179757869",
+      "stage": "production",
+      "M": 8,
+      "T": 500,
+      "datasets": 120,
+      "ncpus": 192,
+      "workers": 120,
+      "status": "passed"
+    },
+    {
+      "job": "179757887",
+      "stage": "production",
+      "M": 8,
+      "T": 1000,
+      "datasets": 120,
+      "ncpus": 192,
+      "workers": 120,
+      "status": "passed"
+    },
+    {
+      "job": "179757900",
+      "stage": "production",
+      "M": 8,
+      "T": 2000,
+      "datasets": 120,
+      "ncpus": 192,
+      "workers": 120,
+      "status": "passed"
+    },
+    {
+      "job": "179759721",
+      "stage": "production",
+      "M": 16,
+      "T": 500,
+      "datasets": 120,
+      "ncpus": 192,
+      "workers": 120,
+      "status": "passed"
+    },
+    {
+      "job": "179759727",
+      "stage": "production",
+      "M": 16,
+      "T": 1000,
+      "datasets": 120,
+      "ncpus": 192,
+      "workers": 120,
+      "status": "passed"
+    },
+    {
+      "job": "179759753",
+      "stage": "production",
+      "M": 16,
+      "T": 2000,
+      "datasets": 120,
+      "ncpus": 240,
+      "workers": 120,
       "status": "submitted"
+    },
+    {
+      "job": "179760728",
+      "stage": "production",
+      "M": 32,
+      "T": 500,
+      "datasets": 120,
+      "ncpus": 240,
+      "workers": 120,
+      "status": "submitted"
+    },
+    {
+      "job": "179760743",
+      "stage": "production",
+      "M": 32,
+      "T": 1000,
+      "datasets": 120,
+      "ncpus": 336,
+      "workers": 120,
+      "status": "submitted"
+    },
+    {
+      "job": "179760753",
+      "stage": "production",
+      "M": 32,
+      "T": 2000,
+      "datasets": 118,
+      "ncpus": 336,
+      "workers": 118,
+      "status": "submitted"
+    },
+    {
+      "job": "179761677",
+      "stage": "initial four-barycentre seed replay smoke",
+      "indices": [
+        1,
+        2
+      ],
+      "status": "passed",
+      "qualification": "Superseded by all-twelve stochastic replay; initial sidecars retained."
+    },
+    {
+      "job": "179762156",
+      "stage": "twelve-stochastic-SPI replay smoke",
+      "indices": [
+        1,
+        2
+      ],
+      "status": "submitted"
+    },
+    {
+      "job": "179762159",
+      "stage": "corner smoke resume if incomplete",
+      "indices": [
+        81,
+        82
+      ],
+      "dependency": "afterany:179751626",
+      "status": "submitted",
+      "walltime_limit": "04:00:00"
+    },
+    {
+      "job": "179762195",
+      "stage": "twelve-stochastic-SPI replay",
+      "datasets": 1080,
+      "workers": 192,
+      "ncpus": 192,
+      "walltime_limit": "02:00:00",
+      "dependency": "afterok:179759753:179760728:179760743:179760753:179762159:179762156",
+      "status": "submitted"
+    },
+    {
+      "job": "179762197",
+      "stage": "audit, feature reconstruction and notebook execution",
+      "dependency": "afterok:179762195",
+      "status": "submitted",
+      "ncpus": 16
     }
   ],
   "case_instances_per_condition": {
@@ -116,5 +253,15 @@
   },
   "extension_decision": "User selected 50 per condition for both cases. Add only DTW instances 30-49; no r-rho-mi extension.",
   "runner_code_introduced_at": "f3c1b11",
-  "case_status": "350/350 complete for each case; notebooks executed; 70 selected MPI values independently replayed to <3e-15 absolute error"
+  "case_status": "350/350 complete for each case; notebooks executed; 70 selected MPI values independently replayed to <3e-15 absolute error",
+  "proof_stochastic_replay": {
+    "policy": "isolated-stochastic-numpy-python-seed-v1",
+    "spis": 12,
+    "untouched_spis": 277,
+    "sidecar": "stochastic-seeded-replay.npz",
+    "source": "247b9e1",
+    "local_check": "refresh-260924-estimator-seed-check.json",
+    "reason": "SGD barycentre and robust covariance fits use random initialisation; original values preserved in per-dataset sidecars."
+  },
+  "proof_aftercare": "Retrieve features.npz and analysis/ through gadi-dm when 179762197 completes; visually review figures and copy executed notebook over the prepared local notebook. On failures inspect logs/*.log, never binary *.status; resume only incomplete outputs."
 }
