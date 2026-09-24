@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -N proof-seed
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2
+#PBS -l mem=8GB
+#PBS -l walltime=00:30:00
+#PBS -l jobfs=2GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 PYSPI_N_JOBS=1
+config=configs/generate/embeddings/proof-p90-260924.yaml
+job_stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+exec >"logs/$job_stem.log" 2>&1
+nodes=$(sort -u "${PBS_NODEFILE:?}" | wc -l)
+mpirun -np "$nodes" --map-by ppr:1:node python -c 'import scripts.replay_proof_sgddtw, pyspi'
+commands="$PBS_JOBFS/commands.txt"
+for ((i=${START_INDEX:-1}; i<=${END_INDEX:-1080}; i++)); do
+    printf 'python -m scripts.replay_proof_sgddtw --experiment-config %s --job-index %d\n' "$config" "$i" >> "$commands"
+done
+mpirun -np "${WORKERS:-$PBS_NCPUS}" --map-by node:PE=1 \
+    nci-parallel --input-file "$commands" --status "$PBS_O_WORKDIR/logs/$job_stem.status" --verbose

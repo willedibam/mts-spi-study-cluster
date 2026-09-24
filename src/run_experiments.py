@@ -271,6 +271,7 @@ def main(argv: List[str] | None = None) -> None:
             n_jobs=effective_n_jobs,
             checkpoint_dir=cp_dir,
             mp_context=args.mp_context,
+            random_seed=spec.rng_seed if effective_n_jobs == 1 else None,
         )
         compute_seconds = time.perf_counter() - compute_start
         csv_path = dataset_dir / "calc.csv"
@@ -313,6 +314,11 @@ def main(argv: List[str] | None = None) -> None:
             gen_extras=gen_extras,
             experiment_provenance=experiment_provenance,
         )
+        meta["pyspi"]["estimator_rng"] = {
+            "policy": "numpy-python-global-serial-v1" if effective_n_jobs == 1 else "uncontrolled",
+            "seed": spec.rng_seed if effective_n_jobs == 1 else None,
+            "n_jobs": effective_n_jobs,
+        }
         dump_json(dataset_dir / "meta.json", meta)
         print(
             f"[INFO] Stored SPI results in {to_relative(csv_path.parent)} "

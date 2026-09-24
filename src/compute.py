@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from contextlib import contextmanager
+import random
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
 
@@ -9,6 +11,22 @@ import pandas as pd
 
 
 from pyspi.calculator import Calculator
+
+
+@contextmanager
+def seeded_estimator_rng(seed: int | None):
+    """Isolate the legacy RNGs used by serial stochastic estimators."""
+    if seed is None:
+        yield
+        return
+    numpy_state, python_state = np.random.get_state(), random.getstate()
+    try:
+        np.random.seed(seed)
+        random.seed(seed)
+        yield
+    finally:
+        np.random.set_state(numpy_state)
+        random.setstate(python_state)
 
 
 @dataclass
@@ -42,7 +60,10 @@ def run_pyspi(
     checkpoint_dir: Path | None = None,
     resume: bool = True,
     mp_context: str | None = None,
+    random_seed: int | None = None,
 ) -> ComputeResult:
+    if random_seed is not None and n_jobs != 1:
+        raise ValueError("Estimator RNG seeding currently requires n_jobs=1.")
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]
@@ -56,13 +77,14 @@ def run_pyspi(
         zscore=normalise,
         verbose=False,
     )
-    calc.compute(
-        n_jobs=n_jobs,
-        checkpoint_dir=checkpoint_dir,
-        resume=resume,
-        mp_context=mp_context,
-        progress=False,
-    )
+    with seeded_estimator_rng(random_seed):
+        calc.compute(
+            n_jobs=n_jobs,
+            checkpoint_dir=checkpoint_dir,
+            resume=resume,
+            mp_context=mp_context,
+            progress=False,
+        )
     info_map = _spi_info(calc.spis)
     spi_names = _extract_spi_names(calc.table)
     matrices: Dict[str, np.ndarray] = {}

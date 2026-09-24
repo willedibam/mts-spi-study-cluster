@@ -1,0 +1,15 @@
+# Exact stochastic barycentre variants from p90; share one computed cache.
+.statistics.distance:
+  Barycenter:
+    dependencies:
+    configs:
+      - mode: sgddtw
+        statistic: mean
+      - mode: sgddtw
+        statistic: max
+      - mode: sgddtw
+        statistic: mean
+        squared: true
+      - mode: sgddtw
+        statistic: max
+        squared: true
