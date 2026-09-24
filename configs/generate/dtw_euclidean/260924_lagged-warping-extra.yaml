@@ -1,0 +1,211 @@
+# Disjoint additional instances; original configs remain fixed for already submitted jobs.
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/cases/dtw-euclidean-260924/data
+timestamp: false
+pyspi_config: configs/pyspi/cases/dtw_euclidean_norm.yaml
+normalise: false
+rng_seed: 42
+save_heatmap: false
+threads: 1
+defaults:
+  M_values:
+  - 20
+  T_values:
+  - 1000
+  instances:
+  - 30
+  - 31
+  - 32
+  - 33
+  - 34
+  - 35
+  - 36
+  - 37
+  - 38
+  - 39
+  - 40
+  - 41
+  - 42
+  - 43
+  - 44
+  - 45
+  - 46
+  - 47
+  - 48
+  - 49
+  - 50
+  - 51
+  - 52
+  - 53
+  - 54
+  - 55
+  - 56
+  - 57
+  - 58
+  - 59
+  - 60
+  - 61
+  - 62
+  - 63
+  - 64
+  - 65
+  - 66
+  - 67
+  - 68
+  - 69
+  - 70
+  - 71
+  - 72
+  - 73
+  - 74
+  - 75
+  - 76
+  - 77
+  - 78
+  - 79
+  - 80
+  - 81
+  - 82
+  - 83
+  - 84
+  - 85
+  - 86
+  - 87
+  - 88
+  - 89
+  - 90
+  - 91
+  - 92
+  - 93
+  - 94
+  - 95
+  - 96
+  - 97
+  - 98
+  - 99
+mts_classes:
+- name: pstep-0.0_maxlag-0
+  labels:
+  - lagged-warping
+  - baseline-floor
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 0
+    p_step: 0.0
+- name: pstep-0.0_maxlag-5
+  labels:
+  - lagged-warping
+  - baseline-lag-only
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 5
+    p_step: 0.0
+- name: pstep-0.1_maxlag-5
+  labels:
+  - lagged-warping
+  - light-warp
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 5
+    p_step: 0.1
+- name: pstep-0.3_maxlag-5
+  labels:
+  - lagged-warping
+  - moderate-warp
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 5
+    p_step: 0.3
+- name: pstep-0.5_maxlag-5
+  labels:
+  - lagged-warping
+  - moderate-warp
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 5
+    p_step: 0.5
+- name: pstep-0.7_maxlag-5
+  labels:
+  - lagged-warping
+  - heavy-warp
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 5
+    p_step: 0.7
+- name: pstep-0.9_maxlag-5
+  labels:
+  - lagged-warping
+  - heavy-warp
+  generator: lagged_warping_mts
+  base_params:
+    lag_dist: linspace
+    warp_step_dist: fixed
+    warp_step_max: 3
+    noise_std: 0.1
+    noise_std_variable: true
+    noise_std_scale: 2.718
+    noise_dist: uniform
+    ar1_a: 0.5
+    ar1_noise_std: 1.0
+    zscore: true
+    max_lag: 5
+    p_step: 0.9

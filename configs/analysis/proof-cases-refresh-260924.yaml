@@ -67,7 +67,7 @@ proof:
     burn_in: 100
 r_rho_mi:
   generation: configs/generate/r_rho_mi/260924_beta.yaml
-  expected_datasets: 350
+  expected_datasets: 700
   spi_config: configs/pyspi/cases/r_rho_mi_260924.yaml
   expected_spis: 4
   primary:
@@ -84,14 +84,18 @@ r_rho_mi:
   linear_baseline: Computed once and shared across beta panels.
   outer_correlation: Pearson across unique unordered channel pairs, raw MI in nats.
   uncertainty_unit: Independent MTS instance, never individual channel pair.
+  extension_generation: configs/generate/r_rho_mi/260924_beta-extra.yaml
+  instances_per_condition: 100
 dtw:
   generation: configs/generate/dtw_euclidean/260924_lagged-warping.yaml
-  expected_datasets: 210
+  expected_datasets: 700
   spi_config: configs/pyspi/cases/dtw_euclidean_norm.yaml
   expected_spis: 3
   outer_correlation: Pearson across unique unordered channel pairs.
   normalization: Distances divided by sqrt(T), not by sqrt(warping-path length).
   qualification: Distance hierarchy is structural; optimal global lag need not equal
     the generating lag under warping.
+  extension_generation: configs/generate/dtw_euclidean/260924_lagged-warping-extra.yaml
+  instances_per_condition: 100
 input_storage: New synthetic inputs saved at float64, identical to the arrays passed
   to pyspi.

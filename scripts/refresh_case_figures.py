@@ -60,7 +60,7 @@ def load_records(root, expected=None):
 
 def analyze(root, kind, output):
     output = Path(output); output.mkdir(parents=True, exist_ok=True)
-    records = load_records(root, 350 if kind == 'r-rho-mi' else 210)
+    records = load_records(root, 700)
     rows = []; catalogue = set(); configs = set(); hierarchy = 0; nonfinite = 0
     for path, meta, mpis in records:
         catalogue.add(tuple(sorted(mpis)))
@@ -94,7 +94,7 @@ def analyze(root, kind, output):
     assert len(configs) == 1 and 'missing' not in configs, configs
     groups = ['class', 'beta_tag'] if kind == 'r-rho-mi' else ['class']
     for _, group in frame.groupby(groups):
-        assert sorted(group.instance) == list(range(50 if kind == 'r-rho-mi' else 30))
+        assert sorted(group.instance) == list(range(100))
     assert hierarchy == 0, hierarchy
     assert not frame.drop(columns=['path', 'class', 'beta_tag'], errors='ignore').isna().any().any()
     frame.to_csv(output / 'per-instance.csv', index=False)
