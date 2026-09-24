@@ -1,8 +1,7 @@
 {
   "study": "proof-cases-refresh-260924",
-  "source_commit": "f3c1b11",
   "pyspi_commit": "65317c9",
-  "proof_status": "two small/large-corner smoke jobs submitted",
+  "proof_status": "small smoke passed; large-corner smoke running; 48-dataset pilot submitted",
   "case_jobs": [
     {
       "job": "179750177",
@@ -40,7 +39,7 @@
         51,
         98
       ],
-      "status": "submitted"
+      "status": "passed"
     },
     {
       "job": "179751406",
@@ -50,7 +49,40 @@
         151,
         198
       ],
-      "status": "submitted"
+      "status": "passed"
+    },
+    {
+      "job": "179753157",
+      "case": "r-rho-mi",
+      "stage": "production",
+      "datasets_including_skipped": 350,
+      "ncpus": 384,
+      "workers": 350,
+      "walltime": "00:03:30",
+      "peak_memory_kb": 99092032,
+      "status": "passed"
+    },
+    {
+      "job": "179753171",
+      "case": "dtw",
+      "stage": "production instances 0-29",
+      "datasets_including_skipped": 210,
+      "ncpus": 240,
+      "workers": 210,
+      "walltime": "00:02:24",
+      "peak_memory_kb": 110073572,
+      "status": "passed"
+    },
+    {
+      "job": "179753188",
+      "case": "dtw",
+      "stage": "production instances 30-49",
+      "datasets_including_skipped": 140,
+      "ncpus": 144,
+      "workers": 140,
+      "walltime": "00:02:09",
+      "peak_memory_kb": 87234360,
+      "status": "passed"
     }
   ],
   "proof_jobs": [
@@ -61,7 +93,7 @@
         1,
         2
       ],
-      "status": "submitted"
+      "status": "passed"
     },
     {
       "job": "179751626",
@@ -71,11 +103,18 @@
         82
       ],
       "status": "submitted"
+    },
+    {
+      "job": "179756850",
+      "stage": "M16 T1000 48-dataset pilot",
+      "status": "submitted"
     }
   ],
   "case_instances_per_condition": {
     "r-rho-mi": 50,
     "dtw": 50
   },
-  "extension_decision": "User selected 50 per condition for both cases. Add only DTW instances 30-49; no r-rho-mi extension."
+  "extension_decision": "User selected 50 per condition for both cases. Add only DTW instances 30-49; no r-rho-mi extension.",
+  "runner_code_introduced_at": "f3c1b11",
+  "case_status": "350/350 complete for each case; notebooks executed; 70 selected MPI values independently replayed to <3e-15 absolute error"
 }

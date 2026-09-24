@@ -129,7 +129,7 @@ def plot_rainclouds(frame, output):
         for j, cls in enumerate(CASE_LABELS):
             for k, (key, color) in enumerate(zip(keys, COLORS)):
                 raincloud(ax, subset[subset['class'] == cls][key], j+(k-1)*.25, color, np.random.default_rng(260924+j+k))
-        ax.set(xticks=range(3), xticklabels=['Linear', '+ monotone', '+ quadratic'], ylim=(-1.05, 1.05), title=label)
+        ax.set(xticks=range(3), xticklabels=['Linear', '+ monotone', '+ quadratic'], ylim=(-.05, 1.05), title=label)
         ax.axhline(0, color='.85', lw=.6)
     for color, label in zip(COLORS, labels): axes[0].plot([], [], color=color, label=label)
     axes[0].legend(loc='lower left'); axes[0].set_ylabel('Pearson agreement across channel pairs')
@@ -171,12 +171,12 @@ def plot_spi_planes(frame, kind, output):
             if kind=='r-rho-mi':
                 mixed=np.isin(pairtypes,['LM','LQ','MQ']);ax.scatter(x[~mixed],y[~mixed],s=7,c='.65',alpha=.25,linewidths=0)
                 for tag,color in zip(['LM','LQ','MQ'],COLORS):
-                    use=pairtypes==tag;ax.scatter(x[use],y[use],s=8,color=color,alpha=.45,linewidths=0,label=tag.replace('Q','quadratic'))
+                    use=pairtypes==tag;ax.scatter(x[use],y[use],s=8,color=color,alpha=.45,linewidths=0,label={'LM':'L–M','LQ':'L–Q','MQ':'M–Q'}[tag])
             else:
                 sc=ax.scatter(x,y,c=lagdiff,cmap='viridis',vmin=0,vmax=5,s=9,alpha=.55,linewidths=0)
                 limit=max(x.max(),y.max())*1.04;ax.plot([0,limit],[0,limit],color='.7',lw=.7,ls='--');ax.set(xlim=(0,limit),ylim=(0,limit))
             ax.set(xlabel=labels[a],ylabel=labels[b]);ax.set_box_aspect(1)
-            ax.set_title(f'{title}\nagreement = {corr(x,y):.2f}',fontsize=9)
+            ax.set_title(f'{title}\nagreement = {corr(x,y):.3f}',fontsize=9)
     if kind=='dtw':fig.colorbar(sc,ax=axes.ravel().tolist(),label='Absolute generating lag difference',shrink=.5)
     else:axes[-1,-1].legend(fontsize=7,loc='lower right')
     return save(fig,Path(output),'spi-planes')
@@ -189,7 +189,7 @@ def plot_dtw_sweep(frame, output):
         vals=[frame[(frame.max_lag==lag)&np.isclose(frame.p_step,ps)][key].to_numpy() for lag,ps in conditions]
         means=np.array([v.mean() for v in vals]);cis=np.array([student_t.ppf(.975,len(v)-1)*v.std(ddof=1)/np.sqrt(len(v)) for v in vals])
         ax.errorbar(range(7),means,yerr=cis,color=color,label=label,marker='o',ms=3,lw=1.2,capsize=2)
-    ax.set(xticks=range(7),xticklabels=['No lag','0','.1','.3','.5','.7','.9'],xlabel=r'Warp probability $p_{\rm step}$ (lag range 0–5 except first control)',ylabel='Pearson agreement across channel pairs',ylim=(-1.05,1.05))
+    ax.set(xticks=range(7),xticklabels=['No lag','0','.1','.3','.5','.7','.9'],xlabel=r'Warp probability $p_{\rm step}$ (lag range 0–5 except first control)',ylabel='Pearson agreement across channel pairs',ylim=(-.05,1.05))
     ax.legend(fontsize=8);ax.axvline(.5,color='.85',lw=.7);ax.axhline(0,color='.85',lw=.6)
     return save(fig,Path(output),'warp-sweep')
 

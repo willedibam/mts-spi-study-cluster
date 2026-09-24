@@ -1,0 +1,14 @@
+{
+  "datasets": 350,
+  "spis": [
+    "dtw_rmse",
+    "pdist_euclidean_rmse",
+    "xpdist_euclidean_tau-10_min_rmse"
+  ],
+  "config_hashes": [
+    "a53085bb0aa374a7bc065ee350f73849de8c720e6ef371a6080f1391fa31202d"
+  ],
+  "nonfinite_off_diagonal_values": 0,
+  "distance_hierarchy_violations": 0,
+  "replication_unit": "independent MTS instance"
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "case": "r-rho-mi",
+    "recordings": 7,
+    "pairwise_values_checked": 42,
+    "max_abs_error": 1.1102230246251565e-15
+  },
+  {
+    "case": "dtw-euclidean",
+    "recordings": 7,
+    "pairwise_values_checked": 28,
+    "max_abs_error": 2.4147350785597155e-15
+  }
+]

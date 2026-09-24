@@ -1,0 +1,25 @@
+{
+  "datasets": 350,
+  "spis": [
+    "cov_EmpiricalCovariance",
+    "mi_kraskov_NN-4",
+    "mi_kraskov_NN-4_DCE-AUTO",
+    "spearmanr"
+  ],
+  "config_hashes": [
+    "643d25c61f3d81c382a587e6fabb51578ab22ff29ab7d2c8b11f5ca6285e3a4b"
+  ],
+  "nonfinite_off_diagonal_values": 0,
+  "distance_hierarchy_violations": 0,
+  "replication_unit": "independent MTS instance",
+  "temporal_exclusion": {
+    "r_mi": {
+      "median_abs_change": 0.0012998498121284952,
+      "max_abs_change": 0.010044920224250131
+    },
+    "rho_mi": {
+      "median_abs_change": 0.0007231397681269347,
+      "max_abs_change": 0.010041744511019357
+    }
+  }
+}
