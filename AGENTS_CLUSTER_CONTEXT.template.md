@@ -8,19 +8,19 @@ Repo path on each cluster; symlink targets for `.venv`/`data`/`logs`; tracked br
 
 ---
 
-# NCI Gadi — account verified 2026-09-22
+# NCI Gadi — account verified 2026-09-22; allocation/quotas refreshed 2026-09-24
 
 ## Access and storage
 
 - Login `we2614@gadi.nci.org.au`, project `ql44`, home `/home/562/we2614`. Passwordless key SSH works unattended. `~/.ssh/config` defines host `gadi.nci.org.au` (no short alias, and **no `gadi-dm` entry** — add one before relying on it).
 - Transfers use `gadi-dm.nci.org.au`, never a login or compute node. Login nodes have external network; **standard compute nodes do not** — sync Git and stage dependencies before submission, or use `copyq`.
 - Roots: `/scratch/ql44/we2614` (working, **100-day expiry**), `/g/data/ql44/we2614` (retained), `mdss` (tape, for bulky archives).
-- Live quota (`lquota`, `nci_account`), 2026-09-22:
+- Live quota (`lquota`, `nci_account`), 2026-09-24:
 
   | Filesystem | Bytes | Inodes |
   |---|---|---|
-  | scratch | 176.08 GiB / 1.00 TiB | **192,637 / 202,000** (hard 212,100) |
-  | gdata | 34.03 GiB / 100 GiB | **68,857 / 70,000** (hard 73,500) |
+  | scratch | 211.23 GiB / 1.00 TiB | **141,948 / 202,000** (hard 212,100) |
+  | gdata | 35.84 GiB / 100 GiB | **61,086 / 70,000** (hard 73,500) |
 
 - **Inodes bind on this account long before bytes.** Check both before any farm. Typical composition: bulk data ~3 inodes per unit of work (`.npz`+`.json`+`.npy`), each Python venv ~40k, `uv` cache ~39k, and other projects' checkouts on the same scratch count against this quota.
 - `UV_CACHE_DIR=/scratch/ql44/we2614/uv-cache` (set in `~/.bashrc`). `uv cache clean` is safe for existing venvs — wheels are hardlinked in, so the venv survives — but it reclaims mostly **inodes, not bytes**: the 2026-09-21 clear freed 8,075 inodes and only 0.06 GiB despite uv reporting 5.4 GiB. Rebuild caches from a login node; compute nodes cannot fetch wheels.
@@ -29,7 +29,7 @@ Repo path on each cluster; symlink targets for `.venv`/`data`/`logs`; tracked br
 
 ## Queues, nodes and charging
 
-- Budget `nci_account`, 2026.q3: **124.51 KSU granted, 85.38 used, 39.13 available.** The grant is revised within a period — re-read it, never subtract remembered spend.
+- Budget `nci_account`, 2026.q3, checked 2026-09-24: **124.51 KSU granted, 85.49 used, 39.02 available**, zero reserved. The grant is revised within a period — re-read it, never subtract remembered spend.
 - Charging: walltime × max(requested cores, memory-equivalent cores). PBS must reserve the requested maximum before starting, so oversizing delays as well as costs. Above one node, requests round to whole nodes.
 - **`server max_array_size = 10`** — arrays are not viable parallelism here. `normal` allows 1,000 queued jobs/project. Use a task farm instead.
 - CPU node inventory (`pbsnodes -a`): 3,274 × 48c (Cascade Lake, `normal`, 192 GB / 190 GB requestable, 4 GB/core, 2 SU/resource-hour); 732 × 104c (Sapphire Rapids, `normalsr`); 814 × 28c (Broadwell, `normalbw`); 203 × 32c (`normalsl`). **`normal` is the default, not automatically the best fit** — `normalsr` more than doubles cores per node.

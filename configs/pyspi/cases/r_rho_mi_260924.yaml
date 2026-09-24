@@ -1,0 +1,37 @@
+# Ordinary KSG is primary; AUTO temporal exclusion is a focused sensitivity, not a replacement.
+.statistics.basic:
+  Covariance:
+    labels:
+    - undirected
+    - linear
+    - signed
+    - multivariate
+    - contemporaneous
+    dependencies: null
+    configs:
+    - estimator: EmpiricalCovariance
+  SpearmanR:
+    labels:
+    - undirected
+    - nonlinear
+    - signed
+    - bivariate
+    - contemporaneous
+    dependencies: null
+    configs:
+    - squared: false
+.statistics.infotheory:
+  MutualInfo:
+    labels:
+    - undirected
+    - nonlinear
+    - unsigned
+    - bivariate
+    - contemporaneous
+    dependencies: null
+    configs:
+    - estimator: kraskov
+      prop_k: 4
+    - estimator: kraskov
+      prop_k: 4
+      dyn_corr_excl: AUTO

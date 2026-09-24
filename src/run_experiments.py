@@ -425,10 +425,13 @@ def _ensure_timeseries(spec, regenerate: bool) -> tuple[np.ndarray, Path, dict]:
     else:
         start = time.perf_counter()
         data, gen_extras = generate_synthetic_from_spec(spec)
-        np.save(ts_path, data.astype(np.float32))
+        # Persist exactly the input used by pyspi: a retry must not switch from
+        # the generated float64 values to a rounded float32 realization.
+        data = np.asarray(data, dtype=np.float64)
+        np.save(ts_path, data)
         mother = gen_extras.pop("_mother", None)   # not JSON-serialisable -> save alongside, keep out of meta
         if mother is not None:
-            np.save(dataset_dir / "mother.npy", np.asarray(mother, dtype=np.float32))
+            np.save(dataset_dir / "mother.npy", np.asarray(mother, dtype=np.float64))
         full_lattice = gen_extras.pop("_full_lattice", None)
         if full_lattice is not None:
             full_array = np.asarray(full_lattice, dtype=np.float32)
