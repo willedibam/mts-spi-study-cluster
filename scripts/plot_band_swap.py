@@ -1,12 +1,13 @@
 """Fixed-setting views of the band-swap marginal comparison."""
-import argparse
+import argparse,json
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from umap import UMAP
 from threadpoolctl import threadpool_limits
-from scripts.analyze_band_swap import get_rows
 from scripts.build_band_swap import OUT
+from scripts.spi_baseline_exploration import ROOT
 from scripts.band_organization_experiment import covariance_layers
 from scripts.refresh_case_figures import style,save
 
@@ -25,11 +26,16 @@ def population():
     return save(fig,OUT/'figures','population-coupling')
 
 
-def plot(stage='development',focused=True):
-    rows=get_rows(stage);test=rows.block.ge(24 if stage=='development' else 32).to_numpy()
+def plot(stage='development',focused=True,run='band-swap-261004'):
+    OUT=ROOT/'results/representation'/run
+    records=json.loads((ROOT/'data/representation'/run/'manifest.json').read_text())['rows']
+    rows=pd.DataFrame(records[:64] if stage=='development' else records)
+    test=rows.block.ge(24 if stage=='development' else 32).to_numpy()
     prefix='direct-' if focused else '';path=OUT/stage/(prefix+'projections.npz')
-    methods=[('band_mean' if focused else 'mean',r'Per-SPI means $m$'),('band_z' if focused else 'z',r'SPI–SPI $z$')]
-    names={'BCA':'BCA: mid–high overlap','CBA':'CBA: low–high overlap'};colors={'BCA':'#0072B2','CBA':'#D55E00'}
+    direct_names=('band_mean','band_z') if run=='band-swap-261004' else ('probe_mean','probe_z')
+    methods=[(direct_names[0] if focused else 'mean',r'Per-SPI means $m$'),(direct_names[1] if focused else 'z',r'SPI–SPI $z$')]
+    names={'BCA':'BCA: mid–high overlap','CBA':'CBA: low–high overlap'} if run=='band-swap-261004' else {label:label.replace('-',' ').capitalize() for label in sorted(rows.label.unique())}
+    colors=dict(zip(names,['#0072B2','#D55E00']))
     style();fig,axes=plt.subplots(2,2,figsize=(8.6,8.6),layout='constrained')
     with np.load(path) as a:
         for col,(method,title) in enumerate(methods):
@@ -48,5 +54,5 @@ def plot(stage='development',focused=True):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final'],default='development');p.add_argument('--p90',action='store_true');p.add_argument('--population',action='store_true');a=p.parse_args()
-    with threadpool_limits(limits=4):population() if a.population else plot(a.stage,not a.p90)
+    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final'],default='development');p.add_argument('--p90',action='store_true');p.add_argument('--population',action='store_true');p.add_argument('--run',default='band-swap-261004');a=p.parse_args()
+    with threadpool_limits(limits=4):population() if a.population else plot(a.stage,not a.p90,a.run)
