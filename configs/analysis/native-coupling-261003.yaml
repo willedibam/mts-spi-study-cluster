@@ -1,0 +1,29 @@
+status: raw_generator_calibration_before_SPI_outcomes
+purpose: match_a_declared_generator_level_strength_in_existing_proof_families
+families: [VAR_phi_0.2, VAR_phi_0.7, CML_alpha_1.69, CML_alpha_1.7522, CML_alpha_1.895, CML_alpha_2.0]
+excluded_before_SPI: CML_alpha1.45_failed_target_bracketing_on_seed261003111_in_g0to0.2; omit_entire_condition_not_selected_records
+observation_transform: subtract_each_channel_mean_divide_all_channels_by_one_global_RMS_SD; strength_ratio_unchanged
+M: 16
+T: 1000
+burn: 2000
+target: 0.10
+tolerance: 0.002
+realizations_per_class: 24
+development_instances: [0, 11]
+evaluation_instances: [12, 23]
+calibration: first_low_coupling_grid_bracket_then_bisection_using_only_strength_error
+initialization: paired_seed_across_classes_independent_instance_groups
+readout: training_only_95percent_validity_standard_scale_clip5_PCA20_logistic_C1
+embedding: development_only_UMAP_fixed30neighbors_min_dist0.1_seed261003
+SPI_config: configs/pyspi/benchmarked_p90.yaml
+definition: sqrt(mean_t_sum_i_(F_g(x_t)_i_minus_F_0(x_t)_i)^2_over_sum_i_var_t_x_i)
+interpretation: dimensionless_RMS_change_to_one_update_caused_by_the_coupling_term
+qualification: declared_cross_model_convention_not_a_unique_universal_total_coupling
+VAR: same_state_and_noise_counterfactual; g_is_total_two_neighbour_weight; no_rescaling
+CML: same_state_counterfactual; g_is_eps; original100_site_ring_and16_site_crop
+primary_SPI_comparison: raw_per_SPI_means_versus_SPI_SPI
+secondary: marginal_distributions
+do_not_assume:
+  - matching_this_strength_matches_every_MPI_mean
+  - old_CML_regime_labels_survive_changed_coupling
+  - standardized_coupling_effect_equals_average_Pearson_or_mutual_information

@@ -1,0 +1,12 @@
+name: native-coupling-261003
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/native-coupling-261003/observations.npz
+  sha256: 1798e363a410fd2092612a5aec37f4ed07b3f543842d41b6d1de47c55c62fc13
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/native-coupling-261003/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003
