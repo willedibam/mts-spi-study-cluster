@@ -94,10 +94,14 @@ def analyze(stage,direct_only=False):
         # these coordinates. Primary z retains the frozen 95% rule.
         bank['z_complete']=bank['z']
         bank['z_shuffled_complete']=bank['z_shuffled']
+        for base in ['z','z_shuffled']:
+            bank[base+'_center']=bank[base]
+            bank[base+'_center_complete']=bank[base]
     projections={};readouts={};diagnostics={}
     for name,x in bank.items():
         try:
-            projection,d,h=project_features(x[train],x[test],dimensions=20,valid=1.0 if name.endswith('_complete') else .95)
+            projection,d,h=project_features(x[train],x[test],dimensions=20,
+                standard='_center' not in name,valid=1.0 if name.endswith('_complete') else .95)
         except RuntimeError as error:
             if str(error)!='no features pass the variance gate':raise
             # A constant validity mask contains no training information. Its
@@ -137,13 +141,14 @@ def analyze(stage,direct_only=False):
         boot=delta[rng.integers(len(delta),size=(5000,len(delta)))].mean(axis=1)
         low,high=np.quantile(boot,[.025,.975])
         paired.append(dict(comparison=reference+' - '+comparator,difference=delta.mean(),low=low,high=high))
-    if 'z_complete' in pivot:
-        for comparator in ['mean','mean_full','mean_RBF','mean_trees','z_shuffled_complete']:
-            delta=(pivot.z_complete-pivot[comparator]).groupby('block').mean().to_numpy()
-            rng=np.random.default_rng(261003)
-            boot=delta[rng.integers(len(delta),size=(5000,len(delta)))].mean(axis=1)
-            low,high=np.quantile(boot,[.025,.975])
-            paired.append(dict(comparison='z_complete - '+comparator,difference=delta.mean(),low=low,high=high))
+    for variant in ['z_complete','z_center','z_center_complete']:
+        if variant in pivot:
+            for comparator in ['mean','mean_full','mean_RBF','mean_trees','distribution',variant.replace('z','z_shuffled',1)]:
+                delta=(pivot[variant]-pivot[comparator]).groupby('block').mean().to_numpy()
+                rng=np.random.default_rng(261003)
+                boot=delta[rng.integers(len(delta),size=(5000,len(delta)))].mean(axis=1)
+                low,high=np.quantile(boot,[.025,.975])
+                paired.append(dict(comparison=variant+' - '+comparator,difference=delta.mean(),low=low,high=high))
     pd.DataFrame(paired).to_csv(target/(prefix+'paired.csv'),index=False)
     np.savez_compressed(target/(prefix+'projections.npz'),**{k+s:v for k,pair in projections.items() for s,v in zip(('_train','_test'),pair)})
     provenance=dict(stage=stage,rows=rows.row_id.tolist(),diagnostics=diagnostics,
@@ -158,6 +163,9 @@ def analyze(stage,direct_only=False):
                 z_detectable=bool(ba['z']>=.80),validity_weak=bool(ba['z_validity']<=.65))
             provenance['development_goal']=dict(**gate,all_pass=all(gate.values()),
                 qualification='Exploratory small-validation gate, not a proof of marginal equality; inspect before held release')
+            centered=dict(gate,z_detectable=bool(ba['z_center']>=.80))
+            provenance['centered_development_goal']=dict(**centered,all_pass=all(centered.values()),
+                qualification='Center-only z refinement selected after initial development result; requires untouched held confirmation')
     (target/(prefix+'analysis.json')).write_text(json.dumps(provenance,indent=2)+'\n')
     print(pd.DataFrame(metrics).round(4).to_string(index=False))
 

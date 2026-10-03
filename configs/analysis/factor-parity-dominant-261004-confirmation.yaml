@@ -1,0 +1,56 @@
+status: held_unseen_confirmation_readout_frozen
+run: factor-parity-dominant-261004
+original_protocol: configs/analysis/factor-parity-dominant-261004.yaml
+original_protocol_sha256: 0dcdffb85858cda001320d921e6a4b3969ad3de00accd25a3eb4094a3844545a
+rationale: Initial standardized z development accuracy .625 failed. Center-only z,
+  matching the earlier proof pipeline and retaining the natural shared correlation
+  scale, gives .8125 while all four mean readouts are <=.625. This readout refinement
+  was selected using development outcomes only; preserve the failed standardized result.
+development_results:
+  mean: 0.4375
+  mean_full: 0.5
+  mean_RBF: 0.5625
+  mean_trees: 0.625
+  z_standard: 0.625
+  z_center: 0.8125
+  z_center_complete: 0.8125
+  z_validity: 0.5
+  z_shuffled_center: 0.3125
+held_blocks:
+- 32
+- 63
+training_blocks:
+- 0
+- 31
+held_recordings: 64
+primary:
+  mean: training95percent_validity_median_standard_scale_clip5_PCA20_logisticC1
+  z_center: training95percent_validity_median_center_only_no_scaling_no_clipping_PCA20_logisticC1
+secondary:
+- all_mean_logistic
+- all_mean_RBF_C1
+- all_mean_ExtraTrees500
+- distribution7_standard_PCA20
+- z_standard_PCA20
+- z_center_training_complete
+- z_validity_only
+- independent_edge_shuffle_centered
+development_sensitivity: readout-sensitivity-development.csv retains both scalings,
+  PCA20/full features and linear/RBF fits; center-only linear PCA20 selected to preserve
+  the historical unsupervised geometry plus common linear readout, not maximize observed
+  BA
+evaluation: Report balanced accuracies and paired block-bootstrap95percent intervals
+  with5000 replicates; fixed models; no held tuning or class/point/seed selection
+desired_pattern:
+  all_mean_readouts_at_most: 0.65
+  z_center_at_least: 0.8
+  validity_at_most: 0.65
+  chance: 0.5
+interpretation: Weak readouts are not information-theoretic absence or equivalence.
+  Claim a resolved paired advantage only if the paired95percent interval is strictly
+  above zero. Preserve outcomes even if targets fail.
+readout_sha256: 7716258f1fac3435886707a043b019f7adbdc077313c77d9f9b83ef34e6bd30d
+feature_preprocessing_sha256: ebb2965018c3326ff2c3946e00b23cc6c4118bd13059a9c14c514cef327ba308
+geometry_transform_sha256: 92bc5bb87811f5ed1b63a7b77d4b06232affcc9643badfa609cf2f2b02d9ce30
+development_features_sha256: 5367f70ef8d284896326cfb4ac7331147e9a8e288e69977d7fc1283a8fa22dff
+raw_manifest_sha256: 20c37b073d8dd418df5a34ad32046c3c5f3cd9baca265b61c7b740b6906ac14c
