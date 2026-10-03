@@ -30,6 +30,8 @@ For a native update $x_{t+1}=F(x_t)$, define
 
 $$G=\frac{1}{MT}\sum_{t,i}\sum_{j\ne i}\left|\frac{\partial F_i}{\partial x_j}(x_t)\right|.$$
 
+Each off-diagonal row sum bounds the first-order incoming response to a unit-bounded perturbation of the other state coordinates; G averages this local sensitivity over receivers and recorded states.
+
 The target $G=0.20\pm0.002$ is inherited from the native VAR/CML pilot as an explicit experimental operating point, not an established universal strength scale. It is feasible for all coupled variants tested. The target was chosen before the MPI outcomes. Each recording is centered channelwise and divided by one common empirical RMS channel SD; this removes arbitrary overall amplitude without applying per-MPI normalization.
 
 **VAR.** With $F_i=\phi x_i+(g/2)(x_{i-1}+x_{i+1})$, $G=g$. We set $g=.2$. The historical generator rescaled its nominal coefficients to spectral radius .98; we preserve the resulting self coefficients .532, .196 and .108889. The newer self coefficients .2 and .7 remain literal. Two newer VAR classes differ only in coupling and become the same generator after matching; they are merged. In particular, self=.196 and self=.2 are intentionally retained near-duplicates, so their distinguishability should not be presumed.
