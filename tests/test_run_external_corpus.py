@@ -73,10 +73,11 @@ def test_run_transposes_source_and_writes_compatible_metadata(
     entry = load_inventory(config)[0]
     observed: dict[str, object] = {}
 
-    def fake_run_pyspi(data, *, config_path, normalise, n_jobs):
+    def fake_run_pyspi(data, *, config_path, normalise, n_jobs, random_seed):
         observed["shape"] = data.shape
         observed["normalise"] = normalise
         observed["n_jobs"] = n_jobs
+        assert random_seed == config.random_seed
         spi = SPIInfo(
             name="pearson", directed=False, labels=["undirected"],
             family="basic", module="pyspi.statistics.basic", class_name="PearsonR",
@@ -122,7 +123,7 @@ def test_runner_pins_and_restores_global_random_state(
     entry = load_inventory(config)[0]
     observed: list[tuple[float, float]] = []
 
-    def fake_run_pyspi(data, *, config_path, normalise, n_jobs):
+    def fake_run_pyspi(data, *, config_path, normalise, n_jobs, random_seed):
         observed.append((float(np.random.random()), random.random()))
         spi = SPIInfo(
             name="pearson",

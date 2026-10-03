@@ -470,6 +470,7 @@ def run_dataset(
             config_path=config.pyspi_config,
             normalise=config.normalise,
             n_jobs=n_jobs,
+            random_seed=config.random_seed if n_jobs == 1 else None,
         )
     finally:
         np.random.set_state(numpy_state)
@@ -478,6 +479,7 @@ def run_dataset(
     _atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
     meta = _metadata(config, entry, result, source, identity, elapsed)
     meta["job"]["n_jobs"] = n_jobs
+    meta["job"]["estimator_rng_policy"] = "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled"
     _atomic_json(dataset_dir / "meta.json", meta)
     error = completion_error(config, entry, identity=identity)
     if error is not None:

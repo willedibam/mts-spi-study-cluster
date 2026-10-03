@@ -1,0 +1,12 @@
+name: band-organization-fixed-strength-261003
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/band-organization-fixed-strength-261003/observations.npz
+  sha256: 7073830bde0d8a86808febcaa8071920d6e68bd8237ab5701b40db833e6f1909
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/band-organization-fixed-strength-261003/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003

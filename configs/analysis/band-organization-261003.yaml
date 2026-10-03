@@ -1,0 +1,30 @@
+status: exploratory_generator_pilot_declared_before_SPI_results
+purpose: distinguish_six_band_assignments_with_matched_population_strength_and_marginals
+generator: periodic_stationary_Gaussian_three_disjoint_frequency_bands
+M: 16
+T: 1000
+bands_cycles_per_sample: [[0.035, 0.095], [0.17, 0.23], [0.33, 0.39]]
+band_variances: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+strength: 0.55  # Fixed across every class and realization, before computing any MPI.
+classes: [ABC, ACB, BAC, BCA, CAB, CBA]
+partitions: four_groups_of_four; A_rows_B_columns_C_A_with_swaps_1_4_and_10_13
+independent_blocks: 24
+development_blocks: [0, 11]
+evaluation_blocks: [12, 23]
+seed: 261003
+noise: independent_across_classes_with_paired_sensor_permutations
+scope: functional_frequency_specific_coorganization_not_direct_causal_coupling
+population_equalities:
+  - identical_zero_lag_joint_Gaussian_law_within_block
+  - identical_single_channel_temporal_laws
+  - identical_individual_band_covariance_edge_multisets
+  - distinct_cross_band_covariance_correspondence
+unmatched: full_p90_marginal_distributions_not_assumed_equal
+direct_controls: raw_Pearson_summaries_single_channel_spectra_band_covariance_marginals_band_correspondence
+SPI_primary_comparison: per_SPI_means_versus_SPI_SPI
+SPI_secondary_controls: seven_summaries_normalized_shapes_validity
+readout: development_only_standard_scaling_clip5_PCA_up_to20_logistic_C1
+evaluation: balanced_accuracy_fixed_split_conditional_block_bootstrap
+embedding: illustrative_development_fit_PCA_UMAP_evaluation_transform_no_outcome_selection
+gate: validate_population_identities_then_direct_observed_contrast_before_any_p90
+compute_scope: two_record_smoke_then48_development_rows_then_remaining96_if_gate_passes
