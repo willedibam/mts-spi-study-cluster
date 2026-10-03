@@ -29,6 +29,19 @@ def extract():
         combined_manifest_sha256=sha(OUT/'combined-manifest.json'),features_sha256=sha(OUT/'features.npz')),indent=2)+'\n')
 
 
+def raw_diagnostics():
+    records=[]
+    for bank,group in rows().groupby('source_bank',sort=False):
+        with np.load(ROOT/f'data/representation/{bank}/observations.npz') as a:
+            for _,row in group.iterrows():
+                x=a[row.row_id];sv=np.linalg.svd(x,compute_uv=False);weights=sv**2/sum(sv**2)
+                lag={f'median_lag{k}':float(np.median([np.corrcoef(y[:-k],y[k:])[0,1] for y in x])) for k in (1,2)}
+                records.append(dict(row_id=row.row_id,label=row.label,block=row.block,
+                    mean_abs_Pearson=row.mean_abs_Pearson,min_scaled_channel_sd=np.std(x,axis=1).min(),
+                    effective_rank=np.exp(-np.sum(weights*np.log(weights+1e-300))),**lag))
+    pd.DataFrame(records).to_csv(OUT/'raw-diagnostics.csv',index=False)
+
+
 def per_class():
     pred=pd.read_csv(OUT/'predictions.csv');pred['correct']=pred.label==pred.predicted
     pred.groupby(['scope','label','method']).correct.mean().unstack('method').to_csv(OUT/'per-class.csv')
@@ -38,4 +51,4 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['extract','analyze']);args=p.parse_args()
     with threadpool_limits(limits=4):
         if args.stage=='extract':extract()
-        else:common.analyze(rows(),OUT);per_class()
+        else:common.analyze(rows(),OUT);per_class();raw_diagnostics()

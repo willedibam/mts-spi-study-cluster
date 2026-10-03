@@ -113,10 +113,11 @@ def plot_calibration(rows=None,out=OUT):
     fig,axes=plt.subplots(1,2,figsize=(max(9,len(labels)*.8),4.6),layout='constrained')
     for i,label in enumerate(labels):
         g=f[f.label==label]
-        axes[0].scatter(np.full(len(g),i),g.strength,s=13,alpha=.5)
-        axes[1].scatter(np.full(len(g),i),g.mean_abs_Pearson,s=13,alpha=.5)
+        color=plt.colormaps['tab20'].colors[i]
+        axes[0].scatter(np.full(len(g),i),g.strength,s=13,alpha=.5,color=color)
+        axes[1].scatter(np.full(len(g),i),g.mean_abs_Pearson,s=13,alpha=.5,color=color)
     axes[0].axhspan(.198,.202,color='.8',alpha=.25);axes[0].axhline(.2,color='.4',ls=':',lw=1)
-    axes[0].set(ylabel='Mean total cross-channel Jacobian gain',title='Native-update gain (noise controls remain zero)')
+    axes[0].set(ylabel='Mean total cross-channel Jacobian gain',title='Native-update gain'+(' (noise controls remain zero)' if f.family.eq('noise').any() else ''))
     axes[1].set(ylabel='Mean absolute Pearson correlation',title='Measured dependence need not match')
     for ax in axes:ax.set_xticks(range(len(labels)),labels,rotation=45,ha='right')
     return save(fig,OUT/'figures','calibration')

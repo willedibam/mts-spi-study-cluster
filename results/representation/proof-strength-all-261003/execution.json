@@ -1,0 +1,15 @@
+{
+  "stage": "two-record new-family smoke running",
+  "source_commit": "f5ee54c",
+  "readout_commit": "634ce00",
+  "pyspi_commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
+  "jobs": {
+    "smoke": "180386748.gadi-pbs"
+  },
+  "expected_additional_records": 216,
+  "expected_combined_records": 384,
+  "remote_data": "/scratch/ql44/we2614/mts-spi-study/representation/synthetic/proof-strength-all-261003",
+  "remote_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-strength-f5ee54c",
+  "heartbeat_id": "proof-coupling-baseline-follow-up",
+  "next": "Verify Kuramoto/wave smoke, then representative 48-record farm before remaining additional inputs."
+}

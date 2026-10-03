@@ -1,0 +1,56 @@
+[
+  {
+    "label": "VAR-legacy-0.95-0.4",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "VAR-legacy-0.2-0.4",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "VAR-legacy-0.2-0.8",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "CML-1.85",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "Kuramoto-fast",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "Kuramoto-slow",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "Gaussian-noise",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "Cauchy-noise",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  },
+  {
+    "label": "Wave",
+    "native_replay": "exact",
+    "observation_replay": "exact",
+    "gain_replay": "exact"
+  }
+]
