@@ -12,7 +12,6 @@ from threadpoolctl import threadpool_limits
 from scripts.build_band_swap import DATA,OUT
 from scripts.spi_baseline_exploration import project_features,sha
 from scripts.analyze_native_coupling import extract as extract_common
-from scripts.band_organization_experiment import BANDS
 from src.spi_spi_contract import build_unified_feature_values
 from src.corpus_geometry import fit_geometry_transform
 from src.utils import slugify
@@ -83,11 +82,33 @@ def analyze(stage,direct_only=False):
         boot=g[rng.integers(len(g),size=(5000,len(g)))].mean(axis=1);low,high=np.quantile(boot,[.025,.975])
         metrics.append(dict(method=method,n=len(f),BA=balanced_accuracy_score(f.label,f.predicted),low=low,high=high,chance=.5))
     prefix='direct-' if direct_only else ''
-    pd.DataFrame(metrics).to_csv(target/(prefix+'metrics.csv'),index=False)
-    pd.concat(predictions).to_csv(target/(prefix+'predictions.csv'),index=False)
+    scores=pd.DataFrame(metrics)
+    scores.to_csv(target/(prefix+'metrics.csv'),index=False)
+    predictions=pd.concat(predictions)
+    predictions.to_csv(target/(prefix+'predictions.csv'),index=False)
+    pivot=predictions.pivot(index=['row_id','block'],columns='method',values='correct').astype(float)
+    reference='band_z' if direct_only else 'z';paired=[]
+    for comparator in pivot.columns.drop(reference):
+        delta=(pivot[reference]-pivot[comparator]).groupby('block').mean().to_numpy()
+        rng=np.random.default_rng(261003)
+        boot=delta[rng.integers(len(delta),size=(5000,len(delta)))].mean(axis=1)
+        low,high=np.quantile(boot,[.025,.975])
+        paired.append(dict(comparison=reference+' - '+comparator,difference=delta.mean(),low=low,high=high))
+    pd.DataFrame(paired).to_csv(target/(prefix+'paired.csv'),index=False)
     np.savez_compressed(target/(prefix+'projections.npz'),**{k+s:v for k,pair in projections.items() for s,v in zip(('_train','_test'),pair)})
-    (target/(prefix+'analysis.json')).write_text(json.dumps(dict(stage=stage,rows=rows.row_id.tolist(),diagnostics=diagnostics,
-        code_sha256=sha(Path(__file__)),direct_features_sha256=sha(DATA/'direct-features.npz')),indent=2)+'\n')
+    provenance=dict(stage=stage,rows=rows.row_id.tolist(),diagnostics=diagnostics,
+        code_sha256=sha(Path(__file__)),direct_features_sha256=sha(DATA/'direct-features.npz'),
+        uncertainty='Conditional paired block bootstrap; fitted models fixed; no equivalence claim')
+    if not direct_only:
+        provenance['features_sha256']=sha(target/'features.npz')
+        provenance['ablation_sha256']=sha(target/'ablation.npz')
+        if stage=='development':
+            ba=scores.set_index('method').BA
+            gate=dict(mean_readouts_weak=bool(ba[['mean','mean_full','mean_RBF','mean_trees']].max()<=.65),
+                z_detectable=bool(ba['z']>=.80),validity_weak=bool(ba['z_validity']<=.65))
+            provenance['development_goal']=dict(**gate,all_pass=all(gate.values()),
+                qualification='Exploratory small-validation gate, not a proof of marginal equality; inspect before held release')
+    (target/(prefix+'analysis.json')).write_text(json.dumps(provenance,indent=2)+'\n')
     print(pd.DataFrame(metrics).round(4).to_string(index=False))
 
 
