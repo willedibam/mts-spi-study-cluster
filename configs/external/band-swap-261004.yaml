@@ -1,0 +1,12 @@
+name: band-swap-261004
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/band-swap-261004/observations.npz
+  sha256: a93621453dabfd83e6b0edc13173646eadd60d53ca105364007cd8c936ea6ee0
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/band-swap-261004/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003

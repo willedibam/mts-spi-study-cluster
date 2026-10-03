@@ -20,9 +20,9 @@ from src.utils import slugify
 from scripts.refresh_case_figures import style,save
 
 
-def extract(data=DATA,out=OUT,corpus="native-gain-261003"):
+def extract(data=DATA,out=OUT,corpus="native-gain-261003",row_limit=None):
     DATA,OUT=data,out
-    manifest=json.loads((DATA/'manifest.json').read_text());rows=manifest['rows']
+    manifest=json.loads((DATA/'manifest.json').read_text());rows=manifest['rows'][:row_limit]
     means,distributions,zs,validity,profile_validity,sources=[],[],[],[],[],[];order=None
     with np.load(DATA/'observations.npz') as raw:
         assert sha(DATA/'observations.npz')==manifest['archive_sha256']
