@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import balanced_accuracy_score,roc_auc_score
 from sklearn.exceptions import ConvergenceWarning
 from threadpoolctl import threadpool_limits
 from scripts.build_band_swap import DATA,OUT
@@ -48,6 +48,22 @@ def fitted_logistic(x,y):
     raise RuntimeError('Logistic fit did not converge')
 
 
+def diagnostic_features(bank,rows,train,target):
+    """Rank on training data only; validation AUCs explain, never select, readouts."""
+    with np.load(target/'features.npz') as archive:names=archive['spi_order']
+    pair_names=np.array([f'{names[a]} | {names[b]}' for a,b in zip(*np.triu_indices(len(names),1))])
+    y=rows.label.eq('CBA').to_numpy();records=[]
+    for method,labels in [('mean',names),('z',pair_names)]:
+        transform=fit_geometry_transform(bank[method][train],scaling='standard',minimum_valid_fraction=.95)
+        x=np.clip(transform.transform(bank[method]),-5,5)
+        effect=x[train & y].mean(axis=0)-x[train & ~y].mean(axis=0)
+        order=np.argsort(-np.abs(effect))[:10]
+        for rank,j in enumerate(order,1):
+            records.append(dict(method=method,training_rank=rank,feature=labels[transform.keep_indices[j]],
+                training_standardized_difference=effect[j],evaluation_AUC=roc_auc_score(y[~train],x[~train,j]*np.sign(effect[j]))))
+    pd.DataFrame(records).to_csv(target/'diagnostic-features.csv',index=False)
+
+
 def analyze(stage,direct_only=False):
     target=OUT/stage;target.mkdir(parents=True,exist_ok=True);rows=get_rows(stage)
     train=rows.block.lt(24 if stage=='development' else 32).to_numpy();test=~train
@@ -61,6 +77,7 @@ def analyze(stage,direct_only=False):
             np.testing.assert_array_equal(a['row_id'],rows.row_id)
             for key in ['mean','distribution','z','z_validity']:bank[key]=a[key]
         with np.load(target/'ablation.npz') as a:bank['z_shuffled']=a['z_shuffled']
+        diagnostic_features(bank,rows,train,target)
     projections={};readouts={};diagnostics={}
     for name,x in bank.items():
         try:
