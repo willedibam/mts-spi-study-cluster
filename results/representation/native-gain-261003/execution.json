@@ -1,5 +1,5 @@
 {
-  "stage": "120-record production submitted",
+  "stage": "all168 complete audited and analyzed",
   "source_commit": "2b787db",
   "readout_commit": "2b787db",
   "pyspi_commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
@@ -22,7 +22,7 @@
   "expected_records": 168,
   "calibration_tolerance_passed": 168,
   "native_replays_checked": 7,
-  "next": "Verify48-record gate, then run indices49\u2013168 and retrieve/audit before analysis.",
+  "next": "Review executed pilot notebook; finish all-class extension before subset selection.",
   "alternative_band_p90_submitted": false,
   "primary_metric": "mean total off-diagonal Jacobian gain .20 +/- .002",
   "production_source_commit": "3a2f21c",
@@ -31,5 +31,16 @@
     "wall_seconds": 1092,
     "peak_memory_kb": 52854396,
     "records": 48
+  },
+  "production": {
+    "exit_status": 0,
+    "wall_seconds": 626,
+    "peak_memory_kb": 116965556,
+    "records": 120
+  },
+  "analysis": {
+    "mean_accuracy": 0.9523809523809523,
+    "z_accuracy": 0.9880952380952381,
+    "interpretation": "means remain highly informative; no clean marginal-noise separation"
   }
 }

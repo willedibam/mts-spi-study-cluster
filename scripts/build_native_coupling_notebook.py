@@ -19,6 +19,7 @@ while not (ROOT/'pyproject.toml').exists() and ROOT!=ROOT.parent: ROOT=ROOT.pare
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
 import numpy as np
 import pandas as pd
+%matplotlib inline
 import matplotlib.pyplot as plt
 from IPython.display import display
 from scripts.calibrate_native_coupling import DATA,OUT
@@ -52,7 +53,7 @@ These five conditions share a generator family and the calibrated coupling-effec
 
 Seven per-SPI summaries (mean, SD, five quantiles) retain additional marginal information. The validity-only control checks whether patterns of undefined statistics classify the conditions. The strength-only control checks residual information in the small allowed calibration error. Confidence intervals and paired differences resample the 12 held seed groups, retaining all classes in each draw; they condition on the fitted models and do not account for training uncertainty or exploratory choices.
 
-Matching a generator-level coupling contribution does not imply equal observed Pearson correlation, equal spectra, or equal means of every SPI. If means still classify well, that is an informative negative result for the proposed separation: marginal SPI responses also describe character under this strength convention. A stronger z result would instead establish an advantage for the specified representation/readout on this controlled comparison, not universal strength invariance.'''),
+Matching a generator-level coupling contribution does not imply equal observed Pearson correlation, equal spectra, or equal means of every SPI. If means still classify well, that is an informative negative result for the proposed separation: marginal SPI responses also describe character under this strength convention. The observed all-seven accuracies are 95.2% for means, 96.4% for means without PCA, and 98.8% for z. The paired z-minus-mean difference is 3.6 percentage points, with a held-block bootstrap interval of 0 to 9.5 points. Thus this pilot does **not** yield unstructured marginals and structured z; the point-estimate gain is modest and uncertain. A stronger z result would instead establish an advantage for the specified representation/readout on this controlled comparison, not universal strength invariance.'''),
 ('code',"display(metrics[~metrics.method.isin(['mean','z','mean_without_PCA'])].round(3))\ndisplay(pd.DataFrame(json.loads((OUT/'analysis.json').read_text())['diagnostics']).T.round(3))"),
 ('md',r'''## Separate cached diagnostic
 

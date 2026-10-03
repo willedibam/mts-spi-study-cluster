@@ -16,6 +16,7 @@ while not (ROOT/'pyproject.toml').exists() and ROOT!=ROOT.parent: ROOT=ROOT.pare
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 import pandas as pd
 import numpy as np
+%matplotlib inline
 import matplotlib.pyplot as plt
 from IPython.display import display
 from scripts.calibrate_all_proof_coupling import OUT

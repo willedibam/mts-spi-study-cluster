@@ -1,0 +1,42 @@
+{
+  "diagnostics": {
+    "mean": {
+      "features": 218,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.13761467889908258,
+      "held_mean_selected_missing_fraction": 0.0019659239842726084,
+      "explained_variance": 0.9915135440446037
+    },
+    "distribution": {
+      "features": 1567,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.13401403956604976,
+      "held_mean_selected_missing_fraction": 0.0019144862795149968,
+      "explained_variance": 0.9759506111609902
+    },
+    "z": {
+      "features": 21856,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.2793283308931186,
+      "held_mean_selected_missing_fraction": 0.003987136582304957,
+      "explained_variance": 0.8682578159564915
+    },
+    "validity": {
+      "features": 89,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 0.9983191172187184
+    },
+    "strength_only": {
+      "features": 1,
+      "components": 1,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 1.0
+    }
+  },
+  "code_sha256": "e2a2061601bcfe049e0a7f14cd1887b497bc7c51c92cdfa1d83dea6260dc4c50",
+  "features_sha256": "49830d734f18cb6bf65b736ae72556438124d664a529dd2c14d12e2533e38175",
+  "status": "exploratory 7-condition generator-level gain comparison"
+}

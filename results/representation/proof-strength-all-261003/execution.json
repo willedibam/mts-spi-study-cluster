@@ -1,15 +1,23 @@
 {
-  "stage": "two-record new-family smoke running",
+  "stage": "48-record representative gate submitted",
   "source_commit": "f5ee54c",
   "readout_commit": "634ce00",
   "pyspi_commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
   "jobs": {
-    "smoke": "180386748.gadi-pbs"
+    "smoke": "180386748.gadi-pbs",
+    "gate": "180387271.gadi-pbs"
   },
   "expected_additional_records": 216,
   "expected_combined_records": 384,
   "remote_data": "/scratch/ql44/we2614/mts-spi-study/representation/synthetic/proof-strength-all-261003",
   "remote_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-strength-f5ee54c",
   "heartbeat_id": "proof-coupling-baseline-follow-up",
-  "next": "Verify Kuramoto/wave smoke, then representative 48-record farm before remaining additional inputs."
+  "next": "Verify48-record gate then run49-216, retrieve, audit and analyze all384.",
+  "smoke": {
+    "checked": 2,
+    "complete": 2,
+    "exit_status": 0,
+    "wall_seconds": 493,
+    "peak_memory_kb": 4933092
+  }
 }
