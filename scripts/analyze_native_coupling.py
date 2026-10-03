@@ -2,10 +2,12 @@
 from pathlib import Path
 import argparse
 import json
+import warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.decomposition import PCA
 from threadpoolctl import threadpool_limits
@@ -28,6 +30,7 @@ def extract(data=DATA,out=OUT,corpus="native-gain-261003"):
             folder=DATA/'mpis'/corpus/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}"
             meta=json.loads((folder/'meta.json').read_text());p=folder/'spi_mpis.npz'
             assert meta['status']=='complete' and meta['dataset_name']==r['row_id']
+            assert (meta['M'],meta['T'])==(r['M'],r['T'])
             assert meta['source']['archive_sha256']==manifest['archive_sha256']
             assert meta['source']['member_sha256']==_array_sha256(raw[r['row_id']])
             assert meta['pyspi']['config_sha256']==sha(ROOT/'configs/pyspi/benchmarked_p90.yaml')
@@ -35,7 +38,10 @@ def extract(data=DATA,out=OUT,corpus="native-gain-261003"):
             names=[x['name'] for x in meta['pyspi']['spis']]
             if order is None:order=names
             assert order==names and len(names)==289
-            with np.load(p) as a:mpis={k:a[k] for k in order}
+            with np.load(p) as a:
+                assert set(a.files)==set(order)
+                mpis={k:a[k] for k in order}
+            assert all(v.shape==(r['M'],r['M']) for v in mpis.values())
             marginal=summarize(mpis,order)
             z,_,invalid=build_unified_feature_values(mpis,order)
             means.append(marginal[:,0]);distributions.append(marginal.reshape(-1));zs.append(z)
@@ -79,11 +85,22 @@ def analyze(rows=None,out=OUT):
     tr=fit_geometry_transform(bank['mean'][dev],scaling='standard',minimum_valid_fraction=.95)
     full=np.clip(tr.transform(bank['mean']),-5,5)
     projections['mean_without_PCA']=(full[dev],full[held])
-    metrics,predictions=[],[]
+    metrics,predictions,optimizer=[],[],[]
     for name,(d,h) in projections.items():
         for scope,mask in scopes.items():
             a,b=mask[dev],mask[held]
-            model=LogisticRegression(C=1,max_iter=3000).fit(d[a],rows.loc[dev,'label'].to_numpy()[a])
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter('always',ConvergenceWarning)
+                model=LogisticRegression(C=1,max_iter=3000).fit(d[a],rows.loc[dev,'label'].to_numpy()[a])
+            retry=any(issubclass(w.category,ConvergenceWarning) for w in caught)
+            if retry:
+                print(f'Convergence repair: {name}/{scope}; same model, higher iteration cap',flush=True)
+                with warnings.catch_warnings(record=True) as retried:
+                    warnings.simplefilter('always',ConvergenceWarning)
+                    model=LogisticRegression(C=1,max_iter=20000).fit(d[a],rows.loc[dev,'label'].to_numpy()[a])
+                assert not any(issubclass(w.category,ConvergenceWarning) for w in retried),(name,scope,'unconverged')
+            optimizer.append(dict(method=name,scope=scope,iterations=int(model.n_iter_.max()),
+                                  iteration_cap=model.max_iter,retried=retry,converged=True))
             pred=model.predict(h[b]);f=rows.loc[held].iloc[np.flatnonzero(b)][['row_id','label','block']].copy()
             f['predicted']=pred;f['correct']=f.label==pred;f['method']=name;f['scope']=scope
             predictions.append(f)
@@ -93,6 +110,7 @@ def analyze(rows=None,out=OUT):
             metrics.append(dict(method=name,scope=scope,n=len(f),balanced_accuracy=balanced_accuracy_score(f.label,pred),
                                 low=lo,high=hi,chance=1/f.label.nunique()))
     pd.DataFrame(metrics).to_csv(OUT/'metrics.csv',index=False)
+    pd.DataFrame(optimizer).to_csv(OUT/'optimizer.csv',index=False)
     predictions=pd.concat(predictions);predictions.to_csv(OUT/'predictions.csv',index=False)
     paired=[]
     for scope,mask in scopes.items():

@@ -1,0 +1,8 @@
+{
+  "feature_sources": {
+    "results/representation/native-gain-261003/features.npz": "e7e2253d013946454fd614ae054ac5075576b22bc2b4014406ddd2b5dfa1ac41",
+    "results/representation/proof-strength-all-261003/extra/features.npz": "fc621e4182ffd176e2bdf0103dbacf4fdc08adcc0067a3671fa58d2b528e0174"
+  },
+  "combined_manifest_sha256": "fa15e5348f9dde0526893b53f6ac71ce124e113f62a38fade95dbcea075ef949",
+  "features_sha256": "bc969b233b8e33db3548843c06a26c9edb9ff0f6274215020124c212d0e469df"
+}

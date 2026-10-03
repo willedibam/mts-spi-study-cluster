@@ -1,5 +1,5 @@
 {
-  "stage": "final149+19 production jobs submitted",
+  "stage": "complete: all384 inputs audited, analyzed and notebook executed",
   "source_commit": "f5ee54c",
   "readout_commit": "634ce00",
   "pyspi_commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
@@ -14,7 +14,7 @@
   "remote_data": "/scratch/ql44/we2614/mts-spi-study/representation/synthetic/proof-strength-all-261003",
   "remote_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-strength-f5ee54c",
   "heartbeat_id": "proof-coupling-baseline-follow-up",
-  "next": "Verify both production jobs, retrieve216 added MPIs, audit and analyze all384 records, execute all-class notebook, then pause heartbeat.",
+  "next": "No remaining computation; retain all classes until user chooses a scientifically motivated subset.",
   "smoke": {
     "checked": 2,
     "complete": 2,
@@ -32,5 +32,43 @@
   "production_partition": {
     "other": 149,
     "slow_Kuramoto": 19
-  }
+  },
+  "completed_additional_records": 216,
+  "completed_combined_records": 384,
+  "notebook": "notebooks/embeddings/spi_all_proof_strength_control_261003.ipynb",
+  "production_other": {
+    "exit_status": 0,
+    "checked": 149,
+    "complete": 149,
+    "wall_seconds": 640,
+    "peak_memory_kb": 168105452
+  },
+  "production_slow": {
+    "exit_status": 0,
+    "checked": 19,
+    "complete": 19,
+    "wall_seconds": 866,
+    "peak_memory_kb": 21937860
+  },
+  "pyspi_end_check": {
+    "commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
+    "clean": true
+  },
+  "result": {
+    "all16_mean": 0.8958333333333334,
+    "all16_z": 0.8958333333333334,
+    "all16_mean_without_PCA": 0.90625,
+    "paired_z_minus_mean_ci": [
+      -0.036458333333333336,
+      0.036458333333333336
+    ],
+    "interpretation": "No marginal-noise separation or demonstrated z advantage under this gain convention."
+  },
+  "validation": {
+    "focused_tests": 10,
+    "optimizer_fits_converged": 32,
+    "notebook_error_outputs": 0,
+    "notebook_embedded_figures": 3
+  },
+  "heartbeat_status": "PAUSED after completion"
 }

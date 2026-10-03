@@ -1,0 +1,56 @@
+{
+  "diagnostics": {
+    "mean": {
+      "features": 226,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.13274336283185842,
+      "held_mean_selected_missing_fraction": 0.0019819321533923306,
+      "explained_variance": 0.9820902810701527
+    },
+    "distribution": {
+      "features": 1627,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.1290719114935464,
+      "held_mean_selected_missing_fraction": 0.0019271153452161442,
+      "explained_variance": 0.9630335235092806
+    },
+    "z": {
+      "features": 20704,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.2802840030911901,
+      "held_mean_selected_missing_fraction": 0.009735186034904688,
+      "explained_variance": 0.7747203108777319
+    },
+    "validity": {
+      "features": 89,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 0.9958334390731794
+    },
+    "profile_validity": {
+      "features": 147,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 0.9619210727120483
+    },
+    "z_validity": {
+      "features": 31434,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 0.9577627873274563
+    },
+    "strength_only": {
+      "features": 1,
+      "components": 1,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 1.0
+    }
+  },
+  "code_sha256": "641ca883ffca65b0ebcaabd521d36b2922ca257af1691c7f2f9762e3edb6b5b2",
+  "features_sha256": "bc969b233b8e33db3548843c06a26c9edb9ff0f6274215020124c212d0e469df",
+  "status": "exploratory 16-condition generator-level gain comparison"
+}
