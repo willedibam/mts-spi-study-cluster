@@ -24,3 +24,16 @@ def test_factor_generator_is_reproducible_and_finite():
     a,m=simulate(CLASSES[0],3);b,n=simulate(CLASSES[0],3)
     np.testing.assert_array_equal(a,b)
     assert m==n and a.shape==(1000,16) and np.isfinite(a).all()
+
+
+def test_selected_dominant_factor_matches_magnitudes_and_regularized_means():
+    from sklearn.covariance import graphical_lasso
+    mask=~np.eye(16,dtype=bool)
+    a,b=[covariance(label,.25,[.9,.075,.025]) for label in CLASSES]
+    np.testing.assert_allclose(np.sort(np.abs(a[mask])),np.sort(np.abs(b[mask])))
+    np.testing.assert_allclose(np.abs(a-np.eye(16)).sum(axis=1),3.35)
+    np.testing.assert_allclose(np.abs(b-np.eye(16)).sum(axis=1),3.35)
+    for alpha in [.01,.1]:
+        first=graphical_lasso(a,alpha=alpha);second=graphical_lasso(b,alpha=alpha)
+        for x,y in zip(first,second):np.testing.assert_allclose(x[mask].mean(),y[mask].mean(),atol=1e-6)
+    assert abs(np.corrcoef(a[mask],a[mask]**2)[0,1]-np.corrcoef(b[mask],b[mask]**2)[0,1])>.08

@@ -1,0 +1,12 @@
+name: factor-parity-dominant-261004
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/factor-parity-dominant-261004/observations.npz
+  sha256: 3f7b1a8abbaf4fb6e09ca276a435688ed73eb19735438d981770f3e2f2fb326a
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/factor-parity-dominant-261004/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003
