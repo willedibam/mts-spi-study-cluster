@@ -63,7 +63,16 @@ def analyze(stage,direct_only=False):
         with np.load(target/'ablation.npz') as a:bank['z_shuffled']=a['z_shuffled']
     projections={};readouts={};diagnostics={}
     for name,x in bank.items():
-        projection,d,h=project_features(x[train],x[test],dimensions=20)
+        try:
+            projection,d,h=project_features(x[train],x[test],dimensions=20)
+        except RuntimeError as error:
+            if str(error)!='no features pass the variance gate':raise
+            # A constant validity mask contains no training information. Its
+            # control remains an intercept-only readout, without invented noise.
+            d,h=np.zeros((train.sum(),1)),np.zeros((test.sum(),1))
+            projections[name]=(d,h);readouts[name]=(d,h,'logistic')
+            diagnostics[name]=dict(selected_features=0,components=0,explained_variance=None,constant_control=True)
+            continue
         projections[name]=(d,h);readouts[name]=(d,h,'logistic')
         diagnostics[name]=dict(selected_features=len(projection.transform.keep_indices),components=d.shape[1],
             explained_variance=float(projection.pca.explained_variance_ratio_.sum()))
