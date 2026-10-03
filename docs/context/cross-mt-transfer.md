@@ -2,6 +2,10 @@
 
 Workstream updated 2026-10-03. The historical Pearson cross-size protocol remains frozen; the separate generator-strength experiment is exploratory and complete.
 
+## Direct marginal-matching follow-up, 2026-10-03
+
+Active user request: construct MTS so raw SPI marginals are near-noise while SPI–SPI distinguishes dependence character. Matching native Jacobian gain was insufficient; the preceding negative evidence stays intact. Primary assumption is the full 289-SPI mean vector, with a focused catalogue as supporting evidence; an optional clarification is pending. First candidate reuses the previously frozen six-band-organization bank (144 recordings, no p90 outputs yet). Its three band-covariance SPIs have identical individual MPI marginal laws by channel-permutation symmetry and independent band draws, while cross-band correspondence differs; full-catalogue marginal equality is explicitly unproved. No per-MPI normalization creates the primary result. Protocol `configs/analysis/band-marginal-validation-261003.yaml` freezes development blocks0–7/8–11, reserves12–23, includes stronger mean classifiers and z-validity controls, and forbids embedding/seed selection to obtain a desired picture. Gadi allowance rechecked:72.92KSU available, Scratch310GiB/168.52K inodes. Band source/archive identities and three focused generator tests pass. Resource smoke/development computation pending. The preceding user instruction to avoid notebook changes applied only to the chat-preview prompt; original notebooks remain untouched regardless.
+
 ## Strength-controlled baseline experiment, 2026-10-03
 
 **Complete; no subset selected.** The user requested generator-level coupling matching before SPIs, raw off-diagonal MPI means as the primary comparator, and then coverage of every existing proof class. The executed lean report is [spi_all_proof_strength_control_261003.ipynb](../../notebooks/embeddings/spi_all_proof_strength_control_261003.ipynb); the earlier seven-condition pilot is [spi_native_strength_control_261003.ipynb](../../notebooks/embeddings/spi_native_strength_control_261003.ipynb). User-edited original notebooks were preserved.
