@@ -28,6 +28,20 @@
       "held_mean_selected_missing_fraction": 0.0,
       "explained_variance": 0.9983191172187184
     },
+    "profile_validity": {
+      "features": 114,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 0.9921457466874366
+    },
+    "z_validity": {
+      "features": 25669,
+      "components": 20,
+      "held_max_selected_missing_fraction": 0.0,
+      "held_mean_selected_missing_fraction": 0.0,
+      "explained_variance": 0.9900324675013855
+    },
     "strength_only": {
       "features": 1,
       "components": 1,
@@ -36,7 +50,7 @@
       "explained_variance": 1.0
     }
   },
-  "code_sha256": "e2a2061601bcfe049e0a7f14cd1887b497bc7c51c92cdfa1d83dea6260dc4c50",
-  "features_sha256": "49830d734f18cb6bf65b736ae72556438124d664a529dd2c14d12e2533e38175",
+  "code_sha256": "715ec714669135fd21cddec0c43f3cc1c73e3b0e0baea9e7ee69c5c9ebe207ec",
+  "features_sha256": "e7e2253d013946454fd614ae054ac5075576b22bc2b4014406ddd2b5dfa1ac41",
   "status": "exploratory 7-condition generator-level gain comparison"
 }

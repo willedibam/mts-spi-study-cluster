@@ -21,7 +21,7 @@ from scripts.refresh_case_figures import style,save
 def extract(data=DATA,out=OUT,corpus="native-gain-261003"):
     DATA,OUT=data,out
     manifest=json.loads((DATA/'manifest.json').read_text());rows=manifest['rows']
-    means,distributions,zs,validity,sources=[],[],[],[],[];order=None
+    means,distributions,zs,validity,profile_validity,sources=[],[],[],[],[],[];order=None
     with np.load(DATA/'observations.npz') as raw:
         assert sha(DATA/'observations.npz')==manifest['archive_sha256']
         for r in rows:
@@ -37,12 +37,13 @@ def extract(data=DATA,out=OUT,corpus="native-gain-261003"):
             assert order==names and len(names)==289
             with np.load(p) as a:mpis={k:a[k] for k in order}
             marginal=summarize(mpis,order)
-            z,_,_=build_unified_feature_values(mpis,order)
+            z,_,invalid=build_unified_feature_values(mpis,order)
             means.append(marginal[:,0]);distributions.append(marginal.reshape(-1));zs.append(z)
             validity.append(np.isfinite(marginal[:,0]).astype(float))
+            profile_validity.append(np.array([k not in invalid for k in order],float))
             sources.append(dict(row_id=r['row_id'],mpi_sha256=sha(p),meta_sha256=sha(folder/'meta.json'),
                                 compute_seconds=meta['job']['compute_seconds']))
-    np.savez_compressed(OUT/'features.npz',mean=means,distribution=distributions,z=zs,validity=validity,
+    np.savez_compressed(OUT/'features.npz',mean=means,distribution=distributions,z=zs,validity=validity,profile_validity=profile_validity,z_validity=np.isfinite(zs).astype(np.uint8),
                         row_id=np.array([r['row_id'] for r in rows]),spi_order=np.array(order))
     (OUT/'sources.json').write_text(json.dumps(dict(sources=sources,manifest_sha256=sha(DATA/'manifest.json'),
         features_sha256=sha(OUT/'features.npz'),code_sha256=sha(Path(__file__))),indent=2)+'\n')
@@ -65,7 +66,7 @@ def analyze(rows=None,out=OUT):
     assert not set(rows.block[dev])&set(rows.block[held])
     with np.load(OUT/'features.npz') as a:
         np.testing.assert_array_equal(rows.row_id,a['row_id'])
-        bank={k:a[k] for k in ['mean','distribution','z','validity']}
+        bank={k:a[k] for k in ['mean','distribution','z','validity','profile_validity','z_validity']}
     bank['strength_only']=rows.strength.to_numpy()[:,None]
     projections,diagnostics={},{}
     for name,x in bank.items():

@@ -19,7 +19,7 @@ def extract():
     for path in paths:
         with np.load(path) as a:banks.append({k:a[k] for k in a.files})
     np.testing.assert_array_equal(banks[0]['spi_order'],banks[1]['spi_order'])
-    features={k:np.concatenate([a[k] for a in banks]) for k in ['mean','distribution','z','validity','row_id']}
+    features={k:np.concatenate([a[k] for a in banks]) for k in ['mean','distribution','z','validity','profile_validity','z_validity','row_id']}
     np.testing.assert_array_equal(features['row_id'],rows().row_id)
     np.savez_compressed(OUT/'features.npz',**features,spi_order=banks[0]['spi_order'])
     manifest=json.loads((OUT/'combined-manifest.json').read_text())
