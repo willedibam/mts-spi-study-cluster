@@ -1,6 +1,7 @@
 """Lean report for the selected Gaussian factor contrast, from audited caches."""
 from pathlib import Path
 import argparse
+import json
 import pandas as pd
 import nbformat as nbf
 import yaml
@@ -9,7 +10,52 @@ ROOT=Path(__file__).resolve().parents[1]
 RUN='factor-parity-dominant-261004'
 
 
+def build_resource_report(run):
+    """Report a failed resource gate without inventing classification outcomes."""
+    out=ROOT/'results/representation'/run
+    receipt=json.loads((out/'execution.json').read_text())
+    assert receipt['smoke_outcome']['complete']==0
+    cells=[nbf.v4.new_markdown_cell(r'''# Longer recordings: full-catalogue evaluation incomplete
+
+The target is weak raw per-SPI means with discernible SPI–SPI structure across the full 289-SPI catalogue. The $T=4000$ follow-up has **no full-catalogue result**: both development smoke recordings exceeded the 110-minute task limit before writing complete outputs. Neither development classification nor held evaluation was run. This is a computational limit, not evidence for or against the scientific hypothesis.
+
+The completed $T=1000$ experiment remains the strongest relevant evidence: held centered SPI–SPI accuracy was 68.8%, versus 45.3–56.3% across four mean readouts. Its 12.5-percentage-point advantage over the primary mean baseline had a paired conditional 95% interval of −3.1 to 28.1 points. The intended strong separation was not established, and its fixed two-dimensional embeddings were largely mixed. See [the executed T1000 report](spi_factor_parity_261004.ipynb).'''),
+    nbf.v4.new_code_cell(f'''from pathlib import Path
+import json
+import pandas as pd
+from IPython.display import display
+ROOT=Path.cwd().resolve()
+while not (ROOT/'pyproject.toml').exists() and ROOT!=ROOT.parent: ROOT=ROOT.parent
+RUN={run!r}
+OUT=ROOT/'results/representation'/RUN
+receipt=json.loads((OUT/'execution.json').read_text())
+display(pd.DataFrame([receipt['smoke_outcome']])[['attempted','complete','task_timeout_seconds','walltime','cpu_time','peak_memory_kb','exit_status']])'''),
+    nbf.v4.new_markdown_cell(r'''## What remains fixed
+
+Each recording has 16 Gaussian channels with independent observations and covariance $C=(1-\lambda)I+\lambda\sum_{a=1}^3 w_a v_av_a^\top$, with $\lambda=.25$ and $w=(.9,.075,.025)$. Balanced orthogonal signs use Walsh masks $(1,2,3)$ for linked signs and $(1,2,4)$ for unlinked signs. The classes share signed mean covariance, absolute covariance distributions, per-channel absolute covariance sums, eigenvalues and nonzero-lag population covariances. Their **signed distributions differ**. These are shared-input functional dependencies, not direct causal channel couplings or a linear-versus-nonlinear contrast.
+
+This follow-up changes recording length from 1,000 to 4,000 and uses fresh RNG blocks: 64–87 train, 88–95 validate and 96–127 remain held. The covariance and centered PCA20/linear readout were fixed before its full-catalogue computation. The prior held seeds are not reused. Raw inputs and frozen analysis-source hashes were reverified after the timeout.
+
+The choice of length used a cheap, development-only scout. Its results below concern a focused catalogue and cannot substitute for the full-289 comparison. At $T=4000$, raw covariance and Pearson distribution summaries also scored .875; information is not absent from all marginal descriptions.'''),
+    nbf.v4.new_code_cell("display(pd.read_csv(ROOT/'results/representation/factor-length-scout-261004/results.csv').pivot(index='T',columns='method',values='BA'))"),
+    nbf.v4.new_markdown_cell(r'''## Resource gate and decision
+
+Gadi job `180432847` requested two CPUs and 24 GB, with a 110-minute timeout per recording. Both tasks timed out; the job ended after 1:50:49 with 3:37:41 total CPU time and 4,677,736 KB peak memory. The log does not reveal which estimator was running at termination, so no specific bottleneck is attributed. There are zero complete SPI archives and no estimator-validity audit is possible for these inputs.
+
+At the failure review, less than 3 hours 35 minutes remained before the authorized 22:07 UTC stop. The observed lower bound of 110 minutes per recording leaves insufficient time for sequential development and held stages, even before node validation, queueing and analysis. No larger batch or held job was submitted. Missing outputs are not converted to zeros, and no reduced-catalogue result is presented as full-catalogue evidence.
+
+Continuation needs a separately authorized compute window. First obtain per-estimator timing on development input while preserving estimator definitions and RNG policy, then complete a bounded smoke and representative node test. Release held data only if the frozen development gate passes. The immutable bank and prospective protocol remain available; there has been no held-out selection.
+
+The failed all-proof gain-matching and band-swap reports remain intact. Overall, the work establishes limitations of simple strength matching and provides a partial Gaussian mean-baseline contrast; it does **not yet establish the requested full-catalogue weak-mean/strong-SPI–SPI demonstration**.'''),
+    nbf.v4.new_markdown_cell(f"Protocol: `configs/analysis/{run}.yaml`. Runtime evidence and source bindings: `results/representation/{run}/resource-audit/`. Rebuild this report with `python -m scripts.build_factor_parity_notebook --run {run} --stage resource`. No SPI computation is performed while rendering.")]
+    nb=nbf.v4.new_notebook(cells=cells)
+    nb.metadata.kernelspec=dict(display_name='Python 3',language='python',name='python3')
+    nbf.write(nb,ROOT/'notebooks/embeddings'/('spi_'+run.replace('-','_')+'.ipynb'))
+
+
 def build(stage,run=RUN):
+    if stage=='resource':
+        return build_resource_report(run)
     settings=yaml.safe_load((ROOT/f'configs/analysis/{run}.yaml').read_text())
     result=ROOT/'results/representation'/run/stage
     score=pd.read_csv(result/'metrics.csv').set_index('method').BA
@@ -94,4 +140,4 @@ The validity-only control uses missingness without numerical z values. The indep
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final'],default='development');p.add_argument('--run',default=RUN);a=p.parse_args();build(a.stage,a.run)
+    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final','resource'],default='development');p.add_argument('--run',default=RUN);a=p.parse_args();build(a.stage,a.run)
