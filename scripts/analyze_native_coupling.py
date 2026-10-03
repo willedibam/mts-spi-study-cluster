@@ -18,13 +18,14 @@ from src.utils import slugify
 from scripts.refresh_case_figures import style,save
 
 
-def extract():
+def extract(data=DATA,out=OUT,corpus="native-gain-261003"):
+    DATA,OUT=data,out
     manifest=json.loads((DATA/'manifest.json').read_text());rows=manifest['rows']
     means,distributions,zs,validity,sources=[],[],[],[],[];order=None
     with np.load(DATA/'observations.npz') as raw:
         assert sha(DATA/'observations.npz')==manifest['archive_sha256']
         for r in rows:
-            folder=DATA/'mpis/native-gain-261003'/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}"
+            folder=DATA/'mpis'/corpus/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}"
             meta=json.loads((folder/'meta.json').read_text());p=folder/'spi_mpis.npz'
             assert meta['status']=='complete' and meta['dataset_name']==r['row_id']
             assert meta['source']['archive_sha256']==manifest['archive_sha256']
@@ -47,8 +48,19 @@ def extract():
         features_sha256=sha(OUT/'features.npz'),code_sha256=sha(Path(__file__))),indent=2)+'\n')
 
 
-def analyze():
-    rows=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows'])
+def scope_masks(rows):
+    masks={f'all{rows.label.nunique()}':np.ones(len(rows),bool),
+           f'CML{rows[rows.family.eq("CML")].label.nunique()}':rows.family.eq('CML').to_numpy()}
+    if 'historical14' in rows:
+        masks['historical14']=rows.historical14.to_numpy(bool)
+        masks['coupled14']=rows.coupled.to_numpy(bool)
+    return masks
+
+
+def analyze(rows=None,out=OUT):
+    OUT=out
+    if rows is None:rows=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows'])
+    scopes=scope_masks(rows)
     dev=rows.role.eq('development').to_numpy();held=~dev
     assert not set(rows.block[dev])&set(rows.block[held])
     with np.load(OUT/'features.npz') as a:
@@ -68,9 +80,8 @@ def analyze():
     projections['mean_without_PCA']=(full[dev],full[held])
     metrics,predictions=[],[]
     for name,(d,h) in projections.items():
-        for scope in ['all7','CML5']:
-            a=np.ones(dev.sum(),bool) if scope=='all7' else rows.loc[dev,'family'].eq('CML').to_numpy()
-            b=np.ones(held.sum(),bool) if scope=='all7' else rows.loc[held,'family'].eq('CML').to_numpy()
+        for scope,mask in scopes.items():
+            a,b=mask[dev],mask[held]
             model=LogisticRegression(C=1,max_iter=3000).fit(d[a],rows.loc[dev,'label'].to_numpy()[a])
             pred=model.predict(h[b]);f=rows.loc[held].iloc[np.flatnonzero(b)][['row_id','label','block']].copy()
             f['predicted']=pred;f['correct']=f.label==pred;f['method']=name;f['scope']=scope
@@ -83,7 +94,7 @@ def analyze():
     pd.DataFrame(metrics).to_csv(OUT/'metrics.csv',index=False)
     predictions=pd.concat(predictions);predictions.to_csv(OUT/'predictions.csv',index=False)
     paired=[]
-    for scope in ['all7','CML5']:
+    for scope,mask in scopes.items():
         pivot=predictions[predictions.scope==scope].pivot(index=['row_id','block'],columns='method',values='correct').astype(float)
         for comparator in ['mean','mean_without_PCA','distribution']:
             delta=(pivot.z-pivot[comparator]).groupby('block').mean().to_numpy();rng=np.random.default_rng(261003)
@@ -92,31 +103,32 @@ def analyze():
     pd.DataFrame(paired).to_csv(OUT/'paired.csv',index=False)
     np.savez_compressed(OUT/'projections.npz',**{k+s:v for k,pair in projections.items() for s,v in zip(('_dev','_held'),pair)})
     (OUT/'analysis.json').write_text(json.dumps(dict(diagnostics=diagnostics,code_sha256=sha(Path(__file__)),
-        features_sha256=sha(OUT/'features.npz'),status='exploratory seven-class fixed generator-level strength comparison'),indent=2)+'\n')
+        features_sha256=sha(OUT/'features.npz'),status=f'exploratory {rows.label.nunique()}-condition generator-level gain comparison'),indent=2)+'\n')
     print(pd.DataFrame(metrics).round(4).to_string(index=False))
 
 
-def plot_calibration():
-    style();f=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows']);labels=sorted(f.label.unique())
-    fig,axes=plt.subplots(1,2,figsize=(9,3.7),layout='constrained')
+def plot_calibration(rows=None,out=OUT):
+    OUT=out
+    style();f=rows if rows is not None else pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows']);labels=sorted(f.label.unique())
+    fig,axes=plt.subplots(1,2,figsize=(max(9,len(labels)*.8),4.6),layout='constrained')
     for i,label in enumerate(labels):
         g=f[f.label==label]
         axes[0].scatter(np.full(len(g),i),g.strength,s=13,alpha=.5)
         axes[1].scatter(np.full(len(g),i),g.mean_abs_Pearson,s=13,alpha=.5)
     axes[0].axhspan(.198,.202,color='.8',alpha=.25);axes[0].axhline(.2,color='.4',ls=':',lw=1)
-    axes[0].set(ylabel='Mean total cross-channel Jacobian gain',title='Generator-level strength matched')
+    axes[0].set(ylabel='Mean total cross-channel Jacobian gain',title='Native-update gain (noise controls remain zero)')
     axes[1].set(ylabel='Mean absolute Pearson correlation',title='Measured dependence need not match')
     for ax in axes:ax.set_xticks(range(len(labels)),labels,rotation=45,ha='right')
     return save(fig,OUT/'figures','calibration')
 
 
-def plot_embedding(scope='all7'):
+def plot_embedding(scope='all7',rows=None,out=OUT):
+    OUT=out
     from umap import UMAP
-    style();f=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows'])
+    style();f=rows if rows is not None else pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows'])
     dev=f.role.eq('development').to_numpy();held=~dev
-    a=np.ones(dev.sum(),bool) if scope=='all7' else f.loc[dev,'family'].eq('CML').to_numpy()
-    b=np.ones(held.sum(),bool) if scope=='all7' else f.loc[held,'family'].eq('CML').to_numpy()
-    labels=f.loc[held,'label'].to_numpy()[b];colors=dict(zip(sorted(f.label.unique()),plt.colormaps['tab10'].colors))
+    mask=scope_masks(f)[scope];a,b=mask[dev],mask[held]
+    labels=f.loc[held,'label'].to_numpy()[b];colors=dict(zip(sorted(f.label.unique()),plt.colormaps['tab20'].colors))
     fig,axes=plt.subplots(2,2,figsize=(8.3,8.5),layout='constrained')
     with np.load(OUT/'projections.npz') as p:
         for col,(name,title) in enumerate([('mean',r'Per-SPI means $m$'),('z',r'SPI–SPI $z$')]):
@@ -126,10 +138,10 @@ def plot_embedding(scope='all7'):
                 mapper.fit(d);xy=mapper.transform(h);ax=axes[row,col]
                 for label in sorted(set(labels)):
                     keep=labels==label;ax.scatter(*xy[keep].T,s=20,color=colors[label],label=label,alpha=.65,linewidths=0)
-                ax.set(title=title,xlabel=kind+' 1',ylabel=kind+' 2');ax.set_box_aspect(1)
+                ax.set(title=title+f' — {len(set(labels))} classes',xlabel=kind+' 1',ylabel=kind+' 2');ax.set_box_aspect(1)
                 for spine in ax.spines.values():spine.set_visible(True)
                 if kind=='UMAP':ax.set(xticks=[],yticks=[])
-    handles,labels=axes[0,0].get_legend_handles_labels();fig.legend(handles,labels,loc='outside lower center',ncol=3,fontsize=8)
+    handles,labels=axes[0,0].get_legend_handles_labels();fig.legend(handles,labels,loc='outside lower center',ncol=3 if len(set(labels))<10 else 4,fontsize=8)
     return save(fig,OUT/'figures','embedding-'+scope)
 
 
