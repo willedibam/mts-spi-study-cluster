@@ -1,0 +1,35 @@
+{
+  "stage": "120-record production submitted",
+  "source_commit": "2b787db",
+  "readout_commit": "2b787db",
+  "pyspi_commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
+  "jobs": {
+    "preliminary_smoke": "180384682.gadi-pbs",
+    "cancelled_queued_smoke": "180384055.gadi-pbs",
+    "gate": "180385257.gadi-pbs",
+    "production": "180386656.gadi-pbs"
+  },
+  "smoke": {
+    "records": 2,
+    "exit_status": 0,
+    "wall_seconds": 524,
+    "peak_memory_kb": 4946220,
+    "catalogue": 289
+  },
+  "remote_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/native-gain-2b787db",
+  "remote_data": "/scratch/ql44/we2614/mts-spi-study/representation/synthetic/native-gain-261003",
+  "archive_sha256": "201394e1c29a5c2a3490028b0344a98b5ec1b7bb564e4ae3e71a0d12fb395b26",
+  "expected_records": 168,
+  "calibration_tolerance_passed": 168,
+  "native_replays_checked": 7,
+  "next": "Verify48-record gate, then run indices49\u2013168 and retrieve/audit before analysis.",
+  "alternative_band_p90_submitted": false,
+  "primary_metric": "mean total off-diagonal Jacobian gain .20 +/- .002",
+  "production_source_commit": "3a2f21c",
+  "gate": {
+    "exit_status": 0,
+    "wall_seconds": 1092,
+    "peak_memory_kb": 52854396,
+    "records": 48
+  }
+}

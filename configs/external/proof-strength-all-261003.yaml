@@ -1,0 +1,12 @@
+name: proof-strength-all-261003
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/proof-strength-all-261003/observations.npz
+  sha256: 0207f87478444252ae748f058422c0aa1d2e179797ad6cd3420242b8f19a0440
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/proof-strength-all-261003/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003

@@ -22,6 +22,7 @@ def generate_wave_1d(
     T: int,
     *,
     c: float = 10.0,
+    dt: float | None = None,
     n_modes: int = 4,
     ic_decay: float = 1.5,
     noise_std: float = 0.0,
@@ -40,7 +41,9 @@ def generate_wave_1d(
 
     Knobs:
       - c          : wave speed (rescales physical time only; does not change
-                     the visible MTS shape because dt = 0.2*dx/c).
+                     the visible MTS shape with the default dt = 0.2*dx/c).
+      - dt         : optional fixed timestep, allowing c to vary at fixed
+                     observation cadence. Requires 0 < c*dt/dx <= 1.
       - n_modes    : number of Fourier modes in the IC. Capped at M//2 (Nyquist).
       - ic_decay   : amplitude decay across modes (a_k ~ 1 / k**ic_decay).
       - noise_std  : optional additive observation noise per channel/timestep
@@ -50,7 +53,11 @@ def generate_wave_1d(
     rng = _resolve_rng(seed, rng)
 
     dx = 1.0 / M
-    dt = 0.2 * dx / c
+    if not np.isfinite(c) or c <= 0:
+        raise ValueError("wave speed c must be positive and finite")
+    dt = 0.2 * dx / c if dt is None else float(dt)
+    if not np.isfinite(dt) or not 0 < c * dt / dx <= 1:
+        raise ValueError("wave timestep must satisfy 0 < c*dt/dx <= 1")
     coeff = (c * dt / dx) ** 2
 
     coords = np.arange(M, dtype=float) / M
