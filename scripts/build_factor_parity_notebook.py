@@ -3,13 +3,15 @@ from pathlib import Path
 import argparse
 import pandas as pd
 import nbformat as nbf
+import yaml
 
 ROOT=Path(__file__).resolve().parents[1]
 RUN='factor-parity-dominant-261004'
 
 
-def build(stage):
-    result=ROOT/'results/representation'/RUN/stage
+def build(stage,run=RUN):
+    settings=yaml.safe_load((ROOT/f'configs/analysis/{run}.yaml').read_text())
+    result=ROOT/'results/representation'/run/stage
     score=pd.read_csv(result/'metrics.csv').set_index('method').BA
     summary=f"MPI means: **{score['mean']:.1%}**; full means: **{score['mean_full']:.1%}**; RBF means: **{score['mean_RBF']:.1%}**; tree means: **{score['mean_trees']:.1%}**; centered SPI–SPI: **{score['z_center']:.1%}**. Chance is 50%. The original standardized SPI–SPI readout scores {score['z']:.1%}."
     if stage=='final':
@@ -34,7 +36,7 @@ import matplotlib.pyplot as plt
 from IPython.display import display
 from scripts.build_factor_parity import covariance,CLASSES
 from scripts.plot_band_swap import plot
-RUN={RUN!r};STAGE={stage!r}
+RUN={run!r};STAGE={stage!r}
 OUT=ROOT/'results/representation'/RUN
 RESULT=OUT/STAGE
 metrics=pd.read_csv(RESULT/'metrics.csv')
@@ -81,10 +83,15 @@ The validity-only control uses missingness without numerical z values. The indep
 ('code',"display(metrics[metrics.method.isin(['probe_mean','probe_z','raw_covariance','raw_Pearson'])].round(3))\ndisplay(pd.read_csv(RESULT/'diagnostic-features.csv').round(3))\ndisplay(pd.DataFrame(analysis['diagnostics']).T.round(3))"),
 ('md',r'''The protocol is `configs/analysis/factor-parity-dominant-261004.yaml`; `build_factor_parity.py` constructs the immutable raw bank. `analyze_band_swap.py --run factor-parity-dominant-261004` audits input/member/catalogue/RNG provenance, extracts features and evaluates the fixed readouts. `sources.json` binds MPI hashes; `execution.json` records cluster jobs and the held-release decision. Rendering uses cached outputs and does not recompute SPIs.'''),
 ('code',"print(json.dumps(analysis.get('centered_development_goal',{}),indent=2))\nprint(json.dumps(json.loads((OUT/'execution.json').read_text()),indent=2))")]
+    cells=[(kind,source.replace('16 channels and 1,000 observations',f"16 channels and {settings['T']:,} observations") if kind=='md' else source) for kind,source in cells]
+    if settings['T']!=1000:
+        cells.insert(2,('md',r'''**Fresh-seed length follow-up.** The preceding $T=1000$ held test gave centered z .6875 versus primary means .5625, with an unresolved paired difference. This experiment keeps the covariance, strength and centered readout fixed and increases $T$ to 4000. A cheap comparison of $T=2000$ and $T=4000$ on fresh development RNG blocks 64–95 gave probe-z .8125 and 1.0, respectively; the latter was the shortest meeting the declared criterion while cheap means stayed weak. Signed distribution summaries also improved, as expected. Local training blocks 0–23 correspond to RNG64–87, validation 24–31 to RNG88–95, and held 32–63 to **previously unseen RNG96–127**. No previous held block is reused as new confirmation data. The full-catalogue centered readout was fixed before this experiment's p90 outcomes.'''))
+        cells.insert(4,('code',"display(pd.read_csv(ROOT/'results/representation/factor-length-scout-261004/results.csv'))"))
     nb=nbf.v4.new_notebook(cells=[nbf.v4.new_markdown_cell(s) if k=='md' else nbf.v4.new_code_cell(s) for k,s in cells])
     nb.metadata.kernelspec=dict(display_name='Python 3',language='python',name='python3')
-    nbf.write(nb,ROOT/'notebooks/embeddings/spi_factor_parity_261004.ipynb')
+    filename='spi_factor_parity_261004.ipynb' if run==RUN else 'spi_'+run.replace('-','_')+'.ipynb'
+    nbf.write(nb,ROOT/'notebooks/embeddings'/filename)
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final'],default='development');a=p.parse_args();build(a.stage)
+    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final'],default='development');p.add_argument('--run',default=RUN);a=p.parse_args();build(a.stage,a.run)
