@@ -90,10 +90,14 @@ def analyze(stage,direct_only=False):
             for key in ['mean','distribution','z','z_validity']:bank[key]=a[key]
         with np.load(target/'ablation.npz') as a:bank['z_shuffled']=a['z_shuffled']
         diagnostic_features(bank,rows,train,target)
+        # Secondary robustness check: do not let training missingness define
+        # these coordinates. Primary z retains the frozen 95% rule.
+        bank['z_complete']=bank['z']
+        bank['z_shuffled_complete']=bank['z_shuffled']
     projections={};readouts={};diagnostics={}
     for name,x in bank.items():
         try:
-            projection,d,h=project_features(x[train],x[test],dimensions=20)
+            projection,d,h=project_features(x[train],x[test],dimensions=20,valid=1.0 if name.endswith('_complete') else .95)
         except RuntimeError as error:
             if str(error)!='no features pass the variance gate':raise
             # A constant validity mask contains no training information. Its
@@ -104,7 +108,8 @@ def analyze(stage,direct_only=False):
             continue
         projections[name]=(d,h);readouts[name]=(d,h,'logistic')
         diagnostics[name]=dict(selected_features=len(projection.transform.keep_indices),components=d.shape[1],
-            explained_variance=float(projection.pca.explained_variance_ratio_.sum()))
+            explained_variance=float(projection.pca.explained_variance_ratio_.sum()),
+            evaluation_selected_missing_fraction=float(np.mean(~np.isfinite(x[test][:,projection.transform.keep_indices]))))
     if 'mean' in bank:
         transform=fit_geometry_transform(bank['mean'][train],scaling='standard',minimum_valid_fraction=.95)
         x=np.clip(transform.transform(bank['mean']),-5,5)
@@ -132,6 +137,13 @@ def analyze(stage,direct_only=False):
         boot=delta[rng.integers(len(delta),size=(5000,len(delta)))].mean(axis=1)
         low,high=np.quantile(boot,[.025,.975])
         paired.append(dict(comparison=reference+' - '+comparator,difference=delta.mean(),low=low,high=high))
+    if 'z_complete' in pivot:
+        for comparator in ['mean','mean_full','mean_RBF','mean_trees','z_shuffled_complete']:
+            delta=(pivot.z_complete-pivot[comparator]).groupby('block').mean().to_numpy()
+            rng=np.random.default_rng(261003)
+            boot=delta[rng.integers(len(delta),size=(5000,len(delta)))].mean(axis=1)
+            low,high=np.quantile(boot,[.025,.975])
+            paired.append(dict(comparison='z_complete - '+comparator,difference=delta.mean(),low=low,high=high))
     pd.DataFrame(paired).to_csv(target/(prefix+'paired.csv'),index=False)
     np.savez_compressed(target/(prefix+'projections.npz'),**{k+s:v for k,pair in projections.items() for s,v in zip(('_train','_test'),pair)})
     provenance=dict(stage=stage,rows=rows.row_id.tolist(),diagnostics=diagnostics,
