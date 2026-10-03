@@ -28,6 +28,18 @@ def test_disjoint_spectral_support_and_exact_population_variance():
     assert np.isfinite(x).all()
 
 
+def test_binary_swap_preserves_broad_band_controls_and_has_declared_signature():
+    layers=covariance_layers(.55)/3
+    first,second=layers[[1,2,0]],layers[[2,1,0]]
+    np.testing.assert_allclose(first.sum(axis=0),second.sum(axis=0))
+    np.testing.assert_array_equal(np.maximum(first[0],first[1]),np.maximum(second[0],second[1]))
+    np.testing.assert_array_equal(first[2],second[2])
+    mask=~np.eye(16,dtype=bool)
+    for matrices,expected in [(first,[-1/24,-1/4,3/8]),(second,[-1/24,3/8,-1/4])]:
+        np.testing.assert_allclose(matrices[:,mask].mean(axis=1),.55/15)
+        np.testing.assert_allclose(np.corrcoef(matrices[:,mask])[np.triu_indices(3,1)],expected)
+
+
 def test_normalized_quantiles_equal_direct_edge_normalization():
     rng=np.random.default_rng(3);v=rng.normal(size=(2,3,30))
     summary=np.concatenate([v.mean(axis=2)[:,:,None],v.std(axis=2)[:,:,None],
