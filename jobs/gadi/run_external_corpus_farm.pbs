@@ -28,7 +28,11 @@ export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export PYSPI_N_JOBS=1
 
-python -c 'import src, pyspi'
+# Source snapshots and the environment must be visible on every allocated node.
+# Normal/express Cascade Lake nodes have 48 CPUs; smaller farms use one node.
+import_ranks=$(( (PBS_NCPUS + 47) / 48 ))
+mpirun -np "$import_ranks" --map-by ppr:1:node \
+    python -c 'import src, pyspi; print(src.__file__, pyspi.__file__)'
 python -m src.run_external_corpus --config "$CORPUS_CONFIG" --validate-source
 
 total=$(python -m src.run_external_corpus --config "$CORPUS_CONFIG" --count-only)
