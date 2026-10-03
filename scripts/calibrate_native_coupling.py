@@ -1,4 +1,4 @@
-"""Match a declared per-step interaction effect in existing VAR and CML generators."""
+"""Match total off-diagonal Jacobian gain in existing VAR and CML generators."""
 from pathlib import Path
 import argparse
 import json
@@ -7,10 +7,10 @@ import pandas as pd
 from scripts.spi_baseline_exploration import ROOT, sha
 from src.generators import generate_varma, generate_cml_logistic
 
-OUT=ROOT/'results/representation/native-coupling-261003'
-DATA=ROOT/'data/representation/native-coupling-261003'
-CASES=[('VAR',.2),('VAR',.7)]+[('CML',a) for a in [1.69,1.7522,1.895,2.0]]
-TARGET=.10
+OUT=ROOT/'results/representation/native-gain-261003'
+DATA=ROOT/'data/representation/native-gain-261003'
+CASES=[('VAR',.2),('VAR',.7)]+[('CML',a) for a in [1.45,1.69,1.7522,1.895,2.0]]
+TARGET=.20
 
 
 def generate(family,parameter,g,seed,t=1000):
@@ -26,10 +26,12 @@ def generate(family,parameter,g,seed,t=1000):
         f=1-parameter*full**2
         delta=g*((np.roll(f,1,axis=1)+np.roll(f,-1,axis=1))/2-f)
         start=(full.shape[1]-16)//2;effect=delta[:,start:start+16]
+    # Mean row sum of absolute off-diagonal Jacobian entries.
+    gain=float(g) if family=='VAR' else float(g*parameter*np.mean(np.abs(np.roll(full,1,axis=1)[:,start:start+16])+np.abs(np.roll(full,-1,axis=1)[:,start:start+16])))
     variance=np.var(x,axis=0).sum()
     strength=float(np.sqrt(np.mean(np.sum(effect**2,axis=1))/variance)) if variance>0 else np.nan
     mask=~np.eye(16,dtype=bool);r=np.corrcoef(x.T)
-    diagnostics=dict(strength=strength,mean_abs_Pearson=float(np.mean(abs(r[mask]))),
+    diagnostics=dict(strength=gain,realized_effect=strength,mean_abs_Pearson=float(np.mean(abs(r[mask]))),
                      min_channel_SD=float(np.std(x,axis=0).min()),mean_channel_SD=float(np.std(x,axis=0).mean()))
     return x,diagnostics
 
@@ -47,6 +49,9 @@ def scout():
 
 
 def calibrate(family,parameter,seed):
+    if family=='VAR':
+        x,d=generate(family,parameter,TARGET,seed)
+        return TARGET,x,d,1
     upper=min(.6,.96-parameter) if family=='VAR' else .2
     tried=[]
     def evaluate(g):
@@ -111,7 +116,7 @@ def prepare_observations():
         np.testing.assert_allclose(np.mean(np.var(arrays[row['row_id']],axis=1)),1,atol=1e-12)
     np.savez_compressed(p,**arrays)
     manifest['native_archive_sha256']=sha(native);manifest['archive_sha256']=sha(p)
-    manifest['observation_transform']='per_channel_center_one_global_RMS_SD_scale; no_MPI_normalization'
+    manifest['observation_transform']='per_channel_center_one_global_RMS_SD_scale; Jacobian_gain_unchanged; no_MPI_normalization'
     (DATA/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
 

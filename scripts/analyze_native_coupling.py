@@ -24,7 +24,7 @@ def extract():
     with np.load(DATA/'observations.npz') as raw:
         assert sha(DATA/'observations.npz')==manifest['archive_sha256']
         for r in rows:
-            folder=DATA/'mpis/native-coupling-261003'/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}"
+            folder=DATA/'mpis/native-gain-261003'/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}"
             meta=json.loads((folder/'meta.json').read_text());p=folder/'spi_mpis.npz'
             assert meta['status']=='complete' and meta['dataset_name']==r['row_id']
             assert meta['source']['archive_sha256']==manifest['archive_sha256']
@@ -68,9 +68,9 @@ def analyze():
     projections['mean_without_PCA']=(full[dev],full[held])
     metrics,predictions=[],[]
     for name,(d,h) in projections.items():
-        for scope in ['all6','CML4']:
-            a=np.ones(dev.sum(),bool) if scope=='all6' else rows.loc[dev,'family'].eq('CML').to_numpy()
-            b=np.ones(held.sum(),bool) if scope=='all6' else rows.loc[held,'family'].eq('CML').to_numpy()
+        for scope in ['all7','CML5']:
+            a=np.ones(dev.sum(),bool) if scope=='all7' else rows.loc[dev,'family'].eq('CML').to_numpy()
+            b=np.ones(held.sum(),bool) if scope=='all7' else rows.loc[held,'family'].eq('CML').to_numpy()
             model=LogisticRegression(C=1,max_iter=3000).fit(d[a],rows.loc[dev,'label'].to_numpy()[a])
             pred=model.predict(h[b]);f=rows.loc[held].iloc[np.flatnonzero(b)][['row_id','label','block']].copy()
             f['predicted']=pred;f['correct']=f.label==pred;f['method']=name;f['scope']=scope
@@ -83,7 +83,7 @@ def analyze():
     pd.DataFrame(metrics).to_csv(OUT/'metrics.csv',index=False)
     predictions=pd.concat(predictions);predictions.to_csv(OUT/'predictions.csv',index=False)
     paired=[]
-    for scope in ['all6','CML4']:
+    for scope in ['all7','CML5']:
         pivot=predictions[predictions.scope==scope].pivot(index=['row_id','block'],columns='method',values='correct').astype(float)
         for comparator in ['mean','mean_without_PCA','distribution']:
             delta=(pivot.z-pivot[comparator]).groupby('block').mean().to_numpy();rng=np.random.default_rng(261003)
@@ -92,7 +92,7 @@ def analyze():
     pd.DataFrame(paired).to_csv(OUT/'paired.csv',index=False)
     np.savez_compressed(OUT/'projections.npz',**{k+s:v for k,pair in projections.items() for s,v in zip(('_dev','_held'),pair)})
     (OUT/'analysis.json').write_text(json.dumps(dict(diagnostics=diagnostics,code_sha256=sha(Path(__file__)),
-        features_sha256=sha(OUT/'features.npz'),status='exploratory six-class fixed generator-level strength comparison'),indent=2)+'\n')
+        features_sha256=sha(OUT/'features.npz'),status='exploratory seven-class fixed generator-level strength comparison'),indent=2)+'\n')
     print(pd.DataFrame(metrics).round(4).to_string(index=False))
 
 
@@ -103,19 +103,19 @@ def plot_calibration():
         g=f[f.label==label]
         axes[0].scatter(np.full(len(g),i),g.strength,s=13,alpha=.5)
         axes[1].scatter(np.full(len(g),i),g.mean_abs_Pearson,s=13,alpha=.5)
-    axes[0].axhspan(.098,.102,color='.8',alpha=.25);axes[0].axhline(.1,color='.4',ls=':',lw=1)
-    axes[0].set(ylabel='Normalized RMS coupling effect',title='Generator-level strength matched')
+    axes[0].axhspan(.198,.202,color='.8',alpha=.25);axes[0].axhline(.2,color='.4',ls=':',lw=1)
+    axes[0].set(ylabel='Mean total cross-channel Jacobian gain',title='Generator-level strength matched')
     axes[1].set(ylabel='Mean absolute Pearson correlation',title='Measured dependence need not match')
     for ax in axes:ax.set_xticks(range(len(labels)),labels,rotation=45,ha='right')
     return save(fig,OUT/'figures','calibration')
 
 
-def plot_embedding(scope='all6'):
+def plot_embedding(scope='all7'):
     from umap import UMAP
     style();f=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows'])
     dev=f.role.eq('development').to_numpy();held=~dev
-    a=np.ones(dev.sum(),bool) if scope=='all6' else f.loc[dev,'family'].eq('CML').to_numpy()
-    b=np.ones(held.sum(),bool) if scope=='all6' else f.loc[held,'family'].eq('CML').to_numpy()
+    a=np.ones(dev.sum(),bool) if scope=='all7' else f.loc[dev,'family'].eq('CML').to_numpy()
+    b=np.ones(held.sum(),bool) if scope=='all7' else f.loc[held,'family'].eq('CML').to_numpy()
     labels=f.loc[held,'label'].to_numpy()[b];colors=dict(zip(sorted(f.label.unique()),plt.colormaps['tab10'].colors))
     fig,axes=plt.subplots(2,2,figsize=(8.3,8.5),layout='constrained')
     with np.load(OUT/'projections.npz') as p:
