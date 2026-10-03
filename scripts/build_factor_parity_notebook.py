@@ -11,7 +11,7 @@ RUN='factor-parity-dominant-261004'
 def build(stage):
     result=ROOT/'results/representation'/RUN/stage
     score=pd.read_csv(result/'metrics.csv').set_index('method').BA
-    summary=f"MPI means: **{score['mean']:.1%}**; full means: **{score['mean_full']:.1%}**; RBF means: **{score['mean_RBF']:.1%}**; tree means: **{score['mean_trees']:.1%}**; SPI–SPI: **{score['z']:.1%}**. Chance is 50%."
+    summary=f"MPI means: **{score['mean']:.1%}**; full means: **{score['mean_full']:.1%}**; RBF means: **{score['mean_RBF']:.1%}**; tree means: **{score['mean_trees']:.1%}**; centered SPI–SPI: **{score['z_center']:.1%}**. Chance is 50%. The original standardized SPI–SPI readout scores {score['z']:.1%}."
     cells=[('md',r'''# Equal interaction magnitudes, different sign–magnitude organization
 
 The main comparison uses the complete 289-SPI catalogue: raw off-diagonal MPI means $m$ versus signed Pearson SPI–SPI $z$. Distribution summaries are secondary. These are deliberately constructed Gaussian controls, not a benchmark of general superiority or nonlinear dynamics.
@@ -35,7 +35,7 @@ OUT=ROOT/'results/representation'/RUN
 RESULT=OUT/STAGE
 metrics=pd.read_csv(RESULT/'metrics.csv')
 analysis=json.loads((RESULT/'analysis.json').read_text())
-display(metrics[metrics.method.isin(['mean','mean_full','mean_RBF','mean_trees','z'])].round(3))'''),
+display(metrics[metrics.method.isin(['mean','mean_full','mean_RBF','mean_trees','z_center','z'])].round(3))'''),
 ('md',r'''## Generator and strength control
 
 Let $f_{at}$ and $\epsilon_{it}$ be independent standard Gaussian variables across factors, channels and time. A recording has 16 channels and 1,000 observations, with
@@ -63,10 +63,12 @@ This is openly **development-based experimental design**, not preregistration of
 ('code',"display(pd.read_csv(ROOT/'results/representation/factor-parity-261004/scout-results.csv').round(4))"),
 ('md',r'''## Full-catalogue comparison
 
-Training uses development blocks 0–23, validation blocks 24–31; each block contains both classes. The separate held blocks 32–63 are evaluated only after a documented development decision, using training blocks 0–31. Preprocessing is fitted on training data: 95% finite-feature selection, median imputation, SD scaling, clipping at five SD and up to 20 PCs. Logistic regression fixes $C=1$. Full-mean logistic, RBF and tree readouts test whether a PCA/linear bottleneck hides mean information. Distributions contain mean, SD and 10/25/50/75/90 percentiles per SPI.
+Training uses development blocks 0–23, validation blocks 24–31; each block contains both classes. The separate held blocks 32–63 are evaluated only after a documented development decision, using training blocks 0–31. Training-only preprocessing selects 95% finite features and imputes medians. Means/distributions use SD scaling, clipping at five SD and 20 PCs; the preferred SPI–SPI readout centers correlations without rescaling or clipping, then uses 20 PCs. Logistic regression fixes $C=1$. Full-mean logistic, RBF and tree readouts test whether a PCA/linear bottleneck hides mean information. Distributions contain mean, SD and 10/25/50/75/90 percentiles per SPI.
+
+**Readout refinement before confirmation.** The initial standardized full-catalogue z readout scored .625 on development, failing the target despite weak means (.4375–.625). Center-only z, as used in the earlier proof analysis, scored .8125 with the same 20 PCs and linear classifier; features already share a correlation scale, so there is no unit-conversion reason to standardize them individually. An exploratory audit retained both scalings, PCA20/full features and linear/RBF results; the center-only PCA20 linear model was selected for confirmation, not the highest-scoring RBF model. This choice was made after seeing development outcomes and frozen in `factor-parity-dominant-261004-confirmation.yaml` before releasing any held MPI. The original standardized result remains reported. A secondary training-complete z subset and edge-shuffled control use the same centered preprocessing.
 
 The figures use fixed PCA/UMAP settings and training-fit/evaluation-transform, without searching seeds or selecting points. Numerical performance takes precedence over appearance. Conditional bootstrap intervals resample paired recording blocks, keeping fitted models fixed; they omit training and parameter-selection uncertainty. Near-chance finite-sample performance is not proof of information-theoretic absence.'''),
-('code',"plot(STAGE,focused=False,run=RUN);plt.show()\ndisplay(pd.read_csv(RESULT/'paired.csv').round(3))\ndisplay(metrics[metrics.method.isin(['distribution','z_validity','z_shuffled'])].round(3))"),
+('code',"plot(STAGE,focused=False,run=RUN,z_method='z_center');plt.show()\npaired=pd.read_csv(RESULT/'paired.csv')\ndisplay(paired[paired.comparison.str.startswith('z_center - ')].round(3))\ndisplay(metrics[metrics.method.isin(['distribution','z_validity','z_shuffled_center','z_center_complete'])].round(3))"),
 ('md',r'''## Mechanism and limits
 
 The classes differ in how signs associate with interaction magnitudes, even though their mean signed strength and entire absolute-strength distribution agree. A pair such as covariance versus squared covariance can respond to this association. For the selected population matrices, that z value is approximately −.0183 versus −.1054. This is not evidence of nonlinear dynamics: both models are Gaussian. Since the second probe is a function of the first, this particular feature also reflects the shape of the signed covariance distribution. It cannot establish information inaccessible to every marginal-distribution description.
@@ -74,7 +76,7 @@ The classes differ in how signs associate with interaction magnitudes, even thou
 The validity-only control uses missingness without numerical z values. The independently shuffled-edge control preserves every MPI marginal while removing alignment; it is a diagnostic transformation, not a realizable-MTS claim. Any class information in these controls must qualify the interpretation. Means of the full catalogue are not inherently blind to dependence character, so informative means would constitute another negative result for the proposed picture.'''),
 ('code',"display(metrics[metrics.method.isin(['probe_mean','probe_z','raw_covariance','raw_Pearson'])].round(3))\ndisplay(pd.read_csv(RESULT/'diagnostic-features.csv').round(3))\ndisplay(pd.DataFrame(analysis['diagnostics']).T.round(3))"),
 ('md',r'''The protocol is `configs/analysis/factor-parity-dominant-261004.yaml`; `build_factor_parity.py` constructs the immutable raw bank. `analyze_band_swap.py --run factor-parity-dominant-261004` audits input/member/catalogue/RNG provenance, extracts features and evaluates the fixed readouts. `sources.json` binds MPI hashes; `execution.json` records cluster jobs and the held-release decision. Rendering uses cached outputs and does not recompute SPIs.'''),
-('code',"print(json.dumps(analysis.get('development_goal',{}),indent=2))\nprint(json.dumps(json.loads((OUT/'execution.json').read_text()),indent=2))")]
+('code',"print(json.dumps(analysis.get('centered_development_goal',{}),indent=2))\nprint(json.dumps(json.loads((OUT/'execution.json').read_text()),indent=2))")]
     nb=nbf.v4.new_notebook(cells=[nbf.v4.new_markdown_cell(s) if k=='md' else nbf.v4.new_code_cell(s) for k,s in cells])
     nb.metadata.kernelspec=dict(display_name='Python 3',language='python',name='python3')
     nbf.write(nb,ROOT/'notebooks/embeddings/spi_factor_parity_261004.ipynb')
