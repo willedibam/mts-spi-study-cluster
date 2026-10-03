@@ -11,7 +11,9 @@ def build(stage):
 
 The main target is weak **full-catalogue (289-SPI) MPI means** alongside informative SPI–SPI. A three-SPI control supports interpretation; it does not substitute for this test. The preceding all-proof-class experiment matched a native-update Jacobian gain but gave 89.6% classification for both means and SPI–SPI. Matching that scalar did not remove marginal information.
 
-Here two stationary Gaussian MTS classes have equal coupling strengths and different organization across frequency bands. This is a controlled character contrast, not a recreation of the historical dynamical classes.'''),
+Here two stationary Gaussian MTS classes have equal coupling strengths and different organization across frequency bands. This is a controlled character contrast, not a recreation of the historical dynamical classes.
+
+**Development result: the main target failed.** MPI means classify 15/16 validation recordings, while full-mean logistic regression and trees classify all 16. SPI–SPI and distributions also classify all 16. The validity-only and independently shuffled-edge controls are at chance. Squared lagged-correlation means reveal the classes despite the matched individual-band marginals. The reserved 64 held recordings remain unopened; this failure does not justify releasing them.'''),
 ('code',f'''from pathlib import Path
 import sys,json
 ROOT=Path.cwd().resolve()
@@ -49,7 +51,7 @@ Development blocks 0–23 train the models (48 recordings); blocks 24–31 valid
 The primary features are the 289 off-diagonal means and 41,616 signed Pearson SPI–SPI values. Training-only preprocessing uses 95% validity selection, median imputation, SD scaling, clipping at five SD and at most 20 principal components; logistic regression fixes $C=1$. Full-mean logistic, RBF kernel and 500-tree classifiers check whether the PCA or linear classifier hides information. Distributions (mean, SD and 10/25/50/75/90 percentiles) are secondary. Missingness-only z and independently shuffled MPI edge profiles are diagnostic controls; the shuffle preserves MPI marginals but is not a realizable-MTS claim.
 
 Intervals resample paired blocks with the fitted models fixed, omitting training uncertainty. Near-chance performance on a small validation set is not evidence of statistical equivalence. PCA/UMAP settings and seeds are fixed; both fit training recordings and transform validation or held recordings. No outcome selects the displayed recordings.'''),
-('code',"plot(STAGE,focused=False);plt.show()\ndisplay(pd.read_csv(RESULT/'paired.csv').round(3))\ndisplay(metrics[metrics.method.isin(['distribution','z_shuffled'])].round(3))"),
+('code',"plot(STAGE,focused=False);plt.show()\ndisplay(pd.read_csv(RESULT/'paired.csv').round(3))\ndisplay(metrics[metrics.method.isin(['distribution','z_shuffled'])].round(3))\ndisplay(pd.read_csv(RESULT/'diagnostic-features.csv').query(\"method == 'mean'\").head(5).round(3))"),
 ('md',r'''## Focused supporting control
 
 The three explicit band-covariance SPIs are separate from p90. Their symmetry argument demonstrates the intended mechanism without establishing that the complete catalogue's means lack information.'''),

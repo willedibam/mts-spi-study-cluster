@@ -17,6 +17,17 @@ from src.corpus_geometry import fit_geometry_transform
 from src.utils import slugify
 
 
+CORPUS='band-swap-261004'
+
+
+def configure(run):
+    global DATA,OUT,CORPUS
+    from scripts.spi_baseline_exploration import ROOT
+    CORPUS=run
+    DATA=ROOT/'data/representation'/run
+    OUT=ROOT/'results/representation'/run
+
+
 def get_rows(stage):
     records=json.loads((DATA/'manifest.json').read_text())['rows']
     return pd.DataFrame(records[:64] if stage=='development' else records)
@@ -24,10 +35,10 @@ def get_rows(stage):
 
 def extract(stage):
     target=OUT/stage;target.mkdir(parents=True,exist_ok=True)
-    extract_common(DATA,target,corpus='band-swap-261004',row_limit=64 if stage=='development' else None)
+    extract_common(DATA,target,corpus=CORPUS,row_limit=64 if stage=='development' else None)
     rows=get_rows(stage);rng=np.random.default_rng(261004);permuted=[]
     for _,r in rows.iterrows():
-        folder=DATA/'mpis/band-swap-261004'/f"{r.corpus_index+1:04d}-{slugify(r.row_id,'dataset')}"
+        folder=DATA/'mpis'/CORPUS/f"{r.corpus_index+1:04d}-{slugify(r.row_id,'dataset')}"
         meta=json.loads((folder/'meta.json').read_text());names=[v['name'] for v in meta['pyspi']['spis']]
         with np.load(folder/'spi_mpis.npz') as a:
             mask=~np.eye(r.M,dtype=bool);mpis={}
@@ -52,7 +63,7 @@ def diagnostic_features(bank,rows,train,target):
     """Rank on training data only; validation AUCs explain, never select, readouts."""
     with np.load(target/'features.npz') as archive:names=archive['spi_order']
     pair_names=np.array([f'{names[a]} | {names[b]}' for a,b in zip(*np.triu_indices(len(names),1))])
-    y=rows.label.eq('CBA').to_numpy();records=[]
+    y=rows.label.eq(sorted(rows.label.unique())[-1]).to_numpy();records=[]
     for method,labels in [('mean',names),('z',pair_names)]:
         transform=fit_geometry_transform(bank[method][train],scaling='standard',minimum_valid_fraction=.95)
         x=np.clip(transform.transform(bank[method]),-5,5)
@@ -70,8 +81,9 @@ def analyze(stage,direct_only=False):
     bank={}
     with np.load(DATA/'direct-features.npz') as a:
         np.testing.assert_array_equal(a['row_id'][:len(rows)],rows.row_id)
-        for key in ['band_z','band_marginals','raw_covariance','raw_Pearson','spectra']:bank[key]=a[key][:len(rows)]
-    bank['band_mean']=bank['band_marginals'][:,::7]
+        for key in a.files:
+            if key!='row_id':bank[key]=a[key][:len(rows)]
+    if 'band_marginals' in bank:bank['band_mean']=bank['band_marginals'][:,::7]
     if not direct_only:
         with np.load(target/'features.npz') as a:
             np.testing.assert_array_equal(a['row_id'],rows.row_id)
@@ -113,7 +125,7 @@ def analyze(stage,direct_only=False):
     predictions=pd.concat(predictions)
     predictions.to_csv(target/(prefix+'predictions.csv'),index=False)
     pivot=predictions.pivot(index=['row_id','block'],columns='method',values='correct').astype(float)
-    reference='band_z' if direct_only else 'z';paired=[]
+    reference=('band_z' if 'band_z' in bank else 'probe_z') if direct_only else 'z';paired=[]
     for comparator in pivot.columns.drop(reference):
         delta=(pivot[reference]-pivot[comparator]).groupby('block').mean().to_numpy()
         rng=np.random.default_rng(261003)
@@ -139,7 +151,8 @@ def analyze(stage,direct_only=False):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('action',choices=['extract','analyze','direct']);p.add_argument('--stage',choices=['development','final'],default='development');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('action',choices=['extract','analyze','direct']);p.add_argument('--stage',choices=['development','final'],default='development');p.add_argument('--run',default='band-swap-261004');a=p.parse_args()
+    configure(a.run)
     with threadpool_limits(limits=4):
         if a.action=='extract':extract(a.stage)
         else:analyze(a.stage,direct_only=a.action=='direct')

@@ -1,0 +1,49 @@
+status: refinement_after_band_swap_development_failure_before_factor_p90
+purpose: approximate_full_catalogue_marginal_matching_with_detectable_SPI_SPI_organization
+construction: Gaussian_iid_weighted_Walsh_factor_covariance_linked_vs_unlinked_signs
+classes:
+- linked-signs
+- unlinked-signs
+selection_rationale: Match absolute covariance distributions and every nonzero lag
+  covariance; remove the squared-lag strength leakage of band swap
+M: 16
+T: 1000
+strength: 0.35
+independent_blocks: 64
+development_training_blocks:
+- 0
+- 23
+development_validation_blocks:
+- 24
+- 31
+held_blocks:
+- 32
+- 63
+final_training_blocks:
+- 0
+- 31
+source_generator: scripts/build_factor_parity.py
+exact_scope: Population absolute coupling distributions and sign-invariant bivariate
+  SPI marginal values; not all289 mean laws
+full289: test_empirically_do_not_assume_equal
+primary_comparison: raw_per_SPI_means_versus_signed_SPI_SPI
+secondary: distribution7_full_means_RBF_SVC_ExtraTrees_z_validity
+preprocessing: training95percent_validity_median_standard_scale_clip5_PCA20
+classifiers: logistic_C1_full_mean_logistic_C1_full_mean_SVC_C1_gamma_scale_ExtraTrees500_min_leaf2
+convergence: increase_iteration_cap_only_if_needed_same_model
+development_goal: mean_readouts_at_most0.65_z_at_least0.80_z_validity_at_most0.65_chance0.50
+holdout: independent_seeds_no_selection_on_held_outcomes_new_generator_after_release_requires_new_held_seeds
+inference: paired_block_bootstrap_report_uncertainty_not_information_theoretic_absence
+embedding: fixed_PCA_UMAP30_min_dist0.1_seed261003_development_fit_held_transform_no_seed_search
+ablation: independently_shuffle_each_MPI_edge_profile_diagnostic_only_not_generator_normalization
+compute: two_record_smoke_then64_development_records_on48_cores_then64_held_if_development_justifies_release
+weights:
+- 0.7
+- 0.2
+- 0.1
+qualification: 'Signed covariance distributions differ: this targets mean compression,
+  not information absent from every distribution summary'
+parameter_rationale: Dominant first factor ensures equal positive/negative edge counts;
+  .35 is a moderate fixed correlation scale before p90 outcomes
+supporting_scout: 32 development blocks; ten cheap means BA .375 versus nine-probe
+  z BA1; generator-level pilot only
