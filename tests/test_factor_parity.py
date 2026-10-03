@@ -37,3 +37,12 @@ def test_selected_dominant_factor_matches_magnitudes_and_regularized_means():
         first=graphical_lasso(a,alpha=alpha);second=graphical_lasso(b,alpha=alpha)
         for x,y in zip(first,second):np.testing.assert_allclose(x[mask].mean(),y[mask].mean(),atol=1e-6)
     assert abs(np.corrcoef(a[mask],a[mask]**2)[0,1]-np.corrcoef(b[mask],b[mask]**2)[0,1])>.08
+
+
+def test_longer_bank_uses_declared_fresh_rng_blocks():
+    x,m=simulate(CLASSES[0],0,.25,[.9,.075,.025],2000,64)
+    y,n=simulate(CLASSES[0],64,.25,[.9,.075,.025],2000,0)
+    np.testing.assert_array_equal(x,y)
+    assert m==n and m['rng_block']==64 and x.shape==(2000,16)
+    old,_=simulate(CLASSES[0],0,.25,[.9,.075,.025],2000,0)
+    assert not np.array_equal(x,old)

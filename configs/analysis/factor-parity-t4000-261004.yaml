@@ -1,0 +1,77 @@
+status: fresh_seed_length_refinement_before_full_p90
+purpose: approximate_full_catalogue_marginal_matching_with_detectable_SPI_SPI_organization
+construction: Gaussian_iid_weighted_Walsh_factor_covariance_linked_vs_unlinked_signs
+classes:
+- linked-signs
+- unlinked-signs
+selection_rationale: T1000 held center-z .6875 versus mean .5625; paired advantage
+  unresolved. Fresh cheap development compares T2000/T4000 without changing covariance;
+  shortest meeting probe-z>=.9 and all cheap mean BAs<=.65 is T4000.
+M: 16
+T: 4000
+strength: 0.25
+independent_blocks: 64
+development_training_blocks:
+- 0
+- 23
+development_validation_blocks:
+- 24
+- 31
+held_blocks:
+- 32
+- 63
+final_training_blocks:
+- 0
+- 31
+source_generator: scripts/build_factor_parity.py
+exact_scope: Population absolute coupling distributions and sign-invariant bivariate
+  SPI marginal values; not all289 mean laws
+full289: test_empirically_do_not_assume_equal
+primary_comparison: raw_per_SPI_means_standard_PCA20_versus_center_only_signed_SPI_SPI_PCA20
+secondary: distribution7_full_means_RBF_SVC_ExtraTrees_z_validity
+preprocessing: Both training95percent_validity_median_PCA20; means/distributions standard_scale_clip5;
+  z_center only centers without scaling/clipping
+classifiers: logistic_C1_full_mean_logistic_C1_full_mean_SVC_C1_gamma_scale_ExtraTrees500_min_leaf2
+convergence: increase_iteration_cap_only_if_needed_same_model
+development_goal: mean_readouts_at_most0.65_z_at_least0.80_z_validity_at_most0.65_chance0.50
+holdout: independent_seeds_no_selection_on_held_outcomes_new_generator_after_release_requires_new_held_seeds
+inference: Paired block bootstrap5000; desired all means<=.65, centered z>=.8, validity<=.65;
+  no held tuning; report both positive and negative outcomes
+embedding: fixed_PCA_UMAP30_min_dist0.1_seed261003_development_fit_held_transform_no_seed_search
+ablation: independently_shuffle_each_MPI_edge_profile_diagnostic_only_not_generator_normalization
+compute: Two-record T4000 resource smoke; representative48core node batch; remaining
+  development sized from observed resources; only then consider held64
+weights:
+- 0.9
+- 0.075
+- 0.025
+qualification: 'Signed covariance distributions differ: this targets mean compression,
+  not information absent from every distribution summary'
+parameter_rationale: Stronger dominant factor keeps covariance and precision sign
+  patterns stable under regularization; lower strength reduces finite-sample graphical-lasso
+  leakage
+supporting_scout:
+  file: results/representation/factor-length-scout-261004/results.csv
+  T2000_z: 0.8125
+  T4000_z: 1.0
+  T4000_mean_linear: 0.375
+  T4000_mean_RBF: 0.5625
+  T4000_mean_trees: 0.625
+  qualification: Development selection only; no new held seed used
+rejected_candidate: 'factor-parity-261004: no p90 jobs; population graphical-lasso
+  means differ despite raw magnitude matching'
+seed_offset: 64
+rng_training_blocks:
+- 64
+- 87
+rng_validation_blocks:
+- 88
+- 95
+rng_held_blocks:
+- 96
+- 127
+readout_source_sha256: 7716258f1fac3435886707a043b019f7adbdc077313c77d9f9b83ef34e6bd30d
+geometry_source_sha256: 92bc5bb87811f5ed1b63a7b77d4b06232affcc9643badfa609cf2f2b02d9ce30
+feature_preprocessing_sha256: ebb2965018c3326ff2c3946e00b23cc6c4118bd13059a9c14c514cef327ba308
+prior_result: "factor-parity-dominant-261004 complete; preserve all128 outputs and\
+  \ held report; no reuse of its RNG blocks0\u201363 as new held data"

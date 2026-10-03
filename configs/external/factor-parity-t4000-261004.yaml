@@ -1,0 +1,12 @@
+name: factor-parity-t4000-261004
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/factor-parity-t4000-261004/observations.npz
+  sha256: a1de2ac6cc24fca581d900a1160d1c5b71189e284fc67ae19901bf468feddad8
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/factor-parity-t4000-261004/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003

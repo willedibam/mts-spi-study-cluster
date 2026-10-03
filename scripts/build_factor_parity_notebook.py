@@ -12,6 +12,10 @@ def build(stage):
     result=ROOT/'results/representation'/RUN/stage
     score=pd.read_csv(result/'metrics.csv').set_index('method').BA
     summary=f"MPI means: **{score['mean']:.1%}**; full means: **{score['mean_full']:.1%}**; RBF means: **{score['mean_RBF']:.1%}**; tree means: **{score['mean_trees']:.1%}**; centered SPI–SPI: **{score['z_center']:.1%}**. Chance is 50%. The original standardized SPI–SPI readout scores {score['z']:.1%}."
+    if stage=='final':
+        paired=pd.read_csv(result/'paired.csv').set_index('comparison').loc['z_center - mean']
+        met=score[['mean','mean_full','mean_RBF','mean_trees']].max()<=.65 and score['z_center']>=.8 and score['z_validity']<=.65
+        summary+=f" The prespecified weak-mean/strong-z numerical target was {'met' if met else 'not met'}. The paired z-minus-mean difference is {paired['difference']*100:.1f} percentage points (95% conditional interval {paired['low']*100:.1f} to {paired['high']*100:.1f}); "+('the advantage is resolved under this conditional analysis.' if paired['low']>0 else 'the advantage over the primary mean baseline remains unresolved.')
     cells=[('md',r'''# Equal interaction magnitudes, different sign–magnitude organization
 
 The main comparison uses the complete 289-SPI catalogue: raw off-diagonal MPI means $m$ versus signed Pearson SPI–SPI $z$. Distribution summaries are secondary. These are deliberately constructed Gaussian controls, not a benchmark of general superiority or nonlinear dynamics.

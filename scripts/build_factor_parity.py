@@ -25,12 +25,13 @@ def covariance(label,strength=STRENGTH,weights=WEIGHTS):
     return (1-strength)*np.eye(16)+strength*np.einsum('k,ki,kj->ij',weights,signs,signs)
 
 
-def simulate(label,block,strength=STRENGTH,weights=WEIGHTS):
-    rng=np.random.default_rng(np.random.SeedSequence([261004,block,CLASSES.index(label)]))
+def simulate(label,block,strength=STRENGTH,weights=WEIGHTS,t=1000,seed_offset=0):
+    rng_block=block+seed_offset
+    rng=np.random.default_rng(np.random.SeedSequence([261004,rng_block,CLASSES.index(label)]))
     c=covariance(label,strength,weights)
-    x=rng.normal(size=(1000,16))@np.linalg.cholesky(c).T
-    order=np.random.default_rng(np.random.SeedSequence([261004,block,99])).permutation(16)
-    return x[:,order],dict(strength=strength,weights=np.asarray(weights).tolist(),sensor_order=order.tolist())
+    x=rng.normal(size=(t,16))@np.linalg.cholesky(c).T
+    order=np.random.default_rng(np.random.SeedSequence([261004,rng_block,99])).permutation(16)
+    return x[:,order],dict(strength=strength,weights=np.asarray(weights).tolist(),sensor_order=order.tolist(),rng_block=rng_block)
 
 
 def direct_features(x):
@@ -47,7 +48,7 @@ def direct_features(x):
         raw_covariance=marginal(cov),raw_Pearson=marginal(r))
 
 
-def build(run=RUN,strength=STRENGTH,weights=WEIGHTS):
+def build(run=RUN,strength=STRENGTH,weights=WEIGHTS,t=1000,seed_offset=0):
     DATA=ROOT/'data/representation'/run
     OUT=ROOT/'results/representation'/run
     if (DATA/'manifest.json').exists():raise FileExistsError('Preserve immutable bank')
@@ -61,13 +62,13 @@ def build(run=RUN,strength=STRENGTH,weights=WEIGHTS):
     arrays={};rows=[];features={}
     for block in range(64):
         for label in CLASSES:
-            x,meta=simulate(label,block,strength,weights);name=f'{label}-block-{block:02d}';arrays[name]=x.T
+            x,meta=simulate(label,block,strength,weights,t,seed_offset);name=f'{label}-block-{block:02d}';arrays[name]=x.T
             rows.append(dict(row_id=name,label=label,block=block,role='development' if block<32 else 'evaluation',
                 development_part='train' if block<24 else 'validation' if block<32 else 'held',
-                corpus_index=len(rows),M=16,T=1000,**meta))
+                corpus_index=len(rows),M=16,T=t,**meta))
             for key,value in direct_features(x).items():features.setdefault(key,[]).append(value)
     np.savez_compressed(DATA/'observations.npz',**arrays,__dataset_names__=np.array([r['row_id'] for r in rows]),
-        __labels_json__=np.array([json.dumps([r['label']]) for r in rows]),__shapes__=np.array([[16,1000]]*len(rows)),
+        __labels_json__=np.array([json.dumps([r['label']]) for r in rows]),__shapes__=np.array([[16,t]]*len(rows)),
         __axis_order__=np.array(['process','observation']))
     np.savez_compressed(DATA/'direct-features.npz',row_id=np.array([r['row_id'] for r in rows]),**features)
     m=dict(rows=rows,archive_sha256=sha(DATA/'observations.npz'),script_sha256=sha(Path(__file__)),
@@ -85,4 +86,4 @@ def build(run=RUN,strength=STRENGTH,weights=WEIGHTS):
 
 if __name__=='__main__':
     import argparse
-    p=argparse.ArgumentParser();p.add_argument('--run',default=RUN);p.add_argument('--strength',type=float,default=STRENGTH);p.add_argument('--weights',type=float,nargs=3,default=WEIGHTS);a=p.parse_args();build(a.run,a.strength,a.weights)
+    p=argparse.ArgumentParser();p.add_argument('--run',default=RUN);p.add_argument('--strength',type=float,default=STRENGTH);p.add_argument('--weights',type=float,nargs=3,default=WEIGHTS);p.add_argument('--t',type=int,default=1000);p.add_argument('--seed-offset',type=int,default=0);a=p.parse_args();build(a.run,a.strength,a.weights,a.t,a.seed_offset)
