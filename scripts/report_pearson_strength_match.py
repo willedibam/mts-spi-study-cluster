@@ -11,6 +11,7 @@ from threadpoolctl import threadpool_limits
 from scripts.build_pearson_strength_match import DATA, OUT, ROOT, RUN
 from scripts.analyze_pearson_strength_match import rows
 from scripts.refresh_case_figures import style, save
+from scripts.spi_baseline_exploration import project_features
 
 LABELS = {'VAR-0.7': 'VAR', 'Wave': 'Wave', 'CML-1.895': 'CML',
           'Kuramoto-fast': 'Kuramoto', 'Gaussian-correlated': 'Correlated Gaussian',
@@ -84,6 +85,35 @@ def embeddings(stage):
     return save(fig, OUT/stage/'figures', 'baseline-hierarchy')
 
 
+def controls(stage):
+    frame = rows(stage)
+    train_role = frame.development_part.eq('train') if stage == 'development' else frame.role.eq('development')
+    train = (train_role & frame.panel.eq('matched')).to_numpy()
+    test = (frame.development_part.eq('validation') if stage == 'development' else frame.role.eq('evaluation')).to_numpy()
+    labels = frame.loc[test, 'label'].to_numpy()
+    style()
+    fig, axes = plt.subplots(1, 2, figsize=(8.5, 4.7), layout='constrained')
+    with np.load(OUT/stage/'features.npz') as archive:
+        np.testing.assert_array_equal(archive['row_id'], frame.row_id)
+        for ax, key, title in zip(axes, ['mean', 'z'], [r'Per-SPI means $m$', r'SPI–SPI $z$']):
+            _, d, h = project_features(archive[key][train], archive[key][test], dimensions=20,
+                                      standard=key == 'mean', valid=1. if key == 'z' else .95)
+            xy = PCA(n_components=2).fit(d).transform(h)
+            for label in LABELS:
+                control = label.endswith('independent')
+                marker = ('D' if label.startswith('Gaussian') else '^') if control else 'o'
+                ax.scatter(*xy[labels == label].T, s=35 if control else 18, marker=marker,
+                           alpha=1 if control else .35, color=COLORS[label],
+                           edgecolors='black' if control else 'none', linewidths=.5, label=LABELS[label])
+            ax.set(title=title+' — independent controls', xlabel='PCA 1', ylabel='PCA 2')
+            ax.set_box_aspect(1)
+            for spine in ax.spines.values():
+                spine.set_visible(True)
+    handles, names = axes[0].get_legend_handles_labels()
+    fig.legend(handles, names, loc='outside lower center', ncol=4)
+    return save(fig, OUT/stage/'figures', 'independent-controls')
+
+
 def notebook(stage):
     result = OUT/stage
     metrics = pd.read_csv(result/'metrics.csv').set_index('method')
@@ -127,6 +157,8 @@ Feature selection, imputation, scaling and PCA use training recordings only. Mea
 
 PCA/UMAP are fit on the training projections and transform evaluation points; UMAP fixes 30 neighbors, minimum distance .1 and seed 261003. Every evaluation point is shown. Classifier results use the full retained representation, not the plotted two coordinates. Conditional 95% intervals resample paired blocks 5,000 times while keeping the fitted models fixed, so they omit training and experimental-design uncertainty.'''),
     ('code', "display(Image(filename=str(RESULT/'figures/baseline-hierarchy.png')))\ndisplay(pd.read_csv(RESULT/'paired.csv').round(3))"),
+    ('md', 'Independent controls are projected into the same training-fitted mean and SPI–SPI spaces below; they do not influence those fits. Larger outlined diamonds/triangles denote independent Gaussian/Cauchy recordings, and faded circles show the six matched classes. These are a diagnostic view, not an additional eight-class accuracy claim. Positions in two PCs alone cannot determine which aspect of the data drives separation.'),
+    ('code', "display(Image(filename=str(RESULT/'figures/independent-controls.png')))"),
     ('md', r'''## Interpretation and limits
 
 Failure of $b$ with successful $z$ establishes information beyond average signed covariance under this normalization. Matching absolute correlation makes this stronger than a cancellation-only demonstration. It does not show that full SPI means or distributions are blind to character: their average detector responses can themselves distinguish temporal structure, non-Gaussianity and other properties. Strong $m$ must be credited, rather than treated as a failed baseline to conceal.
@@ -152,4 +184,5 @@ if __name__ == '__main__':
         strength(args.stage)
         if not args.strength_only:
             embeddings(args.stage)
+            controls(args.stage)
             print(notebook(args.stage))
