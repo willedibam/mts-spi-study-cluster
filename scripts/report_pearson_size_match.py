@@ -74,9 +74,14 @@ def controls():
     fit = frame.panel.eq('matched').to_numpy()
     style()
     fig, axes = plt.subplots(1, 2, figsize=(8.6, 4.8), layout='constrained')
+    validity = []
     with np.load(OUT/'features.npz') as a:
         for ax, key, title in zip(axes, ['mean', 'z'], [r'Per-SPI means $m$', r'SPI–SPI $z$']):
-            _, d, h = project_features(a[key][fit], a[key], dimensions=20, standard=key == 'mean', valid=1. if key == 'z' else .95)
+            projection, d, h = project_features(a[key][fit], a[key], dimensions=20, standard=key == 'mean', valid=1. if key == 'z' else .95)
+            missing = np.mean(~np.isfinite(a[key][:, projection.transform.keep_indices]), axis=1)
+            for i in np.flatnonzero(~fit):
+                validity.append(dict(method=key, label=LABELS[frame.iloc[i].label],
+                                     M=int(frame.iloc[i].M), T=int(frame.iloc[i]['T']), missing_fraction=float(missing[i])))
             xy = PCA(n_components=2).fit(d).transform(h)
             for label in LABELS:
                 independent = label.endswith('independent')
@@ -90,6 +95,7 @@ def controls():
                 spine.set_visible(True)
     handles, names = axes[0].get_legend_handles_labels()
     fig.legend(handles, names, loc='outside lower center', ncol=4)
+    pd.DataFrame(validity).to_csv(OUT/'control-projection-validity.csv', index=False)
     return save(fig, OUT/'figures', 'independent-controls')
 
 
@@ -131,8 +137,8 @@ Every validation fold refits all feature selection and preprocessing using only 
 
 **The plots are descriptive all-data fits**, separately from validation: PCA20 then PCA2 or UMAP with 30 neighbors, minimum distance .1 and seed 261003, using all 270 matched observations. Colors denote class, marker shapes denote $M$, and marker size increases with $T$. No classifier score is computed from this all-data fit. Overlap or clustering in two dimensions is not a test of information absence or superiority.'''),
     ('code', "display(Image(filename=str(OUT/'figures/baseline-hierarchy.png')))\nf=pd.read_csv(OUT/'cell-metrics.csv')\ndisplay(f[f.method.isin(['b','mean','distribution','z_complete'])].pivot(index=['M','T'],columns='method',values='BA').round(3))"),
-    ('md', 'Independent noise controls are projected into the same matched-data PCA spaces below, without influencing the fit. Crosses and plus signs denote independent Gaussian and Cauchy controls. These controls help reveal geometry associated with channel distributions or estimator behavior even without population cross-channel dependence; they are excluded from the six-class accuracy calculation. If a true MPI is constant across channel pairs, its population meta-correlation is undefined. Finite-sample fluctuations can nevertheless vary together across estimators and produce structured numerical z. Consequently, a noise-family signature alone is not evidence of a corresponding population interaction mechanism.'),
-    ('code', "display(Image(filename=str(OUT/'figures/independent-controls.png')))\ndisplay(pd.read_csv(OUT/'diagnostics.csv').groupby('method')[['features','test_missing_fraction']].agg(['min','max']).round(4))"),
+    ('md', 'Independent noise controls are projected into the same matched-data PCA spaces below, without influencing the fit. Crosses and plus signs denote independent Gaussian and Cauchy controls. These controls help reveal geometry associated with channel distributions or estimator behavior even without population cross-channel dependence; they are excluded from the six-class accuracy calculation. The accompanying table reports selected-feature missingness, filled using medians from the matched observations. If a true MPI is constant across channel pairs, its population meta-correlation is undefined. Finite-sample fluctuations can nevertheless vary together across estimators and produce structured numerical z. Consequently, a noise-family signature alone is not evidence of a corresponding population interaction mechanism.'),
+    ('code', "display(Image(filename=str(OUT/'figures/independent-controls.png')))\ndisplay(pd.read_csv(OUT/'control-projection-validity.csv').groupby(['method','label']).missing_fraction.agg(['mean','max']).round(4))\ndisplay(pd.read_csv(OUT/'diagnostics.csv').groupby('method')[['features','test_missing_fraction']].agg(['min','max']).round(4))"),
     ('md', r'''## What this can establish
 
 Weak $b$ with successful $z$ demonstrates information beyond matched scalar covariance summaries. The scalar baseline is deliberately deprived of class information: its near-chance result validates the control, rather than independently establishing general superiority of SPI–SPI. It does not prove that all marginal statistics are blind to character or that $z$ uniquely accesses it. Any strong MPI-mean result must be credited. Scalar matching also leaves temporal persistence, channel distributions, topology and estimator effects available; a class separation does not identify which one drives the geometry. In particular, the Gaussian and Cauchy shared-input constructions are both linear mixtures: distinguishing them does not establish nonlinear coupling. The method is invariant to positive affine changes of individual SPI profiles, not arbitrary generator-strength changes or observational-size changes.

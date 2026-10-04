@@ -93,11 +93,16 @@ def controls(stage):
     labels = frame.loc[test, 'label'].to_numpy()
     style()
     fig, axes = plt.subplots(1, 2, figsize=(8.5, 4.7), layout='constrained')
+    validity = []
     with np.load(OUT/stage/'features.npz') as archive:
         np.testing.assert_array_equal(archive['row_id'], frame.row_id)
         for ax, key, title in zip(axes, ['mean', 'z'], [r'Per-SPI means $m$', r'SPI–SPI $z$']):
-            _, d, h = project_features(archive[key][train], archive[key][test], dimensions=20,
+            projection, d, h = project_features(archive[key][train], archive[key][test], dimensions=20,
                                       standard=key == 'mean', valid=1. if key == 'z' else .95)
+            missing = np.mean(~np.isfinite(archive[key][test][:, projection.transform.keep_indices]), axis=1)
+            for label in ['Gaussian-independent', 'Cauchy-independent']:
+                keep = labels == label
+                validity.append(dict(method=key, label=label, mean_missing=float(missing[keep].mean()), max_missing=float(missing[keep].max())))
             xy = PCA(n_components=2).fit(d).transform(h)
             for label in LABELS:
                 control = label.endswith('independent')
@@ -111,6 +116,7 @@ def controls(stage):
                 spine.set_visible(True)
     handles, names = axes[0].get_legend_handles_labels()
     fig.legend(handles, names, loc='outside lower center', ncol=4)
+    pd.DataFrame(validity).to_csv(OUT/stage/'control-projection-validity.csv', index=False)
     return save(fig, OUT/stage/'figures', 'independent-controls')
 
 
@@ -159,8 +165,8 @@ Feature selection, imputation, scaling and PCA use training recordings only. Mea
 
 PCA/UMAP are fit on the training projections and transform evaluation points; UMAP fixes 30 neighbors, minimum distance .1 and seed 261003. Every evaluation point is shown. Classifier results use the full retained representation, not the plotted two coordinates. Conditional 95% intervals resample paired blocks 5,000 times while keeping the fitted models fixed, so they omit training and experimental-design uncertainty. At perfect accuracy these empirical bootstrap intervals degenerate to a point; that is not evidence of zero generalization uncertainty.'''),
     ('code', "display(Image(filename=str(RESULT/'figures/baseline-hierarchy.png')))\ndisplay(pd.read_csv(RESULT/'paired.csv').round(3))"),
-    ('md', 'Independent controls are projected into the same training-fitted mean and SPI–SPI spaces below; they do not influence those fits. Larger outlined diamonds/triangles denote independent Gaussian/Cauchy recordings, and faded circles show the six matched classes. These are a diagnostic view, not an additional eight-class accuracy claim. Positions in two PCs alone cannot determine which aspect of the data drives separation.'),
-    ('code', "display(Image(filename=str(RESULT/'figures/independent-controls.png')))"),
+    ('md', 'Independent controls are projected into the same training-fitted mean and SPI–SPI spaces below; they do not influence those fits. Larger outlined diamonds/triangles denote independent Gaussian/Cauchy recordings, and faded circles show the six matched classes. These are a diagnostic view, not an additional eight-class accuracy claim. The table reports missing selected features, imputed from training medians; these can influence control positions even though the primary matched-class z evaluation has no missing features. Positions in two PCs alone cannot determine which aspect of the data drives separation.'),
+    ('code', "display(Image(filename=str(RESULT/'figures/independent-controls.png')))\ndisplay(pd.read_csv(RESULT/'control-projection-validity.csv').round(4))"),
     ('md', r'''## Interpretation and limits
 
 Failure of $b$ with successful $z$ establishes information beyond average signed covariance under this normalization. Matching absolute correlation makes this stronger than a cancellation-only demonstration. It does not show that full SPI means or distributions are blind to character: their average detector responses can themselves distinguish temporal structure, non-Gaussianity and other properties. Strong $m$ must be credited, rather than treated as a failed baseline to conceal.
