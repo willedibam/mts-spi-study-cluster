@@ -60,6 +60,9 @@ def build(stage,run=RUN):
     result=ROOT/'results/representation'/run/stage
     score=pd.read_csv(result/'metrics.csv').set_index('method').BA
     summary=f"MPI means: **{score['mean']:.1%}**; full means: **{score['mean_full']:.1%}**; RBF means: **{score['mean_RBF']:.1%}**; tree means: **{score['mean_trees']:.1%}**; centered SPI–SPI: **{score['z_center']:.1%}**. Chance is 50%. The original standardized SPI–SPI readout scores {score['z']:.1%}."
+    if stage=='development':
+        met=score[['mean','mean_full','mean_RBF','mean_trees']].max()<=.65 and score['z_center']>=.8 and score['z_validity']<=.65
+        summary+=f" The frozen development gate was {'met' if met else 'not met'}; these are development results, not held confirmation."
     if stage=='final':
         paired=pd.read_csv(result/'paired.csv').set_index('comparison').loc['z_center - mean']
         met=score[['mean','mean_full','mean_RBF','mean_trees']].max()<=.65 and score['z_center']>=.8 and score['z_validity']<=.65
@@ -105,7 +108,7 @@ For a temporally iid Gaussian pair, reversing one channel changes only the sign 
 checks=[]
 for label in CLASSES:
     C=covariance(label,.25,[.9,.075,.025]);r=C[mask]
-    checks.append(dict(label=label,mean=r.mean(),mean_absolute=np.abs(r).mean(),mean_square=np.mean(r*r),negative_fraction=np.mean(r<0),z_linear_square=np.corrcoef(r,r*r)[0,1]))
+    checks.append(dict(label=label,mean=r.mean(),mean_absolute=np.abs(r).mean(),mean_square=np.mean(r*r),mean_cube=np.mean(r**3),mean_ED=np.sqrt(2-2*r).mean(),negative_fraction=np.mean(r<0),z_linear_square=np.corrcoef(r,r*r)[0,1]))
 display(pd.DataFrame(checks).round(6))'''),
 ('md',r'''## Why these parameters?
 
@@ -123,7 +126,9 @@ The figures use fixed PCA/UMAP settings and training-fit/evaluation-transform, w
 ('code',"plot(STAGE,focused=False,run=RUN,z_method='z_center');plt.show()\npaired=pd.read_csv(RESULT/'paired.csv')\ndisplay(paired[paired.comparison.str.startswith('z_center - ')].round(3))\ndisplay(metrics[metrics.method.isin(['distribution','z_validity','z_shuffled_center','z_center_complete'])].round(3))"),
 ('md',r'''## Mechanism and limits
 
-The classes differ in how signs associate with interaction magnitudes, even though their mean signed strength and entire absolute-strength distribution agree. A pair such as covariance versus squared covariance can respond to this association. For the selected population matrices, that z value is approximately −.0183 versus −.1054. This is not evidence of nonlinear dynamics: both models are Gaussian. Since the second probe is a function of the first, this particular feature also reflects the shape of the signed covariance distribution. It cannot establish information inaccessible to every marginal-distribution description.
+The classes differ in how signs associate with interaction magnitudes, even though their mean signed strength and entire absolute-strength distribution agree. A pair such as covariance versus squared covariance can respond to this association. For the selected population matrices, that z value is approximately −.0183 versus −.1054. Its numerator is $E[r^3]-E[r]E[r^2]$ across edges; the first, second and fourth moments agree between classes, while the third differs. This is not evidence of nonlinear dynamics: both models are Gaussian. Since the second probe is a function of the first, this particular feature also reflects the shape of the signed covariance distribution. It cannot establish information inaccessible to every marginal-distribution description.
+
+Not every population MPI mean is identical either. With unit channel variances, population root-mean-square Euclidean distance is $\sqrt{2-2r}$ per edge. Its mean is 1.41704644 versus 1.41706254, a difference of about $1.61\times10^{-5}$. A weak finite-data mean classifier is therefore not proof that its input has zero class information.
 
 The validity-only control uses missingness without numerical z values. The independently shuffled-edge control preserves every MPI marginal while removing alignment; it is a diagnostic transformation, not a realizable-MTS claim. Any class information in these controls must qualify the interpretation. Means of the full catalogue are not inherently blind to dependence character, so informative means would constitute another negative result for the proposed picture.'''),
 ('code',"display(metrics[metrics.method.isin(['probe_mean','probe_z','raw_covariance','raw_Pearson'])].round(3))\ndisplay(pd.read_csv(RESULT/'diagnostic-features.csv').round(3))\ndisplay(pd.DataFrame(analysis['diagnostics']).T.round(3))"),
@@ -139,6 +144,15 @@ The validity-only control uses missingness without numerical z values. The indep
         cells=[(kind,source.replace(old,new).replace('The protocol is `configs/analysis/factor-parity-dominant-261004.yaml`',f'The protocol is `configs/analysis/{run}.yaml`').replace('analyze_band_swap.py --run factor-parity-dominant-261004',f'analyze_band_swap.py --run {run}') if kind=='md' else source) for kind,source in cells]
         cells.insert(2,('md',r'''**More independent recordings, fixed $T=1000$.** The user capped observation length at 1,000. An exploratory grouped learning-curve check reused all previously examined T1000 recordings: centered z averaged .6875/.6602/.7266 with 32/64/96 training recordings, respectively, while mean readouts remained near .5. This provides modest motivation for a larger training bank, not a prediction of success. The covariance and centered PCA20/linear readout remain fixed. This experiment uses 192 development-training recordings, 64 validation recordings and 128 held recordings, from entirely fresh RNG blocks 256–447. No new held outcomes choose a generator, readout or figure. The refinement history described below concerns the earlier T1000 experiment; its selected readout was fixed before this replication.'''))
         cells.insert(4,('code',"display(pd.read_csv(ROOT/'results/representation/factor-sample-size-261004/summary.csv').round(3))"))
+        if (result/'readout-audit.csv').exists():
+            cells.extend([('md',r'''## Development diagnosis after the fixed readout failed
+
+Increasing independent training recordings did not deliver the prespecified strong-z result. A separate development-only audit tested PCA20 versus all features, linear versus RBF classifiers, and both z scalings; means received the corresponding PCA/full and linear/RBF comparisons. The primary centered PCA20 linear result remains .6875. All-feature centered linear z reaches .78125, while centered PCA20 RBF is .640625. No tested variant reaches .8, so the 128 held recordings remain unevaluated. The diagnostic does not replace the failed primary result.
+
+The fixed full-catalogue PCA/UMAP plots remain substantially mixed; ring-like layouts occur for both representations and are not class separation. The narrow probe catalogue is more discriminative (.890625), but this cannot establish the full-catalogue target. Raw covariance/Pearson distribution summaries score .765625/.796875, supporting the stated limit of the mean-compression comparison.
+
+Reusing development scores to choose an analysis can create optimistic estimates; these diagnostics are exploratory, and any later chosen readout needs untouched confirmation ([Cawley and Talbot, 2010](https://www.jmlr.org/papers/v11/cawley10a.html)). The present evidence does not establish either a clean unsupervised embedding or information absent from every marginal description.'''),
+                ('code',"display(pd.read_csv(RESULT/'readout-audit.csv').round(4))")])
     if settings['T']!=1000:
         cells.insert(2,('md',r'''**Fresh-seed length follow-up.** The preceding $T=1000$ held test gave centered z .6875 versus primary means .5625, with an unresolved paired difference. This experiment keeps the covariance, strength and centered readout fixed and increases $T$ to 4000. A cheap comparison of $T=2000$ and $T=4000$ on fresh development RNG blocks 64–95 gave probe-z .8125 and 1.0, respectively; the latter was the shortest meeting the declared criterion while cheap means stayed weak. Signed distribution summaries also improved, as expected. Local training blocks 0–23 correspond to RNG64–87, validation 24–31 to RNG88–95, and held 32–63 to **previously unseen RNG96–127**. No previous held block is reused as new confirmation data. The full-catalogue centered readout was fixed before this experiment's p90 outcomes.'''))
         cells.insert(4,('code',"display(pd.read_csv(ROOT/'results/representation/factor-length-scout-261004/results.csv'))"))
