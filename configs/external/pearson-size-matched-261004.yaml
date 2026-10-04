@@ -1,0 +1,12 @@
+name: pearson-size-matched-261004
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/pearson-size-matched-261004/observations.npz
+  sha256: 93abbbd45afc08a3eb9437e41ab0e64e417739d862a87cc3a1386e5cf037e837
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/pearson-size-matched-261004/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261011

@@ -1,0 +1,50 @@
+status: prospective_before_new_SPI_outcomes
+scope: exploratory observation-size robustness of scalar-strength matched six families
+M:
+- 8
+- 16
+- 32
+T:
+- 100
+- 500
+- 1000
+independent_parents_per_class: 5
+matched_records: 270
+independent_controls: 90
+parent_design: Native32-channel1000-point parents; centered contiguous channel windows
+  and initial time prefixes. CML physical lattice100. All nine views stay together
+  in validation.
+source: Fresh seed261010; fixed native parameters in build_pearson_size_control.py.
+  Parent raw archive frozen before any new SPI outputs.
+normalization:
+  absolute_target: Midpoint between max sampled innovation correlation floor and min
+    coupled signal absolute correlation, within size/parent block; shared across classes.
+  signed_target: a*(S^2-M)/(M*(M-1)), S=2*round(sqrt(2*M)/2). Equicorrelated reference
+    with attainable polarity imbalance.
+  solver: Rotate two fixed independent innovation arrays; tune noise scale/shared
+    input weight to absolute target; bounded sign candidates and continuous angle
+    root match signed target.
+  selection: Covariance summaries only; no other SPI outcomes, seed replacement or
+    class pruning.
+  qualification: Data-conditioned observation control; targets vary with size but
+    have identical pooled class distributions. Not universal causal/physical coupling
+    equality.
+readout:
+  validation: five-fold leave-one-parent-instance-out; all nine sizes and classes
+    of held block excluded from fitting
+  primary_baseline: mean empirical covariance b after per-channel unit variance
+  primary_z: training-complete centered PCA20/logistic C1
+  controls:
+  - signed+absolute summaries
+  - all means PCA/full linear/RBF/trees
+  - distribution7
+  - standardized z
+  - 95percent-valid z
+  - validity-only
+  - independent edge-shuffle
+  display: Descriptive all-data fit; means/distributions standard clip5, z training-complete
+    center; PCA20 then PCA2/UMAP30/.1/seed261003. No point, class or seed selection.
+  inference: Descriptive pooled and per-cell accuracy plus five-parent range; five
+    independent blocks are insufficient for precise per-cell performance claims.
+T_cap: 1000
+source_archive_sha256: 93abbbd45afc08a3eb9437e41ab0e64e417739d862a87cc3a1386e5cf037e837
