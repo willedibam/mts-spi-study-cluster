@@ -1,0 +1,12 @@
+name: pearson-strength-matched-261004
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/pearson-strength-matched-261004/observations.npz
+  sha256: d06dfe6e5cf0dc4a3f5356fb9c7ba0c89b0af77e3cd231386a0f22f3fc05aa35
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/pearson-strength-matched-261004/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261003

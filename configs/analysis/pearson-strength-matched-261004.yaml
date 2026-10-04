@@ -1,0 +1,85 @@
+status: prospective_before_new_SPI_outcomes
+purpose: Test_information_beyond_matched_mean_covariance_and_mean_absolute_Pearson
+M: 16
+T: 1000
+blocks: 48
+development_blocks:
+- 0
+- 23
+training_blocks:
+- 0
+- 15
+validation_blocks:
+- 16
+- 23
+held_blocks:
+- 24
+- 47
+families:
+- VAR-0.7
+- Wave
+- CML-1.895
+- Kuramoto-fast
+- Gaussian-correlated
+- Cauchy-correlated
+controls:
+- Gaussian-independent
+- Cauchy-independent
+primary_baseline: offdiagonal mean of empirical covariance MPI after per-channel centering
+  and unit sample variance; equals signed mean Pearson
+primary_representation: Full289-derived z, center-only PCA20, training-complete features,
+  logistic C1
+comparators:
+- signed_and_absolute_Pearson_means
+- all_MPI_means_PCA20
+- all_MPI_means_full_linear_RBF_trees
+- MPI_distribution7_PCA20
+- z_95percent_validity_center_PCA20
+- z_validity_only
+normalization:
+  absolute_targets:
+  - 0.065
+  - 0.075
+  signed_targets:
+  - 0.003
+  - 0.007
+  target_assignment: independent fixed random target pair per block, identical across
+    classes
+  absolute_matching: 'coupled: tune independent Gaussian observation noise; noise
+    variants: tune shared-input mixing'
+  signed_matching: choose channel polarities minimizing signed covariance mean error;
+    no use of any other SPI or z
+  channel_scale: zero mean and unit empirical variance ddof0 before SPI computation
+  tolerance_signed: 5.0e-05
+  tolerance_absolute: 1.0e-09
+  meaning: observation-space normalization of two summaries; not universal physical
+    coupling equality
+  qualification: Data-dependent polarity selection is an engineered observation control;
+    additive noise can alter recoverable character. Report settings and stronger controls.
+source:
+  development: reuse24 previously examined native-gain records per coupled family;
+    all treated as development
+  held: fresh coupled generator seeds261008100+block; frozen native-gain calibration;
+    do not evaluate held features before gate
+  noise_seed: 261008
+  normalization_seed: 261007
+  polarity_search: all32768 sign patterns with first channel positive; deterministic
+    closest signed target
+readout:
+  preprocessing: train only; mean/distributions SDscale clip5 PCA20; z centers without
+    scaling; primary z requires finite in every training recording
+  classifier: logistic C1; full mean RBF C1/gamma scale; ExtraTrees500/minleaf2
+  chance: 0.16666666666666666
+  embedding: fixed training-fit PCA/UMAP30/min_dist.1/seed261003; no point/seed selection
+  scalar_display: one-dimensional class distributions, not 2D PCA/UMAP of a scalar
+development_gate:
+  covariance_mean_max: 0.27
+  signed_absolute_summary_max: 0.32
+  z_complete_min: 0.8
+  claim: Primary is information beyond two matched Pearson summaries. Full MPI means/distributions
+    are stronger comparisons, not assumed to fail.
+inference: Paired block bootstrap5000; do not present development selection as independent
+  confirmation
+scope: Six matched classes; independent noise controls analyzed separately. Finite-sample
+  covariance normalization for Cauchy, whose population covariance is undefined. No
+  claim of pure character or universal strength-invariance.
