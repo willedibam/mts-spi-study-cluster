@@ -23,6 +23,15 @@ def strength(stage):
     frame = rows(stage)
     test = frame.development_part.eq('validation') if stage == 'development' else frame.role.eq('evaluation')
     frame = frame.loc[test]
+    diagnostics = []
+    with np.load(DATA/'observations.npz') as archive:
+        for r in frame.itertuples():
+            x = archive[r.row_id]
+            diagnostics.append(dict(label=LABELS[r.label], block=r.block,
+                mean_channel_lag1=float(np.mean(x[:, 1:]*x[:, :-1])),
+                mean_channel_fourth_moment=float(np.mean(x**4))))
+    (OUT/stage).mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(diagnostics).to_csv(OUT/stage/'observation-diagnostics.csv', index=False)
     style()
     fig, axes = plt.subplots(1, 2, figsize=(9.2, 4.8), layout='constrained')
     jitter = np.random.default_rng(261007).uniform(-.12, .12, frame.block.nunique())
@@ -108,7 +117,8 @@ Each block draws a signed target $b_j\sim U(.003,.007)$ and an absolute target $
 For the four coupled dynamical families, add independent Gaussian observation noise and tune its scale to $a_j$, then standardize each channel. For the noise variants, tune the shared-input mixture $(1-g)\epsilon_i+g\ell_iF$, with heterogeneous positive loadings, to the same target. The innovations and common input are Gaussian or Cauchy according to class. Enumerating channel polarities $s_i\in\{-1,+1\}$ then selects the closest signed target. Polarity changes preserve absolute pairwise correlations and each channel's autocorrelation; additive observation noise does not preserve every aspect of the original dynamics.
 
 This is **data-conditioned observation-space normalization of two explicit summaries**, not equality of universal physical or causal coupling. The noise classes acquire dependence through shared inputs, without direct channel-to-channel coupling. Cauchy variables have undefined population variance; their covariance matching here is strictly a finite-recording operation. No MPI entries are adjusted after computation. The matched scalar baseline is expected to fail by construction; the empirical question is whether useful distinctions survive in the other representations.'''),
-    ('code', "display(Image(filename=str(RESULT/'figures/matched-strength.png')))"),
+    ('code', "display(Image(filename=str(RESULT/'figures/matched-strength.png')))\ndisplay(pd.read_csv(RESULT/'observation-diagnostics.csv').groupby('label')[['mean_channel_lag1','mean_channel_fourth_moment']].median().round(3))"),
+    ('md', 'The table gives medians across evaluation recordings of two raw-data diagnostics: mean channel lag-one autocovariance and mean standardized fourth moment. These describe remaining temporal and channel-distribution differences; they are not fitted alternatives or population moments for Cauchy data. Substantial residual differences would limit attribution of class separation specifically to cross-channel dependence character. Both signed and absolute strength targets can match while these properties differ.'),
     ('md', r'''## Frozen comparison and fixed embeddings
 
 Development blocks 0–15 train, blocks 16–23 validate; blocks 24–47 are held until the development gate. There are six matched recordings and two independent controls per block. Coupled development records reuse previously examined raw inputs and are explicitly exploratory; held coupled inputs use fresh generator seeds. Shared target/noise blocks stay together across splits. Final fitting uses all development blocks, then evaluates the untouched held blocks.
