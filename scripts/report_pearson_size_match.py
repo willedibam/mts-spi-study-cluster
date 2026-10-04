@@ -15,8 +15,33 @@ from scripts.report_pearson_strength_match import LABELS, COLORS
 from scripts.spi_baseline_exploration import project_features
 from scripts.refresh_case_figures import style, save
 
-MARKERS = {8: 'o', 16: 's', 32: '^'}
-SIZES = {100: 15, 500: 25, 1000: 38}
+MARKERS = {100: 'o', 500: 's', 1000: '^'}
+# Scatter area, in points squared: sublinear in the number of channels.
+SIZES = {m: 18 * np.sqrt(m / 8) for m in (8, 16, 32)}
+
+
+def embedding_legend():
+    handles = [Line2D([], [], marker='o', ls='', color=COLORS[k], label=v)
+               for k, v in list(LABELS.items())[:6]]
+    handles += [Line2D([], [], marker='o', markersize=np.sqrt(s), ls='',
+                      color='.4', label=f'M = {m}') for m, s in SIZES.items()]
+    handles += [Line2D([], [], marker=marker, ls='', color='.4', label=f'T = {t}')
+                for t, marker in MARKERS.items()]
+    return handles
+
+
+def scatter_classes(ax, xy, frame):
+    # Fixed draw order avoids always placing one class on top at matched values.
+    shuffled = np.random.default_rng(261011).permutation(len(frame))
+    for t, marker in MARKERS.items():
+        indices = shuffled[frame.iloc[shuffled]['T'].to_numpy() == t]
+        selected = frame.iloc[indices]
+        ax.scatter(*xy[indices].T, s=selected.M.map(SIZES), marker=marker,
+                   c=selected.label.map(COLORS), alpha=.7,
+                   edgecolors='white', linewidths=.25)
+    ax.set_box_aspect(1)
+    for spine in ax.spines.values():
+        spine.set_visible(True)
 
 
 def strength():
@@ -27,7 +52,7 @@ def strength():
     for i, label in enumerate(LABELS):
         f = frame[frame.label.eq(label)]
         for ax, key in zip(axes, ['mean_covariance', 'mean_abs_Pearson']):
-            ax.scatter(f[key], i+jitter, color=COLORS[label], s=14, alpha=.65, linewidths=0)
+            ax.scatter(f[key], i+jitter, color=COLORS[label], s=f.M.map(SIZES), alpha=.65, linewidths=0)
     for ax in axes:
         ax.set_yticks(range(8), LABELS.values())
         ax.invert_yaxis()
@@ -51,22 +76,42 @@ def embedding():
                 xy = mapper.fit_transform(p[key])
                 coordinates[key+'_'+kind] = xy
                 ax = axes[row, col]
-                for label in list(LABELS)[:6]:
-                    for m in MARKERS:
-                        keep = frame.label.eq(label) & frame.M.eq(m)
-                        ax.scatter(*xy[keep].T, s=frame.loc[keep, 'T'].map(SIZES), marker=MARKERS[m],
-                            color=COLORS[label], alpha=.7, edgecolors='white', linewidths=.25)
+                scatter_classes(ax, xy, frame)
                 ax.set(title=title+' — 6 classes', xlabel=kind+' 1', ylabel=kind+' 2')
                 ax.set_box_aspect(1)
                 for spine in ax.spines.values():
                     spine.set_visible(True)
                 if kind == 'UMAP':
                     ax.set(xticks=[], yticks=[])
-    handles = [Line2D([], [], marker='o', ls='', color=COLORS[k], label=v) for k, v in list(LABELS.items())[:6]]
-    handles += [Line2D([], [], marker=v, ls='', color='.4', label=f'M = {k}') for k, v in MARKERS.items()]
-    fig.legend(handles=handles, loc='outside lower center', ncol=3)
-    np.savez_compressed(OUT/'embedding-coordinates.npz', **coordinates, row_id=frame.row_id.to_numpy())
+    fig.legend(handles=embedding_legend(), loc='outside lower center', ncol=4)
+    np.savez_compressed(OUT/'embedding-coordinates.npz', **coordinates, row_id=frame.row_id.to_numpy(dtype=str))
     return save(fig, OUT/'figures', 'baseline-hierarchy')
+
+
+def scalar_comparison():
+    frame = rows().query("panel == 'matched'").reset_index(drop=True)
+    style()
+    fig, axes = plt.subplots(1, 3, figsize=(11.8, 4.7), layout='constrained')
+    rng = np.random.default_rng(261012)
+    jitter = np.empty(len(frame))
+    # Identical jitter distributions in every class; vertical position is not data.
+    levels = np.linspace(-.45, .45, 45)
+    for label in list(LABELS)[:6]:
+        jitter[frame.label.eq(label)] = rng.permutation(levels)
+    scatter_classes(axes[0], np.c_[frame.mean_covariance, jitter], frame)
+    axes[0].set(title=r'Mean correlation $b$ — 6 classes',
+                xlabel=r'Mean off-diagonal Pearson $b$',
+                ylabel='Display jitter (no data)', yticks=[])
+    axes[0].xaxis.set_major_locator(MaxNLocator(4))
+    with np.load(OUT/'embedding-coordinates.npz') as a:
+        np.testing.assert_array_equal(a['row_id'], frame.row_id)
+        for ax, kind in zip(axes[1:], ['PCA', 'UMAP']):
+            scatter_classes(ax, a['z_complete_'+kind], frame)
+            ax.set(title=r'SPI–SPI $z$ — 6 classes', xlabel=kind+' 1', ylabel=kind+' 2')
+            if kind == 'UMAP':
+                ax.set(xticks=[], yticks=[])
+    fig.legend(handles=embedding_legend(), loc='outside lower center', ncol=4)
+    return save(fig, OUT/'figures', 'mean-correlation-vs-z')
 
 
 def controls():
@@ -88,7 +133,7 @@ def controls():
                 marker = ('x' if label.startswith('Gaussian') else '+') if independent else 'o'
                 keep = frame.label.eq(label)
                 ax.scatter(*xy[keep].T, marker=marker, color='black' if independent else COLORS[label],
-                    s=25 if independent else 15, alpha=.8 if independent else .25, linewidths=.7 if independent else 0, label=LABELS[label])
+                    s=frame.loc[keep, 'M'].map(SIZES), alpha=.8 if independent else .25, linewidths=.7 if independent else 0, label=LABELS[label])
             ax.set(title=title+' — independent controls', xlabel='PCA 1', ylabel='PCA 2')
             ax.set_box_aspect(1)
             for spine in ax.spines.values():
@@ -135,8 +180,10 @@ The hierarchy is mean covariance $b$, the vector of MPI means from the 289-SPI p
 
 Every validation fold refits all feature selection and preprocessing using only the other four parent blocks. Pooled and per-cell class accuracies below are predictions for excluded parents. Parent minimum/maximum are descriptive variability, not confidence intervals. Only five parents contribute to each cell.
 
-**The plots are descriptive all-data fits**, separately from validation: PCA20 then PCA2 or UMAP with 30 neighbors, minimum distance .1 and seed 261003, using all 270 matched observations. Colors denote class, marker shapes denote $M$, and marker size increases with $T$. No classifier score is computed from this all-data fit. Overlap or clustering in two dimensions is not a test of information absence or superiority.'''),
-    ('code', "display(Image(filename=str(OUT/'figures/baseline-hierarchy.png')))\nf=pd.read_csv(OUT/'cell-metrics.csv')\ndisplay(f[f.method.isin(['b','mean','distribution','z_complete'])].pivot(index=['M','T'],columns='method',values='BA').round(3))"),
+**The plots are descriptive all-data fits**, separately from validation: PCA20 then PCA2 or UMAP with 30 neighbors, minimum distance .1 and seed 261003, using all 270 matched observations. Colors denote class, marker shapes denote $T$, and marker area scales as $\sqrt{M}$. No classifier score is computed from this all-data fit. Overlap or clustering in two dimensions is not a test of information absence or superiority.
+
+The first comparison shows only mean off-diagonal correlation beside the unchanged SPI–SPI PCA/UMAP. Unit channel variance makes this scalar equal to mean covariance $b$. Its vertical coordinate is labelled display jitter, with the same jitter distribution in each class; it is not another feature or an embedding. The complete hierarchy remains visible below.'''),
+    ('code', "display(Image(filename=str(OUT/'figures/mean-correlation-vs-z.png')))\ndisplay(Image(filename=str(OUT/'figures/baseline-hierarchy.png')))\nf=pd.read_csv(OUT/'cell-metrics.csv')\ndisplay(f[f.method.isin(['b','mean','distribution','z_complete'])].pivot(index=['M','T'],columns='method',values='BA').round(3))"),
     ('md', 'Independent noise controls are projected into the same matched-data PCA spaces below, without influencing the fit. Crosses and plus signs denote independent Gaussian and Cauchy controls. These controls help reveal geometry associated with channel distributions or estimator behavior even without population cross-channel dependence; they are excluded from the six-class accuracy calculation. The accompanying table reports selected-feature missingness, filled using medians from the matched observations. If a true MPI is constant across channel pairs, its population meta-correlation is undefined. Finite-sample fluctuations can nevertheless vary together across estimators and produce structured numerical z. Consequently, a noise-family signature alone is not evidence of a corresponding population interaction mechanism.'),
     ('code', "display(Image(filename=str(OUT/'figures/independent-controls.png')))\ndisplay(pd.read_csv(OUT/'control-projection-validity.csv').groupby(['method','label']).missing_fraction.agg(['mean','max']).round(4))\ndisplay(pd.read_csv(OUT/'diagnostics.csv').groupby('method')[['features','test_missing_fraction']].agg(['min','max']).round(4))"),
     ('md', r'''## What this can establish
@@ -156,5 +203,6 @@ if __name__ == '__main__':
     with threadpool_limits(limits=4):
         strength()
         embedding()
+        scalar_comparison()
         controls()
         print(notebook())
