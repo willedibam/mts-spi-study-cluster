@@ -40,7 +40,7 @@ def extract():
                 matrices[name] = a
         z, _, _ = build_unified_feature_values(matrices, names)
         shuffled.append(z)
-    np.savez_compressed(OUT/'shuffled.npz', z=np.array(shuffled), row_id=rows().row_id.to_numpy())
+    np.savez_compressed(OUT/'shuffled.npz', z=np.array(shuffled), row_id=rows().row_id.to_numpy(dtype=str))
 
 
 def bank():
@@ -117,7 +117,7 @@ def analyze():
         _, d, _ = project_features(data[name], data[name], standard=name != 'z_complete', dimensions=20,
                                    valid=1. if name == 'z_complete' else .95)
         coordinates[name] = d
-    np.savez_compressed(OUT/'display-projections.npz', **coordinates, row_id=frame.row_id.to_numpy())
+    np.savez_compressed(OUT/'display-projections.npz', **coordinates, row_id=frame.row_id.to_numpy(dtype=str))
     (OUT/'analysis.json').write_text(json.dumps(dict(status='exploratory five-parent leave-one-parent-out evaluation',
         matched_rows=len(frame), controls=90, readout_sha256=sha(__file__), features_sha256=sha(OUT/'features.npz'),
         qualification='Nine nested views per parent are dependent; no precise per-cell or independent-confirmation claim. Display fits all matched data, classifier preprocessing is fitted separately inside every parent fold.'), indent=2)+'\n')

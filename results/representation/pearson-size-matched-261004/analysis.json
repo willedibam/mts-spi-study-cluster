@@ -1,0 +1,8 @@
+{
+  "status": "exploratory five-parent leave-one-parent-out evaluation",
+  "matched_rows": 270,
+  "controls": 90,
+  "readout_sha256": "c890eeab8d2772bd75e6fae61a9de7527e259c9c4bc73ab525753aa29094d730",
+  "features_sha256": "94f9b7cbf20e45c671b4d5879f596432e4b1cd53af34a48a2bb922b3841435f2",
+  "qualification": "Nine nested views per parent are dependent; no precise per-cell or independent-confirmation claim. Display fits all matched data, classifier preprocessing is fitted separately inside every parent fold."
+}

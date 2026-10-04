@@ -1,0 +1,9 @@
+{
+  "recordings": 72,
+  "selection": "Parent instance 0, all nine sizes and all eight classes",
+  "mean_values": 20808,
+  "distribution_values": 145656,
+  "z_values": 3600,
+  "max_z_error": 2.9623858699423522e-08,
+  "status": "passed independent NumPy replay"
+}

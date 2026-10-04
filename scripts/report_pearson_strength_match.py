@@ -134,9 +134,9 @@ def notebook(stage):
 
 $$b(X)=\frac{1}{M(M-1)}\sum_{i\ne j}\widehat{\operatorname{Cov}}(x_i,x_j).$$
 
-Every channel is centered and scaled to unit empirical variance (divisor $T$), so this also equals mean signed Pearson correlation. Because positive and negative correlations can cancel, we additionally match $a(X)=\operatorname{mean}_{i\ne j}|r_{ij}|$. A scalar has only one informative dimension; its display is a classwise strip plot, not a two-dimensional PCA/UMAP. The comparison then progresses to all 289 MPI means $m$, seven summaries per MPI (mean, SD, 10/25/50/75/90 percentiles), and signed Pearson SPI–SPI $z$.
+Every channel is centered and scaled to unit empirical variance (divisor $T$), so this also equals mean signed Pearson correlation. Because positive and negative correlations can cancel, we additionally match $a(X)=\operatorname{mean}_{i\ne j}|r_{ij}|$. A scalar has only one informative dimension; its display is a classwise strip plot, not a two-dimensional PCA/UMAP. The comparison then progresses to all 289 p90 MPI means $m$, seven summaries per MPI (mean, SD, 10/25/50/75/90 percentiles), and signed Pearson SPI–SPI $z$.
 
-The six matched classes are VAR, Wave, CML, Kuramoto, shared-input Gaussian and shared-input Cauchy. Independent Gaussian and Cauchy recordings are separate zero-population-dependence controls, excluded from the six-class classifier. All recordings use $M=16$, $T=1000$: a practical common size inherited from the cached proof bank, yielding 240 ordered channel pairs (120 unique undirected pairs), not 240 independent observations. This size was not optimized to maximize separation.'''),
+All multi-statistic comparisons use the 289-SPI p90 subset, not the entire SPI catalogue. The six matched classes are VAR, Wave, CML, Kuramoto, shared-input Gaussian and shared-input Cauchy. Independent Gaussian and Cauchy recordings are separate zero-population-dependence controls, excluded from the six-class classifier. All recordings use $M=16$, $T=1000$: a practical common size inherited from the cached proof bank, yielding 240 ordered channel pairs (120 unique undirected pairs), not 240 independent observations. This size was not optimized to maximize separation.'''),
     ('code', f'''from pathlib import Path
 import sys, json
 ROOT=Path.cwd().resolve()

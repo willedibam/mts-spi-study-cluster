@@ -1,0 +1,211 @@
+{
+  "stage": "complete: all 360 outputs audited, frozen grouped analysis and executed notebook",
+  "records": 360,
+  "matched_records": 270,
+  "independent_controls": 90,
+  "jobs": {
+    "smoke_long": {
+      "job_id": "180460968",
+      "indices": [
+        67,
+        70
+      ],
+      "M": 32,
+      "T": 1000,
+      "cpus": 2,
+      "mem_GB": 24,
+      "walltime": "01:00:00",
+      "task_timeout": 3300
+    },
+    "smoke_short": {
+      "job_id": "180460969",
+      "indices": [
+        51,
+        54
+      ],
+      "M": 32,
+      "T": 100,
+      "cpus": 2,
+      "mem_GB": 8,
+      "walltime": "00:15:00",
+      "task_timeout": 600
+    },
+    "node_short": {
+      "job_id": "180461260",
+      "indices_file": "indices/node-short.txt",
+      "cpus": 48,
+      "mem_GB": 190,
+      "walltime": "00:20:00",
+      "task_timeout": 900
+    },
+    "smaller_t100": {
+      "job_id": "180461480",
+      "indices_file": "indices/short-remaining.txt",
+      "cpus": 48,
+      "mem_GB": 190,
+      "workers": 48,
+      "walltime": "00:20:00",
+      "task_timeout": 900
+    },
+    "smaller_t500": {
+      "job_id": "180461481",
+      "indices_file": "indices/smaller-M-T500.txt",
+      "cpus": 48,
+      "mem_GB": 190,
+      "workers": 48,
+      "walltime": "00:25:00",
+      "task_timeout": 1200
+    },
+    "smaller_t1000": {
+      "job_id": "180461482",
+      "indices_file": "indices/smaller-M-T1000.txt",
+      "cpus": 48,
+      "mem_GB": 190,
+      "workers": 48,
+      "walltime": "00:30:00",
+      "task_timeout": 1500
+    },
+    "node_long": {
+      "job_id": "180461620",
+      "indices_file": "indices/node-long.txt",
+      "cpus": 48,
+      "mem_GB": 190,
+      "workers": 24,
+      "walltime": "01:30:00",
+      "task_timeout": 2400
+    },
+    "node_t500": {
+      "job_id": "180461621",
+      "indices_file": "indices/M32-T500.txt",
+      "cpus": 48,
+      "mem_GB": 190,
+      "workers": 24,
+      "walltime": "01:10:00",
+      "task_timeout": 1800
+    }
+  },
+  "source_bindings": {
+    "scripts/build_pearson_size_control.py": "258444464e9be45c71bab7e7b1c35870d4681e37e73104f6d3cbab8bb4dd1874",
+    "scripts/build_pearson_size_match.py": "91a41ce116206f1246b6486cea355bcfdea385db6b40274a50b903198d1b9c2b",
+    "scripts/analyze_pearson_size_match.py": "da45945fe104d2bbfe19bba04de817c57091c6927bb4aabdb7016e8fea575dd2",
+    "scripts/analyze_native_coupling.py": "7f5fc057e337fef6eaf4ef93110ac86ebbca7f2bd81b4915ce24a430955c01d9",
+    "scripts/spi_baseline_exploration.py": "ebb2965018c3326ff2c3946e00b23cc6c4118bd13059a9c14c514cef327ba308",
+    "src/corpus_geometry.py": "92bc5bb87811f5ed1b63a7b77d4b06232affcc9643badfa609cf2f2b02d9ce30",
+    "src/spi_spi_contract.py": "f54c9229447a0920f47686ae11a90138a2b27a9f9af642494ed68478d394f2a2",
+    "configs/analysis/pearson-size-matched-261004.yaml": "4f0a316233667bc469be5f9b3cb9a69e6241e78b60e34b35e42443e7ff01b1dd",
+    "observations.npz": "93abbbd45afc08a3eb9437e41ab0e64e417739d862a87cc3a1386e5cf037e837",
+    "parents.npz": "56c09e542c04eaca6022f5c23d80c1d71e73d1009c821ac3959059e4e0fe1fb3",
+    "scripts/build_pearson_strength_match.py": "ba7f309d9692adffb6bcde2618175607c1493c01337e934f056a04270724ba50",
+    "src/generators/linear.py": "8344b635f5adce6110e2f221e42cf9d325f4f303c5ba0c2222a1e25c7d2b8e0d",
+    "src/generators/dynamical.py": "d0c966ea34dcc4dac38ff8c39e5f7bea514d9bc920fe0918d8f3a724d53fc814",
+    "src/generators/pde.py": "4bdf95291095c348e751dbfd40ea8a0df73c1e6b8968d867b92515fdf817565c",
+    "src/generators/_common.py": "fc2d8e1d3cf7b3837831a7c8aa7d2f42d2137b4d426f7796768e9b5e4bd11f16"
+  },
+  "raw_matching_errors": {
+    "signed": 2.7e-13,
+    "absolute": 3.9e-14
+  },
+  "schedule": "No heartbeat restart authorized; old schedule remains paused",
+  "source_commit": "a770dba",
+  "source_path": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pearson-size-a770dba",
+  "smoke_short_outcome": {
+    "complete": 2,
+    "walltime": "00:05:05",
+    "cpu_time": "00:08:29",
+    "peak_memory_kb": 3484780,
+    "exit_status": 0
+  },
+  "node_short_outcome": {
+    "complete": 40,
+    "walltime": "00:04:11",
+    "cpu_time": "02:08:10",
+    "peak_memory_kb": 38608024,
+    "exit_status": 0,
+    "compute_seconds": [
+      191.76,
+      267.96
+    ],
+    "finite_mean_profile_range": [
+      280,
+      286
+    ]
+  },
+  "scaling_rationale": "M32/T100 full node passed; M<=16 larger-T batches reuse measured M16/T1000 gate from completed pearson-strength-matched-261004 (same pyspi/config and shapes). M32 longer-T remains behind separate smoke; no duplicate active indices.",
+  "smoke_long_outcome": {
+    "complete": 2,
+    "walltime": "00:26:08",
+    "cpu_time": "00:47:24",
+    "peak_memory_kb": 9765816,
+    "exit_status": 0
+  },
+  "smaller_t100_outcome": {
+    "complete": 80,
+    "walltime": "00:03:01",
+    "cpu_time": "01:04:57",
+    "peak_memory_kb": 42955052,
+    "exit_status": 0
+  },
+  "smaller_t500_outcome": {
+    "complete": 80,
+    "walltime": "00:04:14",
+    "cpu_time": "02:18:13",
+    "peak_memory_kb": 45269712,
+    "exit_status": 0
+  },
+  "smaller_t1000_outcome": {
+    "complete": 80,
+    "walltime": "00:07:31",
+    "cpu_time": "05:00:18",
+    "peak_memory_kb": 55366808,
+    "exit_status": 0
+  },
+  "long_concurrency_rationale": "Largest smoke max1549s and9.31GiB aggregate peak for2workers.24workers/node provides about7.9GiB per worker, versus4.65GiB mean smoke peak;40-row node groups run two waves within measured timeout margins.",
+  "node_t500_outcome": {
+    "complete": 40,
+    "walltime": "00:19:45",
+    "cpu_time": "06:17:29",
+    "peak_memory_kb": 32698216,
+    "exit_status": 0
+  },
+  "input_reconstruction": "All360 recordings reproduce bit-exact from saved parents and normalization parameters",
+  "johansen_warning_audit": "Four predetermined smoke records:15872 saved values agree with direct local computation; maximum absolute discrepancy2.2e-12. Does not establish Gaussian asymptotic-test validity for Cauchy.",
+  "node_long_outcome": {
+    "complete": 40,
+    "walltime": "00:48:27",
+    "cpu_time": "14:36:03",
+    "peak_memory_kb": 90352500,
+    "exit_status": 0,
+    "newly_computed": 38,
+    "reused_smoke": 2
+  },
+  "analysis_serialization_repair": {
+    "before_any_classifier_outcome": true,
+    "original_sha256": "da45945fe104d2bbfe19bba04de817c57091c6927bb4aabdb7016e8fea575dd2",
+    "repaired_sha256": "c890eeab8d2772bd75e6fae61a9de7527e259c9c4bc73ab525753aa29094d730",
+    "change": "Save row identifiers as NumPy strings instead of object arrays in shuffled/display archives, so default safe np.load can read them. No data, readout, split, estimator or embedding change. Original frozen bindings retained."
+  },
+  "metrics": {
+    "mean": 0.9851851851851852,
+    "distribution": 0.9962962962962963,
+    "z": 1.0,
+    "z_validity": 0.4333333333333333,
+    "b": 0.1666666666666666,
+    "pearson_two": 0.1666666666666666,
+    "z_complete": 1.0,
+    "z_standard": 0.9703703703703704,
+    "mean_complete": 0.9851851851851852,
+    "z_shuffled_complete": 0.1666666666666666,
+    "mean_full": 0.9888888888888888,
+    "mean_RBF": 1.0,
+    "mean_trees": 0.9962962962962963,
+    "b_full": 0.1666666666666666,
+    "b_RBF": 0.1666666666666666,
+    "b_trees": 0.1666666666666666,
+    "pearson_two_full": 0.1666666666666666,
+    "pearson_two_RBF": 0.1629629629629629,
+    "pearson_two_trees": 0.1666666666666666
+  },
+  "interpretation": "Covariance-summary control succeeds; p90 means/distributions remain highly informative, so stronger weak-marginal contrast fails for this construction.",
+  "report": "notebooks/embeddings/spi_pearson_size_matched_261004.ipynb",
+  "validation": "Executed 11 notebook cells with no errors; inspected all three figures; independent NumPy replay of 72 records across all classes/sizes agrees for 20808 means,145656 distribution values,3600 z values (max error 2.97e-8)."
+}
