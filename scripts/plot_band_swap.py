@@ -29,8 +29,8 @@ def population():
 def plot(stage='development',focused=True,run='band-swap-261004',z_method='z'):
     OUT=ROOT/'results/representation'/run
     records=json.loads((ROOT/'data/representation'/run/'manifest.json').read_text())['rows']
-    rows=pd.DataFrame(records[:64] if stage=='development' else records)
-    test=rows.block.ge(24 if stage=='development' else 32).to_numpy()
+    rows=pd.DataFrame([r for r in records if r['role']=='development'] if stage=='development' else records)
+    test=(rows.development_part.ne('train') if stage=='development' else rows.role.ne('development')).to_numpy()
     prefix='direct-' if focused else '';path=OUT/stage/(prefix+'projections.npz')
     direct_names=('band_mean','band_z') if run=='band-swap-261004' else ('probe_mean','probe_z')
     methods=[(direct_names[0] if focused else 'mean',r'Per-SPI means $m$'),(direct_names[1] if focused else z_method,r'SPI–SPI $z$')]

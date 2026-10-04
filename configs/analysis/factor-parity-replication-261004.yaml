@@ -1,0 +1,79 @@
+status: prospective_T1000_sample_size_followup_before_new_p90
+purpose: approximate_full_catalogue_marginal_matching_with_detectable_SPI_SPI_organization
+construction: Gaussian_iid_weighted_Walsh_factor_covariance_linked_vs_unlinked_signs
+classes:
+- linked-signs
+- unlinked-signs
+selection_rationale: User requires T<=1000. Existing seen-bank grouped learning curves
+  show modest improvement with more training recordings (centered z .6875 at32, .6602
+  at64, .7266 at96; means .49-.55 at96). Test increased training count, keeping generator
+  and primary readout fixed. This motivates a test, not a predicted success.
+M: 16
+T: 1000
+strength: 0.25
+independent_blocks: 192
+development_training_blocks:
+- 0
+- 95
+development_validation_blocks:
+- 96
+- 127
+held_blocks:
+- 128
+- 191
+final_training_blocks:
+- 0
+- 127
+source_generator: scripts/build_factor_parity.py
+exact_scope: Population absolute coupling distributions and sign-invariant bivariate
+  SPI marginal values; not all289 mean laws
+full289: test_empirically_do_not_assume_equal
+primary_comparison: raw_per_SPI_means_standard_PCA20_versus_center_only_signed_SPI_SPI_PCA20
+secondary: distribution7_full_means_RBF_SVC_ExtraTrees_z_validity
+preprocessing: Both training95percent_validity_median_PCA20; means/distributions standard_scale_clip5;
+  z_center only centers without scaling/clipping
+classifiers: logistic_C1_full_mean_logistic_C1_full_mean_SVC_C1_gamma_scale_ExtraTrees500_min_leaf2
+convergence: increase_iteration_cap_only_if_needed_same_model
+development_goal: mean_readouts_at_most0.65_z_at_least0.80_z_validity_at_most0.65_chance0.50
+holdout: Fresh RNG384-447; no tuning of generator, readout or embedding using held
+  outcomes. Raw direct features for held rows may be generated but must not be evaluated
+  before release.
+inference: Paired block bootstrap5000; desired all means<=.65, centered z>=.8, validity<=.65;
+  no held tuning; report both positive and negative outcomes
+embedding: fixed_PCA_UMAP30_min_dist0.1_seed261003_development_fit_held_transform_no_seed_search
+ablation: independently_shuffle_each_MPI_edge_profile_diagnostic_only_not_generator_normalization
+compute: Two-record smoke, representative48core node gate, remaining development,
+  then frozen gate before held release
+weights:
+- 0.9
+- 0.075
+- 0.025
+qualification: 'Signed covariance distributions differ: this targets mean compression,
+  not information absent from every distribution summary'
+parameter_rationale: Stronger dominant factor keeps covariance and precision sign
+  patterns stable under regularization; lower strength reduces finite-sample graphical-lasso
+  leakage
+supporting_scout:
+  file: results/representation/factor-sample-size-261004/summary.csv
+  qualification: Exploratory reuse of all seen T1000 data; two repetitions of four
+    grouped folds are dependent, not confirmation.
+rejected_candidate: 'factor-parity-261004: no p90 jobs; population graphical-lasso
+  means differ despite raw magnitude matching'
+seed_offset: 256
+rng_training_blocks:
+- 256
+- 351
+rng_validation_blocks:
+- 352
+- 383
+rng_held_blocks:
+- 384
+- 447
+readout_source_sha256: ed62c708f7e21cfbc32aeb18e07d27d7839e639517bf4346222f7a9e92a5a1a0
+geometry_source_sha256: 92bc5bb87811f5ed1b63a7b77d4b06232affcc9643badfa609cf2f2b02d9ce30
+feature_preprocessing_sha256: ebb2965018c3326ff2c3946e00b23cc6c4118bd13059a9c14c514cef327ba308
+prior_result: Preserve T1000 held partial result and T4000 computational timeout;
+  neither supplies new held observations.
+readout_change: Only split/count plumbing now reads manifest roles rather than fixed
+  row limits; estimator, scaling, PCA20, logistic C1 and controls unchanged. Prior
+  frozen source retained in Git.

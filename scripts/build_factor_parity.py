@@ -53,6 +53,11 @@ def build(run=RUN,strength=STRENGTH,weights=WEIGHTS,t=1000,seed_offset=0):
     OUT=ROOT/'results/representation'/run
     if (DATA/'manifest.json').exists():raise FileExistsError('Preserve immutable bank')
     DATA.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
+    protocol=yaml.safe_load((ROOT/f'configs/analysis/{run}.yaml').read_text())
+    nblocks=protocol.get('independent_blocks',64)
+    train_end=protocol.get('development_training_blocks',[0,23])[1]+1
+    development_end=protocol.get('development_validation_blocks',[24,31])[1]+1
+    assert 0 < train_end < development_end < nblocks
     mask=~np.eye(16,dtype=bool);a,b=[covariance(c,strength,weights) for c in CLASSES]
     np.testing.assert_allclose(np.sort(np.abs(a[mask])),np.sort(np.abs(b[mask])))
     np.testing.assert_allclose(np.linalg.eigvalsh(a),np.linalg.eigvalsh(b))
@@ -60,11 +65,11 @@ def build(run=RUN,strength=STRENGTH,weights=WEIGHTS,t=1000,seed_offset=0):
     np.testing.assert_allclose(np.abs(a-np.eye(16)).sum(axis=1),np.abs(b-np.eye(16)).sum(axis=1))
     assert np.array_equal((a[mask]<0).sum(),(b[mask]<0).sum())
     arrays={};rows=[];features={}
-    for block in range(64):
+    for block in range(nblocks):
         for label in CLASSES:
             x,meta=simulate(label,block,strength,weights,t,seed_offset);name=f'{label}-block-{block:02d}';arrays[name]=x.T
-            rows.append(dict(row_id=name,label=label,block=block,role='development' if block<32 else 'evaluation',
-                development_part='train' if block<24 else 'validation' if block<32 else 'held',
+            rows.append(dict(row_id=name,label=label,block=block,role='development' if block<development_end else 'evaluation',
+                development_part='train' if block<train_end else 'validation' if block<development_end else 'held',
                 corpus_index=len(rows),M=16,T=t,**meta))
             for key,value in direct_features(x).items():features.setdefault(key,[]).append(value)
     np.savez_compressed(DATA/'observations.npz',**arrays,__dataset_names__=np.array([r['row_id'] for r in rows]),

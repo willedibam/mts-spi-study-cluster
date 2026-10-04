@@ -30,12 +30,14 @@ def configure(run):
 
 def get_rows(stage):
     records=json.loads((DATA/'manifest.json').read_text())['rows']
-    return pd.DataFrame(records[:64] if stage=='development' else records)
+    if stage=='development':
+        records=[row for row in records if row['role']=='development']
+    return pd.DataFrame(records)
 
 
 def extract(stage):
     target=OUT/stage;target.mkdir(parents=True,exist_ok=True)
-    extract_common(DATA,target,corpus=CORPUS,row_limit=64 if stage=='development' else None)
+    extract_common(DATA,target,corpus=CORPUS,row_limit=len(get_rows(stage)) if stage=='development' else None)
     rows=get_rows(stage);rng=np.random.default_rng(261004);permuted=[]
     for _,r in rows.iterrows():
         folder=DATA/'mpis'/CORPUS/f"{r.corpus_index+1:04d}-{slugify(r.row_id,'dataset')}"
@@ -77,7 +79,7 @@ def diagnostic_features(bank,rows,train,target):
 
 def analyze(stage,direct_only=False):
     target=OUT/stage;target.mkdir(parents=True,exist_ok=True);rows=get_rows(stage)
-    train=rows.block.lt(24 if stage=='development' else 32).to_numpy();test=~train
+    train=(rows.development_part.eq('train') if stage=='development' else rows.role.eq('development')).to_numpy();test=~train
     bank={}
     with np.load(DATA/'direct-features.npz') as a:
         np.testing.assert_array_equal(a['row_id'][:len(rows)],rows.row_id)
