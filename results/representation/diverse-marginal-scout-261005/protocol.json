@@ -1,0 +1,256 @@
+{
+  "seed": 261025,
+  "M": 16,
+  "T": 1000,
+  "configurations": {
+    "VAR": [
+      {
+        "phi": 0.2,
+        "gain": 0.05
+      },
+      {
+        "phi": 0.2,
+        "gain": 0.1
+      },
+      {
+        "phi": 0.2,
+        "gain": 0.15
+      },
+      {
+        "phi": 0.5,
+        "gain": 0.05
+      },
+      {
+        "phi": 0.5,
+        "gain": 0.1
+      },
+      {
+        "phi": 0.5,
+        "gain": 0.15
+      },
+      {
+        "phi": 0.8,
+        "gain": 0.05
+      },
+      {
+        "phi": 0.8,
+        "gain": 0.1
+      },
+      {
+        "phi": 0.8,
+        "gain": 0.15
+      }
+    ],
+    "Wave": [
+      {
+        "courant": 0.05,
+        "modes": 2
+      },
+      {
+        "courant": 0.05,
+        "modes": 4
+      },
+      {
+        "courant": 0.05,
+        "modes": 8
+      },
+      {
+        "courant": 0.2,
+        "modes": 2
+      },
+      {
+        "courant": 0.2,
+        "modes": 4
+      },
+      {
+        "courant": 0.2,
+        "modes": 8
+      },
+      {
+        "courant": 0.6,
+        "modes": 2
+      },
+      {
+        "courant": 0.6,
+        "modes": 4
+      },
+      {
+        "courant": 0.6,
+        "modes": 8
+      }
+    ],
+    "CML": [
+      {
+        "alpha": 1.69,
+        "eps": 0.03
+      },
+      {
+        "alpha": 1.69,
+        "eps": 0.15
+      },
+      {
+        "alpha": 1.69,
+        "eps": 0.3
+      },
+      {
+        "alpha": 1.895,
+        "eps": 0.03
+      },
+      {
+        "alpha": 1.895,
+        "eps": 0.15
+      },
+      {
+        "alpha": 1.895,
+        "eps": 0.3
+      },
+      {
+        "alpha": 2.0,
+        "eps": 0.03
+      },
+      {
+        "alpha": 2.0,
+        "eps": 0.15
+      },
+      {
+        "alpha": 2.0,
+        "eps": 0.3
+      }
+    ],
+    "Kuramoto": [
+      {
+        "K": 0.5,
+        "dt": 0.01
+      },
+      {
+        "K": 0.5,
+        "dt": 0.03
+      },
+      {
+        "K": 0.5,
+        "dt": 0.1
+      },
+      {
+        "K": 2.0,
+        "dt": 0.01
+      },
+      {
+        "K": 2.0,
+        "dt": 0.03
+      },
+      {
+        "K": 2.0,
+        "dt": 0.1
+      },
+      {
+        "K": 8.0,
+        "dt": 0.01
+      },
+      {
+        "K": 8.0,
+        "dt": 0.03
+      },
+      {
+        "K": 8.0,
+        "dt": 0.1
+      }
+    ],
+    "Gaussian": [
+      {
+        "max_delay": 0,
+        "heterogeneity": 0.0
+      },
+      {
+        "max_delay": 0,
+        "heterogeneity": 0.5
+      },
+      {
+        "max_delay": 0,
+        "heterogeneity": 1.0
+      },
+      {
+        "max_delay": 1,
+        "heterogeneity": 0.0
+      },
+      {
+        "max_delay": 1,
+        "heterogeneity": 0.5
+      },
+      {
+        "max_delay": 1,
+        "heterogeneity": 1.0
+      },
+      {
+        "max_delay": 5,
+        "heterogeneity": 0.0
+      },
+      {
+        "max_delay": 5,
+        "heterogeneity": 0.5
+      },
+      {
+        "max_delay": 5,
+        "heterogeneity": 1.0
+      }
+    ],
+    "Cauchy": [
+      {
+        "max_delay": 0,
+        "heterogeneity": 0.0
+      },
+      {
+        "max_delay": 0,
+        "heterogeneity": 0.5
+      },
+      {
+        "max_delay": 0,
+        "heterogeneity": 1.0
+      },
+      {
+        "max_delay": 1,
+        "heterogeneity": 0.0
+      },
+      {
+        "max_delay": 1,
+        "heterogeneity": 0.5
+      },
+      {
+        "max_delay": 1,
+        "heterogeneity": 1.0
+      },
+      {
+        "max_delay": 5,
+        "heterogeneity": 0.0
+      },
+      {
+        "max_delay": 5,
+        "heterogeneity": 0.5
+      },
+      {
+        "max_delay": 5,
+        "heterogeneity": 1.0
+      }
+    ]
+  },
+  "source_sha256": "bc5a75a143d85a19ac28da7a359adce689fdf410a5992046b6dc57782929812f",
+  "helper_hashes": {
+    "scripts/build_pearson_size_match.py": "91a41ce116206f1246b6486cea355bcfdea385db6b40274a50b903198d1b9c2b",
+    "scripts/build_pearson_strength_match.py": "ba7f309d9692adffb6bcde2618175607c1493c01337e934f056a04270724ba50",
+    "src/generators/dynamical.py": "d0c966ea34dcc4dac38ff8c39e5f7bea514d9bc920fe0918d8f3a724d53fc814",
+    "src/generators/linear.py": "8344b635f5adce6110e2f221e42cf9d325f4f303c5ba0c2222a1e25c7d2b8e0d",
+    "src/generators/pde.py": "4bdf95291095c348e751dbfd40ea8a0df73c1e6b8968d867b92515fdf817565c"
+  },
+  "scout": "Four realizations per candidate; common random numbers within family across settings. Select settings by means only. Invalid candidate if any of four fails; preserve failures.",
+  "fresh": "64 new paired class blocks, first32 training and last32 validation. All six families retained. Report failure instead of dropping seeds. No held confirmation created.",
+  "calibration": "Exact per-record signed/absolute correlation target shared across families within block; observation noise plus explicit shared drive if native strength too low. No claim of physical coupling equality. Record native variance fraction ignoring empirical cross-terms as a diagnostic, not exact variance decomposition.",
+  "gate": "All focused mean readouts<=.30 and centered z>=.70. No p90 if screen fails. Distributions secondary. No fresh-validation selection of parameters, families, seeds or embeddings.",
+  "references": [
+    "https://www.nature.com/articles/s43588-023-00519-x"
+  ],
+  "qualifications": [
+    "Focused probes are not p90; Gaussian plug-in MI is not KSG MI.",
+    "Cauchy covariance is finite-sample only.",
+    "M16/T1000 isolates generator changes; size grid deferred until feasibility.",
+    "Wave speed uses fixed observation cadence via Courant number; positive Kuramoto K is attractive in this implementation."
+  ]
+}

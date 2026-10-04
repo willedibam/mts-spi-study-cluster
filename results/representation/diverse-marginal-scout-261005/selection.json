@@ -1,0 +1,51 @@
+{
+  "configurations": {
+    "VAR": [
+      {
+        "phi": 0.2,
+        "gain": 0.15
+      }
+    ],
+    "Wave": [
+      {
+        "courant": 0.6,
+        "modes": 2
+      }
+    ],
+    "CML": [
+      {
+        "alpha": 1.69,
+        "eps": 0.03
+      }
+    ],
+    "Kuramoto": [
+      {
+        "K": 8.0,
+        "dt": 0.1
+      }
+    ],
+    "Gaussian": [
+      {
+        "max_delay": 1,
+        "heterogeneity": 0.0
+      }
+    ],
+    "Cauchy": [
+      {
+        "max_delay": 0,
+        "heterogeneity": 0.5
+      }
+    ]
+  },
+  "objective": 13.258088457052965,
+  "indices": {
+    "VAR": 2,
+    "Wave": 6,
+    "CML": 0,
+    "Kuramoto": 8,
+    "Gaussian": 3,
+    "Cauchy": 1
+  },
+  "criterion": "Minimize within-six-family squared distances between scaled scout mean vectors; deterministic multi-start alternating optimization, not a guaranteed global optimum. No z used.",
+  "scout_features_sha256": "6996b57ec1ea47704db87ffc129dd1ff1e4f12dd8fad1ee0e534d2fb8e9df900"
+}
