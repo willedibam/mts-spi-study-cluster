@@ -1,0 +1,9 @@
+{
+  "estimator": "sklearn GraphicalLasso default alpha .01/max_iter100/tol1e-4, as used by p90",
+  "convergence_warnings": 4,
+  "runtime_warnings": 4605,
+  "all_finite": true,
+  "independent_cholesky_logdet_agrees": true,
+  "max_abs_dual_gap": 0.00014967993892178733,
+  "max_inverse_residual": 5.860792497491829e-05
+}

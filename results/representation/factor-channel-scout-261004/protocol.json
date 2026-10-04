@@ -1,0 +1,24 @@
+{
+  "status": "Prospective local development-only scout; no held data or p90 jobs",
+  "seed": 261022,
+  "T": 1000,
+  "M": [
+    8,
+    16,
+    32
+  ],
+  "training_blocks": [
+    0,
+    95
+  ],
+  "validation_blocks": [
+    96,
+    127
+  ],
+  "model": "Unchanged lambda .25 and weights .9/.075/.025, Walsh linked/unlinked signs. Generate max32 Gaussian latent-factor parents; firstM channels are nested views, then apply label-independent channel permutation. Both classes share population absolute covariance multisets, eigenvalues and signed means within each M.",
+  "source_sha256": "b6d326d0ef1317754cd30a1f4f58d6eefaca93d89e256084bd7922c8286bf82a",
+  "probe_source_sha256": "8d277de0376cf9270fc1fd575ac3e429096cf021644d59d35b3aa70a65f4d22b",
+  "methods": "Ten cheap MPI means; full linear/RBF/ExtraTrees; one training-ranked mean logistic/stump; probe z standardized/centered PCA20 logistic; covariance/Pearson distribution summaries secondary.",
+  "criterion": "Consider M32 p90 only if all cheap mean readouts<=.65 and focused z>=.85 at M32. This is a screen, not full-p90 evidence. Do not choose an intermediate unlisted M, T>1000 or new parameters after outcomes.",
+  "limitation": "Signed marginal distributions differ; this is sign-magnitude organization of Gaussian dependence, not nonlinear dynamics. Views within each parent remain dependent, and all reported scores are exploratory development."
+}

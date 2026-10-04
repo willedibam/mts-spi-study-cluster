@@ -1,0 +1,6 @@
+method,BA
+augmented_mean_linear,0.9375
+augmented_mean_RBF,0.921875
+augmented_mean_trees,0.875
+augmented_selected_linear,0.765625
+augmented_selected_stump,0.734375

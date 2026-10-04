@@ -1,0 +1,8 @@
+{
+  "status": "Exploratory audit of already-seen development; held banks untouched",
+  "features_sha256": "90baf5071794d1bb36b1b470a86de96bea408f8489e85168886f0f6af6eee8d9",
+  "script_sha256": "038bbb726e22898da61b9b88e3f224d87305224ca7b3970a785c22585cddec66",
+  "single": "Rank maximum absolute training standardized class mean difference; logisticC1 and depth1 stump fitted on training only",
+  "sparse": "L1 logistic liblinear; C in [.01,.1,1,10], selected by four-fold GroupKFold within training only. Fit preprocessing independently inside each fold; keep paired blocks together. Tie favors smaller C.",
+  "no_selection": "No validation-dependent change to ranking, hyperparameters, feature list, classes, or seeds"
+}

@@ -1,0 +1,10 @@
+method,BA
+mean_linear,0.609375
+mean_RBF,0.484375
+mean_trees,0.515625
+mean_selected_linear,0.515625
+mean_selected_stump,0.4375
+z_center,0.515625
+z_standard,0.578125
+covariance_distribution,0.546875
+Pearson_distribution,0.53125

@@ -1,0 +1,4 @@
+method,BA
+mean_linear,0.90625
+mean_RBF,0.859375
+mean_trees,0.71875

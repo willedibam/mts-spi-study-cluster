@@ -1,0 +1,25 @@
+{
+  "status": "Single additional development-only check; no held or p90 jobs",
+  "M": 32,
+  "T": 1000,
+  "seed": 261023,
+  "strength": 0.12050359712230216,
+  "row_total_absolute_covariance": 3.35,
+  "rationale": "Previous lambda .25 at M32 doubles total row coupling relative to M16. Use lambda=3.35/(.9*M-1), analytically matching the M16 row absolute total. This is one declared candidate, not a parameter sweep.",
+  "training_blocks": [
+    0,
+    95
+  ],
+  "validation_blocks": [
+    96,
+    127
+  ],
+  "weights": [
+    0.9,
+    0.075,
+    0.025
+  ],
+  "source_sha256": "dbaeb832d0186ed50978bbe44485feb7285cb31dd599feec26d293fe1b0d973e",
+  "probes": "Prior ten means plus four exact fixed-p90 GraphicalLasso means; selected single means, linear/RBF/trees; focused z and signed distribution controls",
+  "gate": "All mean readouts<=.65 and focused centered z>=.85. Stop this channel-count branch if it fails. Full p90 still unverified even if it passes."
+}

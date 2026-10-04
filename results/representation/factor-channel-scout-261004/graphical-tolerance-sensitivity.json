@@ -1,0 +1,8 @@
+{
+  "scope": "Seven actual p90 means: empirical covariance/precision/precision squared and four GraphicalLasso covariance/precision means; same train/validation",
+  "default_accuracy": 0.90625,
+  "tight_tolerance_accuracy": 0.90625,
+  "tight_convergence_warnings": 1,
+  "tolerance": "tol=enet_tol=1e-6,max_iter1000; sensitivity only, no p90 setting changes",
+  "max_feature_change": 8.04198555123814e-07
+}

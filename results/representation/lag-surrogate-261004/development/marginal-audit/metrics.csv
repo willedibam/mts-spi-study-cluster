@@ -1,0 +1,6 @@
+method,BA,selected_C,nonzero
+mean_selected_linear,0.9375,,
+mean_selected_stump,0.90625,,
+distribution_selected_linear,0.9375,,
+distribution_selected_stump,0.96875,,
+mean_sparse_cv,1.0,1.0,4.0

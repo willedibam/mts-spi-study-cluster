@@ -1,0 +1,10 @@
+{
+  "stage": "Additional development-only leakage check after M32 cheap gate passed; no parameter retuning",
+  "M": 32,
+  "alphas": [
+    0.01,
+    0.1
+  ],
+  "same_training_validation": true,
+  "selection": "Require every augmented mean readout<=.65; no p90 if this fails"
+}

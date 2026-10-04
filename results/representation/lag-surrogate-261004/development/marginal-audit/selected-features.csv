@@ -1,0 +1,3 @@
+method,feature,training_effect,validation_auc
+mean,corr_kendall_tau-5-sq,-1.4514828843927816,0.9765625
+distribution,dtw/sd,-1.750146461413041,0.99609375
