@@ -1,0 +1,12 @@
+name: lag-surrogate-261004
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/lag-surrogate-261004/observations.npz
+  sha256: 946e8d6cc048b698b8188857ba70360fde1748dab4df71330c0ae34448cf2fc7
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/lag-surrogate-261004/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261016

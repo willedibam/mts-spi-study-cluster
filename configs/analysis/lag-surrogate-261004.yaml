@@ -1,0 +1,39 @@
+status: prospective_before_p90_outcomes
+purpose: Test temporal organization after exact matching of covariance and circular cross-spectrum; full p90 means remain a required competitor
+M: 16
+T: 1000
+classes: [alternating-lag, shared-phase]
+model: Eight independent Gaussian channel pairs; driver permutation swaps adjacent blocks of five observations, giving lags +5/-5. Pair loadings are a permutation of eight equally spaced values .35 to .85. Randomize channel labels. Center and standardize each channel before paired Fourier phase rotation.
+meaning: Nonstationary temporal organization of Gaussian dependence, not nonlinear or causal dynamics. Individual channels before empirical normalization are Gaussian iid in both generating ensembles. Shared phase preserves every realized circular auto/cross-covariance, but not the realized amplitude histogram or edge-trimmed correlations.
+source:
+  development_seed: 261013
+  development_pairs: 48
+  train_blocks: [0, 31]
+  validation_blocks: [32, 47]
+  zero_coupling_seed: 261014
+  zero_coupling_pairs: 16
+  fresh_held_seed: 261015
+  fresh_held_pairs: 32
+  estimator_seed: 261016
+indices:
+  development_matched: [1, 96]
+  development_null: [97, 128]
+  held_unreleased: [129, 192]
+selection: No parameter search; candidate used the declared local six-probe scout. Probe validation means .65625, z .71875; these are development observations, not confirmation.
+readout:
+  primary_z: Training-complete centered PCA20 and logistic C1
+  means: Training-only standard scaling, clip5, PCA20/logisticC1, full linear, RBF C1/gamma scale, ExtraTrees500/minleaf2
+  distributions: Mean,SD,10/25/50/75/90 quantiles; standard clip5 PCA20/logistic C1
+  controls: Signed/absolute covariance summaries, standardized z, validity-only, independently edge-shuffled z, zero-coupling paired records, channel third/fourth moments
+  inference: Paired block bootstrap5000; intervals condition on training and design
+  display: Fixed training-fit PCA2 and UMAP30/min_dist.1/seed261003, all validation points; no seed or class selection
+held_release_gate:
+  primary_z_min: 0.8
+  maximum_mean_readout: 0.65
+  covariance_readouts_max: 0.60
+  validity_only_max: 0.65
+  shuffled_z_max: 0.65
+  null_primary_z_max: 0.65
+  decision: Require every criterion; otherwise preserve negative development report and leave held uncomputed. Distribution performance is reported as secondary, not assumed weak.
+SPI_cap: configs/pyspi/benchmarked_p90.yaml
+literature: https://arxiv.org/abs/chao-dyn/9909037

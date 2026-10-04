@@ -1,0 +1,15 @@
+status: development_only_feasibility
+purpose: Test SPI correspondence after exact matching of global circular second-order structure
+M: 16
+T: 1000
+seed: 261013
+training_blocks: [0, 31]
+validation_blocks: [32, 47]
+classes: [alternating_lag, shared_phase_surrogate]
+model: Eight independent Gaussian channel pairs; within each pair swap adjacent five-sample blocks in the shared driver. Pair correlations span .35 to .85, with random channel permutation. Each individual channel is Gaussian iid in the generating ensemble; cross-channel lag organization is nonstationary.
+surrogate: Multiply every channel Fourier coefficient at each frequency by the same random unit phase, leaving DC and Nyquist fixed. Preserve the realized zero-lag covariance and all circular cross-covariances exactly; do not claim conventional edge-trimmed lag estimates are identical.
+probes: Ordered off-diagonal circular correlations at lags 0,1,5,10 and kNN mutual information at lags 0,5 (four neighbors); their per-profile means and Pearson cross-profile correlations.
+readouts: StandardScaler fitted on training only; logistic C1 and RBF SVC C1; covariance signed/absolute and univariate third/fourth moment controls.
+gate: No held bank or p90 submission until cheap numerical and scientific feasibility is reviewed. Any refinement uses declared development seeds only and preserves this result.
+limitations: This is temporal organization/nonstationarity of Gaussian dependence, not nonlinear Gaussian dynamics or a causal model. Fourier phase randomization does not preserve each realized channel's amplitude histogram. Finite-record estimator behavior remains relevant.
+literature: https://arxiv.org/abs/chao-dyn/9909037
