@@ -1,0 +1,7 @@
+family,phi,gain,courant,modes,alpha,eps,K,dt,max_delay,heterogeneity
+VAR,0.2,0.15,,,,,,,,
+Wave,,,0.6,2.0,,,,,,
+CML,,,,,1.69,0.03,,,,
+Kuramoto,,,,,,,8.0,0.1,,
+Gaussian,,,,,,,,,1.0,0.0
+Cauchy,,,,,,,,,0.0,0.5

@@ -1,0 +1,7 @@
+{
+  "best_mean": 0.9791666666666666,
+  "primary_z": 0.921875,
+  "pass_gate": false,
+  "gate": "All mean readouts <=.30 and centered z >=.70; heuristic development gate, chance1/6. Failure stops this fixed grid without p90 submission.",
+  "scope": "Fresh development realizations; selected using separate scout means. No existing held banks opened; not p90."
+}

@@ -1,0 +1,6 @@
+feature,training_F
+Spearman_lag1_squared,837.7686561284195
+Pearson_lag1_squared,282.97871457058955
+GL_covariance_squared,155.39944782105505
+Pearson_squared,148.87652329035333
+Spearman_lag5_squared,140.80140052908433

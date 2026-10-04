@@ -1,0 +1,13 @@
+method,BA
+mean_linear,0.9791666666666666
+mean_RBF,0.96875
+mean_trees,0.9791666666666666
+mean_selected_tree,0.6614583333333334
+distribution_linear,0.984375
+distribution_RBF,0.96875
+distribution_trees,0.9791666666666666
+distribution_selected_tree,0.5572916666666666
+z_center,0.921875
+z_standard,0.90625
+two_strength_scalars,0.16666666666666666
+z_validity_only,0.16666666666666666

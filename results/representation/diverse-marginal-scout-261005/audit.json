@@ -1,0 +1,46 @@
+{
+  "source_bindings_verified": true,
+  "source_freeze_commit": "e1c39ae",
+  "fresh_features_sha256": "6d9954056497e095474b37c35f7e9ad86cafde610d15f9ea1385252fd56fd7ba",
+  "fresh_rows_sha256": "c0fe8af25439fbe42891dce5bf083a9404e4a5b4d8387364a1f12ba89fad5fcb",
+  "scout_rows": 216,
+  "fresh_rows": 384,
+  "failures": 0,
+  "probe_count": 24,
+  "max_signed_error": 4.0609876572617054e-15,
+  "max_absolute_error": 2.08305594995295e-14,
+  "nonfinite_z": 0,
+  "replays": [
+    {
+      "family": "VAR",
+      "bit_exact_features": true
+    },
+    {
+      "family": "Wave",
+      "bit_exact_features": true
+    },
+    {
+      "family": "CML",
+      "bit_exact_features": true
+    },
+    {
+      "family": "Kuramoto",
+      "bit_exact_features": true
+    },
+    {
+      "family": "Gaussian",
+      "bit_exact_features": true
+    },
+    {
+      "family": "Cauchy",
+      "bit_exact_features": true
+    }
+  ],
+  "package_versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "umap-learn": "0.5.11"
+  },
+  "scope": "Six selected fresh block0 records replay bit-exact. Independent covariance and first-z formula checks. No complete p90 run or held confirmation."
+}
