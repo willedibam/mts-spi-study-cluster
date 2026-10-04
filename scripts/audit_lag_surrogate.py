@@ -7,7 +7,7 @@ from src.run_external_corpus import _array_sha256
 from src.utils import slugify
 
 
-def audit(count):
+def audit(count, source="669a718"):
     manifest=json.loads((DATA/'manifest.json').read_text());assert sha(DATA/'observations.npz')==manifest['archive_sha256']
     order=None;records=[]
     with np.load(DATA/'observations.npz') as raw:
@@ -18,7 +18,7 @@ def audit(count):
             assert (meta['M'],meta['T'])==(16,1000)
             assert meta['source']['archive_sha256']==manifest['archive_sha256']
             assert meta['source']['member_sha256']==_array_sha256(raw[r['row_id']])
-            assert meta['experiment']['git_commit'].startswith('669a718') and not meta['experiment']['git_dirty']
+            assert meta['experiment']['git_commit'].startswith(source) and not meta['experiment']['git_dirty']
             assert meta['random_seed']==261016 and meta['job']['estimator_rng_policy']=='isolated_serial'
             assert meta['pyspi']['version']['computation']=='3.0.0.r7'
             for key,path in [('corpus_config_sha256',f'configs/external/{RUN}.yaml'),('pyspi_config_sha256','configs/pyspi/benchmarked_p90.yaml'),('runner_sha256','src/run_external_corpus.py'),('compute_sha256','src/compute.py')]:
@@ -39,4 +39,6 @@ def audit(count):
     print({k:v for k,v in result.items() if k!='records'})
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--count',type=int,required=True);a=p.parse_args();audit(a.count)
+    p=argparse.ArgumentParser();p.add_argument('--count',type=int,required=True);p.add_argument('--run',default=RUN);p.add_argument('--source',default='669a718');a=p.parse_args()
+    RUN=a.run;DATA=ROOT/'data/representation'/RUN;OUT=ROOT/'results/representation'/RUN
+    audit(a.count,a.source)

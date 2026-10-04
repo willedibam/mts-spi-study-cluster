@@ -1,0 +1,172 @@
+{
+  "stage": "development",
+  "train_rows": [
+    "matched-alternating-lag-block-00",
+    "matched-shared-phase-block-00",
+    "matched-alternating-lag-block-01",
+    "matched-shared-phase-block-01",
+    "matched-alternating-lag-block-02",
+    "matched-shared-phase-block-02",
+    "matched-alternating-lag-block-03",
+    "matched-shared-phase-block-03",
+    "matched-alternating-lag-block-04",
+    "matched-shared-phase-block-04",
+    "matched-alternating-lag-block-05",
+    "matched-shared-phase-block-05",
+    "matched-alternating-lag-block-06",
+    "matched-shared-phase-block-06",
+    "matched-alternating-lag-block-07",
+    "matched-shared-phase-block-07",
+    "matched-alternating-lag-block-08",
+    "matched-shared-phase-block-08",
+    "matched-alternating-lag-block-09",
+    "matched-shared-phase-block-09",
+    "matched-alternating-lag-block-10",
+    "matched-shared-phase-block-10",
+    "matched-alternating-lag-block-11",
+    "matched-shared-phase-block-11",
+    "matched-alternating-lag-block-12",
+    "matched-shared-phase-block-12",
+    "matched-alternating-lag-block-13",
+    "matched-shared-phase-block-13",
+    "matched-alternating-lag-block-14",
+    "matched-shared-phase-block-14",
+    "matched-alternating-lag-block-15",
+    "matched-shared-phase-block-15",
+    "matched-alternating-lag-block-16",
+    "matched-shared-phase-block-16",
+    "matched-alternating-lag-block-17",
+    "matched-shared-phase-block-17",
+    "matched-alternating-lag-block-18",
+    "matched-shared-phase-block-18",
+    "matched-alternating-lag-block-19",
+    "matched-shared-phase-block-19",
+    "matched-alternating-lag-block-20",
+    "matched-shared-phase-block-20",
+    "matched-alternating-lag-block-21",
+    "matched-shared-phase-block-21",
+    "matched-alternating-lag-block-22",
+    "matched-shared-phase-block-22",
+    "matched-alternating-lag-block-23",
+    "matched-shared-phase-block-23",
+    "matched-alternating-lag-block-24",
+    "matched-shared-phase-block-24",
+    "matched-alternating-lag-block-25",
+    "matched-shared-phase-block-25",
+    "matched-alternating-lag-block-26",
+    "matched-shared-phase-block-26",
+    "matched-alternating-lag-block-27",
+    "matched-shared-phase-block-27",
+    "matched-alternating-lag-block-28",
+    "matched-shared-phase-block-28",
+    "matched-alternating-lag-block-29",
+    "matched-shared-phase-block-29",
+    "matched-alternating-lag-block-30",
+    "matched-shared-phase-block-30",
+    "matched-alternating-lag-block-31",
+    "matched-shared-phase-block-31"
+  ],
+  "test_rows": [
+    "matched-alternating-lag-block-32",
+    "matched-shared-phase-block-32",
+    "matched-alternating-lag-block-33",
+    "matched-shared-phase-block-33",
+    "matched-alternating-lag-block-34",
+    "matched-shared-phase-block-34",
+    "matched-alternating-lag-block-35",
+    "matched-shared-phase-block-35",
+    "matched-alternating-lag-block-36",
+    "matched-shared-phase-block-36",
+    "matched-alternating-lag-block-37",
+    "matched-shared-phase-block-37",
+    "matched-alternating-lag-block-38",
+    "matched-shared-phase-block-38",
+    "matched-alternating-lag-block-39",
+    "matched-shared-phase-block-39",
+    "matched-alternating-lag-block-40",
+    "matched-shared-phase-block-40",
+    "matched-alternating-lag-block-41",
+    "matched-shared-phase-block-41",
+    "matched-alternating-lag-block-42",
+    "matched-shared-phase-block-42",
+    "matched-alternating-lag-block-43",
+    "matched-shared-phase-block-43",
+    "matched-alternating-lag-block-44",
+    "matched-shared-phase-block-44",
+    "matched-alternating-lag-block-45",
+    "matched-shared-phase-block-45",
+    "matched-alternating-lag-block-46",
+    "matched-shared-phase-block-46",
+    "matched-alternating-lag-block-47",
+    "matched-shared-phase-block-47"
+  ],
+  "diagnostics": {
+    "mean": {
+      "selected_features": 264,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "distribution": {
+      "selected_features": 1838,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "z": {
+      "selected_features": 29744,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "z_validity": {
+      "selected_features": 6312,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "b": {
+      "selected_features": 1,
+      "components": 1,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "pearson_two": {
+      "selected_features": 2,
+      "components": 2,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "z_complete": {
+      "selected_features": 29744,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "z_standard": {
+      "selected_features": 29744,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "mean_complete": {
+      "selected_features": 264,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    },
+    "z_shuffled_complete": {
+      "selected_features": 31878,
+      "components": 20,
+      "validation_selected_missing_fraction": 0.0
+    }
+  },
+  "development_gate": {
+    "z_strong": true,
+    "means_weak": false,
+    "covariance_weak": true,
+    "validity_weak": true,
+    "shuffle_weak": true,
+    "null_weak": true,
+    "all_pass": false
+  },
+  "readout_sha256": "2e7216ae451a1cc83f0a32c452373679c229ac64b8aeb626a0ddebfcd7959f0a",
+  "features_sha256": "90baf5071794d1bb36b1b470a86de96bea408f8489e85168886f0f6af6eee8d9",
+  "qualification": "Binary paired temporal-organization contrast; development gates supersede the six-class gates in the reused readout. Circular second-order equality is exact. Full p90 means/distributions may encode the difference. No held release unless all gates pass.",
+  "null_accuracy": {
+    "mean": 0.5,
+    "z": 0.5
+  },
+  "wrapper_sha256": "f9331ff92a35a3a4251266112f5658c4c9848ccbcc6164b1372e93dfc0703877"
+}

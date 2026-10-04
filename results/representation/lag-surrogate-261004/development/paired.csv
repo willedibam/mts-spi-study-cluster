@@ -1,0 +1,19 @@
+comparison,difference,low,high
+z_complete - b,0.5,0.5,0.5
+z_complete - b_RBF,0.46875,0.34375,0.59375
+z_complete - b_full,0.5,0.5,0.5
+z_complete - b_trees,0.5,0.5,0.5
+z_complete - distribution,0.53125,0.375,0.6875
+z_complete - mean,0.40625,0.28125,0.53125
+z_complete - mean_RBF,0.375,0.25,0.5
+z_complete - mean_complete,0.40625,0.28125,0.53125
+z_complete - mean_full,0.375,0.25,0.46875
+z_complete - mean_trees,0.28125,0.15625,0.40625
+z_complete - pearson_two,0.5,0.5,0.5
+z_complete - pearson_two_RBF,0.5,0.5,0.5
+z_complete - pearson_two_full,0.5,0.5,0.5
+z_complete - pearson_two_trees,0.5,0.5,0.5
+z_complete - z,0.0,0.0,0.0
+z_complete - z_shuffled_complete,0.46875,0.375,0.5625
+z_complete - z_standard,0.0625,0.0,0.15625
+z_complete - z_validity,0.5625,0.375,0.71875

@@ -1,0 +1,14 @@
+{
+  "decision": "Do not release either confirmation bank",
+  "original_gate": "Failed maximum mean-readout<=.65; tree .71875",
+  "additional_diagnostic": "Top mean feature ranked on training alone: squared Kendall correlation at lag5. Logistic validation accuracy .9375,AUC .9765625; primary z1.0. Information is accessible to a simple marginal baseline. Diagnostic is exploratory, not independent confirmation.",
+  "cancelled_followup": "The announced narrower fresh confirmation was cancelled before any job submission after this finding; no confirmation outcomes seen.",
+  "original_held": "64 records RNG261015 remain uncomputed",
+  "prepared_fresh_bank": {
+    "run": "lag-surrogate-confirmation-261004",
+    "records": 128,
+    "seed": 261019,
+    "archive_sha256": "84a11910692310cc22eb9b8b717138ca65ca5a8cc3e91591c811bebc44e9f905",
+    "status": "Raw inputs generated only; no SPI computation. Generator pair function unchanged from669a718."
+  }
+}

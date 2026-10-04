@@ -1,0 +1,21 @@
+method,training_rank,feature,training_standardized_difference,evaluation_AUC
+mean,1,corr_kendall_tau-5-sq,-1.4514828843927816,0.9765625
+mean,2,corr_spearman_tau-5-sq,-0.8963759210827659,0.8515625
+mean,3,tlmi_kraskov_NN-4_DCE-AUTO,0.5486890394853734,0.51953125
+mean,4,tlmi_kraskov_NN-4,0.5148218832762048,0.53515625
+mean,5,dtw,0.5028146150162569,0.5859375
+mean,6,cce_gaussian_n-5,0.4923840984042688,0.66796875
+mean,7,cce_kozachenko_n-5,-0.48732468400305884,0.5859375
+mean,8,ce_kozachenko,-0.484235921947748,0.51953125
+mean,9,psi_wavelet_max_fs-1_fmin-0_fmax-0-25_max,-0.47873375046645317,0.6640625
+mean,10,dtw_constraint-sakoe-chiba_radius-auto,0.459502725256919,0.56640625
+z,1,corr_spearman_tau-5 | corr_kendall_tau-5,1.9573056418206773,1.0
+z,2,corr_spearman_tau-5-sq | corr_kendall_tau-5-sq,1.923934014429951,1.0
+z,3,dtw | sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-5,1.8642892021962953,0.99609375
+z,4,dtw | gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5,1.8630302732375323,0.99609375
+z,5,dtw | pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5,1.8626121950773804,0.99609375
+z,6,dtw | dtf_multitaper_mean_fs-1_fmin-0_fmax-0-5,1.8626121950773804,0.99609375
+z,7,dtw | ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-5,1.8605410483537834,0.99609375
+z,8,dtw | cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5,1.8595465852239805,0.99609375
+z,9,dtw | dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5,1.8592578590835562,0.99609375
+z,10,dtw_constraint-sakoe-chiba_radius-auto | sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-5,1.859255265166635,0.99609375

@@ -1,0 +1,117 @@
+{
+  "stage": "complete: development gate failed; stronger selected-mean diagnostic rules out intended contrast",
+  "source_commit": "669a718",
+  "source_path": "/scratch/ql44/we2614/mts-spi-study/operations/sources/lag-surrogate-669a718",
+  "pyspi_commit": "65317c9c1fd5f12358b8ede09b7576ef001a76dd",
+  "raw_sha256": "946e8d6cc048b698b8188857ba70360fde1748dab4df71330c0ae34448cf2fc7",
+  "jobs": {
+    "smoke": {
+      "id": "180466254",
+      "indices": [
+        1,
+        2
+      ],
+      "cpus": 2,
+      "mem_GB": 12,
+      "walltime": "00:25:00",
+      "task_timeout": 1200,
+      "outcome": {
+        "exit_status": 0,
+        "complete": 2,
+        "walltime": "00:05:50",
+        "cpu_time": "00:09:35",
+        "peak_memory_kb": 6303832
+      }
+    },
+    "node": {
+      "id": "180466420",
+      "indices": [
+        1,
+        48
+      ],
+      "cpus": 48,
+      "mem_GB": 190,
+      "walltime": "00:20:00",
+      "task_timeout": 900,
+      "skip_existing": true,
+      "outcome": {
+        "complete": 48,
+        "exit_status": 0,
+        "walltime": "00:06:53",
+        "cpu_time": "04:40:29",
+        "peak_memory_kb": 56434100
+      }
+    },
+    "remaining_development": {
+      "id": "180466541",
+      "indices": [
+        49,
+        128
+      ],
+      "cpus": 96,
+      "workers": 80,
+      "mem_GB": 380,
+      "walltime": "00:20:00",
+      "task_timeout": 900,
+      "outcome": {
+        "exit_status": 0,
+        "complete": 80,
+        "walltime": "00:06:22",
+        "cpu_time": "07:23:43",
+        "peak_memory_kb": 109486584
+      }
+    }
+  },
+  "held_status": "indices129\u2013192 unreleased; no SPI outcomes computed",
+  "automation": "old expired heartbeat remains paused",
+  "smoke_validity": "286 fully finite profiles in both records; only three group-delay variants unavailable",
+  "scaling_rationale": "Representative 48-record node passed, max per-record388.5s and53.8GiB peak aggregate. Remaining80 records use two96CPU/380GB nodes in one wave, with shared frozen source and per-node import validation; avoids two waves on one48core node. Held129\u2013192 excluded.",
+  "metrics": {
+    "mean": 0.59375,
+    "distribution": 0.46875,
+    "z": 1.0,
+    "z_validity": 0.4375,
+    "b": 0.5,
+    "pearson_two": 0.5,
+    "z_complete": 1.0,
+    "z_standard": 0.9375,
+    "mean_complete": 0.59375,
+    "z_shuffled_complete": 0.53125,
+    "mean_full": 0.625,
+    "mean_RBF": 0.625,
+    "mean_trees": 0.71875,
+    "b_full": 0.5,
+    "b_RBF": 0.53125,
+    "b_trees": 0.5,
+    "pearson_two_full": 0.5,
+    "pearson_two_RBF": 0.5,
+    "pearson_two_trees": 0.5
+  },
+  "selected_mean": [
+    {
+      "feature": "corr_kendall_tau-5-sq",
+      "feature_index": 73,
+      "selection": "Maximum absolute training standardized difference; diagnostic inspected after primary validation outcomes",
+      "model": "LogisticRegression",
+      "BA": 0.9375,
+      "AUC": 0.9765625,
+      "z_minus_selected": 0.0625,
+      "paired_low": 0.0,
+      "paired_high": 0.15625
+    },
+    {
+      "feature": "corr_kendall_tau-5-sq",
+      "feature_index": 73,
+      "selection": "Maximum absolute training standardized difference; diagnostic inspected after primary validation outcomes",
+      "model": "DecisionTreeClassifier",
+      "BA": 0.90625,
+      "AUC": 0.9765625,
+      "z_minus_selected": 0.09375,
+      "paired_low": 0.0,
+      "paired_high": 0.1875
+    }
+  ],
+  "decision": "Original held bank stays uncomputed; prepared fresh confirmation cancelled before submission after strong one-mean diagnostic.",
+  "report": "notebooks/embeddings/spi_lag_surrogate_261004.ipynb",
+  "validity": "Primary z29744 features; zero validation or null imputation.128 provenance audits passed; four invariant tests; independent replay of12 recordings/3468means/24276distribution values/600z entries passed."
+}

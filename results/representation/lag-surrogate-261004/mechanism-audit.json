@@ -1,0 +1,8 @@
+{
+  "T": 100,
+  "loading": 0.7,
+  "lag": 5,
+  "max_lag_profile_difference": 2.220446049250313e-16,
+  "operator_singular_value_error": 4.440892098500626e-16,
+  "qualification": "Population illustration at T100; p90 experiment uses T1000 and eight pairs. Temporal localization changes, singular strengths and circular lag averages do not."
+}

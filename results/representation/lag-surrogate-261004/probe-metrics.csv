@@ -1,0 +1,9 @@
+method,model,BA
+probe_mean,LogisticRegression,0.65625
+probe_mean,SVC,0.65625
+probe_z,LogisticRegression,0.71875
+probe_z,SVC,0.6875
+covariance,LogisticRegression,0.5
+covariance,SVC,0.5
+univariate,LogisticRegression,0.40625
+univariate,SVC,0.4375

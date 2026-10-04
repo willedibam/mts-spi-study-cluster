@@ -1,0 +1,22 @@
+{
+  "rows": 12,
+  "indices": [
+    1,
+    2,
+    33,
+    34,
+    65,
+    66,
+    95,
+    96,
+    97,
+    98,
+    127,
+    128
+  ],
+  "means_checked": 3468,
+  "distribution_values_checked": 24276,
+  "z_checked": 600,
+  "max_z_error": 2.91206829761137e-08,
+  "status": "independent NumPy replay passed"
+}
