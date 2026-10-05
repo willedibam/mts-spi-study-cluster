@@ -1,0 +1,12 @@
+name: tail-alignment-261005
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/tail-alignment-261005/observations.npz
+  sha256: d6fc5daadfc8f9e845af8556a9ba0ffa5101a10cf60262af4e02cab9f6ecfc27
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/tail-alignment-261005/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261054
