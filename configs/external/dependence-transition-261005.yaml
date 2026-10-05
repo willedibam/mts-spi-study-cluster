@@ -1,0 +1,12 @@
+name: dependence-transition-261005
+source:
+  format: named-npz-v1
+  archive: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/dependence-transition-261005/observations.npz
+  sha256: c68bf9b74b1281cce4d731c09dfea56c691b98361772ecccbfe53f3b64c65f9c
+  axis_order:
+  - process
+  - observation
+base_output_dir: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/dependence-transition-261005/mpis
+pyspi_config: configs/pyspi/benchmarked_p90.yaml
+normalise: false
+random_seed: 261052

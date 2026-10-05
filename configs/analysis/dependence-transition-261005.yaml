@@ -1,0 +1,66 @@
+name: dependence-transition-261005
+purpose: Explore independently defined generalized-synchronization boundaries, not presume SPI-SPI advantage.
+status: exploratory_physics_and_baseline_scope
+T: 1000
+seed: 261051
+physics_seeds: 8
+candidates:
+  rossler-detuned:
+    model: Hramov-Koronovskii PRE71 067201 equation5
+    omega_drive: 1.3
+    omega_response: 0.95
+    controls: [0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.10, 0.105, 0.11, 0.115, 0.12, 0.125, 0.13, 0.135, 0.14, 0.145, 0.15]
+    dt: 0.02
+    sample_dt: 0.2
+    burn_time: 2000
+    reference_time: 2000
+    M: 6
+  rossler-close:
+    model: Hramov-Koronovskii PRE71 067201 equation5
+    omega_drive: 0.99
+    omega_response: 0.95
+    controls: [0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15]
+    dt: 0.02
+    sample_dt: 0.2
+    burn_time: 2000
+    reference_time: 2000
+    M: 6
+  rossler-lorenz:
+    model: de Sousa Vieira-Lichtenberg PRE56 R3741 equations16-17
+    controls: [4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5]
+    dt: 0.005
+    sample_dt: 0.05
+    burn_time: 500
+    reference_time: 500
+    M: 6
+  logistic-modules:
+    model: Pyragas PRE54 R4508; eight independent drive-response modules
+    controls: [0.26, 0.27, 0.28, 0.29, 0.30, 0.31, 0.32, 0.33, 0.34, 0.35, 0.36, 0.38, 0.40, 0.44, 0.48, 0.50, 0.52, 0.56]
+    burn_steps: 20000
+    reference_steps: 20000
+    M: 16
+reference:
+  primary: largest conditional response Lyapunov exponent on disjoint future trajectory
+  secondary: normalized auxiliary-system RMS error on disjoint future trajectory
+  auxiliary_excluded_from_observed_channels: true
+  caveats: Negative finite-time CLE is not proof of global attraction; inspect auxiliary error, reference halves, seeds, and integration refinement.
+readouts:
+  unsupervised: training-only centered z PC1; standardized z PC1 sensitivity; standardized mean and distribution PC1
+  stronger_marginals: training-selected single SPI mean plus full-vector ridge and nonlinear readouts
+  scalar: signed and absolute mean Pearson
+  scope: No favorable-component selection using Q. All development comparisons exploratory. Fresh seeds only after selecting a justified local boundary.
+stop_rules:
+  - Do not claim all-mean information absence from overlapping embeddings or a weak PC1.
+  - Do not include auxiliary replicas in z; that would expose the diagnostic directly.
+  - No promotion to polished order-parameter notebooks before numerical and baseline checks.
+  - Full p90 only after physical transition is verified; retain negative results.
+p90_scope:
+  decision: Two physically better-supported continuous-time cases; no full-catalogue outcome seen at selection.
+  systems: [rossler-close, rossler-lorenz]
+  controls:
+    rossler-close: [0.09, 0.09333333333333334, 0.09666666666666666, 0.10, 0.10333333333333333, 0.10666666666666667, 0.11, 0.11333333333333333, 0.11666666666666667, 0.12, 0.12333333333333334, 0.12666666666666668, 0.13]
+    rossler-lorenz: [6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 7.0, 7.1, 7.2]
+  seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115]
+  training_seeds: [100, 101, 102, 103, 104, 105, 106, 107]
+  numerics: fivefold burn and future reference; half integration step; observed sample interval unchanged
+  caveats: Exploratory new initial conditions, not untouched confirmation after a frozen successful discovery. Cheap-probe results do not show a general mean-baseline failure. Auxiliary coalescence under positive CLE can be finite-precision trapping and is not accepted as sole ground truth.
