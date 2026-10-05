@@ -127,7 +127,11 @@ def analyze(data,out):
     for ext in ['png','svg']:fig.savefig(out/f'p90-comparison.{ext}',dpi=180)
     plt.close(fig)
     pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
-    pd.concat(all_scores).to_csv(out/'scores.csv',index=False)
+    all_scores=pd.concat(all_scores)
+    all_scores.to_csv(out/'scores.csv',index=False)
+    from scripts.transition_sharpness import summarize
+    summarize(all_scores,['CLE','aux_error','mean_r','mean_abs_r','mean_PC1','z_PC1','z_standard_PC1',
+                          'distribution_PC1','selected_mean','mean_ridge','mean_RBF'],out/'sharpness.csv')
     (out/'analysis.json').write_text(json.dumps(dict(settings=settings,features_sha256=sha(out/'features.npz'),
         source_sha256=sha(__file__),scope='Exploratory held-seed comparison; no inference of marginal information absence from PC1.'),indent=2)+'\n')
     print(pd.DataFrame(metrics).round(4).to_string(index=False))

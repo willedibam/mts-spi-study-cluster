@@ -39,3 +39,12 @@ def test_rk4_observations_match_independent_adaptive_integrator():
         reference=solve_ivp(lambda t,y:rhs(y,k,1.3,hetero),(0,.4),s,
                             method='DOP853',t_eval=times,rtol=1e-11,atol=1e-12)
         np.testing.assert_allclose(x,reference.y[:6],rtol=2e-6,atol=2e-7)
+
+
+def test_change_width_is_affine_invariant_and_rejects_reversal():
+    from scripts.transition_sharpness import curve_shape
+    x=np.linspace(0,1,11);step=(x>.5).astype(float)
+    a=curve_shape(x,step);b=curve_shape(x,3-10*step)
+    np.testing.assert_allclose([a['width'],a['midpoint']],[b['width'],b['midpoint']])
+    assert a['width']<curve_shape(x,x)['width']
+    assert curve_shape(x,np.sin(2*np.pi*x))['monotonicity']<.8
