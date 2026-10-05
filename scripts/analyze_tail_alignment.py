@@ -19,7 +19,8 @@ def analyze(data,out):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from scripts.plot_large_m_pair_sampling import figure_style
-    rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
+    manifest=json.loads((data/'manifest.json').read_text())
+    rows=pd.DataFrame(manifest['rows'])
     bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     fit=rows.role.eq('development').to_numpy();held=~fit;y=rows.Q_tail.to_numpy()
     metrics=[];scores=rows.copy();settings={};missing_by_method={}
@@ -73,14 +74,15 @@ def analyze(data,out):
         curve=scores[common].groupby('control')[label]
         axes[3].plot(curve.mean().index,curve.mean(),'o-',color=color,label=label.replace('empirical_',''))
         axes[3].fill_between(curve.mean().index,curve.quantile(.1),curve.quantile(.9),color=color,alpha=.10)
-    axes[3].axhline(rows.mean_r.iloc[0],color='.5',ls=':',lw=.8,label='Population signed mean')
+    population_r=rows.groupby('control').mean_r.first()
+    axes[3].plot(population_r.index,population_r,color='.5',ls=':',lw=.8,label='Population signed mean')
     axes[3].set(ylabel='Observed mean Pearson',title='Primary scalar baseline');axes[3].legend(fontsize=6)
     for ax in axes:ax.set_xlabel('Fraction of assignments swapped');ax.grid(axis='y',alpha=.12)
-    fig.suptitle('Student-t block alignment: M=N=16, T=1000; 32 training / 32 held seeds\nCompositional stochastic control, not a bifurcation',fontsize=10)
+    fig.suptitle(manifest.get('figure_title','Student-t block alignment: M=N=16, T=1000; 32 training / 32 held seeds')+'\nCompositional stochastic control, not a bifurcation',fontsize=10)
     for ext in ['png','svg']:fig.savefig(out/f'p90-tail-comparison.{ext}',dpi=180)
     plt.close(fig);scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     (out/'analysis.json').write_text(json.dumps(dict(settings=settings,features_sha256=sha(out/'features.npz'),
-        source_sha256=sha(__file__),qualification='Exploratory p90 extension on the same seeds as focused probes. Selected Pearson/Kendall/MI population means are matched, not all289 means.'),indent=2)+'\n')
+        source_sha256=sha(__file__),qualification=manifest.get('analysis_scope','Exploratory p90 extension on the same seeds as focused probes. Selected Pearson/Kendall/MI population means are matched, not all289 means.')),indent=2)+'\n')
     print(pd.DataFrame(metrics).round(4).to_string(index=False))
 
 
@@ -89,6 +91,7 @@ if __name__=='__main__':
     p.add_argument('--output',type=Path,default=OUT/'p90');a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
     if a.stage=='extract':
         from scripts.analyze_native_coupling import extract
-        extract(a.data,a.output,corpus='tail-alignment-261005')
+        manifest=json.loads((a.data/'manifest.json').read_text())
+        extract(a.data,a.output,corpus=manifest.get('corpus','tail-alignment-261005'))
     else:
         with threadpool_limits(limits=4):analyze(a.data,a.output)
