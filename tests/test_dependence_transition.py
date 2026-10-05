@@ -1,5 +1,5 @@
 import numpy as np
-from scripts.scout_dependence_transition import rhs, maps, normalize, probes
+from scripts.scout_dependence_transition import rhs, maps, normalize, probes, integrate
 
 
 def test_response_tangent_matches_finite_difference():
@@ -28,3 +28,14 @@ def test_probes_and_normalization_are_deterministic():
     assert m.shape==(11,) and z.shape==(55,) and len(names)==11
     assert np.isfinite(m).all() and np.isfinite(z).all()
     np.testing.assert_allclose(normalize(x).std(axis=1),1,atol=1e-14)
+
+
+def test_rk4_observations_match_independent_adaptive_integrator():
+    from scipy.integrate import solve_ivp
+    s=np.array([1.,2.,.2, 3.,-2.,4., 1.,1.,2., .3,-.2,.5])
+    for hetero,k in [(False,.11),(True,6.6)]:
+        x,_,_=integrate(s,k,1.3,hetero,.001,10,100,100,20)
+        times=.1+.01*np.arange(1,21)
+        reference=solve_ivp(lambda t,y:rhs(y,k,1.3,hetero),(0,.4),s,
+                            method='DOP853',t_eval=times,rtol=1e-11,atol=1e-12)
+        np.testing.assert_allclose(x,reference.y[:6],rtol=2e-6,atol=2e-7)
