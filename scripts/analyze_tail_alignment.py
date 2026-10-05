@@ -63,7 +63,7 @@ def analyze(data,out):
         curve=scores.assign(display_q=q)[common].groupby('control').display_q
         axes[1].plot(curve.mean().index,curve.mean(),'o-',color=color,label=label)
         axes[1].fill_between(curve.mean().index,curve.quantile(.1),curve.quantile(.9),color=color,alpha=.10)
-    axes[1].set(ylabel='PC1, training SD units',title='Held seeds; 10–90% instance spread');axes[1].legend(fontsize=6)
+    axes[1].set(ylabel='PC1, training SD units',title=r'Held seeds; 10--90\% instance spread');axes[1].legend(fontsize=6)
     for label in ['mean_ridge','mean_RBF']:
         curve=scores[common].groupby('control')[label].mean()
         axes[2].plot(curve.index,curve,'o-',label=label)
