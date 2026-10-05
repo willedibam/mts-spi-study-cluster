@@ -15,4 +15,5 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_TH
 : "${CHIMERA_OUTPUT:?}"
 args=(--output "$CHIMERA_OUTPUT" --workers "$PBS_NCPUS")
 if [[ "${SCOUT_SMOKE:-0}" == 1 ]]; then args+=(--smoke); fi
+if [[ "${SCOUT_REFINE:-0}" == 1 ]]; then args+=(--refine); fi
 python -m scripts.scout_breathing_chimera "${args[@]}"
