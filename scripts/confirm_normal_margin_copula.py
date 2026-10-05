@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
+from sklearn.decomposition import PCA
 from threadpoolctl import threadpool_limits
 from scripts.report_dependence_transition import coordinate
 from scripts.analyze_tail_alignment import analyze
@@ -18,6 +19,19 @@ def combined_rows(old,new):
     return retained
 
 
+def frozen_coordinate(original,new,fit,standard):
+    """Rebuild original preprocessing before appending records; preserve float32 reduction layout."""
+    keep=np.isfinite(original[fit]).all(0)&(np.nanstd(original[fit],axis=0)>1e-10)
+    selected=original[:,keep];fill=np.median(selected[fit],axis=0)
+    selected=np.where(np.isfinite(selected),selected,fill)
+    center=selected[fit].mean(0);scale=selected[fit].std(0) if standard else np.ones(selected.shape[1])
+    prepared=(selected-center)/scale
+    model=PCA(n_components=1,svd_solver='full').fit(prepared[fit])
+    new_selected=new[:,keep];missing=np.mean(~np.isfinite(new_selected),axis=1)
+    new_prepared=(np.where(np.isfinite(new_selected),new_selected,fill)-center)/scale
+    return model.transform(prepared)[:,0],model.transform(new_prepared)[:,0],float(model.explained_variance_ratio_[0]),missing
+
+
 def confirm(old_data,old_output,new_data,new_output,out):
     out.mkdir(parents=True,exist_ok=True)
     om=json.loads((old_data/'manifest.json').read_text());nm=json.loads((new_data/'manifest.json').read_text())
@@ -28,7 +42,7 @@ def confirm(old_data,old_output,new_data,new_output,out):
     np.testing.assert_array_equal(nb['row_id'],[r['row_id'] for r in nm['rows']])
     old_fit=np.array([r['role']=='development' for r in om['rows']])
     bank={key:np.concatenate([ob[key][old_fit],nb[key]]) for key in ['z','mean','distribution']}
-    bank.update(row_id=frame.row_id.to_numpy(),spi_order=ob['spi_order'])
+    bank.update(row_id=frame.row_id.to_numpy(dtype=str),spi_order=ob['spi_order'])
     np.savez_compressed(out/'features.npz',**bank)
     raw={}
     for data,records in [(old_data,[r for r in om['rows'] if r['role']=='development']),(new_data,nm['rows'])]:
@@ -45,11 +59,16 @@ def confirm(old_data,old_output,new_data,new_output,out):
     y=frame.Q_tail.to_numpy();common=held&scores.comparison_eligible.to_numpy()
     frozen=[]
     for name,key,standard in [('frozen_z_PC1','z',False),('frozen_z_standard_PC1','z',True),('frozen_mean_PC1','mean',True)]:
-        q,evr,missing=coordinate(bank[key],fit,standard)
+        original_q,new_q,evr,new_missing=frozen_coordinate(ob[key],nb[key],old_fit,standard)
+        q=np.r_[original_q[old_fit],new_q];missing=np.r_[np.zeros(old_fit.sum()),new_missing]
         sign=1 if spearmanr(q[fit],y[fit]).statistic>=0 else -1
-        np.testing.assert_allclose(sign*q[fit],old_scores.loc[old_fit,name.removeprefix('frozen_')],atol=1e-8)
+        expected=old_scores.loc[old_fit,name.removeprefix('frozen_')].to_numpy()
+        error=float(np.max(abs(sign*q[fit]-expected)));relative=error/expected.std()
+        assert relative<1e-4,(name,error,relative)  # platform/float32 replay, in original training SD units
+        assert spearmanr(sign*q[fit],expected).statistic>.99999
         scores[name]=sign*q;common&=missing<=.05
-        frozen.append(dict(method=name,evr=evr,max_missing=float(missing[held].max())))
+        frozen.append(dict(method=name,evr=evr,max_missing=float(missing[held].max()),original_replay_max_error=error,
+            original_replay_max_error_training_sd=relative))
     # All comparisons use the same fresh held rows; previously examined held80 never enter.
     methods=['frozen_z_PC1','frozen_z_standard_PC1','frozen_mean_PC1','z_PC1','z_standard_PC1',
         'mean_PC1','distribution_PC1','selected_mean','mean_ridge','mean_RBF','empirical_mean_r','empirical_mean_abs_r']
