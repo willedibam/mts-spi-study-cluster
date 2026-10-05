@@ -19,3 +19,26 @@ def test_entropy_against_scipy_and_recording_replay():
     assert x.shape==(16,1000) and np.isfinite(x).all()
     np.testing.assert_array_equal(x,recording(2,8))
     np.testing.assert_allclose(x.std(1),1,atol=1e-12)
+def test_p90_readout_uses_observed_not_population_pearson(tmp_path,monkeypatch):
+    import json
+    import pandas as pd
+    from scripts.analyze_tail_alignment import analyze
+    from scripts import plot_large_m_pair_sampling
+    monkeypatch.setattr(plot_large_m_pair_sampling,'figure_style',lambda:None)
+    rows=[];raw={};rng=np.random.default_rng(42)
+    for control in range(3):
+        for seed in range(8):
+            key=f'c{control}-s{seed}';raw[key]=rng.normal(size=(4,30))
+            rows.append(dict(row_id=key,role='development' if seed<4 else 'evaluation',
+                control=control/2,seed=seed,Q_tail=.01+.002*control,mean_r=.01))
+    (tmp_path/'manifest.json').write_text(json.dumps(dict(rows=rows)))
+    np.savez(tmp_path/'observations.npz',**raw)
+    np.savez(tmp_path/'features.npz',row_id=[r['row_id'] for r in rows],
+        mean=rng.normal(size=(24,4)),z=rng.normal(size=(24,6)),
+        distribution=rng.normal(size=(24,12)),spi_order=['a','b','c','d'])
+    analyze(tmp_path,tmp_path)
+    scores=pd.read_csv(tmp_path/'scores.csv')
+    expected=[np.corrcoef(raw[key])[~np.eye(4,dtype=bool)].mean() for key in scores.row_id]
+    np.testing.assert_allclose(scores.empirical_mean_r,expected,atol=1e-14)
+    assert scores.empirical_mean_r.std()>.001
+    assert pd.read_csv(tmp_path/'metrics.csv').n.nunique()==1

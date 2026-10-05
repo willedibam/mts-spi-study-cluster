@@ -101,36 +101,41 @@ def analyze(data,out):
         for nonlinear,label in [(False,'mean_ridge'),(True,'mean_RBF')]:
             predictions[label],settings[system+'/'+label]=predict_means(mean,y,part.seed.to_numpy(),fit,nonlinear)
         predictions.update(mean_r=part.mean_r.to_numpy(),mean_abs_r=part.mean_abs_r.to_numpy())
+        common=np.isfinite(y)
+        for label,q in predictions.items():
+            common &= np.isfinite(q)&(missing.get(label,np.zeros(len(q)))<=.05)
+        out_rows['comparison_eligible']=common
         for label,q in predictions.items():
             finite=np.isfinite(q)&np.isfinite(y);eligible=finite&(missing.get(label,np.zeros(len(q)))<=.05)
-            use=held&eligible
+            own=held&eligible;use=held&common
             metrics.append(dict(system=system,method=label,n=int(use.sum()),total_held=int(held.sum()),
                 held_abs_rho=float(abs(spearmanr(q[use],y[use]).statistic)),
+                own_eligible_n=int(own.sum()),own_eligible_abs_rho=float(abs(spearmanr(q[own],y[own]).statistic)),
                 within_control_rho=float(spearmanr(pd.Series(q[use]).groupby(part.control.to_numpy()[use]).transform(lambda a:a-a.mean()),
                    pd.Series(y[use]).groupby(part.control.to_numpy()[use]).transform(lambda a:a-a.mean())).statistic),
                 max_missing=float(missing.get(label,np.zeros(len(q)))[held].max())))
             out_rows[label]=q
-        use=out_rows[held];curve=use.groupby('control').mean(numeric_only=True)
-        ax=axes[ri,0];ax.plot(curve.index,curve.CLE,'o-',color='#0072B2');ax.axhline(0,color='.5',ls=':',lw=.8)
+        use=out_rows[held&common];curve=use.groupby('control').mean(numeric_only=True)
+        ax=axes[ri,0];ax.plot(curve.index,curve.CLE,'o-',color='#222222');ax.axhline(0,color='.5',ls=':',lw=.8)
         ax.set(title=system,ylabel='Future conditional Lyapunov exponent')
         ax2=ax.twinx();ax2.plot(curve.index,curve.aux_error,'s--',color='#D55E00');ax2.set_ylabel('Auxiliary error',color='#D55E00')
         for label,color in [('z_PC1','#0072B2'),('mean_PC1','#D55E00'),('distribution_PC1','#009E73'),('z_standard_PC1','#CC79A7')]:
             q=out_rows[label].to_numpy();q=(q-q[fit].mean())/q[fit].std()
-            c=out_rows.assign(q_scaled=q)[held].groupby('control').q_scaled.mean()
+            c=out_rows.assign(q_scaled=q)[held&common].groupby('control').q_scaled.mean()
             axes[ri,1].plot(c.index,c,'o-',color=color,label=label)
         axes[ri,1].legend(fontsize=6);axes[ri,1].set_ylabel('PC1, training SD units')
         for label in ['mean_r','mean_abs_r']:axes[ri,2].plot(curve.index,curve[label],'o-',label=label)
         axes[ri,2].legend(fontsize=7);axes[ri,2].set_ylabel('Mean Pearson')
         for ax in axes[ri]:ax.set_xlabel('Coupling');ax.grid(axis='y',alpha=.12)
         all_scores.append(out_rows)
-    fig.suptitle('Local generalized-synchronization sweeps: full p90\nM=N=6, T=1000; eight training and eight held initial-condition seeds',fontsize=11)
+    fig.suptitle('Local generalized-synchronization sweeps: full p90\nM=N=6, T=1000; eight training / eight held seeds; lines: eligible held-instance means',fontsize=11)
     for ext in ['png','svg']:fig.savefig(out/f'p90-comparison.{ext}',dpi=180)
     plt.close(fig)
     pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     all_scores=pd.concat(all_scores)
     all_scores.to_csv(out/'scores.csv',index=False)
     from scripts.transition_sharpness import summarize
-    summarize(all_scores,['CLE','aux_error','mean_r','mean_abs_r','mean_PC1','z_PC1','z_standard_PC1',
+    summarize(all_scores[all_scores.comparison_eligible],['CLE','aux_error','mean_r','mean_abs_r','mean_PC1','z_PC1','z_standard_PC1',
                           'distribution_PC1','selected_mean','mean_ridge','mean_RBF'],out/'sharpness.csv')
     (out/'analysis.json').write_text(json.dumps(dict(settings=settings,features_sha256=sha(out/'features.npz'),
         source_sha256=sha(__file__),scope='Exploratory held-seed comparison; no inference of marginal information absence from PC1.'),indent=2)+'\n')

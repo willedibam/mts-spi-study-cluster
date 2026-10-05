@@ -29,13 +29,14 @@ def summarize(scores,fields,output,repeats=1000):
             j=crossings[0];boundary=controls[j]-truth[j]*(controls[j+1]-controls[j])/(truth[j+1]-truth[j])
         for field in fields:
             grid=part.pivot(index='seed',columns='control',values=field).reindex(index=seeds,columns=controls).to_numpy()
-            shape=curve_shape(controls,grid.mean(0))
-            boot=grid[draws].mean(1)
+            shape=curve_shape(controls,np.nanmean(grid,axis=0))
+            boot=np.nanmean(grid[draws],axis=1)
             widths=np.array([curve_shape(controls,b)['width'] for b in boot])
             contrast=boot[:,-2:].mean(1)-boot[:,:2].mean(1)
             lo,hi=np.quantile(contrast,[.025,.975])
             eligible=bool((lo>0 or hi<0) and shape['monotonicity']>=.8)
             records.append(dict(system=system,method=field,**shape,
+                min_instances_per_control=int(np.isfinite(grid).sum(0).min()),
                 width_low=float(np.nanquantile(widths,.025)),width_high=float(np.nanquantile(widths,.975)),
                 contrast_low=float(lo),contrast_high=float(hi),single_transition_interpretation=eligible,
                 physical_CLE_zero=float(boundary),midpoint_distance=float(abs(shape['midpoint']-boundary))))
