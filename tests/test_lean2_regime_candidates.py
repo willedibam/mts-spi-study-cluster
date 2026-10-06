@@ -35,3 +35,27 @@ def test_uncoupled_ou_and_tangent():
     assert abs(q['Q']-np.log(1-.02+.5*.02**2)/.02)<1e-10
     assert abs(q['state_variance']-.125)<.015
     assert np.linalg.matrix_rank(x)==16
+
+
+def test_defect_charge_matches_global_winding_change():
+    rng=np.random.default_rng(16)
+    old=np.exp(1j*rng.uniform(-np.pi,np.pi,32));new=np.exp(1j*rng.uniform(-np.pi,np.pi,32))
+    winding=lambda z: int(np.rint(np.angle(np.roll(z,-1)*z.conj()).sum()/(2*np.pi)))
+    assert defect_charges(old,new).sum()==winding(old)-winding(new)
+
+
+def test_bundle_preserves_raw_Q_and_separates_seeds(tmp_path):
+    import json
+    from scripts.lean2_candidate_readout import bundle
+    raw=tmp_path/'physics';raw.mkdir();rng=np.random.default_rng(1)
+    for i in range(4):
+        np.savez_compressed(raw/f'case-{i:04d}.npz',observations=rng.normal(size=(16,1000)))
+        (raw/f'case-{i:04d}.json').write_text(json.dumps(dict(system='rate',M=16,N=16,T=1000,seed=100+i,control=1.5,Q=i/10)))
+    out=tmp_path/'bundle';bundle(raw,out,'test','/test',102)
+    manifest=json.loads((out/'manifest.json').read_text())
+    assert [r['role'] for r in manifest['rows']]==['development']*2+['evaluation']*2
+    assert [r['Q'] for r in manifest['rows']]==[0.,.1,.2,.3]
+    arrays=np.load(out/'observations.npz')
+    for row in manifest['rows']:
+        a=arrays[row['row_id']];np.testing.assert_allclose(a.mean(1),0,atol=1e-14)
+        np.testing.assert_allclose(a.std(1),1,atol=1e-14)
