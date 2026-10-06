@@ -119,7 +119,8 @@ def figure(scores,out,target_label=None,filename='baseline-comparison'):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    plt.rcParams.update({'font.family':'serif','mathtext.fontset':'cm','font.size':9,'axes.spines.top':False,
+    plt.rcParams.update({'font.family':'serif','font.serif':['Computer Modern Roman','CMU Serif','DejaVu Serif'],
+        'mathtext.fontset':'cm','font.size':9,'axes.spines.top':False,
         'axes.spines.right':False,'legend.frameon':False,'lines.linewidth':1.7,'lines.markersize':2.7})
     held=scores[scores.role.eq('evaluation')&scores.comparison_eligible]
     system=scores.system.iloc[0]
@@ -141,16 +142,47 @@ def figure(scores,out,target_label=None,filename='baseline-comparison'):
         if system=='rate':
             ax.axhline(0,color='.7',ls=':',lw=.7)
             ax.axvline(critical,color='.6',ls=':',lw=.7)
-        right.set_ylabel('Fit-record SD units' if col!='mean_abs_r' else 'Mean absolute Pearson')
-        ax.legend(lines,[v.get_label() for v in lines],loc='upper left',fontsize=7)
+        right.set_ylabel('Fit-record SD units' if col!='mean_abs_r' else 'Mean absolute Pearson',color='#31688e')
+        right.tick_params(axis='y',colors='#31688e')
+        ax.legend(lines,[v.get_label() for v in lines],loc='upper right' if target_label else 'upper left',fontsize=7)
     name={'cgle':'Complex Ginzburg–Landau','rate':'Driven rate network','crossfreq':'Cross-frequency locking'}[system]
     fig.suptitle(f"{name} · M={scores['M'].iloc[0]}, N={scores['N'].iloc[0]}, T={scores['T'].iloc[0]} · held seeds; bands 10–90%",fontsize=10)
-    for ext in ('png','svg'):fig.savefig(out/f'{filename}.{ext}',dpi=180)
+    fig.canvas.draw()
+    fig.set_layout_engine('none')
+    for ext in ('png','svg'):fig.savefig(out/f'{filename}.{ext}',dpi=180,bbox_inches='tight')
     plt.close(fig)
 
 
+def diagnose_leading(out):
+    """Post-result diagnosis only: never promote a Q-selected replacement for PC1."""
+    from sklearn.decomposition import PCA
+    scores=pd.read_csv(out/'scores.csv');bank=np.load(out/'features.npz')
+    fit=scores.role.eq('development').to_numpy();held=~fit;rows=[];details={}
+    for name,standard in [('z',False),('mean',True)]:
+        x=bank[name].astype(float)
+        keep=np.isfinite(x[fit]).all(0)&(np.nanstd(x[fit],axis=0)>1e-10)
+        x=x[:,keep];x-=x[fit].mean(0)
+        if standard:x/=x[fit].std(0)
+        if not np.isfinite(x).all():raise ValueError('Diagnostic requires complete selected features')
+        model=PCA(n_components=5,svd_solver='full').fit(x[fit]);q=model.transform(x)
+        for j,evr in enumerate(model.explained_variance_ratio_):
+            rows.append(dict(representation=name,component=j+1,evr=float(evr),
+                held_abs_rho=float(abs(spearmanr(q[held,j],scores.Q[held]).statistic))))
+        if name=='z':
+            indices=np.array(np.triu_indices(len(bank['spi_order']),1)).T[keep]
+            load=model.components_[0];top=np.argsort(abs(load))[-8:][::-1]
+            details['largest_PC1_loadings']=[dict(pair=bank['spi_order'][indices[i]].tolist(),loading=float(load[i])) for i in top]
+            vals=scores.loc[held,['control','seed']].copy();vals['q']=q[held,0]
+            total=((vals.q-vals.q.mean())**2).sum()
+            details['PC1_group_mean_variance_fraction']={g:float(1-((vals.q-vals.groupby(g).q.transform('mean'))**2).sum()/total) for g in ['control','seed']}
+    details['interpretation']='Post-result float64 diagnostic; no component selection or replacement of the primary readout. Group-mean fractions are descriptive, not additive causal variance components.'
+    pd.DataFrame(rows).to_csv(out/'leading-component-diagnostic.csv',index=False)
+    (out/'leading-component-diagnostic.json').write_text(json.dumps(details,indent=2)+'\n')
+    print(pd.DataFrame(rows).to_string(index=False))
+
+
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['bundle','extract','analyze'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['bundle','extract','analyze','diagnose'])
     p.add_argument('--data',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
     p.add_argument('--corpus');p.add_argument('--remote');p.add_argument('--fit-seed-stop',type=int)
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
@@ -160,4 +192,6 @@ if __name__=='__main__':
         extract(a.data,a.out,corpus=a.corpus)
     else:
         from threadpoolctl import threadpool_limits
-        with threadpool_limits(limits=2):analyze(a.data,a.out)
+        with threadpool_limits(limits=2):
+            if a.stage=='diagnose':diagnose_leading(a.out)
+            else:analyze(a.data,a.out)
