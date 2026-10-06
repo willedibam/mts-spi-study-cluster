@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N lean2-physics
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2,mem=8GB,walltime=01:00:00,jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${PLAN:?}" "${OUTPUT:?}" "${INDICES:?}"
+cd "$PBS_O_WORKDIR"
+module purge
+module load python3/3.12.1 nci-parallel/1.0.0a
+source .venv/bin/activate
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1
+commands="$PBS_JOBFS/commands.txt"
+while read -r idx; do
+  [[ "$idx" =~ ^[0-9]+$ ]] || exit 2
+  printf 'python -m scripts.lean2_regime_candidates case --plan %s --index %s --out %s\n' "$PLAN" "$idx" "$OUTPUT" >> "$commands"
+done < "$INDICES"
+mkdir -p "$OUTPUT"
+mpirun -np "$PBS_NCPUS" --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$OUTPUT/job-${PBS_JOBID}.status"
