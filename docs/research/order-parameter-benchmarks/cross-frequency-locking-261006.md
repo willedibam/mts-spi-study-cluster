@@ -98,15 +98,43 @@ Motivation only (eight cheap probes, M = 24, four held seeds per control): held 
 
 Figures from this point show Q on the left axis in physical units and each target-blind coordinate on a shared right axis in fit-record SD units; `python -m scripts.cross_frequency_locking{,_snr} figure` redraws the earlier ones from saved scores.
 
+### Nuisance arms: full-p90 result at M = 24, 6 October
+
+The first M = 48 submission (jobs 180609775/778/780) was killed for memory: 4 GB per task, and 8 GB in the two-task smoke job, were not enough; 44 of 1,008 records completed before cancellation and are kept. Before any outcome was read, the same three arms were run at M = N = 24 on separate fresh seeds (run `cross-frequency-locking-nuisance-261006`, `--size m24`, estimator seed 261097, archive SHA `abedd5c9…813c38`). All 1,008 records completed, zero selected-feature missingness, eight MPI replays exact for means and within 3e-8 for z. Held |Spearman|, 168 records per arm:
+
+| Arm | Readout | With Q | With nuisance | Step contrast |
+| --- | --- | ---: | ---: | ---: |
+| Sensor noise | mean \|r\| / mean-SPI PC1 | .15 / .16 | 1.00 / 1.00 | .1 / .1 |
+| | centered z-PC1 | .88 (.85–.90) | .09 | 7.8 |
+| | standardized z-PC1 | .66 | .55 | 2.5 |
+| Common mode | mean \|r\| / mean-SPI PC1 | .03 / .03 | .99 / 1.00 | .5 / .4 |
+| | centered z-PC1 | .09 (.01–.21) | .98 | .5 |
+| | standardized z-PC1 | .11 | .99 | .5 |
+| Internal coupling | mean \|r\| / mean-SPI PC1 | .27 / .61 | .88 / .74 | .2 / .3 |
+| | centered z-PC1 | .85 (.83–.86) | .36 | 3.7 |
+| | standardized z-PC1 | .74 | .60 | 1.6 |
+
+Full-mean ridge ceilings recover Q in every arm (.90, .88, .93).
+
+**Sensor noise replicates** on independent seeds and passes the declared criterion; z minus mean-SPI PC1 is .58–.87. The second mean-SPI component again carries the transition (.82).
+
+**Common mode fails, against the prediction.** Centered z-PC1 follows the shared signal exactly as the baselines do; the transition is the second component of both representations (|ρ| with Q .85 for z, .84 for means). Mechanism, from the features: a shared white signal adds instantaneous, undirected dependence to every pair and no lagged or directed dependence. That is a change in the mix of dependence types across the recording, which is what z measures, not a rescaling. Total z variance is five times that of the sensor-noise arm and 85% of it follows the nuisance; PC1 loads on pairs of a zero-lag statistic with a directed or lagged one (spectral Granger, transfer entropy); z(covariance, transfer entropy) falls from .47 to −.01 as the shared signal grows. The eight-statistic probe predicted success because it contained no directed statistic: the second probe-to-p90 misprediction.
+
+**Internal coupling does better than predicted.** z-PC1 tracks Q (.85 against .61 for mean-SPI PC1; difference .16–.34) and steps at the boundary. It is not clean: within a control value it follows ε (median |ρ| .86), part of which is legitimate because Q itself rises with ε there (.69).
+
+**Revised claim.** Centered SPI–SPI PC1 is robust to recording differences that rescale dependence (sensor noise, coupling heterogeneity) and not to ones that change the mix of dependence types (a shared instantaneous signal). The second kind is, for this representation, signal by construction. A common signal identical on all channels is removable by average re-referencing; that was not tested here.
+
+Provenance: source `02faa24` at Scratch `operations/sources/cross-frequency-nuisance-02faa24`; jobs 180617499/500/501 (farm), 180617502 (analysis), all exit 0. Outputs `results/order-parameter-inference/cross-frequency-locking-nuisance-261006/` including `component-scatter-<arm>.png`.
+
 ## Carry-forward: state, lessons and open decisions (6 October)
 
-**Where it stands.** Two full-p90 results at M = N = 24: (i) clean recordings — mean |r| fails, every catalogue PC1 steps, no advantage over mean-SPI PC1; (ii) recording-specific sensor noise — mean |r| and mean-SPI PC1 follow the noise, centered z-PC1 tracks Q (.87). The M = 48 confirmation with a common-mode nuisance and an internal-coupling boundary arm was approved and specified above. Promotion of this system into the lean benchmark notebook was deferred until confirmation; two concise cells are in `notebooks/inference/dependence-character-transitions-261005.ipynb` (uncommitted, alongside other uncommitted edits).
+**Where it stands.** Two full-p90 results at M = N = 24: (i) clean recordings — mean |r| fails, every catalogue PC1 steps, no advantage over mean-SPI PC1; (ii) recording-specific sensor noise — mean |r| and mean-SPI PC1 follow the noise, centered z-PC1 tracks Q (.87). The three nuisance arms have full-p90 results at M = 24 (above); M = 48 awaits a memory-sized resubmission. Promotion of this system into the lean benchmark notebook was deferred until confirmation; two concise cells are in `notebooks/inference/dependence-character-transitions-261005.ipynb` (uncommitted, alongside other uncommitted edits).
 
 **Design lessons, each backed by a run.**
 - z needs at least three edge types. With two homogeneous classes every SPI profile is a two-level pattern and z, which discards level and scale, cannot move (two-community scratch run).
 - Sweep only the cross-coupling. When internal coupling co-varied, z-PC1 was captured by the ordinary synchrony onset and the locking appeared in PC2.
 - Pooled Spearman rewards any monotone drift; split it at the boundary or use the step scores. No unsupervised readout tracks Q's ramp below the boundary in clean recordings.
-- Seven-probe scratch runs mispredicted mean-SPI PC1 at p90 once (library composition), then predicted the sensor-noise result correctly. Treat probes as motivation.
+- Cheap-probe runs mispredicted p90 twice (mean-SPI PC1 in clean recordings; z-PC1 under common mode) and predicted it twice. Both misses came from statistic families absent from the probe set. Treat probes as motivation.
 - Centered versus standardized z-PC1 is unresolved: centered PCA puts half of PC1's weight on the 5% highest-variance z features; standardized spreads it. Standardized looked better in clean recordings, centered was robust under varying noise and in the copula run where standardized failed. Report both.
 - Working hypothesis, not a theorem: in homogeneous recordings with a rich catalogue, mean-SPI PC1 sees what z-PC1 sees; the baselines fail when a per-recording nuisance moves every dependence estimate together. The failure is one of ordering: the transition is then the second mean-SPI component, and the nuisance the second z component.
 

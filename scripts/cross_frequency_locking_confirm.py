@@ -38,7 +38,7 @@ def record(task,n=16,noise_seed=261094):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure','scatter'])
     p.add_argument('--size',choices=list(RUNS),default='m48');p.add_argument('--data',type=Path);p.add_argument('--output',type=Path)
     p.add_argument('--workers',type=int,default=6);a=p.parse_args();c=RUNS[a.size];RUN=c['run']
     a.data=a.data or ROOT/'data/order-parameter-inference'/RUN;a.output=a.output or ROOT/'results/order-parameter-inference'/RUN
@@ -49,6 +49,9 @@ if __name__=='__main__':
         if a.stage=='extract':
             from scripts.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
+        elif a.stage=='scatter':
+            for arm,label in zip(ARMS,(r'sensor-noise SD $\eta$','common-mode SD','internal coupling $\\varepsilon$')):
+                snr.scatter(a.output,arm,'nuisance',label,f'component-scatter-{arm}')
         elif a.stage=='figure':
             import pandas as pd
             snr.figure(pd.read_csv(a.output/'scores.csv'),a.output,**names)
