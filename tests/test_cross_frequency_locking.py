@@ -72,3 +72,17 @@ def test_sensor_noise_arms_are_reproducible_and_leave_truth_untouched():
     assert truth['Q_lock'] == c.simulate(.1, 100)[1]['Q_lock'] and truth['condition'] < 50
     etas = [s.record(('random-noise', .1, 200 + k))[1]['eta'] for k in range(4)]
     assert min(etas) >= .3 and max(etas) <= .9 and len(set(etas)) == 4
+
+
+def test_confirmation_arms_apply_one_nuisance_each():
+    from scripts import cross_frequency_locking_confirm as k
+    out={arm:k.record((arm,.1,k.FIRST_SEED[arm])) for arm in k.ARMS}
+    for arm,(x,truth) in out.items():
+        assert x.shape==(48,1000) and np.isfinite(x).all() and truth['nuisance']==truth[dict(zip(k.ARMS,('eta','common','eps')))[arm]]
+    noise,common,coupling=(out[arm][1] for arm in k.ARMS)
+    assert .3<=noise['eta']<=.9 and (noise['common'],noise['eps'])==(0.,c.EPS)
+    assert 0<=common['common']<=.8 and (common['eta'],common['eps'])==(.5,c.EPS)
+    assert .15<=coupling['eps']<=.6 and (coupling['eta'],coupling['common'])==(.5,0.)
+    # A shared signal of SD s gives unrelated channels a correlation s^2/(1+eta^2+s^2).
+    s=common['common'];np.testing.assert_allclose(common['abs_r_AB'],s*s/(1.25+s*s),atol=.03)
+    np.testing.assert_array_equal(out['common-mode'][0],k.record(('common-mode',.1,400))[0])

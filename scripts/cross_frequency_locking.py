@@ -44,7 +44,7 @@ def velocity(a,b,c,gamma,wa,wb,wc,eps=EPS):
     return da,db,dc,(x1,x2,y,zc)
 
 
-def simulate(gamma,seed,n=N_COMMUNITY,delta=DELTA,dt=.02,burn=500.,reference=1000.,samples=T):
+def simulate(gamma,seed,n=N_COMMUNITY,delta=DELTA,dt=.02,burn=500.,reference=1000.,samples=T,eps=EPS):
     """Euler-Maruyama. Returns raw sin(phase) channels ordered A|B|C and future-window truth."""
     index=int(np.argmin(np.abs(GAMMAS-gamma))) if np.min(np.abs(GAMMAS-gamma))<1e-9 else int(round(gamma*1e6))+1000
     rng=np.random.default_rng(np.random.SeedSequence([SEED,n,index,seed]))
@@ -52,7 +52,7 @@ def simulate(gamma,seed,n=N_COMMUNITY,delta=DELTA,dt=.02,burn=500.,reference=100
     wa=1+rng.permutation(q);wb=2+delta+rng.permutation(q);wc=FREQ_C+rng.permutation(q)
     a,b,c=rng.uniform(0,2*np.pi,(3,n));every=round(STEP/dt);x=[];fields=[]
     for k in range(round((burn+samples*STEP+reference)/dt)):
-        da,db,dc,z=velocity(a,b,c,gamma,wa,wb,wc)
+        da,db,dc,z=velocity(a,b,c,gamma,wa,wb,wc,eps)
         e=SIGMA*np.sqrt(dt)*rng.normal(size=(3,n))
         a=a+dt*da+e[0];b=b+dt*db+e[1];c=c+dt*dc+e[2]
         if k>=round(burn/dt) and (k+1)%every==0:
@@ -126,10 +126,50 @@ def step_scores(frame,column,target='Q_lock'):
         abs_rho_Q=float(abs(spearmanr(frame[column],frame[target]).statistic)))
 
 
-def analyze(data,out):
+Q_COLOR='#222222'
+Z_CURVES=[('z_PC1','#E69F00','SPI-SPI PC1, centered'),('z_standard_PC1','#D55E00','SPI-SPI PC1, standardized')]
+MEAN_CURVES=[('mean_PC1','#0072B2','mean-SPI PC1'),('distribution_PC1','#56B4E9','distribution PC1')]
+STYLE={'font.family':'serif','mathtext.fontset':'cm','font.size':9,'axes.spines.top':False,'axes.spines.right':False,
+       'legend.frameon':False,'lines.linewidth':1.7,'lines.markersize':2.7}
+
+
+def tracking_panel(ax,scores,curves,critical,title=None):
+    """Q in physical units on the left axis; target-blind q in fit-record SD units on the right. Returns the q axis."""
+    fit=scores[scores.role.eq('development')];held=scores[scores.role.eq('evaluation')&scores.comparison_eligible]
+    group=held.groupby('control').Q_lock;m=group.mean();right=ax.twinx();right.spines['right'].set_visible(True)
+    lines=ax.plot(m.index,m,'o-',color=Q_COLOR,label='$Q$: 2:1 locking index')
+    ax.fill_between(m.index,group.quantile(.1),group.quantile(.9),color=Q_COLOR,alpha=.12,lw=0)
+    for label,color,name in curves:
+        group=((held[label]-fit[label].mean())/fit[label].std()).groupby(held.control);m=group.mean()
+        lines+=right.plot(m.index,m,'s-',color=color,label=name)
+        right.fill_between(m.index,group.quantile(.1),group.quantile(.9),color=color,alpha=.12,lw=0)
+    ax.axvline(critical,color='.6',lw=.8,ls=':');ax.set(xlabel=r'Cross-coupling $\gamma$',ylabel='Locking index $Q$',ylim=(-.05,1.05),title=title)
+    right.set_ylabel('$q$ (fit-record SD units)');ax.legend(lines,[l.get_label() for l in lines],fontsize=7,loc='upper left')
+    return right
+
+
+def share_limits(axes):
+    low=min(a.get_ylim()[0] for a in axes);high=max(a.get_ylim()[1] for a in axes)
+    for a in axes:a.set_ylim(low,high)
+
+
+def figure(scores,out,critical):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
+    plt.rcParams.update(STYLE)
+    fig,axes=plt.subplots(1,3,figsize=(11.6,3.3),constrained_layout=True)
+    share_limits([tracking_panel(axes[0],scores,Z_CURVES,critical),tracking_panel(axes[1],scores,MEAN_CURVES,critical)])
+    group=scores[scores.role.eq('evaluation')&scores.comparison_eligible].groupby('control')
+    for label,color,name in [('abs_r_within','.6','within community'),('mean_abs_r','#009E73','all pairs'),('abs_r_AB','#CC79A7','A-B pairs')]:
+        axes[2].plot(group[label].mean().index,group[label].mean(),'o-',color=color,label=name)
+    axes[2].axvline(critical,color='.6',lw=.8,ls=':');axes[2].set(xlabel=r'Cross-coupling $\gamma$',ylabel='Mean absolute Pearson',ylim=(-.03,1.05));axes[2].legend(fontsize=7)
+    fig.suptitle(f"2:1 cross-frequency locking, M=N={scores['M'].iloc[0]}, T={scores['T'].iloc[0]}; held seeds, bands 10-90 per cent of instances",fontsize=10)
+    for ext in ['png','svg']:fig.savefig(out/f'cross-frequency-comparison.{ext}',dpi=180)
+    plt.close(fig)
+
+
+def analyze(data,out):
     from scripts.report_dependence_transition import coordinate
     from scripts.dependence_transition_pipeline import predict_means
     from scripts.spi_baseline_exploration import sha
@@ -156,28 +196,8 @@ def analyze(data,out):
     metrics=[dict(method=label,kind=kind.get(label,'unsupervised'),n=int(common.sum()),**step_scores(evaluation,label),**pcs.get(label,{}))
              for label in ['Q_lock','slip']+readouts]
     near=rows[rows.control.between(*BOUNDARY)];critical=float(DELTA/(near.X2.mean()+2*near.Y.mean()))
-    try:
-        from scripts.plot_large_m_pair_sampling import figure_style
-        figure_style()
-    except RuntimeError:
-        plt.rcParams.update({'font.family':'serif','mathtext.fontset':'cm','font.size':9,'axes.spines.top':False,'axes.spines.right':False,
-            'legend.frameon':False,'lines.linewidth':1.7,'lines.markersize':2.7,'figure.constrained_layout.use':True})
-    fig,axes=plt.subplots(1,3,figsize=(11,3.3),constrained_layout=True);group=evaluation.groupby('control')
-    def scaled(label):
-        m=group[label].mean();lo,hi=m.iloc[0],m.iloc[-1]
-        return [(v-lo)/(hi-lo) for v in (m,group[label].quantile(.1),group[label].quantile(.9))]
-    for ax,labels in [(axes[0],[('z_PC1','#E69F00','SPI--SPI PC1, centered'),('z_standard_PC1','#D55E00','SPI--SPI PC1, standardized')]),
-                      (axes[1],[('mean_PC1','#0072B2','mean-SPI PC1'),('distribution_PC1','#56B4E9','distribution PC1')])]:
-        m,_,_=scaled('Q_lock');ax.plot(m.index,m,'ko-',label='$Q$: 2:1 locking index')
-        for label,color,name in labels:
-            m,lo,hi=scaled(label);ax.plot(m.index,m,'o-',color=color,label=name);ax.fill_between(m.index,lo,hi,color=color,alpha=.12,lw=0)
-        ax.axvline(critical,color='.6',lw=.8,ls=':');ax.set(xlabel=r'Cross-coupling $\gamma$',ylabel='Rescaled to end-point means');ax.legend(fontsize=7)
-    for label,color,name in [('abs_r_within','.6','within community'),('mean_abs_r','#009E73','all pairs'),('abs_r_AB','#CC79A7','A--B pairs')]:
-        axes[2].plot(group[label].mean().index,group[label].mean(),'o-',color=color,label=name)
-    axes[2].axvline(critical,color='.6',lw=.8,ls=':');axes[2].set(xlabel=r'Cross-coupling $\gamma$',ylabel='Mean absolute Pearson (raw)',ylim=(-.03,1.05));axes[2].legend(fontsize=7)
-    fig.suptitle(f"2:1 cross-frequency locking, M=N={rows['M'].iloc[0]}, T={rows['T'].iloc[0]}; held seeds, bands 10--90 per cent of instances",fontsize=10)
-    for ext in ['png','svg']:fig.savefig(out/f'cross-frequency-comparison.{ext}',dpi=180)
-    plt.close(fig);scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
+    figure(scores,out,critical)
+    scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     (out/'analysis.json').write_text(json.dumps(dict(settings=settings,reference_gamma_c=critical,boundary_interval=BOUNDARY,
         features_sha256=sha(out/'features.npz'),source_sha256=sha(__file__),eligible_per_control=counts.to_dict(),
         qualification='Exploratory first p90 pass. Step scores and intervals were fixed before outcomes; supervised mean readouts are information ceilings, not like-for-like competitors.'),indent=2)+'\n')
@@ -185,7 +205,7 @@ def analyze(data,out):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure'])
     p.add_argument('--data',type=Path,default=DATA);p.add_argument('--output',type=Path,default=OUT)
     p.add_argument('--workers',type=int,default=6);a=p.parse_args()
     if a.stage=='prepare':prepare(a.workers)
@@ -194,6 +214,8 @@ if __name__=='__main__':
         if a.stage=='extract':
             from scripts.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
+        elif a.stage=='figure':
+            figure(pd.read_csv(a.output/'scores.csv'),a.output,json.loads((a.output/'analysis.json').read_text())['reference_gamma_c'])
         else:
             from threadpoolctl import threadpool_limits
             with threadpool_limits(limits=4):analyze(a.data,a.output)

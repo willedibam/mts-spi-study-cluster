@@ -5,3 +5,4 @@
 - [SPI–SPI representation evaluation](spi-spi-representation-evaluation.md) — Direction-preserving contract, benchmark evidence, channel-pair sampling and empirical SPI redundancy.
 - [P90 proof and cross-M,T validation](cross-mt-transfer.md) — Proof/case reruns, cross-size validation, and generator-level strength/marginal controls for SPI–SPI baselines.
 - [Zenodo MTS corpus map](zenodo-mts-corpus.md) — Run pyspi over the 1,053-series archive and build a unified SPI-pair corpus representation, embeddings and stable clusters.
+- [Premise and character–strength direction](premise-and-character-axes.md) — The user's framing of the problem (statistic choice as inductive bias; character versus strength), evidence boundaries, and the unstarted character-axis proposal.
