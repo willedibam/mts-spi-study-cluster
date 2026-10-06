@@ -58,3 +58,17 @@ def test_step_scores_separate_a_step_from_a_drift():
     step, drift = c.step_scores(frame, 'step'), c.step_scores(frame, 'drift')
     assert step['step_share'] > .9 and step['post_locking_drift'] < .1 and step['steepest_interval'] == '0.100-0.110'
     assert abs(drift['step_share'] - .2) < .05 and drift['post_locking_drift'] > .3
+
+
+def test_sensor_noise_arms_are_reproducible_and_leave_truth_untouched():
+    from scripts import cross_frequency_locking_snr as s
+    fixed, truth = s.record(('fixed-noise', .1, 100))
+    again, same = s.record(('fixed-noise', .1, 100))
+    np.testing.assert_array_equal(fixed, again)
+    assert truth == same and truth['eta'] == .5 and fixed.shape == (24, 1000)
+    np.testing.assert_allclose(fixed.std(1), 1, atol=1e-12)
+    # Noise SD .5 attenuates a within-community correlation near .98 by 1/(1+.25).
+    np.testing.assert_allclose(truth['abs_r_within'], .98/1.25, atol=.02)
+    assert truth['Q_lock'] == c.simulate(.1, 100)[1]['Q_lock'] and truth['condition'] < 50
+    etas = [s.record(('random-noise', .1, 200 + k))[1]['eta'] for k in range(4)]
+    assert min(etas) >= .3 and max(etas) <= .9 and len(set(etas)) == 4
