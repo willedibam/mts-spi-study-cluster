@@ -126,6 +126,20 @@ Full-mean ridge ceilings recover Q in every arm (.90, .88, .93).
 
 Provenance: source `02faa24` at Scratch `operations/sources/cross-frequency-nuisance-02faa24`; jobs 180617499/500/501 (farm), 180617502 (analysis), all exit 0. Outputs `results/order-parameter-inference/cross-frequency-locking-nuisance-261006/` including `component-scatter-<arm>.png`.
 
+### M = 48 confirmation: full-p90 result, 6 October
+
+All 1,008 records completed after the memory-sized resubmission (peak 14.2 GB and 52–66 min per record, up to about 2 h for the slowest; high-memory queue); zero selected-feature missingness in the sensor-noise and common-mode arms, at most 1.6% in the coupling arm; eight MPI replays exact for means and within 3e-8 for z. Held |Spearman|, 168 records per arm, centered z-PC1 against mean-SPI PC1:
+
+| Arm | z-PC1 with Q | z-PC1 with nuisance | Mean-SPI PC1 with Q | z minus mean-SPI PC1 |
+| --- | ---: | ---: | ---: | ---: |
+| Sensor noise | .86 (.83–.88) | .06 | .12 | .53–.86 |
+| Common mode | .06 (.00–.15) | .99 | .12 | −.08–.02 |
+| Internal coupling | .89 (.87–.90) | .23 | .53 | .27–.47 |
+
+**The declared confirmation passes for sensor noise** (step contrast 15.2 at .10–.11) and every M = 24 conclusion repeats at twice the size: common mode defeats z-PC1, coupling heterogeneity does not, and the transition is again the second component wherever it is not the first (mean vector .72 and .78 under noise and common mode; z .86 under common mode). Standardized z-PC1 is worse here (.48 with Q, .91 with noise): its two leading eigenvalues are 29% and 25%.
+
+Provenance: farm source `69180ed`, analysis source `7dc6dd4`; jobs 180625955–963 (five exit 0, two timed out at 5,000 s per task), retries 180637360 and 180638141, analysis 180638142; archive SHA `134ff2b6…2d1211e`. Outputs `results/order-parameter-inference/cross-frequency-locking-confirm-261006/`.
+
 ## Real-data attempt: NeuroTycho anaesthetic induction (exploratory, 6 October)
 
 Question: does the unsupervised picture carry over to a real regime change? Data already staged for the transfer pilot: 15 dates, four macaques, ketamine–medetomidine (11) and propofol (4), 16 bipolar ECoG channels, pilot preprocessing unchanged. New here: 2,239 eight-second windows tiling each injection session (20 s stride through induction and the labelled anaesthetized interval, 60 s through emergence and recovery) plus the awake-eyes-closed interval; full p90 at M = 16, T = 2000. Truth is event markers only: there is no measured control or per-window order parameter. Coordinates are fitted without the evaluated animal. Code `scripts/neurotycho_induction.py`; outputs `results/order-parameter-inference/neurotycho-induction-261006/`.
@@ -138,7 +152,7 @@ Question: does the unsupervised picture carry over to a real regime change? Data
 
 ## Carry-forward: state, lessons and open decisions (6 October)
 
-**Where it stands.** Two full-p90 results at M = N = 24: (i) clean recordings — mean |r| fails, every catalogue PC1 steps, no advantage over mean-SPI PC1; (ii) recording-specific sensor noise — mean |r| and mean-SPI PC1 follow the noise, centered z-PC1 tracks Q (.87). The three nuisance arms have full-p90 results at M = 24 (above); M = 48 awaits a memory-sized resubmission. Promotion of this system into the lean benchmark notebook was deferred until confirmation; two concise cells are in `notebooks/inference/dependence-character-transitions-261005.ipynb` (uncommitted, alongside other uncommitted edits).
+**Where it stands.** Two full-p90 results at M = N = 24: (i) clean recordings — mean |r| fails, every catalogue PC1 steps, no advantage over mean-SPI PC1; (ii) recording-specific sensor noise — mean |r| and mean-SPI PC1 follow the noise, centered z-PC1 tracks Q (.87). The three nuisance arms have full-p90 results at M = 24 and M = 48 (above); nothing is queued. Promotion of this system into the lean benchmark notebook was deferred until confirmation; two concise cells are in `notebooks/inference/dependence-character-transitions-261005.ipynb` (uncommitted, alongside other uncommitted edits).
 
 **Design lessons, each backed by a run.**
 - z needs at least three edge types. With two homogeneous classes every SPI profile is a two-level pattern and z, which discards level and scale, cannot move (two-community scratch run).
