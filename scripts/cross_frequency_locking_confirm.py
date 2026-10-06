@@ -1,4 +1,4 @@
-"""M=48 confirmation of the 2:1 locking sweep under recording-specific nuisances; protocol fixed before p90.
+"""M=48 confirmation (and M=24 repeat) of the 2:1 locking sweep under recording-specific nuisances; protocol fixed before p90.
 
 Same dynamics and truth as scripts/cross_frequency_locking.py with 16 oscillators per community and fresh seeds.
 Every arm observes each channel through white sensor noise. One nuisance per arm is drawn once per recording,
@@ -11,28 +11,27 @@ independently of the control:
 Declared before p90: centered z-PC1 is primary; held |Spearman| with Q and with the nuisance are the headline scores.
 """
 import argparse
+from functools import partial
 from pathlib import Path
 import numpy as np
 from scripts.cross_frequency_locking import ROOT,EPS,simulate
 from scripts import cross_frequency_locking_snr as snr
 
-RUN='cross-frequency-locking-confirm-261006'
-DATA=ROOT/'data/order-parameter-inference'/RUN
-OUT=ROOT/'results/order-parameter-inference'/RUN
-N=16
 ARMS=('random-noise','common-mode','internal-coupling')
-FIRST_SEED={'random-noise':300,'common-mode':400,'internal-coupling':500}
-NOISE_SEED,PYSPI_SEED=261094,261095
+# m48 is the declared confirmation. m24 repeats the same arms on separate fresh seeds at the original size; it was
+# added when the first m48 submission was killed for memory, before any outcome of either run had been read.
+RUNS={'m48':dict(run='cross-frequency-locking-confirm-261006',n=16,first=dict(zip(ARMS,(300,400,500))),noise_seed=261094,pyspi_seed=261095),
+      'm24':dict(run='cross-frequency-locking-nuisance-261006',n=8,first=dict(zip(ARMS,(1000,1100,1200))),noise_seed=261096,pyspi_seed=261097)}
 
 
-def record(task):
+def record(task,n=16,noise_seed=261094):
     arm,gamma,seed=task;eta,common,eps=.5,0.,EPS
-    rng=np.random.default_rng(np.random.SeedSequence([NOISE_SEED,ARMS.index(arm),int(round(gamma*1000)),seed]))
+    rng=np.random.default_rng(np.random.SeedSequence([noise_seed,ARMS.index(arm),int(round(gamma*1000)),seed]))
     level=float(rng.uniform())
     if arm==ARMS[0]:eta=.3+.6*level
     if arm==ARMS[1]:common=.8*level
     if arm==ARMS[2]:eps=.15+.45*level
-    raw,truth=simulate(gamma,seed,n=N,eps=eps)
+    raw,truth=simulate(gamma,seed,n=n,eps=eps)
     x,truth=snr.observe(raw,truth,rng,eta,common)
     truth.update(common=common,eps=eps,nuisance=dict(zip(ARMS,(eta,common,eps)))[arm])
     return x,truth
@@ -40,10 +39,11 @@ def record(task):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure'])
-    p.add_argument('--data',type=Path,default=DATA);p.add_argument('--output',type=Path,default=OUT)
-    p.add_argument('--workers',type=int,default=6);a=p.parse_args()
+    p.add_argument('--size',choices=list(RUNS),default='m48');p.add_argument('--data',type=Path);p.add_argument('--output',type=Path)
+    p.add_argument('--workers',type=int,default=6);a=p.parse_args();c=RUNS[a.size];RUN=c['run']
+    a.data=a.data or ROOT/'data/order-parameter-inference'/RUN;a.output=a.output or ROOT/'results/order-parameter-inference'/RUN
     names=dict(stem='confirm-comparison',heading='2:1 locking under recording-specific nuisances')
-    if a.stage=='prepare':snr.prepare(a.workers,RUN,ARMS,FIRST_SEED,record,N,PYSPI_SEED,__file__)
+    if a.stage=='prepare':snr.prepare(a.workers,RUN,ARMS,c['first'],partial(record,n=c['n'],noise_seed=c['noise_seed']),c['n'],c['pyspi_seed'],__file__)
     else:
         a.output.mkdir(parents=True,exist_ok=True)
         if a.stage=='extract':
@@ -55,5 +55,5 @@ if __name__=='__main__':
         else:
             from threadpoolctl import threadpool_limits
             with threadpool_limits(limits=4):
-                snr.analyze(a.data,a.output,'nuisance',**names,qualification='M=48 confirmation on fresh seeds. Arms, primary readout and '
+                snr.analyze(a.data,a.output,'nuisance',**names,qualification=f'{a.size} nuisance arms on fresh seeds. Arms, primary readout and '
                     'scores were fixed before outcomes; internal-coupling is a declared boundary test; supervised mean readouts are information ceilings.')

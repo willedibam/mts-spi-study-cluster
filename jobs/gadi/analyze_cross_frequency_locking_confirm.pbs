@@ -12,7 +12,8 @@ module purge
 module load python3/3.12.1
 source .venv/bin/activate
 export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 MKL_NUM_THREADS=4 NUMEXPR_NUM_THREADS=4
-: "${XFREQ_DATA:?}"
-python -m scripts.cross_frequency_locking_confirm extract --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis"
-python -m scripts.audit_dependence_features --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis" --corpus cross-frequency-locking-confirm-261006
-python -m scripts.cross_frequency_locking_confirm analyze --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis"
+: "${XFREQ_DATA:?}" "${XFREQ_SIZE:?}"
+RUN=$(basename "$XFREQ_DATA")
+python -m scripts.cross_frequency_locking_confirm extract --size $XFREQ_SIZE --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis"
+python -m scripts.audit_dependence_features --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis" --corpus "$RUN"
+python -m scripts.cross_frequency_locking_confirm analyze --size $XFREQ_SIZE --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis"

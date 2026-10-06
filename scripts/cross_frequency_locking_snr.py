@@ -95,13 +95,42 @@ def figure(scores,out,stem='snr-comparison',heading='2:1 locking through sensor 
     plt.close(fig)
 
 
-def components(x,fit,held,standard,targets,k=3):
-    """Leading PCs with coordinate()'s preprocessing: explained variance and held |Spearman| with each target."""
+def leading(x,fit,standard,k=3):
+    """Leading PCs with coordinate()'s preprocessing; scores for every row and explained-variance ratios."""
     from sklearn.decomposition import PCA
     keep=np.isfinite(x[fit]).all(0)&(np.nanstd(x[fit],axis=0)>1e-10);x=x[:,keep];x=np.where(np.isfinite(x),x,np.median(x[fit],axis=0))
-    x=(x-x[fit].mean(0))/(x[fit].std(0) if standard else 1);model=PCA(k,svd_solver='full').fit(x[fit]);q=model.transform(x[held])
+    x=(x-x[fit].mean(0))/(x[fit].std(0) if standard else 1);model=PCA(k,svd_solver='full').fit(x[fit])
+    return model.transform(x),model
+
+
+def components(x,fit,held,standard,targets,k=3):
+    """Explained variance and held |Spearman| of each leading PC with each target."""
+    q,model=leading(x,fit,standard,k);q=q[held]
     return dict(evr=[round(float(v),4) for v in model.explained_variance_ratio_],
         **{name:[round(float(abs(spearmanr(q[:,j],t).statistic)),4) for j in range(k)] for name,t in targets.items() if np.unique(t).size>1})
+
+
+def scatter(out,arm=ARMS[1],nuisance='eta',label=r'sensor-noise SD $\eta$',stem='component-scatter'):
+    """Held records in the plane of the first two target-blind components, coloured by Q and by the nuisance."""
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    plt.rcParams.update(STYLE);rows=pd.read_csv(out/'scores.csv');bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)
+    index=np.flatnonzero(rows.system.eq(arm).to_numpy());part=rows.iloc[index];fit=part.role.eq('development').to_numpy()
+    held=(part.role.eq('evaluation')&part.comparison_eligible).to_numpy()
+    fig,axes=plt.subplots(2,2,figsize=(7.4,6),constrained_layout=True,sharex='row',sharey='row')
+    for row,(name,key,standard) in enumerate([('Mean of each SPI','mean',True),('SPI-SPI, centered','z',False)]):
+        q,model=leading(bank[key][index],fit,standard,2);evr=model.explained_variance_ratio_
+        q=q/q[fit].std(0)*np.sign([spearmanr(q[fit,j],part.control[fit]).statistic for j in range(2)])  # display orientation only
+        for ax,(column,cmap,text) in zip(axes[row],[('Q_lock','viridis','locking index $Q$'),(nuisance,'magma',label)]):
+            points=ax.scatter(q[held,0],q[held,1],c=part[column].to_numpy()[held],cmap=cmap,s=11,alpha=.85,edgecolors='none')
+            rho=[abs(spearmanr(q[held,j],part[column].to_numpy()[held]).statistic) for j in range(2)]
+            ax.set(xlabel=f'PC1 ({evr[0]:.0%} of variance)',title=f'{name}\n$|\\rho|$ with colour: PC1 {rho[0]:.2f}, PC2 {rho[1]:.2f}')
+            fig.colorbar(points,ax=ax,label=text,pad=.02)
+        axes[row,0].set_ylabel(f'PC2 ({evr[1]:.0%} of variance)')
+    fig.suptitle(f"First two unsupervised components, {arm}, M=N={part['M'].iloc[0]}; held recordings",fontsize=10)
+    for ext in ['png','svg']:fig.savefig(out/f'{stem}.{ext}',dpi=180)
+    plt.close(fig)
 
 
 def analyze(data,out,nuisance='eta',stem='snr-comparison',heading='2:1 locking through sensor noise',
@@ -145,7 +174,7 @@ def analyze(data,out,nuisance='eta',stem='snr-comparison',heading='2:1 locking t
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure','scatter'])
     p.add_argument('--data',type=Path,default=DATA);p.add_argument('--output',type=Path,default=OUT)
     p.add_argument('--workers',type=int,default=6);a=p.parse_args()
     if a.stage=='prepare':prepare(a.workers)
@@ -155,6 +184,7 @@ if __name__=='__main__':
             from scripts.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
         elif a.stage=='figure':figure(pd.read_csv(a.output/'scores.csv'),a.output)
+        elif a.stage=='scatter':scatter(a.output)
         else:
             from threadpoolctl import threadpool_limits
             with threadpool_limits(limits=4):analyze(a.data,a.output)

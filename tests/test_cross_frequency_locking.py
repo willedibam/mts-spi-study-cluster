@@ -76,7 +76,7 @@ def test_sensor_noise_arms_are_reproducible_and_leave_truth_untouched():
 
 def test_confirmation_arms_apply_one_nuisance_each():
     from scripts import cross_frequency_locking_confirm as k
-    out={arm:k.record((arm,.1,k.FIRST_SEED[arm])) for arm in k.ARMS}
+    out={arm:k.record((arm,.1,k.RUNS['m48']['first'][arm])) for arm in k.ARMS}
     for arm,(x,truth) in out.items():
         assert x.shape==(48,1000) and np.isfinite(x).all() and truth['nuisance']==truth[dict(zip(k.ARMS,('eta','common','eps')))[arm]]
     noise,common,coupling=(out[arm][1] for arm in k.ARMS)
