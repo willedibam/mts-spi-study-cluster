@@ -106,7 +106,7 @@ def rate(control, seed, N=16, dt=.02, burn=1000., reference=3000., T=1000, sampl
     x,logs,variance=rate_integrate(w,control,sigma,noise_seed,dt,nb,no,nr,every,M)
     durations=np.array([(nr+1)//2,nr//2])*dt
     return x,dict(Q=float(logs.sum()/(nr*dt)),Q_first=float(logs[0]/durations[0]),Q_second=float(logs[1]/durations[1]),
-        state_variance=float(variance),N=N,dt=dt,sigma=sigma),dict(connectivity=w)
+        state_variance=float(variance),N=N,dt=dt,sigma=sigma),dict(connectivity_sha256=np.array(hashlib.sha256(w.tobytes()).hexdigest()))
 
 
 def plan(path, kind='initial'):
@@ -135,6 +135,10 @@ def plan(path, kind='initial'):
         tasks=[dict(system='rate',control=float(round(g,4)),seed=seed,N=256,dt=.01,
                     burn=1000.,reference=4000.,M=16,T=1000,sample=.5)
                for g in np.linspace(1.5,1.9,17) for seed in range(100,116)]
+    if kind=='production-rate1024':
+        tasks=[dict(system='rate',control=float(round(g,4)),seed=seed,N=1024,dt=.01,
+                    burn=1000.,reference=4000.,M=16,T=1000,sample=.5)
+               for g in np.linspace(1.35,1.75,17) for seed in range(100,116)]
     path.parent.mkdir(parents=True,exist_ok=True)
     if path.exists(): raise FileExistsError(path)
     path.write_text(json.dumps(dict(tasks=tasks,purpose='Physics scout only; no SPI-based selection',kind=kind,
@@ -200,7 +204,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['plan','case','summarize','audit'])
     p.add_argument('--plan',type=Path);p.add_argument('--index',type=int);p.add_argument('--out',type=Path,required=True)
     p.add_argument('--indices',type=Path)
-    p.add_argument('--plan-kind',choices=['initial','refinement','production-cgle','production-rate'],default='initial')
+    p.add_argument('--plan-kind',choices=['initial','refinement','production-cgle','production-rate','production-rate1024'],default='initial')
     a=p.parse_args()
     if a.stage=='plan':plan(a.out,a.plan_kind)
     elif a.stage=='case':run_case(a.plan,a.index,a.out)
