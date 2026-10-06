@@ -105,3 +105,10 @@ def test_future_reference_does_not_change_observed_record():
         x,_,_=generator(seed=1,burn=1,T=32,reference=1.,**params)
         longer,_,_=generator(seed=1,burn=1,T=32,reference=2.,**params)
         np.testing.assert_array_equal(x,longer)
+
+
+def test_published_driven_mean_field_boundary():
+    from scripts.lean2_regime_candidates import rate_mean_field_boundary
+    first=rate_mean_field_boundary(quadrature=128);second=rate_mean_field_boundary(quadrature=256)
+    np.testing.assert_allclose(first,second,atol=1e-6)
+    assert abs(first[0]-1.48)<.005

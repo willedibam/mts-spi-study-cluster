@@ -19,6 +19,22 @@ RUN = 'lean2-regime-candidates-261006'
 REMOTE = '/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/' + RUN
 
 
+def rate_mean_field_boundary(sigma=np.sqrt(.125), quadrature=128):
+    """Independently solve Schuecker et al. Eqs. 11 and 20 (infinite N only)."""
+    from scipy.special import roots_hermitenorm
+    from scipy.optimize import brentq
+    if sigma<=0:raise ValueError('This driven-branch solver requires sigma>0')
+    nodes,weights=roots_hermitenorm(quadrature);weights/=np.sqrt(2*np.pi)
+    def quantities(c):
+        x=np.sqrt(c)*nodes;phi=np.logaddexp(x,-x)-np.log(2)
+        return weights@np.tanh(x)**2,weights@phi**2-(weights@phi)**2
+    def energy(c):
+        recurrent,variance=quantities(c)
+        return c/recurrent*variance-.5*(c*c-sigma**4)
+    c=brentq(energy,sigma*sigma,max(2.,100*sigma*sigma))
+    return float(np.sqrt(c/quantities(c)[0])),float(c)
+
+
 def local_flow(a, h, c3):
     denominator = 1 + abs(a)**2 * np.expm1(2*h)
     return a * np.exp(h + (-.5 + .5j*c3)*np.log(denominator))
