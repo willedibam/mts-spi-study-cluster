@@ -62,3 +62,22 @@ Why the mean-SPI PC1 succeeded above: 121 of the 211 usable SPI means step at th
 Variant (`scripts/cross_frequency_locking_snr.py`): identical dynamics and truth, each channel observed through independent white noise of SD η in signal-SD units. Arm `fixed-noise`: η = .5 in every recording, which removes the near-collinearity. Arm `random-noise`: η ~ U[.3, .9] drawn once per recording, independently of γ, as recording quality varies across sessions and subjects. Hypothesis: the nuisance moves every dependence estimate together, so mean |r| and mean-SPI PC1 follow η; z discards each SPI's level and scale across pairs, so z-PC1 follows the locking index. 672 records (2 arms × 21 controls × 16 fresh seeds, 8 fit / 8 held), M = N = 24, T = 1000, estimator seed 261092; arms analysed separately.
 
 Declared: centered z-PC1 is primary, standardized z-PC1 a sensitivity; headline scores are held |Spearman| with Q and, in the random arm, with η; step scores are secondary. Supervised mean readouts stay as information ceilings and are expected to recover Q in both arms. A scratch run with eight cheap probes (4 fit / 4 held seeds) gave, in the random arm, |ρ| with Q of .01 (mean |r|), .06 (mean-probe PC1) and .91 (centered z-PC1), with z-PC1's |ρ| with η at .13; in the fixed arm .41, .81 and .90. The earlier probe-to-p90 discrepancy means this is motivation, not evidence.
+
+### Sensor-noise variant: full-p90 result, 6 October
+
+All 672 records completed; all 168 held records per arm pass the gate with zero selected-feature missingness; eight MPI replays reproduce means exactly and z within 3e-8. Held |Spearman|, 168 records per arm:
+
+| Readout | Fixed noise: with Q | Random noise: with Q | Random noise: with η |
+| --- | ---: | ---: | ---: |
+| Mean absolute Pearson | .38 | .03 | 1.00 |
+| Mean-SPI PC1 | .82 | .02 | 1.00 |
+| Distribution PC1 | .82 | .04 | 1.00 |
+| Centered z-PC1 (primary) | .88 | .87 | .02 |
+| Standardized z-PC1 | .82 | .68 | .69 |
+| Selected mean / full-mean ridge, ceilings | .97 / .92 | .79 / .89 | .22 / .01 |
+
+**Recording-specific noise: both baselines fail and the primary SPI–SPI coordinate does not.** Mean |r| and the unsupervised mean-SPI and distribution PC1s follow the noise level and carry no trace of the transition. Centered z-PC1 tracks Q (seed-bootstrap 95% interval .85–.90; z minus mean-SPI PC1 .60–.87), is unrelated to η, steps at the correct interval .10–.11 (step contrast 12.8) and follows part of the ramp below the boundary (|ρ| .51 for γ ≤ .10, against .10 for mean-SPI PC1). Standardized z-PC1 is contaminated by η; the scaling sensitivity is real and must be reported with the result. The supervised full-mean ridge recovers Q, so the information is present in the mean vector; what fails is unsupervised access to it.
+
+**Homogeneous noise:** mean |r| fails (flat at .250); mean-SPI PC1 tracks (.82) with a weaker step (contrast 6.5) than centered or standardized z-PC1 (21.6, 26.1); z minus mean-SPI PC1 in |ρ| is .02–.09. Without a nuisance the unsupervised mean vector remains a competitive baseline.
+
+Scope: the nuisance is additive white sensor noise with SD U[.3, .9] of signal SD, one construction; one size; exploratory first pass, though the primary readout and scores were recorded before the run. Provenance: source `ef8cc5e` at Scratch `operations/sources/cross-frequency-snr-ef8cc5e`, archive SHA `43ee5f68…c08866`, jobs 180583800/803/804 (farm) and 180583805 (analysis), all exit 0. Outputs `results/order-parameter-inference/cross-frequency-locking-snr-261006/`.
