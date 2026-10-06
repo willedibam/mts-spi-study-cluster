@@ -67,6 +67,17 @@ def analyze(data,out):
     for label in methods:
         rho=abs(spearmanr(scores.loc[eligible,label],y[eligible]).statistic)
         metrics.append(dict(method=label,held_abs_rho=float(rho),n=int(eligible.sum())))
+    # Resample entire held seed trajectories; g values within a quenched network
+    # are not treated as independent replicates. These are exploratory intervals.
+    rng=np.random.default_rng(261110);seeds=np.unique(rows.seed[eligible]);boot=[]
+    for _ in range(1000):
+        ix=np.concatenate([np.flatnonzero(eligible&(rows.seed.to_numpy()==s)) for s in rng.choice(seeds,len(seeds),replace=True)])
+        boot.append([abs(spearmanr(scores[label].to_numpy()[ix],y[ix]).statistic) for label in methods])
+    boot=np.array(boot)
+    for j,item in enumerate(metrics):
+        item['bootstrap_low'],item['bootstrap_high']=np.nanquantile(boot[:,j],[.025,.975]).tolist()
+    details['z_minus_baseline_rho_intervals']={label:np.nanquantile(boot[:,0]-boot[:,methods.index(label)],[.025,.975]).tolist()
+        for label in ['mean_abs_r','mean_PC1']}
     details['selected_mean']=str(bank['spi_order'][best]);details['eligible_per_control']=scores[eligible].groupby('control').size().to_dict()
     scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     (out/'analysis.json').write_text(json.dumps(details,indent=2)+'\n')
@@ -88,7 +99,8 @@ def figure(scores,out):
         ax.fill_between(q.index,group.Q.quantile(.1),group.Q.quantile(.9),color='#222222',alpha=.12,lw=0)
         lines+=right.plot(a.index,a,'s-',color='#31688e',label='$q$' if col!='mean_abs_r' else r'$\overline{|r|}$')
         right.fill_between(a.index,group[col].quantile(.1),group[col].quantile(.9),color='#31688e',alpha=.12,lw=0)
-        ax.set(xlabel=label,ylabel='Defect density $Q$' if system=='cgle' else r'$Q=\lambda_{\max}$',title=title)
+        rho=abs(spearmanr(held[col],held.Q).statistic)
+        ax.set(xlabel=label,ylabel='Defect density $Q$' if system=='cgle' else r'$Q=\lambda_{\max}$',title=title+rf' · $|\rho|={rho:.2f}$')
         right.set_ylabel('Fit-record SD units' if col!='mean_abs_r' else 'Mean absolute Pearson')
         ax.legend(lines,[v.get_label() for v in lines],loc='upper left',fontsize=7)
     fig.suptitle(f'{system.upper()} · M={scores.M.iloc[0]}, N={scores.N.iloc[0]}, T={scores.T.iloc[0]} · held seeds; bands 10–90%')

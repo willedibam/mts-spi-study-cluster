@@ -72,3 +72,15 @@ def test_bundle_preserves_raw_Q_and_separates_seeds(tmp_path):
     for row in manifest['rows']:
         a=arrays[row['row_id']];np.testing.assert_allclose(a.mean(1),0,atol=1e-14)
         np.testing.assert_allclose(a.std(1),1,atol=1e-14)
+
+
+def test_explicit_production_dimensions_and_completion_audit(tmp_path):
+    import json
+    import pytest
+    from scripts.lean2_regime_candidates import run_case,audit_cases
+    plan=tmp_path/'plan.json';indices=tmp_path/'indices.txt';out=tmp_path/'cases'
+    plan.write_text(json.dumps({'tasks':[dict(system='rate',control=1.5,seed=100,N=16,M=16,T=32,burn=1.,reference=1.)]}))
+    indices.write_text('0\n')
+    with pytest.raises(FileNotFoundError):audit_cases(plan,indices,out)
+    run_case(plan,0,out);audit_cases(plan,indices,out)
+    row=json.loads((out/'case-0000.json').read_text());assert (row['M'],row['T'])==(16,32)

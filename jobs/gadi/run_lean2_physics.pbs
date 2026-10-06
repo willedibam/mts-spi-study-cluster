@@ -20,3 +20,4 @@ while read -r idx; do
 done < "$INDICES"
 mkdir -p "$OUTPUT"
 mpirun -np "$PBS_NCPUS" --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$OUTPUT/job-${PBS_JOBID}.status"
+python -m scripts.lean2_regime_candidates audit --plan "$PLAN" --indices "$INDICES" --out "$OUTPUT"

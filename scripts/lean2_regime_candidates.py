@@ -150,11 +150,24 @@ def run_case(plan_path,index,out):
     x,truth,extra=(cgle if system=='cgle' else rate)(**params)
     if not np.isfinite(x).all() or np.any(x.std(1)<1e-8): raise ValueError('Invalid/constant observations')
     r=np.corrcoef(x);off=~np.eye(len(x),dtype=bool)
-    metadata=dict(**task,**{k:v for k,v in truth.items() if k not in task},M=len(x),T=x.shape[1],
-        mean_abs_r=float(abs(r[off]).mean()),mean_r=float(r[off].mean()),rank=int(np.linalg.matrix_rank(x)),
-        seconds=time.monotonic()-start,generator_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+    metadata={**task,**truth,'M':len(x),'T':x.shape[1],
+        'mean_abs_r':float(abs(r[off]).mean()),'mean_r':float(r[off].mean()),'rank':int(np.linalg.matrix_rank(x)),
+        'seconds':time.monotonic()-start,'generator_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
     np.savez_compressed(target,observations=x,**extra)
     meta.write_text(json.dumps(metadata,indent=2)+'\n');print(json.dumps(metadata),flush=True)
+
+
+def audit_cases(plan_path,indices_path,out):
+    tasks=json.loads(plan_path.read_text())['tasks']
+    indices=[int(x) for x in indices_path.read_text().split()]
+    assert len(indices)==len(set(indices))
+    for index in indices:
+        row=json.loads((out/f'case-{index:04d}.json').read_text())
+        for key,value in tasks[index].items():assert row[key]==value,(index,key,row[key],value)
+        x=np.load(out/f'case-{index:04d}.npz')['observations']
+        assert x.shape==(row['M'],row['T']) and np.isfinite(x).all()
+        assert np.isfinite([row['Q'],row['Q_first'],row['Q_second']]).all()
+    print(f'Audited {len(indices)} complete physics cases',flush=True)
 
 
 def summarize(out):
@@ -184,10 +197,12 @@ def summarize(out):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['plan','case','summarize'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['plan','case','summarize','audit'])
     p.add_argument('--plan',type=Path);p.add_argument('--index',type=int);p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--indices',type=Path)
     p.add_argument('--plan-kind',choices=['initial','refinement','production-cgle','production-rate'],default='initial')
     a=p.parse_args()
     if a.stage=='plan':plan(a.out,a.plan_kind)
     elif a.stage=='case':run_case(a.plan,a.index,a.out)
+    elif a.stage=='audit':audit_cases(a.plan,a.indices,a.out)
     else:summarize(a.out)
