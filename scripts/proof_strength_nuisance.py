@@ -228,6 +228,65 @@ def metrics(rows,bank):
     return pd.DataFrame(out)
 
 
+def silhouette_gap(rows,bank,arm,panel,draws=2000,seed=0):
+    """Silhouette of z minus that of the mean vector, with a 95% interval from resampling instances (embeddings held fixed)."""
+    from sklearn.metrics import silhouette_samples
+    index=select(rows,arm,panel);part=rows.iloc[index];y=part.label.to_numpy();instance=part.instance.to_numpy()
+    d=silhouette_samples(embed(bank,index,'z',umap=False)['scores'],y)-silhouette_samples(embed(bank,index,'mean',umap=False)['scores'],y)
+    per=np.array([d[instance==i].mean() for i in np.unique(instance)]);rng=np.random.default_rng(seed)
+    boot=per[rng.integers(0,len(per),(draws,len(per)))].mean(1)
+    return float(d.mean()),*np.quantile(boot,[.025,.975]).round(3)
+
+
+ORDER=('native','equalised','mild','matched','wide','pooled')   # display order: strength fixed, then increasingly varied
+CURVES={'strength':('Mean $|r|$ alone','#009E73','v'),'corr':('Correlation-family means','#E69F00','s'),'mean':('Mean of each SPI, $m$','#D55E00','o'),
+        'mean, PC1 removed':('$m$ without its PC1','#D55E00','x'),'z':('SPI-SPI, $z$','#0072B2','D')}
+
+
+def table(m,panel,column):
+    """One metric of one panel: rows are representations, columns are arms."""
+    arms=[a for a in ORDER if a in set(m.arm)]
+    return m[m.panel.eq(panel)].pivot(index='representation',columns='arm',values=column).loc[list(CURVES),arms].round(2)
+
+
+def metrics_figure(m,out):
+    """Cluster compactness and neighbour agreement of each representation across arms."""
+    plt=style();arms=[a for a in ORDER if a in set(m.arm)];columns=[('silhouette','Silhouette by class'),('purity','5-neighbour class agreement')]
+    fig,axes=plt.subplots(2,2,figsize=(7.6,5.8),layout='constrained',sharex=True)
+    for row,panel in zip(axes,PANELS):
+        for ax,(column,label) in zip(row,columns):
+            for key,(name,color,marker) in CURVES.items():
+                ax.plot(range(len(arms)),table(m,panel,column).loc[key],marker=marker,ms=4.5,lw=1.2,ls='--' if 'removed' in key else '-',color=color,label=name)
+            if column=='purity':ax.axhline(m[m.panel.eq(panel)].chance.iloc[0],color='.6',lw=.8,ls=':')
+            ax.set(xticks=range(len(arms)),ylabel=label);ax.set_xticklabels(arms,rotation=30,ha='right')
+        row[0].set_title({'inter':'Across classes','cml':'Within CML'}[panel],loc='left')
+    fig.legend(*axes[0,0].get_legend_handles_labels(),loc='outside lower center',ncols=3,fontsize=8)
+    return save(fig,out,'metrics')
+
+
+def strength_dependence(rows,bank,arm,names):
+    """Per feature: |Spearman| with observed mean |r| among recordings of one class, averaged over the classes."""
+    from scipy.stats import rankdata
+    index=np.flatnonzero(rows.system.eq(arm).to_numpy()&rows.label.isin(names).to_numpy());y=rows.label.to_numpy()[index];out={}
+    rank=lambda v:(lambda r:(r-r.mean(0))/r.std(0))(np.apply_along_axis(rankdata,0,v))
+    for key in ('mean','z'):
+        x=bank[key][index].astype(float);x=x[:,np.isfinite(x).all(0)]
+        with np.errstate(all='ignore'):out[key]=np.nanmean([abs(rank(x[y==c]).T@rank(rows.mean_abs_r.to_numpy()[index][y==c]))/(y==c).sum() for c in names],axis=0)
+    return out
+
+
+def dependence_figure(rows,bank,arm,out):
+    plt=style();fig,axes=plt.subplots(1,2,figsize=(7.2,2.9),layout='constrained',sharey=True);bins=np.linspace(0,1,26)
+    for ax,(title,names) in zip(axes,[('Within CML',CML_PANEL),('Across coupled classes',[n for n in INTER_PANEL if n not in NOISE])]):
+        d=strength_dependence(rows,bank,arm,list(names))
+        for key,color in (('mean','#D55E00'),('z','#0072B2')):
+            v=d[key][np.isfinite(d[key])];ax.hist(v,bins=bins,density=True,histtype='stepfilled',alpha=.45,color=color,
+                label=f'{REPRESENTATIONS[key]}: median {np.median(v):.2f}, {np.mean(v>.5):.0%} above .5')
+        ax.set(xlabel=r'Within-class $|\rho|$ of a feature with mean $|r|$',title=title,xlim=(0,1));ax.legend(fontsize=7,loc='upper center')
+    axes[0].set_ylabel('Density of features')
+    return save(fig,out,f'strength-dependence-{arm}')
+
+
 def style():
     import matplotlib.pyplot as plt
     plt.rcParams.update({'text.usetex':False,'font.family':'serif','font.serif':['CMU Serif','DejaVu Serif'],'mathtext.fontset':'cm','font.size':9,

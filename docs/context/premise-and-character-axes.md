@@ -28,7 +28,7 @@ Acknowledged crudeness: Pearson correlation is a clumsy comparator of two statis
 ## Evidence boundaries to keep attached
 
 - z is not strength-blind; strength "bleeds" in. It is invariant to a positive affine change of each SPI's edge profile and to nothing else.
-- Per-SPI means are not strength-only. With the full catalogue, supervised mean readouts recover character targets, and the unsupervised mean-SPI PC1 matched z-PC1 on homogeneous recordings ([locking result](../research/order-parameter-benchmarks/cross-frequency-locking-261006.md); [ruled-out record](cross-mt-transfer-ruled-out.md)). The supported contrast is unsupervised access under per-recording nuisances that move every dependence estimate together, not absence of information.
+- Per-SPI means are not strength-only. With the full catalogue, supervised mean readouts recover character targets, and the unsupervised mean-SPI PC1 matched z-PC1 on homogeneous recordings ([locking result](../research/order-parameter-benchmarks/cross-frequency-locking-261006.md); [ruled-out record](cross-mt-transfer-ruled-out.md)). The supported contrast is unsupervised access under per-recording nuisances that move every dependence estimate together, not absence of information. On the proof classes (2026-10-06, [record](cross-mt-transfer.md#strength-as-a-per-recording-nuisance-on-proof-classes-2026-10-06)) equalising strength left the mean vector as clustered as before; strength varying between recordings degraded its geometry, clearly only within CML, and never its class information.
 - "No general-purpose method exists" and "potentially novel" are literature claims not yet verified by a dedicated search.
 
 ## Future direction: a character axis alongside strength (not started)
