@@ -44,8 +44,8 @@ def velocity(a,b,c,gamma,wa,wb,wc,eps=EPS):
     return da,db,dc,(x1,x2,y,zc)
 
 
-def simulate(gamma,seed,n=N_COMMUNITY,delta=DELTA,dt=.02,burn=500.,reference=1000.,samples=T,eps=EPS):
-    """Euler-Maruyama. Returns raw sin(phase) channels ordered A|B|C and future-window truth."""
+def simulate(gamma,seed,n=N_COMMUNITY,delta=DELTA,dt=.02,burn=500.,reference=1000.,samples=T,eps=EPS,trace=False):
+    """Euler-Maruyama. Returns raw sin(phase) channels ordered A|B|C and future-window truth (and its mean fields if trace)."""
     index=int(np.argmin(np.abs(GAMMAS-gamma))) if np.min(np.abs(GAMMAS-gamma))<1e-9 else int(round(gamma*1e6))+1000
     rng=np.random.default_rng(np.random.SeedSequence([SEED,n,index,seed]))
     q=np.sqrt(2)*WIDTH*erfinv(2*(np.arange(n)+.5)/n-1)
@@ -63,7 +63,7 @@ def simulate(gamma,seed,n=N_COMMUNITY,delta=DELTA,dt=.02,burn=500.,reference=100
     truth=dict(Q_lock=float(abs(np.exp(1j*phase).mean())),Q_lock_first=float(halves[0]),Q_lock_second=float(halves[1]),
                slip=float(abs(phase[-1]-phase[0])/(len(phase)*STEP)),X1=float(abs(fields[:,0]).mean()),
                X2=float(abs(fields[:,1]).mean()),Y=float(abs(fields[:,2]).mean()),RC=float(abs(fields[:,3]).mean()))
-    return np.array(x).T,truth
+    return (np.array(x).T,truth,fields) if trace else (np.array(x).T,truth)
 
 
 def record(task):
@@ -169,6 +169,43 @@ def figure(scores,out,critical):
     plt.close(fig)
 
 
+def _physics(task):
+    gamma,seed=task;x,truth,fields=simulate(gamma,seed,trace=True)
+    slow=np.unwrap(np.angle(fields[:,0]));fast=np.unwrap(np.angle(fields[:,2]));span=(len(slow)-1)*STEP
+    return dict(control=gamma,seed=seed,Q_lock=truth['Q_lock'],ratio=(fast[-1]-fast[0])/(slow[-1]-slow[0]),
+                coupling=truth['X2']+2*truth['Y']),np.unwrap(np.angle(fields[:,2]*np.conj(fields[:,1]))),x
+
+
+def physics(out,workers=6,seeds=4,examples=(.04,.09,.14)):
+    """What the transition is: relative-phase traces, observed frequency ratio and locking index against the control."""
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    plt.rcParams.update(STYLE);tasks=[(float(g),900+s) for g in GAMMAS for s in range(seeds)]
+    with ProcessPoolExecutor(max_workers=workers) as pool:results=list(pool.map(_physics,tasks,chunksize=2))
+    rows=pd.DataFrame([r[0] for r in results]);group=rows.groupby('control');a=GAMMAS*group.coupling.mean().to_numpy()
+    fig,axes=plt.subplots(1,4,figsize=(13.6,3.1),constrained_layout=True);colors=['#440154','#31688e','#35b779']
+    time=np.arange(600)*STEP
+    for gamma,color in zip(examples,colors):
+        phase=next(r[1] for r,t in zip(results,tasks) if abs(t[0]-gamma)<1e-9)[:600]
+        axes[0].plot(time,(phase-phase[0])/(2*np.pi),color=color,label=rf'$\gamma={gamma:.2f}$')
+    axes[0].set(xlabel='Time',ylabel=r'Relative phase $(\Psi_B-2\Theta_A)/2\pi$',title='Phase slips stop');axes[0].legend(fontsize=7)
+    low=next(r[2] for r,t in zip(results,tasks) if abs(t[0]-examples[0])<1e-9);high=next(r[2] for r,t in zip(results,tasks) if abs(t[0]-examples[2])<1e-9)
+    for x,color,offset,name in [(low,colors[0],1.3,rf'$\gamma={examples[0]:.2f}$, drifting'),(high,colors[2],-1.3,rf'$\gamma={examples[2]:.2f}$, locked')]:
+        axes[1].plot(x[0,:700]+offset,x[N_COMMUNITY,:700]+offset,color=color,lw=.5,label=name)
+    axes[1].set(xlabel='Slow channel (A)',ylabel='Fast channel (B)',title='Pearson zero in both',xticks=[],yticks=[]);axes[1].legend(fontsize=7,loc='center')
+    m=group.ratio.mean();axes[2].plot(m.index,m,'o-',color=Q_COLOR);axes[2].axhline(2,color='.6',lw=.8,ls=':')
+    axes[2].set(xlabel=r'Cross-coupling $\gamma$',ylabel=r'Observed frequency ratio $\Omega_B/\Omega_A$',title='Ratio pins to 2')
+    m=group.Q_lock.mean();axes[3].plot(m.index,m,'o-',color=Q_COLOR,label='simulated')
+    with np.errstate(invalid='ignore'):theory=np.where(a<DELTA,(DELTA-np.sqrt(DELTA**2-np.minimum(a,DELTA)**2))/np.maximum(a,1e-12),1)
+    axes[3].plot(GAMMAS,theory,'--',color='#b2182b',lw=1,label='noise-free reduction')
+    axes[3].set(xlabel=r'Cross-coupling $\gamma$',ylabel='Locking index $Q$',title='Order parameter');axes[3].legend(fontsize=7)
+    critical=float(DELTA/rows[rows.control.between(*BOUNDARY)].coupling.mean())
+    for ax in axes[2:]:ax.axvline(critical,color='.6',lw=.8,ls=':')
+    for ext in ['png','svg']:fig.savefig(out/f'physics.{ext}',dpi=180)
+    plt.close(fig);rows.to_csv(out/'physics.csv',index=False);print(group[['Q_lock','ratio']].mean().round(4).to_string())
+
+
 def analyze(data,out):
     from scripts.report_dependence_transition import coordinate
     from scripts.dependence_transition_pipeline import predict_means
@@ -205,7 +242,7 @@ def analyze(data,out):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure','physics'])
     p.add_argument('--data',type=Path,default=DATA);p.add_argument('--output',type=Path,default=OUT)
     p.add_argument('--workers',type=int,default=6);a=p.parse_args()
     if a.stage=='prepare':prepare(a.workers)
@@ -214,6 +251,7 @@ if __name__=='__main__':
         if a.stage=='extract':
             from scripts.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
+        elif a.stage=='physics':physics(a.output,a.workers)
         elif a.stage=='figure':
             figure(pd.read_csv(a.output/'scores.csv'),a.output,json.loads((a.output/'analysis.json').read_text())['reference_gamma_c'])
         else:
