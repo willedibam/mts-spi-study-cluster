@@ -109,7 +109,7 @@ def rate(control, seed, N=16, dt=.02, burn=1000., reference=3000., T=1000, sampl
         state_variance=float(variance),N=N,dt=dt,sigma=sigma),dict(connectivity=w)
 
 
-def plan(path):
+def plan(path, kind='initial'):
     tasks=[]
     for L in (128.,512.):
         for c in (.6,.7,.75,.8,.9,1.):
@@ -118,9 +118,18 @@ def plan(path):
     for N in (16,64,256):
         for g in (1.1,1.3,1.45,1.6,1.8,2.):
             for seed in range(4): tasks.append(dict(system='rate',control=g,seed=seed,N=N))
+    if kind=='refinement':
+        tasks=[]
+        for c in (.8,.85,.9):
+            for dx,dt in ((.5,.025),(.5,.0125),(.25,.0125)):
+                for seed in range(4):tasks.append(dict(system='cgle',control=c,seed=seed,L=512.,dx=dx,dt=dt))
+        for g in (1.6,1.8):
+            for seed in range(4):tasks.append(dict(system='rate',control=g,seed=seed,N=256,dt=.01))
+        for g in (1.4,1.6,1.8):
+            for seed in range(4):tasks.append(dict(system='rate',control=g,seed=seed,N=1024))
     path.parent.mkdir(parents=True,exist_ok=True)
     if path.exists(): raise FileExistsError(path)
-    path.write_text(json.dumps(dict(tasks=tasks,purpose='Physics scout only; no SPI-based selection',
+    path.write_text(json.dumps(dict(tasks=tasks,purpose='Physics scout only; no SPI-based selection',kind=kind,
         generator_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()),indent=2)+'\n')
 
 
@@ -168,7 +177,8 @@ def summarize(out):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['plan','case','summarize'])
     p.add_argument('--plan',type=Path);p.add_argument('--index',type=int);p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--plan-kind',choices=['initial','refinement'],default='initial')
     a=p.parse_args()
-    if a.stage=='plan':plan(a.out)
+    if a.stage=='plan':plan(a.out,a.plan_kind)
     elif a.stage=='case':run_case(a.plan,a.index,a.out)
     else:summarize(a.out)

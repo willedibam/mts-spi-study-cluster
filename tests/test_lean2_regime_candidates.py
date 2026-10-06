@@ -21,6 +21,19 @@ def test_plane_wave_second_order_convergence():
     assert 3.9<errors[0]/errors[1]<4.1 and 3.9<errors[1]/errors[2]<4.1
 
 
+def test_split_pde_against_independent_method_of_lines():
+    n=32;L=16.;k=2*np.pi*np.fft.fftfreq(n,d=L/n);xx=np.arange(n)*L/n
+    initial=1+.05*np.cos(2*np.pi*xx/L)+.03j*np.sin(4*np.pi*xx/L)
+    rhs=lambda t,z:(1+3.5j)*np.fft.ifft(-k*k*np.fft.fft(z))+z-(1-.8j)*abs(z)**2*z
+    reference=solve_ivp(rhs,(0,.2),initial,method='DOP853',rtol=1e-11,atol=1e-12).y[:,-1]
+    errors=[]
+    for dt in (.02,.01):
+        a=initial.copy()
+        for _ in range(round(.2/dt)):a=cgle_step(a,dt,3.5,.8,k)
+        errors.append(np.max(abs(a-reference)))
+    assert errors[1]<2e-6 and 3.8<errors[0]/errors[1]<4.2
+
+
 def test_defect_counts_local_and_canceling_events():
     # Explicit vortex and antivortex on distinct plaquettes; net winding can cancel.
     old=np.exp(1j*np.array([-.75,-.25,.25,.75,.25,-.25])*np.pi)
