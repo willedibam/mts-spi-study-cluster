@@ -119,7 +119,7 @@ def test_secondary_diagnostic_reuses_coordinates(tmp_path,monkeypatch):
     import scripts.lean2_candidate_readout as readout
     scores=pd.DataFrame(dict(Q=[0,.1,.2,.3],min_amplitude=[.8,.6,.01,.005],z_PC1=[-2,-1,1,2],
         z_standard_PC1=[-1,-.5,.5,1],mean_PC1=[-1,-.5,.5,1],mean_abs_r=[.4,.3,.2,.1],
-        role=['evaluation']*4,comparison_eligible=[True]*4))
+        role=['evaluation']*4,comparison_eligible=[True]*4,seed=[108]*4))
     original=scores.copy(deep=True);seen=[]
     monkeypatch.setattr(readout,'figure',lambda frame,*args,**kwargs:seen.append(frame.copy()))
     readout.secondary_amplitude(scores,tmp_path)

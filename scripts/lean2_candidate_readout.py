@@ -53,7 +53,8 @@ def analyze(data,out):
         sign=1 if spearmanr(q[fit],rows.control[fit]).statistic>=0 else -1
         scores[label]=sign*(q-q[fit].mean())/q[fit].std()
         scores[label+'_missing']=missing;eligible&=missing<=.05
-        details[label]=dict(evr=evr,max_held_missing=float(missing[held].max()))
+        keep=np.isfinite(bank[key][fit]).all(0)&(np.nanstd(bank[key][fit],axis=0)>1e-10)
+        details[label]=dict(evr=evr,features=int(keep.sum()),max_held_missing=float(missing[held].max()))
     means=bank['mean'];valid=np.isfinite(means[fit]).all(0)&(np.nanstd(means[fit],axis=0)>1e-10)
     ranks=[abs(spearmanr(means[fit,j],y[fit]).statistic) if valid[j] else -np.inf for j in range(means.shape[1])]
     best=int(np.argmax(ranks));scores['selected_mean']=means[:,best]
@@ -81,6 +82,8 @@ def analyze(data,out):
     details['z_minus_baseline_rho_intervals']={label:np.nanquantile(boot[:,0]-boot[:,methods.index(label)],[.025,.975]).tolist()
         for label in ['mean_abs_r','mean_PC1']}
     details['selected_mean']=str(bank['spi_order'][best]);details['eligible_per_control']=scores[eligible].groupby('control').size().to_dict()
+    details['provenance']={name:hashlib.sha256(path.read_bytes()).hexdigest() for name,path in
+        [('readout_sha256',Path(__file__)),('features_sha256',out/'features.npz'),('manifest_sha256',data/'manifest.json')]}
     scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     (out/'analysis.json').write_text(json.dumps(details,indent=2)+'\n')
     figure(scores,out)
@@ -97,6 +100,15 @@ def secondary_amplitude(scores,out):
         metrics.append(dict(method=col,target='finite-window minimum amplitude',n=int(held.sum()),
             held_abs_rho=float(abs(spearmanr(scores.loc[held,col],scores.loc[held,'min_amplitude']).statistic)),
             held_abs_pearson=float(abs(pearsonr(scores.loc[held,col],scores.loc[held,'min_amplitude']).statistic))))
+    rng=np.random.default_rng(261110);seeds=scores.loc[held,'seed'].unique();boot=[]
+    for _ in range(1000):
+        ix=np.concatenate([np.flatnonzero(held.to_numpy()&scores.seed.eq(s).to_numpy()) for s in rng.choice(seeds,len(seeds),replace=True)])
+        boot.append([abs(spearmanr(scores[col].to_numpy()[ix],scores.min_amplitude.to_numpy()[ix]).statistic) for col in methods])
+    boot=np.array(boot)
+    for j,item in enumerate(metrics):
+        item['bootstrap_low'],item['bootstrap_high']=np.nanquantile(boot[:,j],[.025,.975]).tolist()
+    intervals={col:np.nanquantile(boot[:,0]-boot[:,methods.index(col)],[.025,.975]).tolist() for col in ['mean_abs_r','mean_PC1']}
+    (out/'minimum-amplitude-uncertainty.json').write_text(json.dumps(dict(z_minus_baseline_rho_intervals=intervals),indent=2)+'\n')
     pd.DataFrame(metrics).to_csv(out/'minimum-amplitude-metrics.csv',index=False)
     display=scores.copy();display['Q']=display.min_amplitude
     for col in ['z_PC1','mean_PC1']:display[col]=-display[col]
@@ -114,6 +126,9 @@ def figure(scores,out,target_label=None,filename='baseline-comparison'):
     label={'cgle':'$c_3$','rate':'$g$','crossfreq':r'$\gamma$'}[system]
     truth_label={'cgle':'Defect density $Q$','rate':r'$Q=\lambda_{\max}$','crossfreq':'2:1 locking index $Q$'}[system]
     if target_label is not None:truth_label=target_label
+    if system=='rate':
+        from scripts.lean2_regime_candidates import rate_mean_field_boundary
+        critical=rate_mean_field_boundary(float(scores['sigma'].iloc[0]) if 'sigma' in scores else np.sqrt(.125))[0]
     fig,axes=plt.subplots(1,3,figsize=(11,3.3),layout='constrained')
     for ax,col,title in zip(axes,['z_PC1','mean_abs_r','mean_PC1'],['SPI–SPI PC1','Mean absolute Pearson','Mean-SPI PC1']):
         group=held.groupby('control');q=group.Q.mean();a=group[col].mean();right=ax.twinx();right.spines['right'].set_visible(True)
@@ -122,7 +137,10 @@ def figure(scores,out,target_label=None,filename='baseline-comparison'):
         lines+=right.plot(a.index,a,'s-',color='#31688e',label='$q$' if col!='mean_abs_r' else r'$\overline{|r|}$')
         right.fill_between(a.index,group[col].quantile(.1),group[col].quantile(.9),color='#31688e',alpha=.12,lw=0)
         rho=abs(spearmanr(held[col],held.Q).statistic)
-        ax.set(xlabel=label,ylabel=truth_label,title=title+rf' · $|\rho|={rho:.2f}$')
+        ax.set(xlabel=label,ylabel=truth_label,title=title+rf' · $|\rho_s|={rho:.2f}$')
+        if system=='rate':
+            ax.axhline(0,color='.7',ls=':',lw=.7)
+            ax.axvline(critical,color='.6',ls=':',lw=.7)
         right.set_ylabel('Fit-record SD units' if col!='mean_abs_r' else 'Mean absolute Pearson')
         ax.legend(lines,[v.get_label() for v in lines],loc='upper left',fontsize=7)
     name={'cgle':'Complex Ginzburg–Landau','rate':'Driven rate network','crossfreq':'Cross-frequency locking'}[system]
