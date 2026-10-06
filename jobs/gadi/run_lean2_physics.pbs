@@ -19,5 +19,8 @@ while read -r idx; do
   printf 'python -m scripts.lean2_regime_candidates case --plan %s --index %s --out %s\n' "$PLAN" "$idx" "$OUTPUT" >> "$commands"
 done < "$INDICES"
 mkdir -p "$OUTPUT"
-mpirun -np "$PBS_NCPUS" --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$OUTPUT/job-${PBS_JOBID}.status"
+workers="${WORKERS:-$PBS_NCPUS}"
+(( workers >= 1 && workers <= PBS_NCPUS ))
+# Large dense rate networks can use fewer workers/node to reduce memory-bandwidth contention.
+mpirun -np "$workers" --map-by node:PE=1 nci-parallel --input-file "$commands" --status "$OUTPUT/job-${PBS_JOBID}.status"
 python -m scripts.lean2_regime_candidates audit --plan "$PLAN" --indices "$INDICES" --out "$OUTPUT"
