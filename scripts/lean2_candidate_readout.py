@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
+from scipy.stats import spearmanr,pearsonr
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -66,7 +66,9 @@ def analyze(data,out):
         raise ValueError('Insufficient common eligibility: retain the failure, do not silently compare different cohorts')
     for label in methods:
         rho=abs(spearmanr(scores.loc[eligible,label],y[eligible]).statistic)
-        metrics.append(dict(method=label,held_abs_rho=float(rho),n=int(eligible.sum())))
+        kind='supervised information check' if label in ('selected_mean','mean_ridge') else 'unsupervised comparison'
+        metrics.append(dict(method=label,kind=kind,held_abs_rho=float(rho),
+            held_abs_pearson=float(abs(pearsonr(scores.loc[eligible,label],y[eligible]).statistic)),n=int(eligible.sum())))
     # Resample entire held seed trajectories; g values within a quenched network
     # are not treated as independent replicates. These are exploratory intervals.
     rng=np.random.default_rng(261110);seeds=np.unique(rows.seed[eligible]);boot=[]
@@ -81,10 +83,27 @@ def analyze(data,out):
     details['selected_mean']=str(bank['spi_order'][best]);details['eligible_per_control']=scores[eligible].groupby('control').size().to_dict()
     scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     (out/'analysis.json').write_text(json.dumps(details,indent=2)+'\n')
-    figure(scores,out);print(pd.DataFrame(metrics).to_string(index=False))
+    figure(scores,out)
+    if rows.system.iloc[0]=='cgle':secondary_amplitude(scores,out)
+    print(pd.DataFrame(metrics).to_string(index=False))
 
 
-def figure(scores,out):
+def secondary_amplitude(scores,out):
+    """Reuse primary target-blind scores; only display signs change for a falling Q."""
+    held=scores.role.eq('evaluation')&scores.comparison_eligible
+    methods=['z_PC1','z_standard_PC1','mean_abs_r','mean_PC1']
+    metrics=[]
+    for col in methods:
+        metrics.append(dict(method=col,target='finite-window minimum amplitude',n=int(held.sum()),
+            held_abs_rho=float(abs(spearmanr(scores.loc[held,col],scores.loc[held,'min_amplitude']).statistic)),
+            held_abs_pearson=float(abs(pearsonr(scores.loc[held,col],scores.loc[held,'min_amplitude']).statistic))))
+    pd.DataFrame(metrics).to_csv(out/'minimum-amplitude-metrics.csv',index=False)
+    display=scores.copy();display['Q']=display.min_amplitude
+    for col in ['z_PC1','mean_PC1']:display[col]=-display[col]
+    figure(display,out,target_label=r'Finite-window $\min |A|$',filename='minimum-amplitude-comparison')
+
+
+def figure(scores,out,target_label=None,filename='baseline-comparison'):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -94,6 +113,7 @@ def figure(scores,out):
     system=scores.system.iloc[0]
     label={'cgle':'$c_3$','rate':'$g$','crossfreq':r'$\gamma$'}[system]
     truth_label={'cgle':'Defect density $Q$','rate':r'$Q=\lambda_{\max}$','crossfreq':'2:1 locking index $Q$'}[system]
+    if target_label is not None:truth_label=target_label
     fig,axes=plt.subplots(1,3,figsize=(11,3.3),layout='constrained')
     for ax,col,title in zip(axes,['z_PC1','mean_abs_r','mean_PC1'],['SPI–SPI PC1','Mean absolute Pearson','Mean-SPI PC1']):
         group=held.groupby('control');q=group.Q.mean();a=group[col].mean();right=ax.twinx();right.spines['right'].set_visible(True)
@@ -107,7 +127,7 @@ def figure(scores,out):
         ax.legend(lines,[v.get_label() for v in lines],loc='upper left',fontsize=7)
     name={'cgle':'Complex Ginzburg–Landau','rate':'Driven rate network','crossfreq':'Cross-frequency locking'}[system]
     fig.suptitle(f"{name} · M={scores['M'].iloc[0]}, N={scores['N'].iloc[0]}, T={scores['T'].iloc[0]} · held seeds; bands 10–90%",fontsize=10)
-    for ext in ('png','svg'):fig.savefig(out/f'baseline-comparison.{ext}',dpi=180)
+    for ext in ('png','svg'):fig.savefig(out/f'{filename}.{ext}',dpi=180)
     plt.close(fig)
 
 

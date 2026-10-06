@@ -112,3 +112,18 @@ def test_published_driven_mean_field_boundary():
     first=rate_mean_field_boundary(quadrature=128);second=rate_mean_field_boundary(quadrature=256)
     np.testing.assert_allclose(first,second,atol=1e-6)
     assert abs(first[0]-1.48)<.005
+
+
+def test_secondary_diagnostic_reuses_coordinates(tmp_path,monkeypatch):
+    import pandas as pd
+    import scripts.lean2_candidate_readout as readout
+    scores=pd.DataFrame(dict(Q=[0,.1,.2,.3],min_amplitude=[.8,.6,.01,.005],z_PC1=[-2,-1,1,2],
+        z_standard_PC1=[-1,-.5,.5,1],mean_PC1=[-1,-.5,.5,1],mean_abs_r=[.4,.3,.2,.1],
+        role=['evaluation']*4,comparison_eligible=[True]*4))
+    original=scores.copy(deep=True);seen=[]
+    monkeypatch.setattr(readout,'figure',lambda frame,*args,**kwargs:seen.append(frame.copy()))
+    readout.secondary_amplitude(scores,tmp_path)
+    pd.testing.assert_frame_equal(scores,original)
+    np.testing.assert_array_equal(seen[0].z_PC1,-original.z_PC1)
+    np.testing.assert_array_equal(seen[0].Q,original.min_amplitude)
+    assert (tmp_path/'minimum-amplitude-metrics.csv').exists()
