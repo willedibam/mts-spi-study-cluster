@@ -31,3 +31,26 @@ Seven cheap probes, M = 24, four fit and four held seeds, same parameters (seeds
 ## Known risks
 
 Within-community channels are nearly collinear (|r| ≈ .98, correlation-matrix condition number 1200–1800), so precision-type SPIs may be unstable; the missingness gate decides. With 289 SPIs many nonlinear means will step, so mean-SPI PC1 may do better than with seven probes. z-PC1 localizes the boundary but under-tracks the ramp in Q before it.
+
+## First full-p90 result, 6 October
+
+All 336 records completed with the 289-SPI catalogue; all 168 held records pass the missingness gate with zero selected-feature missingness. Per record, 234–282 SPIs are fully finite; 211 means and 58% of z features are finite in every record. Eight independent MPI replays reproduce means exactly and z within 3e-8. Reference boundary from measured coherences: γ_c = .1017; Q's steepest interval is .10–.11.
+
+| Held readout | Step contrast | Step share | Post-locking drift | Steepest interval | Pooled \|ρ\| with Q |
+| --- | ---: | ---: | ---: | --- | ---: |
+| Mean absolute Pearson | 2.2 | .40 | .61 | .06–.07 | .73 |
+| Mean signed Pearson | .7 | .58 | .53 | .19–.20 | .15 |
+| Mean-SPI PC1 | 10.2 | .71 | .33 | .10–.11 | .86 |
+| Distribution PC1 | 11.2 | .71 | .36 | .10–.11 | .84 |
+| Centered z-PC1 (primary) | 8.4 | .92 | .20 | .11–.12 | .83 |
+| Standardized z-PC1 | 12.1 | .82 | .15 | .10–.11 | .89 |
+| Selected mean (`si_kernel_W-0.5_k-1`), ceiling | 11.2 | .61 | .25 | .10–.11 | .98 |
+| Full-mean ridge / RBF, ceilings | 20.5 / 19.5 | .55 / .57 | .02 / .00 | .10–.11 | .93 / .93 |
+
+**First gate passes.** Mean absolute Pearson moves .302 → .305 over the whole sweep with no feature at the boundary; cross-community |r| stays near .003. Every catalogue-based unsupervised coordinate steps at the locking boundary.
+
+**Second gate is not passed.** With the full catalogue the mean-SPI PC1 steps at the correct interval with a contrast comparable to the z coordinates; the large gap seen with seven probes did not survive. The z coordinates concentrate more of their change at the boundary and drift less afterwards, and standardized z has the highest contrast, but the primary centered z-PC1 has the lowest contrast of the four and its steepest interval is one grid step late. All four unsupervised PC1s dip in the wrong direction over γ ≈ .02–.07 before stepping (centered z most strongly), so none tracks the ramp in Q below the boundary. Supervised mean readouts track Q closely; the information is in the mean vector.
+
+Scope: one size (M = N = 24), one sweep, eight fit and eight held seeds, exploratory. The claim supported is unsupervised detection and localization of a dependence-type change that mean correlation cannot register, not an advantage over the mean-SPI vector.
+
+Provenance: source commit `c144491` at `operations/sources/cross-frequency-c144491`, pyspi `65317c9`, estimator seed 261086, archive SHA `06e29ec5…96dcba`. Jobs 180570622 (smoke, 2), 180570654 (node, 48), 180572852 (remaining 286), 180572918 (analysis); all exit 0, 750–840 s per record. Remote data `/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/cross-frequency-locking-261006`. Local outputs `results/order-parameter-inference/cross-frequency-locking-261006/`; `gadi-original/` keeps the cluster metrics, which a local rerun reproduces within 8e-6. The cluster figure had a title bug (`rows.T` is a transpose), fixed afterwards without changing any computation. Reproduce with `python -m scripts.cross_frequency_locking prepare`, the external-corpus farm, then `extract` and `analyze`.

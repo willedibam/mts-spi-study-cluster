@@ -175,7 +175,7 @@ def analyze(data,out):
     for label,color,name in [('abs_r_within','.6','within community'),('mean_abs_r','#009E73','all pairs'),('abs_r_AB','#CC79A7','A--B pairs')]:
         axes[2].plot(group[label].mean().index,group[label].mean(),'o-',color=color,label=name)
     axes[2].axvline(critical,color='.6',lw=.8,ls=':');axes[2].set(xlabel=r'Cross-coupling $\gamma$',ylabel='Mean absolute Pearson (raw)',ylim=(-.03,1.05));axes[2].legend(fontsize=7)
-    fig.suptitle(f'2:1 cross-frequency locking, M=N={rows.M.iloc[0]}, T={rows.T.iloc[0]}; held seeds, bands 10--90 per cent of instances',fontsize=10)
+    fig.suptitle(f"2:1 cross-frequency locking, M=N={rows['M'].iloc[0]}, T={rows['T'].iloc[0]}; held seeds, bands 10--90 per cent of instances",fontsize=10)
     for ext in ['png','svg']:fig.savefig(out/f'cross-frequency-comparison.{ext}',dpi=180)
     plt.close(fig);scores.to_csv(out/'scores.csv',index=False);pd.DataFrame(metrics).to_csv(out/'metrics.csv',index=False)
     (out/'analysis.json').write_text(json.dumps(dict(settings=settings,reference_gamma_c=critical,boundary_interval=BOUNDARY,
