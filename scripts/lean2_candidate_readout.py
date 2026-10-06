@@ -18,6 +18,9 @@ def bundle(physics,out,corpus,remote,fit_seed_stop):
         row=json.loads(p.read_text());a=np.load(p.with_suffix('.npz'))['observations']
         name=f"{row['system']}-{p.stem}"
         if np.linalg.matrix_rank(a)<len(a):raise ValueError('Rank-deficient observations')
+        r=np.corrcoef(a);off=~np.eye(len(a),dtype=bool)
+        for key,value in [('mean_r',r[off].mean()),('mean_abs_r',abs(r[off]).mean())]:
+            if key in row:np.testing.assert_allclose(row[key],value,rtol=0,atol=1e-12)
         raw[name]=(a-a.mean(1,keepdims=True))/a.std(1,keepdims=True)
         row.update(row_id=name,corpus_index=len(rows),instance=row['seed'],block=row['seed'],label=corpus,
             role='development' if row['seed']<fit_seed_stop else 'evaluation')
@@ -58,6 +61,9 @@ def analyze(data,out):
     methods=['z_PC1','z_standard_PC1','mean_abs_r','mean_r','mean_PC1','selected_mean','mean_ridge']
     for label in methods:eligible&=np.isfinite(scores[label]).to_numpy()
     scores['comparison_eligible']=eligible|fit;metrics=[]
+    counts=scores[eligible].groupby('control').size()
+    if len(counts)!=rows.control.nunique() or counts.min()<4:
+        raise ValueError('Insufficient common eligibility: retain the failure, do not silently compare different cohorts')
     for label in methods:
         rho=abs(spearmanr(scores.loc[eligible,label],y[eligible]).statistic)
         metrics.append(dict(method=label,held_abs_rho=float(rho),n=int(eligible.sum())))

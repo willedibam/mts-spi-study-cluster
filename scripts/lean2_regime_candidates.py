@@ -127,10 +127,19 @@ def plan(path, kind='initial'):
             for seed in range(4):tasks.append(dict(system='rate',control=g,seed=seed,N=256,dt=.01))
         for g in (1.4,1.6,1.8):
             for seed in range(4):tasks.append(dict(system='rate',control=g,seed=seed,N=1024))
+    if kind=='production-cgle':
+        tasks=[dict(system='cgle',control=float(round(c,4)),seed=seed,L=512.,dx=.5,dt=.0125,
+                    burn=4000.,reference=8000.,M=16,T=1000,sample=.5)
+               for c in np.linspace(.74,.90,17) for seed in range(100,116)]
+    if kind=='production-rate':
+        tasks=[dict(system='rate',control=float(round(g,4)),seed=seed,N=256,dt=.01,
+                    burn=1000.,reference=4000.,M=16,T=1000,sample=.5)
+               for g in np.linspace(1.5,1.9,17) for seed in range(100,116)]
     path.parent.mkdir(parents=True,exist_ok=True)
     if path.exists(): raise FileExistsError(path)
     path.write_text(json.dumps(dict(tasks=tasks,purpose='Physics scout only; no SPI-based selection',kind=kind,
         generator_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()),indent=2)+'\n')
+    path.with_suffix('.indices.txt').write_text(''.join(f'{i}\n' for i in range(len(tasks))))
 
 
 def run_case(plan_path,index,out):
@@ -177,7 +186,7 @@ def summarize(out):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['plan','case','summarize'])
     p.add_argument('--plan',type=Path);p.add_argument('--index',type=int);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--plan-kind',choices=['initial','refinement'],default='initial')
+    p.add_argument('--plan-kind',choices=['initial','refinement','production-cgle','production-rate'],default='initial')
     a=p.parse_args()
     if a.stage=='plan':plan(a.out,a.plan_kind)
     elif a.stage=='case':run_case(a.plan,a.index,a.out)

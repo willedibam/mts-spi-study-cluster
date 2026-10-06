@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N lean2-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=16GB,walltime=00:30:00,jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${DATA_DIR:?}" "${OUT_DIR:?}" "${CORPUS:?}"
+cd "$PBS_O_WORKDIR"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
+python -m scripts.lean2_candidate_readout extract --data "$DATA_DIR" --out "$OUT_DIR" --corpus "$CORPUS"
+python -m scripts.audit_dependence_features --data "$DATA_DIR" --output "$OUT_DIR" --corpus "$CORPUS"
+python -m scripts.lean2_candidate_readout analyze --data "$DATA_DIR" --out "$OUT_DIR"
