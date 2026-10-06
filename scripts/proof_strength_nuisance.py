@@ -238,6 +238,27 @@ def silhouette_gap(rows,bank,arm,panel,draws=2000,seed=0):
     return float(d.mean()),*np.quantile(boot,[.025,.975]).round(3)
 
 
+def sensitivity(rows,bank,panel):
+    """Class silhouette in 50 PCs under other scalings of the mean vector and of z; rows are scalings, columns are arms."""
+    from scipy.stats import norm,rankdata
+    from sklearn.decomposition import PCA
+    from sklearn.metrics import silhouette_score
+    def finite(x):
+        x=np.asarray(x,float);x=x[:,np.isfinite(x).mean(0)>=.95];x=np.where(np.isfinite(x),x,np.nanmedian(np.where(np.isfinite(x),x,np.nan),axis=0))
+        return x[:,x.std(0)>1e-8]
+    def robust(x):
+        low,mid,high=np.quantile(x,[.25,.5,.75],axis=0);keep=high-low>1e-12
+        return np.clip((x[:,keep]-mid[keep])/(high-low)[keep],-5,5)
+    scalings={'m, unit variance (shown)':lambda b:prepare_features(b['mean'],True),'m, interquartile range':lambda b:robust(finite(b['mean'])),
+        'm, rank-Gaussian':lambda b:norm.ppf((np.apply_along_axis(rankdata,0,finite(b['mean']))-.5)/len(b['mean'])),
+        'z, centred (shown)':lambda b:prepare_features(b['z'],False),'z, unit variance':lambda b:prepare_features(b['z'],True)}
+    out={}
+    for arm in [a for a in ORDER if a in arms_of(rows)]:
+        index=select(rows,arm,panel);y=rows.label.to_numpy()[index];part={k:bank[k][index] for k in ('mean','z')}
+        out[arm]={name:silhouette_score(PCA(50,svd_solver='full').fit_transform(f(part)),y) for name,f in scalings.items()}
+    return pd.DataFrame(out).round(2)
+
+
 ORDER=('native','equalised','mild','matched','wide','pooled')   # display order: strength fixed, then increasingly varied
 CURVES={'strength':('Mean $|r|$ alone','#009E73','v'),'corr':('Correlation-family means','#E69F00','s'),'mean':('Mean of each SPI, $m$','#D55E00','o'),
         'mean, PC1 removed':('$m$ without its PC1','#D55E00','x'),'z':('SPI-SPI, $z$','#0072B2','D')}

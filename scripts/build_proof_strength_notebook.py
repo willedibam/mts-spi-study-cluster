@@ -37,9 +37,9 @@ fig = P.metrics_figure(m, OUT); plt.show()
 for panel in P.PANELS:
     display(pd.concat({c: P.table(m, panel, c) for c in ('silhouette', 'purity', 'ceiling')}, axis=1).loc[['strength', 'mean', 'z']].style.format('{:.2f}').set_caption(panel))
 print({(a, p): tuple(round(float(v), 2) for v in P.silhouette_gap(rows, bank, a, p)) for p in P.PANELS for a in ('native', 'equalised', 'matched', 'wide')})'''),
-md(r'''The last line is the silhouette of $z$ minus that of $m$ with a 95% interval from resampling realizations (embeddings held fixed). `ceiling` is grouped five-fold logistic accuracy on ten PCs.
-
-Fresh-seed repeat at $M=24$, `native` and `matched` only. Native strengths are lower at this size, so more recordings are left as generated (78% of fully developed turbulence).'''),
+md(r'''The last line is the silhouette of $z$ minus that of $m$ with a 95% interval from resampling realizations (embeddings held fixed). `ceiling` is grouped five-fold logistic accuracy on ten PCs. The within-CML ordering does not depend on how either representation is scaled:'''),
+code("P.sensitivity(rows, bank, 'cml')"),
+md(r'''Fresh-seed repeat at $M=24$, `native` and `matched` only. Native strengths are lower at this size, so more recordings are left as generated (78% of fully developed turbulence).'''),
 code('''rows24, bank24 = P.load('m24'); OUT24 = ROOT / 'results/proof' / P.RUNS['m24']['run']
 fig = P.embedding_figure(rows24, bank24, 'cml', ('native', 'matched'), OUT24); plt.show()
 m24 = P.metrics(rows24, bank24); m24.to_csv(OUT24 / 'metrics.csv', index=False)
