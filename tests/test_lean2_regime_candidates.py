@@ -84,3 +84,24 @@ def test_explicit_production_dimensions_and_completion_audit(tmp_path):
     with pytest.raises(FileNotFoundError):audit_cases(plan,indices,out)
     run_case(plan,0,out);audit_cases(plan,indices,out)
     row=json.loads((out/'case-0000.json').read_text());assert (row['M'],row['T'])==(16,32)
+
+
+def test_figure_uses_T_column_not_dataframe_transpose(tmp_path,monkeypatch):
+    import pandas as pd
+    from matplotlib.figure import Figure
+    from scripts.lean2_candidate_readout import figure
+    seen=[]
+    monkeypatch.setattr(Figure,'savefig',lambda self,*args,**kwargs:seen.append(self._suptitle.get_text()))
+    scores=pd.DataFrame(dict(control=[1.3,1.4,1.5,1.6],Q=[-.03,-.01,.01,.03],z_PC1=[-2,-1,1,2],
+        mean_PC1=[-1,-.5,.5,1],mean_abs_r=[.1,.2,.3,.4],role=['evaluation']*4,
+        comparison_eligible=[True]*4,system=['rate']*4,M=[16]*4,N=[1024]*4,T=[1000]*4))
+    figure(scores,tmp_path)
+    assert all('T=1000' in title and len(title)<160 for title in seen)
+
+
+def test_future_reference_does_not_change_observed_record():
+    from scripts.lean2_regime_candidates import cgle
+    for generator,params in [(rate,dict(control=1.5,N=16)),(cgle,dict(control=.8,L=16.))]:
+        x,_,_=generator(seed=1,burn=1,T=32,reference=1.,**params)
+        longer,_,_=generator(seed=1,burn=1,T=32,reference=2.,**params)
+        np.testing.assert_array_equal(x,longer)

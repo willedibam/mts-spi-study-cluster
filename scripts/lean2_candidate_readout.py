@@ -91,7 +91,9 @@ def figure(scores,out):
     plt.rcParams.update({'font.family':'serif','mathtext.fontset':'cm','font.size':9,'axes.spines.top':False,
         'axes.spines.right':False,'legend.frameon':False,'lines.linewidth':1.7,'lines.markersize':2.7})
     held=scores[scores.role.eq('evaluation')&scores.comparison_eligible]
-    system=scores.system.iloc[0];label='$c_3$' if system=='cgle' else '$g$'
+    system=scores.system.iloc[0]
+    label={'cgle':'$c_3$','rate':'$g$','crossfreq':r'$\gamma$'}[system]
+    truth_label={'cgle':'Defect density $Q$','rate':r'$Q=\lambda_{\max}$','crossfreq':'2:1 locking index $Q$'}[system]
     fig,axes=plt.subplots(1,3,figsize=(11,3.3),layout='constrained')
     for ax,col,title in zip(axes,['z_PC1','mean_abs_r','mean_PC1'],['SPI–SPI PC1','Mean absolute Pearson','Mean-SPI PC1']):
         group=held.groupby('control');q=group.Q.mean();a=group[col].mean();right=ax.twinx();right.spines['right'].set_visible(True)
@@ -100,11 +102,13 @@ def figure(scores,out):
         lines+=right.plot(a.index,a,'s-',color='#31688e',label='$q$' if col!='mean_abs_r' else r'$\overline{|r|}$')
         right.fill_between(a.index,group[col].quantile(.1),group[col].quantile(.9),color='#31688e',alpha=.12,lw=0)
         rho=abs(spearmanr(held[col],held.Q).statistic)
-        ax.set(xlabel=label,ylabel='Defect density $Q$' if system=='cgle' else r'$Q=\lambda_{\max}$',title=title+rf' · $|\rho|={rho:.2f}$')
+        ax.set(xlabel=label,ylabel=truth_label,title=title+rf' · $|\rho|={rho:.2f}$')
         right.set_ylabel('Fit-record SD units' if col!='mean_abs_r' else 'Mean absolute Pearson')
         ax.legend(lines,[v.get_label() for v in lines],loc='upper left',fontsize=7)
-    fig.suptitle(f'{system.upper()} · M={scores.M.iloc[0]}, N={scores.N.iloc[0]}, T={scores.T.iloc[0]} · held seeds; bands 10–90%')
+    name={'cgle':'Complex Ginzburg–Landau','rate':'Driven rate network','crossfreq':'Cross-frequency locking'}[system]
+    fig.suptitle(f"{name} · M={scores['M'].iloc[0]}, N={scores['N'].iloc[0]}, T={scores['T'].iloc[0]} · held seeds; bands 10–90%",fontsize=10)
     for ext in ('png','svg'):fig.savefig(out/f'baseline-comparison.{ext}',dpi=180)
+    plt.close(fig)
 
 
 if __name__=='__main__':
