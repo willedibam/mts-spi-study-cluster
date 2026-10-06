@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N lean2-bundle
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2,mem=8GB,walltime=00:10:00,jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${DATA_DIR:?}" "${CORPUS:?}"
+cd "$PBS_O_WORKDIR"
+module purge
+module load python3/3.12.1
+source .venv/bin/activate
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+python -m scripts.lean2_candidate_readout bundle --data "$DATA_DIR/physics" --out "$DATA_DIR" --corpus "$CORPUS" --remote "$DATA_DIR" --fit-seed-stop 108
