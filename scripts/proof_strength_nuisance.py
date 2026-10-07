@@ -132,25 +132,28 @@ def prepare(workers):
     print(len(rows),manifest['archive_sha256'])
 
 
-def extract(data=DATA,out=OUT):
-    """Per-SPI means and the proof notebook's symmetrised SPI-SPI block from the retrieved MPIs."""
+def extract(data=DATA,out=OUT,run=RUN,ordered=False):
+    """Per-SPI means and the proof notebook's symmetrised SPI-SPI block from the retrieved MPIs.
+    ordered=True also stores the direction-preserving block (ordered channel pairs, MPIs not symmetrised)."""
     from scripts.spi_baseline_exploration import sha,summarize
     from src.spi_spi_contract import _similarity_matrix,_upper_symmetrized
     from src.utils import slugify
-    manifest=json.loads((data/'manifest.json').read_text());mean,spread,z,seconds=[],[],[],[];order=None
+    from src.spi_spi_contract import build_unified_feature_values
+    manifest=json.loads((data/'manifest.json').read_text());mean,spread,z,seconds,directed=[],[],[],[],[];order=None
     config=sha(ROOT/'configs/pyspi/benchmarked_p90.yaml')
     for r in manifest['rows']:
-        folder=data/'mpis'/RUN/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}";meta=json.loads((folder/'meta.json').read_text())
-        assert meta['status']=='complete' and meta['dataset_name']==r['row_id'] and (meta['M'],meta['T'])==(M,T)
+        folder=data/'mpis'/run/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}";meta=json.loads((folder/'meta.json').read_text())
+        assert meta['status']=='complete' and meta['dataset_name']==r['row_id'] and (meta['M'],meta['T'])==(r['M'],r['T'])
         assert meta['source']['archive_sha256']==manifest['archive_sha256'] and meta['pyspi']['config_sha256']==config
         names=[x['name'] for x in meta['pyspi']['spis']];order=order or names;assert order==names and len(names)==289
         with np.load(folder/'spi_mpis.npz') as a:mpis={k:a[k] for k in order}
         marginal=summarize(mpis,order,symmetric=True);mean.append(marginal[:,0]);spread.append(marginal[:,1])
         with np.errstate(all='ignore'):c=_similarity_matrix(np.vstack([_upper_symmetrized(mpis[k]) for k in order]),'pearson')
         z.append(c[np.triu_indices(289,1)].astype(np.float32));seconds.append(meta['job']['compute_seconds'])
+        if ordered:directed.append(build_unified_feature_values(mpis,order)[0])
     out.mkdir(parents=True,exist_ok=True)
     np.savez_compressed(out/'features.npz',mean=np.array(mean),spread=np.array(spread),z=np.array(z),row_id=np.array([r['row_id'] for r in manifest['rows']]),
-        spi_order=np.array(order),compute_seconds=np.array(seconds))
+        spi_order=np.array(order),compute_seconds=np.array(seconds),**({'z_ordered':np.array(directed)} if ordered else {}))
     print(len(z),'records; compute seconds median/max',np.median(seconds).round(),np.max(seconds).round(),'; finite z fraction',np.isfinite(z).mean().round(4))
 
 
