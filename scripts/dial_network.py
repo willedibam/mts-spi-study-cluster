@@ -104,6 +104,87 @@ def prepare(workers):
     print(len(rows),manifest['archive_sha256'])
 
 
+# ---- analysis: label-free fits, scored afterwards against class, dials and nuisances ----
+PANEL=tuple(CLASSES)+('uncoupled',)
+DISPLAY={'odd-lag1':'Near-linear, lag 1','odd-lag5':'Near-linear, lag 5','odd-lag1-9':'Near-linear, lags 1-9','even-lag1':'Even, lag 1','even-lag5':'Even, lag 5',
+         'even-lag1-9':'Even, lags 1-9','uncoupled':'Uncoupled'}
+COLORS={'odd-lag1':'#56B4E9','odd-lag5':'#0072B2','odd-lag1-9':'#332288','even-lag1':'#E69F00','even-lag5':'#D55E00','even-lag1-9':'#882255','uncoupled':'#777777'}
+KEYS={'mean':'Mean of each SPI, $m$','z':'SPI-SPI, $z$','z_ordered':'SPI-SPI, direction kept'}
+PAIRS={'beta':('cov_EmpiricalCovariance','mi_kraskov_NN-4'),'spread':('cov_EmpiricalCovariance','xcorr_max_sig-True')}   # named before any outcome was read
+
+
+def load():
+    from scripts import proof_strength_nuisance as P
+    rows=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows']);bank=dict(np.load(OUT/'features.npz'))
+    np.testing.assert_array_equal(bank['row_id'],rows.row_id);rows['arm']=rows.system;rows['system']=np.where(rows.system.eq('class'),'class',rows.label.str.rstrip('0123456789'))
+    return rows,bank,P
+
+
+def shares(x,y,covariates):
+    """Share of total variance between classes, and explained within class by a quadratic in each covariate."""
+    total=(x**2).sum();out={'class':0.,**{k:0. for k in covariates}}
+    for c in np.unique(y):
+        k=y==c;mu=x[k].mean(0);out['class']+=k.sum()*(mu**2).sum()/total
+        for name,v in covariates.items():
+            d=np.column_stack([np.ones(k.sum()),v[k],v[k]**2]);out[name]+=((d@np.linalg.lstsq(d,x[k]-mu,rcond=None)[0])**2).sum()/total
+    return out
+
+
+def class_table(rows,bank,P,names=PANEL):
+    """One embedding per representation of the class recordings, scored against class, each dial, and the nuisances."""
+    from scipy.stats import spearmanr
+    index=np.flatnonzero(rows.arm.eq('class').to_numpy()&rows.label.isin(names).to_numpy());part=rows.iloc[index];y=part.label.to_numpy();inst=part.instance.to_numpy()
+    shape=np.array([v.split('-')[0] for v in y]);lag=np.array([v.split('-',1)[-1] for v in y]);coupled=y!='uncoupled';gain=part.gain.to_numpy();out=[]
+    strata=np.where(~coupled,'none',np.where(gain<np.quantile(gain[coupled],1/3),'low',np.where(gain<np.quantile(gain[coupled],2/3),'mid','high')))
+    for key,scores in [('mean |r|',part.mean_abs_r.to_numpy()[:,None])]+[(k,P.embed(bank,index,k,umap=False)['scores']) for k in KEYS]:
+        g=P.geometry(scores,y,part.mean_abs_r.to_numpy(),coupled,inst);x=scores-scores.mean(0)
+        from sklearn.neighbors import NearestNeighbors
+        near=NearestNeighbors(n_neighbors=6).fit(scores).kneighbors(scores,return_distance=False)[:,1:];agree=lambda v,m:float(np.mean((v[near]==v[:,None])[m]))
+        sh=shares(x[coupled],y[coupled],dict(gain=np.log(gain[coupled]),a=part.a.to_numpy()[coupled]))
+        out.append(dict(representation=key,silhouette=g['silhouette'],class_agreement=g['purity'],shape_agreement=agree(shape,coupled),lag_agreement=agree(lag,coupled),
+            **{f'class_agreement_{t}_gain':agree(y,strata==t) for t in ('low','mid','high')},ceiling=g['ceiling'],
+            share_class=sh['class'],share_gain=sh['gain'],share_a=sh['a'],rho_pc1_gain=abs(spearmanr(scores[coupled,0],gain[coupled]).statistic)))
+    return pd.DataFrame(out).set_index('representation').round(2)
+
+
+def coordinate(bank,first,second):
+    order=[str(v) for v in bank['spi_order']];i,j=sorted((order.index(first),order.index(second)));n=len(order)
+    return bank['z'][:,i*n-i*(i+1)//2+j-i-1],bank['mean'][:,order.index(first)],bank['mean'][:,order.index(second)]
+
+
+def sweep_table(rows,bank,P):
+    """Does the leading label-free coordinate, or one named SPI pair, follow the dial rather than the gain?"""
+    from scipy.stats import spearmanr
+    rho=lambda u,v:round(float(abs(spearmanr(u,v,nan_policy='omit').statistic)),2);out=[]
+    for sweep,dial in (('beta','beta'),('spread','lag_spread')):
+        index=np.flatnonzero(rows.system.eq(sweep).to_numpy());part=rows.iloc[index];d,gain,a=(part[c].to_numpy() for c in (dial,'gain','a'))
+        z,first,second=(v[index] for v in coordinate(bank,*PAIRS[sweep]))
+        readouts={'mean |r|':part.mean_abs_r.to_numpy(),**{f'{k} PC{c+1}':P.embed(bank,index,k,umap=False)['scores'][:,c] for k in ('mean','z') for c in (0,1)},
+                  f'z({PAIRS[sweep][0]}, {PAIRS[sweep][1]})':z,f'mean {PAIRS[sweep][0]}':first,f'mean {PAIRS[sweep][1]}':second}
+        out+= [dict(sweep=sweep,readout=name,dial=rho(v,d),gain=rho(v,gain),a=rho(v,a)) for name,v in readouts.items()]
+    return pd.DataFrame(out)
+
+
+def design_figure(rows,P):
+    """Observed mean |r| against gain for the class recordings: strength overlaps across classes."""
+    plt=P.style();fig,ax=plt.subplots(figsize=(4.6,3.2),layout='constrained');part=rows[rows.arm.eq('class')]
+    for name in PANEL:
+        k=part.label.eq(name);ax.scatter(part.gain[k] if name!='uncoupled' else np.full(k.sum(),GAIN[0]*.85),part.mean_abs_r[k],s=9,color=COLORS[name],alpha=.7,linewidths=0,label=DISPLAY[name])
+    ax.set(xscale='log',xlabel='Gain $k$ (uncoupled shown at left)',ylabel='Observed mean $|r|$');ax.legend(fontsize=6.5,ncols=2,loc='upper left')
+    return P.save(fig,OUT,'strength-by-gain')
+
+
+def sweep_figure(rows,bank,P):
+    plt=P.style();fig,axes=plt.subplots(2,2,figsize=(7.4,5.6),layout='constrained');rng=np.random.default_rng(0)
+    for column,(sweep,dial,label) in enumerate((('beta','beta',r'Even share of the coupling, $\beta$'),('spread','lag_spread','Spread of lags around 5'))):
+        index=np.flatnonzero(rows.system.eq(sweep).to_numpy());part=rows.iloc[index];d=part[dial].to_numpy();z,_,second=(v[index] for v in coordinate(bank,*PAIRS[sweep]))
+        jitter=d+rng.uniform(-.12,.12,len(d))*np.diff(np.unique(d)).min()
+        for ax,(v,name) in zip(axes[:,column],((z,f'$z$({PAIRS[sweep][0]},\n{PAIRS[sweep][1]})'),(second,f'Mean of {PAIRS[sweep][1]}'))):
+            points=ax.scatter(jitter,v,c=part.gain,cmap='viridis',s=10,alpha=.85,linewidths=0);ax.set(xlabel=label,ylabel=name,xticks=np.unique(d))
+    fig.colorbar(points,ax=axes,label='Gain $k$',fraction=.03)
+    return P.save(fig,OUT,'dose-response')
+
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['scout','prepare','extract'])
     p.add_argument('--workers',type=int,default=8);a=p.parse_args()

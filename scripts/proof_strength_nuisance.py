@@ -184,7 +184,7 @@ def arms_of(rows):
 def select(rows,arm,panel):
     """Rows of one panel in one arm, or in all arms pooled; the unmodulated noise references join every arm."""
     arms=arms_of(rows) if arm=='pooled' else [arm]
-    return np.flatnonzero(rows.label.isin(PANELS[panel]).to_numpy()&rows.system.isin(arms+['all']).to_numpy())
+    return np.flatnonzero(rows.label.isin(PANELS.get(panel,panel)).to_numpy()&rows.system.isin(arms+['all']).to_numpy())
 
 
 def prepare_features(x,standard):
@@ -197,7 +197,7 @@ def prepare_features(x,standard):
 
 def embed(bank,index,key,umap=True):
     from sklearn.decomposition import PCA
-    x=prepare_features(bank[key][index],key!='z');pca=PCA(min(50,*x.shape),svd_solver='full').fit(x);scores=pca.transform(x)
+    x=prepare_features(bank[key][index],not key.startswith('z'));pca=PCA(min(50,*x.shape),svd_solver='full').fit(x);scores=pca.transform(x)
     result=dict(scores=scores,evr=pca.explained_variance_ratio_,features=x.shape[1])
     if umap:
         from umap import UMAP
@@ -269,6 +269,36 @@ def sensitivity(rows,bank,panel):
     return pd.DataFrame(out).round(2)
 
 
+COUPLED=tuple(n for n in CLASSES if n not in NOISE)
+SCOPES={'eight classes':COUPLED,'CML four':CML_PANEL,'VAR pair':('var-self-0.2','var-self-0.7')}
+
+
+def load_control():
+    """Native coupled recordings of the M=16 run with the uncoupled control; arms are named coupled and uncoupled."""
+    rows,bank=load('m16');keep=np.flatnonzero(rows.system.eq('native').to_numpy());urows,ubank=load('uncoupled')
+    rows=pd.concat([rows.iloc[keep].assign(system='coupled'),urows.assign(system='uncoupled')],ignore_index=True)
+    return rows,{k:np.concatenate([bank[k][keep],ubank[k]]) for k in ('mean','z','corr')}|{'spi_order':bank['spi_order']}
+
+
+def control_table(rows,bank):
+    """Class separation with and without interaction (separate label-free fits), and whether each representation registers coupling at all."""
+    out=[]
+    for scope,names in SCOPES.items():
+        for arm in ('coupled','uncoupled'):
+            index=select(rows,arm,names);part=rows.iloc[index];y=part.label.to_numpy();s=part.mean_abs_r.to_numpy();c=np.ones(len(y),bool)
+            g=geometry(s[:,None],y,s,c,part.instance.to_numpy());row=dict(question='classes apart?',scope=scope,condition=arm,strength_purity=g['purity'])
+            for key in ('mean','z'):
+                g=geometry(embed(bank,index,key,umap=False)['scores'],y,s,c,part.instance.to_numpy());row|={f'{key}_silhouette':g['silhouette'],f'{key}_purity':g['purity']}
+            out.append(row)
+    for name in COUPLED:   # two-way problem inside one class: coupled against uncoupled recordings
+        index=np.flatnonzero(rows.label.eq(name).to_numpy());part=rows.iloc[index];y=part.system.to_numpy();s=part.mean_abs_r.to_numpy();c=np.ones(len(y),bool)
+        g=geometry(s[:,None],y,s,c,np.arange(len(y)));row=dict(question='coupling visible?',scope=name,condition='coupled vs uncoupled',strength_purity=g['purity'])
+        for key in ('mean','z'):
+            g=geometry(embed(bank,index,key,umap=False)['scores'],y,s,c,np.arange(len(y)));row|={f'{key}_silhouette':g['silhouette'],f'{key}_purity':g['purity']}
+        out.append(row)
+    return pd.DataFrame(out).round(2)
+
+
 ORDER=('native','equalised','mild','matched','wide','pooled')   # display order: strength fixed, then increasingly varied
 CURVES={'strength':('Mean $|r|$ alone','#009E73','v'),'corr':('Correlation-family means','#E69F00','s'),'mean':('Mean of each SPI, $m$','#D55E00','o'),
         'mean, PC1 removed':('$m$ without its PC1','#D55E00','x'),'z':('SPI-SPI, $z$','#0072B2','D')}
@@ -330,9 +360,10 @@ def save(fig,out,name):
     out.mkdir(parents=True,exist_ok=True);fig.savefig(out/f'{name}.png',dpi=180);fig.savefig(out/f'{name}.svg');return fig
 
 
-def legend(fig,names,**kw):
+def legend(fig,names,colors=None,display=None,**kw):
     from matplotlib.lines import Line2D
-    fig.legend(handles=[Line2D([],[],marker='o',ls='',color=COLORS[n],markersize=5,label=DISPLAY[n]) for n in names],loc='outside lower center',ncols=min(4,len(names)),**kw)
+    colors=colors or COLORS;display=display or DISPLAY
+    fig.legend(handles=[Line2D([],[],marker='o',ls='',color=colors[n],markersize=5,label=display[n]) for n in names],loc='outside lower center',ncols=min(4,len(names)),**kw)
 
 
 def strength_figure(rows,out):
@@ -347,26 +378,29 @@ def strength_figure(rows,out):
     return save(fig,out,'strength-by-arm')
 
 
-def embedding_figure(rows,bank,panel,arms,out,keys=('mean','z'),color='class',cache=None):
-    """Rows are arms; columns are PCA and UMAP of each representation. Colour is class, or observed strength."""
+def embedding_figure(rows,bank,panel,arms,out,keys=('mean','z'),color='class',cache=None,stem=None,colors=None,display=None,
+                     value='mean_abs_r',value_label='Observed mean $|r|$'):
+    """Rows are arms; columns are PCA and UMAP of each representation. Colour is class, or a per-recording value (default strength).
+    panel is a key of PANELS or a tuple of class names; stem names the saved file."""
+    colors=colors or COLORS;display=display or DISPLAY;names=PANELS.get(panel,panel)
     plt=style();columns=[(k,m) for k in keys for m in ('pca','umap')];cache={} if cache is None else cache
     fig,axes=plt.subplots(len(arms),len(columns),figsize=(2.75*len(columns),2.75*len(arms)+.5),layout='constrained',squeeze=False)
     for i,arm in enumerate(arms):
-        index=select(rows,arm,panel);part=rows.iloc[index];y=part.label.to_numpy();s=part.mean_abs_r.to_numpy()
+        index=select(rows,arm,panel);part=rows.iloc[index];y=part.label.to_numpy();s=part[value].to_numpy()
         for j,(key,method) in enumerate(columns):
             ax=axes[i,j];e=cache.setdefault((panel,arm,key),embed(bank,index,key));xy=e['scores'][:,:2] if method=='pca' else e['umap']
             if color=='class':
-                for name in PANELS[panel]:ax.scatter(*xy[y==name].T,s=9,color=COLORS[name],alpha=.6,linewidths=0)
-            else:points=ax.scatter(*xy.T,s=9,c=s,cmap='viridis',vmin=0,vmax=max(.2,np.quantile(s,.98)),alpha=.8,linewidths=0)
+                for name in names:ax.scatter(*xy[y==name].T,s=9,color=colors[name],alpha=.6,linewidths=0)
+            else:points=ax.scatter(*xy.T,s=9,c=s,cmap='viridis',vmin=0 if value=='mean_abs_r' else s.min(),vmax=max(.2,np.quantile(s,.98)),alpha=.8,linewidths=0)
             ax.set_box_aspect(1);ax.set(xticks=[],yticks=[])
             for side in ('top','right'):ax.spines[side].set_visible(True)
             if method=='pca':ax.set(xlabel=f'PC1 ({e["evr"][0]:.0%})',ylabel=f'PC2 ({e["evr"][1]:.0%})')
             else:ax.set(xlabel='UMAP 1',ylabel='UMAP 2')
             if i==0:ax.set_title(f'{REPRESENTATIONS[key]}: {method.upper()}')
             if j==0:ax.annotate(arm,(-.32,.5),xycoords='axes fraction',rotation=90,va='center',ha='center',fontsize=10)
-            if color!='class' and j==len(columns)-1:fig.colorbar(points,ax=ax,label='Observed mean $|r|$',fraction=.046)
-    if color=='class':legend(fig,PANELS[panel])
-    return save(fig,out,f'{panel}-embeddings-{color}')
+            if color!='class' and j==len(columns)-1:fig.colorbar(points,ax=ax,label=value_label,fraction=.046)
+    if color=='class':legend(fig,names,colors=colors,display=display)
+    return save(fig,out,f'{stem or panel}-embeddings-{color if color=="class" else value}')
 
 
 if __name__=='__main__':
