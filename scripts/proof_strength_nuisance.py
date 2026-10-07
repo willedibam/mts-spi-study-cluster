@@ -9,6 +9,8 @@ in signal-SD units; arms differ only in how eta is set per recording:
   equalised  eta solves mean|r|=.14: strength normalised to one value in every class.
   matched    eta solves mean|r|=s, s~U[.08,.20]: strength normalised to one DISTRIBUTION in every class and randomised.
 PROOF_STRENGTH_SIZE=m24 selects a fresh-seed repeat of native and matched at M=24 (added after the M=16 outcome was read).
+PROOF_STRENGTH_SIZE=uncoupled builds each recording of a coupled class from 16 independent realizations, one channel from each:
+every channel keeps its class's own dynamics and no channel has interacted with another (added 7 October).
 Sensor noise only attenuates, so a recording natively weaker than its target is left as generated (capped; recorded).
 Gaussian and Cauchy noise have no coupling to attenuate (same-family observation noise leaves their law unchanged);
 one set is generated and joins every arm.
@@ -27,7 +29,8 @@ from scipy.stats import spearmanr
 
 ROOT=Path(__file__).resolve().parents[1]
 RUNS={'m16':dict(run='proof-strength-nuisance-261006',M=16,seed=261101,arms=('native','mild','wide','equalised','matched')),
-      'm24':dict(run='proof-strength-nuisance-m24-261006',M=24,seed=261111,arms=('native','matched'))}
+      'm24':dict(run='proof-strength-nuisance-m24-261006',M=24,seed=261111,arms=('native','matched')),
+      'uncoupled':dict(run='proof-uncoupled-261007',M=16,seed=261101,arms=('uncoupled',))}
 SIZE=os.environ.get('PROOF_STRENGTH_SIZE','m16')
 RUN,M,SEED,ARMS=(RUNS[SIZE][k] for k in ('run','M','seed','arms'))
 DATA=ROOT/'data/proof'/RUN
@@ -87,7 +90,11 @@ def observe(x,arm,rng):
 
 
 def record(task):
-    arm,name,instance=task;x=dynamics(name,instance)
+    arm,name,instance=task
+    if arm=='uncoupled':   # realizations 1000+ are disjoint from every coupled recording and from each other
+        x=np.stack([dynamics(name,1000+M*instance+c)[c] for c in range(M)])
+        return x,dict(eta=0.,target=None,capped=False,native_abs_r=strength(x),mean_abs_r=strength(x),mean_abs_spearman=float(abs(spearmanr(x.T).statistic[OFF]).mean()))
+    x=dynamics(name,instance)
     if name in NOISE:return x,dict(eta=0.,target=None,capped=False,native_abs_r=strength(x),mean_abs_r=strength(x),
                                    mean_abs_spearman=float(abs(spearmanr(x.T).statistic[OFF]).mean()))
     return observe(x,arm,np.random.default_rng(np.random.SeedSequence([SEED+1,RUNS['m16']['arms'].index(arm),list(CLASSES).index(name),instance])))
@@ -95,7 +102,7 @@ def record(task):
 
 def tasks():
     coupled=[(arm,name,i) for arm in ARMS for name in CLASSES if name not in NOISE for i in range(INSTANCES)]
-    return coupled+[('all',name,i) for name in NOISE for i in range(INSTANCES)]
+    return coupled+[('all',name,i) for name in NOISE for i in range(INSTANCES) if SIZE!='uncoupled']
 
 
 def prepare(workers):
