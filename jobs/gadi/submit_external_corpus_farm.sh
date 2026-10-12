@@ -34,7 +34,8 @@ fi
 (( ncpus >= 1 ))
 
 mem_per_cpu_gb="${MEM_PER_CPU_GB:-4}"
-mem_gb=$((ncpus * mem_per_cpu_gb))
+mem_gb="${MEM_GB:-$((ncpus * mem_per_cpu_gb))}"
+[[ "$mem_gb" =~ ^[1-9][0-9]*$ ]] || { echo 'MEM_GB must be a positive integer' >&2; exit 2; }
 walltime="${WALLTIME:-01:00:00}"
 jobfs_gb="${JOBFS_GB:-10}"
 
