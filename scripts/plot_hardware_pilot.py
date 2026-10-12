@@ -38,7 +38,7 @@ def short(name):
     return name.replace('cov_EmpiricalCovariance', 'Covariance').replace('corr_', '').replace('coint_johansen_', 'Johansen ').replace('te_kraskov_', 'TE KSG ').replace('DCE-AUTO_', '').replace('constraint-', '').replace('_', ' ')
 
 
-def sampling_figures(scope):
+def sampling_figures(scope, trace_steps=None, focus_max_step=None):
     style()
     scope = Path(scope)
     frame = pd.read_csv(scope / 'sampling-audit.csv')
@@ -57,7 +57,11 @@ def sampling_figures(scope):
     axes[0].legend()
     save(fig, out, 'sampling-fidelity')
     paths = sorted(scope.glob('display-*.npz'))
-    chosen = [paths[i] for i in sorted({0, len(paths)//2, len(paths)-1})]
+    if trace_steps is None:
+        chosen = [paths[i] for i in sorted({0, len(paths)//2, len(paths)-1})]
+    else:
+        by_step = {int(p.stem.rsplit('-', 1)[-1]): p for p in paths}
+        chosen = [by_step[step] for step in trace_steps]
     fig, axes = plt.subplots(1, len(chosen), figsize=(2.5 * len(chosen), 2.7), squeeze=False)
     for ax, path in zip(axes[0], chosen):
         with np.load(path) as d:
@@ -77,9 +81,21 @@ def sampling_figures(scope):
             for target, color in colors.items():
                 r = d[f'r_T{target}']
                 ax.plot(np.arange(len(r)) * 10 / len(r), r, color=color, alpha=.7, lw=.7, label=f'T={target}')
-            ax.set(ylim=(0, 1), ylabel=r'$R(t)$', title=f"Setting {int(path.stem.rsplit('-', 1)[-1])}")
+            ax.axhline(.8, color='.6', ls=':', lw=.6)
+            ax.set(ylim=(0, 1), ylabel=r'$R_s(t)$', title=f"Setting {int(path.stem.rsplit('-', 1)[-1])}")
     axes[-1, 0].set_xlabel('Time (s)'); axes[0, 0].legend(ncol=4, loc='upper right')
     save(fig, out, 'synchrony-traces')
+    if focus_max_step is not None:
+        physical = frame.drop_duplicates(['record', 'step']).sort_values('step')
+        physical = physical.loc[physical.step <= focus_max_step]
+        fig, axes = plt.subplots(1, 3, figsize=(7.3, 2.8))
+        for ax, column, label in zip(axes, ['mean_r', 'sd_r', 'high_fraction'],
+                                    [r'Mean $R$', r'SD of smoothed $R$', r'Fraction of time: smoothed $R>0.8$']):
+            ax.plot(physical.voltage, physical[column], 'o-', color='.15')
+            ax.set(xlabel='Control voltage (V)', ylabel=label)
+            ax.set_ylim(bottom=0)
+            box(ax)
+        save(fig, out, 'coordination-profile')
     return out
 
 
