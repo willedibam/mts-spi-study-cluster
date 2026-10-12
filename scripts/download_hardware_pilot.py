@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import io
 import json
@@ -119,14 +120,19 @@ class SplitZip:
             size = cache.stat().st_size if cache.exists() else 0
             if size > entry['compressed_size']:
                 raise ValueError('Compressed checkpoint exceeds member size')
-            with cache.open('ab') as handle:
+            with cache.open('ab') as handle, ThreadPoolExecutor(max_workers=8) as pool:
                 while size < entry['compressed_size']:
-                    n = min(512 * 1024, entry['compressed_size'] - size)
-                    handle.write(self.read(entry['disk'], data_offset + size, n))
-                    handle.flush()
-                    size += n
-                    if size % (4 * 1024 * 1024) == 0:
-                        print(f"{entry['name']}: {size}/{entry['compressed_size']} compressed bytes", flush=True)
+                    offsets = range(size, min(size + 8 * 512 * 1024, entry['compressed_size']), 512 * 1024)
+                    def fetch(start):
+                        n = min(512 * 1024, entry['compressed_size'] - start)
+                        return self.read(entry['disk'], data_offset + start, n)
+                    # Ordered writes retain one contiguous resumable prefix.
+                    # Only eight small I/O requests are outstanding at once.
+                    for chunk in pool.map(fetch, offsets):
+                        handle.write(chunk)
+                        handle.flush()
+                        size += len(chunk)
+                    print(f"{entry['name']}: {size}/{entry['compressed_size']} compressed bytes", flush=True)
             compressed = cache.read_bytes()
         if entry["method"] == 8:
             raw = zlib.decompress(compressed, -15)
