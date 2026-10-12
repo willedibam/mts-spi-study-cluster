@@ -99,11 +99,13 @@ def result_figures(root, scope=None):
     axes[1].plot(rows.voltage, scores[:, 0], '.-', color='#26828e', label='SPI–SPI PC1')
     axes[1].set(xlabel='Control voltage (V)', ylabel='PC1 score')
     if scope is not None and (Path(scope) / 'sampling-audit.csv').exists():
-        physical = pd.read_csv(Path(scope) / 'sampling-audit.csv').drop_duplicates('step').set_index('step')
-        available = rows.step.isin(physical.index)
-        twin = axes[1].twinx()
-        twin.plot(rows.loc[available, 'voltage'], physical.loc[rows.loc[available, 'step'], 'mean_r'], 'o-', color='.2', lw=.8)
-        twin.set(ylabel=r'Mean $R$', ylim=(0, 1))
+        physical = pd.read_csv(Path(scope) / 'sampling-audit.csv').drop_duplicates(['record', 'step']).set_index(['record', 'step'])
+        keys = [(int(r.record), int(r.step)) for r in rows.itertuples()]
+        available = [i for i, key in enumerate(keys) if key in physical.index]
+        if available:
+            twin = axes[1].twinx()
+            twin.plot(rows.iloc[available].voltage, [physical.loc[keys[i], 'mean_r'] for i in available], 'o-', color='.2', lw=.8)
+            twin.set(ylabel=r'Mean $R$', ylim=(0, 1))
     evr = np.array(report['explained_variance'])[:8]
     axes[2].bar(np.arange(1, len(evr)+1), evr, color='.5')
     axes[2].set(xlabel='Principal component', ylabel='Explained variance fraction')

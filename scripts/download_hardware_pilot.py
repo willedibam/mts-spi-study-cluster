@@ -66,12 +66,14 @@ def directory_entries(data):
 
 
 class SplitZip:
-    def __init__(self, files):
+    def __init__(self, files, chunk_bytes=8 * 1024 * 1024, workers=4):
         parts = sorted([f for f in files if re.search(r"\.z\d+$", f["key"], re.I)], key=lambda f: int(f["key"].rsplit("z", 1)[-1]))
         final = [f for f in files if f["key"].lower().endswith(".zip")]
         if len(final) != 1:
             raise ValueError("Expected one split ZIP set")
         self.parts = parts + final
+        self.chunk_bytes = chunk_bytes
+        self.workers = workers
 
     def read(self, disk, offset, length):
         chunks = []
@@ -81,7 +83,7 @@ class SplitZip:
                 offset -= part["size"]
                 disk += 1
                 continue
-            n = min(length, part["size"] - offset, 512 * 1024)
+            n = min(length, part["size"] - offset, self.chunk_bytes)
             url = part["links"].get("self") or part["links"]["content"]
             # Zenodo exposes the same public file through two routes. The API
             # content route returned 504 during this pilot; prefer the record URL.
@@ -120,14 +122,14 @@ class SplitZip:
             size = cache.stat().st_size if cache.exists() else 0
             if size > entry['compressed_size']:
                 raise ValueError('Compressed checkpoint exceeds member size')
-            with cache.open('ab') as handle, ThreadPoolExecutor(max_workers=8) as pool:
+            with cache.open('ab') as handle, ThreadPoolExecutor(max_workers=self.workers) as pool:
                 while size < entry['compressed_size']:
-                    offsets = range(size, min(size + 8 * 512 * 1024, entry['compressed_size']), 512 * 1024)
+                    offsets = range(size, min(size + self.workers * self.chunk_bytes, entry['compressed_size']), self.chunk_bytes)
                     def fetch(start):
-                        n = min(512 * 1024, entry['compressed_size'] - start)
+                        n = min(self.chunk_bytes, entry['compressed_size'] - start)
                         return self.read(entry['disk'], data_offset + start, n)
                     # Ordered writes retain one contiguous resumable prefix.
-                    # Only eight small I/O requests are outstanding at once.
+                    # Bound concurrency and avoid hundreds of tiny HTTP requests.
                     for chunk in pool.map(fetch, offsets):
                         handle.write(chunk)
                         handle.flush()
