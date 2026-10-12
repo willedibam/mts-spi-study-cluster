@@ -39,6 +39,22 @@ def test_single_disk_inventory(monkeypatch):
     assert reader.extract(entries[0]) == raw
 
 
+def test_download_resumes_compressed_prefix(tmp_path, monkeypatch):
+    data, raw = example_zip()
+    entry = download.directory_entries(data[data.index(b'PK\x01\x02'):])[0]
+    offset = 30 + len(entry['name'])
+    cache = tmp_path / 'member.partial'
+    cache.write_bytes(data[offset:offset + 5])
+    starts = []
+    def read(url, start, length):
+        starts.append(start)
+        return data[start:start + length]
+    monkeypatch.setattr(download, 'request', read)
+    reader = download.SplitZip([{'key':'x.zip', 'size':len(data), 'links':{'self':'0'}}])
+    assert reader.extract(entry, cache) == raw
+    assert offset + 5 in starts
+
+
 def test_sampling_preserves_duration_and_rejects_lost_carrier():
     fs = 2000
     time = np.arange(20000) / fs

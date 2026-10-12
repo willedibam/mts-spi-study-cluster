@@ -90,7 +90,7 @@ def audit_record(x, fs, targets=CANDIDATES):
 
 def scope(raw_root, output):
     output.mkdir(parents=True, exist_ok=True)
-    paths = sorted(raw_root.glob('step-*.npz'))
+    paths = sorted(raw_root.glob('step-???.npz'))
     if not paths:
         raise FileNotFoundError(f"No verified raw records in {raw_root}")
     rows, sources = [], []
@@ -117,7 +117,7 @@ def build(raw_root, output, target, record):
     import yaml
     output.mkdir(parents=True, exist_ok=True)
     arrays, rows = {}, []
-    paths = sorted(raw_root.glob('step-*.npz'))
+    paths = sorted(raw_root.glob('step-???.npz'))
     if len(paths) < 2:
         raise ValueError('Need at least two source settings')
     for i, path in enumerate(paths):

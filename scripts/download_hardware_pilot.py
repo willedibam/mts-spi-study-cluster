@@ -80,7 +80,7 @@ class SplitZip:
                 offset -= part["size"]
                 disk += 1
                 continue
-            n = min(length, part["size"] - offset, 8 * 1024 * 1024)
+            n = min(length, part["size"] - offset, 512 * 1024)
             url = part["links"].get("self") or part["links"]["content"]
             # Zenodo exposes the same public file through two routes. The API
             # content route returned 504 during this pilot; prefer the record URL.
@@ -105,12 +105,29 @@ class SplitZip:
             raise ValueError("ZIP member count mismatch")
         return entries
 
-    def extract(self, entry):
+    def extract(self, entry, cache=None):
         header = self.read(entry["disk"], entry["offset"], 30)
         if header[:4] != b"PK\x03\x04" or entry["flags"] & 1:
             raise ValueError("Invalid or encrypted member")
         nlen, xlen = struct.unpack_from("<HH", header, 26)
-        compressed = self.read(entry["disk"], entry["offset"] + 30 + nlen + xlen, entry["compressed_size"])
+        data_offset = entry["offset"] + 30 + nlen + xlen
+        if cache is None:
+            compressed = self.read(entry["disk"], data_offset, entry["compressed_size"])
+        else:
+            # A transient HTTP failure should not discard an already transferred
+            # prefix. The complete compressed member is CRC-checked below.
+            size = cache.stat().st_size if cache.exists() else 0
+            if size > entry['compressed_size']:
+                raise ValueError('Compressed checkpoint exceeds member size')
+            with cache.open('ab') as handle:
+                while size < entry['compressed_size']:
+                    n = min(512 * 1024, entry['compressed_size'] - size)
+                    handle.write(self.read(entry['disk'], data_offset + size, n))
+                    handle.flush()
+                    size += n
+                    if size % (4 * 1024 * 1024) == 0:
+                        print(f"{entry['name']}: {size}/{entry['compressed_size']} compressed bytes", flush=True)
+            compressed = cache.read_bytes()
         if entry["method"] == 8:
             raw = zlib.decompress(compressed, -15)
         elif entry["method"] == 0:
@@ -150,7 +167,8 @@ def main(record, root, steps):
         target = root / f"step-{step:03d}.npz"
         if target.exists():
             continue
-        raw = archive.extract(entry)
+        cache = root / f'compressed-step-{step:03d}.partial'
+        raw = archive.extract(entry, cache)
         # The published files contain exactly 28 numeric columns.
         x = np.loadtxt(io.BytesIO(raw), dtype=np.float64)
         if x.shape != (500000, 28) or not np.isfinite(x).all():
@@ -161,6 +179,7 @@ def main(record, root, steps):
         receipt = dict(entry, record=record, raw_sha256=hashlib.sha256(raw).hexdigest(),
                        numeric_sha256=hashlib.sha256(target.read_bytes()).hexdigest())
         target.with_suffix(".json").write_text(json.dumps(receipt, indent=2) + "\n")
+        cache.unlink()  # Own transient download, superseded by verified numeric data.
         print(f"Verified {record} step={step} shape={x.shape}", flush=True)
 
 
