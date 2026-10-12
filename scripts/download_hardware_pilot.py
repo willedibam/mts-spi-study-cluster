@@ -82,6 +82,9 @@ class SplitZip:
                 continue
             n = min(length, part["size"] - offset, 8 * 1024 * 1024)
             url = part["links"].get("self") or part["links"]["content"]
+            # Zenodo exposes the same public file through two routes. The API
+            # content route returned 504 during this pilot; prefer the record URL.
+            url = re.sub(r"/api/records/(\d+)/files/(.+)/content$", r"/records/\1/files/\2?download=1", url)
             chunks.append(request(url, offset, n))
             offset += n
             length -= n
