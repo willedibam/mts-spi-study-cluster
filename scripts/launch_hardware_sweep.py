@@ -26,11 +26,19 @@ def resource_plan(peak_gib, seconds, workers=29):
                 mem_gb=memory, per_worker_gib=per_worker, walltime=f'{hours:02d}:00:00')
 
 
+def validate_sampling(root):
+    report = json.loads((root / 'scope-er-intermediate/sampling-decision.json').read_text())
+    if report['records'] != 29 or report['smallest_passing_T'] != 5000:
+        raise ValueError('Review intermediate sampling and matched SPI structure before releasing T=5000')
+    return report['smallest_passing_T']
+
+
 def main(root, smoke_job, dry_run=False):
     from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
     marker = root / 'sweep-launch.json'
     if marker.exists() and not dry_run:
         raise FileExistsError(f'Inspect existing launch receipt before retrying: {marker}')
+    validate_sampling(root)
     status = subprocess.check_output(['qstat', '-fx', smoke_job], text=True)
     if not re.search(r'job_state = F', status) or not re.search(r'Exit_status = 0(?:\s|$)', status):
         raise ValueError('Smoke did not finish successfully')

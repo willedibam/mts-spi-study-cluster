@@ -101,6 +101,56 @@ def sampling_figures(scope, trace_steps=None, focus_max_step=None):
     return out
 
 
+def mts_figures(root, steps=(0, 23, 24, 350), window=(1., 1.2)):
+    """Existing icefire format; scale full records before taking a fixed view."""
+    from src.corpus_visualization import plot_mts_heatmap, scale_timeseries
+    style()
+    root = Path(root)
+    rows = json.loads((root / 'manifest.json').read_text())['rows']
+    by_step = {row['step']: row for row in rows}
+    with np.load(root / 'observations.npz') as bank:
+        arrays = [bank[by_step[step]['name']] for step in steps]
+    # One colour limit across panels, estimated on full-record robust values.
+    limit = float(np.quantile(np.abs(np.concatenate([
+        scale_timeseries(x, 'robust')[0].ravel() for x in arrays])), .99))
+    fig, axes = plt.subplots(len(steps), 1, figsize=(7.3, 1.5 * len(steps)), squeeze=False)
+    for ax, step, x in zip(axes[:, 0], steps, arrays):
+        row = by_step[step]
+        plot_mts_heatmap(x, method='robust', ax=ax, colorbar=False)
+        image = ax.images[-1]
+        transformed = image.get_array()
+        start, stop = [round(t * row['fs']) for t in window]
+        image.set_data(transformed[:, start:stop])
+        image.set_extent((window[0], window[1], .5, len(x) + .5))
+        image.set_clim(-limit, limit)
+        ax.set(xlim=window, ylim=(.5, len(x) + .5), yticks=[1, 14, 28],
+               ylabel='Channel', xlabel='Time (s)', title=f'Setting {step} · {row["voltage"]:g} V')
+        ax.tick_params(direction='out', length=2, width=.6)
+    fig.colorbar(image, ax=axes[:, 0], shrink=.5, label='Robust-scaled voltage')
+    save(fig, root / 'figures', 'mts-heatmaps')
+    return root / 'figures'
+
+
+def intermediate_figures(scope):
+    style()
+    scope = Path(scope)
+    frame = pd.read_csv(scope / 'sampling-audit.csv')
+    fig, axes = plt.subplots(1, 3, figsize=(7.3, 2.8))
+    colors = dict(zip(sorted(frame['T'].unique()), ['#440154', '#31688e', '#35b779', '#8a9c19']))
+    for ax, column, label, gate in zip(axes,
+            ['reconstruction_nrmse_p95', 'envelope_rmse', 'plv_rmse'],
+            ['Waveform NRMSE (channel p95)', 'Envelope-correlation edge RMSE', 'Phase-locking edge RMSE'],
+            [.05, .03, .03]):
+        for target, group in frame.groupby('T'):
+            ax.plot(group.voltage, group[column], 'o-', color=colors[target], label=f'T={target}')
+        ax.axhline(gate, color='.4', lw=.7, ls=':')
+        ax.set(xlabel='Control voltage (V)', ylabel=label)
+        box(ax)
+    axes[0].legend(fontsize=6)
+    save(fig, scope / 'figures', 'intermediate-fidelity')
+    return scope / 'figures'
+
+
 def result_figures(root, scope=None):
     style()
     root = Path(root); out = root / 'figures'
