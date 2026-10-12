@@ -83,7 +83,9 @@ def sampling_figures(scope, trace_steps=None, focus_max_step=None):
                 ax.plot(np.arange(len(r)) * 10 / len(r), r, color=color, alpha=.7, lw=.7, label=f'T={target}')
             ax.axhline(.8, color='.6', ls=':', lw=.6)
             ax.set(ylim=(0, 1), ylabel=r'$R_s(t)$', title=f"Setting {int(path.stem.rsplit('-', 1)[-1])}")
-    axes[-1, 0].set_xlabel('Time (s)'); axes[0, 0].legend(ncol=4, loc='upper right')
+    axes[-1, 0].set_xlabel('Time (s)')
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, ncol=4, loc='outside upper center')
     save(fig, out, 'synchrony-traces')
     if focus_max_step is not None:
         physical = frame.drop_duplicates(['record', 'step']).sort_values('step')
