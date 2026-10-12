@@ -53,7 +53,7 @@ fi
 
 commands="$PBS_JOBFS/dataset-commands.txt"
 runner="${CORPUS_RUNNER:-src.run_external_corpus}"
-[[ "$runner" == src.run_external_corpus || "$runner" == scripts.run_hcp_bounded_corpus ]] || exit 2
+[[ "$runner" == src.run_external_corpus || "$runner" == scripts.run_hcp_bounded_corpus || "$runner" == scripts.run_hardware_bounded_corpus ]] || exit 2
 while IFS= read -r index; do
     [[ "$index" =~ ^[0-9]+$ ]] || { echo "invalid index: $index" >&2; exit 2; }
     (( index >= 1 && index <= total )) || { echo "out-of-range index: $index" >&2; exit 2; }
