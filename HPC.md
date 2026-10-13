@@ -36,7 +36,7 @@ Other options are environment variables: `START_INDEX`/`END_INDEX`, `NCPUS`, `WA
 - **Book only the cores in use.** `NCPUS` is the recordings running at once times `CORES_PER_RECORDING`, which is the launcher's default: leave `NCPUS` unset, and never round a job of fewer than 48 cores up to a node. A one-recording job asks for its own workers, not a node. Cores beyond that sit idle until the job ends.
 - **Workers or not.** One worker per recording is the most efficient use of a core. Use several when one worker would not finish a recording in good time or when cores exceed recordings; choose the number for run time and by size, never from memory. With the shared `v3` pyspi one worker computes a whole SPI and nothing is gained beyond 8. With `PYSPI_SOURCE=.../pyspi-pair-sampling-fd0de71` the pairs of each pair-loop SPI are shared between the workers, with no flag: a full table scales to a whole node, a sampled one gains little beyond 16. Results do not depend on the worker count.
 - **Dyad sampling** only for large `M` (about 100 and up): the default budget caps near 2,500 dyads and below `M` of about 70 it is nearly every dyad. It is representative of the whole matrix, not of individual channels or small groups. `spi_mpis.npz` then has NaN at unsampled entries and `pairs.npz` lists the dyads.
-- **Memory is per recording, not per core.** Size `MEM_GB` as the recordings running at once times the measured peak of one, plus a quarter. The measured peak is PBS's `resources_used.mem` for a one-recording job (`qstat -xf`). `job.peak_memory_mib` in `meta.json` holds only the parent and the largest worker; parent plus workers times largest is an upper bound three to four times actual use (over 100 GiB against 28 to 43 at 12 workers, `M=86` to `107`, `T=4096`), because only the worker on an all-channel SPI is large. Sampling does not reduce memory.
+- **Memory is per recording, not per core.** Size `MEM_GB` as the recordings running at once times the measured peak of one, plus a quarter. The measured peak is PBS's `resources_used.mem` for a one-recording job (`qstat -xf`). `job.peak_memory_mib` in `meta.json` holds only the parent and the largest worker; parent plus workers times largest is an upper bound two to four times actual use (100 GiB against 28 at 12 workers and 36 against 14 at 4, `M=86`, `T=4096`), because only the worker on an all-channel SPI is large. Sampling does not reduce memory.
 - **Threads.** Keep the `*_NUM_THREADS=1` settings from `env.sh`. The runner refuses several workers without them, or more workers than the cores it is bound to.
 - **Outputs are numeric and few**: `spi_mpis.npz`, `meta.json`, and for generated corpora `timeseries.npy` and any ground truth. Scratch and gdata inode quotas, not bytes, are the usual limit; check `lquota` before a large farm.
 
@@ -57,8 +57,9 @@ Measured on Gadi `normal` (Cascade Lake, 48 cores and 190 GiB per node, 4 GiB pe
 | `M=243`, 2,305 dyads (`pair_tolerance: 0.03`) | 4 | 16 min | 28 GiB |
 | `M=243`, 1,000 dyads | 1 / 4 / 8 | 52 / 9 / 5 min | 20 / 42 / 39 GiB |
 | `M=243`, 1,000 dyads, `fd0de71` pyspi | 16 / 48 | 3.6 / 3.6 min | 72 / 81 GiB |
-| `M=48`, `T=4096`, `fd0de71` pyspi | 1 / 3 | 258 / 87 min | 4 to 5 GiB |
-| `M=86`, `T=4096`, `fd0de71` pyspi | 4 / 12 | 201 / 87 min | about 10 / 28 to 43 GiB (`M=86` to `107`) |
+| `M=48`, `T=4096`, `fd0de71` pyspi | 1 / 3 | 258 / 87 min | 5 / 7 GiB |
+| `M=86`, `T=4096`, `fd0de71` pyspi | 4 / 12 | 201 / 87 min | 14 / 28 GiB |
+| `M=107`, `T=4096`, `fd0de71` pyspi | 4 | 342 min | 27 GiB |
 
 The `M=20` and `M=32` rows predate two kernel speed-ups and are upper bounds. A full `M=243` table has not been run on the current code (19 h on one core before them).
 
