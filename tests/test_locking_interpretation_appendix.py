@@ -179,7 +179,10 @@ def test_latex_has_native_fallback_without_font_warning(caplog):
         latex_style()
         assert 'DejaVuSerif' in font_manager.findfont(font_manager.FontProperties(family='serif'),fallback_to_default=False)
         # No Times/Palatino switch: TeX's serif remains Computer Modern.
-        assert r'\usepackage{type1ec}' in TexManager._get_tex_source('test',9)
+        # Asserted as the absence of a font package: the Computer Modern
+        # package matplotlib loads differs between releases (type1ec, type1cm).
+        source = TexManager._get_tex_source('test',9)
+        assert not any(package in source for package in ('mathptmx', 'mathpazo'))
         fig,ax=plt.subplots(figsize=(2,2));ax.set_title(r'LaTeX $z_{ab}$');fig.canvas.draw();plt.close(fig)
     assert not any('findfont' in record.message for record in caplog.records)
 
