@@ -20,14 +20,16 @@ import json
 import os
 from pathlib import Path
 import random
+import resource
 import subprocess
+import sys
 import tempfile
 import time
 from typing import Any, Sequence
 
 import numpy as np
 
-from .compute import ComputeResult, run_pyspi
+from .compute import ComputeResult, pyspi_pins_estimator_seeds, run_pyspi
 from .utils import load_yaml, project_root, slugify, timestamp, to_relative
 
 
@@ -437,6 +439,55 @@ def _metadata(
     }
 
 
+_THREAD_VARIABLES = (
+    "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+    "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS",
+)
+
+
+def bound_cores() -> int:
+    """CPUs this process may run on: its affinity mask where the OS has one."""
+    try:
+        return len(os.sched_getaffinity(0))
+    except AttributeError:  # macOS
+        return os.cpu_count() or 1
+
+
+def worker_resources(n_jobs: int) -> dict[str, Any]:
+    """Refuse a worker count the launcher did not provide for; record what it did.
+
+    The launcher owns placement: it binds this process to ``n_jobs`` cores and
+    sets the numerical libraries to one thread each. This checks that it did,
+    because more workers than bound cores, or threaded libraries under several
+    workers, silently time-share instead of failing.
+    """
+    cores = bound_cores()
+    threads = {name: os.environ.get(name) for name in _THREAD_VARIABLES}
+    if n_jobs > cores:
+        raise RuntimeError(
+            f"n_jobs={n_jobs} exceeds the {cores} CPU(s) this process is bound to")
+    if n_jobs > 1:
+        threaded = {name: value for name, value in threads.items() if value != "1"}
+        if threaded:
+            raise RuntimeError(
+                f"n_jobs={n_jobs} needs single-threaded numerical libraries; "
+                f"set to 1: {sorted(threaded)}")
+    return {"bound_cores": cores, "thread_variables": threads}
+
+
+def peak_memory_mib() -> dict[str, float]:
+    """Peak resident size of this process and of its largest finished worker.
+
+    Workers overlap, so ``parent + n_jobs * largest_worker`` bounds the
+    recording's footprint from above; that bound is what node admission needs.
+    """
+    unit = 1 if sys.platform == "darwin" else 1024  # ru_maxrss: bytes or KiB
+    def peak(who: int) -> float:
+        return round(resource.getrusage(who).ru_maxrss * unit / 2**20, 1)
+    return {"parent": peak(resource.RUSAGE_SELF),
+            "largest_worker": peak(resource.RUSAGE_CHILDREN)}
+
+
 def run_dataset(
     config: ExternalCorpusConfig,
     entry: CorpusEntry,
@@ -458,6 +509,7 @@ def run_dataset(
             f"-> {to_relative(dataset_dir)}"
         )
         return dataset_dir
+    resources = worker_resources(n_jobs)
     data, source = load_timeseries(config, entry)
     start = time.perf_counter()
     numpy_state = np.random.get_state()
@@ -470,7 +522,8 @@ def run_dataset(
             config_path=config.pyspi_config,
             normalise=config.normalise,
             n_jobs=n_jobs,
-            random_seed=config.random_seed if n_jobs == 1 else None,
+            random_seed=(config.random_seed
+                         if n_jobs == 1 or pyspi_pins_estimator_seeds() else None),
         )
     finally:
         np.random.set_state(numpy_state)
@@ -479,7 +532,9 @@ def run_dataset(
     _atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
     meta = _metadata(config, entry, result, source, identity, elapsed)
     meta["job"]["n_jobs"] = n_jobs
-    meta["job"]["estimator_rng_policy"] = "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled"
+    meta["job"]["estimator_rng_policy"] = result.rng_policy or (
+        "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled")
+    meta["job"].update(resources, peak_memory_mib=peak_memory_mib())
     _atomic_json(dataset_dir / "meta.json", meta)
     error = completion_error(config, entry, identity=identity)
     if error is not None:

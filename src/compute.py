@@ -35,6 +35,20 @@ def _seeded_call(function, seed, *args, **kwargs):
         return function(*args, **kwargs)
 
 
+def pyspi_pins_estimator_seeds() -> bool:
+    """Whether this pyspi fixes its stochastic estimators' seeds itself.
+
+    From computation revision r8 the sgddtw barycenter and the MinCovDet and
+    EllipticEnvelope fits each own a fixed-seed generator, so a value does not
+    depend on evaluation order, on the caller's seed, or on which process
+    computed it. Earlier revisions draw from the global NumPy stream, which is
+    why the overrides in :func:`run_pyspi` exist and why they need one worker.
+    """
+    from pyspi.statistics.distance import Barycenter
+
+    return isinstance(Barycenter(mode="sgddtw")._fn, partial)
+
+
 @dataclass
 class SPIInfo:
     name: str
@@ -55,6 +69,10 @@ class ComputeResult:
     # occupies its column, filled with NaN, so without this a dead column is
     # indistinguishable from a legitimately undefined statistic.
     errors: Dict[str, str] | None = None
+    # "pyspi_fixed_seeds": pyspi pins every stochastic estimator, any n_jobs.
+    # "isolated_serial": this wrapper's overrides, one worker only.
+    # "uncontrolled": neither.
+    rng_policy: str | None = None
 
 
 def run_pyspi(
@@ -68,8 +86,10 @@ def run_pyspi(
     mp_context: str | None = None,
     random_seed: int | None = None,
 ) -> ComputeResult:
-    if random_seed is not None and n_jobs != 1:
-        raise ValueError("Estimator RNG seeding currently requires n_jobs=1.")
+    pinned = pyspi_pins_estimator_seeds()
+    if random_seed is not None and n_jobs != 1 and not pinned:
+        raise ValueError(
+            "Estimator RNG seeding requires n_jobs=1 with this pyspi revision.")
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]
@@ -83,7 +103,7 @@ def run_pyspi(
         zscore=normalise,
         verbose=False,
     )
-    if random_seed is not None:
+    if random_seed is not None and not pinned:
         # This pyspi version does not expose tslearn's random_state argument.
         # Isolate SGD from RNG consumption by earlier SPIs, so a focused replay
         # and full-catalogue extraction agree. All four summaries share its cache.
@@ -129,6 +149,8 @@ def run_pyspi(
     return ComputeResult(
         table=calc.table.copy(), matrices=matrices, metadata=metadata,
         timings=spi_timings, errors=dict(getattr(calc, "errors", {}) or {}),
+        rng_policy=("pyspi_fixed_seeds" if pinned else
+                    "isolated_serial" if random_seed is not None else "uncontrolled"),
     )
 
 
