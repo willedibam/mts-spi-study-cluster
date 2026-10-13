@@ -156,7 +156,7 @@ def correlation_endpoint(name):
 
 
 def analyse(root, mirror_revision=None):
-    from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error, _array_sha256
+    from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error, array_sha256
     from src.spi_spi_contract import build_unified_features
     config = ExternalCorpusConfig.from_file(root / 'external.yaml')
     identity = None
@@ -192,7 +192,7 @@ def analyse(root, mirror_revision=None):
             assert metadata['spectral_memory_repair']['runner_sha256'] == frozen_hash('scripts/run_hardware_bounded_corpus.py')
         assert (entry.M, entry.T) == (28, 5000) and metadata.get('spectral_memory_repair')
         with np.load(config.archive) as bank:
-            assert _array_sha256(bank[entry.name]) == metadata['source']['member_sha256']
+            assert array_sha256(bank[entry.name]) == metadata['source']['member_sha256']
         names = [s['name'] for s in metadata['pyspi']['spis']]
         if order is None:
             order = names

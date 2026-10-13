@@ -21,7 +21,7 @@ import yaml
 
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def select_ridge(bank, view, train, targets, strata, protocol, seed):
@@ -188,7 +188,7 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                     details["chosen_alpha"] = alpha
                     details["retained_dimensions"] = scores.shape[1]
                 prediction = np.clip(prediction, 0, 1)
-                _atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "evaluation_indices": evaluation,
+                atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "evaluation_indices": evaluation,
                                                         "train_indices": train, "target": targets[evaluation],
                                                         "row_id": np.asarray([rows[i]["row_id"] for i in evaluation])})
                 report = {"identity": identity, "details": details,
@@ -198,7 +198,7 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                           "predictions_sha256": file_hash(stem.with_suffix(".npz")),
                           "train_indices": train.tolist(), "evaluation_indices": evaluation.tolist(),
                           "labels_total": len(train), "status": "exploratory_pilot"}
-                _atomic_json(stem.with_suffix(".json"), report)
+                atomic_json(stem.with_suffix(".json"), report)
                 print(f"[DONE] {stem.name} MAE={report['evaluation_MAE']:.4f} seconds={report['seconds']:.1f}", flush=True)
 
 

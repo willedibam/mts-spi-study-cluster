@@ -11,7 +11,7 @@ import yaml
 
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def select_cap(bank, view, train, target, strata, protocol, caps, seed):
@@ -71,11 +71,11 @@ def run(config, output):
                 prediction = np.clip(model.predict(transform.transform(active, evaluation)), 0, 1)
                 method = view + "_pca_selected"
                 stem = output / f"{method.replace('+', '_')}-n{n}-s{seed}"
-                _atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": target[evaluation],
+                atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": target[evaluation],
                               "row_id": np.asarray([rows[i]["row_id"] for i in evaluation]),
                               "train_indices": train, "evaluation_indices": evaluation})
                 details.update(chosen_cap=cap, retained_dimensions=x.shape[1], chosen_alpha=alpha)
-                _atomic_json(stem.with_suffix(".json"), {"identity": {
+                atomic_json(stem.with_suffix(".json"), {"identity": {
                     "method": method, "n_per_coupling": n, "seed": seed,
                     "protocol_sha256": file_hash(protocol_path), "sensitivity_sha256": file_hash(config),
                     "runner_sha256": file_hash(Path(__file__)), "preprocessing_sha256": file_hash(Path("src/representation_screen.py")),

@@ -11,7 +11,7 @@ from src.interaction_share_learning import fit_statistical,standardized_marginal
 from src.mpi_representation_baselines import summarize_mpis
 from src.representation_attribution import rich_marginals
 from src.representation_state_data import file_hash
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.spi_spi_contract import build_unified_features,schema_sha256
 from src.utils import slugify
 
@@ -30,7 +30,7 @@ def build(data,output):
             assert meta['status']=='complete' and meta['normalise'] is False
             assert meta['dataset_name']==row['row_id'] and (meta['M'],meta['T'])==(row['M'],row['T'])
             assert meta['source']['archive_sha256']==manifest['artifacts']['views.npz']
-            assert meta['source']['member_sha256']==_array_sha256(raw[row['row_id']])
+            assert meta['source']['member_sha256']==array_sha256(raw[row['row_id']])
             assert meta['pyspi']['config_sha256']==file_hash(Path('configs/pyspi/benchmarked_p90.yaml'))
             names=[s['name'] for s in meta['pyspi']['spis']]
             if order is None:order=names

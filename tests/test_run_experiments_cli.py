@@ -25,7 +25,7 @@ def test_finished_dataset_from_another_pyspi_revision_stops_the_run(tmp_path) ->
 
     import pytest
 
-    from src.run_experiments import _dataset_complete, _file_sha256, _pyspi_version
+    from src.run_experiments import _dataset_complete, file_sha256, pyspi_version
 
     config = tmp_path / "spis.yaml"
     config.write_text(".statistics.basic:\n  Covariance:\n    labels: [undirected]\n")
@@ -40,10 +40,10 @@ def test_finished_dataset_from_another_pyspi_revision_stops_the_run(tmp_path) ->
 
     for name in ("spi_mpis.npz", "timeseries.npy"):
         (spec.dataset_dir / name).touch()
-    current = _pyspi_version()["computation"]
-    write(current, _file_sha256(config))
+    current = pyspi_version()["computation"]
+    write(current, file_sha256(config))
     assert _dataset_complete(spec)
-    write("3.0.0.r7", _file_sha256(config))
+    write("3.0.0.r7", file_sha256(config))
     with pytest.raises(RuntimeError, match="3.0.0.r7"):
         _dataset_complete(spec)
     write(current, "0" * 64)

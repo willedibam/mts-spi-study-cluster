@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
 
 from src.compute import run_pyspi  # noqa: E402
 from src.mapping import DatasetMapping, ExperimentConfig  # noqa: E402
-from src.run_experiments import _file_sha256, _pyspi_version  # noqa: E402
+from src.run_experiments import file_sha256, pyspi_version  # noqa: E402
 from src.utils import dump_json, ensure_dir, load_json  # noqa: E402
 
 
@@ -116,8 +116,8 @@ def main() -> int:
             "job": {"compute_seconds": elapsed},
             "pyspi": {
                 "config": str(args.pyspi_config),
-                "config_sha256": _file_sha256(args.pyspi_config),
-                "version": _pyspi_version(),
+                "config_sha256": file_sha256(args.pyspi_config),
+                "version": pyspi_version(),
                 "n_spis": len(result.metadata),
                 "errors": result.errors or {},
                 "spis": [

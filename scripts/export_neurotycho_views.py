@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 
 
 def sha(path):
@@ -42,7 +42,7 @@ def main(args):
                     raise ValueError('invalid standardized observation')
                 name = f'{record["archive"]}--{record["session"]}--y{record["target"]}--w{record["window"]:02d}--m{m}-t{t}'
                 if name in excluded:
-                    if _array_sha256(x) != excluded[name]:
+                    if array_sha256(x) != excluded[name]:
                         raise ValueError('previously exported observation changed')
                     continue
                 if name in arrays:
@@ -51,7 +51,7 @@ def main(args):
                 rows.append(dict(row_id=name, corpus_index=len(rows)+1, animal=record['animal'],
                     archive=record['archive'], session=record['session'], target=record['target'],
                     window=record['window'], start=record['start'], M=m, T=t,
-                    array_sha256=_array_sha256(x)))
+                    array_sha256=array_sha256(x)))
     if not rows:
         raise ValueError('no source windows')
     arrays.update(__dataset_names__=np.array([r['row_id'] for r in rows]),

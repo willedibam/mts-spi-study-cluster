@@ -15,7 +15,7 @@ from src.interaction_share_learning import fit_statistical, select_statistical
 from src.phase_surrogates import pooled_autospectrum
 from src.representation_screen import training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def run(config, data, output):
@@ -26,7 +26,7 @@ def run(config, data, output):
                         for r in rows])
     output.mkdir(parents=True, exist_ok=True)
     bank_path = output / 'autospectra.npz'
-    _atomic_savez(bank_path, dict(X_u=spectra, row_id=np.asarray([r['row_id'] for r in rows])))
+    atomic_savez(bank_path, dict(X_u=spectra, row_id=np.asarray([r['row_id'] for r in rows])))
     identity = dict(protocol_sha256=file_hash(config), manifest_sha256=file_hash(data / 'manifest.json'),
                     feature_bank_sha256=file_hash(bank_path), numpy=np.__version__, sklearn=sklearn.__version__,
                     code_sha256={str(p): file_hash(p) for p in [Path(__file__), Path('src/phase_surrogates.py'),
@@ -50,9 +50,9 @@ def run(config, data, output):
                 chosen, details = select_statistical(bank, 'u', train, target, strata, methods, seed, 'pls')
                 transform, model = fit_statistical(bank, 'u', train, target, methods['preprocessing'], 'pls', *chosen)
                 prediction = np.clip(model.predict(transform.transform(bank, evaluation)).reshape(-1), 0, 1)
-                _atomic_savez(stem.with_suffix('.npz'), dict(prediction=prediction, target=target[evaluation],
+                atomic_savez(stem.with_suffix('.npz'), dict(prediction=prediction, target=target[evaluation],
                     train_indices=train, evaluation_indices=evaluation, row_id=np.asarray([rows[i]['row_id'] for i in evaluation])))
-                _atomic_json(stem.with_suffix('.json'), dict(identity=ident, details=dict(details, chosen=chosen),
+                atomic_json(stem.with_suffix('.json'), dict(identity=ident, details=dict(details, chosen=chosen),
                     labels_total=len(train), predictions_sha256=file_hash(stem.with_suffix('.npz')),
                     status='retrospective_control_motivated_by_phase_experiment'))
     print(f'Completed autospectrum PLS: {output}', flush=True)

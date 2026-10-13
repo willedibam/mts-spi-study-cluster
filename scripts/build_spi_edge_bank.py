@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from src.spi_edge_pool import standardize_edges
 from src.representation_state_data import file_hash
-from src.run_external_corpus import _atomic_json,_atomic_savez
+from src.run_external_corpus import atomic_json,atomic_savez
 from src.utils import slugify
 
 
@@ -27,9 +27,9 @@ def main(data,mpi_root,bank,output):
         replay=gram[upper];np.testing.assert_allclose(replay,z[i],atol=3e-6,rtol=0,equal_nan=True)
         maximum=max(maximum,float(np.nanmax(abs(replay-z[i]))));sources.append(source)
     output.parent.mkdir(parents=True,exist_ok=True)
-    _atomic_savez(output,dict(edges=edges,validity=validity,lengths=lengths,spi_order=np.array(order),
+    atomic_savez(output,dict(edges=edges,validity=validity,lengths=lengths,spi_order=np.array(order),
         row_id=np.array([r['row_id'] for r in rows]),manifest_sha256=np.array(file_hash(data/'manifest.json'))))
-    _atomic_json(output.with_suffix('.json'),dict(artifact_sha256=file_hash(output),base_bank_sha256=file_hash(bank),
+    atomic_json(output.with_suffix('.json'),dict(artifact_sha256=file_hash(output),base_bank_sha256=file_hash(bank),
         manifest_sha256=file_hash(data/'manifest.json'),rows=len(rows),z_recovery_max_difference=maximum,
         sources=sources,code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/spi_edge_pool.py']}))
     print(dict(rows=len(rows),z_recovery_max_difference=maximum,sha256=file_hash(output)),flush=True)

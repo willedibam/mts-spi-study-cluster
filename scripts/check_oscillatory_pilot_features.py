@@ -7,7 +7,7 @@ import numpy as np
 from src.mpi_representation_baselines import summarize_mpis
 from src.representation_attribution import rich_marginals
 from src.representation_state_data import file_hash
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.spi_spi_contract import build_unified_features
 from src.spi_edge_pool import standardize_edges
 
@@ -37,7 +37,7 @@ def main(root,data):
             meta=json.loads(path.read_text());name=meta['dataset_name'];index=lookup[name]
             assert file_hash(path)==sources[name]['meta_sha256']
             assert file_hash(path.parent/'spi_mpis.npz')==sources[name]['mpi_sha256']
-            assert meta['source']['member_sha256']==_array_sha256(raw[name])
+            assert meta['source']['member_sha256']==array_sha256(raw[name])
             assert meta['source']['archive_sha256']==manifest['artifacts']['views.npz']
             with np.load(path.parent/'spi_mpis.npz',allow_pickle=False) as a:mpis={k:a[k] for k in order}
             normalized,normalized_valid=standardize_edges(mpis,order)

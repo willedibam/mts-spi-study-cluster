@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from src import compute, run_external_corpus as corpus
+from src import provenance
 from src.compute import run_pyspi
 
 STOCHASTIC_CONFIG = """
@@ -84,8 +85,8 @@ def test_one_result_for_any_worker_count_and_seed(stochastic_config):
 
 
 def test_runner_refuses_more_workers_than_bound_cores(monkeypatch):
-    monkeypatch.setattr(corpus, "bound_cores", lambda: 2)
-    for name in corpus._THREAD_VARIABLES:
+    monkeypatch.setattr(provenance, "bound_cores", lambda: 2)
+    for name in provenance.THREAD_VARIABLES:
         monkeypatch.setenv(name, "1")
     assert corpus.worker_resources(2)["bound_cores"] == 2
     with pytest.raises(RuntimeError, match="bound to"):
@@ -93,8 +94,8 @@ def test_runner_refuses_more_workers_than_bound_cores(monkeypatch):
 
 
 def test_runner_refuses_threaded_libraries_under_several_workers(monkeypatch):
-    monkeypatch.setattr(corpus, "bound_cores", lambda: 8)
-    for name in corpus._THREAD_VARIABLES:
+    monkeypatch.setattr(provenance, "bound_cores", lambda: 8)
+    for name in provenance.THREAD_VARIABLES:
         monkeypatch.setenv(name, "1")
     monkeypatch.setenv("OMP_NUM_THREADS", "4")
     with pytest.raises(RuntimeError, match="OMP_NUM_THREADS"):
@@ -122,8 +123,8 @@ def test_runner_seeds_and_records_resources_for_any_worker_count(tmp_path, monke
                              timings={"pearson": 0.01}, errors={})
 
     monkeypatch.setattr(corpus, "run_pyspi", fake_run_pyspi)
-    monkeypatch.setattr(corpus, "bound_cores", lambda: 8)
-    for name in corpus._THREAD_VARIABLES:
+    monkeypatch.setattr(provenance, "bound_cores", lambda: 8)
+    for name in provenance.THREAD_VARIABLES:
         monkeypatch.setenv(name, "1")
 
     output = corpus.run_dataset(config, entry, n_jobs=n_jobs)

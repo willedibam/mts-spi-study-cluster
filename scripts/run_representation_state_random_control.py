@@ -14,7 +14,7 @@ from src.interaction_share_learning import fit_statistical, select_statistical
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
 from src.representation_state_neural import AlignedChannelEncoder, seed_torch
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def run(config_path, data, output, device, source_family=None, head='pca'):
@@ -64,7 +64,7 @@ def run(config_path, data, output, device, source_family=None, head='pca'):
         extraction_seconds = time.perf_counter() - start
         bank = {"u": values}
         feature_path = output / f"initial-features-s{seed}.npz"
-        _atomic_savez(feature_path, {"X": values, "row_id": np.asarray([r["row_id"] for r in rows])})
+        atomic_savez(feature_path, {"X": values, "row_id": np.asarray([r["row_id"] for r in rows])})
         cohort = source_pool_for_seed(rows, pool, protocol, seed)
         for n, train in training_subsets(strata, cohort, budgets, seed).items():
             start = time.perf_counter()
@@ -81,12 +81,12 @@ def run(config_path, data, output, device, source_family=None, head='pca'):
                 fitted = Ridge(alpha=alpha).fit(scores, targets[train])
             prediction = np.clip(fitted.predict(transform.transform(bank, evaluation)).reshape(-1), 0, 1)
             stem = output / f"{method}-n{n}-s{seed}"
-            _atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": targets[evaluation],
+            atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": targets[evaluation],
                                                     "train_indices": train, "evaluation_indices": evaluation,
                                                     "row_id": np.asarray([rows[i]["row_id"] for i in evaluation])})
             details.update(chosen_alpha=alpha, extraction_seconds_once_per_seed=extraction_seconds,
                            features_sha256=file_hash(feature_path))
-            _atomic_json(stem.with_suffix(".json"), {"identity": {**identity, "n_per_coupling": n}, "details": details,
+            atomic_json(stem.with_suffix(".json"), {"identity": {**identity, "n_per_coupling": n}, "details": details,
                          "predictions_sha256": file_hash(stem.with_suffix(".npz")), "labels_total": len(train),
                          "train_indices": train.tolist(), "evaluation_indices": evaluation.tolist(),
                          "training_MAE": float(abs(np.clip(fitted.predict(scores).reshape(-1), 0, 1) - targets[train]).mean()),

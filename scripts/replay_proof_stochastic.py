@@ -14,7 +14,7 @@ import numpy as np
 
 from src.compute import run_pyspi
 from src.mapping import DatasetMapping, ExperimentConfig
-from src.run_experiments import _file_sha256, _repository_provenance, _pyspi_version
+from src.run_experiments import file_sha256, repository_provenance, pyspi_version
 from src.utils import project_root, timestamp
 
 NAMES = ("bary_sgddtw_mean", "bary_sgddtw_max", "bary-sq_sgddtw_mean", "bary-sq_sgddtw_max")
@@ -47,7 +47,7 @@ def replay(directory: Path, *, compute=run_pyspi):
             new = {name: archive[f"seeded_{name}"] for name in NAMES}
         if receipt["policy"] != POLICY or receipt["seed"] != seed:
             raise ValueError("Replay receipt seed/policy mismatch")
-        if receipt["input_sha256"] != _file_sha256(directory / "timeseries.npy"):
+        if receipt["input_sha256"] != file_sha256(directory / "timeseries.npy"):
             raise ValueError("Replay input has changed")
         for name in NAMES:
             if not any(np.array_equal(matrices[name], candidate[name], equal_nan=True) for candidate in (old, new)):
@@ -61,12 +61,12 @@ def replay(directory: Path, *, compute=run_pyspi):
         old, new = {name: matrices[name] for name in NAMES}, result.matrices
         receipt = {
             "policy": POLICY, "seed": seed, "timestamp": timestamp(),
-            "input_sha256": _file_sha256(directory / "timeseries.npy"),
-            "original_archive_sha256": _file_sha256(mpi_path),
+            "input_sha256": file_sha256(directory / "timeseries.npy"),
+            "original_archive_sha256": file_sha256(mpi_path),
             "original_errors": {name: meta["pyspi"].get("errors", {}).get(name) for name in NAMES},
             "original_seconds": {name: meta.get("paths", {}).get("per_spi", {}).get(name) for name in NAMES},
-            "config_sha256": _file_sha256(CONFIG), "pyspi_version": _pyspi_version(),
-            "code": _repository_provenance(), "compute_seconds": time.perf_counter() - started,
+            "config_sha256": file_sha256(CONFIG), "pyspi_version": pyspi_version(),
+            "code": repository_provenance(), "compute_seconds": time.perf_counter() - started,
             "errors": result.errors or {}, "per_spi": result.timings or {},
             "names": list(NAMES),
         }
@@ -81,7 +81,7 @@ def replay(directory: Path, *, compute=run_pyspi):
     # This records a partial recomputation; the original p90 provenance remains.
     meta["pyspi"]["stochastic_replay"] = {
         **receipt, "sidecar": receipt_path.name,
-        "repaired_archive_sha256": _file_sha256(mpi_path),
+        "repaired_archive_sha256": file_sha256(mpi_path),
     }
     errors = meta["pyspi"].setdefault("errors", {})
     for name in NAMES:

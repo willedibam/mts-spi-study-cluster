@@ -13,7 +13,7 @@ from src.representation_attribution import fit_head, select_head
 from src.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
 from src.representation_state_data import file_hash
 from src.spi_spi_contract import build_unified_feature_values
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def run(config_path, output):
@@ -81,7 +81,7 @@ def run(config_path, output):
     matrices.update({f"z_null_{seed}": ("z", np.asarray(values)) for seed, values in zip(config["null_seeds"], nulls)})
     methods = list(matrices)
     output.mkdir(parents=True)
-    _atomic_savez(output / "features.npz", {**{name: value for name, (_, value) in matrices.items()}, "row_id": np.asarray(ids)})
+    atomic_savez(output / "features.npz", {**{name: value for name, (_, value) in matrices.items()}, "row_id": np.asarray(ids)})
     full_pool = np.asarray([i for i, r in enumerate(full_rows) if r["role"] == "training_pool"])
     full_labels = np.asarray([r["label"] for r in full_rows])
     lookup = {int(global_index): local_index for local_index, global_index in enumerate(chosen)}
@@ -131,7 +131,7 @@ def run(config_path, output):
         boot = bootstrap_group_means(diff, unit_labels, 2000, 1729)
         comparisons[f"{left}_minus_{right}"] = {"difference": diff.mean(axis=-1).tolist(),
                                                 "conditional_95_CI": np.quantile(boot, [.025, .975], axis=-1).T.tolist()}
-    _atomic_savez(output / "predictions.npz", {"prediction": predictions, "methods": np.asarray(methods),
+    atomic_savez(output / "predictions.npz", {"prediction": predictions, "methods": np.asarray(methods),
                   "target": strata, "row_id": np.asarray(ids)[evaluation], "classes": classes})
     result = {"status": "exploratory_three_class_mechanism_check", "summary": summary,
               "paired_primary": comparisons, "fits": fits, "labelled_per_class": budgets, "subset_seeds": seeds,
@@ -142,7 +142,7 @@ def run(config_path, output):
               "hashes": {str(p): file_hash(Path(p)) for p in [config_path, manifest_path, raw_manifest_path, bank_path, rich_path,
                   __file__, "src/representation_mechanism.py", "src/representation_attribution.py", "src/representation_screen.py"]},
               "features_sha256": file_hash(output / "features.npz"), "predictions_sha256": file_hash(output / "predictions.npz")}
-    _atomic_json(output / "results.json", result)
+    atomic_json(output / "results.json", result)
     lines = ["# Three-class VAR mechanism diagnostic", "",
              "All three existing VAR classes, including the previously difficult low-self-memory/moderate-coupling class. "
              "Every method is refit on the same filtered historical training subsets: 6/12/24 total labels. "

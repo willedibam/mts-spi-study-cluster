@@ -8,7 +8,7 @@ import numpy as np
 from src.representation_state_data import load_state_data,file_hash
 from src.representation_mechanism import permute_dyads
 from src.spi_spi_contract import build_unified_feature_values
-from src.run_external_corpus import _atomic_json,_atomic_savez
+from src.run_external_corpus import atomic_json,atomic_savez
 from src.utils import slugify
 
 
@@ -45,8 +45,8 @@ def build(config,data,mpi_root,bank_path,output):
     output.mkdir(parents=True)
     for seed,values in zip(seeds,banks):
         path=output/f'null-{seed}.npz'
-        _atomic_savez(path,{**common,'X_z':np.asarray(values)})
-    _atomic_json(output/'verification.json',dict(seeds=seeds,records=len(original),edge_multisets_and_z_validity_preserved=True,
+        atomic_savez(path,{**common,'X_z':np.asarray(values)})
+    atomic_json(output/'verification.json',dict(seeds=seeds,records=len(original),edge_multisets_and_z_validity_preserved=True,
         shared_permutation_max_difference=maximum,seconds=time.perf_counter()-start,base_bank_sha256=file_hash(bank_path),
         artifacts={p.name:file_hash(p) for p in output.glob('*.npz')},
         code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/representation_mechanism.py','src/spi_spi_contract.py']}))

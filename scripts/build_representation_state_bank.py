@@ -10,7 +10,7 @@ import yaml
 from src.mpi_representation_baselines import summarize_mpis
 from src.representation_attribution import rich_marginals
 from src.representation_state_data import file_hash, load_state_data, observed_view
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.spi_spi_contract import build_unified_features, schema_sha256
 from src.utils import slugify
 
@@ -34,7 +34,7 @@ def build(config_path, data_root, mpi_root, output):
         assert meta["pyspi"]["config_sha256"] == catalogue_hash
         assert meta["source"]["archive_sha256"] == manifest["artifacts"]["views.npz"]
         raw = observed_view(masters[row["master_index"]], row["M"], row["T"])
-        assert meta["source"]["member_sha256"] == _array_sha256(raw)
+        assert meta["source"]["member_sha256"] == array_sha256(raw)
         computations.add(json.dumps(meta["pyspi"]["version"], sort_keys=True))
         names = [item["name"] for item in meta["pyspi"]["spis"]]
         if order is None:

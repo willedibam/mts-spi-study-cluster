@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -33,14 +32,7 @@ from .atlas_analysis import (
     procrustes_stability,
 )
 from .utils import load_yaml
-
-
-def _file_sha256(path: Path) -> str:
-    digest = sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+from .provenance import atomic_json, file_sha256
 
 
 def _json_value(value: Any) -> Any:
@@ -55,29 +47,6 @@ def _json_value(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return [_json_value(item) for item in value]
     return value
-
-
-def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            encoding="utf-8",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as handle:
-            temporary = Path(handle.name)
-            json.dump(_json_value(payload), handle, indent=2, allow_nan=False)
-            handle.write("\n")
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, path)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
 
 
 def _atomic_npz(path: Path, payload: dict[str, Any]) -> None:
@@ -586,7 +555,7 @@ def run(config_path: str | Path) -> dict[str, Any]:
 
     summary = {
         "feature_artifact": str(feature_path),
-        "feature_artifact_sha256": _file_sha256(feature_path),
+        "feature_artifact_sha256": file_sha256(feature_path),
         "rows": len(values),
         "raw_features": values.shape[1],
         "primary_validity_threshold": primary_threshold,
@@ -618,7 +587,7 @@ def run(config_path: str | Path) -> dict[str, Any]:
             "cross-dimensional choice uses subsample stability with a smaller-dimension tie-break."
         ),
     }
-    _atomic_json(output_dir / "atlas-summary.json", summary)
+    atomic_json(output_dir / "atlas-summary.json", summary)
     _atomic_npz(
         output_dir / "atlas-results.npz",
         {

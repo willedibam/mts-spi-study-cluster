@@ -3,7 +3,7 @@ import argparse,json
 import numpy as np
 from scripts.build_lag_surrogate import DATA,OUT,ROOT,RUN
 from scripts.spi_baseline_exploration import sha
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.utils import slugify
 
 
@@ -17,7 +17,7 @@ def audit(count, source="669a718"):
             assert meta['status']=='complete' and meta['dataset_name']==r['row_id']
             assert (meta['M'],meta['T'])==(16,1000)
             assert meta['source']['archive_sha256']==manifest['archive_sha256']
-            assert meta['source']['member_sha256']==_array_sha256(raw[r['row_id']])
+            assert meta['source']['member_sha256']==array_sha256(raw[r['row_id']])
             assert meta['experiment']['git_commit'].startswith(source) and not meta['experiment']['git_dirty']
             assert meta['random_seed']==261016 and meta['job']['estimator_rng_policy']=='isolated_serial'
             assert meta['pyspi']['version']['computation']=='3.0.0.r7'

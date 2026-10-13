@@ -9,7 +9,7 @@ from sklearn.isotonic import IsotonicRegression
 from src.interaction_share_learning import fit_statistical, select_statistical, standardized_marginal_shapes
 from src.representation_screen import training_subsets
 from src.representation_state_data import file_hash,load_state_data,source_pool_for_seed
-from src.run_external_corpus import _atomic_json,_atomic_savez
+from src.run_external_corpus import atomic_json,atomic_savez
 
 
 def run(config,data,output,selected,feature_bank=None):
@@ -56,9 +56,9 @@ def run(config,data,output,selected,feature_bank=None):
                         chosen,details=select_statistical(active,view,train,target,strata,cfg['methods'],seed,head)
                         transform,model=fit_statistical(active,view,train,target,cfg['methods']['preprocessing'],head,*chosen)
                         pred=model.predict(transform.transform(active,evaluation)).reshape(-1);details['chosen']=chosen
-                    _atomic_savez(stem.with_suffix('.npz'),dict(prediction=np.clip(pred,0,1),target=target[evaluation],
+                    atomic_savez(stem.with_suffix('.npz'),dict(prediction=np.clip(pred,0,1),target=target[evaluation],
                                       train_indices=train,evaluation_indices=evaluation,row_id=np.asarray([rows[i]['row_id'] for i in evaluation])))
-                    _atomic_json(stem.with_suffix('.json'),dict(identity=ident,details=details,labels_total=len(train),
+                    atomic_json(stem.with_suffix('.json'),dict(identity=ident,details=details,labels_total=len(train),
                                  seconds=time.perf_counter()-start,predictions_sha256=file_hash(stem.with_suffix('.npz')),
                                  status=cfg.get('status','exploratory')))
                     print(f'[DONE] {family}/{stem.name}',flush=True)

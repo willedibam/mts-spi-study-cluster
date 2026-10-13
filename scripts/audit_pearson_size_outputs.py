@@ -5,7 +5,7 @@ import numpy as np
 from threadpoolctl import threadpool_limits
 from scripts.build_pearson_size_match import DATA, OUT, ROOT, RUN
 from scripts.spi_baseline_exploration import sha
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.spi_spi_contract import build_unified_feature_values
 from src.utils import slugify
 
@@ -22,7 +22,7 @@ def audit(indices, name):
             assert meta['status'] == 'complete' and meta['dataset_name'] == r['row_id']
             assert (meta['M'], meta['T']) == (r['M'], r['T'])
             assert meta['source']['archive_sha256'] == manifest['archive_sha256']
-            assert meta['source']['member_sha256'] == _array_sha256(raw[r['row_id']])
+            assert meta['source']['member_sha256'] == array_sha256(raw[r['row_id']])
             assert meta['experiment']['git_commit'].startswith('a770dba') and not meta['experiment']['git_dirty']
             assert meta['random_seed'] == 261011 and meta['job']['estimator_rng_policy'] == 'isolated_serial'
             assert meta['pyspi']['version']['computation'] == '3.0.0.r7'

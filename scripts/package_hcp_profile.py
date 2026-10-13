@@ -11,7 +11,7 @@ from pyspi.calculator import Calculator
 
 from src.compute import ComputeResult, SPIInfo, _spi_info
 from src.run_external_corpus import (ExternalCorpusConfig, load_inventory, load_timeseries,
-                                    _atomic_json, _atomic_savez, _execution_identity,
+                                    atomic_json, atomic_savez, _execution_identity,
                                     _metadata, completion_error)
 
 
@@ -53,11 +53,11 @@ def main(config_path, index, profile):
         packaging_script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         computation='Original instrumented serial run; all checkpoint matrices reused, no SPI recomputed',
         warning_note='Per-SPI warnings were emitted by the original run but not retained in its checkpoint sidecars')
-    _atomic_savez(directory/'spi_mpis.npz', matrices)
+    atomic_savez(directory/'spi_mpis.npz', matrices)
     with np.load(directory/'spi_mpis.npz') as archive:
         for key in names:
             np.testing.assert_array_equal(archive[key], matrices[key])
-    _atomic_json(directory/'meta.json', meta)
+    atomic_json(directory/'meta.json', meta)
     assert completion_error(config, entry) is None
     print(json.dumps(dict(status='complete', index=index, directory=str(directory), n_spis=len(names))))
 

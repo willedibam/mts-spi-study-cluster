@@ -8,7 +8,7 @@ import yaml
 
 from src.representation_screen import bootstrap_group_means
 from src.representation_state_data import file_hash, load_state_data
-from src.run_external_corpus import _atomic_json
+from src.run_external_corpus import atomic_json
 
 
 def report(config, data, results, output):
@@ -122,7 +122,7 @@ def report(config, data, results, output):
                     'conditional_95_CI': np.quantile(boot, [.025, .975]).tolist()}
     output.mkdir(parents=True, exist_ok=True)
     incomplete = {name: count for name, count in counts.items() if name not in complete}
-    _atomic_json(output / 'results.json', dict(
+    atomic_json(output / 'results.json', dict(
         status='paired_mechanism_exploratory_conditional_on_fitted_models',
         primary='same_family_independent_minus_common_phase', summary=summaries,
         paired_arm_contrasts=paired, method_contrasts=method_contrasts, cells=cells,

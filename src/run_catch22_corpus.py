@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ProcessPoolExecutor
-from hashlib import sha256
 import json
 from multiprocessing import get_context
 import os
@@ -16,17 +15,10 @@ import numpy as np
 
 from .run_external_corpus import ExternalCorpusConfig, load_inventory
 from .utils import project_root
+from .provenance import file_sha256
 
 
 SUMMARY_NAMES = ("min", "q25", "mean", "q75", "max")
-
-
-def _file_sha256(path: Path) -> str:
-    digest = sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def aggregate_catch22(timeseries: np.ndarray) -> tuple[np.ndarray, list[str], list[str]]:
@@ -169,7 +161,7 @@ def run(config_path: str | Path, output: str | Path, *, workers: int) -> Path:
             "errors_json": np.asarray(errors),
             "source_archive": str(config.archive),
             "source_sha256": config.archive_sha256,
-            "corpus_config_sha256": _file_sha256(config.path),
+            "corpus_config_sha256": file_sha256(config.path),
             "git_commit": commit,
             "normalisation": "per-channel-zscore",
             "aggregation": "min-q25-mean-q75-max",

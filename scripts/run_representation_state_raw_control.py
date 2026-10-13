@@ -11,7 +11,7 @@ from scripts.run_representation_state_pilot import select_ridge
 from src.cross_mt_transfer import pooled_baseline_features
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def run(config_path, data, output):
@@ -39,7 +39,7 @@ def run(config_path, data, output):
     extraction_seconds = time.perf_counter() - start
     output.mkdir(parents=True)
     feature_path = output / "features.npz"
-    _atomic_savez(feature_path, {**feature_sets, "feature_names": np.asarray(names),
+    atomic_savez(feature_path, {**feature_sets, "feature_names": np.asarray(names),
                                "row_id": np.asarray([r["row_id"] for r in rows])})
     identity = {"protocol_sha256": file_hash(config_path), "manifest_sha256": file_hash(data / "manifest.json"),
                 "runner_sha256": file_hash(Path(__file__)), "frontend_sha256": file_hash(Path("src/cross_mt_transfer.py")),
@@ -56,12 +56,12 @@ def run(config_path, data, output):
                 fitted = Ridge(alpha=alpha).fit(scores, target[train])
                 prediction = np.clip(fitted.predict(transform.transform(bank, evaluation)), 0, 1)
                 stem = output / f"{method}-n{n}-s{seed}"
-                _atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": target[evaluation],
+                atomic_savez(stem.with_suffix(".npz"), {"prediction": prediction, "target": target[evaluation],
                                                         "train_indices": train, "evaluation_indices": evaluation,
                                                         "row_id": np.asarray([rows[i]["row_id"] for i in evaluation])})
                 details.update(chosen_alpha=alpha, feature_count=matrix.shape[1],
                                extraction_seconds_once=extraction_seconds, features_sha256=file_hash(feature_path))
-                _atomic_json(stem.with_suffix(".json"), {"identity": {**identity, "method": method, "seed": seed, "n_per_coupling": n},
+                atomic_json(stem.with_suffix(".json"), {"identity": {**identity, "method": method, "seed": seed, "n_per_coupling": n},
                              "details": details, "predictions_sha256": file_hash(stem.with_suffix(".npz")),
                              "labels_total": len(train), "train_indices": train.tolist(), "evaluation_indices": evaluation.tolist(),
                              "training_MAE": float(abs(np.clip(fitted.predict(scores), 0, 1) - target[train]).mean()),

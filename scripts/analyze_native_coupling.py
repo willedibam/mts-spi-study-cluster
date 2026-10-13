@@ -15,7 +15,7 @@ from scripts.calibrate_native_coupling import DATA,OUT
 from scripts.spi_baseline_exploration import ROOT,sha,summarize,project_features
 from src.corpus_geometry import fit_geometry_transform
 from src.spi_spi_contract import build_unified_feature_values
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.utils import slugify
 from scripts.refresh_case_figures import style,save
 
@@ -32,7 +32,7 @@ def extract(data=DATA,out=OUT,corpus="native-gain-261003",row_limit=None):
             assert meta['status']=='complete' and meta['dataset_name']==r['row_id']
             assert (meta['M'],meta['T'])==(r['M'],r['T'])
             assert meta['source']['archive_sha256']==manifest['archive_sha256']
-            assert meta['source']['member_sha256']==_array_sha256(raw[r['row_id']])
+            assert meta['source']['member_sha256']==array_sha256(raw[r['row_id']])
             assert meta['pyspi']['config_sha256']==sha(ROOT/'configs/pyspi/benchmarked_p90.yaml')
             assert meta['job']['estimator_rng_policy']=='isolated_serial'
             names=[x['name'] for x in meta['pyspi']['spis']]

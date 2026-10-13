@@ -7,7 +7,7 @@ import numpy as np
 import yaml
 from src.representation_state_data import file_hash, load_state_data
 from src.representation_screen import bootstrap_group_means
-from src.run_external_corpus import _atomic_json
+from src.run_external_corpus import atomic_json
 
 
 def report(config,data,inputs,output):
@@ -103,7 +103,7 @@ def report(config,data,inputs,output):
         status='prospective_primary_with_retrospective_controls_conditional_on_fitted_models'
     planned=set(p['methods'].get('confirmation_statistical_methods',[])+p['methods'].get('confirmation_raw_methods',[]))
     supplementary=sorted(set(complete)-planned) if planned else []
-    _atomic_json(output/'results.json',dict(status=status,primary=summary,cells=cells,paired_primary=comparisons,
+    atomic_json(output/'results.json',dict(status=status,primary=summary,cells=cells,paired_primary=comparisons,
                  total_label_budgets=p['sampling']['total_label_budgets'],incomplete_methods=incomplete,fit_provenance=provenance,
                  per_source_subset_primary_MAE=per_cohort,disjoint_training_cohorts=p['sampling'].get('disjoint_training_cohorts',False),
                  supplementary_methods_outside_frozen_protocol=supplementary,

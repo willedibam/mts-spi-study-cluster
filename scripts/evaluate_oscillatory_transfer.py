@@ -11,7 +11,7 @@ from src.interaction_share_learning import fit_statistical,standardized_marginal
 from src.representation_state_data import file_hash,observed_view
 from src.representation_state_neural import make_encoder,predict
 from src.spi_edge_pool import pack_inputs
-from src.run_external_corpus import _atomic_json,_atomic_savez
+from src.run_external_corpus import atomic_json,atomic_savez
 
 
 def main(config,source_data,source_root,target_data,target_bank,edge_bank,output):
@@ -99,9 +99,9 @@ def main(config,source_data,source_root,target_data,target_bank,edge_bank,output
                 np.testing.assert_allclose(replay,old_pred,atol=1e-9,rtol=0)
                 replay=float(np.max(abs(replay-old_pred)))
                 prediction=np.clip(model.predict(transform.transform(active,np.arange(n,n+len(tr)))).reshape(-1),0,1)
-            _atomic_savez(stem.with_suffix('.npz'),dict(prediction=prediction,target=np.array([r['target'] for r in tr]),
+            atomic_savez(stem.with_suffix('.npz'),dict(prediction=prediction,target=np.array([r['target'] for r in tr]),
                 train_indices=train,evaluation_indices=np.arange(len(tr)),row_id=np.array([r['row_id'] for r in tr])))
-            _atomic_json(stem.with_suffix('.json'),dict(identity=ident,labels_total=info['labels_total'],
+            atomic_json(stem.with_suffix('.json'),dict(identity=ident,labels_total=info['labels_total'],
                 predictions_sha256=file_hash(stem.with_suffix('.npz')),source_fit=str(p),source_replay_max_difference=replay,
                 details={'no_target_fitting':True,'source_chosen_settings':info['details'].get('chosen')},status='prospective_regime_transfer'))
             checks.append(dict(method=name,labels=info['labels_total'],seed=old['seed'],source_replay_max_difference=replay))

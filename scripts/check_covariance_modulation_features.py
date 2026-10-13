@@ -8,7 +8,7 @@ from src.interaction_share_learning import fit_statistical,select_statistical
 from src.mpi_representation_baselines import summarize_mpis
 from src.representation_attribution import rich_marginals
 from src.representation_state_data import load_state_data,observed_view,file_hash
-from src.run_external_corpus import _array_sha256
+from src.run_external_corpus import array_sha256
 from src.spi_spi_contract import build_unified_features
 
 
@@ -28,7 +28,7 @@ def main():
         for meta_path in sorted(replay.glob('*/meta.json')):
             meta=json.loads(meta_path.read_text());i=lookup[meta['dataset_name']];r=rows[i]
             view=observed_view(masters[r['master_index']],r['M'],r['T'])
-            assert _array_sha256(view)==meta['source']['member_sha256']
+            assert array_sha256(view)==meta['source']['member_sha256']
             with np.load(meta_path.parent/'spi_mpis.npz',allow_pickle=False) as a:mpis={k:a[k] for k in order}
             _,g,valid=summarize_mpis(mpis,order)
             values={'m':rich_marginals(mpis,order),'g':g,'validity':valid,

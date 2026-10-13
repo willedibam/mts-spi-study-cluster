@@ -14,16 +14,9 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
-from hashlib import sha256
-from importlib.metadata import PackageNotFoundError, version
 import json
-import os
 from pathlib import Path
 import random
-import resource
-import subprocess
-import sys
-import tempfile
 import time
 from typing import Any, Sequence
 
@@ -31,6 +24,10 @@ import numpy as np
 
 from .compute import ComputeResult, run_pyspi
 from .utils import load_yaml, project_root, slugify, timestamp, to_relative
+from .provenance import (
+    array_sha256, atomic_json, atomic_savez, file_sha256, peak_memory_mib,
+    pyspi_version, repository_provenance, worker_resources,
+)
 
 
 SOURCE_FORMAT = "named-npz-v1"
@@ -39,61 +36,6 @@ SOURCE_FORMAT = "named-npz-v1"
 def _resolve_path(value: str | Path) -> Path:
     path = Path(value)
     return path if path.is_absolute() else project_root() / path
-
-
-def _file_sha256(path: Path) -> str:
-    digest = sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def _array_sha256(array: np.ndarray) -> str:
-    contiguous = np.ascontiguousarray(array)
-    digest = sha256()
-    digest.update(contiguous.dtype.str.encode("ascii"))
-    digest.update(str(contiguous.shape).encode("ascii"))
-    digest.update(contiguous.view(np.uint8))
-    return digest.hexdigest()
-
-
-def _repository_provenance() -> dict[str, Any]:
-    try:
-        commit = subprocess.check_output(
-            ["git", "-C", str(project_root()), "rev-parse", "HEAD"],
-            text=True,
-            stderr=subprocess.DEVNULL,
-        ).strip()
-        dirty = bool(
-            subprocess.check_output(
-                ["git", "-C", str(project_root()), "status", "--porcelain"],
-                text=True,
-                stderr=subprocess.DEVNULL,
-            ).strip()
-        )
-    except (OSError, subprocess.CalledProcessError):
-        commit, dirty = "unknown", None
-    return {"git_commit": commit, "git_dirty": dirty}
-
-
-def _pyspi_version() -> dict[str, str]:
-    try:
-        dist = version("pyspi")
-    except PackageNotFoundError:
-        dist = "unknown"
-    try:
-        from pyspi._parallel import COMPUTATION_VERSION as computation
-    except Exception:  # pragma: no cover - defensive provenance fallback
-        computation = "unknown"
-    try:
-        import pyspi
-        source = str(Path(pyspi.__file__).resolve().parent)
-    except Exception:  # pragma: no cover - defensive provenance fallback
-        source = "unknown"
-    # `source` separates a run made from a pinned snapshot (PYSPI_SOURCE) from
-    # one made with the environment's install at the same computation revision.
-    return {"dist": dist, "computation": str(computation), "source": source}
 
 
 @dataclass(frozen=True)
@@ -242,7 +184,7 @@ def _source_to_timeseries(
         raise ValueError(f"dataset {entry.name!r} contains non-finite values")
     data = source.T if config.source_axis_order == ("process", "observation") else source
     return data.astype(np.float64, copy=False), {
-        "member_sha256": _array_sha256(source),
+        "member_sha256": array_sha256(source),
         "source_dtype": str(source.dtype),
         "source_shape": list(source.shape),
     }
@@ -257,7 +199,7 @@ def load_timeseries(
 
 
 def validate_source(config: ExternalCorpusConfig) -> dict[str, Any]:
-    actual_hash = _file_sha256(config.archive)
+    actual_hash = file_sha256(config.archive)
     if actual_hash != config.archive_sha256:
         raise ValueError(
             f"source archive SHA-256 mismatch: {actual_hash} != {config.archive_sha256}"
@@ -281,53 +223,13 @@ def validate_source(config: ExternalCorpusConfig) -> dict[str, Any]:
     }
 
 
-def _atomic_savez(path: Path, arrays: dict[str, np.ndarray]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            dir=path.parent, prefix=f".{path.name}.", suffix=".tmp", delete=False
-        ) as handle:
-            temporary = Path(handle.name)
-            np.savez_compressed(handle, **arrays)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, path)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-
-
-def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            encoding="utf-8",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as handle:
-            temporary = Path(handle.name)
-            json.dump(payload, handle, indent=2)
-            handle.write("\n")
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, path)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-
-
 def _execution_identity(config: ExternalCorpusConfig) -> dict[str, Any]:
     return {
-        "corpus_config_sha256": _file_sha256(config.path),
-        "pyspi_config_sha256": _file_sha256(config.pyspi_config),
-        "runner_sha256": _file_sha256(Path(__file__)),
-        "compute_sha256": _file_sha256(Path(__file__).with_name("compute.py")),
-        "pyspi_version": _pyspi_version(),
+        "corpus_config_sha256": file_sha256(config.path),
+        "pyspi_config_sha256": file_sha256(config.pyspi_config),
+        "runner_sha256": file_sha256(Path(__file__)),
+        "compute_sha256": file_sha256(Path(__file__).with_name("compute.py")),
+        "pyspi_version": pyspi_version(),
     }
 
 
@@ -429,7 +331,7 @@ def _metadata(
         },
         "experiment": {
             "config": to_relative(config.path),
-            **_repository_provenance(),
+            **repository_provenance(),
         },
         "execution_identity": identity,
         "pyspi": {
@@ -463,55 +365,6 @@ def _metadata(
             "compute_seconds": compute_seconds,
         },
     }
-
-
-_THREAD_VARIABLES = (
-    "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
-    "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS",
-)
-
-
-def bound_cores() -> int:
-    """CPUs this process may run on: its affinity mask where the OS has one."""
-    try:
-        return len(os.sched_getaffinity(0))
-    except AttributeError:  # macOS
-        return os.cpu_count() or 1
-
-
-def worker_resources(n_jobs: int) -> dict[str, Any]:
-    """Refuse a worker count the launcher did not provide for; record what it did.
-
-    The launcher owns placement: it binds this process to ``n_jobs`` cores and
-    sets the numerical libraries to one thread each. This checks that it did,
-    because more workers than bound cores, or threaded libraries under several
-    workers, silently time-share instead of failing.
-    """
-    cores = bound_cores()
-    threads = {name: os.environ.get(name) for name in _THREAD_VARIABLES}
-    if n_jobs > cores:
-        raise RuntimeError(
-            f"n_jobs={n_jobs} exceeds the {cores} CPU(s) this process is bound to")
-    if n_jobs > 1:
-        threaded = {name: value for name, value in threads.items() if value != "1"}
-        if threaded:
-            raise RuntimeError(
-                f"n_jobs={n_jobs} needs single-threaded numerical libraries; "
-                f"set to 1: {sorted(threaded)}")
-    return {"bound_cores": cores, "thread_variables": threads}
-
-
-def peak_memory_mib() -> dict[str, float]:
-    """Peak resident size of this process and of its largest finished worker.
-
-    Workers overlap, so ``parent + n_jobs * largest_worker`` bounds the
-    recording's footprint from above; that bound is what node admission needs.
-    """
-    unit = 1 if sys.platform == "darwin" else 1024  # ru_maxrss: bytes or KiB
-    def peak(who: int) -> float:
-        return round(resource.getrusage(who).ru_maxrss * unit / 2**20, 1)
-    return {"parent": peak(resource.RUSAGE_SELF),
-            "largest_worker": peak(resource.RUSAGE_CHILDREN)}
 
 
 def run_dataset(
@@ -556,17 +409,17 @@ def run_dataset(
         np.random.set_state(numpy_state)
         random.setstate(python_state)
     elapsed = time.perf_counter() - start
-    _atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
+    atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
     meta = _metadata(config, entry, result, source, identity, elapsed)
     if config.pair_tolerance is not None:
         # Which entries of each matrix were computed; the rest are NaN.
-        _atomic_savez(dataset_dir / "pairs.npz", {"pairs": result.pairs})
+        atomic_savez(dataset_dir / "pairs.npz", {"pairs": result.pairs})
         meta["paths"]["pairs"] = "pairs.npz"
         meta["pyspi"]["sampling"] = result.sampling
     meta["job"]["n_jobs"] = n_jobs
     meta["job"]["estimator_rng_policy"] = result.rng_policy
     meta["job"].update(resources, peak_memory_mib=peak_memory_mib())
-    _atomic_json(dataset_dir / "meta.json", meta)
+    atomic_json(dataset_dir / "meta.json", meta)
     error = completion_error(config, entry, identity=identity)
     if error is not None:
         raise RuntimeError(f"post-write validation failed for {entry.name}: {error}")

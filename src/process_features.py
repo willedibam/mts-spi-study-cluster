@@ -30,6 +30,7 @@ import pandas as pd
 from scipy.stats import rankdata, spearmanr, ConstantInputWarning
 
 from .utils import load_json, project_root
+from .provenance import file_sha256
 from .spi_spi_contract import (
     DIRECTIONAL_CONTRACT_VERSION,
     LEGACY_CONTRACT_VERSION,
@@ -151,14 +152,6 @@ def load_samples_with_flags(
     return samples, spi_order, directed_flags
 
 
-def _file_sha256(path: str | Path) -> str:
-    digest = hashlib.sha256()
-    with Path(path).open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def _canonical_json(value: object) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str)
 
@@ -249,8 +242,8 @@ def build_source_manifest(samples: Sequence[Dict]) -> dict[str, object]:
         entries.append(
             {
                 "dataset_path": str(dataset_path.resolve()),
-                "meta_sha256": _file_sha256(meta_path),
-                "mpi_sha256": _file_sha256(mpi_path),
+                "meta_sha256": file_sha256(meta_path),
+                "mpi_sha256": file_sha256(mpi_path),
                 "experiment": sample.get("experiment_provenance", {}),
             }
         )
@@ -893,8 +886,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     source_manifest = build_source_manifest(samples)
     repository = _repository_state()
     builder_identity = {
-        "process_features_sha256": _file_sha256(Path(__file__)),
-        "spi_spi_contract_sha256": _file_sha256(
+        "process_features_sha256": file_sha256(Path(__file__)),
+        "spi_spi_contract_sha256": file_sha256(
             Path(__file__).with_name("spi_spi_contract.py")
         ),
         **repository,

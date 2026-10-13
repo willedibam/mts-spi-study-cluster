@@ -12,7 +12,7 @@ from sklearn.isotonic import IsotonicRegression
 from src.interaction_share_learning import fit_statistical, select_statistical, select_reference, standardized_marginal_shapes
 from src.representation_screen import training_subsets
 from src.representation_state_data import file_hash, load_state_data, source_pool_for_seed
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',method_prefix=''):
@@ -73,9 +73,9 @@ def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',m
                         prediction=model.predict(transform.transform(bank,evaluation)).reshape(-1)
                         details['chosen']=chosen
                     prediction=np.clip(prediction,0,1)
-                    _atomic_savez(stem.with_suffix('.npz'),dict(prediction=prediction,target=target[evaluation],
+                    atomic_savez(stem.with_suffix('.npz'),dict(prediction=prediction,target=target[evaluation],
                                   train_indices=train,evaluation_indices=evaluation,row_id=np.asarray([rows[i]['row_id'] for i in evaluation])))
-                    _atomic_json(stem.with_suffix('.json'),dict(identity=ident,details=details,labels_total=len(train),
+                    atomic_json(stem.with_suffix('.json'),dict(identity=ident,details=details,labels_total=len(train),
                                  seconds=time.perf_counter()-start,train_indices=train.tolist(),evaluation_indices=evaluation.tolist(),
                                  predictions_sha256=file_hash(stem.with_suffix('.npz')),status='exploratory_pilot'))
                     print(f'[DONE] {family}/{stem.name} {time.perf_counter()-start:.1f}s',flush=True)

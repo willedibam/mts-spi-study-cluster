@@ -11,7 +11,7 @@ import nbformat
 from nbclient import NotebookClient
 
 from src.mapping import DatasetMapping, ExperimentConfig
-from src.run_experiments import _file_sha256
+from src.run_experiments import file_sha256
 from src.utils import project_root
 from scripts.replay_proof_stochastic import POLICY
 
@@ -24,7 +24,7 @@ def main():
     args = parser.parse_args()
     root = project_root()
     mapping = DatasetMapping(ExperimentConfig.from_file(root / "configs/generate/embeddings/proof-p90-260924.yaml"))
-    expected_hash = _file_sha256(root / "configs/pyspi/benchmarked_p90.yaml")
+    expected_hash = file_sha256(root / "configs/pyspi/benchmarked_p90.yaml")
     errors = Counter()
     rows = []
     assert len(mapping.specs) == 1080
@@ -37,8 +37,8 @@ def main():
         assert meta["pyspi"]["version"]["computation"] == "3.0.0.r7"
         assert (meta["mts_class"], meta["M"], meta["T"], meta["instance_index"]) == (spec.mts_class, spec.M, spec.T, spec.instance)
         assert replay["policy"] == POLICY and replay["seed"] == spec.rng_seed
-        assert replay["input_sha256"] == _file_sha256(directory / "timeseries.npy")
-        assert replay["repaired_archive_sha256"] == _file_sha256(directory / "spi_mpis.npz")
+        assert replay["input_sha256"] == file_sha256(directory / "timeseries.npy")
+        assert replay["repaired_archive_sha256"] == file_sha256(directory / "spi_mpis.npz")
         errors.update(meta["pyspi"]["errors"].keys())
         rows.append({"class": spec.mts_class, "M": spec.M, "T": spec.T, "instance": spec.instance,
                      "archive_sha256": replay["repaired_archive_sha256"]})

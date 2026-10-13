@@ -11,7 +11,7 @@ import yaml
 from src.representation_attribution import RICH_NAMES, rich_marginals, fit_head, select_head
 from src.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
 from src.representation_state_data import file_hash
-from src.run_external_corpus import _atomic_json, _atomic_savez
+from src.run_external_corpus import atomic_json, atomic_savez
 
 
 def extract(manifest_path, mirror, output):
@@ -37,10 +37,10 @@ def extract(manifest_path, mirror, output):
         values.append(rich_marginals(mpis, order))
         if len(values) % 200 == 0:
             print(f"Rich marginals: {len(values)}/{len(manifest['records'])}", flush=True)
-    _atomic_savez(output, {"X_m": np.asarray(values),
+    atomic_savez(output, {"X_m": np.asarray(values),
                           "row_id": np.asarray([r["row_id"] for r in manifest["records"]]),
                           "feature_names": np.asarray([f"{s}::{n}" for s in order for n in RICH_NAMES])})
-    _atomic_json(output.with_suffix(".json"), {"identity": identity, "artifact_sha256": file_hash(output),
+    atomic_json(output.with_suffix(".json"), {"identity": identity, "artifact_sha256": file_hash(output),
                                               "seconds": time.perf_counter() - start})
 
 
@@ -120,7 +120,7 @@ def run(config_path, output):
     per_class = {name: {str(cls): correct[i][..., cells[primary] & (strata == j)].mean(axis=(1, 2)).tolist()
                        for j, cls in enumerate(classes)} for i, name in enumerate(names)}
     output.mkdir(parents=True)
-    _atomic_savez(output / "predictions.npz", {"prediction": predictions, "target": labels[evaluation],
+    atomic_savez(output / "predictions.npz", {"prediction": predictions, "target": labels[evaluation],
                     "row_id": meta["row_id"][evaluation], "classes": classes, "methods": np.asarray(names)})
     result = {"status": "exploratory_post_stage_b_attribution", "protocol_sha256": file_hash(config_path),
               "bank_sha256": file_hash(bank_path), "rich_bank_sha256": file_hash(rich_path),
@@ -129,7 +129,7 @@ def run(config_path, output):
               "predictions_sha256": file_hash(output / "predictions.npz"), "summary": summary,
               "paired_primary": comparisons, "per_class_primary": per_class, "fits": fits,
               "labelled_per_class": budgets, "subset_seeds": seeds}
-    _atomic_json(output / "results.json", result)
+    atomic_json(output / "results.json", result)
     lines = ["# Stage A: marginal richness and nonlinear readout", "",
              "Exploratory reuse of inspected data. All methods use the same training-only clipping/PCA32, "
              "two-fold selection and five C values. RBF uses fixed gamma='scale'; this is one bounded "

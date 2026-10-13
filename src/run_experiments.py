@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import argparse
-import os
-import subprocess
 from datetime import datetime
-from hashlib import blake2s, sha256
+from hashlib import blake2s
 import sys
 import time
 from pathlib import Path
@@ -19,9 +17,11 @@ from .generators.harness import generate_from_spec as generate_synthetic_from_sp
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
-from .run_external_corpus import peak_memory_mib
-from .utils import dump_json, ensure_dir, load_json, project_root, slugify, timestamp, to_relative
-
+from .utils import ensure_dir, load_json, project_root, slugify, timestamp, to_relative
+from .provenance import (
+    atomic_json, atomic_savez, file_sha256, peak_memory_mib, pyspi_version, repository_provenance,
+    worker_resources,
+)
 
 
 def _resolve_path(path_value: str) -> Path:
@@ -29,65 +29,6 @@ def _resolve_path(path_value: str) -> Path:
     if path.is_absolute():
         return path
     return project_root() / path
-
-
-def _pyspi_version() -> Dict[str, str]:
-    """pyspi identity, recorded per dataset.
-
-    pyspi 3.0 changed the *values* of ~70 SPIs relative to 2.x (kernel and
-    symbolic estimators moved from bits to nats, the kraskov input policy
-    changed, dcoh/xcorr/gd/ccm/coint_aeg/psi_wavelet/phase were corrected, and
-    six directed spectral SPIs are transposed). Runs from different versions
-    must not be pooled into one feature matrix, and nothing else in a dataset
-    directory records which one produced it.
-
-    Two fields, because they can disagree. `dist` is the installed
-    distribution's metadata, which goes stale on an editable install whose
-    version was bumped without reinstalling. `computation` is pyspi's own
-    COMPUTATION_VERSION, read from the live source: it is what pyspi bumps
-    whenever a change can alter a valid SPI output, and what its checkpoint
-    manifests are keyed on, so it is the field to compare before pooling.
-    """
-    from importlib.metadata import PackageNotFoundError, version
-
-    try:
-        dist = version("pyspi")
-    except PackageNotFoundError:  # editable install without metadata
-        dist = "unknown"
-    try:
-        from pyspi._parallel import COMPUTATION_VERSION as computation
-    except Exception:
-        computation = "unknown"
-    return {"dist": dist, "computation": str(computation)}
-
-
-def _file_sha256(path: Path) -> str:
-    digest = sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def _repository_provenance() -> Dict[str, Any]:
-    """Best-effort identity for the generator/runner source tree."""
-    root = project_root()
-    try:
-        commit = subprocess.check_output(
-            ["git", "-C", str(root), "rev-parse", "HEAD"],
-            text=True,
-            stderr=subprocess.DEVNULL,
-        ).strip()
-        dirty = bool(
-            subprocess.check_output(
-                ["git", "-C", str(root), "status", "--porcelain"],
-                text=True,
-                stderr=subprocess.DEVNULL,
-            ).strip()
-        )
-    except (OSError, subprocess.CalledProcessError):
-        return {"git_commit": "unknown", "git_dirty": None}
-    return {"git_commit": commit, "git_dirty": dirty}
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -111,7 +52,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--threads",
         type=int,
-        help="Deprecated alias for --n-jobs (still sets PYSPI_N_JOBS env var). BLAS threads must be pinned to 1 in the shell.",
+        help="Older spelling of --n-jobs.",
     )
     parser.add_argument(
         "--n-jobs",
@@ -217,8 +158,8 @@ def main(argv: List[str] | None = None) -> None:
     mapping = DatasetMapping(config)
     experiment_provenance = {
         "config": to_relative(config_path),
-        "config_sha256": _file_sha256(config_path),
-        **_repository_provenance(),
+        "config_sha256": file_sha256(config_path),
+        **repository_provenance(),
     }
     if args.list:
         print(f"[INFO] Listing {len(mapping)} dataset combinations from {to_relative(config_path)}.")
@@ -249,10 +190,9 @@ def main(argv: List[str] | None = None) -> None:
                 f"(found meta.json, calc.csv, and spi_mpis.npz in {to_relative(spec.dataset_dir)})."
             )
             continue
-        # Explicit --n-jobs wins; otherwise --threads (legacy) or spec.threads
-        # sets PYSPI_N_JOBS as a fallback for the kwarg default in compute().
-        _configure_threading(args.threads or spec.threads)
-        effective_n_jobs = args.n_jobs if args.n_jobs is not None else (args.threads or spec.threads)
+        # --n-jobs wins; --threads and the config's `threads` are older spellings.
+        effective_n_jobs = args.n_jobs or args.threads or spec.threads or 1
+        resources = worker_resources(effective_n_jobs)
         data, ts_path, gen_extras = _ensure_timeseries(spec, regenerate=args.regenerate_timeseries)
         if args.mts_only:
             if _heatmap_enabled(args.heatmap, spec.save_heatmap):
@@ -279,7 +219,7 @@ def main(argv: List[str] | None = None) -> None:
         if args.parquet:
             _safe_write_parquet(result.table, dataset_dir / "calc.parquet")
         npz_path = dataset_dir / "spi_mpis.npz"
-        np.savez_compressed(npz_path, **result.matrices)
+        atomic_savez(npz_path, result.matrices)
         heatmap_paths: list[str] = []
         if _heatmap_enabled(args.heatmap, spec.save_heatmap):
             deltas = [max(1, int(d)) for d in (spec.heatmap_deltas or [1])]
@@ -313,36 +253,17 @@ def main(argv: List[str] | None = None) -> None:
             gen_extras=gen_extras,
             experiment_provenance=experiment_provenance,
         )
-        meta["job"].update(n_jobs=effective_n_jobs, peak_memory_mib=peak_memory_mib())
+        meta["job"].update(resources, n_jobs=effective_n_jobs, peak_memory_mib=peak_memory_mib())
         meta["pyspi"]["estimator_rng"] = {
             "policy": result.rng_policy,
             "seed": spec.rng_seed,
             "n_jobs": effective_n_jobs,
         }
-        dump_json(dataset_dir / "meta.json", meta)
+        atomic_json(dataset_dir / "meta.json", meta)
         print(
             f"[INFO] Stored SPI results in {to_relative(csv_path.parent)} "
             f"({len(result.metadata)} SPIs, {compute_seconds:.1f}s)."
         )
-
-
-def _configure_threading(threads: int | None) -> None:
-    """
-    Set PYSPI_N_JOBS (parallel-SPI worker count) for pyspi-fork.
-
-    BLAS threading (OMP/OPENBLAS/MKL) must be pinned to 1 *before* Python starts
-    — i.e. in the PBS/shell script — because libopenblas reads its env vars at
-    import time. Setting them here would be a no-op for the parent process, and
-    forked workers inherit the live BLAS state in-memory, not fresh env vars.
-    """
-    if threads and threads > 0:
-        os.environ["PYSPI_N_JOBS"] = str(threads)
-    for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
-        if os.environ.get(var) not in ("1", None):
-            print(
-                f"[WARN] {var}={os.environ.get(var)} — expected 1 to avoid BLAS oversubscription "
-                f"when PYSPI_N_JOBS>1. Set it in your shell/PBS script before launching python."
-            )
 
 
 def _heatmap_enabled(cli_value: bool | None, config_value: bool) -> bool:
@@ -852,8 +773,8 @@ def _build_metadata(
         "generator": source_block,
         "pyspi": {
             "config": to_relative(spec.pyspi_config),
-            "config_sha256": _file_sha256(spec.pyspi_config),
-            "version": _pyspi_version(),
+            "config_sha256": file_sha256(spec.pyspi_config),
+            "version": pyspi_version(),
             "n_spis": len(result.metadata),
             "errors": result.errors or {},
             "spis": [
@@ -895,7 +816,7 @@ def _dataset_complete(spec) -> bool:
     # mix them just the same, so a stale directory stops the run.
     recorded = load_json(dataset_dir / "meta.json").get("pyspi", {})
     recorded = (recorded.get("version", {}).get("computation"), recorded.get("config_sha256"))
-    current = (_pyspi_version()["computation"], _file_sha256(spec.pyspi_config))
+    current = (pyspi_version()["computation"], file_sha256(spec.pyspi_config))
     if recorded != current:
         raise RuntimeError(
             f"{to_relative(dataset_dir)} was computed with pyspi {recorded[0]} "
