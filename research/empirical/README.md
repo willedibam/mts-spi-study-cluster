@@ -5,6 +5,5 @@ Measured data.
 | Study | Content |
 | --- | --- |
 | `hardware_pilot/` | The hardware oscillator pilot (October 2026): fetch, extraction sweep and analysis |
-| `bridge/` | Bridge sensor data: scout and transfer audit |
-| `sleep_onset/` | Sleep-onset EEG exploration notebook |
+| `bridge/` | EWSHM 2026 temperature-controlled bridge benchmark (structural health monitoring): fetch scout, transfer audit and an unsent data-access request |
 | `tuh_eeg/` | TUH seizure EEG exploration notebook |

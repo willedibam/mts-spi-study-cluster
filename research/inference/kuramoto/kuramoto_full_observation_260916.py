@@ -3,7 +3,7 @@ import argparse
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 import numpy as np
-from research.inference.system_scouts.finite_regime_pipeline import export_arrays, write_json
+from research.inference.candidate_search.finite_regime_pipeline import export_arrays, write_json
 from mtsspi.generators.order_parameter import generate_kuramoto_order_parameter
 
 CONTROLS = (.625, .725, .825, .8875, .9425, .9775, .9925, 1.0075,

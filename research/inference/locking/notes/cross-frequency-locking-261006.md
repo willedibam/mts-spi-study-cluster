@@ -152,7 +152,7 @@ Question: does the unsupervised picture carry over to a real regime change? Data
 
 ## Carry-forward: state, lessons and open decisions (6 October)
 
-**Where it stands.** Two full-p90 results at M = N = 24: (i) clean recordings — mean |r| fails, every catalogue PC1 steps, no advantage over mean-SPI PC1; (ii) recording-specific sensor noise — mean |r| and mean-SPI PC1 follow the noise, centered z-PC1 tracks Q (.87). The three nuisance arms have full-p90 results at M = 24 and M = 48 (above); nothing is queued. Promotion of this system into the lean benchmark notebook was deferred until confirmation; two concise cells are in `research/inference/dependence_transition/notebooks/dependence-character-transitions-261005.ipynb` (uncommitted, alongside other uncommitted edits).
+**Where it stands.** Two full-p90 results at M = N = 24: (i) clean recordings — mean |r| fails, every catalogue PC1 steps, no advantage over mean-SPI PC1; (ii) recording-specific sensor noise — mean |r| and mean-SPI PC1 follow the noise, centered z-PC1 tracks Q (.87). The three nuisance arms have full-p90 results at M = 24 and M = 48 (above); nothing is queued. Promotion of this system into the lean benchmark notebook was deferred until confirmation; two concise cells are in `research/inference/candidate_search/notebooks/dependence-character-transitions-261005.ipynb` (uncommitted, alongside other uncommitted edits).
 
 **Design lessons, each backed by a run.**
 - z needs at least three edge types. With two homogeneous classes every SPI profile is a two-level pattern and z, which discards level and scale, cannot move (two-community scratch run).

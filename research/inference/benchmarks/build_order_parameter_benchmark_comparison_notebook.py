@@ -1008,11 +1008,11 @@ print("Constant-channel threshold: temporal SD <= 1e-8; all tested channels exce
 print("No SPI extraction or simulation is performed by this notebook.")"""
         ),
         nbformat.v4.new_markdown_cell(
-            """**Provenance and stopping.** Narrow job `178628828` completed in 56m11s, costing 29.96 SU; all overnight cluster stages totalled 37.17 SU. All 16 archives were collected, and the scheduled reminder was deleted. No further job is implied by these results. [Detailed audit and reproduction](../../research/inference/system_scouts/notes/vicsek-narrow-results-260910.md), [frozen protocol](../../research/inference/system_scouts/notes/vicsek-narrow-protocol-260910.md), [execution ledger](../../research/inference/benchmarks/notes/overnight-260910.md)."""
+            """**Provenance and stopping.** Narrow job `178628828` completed in 56m11s, costing 29.96 SU; all overnight cluster stages totalled 37.17 SU. All 16 archives were collected, and the scheduled reminder was deleted. No further job is implied by these results. [Detailed audit and reproduction](../../research/inference/candidate_search/notes/vicsek-narrow-results-260910.md), [frozen protocol](../../research/inference/candidate_search/notes/vicsek-narrow-protocol-260910.md), [execution ledger](../../research/inference/benchmarks/notes/overnight-260910.md)."""
         ),
     ]
     cells[comparative_index:comparative_index] = desai_cells + vicsek_cells + cml2d_cells()
-    from research.inference.system_scouts.finite_regime_notebook_cells import build_cells as finite_regime_cells
+    from research.inference.candidate_search.finite_regime_notebook_cells import build_cells as finite_regime_cells
     cells.extend(finite_regime_cells())
 
     notebook = nbformat.v4.new_notebook(cells=cells)

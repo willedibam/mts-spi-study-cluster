@@ -79,7 +79,7 @@ def calibrate(case,seed):
 
 
 def inventory():
-    old=yaml.safe_load((ROOT/'research/proof/cross_mt/configs/cross-mt-confirmation-260824.yaml').read_text())
+    old=yaml.safe_load((ROOT/'research/representation/cross_mt/configs/cross-mt-confirmation-260824.yaml').read_text())
     mapping={}
     for entry,case in zip(old['mts_classes'][:3],EXTRA[:3]):mapping[entry['name']]=case['label']
     mapping.update({'kuramoto_omega-fast':'Kuramoto-fast','kuramoto_omega-slow':'Kuramoto-slow',

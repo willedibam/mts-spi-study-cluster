@@ -101,7 +101,7 @@ def prepare_synthetic(root, index):
                         indices=indices.tolist(), **order_summary(means, 1000),
                         generator_sha256=sha('research/inference/cml/scout_cml2d_period_doubling.py'))
     else:
-        from research.inference.system_scouts.tasep_phase_boundary import simulate
+        from research.inference.candidate_search.tasep_phase_boundary import simulate
         m = task['M']
         values, metadata = simulate(dict(N=m, alpha=task['alpha'], seed=task['seed']),
             dict(beta=.2, burn=100000., observation_steps=1000, dt=1.,

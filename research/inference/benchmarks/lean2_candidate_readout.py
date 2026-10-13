@@ -42,8 +42,8 @@ def bundle(physics,out,corpus,remote,fit_seed_stop):
 
 
 def analyze(data,out):
-    from research.inference.dependence_transition.report_dependence_transition import coordinate
-    from research.inference.dependence_transition.dependence_transition_pipeline import predict_means
+    from research.inference.candidate_search.report_dependence_transition import coordinate
+    from research.inference.candidate_search.dependence_transition_pipeline import predict_means
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
     bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     fit=rows.role.eq('development').to_numpy();held=~fit;y=rows.Q.to_numpy();eligible=held.copy();details={}

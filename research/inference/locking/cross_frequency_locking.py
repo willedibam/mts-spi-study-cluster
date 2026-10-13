@@ -207,8 +207,8 @@ def physics(out,workers=6,seeds=4,examples=(.04,.09,.14)):
 
 
 def analyze(data,out):
-    from research.inference.dependence_transition.report_dependence_transition import coordinate
-    from research.inference.dependence_transition.dependence_transition_pipeline import predict_means
+    from research.inference.candidate_search.report_dependence_transition import coordinate
+    from research.inference.candidate_search.dependence_transition_pipeline import predict_means
     from research.proof.p90.spi_baseline_exploration import sha
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
     bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)

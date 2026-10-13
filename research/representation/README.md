@@ -9,6 +9,7 @@ What the SPI–SPI representation captures, and how it compares with learned rep
 | `oscillatory/` | Oscillatory co-organisation and mechanism transfer |
 | `covariance_modulation/` | Covariance modulation, synthetic and neural |
 | `neurotycho/` | Transfer to Neurotycho ECoG |
+| `cross_mt/` | Cross-M,T transfer: whether a representation fitted at one size carries to another |
 | `learned_baselines/` | InceptionTime, MiniRocket and MPI representation baselines |
 | `shared/` | Modules two or more of these studies use |
 
