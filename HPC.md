@@ -17,6 +17,9 @@ A corpus is one YAML file: generated (`mts_classes:`) or a prepared archive (`so
 ```bash
 python -m mtsspi.run_corpus --config corpus.yaml --count-only        # also --list, --validate-source, --audit
 python -m mtsspi.run_corpus --config corpus.yaml --job-index 1 --n-jobs 1 --dry-run
+# locally there is no farm: one recording per call, so loop over 1..count
+for i in $(seq 1 "$(python -m mtsspi.run_corpus --config corpus.yaml --count-only)"); do
+    python -m mtsspi.run_corpus --config corpus.yaml --job-index "$i"; done
 
 # Gadi: one recording per core
 bash jobs/gadi/submit_farm.sh corpus.yaml [index-file]
@@ -62,7 +65,7 @@ The `M=20` and `M=32` rows predate two kernel speed-ups and are upper bounds. A 
 - A job that reads gdata needs `#PBS -l storage=gdata/ql44+scratch/ql44`; an omitted mount appears as a missing path inside the job.
 - A multi-node farm cannot see another node's `$PBS_JOBFS`: code and environments must be on shared storage. The launcher checks imports on every node before dispatch.
 - The project going over a storage quota holds its jobs. Check `lquota` when a job is held without an obvious reason.
-- During and after a run: `qstat -swx`, the farm's status file under `logs/`, `--audit` for completeness, and `nci_account`.
+- During and after a run: `qstat -swx`, the farm's status file under `logs/`, `--audit` for completeness, and `nci_account`. Audit with the `PYSPI_SOURCE` the run used (`PYSPI_SOURCE=... source jobs/gadi/env.sh`): the stored identity includes the pyspi source path, so a snapshot run audited against the shared checkout reports every recording incomplete.
 
 ## USyd Physics
 
