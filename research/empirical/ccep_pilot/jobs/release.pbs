@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N ccep-release
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -l walltime=00:20:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${CORPUS_CONFIG:?}" "${AFTER_INDEX:?}" "${PYSPI_SOURCE:?}"
+cd "$PBS_O_WORKDIR"
+source jobs/gadi/env.sh
+exec >"$RUN_ROOT/logs/release-${PBS_JOBID%%.*}.log" 2>&1
+python -u -m research.empirical.ccep_pilot.release --root "$RUN_ROOT" --config "$CORPUS_CONFIG" --after-index "$AFTER_INDEX"
