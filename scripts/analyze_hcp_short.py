@@ -10,7 +10,8 @@ from scipy.spatial.distance import pdist
 from scipy.stats import spearmanr
 from sklearn.metrics import roc_auc_score
 
-from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
+from src.corpus import ArchiveCorpus, load_inventory
+from src.run_corpus import completion_error
 from src.spi_spi_contract import build_unified_features, schema_sha256
 from src.representation_attribution import rich_marginals
 
@@ -41,7 +42,7 @@ def frozen_pc1(features, train):
 
 
 def main(root):
-    config = ExternalCorpusConfig.from_file(root/'external.yaml')
+    config = ArchiveCorpus.from_file(root/'external.yaml')
     manifest = json.loads((root/'manifest.json').read_text())
     assert sha(config.archive) == manifest['archive_sha256']
     entries = load_inventory(config)

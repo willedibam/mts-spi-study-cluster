@@ -8,7 +8,8 @@ import tempfile
 import numpy as np
 from scipy.signal import welch
 
-from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
+from src.corpus import ArchiveCorpus, load_inventory
+from src.run_corpus import completion_error
 from src.spi_spi_contract import build_unified_features, schema_sha256
 from src.representation_attribution import rich_marginals
 
@@ -43,7 +44,7 @@ def read_record(config, entry, waveform):
 
 def check_scout(root):
     """Check two actual inputs against the already independently verified scout bank."""
-    config = ExternalCorpusConfig.from_file(root/'external.yaml')
+    config = ArchiveCorpus.from_file(root/'external.yaml')
     entries = load_inventory(config)
     with np.load(config.archive, allow_pickle=False) as raw, np.load(root/'analysis/feature-bank.npz', allow_pickle=False) as saved:
         for i in (0, 1):
@@ -77,7 +78,7 @@ def build(root):
     rows, spi_order, schema_hash = [], None, None
     # One source archive open per run; preserve the frozen extraction-plan order.
     for source in plan['sources']:
-        config = ExternalCorpusConfig.from_file(source['config'])
+        config = ArchiveCorpus.from_file(source['config'])
         assert sha(config.archive) == config.archive_sha256 == source['archive_sha256']
         manifest_path = Path(source['config']).parent/'manifest.json'
         assert sha(manifest_path) == source['manifest_sha256']

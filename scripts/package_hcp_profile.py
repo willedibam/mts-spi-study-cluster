@@ -10,13 +10,13 @@ from pyspi import _parallel
 from pyspi.calculator import Calculator
 
 from src.compute import ComputeResult, SPIInfo, _spi_info
-from src.run_external_corpus import (ExternalCorpusConfig, load_inventory, load_timeseries,
-                                    atomic_json, atomic_savez, _execution_identity,
-                                    _metadata, completion_error)
+from src.corpus import ArchiveCorpus, load_inventory, load_timeseries
+from src.provenance import atomic_json, atomic_savez
+from src.run_corpus import execution_identity, _metadata, completion_error
 
 
 def main(config_path, index, profile):
-    config = ExternalCorpusConfig.from_file(config_path)
+    config = ArchiveCorpus.from_file(config_path)
     entry = load_inventory(config)[index-1]
     summary = json.loads((profile/'summary.json').read_text())
     recorded = json.loads((profile/'identity.json').read_text())
@@ -45,7 +45,7 @@ def main(config_path, index, profile):
     result = ComputeResult(pd.DataFrame(), matrices, metadata, summary['timings'], {})
     directory = entry.output_dir(config)
     assert not (directory/'meta.json').exists() and not (directory/'spi_mpis.npz').exists(), 'Never overwrite a production output'
-    identity = _execution_identity(config)
+    identity = execution_identity(config)
     meta = _metadata(config, entry, result, source, identity, sum(summary['timings'].values()))
     meta['profile_provenance'] = dict(directory=str(profile), identity=recorded,
         trace_sha256=hashlib.sha256((profile/'trace.jsonl').read_bytes()).hexdigest(),

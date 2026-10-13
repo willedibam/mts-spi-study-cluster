@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from src.spi_edge_pool import standardize_edges
 from src.representation_state_data import file_hash
-from src.run_external_corpus import atomic_json,atomic_savez
+from src.provenance import atomic_json, atomic_savez
 from src.utils import slugify
 
 

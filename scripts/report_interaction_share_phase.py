@@ -8,7 +8,7 @@ import yaml
 
 from src.representation_screen import bootstrap_group_means
 from src.representation_state_data import file_hash, load_state_data
-from src.run_external_corpus import atomic_json
+from src.provenance import atomic_json
 
 
 def report(config, data, results, output):

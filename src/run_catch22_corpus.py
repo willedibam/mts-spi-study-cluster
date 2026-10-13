@@ -13,7 +13,7 @@ from typing import Any, Sequence
 
 import numpy as np
 
-from .run_external_corpus import ExternalCorpusConfig, load_inventory
+from .corpus import ArchiveCorpus, load_inventory
 from .utils import project_root
 from .provenance import file_sha256
 
@@ -107,7 +107,7 @@ def _atomic_npz(path: Path, payload: dict[str, Any]) -> None:
 
 
 def run(config_path: str | Path, output: str | Path, *, workers: int) -> Path:
-    config = ExternalCorpusConfig.from_file(config_path)
+    config = ArchiveCorpus.from_file(config_path)
     entries = load_inventory(config)
     tasks = [
         (str(config.archive), entry.name, config.source_axis_order)

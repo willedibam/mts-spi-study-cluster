@@ -34,7 +34,7 @@ def test_full_sensor_order_is_unique_and_preserves_coverage_prefix():
 
 
 def test_assembly_produces_three_valid_16_record_groups(tmp_path):
-    from src.run_external_corpus import ExternalCorpusConfig, load_inventory
+    from src.corpus import ArchiveCorpus, load_inventory
     for index, task in enumerate(tasks()):
         if task['system'] == 'cml':
             sizes = [64, 100, 256]
@@ -50,7 +50,7 @@ def test_assembly_produces_three_valid_16_record_groups(tmp_path):
         write_part(tmp_path, index, arrays, rows, {})
     assemble(tmp_path)
     for group in ['m64', 'm100', 'large']:
-        config = ExternalCorpusConfig.from_file(tmp_path/f'{group}.yaml')
+        config = ArchiveCorpus.from_file(tmp_path/f'{group}.yaml')
         assert len(load_inventory(config)) == 16
         smoke = (tmp_path/f'{group}-smoke.txt').read_text().split()
         rest = (tmp_path/f'{group}-rest.txt').read_text().split()

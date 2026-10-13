@@ -11,7 +11,7 @@ import nbformat
 from nbclient import NotebookClient
 
 from src.mapping import DatasetMapping, ExperimentConfig
-from src.run_experiments import file_sha256
+from src.provenance import file_sha256
 from src.utils import project_root
 from scripts.replay_proof_stochastic import POLICY
 

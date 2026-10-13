@@ -5,7 +5,7 @@ import json
 import numpy as np
 import pytest
 
-from src import compute, run_external_corpus as corpus
+from src import compute, corpus, provenance, run_corpus
 from src import provenance
 from src.compute import run_pyspi
 
@@ -44,7 +44,7 @@ def _corpus(tmp_path):
            "__axis_order__": np.asarray(["process", "observation"])})
     pyspi_config = tmp_path / "pyspi.yaml"
     pyspi_config.write_text("dummy: true\n", encoding="utf-8")
-    path = tmp_path / "corpus.yaml"
+    path = tmp_path / "run_corpus.yaml"
     path.write_text("\n".join([
         "name: fixture", "source:", "  format: named-npz-v1",
         f"  archive: {archive}",
@@ -53,7 +53,7 @@ def _corpus(tmp_path):
         f"base_output_dir: {tmp_path / 'outputs'}",
         f"pyspi_config: {pyspi_config}", "normalise: true", "random_seed: 1729", ""]),
         encoding="utf-8")
-    return corpus.ExternalCorpusConfig.from_file(path)
+    return corpus.ArchiveCorpus.from_file(path)
 
 
 @pytest.fixture
@@ -88,9 +88,9 @@ def test_runner_refuses_more_workers_than_bound_cores(monkeypatch):
     monkeypatch.setattr(provenance, "bound_cores", lambda: 2)
     for name in provenance.THREAD_VARIABLES:
         monkeypatch.setenv(name, "1")
-    assert corpus.worker_resources(2)["bound_cores"] == 2
+    assert provenance.worker_resources(2)["bound_cores"] == 2
     with pytest.raises(RuntimeError, match="bound to"):
-        corpus.worker_resources(3)
+        provenance.worker_resources(3)
 
 
 def test_runner_refuses_threaded_libraries_under_several_workers(monkeypatch):
@@ -99,12 +99,12 @@ def test_runner_refuses_threaded_libraries_under_several_workers(monkeypatch):
         monkeypatch.setenv(name, "1")
     monkeypatch.setenv("OMP_NUM_THREADS", "4")
     with pytest.raises(RuntimeError, match="OMP_NUM_THREADS"):
-        corpus.worker_resources(2)
+        provenance.worker_resources(2)
     monkeypatch.delenv("MKL_NUM_THREADS")
     with pytest.raises(RuntimeError, match="MKL_NUM_THREADS"):
-        corpus.worker_resources(4)
+        provenance.worker_resources(4)
     # One worker keeps the previous behaviour: nothing is demanded of it.
-    assert corpus.worker_resources(1)["thread_variables"]["OMP_NUM_THREADS"] == "4"
+    assert provenance.worker_resources(1)["thread_variables"]["OMP_NUM_THREADS"] == "4"
 
 
 @pytest.mark.parametrize("n_jobs", [1, 4])
@@ -122,18 +122,18 @@ def test_runner_seeds_and_records_resources_for_any_worker_count(tmp_path, monke
         return ComputeResult(table=None, matrices={"pearson": np.eye(3)}, metadata=[spi],
                              timings={"pearson": 0.01}, errors={})
 
-    monkeypatch.setattr(corpus, "run_pyspi", fake_run_pyspi)
+    monkeypatch.setattr(run_corpus, "run_pyspi", fake_run_pyspi)
     monkeypatch.setattr(provenance, "bound_cores", lambda: 8)
     for name in provenance.THREAD_VARIABLES:
         monkeypatch.setenv(name, "1")
 
-    output = corpus.run_dataset(config, entry, n_jobs=n_jobs)
+    output = run_corpus.run_dataset(config, entry, n_jobs=n_jobs)
     assert seen["random_seed"] == config.random_seed
     job = json.loads((output / "meta.json").read_text(encoding="utf-8"))["job"]
     assert job["n_jobs"] == n_jobs and job["bound_cores"] == 8
     assert job["estimator_rng_policy"] == "pyspi_fixed_seeds"
     assert job["peak_memory_mib"]["parent"] > 0
-    assert corpus.completion_error(config, entry) is None
+    assert run_corpus.completion_error(config, entry) is None
 
 
 def _real_corpus(tmp_path, pair_tolerance=None):
@@ -148,7 +148,7 @@ def _real_corpus(tmp_path, pair_tolerance=None):
            "__axis_order__": np.asarray(["process", "observation"])})
     pyspi_config = tmp_path / "pyspi.yaml"
     pyspi_config.write_text(STOCHASTIC_CONFIG, encoding="utf-8")
-    path = tmp_path / "corpus.yaml"
+    path = tmp_path / "run_corpus.yaml"
     path.write_text("\n".join([
         "name: fixture", "source:", "  format: named-npz-v1",
         f"  archive: {archive}",
@@ -158,7 +158,7 @@ def _real_corpus(tmp_path, pair_tolerance=None):
         f"pyspi_config: {pyspi_config}", "normalise: false", "random_seed: 1729",
         *([f"pair_tolerance: {pair_tolerance}"] if pair_tolerance else []), ""]),
         encoding="utf-8")
-    return corpus.ExternalCorpusConfig.from_file(path)
+    return corpus.ArchiveCorpus.from_file(path)
 
 
 @pytest.mark.skipif(not hasattr(compute.Calculator, "compute_pairs"),
@@ -169,8 +169,8 @@ def test_sampled_corpus_run_holds_the_full_run_at_its_dyads(tmp_path):
     for label, tolerance in (("full", None), ("sampled", 0.5)):
         config = _real_corpus(tmp_path, tolerance)
         entry = corpus.load_inventory(config)[0]
-        directory = corpus.run_dataset(config, entry, n_jobs=1)
-        assert corpus.completion_error(config, entry) is None
+        directory = run_corpus.run_dataset(config, entry, n_jobs=1)
+        assert run_corpus.completion_error(config, entry) is None
         with np.load(directory / "spi_mpis.npz") as archive:
             outputs[label] = (directory, {name: archive[name] for name in archive.files})
     directory, sampled = outputs["sampled"]
@@ -187,7 +187,7 @@ def test_sampled_corpus_run_holds_the_full_run_at_its_dyads(tmp_path):
         assert np.isnan(matrix[~held]).all(), name
 
     # A full-table config must not accept the sampled output, nor the reverse.
-    assert corpus.completion_error(
+    assert run_corpus.completion_error(
         _real_corpus(tmp_path, 0.4), corpus.load_inventory(_real_corpus(tmp_path, 0.4))[0]
     ) is not None
 
@@ -198,4 +198,4 @@ def test_pair_tolerance_must_be_a_fraction(tmp_path):
     for bad in ("3", "0.0", "true", "1.5"):
         config.path.write_text(text + f"pair_tolerance: {bad}\n", encoding="utf-8")
         with pytest.raises(ValueError, match="pair_tolerance"):
-            corpus.ExternalCorpusConfig.from_file(config.path)
+            corpus.ArchiveCorpus.from_file(config.path)

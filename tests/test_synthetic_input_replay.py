@@ -1,12 +1,12 @@
 """Fresh and resumed extraction must receive identical synthetic inputs."""
-from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
 import pytest
 
 from src.mapping import DatasetMapping, ExperimentConfig
-from src.run_experiments import _ensure_timeseries, generate_synthetic_from_spec
+from src.generators.harness import generate_from_spec
+from src.generated_corpus import GeneratedCorpus
 
 
 @pytest.mark.parametrize("config", [
@@ -15,13 +15,15 @@ from src.run_experiments import _ensure_timeseries, generate_synthetic_from_spec
     "dtw_euclidean/260924_lagged-warping.yaml",
 ])
 def test_saved_input_equals_fresh_and_resumed_input(tmp_path, config):
-    spec = DatasetMapping(ExperimentConfig.from_file(
-        Path(__file__).resolve().parents[1] / "configs/generate" / config
-    )).spec_for_index(1)
-    spec = replace(spec, dataset_dir=tmp_path)
-    expected, extras = generate_synthetic_from_spec(spec)
-    fresh, path, _ = _ensure_timeseries(spec, regenerate=False)
-    resumed, _, _ = _ensure_timeseries(spec, regenerate=False)
+    corpus = GeneratedCorpus.from_file(
+        Path(__file__).resolve().parents[1] / "configs/generate" / config)
+    entry = corpus.entries()[0]
+    spec = entry.spec
+    spec.dataset_dir = tmp_path
+    expected, extras = generate_from_spec(spec)
+    fresh, _ = corpus.load(entry)
+    resumed, _ = corpus.load(entry)
+    path = tmp_path / "timeseries.npy"
     saved = np.load(path)
     assert saved.dtype == np.float64
     np.testing.assert_array_equal(saved, expected)

@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from src.run_external_corpus import ExternalCorpusConfig, load_inventory
+from src.corpus import ArchiveCorpus, load_inventory
 
 
 def sha(path):
@@ -27,7 +27,7 @@ def main(root, length):
         assert contract['source_archive_sha256'] == run['archive_sha256']
         config_path = directory/'external.yaml'
         assert sha(config_path) == manifest['external_config_sha256']
-        config = ExternalCorpusConfig.from_file(config_path)
+        config = ArchiveCorpus.from_file(config_path)
         assert sha(config.archive) == config.archive_sha256 == manifest['archive_sha256']
         entries = load_inventory(config)
         assert len(entries) == len(manifest['rows']) == run['views']

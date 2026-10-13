@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from scripts.export_neurotycho_views import main
-from src.run_external_corpus import ExternalCorpusConfig, load_inventory, load_timeseries
+from src.corpus import ArchiveCorpus, load_inventory, load_timeseries
 
 
 def test_export_obeys_actual_external_corpus_reader(tmp_path, monkeypatch):
@@ -22,7 +22,7 @@ def test_export_obeys_actual_external_corpus_reader(tmp_path, monkeypatch):
     (source/'20110112.json').write_text(json.dumps(dict(usable=True,archive='20110112ktmd',records=[record])))
     output=tmp_path/'output'
     main(SimpleNamespace(input=source,output=output,name='test',remote=tmp_path/'remote',exclude_manifest=None,phase='source'))
-    config=ExternalCorpusConfig.from_file(tmp_path/'configs/external/test.yaml')
+    config=ArchiveCorpus.from_file(tmp_path/'configs/external/test.yaml')
     config=replace(config,archive=output/'views.npz',pyspi_config=catalogue)
     entries=load_inventory(config)
     assert [(e.M,e.T) for e in entries]==[(16,2000),(8,1000)]

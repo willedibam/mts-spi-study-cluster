@@ -6,13 +6,8 @@ import numpy as np
 import pytest
 
 from src.compute import ComputeResult, SPIInfo
-from src.run_external_corpus import (
-    ExternalCorpusConfig,
-    completion_error,
-    load_inventory,
-    run_dataset,
-    validate_source,
-)
+from src.corpus import ArchiveCorpus, load_inventory, validate_source
+from src.run_corpus import completion_error, run_dataset
 
 
 def _sha256(path: Path) -> str:
@@ -56,7 +51,7 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path]:
 
 def test_inventory_and_source_validation(tmp_path: Path) -> None:
     config_path, archive_path = _fixture(tmp_path)
-    config = ExternalCorpusConfig.from_file(config_path)
+    config = ArchiveCorpus.from_file(config_path)
     entries = load_inventory(config)
     assert [(entry.index, entry.M, entry.T) for entry in entries] == [(1, 3, 5), (2, 2, 8)]
     assert entries[0].labels == ("synthetic", "var")
@@ -69,7 +64,7 @@ def test_run_transposes_source_and_writes_compatible_metadata(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     config_path, _ = _fixture(tmp_path)
-    config = ExternalCorpusConfig.from_file(config_path)
+    config = ArchiveCorpus.from_file(config_path)
     entry = load_inventory(config)[0]
     observed: dict[str, object] = {}
 
@@ -90,7 +85,7 @@ def test_run_transposes_source_and_writes_compatible_metadata(
             errors={},
         )
 
-    monkeypatch.setattr("src.run_external_corpus.run_pyspi", fake_run_pyspi)
+    monkeypatch.setattr("src.run_corpus.run_pyspi", fake_run_pyspi)
     output = run_dataset(config, entry, n_jobs=1)
     assert observed == {"shape": (5, 3), "normalise": True, "n_jobs": 1}
     meta = json.loads((output / "meta.json").read_text(encoding="utf-8"))
@@ -108,7 +103,7 @@ def test_run_transposes_source_and_writes_compatible_metadata(
 
 def test_source_hash_mismatch_is_rejected(tmp_path: Path) -> None:
     config_path, archive_path = _fixture(tmp_path)
-    config = ExternalCorpusConfig.from_file(config_path)
+    config = ArchiveCorpus.from_file(config_path)
     with archive_path.open("ab") as handle:
         handle.write(b"changed")
     with pytest.raises(ValueError, match="SHA-256 mismatch"):
@@ -119,7 +114,7 @@ def test_runner_pins_and_restores_global_random_state(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     config_path, _ = _fixture(tmp_path)
-    config = ExternalCorpusConfig.from_file(config_path)
+    config = ArchiveCorpus.from_file(config_path)
     entry = load_inventory(config)[0]
     observed: list[tuple[float, float]] = []
 
@@ -143,7 +138,7 @@ def test_runner_pins_and_restores_global_random_state(
 
     import random
 
-    monkeypatch.setattr("src.run_external_corpus.run_pyspi", fake_run_pyspi)
+    monkeypatch.setattr("src.run_corpus.run_pyspi", fake_run_pyspi)
     np.random.seed(23)
     random.seed(23)
     expected_numpy = np.random.random()

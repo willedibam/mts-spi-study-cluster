@@ -8,7 +8,7 @@ import numpy as np
 from src.representation_state_data import load_state_data,file_hash
 from src.representation_mechanism import permute_dyads
 from src.spi_spi_contract import build_unified_feature_values
-from src.run_external_corpus import atomic_json,atomic_savez
+from src.provenance import atomic_json, atomic_savez
 from src.utils import slugify
 
 

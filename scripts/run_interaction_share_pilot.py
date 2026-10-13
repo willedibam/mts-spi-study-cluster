@@ -12,7 +12,7 @@ from sklearn.isotonic import IsotonicRegression
 from src.interaction_share_learning import fit_statistical, select_statistical, select_reference, standardized_marginal_shapes
 from src.representation_screen import training_subsets
 from src.representation_state_data import file_hash, load_state_data, source_pool_for_seed
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',method_prefix=''):

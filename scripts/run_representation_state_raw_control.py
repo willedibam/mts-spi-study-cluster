@@ -11,7 +11,7 @@ from scripts.run_representation_state_pilot import select_ridge
 from src.cross_mt_transfer import pooled_baseline_features
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def run(config_path, data, output):

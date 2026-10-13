@@ -188,15 +188,15 @@ def assemble(root):
 
 
 def extract(root, group, index):
-    from src import run_external_corpus as corpus
-    config = corpus.ExternalCorpusConfig.from_file(root/f'{group}.yaml')
+    from src import corpus, provenance, run_corpus
+    config = corpus.ArchiveCorpus.from_file(root/f'{group}.yaml')
     entries = corpus.load_inventory(config)
     entry = entries[index-1]
     assert 1 <= index <= len(entries)
-    assert corpus.completion_error(config, entry) is not None, 'Do not overwrite completed output'
+    assert run_corpus.completion_error(config, entry) is not None, 'Do not overwrite completed output'
     started = time.perf_counter()
-    directory = corpus.run_dataset(config, entry, n_jobs=1)
-    assert corpus.completion_error(config, entry) is None
+    directory = run_corpus.run_dataset(config, entry, n_jobs=1)
+    assert run_corpus.completion_error(config, entry) is None
     meta = json.loads((directory/'meta.json').read_text())
     order = [s['name'] for s in meta['pyspi']['spis']]
     valid_spis = 0
@@ -214,12 +214,12 @@ def extract(root, group, index):
 
 
 def gate(root, group):
-    from src import run_external_corpus as corpus
-    config = corpus.ExternalCorpusConfig.from_file(root/f'{group}.yaml')
+    from src import corpus, provenance, run_corpus
+    config = corpus.ArchiveCorpus.from_file(root/f'{group}.yaml')
     entries = corpus.load_inventory(config)
     smoke = [int(i) for i in (root/f'{group}-smoke.txt').read_text().split()]
     for index in smoke:
-        assert corpus.completion_error(config, entries[index-1]) is None
+        assert run_corpus.completion_error(config, entries[index-1]) is None
         status = json.loads((root/f'{group}-resource-{index:02d}.json').read_text())
         assert status['peak_rss_gib'] < 20, 'Stop for memory resizing before parallel continuation'
         assert status['total_spis'] == 289 and status['full_valid_spis'] >= 200, 'Stop for validity inspection'

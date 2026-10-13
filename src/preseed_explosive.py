@@ -6,7 +6,7 @@ coexist and which one is observed depends on history. The standard harness gener
 each (variant, instance) independently from a random IC, so it samples only the lower
 branch and cannot produce the loop. This script does the required quasi-static
 continuation -- per instance, on a FIXED network -- and writes `timeseries.npy` into
-each dataset dir. The standard harness (run_experiments) then finds the cached
+each dataset dir. The runner (src.run_corpus) then finds the cached
 timeseries, skips regeneration, and runs pyspi in parallel as usual.
 
 Protocol per (M, T, instance):
@@ -127,7 +127,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     LOGGER.info("Pre-seed complete: %d timeseries written, %d skipped.", written, skipped)
     if not args.dry_run:
-        LOGGER.info("Next: run_experiments on the same config (cached timeseries -> pyspi only).")
+        LOGGER.info("Next: src.run_corpus on the same config (cached timeseries -> pyspi only).")
 
 
 if __name__ == "__main__":

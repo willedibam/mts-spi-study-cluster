@@ -11,7 +11,7 @@ from src.interaction_share_learning import fit_statistical,standardized_marginal
 from src.representation_state_data import file_hash,observed_view
 from src.representation_state_neural import make_encoder,predict
 from src.spi_edge_pool import pack_inputs
-from src.run_external_corpus import atomic_json,atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def main(config,source_data,source_root,target_data,target_bank,edge_bank,output):

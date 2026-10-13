@@ -3,7 +3,7 @@ import argparse,json
 import numpy as np
 from scripts.build_lag_surrogate import DATA,OUT,ROOT,RUN
 from scripts.spi_baseline_exploration import sha
-from src.run_external_corpus import array_sha256
+from src.provenance import array_sha256
 from src.utils import slugify
 
 
@@ -21,7 +21,7 @@ def audit(count, source="669a718"):
             assert meta['experiment']['git_commit'].startswith(source) and not meta['experiment']['git_dirty']
             assert meta['random_seed']==261016 and meta['job']['estimator_rng_policy']=='isolated_serial'
             assert meta['pyspi']['version']['computation']=='3.0.0.r7'
-            for key,path in [('corpus_config_sha256',f'configs/external/{RUN}.yaml'),('pyspi_config_sha256','configs/pyspi/benchmarked_p90.yaml'),('runner_sha256','src/run_external_corpus.py'),('compute_sha256','src/compute.py')]:
+            for key,path in [('corpus_config_sha256',f'configs/external/{RUN}.yaml'),('pyspi_config_sha256','configs/pyspi/benchmarked_p90.yaml'),('runner_sha256','src/run_corpus.py'),('compute_sha256','src/compute.py')]:
                 assert meta['execution_identity'][key]==sha(ROOT/path)
             names=[s['name'] for s in meta['pyspi']['spis']]
             if order is None:order=names

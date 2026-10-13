@@ -11,7 +11,7 @@ import yaml
 
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def select_cap(bank, view, train, target, strata, protocol, caps, seed):

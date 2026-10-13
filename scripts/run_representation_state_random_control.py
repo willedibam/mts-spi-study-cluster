@@ -14,7 +14,7 @@ from src.interaction_share_learning import fit_statistical, select_statistical
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
 from src.representation_state_neural import AlignedChannelEncoder, seed_torch
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def run(config_path, data, output, device, source_family=None, head='pca'):

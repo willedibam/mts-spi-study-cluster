@@ -13,7 +13,7 @@ from src.representation_attribution import fit_head, select_head
 from src.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
 from src.representation_state_data import file_hash
 from src.spi_spi_contract import build_unified_feature_values
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def run(config_path, output):

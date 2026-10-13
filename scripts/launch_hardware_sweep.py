@@ -34,7 +34,8 @@ def validate_sampling(root):
 
 
 def main(root, smoke_job, dry_run=False):
-    from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
+    from src.corpus import ArchiveCorpus, load_inventory
+    from src.run_corpus import completion_error
     marker = root / 'sweep-launch.json'
     if marker.exists() and not dry_run:
         raise FileExistsError(f'Inspect existing launch receipt before retrying: {marker}')
@@ -46,7 +47,7 @@ def main(root, smoke_job, dry_run=False):
     if not match:
         raise ValueError('Final PBS memory measurement unavailable')
     peak = int(match[1]) * {'b':1, 'kb':1024, 'mb':1024**2, 'gb':1024**3}[match[2]] / 1024**3
-    config = ExternalCorpusConfig.from_file(root / 'pilot/external.yaml')
+    config = ArchiveCorpus.from_file(root / 'pilot/external.yaml')
     entries = load_inventory(config)
     reports, names = [], None
     for index in (1, 5):
@@ -68,7 +69,7 @@ def main(root, smoke_job, dry_run=False):
         reports.append(dict(index=index, seconds=meta['job']['compute_seconds'],
                             finite_edge_fraction=finite, errors=meta['pyspi']['errors']))
     # Keep T=5000: changing resolution requires a separate estimator check.
-    sweep = ExternalCorpusConfig.from_file(root / 'sweep29/external.yaml')
+    sweep = ArchiveCorpus.from_file(root / 'sweep29/external.yaml')
     target = load_inventory(sweep)
     if len(target) != 29 or any(e.M != 28 or e.T != 5000 for e in target):
         raise ValueError('Expanded corpus differs from the authorised bank')
@@ -83,7 +84,7 @@ def main(root, smoke_job, dry_run=False):
     env = dict(os.environ, NCPUS=str(plan['ncpus']), WORKERS=str(plan['workers']),
                MEM_GB=str(plan['mem_gb']), WALLTIME=plan['walltime'])
     env.pop('TASK_TIMEOUT', None)
-    job = subprocess.check_output(['bash', 'jobs/gadi/submit_external_corpus_farm.sh',
+    job = subprocess.check_output(['bash', 'jobs/gadi/submit_farm.sh',
                                    str(sweep.path)], env=env, text=True).strip()
     if not re.fullmatch(r'\d+\.gadi-pbs', job):
         raise ValueError(f'Unexpected qsub response; inspect before retrying: {job}')

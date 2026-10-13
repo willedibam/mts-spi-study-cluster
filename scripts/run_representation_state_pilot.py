@@ -21,7 +21,7 @@ import yaml
 
 from src.representation_screen import fit_view, training_subsets
 from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def select_ridge(bank, view, train, targets, strata, protocol, seed):

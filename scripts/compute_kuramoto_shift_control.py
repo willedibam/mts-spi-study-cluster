@@ -17,7 +17,8 @@ if str(ROOT) not in sys.path:
 
 from src.compute import run_pyspi  # noqa: E402
 from src.mapping import DatasetMapping, ExperimentConfig  # noqa: E402
-from src.run_experiments import file_sha256, pyspi_version  # noqa: E402
+from src.provenance import file_sha256
+from src.provenance import pyspi_version  # noqa: E402
 from src.utils import dump_json, ensure_dir, load_json  # noqa: E402
 
 

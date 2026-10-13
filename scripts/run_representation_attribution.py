@@ -11,7 +11,7 @@ import yaml
 from src.representation_attribution import RICH_NAMES, rich_marginals, fit_head, select_head
 from src.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
 from src.representation_state_data import file_hash
-from src.run_external_corpus import atomic_json, atomic_savez
+from src.provenance import atomic_json, atomic_savez
 
 
 def extract(manifest_path, mirror, output):

@@ -10,7 +10,7 @@ import yaml
 from src.mpi_representation_baselines import summarize_mpis
 from src.representation_attribution import rich_marginals
 from src.representation_state_data import file_hash, load_state_data, observed_view
-from src.run_external_corpus import array_sha256
+from src.provenance import array_sha256
 from src.spi_spi_contract import build_unified_features, schema_sha256
 from src.utils import slugify
 

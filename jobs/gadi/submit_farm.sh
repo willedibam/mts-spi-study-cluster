@@ -9,7 +9,10 @@ source jobs/gadi/require_synced_source.sh
 
 source jobs/gadi/env.sh
 
-total=$(python -m src.run_external_corpus --config "$config" --count-only)
+# Reject layout drift and accidental output into retired roots before submission.
+python scripts/check_gadi_storage_layout.py --output "$(python -m src.run_corpus --config "$config" --output-dir)"
+
+total=$(python -m src.run_corpus --config "$config" --count-only)
 if [[ -n "$index_file" ]]; then
     tasks=$(awk 'NF { n += 1 } END { print n + 0 }' "$index_file")
 else
@@ -20,7 +23,7 @@ else
 fi
 (( tasks >= 1 ))
 
-# pyspi workers per recording (see run_external_corpus_farm.pbs). Cores are
+# pyspi workers per recording (see run_farm.pbs). Cores are
 # tasks x workers; memory is per recording, so set MEM_GB from a measured
 # recording of this size rather than relying on the per-core default.
 cores_per_recording="${CORES_PER_RECORDING:-1}"
@@ -61,4 +64,4 @@ echo "[INFO] config=$config selected=$tasks/$total cores_per_recording=$cores_pe
 qsub \
     -l "ncpus=$ncpus,mem=${mem_gb}GB,walltime=$walltime,jobfs=${jobfs_gb}GB" \
     -v "$variables" \
-    jobs/gadi/run_external_corpus_farm.pbs
+    jobs/gadi/run_farm.pbs

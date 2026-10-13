@@ -5,7 +5,7 @@ import numpy as np
 from threadpoolctl import threadpool_limits
 from scripts.build_pearson_size_match import DATA, OUT, ROOT, RUN
 from scripts.spi_baseline_exploration import sha
-from src.run_external_corpus import array_sha256
+from src.provenance import array_sha256
 from src.spi_spi_contract import build_unified_feature_values
 from src.utils import slugify
 
@@ -28,7 +28,7 @@ def audit(indices, name):
             assert meta['pyspi']['version']['computation'] == '3.0.0.r7'
             for key, path in [('corpus_config_sha256', f'configs/external/{RUN}.yaml'),
                               ('pyspi_config_sha256', 'configs/pyspi/benchmarked_p90.yaml'),
-                              ('runner_sha256', 'src/run_external_corpus.py'), ('compute_sha256', 'src/compute.py')]:
+                              ('runner_sha256', 'src/run_corpus.py'), ('compute_sha256', 'src/compute.py')]:
                 assert meta['execution_identity'][key] == sha(ROOT/path)
             names = [s['name'] for s in meta['pyspi']['spis']]
             if order is None:

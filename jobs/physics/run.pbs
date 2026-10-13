@@ -1,35 +1,28 @@
 #!/bin/bash
-#PBS -N spi-one
+#PBS -N spi
 #PBS -q defaultQ
 #PBS -l select=1:ncpus=1:mem=4gb
 #PBS -l walltime=02:00:00
 #PBS -j oe
 
-# Submit from the repository root:
-# qsub -v CONFIG=<experiment.yaml>,INDEX=1 jobs/physics/run.pbs
-# Command-line -q/-l options override the defaults above.
+# One recording per job, from the repository root. Command-line -q/-l options
+# override the defaults above; with ncpus=k the recording gets k pyspi workers.
+#   qsub -v CONFIG=<corpus.yaml>,INDEX=1 jobs/physics/run.pbs
+#   qsub -J 1-100 -v CONFIG=<corpus.yaml> jobs/physics/run.pbs
+# Physics permits at most 950 indices per array: submit larger corpora as
+# non-overlapping ranges (1-950, 951-1900, ...).
 
 set -euo pipefail
 
-: "${CONFIG:?submit with -v CONFIG=<experiment.yaml>,INDEX=<1-based index>}"
-INDEX="${INDEX:-1}"
+: "${CONFIG:?submit with -v CONFIG=<corpus.yaml>}"
+INDEX="${PBS_ARRAY_INDEX:-${INDEX:-1}}"
 [[ "$INDEX" =~ ^[1-9][0-9]*$ ]] || { echo "INDEX must be a positive integer" >&2; exit 2; }
 
 cd "${PBS_O_WORKDIR:?submit this file with qsub}"
 test -f "$CONFIG"
 source scripts/activate.sh
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 
-pyspi_args=()
-if [[ -n "${PYSPI_CONFIG:-}" ]]; then
-    test -f "$PYSPI_CONFIG"
-    pyspi_args=(--pyspi-config "$PYSPI_CONFIG")
-fi
-
-python -m src.run_experiments \
-    --experiment-config "$CONFIG" \
-    --job-index "$INDEX" \
-    --n-jobs "${PBS_NCPUS:-1}" \
-    --skip-existing \
-    --no-csv \
-    --no-heatmap \
-    "${pyspi_args[@]}"
+python -m src.run_corpus --config "$CONFIG" --job-index "$INDEX" \
+    --n-jobs "${PBS_NCPUS:-1}" --skip-existing

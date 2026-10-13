@@ -14,7 +14,7 @@ import numpy as np
 
 from src.compute import run_pyspi
 from src.mapping import DatasetMapping, ExperimentConfig
-from src.run_experiments import file_sha256, repository_provenance, pyspi_version
+from src.provenance import file_sha256, repository_provenance, pyspi_version
 from src.utils import project_root, timestamp
 
 NAMES = ("bary_sgddtw_mean", "bary_sgddtw_max", "bary-sq_sgddtw_mean", "bary-sq_sgddtw_max")

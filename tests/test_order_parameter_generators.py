@@ -19,11 +19,9 @@ from src.generators.harness import (
     _miller_huse_semantics,
     _stuart_landau_semantics,
 )
-from src.run_experiments import (
-    _build_metadata,
-    _ground_truth_descriptor,
-    generate_synthetic_from_spec,
-)
+from src.generators.harness import generate_from_spec
+from src.generated_corpus import GeneratedCorpus
+from src.generators.harness import ground_truth_descriptor
 
 
 def test_ground_truth_descriptor_skips_empty_future_arrays(tmp_path: Path) -> None:
@@ -33,7 +31,7 @@ def test_ground_truth_descriptor_skips_empty_future_arrays(tmp_path: Path) -> No
         magnetization=np.asarray([0.25, -0.5]),
         magnetization_future=np.asarray([], dtype=np.float32),
     )
-    descriptor = _ground_truth_descriptor(path)
+    descriptor = ground_truth_descriptor(path)
     assert descriptor["magnetization_mean"] == -0.125
     assert "magnetization_future_mean" not in descriptor
     assert descriptor["arrays"]["magnetization_future"] == [0]
@@ -139,7 +137,7 @@ mts_classes:
         encoding="utf-8",
     )
     spec = DatasetMapping(ExperimentConfig.from_file(config_path)).specs[0]
-    observed, extras = generate_synthetic_from_spec(spec)
+    observed, extras = generate_from_spec(spec)
     assert observed.shape == (20, 4)
     assert "full_phases" not in extras["_ground_truth"]
     assert extras["_ground_truth"]["r_full_future"].shape == (5,)
@@ -153,25 +151,13 @@ mts_classes:
     )
     assert semantics["order_parameter"]["primary_analysis_array"] == "r_full_future"
     assert semantics["order_parameter"]["included_in_timeseries_input"] is False
-    meta = _build_metadata(
-        spec=spec,
-        result=SimpleNamespace(metadata=[], errors={}),
-        paths={},
-        compute_seconds=1.0,
-        gen_extras={
-            "resolved_params": extras["resolved_params"],
-            "ground_truth": {"critical_coupling": np.sqrt(8.0 / np.pi)},
-        },
-        experiment_provenance={
-            "config": "compact.yaml",
-            "config_sha256": "abc",
-            "git_commit": "def",
-            "git_dirty": False,
-        },
-    )
+    corpus = GeneratedCorpus.from_file(config_path)
+    meta = corpus.describe(corpus.entries()[0], {
+        "resolved_params": extras["resolved_params"],
+        "ground_truth": {"critical_coupling": np.sqrt(8.0 / np.pi)},
+    })
     assert meta["sampling_design"]["seed_scope"] == "dataset"
     assert meta["sampling_design"]["seed_group_id"] == spec.name
-    assert meta["experiment"]["config_sha256"] == "abc"
     assert meta["generator"]["control"]["reduced_name"] == "kappa"
 
 
@@ -287,7 +273,7 @@ mts_classes:
     )
     specs = DatasetMapping(ExperimentConfig.from_file(config_path)).specs
     mh_spec = next(spec for spec in specs if spec.generator == "miller_huse")
-    mh_observed, mh_extras = generate_synthetic_from_spec(mh_spec)
+    mh_observed, mh_extras = generate_from_spec(mh_spec)
     assert mh_observed.shape == (20, 20)
     assert "full_field" not in mh_extras["_ground_truth"]
     assert mh_extras["_ground_truth"]["q_spin_abs"].shape == ()
@@ -382,7 +368,7 @@ mts_classes:
         encoding="utf-8",
     )
     spec = DatasetMapping(ExperimentConfig.from_file(config_path)).specs[0]
-    observed, extras = generate_synthetic_from_spec(spec)
+    observed, extras = generate_from_spec(spec)
     assert observed.shape == (40, 8)
     assert "full_states" not in extras["_ground_truth"]
     assert extras["_ground_truth"]["mean_field_future"].shape == (20,)
@@ -477,7 +463,7 @@ mts_classes:
         encoding="utf-8",
     )
     spec = DatasetMapping(ExperimentConfig.from_file(config_path)).specs[0]
-    observed, extras = generate_synthetic_from_spec(spec)
+    observed, extras = generate_from_spec(spec)
     assert observed.shape == (40, 8)
     assert "full_states_real" not in extras["_ground_truth"]
     assert extras["_ground_truth"]["order_parameter_R_future"].shape == (20,)

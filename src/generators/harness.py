@@ -16,6 +16,7 @@ the runner stays free of generator names:
 from __future__ import annotations
 
 import inspect
+from pathlib import Path
 from typing import Any, Dict
 
 import numpy as np
@@ -151,7 +152,7 @@ def _filter_roll_mts(spec, generator_params):
         "types": internals.types,
         "betas": [None if np.isnan(b) else float(b) for b in internals.betas],
         "noise_stds": internals.noise_stds.tolist(),
-        # transient: persisted to mother.npy by _ensure_timeseries, popped before meta.json
+        # transient: written to mother.npy by the corpus, kept out of meta.json
         "_mother": internals.mother,
     }
     return data, gen_extras
@@ -674,3 +675,70 @@ def _quadratic_cml_semantics(spec, gen_extras: Dict[str, Any]) -> Dict[str, Any]
             "included_in_timeseries_input": False,
         },
     }
+
+
+def ground_truth_descriptor(path: Path) -> dict:
+    with np.load(path, allow_pickle=False) as archive:
+        descriptor: dict = {
+            "path": path.name,
+            "arrays": {name: list(archive[name].shape) for name in archive.files},
+        }
+        for name in (
+            "r_full",
+            "r_observed",
+            "r_unobserved",
+            "r_full_future",
+            "r_unobserved_future",
+            "magnetization",
+            "spin_magnetization",
+            "spin_magnetization_unobserved",
+            "magnetization_future",
+            "spin_magnetization_future",
+            "spin_magnetization_unobserved_future",
+            "magnetization_unobserved",
+            "magnetization_unobserved_future",
+            "order_parameter_R",
+            "order_parameter_R_future",
+            "mean_activity",
+            "mean_activity_future",
+        ):
+            if name in archive.files:
+                values = np.asarray(archive[name], dtype=np.float64)
+                if values.size == 0:
+                    continue
+                descriptor[f"{name}_mean"] = float(values.mean())
+                descriptor[f"{name}_std"] = float(values.std())
+        for name in (
+            "critical_coupling",
+            "q_spin_rms",
+            "q_spin_abs",
+            "q_spin_rms_unobserved",
+            "q_spin_abs_unobserved",
+            "spin_m2",
+            "spin_m4",
+            "spin_binder_cumulant",
+            "spin_susceptibility",
+            "q_magnetization_rms",
+            "q_magnetization_abs",
+            "q_magnetization_rms_unobserved",
+            "q_magnetization_abs_unobserved",
+            "magnetization_m2",
+            "magnetization_m4",
+            "magnetization_binder_cumulant",
+            "magnetization_susceptibility",
+            "beta",
+            "reduced_coupling",
+            "exact_spontaneous_magnetization",
+            "q_R_mean",
+            "q_R_std",
+            "q_activity_mean",
+            "q_temporal_spectral_entropy",
+            "q_dynamical_spatial_pattern_entropy",
+            "q_selected_band_power",
+            "q_period2_activity",
+            "q_turbulent_fraction_0p05",
+        ):
+            if name in archive.files:
+                value = float(archive[name])
+                descriptor[name] = value if np.isfinite(value) else None
+    return descriptor

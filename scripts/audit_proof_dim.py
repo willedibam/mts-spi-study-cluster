@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.dimensionality import n_pcs_for_variance
 from src.mapping import DatasetMapping, ExperimentConfig
-from src.run_experiments import generate_synthetic_from_spec
+from src.generators.harness import generate_from_spec
 
 ALPHA = 0.95
 N_PCS_MIN = 3
@@ -32,7 +32,7 @@ def main():
     rows = []
     for i, spec in enumerate(mapping.specs):
         try:
-            data, _ = generate_synthetic_from_spec(spec)
+            data, _ = generate_from_spec(spec)
             npcs = n_pcs_for_variance(data, alpha=ALPHA)
         except Exception as e:
             npcs = -1

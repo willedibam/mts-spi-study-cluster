@@ -156,9 +156,11 @@ def correlation_endpoint(name):
 
 
 def analyse(root, mirror_revision=None):
-    from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error, array_sha256
+    from src.corpus import ArchiveCorpus, load_inventory
+    from src.provenance import array_sha256
+    from src.run_corpus import completion_error
     from src.spi_spi_contract import build_unified_features
-    config = ExternalCorpusConfig.from_file(root / 'external.yaml')
+    config = ArchiveCorpus.from_file(root / 'external.yaml')
     identity = None
     if mirror_revision:
         # Validate historical outputs against their frozen source, not today's editable install.
@@ -170,7 +172,7 @@ def analyse(root, mirror_revision=None):
         config = replace(config, archive=root / 'observations.npz', base_output_dir=root / 'mpis')
         identity = dict(corpus_config_sha256=sha(config.path),
                         pyspi_config_sha256=frozen_hash('configs/pyspi/benchmarked_p90.yaml'),
-                        runner_sha256=frozen_hash('src/run_external_corpus.py'),
+                        runner_sha256=frozen_hash('src/run_corpus.py'),
                         compute_sha256=frozen_hash('src/compute.py'),
                         pyspi_version={'dist': '3.0.0', 'computation': '3.0.0.r7'})
         assert sha(config.pyspi_config) == identity['pyspi_config_sha256']
