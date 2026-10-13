@@ -271,7 +271,7 @@ def main(argv: List[str] | None = None) -> None:
             n_jobs=effective_n_jobs,
             checkpoint_dir=cp_dir,
             mp_context=args.mp_context,
-            random_seed=spec.rng_seed if effective_n_jobs == 1 else None,
+            random_seed=spec.rng_seed,
         )
         compute_seconds = time.perf_counter() - compute_start
         csv_path = dataset_dir / "calc.csv"
@@ -315,8 +315,8 @@ def main(argv: List[str] | None = None) -> None:
             experiment_provenance=experiment_provenance,
         )
         meta["pyspi"]["estimator_rng"] = {
-            "policy": "serial-global-and-isolated-stochastic-v1" if effective_n_jobs == 1 else "uncontrolled",
-            "seed": spec.rng_seed if effective_n_jobs == 1 else None,
+            "policy": result.rng_policy,
+            "seed": spec.rng_seed,
             "n_jobs": effective_n_jobs,
         }
         dump_json(dataset_dir / "meta.json", meta)
@@ -1488,7 +1488,21 @@ def _dataset_complete(spec) -> bool:
         and spec.generator_params.get("return_full_lattice", False)
     ):
         required.append(dataset_dir / "full_lattice.npy")
-    return all(path.exists() for path in required)
+    if not all(path.exists() for path in required):
+        return False
+    # Finished, but by which pyspi? A resumed corpus must not mix computation
+    # revisions or SPI configs, and recomputing only this job's indices would
+    # mix them just the same, so a stale directory stops the run.
+    recorded = load_json(dataset_dir / "meta.json").get("pyspi", {})
+    recorded = (recorded.get("version", {}).get("computation"), recorded.get("config_sha256"))
+    current = (_pyspi_version()["computation"], _file_sha256(spec.pyspi_config))
+    if recorded != current:
+        raise RuntimeError(
+            f"{to_relative(dataset_dir)} was computed with pyspi {recorded[0]} "
+            f"(config {str(recorded[1])[:12]}), not {current[0]} (config {current[1][:12]}). "
+            "Use a new base_output_dir, or remove the old outputs to recompute the corpus."
+        )
+    return True
 
 
 def _describe_dataset(spec) -> str:

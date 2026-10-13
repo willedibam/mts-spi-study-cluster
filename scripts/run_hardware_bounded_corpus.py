@@ -33,7 +33,7 @@ def main():
     bounded = pyspi_bounds_psi_memory()
     if args.job_index is None:
         raise ValueError('Give one recording with --job-index')
-    if args.n_jobs != 1 and not (bounded and corpus.pyspi_pins_estimator_seeds()):
+    if args.n_jobs != 1 and not bounded:
         raise ValueError('This pyspi revision needs one serial worker per recording')
     config = corpus.ExternalCorpusConfig.from_file(args.config)
     entries = corpus.load_inventory(config)

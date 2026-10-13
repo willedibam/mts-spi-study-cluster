@@ -29,7 +29,7 @@ from typing import Any, Sequence
 
 import numpy as np
 
-from .compute import ComputeResult, pyspi_pins_estimator_seeds, run_pyspi
+from .compute import ComputeResult, run_pyspi
 from .utils import load_yaml, project_root, slugify, timestamp, to_relative
 
 
@@ -548,8 +548,7 @@ def run_dataset(
             config_path=config.pyspi_config,
             normalise=config.normalise,
             n_jobs=n_jobs,
-            random_seed=(config.random_seed
-                         if n_jobs == 1 or pyspi_pins_estimator_seeds() else None),
+            random_seed=config.random_seed,
             **({} if config.pair_tolerance is None else
                {"pair_tolerance": config.pair_tolerance, "pair_seed": config.random_seed}),
         )
@@ -565,8 +564,7 @@ def run_dataset(
         meta["paths"]["pairs"] = "pairs.npz"
         meta["pyspi"]["sampling"] = result.sampling
     meta["job"]["n_jobs"] = n_jobs
-    meta["job"]["estimator_rng_policy"] = result.rng_policy or (
-        "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled")
+    meta["job"]["estimator_rng_policy"] = result.rng_policy
     meta["job"].update(resources, peak_memory_mib=peak_memory_mib())
     _atomic_json(dataset_dir / "meta.json", meta)
     error = completion_error(config, entry, identity=identity)

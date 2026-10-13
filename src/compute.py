@@ -30,19 +30,14 @@ def seeded_estimator_rng(seed: int | None):
         random.setstate(python_state)
 
 
-def _seeded_call(function, seed, *args, **kwargs):
-    with seeded_estimator_rng(seed):
-        return function(*args, **kwargs)
-
-
 def pyspi_pins_estimator_seeds() -> bool:
     """Whether this pyspi fixes its stochastic estimators' seeds itself.
 
     From computation revision r8 the sgddtw barycenter and the MinCovDet and
     EllipticEnvelope fits each own a fixed-seed generator, so a value does not
     depend on evaluation order, on the caller's seed, or on which process
-    computed it. Earlier revisions draw from the global NumPy stream, which is
-    why the overrides in :func:`run_pyspi` exist and why they need one worker.
+    computed it. Earlier revisions draw from the global NumPy stream, so
+    :func:`run_pyspi` refuses them.
     """
     from pyspi.statistics.distance import Barycenter
 
@@ -69,10 +64,9 @@ class ComputeResult:
     # occupies its column, filled with NaN, so without this a dead column is
     # indistinguishable from a legitimately undefined statistic.
     errors: Dict[str, str] | None = None
-    # "pyspi_fixed_seeds": pyspi pins every stochastic estimator, any n_jobs.
-    # "isolated_serial": this wrapper's overrides, one worker only.
-    # "uncontrolled": neither.
-    rng_policy: str | None = None
+    # Always "pyspi_fixed_seeds": pyspi pins every stochastic estimator, so a
+    # value does not depend on n_jobs. Kept because metadata records it.
+    rng_policy: str = "pyspi_fixed_seeds"
     # Set for a sampled run (pyspi `compute_pairs`): the (b, 2) dyads whose
     # entries the matrices hold -- every other off-diagonal entry is NaN
     # because it was not computed -- and pyspi's record of the sample.
@@ -93,10 +87,10 @@ def run_pyspi(
     pair_tolerance: float | None = None,
     pair_seed: int | None = None,
 ) -> ComputeResult:
-    pinned = pyspi_pins_estimator_seeds()
-    if random_seed is not None and n_jobs != 1 and not pinned:
-        raise ValueError(
-            "Estimator RNG seeding requires n_jobs=1 with this pyspi revision.")
+    if not pyspi_pins_estimator_seeds():
+        raise RuntimeError(
+            "pyspi computation r8 or later is required: earlier revisions draw "
+            "estimator randomness from the global stream.")
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]
@@ -110,19 +104,6 @@ def run_pyspi(
         zscore=normalise,
         verbose=False,
     )
-    if random_seed is not None and not pinned:
-        # This pyspi version does not expose tslearn's random_state argument.
-        # Isolate SGD from RNG consumption by earlier SPIs, so a focused replay
-        # and full-catalogue extraction agree. All four summaries share its cache.
-        from pyspi.statistics.distance import Barycenter
-        from pyspi.statistics.basic import Estimators
-        for spi in calc.spis.values():
-            if isinstance(spi, Barycenter) and spi._mode == "sgddtw":
-                spi._fn = partial(spi._fn, random_state=np.random.RandomState(random_seed))
-            elif isinstance(spi, Estimators) and spi._estimator in {"MinCovDet", "EllipticEnvelope"}:
-                # These sklearn fits also use random initial subsets. Preserve
-                # pyspi's cache and its normal per-SPI failure handling.
-                spi._from_cache = partial(_seeded_call, spi._from_cache, random_seed)
     run = dict(n_jobs=n_jobs, checkpoint_dir=checkpoint_dir, resume=resume,
                mp_context=mp_context, progress=False)
     with seeded_estimator_rng(random_seed):
@@ -160,8 +141,6 @@ def run_pyspi(
     return ComputeResult(
         table=calc.table.copy(), matrices=matrices, metadata=metadata,
         timings=spi_timings, errors=dict(getattr(calc, "errors", {}) or {}),
-        rng_policy=("pyspi_fixed_seeds" if pinned else
-                    "isolated_serial" if random_seed is not None else "uncontrolled"),
         pairs=getattr(calc, "pairs", None), sampling=getattr(calc, "sampling", None),
     )
 

@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from src import compute, run_external_corpus as corpus
-from src.compute import pyspi_pins_estimator_seeds, run_pyspi
+from src.compute import run_pyspi
 
 STOCHASTIC_CONFIG = """
 .statistics.distance:
@@ -62,15 +62,13 @@ def stochastic_config(tmp_path):
     return path
 
 
-def test_unpinned_pyspi_still_needs_one_worker_to_seed(monkeypatch, stochastic_config):
+def test_pyspi_that_draws_from_the_global_stream_is_refused(monkeypatch, stochastic_config):
     monkeypatch.setattr(compute, "pyspi_pins_estimator_seeds", lambda: False)
-    with pytest.raises(ValueError, match="n_jobs=1"):
-        run_pyspi(_series(), config_path=stochastic_config, n_jobs=2, random_seed=7)
+    with pytest.raises(RuntimeError, match="r8 or later"):
+        run_pyspi(_series(), config_path=stochastic_config, n_jobs=1, random_seed=7)
 
 
-@pytest.mark.skipif(not pyspi_pins_estimator_seeds(),
-                    reason="this pyspi draws estimator randomness from the global stream")
-def test_pinned_pyspi_gives_one_result_for_any_worker_count_and_seed(stochastic_config):
+def test_one_result_for_any_worker_count_and_seed(stochastic_config):
     """Stochastic estimators included: values, missing entries and errors."""
     runs = [run_pyspi(_series(), config_path=stochastic_config, n_jobs=n_jobs,
                       random_seed=seed, mp_context=context)
@@ -108,10 +106,8 @@ def test_runner_refuses_threaded_libraries_under_several_workers(monkeypatch):
     assert corpus.worker_resources(1)["thread_variables"]["OMP_NUM_THREADS"] == "4"
 
 
-@pytest.mark.parametrize("pinned,n_jobs,seeded", [
-    (True, 1, True), (True, 4, True), (False, 1, True), (False, 4, False)])
-def test_runner_seeds_whenever_the_result_cannot_depend_on_workers(
-        tmp_path, monkeypatch, pinned, n_jobs, seeded):
+@pytest.mark.parametrize("n_jobs", [1, 4])
+def test_runner_seeds_and_records_resources_for_any_worker_count(tmp_path, monkeypatch, n_jobs):
     from src.compute import ComputeResult, SPIInfo
 
     config = _corpus(tmp_path)
@@ -123,22 +119,18 @@ def test_runner_seeds_whenever_the_result_cannot_depend_on_workers(
         spi = SPIInfo(name="pearson", directed=False, labels=["undirected"],
                       family="basic", module="pyspi.statistics.basic", class_name="PearsonR")
         return ComputeResult(table=None, matrices={"pearson": np.eye(3)}, metadata=[spi],
-                             timings={"pearson": 0.01}, errors={},
-                             rng_policy="pyspi_fixed_seeds" if pinned else None)
+                             timings={"pearson": 0.01}, errors={})
 
     monkeypatch.setattr(corpus, "run_pyspi", fake_run_pyspi)
-    monkeypatch.setattr(corpus, "pyspi_pins_estimator_seeds", lambda: pinned)
     monkeypatch.setattr(corpus, "bound_cores", lambda: 8)
     for name in corpus._THREAD_VARIABLES:
         monkeypatch.setenv(name, "1")
 
     output = corpus.run_dataset(config, entry, n_jobs=n_jobs)
-    assert seen["random_seed"] == (config.random_seed if seeded else None)
+    assert seen["random_seed"] == config.random_seed
     job = json.loads((output / "meta.json").read_text(encoding="utf-8"))["job"]
     assert job["n_jobs"] == n_jobs and job["bound_cores"] == 8
-    assert job["estimator_rng_policy"] == (
-        "pyspi_fixed_seeds" if pinned else
-        "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled")
+    assert job["estimator_rng_policy"] == "pyspi_fixed_seeds"
     assert job["peak_memory_mib"]["parent"] > 0
     assert corpus.completion_error(config, entry) is None
 
