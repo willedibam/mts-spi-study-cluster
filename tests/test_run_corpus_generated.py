@@ -89,3 +89,11 @@ def test_cli_counts_and_lists_a_generated_corpus(corpus, capsys):
     assert capsys.readouterr().out.strip() == "2"
     run_corpus.main(["--config", str(corpus.path), "--list"])
     assert capsys.readouterr().out.splitlines()[1].split("\t") == ["2", "3", "40", "Noise_M3_T40_I1"]
+
+
+def test_a_config_that_expands_to_nothing_is_an_error(tmp_path):
+    config = tmp_path / "empty.yaml"
+    config.write_text("pyspi_config: x.yaml\nmts_classes:\n  - name: N\n    generator: gaussian_noise\n    M_values: [3]\n    T_values: [40]\n")
+    with pytest.raises(ValueError, match="expands to no datasets"):
+        run_corpus.load_corpus(config)
+

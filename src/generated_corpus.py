@@ -47,6 +47,10 @@ class GeneratedCorpus:
         self.pair_tolerance = config.pair_tolerance
         self.base_output_dir = config.base_output_dir
         self.mapping = DatasetMapping(config)
+        if not self.mapping.specs:
+            raise ValueError(
+                f"{path} expands to no datasets: give M_values, T_values and instances "
+                "(per class or under defaults)")
 
     @classmethod
     def from_file(cls, path: str | Path) -> "GeneratedCorpus":
