@@ -8,11 +8,47 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import resource
 import time
 
 import numpy as np
 import yaml
+
+
+# MEG preparation helpers, kept from the removed HCP study: this panel is their only user.
+def farthest_sensors(positions, first, count=32):
+    """Deterministic Euclidean coverage on the helmet; no signal or label fitting."""
+    distances = np.sum((positions[:, None] - positions[None, :]) ** 2, axis=2)
+    selected = [int(first)]
+    while len(selected) < count:
+        nearest = distances[:, selected].min(axis=1)
+        nearest[selected] = -np.inf
+        selected.append(int(np.argmax(nearest)))
+    return np.asarray(selected), float(np.sqrt(distances[:, selected].min(axis=1).max()))
+
+
+def ica_projection(comp, annotation):
+    """Remove only this run's explicitly labelled cardiac/ocular components."""
+    labels = np.atleast_1d(comp['topolabel']).tolist()
+    mixing, unmixing = np.asarray(comp['topo']), np.asarray(comp['unmixing'])
+    if mixing.shape != unmixing.T.shape or mixing.shape[0] != len(labels) or len(set(labels)) != len(labels):
+        raise ValueError('ICA sensor labels/matrix shapes do not match')
+    error = float(np.max(np.abs(unmixing@mixing-np.eye(unmixing.shape[0]))))
+    if not np.isfinite(error) or error >= 1e-5:
+        raise ValueError('ICA mixing/unmixing inverse check failed')
+    match = re.search(r'vs\.ecg_eog_ic\s*=\s*\[([^]]*)\]', annotation)
+    if match is None:
+        raise ValueError('Missing explicit ECG/EOG component annotation')
+    tokens = match[1].split()
+    excluded = np.asarray([int(token)-1 for token in tokens], dtype=int)
+    if (len(set(excluded)) != len(excluded) or (excluded < 0).any()
+            or (excluded >= unmixing.shape[0]).any()):
+        raise ValueError('Invalid or duplicate ICA component index')
+    projection = np.eye(len(labels))-mixing[:, excluded]@unmixing[excluded]
+    if excluded.size and np.max(np.abs(unmixing[excluded]@projection)) >= 1e-5*max(1, np.max(np.abs(unmixing))):
+        raise ValueError('Excluded ICA components were not removed')
+    return labels, projection, excluded, error
 
 
 def sha(path):
@@ -87,8 +123,6 @@ def prepare_meg(root, source, index):
     from sklearn.linear_model import LinearRegression
     from sklearn.preprocessing import StandardScaler
     from sklearn.pipeline import make_pipeline
-    from scripts.prepare_hcp_m32 import farthest_sensors
-    from mtsspi.hcp_run_audit import ica_projection
     audit = json.loads((source/'continuous-audit.json').read_text())
     downloads = json.loads((source/'download-verification.json').read_text())
     ica = json.loads((source/'ica/download-verification.json').read_text())

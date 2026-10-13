@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
-from scripts.large_m_pair_baselines import assemble, standardize, tasks, write_part
-from scripts.prepare_hcp_m32 import farthest_sensors
+from scripts.large_m_pair_baselines import assemble, farthest_sensors, standardize, tasks, write_part
 
 
 def test_plan_has_expected_families_sizes_and_counts():
