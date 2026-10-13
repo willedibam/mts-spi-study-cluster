@@ -9,7 +9,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from scripts.benchmark_latex_style import latex_style,prepare_latex_figure
-from scripts.spi_feature_gallery import DEFAULT_SOURCE,DEFAULT_OUT
+from research.inference.benchmarks.spi_feature_gallery import DEFAULT_SOURCE,DEFAULT_OUT
 
 GROUPS=[('A–A','#0072B2','o'),('B–B','#D55E00','^'),('C–C','#009E73','s'),
         ('A–B','#CC79A7','D'),('A–C','#7B3294','P'),('B–C','#666666','X')]

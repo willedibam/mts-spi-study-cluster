@@ -46,7 +46,7 @@ Defensible now: "Within the existing finite CML sweep, an unlabeled SPI–SPI me
 
 Calling `Q_sel` an operational order parameter is a plausible scoped pilot interpretation. The unqualified physical sentence remains unproved because the archive has only a short crop, one physical size, no T/N scaling, and cannot exclude supertransients.
 
-Later cluster design: full-ring `N={128,256,512}`, prefixes `T={8192,16384}`, burn-in 65536, 24--48 seeds, alpha 0.01 globally and 0.002 over 1.68--1.80. Freeze modes and SPI transform first; require T convergence, sensible N behavior, stationary blocks, and seed-clustered held-out q--Q association. Current notebook: `notebooks/inference/cml-order-parameter-inference.ipynb`.
+Later cluster design: full-ring `N={128,256,512}`, prefixes `T={8192,16384}`, burn-in 65536, 24--48 seeds, alpha 0.01 globally and 0.002 over 1.68--1.80. Freeze modes and SPI transform first; require T convergence, sensible N behavior, stationary blocks, and seed-clustered held-out q--Q association. Current notebook: `notebooks/inference/cml-order-parameter-inference.ipynb (removed)`.
 
 ## Distinct literature-grounded future experiment
 

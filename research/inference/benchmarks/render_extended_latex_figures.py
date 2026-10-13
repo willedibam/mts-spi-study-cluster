@@ -11,7 +11,7 @@ from threadpoolctl import threadpool_limits
 from scripts.benchmark_latex_style import latex_style, prepare_latex_figure
 from research.inference.locking.cross_frequency_locking import _physics, STYLE, DELTA, BOUNDARY, GAMMAS, STEP, N_COMMUNITY
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[3]
 RESULTS=ROOT/'results/order-parameter-inference'
 OUT=RESULTS/'locking-composites-261008/latex'
 

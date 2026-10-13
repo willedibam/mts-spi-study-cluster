@@ -6,6 +6,6 @@ Does a uniform sample of channel dyads reproduce the SPI–SPI vector computed f
 - `large_m_var_replacement.py`: the VAR records that replaced the first panel's.
 - `scout_spi_pair_sampling.py`, `scout_spi_coordinate_sampling.py`: draw dyad samples from the full tables and measure the error.
 - `plot_large_m_pair_sampling.py`, `plot_pair_sampling_coordinate_gallery.py`: the convergence figures and coordinate gallery.
-- `notebooks/channel-pair-sampling.ipynb`: the summary notebook.
+- `research/methods/pair_sampling/notebooks/channel-pair-sampling.ipynb`: the summary notebook.
 
 These results are pyspi computation r7. pyspi's `compute_pairs` was validated against them (`pyspi-fork/bench/pair_sampling/validate.py retrospective`).

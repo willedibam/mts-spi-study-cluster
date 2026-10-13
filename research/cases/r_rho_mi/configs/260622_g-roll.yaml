@@ -6,7 +6,7 @@
 # Shared AR(1) mother per MTS; per-channel SNR spread (noise_std_variable) populates the MPI.
 # beta=3.142 (pi) LOCKED. corr(r,rho) falls monotonically with beta; beta=2pi breaks corr(r,rho)
 #   deeper (iter2 ~0.69 vs ~0.78) BUT over-saturates M->sign(z) (M-M rho 0.94->0.88, M-NM MI 0.49->0.24)
-#   -- a saturation/ties confound. pi keeps M cleanly monotone. See notebooks/presentation/r_rho_mi_figure_plan.md.
+#   -- a saturation/ties confound. pi keeps M cleanly monotone. See research/cases/r_rho_mi/figures/r_rho_mi_figure_plan.md.
 base_output_dir: data/r_rho_mi/260624_g-roll/
 timestamp: false
 pyspi_config: research/cases/r_rho_mi/spis/r_rho_mi.yaml

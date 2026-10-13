@@ -20,7 +20,7 @@ capture hierarchy **r ⊂ ρ ⊂ MI**. Read off pairwise SPI agreement: monotone
 from ρ; non-monotonicity breaks MI from {r,ρ}.
 
 ## Data (locked)
-- Generator `generate_filter_roll_mts`; config `configs/generate/r_rho_mi/260622_g-roll.yaml`.
+- Generator `generate_filter_roll_mts`; config `research/cases/r_rho_mi/configs/260622_g-roll.yaml`.
 - **β = π locked** (`260624_g-roll`, M=32, T=2000, 30 instances). β=2π (`260623_g-roll`) breaks
   corr(r,ρ) deeper (iter2 0.685 vs 0.780) BUT over-saturates M→sign(z): M-M ρ falls 0.935→0.876 and
   M-NM ⟨MI⟩ 0.49→0.24, so part of the extra break is a saturation/ties confound and the MI planes/

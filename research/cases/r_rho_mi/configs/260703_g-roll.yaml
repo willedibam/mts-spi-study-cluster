@@ -12,7 +12,7 @@
 #     (iter3 M-NM MI ~1.00 vs 0.82 at 2pi, which darkens the MI block; M-M rho 0.96 vs 0.94).
 #   noise_std_scale=5: E[kappa]=5 -> representative SNR mix (ultra-clean/clean/medium/med-weak) for the
 #     strength-of-dependency axis. NB scale is a corr(r,rho) confound: >~10 re-correlates r,rho and kills
-#     the break. std_i = 0.01*kappa, kappa~Geom(1/scale). See notebooks/presentation/r_rho_mi_figure_plan.md.
+#     the break. std_i = 0.01*kappa, kappa~Geom(1/scale). See research/cases/r_rho_mi/figures/r_rho_mi_figure_plan.md.
 base_output_dir: data/r_rho_mi/260703_g-roll/
 timestamp: false
 pyspi_config: research/cases/r_rho_mi/spis/r_rho_mi.yaml

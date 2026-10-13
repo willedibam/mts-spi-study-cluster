@@ -16,7 +16,7 @@ Both Gadi stores now expose `mts-spi-study/zenodo/7118947/`. The authoritative l
 
 ## Implemented boundary
 
-- `src/run_external_corpus.py` and `research/zenodo/atlas/configs/zenodo-7118947-p90.yaml` provide a dedicated YAML API. Each task reads one member directly from the shared NPZ, transposes to `T x M`, preserves source data and asks pyspi to z-score each process.
+- `src/mtsspi/run_corpus.py` and `research/zenodo/atlas/configs/zenodo-7118947-p90.yaml` provide a dedicated YAML API. Each task reads one member directly from the shared NPZ, transposes to `T x M`, preserves source data and asks pyspi to z-score each process.
 - The config requires an explicit RNG seed and the runner pins/restores NumPy/Python global state per dataset. Feature reconstruction accepts both legacy class/dataset and direct experiment/dataset layouts, but never mixes experiment banks.
 - Output is one atomic `spi_mpis.npz` plus `meta.json` per dataset; completion checks bind source/config/runner/compute/pyspi identities and validate MPI shape/catalogue.
 - Gadi uses one process/core/dataset through `nci-parallel`; no PBS array and no copied per-dataset input files. Source and outputs belong on gdata via a dataset symlink.

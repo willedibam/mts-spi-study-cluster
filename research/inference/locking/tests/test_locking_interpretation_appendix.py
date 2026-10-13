@@ -80,7 +80,7 @@ def test_delivered_copy_is_executed_and_preserves_prefix():
 
 
 def test_gallery_ranking_and_spearman():
-    from scripts.spi_feature_gallery import column_rho, ranking_indices
+    from research.inference.benchmarks.spi_feature_gallery import column_rho, ranking_indices
     from scipy.stats import spearmanr
     x=np.array([[1,4,1],[2,1,1],[3,3,1],[4,2,1]],float)
     rho=column_rho(x,np.arange(4))
@@ -92,7 +92,7 @@ def test_gallery_ranking_and_spearman():
 
 
 def test_correlation_endpoint_definition():
-    from scripts.spi_feature_gallery import correlation_endpoint
+    from research.inference.benchmarks.spi_feature_gallery import correlation_endpoint
     for name in ['corr_pearson_tau-20-sq','spearmanr','kendalltau-sq','xcorr-sq_max_sig-True',
                  'cov_EmpiricalCovariance','cov-sq_EmpiricalCovariance']:
         assert correlation_endpoint(name)
@@ -116,7 +116,7 @@ def test_m24_edge_profiles_use_all_directions_and_label_blind_selection():
 
 def test_m24_edge_profile_replay():
     import json
-    from scripts.spi_feature_gallery import DEFAULT_OUT
+    from research.inference.benchmarks.spi_feature_gallery import DEFAULT_OUT
     audit=json.loads((DEFAULT_OUT/'edge-profile-audit.json').read_text())
     assert audit['panels']==15 and audit['ordered_edges_per_panel']==552
     assert audit['max_replay_error']<1e-6
@@ -124,7 +124,7 @@ def test_m24_edge_profile_replay():
 
 def test_correlation_composition_preserves_global_ranking():
     import pandas as pd
-    from scripts.spi_feature_gallery import DEFAULT_OUT,correlation_endpoint
+    from research.inference.benchmarks.spi_feature_gallery import DEFAULT_OUT,correlation_endpoint
     all_rows=pd.read_csv(DEFAULT_OUT/'all-feature-rankings.csv')
     pairs=pd.read_csv(DEFAULT_OUT/'correlation-pair-rankings.csv')
     others=pd.read_csv(DEFAULT_OUT/'top20-at-most-one-correlation.csv')

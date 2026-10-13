@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import ConnectionPatch
-from src.utils import project_root
+from mtsspi.utils import project_root
 
 RUN = project_root() / "data/r_rho_mi/260624_g-roll"     # beta = pi
 ABBR = {"linear": "L", "monotonic": "M", "non-monotonic": "NM"}

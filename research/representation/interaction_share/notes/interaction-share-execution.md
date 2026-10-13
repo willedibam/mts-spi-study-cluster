@@ -52,7 +52,7 @@ Pin numerical libraries to two threads locally; production pyspi uses one thread
 
 For production submission, follow `HPC.md`: verify allocation, queue, storage and both repository commits; sync committed code and the source archive through the data mover. Validate the archive on Gadi, then run the two record smoke and representative-node gate. Use the existing external corpus farm launcher with separate source/shift index files, selecting resources from measured runtime tails. No new scientific generator or observation grid is needed.
 
-The audited extraction-to-fit worker is `jobs/gadi/run_interaction_share_analysis.pbs`, submitted with dependencies on both production farms. Once all 520 MPIs pass their source/config/output audit:
+The audited extraction-to-fit worker is `jobs/gadi/run_interaction_share_analysis.pbs (removed)`, submitted with dependencies on both production farms. Once all 520 MPIs pass their source/config/output audit:
 
 ```sh
 .venv/bin/python -m research.representation.representation_state.build_representation_state_bank --config research/representation/interaction_share/configs/analysis/interaction-share-260908.yaml --data data/interaction_share_260908 --mpi-root /g/data/ql44/we2614/interaction_share_260908/mpis/interaction-share-260908 --output results/interaction_share_260908/features.npz
@@ -66,4 +66,4 @@ Rich marginals contain 23 summaries per SPI. All 289 p90 SPIs enter the bank; un
 
 Frozen-random controls use `research/representation/representation_state/run_representation_state_random_control.py` with `--source-family linear` or `tanh`, fresh outputs under `random/`, and the same training-selected PCA caps/ridge grid. Normalized shapes use the existing pilot runner with `--marginal-mode shape` and methods `m-pca m-pls m+z-pca m+z-pls`; reported names are `shape-*`. The RBF control uses methods `m-rbf z-rbf`, with `m-rbf --marginal-mode shape` separately. These leave the primary protocol/data unchanged and are explicitly post-result analyses. Source code hashes in fits identify the actual versions; completed older outputs retain strict resume identities.
 
-`check_interaction_share_linearization.py` verifies the mean-Jacobian approximation against simulator replays; its oracle values never enter a fitted predictor. `jobs/gadi/run_interaction_share_alignment.pbs` generates three null banks from existing MPIs and fits matched PCA/ridge and PLS controls. No new pyspi is needed.
+`check_interaction_share_linearization.py` verifies the mean-Jacobian approximation against simulator replays; its oracle values never enter a fitted predictor. `jobs/gadi/run_interaction_share_alignment.pbs (removed)` generates three null banks from existing MPIs and fits matched PCA/ridge and PLS controls. No new pyspi is needed.

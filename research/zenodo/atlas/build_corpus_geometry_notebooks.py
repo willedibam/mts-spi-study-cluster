@@ -137,7 +137,7 @@ plt.show()
 The original proof used $n_{\mathrm{neighbors}}=9$ and
 $\mathrm{min\_dist}=0.75$. Here it is applied to the legacy PCA50 coordinates
 rather than all retained features; the exact all-feature reproduction remains
-available through `scripts/legacy_compat/proof_of_principle.py`. The PCA step makes
+available in the history before October 2026 (`scripts/legacy_compat/proof_of_principle.py`). The PCA step makes
 the notebook tractable and is the only deliberate deviation.
 """
             ),

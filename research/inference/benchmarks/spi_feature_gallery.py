@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from research.inference.locking.locking_feature_sensitivity_261007 import project
 from scripts.benchmark_latex_style import latex_style, prepare_latex_figure
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[3]
 DEFAULT_SOURCE=ROOT/'results/order-parameter-inference/cross-frequency-locking-snr-261006'
 DEFAULT_OUT=ROOT/'results/order-parameter-inference/locking-features-m24-261009'
 

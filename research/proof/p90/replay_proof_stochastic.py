@@ -21,7 +21,7 @@ NAMES = ("bary_sgddtw_mean", "bary_sgddtw_max", "bary-sq_sgddtw_mean", "bary-sq_
 NAMES += tuple(f"{prefix}_{estimator}" for estimator in ("EllipticEnvelope", "MinCovDet")
                for prefix in ("cov", "cov-sq", "prec", "prec-sq"))
 POLICY = "isolated-stochastic-numpy-python-seed-v1"
-CONFIG = project_root() / "configs/pyspi/cases/proof_stochastic_replay.yaml"
+CONFIG = project_root() / "research/proof/p90/spis/proof_stochastic_replay.yaml"
 
 
 def _write_npz(path, arrays):

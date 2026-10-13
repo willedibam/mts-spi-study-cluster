@@ -169,7 +169,7 @@ def test_unified_rejects_corpus_variance_filter(tmp_path: Path) -> None:
 def test_kuramoto_subset_matches_frozen_final_core() -> None:
     root = Path(__file__).resolve().parents[1]
     subset = (
-        root / "configs/pyspi/subsets/kuramoto-final-core.txt"
+        root / "research/inference/kuramoto/spis/kuramoto-final-core.txt"
     ).read_text(encoding="utf-8").splitlines()
     model = root / "data/order_parameter/kuramoto_final_confirmation_contract/representation_model.npz"
     if not model.exists():
