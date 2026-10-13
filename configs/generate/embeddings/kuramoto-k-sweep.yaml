@@ -24,7 +24,7 @@
 # Downstream: meta.json stores generator.params.{K,omega_std,...}, variant, instance.
 base_output_dir: data/embeddings/kuramoto_k_sweep_260616/
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 110305
 save_heatmap: true

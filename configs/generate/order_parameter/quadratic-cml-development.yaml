@@ -1,6 +1,6 @@
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/quadratic-cml/runs/quadratic_cml_development
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 355974
 save_heatmap: false

@@ -143,3 +143,14 @@ def resolve_path(value: str | Path) -> Path:
     and relative paths taken from the repository root."""
     path = Path(os.path.expandvars(str(value)))
     return path if path.is_absolute() else project_root() / path
+
+
+def resolve_pyspi_config(value: str | Path) -> Path:
+    """An SPI-set config: the name of one bundled with pyspi (`benchmarked_p90`,
+    `fast`, ...) or a path to a study-specific YAML."""
+    from pyspi.calculator import resolve_config
+
+    text = str(value)
+    if "/" in text or text.endswith((".yaml", ".yml")):
+        return resolve_path(text)
+    return Path(resolve_config(text))

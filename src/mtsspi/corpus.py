@@ -32,7 +32,7 @@ from typing import Any
 import numpy as np
 
 from .provenance import array_sha256, file_sha256
-from .utils import load_yaml, resolve_path, slugify, to_relative
+from .utils import load_yaml, resolve_path, slugify, to_relative, resolve_pyspi_config
 
 SOURCE_FORMAT = "named-npz-v1"
 
@@ -106,7 +106,7 @@ class ArchiveCorpus:
             archive_sha256=expected_hash,
             source_axis_order=axis_order,  # type: ignore[arg-type]
             base_output_dir=resolve_path(payload["base_output_dir"]),
-            pyspi_config=resolve_path(payload["pyspi_config"]),
+            pyspi_config=resolve_pyspi_config(payload["pyspi_config"]),
             normalise=payload["normalise"],
             random_seed=random_seed,
         )

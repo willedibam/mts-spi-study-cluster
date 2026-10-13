@@ -7,6 +7,6 @@ source:
   - observation
   - process
 base_output_dir: /g/data/ql44/we2614/mts-spi-study/representation/synthetic/interaction-share/confirmation/interaction_share_confirmation_260908/mpis
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 random_seed: 260908

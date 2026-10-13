@@ -63,12 +63,6 @@ def stochastic_config(tmp_path):
     return path
 
 
-def test_pyspi_that_draws_from_the_global_stream_is_refused(monkeypatch, stochastic_config):
-    monkeypatch.setattr(compute, "pyspi_pins_estimator_seeds", lambda: False)
-    with pytest.raises(RuntimeError, match="r8 or later"):
-        run_pyspi(_series(), config_path=stochastic_config, n_jobs=1, random_seed=7)
-
-
 def test_one_result_for_any_worker_count_and_seed(stochastic_config):
     """Stochastic estimators included: values, missing entries and errors."""
     runs = [run_pyspi(_series(), config_path=stochastic_config, n_jobs=n_jobs,

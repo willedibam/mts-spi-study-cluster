@@ -28,7 +28,7 @@
 # slowest, omega=degree_min=3) so phase/coherence SPIs see enough oscillation cycles.
 base_output_dir: data/embeddings/kuramoto_explosive_260616/
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 110305
 save_heatmap: true

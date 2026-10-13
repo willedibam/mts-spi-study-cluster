@@ -7,6 +7,6 @@ source:
   - process
   - observation
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/representation/synthetic/lag-surrogate-261004/mpis
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 random_seed: 261016

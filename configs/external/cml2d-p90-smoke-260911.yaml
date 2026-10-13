@@ -7,6 +7,6 @@ source:
   - process
   - observation
 base_output_dir: data/order_parameter/cml2d_period_doubling_260911/p90-smoke/mpi
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 random_seed: 260911

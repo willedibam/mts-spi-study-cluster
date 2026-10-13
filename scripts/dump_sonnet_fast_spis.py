@@ -1,5 +1,5 @@
 """
-Dump pyspi-internal SPI names produced by configs/pyspi/sonnet.yaml.
+Dump pyspi-internal SPI names produced by pyspi's bundled `sonnet` set.
 
 Instantiates a pyspi Calculator on a dummy (M=5, T=500) dataset, reads the
 SPI identifiers pyspi generates from (class + config kwargs), and writes
@@ -23,8 +23,10 @@ from pathlib import Path
 import numpy as np
 from pyspi.calculator import Calculator
 
+from mtsspi.utils import resolve_pyspi_config
+
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG = ROOT / "configs/pyspi/sonnet.yaml"
+CONFIG = resolve_pyspi_config("sonnet")
 OUT = ROOT / "features/spis/sonnet_spis.txt"
 
 

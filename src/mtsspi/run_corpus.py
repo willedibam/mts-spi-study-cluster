@@ -13,7 +13,6 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-import random
 import time
 from typing import Any, Sequence
 
@@ -177,24 +176,17 @@ def run_dataset(
     seed = corpus.seed(entry)
     sampled = corpus.pair_tolerance is not None
     start = time.perf_counter()
-    numpy_state = np.random.get_state()
-    python_state = random.getstate()
-    try:
-        np.random.seed(seed)
-        random.seed(seed)
-        result = run_pyspi(
-            data,
-            config_path=corpus.pyspi_config,
-            normalise=corpus.normalise,
-            n_jobs=n_jobs,
-            random_seed=seed,
-            **({"pair_tolerance": corpus.pair_tolerance, "pair_seed": seed} if sampled else {}),
-            # pyspi's per-SPI checkpoints: a killed recording resumes from them.
-            **({"checkpoint_dir": dataset_dir / "checkpoints"} if checkpoints else {}),
-        )
-    finally:
-        np.random.set_state(numpy_state)
-        random.setstate(python_state)
+    # run_pyspi seeds the global generators with `seed` and restores them after.
+    result = run_pyspi(
+        data,
+        config_path=corpus.pyspi_config,
+        normalise=corpus.normalise,
+        n_jobs=n_jobs,
+        random_seed=seed,
+        **({"pair_tolerance": corpus.pair_tolerance, "pair_seed": seed} if sampled else {}),
+        # pyspi's per-SPI checkpoints: a killed recording resumes from them.
+        **({"checkpoint_dir": dataset_dir / "checkpoints"} if checkpoints else {}),
+    )
     elapsed = time.perf_counter() - start
     atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
     meta = _metadata(corpus, entry, result, source, identity)

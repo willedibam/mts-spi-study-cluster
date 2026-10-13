@@ -1,6 +1,6 @@
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/order-parameter-inference/desai-zwanzig/runs/desai_zwanzig_fine_boundary
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 1047293
 save_heatmap: false

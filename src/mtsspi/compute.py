@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from contextlib import contextmanager
-from functools import partial
 import random
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
@@ -16,7 +15,11 @@ from pyspi.calculator import Calculator
 
 @contextmanager
 def seeded_estimator_rng(seed: int | None):
-    """Isolate the legacy RNGs used by serial stochastic estimators."""
+    """Seed the global NumPy and Python generators for the block, then restore them.
+
+    pyspi's bundled SPI sets do not read them (their stochastic estimators
+    carry fixed seeds); this covers any SPI outside those sets that does.
+    """
     if seed is None:
         yield
         return
@@ -28,20 +31,6 @@ def seeded_estimator_rng(seed: int | None):
     finally:
         np.random.set_state(numpy_state)
         random.setstate(python_state)
-
-
-def pyspi_pins_estimator_seeds() -> bool:
-    """Whether this pyspi fixes its stochastic estimators' seeds itself.
-
-    From computation revision r8 the sgddtw barycenter and the MinCovDet and
-    EllipticEnvelope fits each own a fixed-seed generator, so a value does not
-    depend on evaluation order, on the caller's seed, or on which process
-    computed it. Earlier revisions draw from the global NumPy stream, so
-    :func:`run_pyspi` refuses them.
-    """
-    from pyspi.statistics.distance import Barycenter
-
-    return isinstance(Barycenter(mode="sgddtw")._fn, partial)
 
 
 @dataclass
@@ -87,10 +76,6 @@ def run_pyspi(
     pair_tolerance: float | None = None,
     pair_seed: int | None = None,
 ) -> ComputeResult:
-    if not pyspi_pins_estimator_seeds():
-        raise RuntimeError(
-            "pyspi computation r8 or later is required: earlier revisions draw "
-            "estimator randomness from the global stream.")
     if timeseries.ndim != 2:
         raise ValueError("Timeseries array must be 2D (T x M).")
     M = timeseries.shape[1]

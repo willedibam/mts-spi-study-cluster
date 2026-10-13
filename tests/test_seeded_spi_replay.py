@@ -61,3 +61,15 @@ def test_partial_replay_preserves_other_values_and_resumes(tmp_path):
     assert json.loads(meta_path.read_text())["pyspi"]["errors"] == {"untouched": "original"}
     with np.load(tmp_path / "stochastic-seeded-replay.npz") as archive:
         np.testing.assert_array_equal(archive[f"original_{NAMES[0]}"], original[NAMES[0]])
+
+
+def test_block_runs_under_the_seed_and_leaves_the_generators_as_found():
+    np.random.seed(23); random.seed(23)
+    expected = (np.random.random(), random.random())
+    np.random.seed(23); random.seed(23)
+    with seeded_estimator_rng(1729):
+        inside = (np.random.random(), random.random())
+    assert (np.random.random(), random.random()) == expected
+    np.random.seed(1729); random.seed(1729)
+    assert inside == (np.random.random(), random.random())
+

@@ -2,7 +2,7 @@
 # Total ring coupling is twice the per-neighbour weight; no stability rescaling is triggered.
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/proof/refresh-260924/data
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 110305
 save_heatmap: false

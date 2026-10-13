@@ -24,7 +24,7 @@
 
 base_output_dir: data/260726_r1_demo/
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 110305
 save_heatmap: false

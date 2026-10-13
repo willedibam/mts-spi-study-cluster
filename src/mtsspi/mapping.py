@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from .utils import (
+    resolve_pyspi_config,
     resolve_path,
     class_dir_name,
     load_yaml,
@@ -118,7 +119,7 @@ class ExperimentConfig:
         tolerance = data.get("pair_tolerance")
         return cls(
             base_output_dir=resolve_path(data.get("base_output_dir", "data")),
-            pyspi_config=resolve_path(data["pyspi_config"]),
+            pyspi_config=resolve_pyspi_config(data["pyspi_config"]),
             normalise=bool(data.get("normalise", False)),
             rng_seed=int(data.get("rng_seed", 0)),
             pair_tolerance=None if tolerance is None else float(tolerance),

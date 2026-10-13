@@ -5,7 +5,7 @@
 # M grids in one dir would corrupt both the data and the feature matrix).
 base_output_dir: /g/data/ql44/we2614/mts-spi-study/proof/data/development/multi_p90_260701/
 timestamp: false
-pyspi_config: configs/pyspi/benchmarked_p90.yaml
+pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 110305
 save_heatmap: true
