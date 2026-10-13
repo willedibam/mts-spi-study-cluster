@@ -22,9 +22,9 @@ def test_entropy_against_scipy_and_recording_replay():
 def test_p90_readout_uses_observed_not_population_pearson(tmp_path,monkeypatch):
     import json
     import pandas as pd
+    from mtsspi import figures
     from scripts.analyze_tail_alignment import analyze
-    from scripts import plot_large_m_pair_sampling
-    monkeypatch.setattr(plot_large_m_pair_sampling,'figure_style',lambda:None)
+    monkeypatch.setattr(figures,'figure_style',lambda:None)
     rows=[];raw={};rng=np.random.default_rng(42)
     for control in range(3):
         for seed in range(8):

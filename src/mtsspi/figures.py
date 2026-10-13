@@ -1,8 +1,9 @@
-"""Figure helpers shared by the report and case-study plots: one serif style,
-one way to save a figure, and the raincloud mark."""
+"""Figure helpers shared across studies: two serif styles (`style` without LaTeX,
+`figure_style` with it), one way to save a figure, and the raincloud mark."""
 from __future__ import annotations
 
 from pathlib import Path
+import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,3 +34,15 @@ def raincloud(ax, values, position, color, rng, width=.2):
             body.set_facecolor(color); body.set_edgecolor('none'); body.set_alpha(.25)
     ax.scatter(position-rng.uniform(.025, width*.55, len(values)), values, color=color, s=7, alpha=.5, linewidths=0)
     ax.plot([position-width*.12, position+width*.12], [np.median(values)]*2, color=color, lw=1.6)
+
+
+def figure_style():
+    if not (shutil.which('latex') and shutil.which('dvipng')):
+        raise RuntimeError('Requested LaTeX rendering requires latex and dvipng.')
+    plt.rcParams.update({'text.usetex': True, 'font.family': 'serif',
+        'font.serif': ['Computer Modern Roman'], 'mathtext.fontset': 'cm',
+        'font.size': 9, 'axes.titlesize': 10, 'axes.labelsize': 9,
+        'axes.spines.top': False, 'axes.spines.right': False,
+        'xtick.direction': 'out', 'ytick.direction': 'out', 'legend.frameon': False,
+        'lines.linewidth': 1.7, 'lines.markersize': 2.7,
+        'figure.constrained_layout.use': True, 'savefig.bbox': 'tight'})

@@ -18,7 +18,7 @@ def analyze(data,out):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import figure_style
+    from mtsspi.figures import figure_style
     manifest=json.loads((data/'manifest.json').read_text())
     rows=pd.DataFrame(manifest['rows'])
     bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)

@@ -16,7 +16,7 @@ def report(folder):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import figure_style
+    from mtsspi.figures import figure_style
     rows=pd.read_csv(folder/'rows.csv');oa=pd.read_csv(folder/'continuum.csv')
     boundary=json.loads((folder/'report.json').read_text())['hopf'][0]
     figure_style();fig,axes=plt.subplots(2,3,figsize=(11,6),constrained_layout=True)

@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from mtsspi.spi_spi_contract import _pearson_corr_matrix, build_unified_feature_values
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[3]
 OUT=ROOT/'results/spi_pair_sampling_260916'
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from scripts.large_m_var_replacement import generate, transition_matrix
+from research.methods.pair_sampling.large_m_var_replacement import generate, transition_matrix
 
 
 @pytest.mark.parametrize('topology',['sparse','dense'])

@@ -1,5 +1,5 @@
 import numpy as np
-from scripts.scout_spi_pair_sampling import pair_vectors,correlation_features
+from research.methods.pair_sampling.scout_spi_pair_sampling import pair_vectors,correlation_features
 from mtsspi.spi_spi_contract import build_unified_feature_values
 
 

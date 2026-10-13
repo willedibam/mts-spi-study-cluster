@@ -107,7 +107,7 @@ def plot(scores,rows,old_fit,held,out):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import figure_style
+    from mtsspi.figures import figure_style
     figure_style();fig,axes=plt.subplots(1,2,figsize=(9,3.5),constrained_layout=True)
     methods=[('frozen_z_PC1','Frozen SPI--SPI PC1','#0072B2'),('frozen_mean_PC1','Frozen mean PC1','#E69F00'),
         ('z_PC1','Enlarged-training SPI--SPI PC1','#56B4E9'),('mean_PC1','Enlarged-training mean PC1','#D55E00')]

@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from scripts.large_m_pair_baselines import assemble, farthest_sensors, standardize, tasks, write_part
+from research.methods.pair_sampling.large_m_pair_baselines import assemble, farthest_sensors, standardize, tasks, write_part
 
 
 def test_plan_has_expected_families_sizes_and_counts():

@@ -5,7 +5,7 @@ Research code, experiments and notebooks for SPI–SPI representations and order
 - [Workstream context](docs/context/INDEX.md): current questions, evidence and reproduction pointers.
 - [Cluster operations](HPC.md) and [storage layout](docs/operations/gadi-storage-layout.md).
 - `notebooks/embeddings/` and `notebooks/inference/`: retained study notebooks.
-- `notebooks/cases/`, `notebooks/optimization/`, `notebooks/benchmark/` and `notebooks/presentation/`: examples, optimisation, benchmarks and presentation material.
+- `notebooks/cases/`, `notebooks/optimization/`, `research/methods/spi_benchmark/notebooks/` and `notebooks/presentation/`: examples, optimisation, benchmarks and presentation material.
 - [`research/`](research/README.md): one folder per research stream and study (being populated; `cases/` first).
 - `src/mtsspi/`: the library (runner, corpora, generators, features). `scripts/`: command-line entry points and plotting. `configs/`, `jobs/` and `tests/`: experiment definitions, cluster launchers and tests.
 

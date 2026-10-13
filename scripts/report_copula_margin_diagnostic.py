@@ -11,7 +11,7 @@ def run():
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import figure_style
+    from mtsspi.figures import figure_style
     out=d.OUT.parent;rows=pd.read_csv(d.OUT/'rows.csv');bank=np.load(d.OUT/'features.npz')
     metadata=json.loads((d.OUT/'report.json').read_text())
     assert metadata['source_sha256']==sha(d.__file__)

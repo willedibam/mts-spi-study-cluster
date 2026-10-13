@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from scripts.scout_spi_pair_sampling import ROOT, correlation_features, pair_vectors
+from research.methods.pair_sampling.scout_spi_pair_sampling import ROOT, correlation_features, pair_vectors
 
 OUT = ROOT / 'results/spi_pair_sampling_260917'
 

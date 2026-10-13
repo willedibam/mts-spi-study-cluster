@@ -11,9 +11,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from scripts.plot_large_m_pair_sampling import COLORS, OUT, ROOT, X_LABEL, draw_paths, figure_style
+from mtsspi.figures import figure_style
+from research.methods.pair_sampling.plot_large_m_pair_sampling import COLORS, OUT, ROOT, X_LABEL, draw_paths
 from matplotlib.lines import Line2D
-from scripts.scout_spi_pair_sampling import correlation_features, pair_vectors
+from research.methods.pair_sampling.scout_spi_pair_sampling import correlation_features, pair_vectors
 
 PEARSON = 'cov_EmpiricalCovariance'  # Inputs have channel variance one (ddof=0).
 PLV = 'plv_multitaper_mean_fs-1_fmin-0_fmax-0-5'

@@ -7,7 +7,7 @@ from scipy.stats import spearmanr,t
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scripts.plot_large_m_pair_sampling import figure_style
+from mtsspi.figures import figure_style
 from scripts.spi_baseline_exploration import sha
 
 ROOT=Path(__file__).resolve().parents[1]

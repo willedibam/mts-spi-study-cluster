@@ -13,6 +13,8 @@ import shutil
 import warnings
 
 import matplotlib
+
+from mtsspi.figures import figure_style
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -20,10 +22,10 @@ from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 
-from scripts.scout_spi_pair_sampling import pair_vectors, correlation_features
+from research.methods.pair_sampling.scout_spi_pair_sampling import pair_vectors, correlation_features
 from mtsspi.spi_spi_contract import build_unified_feature_values
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 BASE = ROOT/'results/large_m_pair_baselines_260917'
 OUT = BASE/'sampling-m64-m100'
 FAMILIES = ['CML', 'MEG', 'VAR sparse', 'VAR dense']
@@ -125,18 +127,6 @@ def process_case(arguments):
 
 def sampling_budgets(d):
     return np.array(sorted({min(d,b) for b in [8,16,32,50,100,200,400,800,1600,3200,6400,12800,25600,d]}))
-
-
-def figure_style():
-    if not (shutil.which('latex') and shutil.which('dvipng')):
-        raise RuntimeError('Requested LaTeX rendering requires latex and dvipng.')
-    plt.rcParams.update({'text.usetex': True, 'font.family': 'serif',
-        'font.serif': ['Computer Modern Roman'], 'mathtext.fontset': 'cm',
-        'font.size': 9, 'axes.titlesize': 10, 'axes.labelsize': 9,
-        'axes.spines.top': False, 'axes.spines.right': False,
-        'xtick.direction': 'out', 'ytick.direction': 'out', 'legend.frameon': False,
-        'lines.linewidth': 1.7, 'lines.markersize': 2.7,
-        'figure.constrained_layout.use': True, 'savefig.bbox': 'tight'})
 
 
 def draw_paths(ax, budgets, values):

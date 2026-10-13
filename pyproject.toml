@@ -79,3 +79,6 @@ dev = ["pytest", "ipykernel", "nbclient", "nbconvert"]
 # Tests import the checkout they sit in, not another checkout's editable install.
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
+testpaths = ["tests", "research"]
+# Study tests live in research/<stream>/<study>/tests/ and may share basenames.
+addopts = "--import-mode=importlib"

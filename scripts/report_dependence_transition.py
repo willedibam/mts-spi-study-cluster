@@ -30,7 +30,7 @@ def analyze(folder):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import figure_style
+    from mtsspi.figures import figure_style
     rows=pd.read_csv(folder/'rows.csv');features=np.load(folder/'probes.npz')
     metrics=[];scores=[]
     figure_style();fig,axes=plt.subplots(4,3,figsize=(11,10),constrained_layout=True)

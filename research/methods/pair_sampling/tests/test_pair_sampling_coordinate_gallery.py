@@ -1,6 +1,6 @@
 import numpy as np
 
-from scripts.plot_pair_sampling_coordinate_gallery import sample_examples
+from research.methods.pair_sampling.plot_pair_sampling_coordinate_gallery import sample_examples
 
 
 def test_gallery_matches_selected_coordinates_of_full_catalogue():
@@ -24,7 +24,7 @@ def test_covariance_is_pearson_for_variance_one_prepared_inputs():
 
 def test_all_draw_paths_use_requested_opacity():
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import draw_paths
+    from research.methods.pair_sampling.plot_large_m_pair_sampling import draw_paths
     fig, ax = plt.subplots()
     draw_paths(ax, np.array([8, 16, 32]), np.zeros((3, 128)))
     assert len(ax.lines) == 128

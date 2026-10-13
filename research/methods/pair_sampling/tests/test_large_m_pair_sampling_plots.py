@@ -1,5 +1,5 @@
 import numpy as np
-from scripts.plot_large_m_pair_sampling import metrics, family, sampling_budgets
+from research.methods.pair_sampling.plot_large_m_pair_sampling import metrics, family, sampling_budgets
 
 
 def test_error_does_not_hide_undefined_reference_coordinates():
@@ -39,7 +39,7 @@ def test_large_budgets_extend_without_changing_existing_small_budgets():
 
 
 def test_single_exceptional_orientation_can_determine_feature_validity():
-    from scripts.scout_spi_pair_sampling import correlation_features
+    from research.methods.pair_sampling.scout_spi_pair_sampling import correlation_features
     pairs = np.ones((2, 3, 2))
     pairs[0, 2, 1] = .6
     pairs[1] = np.arange(6).reshape(3, 2)

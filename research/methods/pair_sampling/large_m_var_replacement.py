@@ -11,7 +11,7 @@ import numpy as np
 from scipy.linalg import solve_discrete_lyapunov
 import yaml
 
-from scripts.large_m_pair_baselines import sha, standardize
+from research.methods.pair_sampling.large_m_pair_baselines import sha, standardize
 
 
 def transition_matrix(m, topology, seed):

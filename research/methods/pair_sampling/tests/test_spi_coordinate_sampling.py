@@ -1,5 +1,5 @@
 import numpy as np
-from scripts.scout_spi_coordinate_sampling import coordinate_statistics
+from research.methods.pair_sampling.scout_spi_coordinate_sampling import coordinate_statistics
 
 
 def test_bias_variance_rmse_identity_and_exact_coordinate():

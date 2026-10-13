@@ -79,7 +79,7 @@ def analyze(data,out):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from scripts.plot_large_m_pair_sampling import figure_style
+    from mtsspi.figures import figure_style
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
     arrays=np.load(out/'features.npz');np.testing.assert_array_equal(arrays['row_id'],rows.row_id)
     metrics=[];all_scores=[];settings={}
