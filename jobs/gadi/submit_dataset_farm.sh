@@ -3,6 +3,7 @@ set -euo pipefail
 
 config="${1:?usage: $0 EXPERIMENT_CONFIG}"
 test -f "$config"
+source jobs/gadi/require_synced_source.sh
 
 module purge
 module load python3/3.12.1

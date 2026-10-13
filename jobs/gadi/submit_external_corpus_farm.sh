@@ -5,6 +5,7 @@ config="${1:?usage: $0 CORPUS_CONFIG [INDEX_FILE]}"
 index_file="${2:-}"
 test -f "$config"
 [[ -z "$index_file" ]] || test -f "$index_file"
+source jobs/gadi/require_synced_source.sh
 
 module purge
 module load python3/3.12.1
