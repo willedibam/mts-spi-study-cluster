@@ -15,7 +15,7 @@ from sklearn.decomposition import PCA
 from umap import UMAP
 import yaml
 
-from scripts.refresh_case_figures import style, save, raincloud
+from mtsspi.figures import style, save, raincloud
 
 ROOT=Path(__file__).resolve().parents[1]
 PROTOCOL=ROOT/'configs/analysis/proof-cases-refresh-260924.yaml'

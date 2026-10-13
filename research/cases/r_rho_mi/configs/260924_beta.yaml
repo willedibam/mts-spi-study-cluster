@@ -1,7 +1,7 @@
 # Betas share mother/noise draws within each class and instance. All-linear baseline computed once.
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/cases/r-rho-mi-260924/data
 timestamp: false
-pyspi_config: configs/pyspi/cases/r_rho_mi_260924.yaml
+pyspi_config: research/cases/r_rho_mi/spis/r_rho_mi_260924.yaml
 normalise: false
 rng_seed: 260924
 save_heatmap: false

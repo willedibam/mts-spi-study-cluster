@@ -58,10 +58,11 @@ process-features = "mtsspi.process_features:main"
 find-distributions = "mtsspi.find_non_overlapping_distributions:main"
 corpus-geometry = "mtsspi.run_corpus_geometry:main"
 
-# The library is src/mtsspi; scripts/ holds command-line entry points.
+# The library is src/mtsspi; scripts/ holds command-line entry points; research/
+# holds each study's own code, configs and notebooks.
 [tool.setuptools.packages.find]
 where = ["src", "."]
-include = ["mtsspi*", "scripts*"]
+include = ["mtsspi*", "scripts*", "research*"]
 
 
 [build-system]

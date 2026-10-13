@@ -1,15 +1,15 @@
 """Generate sweep configs from a base YAML by overriding one parameter at a time.
 
 Usage:
-    python scripts/gen_sweep_configs.py
+    python research/cases/r_rho_mi/gen_sweep_configs.py
 """
 
 import copy
 import yaml
 from pathlib import Path
 
-BASE_CONFIG = "configs/generate/r_rho_mi/260323_g-tanhsin_small.yaml"
-OUT_DIR = Path("configs/generate/r_rho_mi/sweep_260323")
+BASE_CONFIG = "research/cases/r_rho_mi/configs/260323_g-tanhsin_small.yaml"
+OUT_DIR = Path("research/cases/r_rho_mi/configs/sweep_260323")
 
 # Each sweep: (param_name, {yaml_key_in_base_params: value}, output_dir_suffix)
 # Baseline: ar1_a=0.8, noise_std=0.1, k=6.283 (2pi)

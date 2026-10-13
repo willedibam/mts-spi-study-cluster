@@ -9,7 +9,7 @@ from sklearn.decomposition import PCA
 from umap import UMAP
 from threadpoolctl import threadpool_limits
 from scripts.build_lag_surrogate import DATA,OUT,ROOT,RUN
-from scripts.refresh_case_figures import style,save
+from mtsspi.figures import style, save
 
 COLORS=['#0072B2','#D55E00']
 LABELS=['Alternating lag','Shared-phase surrogate']

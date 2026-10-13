@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix, silhouette_score
 from umap import UMAP
 
-from scripts.refresh_case_figures import save, style
+from mtsspi.figures import save, style
 from scripts.scout_diverse_marginal_match import FAMILIES, OUT, ROOT, RUN, SEED
 from scripts.spi_baseline_exploration import project_features, sha
 from mtsspi.corpus_geometry import fit_geometry_transform

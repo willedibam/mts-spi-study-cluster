@@ -13,7 +13,7 @@ from scripts.build_pearson_size_match import ROOT, DATA, OUT, RUN
 from scripts.analyze_pearson_size_match import rows
 from scripts.report_pearson_strength_match import LABELS, COLORS
 from scripts.spi_baseline_exploration import project_features
-from scripts.refresh_case_figures import style, save
+from mtsspi.figures import style, save
 
 MARKERS = {100: 'o', 500: 's', 1000: '^'}
 # Scatter area, in points squared: sublinear in the number of channels.

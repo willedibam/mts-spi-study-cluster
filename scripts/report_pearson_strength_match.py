@@ -10,7 +10,7 @@ from sklearn.decomposition import PCA
 from threadpoolctl import threadpool_limits
 from scripts.build_pearson_strength_match import DATA, OUT, ROOT, RUN
 from scripts.analyze_pearson_strength_match import rows
-from scripts.refresh_case_figures import style, save
+from mtsspi.figures import style, save
 from scripts.spi_baseline_exploration import project_features
 
 LABELS = {'VAR-0.7': 'VAR', 'Wave': 'Wave', 'CML-1.895': 'CML',

@@ -2,7 +2,7 @@
 from pathlib import Path
 import nbformat as nbf
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 
 
 def build(kind):
@@ -20,7 +20,7 @@ ROOT = Path.cwd().resolve()
 while not (ROOT / 'src').is_dir() and ROOT != ROOT.parent:
     ROOT = ROOT.parent
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
-from scripts.refresh_case_figures import (analyze, plot_rainclouds, plot_mi_sensitivity, plot_spi_planes, plot_dtw_sweep)
+from research.cases.refresh_case_figures import analyze, plot_rainclouds, plot_mi_sensitivity, plot_spi_planes, plot_dtw_sweep
 DATA = ROOT / 'data/cases/{folder}/data'
 OUT = ROOT / 'results/cases/{folder}'
 # Analyse existing MPI archives; this never reruns pyspi.
@@ -51,7 +51,8 @@ All distances use the same squared-error cost and division by $\sqrt{T}$. The sh
             md('Averaging warp offsets across channels does not guarantee exact lag recovery for individual pairs. The optimal global shift can differ from the generating lag even without noise. Correlation between distance matrices describes agreement across pairs; it is not an alignment-accuracy score.')]
     cells.append(md('Generation and analysis choices are recorded in `configs/analysis/proof-cases-refresh-260924.yaml`. The helpers save SVG figures and PNG previews under the result directory. Earlier notebooks and result banks are preserved.'))
     nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})
-    path=ROOT/'notebooks/cases'/name;nbf.write(nb,path);print(path)
+    study='r_rho_mi' if is_mi else 'dtw_euclidean'
+    path=ROOT/'research/cases'/study/'notebooks'/name;nbf.write(nb,path);print(path)
 
 
 if __name__=='__main__':

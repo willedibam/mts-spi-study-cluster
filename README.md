@@ -6,6 +6,7 @@ Research code, experiments and notebooks for SPI–SPI representations and order
 - [Cluster operations](HPC.md) and [storage layout](docs/operations/gadi-storage-layout.md).
 - `notebooks/embeddings/` and `notebooks/inference/`: retained study notebooks.
 - `notebooks/cases/`, `notebooks/optimization/`, `notebooks/benchmark/` and `notebooks/presentation/`: examples, optimisation, benchmarks and presentation material.
+- [`research/`](research/README.md): one folder per research stream and study (being populated; `cases/` first).
 - `src/mtsspi/`: the library (runner, corpora, generators, features). `scripts/`: command-line entry points and plotting. `configs/`, `jobs/` and `tests/`: experiment definitions, cluster launchers and tests.
 
 Local datasets and feature banks live together under `data/`; see the [data layout](data/README.md). Analysis outputs live under `results/` with matching study groups. These directories are ignored apart from explicitly tracked documentation and selected results; a clone does not include the full datasets. Temporary review/render output belongs in ignored `tmp/`.

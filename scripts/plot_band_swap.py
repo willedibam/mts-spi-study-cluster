@@ -9,7 +9,7 @@ from threadpoolctl import threadpool_limits
 from scripts.build_band_swap import OUT
 from scripts.spi_baseline_exploration import ROOT
 from scripts.band_organization_experiment import covariance_layers
-from scripts.refresh_case_figures import style,save
+from mtsspi.figures import style, save
 
 
 def population():

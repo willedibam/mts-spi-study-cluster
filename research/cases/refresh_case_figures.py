@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 from scipy.stats import t as student_t
 
+from mtsspi.figures import raincloud, save, style
+
 R = 'cov_EmpiricalCovariance'
 RHO = 'spearmanr'
 MI = 'mi_kraskov_NN-4'
@@ -20,21 +22,6 @@ DTW = 'dtw_rmse'
 COLORS = ['#0072B2', '#D55E00', '#009E73']
 CASE_LABELS = {'iter1_L': 'Linear', 'iter2_LM': 'Linear + monotone', 'iter3_LMNM': '+ quadratic'}
 BETA_LABELS = {'beta-pi': r'$\beta=\pi$', 'beta-5': r'$\beta=5$', 'beta-2pi': r'$\beta=2\pi$'}
-
-
-def style():
-    plt.rcParams.update({'text.usetex': False, 'font.family': 'serif', 'font.serif': ['CMU Serif', 'DejaVu Serif'],
-                        'mathtext.fontset': 'cm', 'font.size': 9, 'axes.titlesize': 10,
-                        'axes.spines.top': False, 'axes.spines.right': False, 'legend.frameon': False,
-                        'xtick.direction': 'out', 'ytick.direction': 'out', 'figure.dpi': 180,
-                        'savefig.bbox': 'tight', 'axes.grid': False})
-
-
-def save(fig, output: Path, name: str):
-    output.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output / f'{name}.png', dpi=180)
-    fig.savefig(output / f'{name}.svg')
-    return fig
 
 
 def corr(a, b):
@@ -107,18 +94,6 @@ def analyze(root, kind, output):
                                         for key in ['r_mi', 'rho_mi']}
     (output / 'audit.json').write_text(json.dumps(audit, indent=2)+'\n')
     return frame
-
-
-def raincloud(ax, values, position, color, rng, width=.2):
-    values = np.asarray(values); values = values[np.isfinite(values)]
-    if len(values) > 2 and np.std(values) > 1e-9:
-        parts = ax.violinplot(values, positions=[position], widths=width, showextrema=False)
-        for body in parts['bodies']:
-            verts = body.get_paths()[0].vertices
-            verts[:, 0] = np.maximum(verts[:, 0], position)
-            body.set_facecolor(color); body.set_edgecolor('none'); body.set_alpha(.25)
-    ax.scatter(position-rng.uniform(.025, width*.55, len(values)), values, color=color, s=7, alpha=.5, linewidths=0)
-    ax.plot([position-width*.12, position+width*.12], [np.median(values)]*2, color=color, lw=1.6)
 
 
 def plot_rainclouds(frame, output):

@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import nbformat as nbf
 from scripts.scout_factor_channels import ROOT,OUT,RUN
-from scripts.refresh_case_figures import style,save
+from mtsspi.figures import style, save
 
 
 def report():

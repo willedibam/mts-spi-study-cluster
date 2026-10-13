@@ -17,7 +17,7 @@ from mtsspi.corpus_geometry import fit_geometry_transform
 from mtsspi.spi_spi_contract import build_unified_feature_values
 from mtsspi.provenance import array_sha256
 from mtsspi.utils import slugify
-from scripts.refresh_case_figures import style,save
+from mtsspi.figures import style, save
 
 
 def extract(data=DATA,out=OUT,corpus="native-gain-261003",row_limit=None):

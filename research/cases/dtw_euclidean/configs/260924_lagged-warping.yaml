@@ -1,7 +1,7 @@
 # Same generator/settings as April 13; fresh extraction with current distance implementations.
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/cases/dtw-euclidean-260924/data
 timestamp: false
-pyspi_config: configs/pyspi/cases/dtw_euclidean_norm.yaml
+pyspi_config: research/cases/dtw_euclidean/spis/dtw_euclidean_norm.yaml
 normalise: false
 rng_seed: 42
 save_heatmap: false

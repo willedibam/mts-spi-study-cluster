@@ -10,13 +10,13 @@ from mtsspi.generated_corpus import GeneratedCorpus
 
 
 @pytest.mark.parametrize("config", [
-    "embeddings/proof-p90-260924.yaml",
-    "r_rho_mi/260924_beta.yaml",
-    "dtw_euclidean/260924_lagged-warping.yaml",
+    "configs/generate/embeddings/proof-p90-260924.yaml",
+    "research/cases/r_rho_mi/configs/260924_beta.yaml",
+    "research/cases/dtw_euclidean/configs/260924_lagged-warping.yaml",
 ])
 def test_saved_input_equals_fresh_and_resumed_input(tmp_path, config):
     corpus = GeneratedCorpus.from_file(
-        Path(__file__).resolve().parents[1] / "configs/generate" / config)
+        Path(__file__).resolve().parents[1] / config)
     entry = corpus.entries()[0]
     spec = entry.spec
     spec.dataset_dir = tmp_path

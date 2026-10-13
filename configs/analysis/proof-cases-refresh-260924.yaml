@@ -66,9 +66,9 @@ proof:
     innovation_std: 0.1
     burn_in: 100
 r_rho_mi:
-  generation: configs/generate/r_rho_mi/260924_beta.yaml
+  generation: research/cases/r_rho_mi/configs/260924_beta.yaml
   expected_datasets: 350
-  spi_config: configs/pyspi/cases/r_rho_mi_260924.yaml
+  spi_config: research/cases/r_rho_mi/spis/r_rho_mi_260924.yaml
   expected_spis: 4
   primary:
   - cov_EmpiricalCovariance
@@ -86,15 +86,15 @@ r_rho_mi:
   uncertainty_unit: Independent MTS instance, never individual channel pair.
   instances_per_condition: 50
 dtw:
-  generation: configs/generate/dtw_euclidean/260924_lagged-warping.yaml
+  generation: research/cases/dtw_euclidean/configs/260924_lagged-warping.yaml
   expected_datasets: 350
-  spi_config: configs/pyspi/cases/dtw_euclidean_norm.yaml
+  spi_config: research/cases/dtw_euclidean/spis/dtw_euclidean_norm.yaml
   expected_spis: 3
   outer_correlation: Pearson across unique unordered channel pairs.
   normalization: Distances divided by sqrt(T), not by sqrt(warping-path length).
   qualification: Distance hierarchy is structural; optimal global lag need not equal
     the generating lag under warping.
   instances_per_condition: 50
-  extension_generation: configs/generate/dtw_euclidean/260924_lagged-warping-extra.yaml
+  extension_generation: research/cases/dtw_euclidean/configs/260924_lagged-warping-extra.yaml
 input_storage: New synthetic inputs saved at float64, identical to the arrays passed
   to pyspi.
