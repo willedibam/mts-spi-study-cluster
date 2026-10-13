@@ -17,7 +17,7 @@ from sklearn.mixture import GaussianMixture
 from threadpoolctl import threadpool_limits
 from umap import UMAP
 
-from .atlas_analysis import (
+from mtsspi.atlas_analysis import (
     cluster_medoids,
     cluster_tag_enrichment,
     density_subsample_stability,
@@ -31,8 +31,8 @@ from .atlas_analysis import (
     predictive_subsample_stability,
     procrustes_stability,
 )
-from .utils import load_yaml
-from .provenance import atomic_json, file_sha256
+from mtsspi.utils import load_yaml
+from mtsspi.provenance import atomic_json, file_sha256
 
 
 def _json_value(value: Any) -> Any:

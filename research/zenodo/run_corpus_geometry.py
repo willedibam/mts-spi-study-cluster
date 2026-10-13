@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from threadpoolctl import threadpool_limits
 
-from .corpus_geometry import (
+from mtsspi.corpus_geometry import (
     condensed_distances,
     fit_geometry_transform,
     fit_pca_projection,
@@ -21,7 +21,7 @@ from .corpus_geometry import (
     neighbour_overlap,
     retrieval_summary,
 )
-from .utils import load_yaml
+from mtsspi.utils import load_yaml, project_root
 
 
 def _atomic_npz(path: Path, **payload: Any) -> None:
@@ -232,7 +232,7 @@ def _run_study(
 def run(config_path: str | Path) -> pd.DataFrame:
     path = Path(config_path).resolve()
     config = load_yaml(path)
-    root = path.parents[2]
+    root = project_root()
     output_root = Path(config["output_dir"])
     if not output_root.is_absolute():
         output_root = root / output_root
