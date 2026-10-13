@@ -100,6 +100,10 @@ class ExternalCorpusConfig:
     pyspi_config: Path
     normalise: bool
     random_seed: int
+    # Optional `pair_tolerance:` in the YAML: compute a sample of channel dyads
+    # sized by pyspi's budget rule instead of every dyad (large M only). The
+    # sample is drawn with `random_seed`.
+    pair_tolerance: float | None = None
 
     @classmethod
     def from_file(cls, path: str | Path) -> "ExternalCorpusConfig":
@@ -128,7 +132,12 @@ class ExternalCorpusConfig:
         random_seed = payload.get("random_seed")
         if not isinstance(random_seed, int) or isinstance(random_seed, bool) or random_seed < 0:
             raise ValueError("random_seed must be an explicit non-negative integer")
+        pair_tolerance = payload.get("pair_tolerance")
+        if pair_tolerance is not None and not (
+                isinstance(pair_tolerance, float) and 0 < pair_tolerance < 1):
+            raise ValueError("pair_tolerance must be a float in (0, 1) when given")
         return cls(
+            pair_tolerance=pair_tolerance,
             path=config_path,
             name=name,
             archive=_resolve_path(source["archive"]),
@@ -352,6 +361,16 @@ def completion_error(
         return "normalisation mismatch"
     if meta.get("random_seed") != config.random_seed:
         return "random seed mismatch"
+    sampling = meta.get("pyspi", {}).get("sampling")
+    if (sampling or {}).get("tolerance") != config.pair_tolerance:
+        return "pair sampling mismatch"
+    if config.pair_tolerance is not None:
+        try:
+            with np.load(dataset_dir / "pairs.npz", allow_pickle=False) as held:
+                if held["pairs"].shape != (sampling["n_pairs"], 2):
+                    return "sampled pairs do not match the metadata"
+        except (OSError, KeyError, ValueError) as exc:
+            return f"invalid sampled pairs: {exc}"
     spi_names = [item.get("name") for item in meta.get("pyspi", {}).get("spis", [])]
     if not spi_names or any(not isinstance(name, str) for name in spi_names):
         return "missing SPI catalogue"
@@ -524,6 +543,8 @@ def run_dataset(
             n_jobs=n_jobs,
             random_seed=(config.random_seed
                          if n_jobs == 1 or pyspi_pins_estimator_seeds() else None),
+            **({} if config.pair_tolerance is None else
+               {"pair_tolerance": config.pair_tolerance, "pair_seed": config.random_seed}),
         )
     finally:
         np.random.set_state(numpy_state)
@@ -531,6 +552,11 @@ def run_dataset(
     elapsed = time.perf_counter() - start
     _atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
     meta = _metadata(config, entry, result, source, identity, elapsed)
+    if config.pair_tolerance is not None:
+        # Which entries of each matrix were computed; the rest are NaN.
+        _atomic_savez(dataset_dir / "pairs.npz", {"pairs": result.pairs})
+        meta["paths"]["pairs"] = "pairs.npz"
+        meta["pyspi"]["sampling"] = result.sampling
     meta["job"]["n_jobs"] = n_jobs
     meta["job"]["estimator_rng_policy"] = result.rng_policy or (
         "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled")

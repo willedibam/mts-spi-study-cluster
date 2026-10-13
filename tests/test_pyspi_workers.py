@@ -141,3 +141,68 @@ def test_runner_seeds_whenever_the_result_cannot_depend_on_workers(
         "isolated_serial" if n_jobs == 1 else "parallel_uncontrolled")
     assert job["peak_memory_mib"]["parent"] > 0
     assert corpus.completion_error(config, entry) is None
+
+
+def _real_corpus(tmp_path, pair_tolerance=None):
+    series = _series(T=150, M=6)
+    archive = tmp_path / "source.npz"
+    np.savez_compressed(
+        archive,
+        **{"only": series.T,
+           "__dataset_names__": np.asarray(["only"]),
+           "__labels_json__": np.asarray(['["synthetic"]']),
+           "__shapes__": np.asarray([[6, 150]], dtype=np.int32),
+           "__axis_order__": np.asarray(["process", "observation"])})
+    pyspi_config = tmp_path / "pyspi.yaml"
+    pyspi_config.write_text(STOCHASTIC_CONFIG, encoding="utf-8")
+    path = tmp_path / "corpus.yaml"
+    path.write_text("\n".join([
+        "name: fixture", "source:", "  format: named-npz-v1",
+        f"  archive: {archive}",
+        f"  sha256: {hashlib.sha256(archive.read_bytes()).hexdigest()}",
+        "  axis_order: [process, observation]",
+        f"base_output_dir: {tmp_path / ('sampled' if pair_tolerance else 'full')}",
+        f"pyspi_config: {pyspi_config}", "normalise: false", "random_seed: 1729",
+        *([f"pair_tolerance: {pair_tolerance}"] if pair_tolerance else []), ""]),
+        encoding="utf-8")
+    return corpus.ExternalCorpusConfig.from_file(path)
+
+
+@pytest.mark.skipif(not hasattr(compute.Calculator, "compute_pairs"),
+                    reason="this pyspi has no dyad sampling")
+def test_sampled_corpus_run_holds_the_full_run_at_its_dyads(tmp_path):
+    """Same archive layout; unsampled entries are NaN and the dyads are stored."""
+    outputs = {}
+    for label, tolerance in (("full", None), ("sampled", 0.5)):
+        config = _real_corpus(tmp_path, tolerance)
+        entry = corpus.load_inventory(config)[0]
+        directory = corpus.run_dataset(config, entry, n_jobs=1)
+        assert corpus.completion_error(config, entry) is None
+        with np.load(directory / "spi_mpis.npz") as archive:
+            outputs[label] = (directory, {name: archive[name] for name in archive.files})
+    directory, sampled = outputs["sampled"]
+    full = outputs["full"][1]
+    pairs = np.load(directory / "pairs.npz")["pairs"]
+    meta = json.loads((directory / "meta.json").read_text(encoding="utf-8"))
+    assert meta["pyspi"]["sampling"]["tolerance"] == 0.5
+    assert len(pairs) == meta["pyspi"]["sampling"]["n_pairs"] < 15
+    held = np.eye(6, dtype=bool)
+    held[pairs[:, 0], pairs[:, 1]] = held[pairs[:, 1], pairs[:, 0]] = True
+    assert list(sampled) == list(full)
+    for name, matrix in sampled.items():
+        assert np.array_equal(matrix[held], full[name][held]), name
+        assert np.isnan(matrix[~held]).all(), name
+
+    # A full-table config must not accept the sampled output, nor the reverse.
+    assert corpus.completion_error(
+        _real_corpus(tmp_path, 0.4), corpus.load_inventory(_real_corpus(tmp_path, 0.4))[0]
+    ) is not None
+
+
+def test_pair_tolerance_must_be_a_fraction(tmp_path):
+    config = _corpus(tmp_path)
+    text = config.path.read_text(encoding="utf-8")
+    for bad in ("3", "0.0", "true", "1.5"):
+        config.path.write_text(text + f"pair_tolerance: {bad}\n", encoding="utf-8")
+        with pytest.raises(ValueError, match="pair_tolerance"):
+            corpus.ExternalCorpusConfig.from_file(config.path)

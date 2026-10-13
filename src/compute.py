@@ -73,6 +73,11 @@ class ComputeResult:
     # "isolated_serial": this wrapper's overrides, one worker only.
     # "uncontrolled": neither.
     rng_policy: str | None = None
+    # Set for a sampled run (pyspi `compute_pairs`): the (b, 2) dyads whose
+    # entries the matrices hold -- every other off-diagonal entry is NaN
+    # because it was not computed -- and pyspi's record of the sample.
+    pairs: np.ndarray | None = None
+    sampling: Dict[str, Any] | None = None
 
 
 def run_pyspi(
@@ -85,6 +90,8 @@ def run_pyspi(
     resume: bool = True,
     mp_context: str | None = None,
     random_seed: int | None = None,
+    pair_tolerance: float | None = None,
+    pair_seed: int | None = None,
 ) -> ComputeResult:
     pinned = pyspi_pins_estimator_seeds()
     if random_seed is not None and n_jobs != 1 and not pinned:
@@ -116,14 +123,18 @@ def run_pyspi(
                 # These sklearn fits also use random initial subsets. Preserve
                 # pyspi's cache and its normal per-SPI failure handling.
                 spi._from_cache = partial(_seeded_call, spi._from_cache, random_seed)
+    run = dict(n_jobs=n_jobs, checkpoint_dir=checkpoint_dir, resume=resume,
+               mp_context=mp_context, progress=False)
     with seeded_estimator_rng(random_seed):
-        calc.compute(
-            n_jobs=n_jobs,
-            checkpoint_dir=checkpoint_dir,
-            resume=resume,
-            mp_context=mp_context,
-            progress=False,
-        )
+        if pair_tolerance is None:
+            calc.compute(**run)
+        elif not hasattr(calc, "compute_pairs"):
+            raise RuntimeError("This pyspi has no Calculator.compute_pairs; "
+                               "dyad sampling needs pyspi 3.1 or later.")
+        else:
+            # Sampled dyads only. calc.table then holds those entries and NaN
+            # elsewhere, so everything below treats it as a full table.
+            calc.compute_pairs(tolerance=pair_tolerance, seed=pair_seed, **run)
     info_map = _spi_info(calc.spis)
     spi_names = _extract_spi_names(calc.table)
     matrices: Dict[str, np.ndarray] = {}
@@ -151,6 +162,7 @@ def run_pyspi(
         timings=spi_timings, errors=dict(getattr(calc, "errors", {}) or {}),
         rng_policy=("pyspi_fixed_seeds" if pinned else
                     "isolated_serial" if random_seed is not None else "uncontrolled"),
+        pairs=getattr(calc, "pairs", None), sampling=getattr(calc, "sampling", None),
     )
 
 
