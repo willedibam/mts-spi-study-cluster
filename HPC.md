@@ -23,11 +23,10 @@ for i in $(seq 1 "$(python -m mtsspi.run_corpus --config corpus.yaml --count-onl
 
 # Gadi: one recording per core
 bash jobs/gadi/submit_farm.sh corpus.yaml [index-file]
-# several pyspi workers per recording
-CORES_PER_RECORDING=4 MEM_GB=<recordings x peak> bash jobs/gadi/submit_farm.sh corpus.yaml
-# dyad sampling: add `pair_tolerance: 0.03` to the YAML and name a pyspi with compute_pairs
-PYSPI_SOURCE=$MTS_SCRATCH/operations/sources/pyspi-pair-sampling-9fa9b91 \
-CORES_PER_RECORDING=4 MEM_GB=<recordings x peak> bash jobs/gadi/submit_farm.sh corpus.yaml
+# several pyspi workers per recording, with the pyspi that shares each SPI's pairs between them
+PYSPI_SOURCE=$MTS_SCRATCH/operations/sources/pyspi-pair-sampling-fd0de71 \
+CORES_PER_RECORDING=8 MEM_GB=<recordings x peak> bash jobs/gadi/submit_farm.sh corpus.yaml
+# dyad sampling: the same, with `pair_tolerance: 0.03` in the YAML (that pyspi has compute_pairs)
 ```
 
 Other options are environment variables: `START_INDEX`/`END_INDEX`, `NCPUS`, `WALLTIME`, `TASK_TIMEOUT`, `WORKERS`. `python -m scripts.select_dataset_indices` writes an index file for a subset of a generated corpus. `jobs/gadi/env.sh` holds the modules, thread settings and the storage roots `$MTS_SCRATCH` and `$MTS_GDATA`, which configs may use in paths.
@@ -35,7 +34,7 @@ Other options are environment variables: `START_INDEX`/`END_INDEX`, `NCPUS`, `WA
 - **A farm is one PBS allocation** in which `nci-parallel` gives each free core group the next recording. Do not submit thousands of single-core jobs or PBS arrays.
 - **Keep a farm homogeneous** in `M`, `T` and SPI config, and submit size classes separately: one oversized recording can exhaust the job's memory and kill every recording in it.
 - **Do not allocate more core groups than recordings.** A group with nothing left idles and is charged until the job ends.
-- **Workers or not.** One worker per recording whenever queued recordings can fill the cores. Several workers when cores exceed recordings or memory limits how many recordings fit on a node; expect little beyond 8. Results do not depend on the worker count.
+- **Workers or not.** One worker per recording is the most efficient use of a core. Use several when a recording needs more than 4 GiB per core (those cores are charged anyway), when one worker would not finish it in the walltime, or when cores exceed recordings. With the shared `v3` pyspi one worker computes a whole SPI and nothing is gained beyond 8. With `PYSPI_SOURCE=.../pyspi-pair-sampling-fd0de71` the pairs of each pair-loop SPI are shared between the workers, with no flag: a full table scales to a whole node, a sampled one gains little beyond 16. Results do not depend on the worker count.
 - **Dyad sampling** only for large `M` (about 100 and up): the default budget caps near 2,500 dyads and below `M` of about 70 it is nearly every dyad. It is representative of the whole matrix, not of individual channels or small groups. `spi_mpis.npz` then has NaN at unsampled entries and `pairs.npz` lists the dyads.
 - **Memory is per recording, not per core.** Size `MEM_GB` as recordings per node times `job.peak_memory_mib` of a measured recording (parent plus `n_jobs` times the largest worker). Sampling does not reduce it.
 - **Threads.** Keep the `*_NUM_THREADS=1` settings from `env.sh`. The runner refuses several workers without them, or more workers than the cores it is bound to.
@@ -45,15 +44,19 @@ Other options are environment variables: `START_INDEX`/`END_INDEX`, `NCPUS`, `WA
 
 Progression: a two-recording smoke on the tiny archive (`$MTS_GDATA/pyspi-optimisation/farm-smoke-261013/tiny.npz`, about 90 s) to check that the configuration runs; one representative recording when time or memory is unknown; then the farm. Prefer a generous memory request to a long smoke.
 
-Measured on Gadi `normal` (Cascade Lake, 48 cores and 190 GiB per node, 4 GiB per core for charging), 289-SPI p90, `T=1000`, single runs (expect tens of percent between nodes):
+**Workers per recording** for full tables with the `fd0de71` pyspi: 1 up to `M=64`, 4 near `M=100`, 8 near `M=150`, 24 near `M=243`, 48 near `M=306`. Measure one recording of each size class at its longest `T` first and read the wall time and `job.peak_memory_mib` from its `meta.json`. `MEM_GB` is that peak times the recordings in the job, plus a quarter. If the peak exceeds 4 GiB times the workers, raise the workers to match; if it exceeds a node, lower them, because fewer workers hold less at once. `WALLTIME` is twice the measured time. Extrapolated from the rows below, a recording then takes under about 9 h at `T=5000` and under 1 h at `T=1000`; nothing above `M=64` has been run as a full table on the current code, which is why one is measured first.
+
+Measured on Gadi `normal` (Cascade Lake, 48 cores and 190 GiB per node, 4 GiB per core for charging), p90 (283 SPIs in the `fd0de71` rows, 289 in the others), `T=1000`, single runs (expect tens of percent between nodes):
 
 | Recording | Workers | Wall time | Peak memory |
 | --- | ---: | ---: | ---: |
 | `M=20` | 1 | about 10 min (maximum 17) | under 4 GiB |
 | `M=32`, or `M=20, T=2000` | 1 | about 30 min | under 8 GiB |
-| `M=64` | 1 / 4 / 8 | 40 / 11 / 6 min | 2.7 / 5.1 / 5.9 GiB |
+| `M=64`, shared `v3` pyspi | 1 / 4 / 8 / 16 | 40 / 11 / 6 / 5 min | 2.7 / 5.1 / 5.9 / 6.2 GiB |
+| `M=64`, `fd0de71` pyspi | 1 / 4 / 8 / 16 / 48 | 41 / 10 / 5.0 / 2.6 / 1.3 min | 4 / 4 / 5 / 7 / 14 GiB |
 | `M=243`, 2,305 dyads (`pair_tolerance: 0.03`) | 4 | 16 min | 28 GiB |
 | `M=243`, 1,000 dyads | 1 / 4 / 8 | 52 / 9 / 5 min | 20 / 42 / 39 GiB |
+| `M=243`, 1,000 dyads, `fd0de71` pyspi | 16 / 48 | 3.6 / 3.6 min | 72 / 81 GiB |
 
 The `M=20` and `M=32` rows predate two kernel speed-ups and are upper bounds. A full `M=243` table has not been run on the current code (19 h on one core before them).
 
