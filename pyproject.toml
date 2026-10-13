@@ -2,7 +2,7 @@
 name = "mts-spi-study-cluster"
 version = "0.1.0"
 description = "PBS-ready driver for multivariate time-series SPI studies"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.26",
     "scipy>=1.11",
@@ -19,7 +19,7 @@ dependencies = [
     "setuptools>=68",
     "matplotlib>=3.8",
     "seaborn>=0.13",
-    "scikit-learn>=1.4",
+    "scikit-learn>=1.8",
     "umap-learn>=0.5.5",
     "tqdm>=4.66",
     "psutil>=5.9",
