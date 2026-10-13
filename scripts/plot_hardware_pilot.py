@@ -35,7 +35,7 @@ def save(fig, output, name):
 
 
 def short(name):
-    return name.replace('cov_EmpiricalCovariance', 'Covariance').replace('corr_', '').replace('coint_johansen_', 'Johansen ').replace('te_kraskov_', 'TE KSG ').replace('DCE-AUTO_', '').replace('constraint-', '').replace('_', ' ')
+    return name.removeprefix('corr_').replace('cov_EmpiricalCovariance', 'Covariance').replace('coint_johansen_', 'Johansen ').replace('te_kraskov_', 'TE KSG ').replace('DCE-AUTO_', '').replace('constraint-', '').replace('_', ' ')
 
 
 def sampling_figures(scope, trace_steps=None, focus_max_step=None):
@@ -159,7 +159,8 @@ def result_figures(root, scope=None):
     table = pd.read_csv(root / 'feature-rankings.csv')
     with np.load(root / 'features.npz') as bank:
         z, scores, dev = bank['z'], bank['scores'], bank['development']
-    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.8))
+    fig, axes = plt.subplots(2, 2, figsize=(6.6, 6.1))
+    axes = axes.ravel()
     axes[0].plot(scores[:, 0], scores[:, 1], color='.7', lw=.7)
     im = axes[0].scatter(scores[:, 0], scores[:, 1], c=rows.voltage, cmap='viridis', s=18)
     fig.colorbar(im, ax=axes[0], label='Control voltage (V)', shrink=.7)
@@ -177,6 +178,10 @@ def result_figures(root, scope=None):
     evr = np.array(report['explained_variance'])[:8]
     axes[2].bar(np.arange(1, len(evr)+1), evr, color='.5')
     axes[2].set(xlabel='Principal component', ylabel='Explained variance fraction')
+    focus = rows.step <= 87
+    axes[3].plot(rows.voltage[focus], scores[focus, 0], '.-', color='#26828e')
+    axes[3].axvspan(.115, .120, color='.6', alpha=.2)
+    axes[3].set(xlabel='Control voltage (V)', ylabel='PC1 score', title='Low-coupling detail: settings 23–24 shaded')
     for ax in axes: box(ax)
     save(fig, out, 'geometry')
     for filtered in (False, True):
@@ -195,7 +200,9 @@ def result_figures(root, scope=None):
         for ax in list(axes.flat)[len(chosen):]: ax.set_visible(False)
         save(fig, out, 'features-filtered' if filtered else 'features-top')
     with np.load(root / 'edge-examples.npz') as bank:
-        matrices, steps, order = bank['matrices'], bank['steps'], bank['spi_order'].tolist()
+        all_matrices, all_steps, order = bank['matrices'], bank['steps'], bank['spi_order'].tolist()
+    broad = np.isin(all_steps, [0, 350, 700])
+    matrices, steps = all_matrices[broad], all_steps[broad]
     chosen = table.loc[~table.both_correlation].head(3)
     fig, axes = plt.subplots(len(chosen), len(steps), figsize=(2.5 * len(steps), 2.6 * len(chosen)), squeeze=False)
     edge = ~np.eye(matrices.shape[-1], dtype=bool)
@@ -215,4 +222,24 @@ def result_figures(root, scope=None):
                 setter(lo-pad, hi+pad)
             box(ax)
     save(fig, out, 'edge-profiles')
+    if (root / 'contrast-edges.csv').exists():
+        contrasts = pd.read_csv(root / 'contrast-edges.csv')
+        selected = contrasts.drop_duplicates(['spi_a', 'spi_b'])
+        fig, axes = plt.subplots(len(selected), 2, figsize=(5.8, 2.7*len(selected)), squeeze=False)
+        for i, feature in enumerate(selected.itertuples()):
+            xs, ys = [], []
+            for step in (23, 24):
+                matrix = all_matrices[list(all_steps).index(step)]
+                xs.append(matrix[order.index(feature.spi_a)][edge])
+                ys.append(matrix[order.index(feature.spi_b)][edge])
+            for ax, step, x, y in zip(axes[i], (23, 24), xs, ys):
+                ax.scatter(x, y, s=5, alpha=.35, color='#26828e', linewidths=0, rasterized=True)
+                ax.set(xlabel='\n'.join(textwrap.wrap(short(feature.spi_a), 32)),
+                       ylabel='\n'.join(textwrap.wrap(short(feature.spi_b), 32)),
+                       title=f'#{feature.rank} · setting {step} · z={np.corrcoef(x, y)[0, 1]:+.2f}')
+                for setter, values in ((ax.set_xlim, xs), (ax.set_ylim, ys)):
+                    lo, hi = np.min(values), np.max(values); pad = max(.04*(hi-lo), 1e-8)
+                    setter(lo-pad, hi+pad)
+                box(ax)
+        save(fig, out, 'edge-contrast-23-24')
     return out

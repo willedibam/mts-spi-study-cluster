@@ -155,23 +155,44 @@ def correlation_endpoint(name):
         'cov_EmpiricalCovariance', 'cov-sq_EmpiricalCovariance'}
 
 
-def analyse(root):
-    from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error
+def analyse(root, mirror_revision=None):
+    from src.run_external_corpus import ExternalCorpusConfig, load_inventory, completion_error, _array_sha256
     from src.spi_spi_contract import build_unified_features
     config = ExternalCorpusConfig.from_file(root / 'external.yaml')
+    identity = None
+    if mirror_revision:
+        # Validate historical outputs against their frozen source, not today's editable install.
+        from dataclasses import replace
+        import subprocess
+        revision = subprocess.check_output(['git', 'rev-parse', mirror_revision], cwd=ROOT, text=True).strip()
+        def frozen_hash(path):
+            return hashlib.sha256(subprocess.check_output(['git', 'show', f'{revision}:{path}'], cwd=ROOT)).hexdigest()
+        config = replace(config, archive=root / 'observations.npz', base_output_dir=root / 'mpis')
+        identity = dict(corpus_config_sha256=sha(config.path),
+                        pyspi_config_sha256=frozen_hash('configs/pyspi/benchmarked_p90.yaml'),
+                        runner_sha256=frozen_hash('src/run_external_corpus.py'),
+                        compute_sha256=frozen_hash('src/compute.py'),
+                        pyspi_version={'dist': '3.0.0', 'computation': '3.0.0.r7'})
+        assert sha(config.pyspi_config) == identity['pyspi_config_sha256']
     manifest = json.loads((root / 'manifest.json').read_text())
     assert sha(config.archive) == manifest['archive_sha256']
     entries = load_inventory(config)
     rows = manifest['rows']
     values, means, sources, order = [], [], [], None
-    example_indices = {min(range(len(rows)), key=lambda j: abs(rows[j]['step'] - step)) for step in (0, 350, 700)}
+    example_indices = {min(range(len(rows)), key=lambda j: abs(rows[j]['step'] - step)) for step in (0, 23, 24, 350, 700)}
     examples, example_steps = [], []
     for entry, row in zip(entries, rows, strict=True):
-        error = completion_error(config, entry)
+        error = completion_error(config, entry, identity=identity)
         if error:
             raise ValueError(f'{entry.name}: {error}')
         p = entry.output_dir(config)
         metadata = json.loads((p / 'meta.json').read_text())
+        if mirror_revision:
+            assert metadata['experiment']['git_commit'] == revision and not metadata['experiment']['git_dirty']
+            assert metadata['spectral_memory_repair']['runner_sha256'] == frozen_hash('scripts/run_hardware_bounded_corpus.py')
+        assert (entry.M, entry.T) == (28, 5000) and metadata.get('spectral_memory_repair')
+        with np.load(config.archive) as bank:
+            assert _array_sha256(bank[entry.name]) == metadata['source']['member_sha256']
         names = [s['name'] for s in metadata['pyspi']['spis']]
         if order is None:
             order = names
@@ -184,9 +205,12 @@ def analyse(root):
             examples.append(np.array([mpis[s] for s in names]))
             example_steps.append(row['step'])
         edge = ~np.eye(entry.M, dtype=bool)
+        finite_fraction = float(np.mean([np.isfinite(mpis[s][edge]).mean() for s in names]))
+        assert finite_fraction >= .9 and len(metadata['pyspi']['errors']) <= 15
         means.append([float(np.mean(mpis[s][edge])) if np.isfinite(mpis[s][edge]).all() else np.nan for s in names])
         sources.append(dict(name=entry.name, mpi_sha256=sha(p / 'spi_mpis.npz'),
-                            seconds=metadata['job']['compute_seconds'], valid_features=int(np.isfinite(features.z).sum())))
+                            seconds=metadata['job']['compute_seconds'], valid_features=int(np.isfinite(features.z).sum()),
+                            failed_spis=list(metadata['pyspi']['errors']), finite_edge_fraction=finite_fraction))
     z = np.array(values)
     dev = np.array([r['development'] for r in rows], bool)
     # Strict development completeness prevents missingness from manufacturing a PC.
@@ -196,7 +220,7 @@ def analyse(root):
     if keep.sum() < 2 or dev.sum() < 3:
         raise ValueError('Insufficient eligible features/development observations')
     center = z[dev][:, keep].mean(axis=0)
-    selected = z[:, keep]
+    selected = z[:, keep].astype(np.float64)
     missing = (~np.isfinite(selected)).mean(axis=1)
     if missing.max() > .05:
         raise ValueError(f'More than 5% frozen features missing in a recording: {missing.max():.3f}')
@@ -220,16 +244,60 @@ def analyse(root):
         q = transformed[mask] - transformed[mask].mean(axis=0)
         _, _, v = np.linalg.svd(q, full_matrices=False)
         loading_cosines.append(float(abs(v[0] @ vt[0])))
+    # Sensitivity refits the representation; a filtered display alone cannot test redundancy.
+    noncorr = np.array([not (correlation_endpoint(s.spi_a) and correlation_endpoint(s.spi_b)) for s in specs])
+    _, sf, vf = np.linalg.svd(transformed[dev][:, noncorr], full_matrices=False)
+    filtered_scores = transformed[:, noncorr] @ vf[0]
+    if np.dot(filtered_scores[dev], scores[dev, 0]) < 0:
+        filtered_scores *= -1
+    sensitivity = dict(excluded_features=int((~noncorr).sum()),
+                       score_correlation=float(np.corrcoef(filtered_scores, scores[:, 0])[0, 1]),
+                       explained_variance=float(sf[0]**2 / np.sum(sf**2)))
+    contrast = None
+    steps = [r['step'] for r in rows]
+    if 23 in steps and 24 in steps:
+        left, right = steps.index(23), steps.index(24)
+        table['delta_23_24'] = z[right, table.feature_index] - z[left, table.feature_index]
+        table['pc1_contribution_23_24'] = table.weight * table.delta_23_24
+        table.sort_values('pc1_contribution_23_24', ascending=False).to_csv(out / 'contrast-contributions.csv', index=False)
+        chosen = pd.concat([table.head(1), table.loc[~table.both_correlation].nlargest(2, 'pc1_contribution_23_24')]).drop_duplicates('feature_index')
+        diagnostics = []
+        for feature in chosen.itertuples():
+            for step in (23, 24):
+                matrix = examples[example_steps.index(step)]
+                a, b = matrix[order.index(feature.spi_a)], matrix[order.index(feature.spi_b)]
+                edge = ~np.eye(len(a), dtype=bool)
+                deletion = []
+                for channel in range(len(a)):
+                    mask = edge.copy(); mask[channel, :] = False; mask[:, channel] = False
+                    deletion.append(float(np.corrcoef(a[mask], b[mask])[0, 1]))
+                from scipy.stats import spearmanr
+                diagnostics.append(dict(rank=feature.rank, spi_a=feature.spi_a, spi_b=feature.spi_b,
+                    weight=feature.weight, step=step, z=float(np.corrcoef(a[edge], b[edge])[0, 1]),
+                    edge_spearman=float(spearmanr(a[edge], b[edge]).statistic),
+                    channel_deletion_min=min(deletion), channel_deletion_max=max(deletion),
+                    mean_a=float(a[edge].mean()), mean_b=float(b[edge].mean()),
+                    sd_a=float(a[edge].std()), sd_b=float(b[edge].std())))
+        pd.DataFrame(diagnostics).to_csv(out / 'contrast-edges.csv', index=False)
+        delta = np.diff(scores[:, 0])
+        contrast = dict(steps=[23, 24], pc1_delta=float(scores[right, 0]-scores[left, 0]),
+                        largest_adjacent_absolute_jump=bool(np.argmax(abs(delta)) == left),
+                        filtered_pc1_delta=float(filtered_scores[right]-filtered_scores[left]),
+                        summed_feature_contributions=float(table.pc1_contribution_23_24.sum()),
+                        diagnostic_note='Channel deletion removes existing MPI edges; it does not refit population-dependent SPIs. Ranges are sensitivity checks, not confidence intervals.')
     np.savez_compressed(out / 'features.npz', z=z, means=np.array(means), spi_order=np.array(order),
                         scores=scores, selected=keep, center=center, loadings=vt[:2], eigenvalues=s*s,
-                        missing_fraction=missing, development=dev)
+                        missing_fraction=missing, development=dev, filtered_scores=filtered_scores)
     np.savez_compressed(out / 'edge-examples.npz', matrices=np.array(examples), steps=np.array(example_steps), spi_order=np.array(order))
     report = dict(rows=rows, sources=sources, retained_features=int(keep.sum()),
                   explained_variance=(s*s / (s*s).sum()).tolist(), leave_setting_loading_cosines=loading_cosines,
                   max_imputed_fraction=float(missing.max()),
                   top20_double_correlation=int(table.head(20).both_correlation.sum()),
+                  correlation_exclusion_sensitivity=sensitivity, contrast_23_24=contrast,
                   scope='One measured sweep; held settings test interpolation, not independent physical replication.',
                   pc_sign='Largest absolute loading positive; no coupling/physics orientation',
+                  validation=dict(records=len(entries), source_revision=mirror_revision, execution_identity=identity,
+                                  checks='Archive/member hashes, source revision, repair runner, catalogue, shape, infinities, seed, normalization and coverage'),
                   script_sha256=sha(__file__))
     (out / 'summary.json').write_text(json.dumps(report, indent=2) + '\n')
     return report
@@ -242,10 +310,11 @@ if __name__ == '__main__':
     a = sub.add_parser('build'); a.add_argument('--raw', type=Path, required=True); a.add_argument('--output', type=Path, required=True)
     a.add_argument('--T', type=int, choices=CANDIDATES, required=True); a.add_argument('--record', type=int, default=17451096)
     a = sub.add_parser('analyse'); a.add_argument('--root', type=Path, required=True)
+    a.add_argument('--mirror-revision', help='Frozen main-repo revision for a local mirror of the original r7 pilot')
     a = p.parse_args()
     if a.command == 'scope':
         print(json.dumps(scope(a.raw, a.output), indent=2))
     elif a.command == 'build':
         print(json.dumps(build(a.raw, a.output, a.T, a.record), indent=2))
     else:
-        print(json.dumps(analyse(a.root), indent=2))
+        print(json.dumps(analyse(a.root, a.mirror_revision), indent=2))
