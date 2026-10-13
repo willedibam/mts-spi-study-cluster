@@ -12,25 +12,36 @@ import numpy as np
 EXPECTED_SOURCE='/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-fd0de71'
 
 
+def recording_peak_mib(peak, workers):
+    """Runner metadata stores parent and largest child, not one scalar RSS."""
+    return float(peak['parent']+workers*peak['largest_worker']) if isinstance(peak,dict) else float(peak)
+
+
 def resource_plan(peak_mib, workers, seconds, remaining):
-    peak_gib=peak_mib/1024
-    if not 0<peak_gib<190: raise ValueError('Smoke peak requires a new within-node resource assessment')
+    peak_gib=recording_peak_mib(peak_mib,workers)/1024
+    if not np.isfinite(peak_gib) or peak_gib<=0: raise ValueError('Invalid smoke memory measurement')
     if not remaining: return {'complete':True}
     required=max(workers,math.ceil(peak_gib/4))
     options=(1,2,3,4,6,8,12,16,24,48)
-    requested=next((k for k in options if k>=required),None)
-    if requested is None: raise ValueError('Worker requirement exceeds one node')
+    # More workers can multiply memory. Forecast conservatively before a remeasurement.
+    safe=[k for k in options if recording_peak_mib(peak_mib,k)/1024*1.25<=190]
+    if not safe: raise ValueError('No within-node worker count fits the measured memory bound plus margin')
+    target=next((k for k in options if k>=required),48)
+    requested=min(target,max(safe))
     remeasure=requested!=workers
     count=1 if remeasure else remaining
-    nodes=math.ceil(count*requested/48)
+    per_node_capacity=min(48//requested,math.floor(190/(peak_gib*1.25))) if not remeasure else 1
+    nodes=math.ceil(count/per_node_capacity)
     per_node=math.ceil(count/nodes)
     # nci-parallel maps by node; allow for the node with the extra group.
-    memory=180 if remeasure else math.ceil(peak_gib*per_node*nodes*1.25)
+    memory=max(180,math.ceil(recording_peak_mib(peak_mib,requested)/1024*1.25)) if remeasure else math.ceil(peak_gib*per_node*nodes*1.25)
     if memory/nodes>190: raise ValueError('Measured simultaneous peaks exceed one-node memory; reassess worker count')
     wall_seconds=min(48*3600,max(600,math.ceil(2*seconds/60)*60))
-    return dict(workers=requested,groups=count,ncpus=nodes*48,mem_gb=memory,
+    result=dict(workers=requested,groups=count,ncpus=nodes*48,mem_gb=memory,
                 walltime=f'{wall_seconds//3600:02d}:{wall_seconds//60%60:02d}:00',
                 remeasure=remeasure,complete=False)
+    if requested<target: result['memory_limited_workers']=True
+    return result
 
 
 def release(root,config,after_index):

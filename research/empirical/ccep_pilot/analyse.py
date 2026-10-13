@@ -10,6 +10,7 @@ from mtsspi.run_corpus import completion_error
 from mtsspi.spi_spi_contract import build_unified_features
 from research.empirical.ccep_pilot.acquire import sha256
 from research.empirical.ccep_pilot.plots import style, save
+from research.empirical.ccep_pilot.release import recording_peak_mib
 
 EXPECTED_SOURCE='/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-fd0de71'
 
@@ -47,7 +48,7 @@ def analyse(root):
             rows.append(row);values.append(feature.z);matrices.append(table)
             coverage.append(dict(name=entry.name,finite_edge_fraction=finite,failed_spis=len(metadata['pyspi']['errors']),
                                  seconds=metadata['job']['compute_seconds'],workers=metadata['job']['n_jobs'],
-                                 peak_memory_mib=metadata['job']['peak_memory_mib'],mpi_sha256=sha256(folder/'spi_mpis.npz')))
+                                 peak_memory_bound_mib=recording_peak_mib(metadata['job']['peak_memory_mib'],metadata['job']['n_jobs']),mpi_sha256=sha256(folder/'spi_mpis.npz')))
     if not rows: raise ValueError('No complete participant corpora')
     z=np.asarray(values,dtype=float)
     primary=np.array([not row['reference_control'] for row in rows])
