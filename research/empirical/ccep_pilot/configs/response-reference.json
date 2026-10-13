@@ -1,0 +1,26 @@
+{
+  "dataset": "ds004080",
+  "release": "1.2.4",
+  "git_tree": "c4fd7418883e33b024292468eb14da1649f51aae",
+  "purpose": "Inspect published evoked-response derivatives for the five selected participants; verify whether responses can be matched to the selected run/electrodes before comparisons. This does not expand the pilot cohort.",
+  "files": [
+    {
+      "path": "derivatives/av_ccep/ccepAverages.mat",
+      "bytes": 155745595,
+      "sha256": "57061f73c68203e853e6a05043a761d4750c0a8442658d0ed2a5fd573bb20290",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/derivatives/av_ccep/ccepAverages.mat"
+    },
+    {
+      "path": "derivatives/av_ccep/ccepData_V2.mat",
+      "bytes": 15255812,
+      "sha256": "ec2b425c65f46673cedd1739e838f948dc17dff97734596bc87d7ec0b930b731",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/derivatives/av_ccep/ccepData_V2.mat"
+    },
+    {
+      "path": "derivatives/av_ccep/ccepData_init.mat",
+      "bytes": 294828,
+      "sha256": "8f8372a9d95d6f920c5470e783dd6861593b24bccc14141ec8e003d6806fd011",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/derivatives/av_ccep/ccepData_init.mat"
+    }
+  ]
+}

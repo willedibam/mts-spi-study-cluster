@@ -15,4 +15,4 @@ source jobs/gadi/env.sh
 mkdir -p "$RUN_ROOT/logs"
 exec >"$RUN_ROOT/logs/acquire-${PBS_JOBID%%.*}.log" 2>&1
 python -u -m research.empirical.ccep_pilot.acquire \
-    --selection research/empirical/ccep_pilot/configs/selection.json --root "$RUN_ROOT"
+    --selection "${SELECTION:-research/empirical/ccep_pilot/configs/selection.json}" --root "$RUN_ROOT"
