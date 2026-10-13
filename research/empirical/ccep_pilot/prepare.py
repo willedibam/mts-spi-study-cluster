@@ -202,7 +202,30 @@ def scope(root, selection):
         note='Selected diagnostic families, not a full-p90 invariance claim. CAR over retained ECoG; no concatenation.'),indent=2)+'\n')
 
 
-def build(root, rate, cutoff, seconds):
+def long_window_audit(root, rate, cutoff):
+    root = Path(root)
+    selected = json.loads((Path(__file__).parent/'configs/selection.json').read_text())['records']
+    report = json.loads((root/'scope/participants.json').read_text())
+    records = []
+    for row in report:
+        starts = row.get('available_windows', {}).get('64', [])
+        if not starts: continue
+        item = next(r for r in selected if r['subject'] == row['subject'])
+        raw = mne.io.read_raw_brainvision(root/'raw'/item['path'].replace('.json','.vhdr'), preload=False, verbose='ERROR')
+        start, fs = starts[0], item['fs']
+        x = raw.get_data(picks=row['channels'], start=round((start-4)*fs), stop=round((start+68)*fs))
+        x -= x.mean(axis=0,keepdims=True)
+        x = resample_poly(filtered(x,fs,cutoff),rate,fs,axis=1)[:,4*rate:-4*rate]
+        whole = profiles(x,rate)
+        for duration in (16,32):
+            for index in range(64//duration):
+                part = profiles(x[:,index*duration*rate:(index+1)*duration*rate],rate)
+                records.append(dict(subject=row['subject'],start=start,fs=rate,bandwidth=cutoff,
+                                    duration=duration,reference_seconds=64,part=index,**compare_profiles(part,whole)))
+    pd.DataFrame(records).to_csv(root/'scope/long-duration.csv',index=False)
+
+
+def build(root, rate, cutoff, seconds, reference_control=False):
     """Build homogeneous participant archives only after the audit is reviewed."""
     import yaml
     root=Path(root)
@@ -222,6 +245,18 @@ def build(root, rate, cutoff, seconds):
                 records.append(dict(name=name,subject=subject,window=index,start=start,M=len(x),T=x.shape[1],fs=rate,
                                     seconds=seconds,bandwidth=[.5,cutoff],reference='CAR retained good ECoG',channels=row['channels']))
         if len(records)<2: continue
+        for record in records: record['reference_control'] = False
+        if reference_control:
+            selected=json.loads((Path(__file__).parent/'configs/selection.json').read_text())['records']
+            item=next(r for r in selected if r['subject']==subject)
+            raw=mne.io.read_raw_brainvision(root/'raw'/item['path'].replace('.json','.vhdr'),preload=False,verbose='ERROR')
+            start=records[0]['start']; fs=item['fs']
+            x=raw.get_data(picks=row['channels'],start=round((start-4)*fs),stop=round((start+seconds+4)*fs))
+            x=resample_poly(filtered(x,fs,cutoff),rate,fs,axis=1)[:,4*rate:-4*rate]
+            x=(x-x.mean(axis=1,keepdims=True))/x.std(axis=1,keepdims=True)
+            name=records[0]['name']+'-acquisition-reference'
+            arrays[name]=x
+            records.append(dict(records[0],name=name,reference='Acquisition G2; probably mastoid',reference_control=True))
         folder=root/'corpora'/f'{subject}-fs{rate}-t{seconds*rate}';folder.mkdir(parents=True,exist_ok=True)
         arrays.update(__dataset_names__=np.array([r['name'] for r in records]),
                       __labels_json__=np.array([json.dumps([subject,f"window-{r['window']}"]) for r in records]),
@@ -237,12 +272,14 @@ def build(root, rate, cutoff, seconds):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['scope','build'])
+    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['scope','build','long-windows'])
     parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--rate',type=int);parser.add_argument('--cutoff',type=int);parser.add_argument('--seconds',type=int,default=32)
+    parser.add_argument('--reference-control',action='store_true')
     args=parser.parse_args()
     if args.command=='scope': scope(args.root,json.loads((Path(__file__).parent/'configs/selection.json').read_text()))
-    else: build(args.root,args.rate,args.cutoff,args.seconds)
+    elif args.command=='long-windows': long_window_audit(args.root,args.rate,args.cutoff)
+    else: build(args.root,args.rate,args.cutoff,args.seconds,args.reference_control)
 
 
 if __name__=='__main__': main()
