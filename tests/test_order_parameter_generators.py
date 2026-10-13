@@ -13,13 +13,15 @@ from src.generators.order_parameter import (
     miller_huse_map,
 )
 from src.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
-from src.run_experiments import (
-    _build_metadata,
+from src.generators.harness import (
     _desai_zwanzig_semantics,
-    _ground_truth_descriptor,
     _kuramoto_semantics,
     _miller_huse_semantics,
     _stuart_landau_semantics,
+)
+from src.run_experiments import (
+    _build_metadata,
+    _ground_truth_descriptor,
     generate_synthetic_from_spec,
 )
 
