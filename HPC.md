@@ -46,6 +46,14 @@ Progression: a two-recording smoke on the tiny archive (`$MTS_GDATA/pyspi-optimi
 
 **Workers per recording** for full tables with the `fd0de71` pyspi. When recordings outnumber the cores, 1 each. Otherwise fix them by size and do not re-measure with more: 8 up to `M=64`, 12 up to about `M=128`, 24 near `M=243`, and 48 only for a lone recording near `M=306`. Above about 16 a recording gains less per worker and holds more memory, so run a job's recordings side by side (4 recordings of 12 workers on 48 cores) before giving one of them more. Measure one recording of each size class at its longest `T` first, with those workers, for its wall time and PBS memory; then release the rest in one job. `WALLTIME` is twice the measured time.
 
+**Workers, memory and charge.** A job is charged 2 SU per hour times the larger of its requested cores and its requested memory over 3.96 GiB, on the request and not on use.
+
+- **Workers:** at least the requested memory over 4 GiB, since those cores are charged anyway. More buys time at a modest extra cost: from 4 to 12 workers at `T=4096` a recording ran 2.1 to 2.5 times faster for between 39% less and 19% more SU.
+- **Memory request:** 1.25 times PBS's measured peak at the worker count you will run. For another worker count add 1 to 2 GiB per extra worker at `T=4096`, about 0.2 GiB at `T=1000`.
+- **Packing a node:** recordings at once is the smaller of 48 over the workers and 190 GiB over the requested memory. At 12 workers that is four recordings at `M=86` (35 GiB each) and three at `M=107` (52 GiB each).
+- **Useful workers:** a recording gains nothing beyond its summed SPI time over its longest unsplit task. For full tables that is 80 to 125 workers at `T=4096` (`M=48` to `107`) and about 40 at `M=64`, `T=1000`; for a sampled `M=243` run it is 12.
+- **Idle bookings cost the most:** a recording that needs 29 SU on 4 workers is billed 320 when its job books 48 cores.
+
 Measured on Gadi `normal` (Cascade Lake, 48 cores and 190 GiB per node, 4 GiB per core for charging), p90 (283 SPIs in the `fd0de71` rows, 289 in the others), `T=1000`, single runs (expect tens of percent between nodes):
 
 | Recording | Workers | Wall time | Peak memory |
