@@ -23,7 +23,7 @@ from typing import Any, Sequence
 import numpy as np
 
 from .compute import ComputeResult, run_pyspi
-from .utils import load_yaml, project_root, slugify, timestamp, to_relative
+from .utils import load_yaml, project_root, slugify, timestamp, to_relative, resolve_path
 from .provenance import (
     array_sha256, atomic_json, atomic_savez, file_sha256, peak_memory_mib,
     pyspi_version, repository_provenance, worker_resources,
@@ -31,11 +31,6 @@ from .provenance import (
 
 
 SOURCE_FORMAT = "named-npz-v1"
-
-
-def _resolve_path(value: str | Path) -> Path:
-    path = Path(value)
-    return path if path.is_absolute() else project_root() / path
 
 
 @dataclass(frozen=True)
@@ -56,7 +51,7 @@ class ExternalCorpusConfig:
 
     @classmethod
     def from_file(cls, path: str | Path) -> "ExternalCorpusConfig":
-        config_path = _resolve_path(path)
+        config_path = resolve_path(path)
         payload = load_yaml(config_path)
         source = payload.get("source") or {}
         if source.get("format") != SOURCE_FORMAT:
@@ -89,11 +84,11 @@ class ExternalCorpusConfig:
             pair_tolerance=pair_tolerance,
             path=config_path,
             name=name,
-            archive=_resolve_path(source["archive"]),
+            archive=resolve_path(source["archive"]),
             archive_sha256=expected_hash,
             source_axis_order=axis_order,  # type: ignore[arg-type]
-            base_output_dir=_resolve_path(payload["base_output_dir"]),
-            pyspi_config=_resolve_path(payload["pyspi_config"]),
+            base_output_dir=resolve_path(payload["base_output_dir"]),
+            pyspi_config=resolve_path(payload["pyspi_config"]),
             normalise=payload["normalise"],
             random_seed=random_seed,
         )

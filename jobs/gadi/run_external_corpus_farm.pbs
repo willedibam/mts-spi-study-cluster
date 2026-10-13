@@ -17,24 +17,7 @@ set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 test -f "$CORPUS_CONFIG"
 
-module purge
-module load python3/3.12.1 nci-parallel/1.0.0a
-source .venv/bin/activate
-
-# Optional: an immutable pyspi source tree to import instead of the
-# environment's install -- e.g. a snapshot of the pyspi dev branch for dyad
-# sampling, which the release line does not have yet. Must be on shared storage.
-if [[ -n "${PYSPI_SOURCE:-}" ]]; then
-    test -d "$PYSPI_SOURCE/pyspi"
-    export PYTHONPATH="$PYSPI_SOURCE${PYTHONPATH:+:$PYTHONPATH}"
-fi
-
-export OMP_NUM_THREADS=1
-export OPENBLAS_NUM_THREADS=1
-export MKL_NUM_THREADS=1
-export VECLIB_MAXIMUM_THREADS=1
-export NUMEXPR_NUM_THREADS=1
-export PYSPI_N_JOBS=1
+source jobs/gadi/env.sh
 
 # Source snapshots and the environment must be visible on every allocated node.
 # Normal/express Cascade Lake nodes have 48 CPUs; smaller farms use one node.

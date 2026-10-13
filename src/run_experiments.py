@@ -17,18 +17,11 @@ from .generators.harness import generate_from_spec as generate_synthetic_from_sp
 from .compute import run_pyspi
 from .mapping import DatasetMapping, ExperimentConfig
 from .plot_style import apply_plot_style, save_figure
-from .utils import ensure_dir, load_json, project_root, slugify, timestamp, to_relative
+from .utils import ensure_dir, load_json, project_root, slugify, timestamp, to_relative, resolve_path
 from .provenance import (
     atomic_json, atomic_savez, file_sha256, peak_memory_mib, pyspi_version, repository_provenance,
     worker_resources,
 )
-
-
-def _resolve_path(path_value: str) -> Path:
-    path = Path(path_value)
-    if path.is_absolute():
-        return path
-    return project_root() / path
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -145,7 +138,7 @@ def main(argv: List[str] | None = None) -> None:
     config_path = Path(args.experiment_config)
     config = ExperimentConfig.from_file(config_path)
     if args.pyspi_config:
-        config.pyspi_config = _resolve_path(args.pyspi_config)
+        config.pyspi_config = resolve_path(args.pyspi_config)
     if args.normalise is not None:
         config.normalise = bool(args.normalise)
     if args.threads:

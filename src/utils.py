@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -135,3 +136,10 @@ def load_all_spi(base_dir: str | Path = DATA_ROOT) -> List[DatasetSPIBundle]:
     for dataset_dir in iter_dataset_dirs(base_dir):
         bundles.append(load_spi_for_dataset(dataset_dir))
     return bundles
+
+
+def resolve_path(value: str | Path) -> Path:
+    """A config path: environment variables expanded ($MTS_SCRATCH, $MTS_GDATA),
+    and relative paths taken from the repository root."""
+    path = Path(os.path.expandvars(str(value)))
+    return path if path.is_absolute() else project_root() / path

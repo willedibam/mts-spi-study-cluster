@@ -7,9 +7,7 @@ test -f "$config"
 [[ -z "$index_file" ]] || test -f "$index_file"
 source jobs/gadi/require_synced_source.sh
 
-module purge
-module load python3/3.12.1
-source .venv/bin/activate
+source jobs/gadi/env.sh
 
 total=$(python -m src.run_external_corpus --config "$config" --count-only)
 if [[ -n "$index_file" ]]; then

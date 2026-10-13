@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from .utils import (
+    resolve_path,
     class_dir_name,
     load_yaml,
     project_root,
@@ -33,13 +34,6 @@ def _warping_mts_pre_seed(M: int, T: int, instance: int, mts_class: str) -> int:
     payload = f"warping_mts_regime|{M}|{T}|{instance}|{mts_class}".encode()
     digest = hashlib.blake2s(payload, digest_size=8).digest()
     return int.from_bytes(digest, "big") % (2**32 - 1) or 1
-
-
-def _as_path(path_value: str | Path) -> Path:
-    path = Path(path_value)
-    if path.is_absolute():
-        return path
-    return project_root() / path
 
 
 def _parse_delta_list(value: Any) -> List[int]:
@@ -139,8 +133,8 @@ class ExperimentConfig:
     @classmethod
     def from_file(cls, path: str | Path) -> "ExperimentConfig":
         data = load_yaml(path)
-        base_output_dir = _as_path(data.get("base_output_dir", "data"))
-        pyspi_config = _as_path(data["pyspi_config"])
+        base_output_dir = resolve_path(data.get("base_output_dir", "data"))
+        pyspi_config = resolve_path(data["pyspi_config"])
         normalise = bool(data.get("normalise", False))
         rng_seed = int(data.get("rng_seed", 0))
         save_heatmap = bool(data.get("save_heatmap", False))
@@ -246,7 +240,7 @@ def _parse_class(
         instances=instances,
         variants=variants,
         include_base_variant=entry.get("include_base_variant", True),
-        pyspi_config=_as_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
+        pyspi_config=resolve_path(entry["pyspi_config"]) if entry.get("pyspi_config") else None,
         zscore_data=bool(entry.get("zscore", False)),
         normalise=entry.get("normalise"),
         save_heatmap=entry.get("save_heatmap"),
