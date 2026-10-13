@@ -68,3 +68,20 @@ def scope_figures(root):
     fig.suptitle('Baseline previews · common average reference · 0.5–45 Hz, 128 Hz',fontsize=11)
     save(fig,out,'baseline-heatmaps')
     return out
+
+
+def response_figures(root):
+    root=Path(root);plt=style()
+    examples=json.loads((root/'responses/examples.json').read_text())
+    fig,axes=plt.subplots(1,len(examples),figsize=(2.6*len(examples),2.8),squeeze=False)
+    with np.load(root/'responses/native-examples.npz') as bank:
+        for ax,row in zip(axes[0],examples):
+            subject=row['subject'];time=bank[subject+'_time'];mean=bank[subject+'_mean'].copy();epochs=bank[subject+'_epochs'].copy()
+            artefact=(time>=0)&(time<=9);mean[artefact]=np.nan;epochs[:,artefact]=np.nan
+            ax.plot(time,epochs.T,color='.7',alpha=.3,lw=.45)
+            ax.plot(time,mean,color='#222222',lw=1.3)
+            ax.axvspan(0,9,color='.9');ax.axvline(row['latency_ms'],color='#26828e',ls=':',lw=1)
+            ax.set(xlim=(-20,120),xlabel='Time from stimulus (ms)',ylabel=r'Voltage ($\mu$V)',
+                   title=f"{subject[-2:]} · {row['site']} → {row['response']}")
+            ax.set_box_aspect(1)
+    save(fig,root/'figures','native-response-examples')
