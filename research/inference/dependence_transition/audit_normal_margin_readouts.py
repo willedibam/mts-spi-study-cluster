@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 from threadpoolctl import threadpool_limits
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 
 def main():

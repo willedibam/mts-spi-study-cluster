@@ -8,7 +8,7 @@ from sklearn.model_selection import GroupKFold
 from sklearn.metrics import balanced_accuracy_score,roc_auc_score
 from sklearn.exceptions import ConvergenceWarning
 from threadpoolctl import threadpool_limits
-from scripts.spi_baseline_exploration import ROOT,sha
+from research.proof.p90.spi_baseline_exploration import ROOT,sha
 from mtsspi.corpus_geometry import fit_geometry_transform
 
 

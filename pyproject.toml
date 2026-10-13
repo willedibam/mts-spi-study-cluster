@@ -55,7 +55,7 @@ interactive = ["anywidget>=0.9", "ipywidgets>=8.1"]
 [project.scripts]
 run-corpus = "mtsspi.run_corpus:main"
 process-features = "mtsspi.process_features:main"
-corpus-geometry = "research.zenodo.run_corpus_geometry:main"
+corpus-geometry = "research.zenodo.atlas.run_corpus_geometry:main"
 
 # The library is src/mtsspi; scripts/ holds command-line entry points; research/
 # holds each study's own code, configs and notebooks.

@@ -9,7 +9,7 @@ import pandas as pd
 
 from research.inference.cml.prepare_cml2d_corpus import prepare
 from research.inference.cml.analyze_cml2d_spi import run, corr
-from mtsspi.order_parameter_analysis import clustered_bootstrap_spearman
+from research.inference.shared.order_parameter_analysis import clustered_bootstrap_spearman
 
 OLD_CONTROLS = [3.84, 3.85, 3.858, 3.86212, 3.864, 3.866, 3.87, 3.875, 3.89]
 FROZEN_HASHES = {

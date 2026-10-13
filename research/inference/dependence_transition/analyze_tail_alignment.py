@@ -9,7 +9,7 @@ from threadpoolctl import threadpool_limits
 from research.inference.dependence_transition.scout_tail_alignment import ROOT,OUT
 from research.inference.dependence_transition.report_dependence_transition import coordinate
 from research.inference.dependence_transition.dependence_transition_pipeline import predict_means
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 DATA=ROOT/'data/order-parameter-inference/tail-alignment-261005'
 
@@ -90,7 +90,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['extract','analyze']);p.add_argument('--data',type=Path,default=DATA)
     p.add_argument('--output',type=Path,default=OUT/'p90');a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
     if a.stage=='extract':
-        from scripts.analyze_native_coupling import extract
+        from research.proof.strength_controls.analyze_native_coupling import extract
         manifest=json.loads((a.data/'manifest.json').read_text())
         extract(a.data,a.output,corpus=manifest.get('corpus','tail-alignment-261005'))
     else:

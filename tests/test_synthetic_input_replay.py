@@ -10,7 +10,7 @@ from mtsspi.generated_corpus import GeneratedCorpus
 
 
 @pytest.mark.parametrize("config", [
-    "configs/generate/embeddings/proof-p90-260924.yaml",
+    "research/proof/p90/configs/proof-p90-260924.yaml",
     "research/cases/r_rho_mi/configs/260924_beta.yaml",
     "research/cases/dtw_euclidean/configs/260924_lagged-warping.yaml",
 ])
@@ -34,7 +34,7 @@ def test_saved_input_equals_fresh_and_resumed_input(tmp_path, config):
 
 def test_proof_var_contrasts_are_literal_and_stable():
     root = Path(__file__).resolve().parents[1]
-    specs = DatasetMapping(ExperimentConfig.from_file(root/"configs/generate/embeddings/proof-p90-260924.yaml")).specs
+    specs = DatasetMapping(ExperimentConfig.from_file(root/"research/proof/p90/configs/proof-p90-260924.yaml")).specs
     params = {}
     for spec in specs:
         if spec.generator != "varma":

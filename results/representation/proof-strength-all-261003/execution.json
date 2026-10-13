@@ -35,7 +35,7 @@
   },
   "completed_additional_records": 216,
   "completed_combined_records": 384,
-  "notebook": "notebooks/embeddings/spi_all_proof_strength_control_261003.ipynb",
+  "notebook": "research/proof/strength_controls/notebooks/spi_all_proof_strength_control_261003.ipynb",
   "production_other": {
     "exit_status": 0,
     "checked": 149,

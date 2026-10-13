@@ -112,6 +112,6 @@
     }
   ],
   "decision": "Original held bank stays uncomputed; prepared fresh confirmation cancelled before submission after strong one-mean diagnostic.",
-  "report": "notebooks/embeddings/spi_lag_surrogate_261004.ipynb",
+  "report": "research/proof/strength_controls/notebooks/spi_lag_surrogate_261004.ipynb",
   "validity": "Primary z29744 features; zero validation or null imputation.128 provenance audits passed; four invariant tests; independent replay of12 recordings/3468means/24276distribution values/600z entries passed."
 }

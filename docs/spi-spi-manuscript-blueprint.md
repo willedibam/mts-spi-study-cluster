@@ -25,7 +25,7 @@ The central positive example concerns correspondence between **phase-coupling an
 | Supervised co-organization and transfer | Test access to a specified interaction property | Few-label benefits over tested SPI summaries, source-frozen dynamics/mechanism transfer and correspondence interventions | Research-level target selection remains; specialist and learned-pooling successes limit exclusivity; InceptionTime is near chance at full size under the tested label budgets; four 10-label folds hit the epoch ceiling |
 | NeuroTycho | External feasibility and transfer | Source-animal-excluded, cross-agent state prediction; z adds value over several declared pipelines | Two target animals, drug/year confounding, ranking saturation and stronger enriched neural performance prevent broad application superiority |
 
-Evidence routes: [cross-M/T](context/cross-mt-transfer.md), [corpus](context/zenodo-mts-corpus.md), [physical benchmarks](context/order-parameter-benchmarks.md), [CML2D independent confirmation](../research/inference/cml/notes/cml2d-confirmation-results-260911.md), [complete learning evidence map](spi-representation-evidence-map.md). These workstreams retain their original protocols, schemas and owners. This synthesis does not silently recompute or relabel their results.
+Evidence routes: [cross-M/T](context/cross-mt-transfer.md), [corpus](context/zenodo-mts-corpus.md), [physical benchmarks](context/order-parameter-benchmarks.md), [CML2D independent confirmation](../research/inference/cml/notes/cml2d-confirmation-results-260911.md), [complete learning evidence map](../research/representation/representation_state/notes/spi-representation-evidence-map.md). These workstreams retain their original protocols, schemas and owners. This synthesis does not silently recompute or relabel their results.
 
 Coverage clarification: the corpus study already has an exploratory catch22 comparison on its mixed real/synthetic collection. Statements that the three conventional libraries were tested "only on NeuroTycho" refer to the supervised transfer programme, not the entire repository. Native MiniRocket/ridge has now been verified on the central full-size synthetic tasks and remains near chance; tsfresh/catch22 have not been tested on that core.
 
@@ -57,7 +57,7 @@ This is a working abstract, not a submission-ready claim of neural superiority. 
 
 Suggested argument order:
 
-1. Define the scientific property and practical observation shift before the descriptor. Explain why comparing separate dependence distributions can miss correspondence. Cite relevant prior SPI-comparison and phase/envelope literature from the [study design](spi-representation-learning-study.md); record-wise correlations themselves are not the novelty claim.
+1. Define the scientific property and practical observation shift before the descriptor. Explain why comparing separate dependence distributions can miss correspondence. Cite relevant prior SPI-comparison and phase/envelope literature from the [study design](../research/representation/representation_state/notes/spi-representation-learning-study.md); record-wise correlations themselves are not the novelty claim.
 2. Define z, its geometry and its deliberate information losses. Use one clear illustration; existing case studies can supply supporting intuition.
 3. Show the principal learning curves and the correspondence intervention. Display task-informed specialists and learned SPI pooling alongside z.
 4. Test frozen-source transfer, separating ranking from a fixed decision threshold. Preserve the extra-information status of prevalence adjustment.
@@ -88,7 +88,7 @@ Both papers need distinct positioning relative to [Cliff et al. 2023](https://ww
 
 ## Immediate work and decision boundaries
 
-InceptionTime is complete: 55 source fits, 174 independently checked metric rows and 200 CPU replays. Full-size synthetic ensemble BA stays near 50% while z remains strong; the matched NeuroTycho ensemble reaches 95.31%, slightly above z-PCA/PLS. Preserve the four selected 10-label epoch ceilings, individual-member variability and distinction between ensemble and seed-mean metrics. See [verified findings](inceptiontime-followup.md). No further fits, pyspi extraction or generator work are warranted by this result.
+InceptionTime is complete: 55 source fits, 174 independently checked metric rows and 200 CPU replays. Full-size synthetic ensemble BA stays near 50% while z remains strong; the matched NeuroTycho ensemble reaches 95.31%, slightly above z-PCA/PLS. Preserve the four selected 10-label epoch ceilings, individual-member variability and distinction between ensemble and seed-mean metrics. See [verified findings](../research/representation/learned_baselines/notes/inceptiontime-followup.md). No further fits, pyspi extraction or generator work are warranted by this result.
 
 After this comparison, decide whether a conventional MiniRocket/ridge synthetic control is necessary to close the fixed-feature baseline gap. Choose on the claim it tests, not on whether its result might favour z. This blueprint does not launch that follow-up or expand into a library grid.
 

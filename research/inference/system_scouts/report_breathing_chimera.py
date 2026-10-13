@@ -9,7 +9,7 @@ from threadpoolctl import threadpool_limits
 from research.inference.system_scouts.scout_breathing_chimera import OUT
 from research.inference.dependence_transition.scout_dependence_transition import probes
 from research.inference.dependence_transition.report_dependence_transition import coordinate
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 
 def report(folder):

@@ -23,7 +23,7 @@ from research.inference.stuart_landau.analyze_stuart_landau_development import (
     _resolve_dataset_path,
     _source_stability,
 )
-from mtsspi.order_parameter_analysis import safe_spearman  # noqa: E402
+from research.inference.shared.order_parameter_analysis import safe_spearman  # noqa: E402
 from mtsspi.spi_spi_analysis import fit_feature_transform  # noqa: E402
 from mtsspi.utils import load_json  # noqa: E402
 

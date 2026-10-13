@@ -83,7 +83,7 @@ def partitions(total):
 
 def prepare(workers):
     import yaml
-    from scripts.spi_baseline_exploration import sha
+    from research.proof.p90.spi_baseline_exploration import sha
     if (DATA/'manifest.json').exists():raise FileExistsError(DATA)
     DATA.mkdir(parents=True,exist_ok=True)
     tasks=[(float(g),s) for g in GAMMAS for s in range(SEEDS)];rows=[];raw={}
@@ -209,7 +209,7 @@ def physics(out,workers=6,seeds=4,examples=(.04,.09,.14)):
 def analyze(data,out):
     from research.inference.dependence_transition.report_dependence_transition import coordinate
     from research.inference.dependence_transition.dependence_transition_pipeline import predict_means
-    from scripts.spi_baseline_exploration import sha
+    from research.proof.p90.spi_baseline_exploration import sha
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
     bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     fit=rows.role.eq('development').to_numpy();held=~fit;y=rows.Q_lock.to_numpy()
@@ -249,7 +249,7 @@ if __name__=='__main__':
     else:
         a.output.mkdir(parents=True,exist_ok=True)
         if a.stage=='extract':
-            from scripts.analyze_native_coupling import extract
+            from research.proof.strength_controls.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
         elif a.stage=='physics':physics(a.output,a.workers)
         elif a.stage=='figure':

@@ -49,7 +49,7 @@ All distances use the same squared-error cost and division by $\sqrt{T}$. The sh
             md('Predetermined instance 0 illustrates no lag/no warp, lag only, and heavy warping. Colour shows the absolute generating lag difference. Dashed lines mark equal distances. Each panel uses matching x/y scales, with limits varying between panels.'),
             code("fig = plot_spi_planes(frame, 'dtw', OUT)\nplt.show()"),
             md('Averaging warp offsets across channels does not guarantee exact lag recovery for individual pairs. The optimal global shift can differ from the generating lag even without noise. Correlation between distance matrices describes agreement across pairs; it is not an alignment-accuracy score.')]
-    cells.append(md('Generation and analysis choices are recorded in `configs/analysis/proof-cases-refresh-260924.yaml`. The helpers save SVG figures and PNG previews under the result directory. Earlier notebooks and result banks are preserved.'))
+    cells.append(md('Generation and analysis choices are recorded in `research/proof/p90/configs/analysis/proof-cases-refresh-260924.yaml`. The helpers save SVG figures and PNG previews under the result directory. Earlier notebooks and result banks are preserved.'))
     nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})
     study='r_rho_mi' if is_mi else 'dtw_euclidean'
     path=ROOT/'research/cases'/study/'notebooks'/name;nbf.write(nb,path);print(path)

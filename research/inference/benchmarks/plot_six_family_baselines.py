@@ -9,9 +9,9 @@ from sklearn.svm import SVC
 from sklearn.ensemble import ExtraTreesClassifier
 from umap import UMAP
 from threadpoolctl import threadpool_limits
-from scripts.analyze_all_proof_coupling import rows as load_rows
-from scripts.analyze_band_swap import fitted_logistic
-from scripts.spi_baseline_exploration import ROOT,project_features,sha
+from research.proof.strength_controls.analyze_all_proof_coupling import rows as load_rows
+from research.proof.strength_controls.analyze_band_swap import fitted_logistic
+from research.proof.p90.spi_baseline_exploration import ROOT,project_features,sha
 from mtsspi.figures import style, save
 from mtsspi.corpus_geometry import fit_geometry_transform
 

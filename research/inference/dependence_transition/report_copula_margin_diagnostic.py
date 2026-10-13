@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 from research.inference.dependence_transition import diagnose_tail_copula_margins as d
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 
 def run():

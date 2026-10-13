@@ -13,8 +13,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.order_parameter_analysis import FrozenPC1, residualize_by_group, safe_spearman  # noqa: E402
-from mtsspi.order_parameter_features import build_meta_feature_matrix, validate_spi_catalogs  # noqa: E402
+from research.inference.shared.order_parameter_analysis import FrozenPC1, residualize_by_group, safe_spearman  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import build_meta_feature_matrix, validate_spi_catalogs  # noqa: E402
 from mtsspi.utils import load_json  # noqa: E402
 
 

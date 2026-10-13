@@ -81,7 +81,7 @@ def scout(workers,n=12):
 def prepare(workers):
     import yaml
     from research.inference.locking.cross_frequency_locking import partitions
-    from scripts.spi_baseline_exploration import sha
+    from research.proof.p90.spi_baseline_exploration import sha
     if (DATA/'manifest.json').exists():raise FileExistsError(DATA)
     DATA.mkdir(parents=True,exist_ok=True);rows=[];raw={}
     with ProcessPoolExecutor(max_workers=workers) as pool:
@@ -114,7 +114,7 @@ PAIRS={'beta':('cov_EmpiricalCovariance','mi_kraskov_NN-4'),'spread':('cov_Empir
 
 
 def load():
-    from scripts import proof_strength_nuisance as P
+    from research.proof.strength_controls import proof_strength_nuisance as P
     rows=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows']);bank=dict(np.load(OUT/'features.npz'))
     np.testing.assert_array_equal(bank['row_id'],rows.row_id);rows['arm']=rows.system;rows['system']=np.where(rows.system.eq('class'),'class',rows.label.str.rstrip('0123456789'))
     return rows,bank,P
@@ -191,5 +191,5 @@ if __name__=='__main__':
     if a.stage=='scout':scout(a.workers)
     elif a.stage=='prepare':prepare(a.workers)
     else:
-        from scripts.proof_strength_nuisance import extract
+        from research.proof.strength_controls.proof_strength_nuisance import extract
         extract(DATA,OUT,run=RUN,ordered=True)

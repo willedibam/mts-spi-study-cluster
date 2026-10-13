@@ -13,7 +13,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[3]
 
 from research.inference.kuramoto.analyze_kuramoto_confirmation import _records  # noqa: E402
-from mtsspi.order_parameter_features import (  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     stable_spi_names,
     validate_spi_catalogs,

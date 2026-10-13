@@ -13,7 +13,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[3]
 
 from research.inference.kuramoto.kuramoto_order_parameter_scout import _jobs  # noqa: E402
-from mtsspi.order_parameter_analysis import safe_spearman  # noqa: E402
+from research.inference.shared.order_parameter_analysis import safe_spearman  # noqa: E402
 from mtsspi.utils import load_yaml  # noqa: E402
 
 

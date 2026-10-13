@@ -42,6 +42,6 @@ md(r'''**Reading.**
 
 Run: `research/inference/system_scouts/dial_network.py` (`scout`, `prepare`, external-corpus farm, `extract`); rebuilt by `research/inference/system_scouts/build_dial_network_notebook.py`. Full p90, estimator seed 261122, 496 recordings, none failed (two reran after a job walltime).''')]
 nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})
-path=ROOT/'notebooks/embeddings/dial_network_261007.ipynb'
+path=ROOT/'research/inference/system_scouts/notebooks/dial_network_261007.ipynb'
 NotebookClient(nb,timeout=1800,kernel_name='python3',resources={'metadata':{'path':str(path.parent)}}).execute()
 nbf.write(nb,path);print(path)

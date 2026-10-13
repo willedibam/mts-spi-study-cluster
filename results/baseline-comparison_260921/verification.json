@@ -16,7 +16,7 @@
     },
     "original_notebooks_unchanged": [
       "notebooks/embeddings/proof_p90_260824.ipynb",
-      "notebooks/embeddings/zenodo_1053_geometry.ipynb",
+      "research/zenodo/atlas/notebooks/zenodo_1053_geometry.ipynb",
       "research/inference/benchmarks/notebooks/order-parameter-benchmark-comparison.ipynb",
       "research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb",
       "research/inference/benchmarks/notebooks/order-parameter-benchmarks-baselines.ipynb"
@@ -36,11 +36,11 @@
     "zenodo-descriptive.csv": "afa696e58d98be54b11daab64c7d3c76c1239c6c1549d41d13147f0264c034c8"
   },
   "source_sha256": {
-    "scripts/spi_baseline_exploration.py": "897c2002c78c72ee76cf84c3617f61abc0f487cded814944624eafe706e07484",
-    "scripts/prepare_spi_baseline_data.py": "72bfa07357cac31cd0994e3e8e58d268c10ddbe0ab4b8b4c9be1945bb682acec",
-    "scripts/audit_spi_baseline_exploration.py": "290040d51f089ff591eb7c5f45a13af2237cded097f9212c416b8d6b2f82bfed",
-    "scripts/plot_spi_baseline_exploration.py": "6d17329d64aa54cba2f9f8268147b50c9fb71bd67c9b99ab5c84556e4826b6ec",
-    "scripts/build_spi_baseline_notebooks.py": "9fbb51a64495a4b1b636e2546622f1aaf4e371e6f6fe61fc25a27a5eb703accf",
-    "configs/analysis/spi-baseline-exploration-260921.yaml": "711eb458f7c641db8643da5f4a2f0a825dda64d36819433937cc15af0197f026"
+    "research/proof/p90/spi_baseline_exploration.py": "897c2002c78c72ee76cf84c3617f61abc0f487cded814944624eafe706e07484",
+    "research/proof/p90/prepare_spi_baseline_data.py": "72bfa07357cac31cd0994e3e8e58d268c10ddbe0ab4b8b4c9be1945bb682acec",
+    "research/proof/p90/audit_spi_baseline_exploration.py": "290040d51f089ff591eb7c5f45a13af2237cded097f9212c416b8d6b2f82bfed",
+    "research/proof/p90/plot_spi_baseline_exploration.py": "6d17329d64aa54cba2f9f8268147b50c9fb71bd67c9b99ab5c84556e4826b6ec",
+    "research/proof/p90/build_spi_baseline_notebooks.py": "9fbb51a64495a4b1b636e2546622f1aaf4e371e6f6fe61fc25a27a5eb703accf",
+    "research/proof/p90/configs/analysis/spi-baseline-exploration-260921.yaml": "711eb458f7c641db8643da5f4a2f0a825dda64d36819433937cc15af0197f026"
   }
 }

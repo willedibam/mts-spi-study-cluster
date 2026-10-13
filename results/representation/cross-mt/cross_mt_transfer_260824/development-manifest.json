@@ -600,7 +600,7 @@
     "path": "/g/data/ql44/we2614/mts-spi-cross-mt-260824/development-models.joblib",
     "sha256": "ce7de82795f20ce0fbdc5b4b9ad5213c593b9ce5abff19789822bdec0064aa37"
   },
-  "protocol_path": "configs/analysis/cross-mt-transfer-260824.yaml",
+  "protocol_path": "research/proof/cross_mt/configs/analysis/cross-mt-transfer-260824.yaml",
   "protocol_sha256": "76f102abdae50e8198d583aa60b0db34d957edfdb3f7486cd71fc7e22e83ee87",
   "row_keys_sha256": "d8ea4aa1506d8c5039b1f8a913638e0a02a1e71b3aff1f60f0f061ff3db0ad46",
   "rows": 1260,

@@ -16,7 +16,7 @@ import yaml
 from research.inference.cml.analyze_cml2d_spi import assemble, corr
 from research.inference.system_scouts.rossler_phase_sync import pilot_cases
 from mtsspi.spi_spi_analysis import fit_feature_transform
-from mtsspi.order_parameter_analysis import clustered_bootstrap_spearman
+from research.inference.shared.order_parameter_analysis import clustered_bootstrap_spearman
 from mtsspi.spi_spi_contract import UNIFIED_CONTRACT_VERSION
 
 

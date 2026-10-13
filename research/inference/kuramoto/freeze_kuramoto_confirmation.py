@@ -16,9 +16,9 @@ from sklearn.decomposition import PCA
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.diffusion_map import fit_diffusion_map  # noqa: E402
-from mtsspi.order_parameter_analysis import FrozenPC1  # noqa: E402
-from mtsspi.order_parameter_features import (  # noqa: E402
+from research.inference.kuramoto.diffusion_map import fit_diffusion_map  # noqa: E402
+from research.inference.shared.order_parameter_analysis import FrozenPC1  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     validate_spi_catalogs,
 )

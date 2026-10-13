@@ -8,7 +8,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mtsspi.figures import figure_style
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 ROOT=Path(__file__).resolve().parents[3]
 OUT=ROOT/'results/order-parameter-inference/dependence-transition-261005/normal-margin-replication'

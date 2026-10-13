@@ -15,5 +15,5 @@ export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 MKL_NUM_THREADS=4 NUMEXPR_NUM_TH
 : "${XFREQ_DATA:?}" "${XFREQ_SIZE:?}"
 RUN=$(basename "$XFREQ_DATA")
 python -m research.inference.locking.cross_frequency_locking_confirm extract --size $XFREQ_SIZE --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis"
-python -m scripts.audit_dependence_features --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis" --corpus "$RUN"
+python -m research.representation.representation_state.audit_dependence_features --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis" --corpus "$RUN"
 python -m research.inference.locking.cross_frequency_locking_confirm analyze --size $XFREQ_SIZE --data "$XFREQ_DATA" --output "$XFREQ_DATA/analysis"

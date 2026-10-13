@@ -1,0 +1,67 @@
+# waves.yaml — wave-equation PDE preview.
+# Usage:
+#   python -m src.run_experiments \
+#       --experiment-config research/proof/cross_mt/configs/waves.yaml \
+#       --mts-only
+#
+# `c` does NOT change the visible MTS shape (dt = 0.2*dx/c absorbs it). Don't sweep.
+# `wave_1d_pulse` with direction='standing' needs M >= ~40 for sigma to resolve cleanly.
+base_output_dir: data/embeddings/waves_260424/
+timestamp: false
+pyspi_config: benchmarked_p90
+normalise: false
+rng_seed: 110305
+save_heatmap: true
+threads: 1
+
+defaults:
+  # M_values: [9, 16, 25]
+  M_values: [5,10,20]
+  T_values: [500, 1000, 2000]
+  instances: 10
+
+mts_classes:
+  # Canonical anchor: random multi-mode Fourier IC (1/k^1.5 spectrum).
+  - name: "wave-1d"
+    labels: [wave, pde, 1d]
+    generator: "wave_1d"
+    base_params:
+      c: 10.0
+      n_modes: 5
+      ic_decay: 1.5
+      noise_std: 0.01
+      zscore: true
+
+  # Diamond recreation: localized Gaussian, released at rest, splits into
+  # two counter-propagating halves on the periodic ring.
+  - name: "wave-1d-diamond"
+    labels: [wave, pde, 1d, standing]
+    generator: "wave_1d_pulse"
+    base_params:
+      c: 10.0
+      sigma_factor: 0.02
+      direction: "standing"
+      noise_std: 0.01
+      zscore: true
+
+  # # Simplest possible wave: single Fourier mode (textbook standing wave).
+  # - name: "wave-1d-smooth"
+  #   labels: [wave, pde, 1d, single-mode]
+  #   generator: "wave_1d"
+  #   base_params:
+  #     c: 10.0
+  #     n_modes: 1
+  #     ic_decay: 1.5
+  #     noise_std: 0.0
+  #     zscore: true
+
+  # Unidirectional travelling pulse (single diagonal stripe).
+  - name: "wave-1d-pulse"
+    labels: [wave, pde, 1d, travelling]
+    generator: "wave_1d_pulse"
+    base_params:
+      c: 10.0
+      sigma_factor: 0.15
+      direction: "random"
+      noise_std: 0.0
+      zscore: true

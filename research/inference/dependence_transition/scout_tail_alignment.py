@@ -9,7 +9,7 @@ from scipy.stats import t as student_t,rankdata,kendalltau,spearmanr
 from sklearn.feature_selection import mutual_info_regression
 from research.inference.dependence_transition.scout_dependence_transition import ROOT,normalize
 from research.inference.dependence_transition.report_dependence_transition import coordinate
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 OUT=ROOT/'results/order-parameter-inference/dependence-transition-261005/tail-alignment'
 M,T=16,1000

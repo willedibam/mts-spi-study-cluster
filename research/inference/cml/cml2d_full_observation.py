@@ -10,7 +10,7 @@ import pandas as pd
 from research.inference.cml.prepare_cml2d_corpus import prepare
 from research.inference.cml.cml2d_confirmation import verify_frozen
 from research.inference.cml.analyze_cml2d_spi import run, corr
-from mtsspi.order_parameter_analysis import clustered_bootstrap_spearman
+from research.inference.shared.order_parameter_analysis import clustered_bootstrap_spearman
 
 DEVELOPMENT = list(range(260914001, 260914009))
 EVALUATION = list(range(260914101, 260914133))

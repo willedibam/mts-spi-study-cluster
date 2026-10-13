@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.covariance import EllipticEnvelope
 from scipy.stats import spearmanr
 from research.inference.dependence_transition.scout_tail_alignment import recording,population,OUT
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 
 def case(task):

@@ -14,8 +14,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.diffusion_map import FrozenDiffusionMap  # noqa: E402
-from mtsspi.order_parameter_analysis import (  # noqa: E402
+from research.inference.kuramoto.diffusion_map import FrozenDiffusionMap  # noqa: E402
+from research.inference.shared.order_parameter_analysis import (  # noqa: E402
     FrozenPC1,
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
@@ -23,7 +23,7 @@ from mtsspi.order_parameter_analysis import (  # noqa: E402
     input_only_features,
     safe_spearman,
 )
-from mtsspi.order_parameter_features import (  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     validate_spi_catalogs,
 )

@@ -4,7 +4,7 @@ import json
 import numpy as np
 import yaml
 from research.inference.dependence_transition.diagnose_tail_copula_margins import recording,population,ARMS,ROOT
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 RUN='t-copula-normal-margins-261006'
 DATA=ROOT/'data/order-parameter-inference'/RUN

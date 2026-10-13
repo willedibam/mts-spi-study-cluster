@@ -26,7 +26,7 @@ while ROOT != ROOT.parent and not (ROOT / "src").is_dir():
 if not (ROOT / "src").is_dir():
     ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.order_parameter_analysis import (  # noqa: E402
+from research.inference.shared.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
     input_only_features,

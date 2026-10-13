@@ -23,7 +23,7 @@ from research.inference.kuramoto.freeze_kuramoto_confirmation import (  # noqa: 
     _records as _old_records,
     _sha256,
 )
-from mtsspi.order_parameter_features import (  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,

@@ -21,7 +21,7 @@ from research.inference.desai_zwanzig.analyze_desai_zwanzig_fine_boundary import
 )
 from research.inference.stuart_landau.analyze_stuart_landau_confirmation import _steepest_interval  # noqa: E402
 from research.inference.stuart_landau.analyze_stuart_landau_development import _load_artifact  # noqa: E402
-from mtsspi.order_parameter_analysis import safe_spearman  # noqa: E402
+from research.inference.shared.order_parameter_analysis import safe_spearman  # noqa: E402
 from mtsspi.utils import load_yaml  # noqa: E402
 
 

@@ -23,7 +23,7 @@ from research.inference.stuart_landau.analyze_stuart_landau_development import (
     _paired_prefix_stability,
     _resolve_dataset_path,
 )
-from mtsspi.order_parameter_analysis import (  # noqa: E402
+from research.inference.shared.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,

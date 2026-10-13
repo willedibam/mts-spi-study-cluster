@@ -46,7 +46,7 @@ def record(task):
 
 def prepare(workers,run=RUN,arms=ARMS,first=FIRST_SEED,make=record,n=N_COMMUNITY,pyspi_seed=PYSPI_SEED,source=__file__):
     import yaml
-    from scripts.spi_baseline_exploration import sha
+    from research.proof.p90.spi_baseline_exploration import sha
     data=ROOT/'data/order-parameter-inference'/run;remote='/scratch/ql44/we2614/mts-spi-study/order-parameter-inference/'+run
     if (data/'manifest.json').exists():raise FileExistsError(data)
     data.mkdir(parents=True,exist_ok=True)
@@ -137,7 +137,7 @@ def analyze(data,out,nuisance='eta',stem='snr-comparison',heading='2:1 locking t
             qualification='Exploratory first p90 pass of the sensor-noise variant. Primary readout and scores were fixed before outcomes; supervised mean readouts are information ceilings.'):
     from research.inference.dependence_transition.report_dependence_transition import coordinate
     from research.inference.dependence_transition.dependence_transition_pipeline import predict_means
-    from scripts.spi_baseline_exploration import sha
+    from research.proof.p90.spi_baseline_exploration import sha
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
     bank=np.load(out/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     metrics=[];scores=[];settings={}
@@ -181,7 +181,7 @@ if __name__=='__main__':
     else:
         a.output.mkdir(parents=True,exist_ok=True)
         if a.stage=='extract':
-            from scripts.analyze_native_coupling import extract
+            from research.proof.strength_controls.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
         elif a.stage=='figure':figure(pd.read_csv(a.output/'scores.csv'),a.output)
         elif a.stage=='scatter':scatter(a.output)

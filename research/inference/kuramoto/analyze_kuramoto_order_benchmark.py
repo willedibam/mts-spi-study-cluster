@@ -16,7 +16,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.order_parameter_analysis import (  # noqa: E402
+from research.inference.shared.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
@@ -25,7 +25,7 @@ from mtsspi.order_parameter_analysis import (  # noqa: E402
     residualize_by_group,
     safe_spearman,
 )
-from mtsspi.order_parameter_features import (  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,

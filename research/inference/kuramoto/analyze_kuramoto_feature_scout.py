@@ -16,7 +16,7 @@ from sklearn.decomposition import PCA
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.order_parameter_features import (  # noqa: E402
+from research.inference.kuramoto.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,

@@ -18,7 +18,7 @@ from threadpoolctl import threadpool_limits
 
 from research.inference.dependence_transition.scout_dependence_transition import ROOT,OUT,CONFIG,case,normalize
 from research.inference.dependence_transition.report_dependence_transition import coordinate
-from scripts.spi_baseline_exploration import sha
+from research.proof.p90.spi_baseline_exploration import sha
 
 RUN='dependence-transition-261005'
 DATA=ROOT/'data/order-parameter-inference'/RUN
@@ -149,7 +149,7 @@ if __name__=='__main__':
     a.output.mkdir(parents=True,exist_ok=True)
     if a.stage=='prepare':prepare(a.workers)
     elif a.stage=='extract':
-        from scripts.analyze_native_coupling import extract
+        from research.proof.strength_controls.analyze_native_coupling import extract
         extract(a.data,a.output,corpus=RUN)
     else:
         with threadpool_limits(limits=4):analyze(a.data,a.output)
