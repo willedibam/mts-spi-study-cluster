@@ -8,12 +8,12 @@ import numpy as np
 import sklearn
 import yaml
 
-from src.representation_mechanism import permute_dyads, linear_dynamics_features
-from src.representation_attribution import fit_head, select_head
-from src.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
-from src.representation_state_data import file_hash
-from src.spi_spi_contract import build_unified_feature_values
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.representation_mechanism import permute_dyads, linear_dynamics_features
+from mtsspi.representation_attribution import fit_head, select_head
+from mtsspi.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
+from mtsspi.representation_state_data import file_hash
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def run(config_path, output):
@@ -140,7 +140,7 @@ def run(config_path, output):
               "extraction_seconds": extraction_seconds, "total_seconds": time.perf_counter() - started,
               "numpy": np.__version__, "sklearn": sklearn.__version__,
               "hashes": {str(p): file_hash(Path(p)) for p in [config_path, manifest_path, raw_manifest_path, bank_path, rich_path,
-                  __file__, "src/representation_mechanism.py", "src/representation_attribution.py", "src/representation_screen.py"]},
+                  __file__, "src/mtsspi/representation_mechanism.py", "src/mtsspi/representation_attribution.py", "src/mtsspi/representation_screen.py"]},
               "features_sha256": file_hash(output / "features.npz"), "predictions_sha256": file_hash(output / "predictions.npz")}
     atomic_json(output / "results.json", result)
     lines = ["# Three-class VAR mechanism diagnostic", "",

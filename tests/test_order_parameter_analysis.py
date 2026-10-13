@@ -23,7 +23,7 @@ from scripts.analyze_stuart_landau_confirmation import (
     _steepest_interval,
 )
 
-from src.order_parameter_analysis import (
+from mtsspi.order_parameter_analysis import (
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
@@ -157,7 +157,7 @@ def test_desai_association_ignores_only_degenerate_bootstrap_draws() -> None:
 
 
 def test_desai_finite_size_scaling_design_is_log_spaced_and_three_start() -> None:
-    from src.utils import load_yaml
+    from mtsspi.utils import load_yaml
 
     config = load_yaml(
         Path("configs/scout/desai-zwanzig-finite-size-scaling.yaml")

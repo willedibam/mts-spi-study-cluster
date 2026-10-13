@@ -9,10 +9,10 @@ import pandas as pd
 from pyspi import _parallel
 from pyspi.calculator import Calculator
 
-from src.compute import ComputeResult, SPIInfo, _spi_info
-from src.corpus import ArchiveCorpus, load_inventory, load_timeseries
-from src.provenance import atomic_json, atomic_savez
-from src.run_corpus import execution_identity, _metadata, completion_error
+from mtsspi.compute import ComputeResult, SPIInfo, _spi_info
+from mtsspi.corpus import ArchiveCorpus, load_inventory, load_timeseries
+from mtsspi.provenance import atomic_json, atomic_savez
+from mtsspi.run_corpus import execution_identity, _metadata, completion_error
 
 
 def main(config_path, index, profile):

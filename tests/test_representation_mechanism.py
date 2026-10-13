@@ -1,8 +1,8 @@
 import numpy as np
 
-from src.representation_mechanism import permute_dyads, linear_dynamics_features
-from src.spi_spi_contract import build_unified_feature_values
-from src.mpi_representation_baselines import summarize_mpis
+from mtsspi.representation_mechanism import permute_dyads, linear_dynamics_features
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.mpi_representation_baselines import summarize_mpis
 
 
 def test_independent_dyad_maps_preserve_marginals_reciprocity_and_validity():

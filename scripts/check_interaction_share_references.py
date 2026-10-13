@@ -9,7 +9,7 @@ from scipy.stats import spearmanr
 from sklearn.isotonic import IsotonicRegression
 
 from scripts.check_interaction_share_feasibility import drift_and_jacobian, interaction_share, ring
-from src.interaction_share_reference import energy_share, fit_map, own_memory
+from mtsspi.interaction_share_reference import energy_share, fit_map, own_memory
 
 
 def parameters(value, parameterization, seed):
@@ -114,7 +114,7 @@ def run(output, parameterization):
               "summary": summary, "calibration_summary": calibration_summary, "rows": rows,
               "calibrated_predictions": calibrated, "masters": masters,
               "code_sha256": {p: hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in [
-                  __file__, "scripts/check_interaction_share_feasibility.py", "src/interaction_share_reference.py"]}}
+                  __file__, "scripts/check_interaction_share_feasibility.py", "src/mtsspi/interaction_share_reference.py"]}}
     output.mkdir(parents=True)
     (output / "results.json").write_text(json.dumps(result, indent=2) + "\n")
     lines = ["# Raw reference audit", "", f"Parameterization: {parameterization}. 80 masters; 40/family; no SPI evaluation.", "",

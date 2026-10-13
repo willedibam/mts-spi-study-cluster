@@ -15,16 +15,14 @@ from scipy.stats import spearmanr
 from sklearn.decomposition import PCA
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.diffusion_map import fit_diffusion_map  # noqa: E402
-from src.order_parameter_analysis import FrozenPC1  # noqa: E402
-from src.order_parameter_features import (  # noqa: E402
+from mtsspi.diffusion_map import fit_diffusion_map  # noqa: E402
+from mtsspi.order_parameter_analysis import FrozenPC1  # noqa: E402
+from mtsspi.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     validate_spi_catalogs,
 )
-from src.utils import load_json  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 EXPECTED = {

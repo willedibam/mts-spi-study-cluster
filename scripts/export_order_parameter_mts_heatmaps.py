@@ -11,9 +11,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.corpus_visualization import plot_mts_heatmap
-from src.generators.dynamical import generate_cml_logistic
-from src.generators.order_parameter import generate_miller_huse, generate_stuart_landau
+from mtsspi.corpus_visualization import plot_mts_heatmap
+from mtsspi.generators.dynamical import generate_cml_logistic
+from mtsspi.generators.order_parameter import generate_miller_huse, generate_stuart_landau
 
 
 ROOT = Path(__file__).resolve().parents[1]

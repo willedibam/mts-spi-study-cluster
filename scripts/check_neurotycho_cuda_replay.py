@@ -7,8 +7,8 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from src.neurotycho_learning import predict_binary
-from src.representation_state_neural import make_encoder, seed_torch
+from mtsspi.neurotycho_learning import predict_binary
+from mtsspi.representation_state_neural import make_encoder, seed_torch
 
 
 def sha(path):

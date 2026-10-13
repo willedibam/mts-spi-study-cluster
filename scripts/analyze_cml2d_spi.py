@@ -10,9 +10,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from src.spi_spi_contract import build_unified_feature_values, UNIFIED_CONTRACT_VERSION
-from src.spi_spi_analysis import fit_feature_transform
-from src.utils import slugify
+from mtsspi.spi_spi_contract import build_unified_feature_values, UNIFIED_CONTRACT_VERSION
+from mtsspi.spi_spi_analysis import fit_feature_transform
+from mtsspi.utils import slugify
 
 
 def file_hash(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()

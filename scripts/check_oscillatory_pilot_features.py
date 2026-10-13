@@ -4,12 +4,12 @@ import json
 import tarfile
 from pathlib import Path
 import numpy as np
-from src.mpi_representation_baselines import summarize_mpis
-from src.representation_attribution import rich_marginals
-from src.representation_state_data import file_hash
-from src.provenance import array_sha256
-from src.spi_spi_contract import build_unified_features
-from src.spi_edge_pool import standardize_edges
+from mtsspi.mpi_representation_baselines import summarize_mpis
+from mtsspi.representation_attribution import rich_marginals
+from mtsspi.representation_state_data import file_hash
+from mtsspi.provenance import array_sha256
+from mtsspi.spi_spi_contract import build_unified_features
+from mtsspi.spi_edge_pool import standardize_edges
 
 
 def main(root,data):

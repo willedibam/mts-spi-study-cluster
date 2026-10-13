@@ -5,7 +5,7 @@ import json
 import numpy as np
 import pandas as pd
 from scripts.spi_baseline_exploration import ROOT, sha
-from src.generators import generate_varma, generate_cml_logistic
+from mtsspi.generators import generate_varma, generate_cml_logistic
 
 OUT=ROOT/'results/representation/native-gain-261003'
 DATA=ROOT/'data/representation/native-gain-261003'

@@ -6,7 +6,7 @@ coexist and which one is observed depends on history. The standard harness gener
 each (variant, instance) independently from a random IC, so it samples only the lower
 branch and cannot produce the loop. This script does the required quasi-static
 continuation -- per instance, on a FIXED network -- and writes `timeseries.npy` into
-each dataset dir. The runner (src.run_corpus) then finds the cached
+each dataset dir. The runner (mtsspi.run_corpus) then finds the cached
 timeseries, skips regeneration, and runs pyspi in parallel as usual.
 
 Protocol per (M, T, instance):
@@ -15,8 +15,8 @@ Protocol per (M, T, instance):
   backward: K descending, start from the forward branch's final (synchronised) state
 
 Usage:
-  python -m src.preseed_explosive --config configs/generate/embeddings/kuramoto-explosive-sweep.yaml
-  python -m src.preseed_explosive --config <yaml> --dry-run   # show grouping + target dirs only
+  python -m mtsspi.preseed_explosive --config configs/generate/embeddings/kuramoto-explosive-sweep.yaml
+  python -m mtsspi.preseed_explosive --config <yaml> --dry-run   # show grouping + target dirs only
 """
 from __future__ import annotations
 
@@ -127,7 +127,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     LOGGER.info("Pre-seed complete: %d timeseries written, %d skipped.", written, skipped)
     if not args.dry_run:
-        LOGGER.info("Next: src.run_corpus on the same config (cached timeseries -> pyspi only).")
+        LOGGER.info("Next: mtsspi.run_corpus on the same config (cached timeseries -> pyspi only).")
 
 
 if __name__ == "__main__":

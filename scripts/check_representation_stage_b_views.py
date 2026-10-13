@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.generators.order_parameter import generate_kuramoto_order_parameter, kuramoto_critical_coupling
+from mtsspi.generators.order_parameter import generate_kuramoto_order_parameter, kuramoto_critical_coupling
 
 
 def check(config_path: Path, output: Path) -> None:
@@ -45,7 +45,7 @@ def check(config_path: Path, output: Path) -> None:
     report = {"status": "raw_view_construction_checked_no_pyspi_or_model_training",
               "config_sha256": hashlib.sha256(config_path.read_bytes()).hexdigest(),
               "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-              "generator_sha256": hashlib.sha256(Path("src/generators/order_parameter.py").read_bytes()).hexdigest(),
+              "generator_sha256": hashlib.sha256(Path("src/mtsspi/generators/order_parameter.py").read_bytes()).hexdigest(),
               "records": records,
               "target_range": [min(r["future_coherence"] for r in records), max(r["future_coherence"] for r in records)],
               "warning": "This checks construction and records burn-time sensitivity; it does not establish stationarity, predictive utility, or superiority."}

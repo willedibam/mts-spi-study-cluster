@@ -7,11 +7,11 @@ are frozen checkpoints. No target label enters fitting or selection.
 import argparse,json
 from pathlib import Path
 import numpy as np,torch,yaml
-from src.interaction_share_learning import fit_statistical,standardized_marginal_shapes
-from src.representation_state_data import file_hash,observed_view
-from src.representation_state_neural import make_encoder,predict
-from src.spi_edge_pool import pack_inputs
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.interaction_share_learning import fit_statistical,standardized_marginal_shapes
+from mtsspi.representation_state_data import file_hash,observed_view
+from mtsspi.representation_state_neural import make_encoder,predict
+from mtsspi.spi_edge_pool import pack_inputs
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def main(config,source_data,source_root,target_data,target_bank,edge_bank,output):
@@ -69,7 +69,7 @@ def main(config,source_data,source_root,target_data,target_bank,edge_bank,output
                 source_manifest_sha256=file_hash(source_data/'manifest.json'),source_fit_sha256=file_hash(p),
                 config_sha256=file_hash(config),target_bank_sha256=file_hash(target_bank),target_edge_bank_sha256=file_hash(edge_bank),
                 evaluator_sha256=file_hash(Path(__file__)),model_code_sha256={f:file_hash(Path(f)) for f in
-                    ['src/spi_edge_pool.py','src/representation_state_neural.py','src/interaction_share_learning.py','src/representation_screen.py']})
+                    ['src/mtsspi/spi_edge_pool.py','src/mtsspi/representation_state_neural.py','src/mtsspi/interaction_share_learning.py','src/mtsspi/representation_screen.py']})
             stem=output/f"{name.replace('+','_').replace(':','_')}-n{info['labels_total']}-s{old['seed']}"
             if stem.with_suffix('.json').exists():
                 saved=json.loads(stem.with_suffix('.json').read_text());assert saved['identity']==ident

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import yaml
 
-from src.neurotycho_statistical import fit_grouped, predict_fitted
+from mtsspi.neurotycho_statistical import fit_grouped, predict_fitted
 
 
 def fixture_bank():

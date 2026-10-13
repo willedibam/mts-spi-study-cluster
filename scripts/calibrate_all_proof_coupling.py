@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 from scripts import calibrate_native_coupling as pilot
 from scripts.spi_baseline_exploration import ROOT, sha
-from src.generators import generate_kuramoto, generate_wave_1d
+from mtsspi.generators import generate_kuramoto, generate_wave_1d
 
 DATA=ROOT/'data/representation/proof-strength-all-261003'
 OUT=ROOT/'results/representation/proof-strength-all-261003'

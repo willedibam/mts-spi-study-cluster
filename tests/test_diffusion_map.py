@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import spearmanr
 
-from src.diffusion_map import fit_diffusion_map
+from mtsspi.diffusion_map import fit_diffusion_map
 
 
 def test_frozen_diffusion_map_extends_training_coordinate() -> None:

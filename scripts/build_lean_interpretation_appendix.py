@@ -26,7 +26,7 @@ The preceding notebook is preserved unchanged. This appendix separates **physica
     cells.append(code('''from pathlib import Path
 from IPython.display import Image, display
 _appendix_root = next(p for p in (Path.cwd().resolve(), *Path.cwd().resolve().parents)
-                     if (p / 'src/spi_spi_contract.py').is_file())
+                     if (p / 'src/mtsspi/spi_spi_contract.py').is_file())
 def _appendix_show(relative_path):
     path = _appendix_root / 'results/order-parameter-inference' / relative_path
     if not path.is_file():

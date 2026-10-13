@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import yaml
 
-from src.hcp_statistical import fit_source, predict
+from mtsspi.hcp_statistical import fit_source, predict
 
 
 @pytest.mark.parametrize('method', ['m-pca', 'z-pca', 'mz-pca', 'm-pls', 'z-pls', 'spectra', 'minirocket'])

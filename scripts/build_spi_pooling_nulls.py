@@ -5,8 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
-from src.representation_state_data import file_hash
-from src.spi_pooling_nulls import canonical_dyads, permute_edge_columns
+from mtsspi.representation_state_data import file_hash
+from mtsspi.spi_pooling_nulls import canonical_dyads, permute_edge_columns
 
 
 def main(data, bank, output):
@@ -37,7 +37,7 @@ def main(data, bank, output):
         result = dict(artifact_sha256=file_hash(path), manifest_sha256=file_hash(data / "manifest.json"),
             base_bank_sha256=file_hash(bank), permutation_seed=seed, records=len(rows),
             full_column_and_reciprocal_multisets_preserved=True, validity_and_padding_unchanged=True,
-            code_sha256={p: file_hash(Path(p)) for p in [__file__, "src/spi_pooling_nulls.py"]})
+            code_sha256={p: file_hash(Path(p)) for p in [__file__, "src/mtsspi/spi_pooling_nulls.py"]})
         path.with_suffix(".json").write_text(json.dumps(result, indent=2) + "\n")
         checks.append(result)
         print(f"Verified and saved null {seed}: {len(rows)} records", flush=True)

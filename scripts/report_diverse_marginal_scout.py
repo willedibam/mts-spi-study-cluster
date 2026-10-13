@@ -13,7 +13,7 @@ from umap import UMAP
 from scripts.refresh_case_figures import save, style
 from scripts.scout_diverse_marginal_match import FAMILIES, OUT, ROOT, RUN, SEED
 from scripts.spi_baseline_exploration import project_features, sha
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 COLORS = ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00', '#56B4E9']
 

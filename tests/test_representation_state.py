@@ -6,8 +6,8 @@ import pytest
 import torch
 import yaml
 
-from src.representation_state_data import observed_view, simple_observables
-from src.representation_state_neural import AlignedChannelEncoder, fit_encoder, seed_torch
+from mtsspi.representation_state_data import observed_view, simple_observables
+from mtsspi.representation_state_neural import AlignedChannelEncoder, fit_encoder, seed_torch
 from scripts.run_representation_state_pilot import select_ridge
 
 
@@ -87,7 +87,7 @@ def test_end_to_end_state_pilot_groups_views_and_rejects_changed_data_protocol(t
     from scripts.report_representation_state_pilot import report
     from scripts.run_representation_state_random_control import run as run_random
     from scripts.run_representation_state_raw_control import run as run_raw
-    from src.representation_state_data import load_state_data
+    from mtsspi.representation_state_data import load_state_data
     p = protocol()
     p.pop("data_protocol")
     p["generator"].update(M=4, N_full=4, T=64, future_truth_T=64, burn_time=1., reduced_couplings=[.6, 1.4])

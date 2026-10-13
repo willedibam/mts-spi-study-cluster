@@ -11,11 +11,11 @@ import numpy as np
 import sklearn
 import yaml
 
-from src.interaction_share_learning import fit_statistical, select_statistical
-from src.phase_surrogates import pooled_autospectrum
-from src.representation_screen import training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.interaction_share_learning import fit_statistical, select_statistical
+from mtsspi.phase_surrogates import pooled_autospectrum
+from mtsspi.representation_screen import training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def run(config, data, output):
@@ -29,8 +29,8 @@ def run(config, data, output):
     atomic_savez(bank_path, dict(X_u=spectra, row_id=np.asarray([r['row_id'] for r in rows])))
     identity = dict(protocol_sha256=file_hash(config), manifest_sha256=file_hash(data / 'manifest.json'),
                     feature_bank_sha256=file_hash(bank_path), numpy=np.__version__, sklearn=sklearn.__version__,
-                    code_sha256={str(p): file_hash(p) for p in [Path(__file__), Path('src/phase_surrogates.py'),
-                                  Path('src/interaction_share_learning.py'), Path('src/representation_screen.py')]})
+                    code_sha256={str(p): file_hash(p) for p in [Path(__file__), Path('src/mtsspi/phase_surrogates.py'),
+                                  Path('src/mtsspi/interaction_share_learning.py'), Path('src/mtsspi/representation_screen.py')]})
     target = np.asarray([r['target'] for r in rows])
     strata = np.asarray([r['coupling_index'] for r in rows])
     evaluation = np.asarray([i for i, r in enumerate(rows) if r['role'] == 'evaluation'])

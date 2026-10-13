@@ -5,11 +5,11 @@ from pathlib import Path
 import time
 import numpy as np
 
-from src.representation_state_data import load_state_data,file_hash
-from src.representation_mechanism import permute_dyads
-from src.spi_spi_contract import build_unified_feature_values
-from src.provenance import atomic_json, atomic_savez
-from src.utils import slugify
+from mtsspi.representation_state_data import load_state_data,file_hash
+from mtsspi.representation_mechanism import permute_dyads
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.provenance import atomic_json, atomic_savez
+from mtsspi.utils import slugify
 
 
 def build(config,data,mpi_root,bank_path,output):
@@ -49,7 +49,7 @@ def build(config,data,mpi_root,bank_path,output):
     atomic_json(output/'verification.json',dict(seeds=seeds,records=len(original),edge_multisets_and_z_validity_preserved=True,
         shared_permutation_max_difference=maximum,seconds=time.perf_counter()-start,base_bank_sha256=file_hash(bank_path),
         artifacts={p.name:file_hash(p) for p in output.glob('*.npz')},
-        code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/representation_mechanism.py','src/spi_spi_contract.py']}))
+        code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/representation_mechanism.py','src/mtsspi/spi_spi_contract.py']}))
 
 
 if __name__=='__main__':

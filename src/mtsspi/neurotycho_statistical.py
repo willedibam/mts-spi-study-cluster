@@ -7,9 +7,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from src.interaction_share_learning import fit_statistical, ridge_readout
-from src.neurotycho_learning import balanced_brier, date_state_weights
-from src.representation_screen import fit_view
+from mtsspi.interaction_share_learning import fit_statistical, ridge_readout
+from mtsspi.neurotycho_learning import balanced_brier, date_state_weights
+from mtsspi.representation_screen import fit_view
 
 
 METHODS = {'m-pca': ('m', 'pca'), 'mg-pca': ('m+g', 'pca'),

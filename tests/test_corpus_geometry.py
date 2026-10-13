@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from src.corpus_geometry import (
+from mtsspi.corpus_geometry import (
     condensed_distances,
     fit_geometry_transform,
     legacy_geometry,

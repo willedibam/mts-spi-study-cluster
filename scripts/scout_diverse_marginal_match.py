@@ -25,8 +25,8 @@ from threadpoolctl import threadpool_limits
 from scripts.build_pearson_size_match import absolute, joint_match
 from scripts.build_pearson_strength_match import normalize
 from scripts.spi_baseline_exploration import ROOT, project_features, sha
-from src.corpus_geometry import fit_geometry_transform
-from src.generators import generate_cml_logistic, generate_kuramoto, generate_varma, generate_wave_1d
+from mtsspi.corpus_geometry import fit_geometry_transform
+from mtsspi.generators import generate_cml_logistic, generate_kuramoto, generate_varma, generate_wave_1d
 
 RUN = 'diverse-marginal-scout-261005'
 OUT = ROOT/'results/representation'/RUN
@@ -246,7 +246,7 @@ def run(stage):
         if (OUT/'protocol.json').exists():
             raise FileExistsError('Preserve the existing scout')
         protocol = dict(seed=SEED,M=M,T=T,configurations=configurations(),
-            source_sha256=sha(__file__),helper_hashes={str(p.relative_to(ROOT)):sha(p) for p in [ROOT/'scripts/build_pearson_size_match.py',ROOT/'scripts/build_pearson_strength_match.py',ROOT/'src/generators/dynamical.py',ROOT/'src/generators/linear.py',ROOT/'src/generators/pde.py']},
+            source_sha256=sha(__file__),helper_hashes={str(p.relative_to(ROOT)):sha(p) for p in [ROOT/'scripts/build_pearson_size_match.py',ROOT/'scripts/build_pearson_strength_match.py',ROOT/'src/mtsspi/generators/dynamical.py',ROOT/'src/mtsspi/generators/linear.py',ROOT/'src/mtsspi/generators/pde.py']},
             scout='Four realizations per candidate; common random numbers within family across settings. Select settings by means only. Invalid candidate if any of four fails; preserve failures.',
             fresh='64 new paired class blocks, first32 training and last32 validation. All six families retained. Report failure instead of dropping seeds. No held confirmation created.',
             calibration='Exact per-record signed/absolute correlation target shared across families within block; observation noise plus explicit shared drive if native strength too low. No claim of physical coupling equality. Record native variance fraction ignoring empirical cross-terms as a diagnostic, not exact variance decomposition.',

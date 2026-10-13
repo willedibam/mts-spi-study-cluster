@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.cml_order_parameter import (
+from mtsspi.cml_order_parameter import (
     correlation_length_1e,
     dynamical_spatial_pattern_entropy,
     period2_activity,
@@ -15,8 +15,8 @@ from src.cml_order_parameter import (
     temporal_spectral_entropy,
     turbulent_fraction,
 )
-from src.generators.dynamical import generate_cml_logistic
-from src.generators.order_parameter import generate_quadratic_cml_order_parameter
+from mtsspi.generators.dynamical import generate_cml_logistic
+from mtsspi.generators.order_parameter import generate_quadratic_cml_order_parameter
 
 
 def test_period_two_field_has_zero_activity() -> None:

@@ -15,7 +15,7 @@ from sklearn.metrics import adjusted_rand_score, silhouette_samples
 from threadpoolctl import threadpool_limits
 
 from scripts.explore_zenodo_geometry import ROOT, paper_style, save_panel, write_gallery
-from src.atlas_analysis import fit_atlas_transform
+from mtsspi.atlas_analysis import fit_atlas_transform
 
 OUT = ROOT / "results/zenodo_7118947/visual-exploration"
 

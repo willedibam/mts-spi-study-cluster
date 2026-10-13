@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from src.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges
+from mtsspi.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges
 
 
 def test_cuda_tolerance_requires_matching_source_only_precision_evidence():

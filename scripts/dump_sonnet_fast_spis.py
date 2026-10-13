@@ -10,7 +10,7 @@ not written by this script.
 
 Use with process_features.py:
 
-    python -m src.process_features \\
+    python -m mtsspi.process_features \\
         --data-path data/embeddings/proof_260420/ \\
         --spi-subset features/spis/sonnet_spis.txt \\
         --metric spearman,pearson \\

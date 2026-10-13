@@ -34,8 +34,8 @@ def validate_sampling(root):
 
 
 def main(root, smoke_job, dry_run=False):
-    from src.corpus import ArchiveCorpus, load_inventory
-    from src.run_corpus import completion_error
+    from mtsspi.corpus import ArchiveCorpus, load_inventory
+    from mtsspi.run_corpus import completion_error
     marker = root / 'sweep-launch.json'
     if marker.exists() and not dry_run:
         raise FileExistsError(f'Inspect existing launch receipt before retrying: {marker}')

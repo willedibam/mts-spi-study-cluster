@@ -23,8 +23,6 @@ def main() -> int:
     parser.add_argument("--no-execute", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    if str(root) not in sys.path:
-        sys.path.insert(0, str(root))
     from scripts.cml2d_notebook_cells import build_cells as cml2d_cells
 
     cells = [

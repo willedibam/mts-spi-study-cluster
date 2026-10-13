@@ -10,7 +10,7 @@ import pandas as pd
 from scripts.prepare_cml2d_corpus import prepare
 from scripts.cml2d_confirmation import verify_frozen
 from scripts.analyze_cml2d_spi import run, corr
-from src.order_parameter_analysis import clustered_bootstrap_spearman
+from mtsspi.order_parameter_analysis import clustered_bootstrap_spearman
 
 DEVELOPMENT = list(range(260914001, 260914009))
 EVALUATION = list(range(260914101, 260914133))

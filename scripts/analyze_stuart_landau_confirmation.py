@@ -14,8 +14,6 @@ import pandas as pd
 from sklearn.isotonic import IsotonicRegression
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _association,
@@ -25,13 +23,13 @@ from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _paired_prefix_stability,
     _resolve_dataset_path,
 )
-from src.order_parameter_analysis import (  # noqa: E402
+from mtsspi.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
     safe_spearman,
 )
-from src.utils import load_json, load_yaml  # noqa: E402
+from mtsspi.utils import load_json, load_yaml  # noqa: E402
 
 
 EXPECTED_GAMMAS = {0.55, 0.65, 0.725, 0.775, 0.85, 0.95, 1.05, 1.15, 1.25}

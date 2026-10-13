@@ -1,5 +1,5 @@
 import numpy as np
-from src.generators import generate_cml_logistic
+from mtsspi.generators import generate_cml_logistic
 from scripts.calibrate_native_coupling import generate, calibrate
 
 

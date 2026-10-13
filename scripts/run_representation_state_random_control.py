@@ -10,11 +10,11 @@ import torch
 import yaml
 
 from scripts.run_representation_state_pilot import select_ridge
-from src.interaction_share_learning import fit_statistical, select_statistical
-from src.representation_screen import fit_view, training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
-from src.representation_state_neural import AlignedChannelEncoder, seed_torch
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.interaction_share_learning import fit_statistical, select_statistical
+from mtsspi.representation_screen import fit_view, training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
+from mtsspi.representation_state_neural import AlignedChannelEncoder, seed_torch
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def run(config_path, data, output, device, source_family=None, head='pca'):
@@ -36,14 +36,14 @@ def run(config_path, data, output, device, source_family=None, head='pca'):
     torch.set_num_threads(2)
     for seed in protocol["methods"]["subset_seeds"]:
         identity = {"protocol_sha256": file_hash(config_path), "manifest_sha256": file_hash(data / "manifest.json"),
-                    "runner_sha256": file_hash(Path(__file__)), "neural_sha256": file_hash(Path("src/representation_state_neural.py")),
-                    "preprocessing_sha256": file_hash(Path("src/representation_screen.py")),
+                    "runner_sha256": file_hash(Path(__file__)), "neural_sha256": file_hash(Path("src/mtsspi/representation_state_neural.py")),
+                    "preprocessing_sha256": file_hash(Path("src/mtsspi/representation_screen.py")),
                     "method": method, "seed": seed, "device": device, "torch": str(torch.__version__),
                     "status": "post_neural_result_exploratory_addition", "pretraining": "none"}
         if source_family is not None:
             identity["source_family"] = source_family
         if head=='pls' or "pca_caps" in protocol["methods"]:
-            identity["selection_sha256"] = file_hash(Path("src/interaction_share_learning.py"))
+            identity["selection_sha256"] = file_hash(Path("src/mtsspi/interaction_share_learning.py"))
         seed_torch(seed)
         model = AlignedChannelEncoder(protocol["methods"]["raw_encoder_spec"]).to(device).eval()
         # Capture the invariant pooled vector immediately before the readout;

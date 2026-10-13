@@ -4,9 +4,9 @@ import json
 from pathlib import Path
 import numpy as np
 import yaml
-from src.covariance_modulation import simulate, raw_references
-from src.phase_surrogates import pooled_autospectrum
-from src.representation_state_data import file_hash, observed_view
+from mtsspi.covariance_modulation import simulate, raw_references
+from mtsspi.phase_surrogates import pooled_autospectrum
+from mtsspi.representation_state_data import file_hash, observed_view
 
 
 def build(config_path,output):
@@ -55,7 +55,7 @@ def build(config_path,output):
     artifacts=['masters.npy','targets.npy','observables.npy','raw-references.npz','raw-controls.npz','views.npz']
     manifest=dict(config_sha256=file_hash(config_path),artifacts={p:file_hash(output/p) for p in artifacts},
                   rows=rows,masters=records,status='prospectively_specified_exploratory_pilot',
-                  code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/covariance_modulation.py']})
+                  code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/covariance_modulation.py']})
     (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(json.dumps(dict(masters=len(masters),views=len(rows),archive_sha256=manifest['artifacts']['views.npz'])))
 

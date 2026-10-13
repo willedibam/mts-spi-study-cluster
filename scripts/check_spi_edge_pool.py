@@ -2,9 +2,9 @@
 import argparse,json
 from pathlib import Path
 import numpy as np,torch
-from src.representation_state_data import file_hash
-from src.representation_state_neural import make_encoder,predict
-from src.spi_edge_pool import pack_inputs
+from mtsspi.representation_state_data import file_hash
+from mtsspi.representation_state_neural import make_encoder,predict
+from mtsspi.spi_edge_pool import pack_inputs
 
 
 def main(data,bank,fits,output,expected_fits=9):

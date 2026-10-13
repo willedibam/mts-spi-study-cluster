@@ -4,7 +4,7 @@ import zipfile
 
 import pytest
 
-from src import neurotycho_zip as nz
+from mtsspi import neurotycho_zip as nz
 
 
 def test_ranges_roundtrip_and_cache_corruption(tmp_path, monkeypatch):

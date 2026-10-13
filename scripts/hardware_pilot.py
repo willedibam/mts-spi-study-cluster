@@ -156,10 +156,10 @@ def correlation_endpoint(name):
 
 
 def analyse(root, mirror_revision=None):
-    from src.corpus import ArchiveCorpus, load_inventory
-    from src.provenance import array_sha256
-    from src.run_corpus import completion_error
-    from src.spi_spi_contract import build_unified_features
+    from mtsspi.corpus import ArchiveCorpus, load_inventory
+    from mtsspi.provenance import array_sha256
+    from mtsspi.run_corpus import completion_error
+    from mtsspi.spi_spi_contract import build_unified_features
     config = ArchiveCorpus.from_file(root / 'external.yaml')
     identity = None
     if mirror_revision:

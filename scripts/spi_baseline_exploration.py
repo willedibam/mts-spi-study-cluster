@@ -20,8 +20,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
 from threadpoolctl import threadpool_limits
 
-from src.corpus_geometry import fit_geometry_transform
-from src.representation_screen import bootstrap_group_means
+from mtsspi.corpus_geometry import fit_geometry_transform
+from mtsspi.representation_screen import bootstrap_group_means
 from scripts.order_parameter_simple_baselines import input_statistics
 
 ROOT = Path(__file__).resolve().parents[1]

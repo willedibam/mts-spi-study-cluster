@@ -13,10 +13,8 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.plot_style import apply_plot_style  # noqa: E402
+from mtsspi.plot_style import apply_plot_style  # noqa: E402
 
 
 METRICS = {

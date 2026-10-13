@@ -13,11 +13,10 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from src.dimensionality import n_pcs_for_variance
-from src.mapping import DatasetMapping, ExperimentConfig
-from src.generators.harness import generate_from_spec
+from mtsspi.dimensionality import n_pcs_for_variance
+from mtsspi.mapping import DatasetMapping, ExperimentConfig
+from mtsspi.generators.harness import generate_from_spec
 
 ALPHA = 0.95
 N_PCS_MIN = 3

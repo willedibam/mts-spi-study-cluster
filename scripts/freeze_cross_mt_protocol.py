@@ -13,7 +13,7 @@ import joblib
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score
 
-from src.cross_mt_transfer import (
+from mtsspi.cross_mt_transfer import (
     FrozenCellModel,
     FrozenSharedModel,
     build_pooled_baseline_matrices,
@@ -24,7 +24,7 @@ from src.cross_mt_transfer import (
     fit_projection,
     load_feature_artifact,
 )
-from src.utils import load_yaml
+from mtsspi.utils import load_yaml
 
 
 def _canonical_json(value: Any) -> str:

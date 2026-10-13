@@ -13,14 +13,14 @@ from sklearn.model_selection import StratifiedKFold
 import torch
 import yaml
 
-from src.inceptiontime_baseline import InceptionNetwork, fit_network
-from src.neurotycho_learning import predict_binary
-from src.representation_screen import training_subsets
-from src.representation_state_data import source_pool_for_seed, observed_view
+from mtsspi.inceptiontime_baseline import InceptionNetwork, fit_network
+from mtsspi.neurotycho_learning import predict_binary
+from mtsspi.representation_screen import training_subsets
+from mtsspi.representation_state_data import source_pool_for_seed, observed_view
 
 CONFIG = Path('configs/analysis/inceptiontime-followup-260911.yaml')
-MODULES = [Path(__file__), Path('src/inceptiontime_baseline.py'), Path('src/neurotycho_learning.py'),
-           Path('src/representation_state_neural.py')]
+MODULES = [Path(__file__), Path('src/mtsspi/inceptiontime_baseline.py'), Path('src/mtsspi/neurotycho_learning.py'),
+           Path('src/mtsspi/representation_state_neural.py')]
 
 
 def sha(path):

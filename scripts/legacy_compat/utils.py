@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.corpus_visualization import plot_mts_heatmap
+from mtsspi.corpus_visualization import plot_mts_heatmap
 
 
 def save_figure(fig: plt.Figure, output: str | Path) -> None:

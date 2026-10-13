@@ -15,8 +15,8 @@ How this repository runs on NCI Gadi and the USyd Physics cluster: what is fixed
 A corpus is one YAML file: generated (`mts_classes:`) or a prepared archive (`source:`). One runner and one launcher serve both.
 
 ```bash
-python -m src.run_corpus --config corpus.yaml --count-only        # also --list, --validate-source, --audit
-python -m src.run_corpus --config corpus.yaml --job-index 1 --n-jobs 1 --dry-run
+python -m mtsspi.run_corpus --config corpus.yaml --count-only        # also --list, --validate-source, --audit
+python -m mtsspi.run_corpus --config corpus.yaml --job-index 1 --n-jobs 1 --dry-run
 
 # Gadi: one recording per core
 bash jobs/gadi/submit_farm.sh corpus.yaml [index-file]

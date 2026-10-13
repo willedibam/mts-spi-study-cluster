@@ -1,6 +1,6 @@
 import torch
 import pytest
-from src.representation_state_neural import make_encoder
+from mtsspi.representation_state_neural import make_encoder
 
 
 @pytest.mark.parametrize('architecture',['pair_relation','pointwise_pair'])

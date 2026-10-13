@@ -7,7 +7,7 @@ incompatibility); .mat files are loaded directly with pymatreader instead.
 
 Usage (run once from project root):
 
-    python -m src.prep_bciciv2a \\
+    python -m mtsspi.prep_bciciv2a \\
         --output-dir data/bciciv2a \\
         --config-out configs/generate/bciciv2a.yaml
 

@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.io import loadmat
 from scipy.stats import spearmanr
-from src.neurotycho_pilot import preprocess
+from mtsspi.neurotycho_pilot import preprocess
 
 ROOT=Path(__file__).resolve().parents[1]
 RUN='neurotycho-induction-261006'

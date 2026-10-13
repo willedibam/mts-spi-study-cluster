@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.hcp_evaluation import evaluate_with_schedule_slice, participant_scores, summarize
+from mtsspi.hcp_evaluation import evaluate_with_schedule_slice, participant_scores, summarize
 
 
 def test_participant_scores_do_not_overweight_people_with_more_blocks():

@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.spi_spi_analysis import fit_feature_transform, fit_frozen_pc1
+from mtsspi.spi_spi_analysis import fit_feature_transform, fit_frozen_pc1
 
 
 def test_transform_fits_missingness_and_variance_on_development_only() -> None:

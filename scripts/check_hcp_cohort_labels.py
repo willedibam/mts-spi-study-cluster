@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy.io import loadmat
 
-from src.hcp_run_audit import align_eprime
+from mtsspi.hcp_run_audit import align_eprime
 
 
 def main(root):
@@ -46,7 +46,7 @@ def main(root):
                   retained_events=sum(row['retained_events'] for row in rows),
                   reference_sampling_hz=reference_fs,
                   timing_limit='Clock diagnostics use the scout sampling rate; verify each raw header before treating these as final timing values.',
-                  helper_sha256=hashlib.sha256(Path('src/hcp_run_audit.py').read_bytes()).hexdigest(),
+                  helper_sha256=hashlib.sha256(Path('src/mtsspi/hcp_run_audit.py').read_bytes()).hexdigest(),
                   script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     (root/'cohort-stage/label-verification.json').write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps(dict(status=report['status'], runs=len(rows), errors=errors,

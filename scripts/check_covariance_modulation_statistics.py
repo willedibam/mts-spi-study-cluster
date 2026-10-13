@@ -3,8 +3,8 @@ import json
 from pathlib import Path
 import numpy as np
 import yaml
-from src.interaction_share_learning import fit_statistical, select_statistical, standardized_marginal_shapes
-from src.representation_state_data import file_hash
+from mtsspi.interaction_share_learning import fit_statistical, select_statistical, standardized_marginal_shapes
+from mtsspi.representation_state_data import file_hash
 
 
 def main():

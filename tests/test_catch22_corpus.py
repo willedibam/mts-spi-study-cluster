@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from src.run_catch22_corpus import SUMMARY_NAMES, aggregate_catch22
+from mtsspi.run_catch22_corpus import SUMMARY_NAMES, aggregate_catch22
 
 
 def test_aggregated_catch22_contract() -> None:

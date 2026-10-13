@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from collections.abc import Sequence
 
-from src.mapping import DatasetMapping, ExperimentConfig
+from mtsspi.mapping import DatasetMapping, ExperimentConfig
 
 
 def select_indices(

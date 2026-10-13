@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.representation_screen import bootstrap_group_means
-from src.representation_state_data import file_hash, load_state_data
+from mtsspi.representation_screen import bootstrap_group_means
+from mtsspi.representation_state_data import file_hash, load_state_data
 
 
 def check(config, data, results, output):

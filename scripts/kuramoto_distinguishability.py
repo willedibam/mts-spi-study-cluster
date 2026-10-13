@@ -24,10 +24,9 @@ import pandas as pd
 from scipy import signal, stats
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from src.generators.dynamical import _build_kuramoto_adjacency, generate_cml_logistic
-from src.generators.linear import (
+from mtsspi.generators.dynamical import _build_kuramoto_adjacency, generate_cml_logistic
+from mtsspi.generators.linear import (
     generate_cauchy_noise,
     generate_gaussian_noise,
     generate_varma,

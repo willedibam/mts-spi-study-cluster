@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.oscillatory_mechanism import draw_parameters, simulate
-from src.representation_state_data import file_hash, observed_view
+from mtsspi.oscillatory_mechanism import draw_parameters, simulate
+from mtsspi.representation_state_data import file_hash, observed_view
 
 
 def main(config, data, output):

@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from src.covariance_modulation import simulate
+from mtsspi.covariance_modulation import simulate
 
 
 def main():

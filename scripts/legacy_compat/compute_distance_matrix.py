@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.corpus_geometry import condensed_distances, legacy_geometry, load_feature_rows
+from mtsspi.corpus_geometry import condensed_distances, legacy_geometry, load_feature_rows
 
 
 def main() -> None:

@@ -4,10 +4,10 @@ import itertools
 import numpy as np
 from sklearn.linear_model import Ridge
 
-from src.hcp_grouping import family_folds, participant_balanced_brier, participant_state_weights
-from src.interaction_share_learning import fit_statistical
-from src.neurotycho_library_baselines import fit_head, make_rocket, standardized
-from src.representation_screen import fit_view
+from mtsspi.hcp_grouping import family_folds, participant_balanced_brier, participant_state_weights
+from mtsspi.interaction_share_learning import fit_statistical
+from mtsspi.neurotycho_library_baselines import fit_head, make_rocket, standardized
+from mtsspi.representation_screen import fit_view
 
 
 VIEWS = {'m-pca': ('m', 'pca'), 'z-pca': ('z', 'pca'), 'mz-pca': ('m+z', 'pca'),

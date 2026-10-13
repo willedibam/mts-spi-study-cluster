@@ -11,7 +11,7 @@ import numpy as np
 import torch
 import yaml
 
-from src.neurotycho_learning import fit_binary,predict_binary
+from mtsspi.neurotycho_learning import fit_binary,predict_binary
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -28,7 +28,7 @@ def main(args):
     paths=[args.data/('edges.npz' if args.kind=='pool' else 'matched.npz')]+([args.data/'dense.npz'] if args.kind=='enriched' else [])
     hashes={p.name:sha(p) for p in paths}
     identity=dict(config_sha256=sha(args.config),inputs=hashes,animal=args.animal,seed=args.seed,kind=args.kind,
-        modules={str(p):sha(p) for p in [Path(__file__),Path('src/neurotycho_learning.py'),Path('src/representation_state_neural.py')]},
+        modules={str(p):sha(p) for p in [Path(__file__),Path('src/mtsspi/neurotycho_learning.py'),Path('src/mtsspi/representation_state_neural.py')]},
         torch=torch.__version__,device=args.device,platform=platform.platform())
     if stem.with_suffix('.json').exists():
         prior=json.loads(stem.with_suffix('.json').read_text())

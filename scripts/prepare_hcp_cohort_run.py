@@ -32,7 +32,7 @@ def main(cohort_root, metadata_root, output_root, subject, run):
     identity = dict(subject=subject, run=run, raw_sha256={r['key']:r['sha256'] for r in raw+ica},
                     metadata_manifest_sha256=hashlib.sha256((metadata_root/'manifest.json').read_bytes()).hexdigest(),
                     code_sha256={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in map(Path,
-                        ['scripts/audit_hcp_continuous.py', 'scripts/prepare_hcp_m32.py', 'src/hcp_run_audit.py'])})
+                        ['scripts/audit_hcp_continuous.py', 'scripts/prepare_hcp_m32.py', 'src/mtsspi/hcp_run_audit.py'])})
     identity_path = root/'preparation-identity.json'
     if identity_path.exists():
         assert json.loads(identity_path.read_text()) == identity, 'Preserve a different prepared run'

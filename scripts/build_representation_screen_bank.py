@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.mpi_representation_baselines import MARGINAL_NAMES, GRAPH_NAMES, summarize_mpis
-from src.spi_spi_contract import build_unified_features, schema_sha256
+from mtsspi.mpi_representation_baselines import MARGINAL_NAMES, GRAPH_NAMES, summarize_mpis
+from mtsspi.spi_spi_contract import build_unified_features, schema_sha256
 
 
 def sha(path: Path) -> str:
@@ -109,7 +109,7 @@ def build(manifest_path: Path, mirror_root: Path, output: Path) -> None:
               "protocol_sha256": manifest["protocol_sha256"],
               "source_hashes_verified": True, "artifact_sha256": sha(output),
               "manifest_sha256": sha(manifest_path), "builder_sha256": sha(Path(__file__)),
-              "modules": {name: sha(Path(name)) for name in ("src/mpi_representation_baselines.py", "src/spi_spi_contract.py")}}
+              "modules": {name: sha(Path(name)) for name in ("src/mtsspi/mpi_representation_baselines.py", "src/mtsspi/spi_spi_contract.py")}}
     output.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

@@ -13,10 +13,10 @@ from sklearn.decomposition import PCA
 from threadpoolctl import threadpool_limits
 from scripts.calibrate_native_coupling import DATA,OUT
 from scripts.spi_baseline_exploration import ROOT,sha,summarize,project_features
-from src.corpus_geometry import fit_geometry_transform
-from src.spi_spi_contract import build_unified_feature_values
-from src.provenance import array_sha256
-from src.utils import slugify
+from mtsspi.corpus_geometry import fit_geometry_transform
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.provenance import array_sha256
+from mtsspi.utils import slugify
 from scripts.refresh_case_figures import style,save
 
 

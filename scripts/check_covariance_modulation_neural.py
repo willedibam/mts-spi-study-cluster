@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import numpy as np
 import torch
-from src.representation_state_data import observed_view,file_hash
-from src.representation_state_neural import make_encoder,predict
+from mtsspi.representation_state_data import observed_view,file_hash
+from mtsspi.representation_state_neural import make_encoder,predict
 
 
 def main(tags, expected_fits, output, root, data):

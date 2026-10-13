@@ -10,9 +10,9 @@ import numpy as np
 import yaml
 from sklearn.metrics import roc_auc_score
 
-from src.oscillatory_coorganization import observed_controls
-from src.oscillatory_mechanism import draw_parameters, group_contrast, phase_matrix, simulate
-from src.representation_state_data import file_hash, observed_view
+from mtsspi.oscillatory_coorganization import observed_controls
+from mtsspi.oscillatory_mechanism import draw_parameters, group_contrast, phase_matrix, simulate
+from mtsspi.representation_state_data import file_hash, observed_view
 
 
 def array_hash(x):
@@ -98,8 +98,8 @@ def main(config, output):
     report = dict(passed=all(gates.values()), gates=gates, reference_AUROC=reference_auc,
                   reference_class_pass_fractions=class_fractions, finite_AUROC=finite_auc,
                   config_sha256=file_hash(config), code_sha256={p: file_hash(Path(p)) for p in [
-                      "scripts/scout_oscillatory_mechanism.py", "src/oscillatory_mechanism.py",
-                      "src/oscillatory_coorganization.py", "src/representation_state_data.py"]},
+                      "scripts/scout_oscillatory_mechanism.py", "src/mtsspi/oscillatory_mechanism.py",
+                      "src/mtsspi/oscillatory_coorganization.py", "src/mtsspi/representation_state_data.py"]},
                   artifacts={"raw-diagnostics.npz": file_hash(output / "raw-diagnostics.npz")},
                   records=records, convergence=convergence, uncoupled=uncoupled)
     (output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")

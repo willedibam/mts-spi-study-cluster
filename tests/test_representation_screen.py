@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.representation_screen import (
+from mtsspi.representation_screen import (
     bootstrap_group_means, classifier, evaluation_cells, fit_view, select_c, training_subsets,
 )
 
@@ -53,7 +53,7 @@ def test_no_features_has_explicit_chance_baseline():
 
 
 def test_train_fitted_clipping_bounds_unseen_outliers_without_test_statistics():
-    from src.representation_screen import fit_block
+    from mtsspi.representation_screen import fit_block
     train = np.array([[0., 1.], [1., 2.], [2., 3.], [3., 4.]])
     config = {**PREPROCESSING, "clip_standard_deviations": 5.}
     fitted = fit_block("g", train, config)

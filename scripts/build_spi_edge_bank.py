@@ -2,10 +2,10 @@
 import argparse,json
 from pathlib import Path
 import numpy as np
-from src.spi_edge_pool import standardize_edges
-from src.representation_state_data import file_hash
-from src.provenance import atomic_json, atomic_savez
-from src.utils import slugify
+from mtsspi.spi_edge_pool import standardize_edges
+from mtsspi.representation_state_data import file_hash
+from mtsspi.provenance import atomic_json, atomic_savez
+from mtsspi.utils import slugify
 
 
 def main(data,mpi_root,bank,output):
@@ -31,7 +31,7 @@ def main(data,mpi_root,bank,output):
         row_id=np.array([r['row_id'] for r in rows]),manifest_sha256=np.array(file_hash(data/'manifest.json'))))
     atomic_json(output.with_suffix('.json'),dict(artifact_sha256=file_hash(output),base_bank_sha256=file_hash(bank),
         manifest_sha256=file_hash(data/'manifest.json'),rows=len(rows),z_recovery_max_difference=maximum,
-        sources=sources,code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/spi_edge_pool.py']}))
+        sources=sources,code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/spi_edge_pool.py']}))
     print(dict(rows=len(rows),z_recovery_max_difference=maximum,sha256=file_hash(output)),flush=True)
 
 

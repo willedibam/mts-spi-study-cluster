@@ -12,8 +12,8 @@ from sklearn.metrics import balanced_accuracy_score, roc_auc_score, brier_score_
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from src.neurotycho_pilot import preprocess, spectral_features, window_specs
-from src import neurotycho_pilot
+from mtsspi.neurotycho_pilot import preprocess, spectral_features, window_specs
+from mtsspi import neurotycho_pilot
 
 
 def processing_hash():

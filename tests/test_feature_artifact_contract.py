@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.process_features import main
+from mtsspi.process_features import main
 
 
 SPI_CATALOG = [

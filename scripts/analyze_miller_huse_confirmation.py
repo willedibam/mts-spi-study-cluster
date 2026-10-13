@@ -14,8 +14,6 @@ import pandas as pd
 from sklearn.isotonic import IsotonicRegression
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_miller_huse_development import (  # noqa: E402
     _cell_summary,
@@ -27,12 +25,12 @@ from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _input_baselines,
     _load_artifact,
 )
-from src.order_parameter_analysis import (  # noqa: E402
+from mtsspi.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
     safe_spearman,
 )
-from src.utils import load_json  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 EXPECTED_G = {0.185, 0.195, 0.20125, 0.20325, 0.2047, 0.20517, 0.2057, 0.20875, 0.225}

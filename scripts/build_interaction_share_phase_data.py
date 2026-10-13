@@ -7,10 +7,10 @@ import time
 import numpy as np
 import yaml
 
-from src.interaction_share_reference import fit_map, energy_share, own_memory
-from src.phase_surrogates import phase_surrogate, pooled_autospectrum, spectrum_checks
-from src.representation_screen import training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
+from mtsspi.interaction_share_reference import fit_map, energy_share, own_memory
+from mtsspi.phase_surrogates import phase_surrogate, pooled_autospectrum, spectrum_checks
+from mtsspi.representation_screen import training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
 
 
 def build(config_path, output):
@@ -78,7 +78,7 @@ def build(config_path, output):
         manifest=dict(config_sha256=file_hash(config_path),artifacts={name:file_hash(root/name) for name in files},
             rows=rows,masters=records,arm=arm,status='origin_labels_not_surrogate_Jacobians',
             origin_manifest_sha256=file_hash(parent_root/'manifest.json'),
-            code_sha256={name:file_hash(Path(name)) for name in [__file__,'src/phase_surrogates.py','src/interaction_share_reference.py']})
+            code_sha256={name:file_hash(Path(name)) for name in [__file__,'src/mtsspi/phase_surrogates.py','src/mtsspi/interaction_share_reference.py']})
         (root/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
         if arm=='intact':
             np.savez_compressed(root/'features.npz',**intact_bank,row_id=np.asarray([r['row_id'] for r in rows]),

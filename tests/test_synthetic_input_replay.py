@@ -4,9 +4,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.mapping import DatasetMapping, ExperimentConfig
-from src.generators.harness import generate_from_spec
-from src.generated_corpus import GeneratedCorpus
+from mtsspi.mapping import DatasetMapping, ExperimentConfig
+from mtsspi.generators.harness import generate_from_spec
+from mtsspi.generated_corpus import GeneratedCorpus
 
 
 @pytest.mark.parametrize("config", [

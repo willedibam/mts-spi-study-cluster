@@ -14,4 +14,7 @@ export MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
+# Run this checkout's code, not another checkout's editable install.
+export PYTHONPATH="$_here/src:$_here${PYTHONPATH:+:$PYTHONPATH}"
+
 unset _here

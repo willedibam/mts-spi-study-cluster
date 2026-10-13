@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from src.phase_surrogates import phase_surrogate, pooled_autospectrum, spectrum_checks
+from mtsspi.phase_surrogates import phase_surrogate, pooled_autospectrum, spectrum_checks
 
 
 @pytest.mark.parametrize('length',[127,128])

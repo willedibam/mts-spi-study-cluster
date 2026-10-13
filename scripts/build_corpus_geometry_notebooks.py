@@ -54,7 +54,6 @@ import sys
 ROOT = Path.cwd().resolve()
 while not (ROOT / 'pyproject.toml').exists() and ROOT != ROOT.parent:
     ROOT = ROOT.parent
-sys.path.insert(0, str(ROOT))
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -63,7 +62,7 @@ import seaborn as sns
 from sklearn.manifold import TSNE
 from umap import UMAP
 
-from src.corpus_visualization import plot_embedding
+from mtsspi.corpus_visualization import plot_embedding
 
 sns.set_theme(context='notebook', style='ticks')
 RESULTS = ROOT / 'results' / 'corpus_geometry'
@@ -157,7 +156,7 @@ plt.show()
             markdown("## Live point-to-MTS browser"),
             code(
                 """
-from src.corpus_visualization import interactive_embedding_browser
+from mtsspi.corpus_visualization import interactive_embedding_browser
 
 CONFIRMATION_FEATURES = ROOT / 'data' / 'proof_p90_260824' / 'features' / 'confirmation.npz'
 RAW_ROOT = ROOT / 'data' / 'proof_p90_260824' / 'raw' / 'confirmation'
@@ -205,7 +204,6 @@ import sys
 ROOT = Path.cwd().resolve()
 while not (ROOT / 'pyproject.toml').exists() and ROOT != ROOT.parent:
     ROOT = ROOT.parent
-sys.path.insert(0, str(ROOT))
 
 import json
 import matplotlib.pyplot as plt
@@ -213,9 +211,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from src.atlas_analysis import cluster_medoids
-from src.corpus_geometry import nearest_neighbour_table
-from src.corpus_visualization import (
+from mtsspi.atlas_analysis import cluster_medoids
+from mtsspi.corpus_geometry import nearest_neighbour_table
+from mtsspi.corpus_visualization import (
     interactive_embedding_browser,
     plot_embedding,
     plot_mts_heatmap,

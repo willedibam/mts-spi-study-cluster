@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.cross_mt_transfer import (
+from mtsspi.cross_mt_transfer import (
     geometry_metrics,
     pooled_baseline_features,
     retrieval_scores,

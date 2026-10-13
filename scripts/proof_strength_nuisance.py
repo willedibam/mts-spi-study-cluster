@@ -66,7 +66,7 @@ def strength(x):
 
 def dynamics(name,instance):
     """One (M,T) realization, channels z-scored; shared by every arm."""
-    from src import generators
+    from mtsspi import generators
     generator,params=CLASSES[name]
     rng=np.random.default_rng(np.random.SeedSequence([SEED,list(CLASSES).index(name),instance]))
     with contextlib.redirect_stdout(io.StringIO()):
@@ -136,9 +136,9 @@ def extract(data=DATA,out=OUT,run=RUN,ordered=False):
     """Per-SPI means and the proof notebook's symmetrised SPI-SPI block from the retrieved MPIs.
     ordered=True also stores the direction-preserving block (ordered channel pairs, MPIs not symmetrised)."""
     from scripts.spi_baseline_exploration import sha,summarize
-    from src.spi_spi_contract import _similarity_matrix,_upper_symmetrized
-    from src.utils import slugify
-    from src.spi_spi_contract import build_unified_feature_values
+    from mtsspi.spi_spi_contract import _similarity_matrix,_upper_symmetrized
+    from mtsspi.utils import slugify
+    from mtsspi.spi_spi_contract import build_unified_feature_values
     manifest=json.loads((data/'manifest.json').read_text());mean,spread,z,seconds,directed=[],[],[],[],[];order=None
     config=sha(ROOT/'configs/pyspi/benchmarked_p90.yaml')
     for r in manifest['rows']:

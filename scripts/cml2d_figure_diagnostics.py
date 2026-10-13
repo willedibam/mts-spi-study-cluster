@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.corpus_visualization import plot_mts_heatmap, scale_timeseries
-from src.spi_spi_contract import build_unified_schema
+from mtsspi.corpus_visualization import plot_mts_heatmap, scale_timeseries
+from mtsspi.spi_spi_contract import build_unified_schema
 
 
 def export_snapshots(root: Path, output: Path, *, tracking_panel=None, seed=26091115, M=32, full=False):

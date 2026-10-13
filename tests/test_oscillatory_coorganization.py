@@ -1,5 +1,5 @@
 import numpy as np
-from src.oscillatory_coorganization import partitions,simulate,observed_controls
+from mtsspi.oscillatory_coorganization import partitions,simulate,observed_controls
 
 
 def test_only_cross_partition_correspondence_changes():

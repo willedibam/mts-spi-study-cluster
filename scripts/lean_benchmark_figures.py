@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
-from src.corpus_visualization import plot_mts_heatmap, scale_timeseries
+from mtsspi.corpus_visualization import plot_mts_heatmap, scale_timeseries
 
 
 def snapshots(root, system, controls):

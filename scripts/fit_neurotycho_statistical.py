@@ -9,7 +9,7 @@ import joblib
 import numpy as np
 import yaml
 
-from src.neurotycho_statistical import METHODS, fit_grouped, predict_fitted
+from mtsspi.neurotycho_statistical import METHODS, fit_grouped, predict_fitted
 
 
 def sha(path):
@@ -45,8 +45,8 @@ def main(args):
     stem = args.output / f'{args.method}-{args.animal}'
     identity = dict(config_sha256=sha(args.config), animal=args.animal, method=args.method,
         inputs={str(p): sha(p) for p in [*args.banks, args.spectral]},
-        modules={str(p): sha(p) for p in [Path(__file__), Path('src/neurotycho_statistical.py'),
-            Path('src/representation_screen.py'), Path('src/interaction_share_learning.py')]})
+        modules={str(p): sha(p) for p in [Path(__file__), Path('src/mtsspi/neurotycho_statistical.py'),
+            Path('src/mtsspi/representation_screen.py'), Path('src/mtsspi/interaction_share_learning.py')]})
     if stem.with_suffix('.json').exists():
         report = json.loads(stem.with_suffix('.json').read_text())
         assert report['identity'] == identity and sha(stem.with_suffix('.joblib')) == report['model_sha256']

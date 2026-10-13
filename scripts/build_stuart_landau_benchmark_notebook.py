@@ -45,8 +45,8 @@ import seaborn as sns
 ROOT = Path.cwd().resolve()
 while ROOT != ROOT.parent and not (ROOT / "src").exists():
     ROOT = ROOT.parent
-from src.corpus_visualization import plot_mts_heatmap
-from src.generators.order_parameter import generate_stuart_landau
+from mtsspi.corpus_visualization import plot_mts_heatmap
+from mtsspi.generators.order_parameter import generate_stuart_landau
 
 RESULTS = ROOT / "data/order_parameter/stuart_landau_development_analysis"
 summary = json.loads((RESULTS / "summary.json").read_text())

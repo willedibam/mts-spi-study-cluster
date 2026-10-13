@@ -10,9 +10,9 @@ source jobs/gadi/require_synced_source.sh
 source jobs/gadi/env.sh
 
 # Reject layout drift and accidental output into retired roots before submission.
-python scripts/check_gadi_storage_layout.py --output "$(python -m src.run_corpus --config "$config" --output-dir)"
+python scripts/check_gadi_storage_layout.py --output "$(python -m mtsspi.run_corpus --config "$config" --output-dir)"
 
-total=$(python -m src.run_corpus --config "$config" --count-only)
+total=$(python -m mtsspi.run_corpus --config "$config" --count-only)
 if [[ -n "$index_file" ]]; then
     tasks=$(awk 'NF { n += 1 } END { print n + 0 }' "$index_file")
 else

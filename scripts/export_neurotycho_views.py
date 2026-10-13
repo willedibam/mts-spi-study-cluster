@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.provenance import array_sha256
+from mtsspi.provenance import array_sha256
 
 
 def sha(path):

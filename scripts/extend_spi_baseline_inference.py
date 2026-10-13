@@ -10,8 +10,8 @@ from threadpoolctl import threadpool_limits
 
 from scripts.spi_baseline_exploration import ROOT, DATA, OUT, sha, summarize, fit_coordinate, write_json, finite_json
 from scripts.order_parameter_simple_baselines import input_statistics
-from src.corpus_geometry import fit_geometry_transform
-from src.utils import slugify
+from mtsspi.corpus_geometry import fit_geometry_transform
+from mtsspi.utils import slugify
 
 ORDER_ROOT = ROOT / "data/order_parameter"
 MIRROR = DATA / "downloads"

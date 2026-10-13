@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from src.generators.order_parameter import (
+from mtsspi.generators.order_parameter import (
     generate_desai_zwanzig,
     generate_kuramoto_order_parameter,
     generate_miller_huse,
@@ -12,16 +12,16 @@ from src.generators.order_parameter import (
     kuramoto_critical_coupling,
     miller_huse_map,
 )
-from src.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
-from src.generators.harness import (
+from mtsspi.mapping import DatasetMapping, ExperimentConfig, _derive_dataset_seed
+from mtsspi.generators.harness import (
     _desai_zwanzig_semantics,
     _kuramoto_semantics,
     _miller_huse_semantics,
     _stuart_landau_semantics,
 )
-from src.generators.harness import generate_from_spec
-from src.generated_corpus import GeneratedCorpus
-from src.generators.harness import ground_truth_descriptor
+from mtsspi.generators.harness import generate_from_spec
+from mtsspi.generated_corpus import GeneratedCorpus
+from mtsspi.generators.harness import ground_truth_descriptor
 
 
 def test_ground_truth_descriptor_skips_empty_future_arrays(tmp_path: Path) -> None:

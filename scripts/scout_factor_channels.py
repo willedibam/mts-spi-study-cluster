@@ -10,7 +10,7 @@ from sklearn.metrics import balanced_accuracy_score
 from threadpoolctl import threadpool_limits
 from scripts.build_factor_parity import direct_features,CLASSES
 from scripts.spi_baseline_exploration import ROOT,project_features,sha
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 RUN='factor-channel-scout-261004';OUT=ROOT/'results/representation'/RUN
 SEED=261022;WEIGHTS=np.array([.9,.075,.025]);STRENGTH=.25

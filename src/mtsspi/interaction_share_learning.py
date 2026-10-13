@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
 from sklearn.dummy import DummyRegressor
 
-from src.representation_screen import fit_view, fit_block, ViewTransform
+from mtsspi.representation_screen import fit_view, fit_block, ViewTransform
 
 
 def standardized_marginal_shapes(rich, validity):

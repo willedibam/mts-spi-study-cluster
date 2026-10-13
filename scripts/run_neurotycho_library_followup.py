@@ -12,7 +12,7 @@ import joblib
 import numpy as np
 import yaml
 
-from src.neurotycho_library_baselines import array_sha, fit_model, predict_model, standardized
+from mtsspi.neurotycho_library_baselines import array_sha, fit_model, predict_model, standardized
 
 
 ROOT = Path('results/neurotycho_library_followup_260911')
@@ -135,7 +135,7 @@ def fit(args):
             for seed in seeds:
                 stem = out/f'{method}-{animal}-s{seed}'
                 identity = dict(method=method, animal=animal, seed=seed, config_sha256=sha(CONFIG),
-                    bank_sha256=sha(ROOT/'source'/'bank.npz'), module_sha256=sha(Path('src/neurotycho_library_baselines.py')))
+                    bank_sha256=sha(ROOT/'source'/'bank.npz'), module_sha256=sha(Path('src/mtsspi/neurotycho_library_baselines.py')))
                 if stem.with_suffix('.json').exists():
                     previous = json.loads(stem.with_suffix('.json').read_text())
                     assert previous['identity'] == identity and sha(stem.with_suffix('.joblib')) == previous['model_sha256']
@@ -159,7 +159,7 @@ def fit(args):
 
 def evaluate(args):
     from sklearn.metrics import balanced_accuracy_score, roc_auc_score
-    from src.neurotycho_library_baselines import brier
+    from mtsspi.neurotycho_library_baselines import brier
     assert len(list((ROOT/'fits').glob('*.json'))) == 10
     bank = load_bank('evaluation'); rows=[]; audits=[]
     for path in sorted((ROOT/'fits').glob('*.json')):

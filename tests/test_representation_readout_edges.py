@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 from torch import nn
-from src.interaction_share_learning import fit_statistical
-from src.representation_state_neural import fit_encoder
+from mtsspi.interaction_share_learning import fit_statistical
+from mtsspi.representation_state_neural import fit_encoder
 
 
 def test_pls_caps_rank_of_duplicate_validity_columns():
@@ -29,7 +29,7 @@ class ConstantPrediction(nn.Module):
 
 
 def test_unclipped_stopping_recognizes_improvement_below_zero(monkeypatch):
-    monkeypatch.setattr('src.representation_state_neural.make_encoder',lambda spec:ConstantPrediction())
+    monkeypatch.setattr('mtsspi.representation_state_neural.make_encoder',lambda spec:ConstantPrediction())
     x=torch.zeros(4,4,2);y=torch.full((4,),.5)
     spec=dict(batch_size=2,maximum_epochs=8,minimum_epochs=3,early_stopping_patience=2)
     _,old=fit_encoder(x,y,spec,.01,0.,3,validation=(x,y))

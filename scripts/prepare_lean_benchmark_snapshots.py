@@ -8,9 +8,9 @@ from concurrent.futures import ProcessPoolExecutor
 import json
 from pathlib import Path
 import numpy as np
-from src.generators.order_parameter import (
+from mtsspi.generators.order_parameter import (
     generate_kuramoto_order_parameter, generate_miller_huse, generate_stuart_landau)
-from src.generators.dynamical import generate_cml_logistic
+from mtsspi.generators.dynamical import generate_cml_logistic
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT/'data/order_parameter/lean_snapshots_260916'

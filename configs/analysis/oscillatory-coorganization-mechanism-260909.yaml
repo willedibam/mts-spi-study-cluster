@@ -9,7 +9,7 @@ generator:
   conditions:
   - crossed
   - aligned
-  source_module: src/oscillatory_coorganization.py
+  source_module: src/mtsspi/oscillatory_coorganization.py
   unchanged_from_scout: true
 target:
   quantity: coincident phase and envelope group assignments

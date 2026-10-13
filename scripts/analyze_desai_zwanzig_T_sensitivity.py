@@ -12,8 +12,6 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_desai_zwanzig_fine_boundary import (  # noqa: E402
     _association,
@@ -23,8 +21,8 @@ from scripts.analyze_desai_zwanzig_fine_boundary import (  # noqa: E402
 )
 from scripts.analyze_stuart_landau_confirmation import _steepest_interval  # noqa: E402
 from scripts.analyze_stuart_landau_development import _load_artifact  # noqa: E402
-from src.order_parameter_analysis import safe_spearman  # noqa: E402
-from src.utils import load_yaml  # noqa: E402
+from mtsspi.order_parameter_analysis import safe_spearman  # noqa: E402
+from mtsspi.utils import load_yaml  # noqa: E402
 
 
 def _reference_path(path: Path, reference_root: Path, T: int) -> Path:

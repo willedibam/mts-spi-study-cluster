@@ -115,7 +115,7 @@ source_configs_sha256:
 notes:
 - Architectures/candidate grids reuse existing verified implementations; no HCP neural
   fitting has occurred.
-- Source-only grouped adapter src/hcp_learning.py is verified on random inputs; the
+- Source-only grouped adapter src/mtsspi/hcp_learning.py is verified on random inputs; the
   cohort/data-loading driver and actual splits remain pending.
 - No equal-compute claim; report tuning/fitting costs and selected epoch ceilings.
 - Statistical and MiniRocket candidates are declared in hcp-statistical-candidates-260915.yaml.

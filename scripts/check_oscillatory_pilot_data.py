@@ -3,9 +3,9 @@ import json
 from pathlib import Path
 import numpy as np
 import yaml
-from src.oscillatory_coorganization import simulate
-from src.representation_state_data import load_state_data,observed_view,source_pool_for_seed,file_hash
-from src.representation_screen import training_subsets
+from mtsspi.oscillatory_coorganization import simulate
+from mtsspi.representation_state_data import load_state_data,observed_view,source_pool_for_seed,file_hash
+from mtsspi.representation_screen import training_subsets
 
 
 def main():

@@ -2,7 +2,7 @@
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 
-from src.neurotycho_learning import balanced_brier
+from mtsspi.neurotycho_learning import balanced_brier
 
 
 def audited_cuda_tolerance(audit, model_name, checkpoint_sha256):

@@ -11,8 +11,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from src.neurotycho_learning import balanced_brier, date_state_weights, predict_binary
-from src.representation_state_neural import seed_torch
+from mtsspi.neurotycho_learning import balanced_brier, date_state_weights, predict_binary
+from mtsspi.representation_state_neural import seed_torch
 
 
 class SameConv(nn.Conv1d):

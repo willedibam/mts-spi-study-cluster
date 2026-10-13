@@ -12,8 +12,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.manifold import Isomap
 from sklearn.metrics import balanced_accuracy_score
 
-from src.cml_order_parameter import spatial_power_distribution
-from src.spi_spi_analysis import fit_feature_transform, fit_frozen_pc1
+from mtsspi.cml_order_parameter import spatial_power_distribution
+from mtsspi.spi_spi_analysis import fit_feature_transform, fit_frozen_pc1
 
 
 def _load(path: str | Path) -> dict[str, np.ndarray]:

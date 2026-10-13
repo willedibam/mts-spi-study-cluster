@@ -8,7 +8,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.cross_mt_transfer import pooled_baseline_features
+from mtsspi.cross_mt_transfer import pooled_baseline_features
 
 
 def sha(path: Path) -> str:
@@ -37,7 +37,7 @@ def build(manifest_path: Path, mirror: Path, raw_evaluation: Path, output: Path)
     np.savez_compressed(output, X_u=np.asarray(values), row_id=np.asarray(rows), feature_names=np.asarray(names))
     output.with_suffix(".json").write_text(json.dumps({"artifact_sha256": sha(output),
         "manifest_sha256": sha(manifest_path), "rows": len(rows), "features": len(names),
-        "builder_sha256": sha(Path(__file__)), "baseline_module_sha256": sha(Path("src/cross_mt_transfer.py")),
+        "builder_sha256": sha(Path(__file__)), "baseline_module_sha256": sha(Path("src/mtsspi/cross_mt_transfer.py")),
         "sources": sources}, indent=2) + "\n")
     print(f"Built {len(rows)} x {len(names)} raw controls")
 

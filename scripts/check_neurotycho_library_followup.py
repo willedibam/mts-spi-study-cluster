@@ -6,7 +6,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 
-from src.neurotycho_library_baselines import predict_model
+from mtsspi.neurotycho_library_baselines import predict_model
 
 ROOT=Path('results/neurotycho_library_followup_260911')
 

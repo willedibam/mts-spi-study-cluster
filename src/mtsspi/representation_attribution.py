@@ -4,7 +4,7 @@ from sklearn.metrics import balanced_accuracy_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
 
-from src.representation_screen import classifier, fit_view
+from mtsspi.representation_screen import classifier, fit_view
 
 QUANTILES = np.arange(1, 20) / 20
 RICH_NAMES = ("mean", "std", "skewness", "kurtosis", *(f"q{int(q * 100):02d}" for q in QUANTILES))

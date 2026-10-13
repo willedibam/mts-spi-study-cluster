@@ -3,7 +3,7 @@ import time
 import numpy as np
 import torch
 from torch import nn
-from src.representation_state_neural import make_encoder,seed_torch
+from mtsspi.representation_state_neural import make_encoder,seed_torch
 
 
 def date_state_weights(archives,y):

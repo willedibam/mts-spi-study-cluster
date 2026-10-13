@@ -5,8 +5,8 @@ from torch.nn import functional as F
 import yaml
 from pathlib import Path
 
-from src.inceptiontime_baseline import InceptionNetwork, SameConv, fit_network
-from src.neurotycho_learning import predict_binary
+from mtsspi.inceptiontime_baseline import InceptionNetwork, SameConv, fit_network
+from mtsspi.neurotycho_learning import predict_binary
 
 
 def protocol():

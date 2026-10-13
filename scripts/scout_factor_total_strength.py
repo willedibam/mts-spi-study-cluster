@@ -13,7 +13,7 @@ from threadpoolctl import threadpool_limits
 from scripts.scout_factor_channels import signs,CLASSES,WEIGHTS,ROOT
 from scripts.build_factor_parity import direct_features
 from scripts.spi_baseline_exploration import project_features,sha
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 OUT=ROOT/'results/representation/factor-total-strength-scout-261004'
 

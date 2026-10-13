@@ -6,7 +6,7 @@ import argparse
 import pandas as pd
 
 from scripts.legacy_compat.utils import load_geometry
-from src.corpus_geometry import nearest_neighbour_table
+from mtsspi.corpus_geometry import nearest_neighbour_table
 
 
 def main() -> None:

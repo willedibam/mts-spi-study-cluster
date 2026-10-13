@@ -15,10 +15,8 @@ from sklearn.isotonic import IsotonicRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.order_parameter_analysis import (  # noqa: E402
+from mtsspi.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
@@ -27,14 +25,14 @@ from src.order_parameter_analysis import (  # noqa: E402
     residualize_by_group,
     safe_spearman,
 )
-from src.order_parameter_features import (  # noqa: E402
+from mtsspi.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,
     validate_spi_catalogs,
 )
-from src.process_features import _edge_vectors  # noqa: E402
-from src.utils import load_json  # noqa: E402
+from mtsspi.process_features import _edge_vectors  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 EXPECTED = {

@@ -1072,7 +1072,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mts-spi-study-cluster"
+name = "mtsspi"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

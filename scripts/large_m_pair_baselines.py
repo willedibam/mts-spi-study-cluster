@@ -88,7 +88,7 @@ def prepare_meg(root, source, index):
     from sklearn.preprocessing import StandardScaler
     from sklearn.pipeline import make_pipeline
     from scripts.prepare_hcp_m32 import farthest_sensors
-    from src.hcp_run_audit import ica_projection
+    from mtsspi.hcp_run_audit import ica_projection
     audit = json.loads((source/'continuous-audit.json').read_text())
     downloads = json.loads((source/'download-verification.json').read_text())
     ica = json.loads((source/'ica/download-verification.json').read_text())
@@ -188,7 +188,7 @@ def assemble(root):
 
 
 def extract(root, group, index):
-    from src import corpus, provenance, run_corpus
+    from mtsspi import corpus, provenance, run_corpus
     config = corpus.ArchiveCorpus.from_file(root/f'{group}.yaml')
     entries = corpus.load_inventory(config)
     entry = entries[index-1]
@@ -214,7 +214,7 @@ def extract(root, group, index):
 
 
 def gate(root, group):
-    from src import corpus, provenance, run_corpus
+    from mtsspi import corpus, provenance, run_corpus
     config = corpus.ArchiveCorpus.from_file(root/f'{group}.yaml')
     entries = corpus.load_inventory(config)
     smoke = [int(i) for i in (root/f'{group}-smoke.txt').read_text().split()]

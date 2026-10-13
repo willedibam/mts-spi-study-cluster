@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from src.generators import harness
+from mtsspi.generators import harness
 
 
 def _spec(generator, **params):
@@ -29,7 +29,7 @@ def test_cml_full_lattice_is_requested_by_parameter():
 
 
 def test_every_ground_truth_generator_is_registered_consistently():
-    from src.generators import GENERATOR_REGISTRY
+    from mtsspi.generators import GENERATOR_REGISTRY
 
     assert harness._GROUND_TRUTH and harness._GROUND_TRUTH <= set(harness._OUTPUTS)
     assert set(harness._SEMANTICS) == harness._GROUND_TRUTH

@@ -12,10 +12,10 @@ import time
 
 import numpy as np
 
-from src.compute import run_pyspi
-from src.mapping import DatasetMapping, ExperimentConfig
-from src.provenance import file_sha256, repository_provenance, pyspi_version
-from src.utils import project_root, timestamp
+from mtsspi.compute import run_pyspi
+from mtsspi.mapping import DatasetMapping, ExperimentConfig
+from mtsspi.provenance import file_sha256, repository_provenance, pyspi_version
+from mtsspi.utils import project_root, timestamp
 
 NAMES = ("bary_sgddtw_mean", "bary_sgddtw_max", "bary-sq_sgddtw_mean", "bary-sq_sgddtw_max")
 NAMES += tuple(f"{prefix}_{estimator}" for estimator in ("EllipticEnvelope", "MinCovDet")

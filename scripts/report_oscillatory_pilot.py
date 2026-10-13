@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import balanced_accuracy_score,roc_auc_score
-from src.representation_state_data import file_hash
+from mtsspi.representation_state_data import file_hash
 
 
 def main(data,inputs,output,source_data=None):

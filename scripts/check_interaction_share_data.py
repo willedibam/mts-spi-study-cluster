@@ -8,8 +8,8 @@ import yaml
 
 from scripts.check_interaction_share_feasibility import interaction_share
 from scripts.check_interaction_share_references import parameters, simulate
-from src.representation_screen import training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
+from mtsspi.representation_screen import training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
 
 
 def check(config, data, output):

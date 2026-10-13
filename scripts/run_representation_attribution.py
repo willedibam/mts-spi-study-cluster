@@ -8,16 +8,16 @@ import numpy as np
 import sklearn
 import yaml
 
-from src.representation_attribution import RICH_NAMES, rich_marginals, fit_head, select_head
-from src.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
-from src.representation_state_data import file_hash
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.representation_attribution import RICH_NAMES, rich_marginals, fit_head, select_head
+from mtsspi.representation_screen import fit_view, training_subsets, evaluation_cells, bootstrap_group_means
+from mtsspi.representation_state_data import file_hash
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def extract(manifest_path, mirror, output):
     manifest = json.loads(manifest_path.read_text())
     identity = {"manifest_sha256": file_hash(manifest_path),
-                "module_sha256": file_hash(Path("src/representation_attribution.py"))}
+                "module_sha256": file_hash(Path("src/mtsspi/representation_attribution.py"))}
     if output.exists():
         previous = json.loads(output.with_suffix(".json").read_text())
         if previous["identity"] != identity or previous["artifact_sha256"] != file_hash(output):
@@ -124,7 +124,7 @@ def run(config_path, output):
                     "row_id": meta["row_id"][evaluation], "classes": classes, "methods": np.asarray(names)})
     result = {"status": "exploratory_post_stage_b_attribution", "protocol_sha256": file_hash(config_path),
               "bank_sha256": file_hash(bank_path), "rich_bank_sha256": file_hash(rich_path),
-              "code_sha256": {p: file_hash(Path(p)) for p in [__file__, "src/representation_attribution.py", "src/representation_screen.py"]},
+              "code_sha256": {p: file_hash(Path(p)) for p in [__file__, "src/mtsspi/representation_attribution.py", "src/mtsspi/representation_screen.py"]},
               "numpy": np.__version__, "sklearn": sklearn.__version__, "seconds": time.perf_counter() - start,
               "predictions_sha256": file_hash(output / "predictions.npz"), "summary": summary,
               "paired_primary": comparisons, "per_class_primary": per_class, "fits": fits,

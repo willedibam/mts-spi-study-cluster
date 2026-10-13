@@ -5,11 +5,11 @@ import json
 from pathlib import Path
 import numpy as np
 
-from src.mpi_representation_baselines import summarize_mpis
-from src.representation_attribution import rich_marginals
-from src.spi_edge_pool import standardize_edges
-from src.spi_spi_contract import build_unified_features,schema_sha256
-from src.utils import slugify
+from mtsspi.mpi_representation_baselines import summarize_mpis
+from mtsspi.representation_attribution import rich_marginals
+from mtsspi.spi_edge_pool import standardize_edges
+from mtsspi.spi_spi_contract import build_unified_features,schema_sha256
+from mtsspi.utils import slugify
 
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -56,8 +56,8 @@ def main(args):
         spi_order=np.array(order),schema_sha256=schema_sha256(features.schema))
     report=dict(sha256=sha(args.output),manifest_sha256=sha(args.data/'manifest.json'),phase=manifest['phase'],
         catalogue_sha256=manifest['catalogue_sha256'],versions=list(versions),sources=sources,
-        modules={str(p):sha(p) for p in [Path(__file__),Path('src/mpi_representation_baselines.py'),
-            Path('src/representation_attribution.py'),Path('src/spi_spi_contract.py'),Path('src/spi_edge_pool.py')]})
+        modules={str(p):sha(p) for p in [Path(__file__),Path('src/mtsspi/mpi_representation_baselines.py'),
+            Path('src/mtsspi/representation_attribution.py'),Path('src/mtsspi/spi_spi_contract.py'),Path('src/mtsspi/spi_edge_pool.py')]})
     args.output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n')
     print(dict(rows=len(rows),valid_min=min(s['valid_spis'] for s in sources),sha256=report['sha256']),flush=True)
 

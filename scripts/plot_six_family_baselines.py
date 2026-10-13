@@ -13,7 +13,7 @@ from scripts.analyze_all_proof_coupling import rows as load_rows
 from scripts.analyze_band_swap import fitted_logistic
 from scripts.spi_baseline_exploration import ROOT,project_features,sha
 from scripts.refresh_case_figures import style,save
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 SOURCE=ROOT/'results/representation/proof-strength-all-261003'
 OUT=ROOT/'results/representation/six-family-view-261004'

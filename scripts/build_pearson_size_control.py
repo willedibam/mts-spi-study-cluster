@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import brentq
 from threadpoolctl import threadpool_limits
-from src.generators import generate_varma, generate_cml_logistic, generate_kuramoto, generate_wave_1d
+from mtsspi.generators import generate_varma, generate_cml_logistic, generate_kuramoto, generate_wave_1d
 from scripts.spi_baseline_exploration import ROOT, sha
 from scripts.build_pearson_strength_match import normalize
 

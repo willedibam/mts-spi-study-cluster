@@ -2,7 +2,7 @@
 import numpy as np
 from sklearn.metrics import roc_auc_score
 
-from src.hcp_grouping import _ids, participant_state_weights
+from mtsspi.hcp_grouping import _ids, participant_state_weights
 
 
 METRICS = ('balanced_accuracy', 'auroc', 'balanced_brier')

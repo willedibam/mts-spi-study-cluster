@@ -34,7 +34,7 @@ def test_full_sensor_order_is_unique_and_preserves_coverage_prefix():
 
 
 def test_assembly_produces_three_valid_16_record_groups(tmp_path):
-    from src.corpus import ArchiveCorpus, load_inventory
+    from mtsspi.corpus import ArchiveCorpus, load_inventory
     for index, task in enumerate(tasks()):
         if task['system'] == 'cml':
             sizes = [64, 100, 256]

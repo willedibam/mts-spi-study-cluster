@@ -12,7 +12,7 @@ import joblib
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score, f1_score
 
-from src.cross_mt_transfer import (
+from mtsspi.cross_mt_transfer import (
     build_pooled_baseline_matrices,
     feature_view,
     file_sha256,
@@ -22,7 +22,7 @@ from src.cross_mt_transfer import (
     retrieval_scores,
     stratified_bootstrap_interval,
 )
-from src.utils import load_yaml
+from mtsspi.utils import load_yaml
 
 
 def _row_key(label: str, M: int, T: int, instance: int) -> str:

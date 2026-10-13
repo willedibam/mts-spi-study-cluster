@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 
-from src.representation_mechanism import permute_dyads
-from src.spi_edge_pool import SPIEdgePool, pack_inputs
-from src.spi_pooling_nulls import canonical_dyads, permute_edge_columns
+from mtsspi.representation_mechanism import permute_dyads
+from mtsspi.spi_edge_pool import SPIEdgePool, pack_inputs
+from mtsspi.spi_pooling_nulls import canonical_dyads, permute_edge_columns
 
 
 def test_matches_independent_matrix_implementation_and_preserves_dyads():

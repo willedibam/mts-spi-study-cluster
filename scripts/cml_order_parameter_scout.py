@@ -22,11 +22,9 @@ import numpy as np
 ROOT = Path(
     os.environ.get("MTS_SPI_REPO_ROOT", Path(__file__).resolve().parents[1])
 ).resolve()
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.cml_order_parameter import largest_lyapunov_exponent, summarize_field
-from src.generators.dynamical import generate_cml_logistic
+from mtsspi.cml_order_parameter import largest_lyapunov_exponent, summarize_field
+from mtsspi.generators.dynamical import generate_cml_logistic
 
 
 def parse_grid(text: str, *, integer: bool = False) -> list[float] | list[int]:

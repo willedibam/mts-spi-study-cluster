@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from src.spi_edge_pool import pack_inputs
+from mtsspi.spi_edge_pool import pack_inputs
 
 
 def main(args):

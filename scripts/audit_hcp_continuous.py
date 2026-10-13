@@ -9,7 +9,7 @@ import mne
 import numpy as np
 import pandas as pd
 from scipy.io import loadmat
-from src.hcp_run_audit import align_eprime
+from mtsspi.hcp_run_audit import align_eprime
 
 
 def main(root, subject='105923', run='6-Wrkmem'):

@@ -4,12 +4,12 @@ import tarfile
 from pathlib import Path
 import numpy as np
 import yaml
-from src.interaction_share_learning import fit_statistical,select_statistical
-from src.mpi_representation_baselines import summarize_mpis
-from src.representation_attribution import rich_marginals
-from src.representation_state_data import load_state_data,observed_view,file_hash
-from src.provenance import array_sha256
-from src.spi_spi_contract import build_unified_features
+from mtsspi.interaction_share_learning import fit_statistical,select_statistical
+from mtsspi.mpi_representation_baselines import summarize_mpis
+from mtsspi.representation_attribution import rich_marginals
+from mtsspi.representation_state_data import load_state_data,observed_view,file_hash
+from mtsspi.provenance import array_sha256
+from mtsspi.spi_spi_contract import build_unified_features
 
 
 def main():

@@ -10,9 +10,9 @@ from scripts.build_pearson_strength_match import DATA,OUT,RUN
 from scripts.analyze_native_coupling import extract as extract_common
 from scripts.analyze_band_swap import fitted_logistic
 from scripts.spi_baseline_exploration import project_features,sha
-from src.corpus_geometry import fit_geometry_transform
-from src.spi_spi_contract import build_unified_feature_values
-from src.utils import slugify
+from mtsspi.corpus_geometry import fit_geometry_transform
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.utils import slugify
 
 
 def rows(stage):

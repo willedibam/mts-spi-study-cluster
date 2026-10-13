@@ -7,8 +7,8 @@ import numpy as np
 import torch
 import yaml
 
-from src.representation_state_data import file_hash
-from src.representation_state_neural import fit_encoder, predict, seed_torch
+from mtsspi.representation_state_data import file_hash
+from mtsspi.representation_state_neural import fit_encoder, predict, seed_torch
 
 
 def check(config, output, device, learning_rate=.001):
@@ -27,7 +27,7 @@ def check(config, output, device, learning_rate=.001):
     model, log = fit_encoder(x, y, spec, learning_rate, .0001, 911, epochs=200)
     prediction = predict(model, x, 4)
     mae = float(np.abs(prediction - labels).mean())
-    report = {"config_sha256": file_hash(config), "model_sha256": file_hash(Path("src/representation_state_neural.py")),
+    report = {"config_sha256": file_hash(config), "model_sha256": file_hash(Path("src/mtsspi/representation_state_neural.py")),
               "device": device, "torch": torch.__version__, "learning_rate": learning_rate, "training_MAE": mae,
               "constant_training_MAE": float(np.abs(labels - labels.mean()).mean()),
               "targets": labels.tolist(), "predictions": prediction.tolist(), "fit": log,

@@ -4,10 +4,10 @@ import json
 from pathlib import Path
 import numpy as np
 import yaml
-from src.oscillatory_coorganization import simulate,observed_controls
-from src.covariance_modulation import raw_references
-from src.phase_surrogates import pooled_autospectrum
-from src.representation_state_data import observed_view,file_hash
+from mtsspi.oscillatory_coorganization import simulate,observed_controls
+from mtsspi.covariance_modulation import raw_references
+from mtsspi.phase_surrogates import pooled_autospectrum
+from mtsspi.representation_state_data import observed_view,file_hash
 
 
 def main(config,data):
@@ -20,7 +20,7 @@ def main(config,data):
             for replicate in range(count):
                 seed=[cfg['sampling']['master_seed'],split,condition,replicate]
                 if cfg['generator']['name']=='oscillatory_direct_phase':
-                    from src.oscillatory_mechanism import draw_parameters,simulate as simulate_direct
+                    from mtsspi.oscillatory_mechanism import draw_parameters,simulate as simulate_direct
                     settings=cfg['generator']['settings'];meta=draw_parameters(seed+[0],settings)
                     x=simulate_direct(bool(condition),seed+[1],meta,settings,t=cfg['generator']['input_T'])
                 else:
@@ -48,8 +48,8 @@ def main(config,data):
     np.savez_compressed(data/'views.npz',**views)
     manifest=dict(config_sha256=file_hash(config),rows=rows,masters=records,
         artifacts={p:file_hash(data/p) for p in ['masters.npy','observables.npy','raw-references.npz','views.npz']},
-        code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/oscillatory_coorganization.py']+
-                     (['src/oscillatory_mechanism.py'] if cfg['generator']['name']=='oscillatory_direct_phase' else [])},
+        code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/oscillatory_coorganization.py']+
+                     (['src/mtsspi/oscillatory_mechanism.py'] if cfg['generator']['name']=='oscillatory_direct_phase' else [])},
         status=cfg.get('status','fresh_pilot_frozen_before_generation_independent_records_no_pretraining'))
     (data/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(dict(masters=len(masters),views=len(rows),sha256=manifest['artifacts']['views.npz']))

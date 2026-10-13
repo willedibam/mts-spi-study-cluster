@@ -1,5 +1,5 @@
 import numpy as np
-from src.covariance_modulation import simulate, population_covariance, raw_references
+from mtsspi.covariance_modulation import simulate, population_covariance, raw_references
 
 
 def test_population_covariance_and_channel_laws():

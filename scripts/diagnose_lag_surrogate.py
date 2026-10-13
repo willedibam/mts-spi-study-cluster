@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import balanced_accuracy_score,roc_auc_score
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 from scripts.build_lag_surrogate import DATA,OUT
 from scripts.analyze_band_swap import diagnostic_features
 

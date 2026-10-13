@@ -2,8 +2,8 @@ from pathlib import Path
 import numpy as np
 import torch
 import yaml
-from src.neurotycho_learning import augment_source,date_state_weights,balanced_brier,fit_binary,predict_binary
-from src.representation_state_neural import make_encoder
+from mtsspi.neurotycho_learning import augment_source,date_state_weights,balanced_brier,fit_binary,predict_binary
+from mtsspi.representation_state_neural import make_encoder
 
 
 def test_date_state_mass_and_observation_augmentation():
@@ -35,7 +35,7 @@ def test_binary_best_checkpoint_replays_validation_score(monkeypatch):
         def __init__(self):
             super().__init__();self.weight=torch.nn.Parameter(torch.zeros(()))
         def forward(self,x):return self.weight*x.mean((1,2))
-    monkeypatch.setattr('src.neurotycho_learning.make_encoder',lambda spec:OneFeature())
+    monkeypatch.setattr('mtsspi.neurotycho_learning.make_encoder',lambda spec:OneFeature())
     y=np.array([0,1]*8);x=torch.tensor(2*y-1,dtype=torch.float32)[:,None,None]
     training=dict(maximum_epochs=30,minimum_epochs=5,patience=5,batch_size=8)
     model,report=fit_binary(x,y,np.array(['source']*len(y)),{},training,.1,0.,11,validation=(x,y))

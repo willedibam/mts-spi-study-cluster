@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from src.corpus import ArchiveCorpus, load_inventory
+from mtsspi.corpus import ArchiveCorpus, load_inventory
 
 
 def sha(path):

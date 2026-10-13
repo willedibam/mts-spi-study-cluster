@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 from threadpoolctl import threadpool_limits
 from scripts.analyze_band_swap import fitted_logistic
 from scripts.spi_baseline_exploration import ROOT, project_features, sha
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 RUN = 'factor-parity-dominant-261004'
 OUT = ROOT/'results/representation/factor-sample-size-261004'

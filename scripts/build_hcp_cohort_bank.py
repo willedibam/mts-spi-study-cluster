@@ -8,10 +8,10 @@ import tempfile
 import numpy as np
 from scipy.signal import welch
 
-from src.corpus import ArchiveCorpus, load_inventory
-from src.run_corpus import completion_error
-from src.spi_spi_contract import build_unified_features, schema_sha256
-from src.representation_attribution import rich_marginals
+from mtsspi.corpus import ArchiveCorpus, load_inventory
+from mtsspi.run_corpus import completion_error
+from mtsspi.spi_spi_contract import build_unified_features, schema_sha256
+from mtsspi.representation_attribution import rich_marginals
 
 
 def sha(path):

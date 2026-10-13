@@ -12,12 +12,10 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.order_parameter_analysis import FrozenPC1, residualize_by_group, safe_spearman  # noqa: E402
-from src.order_parameter_features import build_meta_feature_matrix, validate_spi_catalogs  # noqa: E402
-from src.utils import load_json  # noqa: E402
+from mtsspi.order_parameter_analysis import FrozenPC1, residualize_by_group, safe_spearman  # noqa: E402
+from mtsspi.order_parameter_features import build_meta_feature_matrix, validate_spi_catalogs  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 def _records(data_dir: Path, expected_count: int = 192) -> pd.DataFrame:

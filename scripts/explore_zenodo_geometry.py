@@ -34,8 +34,8 @@ from umap import UMAP
 import hdbscan
 import yaml
 
-from src.atlas_analysis import fit_atlas_transform
-from src.corpus_visualization import scale_timeseries
+from mtsspi.atlas_analysis import fit_atlas_transform
+from mtsspi.corpus_visualization import scale_timeseries
 
 ROOT = Path(__file__).resolve().parents[1]
 

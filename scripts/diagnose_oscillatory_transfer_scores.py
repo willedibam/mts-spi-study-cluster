@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 
-from src.representation_state_data import file_hash
+from mtsspi.representation_state_data import file_hash
 
 
 def balanced_batch_assignments(scores):

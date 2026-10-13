@@ -24,5 +24,5 @@ source scripts/activate.sh
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 
-python -m src.run_corpus --config "$CONFIG" --job-index "$INDEX" \
+python -m mtsspi.run_corpus --config "$CONFIG" --job-index "$INDEX" \
     --n-jobs "${PBS_NCPUS:-1}" --skip-existing

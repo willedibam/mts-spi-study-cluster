@@ -15,16 +15,14 @@ from scipy.stats import spearmanr
 from sklearn.decomposition import PCA
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.order_parameter_features import (  # noqa: E402
+from mtsspi.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,
     validate_spi_catalogs,
 )
-from src.utils import load_json  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 CONVERGENCE_THRESHOLDS = {

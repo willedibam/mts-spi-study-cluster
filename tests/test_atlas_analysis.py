@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.atlas_analysis import (
+from mtsspi.atlas_analysis import (
     cluster_medoids,
     cluster_tag_enrichment,
     density_subsample_stability,

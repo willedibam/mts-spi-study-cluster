@@ -12,10 +12,10 @@ re-normalisation is applied here (config must set ``zscore: false``).
 
 Run once per tensor variant, from the project root:
 
-    python -m src.prep_sleep_onset --subject EPCTL01 --tensor M38
-    python -m src.prep_sleep_onset --subject EPCTL01 --tensor EEGonly_zscore \\
+    python -m mtsspi.prep_sleep_onset --subject EPCTL01 --tensor M38
+    python -m mtsspi.prep_sleep_onset --subject EPCTL01 --tensor EEGonly_zscore \\
         --label epctl01-m83
-    python -m src.prep_sleep_onset --subject EPCTL02 --tensor EEGonly_zscore \\
+    python -m mtsspi.prep_sleep_onset --subject EPCTL02 --tensor EEGonly_zscore \\
         --label epctl02-m83 --scored-only
 
 Output layout (mirrors run_experiments.py real-data paths):

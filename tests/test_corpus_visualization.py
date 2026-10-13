@@ -3,7 +3,7 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.corpus_visualization import plot_embedding, process_by_time, scale_timeseries
+from mtsspi.corpus_visualization import plot_embedding, process_by_time, scale_timeseries
 
 
 def test_process_by_time_handles_repository_orientations() -> None:

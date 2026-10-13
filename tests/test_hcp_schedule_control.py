@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.hcp_schedule_control import discordant_mask, fit_block_lookup, predict_block_lookup
+from mtsspi.hcp_schedule_control import discordant_mask, fit_block_lookup, predict_block_lookup
 
 
 def test_lookup_uses_source_labels_and_fixed_unknown_prior():

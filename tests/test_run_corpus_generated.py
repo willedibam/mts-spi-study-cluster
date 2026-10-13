@@ -4,8 +4,8 @@ import json
 import numpy as np
 import pytest
 
-from src import provenance, run_corpus
-from src.compute import ComputeResult, SPIInfo
+from mtsspi import provenance, run_corpus
+from mtsspi.compute import ComputeResult, SPIInfo
 
 CONFIG = """
 base_output_dir: {out}

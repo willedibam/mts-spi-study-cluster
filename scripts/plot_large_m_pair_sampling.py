@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 from scripts.scout_spi_pair_sampling import pair_vectors, correlation_features
-from src.spi_spi_contract import build_unified_feature_values
+from mtsspi.spi_spi_contract import build_unified_feature_values
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT/'results/large_m_pair_baselines_260917'

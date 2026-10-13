@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 import yaml
-from src.hcp_run_audit import eprime_events, ica_projection
+from mtsspi.hcp_run_audit import eprime_events, ica_projection
 
 
 def farthest_sensors(positions, first, count=32):

@@ -11,16 +11,14 @@ import sys
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_kuramoto_confirmation import _records  # noqa: E402
-from src.order_parameter_features import (  # noqa: E402
+from mtsspi.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     stable_spi_names,
     validate_spi_catalogs,
 )
-from src.utils import load_json  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 def main() -> int:

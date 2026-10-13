@@ -13,7 +13,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from src.spi_spi_contract import _pearson_corr_matrix, build_unified_feature_values
+from mtsspi.spi_spi_contract import _pearson_corr_matrix, build_unified_feature_values
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'results/spi_pair_sampling_260916'

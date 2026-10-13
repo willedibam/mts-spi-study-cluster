@@ -7,7 +7,7 @@ from sklearn.svm import SVC
 from threadpoolctl import threadpool_limits
 from scripts.spi_baseline_exploration import ROOT,project_features,sha
 from scripts.analyze_band_swap import fitted_logistic
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 
 def run(run):

@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 
 from scripts.cml2d_confirmation import FROZEN_HASHES, OLD_CONTROLS, confirmation_gate
-from src.spi_spi_contract import build_unified_feature_values
-from src.utils import slugify
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.utils import slugify
 
 
 def array_hash(array):

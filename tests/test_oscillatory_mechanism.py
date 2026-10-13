@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.oscillatory_mechanism import draw_parameters, integrate_phase, simulate
+from mtsspi.oscillatory_mechanism import draw_parameters, integrate_phase, simulate
 
 
 def test_uncoupled_solution_and_group_mean_noise_conservation():

@@ -103,7 +103,7 @@ def sampling_figures(scope, trace_steps=None, focus_max_step=None):
 
 def mts_figures(root, steps=(0, 23, 24, 350), window=(1., 1.2)):
     """Existing icefire format; scale full records before taking a fixed view."""
-    from src.corpus_visualization import plot_mts_heatmap, scale_timeseries
+    from mtsspi.corpus_visualization import plot_mts_heatmap, scale_timeseries
     style()
     root = Path(root)
     rows = json.loads((root / 'manifest.json').read_text())['rows']

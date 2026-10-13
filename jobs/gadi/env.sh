@@ -14,6 +14,10 @@ export VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 export MTS_SCRATCH=/scratch/ql44/we2614/mts-spi-study
 export MTS_GDATA=/g/data/ql44/we2614/mts-spi-study
 
+# Run this checkout's code (or this snapshot's), not whatever the environment's
+# editable install points at.
+export PYTHONPATH="$PWD/src:$PWD${PYTHONPATH:+:$PYTHONPATH}"
+
 # Optional pyspi source snapshot (a development branch) ahead of the shared
 # editable install; meta.json records which pyspi ran.
 if [[ -n "${PYSPI_SOURCE:-}" ]]; then

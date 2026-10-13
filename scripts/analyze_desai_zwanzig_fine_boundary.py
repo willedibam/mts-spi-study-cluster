@@ -15,8 +15,6 @@ from sklearn.decomposition import PCA
 from sklearn.isotonic import IsotonicRegression
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _anchor_components,
@@ -24,7 +22,7 @@ from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _resolve_dataset_path,
 )
 from scripts.analyze_stuart_landau_confirmation import _steepest_interval  # noqa: E402
-from src.order_parameter_analysis import (  # noqa: E402
+from mtsspi.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_difference,
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
@@ -32,8 +30,8 @@ from src.order_parameter_analysis import (  # noqa: E402
     residualize_by_group,
     safe_spearman,
 )
-from src.spi_spi_analysis import fit_feature_transform  # noqa: E402
-from src.utils import load_json, load_yaml  # noqa: E402
+from mtsspi.spi_spi_analysis import fit_feature_transform  # noqa: E402
+from mtsspi.utils import load_json, load_yaml  # noqa: E402
 
 
 def _sha256(path: Path) -> str:

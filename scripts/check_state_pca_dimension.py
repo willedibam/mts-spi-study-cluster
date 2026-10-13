@@ -9,9 +9,9 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import StratifiedKFold
 import yaml
 
-from src.representation_screen import fit_view, training_subsets
-from src.representation_state_data import file_hash, load_state_data
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.representation_screen import fit_view, training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def select_cap(bank, view, train, target, strata, protocol, caps, seed):
@@ -78,7 +78,7 @@ def run(config, output):
                 atomic_json(stem.with_suffix(".json"), {"identity": {
                     "method": method, "n_per_coupling": n, "seed": seed,
                     "protocol_sha256": file_hash(protocol_path), "sensitivity_sha256": file_hash(config),
-                    "runner_sha256": file_hash(Path(__file__)), "preprocessing_sha256": file_hash(Path("src/representation_screen.py")),
+                    "runner_sha256": file_hash(Path(__file__)), "preprocessing_sha256": file_hash(Path("src/mtsspi/representation_screen.py")),
                     "manifest_sha256": file_hash(data / "manifest.json"), "bank_sha256": file_hash(feature_path)},
                     "details": details, "labels_total": len(train), "seconds": time.perf_counter() - start,
                     "predictions_sha256": file_hash(stem.with_suffix(".npz")),

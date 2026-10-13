@@ -14,8 +14,6 @@ from sklearn.decomposition import PCA
 from sklearn.isotonic import IsotonicRegression
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _anchor_components,
@@ -25,9 +23,9 @@ from scripts.analyze_stuart_landau_development import (  # noqa: E402
     _resolve_dataset_path,
     _source_stability,
 )
-from src.order_parameter_analysis import safe_spearman  # noqa: E402
-from src.spi_spi_analysis import fit_feature_transform  # noqa: E402
-from src.utils import load_json  # noqa: E402
+from mtsspi.order_parameter_analysis import safe_spearman  # noqa: E402
+from mtsspi.spi_spi_analysis import fit_feature_transform  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 def _metadata_frame(payload: dict[str, np.ndarray], data_root: Path) -> pd.DataFrame:

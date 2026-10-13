@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 import numpy as np
 from scripts.finite_regime_pipeline import export_arrays, write_json
-from src.generators.order_parameter import generate_kuramoto_order_parameter
+from mtsspi.generators.order_parameter import generate_kuramoto_order_parameter
 
 CONTROLS = (.625, .725, .825, .8875, .9425, .9775, .9925, 1.0075,
             1.0225, 1.0575, 1.0875, 1.175, 1.25, 1.375, 1.525, 1.65)

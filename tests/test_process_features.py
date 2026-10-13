@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.process_features import (
+from mtsspi.process_features import (
     _edge_vectors,
     _pearson_corr_matrix,
     _parse_metrics,

@@ -16,11 +16,9 @@ import numpy as np
 ROOT = Path(
     os.environ.get("MTS_SPI_REPO_ROOT", Path(__file__).resolve().parents[1])
 ).resolve()
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.generators.order_parameter import generate_miller_huse  # noqa: E402
-from src.utils import load_yaml  # noqa: E402
+from mtsspi.generators.order_parameter import generate_miller_huse  # noqa: E402
+from mtsspi.utils import load_yaml  # noqa: E402
 
 
 def _jobs(config: dict) -> list[dict]:

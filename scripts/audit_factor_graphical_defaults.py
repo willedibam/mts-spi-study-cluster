@@ -10,7 +10,7 @@ from sklearn.metrics import balanced_accuracy_score
 from sklearn.exceptions import ConvergenceWarning
 from threadpoolctl import threadpool_limits
 from scripts.scout_factor_channels import OUT,parent,CLASSES,SEED
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 
 def run():

@@ -1,13 +1,13 @@
 import numpy as np
 import pytest
 
-from src.process_features import (
+from mtsspi.process_features import (
     _edge_vectors,
     _mutual_information_matrix,
     _pearson_corr_matrix,
     _spearman_corr_matrix,
 )
-from src.spi_spi_contract import build_feature_blocks, build_unified_features
+from mtsspi.spi_spi_contract import build_feature_blocks, build_unified_features
 
 
 def _schema_index(result, relation: str, first: str, second: str) -> int:

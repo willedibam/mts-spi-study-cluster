@@ -10,7 +10,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import balanced_accuracy_score
 from threadpoolctl import threadpool_limits
 from scripts.scout_factor_channels import OUT,parent,covariance,CLASSES,SEED
-from src.corpus_geometry import fit_geometry_transform
+from mtsspi.corpus_geometry import fit_geometry_transform
 
 
 def run():

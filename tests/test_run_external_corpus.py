@@ -5,9 +5,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.compute import ComputeResult, SPIInfo
-from src.corpus import ArchiveCorpus, load_inventory, validate_source
-from src.run_corpus import completion_error, run_dataset
+from mtsspi.compute import ComputeResult, SPIInfo
+from mtsspi.corpus import ArchiveCorpus, load_inventory, validate_source
+from mtsspi.run_corpus import completion_error, run_dataset
 
 
 def _sha256(path: Path) -> str:
@@ -85,7 +85,7 @@ def test_run_transposes_source_and_writes_compatible_metadata(
             errors={},
         )
 
-    monkeypatch.setattr("src.run_corpus.run_pyspi", fake_run_pyspi)
+    monkeypatch.setattr("mtsspi.run_corpus.run_pyspi", fake_run_pyspi)
     output = run_dataset(config, entry, n_jobs=1)
     assert observed == {"shape": (5, 3), "normalise": True, "n_jobs": 1}
     meta = json.loads((output / "meta.json").read_text(encoding="utf-8"))
@@ -138,7 +138,7 @@ def test_runner_pins_and_restores_global_random_state(
 
     import random
 
-    monkeypatch.setattr("src.run_corpus.run_pyspi", fake_run_pyspi)
+    monkeypatch.setattr("mtsspi.run_corpus.run_pyspi", fake_run_pyspi)
     np.random.seed(23)
     random.seed(23)
     expected_numpy = np.random.random()

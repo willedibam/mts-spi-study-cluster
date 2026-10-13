@@ -3,10 +3,10 @@ import json
 from pathlib import Path
 import numpy as np
 from sklearn.metrics import roc_auc_score
-from src.oscillatory_coorganization import simulate,observed_controls
-from src.phase_surrogates import pooled_autospectrum
-from src.covariance_modulation import raw_references
-from src.representation_state_data import file_hash
+from mtsspi.oscillatory_coorganization import simulate,observed_controls
+from mtsspi.phase_surrogates import pooled_autospectrum
+from mtsspi.covariance_modulation import raw_references
+from mtsspi.representation_state_data import file_hash
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
     np.savez_compressed(data/'raw.npz',**{k:np.asarray(v) for k,v in raw.items()},row_id=names)
     (data/'manifest.json').write_text(json.dumps(dict(rows=rows,records=records,
        protocol_sha256=file_hash(Path('docs/oscillatory-coorganization-scout.md')),
-       code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/oscillatory_coorganization.py']},
+       code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/oscillatory_coorganization.py']},
        artifacts={p:file_hash(data/p) for p in ['views.npz','raw.npz']}),indent=2)+'\n')
     checks=[]
     for m in [16,8]:

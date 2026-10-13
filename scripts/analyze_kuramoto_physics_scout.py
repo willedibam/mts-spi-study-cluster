@@ -13,11 +13,9 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.kuramoto_order_parameter_scout import _jobs  # noqa: E402
-from src.utils import load_yaml  # noqa: E402
+from mtsspi.utils import load_yaml  # noqa: E402
 
 
 def _correlation(frame: pd.DataFrame, x: str, y: str) -> float:

@@ -9,7 +9,7 @@ from scipy.stats import rankdata
 import torch
 import yaml
 
-from src.inceptiontime_baseline import InceptionNetwork
+from mtsspi.inceptiontime_baseline import InceptionNetwork
 
 
 def sha(path):

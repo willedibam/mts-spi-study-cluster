@@ -14,7 +14,7 @@ from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import balanced_accuracy_score, log_loss
 from threadpoolctl import threadpool_limits
 
-from src.representation_screen import (
+from mtsspi.representation_screen import (
     bootstrap_group_means, classifier, evaluation_cells, fit_view, select_c, training_subsets,
 )
 
@@ -174,7 +174,7 @@ def run(config_path: Path, bank_path: Path, output: Path) -> None:
     result = {"status": "exploratory_screen_complete", "protocol": config,
               "raw_control_input": extra_input,
               "config_sha256": sha(config_path), "bank_sha256": report["artifact_sha256"],
-              "runner_sha256": sha(Path(__file__)), "module_sha256": sha(Path("src/representation_screen.py")),
+              "runner_sha256": sha(Path(__file__)), "module_sha256": sha(Path("src/mtsspi/representation_screen.py")),
               "predictions_sha256": sha(output / "predictions.npz"), "splits_sha256": sha(output / "splits.json"),
               "elapsed_seconds": time.monotonic() - started,
               "convergence_warning_count": sum(len(f["convergence_warnings"]) for f in fits),

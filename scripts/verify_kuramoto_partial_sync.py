@@ -15,10 +15,9 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from src.dimensionality import n_pcs_for_variance
-from src.generators.dynamical import _build_kuramoto_adjacency
+from mtsspi.dimensionality import n_pcs_for_variance
+from mtsspi.generators.dynamical import _build_kuramoto_adjacency
 
 # Option B params
 K = 2.0

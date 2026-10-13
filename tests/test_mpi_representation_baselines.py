@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.mpi_representation_baselines import summarize_mpis, pearson_geometry_audit
-from src.spi_spi_contract import build_unified_feature_values
+from mtsspi.mpi_representation_baselines import summarize_mpis, pearson_geometry_audit
+from mtsspi.spi_spi_contract import build_unified_feature_values
 
 
 def test_node_relabeling_and_diagonals_do_not_change_summaries():

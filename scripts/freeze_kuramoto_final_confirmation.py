@@ -12,8 +12,6 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.analyze_kuramoto_confirmation import _records as _failed_records  # noqa: E402
 from scripts.freeze_kuramoto_confirmation import (  # noqa: E402
@@ -25,7 +23,7 @@ from scripts.freeze_kuramoto_confirmation import (  # noqa: E402
     _records as _old_records,
     _sha256,
 )
-from src.order_parameter_features import (  # noqa: E402
+from mtsspi.order_parameter_features import (  # noqa: E402
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,

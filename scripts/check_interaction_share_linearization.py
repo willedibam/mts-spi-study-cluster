@@ -6,7 +6,7 @@ import numpy as np
 
 from scripts.check_interaction_share_references import simulate
 from scripts.check_interaction_share_feasibility import interaction_share
-from src.representation_state_data import load_state_data, file_hash
+from mtsspi.representation_state_data import load_state_data, file_hash
 
 
 def run(config,data,output):

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.utils import slugify
+from mtsspi.utils import slugify
 
 
 def sha(path):

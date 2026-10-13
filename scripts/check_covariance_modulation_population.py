@@ -2,8 +2,8 @@
 import json
 from pathlib import Path
 import numpy as np
-from src.covariance_modulation import population_covariance
-from src.representation_state_data import file_hash
+from mtsspi.covariance_modulation import population_covariance
+from mtsspi.representation_state_data import file_hash
 
 
 def main():

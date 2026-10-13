@@ -19,9 +19,9 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import StratifiedKFold
 import yaml
 
-from src.representation_screen import fit_view, training_subsets
-from src.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.representation_screen import fit_view, training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data, observed_view, source_pool_for_seed
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def select_ridge(bank, view, train, targets, strata, protocol, seed):
@@ -74,21 +74,21 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
     common_identity = {"protocol_sha256": file_hash(config_path),
                        "manifest_sha256": file_hash(data_root / "manifest.json"),
                        "runner_sha256": file_hash(Path(__file__)),
-                       "preprocessing_sha256": file_hash(Path("src/representation_screen.py")),
-                       "data_module_sha256": file_hash(Path("src/representation_state_data.py")),
+                       "preprocessing_sha256": file_hash(Path("src/mtsspi/representation_screen.py")),
+                       "data_module_sha256": file_hash(Path("src/mtsspi/representation_state_data.py")),
                        "feature_bank_sha256": None if feature_bank is None else file_hash(feature_bank),
                        "numpy": np.__version__, "sklearn": sklearn.__version__, "python": platform.python_version()}
     if source_family is not None:
         common_identity["source_family"] = source_family
     edge_values = edge_validity = edge_lengths = None
     if edge_bank is not None:
-        from src.spi_edge_pool import pack_inputs
+        from mtsspi.spi_edge_pool import pack_inputs
         assert json.loads(edge_bank.with_suffix('.json').read_text())['artifact_sha256']==file_hash(edge_bank)
         with np.load(edge_bank,allow_pickle=False) as a:
             np.testing.assert_array_equal(a['row_id'],[r['row_id'] for r in rows])
             assert a['manifest_sha256'].item()==file_hash(data_root/'manifest.json')
             edge_values,edge_validity,edge_lengths=a['edges'],a['validity'],a['lengths']
-        common_identity.update(edge_bank_sha256=file_hash(edge_bank),edge_module_sha256=file_hash(Path('src/spi_edge_pool.py')))
+        common_identity.update(edge_bank_sha256=file_hash(edge_bank),edge_module_sha256=file_hash(Path('src/mtsspi/spi_edge_pool.py')))
         def edge_tensor(indices):
             count=edge_lengths[indices]
             assert len(np.unique(count))==1
@@ -96,7 +96,7 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
     x_source = None
     if "neural" in methods:
         import torch
-        from src.representation_state_neural import fit_encoder, predict
+        from mtsspi.representation_state_neural import fit_encoder, predict
         torch.set_num_threads(2)
         if device == "cuda" and not torch.cuda.is_available():
             raise RuntimeError("CUDA explicitly requested but unavailable")
@@ -115,7 +115,7 @@ def run(config_path, data_root, output, methods, device, seeds=None, budgets=Non
                 stem = output / f"{method.replace('+', '_')}-n{n}-s{seed}"
                 identity = {**common_identity, "method": method, "n_per_coupling": n, "seed": seed}
                 if method == "neural":
-                    identity.update(neural_sha256=file_hash(Path("src/representation_state_neural.py")),
+                    identity.update(neural_sha256=file_hash(Path("src/mtsspi/representation_state_neural.py")),
                                     torch=torch.__version__, device=device,
                                     hardware=torch.cuda.get_device_name() if device == "cuda" else platform.machine())
                 if stem.with_suffix(".json").exists():

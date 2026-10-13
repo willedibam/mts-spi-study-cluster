@@ -17,10 +17,8 @@ from scipy.stats import spearmanr
 import seaborn as sns
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.atlas_analysis import (  # noqa: E402
+from mtsspi.atlas_analysis import (  # noqa: E402
     cluster_medoids,
     cluster_tag_enrichment,
     load_unified_artifact,

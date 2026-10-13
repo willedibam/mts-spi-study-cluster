@@ -9,8 +9,8 @@ import time
 import numpy as np
 import yaml
 
-from src.generators.order_parameter import generate_kuramoto_order_parameter, kuramoto_critical_coupling
-from src.representation_state_data import file_hash, observed_view, simple_observables
+from mtsspi.generators.order_parameter import generate_kuramoto_order_parameter, kuramoto_critical_coupling
+from mtsspi.representation_state_data import file_hash, observed_view, simple_observables
 
 
 def build(config_path: Path, output: Path) -> None:
@@ -67,7 +67,7 @@ def build(config_path: Path, output: Path) -> None:
     np.savez_compressed(output / "views.npz", **corpus)
     artifacts = {name: file_hash(output / name) for name in ("masters.npy", "targets.npy", "observables.npy", "views.npz")}
     manifest = {"config_sha256": file_hash(config_path), "artifacts": artifacts,
-                "generator_sha256": file_hash(Path("src/generators/order_parameter.py")),
+                "generator_sha256": file_hash(Path("src/mtsspi/generators/order_parameter.py")),
                 "builder_sha256": file_hash(Path(__file__)), "rows": rows, "masters": master_records,
                 "seconds": time.perf_counter() - start, "target_range": [min(targets), max(targets)],
                 "status": "exploratory_pilot_not_confirmation"}

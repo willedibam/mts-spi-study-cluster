@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.neurotycho_library_baselines import FiniteColumns, channel_layout, fit_model, standardized
+from mtsspi.neurotycho_library_baselines import FiniteColumns, channel_layout, fit_model, standardized
 
 
 def test_training_missingness_filter_is_not_recomputed_on_target():
@@ -17,7 +17,7 @@ def test_pooled_features_are_channel_permutation_invariant():
 
 
 def test_rocket_bias_fitting_excludes_validation_animals(monkeypatch):
-    import src.neurotycho_library_baselines as module
+    import mtsspi.neurotycho_library_baselines as module
     fits=[]
     class ProbeRocket:
         def fit_transform(self,x):

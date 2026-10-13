@@ -13,10 +13,9 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from src.dimensionality import n_pcs_for_variance
-from src.generators.dynamical import generate_kuramoto
+from mtsspi.dimensionality import n_pcs_for_variance
+from mtsspi.generators.dynamical import generate_kuramoto
 
 M = 10
 T = 1000

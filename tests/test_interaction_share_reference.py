@@ -3,7 +3,7 @@ import numpy as np
 
 from scripts.check_interaction_share_feasibility import drift_and_jacobian, ring
 from scripts.check_interaction_share_references import parameters
-from src.interaction_share_reference import fit_map, energy_share
+from mtsspi.interaction_share_reference import fit_map, energy_share
 
 
 def test_gain_nuisance_changes_dynamics_without_changing_linear_share():

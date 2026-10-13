@@ -13,7 +13,7 @@ import time
 
 import numpy as np
 
-from src.mpi_representation_baselines import (
+from mtsspi.mpi_representation_baselines import (
     GRAPH_NAMES, MARGINAL_NAMES, pearson_geometry_audit, summarize_mpis,
 )
 
@@ -89,7 +89,7 @@ def main() -> None:
                "elapsed_seconds": time.monotonic() - started,
                "artifact_sha256": digest(output),
                "builder_sha256": digest(Path(__file__)),
-               "summary_module_sha256": digest(Path(__file__).parents[1] / "src/mpi_representation_baselines.py"),
+               "summary_module_sha256": digest(Path(__file__).parents[1] / "src/mtsspi/mpi_representation_baselines.py"),
                "records": records}
     report.write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k not in ("records", "common_valid_spis_descriptive_only")}, indent=2))

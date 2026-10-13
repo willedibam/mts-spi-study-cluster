@@ -10,12 +10,12 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 
-from src.inceptiontime_baseline import InceptionNetwork
-from src.neurotycho_learning import predict_binary
-from src.representation_state_neural import make_encoder, seed_torch
+from mtsspi.inceptiontime_baseline import InceptionNetwork
+from mtsspi.neurotycho_learning import predict_binary
+from mtsspi.representation_state_neural import make_encoder, seed_torch
 
 
-from src.hcp_grouping import _ids, family_folds, participant_balanced_brier, participant_state_weights
+from mtsspi.hcp_grouping import _ids, family_folds, participant_balanced_brier, participant_state_weights
 
 
 def fit_network(x, y, participants, model_name, spec, training, lr, decay, seed,

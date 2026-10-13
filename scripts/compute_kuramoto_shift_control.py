@@ -12,14 +12,12 @@ import time
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.compute import run_pyspi  # noqa: E402
-from src.mapping import DatasetMapping, ExperimentConfig  # noqa: E402
-from src.provenance import file_sha256
-from src.provenance import pyspi_version  # noqa: E402
-from src.utils import dump_json, ensure_dir, load_json  # noqa: E402
+from mtsspi.compute import run_pyspi  # noqa: E402
+from mtsspi.mapping import DatasetMapping, ExperimentConfig  # noqa: E402
+from mtsspi.provenance import file_sha256
+from mtsspi.provenance import pyspi_version  # noqa: E402
+from mtsspi.utils import dump_json, ensure_dir, load_json  # noqa: E402
 
 
 def selected_sources(config_path: Path, expected_count: int):

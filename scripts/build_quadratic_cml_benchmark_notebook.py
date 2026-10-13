@@ -50,8 +50,8 @@ import seaborn as sns
 ROOT = Path.cwd().resolve()
 while ROOT != ROOT.parent and not (ROOT / "src").exists():
     ROOT = ROOT.parent
-from src.corpus_visualization import plot_mts_heatmap
-from src.generators.dynamical import generate_cml_logistic
+from mtsspi.corpus_visualization import plot_mts_heatmap
+from mtsspi.generators.dynamical import generate_cml_logistic
 
 PHYSICS = ROOT / "data/order_parameter/quadratic_cml_physics_contract"
 RESULTS = ROOT / "data/order_parameter/quadratic_cml_development_analysis"

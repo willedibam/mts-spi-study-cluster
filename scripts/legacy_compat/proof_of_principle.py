@@ -9,7 +9,7 @@ import seaborn as sns
 from umap import UMAP
 
 from scripts.legacy_compat.utils import save_figure
-from src.corpus_geometry import legacy_geometry, load_feature_rows
+from mtsspi.corpus_geometry import legacy_geometry, load_feature_rows
 
 
 def main() -> None:

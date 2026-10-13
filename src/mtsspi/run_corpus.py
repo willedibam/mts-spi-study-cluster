@@ -1,8 +1,8 @@
 """Run pyspi over a corpus, one recording per process.
 
-    python -m src.run_corpus --config CORPUS.yaml --job-index 3 --n-jobs 4
+    python -m mtsspi.run_corpus --config CORPUS.yaml --job-index 3 --n-jobs 4
 
-One contract for every corpus (see :mod:`src.corpus`): a recording is complete
+One contract for every corpus (see :mod:`mtsspi.corpus`): a recording is complete
 only if its metadata names this corpus config, this pyspi config, this code and
 this pyspi computation version, and its SPI archive matches its catalogue.
 Outputs are written atomically and validated after writing, so `--skip-existing`

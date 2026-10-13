@@ -5,15 +5,15 @@ import numpy as np
 import pytest
 import yaml
 
-from src.interaction_share_learning import select_statistical, select_reference
-from src.interaction_share_learning import standardized_marginal_shapes
-from src.representation_state_data import file_hash
+from mtsspi.interaction_share_learning import select_statistical, select_reference
+from mtsspi.interaction_share_learning import standardized_marginal_shapes
+from mtsspi.representation_state_data import file_hash
 from scripts.run_representation_state_pilot import run
 
 
 def test_marginal_shapes_match_positive_affine_invariance_and_ignore_alignment():
-    from src.representation_attribution import rich_marginals
-    from src.mpi_representation_baselines import summarize_mpis
+    from mtsspi.representation_attribution import rich_marginals
+    from mtsspi.mpi_representation_baselines import summarize_mpis
     rng=np.random.default_rng(22)
     mpis={'a':rng.normal(size=(6,6)), 'b':rng.exponential(size=(6,6)), 'constant':np.ones((6,6))}
     order=list(mpis)
@@ -85,8 +85,8 @@ def test_shared_runner_filters_training_family_and_keeps_both_test_families(tmp_
 
 
 def test_independent_training_cohorts_have_disjoint_nested_label_budgets():
-    from src.representation_state_data import source_pool_for_seed
-    from src.representation_screen import training_subsets
+    from mtsspi.representation_state_data import source_pool_for_seed
+    from mtsspi.representation_screen import training_subsets
     p=yaml.safe_load(Path('configs/analysis/interaction-share-260908.yaml').read_text())
     p['sampling']['disjoint_training_cohorts']=True
     rows=[dict(cohort_index=c,coupling_index=k) for c in range(5) for k in range(5) for r in range(8)]

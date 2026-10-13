@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.hcp_run_audit import align_eprime, ica_projection
+from mtsspi.hcp_run_audit import align_eprime, ica_projection
 
 
 def test_missing_retained_trials_do_not_shift_labels_or_times():

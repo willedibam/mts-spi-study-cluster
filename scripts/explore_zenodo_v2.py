@@ -28,7 +28,7 @@ from umap import UMAP
 import yaml
 
 from scripts.explore_zenodo_geometry import ROOT, historical_input, paper_style
-from src.atlas_analysis import fit_atlas_transform
+from mtsspi.atlas_analysis import fit_atlas_transform
 
 
 def distance_neighbors(distances, k=15):

@@ -1,8 +1,8 @@
 import numpy as np
 import torch
-from src.spi_edge_pool import SPIEdgePool,standardize_edges,pack_inputs
-from src.spi_spi_contract import build_unified_feature_values
-from src.representation_state_neural import fit_encoder,predict
+from mtsspi.spi_edge_pool import SPIEdgePool,standardize_edges,pack_inputs
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.representation_state_neural import fit_encoder,predict
 
 
 def test_edges_recover_pearson_and_invalid_contract():

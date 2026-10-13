@@ -1,7 +1,7 @@
 """What a corpus is, and the archive kind.
 
 A corpus is an ordered set of recordings that pyspi is run on. The runner
-(:mod:`src.run_corpus`) uses only this interface:
+(:mod:`mtsspi.run_corpus`) uses only this interface:
 
 - ``path``, ``name``, ``pyspi_config``, ``normalise``, ``pair_tolerance``
 - ``entries()``: the recordings, as :class:`CorpusEntry`, 1-based
@@ -20,7 +20,7 @@ A corpus is an ordered set of recordings that pyspi is run on. The runner
 - ``__shapes__``: ``(M, T)`` rows aligned with the names;
 - each name is also a member holding its numeric array.
 
-:class:`src.generated_corpus.GeneratedCorpus` generates them from a config.
+:class:`mtsspi.generated_corpus.GeneratedCorpus` generates them from a config.
 """
 from __future__ import annotations
 

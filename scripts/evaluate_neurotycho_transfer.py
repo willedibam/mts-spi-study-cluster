@@ -9,11 +9,11 @@ import numpy as np
 import torch
 import yaml
 
-from src.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges
-from src.neurotycho_learning import predict_binary
-from src.neurotycho_statistical import METHODS, predict_fitted
-from src.representation_state_neural import make_encoder
-from src.spi_edge_pool import pack_inputs
+from mtsspi.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges
+from mtsspi.neurotycho_learning import predict_binary
+from mtsspi.neurotycho_statistical import METHODS, predict_fitted
+from mtsspi.representation_state_neural import make_encoder
+from mtsspi.spi_edge_pool import pack_inputs
 
 
 def sha(path):

@@ -25,18 +25,16 @@ while ROOT != ROOT.parent and not (ROOT / "src").is_dir():
     ROOT = ROOT.parent
 if not (ROOT / "src").is_dir():
     ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.order_parameter_analysis import (  # noqa: E402
+from mtsspi.order_parameter_analysis import (  # noqa: E402
     clustered_bootstrap_mae,
     clustered_bootstrap_spearman,
     input_only_features,
     residualize_by_group,
     safe_spearman,
 )
-from src.spi_spi_analysis import fit_feature_transform  # noqa: E402
-from src.utils import load_json  # noqa: E402
+from mtsspi.spi_spi_analysis import fit_feature_transform  # noqa: E402
+from mtsspi.utils import load_json  # noqa: E402
 
 
 def _sha256(path: Path) -> str:

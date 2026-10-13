@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from src.compute import run_pyspi, seeded_estimator_rng
+from mtsspi.compute import run_pyspi, seeded_estimator_rng
 from scripts.replay_proof_stochastic import CONFIG, NAMES, replay
 
 

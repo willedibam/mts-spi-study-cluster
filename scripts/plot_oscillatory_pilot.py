@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
 import numpy as np
 import pandas as pd
-from src.representation_state_data import file_hash
+from mtsspi.representation_state_data import file_hash
 
 
 def main():

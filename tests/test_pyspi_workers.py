@@ -5,9 +5,9 @@ import json
 import numpy as np
 import pytest
 
-from src import compute, corpus, provenance, run_corpus
-from src import provenance
-from src.compute import run_pyspi
+from mtsspi import compute, corpus, provenance, run_corpus
+from mtsspi import provenance
+from mtsspi.compute import run_pyspi
 
 STOCHASTIC_CONFIG = """
 .statistics.distance:
@@ -109,7 +109,7 @@ def test_runner_refuses_threaded_libraries_under_several_workers(monkeypatch):
 
 @pytest.mark.parametrize("n_jobs", [1, 4])
 def test_runner_seeds_and_records_resources_for_any_worker_count(tmp_path, monkeypatch, n_jobs):
-    from src.compute import ComputeResult, SPIInfo
+    from mtsspi.compute import ComputeResult, SPIInfo
 
     config = _corpus(tmp_path)
     entry = corpus.load_inventory(config)[0]

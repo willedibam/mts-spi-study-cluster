@@ -12,8 +12,6 @@ import numpy as np
 from sklearn.isotonic import IsotonicRegression
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 from scripts.freeze_kuramoto_confirmation import _records, _sha256  # noqa: E402
 

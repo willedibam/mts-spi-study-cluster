@@ -1,6 +1,6 @@
 import numpy as np
 from scripts.scout_spi_pair_sampling import pair_vectors,correlation_features
-from src.spi_spi_contract import build_unified_feature_values
+from mtsspi.spi_spi_contract import build_unified_feature_values
 
 
 def test_full_dyad_budget_matches_ordered_contract():

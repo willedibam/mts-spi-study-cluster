@@ -9,7 +9,7 @@ generator:
   conditions:
   - crossed
   - aligned
-  source_module: src/oscillatory_mechanism.py
+  source_module: src/mtsspi/oscillatory_mechanism.py
   settings:
     N: 32
     fs: 100

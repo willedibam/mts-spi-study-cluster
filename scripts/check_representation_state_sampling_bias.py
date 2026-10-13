@@ -15,8 +15,8 @@ import numpy as np
 from scipy.signal import hilbert
 import yaml
 
-from src.representation_screen import evaluation_cells
-from src.representation_state_data import file_hash, load_state_data, observed_view
+from mtsspi.representation_screen import evaluation_cells
+from mtsspi.representation_state_data import file_hash, load_state_data, observed_view
 
 
 def corrected_squared_coherence(r_squared, m, n):

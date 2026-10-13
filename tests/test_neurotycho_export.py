@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from scripts.export_neurotycho_views import main
-from src.corpus import ArchiveCorpus, load_inventory, load_timeseries
+from mtsspi.corpus import ArchiveCorpus, load_inventory, load_timeseries
 
 
 def test_export_obeys_actual_external_corpus_reader(tmp_path, monkeypatch):

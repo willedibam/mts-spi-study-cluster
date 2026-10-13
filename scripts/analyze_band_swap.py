@@ -12,9 +12,9 @@ from threadpoolctl import threadpool_limits
 from scripts.build_band_swap import DATA,OUT
 from scripts.spi_baseline_exploration import project_features,sha
 from scripts.analyze_native_coupling import extract as extract_common
-from src.spi_spi_contract import build_unified_feature_values
-from src.corpus_geometry import fit_geometry_transform
-from src.utils import slugify
+from mtsspi.spi_spi_contract import build_unified_feature_values
+from mtsspi.corpus_geometry import fit_geometry_transform
+from mtsspi.utils import slugify
 
 
 CORPUS='band-swap-261004'

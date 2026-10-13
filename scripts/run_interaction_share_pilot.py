@@ -9,10 +9,10 @@ import sklearn
 import yaml
 from sklearn.isotonic import IsotonicRegression
 
-from src.interaction_share_learning import fit_statistical, select_statistical, select_reference, standardized_marginal_shapes
-from src.representation_screen import training_subsets
-from src.representation_state_data import file_hash, load_state_data, source_pool_for_seed
-from src.provenance import atomic_json, atomic_savez
+from mtsspi.interaction_share_learning import fit_statistical, select_statistical, select_reference, standardized_marginal_shapes
+from mtsspi.representation_screen import training_subsets
+from mtsspi.representation_state_data import file_hash, load_state_data, source_pool_for_seed
+from mtsspi.provenance import atomic_json, atomic_savez
 
 
 def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',method_prefix=''):
@@ -36,7 +36,7 @@ def run(config_path,data,output,selected,feature_bank=None,marginal_mode='raw',m
     identity=dict(protocol_sha256=file_hash(config_path),manifest_sha256=file_hash(data/'manifest.json'),
                   feature_bank_sha256=file_hash(feature_bank) if feature_bank else None,
                   numpy=np.__version__,sklearn=sklearn.__version__,
-                  code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/interaction_share_learning.py','src/representation_screen.py']})
+                  code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/interaction_share_learning.py','src/mtsspi/representation_screen.py']})
     if marginal_mode == 'shape': identity['marginal_mode'] = 'affine_invariance_control'
     for family in protocol['generator']['families']:
         pool=np.asarray([i for i,r in enumerate(rows) if r['role']=='training_pool' and r['family']==family])

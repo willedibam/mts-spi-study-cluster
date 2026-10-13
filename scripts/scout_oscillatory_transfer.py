@@ -3,8 +3,8 @@ import argparse,json
 from pathlib import Path
 import numpy as np,yaml
 from sklearn.metrics import roc_auc_score
-from src.oscillatory_coorganization import simulate,observed_controls
-from src.representation_state_data import observed_view,file_hash
+from mtsspi.oscillatory_coorganization import simulate,observed_controls
+from mtsspi.representation_state_data import observed_view,file_hash
 
 
 def main(config,output):
@@ -22,7 +22,7 @@ def main(config,output):
     auc={str(m):float(roc_auc_score(truth,values)) for m,values in scores.items()}
     output.parent.mkdir(parents=True,exist_ok=True)
     report=dict(passed=all(v>=s['minimum_agreement_AUROC'] for v in auc.values()),AUROC=auc,
-        config_sha256=file_hash(config),code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/oscillatory_coorganization.py']},records=checks)
+        config_sha256=file_hash(config),code_sha256={p:file_hash(Path(p)) for p in [__file__,'src/mtsspi/oscillatory_coorganization.py']},records=checks)
     output.write_text(json.dumps(report,indent=2)+'\n');print({k:v for k,v in report.items() if k!='records'})
 
 

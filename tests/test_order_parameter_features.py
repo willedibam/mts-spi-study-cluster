@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.order_parameter_features import (
+from mtsspi.order_parameter_features import (
     build_meta_feature_matrix,
     explicit_phase_spi_names,
     stable_spi_names,

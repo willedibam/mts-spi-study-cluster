@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from src.neurotycho_pilot import preprocess, spectral_features, window_specs
+from mtsspi.neurotycho_pilot import preprocess, spectral_features, window_specs
 
 
 def test_windows_respect_one_based_labels_and_margins():

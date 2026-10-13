@@ -6,11 +6,11 @@ import pytest
 import torch
 import yaml
 
-from src.hcp_learning import (family_folds, fit_source_member, participant_balanced_brier,
+from mtsspi.hcp_learning import (family_folds, fit_source_member, participant_balanced_brier,
                               participant_state_weights)
-from src.inceptiontime_baseline import InceptionNetwork
-from src.neurotycho_learning import predict_binary
-from src.representation_state_neural import make_encoder
+from mtsspi.inceptiontime_baseline import InceptionNetwork
+from mtsspi.neurotycho_learning import predict_binary
+from mtsspi.representation_state_neural import make_encoder
 
 
 def test_equal_participant_class_mass_and_replication_invariance():

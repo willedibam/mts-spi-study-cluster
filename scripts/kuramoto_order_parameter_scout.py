@@ -14,14 +14,12 @@ import time
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.generators.order_parameter import (  # noqa: E402
+from mtsspi.generators.order_parameter import (  # noqa: E402
     generate_kuramoto_order_parameter,
     kuramoto_critical_coupling,
 )
-from src.utils import load_yaml  # noqa: E402
+from mtsspi.utils import load_yaml  # noqa: E402
 
 
 def _seed(config: dict, distribution: str, n_full: int, kappa: float, instance: int) -> int:

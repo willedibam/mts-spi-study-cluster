@@ -14,11 +14,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.generators.order_parameter import generate_stuart_landau  # noqa: E402
-from src.utils import load_yaml  # noqa: E402
+from mtsspi.generators.order_parameter import generate_stuart_landau  # noqa: E402
+from mtsspi.utils import load_yaml  # noqa: E402
 
 
 def _jobs(config: dict) -> list[dict]:

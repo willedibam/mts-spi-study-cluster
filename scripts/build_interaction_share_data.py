@@ -9,9 +9,9 @@ import yaml
 
 from scripts.check_interaction_share_feasibility import interaction_share
 from scripts.check_interaction_share_references import parameters, simulate
-from src.cross_mt_transfer import pooled_baseline_features
-from src.interaction_share_reference import energy_share, fit_map, own_memory
-from src.representation_state_data import file_hash, observed_view
+from mtsspi.cross_mt_transfer import pooled_baseline_features
+from mtsspi.interaction_share_reference import energy_share, fit_map, own_memory
+from mtsspi.representation_state_data import file_hash, observed_view
 
 
 def build(config_path, output):
@@ -95,7 +95,7 @@ def build(config_path, output):
                     status=config.get('status', 'fresh_exploratory_pilot_not_confirmation'),
                     code_sha256={p:file_hash(Path(p)) for p in [__file__,
                         'scripts/check_interaction_share_references.py', 'scripts/check_interaction_share_feasibility.py',
-                        'src/interaction_share_reference.py', 'src/cross_mt_transfer.py']})
+                        'src/mtsspi/interaction_share_reference.py', 'src/mtsspi/cross_mt_transfer.py']})
     (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(json.dumps(dict(masters=len(arrays), views=len(rows), seconds=manifest['seconds'])))
 

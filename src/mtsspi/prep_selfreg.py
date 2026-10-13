@@ -4,7 +4,7 @@ timeseries.npy files into the directory layout expected by run_experiments.py.
 
 Run once from the project root before submitting the PBS array job:
 
-    python -m src.prep_selfreg [--output-dir data/selfreg]
+    python -m mtsspi.prep_selfreg [--output-dir data/selfreg]
 
 Output layout mirrors what the pipeline would generate for a real-data config:
 

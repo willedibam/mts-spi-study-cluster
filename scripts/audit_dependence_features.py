@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import numpy as np
-from src.utils import slugify
+from mtsspi.utils import slugify
 from scripts.spi_baseline_exploration import sha
 
 

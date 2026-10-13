@@ -1,5 +1,5 @@
 [project]
-name = "mts-spi-study-cluster"
+name = "mtsspi"
 version = "0.1.0"
 description = "PBS-ready driver for multivariate time-series SPI studies"
 requires-python = ">=3.12,<3.13"
@@ -53,14 +53,15 @@ atlas = ["pycatch22>=0.5.0"]
 interactive = ["anywidget>=0.9", "ipywidgets>=8.1"]
 
 [project.scripts]
-run-corpus = "src.run_corpus:main"
-process-features = "src.process_features:main"
-find-distributions = "src.find_non_overlapping_distributions:main"
-corpus-geometry = "src.run_corpus_geometry:main"
+run-corpus = "mtsspi.run_corpus:main"
+process-features = "mtsspi.process_features:main"
+find-distributions = "mtsspi.find_non_overlapping_distributions:main"
+corpus-geometry = "mtsspi.run_corpus_geometry:main"
 
+# The library is src/mtsspi; scripts/ holds command-line entry points.
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*", "scripts*"]
+where = ["src", "."]
+include = ["mtsspi*", "scripts*"]
 
 
 [build-system]
@@ -73,3 +74,7 @@ pyspi = { path = "../pyspi-fork", editable = true }
 # Installed by `uv sync` unless --no-dev: tests and notebook execution.
 [dependency-groups]
 dev = ["pytest", "ipykernel", "nbclient", "nbconvert"]
+
+# Tests import the checkout they sit in, not another checkout's editable install.
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]

@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 from numba import njit
 
-from src.oscillatory_coorganization import partitions, stationary_ar
+from mtsspi.oscillatory_coorganization import partitions, stationary_ar
 
 
 def draw_parameters(seed, settings):

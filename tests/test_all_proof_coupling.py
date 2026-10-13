@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from scripts.calibrate_all_proof_coupling import kuramoto_gain, inventory, EXTRA, simulate
-from src.generators import generate_wave_1d, generate_kuramoto
+from mtsspi.generators import generate_wave_1d, generate_kuramoto
 
 
 def test_phase_gain_matches_actual_update_finite_differences():

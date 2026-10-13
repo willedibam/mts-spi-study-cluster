@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.representation_attribution import QUANTILES, rich_marginals, select_head
+from mtsspi.representation_attribution import QUANTILES, rich_marginals, select_head
 
 
 def test_rich_marginals_preserve_histograms_and_standardized_moments():

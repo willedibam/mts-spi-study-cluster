@@ -10,9 +10,9 @@ import sys
 import nbformat
 from nbclient import NotebookClient
 
-from src.mapping import DatasetMapping, ExperimentConfig
-from src.provenance import file_sha256
-from src.utils import project_root
+from mtsspi.mapping import DatasetMapping, ExperimentConfig
+from mtsspi.provenance import file_sha256
+from mtsspi.utils import project_root
 from scripts.replay_proof_stochastic import POLICY
 
 
@@ -48,7 +48,7 @@ def main():
         "validity_refusals_by_spi": dict(errors), "stochastic_policy": POLICY,
         "rows": rows,
     }, indent=2) + "\n")
-    subprocess.run([sys.executable, "-m", "src.process_features", "--data-path", str(mapping.specs[0].base_output_dir),
+    subprocess.run([sys.executable, "-m", "mtsspi.process_features", "--data-path", str(mapping.specs[0].base_output_dir),
                     "--output", str(args.bank), "--feature-contract", "direction_preserving_v2",
                     "--metric", "pearson", "--workers", str(args.workers)], check=True, cwd=root)
     os.environ["PROOF_REFRESH_BANK"] = str(args.bank)

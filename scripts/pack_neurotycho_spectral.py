@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from src.neurotycho_pilot import spectral_features
+from mtsspi.neurotycho_pilot import spectral_features
 
 
 def main(args):

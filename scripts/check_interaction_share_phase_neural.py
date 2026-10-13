@@ -6,8 +6,8 @@ import numpy as np
 import torch
 import yaml
 
-from src.representation_state_data import file_hash, load_state_data
-from src.representation_state_neural import AlignedChannelEncoder, predict
+from mtsspi.representation_state_data import file_hash, load_state_data
+from mtsspi.representation_state_neural import AlignedChannelEncoder, predict
 
 
 def check():

@@ -131,7 +131,7 @@ else:
     cml2d_fit = cml2d_scores.query("role == 'development' and eligible")
     cml2d_sign = -1 if spearman(cml2d_fit.q,cml2d_fit.Q_reference)<0 else 1
     cml2d_held = cml2d_scores.query("role == 'evaluation' and eligible").copy()
-    from src.order_parameter_analysis import clustered_bootstrap_spearman
+    from mtsspi.order_parameter_analysis import clustered_bootstrap_spearman
     if cml2d_held.seed.nunique() >= 2:
         uncertainty=[]
         for target in ["Q_reference","Q_window"]:

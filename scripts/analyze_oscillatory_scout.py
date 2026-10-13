@@ -7,13 +7,13 @@ import pandas as pd
 import yaml
 from sklearn.metrics import balanced_accuracy_score,roc_auc_score
 from sklearn.model_selection import GroupKFold
-from src.interaction_share_learning import fit_statistical,standardized_marginal_shapes
-from src.mpi_representation_baselines import summarize_mpis
-from src.representation_attribution import rich_marginals
-from src.representation_state_data import file_hash
-from src.provenance import array_sha256
-from src.spi_spi_contract import build_unified_features,schema_sha256
-from src.utils import slugify
+from mtsspi.interaction_share_learning import fit_statistical,standardized_marginal_shapes
+from mtsspi.mpi_representation_baselines import summarize_mpis
+from mtsspi.representation_attribution import rich_marginals
+from mtsspi.representation_state_data import file_hash
+from mtsspi.provenance import array_sha256
+from mtsspi.spi_spi_contract import build_unified_features,schema_sha256
+from mtsspi.utils import slugify
 
 
 def build(data,output):

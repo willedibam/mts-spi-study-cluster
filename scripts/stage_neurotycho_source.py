@@ -11,7 +11,7 @@ import zipfile
 import numpy as np
 from scipy.io import loadmat
 
-from src.neurotycho_zip import directory, read_member
+from mtsspi.neurotycho_zip import directory, read_member
 
 
 def montage(path, count=16):
