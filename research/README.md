@@ -5,13 +5,13 @@ One folder per research stream, one folder per study inside it. A study holds wh
 | Stream | Scope |
 | --- | --- |
 | [`cases/`](cases/README.md) | Small worked cases that isolate one contrast between statistics |
-| `inference/` | Order-parameter and phase-transition inference |
+| [`inference/`](inference/README.md) | Order-parameter and phase-transition inference |
 | `proof/` | The p90 proof-of-concept embeddings, validation and control baselines |
 | `representation/` | The SPI–SPI representation and what it captures, including the Neurotycho transfer work and the learned baselines |
 | `empirical/` | Measured data |
 | `zenodo/` | The Zenodo MTS corpus map |
 | [`methods/`](methods/README.md) | Computing SPIs at scale |
 
-`cases/` and `methods/` have been moved (October 2026); the other streams' files are still under `scripts/`, `configs/`, `tests/` and `notebooks/`. Large inputs and outputs stay in the ignored `data/` and `results/` directories, under the study's name.
+`cases/`, `methods/` and `inference/` have been moved (October 2026); the other streams' files are still under `scripts/`, `configs/`, `tests/` and `notebooks/`. Large inputs and outputs stay in the ignored `data/` and `results/` directories, under the study's name.
 
 Study folders are importable (`python -m research.cases.refresh_case_figures`), so their names use underscores.

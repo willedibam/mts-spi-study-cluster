@@ -87,7 +87,7 @@ def prepare_synthetic(root, index):
     task = tasks()[index]
     arrays, rows = {}, []
     if task['system'] == 'cml':
-        from scripts.scout_cml2d_period_doubling import evolve, order_summary
+        from research.inference.cml.scout_cml2d_period_doubling import evolve, order_summary
         rng = np.random.default_rng(task['seed'])
         state = rng.random((256, 256))
         indices = rng.permutation(256**2)[:256].reshape(1, -1)
@@ -99,9 +99,9 @@ def prepare_synthetic(root, index):
             rows.append(dict(name=name, M=m, T=1000, system='cml', seed=task['seed'], r=task['r']))
         metadata = dict(N=256**2, L=256, g=.2, burn=100000, record_steps=6000,
                         indices=indices.tolist(), **order_summary(means, 1000),
-                        generator_sha256=sha('scripts/scout_cml2d_period_doubling.py'))
+                        generator_sha256=sha('research/inference/cml/scout_cml2d_period_doubling.py'))
     else:
-        from scripts.tasep_phase_boundary import simulate
+        from research.inference.system_scouts.tasep_phase_boundary import simulate
         m = task['M']
         values, metadata = simulate(dict(N=m, alpha=task['alpha'], seed=task['seed']),
             dict(beta=.2, burn=100000., observation_steps=1000, dt=1.,

@@ -22,7 +22,7 @@ from threadpoolctl import threadpool_limits
 
 from mtsspi.corpus_geometry import fit_geometry_transform
 from mtsspi.representation_screen import bootstrap_group_means
-from scripts.order_parameter_simple_baselines import input_statistics
+from research.inference.benchmarks.order_parameter_simple_baselines import input_statistics
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data/baseline-comparison_260921"

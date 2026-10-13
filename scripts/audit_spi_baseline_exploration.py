@@ -144,8 +144,8 @@ def run():
             np.testing.assert_allclose(r,row.abs_rho,atol=1e-14)
             assert row.n==len(held)
     originals=["notebooks/embeddings/proof_p90_260824.ipynb","notebooks/embeddings/zenodo_1053_geometry.ipynb",
-        "notebooks/inference/order-parameter-benchmark-comparison.ipynb",
-        "notebooks/inference/order-parameter-benchmarks-lean.ipynb","notebooks/inference/order-parameter-benchmarks-baselines.ipynb"]
+        "research/inference/benchmarks/notebooks/order-parameter-benchmark-comparison.ipynb",
+        "research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb","research/inference/benchmarks/notebooks/order-parameter-benchmarks-baselines.ipynb"]
     for name in originals:
         before=subprocess.check_output(["git","show",f"9ba2094:{name}"],cwd=ROOT)
         assert before==(ROOT/name).read_bytes(),name

@@ -9,7 +9,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from threadpoolctl import threadpool_limits
 from scripts.benchmark_latex_style import latex_style, prepare_latex_figure
-from scripts.cross_frequency_locking import _physics, STYLE, DELTA, BOUNDARY, GAMMAS, STEP, N_COMMUNITY
+from research.inference.locking.cross_frequency_locking import _physics, STYLE, DELTA, BOUNDARY, GAMMAS, STEP, N_COMMUNITY
 
 ROOT=Path(__file__).resolve().parents[1]
 RESULTS=ROOT/'results/order-parameter-inference'
@@ -58,7 +58,7 @@ def physics():
 
 
 def scatter():
-    from scripts.cross_frequency_locking_snr import leading
+    from research.inference.locking.cross_frequency_locking_snr import leading
     source=RESULTS/'cross-frequency-locking-confirm-261006'
     rows=pd.read_csv(source/'scores.csv');bank=np.load(source/'features.npz');np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     index=np.flatnonzero(rows.system.eq('random-noise').to_numpy());part=rows.iloc[index];fit=part.role.eq('development').to_numpy()

@@ -1,6 +1,6 @@
 # Benchmark figure style
 
-Follow the general [figure style](figure-style.md). These conventions apply to [`order-parameter-benchmark-comparison.ipynb`](../notebooks/inference/order-parameter-benchmark-comparison.ipynb):
+Follow the general [figure style](figure-style.md). These conventions apply to [`order-parameter-benchmark-comparison.ipynb`](../research/inference/benchmarks/notebooks/order-parameter-benchmark-comparison.ipynb):
 
 - Physical truth `Q`: near-black circles. Frozen `q`: one consistent colour and square markers. Use Viridis-derived colours when distinguishing `M`.
 - For run-averaged curves, use lightly shaded (`alpha≈0.16`) 95% bootstrap intervals across independent runs; label alternatives explicitly.

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from scripts.finite_regime_pipeline import analyze_assembled, digest, write_json
+from research.inference.system_scouts.finite_regime_pipeline import analyze_assembled, digest, write_json
 
 
 def load_verified(corpus, cached, frozen):

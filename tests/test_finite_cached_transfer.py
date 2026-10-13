@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from scripts.analyze_finite_cached_transfer import load_verified
-from scripts.finite_regime_pipeline import digest
+from research.inference.system_scouts.finite_regime_pipeline import digest
 
 
 @pytest.fixture

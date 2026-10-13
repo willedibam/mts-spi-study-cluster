@@ -62,7 +62,7 @@ For a reduced raw-neural observation, normalization is recalculated on that obse
 
 Filtered observations remain float64 through SPI extraction. Neural tensors and the final $z$ coordinates use float32. Rounding the *input waveform* can create exact ties that affect some estimators; rounding an already-computed correlation is a different numerical operation.
 
-Implementation: [windowing and preprocessing](../src/neurotycho_pilot.py).
+Implementation: [windowing and preprocessing](../src/mtsspi/neurotycho_pilot.py).
 
 ## 2. From SPIs to the agreement representation $z$
 
@@ -127,7 +127,7 @@ Conversely, replacing $b$ by $3b+5$ leaves its agreement with $a$ unchanged. If 
 
 The numerical norm threshold for accepting a nonconstant vector is not a guarantee that its estimated relationships are reliable.
 
-Implementation: [SPI–SPI contract](../src/spi_spi_contract.py).
+Implementation: [SPI–SPI contract](../src/mtsspi/spi_spi_contract.py).
 
 ## 3. The geometric interpretation—and its limits
 
@@ -173,7 +173,7 @@ The total is $289\times23=6{,}647$ coordinates before filtering. This preserves 
 
 Here “magnitude” means the magnitude of an SPI calculated on standardized time series. It does not restore the original waveform amplitude removed before SPI extraction.
 
-Implementation: [rich marginal descriptors](../src/representation_attribution.py).
+Implementation: [rich marginal descriptors](../src/mtsspi/representation_attribution.py).
 
 ### Graph summaries $g$
 
@@ -198,7 +198,7 @@ $$
 
 These descriptors retain selected aspects of node incidence and matrix organization that link histograms discard. They are not a complete topology representation. “Singular-value spectrum” here concerns a matrix decomposition, not temporal frequency.
 
-Implementation: [MPI graph summaries](../src/mpi_representation_baselines.py).
+Implementation: [MPI graph summaries](../src/mtsspi/mpi_representation_baselines.py).
 
 ### Conventional spectral baseline
 
@@ -281,7 +281,7 @@ Partial least squares learns feature combinations related to the target, rather 
 
 This pilot selects 1, 2 or 4 components and uses PLS without an extra scaling step, because preprocessing already specifies feature scaling. Numerical-rank and zero-covariance safeguards handle degenerate inputs. PLS is still a linear regression model in the transformed features; it is not a general nonlinear learner. See the [PLSRegression documentation](https://scikit-learn.org/stable/modules/generated/sklearn.cross_decomposition.PLSRegression.html).
 
-Implementation: [fold transforms](../src/representation_screen.py), [ridge/PLS fitting](../src/interaction_share_learning.py), [animal-grouped selection](../src/neurotycho_statistical.py).
+Implementation: [fold transforms](../src/mtsspi/representation_screen.py), [ridge/PLS fitting](../src/mtsspi/interaction_share_learning.py), [animal-grouped selection](../src/mtsspi/neurotycho_statistical.py).
 
 ## 6. Learned SPI pooling
 
@@ -334,7 +334,7 @@ Consequently, a pooling gain would not isolate “learned correlation” alone. 
 
 The model is invariant to arbitrary link ordering. It has no endpoint identities or explicit sensor topology. Padding stored in feature banks is removed before pooling reduced views; padded zeros are not treated as observed links.
 
-Implementation: [standardization, input packing and pooling network](../src/spi_edge_pool.py).
+Implementation: [standardization, input packing and pooling network](../src/mtsspi/spi_edge_pool.py).
 
 ## 7. Raw waveform encoder
 
@@ -394,7 +394,7 @@ raw samples, or approximately **0.86 seconds** at 250 Hz. Channel attention broa
 
 Final pooling uses features from the whole window, so prediction is not based on only one 0.86-second segment. However, the architecture does not explicitly model arbitrary long-range temporal ordering after local feature extraction. It is a particular convolution/attention inductive bias, not an unrestricted neural encoder or pretrained foundation model.
 
-Implementation: [AlignedChannelEncoder](../src/representation_state_neural.py).
+Implementation: [AlignedChannelEncoder](../src/mtsspi/representation_state_neural.py).
 
 ## 8. Enriched raw training
 
@@ -411,7 +411,7 @@ The source observations have already been labelled at the interval level. Extrac
 
 This is a deliberately stronger comparator. Because extra windows and augmentation change together, their individual effects cannot be isolated from this comparison.
 
-Implementation: [augmentation and training weights](../src/neurotycho_learning.py).
+Implementation: [augmentation and training weights](../src/mtsspi/neurotycho_learning.py).
 
 ## 9. Optimization, model selection and final fitting
 
@@ -535,17 +535,17 @@ For intuition, read Sections2,6,7 and10. For reproducing the analysis, add Secti
 |---|---|
 | Study decisions | [Frozen protocol](neurotycho-transfer-pilot.md) |
 | Numerical settings | [Configuration](../configs/analysis/neurotycho-transfer-260910.yaml) |
-| Windowing, filtering, power spectra | [neurotycho_pilot.py](../src/neurotycho_pilot.py) |
-| Ordered-edge Pearson representation | [spi_spi_contract.py](../src/spi_spi_contract.py) |
-| Rich SPI summaries | [representation_attribution.py](../src/representation_attribution.py) |
-| Graph summaries | [mpi_representation_baselines.py](../src/mpi_representation_baselines.py) |
-| Training-only feature transforms | [representation_screen.py](../src/representation_screen.py) |
-| Ridge and PLS implementation | [interaction_share_learning.py](../src/interaction_share_learning.py) |
-| Grouped statistical selection | [neurotycho_statistical.py](../src/neurotycho_statistical.py) |
-| Learned link pooling | [spi_edge_pool.py](../src/spi_edge_pool.py) |
-| Raw encoder | [representation_state_neural.py](../src/representation_state_neural.py) |
-| Binary training and augmentation | [neurotycho_learning.py](../src/neurotycho_learning.py) |
-| Metric aggregation and integrity checks | [neurotycho_evaluation.py](../src/neurotycho_evaluation.py) |
+| Windowing, filtering, power spectra | [neurotycho_pilot.py](../src/mtsspi/neurotycho_pilot.py) |
+| Ordered-edge Pearson representation | [spi_spi_contract.py](../src/mtsspi/spi_spi_contract.py) |
+| Rich SPI summaries | [representation_attribution.py](../src/mtsspi/representation_attribution.py) |
+| Graph summaries | [mpi_representation_baselines.py](../src/mtsspi/mpi_representation_baselines.py) |
+| Training-only feature transforms | [representation_screen.py](../src/mtsspi/representation_screen.py) |
+| Ridge and PLS implementation | [interaction_share_learning.py](../src/mtsspi/interaction_share_learning.py) |
+| Grouped statistical selection | [neurotycho_statistical.py](../src/mtsspi/neurotycho_statistical.py) |
+| Learned link pooling | [spi_edge_pool.py](../src/mtsspi/spi_edge_pool.py) |
+| Raw encoder | [representation_state_neural.py](../src/mtsspi/representation_state_neural.py) |
+| Binary training and augmentation | [neurotycho_learning.py](../src/mtsspi/neurotycho_learning.py) |
+| Metric aggregation and integrity checks | [neurotycho_evaluation.py](../src/mtsspi/neurotycho_evaluation.py) |
 | Full prospective evaluation | [evaluate_neurotycho_transfer.py](../scripts/evaluate_neurotycho_transfer.py) |
 
 Some shared modules also contain earlier experimental models. This guide describes only the architectures and settings selected by the NeuroTycho configuration.

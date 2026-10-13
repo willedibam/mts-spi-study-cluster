@@ -9,7 +9,7 @@ from scipy.stats import spearmanr
 from threadpoolctl import threadpool_limits
 
 from scripts.spi_baseline_exploration import ROOT, DATA, OUT, sha, summarize, fit_coordinate, write_json, finite_json
-from scripts.order_parameter_simple_baselines import input_statistics
+from research.inference.benchmarks.order_parameter_simple_baselines import input_statistics
 from mtsspi.corpus_geometry import fit_geometry_transform
 from mtsspi.utils import slugify
 
@@ -205,7 +205,7 @@ def analyze():
     pd.DataFrame([r for result in metrics.values() for r in result]).to_csv(OUT/'inference-extra-metrics.csv',index=False)
     write_json(OUT/'inference-extra-provenance.json',finite_json(dict(diagnostics=diagnostics,
         status='retrospective extension to existing lean benchmark systems; no new p90',
-        protocol_sha256=sha(ROOT/'configs/analysis/spi-baseline-lean-extension-260921.yaml'),
+        protocol_sha256=sha(ROOT/'research/inference/benchmarks/configs/analysis/spi-baseline-lean-extension-260921.yaml'),
         code_sha256=sha(Path(__file__)),summaries_sha256=sha(DATA/'extension-summaries.npz'),
         scores_sha256=sha(DATA/'extension-scores.csv'),sources_sha256=sha(DATA/'extension-sources.json'))))
 

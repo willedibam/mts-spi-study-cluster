@@ -382,12 +382,12 @@ mts_classes:
 def test_desai_zwanzig_T_sensitivity_reuses_primary_master_seeds() -> None:
     primary = DatasetMapping(
         ExperimentConfig.from_file(
-            Path("configs/generate/order_parameter/desai-zwanzig-fine-boundary.yaml")
+            Path("research/inference/desai_zwanzig/configs/desai-zwanzig-fine-boundary.yaml")
         )
     ).specs
     sensitivity = DatasetMapping(
         ExperimentConfig.from_file(
-            Path("configs/generate/order_parameter/desai-zwanzig-T-sensitivity.yaml")
+            Path("research/inference/desai_zwanzig/configs/desai-zwanzig-T-sensitivity.yaml")
         )
     ).specs
     primary_seeds = {
@@ -527,7 +527,7 @@ mts_classes:
 
 def test_dataset_seed_does_not_depend_on_clone_path(tmp_path: Path) -> None:
     config = ExperimentConfig.from_file(
-        Path("configs/generate/order_parameter/spin-order-smoke.yaml")
+        Path("research/inference/miller_huse/configs/spin-order-smoke.yaml")
     )
     spec = DatasetMapping(config).specs[0]
     moved = replace(
@@ -542,7 +542,7 @@ def test_dataset_seed_does_not_depend_on_clone_path(tmp_path: Path) -> None:
 
 def test_claim_benchmark_mapping_and_split_invariants() -> None:
     config = ExperimentConfig.from_file(
-        Path("configs/generate/order_parameter/kuramoto-order-benchmark.yaml")
+        Path("research/inference/kuramoto/configs/kuramoto-order-benchmark.yaml")
     )
     mapping = DatasetMapping(config)
     assert len(mapping.specs) == 880
@@ -577,12 +577,12 @@ def test_claim_benchmark_mapping_and_split_invariants() -> None:
 def test_kuramoto_confirmation_uses_new_controls_and_both_sampling_designs() -> None:
     old = DatasetMapping(
         ExperimentConfig.from_file(
-            Path("configs/generate/order_parameter/kuramoto-order-benchmark.yaml")
+            Path("research/inference/kuramoto/configs/kuramoto-order-benchmark.yaml")
         )
     )
     confirmation = DatasetMapping(
         ExperimentConfig.from_file(
-            Path("configs/generate/order_parameter/kuramoto-confirmation.yaml")
+            Path("research/inference/kuramoto/configs/kuramoto-confirmation.yaml")
         )
     )
     assert len(confirmation.specs) == 1152
@@ -612,9 +612,9 @@ def test_terminal_kuramoto_confirmation_is_independent_and_preserves_hard_paths(
     mappings = [
         DatasetMapping(ExperimentConfig.from_file(Path(path)))
         for path in (
-            "configs/generate/order_parameter/kuramoto-order-benchmark.yaml",
-            "configs/generate/order_parameter/kuramoto-confirmation.yaml",
-            "configs/generate/order_parameter/kuramoto-final-confirmation.yaml",
+            "research/inference/kuramoto/configs/kuramoto-order-benchmark.yaml",
+            "research/inference/kuramoto/configs/kuramoto-confirmation.yaml",
+            "research/inference/kuramoto/configs/kuramoto-final-confirmation.yaml",
         )
     ]
     final = mappings[2]

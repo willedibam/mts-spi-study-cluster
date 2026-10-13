@@ -37,7 +37,7 @@
     ]
   ],
   "preserved_files": {
-    "notebooks/inference/order-parameter-benchmarks-lean.ipynb": "76545eaaa8ce3093ddaaeb7e6d39bdcb6bf6a1274cc2a8ebc03d95c39b711e21",
+    "research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb": "76545eaaa8ce3093ddaaeb7e6d39bdcb6bf6a1274cc2a8ebc03d95c39b711e21",
     "docs/figure-style.md": "93f0deccb247506a00a2eacc7fcf8f4af1f0bc83880936d141943288dd2345af",
     "notebooks/embeddings/spi_baseline_zenodo_260921.ipynb": "42587f42a6a9efb24dbb03b49c2342c28551da33f02f575d57b25fb284982ae6"
   },

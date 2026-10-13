@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from scripts.analyze_kuramoto_order_benchmark import (
+from research.inference.kuramoto.analyze_kuramoto_order_benchmark import (
     _conditional_path_gap,
     _ci_excludes_zero,
     _curve_rmse,
@@ -12,13 +12,13 @@ from scripts.analyze_kuramoto_order_benchmark import (
     _paired_cell_bootstrap,
     _truth_result_payload,
 )
-from scripts.analyze_desai_zwanzig_fine_boundary import (
+from research.inference.desai_zwanzig.analyze_desai_zwanzig_fine_boundary import (
     _association as _desai_association,
     _normalized_maximum_adjacent_change,
     _paired_sharpness_bootstrap,
 )
-from scripts.desai_zwanzig_physics_scout import _jobs as _desai_physics_jobs
-from scripts.analyze_stuart_landau_confirmation import (
+from research.inference.desai_zwanzig.desai_zwanzig_physics_scout import _jobs as _desai_physics_jobs
+from research.inference.stuart_landau.analyze_stuart_landau_confirmation import (
     _metadata_frame,
     _steepest_interval,
 )
@@ -160,7 +160,7 @@ def test_desai_finite_size_scaling_design_is_log_spaced_and_three_start() -> Non
     from mtsspi.utils import load_yaml
 
     config = load_yaml(
-        Path("configs/scout/desai-zwanzig-finite-size-scaling.yaml")
+        Path("research/inference/desai_zwanzig/configs/scout/desai-zwanzig-finite-size-scaling.yaml")
     )
     jobs = _desai_physics_jobs(config)
     assert config["population_sizes"] == [32, 100, 1000, 10000, 100000]

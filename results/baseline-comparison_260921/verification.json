@@ -17,9 +17,9 @@
     "original_notebooks_unchanged": [
       "notebooks/embeddings/proof_p90_260824.ipynb",
       "notebooks/embeddings/zenodo_1053_geometry.ipynb",
-      "notebooks/inference/order-parameter-benchmark-comparison.ipynb",
-      "notebooks/inference/order-parameter-benchmarks-lean.ipynb",
-      "notebooks/inference/order-parameter-benchmarks-baselines.ipynb"
+      "research/inference/benchmarks/notebooks/order-parameter-benchmark-comparison.ipynb",
+      "research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb",
+      "research/inference/benchmarks/notebooks/order-parameter-benchmarks-baselines.ipynb"
     ],
     "primary_protocol_preserved": true
   },

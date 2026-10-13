@@ -125,7 +125,7 @@ def analyze(data,out):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from sklearn.metrics import roc_auc_score
-    from scripts.cross_frequency_locking import STYLE
+    from research.inference.locking.cross_frequency_locking import STYLE
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows']);bank=np.load(out/'features.npz')
     np.testing.assert_array_equal(bank['row_id'],rows.row_id);rows['state'],rows['onset']=states(rows)
     plateau=rows.state.isin(['awake','anaesthetized']).to_numpy();y=rows.state.eq('anaesthetized').to_numpy().astype(float)

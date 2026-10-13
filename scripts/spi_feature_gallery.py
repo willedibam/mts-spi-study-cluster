@@ -13,7 +13,7 @@ from threadpoolctl import threadpool_limits
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scripts.locking_feature_sensitivity_261007 import project
+from research.inference.locking.locking_feature_sensitivity_261007 import project
 from scripts.benchmark_latex_style import latex_style, prepare_latex_figure
 
 ROOT=Path(__file__).resolve().parents[1]

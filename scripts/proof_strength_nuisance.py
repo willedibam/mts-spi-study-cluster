@@ -107,7 +107,7 @@ def tasks():
 
 def prepare(workers):
     import yaml
-    from scripts.cross_frequency_locking import partitions
+    from research.inference.locking.cross_frequency_locking import partitions
     from scripts.spi_baseline_exploration import sha
     if (DATA/'manifest.json').exists():raise FileExistsError(DATA)
     DATA.mkdir(parents=True,exist_ok=True);rows=[];raw={}
