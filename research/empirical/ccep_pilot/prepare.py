@@ -251,7 +251,7 @@ def transient_audit(root):
     np.savez_compressed(root/'scope/transient-traces.npz',**traces)
 
 
-def build(root, rate, cutoff, seconds, reference_control=False):
+def build(root, rate, cutoff, seconds, reference_control=False, only_subject=None, exclude_windows=(), suffix=''):
     """Build homogeneous participant archives only after the audit is reviewed."""
     import yaml
     root=Path(root)
@@ -260,9 +260,11 @@ def build(root, rate, cutoff, seconds, reference_control=False):
     assert (rate,cutoff) in OPTIONS and seconds in (16,32)
     for row in reports:
         if row['status']!='audited': continue
+        if only_subject is not None and row['subject']!=only_subject: continue
         subject=row['subject']; arrays={}; records=[]
         with np.load(root/'prepared'/f'{subject}.npz') as bank:
             for index,start in enumerate(row['starts']):
+                if index in exclude_windows: continue
                 if not bool(quality.query('subject == @subject and window == @index').qc_pass.iloc[0]): continue
                 x=bank[f'w{index}_fs{rate}_bw{cutoff}'][:,:seconds*rate]
                 x=(x-x.mean(axis=1,keepdims=True))/x.std(axis=1,keepdims=True)
@@ -283,17 +285,18 @@ def build(root, rate, cutoff, seconds, reference_control=False):
             name=records[0]['name']+'-acquisition-reference'
             arrays[name]=x
             records.append(dict(records[0],name=name,reference='Acquisition G2; probably mastoid',reference_control=True))
-        folder=root/'corpora'/f'{subject}-fs{rate}-t{seconds*rate}';folder.mkdir(parents=True,exist_ok=True)
+        folder=root/'corpora'/f'{subject}-fs{rate}-t{seconds*rate}{suffix}';folder.mkdir(parents=True,exist_ok=True)
+        if (folder/'observations.npz').exists(): raise FileExistsError(f'Preserve frozen corpus: {folder}')
         arrays.update(__dataset_names__=np.array([r['name'] for r in records]),
                       __labels_json__=np.array([json.dumps([subject,f"window-{r['window']}"]) for r in records]),
                       __shapes__=np.array([(r['M'],r['T']) for r in records]),__axis_order__=np.array(['process','observation']))
         archive=folder/'observations.npz';np.savez_compressed(archive,**arrays)
-        config=dict(name=f'ccep-{subject}-fs{rate}-t{seconds*rate}',
+        config=dict(name=f'ccep-{subject}-fs{rate}-t{seconds*rate}{suffix}',
                     source=dict(format='named-npz-v1',archive=str(archive.resolve()),sha256=sha256(archive),axis_order=['process','observation']),
                     base_output_dir=str((folder/'mpis').resolve()),pyspi_config='configs/pyspi/benchmarked_p90.yaml',normalise=False,random_seed=261014)
         (folder/'external.yaml').write_text(yaml.safe_dump(config,sort_keys=False))
         (folder/'manifest.json').write_text(json.dumps(dict(rows=records,archive_sha256=sha256(archive),
-                scope_sha256=sha256(root/'scope/participants.json'),script_sha256=sha256(__file__)),indent=2)+'\n')
+                excluded_windows=list(exclude_windows),scope_sha256=sha256(root/'scope/participants.json'),script_sha256=sha256(__file__)),indent=2)+'\n')
         print(folder/'external.yaml',flush=True)
 
 
@@ -302,11 +305,13 @@ def main():
     parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--rate',type=int);parser.add_argument('--cutoff',type=int);parser.add_argument('--seconds',type=int,default=32)
     parser.add_argument('--reference-control',action='store_true')
+    parser.add_argument('--subject');parser.add_argument('--exclude-window',type=int,action='append',default=[])
+    parser.add_argument('--suffix',default='')
     args=parser.parse_args()
     if args.command=='scope': scope(args.root,json.loads((Path(__file__).parent/'configs/selection.json').read_text()))
     elif args.command=='long-windows': long_window_audit(args.root,args.rate,args.cutoff)
     elif args.command=='transients': transient_audit(args.root)
-    else: build(args.root,args.rate,args.cutoff,args.seconds,args.reference_control)
+    else: build(args.root,args.rate,args.cutoff,args.seconds,args.reference_control,args.subject,args.exclude_window,args.suffix)
 
 
 if __name__=='__main__': main()

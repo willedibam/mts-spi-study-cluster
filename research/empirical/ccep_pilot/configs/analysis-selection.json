@@ -1,0 +1,11 @@
+{
+  "corpora": [
+    "sub-ccepAgeUMCU02-fs128-t4096",
+    "sub-ccepAgeUMCU10-fs128-t4096",
+    "sub-ccepAgeUMCU12-fs128-t4096",
+    "sub-ccepAgeUMCU61-fs128-t4096",
+    "sub-ccepAgeUMCU73-fs128-t4096-reviewed"
+  ],
+  "excluded_windows": {"sub-ccepAgeUMCU73": [0]},
+  "reason": "Native C26 has an isolated 3.58 mV range slow excursion in window 0; its cause is unresolved. Exclude that interval from baseline-character interpretation before viewing p90 results; retain the contact and the two other windows. No additional disjoint 32-second window meets the existing margins. Preserve the original archive as QC evidence."
+}

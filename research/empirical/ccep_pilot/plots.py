@@ -104,3 +104,16 @@ def full_window_qc(root):
                 if w==0:axes[r,w].set_ylabel('Channel')
     fig.suptitle('All retained 32-second windows · CAR, 0.5–45 Hz · per-channel median/IQR, clipped ±3',fontsize=10)
     save(fig,root/'figures','all-window-qc')
+
+
+def contact_qc_figure(root):
+    root=Path(root);plt=style()
+    fig,axes=plt.subplots(3,1,figsize=(7,5.4),sharex=True)
+    with np.load(root/'scope/transient-traces.npz') as bank:
+        for ax,name in zip(axes,['C25','C26','C27']):
+            ax.plot(bank['seconds'],bank[name],lw=.4,color='#222222')
+            ax.set_ylabel(name+r' ($\mu$V)')
+            ax.axvspan(22,30,color='#26828e',alpha=.1)
+        axes[-1].set(xlabel='Window time (s)',xlim=(0,32))
+    fig.suptitle('Participant 73 · excluded first interval · native 2048 Hz; differing voltage scales',fontsize=10)
+    save(fig,root/'figures','native-contact-qc')

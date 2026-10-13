@@ -20,7 +20,10 @@ def correlation_endpoint(name):
 
 def analyse(root):
     root=Path(root);rows=[];values=[];matrices=[];names=None;coverage=[]
-    for config in sorted((root/'corpora').glob('*/external.yaml')):
+    selection_path=Path(__file__).parent/'configs/analysis-selection.json'
+    selection=json.loads(selection_path.read_text())
+    for name in selection['corpora']:
+        config=root/'corpora'/name/'external.yaml'
         corpus=ArchiveCorpus.from_file(config)
         manifest=json.loads((config.parent/'manifest.json').read_text())
         assert sha256(corpus.archive)==manifest['archive_sha256']
@@ -48,7 +51,9 @@ def analyse(root):
     if not rows: raise ValueError('No complete participant corpora')
     z=np.asarray(values,dtype=float)
     primary=np.array([not row['reference_control'] for row in rows])
-    development=np.array([not row['reference_control'] and row['window']==0 for row in rows])
+    first_window={subject:min(r['window'] for r in rows if r['subject']==subject and not r['reference_control'])
+                  for subject in {r['subject'] for r in rows}}
+    development=np.array([not row['reference_control'] and row['window']==first_window[row['subject']] for row in rows])
     assert development.sum()>=4
     # Completeness across primary windows; never impute failed/constant features.
     keep=np.isfinite(z[primary]).all(axis=0)
@@ -105,7 +110,7 @@ def analyse(root):
         correlation_exclusion_score_r=sensitivity,nonfinite_reference_score_rows=int((~np.isfinite(scores[~primary]).all(axis=1)).sum()),
         interpretation='Exploratory first-window PCA; other windows and acquisition-reference controls probe sensitivity. No group or evoked-response association established.',
         missingness='Primary-window completeness; reference projections with missing selected features remain NaN.',
-        source=EXPECTED_SOURCE,script_sha256=sha256(__file__))
+        source=EXPECTED_SOURCE,selection_sha256=sha256(selection_path),script_sha256=sha256(__file__))
     (out/'summary.json').write_text(json.dumps(report,indent=2)+'\n')
     plot_results(root,rows,scores,development,table,contrasts,extremes,matrices,report)
     return report
