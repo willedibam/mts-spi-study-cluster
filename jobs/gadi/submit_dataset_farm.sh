@@ -29,10 +29,15 @@ selector=("$config" --start "$start" --end "$end" --count)
 [[ -n "${INSTANCE_MIN:-}" ]] && selector+=(--instance-min "$INSTANCE_MIN")
 [[ -n "${INSTANCE_MAX:-}" ]] && selector+=(--instance-max "$INSTANCE_MAX")
 tasks=$(python -m scripts.select_dataset_indices "${selector[@]}")
-if (( tasks <= 48 )); then
-    default_ncpus=$tasks
+# pyspi workers per dataset (see run_dataset_farm.pbs): cores are tasks x
+# workers, and memory is per dataset, so give MEM_GB from a measured dataset.
+cores_per_recording="${CORES_PER_RECORDING:-1}"
+[[ "$cores_per_recording" =~ ^[1-9][0-9]*$ ]] || { echo 'CORES_PER_RECORDING must be a positive integer' >&2; exit 2; }
+cores=$((tasks * cores_per_recording))
+if (( cores <= 48 )); then
+    default_ncpus=$cores
 else
-    default_ncpus=$(( ((tasks + 47) / 48) * 48 ))
+    default_ncpus=$(( ((cores + 47) / 48) * 48 ))
 fi
 ncpus="${NCPUS:-$default_ncpus}"
 if (( ncpus > 48 && ncpus % 48 != 0 )); then
@@ -41,7 +46,7 @@ if (( ncpus > 48 && ncpus % 48 != 0 )); then
 fi
 
 mem_per_cpu_gb="${MEM_PER_CPU_GB:-4}"
-mem_gb=$((ncpus * mem_per_cpu_gb))
+mem_gb="${MEM_GB:-$((ncpus * mem_per_cpu_gb))}"
 walltime="${WALLTIME:-01:00:00}"
 jobfs_gb="${JOBFS_GB:-10}"
 pyspi_config="${PYSPI_CONFIG:-configs/pyspi/benchmarked_p90.yaml}"
@@ -49,11 +54,12 @@ test -f "$pyspi_config"
 task_timeout="${TASK_TIMEOUT:-}"
 workers="${WORKERS:-}"
 if [[ -n "$workers" ]]; then
-    (( workers >= 1 && workers <= ncpus ))
+    (( workers >= 1 && workers * cores_per_recording <= ncpus ))
 fi
 
 variables="EXPERIMENT_CONFIG=$config,START_INDEX=$start,END_INDEX=$end,PYSPI_CONFIG=$pyspi_config"
-for name in FILTER_M FILTER_T INSTANCE_MIN INSTANCE_MAX; do
+variables+=",CORES_PER_RECORDING=$cores_per_recording"
+for name in FILTER_M FILTER_T INSTANCE_MIN INSTANCE_MAX PYSPI_SOURCE; do
     if [[ -n "${!name:-}" ]]; then
         variables+=",$name=${!name}"
     fi
@@ -65,7 +71,7 @@ if [[ -n "$workers" ]]; then
     variables+=",WORKERS=$workers"
 fi
 
-echo "[INFO] config=$config selected=$tasks/$total ncpus=$ncpus workers=${workers:-$ncpus} mem=${mem_gb}GB walltime=$walltime task_timeout=${task_timeout:-none}" >&2
+echo "[INFO] config=$config selected=$tasks/$total ncpus=$ncpus workers=${workers:-$((ncpus / cores_per_recording))} cores_per_recording=$cores_per_recording mem=${mem_gb}GB walltime=$walltime task_timeout=${task_timeout:-none}" >&2
 dependency_args=()
 [[ -n "${DEPENDENCY:-}" ]] && dependency_args=(-W "depend=$DEPENDENCY")
 qsub \

@@ -31,6 +31,13 @@ export MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export PYSPI_N_JOBS=1
+
+# Optional pyspi source snapshot (a development branch) ahead of the shared
+# editable install; meta.json records which pyspi ran.
+if [[ -n "${PYSPI_SOURCE:-}" ]]; then
+    test -d "$PYSPI_SOURCE/pyspi"
+    export PYTHONPATH="$PYSPI_SOURCE${PYTHONPATH:+:$PYTHONPATH}"
+fi
 # (the old `unset CUDA_VISIBLE_DEVICES` guarded cdt's import-time
 # ast.literal_eval of it; pyspi 3.0 dropped cdt, so it is gone)
 
@@ -51,17 +58,23 @@ selector=("$EXPERIMENT_CONFIG" --start "$START_INDEX" --end "$END_INDEX")
 [[ -n "${INSTANCE_MAX:-}" ]] && selector+=(--instance-max "$INSTANCE_MAX")
 python -m scripts.select_dataset_indices "${selector[@]}" > "$indices"
 
+# pyspi workers per dataset. Each dataset is bound to this many cores and runs
+# that many workers; results do not depend on the count. Memory is per
+# dataset, not per core: request WORKERS x (parent + CORES_PER_RECORDING x
+# largest worker), from job.peak_memory_mib of a measured dataset.
+cores_per_recording="${CORES_PER_RECORDING:-1}"
+[[ "$cores_per_recording" =~ ^[1-9][0-9]*$ ]] || { echo "invalid CORES_PER_RECORDING" >&2; exit 2; }
 while IFS= read -r i; do
-    printf 'python -m src.run_experiments --job-index %d --experiment-config %s --pyspi-config %s --n-jobs 1 --skip-existing --no-csv --no-heatmap\n' \
-        "$i" "$EXPERIMENT_CONFIG" "$PYSPI_CONFIG" >> "$commands"
+    printf 'python -m src.run_experiments --job-index %d --experiment-config %s --pyspi-config %s --n-jobs %d --skip-existing --no-csv --no-heatmap\n' \
+        "$i" "$EXPERIMENT_CONFIG" "$PYSPI_CONFIG" "$cores_per_recording" >> "$commands"
 done < "$indices"
 
 task_count=$(wc -l < "$indices")
-workers="${WORKERS:-$PBS_NCPUS}"
-(( workers >= 1 && workers <= PBS_NCPUS ))
+workers="${WORKERS:-$(( PBS_NCPUS / cores_per_recording ))}"
+(( workers >= 1 && workers * cores_per_recording <= PBS_NCPUS ))
 (( workers > task_count )) && workers=$task_count
 
-echo "[INFO] datasets=$START_INDEX..$END_INDEX workers=$workers p90=$PYSPI_CONFIG"
+echo "[INFO] datasets=$START_INDEX..$END_INDEX workers=$workers cores_per_recording=$cores_per_recording p90=$PYSPI_CONFIG"
 # Verify the shared editable installs on every allocated node before dispatch.
 # A head-node-only import check misses node-local source/path mistakes.
 nodes=$(sort -u "${PBS_NODEFILE:?}" | wc -l)
@@ -74,7 +87,7 @@ if [[ -n "${TASK_TIMEOUT:-}" ]]; then
     nci_args+=(--timeout "$TASK_TIMEOUT")
 fi
 set +e
-mpirun -np "$workers" --map-by node:PE=1 \
+mpirun -np "$workers" --map-by "node:PE=$cores_per_recording" \
     nci-parallel "${nci_args[@]}"
 rc=$?
 set -e
