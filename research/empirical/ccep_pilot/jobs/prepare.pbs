@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -N ccep-scope
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8
+#PBS -l mem=64GB
+#PBS -l walltime=02:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${CODE_SNAPSHOT:?}"
+cd "$CODE_SNAPSHOT"
+source jobs/gadi/env.sh
+mkdir -p "$RUN_ROOT/logs"
+exec >"$RUN_ROOT/logs/scope-${PBS_JOBID%%.*}.log" 2>&1
+test -f "$RUN_ROOT/acquisition.json"
+python -u -m research.empirical.ccep_pilot.prepare scope --root "$RUN_ROOT"
