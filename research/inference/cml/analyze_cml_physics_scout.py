@@ -14,7 +14,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from mtsspi.plot_style import apply_plot_style  # noqa: E402
+from mtsspi.figures import figure_style  # noqa: E402
 
 
 METRICS = {
@@ -124,7 +124,7 @@ def main() -> int:
         json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 
-    apply_plot_style()
+    figure_style()
     figure, axes = plt.subplots(2, 2, figsize=(8.0, 5.8), sharex=True)
     colors = {128: "#3b4cc0", 256: "#1fa187", 512: "#d1495b"}
     for axis, (metric, label) in zip(axes.flat, METRICS.items()):
