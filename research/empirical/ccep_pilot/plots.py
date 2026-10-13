@@ -85,3 +85,22 @@ def response_figures(root):
                    title=f"{subject[-2:]} · {row['site']} → {row['response']}")
             ax.set_box_aspect(1)
     save(fig,root/'figures','native-response-examples')
+
+
+def full_window_qc(root):
+    import seaborn as sns
+    root=Path(root);plt=style()
+    rows=json.loads((root/'scope/participants.json').read_text())
+    fig,axes=plt.subplots(len(rows),3,figsize=(10.5,10))
+    for r,row in enumerate(rows):
+        with np.load(root/'prepared'/f"{row['subject']}.npz") as bank:
+            for w in range(3):
+                x=bank[f'w{w}_fs128_bw45'];q25,q75=np.quantile(x,[.25,.75],axis=1)
+                scaled=(x-np.median(x,axis=1,keepdims=True))/np.maximum(q75-q25,1e-12)[:,None]
+                axes[r,w].imshow(scaled,origin='lower',aspect='auto',extent=(0,32,.5,len(x)+.5),
+                    vmin=-3,vmax=3,cmap=sns.color_palette('icefire',as_cmap=True),interpolation='nearest')
+                axes[r,w].set(title=f"{row['subject'][-2:]} · window {w+1}",xticks=[0,16,32],yticks=[1,len(x)])
+                if r==len(rows)-1:axes[r,w].set_xlabel('Time (s)')
+                if w==0:axes[r,w].set_ylabel('Channel')
+    fig.suptitle('All retained 32-second windows · CAR, 0.5–45 Hz · per-channel median/IQR, clipped ±3',fontsize=10)
+    save(fig,root/'figures','all-window-qc')

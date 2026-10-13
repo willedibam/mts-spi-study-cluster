@@ -225,6 +225,32 @@ def long_window_audit(root, rate, cutoff):
     pd.DataFrame(records).to_csv(root/'scope/long-duration.csv',index=False)
 
 
+def transient_audit(root):
+    """Detect sustained exact flat segments; retain traces for a visual QC query."""
+    root=Path(root);records=[];traces={}
+    selected=json.loads((Path(__file__).parent/'configs/selection.json').read_text())['records']
+    report=json.loads((root/'scope/participants.json').read_text())
+    for row in report:
+        item=next(r for r in selected if r['subject']==row['subject']);fs=item['fs']
+        raw=mne.io.read_raw_brainvision(root/'raw'/item['path'].replace('.json','.vhdr'),preload=False,verbose='ERROR')
+        for window,start in enumerate(row['starts']):
+            x=raw.get_data(picks=row['channels'],start=round(start*fs),stop=round((start+32)*fs))*1e6
+            blocks=x.reshape(len(x),32,fs).std(axis=2)
+            for channel,name in enumerate(row['channels']):
+                unchanged=np.diff(x[channel])==0
+                transitions=np.flatnonzero(np.diff(np.r_[False,unchanged,False]))
+                longest=int(np.max(transitions[1::2]-transitions[::2],initial=0))
+                records.append(dict(subject=row['subject'],window=window,channel=name,
+                    longest_equal_seconds=(longest+1)/fs,one_second_sd_min=float(blocks[channel].min()),
+                    one_second_sd_median=float(np.median(blocks[channel])),range_uv=float(np.ptp(x[channel]))))
+            if row['subject'].endswith('73') and window==0:
+                for name in ('C25','C26','C27'):
+                    traces[name]=x[row['channels'].index(name)]
+                traces['seconds']=np.arange(x.shape[1])/fs
+    pd.DataFrame(records).to_csv(root/'scope/transient-qc.csv',index=False)
+    np.savez_compressed(root/'scope/transient-traces.npz',**traces)
+
+
 def build(root, rate, cutoff, seconds, reference_control=False):
     """Build homogeneous participant archives only after the audit is reviewed."""
     import yaml
@@ -272,13 +298,14 @@ def build(root, rate, cutoff, seconds, reference_control=False):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['scope','build','long-windows'])
+    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['scope','build','long-windows','transients'])
     parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--rate',type=int);parser.add_argument('--cutoff',type=int);parser.add_argument('--seconds',type=int,default=32)
     parser.add_argument('--reference-control',action='store_true')
     args=parser.parse_args()
     if args.command=='scope': scope(args.root,json.loads((Path(__file__).parent/'configs/selection.json').read_text()))
     elif args.command=='long-windows': long_window_audit(args.root,args.rate,args.cutoff)
+    elif args.command=='transients': transient_audit(args.root)
     else: build(args.root,args.rate,args.cutoff,args.seconds,args.reference_control)
 
 
