@@ -9,7 +9,7 @@ from src.corpus_visualization import plot_mts_heatmap, scale_timeseries
 def snapshots(root, system, controls):
     result=[]
     for c in controls:
-        with np.load(root/f'data/order_parameter/lean_snapshots_260916/{system}-{c:g}.npz') as a:
+        with np.load(root/f'data/order-parameter-inference/figure-examples_260916/{system}-{c:g}.npz') as a:
             result.append({key:a[key].copy() for key in a.files})
         if system == 'stuart-landau':
             # The generator stores complex Z(t), not its magnitude.

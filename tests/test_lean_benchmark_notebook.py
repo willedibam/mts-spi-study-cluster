@@ -28,7 +28,7 @@ def test_lean_notebook_scope_and_source_preservation():
 
 
 def test_stuart_landau_trace_is_magnitude(tmp_path):
-    folder=tmp_path/'data/order_parameter/lean_snapshots_260916'
+    folder=tmp_path/'data/order-parameter-inference/figure-examples_260916'
     folder.mkdir(parents=True)
     np.savez(folder/'stuart-landau-0.725.npz', X=np.ones((32,1000)), trace=np.array([3+4j]))
     loaded=snapshots(tmp_path,'stuart-landau',[.725])[0]
