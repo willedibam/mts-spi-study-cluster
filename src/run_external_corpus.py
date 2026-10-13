@@ -86,7 +86,14 @@ def _pyspi_version() -> dict[str, str]:
         from pyspi._parallel import COMPUTATION_VERSION as computation
     except Exception:  # pragma: no cover - defensive provenance fallback
         computation = "unknown"
-    return {"dist": dist, "computation": str(computation)}
+    try:
+        import pyspi
+        source = str(Path(pyspi.__file__).resolve().parent)
+    except Exception:  # pragma: no cover - defensive provenance fallback
+        source = "unknown"
+    # `source` separates a run made from a pinned snapshot (PYSPI_SOURCE) from
+    # one made with the environment's install at the same computation revision.
+    return {"dist": dist, "computation": str(computation), "source": source}
 
 
 @dataclass(frozen=True)
