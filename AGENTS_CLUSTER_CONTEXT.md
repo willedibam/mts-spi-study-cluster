@@ -54,7 +54,7 @@ State on Gadi from 2026-10-13. Workers alone, sampling alone and both give match
 
 - **pyspi.** The shared checkout `/home/562/we2614/pyspi-fork` is on `v3` at `b795245`, computation **r9** (it was `65317c9`, r7). r9 needs scikit-learn >= 1.8 (the environment has 1.9.0). About 20 SPI values differ from r7: never mix revisions in one corpus, and re-run a corpus rather than topping it up. `v3` has workers but not dyad sampling.
 - **Dyad sampling** lives on pyspi's dev branch. Use it per job with `PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-75cc0c9` (tag `gadi/pair-sampling-75cc0c9` on the fork); `meta.json` records `pyspi.version.source`. Its full-table results equal `v3`'s.
-- **Runner.** Both runners need pyspi computation r8 or later and record `pyspi_fixed_seeds`: results do not depend on the worker count. Only the external-corpus farm takes `CORES_PER_RECORDING`; the synthetic farm (`run_dataset_farm.pbs`) is one core per dataset.
+- **Runner.** Both runners need pyspi computation r8 or later and record `pyspi_fixed_seeds`: results do not depend on the worker count. Both farms take `CORES_PER_RECORDING`, `MEM_GB` and `PYSPI_SOURCE` (synthetic farm verified with tiny job 181134379).
 - **Revisions.** The synthetic runner stops when `--skip-existing` meets a dataset computed by another pyspi revision or SPI config; the external runner recomputes it and `--audit` fails on a mixed corpus. Give a re-run a new `base_output_dir`.
 
 ```bash
