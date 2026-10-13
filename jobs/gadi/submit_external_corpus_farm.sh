@@ -21,10 +21,16 @@ else
 fi
 (( tasks >= 1 ))
 
-if (( tasks <= 48 )); then
-    default_ncpus=$tasks
+# pyspi workers per recording (see run_external_corpus_farm.pbs). Cores are
+# tasks x workers; memory is per recording, so set MEM_GB from a measured
+# recording of this size rather than relying on the per-core default.
+cores_per_recording="${CORES_PER_RECORDING:-1}"
+[[ "$cores_per_recording" =~ ^[1-9][0-9]*$ ]] || { echo 'CORES_PER_RECORDING must be a positive integer' >&2; exit 2; }
+cores=$((tasks * cores_per_recording))
+if (( cores <= 48 )); then
+    default_ncpus=$cores
 else
-    default_ncpus=$(( ((tasks + 47) / 48) * 48 ))
+    default_ncpus=$(( ((cores + 47) / 48) * 48 ))
 fi
 ncpus="${NCPUS:-$default_ncpus}"
 if (( ncpus > 48 && ncpus % 48 != 0 )); then
@@ -45,13 +51,14 @@ if [[ -n "$index_file" ]]; then
 else
     variables+=",START_INDEX=${START_INDEX:-1},END_INDEX=${END_INDEX:-$total}"
 fi
+variables+=",CORES_PER_RECORDING=$cores_per_recording"
 for name in TASK_TIMEOUT WORKERS CORPUS_RUNNER; do
     if [[ -n "${!name:-}" ]]; then
         variables+=",$name=${!name}"
     fi
 done
 
-echo "[INFO] config=$config selected=$tasks/$total ncpus=$ncpus mem=${mem_gb}GB walltime=$walltime" >&2
+echo "[INFO] config=$config selected=$tasks/$total cores_per_recording=$cores_per_recording ncpus=$ncpus mem=${mem_gb}GB walltime=$walltime" >&2
 qsub \
     -l "ncpus=$ncpus,mem=${mem_gb}GB,walltime=$walltime,jobfs=${jobfs_gb}GB" \
     -v "$variables" \
