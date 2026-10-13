@@ -68,4 +68,4 @@
 
 ## Cluster operations
 
-- Read `AGENTS_CLUSTER_CONTEXT.md` before changing, synchronising, or submitting work on NCI Gadi or the USyd Physics cluster.
+- Read `HPC.md` before changing, synchronising, or submitting work on NCI Gadi or the USyd Physics cluster.
