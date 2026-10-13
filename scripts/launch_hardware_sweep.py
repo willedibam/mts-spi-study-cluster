@@ -60,8 +60,6 @@ def main(root, smoke_job, dry_run=False):
         if len(order) != 289 or (names is not None and names != order):
             raise ValueError('Smoke catalogue mismatch')
         names = order
-        if not meta.get('spectral_memory_repair'):
-            raise ValueError('Memory-repair provenance missing')
         with np.load(directory / 'spi_mpis.npz') as bank:
             edge = ~np.eye(entry.M, dtype=bool)
             finite = float(np.mean([np.isfinite(bank[s][edge]).mean() for s in names]))
@@ -83,8 +81,7 @@ def main(root, smoke_job, dry_run=False):
     receipt['status'] = 'submitting'
     marker.write_text(json.dumps(receipt, indent=2) + '\n')
     env = dict(os.environ, NCPUS=str(plan['ncpus']), WORKERS=str(plan['workers']),
-               MEM_GB=str(plan['mem_gb']), WALLTIME=plan['walltime'],
-               CORPUS_RUNNER='scripts.run_hardware_bounded_corpus')
+               MEM_GB=str(plan['mem_gb']), WALLTIME=plan['walltime'])
     env.pop('TASK_TIMEOUT', None)
     job = subprocess.check_output(['bash', 'jobs/gadi/submit_external_corpus_farm.sh',
                                    str(sweep.path)], env=env, text=True).strip()

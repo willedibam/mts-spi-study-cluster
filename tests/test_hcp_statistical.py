@@ -9,6 +9,8 @@ from src.hcp_statistical import fit_source, predict
 
 @pytest.mark.parametrize('method', ['m-pca', 'z-pca', 'mz-pca', 'm-pls', 'z-pls', 'spectra', 'minirocket'])
 def test_source_grouping_and_prediction_on_random_inputs(method):
+    if method == 'minirocket':
+        pytest.importorskip('aeon')
     config = yaml.safe_load(Path('configs/analysis/hcp-statistical-candidates-260915.yaml').read_text())
     config['pca_caps'] = [2]
     config['ridge_alpha_grid'] = [1.]

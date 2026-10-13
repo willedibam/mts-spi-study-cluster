@@ -189,19 +189,15 @@ def assemble(root):
 
 def extract(root, group, index):
     from src import run_external_corpus as corpus
-    from src.hcp_spectral_memory import bounded_psi_memory
     config = corpus.ExternalCorpusConfig.from_file(root/f'{group}.yaml')
     entries = corpus.load_inventory(config)
     entry = entries[index-1]
     assert 1 <= index <= len(entries)
     assert corpus.completion_error(config, entry) is not None, 'Do not overwrite completed output'
     started = time.perf_counter()
-    with bounded_psi_memory() as repair:
-        directory = corpus.run_dataset(config, entry, n_jobs=1)
+    directory = corpus.run_dataset(config, entry, n_jobs=1)
     assert corpus.completion_error(config, entry) is None
     meta = json.loads((directory/'meta.json').read_text())
-    meta['spectral_memory_repair'] = repair
-    corpus._atomic_json(directory/'meta.json', meta)
     order = [s['name'] for s in meta['pyspi']['spis']]
     valid_spis = 0
     with np.load(directory/'spi_mpis.npz') as bank:
