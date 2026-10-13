@@ -20,12 +20,13 @@ Storage audited on 2026-09-22; allocation, quotas and checkout state rechecked o
 
 ## Git and environment
 
-- Local repositories are authoritative during development. Commit the intended files, push, then fetch/fast-forward the matching Gadi branches; never pull over uncommitted work.
+- **Source moves one way: local, then `origin`, then the cluster.** Commit and push locally; on the cluster only `git pull --ff-only`. Never edit tracked files on a cluster checkout, and never pull over uncommitted work. The cluster runner must be the pushed local runner: `git status -sb` in both places before submitting.
+- `jobs/gadi/require_synced_source.sh` enforces this for the two farm submitters: they refuse a checkout with uncommitted tracked changes, a commit on no remote branch, or one behind its remote branch. Source snapshots under `operations/sources/` (not Git checkouts, named by commit) pass. `ALLOW_UNSYNCED_SOURCE=1` overrides for a deliberate one-off; say so in the run's notes.
 - Storage-path updates were deployed from `codex/gadi-storage-layout` (`8fc2bc1`, based on prior Gadi commit `18ef949`) into the existing cluster checkout. The migration lineage was integrated into the local `refactor-lagged-warping` branch on September 23, preserving the newer local code and user notebook removals. Future cluster updates can follow that merged history; do not force-reset.
-- Gadi tracks main-repo branch `refactor-lagged-warping` and pyspi branch `v3`. Verify both commits before each production submission.
+- Gadi tracks main-repo branch `refactor-lagged-warping` and pyspi branch `v3` (the 3.0 release branch; pyspi development branches are used per job through `PYSPI_SOURCE`, never by switching the shared checkout). Verify both commits before each production submission.
 - Proof/case refresh on 2026-09-24: Gadi main checkout `247b9e1`, pyspi `65317c9`, both clean at deployment. Both 350-dataset focused cases completed; proof farms and dependent stochastic replay/figure jobs are submitted. See `results/cases/refresh-260924-execution.json`. Notebook execution dependencies were added without changing existing package versions; inventories live in the proof refresh analysis folder.
 - The active Scratch Python 3.12 environment has editable main/pyspi-v3 installs. The obsolete broken v2 environment was removed on 2026-08-22. Require `import src, pyspi`, the fast tests, and a one-dataset smoke test after any rebuild.
-- These experiments use `configs/pyspi/benchmarked_p90.yaml` (289 SPIs) and one pyspi worker per dataset. The exact-GP additive-noise-model SPI is intentionally disabled: six `M=20,T=1000` tasks each exceeded 18 minutes inside it in job `177018028`.
+- These experiments use `configs/pyspi/benchmarked_p90.yaml` (289 SPIs); one pyspi worker per dataset is the default, see the workers section below. The exact-GP additive-noise-model SPI is intentionally disabled: six `M=20,T=1000` tasks each exceeded 18 minutes inside it in job `177018028`.
 
 ## Compute allocation and charging
 
@@ -47,9 +48,34 @@ Storage audited on 2026-09-22; allocation, quotas and checkout state rechecked o
 - Measured `M=20,T=1000` p90 pilot `177019354`: median `603 s`, maximum `774 s` per dataset; six tasks peaked at 11.4 GB total. Corner gates `177020665` and `177020346` measured maxima of `1716 s` for `M=20,T=2000` and `1908 s` for `M=32,T=1000`, with three-task peak memory of 13.6 and 9.46 GB respectively. Request 8 GB/core for those two classes and 4 GB/core for `M=20,T<=1000` and `M=8`; `M=20` remains the production observation size.
 - Production job `177026144` used one 1,776-core allocation for 880 concurrent `M=20,T=1000` commands, requested 7,104 GB, and finished in `00:17:04` with `177:41:03` CPU time and 936 GiB peak aggregate memory. Per-dataset runtime was `617/686/834/866/908/1004 s` at min/median/p90/p95/p99/max. The 880 outputs occupy about 750 MiB and 4,401 inodes. This validates the farm architecture, but recheck Scratch inode headroom before repeating it (47.93k at verification).
 
+## Workers within a recording and dyad sampling
+
+State on Gadi from 2026-10-13. Workers alone, sampling alone and both give matching results through `run_external_corpus_farm.pbs`, with each recording bound to its own cores (tiny jobs 181130354/55/59).
+
+- **pyspi.** The shared checkout `/home/562/we2614/pyspi-fork` is on `v3` at `b795245`, computation **r9** (it was `65317c9`, r7). r9 needs scikit-learn >= 1.8 (the environment has 1.9.0). About 20 SPI values differ from r7: never mix revisions in one corpus, and re-run a corpus rather than topping it up. `v3` has workers but not dyad sampling.
+- **Dyad sampling** lives on pyspi's dev branch. Use it per job with `PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-75cc0c9` (tag `gadi/pair-sampling-75cc0c9` on the fork); `meta.json` records `pyspi.version.source`. Its full-table results equal `v3`'s.
+- **Runner.** Both runners need pyspi computation r8 or later and record `pyspi_fixed_seeds`: results do not depend on the worker count. Only the external-corpus farm takes `CORES_PER_RECORDING`; the synthetic farm (`run_dataset_farm.pbs`) is one core per dataset.
+- **Revisions.** The synthetic runner stops when `--skip-existing` meets a dataset computed by another pyspi revision or SPI config; the external runner recomputes it and `--audit` fails on a mixed corpus. Give a re-run a new `base_output_dir`.
+
+```bash
+# several workers per recording (full table)
+CORES_PER_RECORDING=4 MEM_GB=<recordings x peak> bash jobs/gadi/submit_external_corpus_farm.sh corpus.yaml
+# dyad sampling: add `pair_tolerance: 0.03` to the corpus YAML, then
+PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-75cc0c9 \
+CORES_PER_RECORDING=4 MEM_GB=<recordings x peak> bash jobs/gadi/submit_external_corpus_farm.sh corpus.yaml
+```
+
+- **When to use which.** One worker per recording whenever queued recordings can fill the cores. Workers when cores exceed recordings or memory limits recordings per node; the longest shared-cache task caps the gain, so beyond 8 expect little. Sampling only for large `M` (about 100 and up): the budget caps near 2,500 dyads and below `M` of about 70 it is nearly every dyad.
+- **Sampled output.** `spi_mpis.npz` keeps its layout with NaN at unsampled entries; `pairs.npz` lists the dyads. Downstream feature code must restrict to those dyads. An SPI with few finite entries can fail on a sample and not on the full table.
+- **Measured** (one MEG recording, `T=1000`, 289-SPI p90, r8 kernels; single runs, expect tens of percent between nodes): `M=64` full table 40/11/6 min and 2.7/5.1/5.9 GiB on 1/4/8 workers; `M=243` at 1,000 of 29,403 dyads 52/9/5 min and 20/42/39 GiB, and 16 min and 28 GiB at the default budget (2,305 dyads) on 4 workers; the full `M=243` table took 19.3 h.
+- **Memory is per recording, not per core.** Set `MEM_GB` to recordings per node times the peak in `meta.json: job.peak_memory_mib` of a measured recording (until then: parent + `k` x largest worker). Sampling does not reduce it: SPIs fitted on all channels are still computed in full, about 16 GiB in the largest worker at `M=243`. One recording over the request kills every recording in the job, so keep a job homogeneous in `M` and `T`.
+- **Idle cores.** `nci-parallel` gives a freed group the next queued recording; with none left the group idles and is charged until the job ends. Do not allocate more groups than recordings, and submit size classes separately.
+- **Threads.** Keep the `*_NUM_THREADS=1` exports (pyspi no longer sets one on import). The runner refuses several workers without them, and refuses more workers than the cores it is bound to.
+- **Smoke tests.** Use the tiny archive (`pyspi-optimisation/farm-smoke-261013/tiny.npz`, two `M=8`, `T=300` recordings, about 90 s per job) to check that a configuration runs. Reserve large recordings for measuring time or memory you actually need.
+
 ## Operational checks
 
-- Before submit: correct branches/commit, clean intended tree, working venv, dataset count/dry run, output path, two-task smoke test.
+- Before submit: checkout clean and equal to the pushed local branch (the farm submitters check), pyspi commit and computation version as intended, working venv, dataset count/dry run, output path, two-task smoke test.
 - Multi-node workers cannot see another node's `$PBS_JOBFS`. Put immutable code snapshots on shared Scratch/gdata (or explicitly stage on every node), and smoke-test imports on one process per node before the farm. CML confirmation178753573 exposed this: head-node workers ran while other nodes failed to import `scripts`; the shared-snapshot launcher and validated resume preserve completed cases.
 - During/after: `qstat -swx`, task status/log archive, output completeness, PBS CPU/memory efficiency, `nci_account`, Scratch inode use.
 - Do not scale a scientifically unvalidated generator merely because compute is available.

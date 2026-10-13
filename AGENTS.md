@@ -16,6 +16,8 @@
 - Be concise and direct. Prefer the simplest implementation that fully solves the problem. If a local fix would add brittle complexity, flag the underlying refactor instead of layering on a workaround.
 - Make surgical edits. Do not touch unrelated code; mention unrelated dead code or cleanup opportunities instead of removing them.
 - Write Markdown prose with one logical paragraph per physical line. Do not hard-wrap prose to a fixed column width. Preserve intentional line breaks and structured Markdown.
+- When adding markdown commentary, research in notebooks, do not unnecessarily bloat.
+- When setting scheduled reminders, use the most concise wording that fully conveys all necessary information. Prefer lower-frequency to unnecessarily high-frequency reminders. Do not unnecessarly bloat the content of reminders.
 
 ## Durable project context
 
@@ -57,6 +59,12 @@
 ## Figures
 
 - Follow `docs/figure-style.md` for new plots; use `docs/benchmark-figure-style.md` for order-parameter benchmark conventions.
+
+## Source sync
+
+- `origin` is the single source of truth. Commit and push finished work in the session that produced it; before ending a session, run `git status -sb` and report anything left uncommitted or unpushed and why.
+- Clusters only receive: `git pull --ff-only` there, no edits to tracked files. The runner on a cluster must be the pushed local runner; the farm submitters refuse a dirty, unpushed or stale checkout.
+- Never extend a corpus with a different pyspi computation version; re-run it into a new output directory.
 
 ## Cluster operations
 

@@ -1,6 +1,6 @@
 <!-- ## Remember
 
-- Do not sycophant user. Be completely objective. If you are unsure or uncertain about anything, ask user to clarify. Do not be overconfident. If you are not confident of the correct, you must inform user, citing why. 
+- Do not sycophant user. Be completely objective. If you are unsure or uncertain about anything, ask user to clarify. Do not be overconfident. If you are not confident of the correct, you must inform user, citing why.
 - Be intelligent, interpretable, concise, clear, direct, targeted, surgical, efficient, and not verbose, unless required. If a complex task can be fully achieved with a simple implementation, do so. Do not unnecessarily overcomplicate anything. If the complexity of the task or code is too complex, consider a refactor. Prefer concise over verbosity.
 - Be extremely academically and literature versed for assessing novelty and quality of the idea.
 - If user's ideas are wrong, incorrect, only partially correct, or partially incorrect, you must correct them and inform of a more optimal strategy to approach their problem. You MUST stop user from proceeding with a sub-optimal idea. Clarify user's intentions if you are unsure of what they are trying to do.
@@ -16,6 +16,8 @@
 - Be concise and direct. Prefer the simplest implementation that fully solves the problem. If a local fix would add brittle complexity, flag the underlying refactor instead of layering on a workaround.
 - Make surgical edits. Do not touch unrelated code; mention unrelated dead code or cleanup opportunities instead of removing them.
 - Write Markdown prose with one logical paragraph per physical line. Do not hard-wrap prose to a fixed column width. Preserve intentional line breaks and structured Markdown.
+- When adding markdown commentary, research in notebooks, do not unnecessarily bloat.
+- When setting scheduled reminders, use the most concise wording that fully conveys all necessary information. Prefer lower-frequency to unnecessarily high-frequency reminders. Do not unnecessarly bloat the content of reminders.
 
 ## Durable project context
 
@@ -28,7 +30,7 @@
 #### Where knowledge lives
 
 - Keep this file limited to stable repository-wide instructions and pointers.
-- `docs/context/INDEX.md` is a routing index — one line per workstream, pointing to its context file. Not a diary or task tracker.
+- `docs/context/INDEX.md` is a routing index — one line per workstream, pointing to its context file. Not a diary or task tracker. If content of a given workstream has evolved significantly from the line in `INDEX.md`, you should update it accordingly.
 - Write context only for workstreams listed in the index. Unindexed work — exploration, plotting, hygiene — produces no context file; if it yields something worth carrying forward, say so and ask.
 - Put knowledge in its natural version-controlled location. Use `docs/context/<workstream>.md` only for durable cross-artifact state with no better home.
 - Update the existing authoritative document by default. Create a new document only for a distinct deliverable or independently useful protocol/report; link it from the relevant workstream context. Do not create additional status, planning or summary documents that duplicate existing material.
@@ -46,6 +48,24 @@
 - Retain bulky outputs only when authoritative, costly, or non-deterministic to reproduce; otherwise record how to regenerate them.
 - Never store secrets or credentials. Preserve conclusions, evidence, assumptions, and concise rationale — not raw transcripts or hidden chain-of-thought.
 
+#### Memories
+
+- Use memory for continuity, not validation. My previous beliefs, enthusiasm and methodological choices are not evidence that an approach is correct or preferable. Preserve the scope and uncertainty of earlier conclusions. When evaluating research, assess alternatives on their merits and challenge prior decisions when warranted.
+
 #### Parallel work
 
 - Assign ownership of shared context files or separate them by workstream. Agents without ownership return concise findings and evidence for integration.
+
+## Figures
+
+- Follow `docs/figure-style.md` for new plots; use `docs/benchmark-figure-style.md` for order-parameter benchmark conventions.
+
+## Source sync
+
+- `origin` is the single source of truth. Commit and push finished work in the session that produced it; before ending a session, run `git status -sb` and report anything left uncommitted or unpushed and why.
+- Clusters only receive: `git pull --ff-only` there, no edits to tracked files. The runner on a cluster must be the pushed local runner; the farm submitters refuse a dirty, unpushed or stale checkout.
+- Never extend a corpus with a different pyspi computation version; re-run it into a new output directory.
+
+## Cluster operations
+
+- Read `AGENTS_CLUSTER_CONTEXT.md` before changing, synchronising, or submitting work on NCI Gadi or the USyd Physics cluster.
