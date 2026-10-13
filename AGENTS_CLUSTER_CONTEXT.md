@@ -25,6 +25,7 @@ Storage audited on 2026-09-22; allocation, quotas and checkout state rechecked o
 - Storage-path updates were deployed from `codex/gadi-storage-layout` (`8fc2bc1`, based on prior Gadi commit `18ef949`) into the existing cluster checkout. The migration lineage was integrated into the local `refactor-lagged-warping` branch on September 23, preserving the newer local code and user notebook removals. Future cluster updates can follow that merged history; do not force-reset.
 - The trunk is `main` (until 2026-10-13 it was `refactor-lagged-warping`, which `main` now contains and which is retired). Gadi tracks main-repo branch `main` and pyspi branch `v3` (the 3.0 release branch; pyspi development branches are used per job through `PYSPI_SOURCE`, never by switching the shared checkout). Verify both commits before each production submission.
 - Proof/case refresh on 2026-09-24: Gadi main checkout `247b9e1`, pyspi `65317c9`, both clean at deployment. Both 350-dataset focused cases completed; proof farms and dependent stochastic replay/figure jobs are submitted. See `results/cases/refresh-260924-execution.json`. Notebook execution dependencies were added without changing existing package versions; inventories live in the proof refresh analysis folder.
+- **One environment definition.** `uv.lock` is the environment on every machine (Python 3.12; pyspi is the editable sibling checkout `../pyspi-fork`, declared in `pyproject.toml`). After a dependency change: `uv lock` locally, commit, then `uv sync --locked --inexact` in each checkout (`--inexact` keeps packages the lock does not name). The lock was resolved to Gadi's installed versions on 2026-10-13. `aeon` is not lockable with pyspi 3.0's numpy and lives in a separate environment if needed.
 - The active Scratch Python 3.12 environment has editable main/pyspi-v3 installs. The obsolete broken v2 environment was removed on 2026-08-22. Require `import src, pyspi`, the fast tests, and a one-dataset smoke test after any rebuild.
 - These experiments use `configs/pyspi/benchmarked_p90.yaml` (289 SPIs); one pyspi worker per dataset is the default, see the workers section below. The exact-GP additive-noise-model SPI is intentionally disabled: six `M=20,T=1000` tasks each exceeded 18 minutes inside it in job `177018028`.
 
@@ -52,8 +53,8 @@ Storage audited on 2026-09-22; allocation, quotas and checkout state rechecked o
 
 State on Gadi from 2026-10-13. Workers alone, sampling alone and both give matching results through `run_external_corpus_farm.pbs`, with each recording bound to its own cores (tiny jobs 181130354/55/59).
 
-- **pyspi.** The shared checkout `/home/562/we2614/pyspi-fork` is on `v3` at `b795245`, computation **r9** (it was `65317c9`, r7). r9 needs scikit-learn >= 1.8 (the environment has 1.9.0). About 20 SPI values differ from r7: never mix revisions in one corpus, and re-run a corpus rather than topping it up. `v3` has workers but not dyad sampling.
-- **Dyad sampling** lives on pyspi's dev branch. Use it per job with `PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-75cc0c9` (tag `gadi/pair-sampling-75cc0c9` on the fork); `meta.json` records `pyspi.version.source`. Its full-table results equal `v3`'s.
+- **pyspi.** The shared checkout `/home/562/we2614/pyspi-fork` is on `v3` at `c2d723f`, computation **r9** (it was `65317c9`, r7). r9 needs scikit-learn >= 1.8 (the environment has 1.9.0). About 20 SPI values differ from r7: never mix revisions in one corpus, and re-run a corpus rather than topping it up. `v3` has workers but not dyad sampling.
+- **Dyad sampling** lives on pyspi's dev branch. Use it per job with `PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-9fa9b91` (tag `gadi/pair-sampling-9fa9b91` on the fork); `meta.json` records `pyspi.version.source`. Its full-table results equal `v3`'s.
 - **Runner.** Both runners need pyspi computation r8 or later and record `pyspi_fixed_seeds`: results do not depend on the worker count. Both farms take `CORES_PER_RECORDING`, `MEM_GB` and `PYSPI_SOURCE` (synthetic farm verified with tiny job 181134379).
 - **Revisions.** The synthetic runner stops when `--skip-existing` meets a dataset computed by another pyspi revision or SPI config; the external runner recomputes it and `--audit` fails on a mixed corpus. Give a re-run a new `base_output_dir`.
 
@@ -61,7 +62,7 @@ State on Gadi from 2026-10-13. Workers alone, sampling alone and both give match
 # several workers per recording (full table)
 CORES_PER_RECORDING=4 MEM_GB=<recordings x peak> bash jobs/gadi/submit_external_corpus_farm.sh corpus.yaml
 # dyad sampling: add `pair_tolerance: 0.03` to the corpus YAML, then
-PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-75cc0c9 \
+PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pair-sampling-9fa9b91 \
 CORES_PER_RECORDING=4 MEM_GB=<recordings x peak> bash jobs/gadi/submit_external_corpus_farm.sh corpus.yaml
 ```
 

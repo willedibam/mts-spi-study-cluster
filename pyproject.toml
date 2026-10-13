@@ -2,7 +2,7 @@
 name = "mts-spi-study-cluster"
 version = "0.1.0"
 description = "PBS-ready driver for multivariate time-series SPI studies"
-requires-python = ">=3.11"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "numpy>=1.26",
     "scipy>=1.11",
@@ -20,6 +20,8 @@ dependencies = [
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "scikit-learn>=1.8",
+    # The sibling checkout, editable: see [tool.uv.sources].
+    "pyspi",
     "umap-learn>=0.5.5",
     "tqdm>=4.66",
     "psutil>=5.9",
@@ -30,7 +32,6 @@ dependencies = [
     "dtaidistance==2.3.13",
     "dtw-python",
     "fastdtw",
-    "infomeasure>=0.6.0",
     "torch>=2.1.0",
     "torch-geometric>=2.5.0",
     "plotly>=6.7.0",
@@ -44,20 +45,17 @@ dependencies = [
 # mne 1.0. That is obsolete and now actively harmful: pyspi 3.0 imports
 # `mne_connectivity` and *requires* mne>=1.6 and mne-connectivity>=0.5.
 # Do not downgrade mne before submitting PBS jobs.
-real = ["sktime>=0.30.0", "aeon>=0.11.0", "yfinance"]
+# aeon (UEA loaders, MiniRocket) caps numpy below what pyspi 3.0 needs, so it
+# cannot be locked with the rest: install it in a separate environment.
+real = ["yfinance"]
 prep = ["mne>=1.6.0", "moabb>=1.0.0"]
-dtw = ["dtw-python", "fastdtw", "dtaidistance"]
-graph = ["torch>=2.0", "torch-geometric>=2.5"]
 atlas = ["pycatch22>=0.5.0"]
 interactive = ["anywidget>=0.9", "ipywidgets>=8.1"]
 
 [project.scripts]
 run-experiment = "src.run_experiments:main"
 process-features = "src.process_features:main"
-feature-selection = "src.feature_selection:main"
-run-dtw-ed = "src.run_dtw_ed:main"
 find-distributions = "src.find_non_overlapping_distributions:main"
-graph-pipeline = "src.graph_pipeline:main"
 corpus-geometry = "src.run_corpus_geometry:main"
 
 [tool.setuptools.packages.find]
@@ -68,3 +66,10 @@ include = ["src*", "scripts*"]
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.uv.sources]
+pyspi = { path = "../pyspi-fork", editable = true }
+
+# Installed by `uv sync` unless --no-dev: tests and notebook execution.
+[dependency-groups]
+dev = ["pytest", "ipykernel", "nbclient", "nbconvert"]
