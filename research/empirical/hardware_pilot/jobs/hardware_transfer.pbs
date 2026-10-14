@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -N hardware-transfer
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4
+#PBS -l mem=16GB
+#PBS -l walltime=00:30:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${CODE_SNAPSHOT:?}" "${SOURCE_REVISION:?}"
+module load python3/3.12.1
+source /scratch/ql44/we2614/mts-spi-study/environments/mts-spi-v3-631de27/bin/activate
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export PYTHONPATH="$CODE_SNAPSHOT/src:$CODE_SNAPSHOT"
+cd "$CODE_SNAPSHOT"
+OUT="$RUN_ROOT/transfer-sw-261014"
+mkdir -p "$OUT/logs"
+exec >"$OUT/logs/${PHASE:-initial}-${PBS_JOBID%%.*}.log" 2>&1
+if [ "${PHASE:-initial}" = initial ]; then
+  python -u -m research.empirical.hardware_pilot.transfer_hardware_pilot prepare --output "$OUT" --raw "$RUN_ROOT/raw/17451530" --workers 4
+  python -u -m research.empirical.hardware_pilot.transfer_hardware_pilot select --output "$OUT"
+elif [ "$PHASE" = final ]; then
+  STEPS=$(python -c 'import json,sys; print(*json.load(open(sys.argv[1]))["all_steps"])' "$OUT/selection.json")
+  python -u -m research.empirical.hardware_pilot.transfer_hardware_pilot prepare --output "$OUT" --raw "$RUN_ROOT/raw/17451530" --steps $STEPS --workers 4
+  python -u -m research.empirical.hardware_pilot.transfer_hardware_pilot analyse --output "$OUT" --revision "$SOURCE_REVISION"
+else
+  printf 'Invalid phase: %s\n' "$PHASE" >&2
+  exit 2
+fi
