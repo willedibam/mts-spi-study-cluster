@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N ccep-cohort-start
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -l walltime=00:30:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${PYSPI_SOURCE:?}"
+cd "$PBS_O_WORKDIR"
+source jobs/gadi/env.sh
+exec >"$RUN_ROOT/logs/start-${PBS_JOBID%%.*}.log" 2>&1
+python -u -m research.empirical.ccep_pilot.cohort build --root "$RUN_ROOT" --review research/empirical/ccep_pilot/configs/cohort-review.json
+python -u -m research.empirical.ccep_pilot.cohort_dispatch dispatch --root "$RUN_ROOT"
