@@ -29,6 +29,15 @@ proof:
   umap:
     n_neighbors: 25
     min_dist: 0.25
+    init: spectral
+    metric: euclidean
+    random_state: 260924
+  tsne:
+    perplexity: 30
+    init: pca
+    learning_rate: auto
+    early_exaggeration: 12
+    max_iter: 1500
     metric: euclidean
     random_state: 260924
   feature_selection_instances:

@@ -273,6 +273,72 @@
       "reason": "Incomplete recordings after the 780-second task limit; preserve the pinned runner, inputs and pyspi."
     },
     {
+      "job": "181228490.gadi-pbs",
+      "original_job": "181225054.gadi-pbs",
+      "M": 32,
+      "T": 1000,
+      "indices": [
+        431,
+        432,
+        433,
+        434,
+        435,
+        436,
+        437,
+        438,
+        439,
+        440
+      ],
+      "cores_per_recording": 2,
+      "ncpus": 20,
+      "mem_gb": 40,
+      "walltime": "00:45:00",
+      "reason": "Incomplete recordings after the 1260-second task limit; preserve the pinned runner, inputs and pyspi."
+    },
+    {
+      "job": "181229438.gadi-pbs",
+      "original_job": "181225059.gadi-pbs",
+      "M": 32,
+      "T": 2000,
+      "indices": [
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359,
+        360,
+        441,
+        442,
+        443,
+        444,
+        445,
+        446,
+        447,
+        448,
+        449,
+        450,
+        712,
+        713,
+        714,
+        715,
+        716,
+        717,
+        718,
+        719,
+        720,
+        804
+      ],
+      "cores_per_recording": 4,
+      "ncpus": 144,
+      "mem_gb": 240,
+      "walltime": "01:00:00",
+      "reason": "Incomplete recordings after the 1500-second task limit; preserve the pinned runner, inputs and pyspi. Four workers reduce the slowest cell runtime."
+    },
+    {
       "job": "181227185.gadi-pbs",
       "original_job": "181225049.gadi-pbs",
       "M": 32,
@@ -321,5 +387,19 @@
     ],
     "status": "cancelled_by_failed_afterok_dependency; resubmit after recovery"
   },
-  "resource_lesson": "VAR pilots did not cover Kuramoto/occasional wave runtime. Initial M32/T500 and M16/T2000 limits left 20 and 26 incomplete rows; recover only missing rows with unchanged scientific inputs and pinned source."
+  "resource_lesson": "VAR pilots did not cover Kuramoto and occasional wave/CML runtime. Four original farms left 20 M32/T500, 26 M16/T2000, 10 M32/T1000 and 30 M32/T2000 rows incomplete. Recovery changes only worker counts and time limits; pinned source, catalogue, inputs and estimator seeds remain unchanged.",
+  "figures": {
+    "job": "181229439.gadi-pbs",
+    "afterok": [
+      "181224976.gadi-pbs",
+      "181227621.gadi-pbs",
+      "181224947.gadi-pbs",
+      "181228490.gadi-pbs",
+      "181229438.gadi-pbs",
+      "181227185.gadi-pbs",
+      "181224919.gadi-pbs",
+      "181224938.gadi-pbs",
+      "181224912.gadi-pbs"
+    ]
+  }
 }

@@ -1,4 +1,4 @@
-"""Lean proof embeddings and train-selected SPI-pair rainclouds for the 260924 rerun."""
+"""Lean proof embeddings and train-selected SPI-pair rainclouds for dated p90 reruns."""
 from __future__ import annotations
 
 import argparse
@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import rankdata
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from umap import UMAP
 import yaml
 
@@ -77,6 +78,8 @@ def embeddings(bank, output, *, protocol_path=PROTOCOL):
         scores=pca.fit_transform(Y)
         umap=UMAP(**protocol['umap'],n_jobs=1).fit_transform(scores)
         coords.update({name+'_indices':np.flatnonzero(mask),name+'_pca':scores[:,:2],name+'_umap':umap,name+'_variance':pca.explained_variance_ratio_[:2]})
+        if 'tsne' in protocol:
+            coords[name+'_tsne']=TSNE(**protocol['tsne'],n_jobs=1).fit_transform(scores)
         audit[name]={'datasets':int(mask.sum()),'features':int(keep.sum()),'pca50_variance':float(pca.explained_variance_ratio_.sum()),'imputed_values':int((~np.isfinite(bank['X_sym'][mask][:,keep])).sum())}
     np.savez_compressed(output/'embedding-coordinates.npz',**coords)
     (output/'embedding-audit.json').write_text(json.dumps(audit,indent=2)+'\n')
@@ -84,17 +87,20 @@ def embeddings(bank, output, *, protocol_path=PROTOCOL):
 
 
 def plot_embedding(bank, coords, panel, output):
-    style();fig,axes=plt.subplots(1,2,figsize=(9.5,4.8));fig.subplots_adjust(bottom=.27,wspace=.3)
+    methods=['pca','umap']+(['tsne'] if panel+'_tsne' in coords else [])
+    style();fig,axes=plt.subplots(1,len(methods),figsize=(4.75*len(methods),4.8));fig.subplots_adjust(bottom=.27,wspace=.3)
     inds=coords[panel+'_indices'];labels=bank['y'][inds];order=[c for c in sorted(set(labels)) if c not in CML]+[c for c in CML if c in labels]
     sizes=np.array([{8:7,16:13,32:23}[int(m)] for m in bank['M'][inds]])
-    for ax,method in zip(axes,['pca','umap']):
+    for ax,method in zip(axes,methods):
         xy=coords[panel+'_'+method]
         for cls in order:
             take=labels==cls;ax.scatter(xy[take,0],xy[take,1],s=sizes[take],c=bank['colors'][cls],alpha=.42,linewidths=0,rasterized=True)
         ax.set_box_aspect(1)
         if method=='pca':
             v=coords[panel+'_variance'];ax.set(xlabel=f'PC1 ({v[0]:.1%})',ylabel=f'PC2 ({v[1]:.1%})',title='PCA')
-        else:ax.set(xlabel='UMAP 1',ylabel='UMAP 2',xticks=[],yticks=[],title='UMAP')
+        else:
+            label='UMAP' if method=='umap' else 't-SNE'
+            ax.set(xlabel=label+' 1',ylabel=label+' 2',xticks=[],yticks=[],title=label)
     handles=[Line2D([],[],marker='o',ls='',color=bank['colors'][c],markersize=5,label=display_name(c)) for c in order]
     fig.legend(handles=handles,loc='lower center',ncols=2 if len(order)>4 else 2,fontsize=7.5,bbox_to_anchor=(.5,.01))
     return save(fig,Path(output),panel+'-embeddings')
