@@ -120,7 +120,9 @@ def plot_mi_sensitivity(frame, output):
                 raincloud(ax, d[key+'_dce']-d[key], b+(j-.5)*.28, COLORS[j], np.random.default_rng(b+j), width=.23)
             ax.plot([], [], color=COLORS[j], label=CASE_LABELS[cls])
         ax.axhline(0, color='.5', lw=.8); ax.set(xticks=range(3), xticklabels=[r'$\pi$', '5', r'$2\pi$'], xlabel=r'$\beta$', title=label)
-    axes[0].set_ylabel('Change in agreement: exclusion − primary'); axes[0].legend(fontsize=7)
+        ax.set_box_aspect(1); ax.spines[['top', 'right']].set_visible(True)
+    axes[0].set_ylabel('Change in agreement: exclusion − primary')
+    fig.legend(*axes[0].get_legend_handles_labels(),loc='outside upper center',ncols=2,fontsize=8)
     return save(fig, Path(output), 'mi-temporal-exclusion')
 
 
@@ -151,9 +153,10 @@ def plot_spi_planes(frame, kind, output):
                 sc=ax.scatter(x,y,c=lagdiff,cmap='viridis',vmin=0,vmax=5,s=9,alpha=.55,linewidths=0)
                 limit=max(x.max(),y.max())*1.04;ax.plot([0,limit],[0,limit],color='.7',lw=.7,ls='--');ax.set(xlim=(0,limit),ylim=(0,limit))
             ax.set(xlabel=labels[a],ylabel=labels[b]);ax.set_box_aspect(1)
+            ax.spines[['top','right']].set_visible(True)
             ax.set_title(f'{title}\nagreement = {corr(x,y):.3f}',fontsize=9)
     if kind=='dtw':fig.colorbar(sc,ax=axes.ravel().tolist(),label='Absolute generating lag difference',shrink=.5)
-    else:axes[-1,-1].legend(fontsize=7,loc='lower right')
+    else:fig.legend(*axes[-1,-1].get_legend_handles_labels(),fontsize=8,loc='outside lower center',ncols=3)
     return save(fig,Path(output),'spi-planes')
 
 
@@ -167,6 +170,73 @@ def plot_dtw_sweep(frame, output):
     ax.set(xticks=range(7),xticklabels=['No lag','0','.1','.3','.5','.7','.9'],xlabel=r'Warp probability $p_{\rm step}$ (lag range 0–5 except first control)',ylabel='Pearson agreement across channel pairs',ylim=(-.05,1.05))
     ax.legend(fontsize=8);ax.axvline(.5,color='.85',lw=.7);ax.axhline(0,color='.85',lw=.6)
     return save(fig,Path(output),'warp-sweep')
+
+
+def plot_pair_rainclouds(frame, output):
+    """One SPI pair per row; share its limits across beta, never across SPI pairs."""
+    style()
+    fig, axes = plt.subplots(3, 3, figsize=(10, 10), sharey='row', layout='constrained')
+    for row, (key, label, color) in enumerate(zip(
+            ['r_rho', 'r_mi', 'rho_mi'], [r'$z_{r,\rho}$', r'$z_{r,\mathrm{MI}}$', r'$z_{\rho,\mathrm{MI}}$'], COLORS)):
+        values = frame[key].to_numpy()
+        pad = max(np.ptp(values) * .08, .002)
+        limits = (max(-1.02, values.min() - pad), min(1.02, values.max() + pad))
+        for col, (beta, beta_label) in enumerate(BETA_LABELS.items()):
+            ax = axes[row, col]
+            subset = frame[(frame.beta_tag == beta) | (frame['class'] == 'iter1_L')]
+            for j, cls in enumerate(CASE_LABELS):
+                raincloud(ax, subset[subset['class'] == cls][key], j, color,
+                          np.random.default_rng(261014 + 3 * row + j), width=.6)
+            ax.set(xticks=range(3), xticklabels=['Linear', '+ sigmoid', '+ quadratic'],
+                   xlim=(-.5, 2.5), ylim=limits)
+            ax.tick_params(axis='x', labelsize=8)
+            ax.ticklabel_format(axis='y', style='plain', useOffset=False)
+            ax.set_box_aspect(1); ax.spines[['top', 'right']].set_visible(True)
+            if row == 0: ax.set_title(beta_label)
+            if col == 0: ax.set_ylabel(label + ' (Pearson across pairs)')
+    return save(fig, Path(output), 'pair-rainclouds')
+
+
+def plot_rmi_channel_pairs(frame, output):
+    """Predetermined channels, without selecting for the observed SPI values."""
+    record = frame[(frame.instance == 0) & (frame.beta_tag == 'beta-5') &
+                   (frame['class'] == 'iter3_LMNM')].iloc[0]
+    path = Path(record['path'])
+    params = json.loads((path / 'meta.json').read_text())['generator']['params']
+    x = np.load(path / 'timeseries.npy')
+    channels = [1, params['n_linear'], params['n_linear'] + params['n_monotonic']]
+    style(); fig, axes = plt.subplots(1, 3, figsize=(10, 3.6), layout='constrained')
+    with np.load(path / 'spi_mpis.npz') as bank:
+        for ax, j, name, color in zip(axes, channels, ['Linear–linear', 'Linear–sigmoid', 'Linear–quadratic'], ['.5', COLORS[0], COLORS[1]]):
+            ax.scatter(x[:, 0], x[:, j], s=3, color=color, alpha=.25, linewidths=0, rasterized=True)
+            ax.set(xlabel='Linear channel (standardised)', ylabel='Other channel (standardised)',
+                   title=f'{name}\n$r$={bank[R][0,j]:.2f}, $\u03c1$={bank[RHO][0,j]:.2f}, MI={bank[MI][0,j]:.2f} nats')
+            ax.set_box_aspect(1); ax.spines[['top', 'right']].set_visible(True)
+    return save(fig, Path(output), 'channel-pairs')
+
+
+def plot_dtw_pair_sweep(frame, output):
+    """Keep the same estimands and confidence intervals, with pair-specific scales."""
+    style(); fig, axes = plt.subplots(1, 3, figsize=(10.5, 3.8), layout='constrained')
+    conditions = [(0, 0), (5, 0), (5, .1), (5, .3), (5, .5), (5, .7), (5, .9)]
+    for ax, key, color, label in zip(axes, ['ed_xd', 'ed_dtw', 'dtw_xd'], COLORS,
+                                    ['Euclidean–shifted', 'Euclidean–DTW', 'DTW–shifted']):
+        vals = [frame[(frame.max_lag == lag) & np.isclose(frame.p_step, ps)][key].to_numpy()
+                for lag, ps in conditions]
+        means = np.array([v.mean() for v in vals])
+        ci = np.array([student_t.ppf(.975, len(v)-1) * v.std(ddof=1) / np.sqrt(len(v)) for v in vals])
+        # The no-lag control is separate from the connected warp sweep.
+        for indices in [np.array([0]), np.arange(1, 7)]:
+            ax.errorbar(indices, means[indices], yerr=ci[indices], color=color,
+                        marker='o', ms=3, lw=1.2, capsize=2)
+        ax.set(xticks=range(7), xticklabels=['No lag', '0', '.1', '.3', '.5', '.7', '.9'],
+               xlabel=r'Warp probability $p_{\rm step}$', title=label)
+        ax.tick_params(axis='x', labelsize=7)
+        ax.ticklabel_format(axis='y', style='plain', useOffset=False)
+        ax.axvline(.5, color='.85', lw=.7)
+        ax.set_box_aspect(1); ax.spines[['top', 'right']].set_visible(True)
+    axes[0].set_ylabel('SPI–SPI Pearson agreement')
+    return save(fig, Path(output), 'pair-warp-sweep')
 
 
 def main():

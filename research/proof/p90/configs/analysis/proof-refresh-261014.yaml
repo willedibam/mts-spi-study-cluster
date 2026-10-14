@@ -26,6 +26,11 @@ proof:
     pca_components: 50
   embedding_scope: Independent unsupervised fits per panel; illustrative, not an invariance
     test.
+  presentation:
+    primary_embeddings: [pca, tsne]
+    optional_embedding: umap
+    square_boxed_panels: true
+    raincloud_limits: Pair-specific; both displayed classes share limits, all finite observations included.
   umap:
     n_neighbors: 25
     min_dist: 0.25

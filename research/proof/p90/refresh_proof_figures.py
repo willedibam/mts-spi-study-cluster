@@ -78,6 +78,9 @@ def embeddings(bank, output, *, protocol_path=PROTOCOL):
         scores=pca.fit_transform(Y)
         umap=UMAP(**protocol['umap'],n_jobs=1).fit_transform(scores)
         coords.update({name+'_indices':np.flatnonzero(mask),name+'_pca':scores[:,:2],name+'_umap':umap,name+'_variance':pca.explained_variance_ratio_[:2]})
+        # Bind interpretable PC axes to the original SPI-pair coordinates.
+        coords.update({name+'_feature_indices':np.flatnonzero(keep),
+                       name+'_pca_loadings':pca.components_[:2],name+'_pca_center':pca.mean_})
         if 'tsne' in protocol:
             coords[name+'_tsne']=TSNE(**protocol['tsne'],n_jobs=1).fit_transform(scores)
         audit[name]={'datasets':int(mask.sum()),'features':int(keep.sum()),'pca50_variance':float(pca.explained_variance_ratio_.sum()),'imputed_values':int((~np.isfinite(bank['X_sym'][mask][:,keep])).sum())}
@@ -86,16 +89,17 @@ def embeddings(bank, output, *, protocol_path=PROTOCOL):
     return coords
 
 
-def plot_embedding(bank, coords, panel, output):
-    methods=['pca','umap']+(['tsne'] if panel+'_tsne' in coords else [])
-    style();fig,axes=plt.subplots(1,len(methods),figsize=(4.75*len(methods),4.8));fig.subplots_adjust(bottom=.27,wspace=.3)
+def plot_embedding(bank, coords, panel, output, *, methods=None):
+    methods=methods or (['pca','tsne'] if panel+'_tsne' in coords else ['pca','umap'])
+    style();fig,axes=plt.subplots(1,len(methods),figsize=(4.75*len(methods),4.8),squeeze=False);fig.subplots_adjust(bottom=.27,wspace=.3)
     inds=coords[panel+'_indices'];labels=bank['y'][inds];order=[c for c in sorted(set(labels)) if c not in CML]+[c for c in CML if c in labels]
     sizes=np.array([{8:7,16:13,32:23}[int(m)] for m in bank['M'][inds]])
-    for ax,method in zip(axes,methods):
+    for ax,method in zip(axes.flat,methods):
         xy=coords[panel+'_'+method]
         for cls in order:
             take=labels==cls;ax.scatter(xy[take,0],xy[take,1],s=sizes[take],c=bank['colors'][cls],alpha=.42,linewidths=0,rasterized=True)
         ax.set_box_aspect(1)
+        ax.spines[['top','right']].set_visible(True)
         if method=='pca':
             v=coords[panel+'_variance'];ax.set(xlabel=f'PC1 ({v[0]:.1%})',ylabel=f'PC2 ({v[1]:.1%})',title='PCA')
         else:
@@ -103,7 +107,8 @@ def plot_embedding(bank, coords, panel, output):
             ax.set(xlabel=label+' 1',ylabel=label+' 2',xticks=[],yticks=[],title=label)
     handles=[Line2D([],[],marker='o',ls='',color=bank['colors'][c],markersize=5,label=display_name(c)) for c in order]
     fig.legend(handles=handles,loc='lower center',ncols=2 if len(order)>4 else 2,fontsize=7.5,bbox_to_anchor=(.5,.01))
-    return save(fig,Path(output),panel+'-embeddings')
+    suffix='-umap-comparison' if list(methods)==['umap'] else '-embeddings'
+    return save(fig,Path(output),panel+suffix)
 
 
 def auc(a,b):
@@ -140,13 +145,23 @@ def rank_features(bank,output):
 
 def plot_discriminative(bank,ranked,scope,output):
     style();subset=ranked[ranked.class_a.isin(CML)&ranked.class_b.isin(CML)] if scope=='cml' else ranked[~ranked.class_a.isin(CML)]
-    n=len(subset);fig,axes=plt.subplots(int(np.ceil(n/2)),2,figsize=(10,2.8*int(np.ceil(n/2))),layout='constrained',squeeze=False)
+    n=len(subset);fig,axes=plt.subplots(int(np.ceil(n/2)),2,figsize=(9,4.4*int(np.ceil(n/2))),layout='constrained',squeeze=False)
     for ax,(_,row) in zip(axes.flat,subset.iterrows()):
         col=int(row.feature_index)
         for pos,cls in enumerate([row.class_a,row.class_b]):
             mask=(bank['y']==cls)&(bank['instance']>=6)
             raincloud(ax,bank['X_sym'][mask,col],pos,bank['colors'][cls],np.random.default_rng(260924+col+pos),width=.65)
-        ax.set(xticks=[0,1],xticklabels=[display_name(row.class_a),display_name(row.class_b)],ylim=(-1.05,1.05),xlim=(-.6,1.6),ylabel='SPI–SPI Pearson correlation')
+        same_coordinate=ranked[ranked.feature_index==col]
+        classes=np.unique(same_coordinate[['class_a','class_b']].to_numpy())
+        values=bank['X_sym'][(bank['instance']>=6)&np.isin(bank['y'],classes),col]
+        values=values[np.isfinite(values)]
+        padding=max(float(np.ptp(values))*.08,.002)
+        limits=(max(-1.005,float(values.min())-padding),min(1.005,float(values.max())+padding))
+        names=[display_name(cls).replace(', total coupling ', '\nTotal neighbour ') for cls in [row.class_a,row.class_b]]
+        ax.set(xticks=[0,1],xticklabels=names,ylim=limits,xlim=(-.6,1.6),ylabel='SPI–SPI Pearson correlation')
+        ax.set_box_aspect(1)
+        ax.spines[['top','right']].set_visible(True)
+        ax.ticklabel_format(axis='y',style='plain',useOffset=False)
         ax.tick_params(axis='x',labelsize=7)
         # One SPI per line keeps identifiers legible without arbitrary renaming.
         ax.set_title(f'{row.spi_a}\n× {row.spi_b}',fontsize=8)

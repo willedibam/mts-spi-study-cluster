@@ -4,6 +4,7 @@ Default for new figures; adapt when clarity requires. Benchmark-specific convent
 
 - Minimal, unboxed: white background, Computer Modern serif, 8–10 pt at final size, outward ticks, no top/right spines unless needed.
 - Prefer square plots where appropriate or for embeddings (e.g. PCA, UMAP, t-SNE, etc.); deviate appropriately.
+- Proof/case viewers use boxed, square embeddings and feature-coordinate rainclouds, and boxed SPI–SPI scatterplots. Raincloud limits may differ between SPI pairs; share limits across groups/conditions for the same pair and disclose the differing scales.
 - Thin lines (`lw≈1.7`), small markers (`ms≈2.7`), frameless legends, uncluttered layout.
 - Keep colour/marker meanings consistent across related plots. Use accessible palettes; sequential colours for ordered values, diverging colours around a meaningful centre.
 - Label variables and units; disclose transformations and normalization. Share axis/heatmap scales for direct comparisons where appropriate; flag differing scales.

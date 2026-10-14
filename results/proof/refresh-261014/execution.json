@@ -639,8 +639,8 @@
     "extraction_audit": "extraction-audit.json",
     "embedding_audit": "embedding-audit.json",
     "independent_feature_check": "independent-feature-check.json",
-    "notebook_execution": "13 cells, four figures, no errors; final notebook executed locally.",
-    "visual_check": "All four final figures inspected; clearer Kuramoto colour, overlapping AUC annotations removed, undefined display observations disclosed.",
+    "notebook_execution": "15 cells, four primary figures, no errors; optional UMAP rendering separately checked.",
+    "visual_check": "All four proof figures inspected: square boxed panels, pair-specific scales shared for repeated coordinates, all finite display observations included. Both dated case notebooks also executed and visually checked; their per-recording analyses exactly match September.",
     "legacy_helper_calls_checked": 42
   },
   "final_analysis": {
@@ -654,12 +654,12 @@
       "umap-learn": "0.5.12",
       "matplotlib": "3.11.1"
     },
-    "source_sha256": "eb9e0e2992f4f8dac53c432490d16bebec8440fef6b77db0430663640d176337",
-    "protocol_sha256": "2a495586d1dc05b210cc17a28f85ca89b886331c49f16047e81212578ef57f16",
-    "notebook_sha256": "b134011625ca34699dc945f7d3feac2e8e6af38d2d48d4470e21b9d38ab74656",
-    "coordinates_sha256": "44a40529f7d0aaffa19989be74c52eea9473fc0f3df98559f638634247e95e4d",
+    "source_sha256": "2efb2191ca383a96f18d17faaa7f1aa26a101cf05e62dde5dd239bd9edee08bd",
+    "protocol_sha256": "07d882374ab055d78e1f303c9a6c287435504fc881bc01843fbb6c57916fd53c",
+    "notebook_sha256": "bf264cec39709a5f7d471f87e903ef47b7310f846bc19626ea51c956ef06b4ee",
+    "coordinates_sha256": "646865b1ee3fcc413f6c76b8b1a0474d9955f5f0b101ca8d4cf31ac5b0528a29",
     "selected_features_sha256": "2c4a4f82606bf472dd29ec74f38bc7147a6debe34740ffaa86c42d0e9c7fd3bc",
-    "note": "Final local execution uses the same analysis parameters as Gadi, with presentation changes only. Nonlinear layouts need not be identical across platforms; committed coordinates bind the final figures."
+    "note": "PCA/t-SNE primary, UMAP optional. Embedding coordinates and selected features unchanged from the prior local execution; archive now includes PC1/PC2 loadings and retained-feature indices. Boxed square panels and coordinate-specific raincloud limits; repeated coordinates share limits."
   },
   "gadi_analysis_environment": {
     "python": "3.12.1",
