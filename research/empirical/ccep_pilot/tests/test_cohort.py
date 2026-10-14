@@ -40,3 +40,21 @@ def test_single_window_and_same_subject_different_runs(tmp_path):
             names=bank['__dataset_names__'];assert len(names)==2
             assert np.allclose(bank[names[0]].std(axis=1),1)
             assert np.allclose(bank[names[0]].mean(axis=1),0)
+
+
+def test_cohort_plan_exact_cores_and_pbs_memory():
+    from research.empirical.ccep_pilot.cohort_dispatch import plan
+    p=plan(41.33*1024,8100,107,4)
+    assert p==dict(workers=12,groups=3,mem_gb=156,walltime='04:30:00')
+    assert plan(12*1024,2700,48,1)==dict(workers=8,groups=1,mem_gb=15,walltime='01:30:00')
+
+
+def test_dispatch_does_not_retry_ambiguous_receipt(tmp_path,monkeypatch):
+    import research.empirical.ccep_pilot.cohort_dispatch as cd
+    folder=tmp_path/'dispatch'/'subject-m48';folder.mkdir(parents=True)
+    receipt=folder/'measurement.json';receipt.write_text('{"status":"requires-inspection"}')
+    monkeypatch.setenv('PYSPI_SOURCE',cd.EXPECTED_SOURCE)
+    monkeypatch.setattr(cd,'cohorts',lambda root:{('subject',48):[(None,None,None)]})
+    monkeypatch.setattr(cd,'assert_no_active_farm',lambda config: (_ for _ in ()).throw(AssertionError('must not reach submission')))
+    cd.dispatch(tmp_path)
+    assert json.loads(receipt.read_text())['status']=='requires-inspection'
