@@ -120,8 +120,9 @@ def analyse(bank, out):
             meta = json.loads(path.with_name("meta.json").read_text())
             if (meta["status"] != "complete" or meta["pyspi"]["version"]["computation"] != "3.0.0.r9"
                     or meta["pyspi"]["config_sha256"] != manifest["config_sha256"]
-                    or meta["M"] != 28 or meta["T"] != row["T"] or meta["pyspi"]["errors"]):
-                raise ValueError("Unexpected computation version")
+                    or meta["M"] != 28 or meta["T"] != row["T"] or meta["pyspi"]["errors"]
+                    or meta["normalise"] or meta["source"]["member_sha256"] != row["member_sha256"]):
+                raise ValueError(f"Invalid selected-SPI receipt: {row['name']}")
             with np.load(path) as matrices:
                 expected = {"ids", *(f"si_kernel_W-{w}_k-1" for w in WIDTHS)}
                 if set(matrices.files) != expected:
@@ -145,9 +146,11 @@ def analyse(bank, out):
                     z = edge_corr(a, b)
                     if not np.isclose(sum(partition.values()), z, atol=1e-12):
                         raise ValueError("Covariance partition failed")
+                    deletion = [edge_corr(a[(I != k) & (J != k)], b[(I != k) & (J != k)]) for k in range(28)]
                     records.append(dict(**row, width=width, z=z, z_restandardised_ids=edge_corr(a, controls[row["name"]][I, J]),
                                         mean_si=float(a.mean()), sd_si=float(a.std()), min_si=float(a.min()), max_si=float(a.max()),
                                         mean_ids=float(b.mean()), sd_ids=float(b.std()),
+                                        delete_min=min(deletion), delete_max=max(deletion),
                                         si_profile_agreement_w05=edge_corr(a, reference), z_coherent=edge_corr(a[group], b[group]),
                                         coherent_dyads=int(group.sum()), **partition))
                     profiles[(row["topology"], row["step"], row["window"], width)] = (a.copy(), b.copy())
@@ -172,6 +175,7 @@ def analyse(bank, out):
     pd.DataFrame(halves).to_csv(out / "half-profile-agreement.csv", index=False)
     summary = dict(records=4, windows=3, widths=list(WIDTHS), feature_estimates=len(frame),
                    reversals=sum(r["reversal"] for r in comparisons), contrasts=len(comparisons),
+                   manifest_sha256=file_sha256(out / "manifest.json"), analysis_source_sha256=file_sha256(Path(__file__)),
                    archive_replay=parity, matrices_sha256=paths,
                    max_ids_restandardisation_z_change=float(abs(frame.z-frame.z_restandardised_ids).max()),
                    uncertainty="Paired duration/estimator sensitivities, not confidence intervals or independent replications")
