@@ -37,6 +37,15 @@ def test_band_definition_matches_er_exactly_at_frozen_rate():
             assert_allclose(actual[key], expected[key], rtol=0, atol=0)
 
 
+def test_higher_resolution_keeps_physical_frequency_and_window():
+    time = np.arange(10000) / 1000
+    phase = np.linspace(-.4, .4, 28)[:, None]
+    x = np.cos(2 * np.pi * 116 * time + phase)
+    p = band_properties(x, 1000, (90, 140))
+    assert p['unit'].shape == (28, 9000)
+    assert_allclose(p['frequency'], 116., atol=1e-4)
+
+
 def test_refinement_is_physical_only_and_frozen(tmp_path):
     frame = pd.DataFrame({'step': INITIAL_STEPS,
                           'frequency_range': [1 if step < 28 else .001 for step in INITIAL_STEPS]})

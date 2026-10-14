@@ -280,56 +280,70 @@ def plot_transfer(out):
     plt, box = _plot_tools()
     out = Path(out)
     frame = pd.read_csv(out / 'features.csv')
+    frequency_log = np.log10(np.maximum(frame.frequency_range.to_numpy(), 1e-4))
+    boundary = int(np.argmax(frequency_log[:-1] - frequency_log[1:]))
+    bracket = frame.voltage.iloc[boundary:boundary + 2].to_numpy()
     fig, axes = plt.subplots(1, 3, figsize=(9.4, 3.3))
     axes[0].plot(frame.voltage, frame.z, 's-', color='#26828e', label='Measured')
     axes[0].plot(frame.voltage, frame.predicted_z, '.--', color='#d95f02', label='Frozen spectral explanation')
-    axes[0].set(xscale='symlog', xlabel='Control voltage (V)', ylabel='Lag-profile agreement',
+    axes[0].set(xlabel='Control voltage (V)', ylabel='Lag-profile agreement',
                 title='A  Transfer without refitting', ylim=(-1.05, 1.05))
-    axes[0].set_xscale('symlog', linthresh=.05)
     axes[0].legend(fontsize=6)
     points = axes[1].scatter(frame.z, frame.predicted_z, c=frame.voltage, cmap='viridis', s=15)
     axes[1].plot([-1, 1], [-1, 1], ':', color='.55', lw=.8)
     axes[1].set(xlabel='Measured agreement', ylabel='Predicted agreement',
                 title='B  Every selected recording', xlim=(-1.05, 1.05), ylim=(-1.05, 1.05))
+    for row in frame.loc[~frame.reconstruction_target_met].itertuples():
+        axes[1].annotate(str(row.step), (row.z, row.predicted_z), xytext=(-18, -16),
+                         textcoords='offset points', fontsize=7,
+                         arrowprops={'arrowstyle': '-', 'color': '.5', 'lw': .6})
     fig.colorbar(points, ax=axes[1], shrink=.6, label='Control voltage (V)')
     axes[2].plot(frame.voltage, frame.frequency_range, 'o-', color='#222222')
     axes[2].set(xlabel='Control voltage (V)', ylabel='116 Hz frequency range (Hz)',
                 title='C  Independent locking diagnostic', yscale='log')
-    axes[2].set_xscale('symlog', linthresh=.05)
+    for ax in (axes[0], axes[2]):
+        ax.set_xscale('symlog', linthresh=.05)
+        ax.set_xlim(0, 3.7)
+        ax.set_xticks([0, .05, .2, 1, 3.5], ['0', '0.05', '0.2', '1', '3.5'])
+        ax.axvspan(*bracket, color='.9', zorder=-2)
     for ax in axes:
         box(ax)
     _save(fig, out, 'transfer-summary')
     pairs = pd.read_csv(out / 'matched-pairs.csv')
     eligible = pairs.loc[pairs.working_contrast_target & pairs.both_reconstructed]
     if eligible.empty:
+        # The .10 target is deliberately not a universal minimum effect.
+        # Keep the unchanged target flags, and label a smaller robust example.
+        eligible = pairs.loc[pairs.same_direction_halves & pairs.deletion_ranges_separate
+                             & pairs.larger_than_half_variation & pairs.both_reconstructed]
+    if eligible.empty:
         return None
     selected = eligible.loc[eligible.delta_z.abs().idxmax()]
     steps = [int(selected.step_a), int(selected.step_b)]
     with np.load(out / 'edge-profiles.npz') as bank:
         actual = [bank[f'actual_{step}'] for step in steps]
-        groups = [bank[f'group58_{step}'] for step in steps]
-        alignment = [bank[f'alignment_58_{step}'] for step in steps]
-    fig, axes = plt.subplots(2, 2, figsize=(6.6, 6.1))
+    fig, axes = plt.subplots(1, 3, figsize=(9.2, 3.4))
     limits = []
     for j in (0, 1):
         v = np.concatenate([p[j] for p in actual]); pad = .06 * np.ptp(v)
         limits.append((v.min() - pad, v.max() + pad))
-    for row, step in enumerate(steps):
+    colors = ['#26828e', '#d95f02']
+    for index, step in enumerate(steps):
         values = frame.set_index('step').loc[step]
-        im = axes[row, 0].imshow(alignment[row], origin='lower', vmin=-1, vmax=1,
-                                 extent=(.5, 28.5, .5, 28.5), cmap='RdBu_r', interpolation='nearest', rasterized=True)
-        axes[row, 0].set(title=f'Setting {step}: 58 Hz organisation', xlabel='Channel', ylabel='Channel',
-                         xticks=[1, 14, 28], yticks=[1, 14, 28])
-        same = groups[row][I] == groups[row][J]
-        for mask, color, label in ((same, '#31688e', 'Same 58 Hz group'), (~same, '#d95f02', 'Opposite groups')):
-            axes[row, 1].scatter(actual[row][0, mask], actual[row][1, mask], s=7, alpha=.7,
-                                  color=color, linewidths=0, label=label, rasterized=True)
-        axes[row, 1].set(title=f'mean r={values.mean_pearson:.3f}; z={values.z:.3f}',
-                         xlabel='Pearson, 2 ms', ylabel='Pearson, 20 ms', xlim=limits[0], ylim=limits[1])
-        axes[row, 1].legend(fontsize=6)
-    for ax in axes.flat:
+        axes[index].scatter(*actual[index], s=7, alpha=.65, color=colors[index], linewidths=0, rasterized=True)
+        axes[index].set(title=f'Setting {step}: mean r={values.mean_pearson:.4f}; z={values.z:.3f}',
+                        xlabel='Pearson, 2 ms', ylabel='Pearson, 20 ms', xlim=limits[0], ylim=limits[1])
+    bands = pd.read_csv(out / 'harmonics.csv')
+    for step, color in zip(steps, colors):
+        data = bands.loc[bands.step == step].set_index('band').loc[[58, 116, 174]]
+        axes[2].plot(range(3), data.profile_sd, 'o-', color=color, label=f'Setting {step}')
+    axes[2].set(xticks=range(3), xticklabels=['58', '116', '174'], xlabel='Band (Hz)',
+                ylabel='SD of normalized band covariance', yscale='log', title='Relative spectral heterogeneity')
+    axes[2].legend(fontsize=7)
+    for ax in axes:
         box(ax)
-    fig.colorbar(im, ax=axes[:, 0], shrink=.55, label='Phase alignment (cosine)')
+    qualifier = 'Modest stable' if abs(selected.delta_z) < .1 else 'Stable'
+    fig.suptitle(f'{qualifier} contrast at similar mean Pearson strength', fontsize=11)
     _save(fig, out, 'transfer-matched-contrast')
     return steps
 
