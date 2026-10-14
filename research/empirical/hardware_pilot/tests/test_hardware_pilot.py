@@ -55,6 +55,38 @@ def test_download_resumes_compressed_prefix(tmp_path, monkeypatch):
     assert offset + 5 in starts
 
 
+def test_verified_range_with_short_body_is_retried_without_accepting_partial_data(monkeypatch):
+    class Response:
+        status = 206
+        headers = {'Content-Range': 'bytes 10-13/20'}
+        def __init__(self, data): self.data = data
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def read(self, limit): return self.data
+    responses = iter([Response(b'ab'), Response(b'abcd')])
+    monkeypatch.setattr(download.urllib.request, 'urlopen', lambda *a, **k: next(responses))
+    monkeypatch.setattr(download.time, 'sleep', lambda seconds: None)
+    assert download.request('https://example.test/public.dat', 10, 4) == b'abcd'
+
+
+def test_truncated_range_retries_are_bounded(monkeypatch):
+    class Response:
+        status = 206
+        headers = {'Content-Range': 'bytes 10-13/20'}
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def read(self, limit): return b'ab'
+    calls = []
+    def open_response(*args, **kwargs):
+        calls.append(1)
+        return Response()
+    monkeypatch.setattr(download.urllib.request, 'urlopen', open_response)
+    monkeypatch.setattr(download.time, 'sleep', lambda seconds: None)
+    with pytest.raises(OSError, match='Truncated range body'):
+        download.request('https://example.test/public.dat', 10, 4)
+    assert len(calls) == 3
+
+
 def test_sampling_preserves_duration_and_rejects_lost_carrier():
     fs = 2000
     time = np.arange(20000) / fs

@@ -27,8 +27,12 @@ def request(url, start=None, length=None):
                         raise ValueError(f"Server did not honour byte range: {r.status}, {r.headers.get('Content-Range')}")
                 limit = length if length is not None else 2_000_000
                 data = r.read(limit + 1)
-                if (start is not None and len(data) != length) or len(data) > limit:
-                    raise ValueError("Incorrect response length")
+                if start is not None and len(data) < length:
+                    # A valid 206 header can still precede a truncated body.
+                    # Retry this range without admitting it to the saved prefix.
+                    raise OSError(f"Truncated range body: expected {length} bytes, received {len(data)}")
+                if len(data) > limit:
+                    raise ValueError(f"Response exceeds requested length: limit {limit} bytes, received at least {len(data)}")
                 return data
         except (OSError, TimeoutError):
             if attempt == 2:
