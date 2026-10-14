@@ -9,8 +9,10 @@
 #PBS -l wd
 #PBS -j oe
 set -euo pipefail
-: "${RUN_ROOT:?}" "${CORPUS_CONFIG:?}" "${AFTER_INDEX:?}" "${PYSPI_SOURCE:?}"
+: "${RUN_ROOT:?}" "${CORPUS_CONFIG:?}" "${AFTER_INDEX:?}" "${AFTER_JOB:?}" "${PYSPI_SOURCE:?}"
 cd "$PBS_O_WORKDIR"
 source jobs/gadi/env.sh
 exec >"$RUN_ROOT/logs/release-${PBS_JOBID%%.*}.log" 2>&1
-python -u -m research.empirical.ccep_pilot.release --root "$RUN_ROOT" --config "$CORPUS_CONFIG" --after-index "$AFTER_INDEX"
+args=(--root "$RUN_ROOT" --config "$CORPUS_CONFIG" --after-index "$AFTER_INDEX" --after-job "$AFTER_JOB")
+[[ -z "${SMOKE_INDEX:-}" ]] || args+=(--smoke-index "$SMOKE_INDEX" --smoke-job "${SMOKE_JOB:?}")
+python -u -m research.empirical.ccep_pilot.release "${args[@]}"
