@@ -22,6 +22,7 @@ def audit(root, cohort=False):
         assert config.resolve()==(root/'corpora'/config.parent.name/'external.yaml').resolve()
         corpus=ArchiveCorpus.from_file(config)
         assert corpus.pair_tolerance is None
+        assert sha256(corpus.archive)==corpus.archive_sha256, f'Input archive checksum mismatch: {config}'
         for entry in corpus.entries():
             row=dict(corpus=config.parent.name,index=entry.index,name=entry.name,M=entry.M,T=entry.T)
             if not (entry.output_dir(corpus)/'meta.json').exists():
