@@ -1,6 +1,6 @@
 {
   "study": "proof-refresh-261014",
-  "status": "production_and_timeout_recovery_running",
+  "status": "complete",
   "authorised": "Fresh current p90 in a new dated directory; preserve the September model/grid settings.",
   "source_commit": "aaad401",
   "initial_smoke_source_commit": "b9a92f6",
@@ -389,7 +389,7 @@
   },
   "resource_lesson": "VAR pilots did not cover Kuramoto and occasional wave/CML runtime. Four original farms left 20 M32/T500, 26 M16/T2000, 10 M32/T1000 and 30 M32/T2000 rows incomplete. Recovery changes only worker counts and time limits; pinned source, catalogue, inputs and estimator seeds remain unchanged.",
   "figures": {
-    "job": "181229439.gadi-pbs",
+    "job": "181232736.gadi-pbs",
     "afterok": [
       "181224976.gadi-pbs",
       "181227621.gadi-pbs",
@@ -400,6 +400,275 @@
       "181224919.gadi-pbs",
       "181224938.gadi-pbs",
       "181224912.gadi-pbs"
-    ]
+    ],
+    "replaces": "181229439.gadi-pbs",
+    "analysis_source_commit": "d094b6b",
+    "source_snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-d094b6b",
+    "includes_tsne": true,
+    "exit_status": 0,
+    "walltime": "00:06:24",
+    "peak_memory_kb": 14213028
+  },
+  "analysis_source_commit": "d094b6b",
+  "analysis_methods": [
+    "PCA",
+    "UMAP",
+    "t-SNE"
+  ],
+  "validation_tsne": "Both panels fit and render all three methods on a small smoke fixture; two proof analysis tests pass.",
+  "completed_date": "2026-10-14",
+  "extraction_job_outcomes": {
+    "181220716.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 81,
+        "cput": "00:01:17",
+        "jobfs": "8425774b",
+        "mem": "2956720kb",
+        "ncpus": 2,
+        "vmem": "2956720kb",
+        "walltime": "00:01:43"
+      },
+      "run_count": 1
+    },
+    "181222060.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 67,
+        "cput": "00:00:41",
+        "jobfs": "0b",
+        "mem": "300300kb",
+        "ncpus": 1,
+        "vmem": "300300kb",
+        "walltime": "00:00:59"
+      },
+      "run_count": 1
+    },
+    "181224976.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 11040,
+        "cput": "07:41:41",
+        "jobfs": "25096kb",
+        "mem": "94350116kb",
+        "ncpus": 144,
+        "vmem": "94350116kb",
+        "walltime": "00:07:02"
+      },
+      "run_count": 1
+    },
+    "181225012.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 1,
+      "resources_used": {
+        "cpupercent": 11946,
+        "cput": "20:02:02",
+        "jobfs": "25096kb",
+        "mem": "110000164kb",
+        "ncpus": 144,
+        "vmem": "110000164kb",
+        "walltime": "00:13:21"
+      },
+      "run_count": 1
+    },
+    "181224947.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 7529,
+        "cput": "03:55:25",
+        "jobfs": "25096kb",
+        "mem": "92970664kb",
+        "ncpus": 144,
+        "vmem": "92970664kb",
+        "walltime": "00:05:05"
+      },
+      "run_count": 1
+    },
+    "181225054.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 1,
+      "resources_used": {
+        "cpupercent": 11935,
+        "cput": "28:36:59",
+        "jobfs": "25096kb",
+        "mem": "99988872kb",
+        "ncpus": 144,
+        "vmem": "99988872kb",
+        "walltime": "00:21:27"
+      },
+      "run_count": 1
+    },
+    "181225059.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": -29,
+      "resources_used": {
+        "cpupercent": 23828,
+        "cput": "80:01:20",
+        "jobfs": "41796kb",
+        "mem": "218738396kb",
+        "ncpus": 240,
+        "vmem": "218738396kb",
+        "walltime": "00:26:33"
+      },
+      "run_count": 1
+    },
+    "181225049.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 1,
+      "resources_used": {
+        "cpupercent": 11912,
+        "cput": "12:04:28",
+        "jobfs": "25096kb",
+        "mem": "100310736kb",
+        "ncpus": 144,
+        "vmem": "100310736kb",
+        "walltime": "00:09:22"
+      },
+      "run_count": 1
+    },
+    "181224919.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 6929,
+        "cput": "02:22:08",
+        "jobfs": "25096kb",
+        "mem": "94314768kb",
+        "ncpus": 144,
+        "vmem": "94314768kb",
+        "walltime": "00:02:28"
+      },
+      "run_count": 1
+    },
+    "181224938.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 9488,
+        "cput": "05:35:31",
+        "jobfs": "25096kb",
+        "mem": "106247424kb",
+        "ncpus": 144,
+        "vmem": "106247424kb",
+        "walltime": "00:05:08"
+      },
+      "run_count": 1
+    },
+    "181224912.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 5382,
+        "cput": "01:28:04",
+        "jobfs": "25096kb",
+        "mem": "89847896kb",
+        "ncpus": 144,
+        "vmem": "89847896kb",
+        "walltime": "00:02:01"
+      },
+      "run_count": 1
+    },
+    "181227621.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 5198,
+        "cput": "06:32:35",
+        "jobfs": "16716kb",
+        "mem": "47830272kb",
+        "ncpus": 96,
+        "vmem": "47830272kb",
+        "walltime": "00:09:08"
+      },
+      "run_count": 1
+    },
+    "181228490.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 1994,
+        "cput": "03:42:15",
+        "jobfs": "8480094b",
+        "mem": "16612020kb",
+        "ncpus": 20,
+        "vmem": "16612020kb",
+        "walltime": "00:12:27"
+      },
+      "run_count": 1
+    },
+    "181229438.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 12007,
+        "cput": "27:46:21",
+        "jobfs": "25072kb",
+        "mem": "81040036kb",
+        "ncpus": 144,
+        "vmem": "81040036kb",
+        "walltime": "00:24:06"
+      },
+      "run_count": 2
+    },
+    "181227185.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 4004,
+        "cput": "03:58:45",
+        "jobfs": "8534672b",
+        "mem": "29115408kb",
+        "ncpus": 40,
+        "vmem": "29115408kb",
+        "walltime": "00:08:37"
+      },
+      "run_count": 1
+    }
+  },
+  "feature_bank": {
+    "local_path": "data/proof/refresh-261014/features.npz",
+    "sha256": "65f3936c03f28d09ad707cd983c219b27c63c5cc5d1d70e84cfb0a740190e8d1",
+    "datasets": 1080,
+    "symmetric_coordinates": 39903
+  },
+  "validation": {
+    "extraction_audit": "extraction-audit.json",
+    "embedding_audit": "embedding-audit.json",
+    "independent_feature_check": "independent-feature-check.json",
+    "notebook_execution": "13 cells, four figures, no errors; final notebook executed locally.",
+    "visual_check": "All four final figures inspected; clearer Kuramoto colour, overlapping AUC annotations removed, undefined display observations disclosed.",
+    "legacy_helper_calls_checked": 42
+  },
+  "final_analysis": {
+    "location": "local",
+    "python": "3.12.12",
+    "platform": "macOS-26.7.1-arm64-arm-64bit",
+    "packages": {
+      "numpy": "2.5.2",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.0",
+      "umap-learn": "0.5.12",
+      "matplotlib": "3.11.1"
+    },
+    "source_sha256": "eb9e0e2992f4f8dac53c432490d16bebec8440fef6b77db0430663640d176337",
+    "protocol_sha256": "2a495586d1dc05b210cc17a28f85ca89b886331c49f16047e81212578ef57f16",
+    "notebook_sha256": "b134011625ca34699dc945f7d3feac2e8e6af38d2d48d4470e21b9d38ab74656",
+    "coordinates_sha256": "44a40529f7d0aaffa19989be74c52eea9473fc0f3df98559f638634247e95e4d",
+    "selected_features_sha256": "2c4a4f82606bf472dd29ec74f38bc7147a6debe34740ffaa86c42d0e9c7fd3bc",
+    "note": "Final local execution uses the same analysis parameters as Gadi, with presentation changes only. Nonlinear layouts need not be identical across platforms; committed coordinates bind the final figures."
+  },
+  "gadi_analysis_environment": {
+    "python": "3.12.1",
+    "packages": {
+      "numpy": "2.5.2",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.0",
+      "umap-learn": "0.5.12",
+      "matplotlib": "3.11.1"
+    }
   }
 }

@@ -52,7 +52,7 @@ def load_bank(path, *, expected_spis=289):
                 assert sorted(got)==list(range(10)),(cls,m,t,got)
     colors=dict(CML_COLORS)
     others=[x for x in sorted(set(bank['y'])) if x not in colors]
-    for name,color in zip(others,['#0072B2','#56B4E9','#332288','#88CCEE','#882255','#AA4499','#999933','#555555']):colors[name]=color
+    for name,color in zip(others,['#0072B2','#56B4E9','#332288','#EE6677','#882255','#AA4499','#999933','#555555']):colors[name]=color
     bank['colors']=colors
     return bank
 
@@ -150,7 +150,6 @@ def plot_discriminative(bank,ranked,scope,output):
         ax.tick_params(axis='x',labelsize=7)
         # One SPI per line keeps identifiers legible without arbitrary renaming.
         ax.set_title(f'{row.spi_a}\n× {row.spi_b}',fontsize=8)
-        ax.text(.98,.04,f'Display AUC {row.display_auc_fixed_orientation:.2f}',transform=ax.transAxes,ha='right',fontsize=7)
     for ax in list(axes.flat)[n:]:ax.set_visible(False)
     return save(fig,Path(output),scope+'-discriminative')
 

@@ -1,0 +1,11 @@
+class_a,class_b,feature_index,spi_a,spi_b,training_auc_oriented,display_auc_fixed_orientation,training_orientation,display_n_a,display_n_b
+frozen-chaos,sti-i,36,cov_EmpiricalCovariance,corr_pearson_tau-2,1.0,1.0,-1,36,36
+frozen-chaos,defect-turbulence,15,cov_EmpiricalCovariance,prec_EmpiricalCovariance,1.0,0.9992283950559795,-1,36,36
+frozen-chaos,fdstc,8,cov_EmpiricalCovariance,cov-sq_EllipticEnvelope,1.0,1.0,1,36,36
+sti-i,defect-turbulence,7,cov_EmpiricalCovariance,cov-sq_EmpiricalCovariance,1.0,0.9722222220152617,-1,36,36
+sti-i,fdstc,24,cov_EmpiricalCovariance,prec-sq_EllipticEnvelope,1.0,1.0,1,36,36
+defect-turbulence,fdstc,7,cov_EmpiricalCovariance,cov-sq_EmpiricalCovariance,1.0,1.0,1,36,36
+gaussian-noise,cauchy-noise,0,cov_EmpiricalCovariance,cov_EllipticEnvelope,1.0,1.0,-1,36,36
+var-self-0.2_total-0.2,var-self-0.2_total-0.7,21,cov_EmpiricalCovariance,prec_OAS,1.0,1.0,1,35,36
+var-self-0.2_total-0.2,var-self-0.7_total-0.2,21,cov_EmpiricalCovariance,prec_OAS,1.0,1.0,1,35,36
+var-self-0.2_total-0.7,var-self-0.7_total-0.2,35,cov_EmpiricalCovariance,corr_pearson_tau-1,1.0,1.0,1,36,36

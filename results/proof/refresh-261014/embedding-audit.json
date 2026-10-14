@@ -1,0 +1,14 @@
+{
+  "inter": {
+    "datasets": 900,
+    "features": 22783,
+    "pca50_variance": 0.8782086815743836,
+    "imputed_values": 145431
+  },
+  "cml": {
+    "datasets": 360,
+    "features": 23958,
+    "pca50_variance": 0.9499512695088799,
+    "imputed_values": 73397
+  }
+}

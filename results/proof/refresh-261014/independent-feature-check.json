@@ -1,0 +1,11 @@
+{
+  "feature_bank_sha256": "65f3936c03f28d09ad707cd983c219b27c63c5cc5d1d70e84cfb0a740190e8d1",
+  "rows": 1080,
+  "symmetric_coordinates": 39903,
+  "independent_values_checked": 300,
+  "undefined_values_confirmed": 65,
+  "maximum_absolute_error": 2.977457747022072e-08,
+  "tolerance": 6e-08,
+  "sampling_seed": 261014,
+  "method": "Direct NumPy Pearson correlation of symmetrized MPI upper triangles for three separately retrieved source recordings; feature bank is float32."
+}
