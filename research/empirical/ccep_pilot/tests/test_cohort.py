@@ -58,3 +58,26 @@ def test_dispatch_does_not_retry_ambiguous_receipt(tmp_path,monkeypatch):
     monkeypatch.setattr(cd,'assert_no_active_farm',lambda config: (_ for _ in ()).throw(AssertionError('must not reach submission')))
     cd.dispatch(tmp_path)
     assert json.loads(receipt.read_text())['status']=='requires-inspection'
+
+
+def test_prepare_accepts_pilot_header_rounding(tmp_path,monkeypatch):
+    import research.empirical.ccep_pilot.cohort as cc
+    raw_root=tmp_path/'input';raw=(raw_root/'raw');raw.mkdir(parents=True)
+    prefix='sub-test_run-1';fs=2048;duration=50
+    t=np.arange(fs*duration)/fs
+    x=np.stack([20*np.sin(2*np.pi*(j+4)*t)+np.cos(2*np.pi*t) for j in range(3)],axis=1)
+    (raw/f'{prefix}_ieeg.eeg').write_bytes(x.astype('<f4').tobytes())
+    (raw/f'{prefix}_ieeg.vhdr').write_text('Brain Vision Data Exchange Header File Version 1.0\n[Common Infos]\nDataFile='+prefix+'_ieeg.eeg\nMarkerFile='+prefix+'_ieeg.vmrk\nDataFormat=BINARY\nDataOrientation=MULTIPLEXED\nNumberOfChannels=3\nSamplingInterval=4.882812e+02\n[Binary Infos]\nBinaryFormat=IEEE_FLOAT_32\n[Channel Infos]\nCh1=A,,1,µV\nCh2=B,,1,µV\nCh3=C,,1,µV\n')
+    (raw/f'{prefix}_ieeg.vmrk').write_text('Brain Vision Data Exchange Marker File, Version 1.0\n[Common Infos]\nDataFile='+prefix+'_ieeg.eeg\n[Marker Infos]\n')
+    (raw/f'{prefix}_ieeg.json').write_text(json.dumps(dict(SamplingFrequency=fs,iEEGReference='G2')))
+    pd.DataFrame(dict(name=['A','B','C'],type=['ECOG']*3,status=['good']*3)).to_csv(raw/f'{prefix}_channels.tsv',sep='\t',index=False)
+    pd.DataFrame([dict(onset=50.,duration=0.,trial_type='electrical_stimulation',sample_start=102400)]).to_csv(raw/f'{prefix}_events.tsv',sep='\t',index=False)
+    files=[dict(path=p.name,sha256=sha256(p)) for p in raw.iterdir()]
+    selection=tmp_path/'selection.json';selection.write_text(json.dumps(dict(files=files,records=[dict(run_id=prefix,subject='sub-test',path=prefix+'_ieeg.json',duration=duration,starts=[9.])])) )
+    (raw_root/'acquisition.json').write_text(json.dumps(dict(selection_sha256=sha256(selection),files=files)))
+    monkeypatch.setattr(cc,'CONFIG',selection);monkeypatch.setattr(cc,'gallery',lambda *args:None)
+    output=tmp_path/'output';cc.prepare(output,raw_root)
+    report=json.loads((output/'scope/runs.json').read_text())[0]
+    assert report['M']==3 and report['windows'][0]['qc_pass']
+    with np.load(output/'prepared'/f'{prefix}.npz') as bank:
+        assert bank['w0'].shape==(3,4096)
