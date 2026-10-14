@@ -1,0 +1,1799 @@
+{
+  "dataset": "ds004080",
+  "release": "1.2.4",
+  "git_tree": "c4fd7418883e33b024292468eb14da1649f51aae",
+  "records": [
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.json",
+      "json_sha256": "3a67244cc5eefa5b8e9951be66803a299b44b37854af86e2347ff44310531f77",
+      "events_sha256": "35ca43f6680937dfc1203a7debb794a16def86bd121f410f2646576e579df323",
+      "fs": 512,
+      "channels": 104,
+      "duration": 7200.15625,
+      "recording_type": "continuous",
+      "n_pulses": 460,
+      "before_first_pulse": 2881.783203125,
+      "after_last_pulse": 224.5625,
+      "baseline_stop": 2877.943359375,
+      "starts": [
+        9.0,
+        1335.587890625,
+        2836.943359375
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.json",
+      "json_sha256": "c5cf1d58bf726ed83030902d4f3992edb7498d7bbe06f174df3d0c1b643705d4",
+      "events_sha256": "e729fd7bfed9d07542c0f06a4a4e40a86e8cae0d38e8d08e5a59709921ae2d29",
+      "fs": 512,
+      "channels": 104,
+      "duration": 2731.25,
+      "recording_type": "continuous",
+      "n_pulses": 314,
+      "before_first_pulse": 411.8203125,
+      "after_last_pulse": 38.4296875,
+      "baseline_stop": 409.810546875,
+      "starts": [
+        9.0,
+        152.611328125,
+        345.486328125
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.json",
+      "json_sha256": "de852e4236efc0917ed64a94f163a6ff099fe71a4be761ac5e8867aa5997d055",
+      "events_sha256": "02b882e2727307a37049fa45557037ea4107284b9465d92fd62ef70d29449c6b",
+      "fs": 512,
+      "channels": 104,
+      "duration": 5788.28125,
+      "recording_type": "continuous",
+      "n_pulses": 141,
+      "before_first_pulse": 4189.751953125,
+      "after_last_pulse": 683.716796875,
+      "baseline_stop": 4189.279296875,
+      "starts": [
+        94.74609375,
+        2342.404296875,
+        4148.279296875
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.json",
+      "json_sha256": "3a67244cc5eefa5b8e9951be66803a299b44b37854af86e2347ff44310531f77",
+      "events_sha256": "4069dcc791ea261d7a9d7e3bbf8543659c3d3b602cc33ab363ccf74c255519e3",
+      "fs": 512,
+      "channels": 104,
+      "duration": 7200.15625,
+      "recording_type": "continuous",
+      "n_pulses": 40,
+      "before_first_pulse": 6746.537109375,
+      "after_last_pulse": 66.927734375,
+      "baseline_stop": 6745.021484375,
+      "starts": [
+        79.51953125,
+        3598.902099609375,
+        6592.416015625
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.json",
+      "json_sha256": "722df3f748a3050d1ba76ca67877427a5c46b1da230d8797f790d6bcff08930b",
+      "events_sha256": "2d22016077796dfa3e2c79bf0d1fd0e94a9f80f63527242875e5df0c3157e57e",
+      "fs": 512,
+      "channels": 104,
+      "duration": 3199.625,
+      "recording_type": "continuous",
+      "n_pulses": 380,
+      "before_first_pulse": 191.978515625,
+      "after_last_pulse": 560.740234375,
+      "baseline_stop": 187.458984375,
+      "starts": [
+        9.0,
+        83.04296875
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.json",
+      "json_sha256": "6df2f4a662987f61cb9de4e9294a03603cdf2540d320e51b73a33c4c97c989aa",
+      "events_sha256": "f1d8c4596994f066149d91efe26b080ed1dd47bbba8a0e8f22e5699a81e14875",
+      "fs": 2048,
+      "channels": 104,
+      "duration": 3840.125,
+      "recording_type": "continuous",
+      "n_pulses": 535,
+      "before_first_pulse": 100.41650390625,
+      "after_last_pulse": 2.43798828125,
+      "baseline_stop": 98.8095703125,
+      "starts": [
+        9.0,
+        57.8095703125
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU01",
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.json",
+      "json_sha256": "86d9717b0ee46f9923d9c0f32dfc6257438d45986a694160f717d6070336e24c",
+      "events_sha256": "724793f73e3183620b4ff068924feb3e8bbe4dfe78904961765f9d4e26ce3cfd",
+      "fs": 2048,
+      "channels": 104,
+      "duration": 2364.34375,
+      "recording_type": "continuous",
+      "n_pulses": 334,
+      "before_first_pulse": 81.90478515625,
+      "after_last_pulse": 10.31494140625,
+      "baseline_stop": 81.16845703125,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 102,
+      "run_id": "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU02",
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.json",
+      "json_sha256": "f1ef72c0b4b360ba17682dfac2ca17c2623d77c3d3b2c9b1d7f01734e33f751e",
+      "events_sha256": "8957b9ecb0acb667696e1ed68f5ed49bbc080f4bafe1d2a3c77311e80bd6b520",
+      "fs": 2048,
+      "channels": 88,
+      "duration": 3448.6875,
+      "recording_type": "continuous",
+      "n_pulses": 508,
+      "before_first_pulse": 146.56689453125,
+      "after_last_pulse": 45.58203125,
+      "baseline_stop": 115.072265625,
+      "starts": [
+        9.0,
+        57.27734375
+      ],
+      "declared_M": 86,
+      "run_id": "sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU03",
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.json",
+      "json_sha256": "c7668732e584f972496282676ce09cb4b73f613b1e135022e505fdf298a2cf34",
+      "events_sha256": "050470dc9fc4da6e1d79bf5b15dd6f2a3ae8858d3402628264e80fdf3ebe6e8c",
+      "fs": 2048,
+      "channels": 72,
+      "duration": 3391.25,
+      "recording_type": "continuous",
+      "n_pulses": 551,
+      "before_first_pulse": 70.80859375,
+      "after_last_pulse": 239.16162109375,
+      "baseline_stop": 70.46630859375,
+      "starts": [
+        17.07568359375
+      ],
+      "declared_M": 72,
+      "run_id": "sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU04",
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.json",
+      "json_sha256": "faaf97b3c0788c897414b88dc4899acc78b18376dc735fa7599dce7434f108c2",
+      "events_sha256": "acce30161c93a1b5916a1180e1e76402444a993dd8b3c90900ef696a20d361ab",
+      "fs": 2048,
+      "channels": 116,
+      "duration": 3840.21875,
+      "recording_type": "continuous",
+      "n_pulses": 694,
+      "before_first_pulse": 117.56640625,
+      "after_last_pulse": 4.02880859375,
+      "baseline_stop": 112.8623046875,
+      "starts": [
+        9.0,
+        71.8623046875
+      ],
+      "declared_M": 111,
+      "run_id": "sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU07",
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.json",
+      "json_sha256": "6745a944b0f815ec8b80a4ea18555b5fde7b5f61a9040f14bf92654730afa3ab",
+      "events_sha256": "d9fc9d1f14ed5b0dc050d199c38685bf3d7aee64b562386f32afbe3684b43605",
+      "fs": 2048,
+      "channels": 112,
+      "duration": 3900.21875,
+      "recording_type": "continuous",
+      "n_pulses": 706,
+      "before_first_pulse": 222.80126953125,
+      "after_last_pulse": 3.53173828125,
+      "baseline_stop": 222.3232421875,
+      "starts": [
+        9.0,
+        77.929296875,
+        181.3232421875
+      ],
+      "declared_M": 111,
+      "run_id": "sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU12",
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.json",
+      "json_sha256": "34d84bdb7567917e172eec568064e1d4d3e16eef6e6b5bff1fea4a603f81307c",
+      "events_sha256": "ea188c659f8412c3b802274c6efd9eb74a6d9776d4324ac242e07ea4a67fe761",
+      "fs": 2048,
+      "channels": 116,
+      "duration": 1712.21875,
+      "recording_type": "continuous",
+      "n_pulses": 112,
+      "before_first_pulse": 628.224609375,
+      "after_last_pulse": 224.3046875,
+      "baseline_stop": 622.06884765625,
+      "starts": [
+        9.0,
+        183.96435546875,
+        541.67138671875
+      ],
+      "declared_M": 107,
+      "run_id": "sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU12",
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.json",
+      "json_sha256": "8430fa4ce5f6768596ea0000c322b6e1f654d6f94f8c8974a5ce302ba34cd5df",
+      "events_sha256": "f0395bd1050e6696b0b534acfa0ef2f308fbc370c6dc405fbc913c7843fedd39",
+      "fs": 2048,
+      "channels": 116,
+      "duration": 355.03125,
+      "recording_type": "continuous",
+      "n_pulses": 40,
+      "before_first_pulse": 79.853515625,
+      "after_last_pulse": 8.99853515625,
+      "baseline_stop": 76.96044921875,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 107,
+      "run_id": "sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU20",
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.json",
+      "json_sha256": "57a15b973e4e2de7267be2596f21763f442bb506a0632f762b7cef1a09b7aa9b",
+      "events_sha256": "633336b701f34208411f2d63bd3397d65943b145f8237bbbeccc1f319b562203",
+      "fs": 2048,
+      "channels": 88,
+      "duration": 3840.25,
+      "recording_type": "continuous",
+      "n_pulses": 646,
+      "before_first_pulse": 134.41064453125,
+      "after_last_pulse": 1.55908203125,
+      "baseline_stop": 128.46240234375,
+      "starts": [
+        9.0,
+        48.231201171875,
+        87.46240234375
+      ],
+      "declared_M": 84,
+      "run_id": "sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU23",
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.json",
+      "json_sha256": "13aa50e740cdfc6ddca80ec57aa790f37567b47d47fa6caeb38646664ebb5559",
+      "events_sha256": "9a7ff7a11b359c890c88d068430690f8fa2cc260ad219c796e23226608e9e5c4",
+      "fs": 2048,
+      "channels": 56,
+      "duration": 2548,
+      "recording_type": "continuous",
+      "n_pulses": 450,
+      "before_first_pulse": 97.69873046875,
+      "after_last_pulse": 138.923828125,
+      "baseline_stop": 86.22412109375,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 53,
+      "run_id": "sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU25",
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.json",
+      "json_sha256": "6e9ff6040f759e5745d710a5cdc555ebd3c657b5e752dba1363f2ec5161615b3",
+      "events_sha256": "729c5deffad3db1feed3dbfb26d480beac7abbe867ddc2e30149196962acf2f7",
+      "fs": 2048,
+      "channels": 86,
+      "duration": 2373.1875,
+      "recording_type": "continuous",
+      "n_pulses": 419,
+      "before_first_pulse": 60.84423828125,
+      "after_last_pulse": 50.02099609375,
+      "baseline_stop": 57.27392578125,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 75,
+      "run_id": "sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU26",
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.json",
+      "json_sha256": "7b7763fda7e350526e1744a3912498cdd6a6eafb5cc9ff32b88ec69f4893aa72",
+      "events_sha256": "86a959f56a8e175c2b1a28d28f06ebe7114c9fc2392c3cf7beea3f974e189eec",
+      "fs": 2048,
+      "channels": 64,
+      "duration": 2700.53125,
+      "recording_type": "continuous",
+      "n_pulses": 480,
+      "before_first_pulse": 135.779296875,
+      "after_last_pulse": 33.4404296875,
+      "baseline_stop": 127.82568359375,
+      "starts": [
+        9.0,
+        47.912841796875,
+        86.82568359375
+      ],
+      "declared_M": 56,
+      "run_id": "sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU27",
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.json",
+      "json_sha256": "0e9772db8fe3ffff9fc97e07a75312f9fc0515adb8819dd3d91fc69b0db5b627",
+      "events_sha256": "a5aa5eb6dbacdcc6d75f95b4d2e054a9a900636e7bb5409c16e5b01158058e95",
+      "fs": 2048,
+      "channels": 72,
+      "duration": 3840.09375,
+      "recording_type": "continuous",
+      "n_pulses": 621,
+      "before_first_pulse": 179.5087890625,
+      "after_last_pulse": 2.66259765625,
+      "baseline_stop": 175.373046875,
+      "starts": [
+        9.0,
+        92.58203125,
+        134.373046875
+      ],
+      "declared_M": 58,
+      "run_id": "sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU32",
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.json",
+      "json_sha256": "2e26690d89207f22926ea91426e14d6c7be94ec01988a99869d7615928b7a852",
+      "events_sha256": "69c594eda7b9bdd24a1d9e516971ed2aa5ea782b6452246e30b8d450eb7ba508",
+      "fs": 2048,
+      "channels": 88,
+      "duration": 2838.96875,
+      "recording_type": "continuous",
+      "n_pulses": 261,
+      "before_first_pulse": 856.517578125,
+      "after_last_pulse": 32.64599609375,
+      "baseline_stop": 855.66943359375,
+      "starts": [
+        9.0,
+        53.110107421875,
+        97.22021484375
+      ],
+      "declared_M": 77,
+      "run_id": "sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU39",
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.json",
+      "json_sha256": "c5eb7f1e8f54da70e5333d2687c20f51a1c1f385e68864e0f0cffecb42fff22b",
+      "events_sha256": "459ade1611abb52061f7de506dfba20d806842c5ac908e527ea22d3dd935c342",
+      "fs": 2048,
+      "channels": 60,
+      "duration": 2743.28125,
+      "recording_type": "continuous",
+      "n_pulses": 437,
+      "before_first_pulse": 81.2314453125,
+      "after_last_pulse": 406.99853515625,
+      "baseline_stop": 80.61279296875,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 48,
+      "run_id": "sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU40",
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.json",
+      "json_sha256": "4c113af89710f95eb757327273bc14d7faf410206eb90d7460d9c657d7fa0c12",
+      "events_sha256": "6d937ba864405afb0a3aa4409234abbc3fab247f94902a62754aaf4ae242749a",
+      "fs": 2048,
+      "channels": 56,
+      "duration": 2733.25,
+      "recording_type": "continuous",
+      "n_pulses": 490,
+      "before_first_pulse": 135.998046875,
+      "after_last_pulse": 112.40576171875,
+      "baseline_stop": 132.8349609375,
+      "starts": [
+        43.0
+      ],
+      "declared_M": 55,
+      "run_id": "sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU48",
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.json",
+      "json_sha256": "bdf435ccae85bf0bab2d5dc45280199b747198a3a15a2d4428be070f4df87300",
+      "events_sha256": "95e6d4391135cf00c45e8e2f2c32e1861dec31cdf2290427334ff2c0e2762ee5",
+      "fs": 2048,
+      "channels": 70,
+      "duration": 3504.21875,
+      "recording_type": "continuous",
+      "n_pulses": 588,
+      "before_first_pulse": 73.0771484375,
+      "after_last_pulse": 15.65185546875,
+      "baseline_stop": 72.34228515625,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 59,
+      "run_id": "sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU51",
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.json",
+      "json_sha256": "76364966d32a23044c8d549b4ec777ec848425bee020f97a8f12b61c10dbfba7",
+      "events_sha256": "29f91a20a40ab4c8afed3a26d899abcdedabb9670e945eb482c31e2309bcf96a",
+      "fs": 2048,
+      "channels": 54,
+      "duration": 2904.84375,
+      "recording_type": "continuous",
+      "n_pulses": 470,
+      "before_first_pulse": 186.306640625,
+      "after_last_pulse": 28.4072265625,
+      "baseline_stop": 183.0615234375,
+      "starts": [
+        54.95849609375,
+        98.510009765625,
+        142.0615234375
+      ],
+      "declared_M": 48,
+      "run_id": "sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU56",
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.json",
+      "json_sha256": "23020b212af8cb9520220ebc5a0e570b762336de9cd543a9235d66f3890bdb30",
+      "events_sha256": "3056fc6b631fc0c61ed2dcc955ca0d6ed9161d45c7b2d43551fd85fe47754753",
+      "fs": 2048,
+      "channels": 56,
+      "duration": 2895.15625,
+      "recording_type": "continuous",
+      "n_pulses": 480,
+      "before_first_pulse": 119.68701171875,
+      "after_last_pulse": 28.033203125,
+      "baseline_stop": 117.978515625,
+      "starts": [
+        28.9052734375,
+        76.978515625
+      ],
+      "declared_M": 56,
+      "run_id": "sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU56",
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.json",
+      "json_sha256": "23020b212af8cb9520220ebc5a0e570b762336de9cd543a9235d66f3890bdb30",
+      "events_sha256": "3056fc6b631fc0c61ed2dcc955ca0d6ed9161d45c7b2d43551fd85fe47754753",
+      "fs": 2048,
+      "channels": 56,
+      "duration": 2895.15625,
+      "recording_type": "continuous",
+      "n_pulses": 480,
+      "before_first_pulse": 119.68701171875,
+      "after_last_pulse": 28.033203125,
+      "baseline_stop": 117.978515625,
+      "starts": [
+        28.9052734375,
+        76.978515625
+      ],
+      "declared_M": 56,
+      "run_id": "sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU57",
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.json",
+      "json_sha256": "3efef6808c0ddfab470da7f0fad20ba950d182b6ae2dcae2078d6a8b65a6d4b3",
+      "events_sha256": "520d3bb2e8623b3acb7d311f92c550220112d294af420906f7165cce875e98db",
+      "fs": 2048,
+      "channels": 64,
+      "duration": 3047.125,
+      "recording_type": "continuous",
+      "n_pulses": 510,
+      "before_first_pulse": 64.56884765625,
+      "after_last_pulse": 11.31787109375,
+      "baseline_stop": 62.53466796875,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 53,
+      "run_id": "sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU63",
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.json",
+      "json_sha256": "c8e085bb860876244e5e6123312edb4a4c4acad62a011c0c8d982df1726bbe44",
+      "events_sha256": "357525d061461558fc625d6161f4900793d3f45bf9f6703fb59af96bf1c0d6d3",
+      "fs": 2048,
+      "channels": 80,
+      "duration": 655.71875,
+      "recording_type": "continuous",
+      "n_pulses": 93,
+      "before_first_pulse": 92.35986328125,
+      "after_last_pulse": 16.92822265625,
+      "baseline_stop": 90.31494140625,
+      "starts": [
+        9.0,
+        49.31494140625
+      ],
+      "declared_M": 46,
+      "run_id": "sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU64",
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.json",
+      "json_sha256": "03d3e020a2e7b4d908dec29f69a441e9aa63ae80f3aec249591a6a60f04e81bd",
+      "events_sha256": "c51c13e7347af3cd67d064d5a71c4c4d1a3b38a8547ef6df81c96291b7960d9b",
+      "fs": 2048,
+      "channels": 64,
+      "duration": 3383.25,
+      "recording_type": "continuous",
+      "n_pulses": 510,
+      "before_first_pulse": 441.06884765625,
+      "after_last_pulse": 22.32568359375,
+      "baseline_stop": 439.439453125,
+      "starts": [
+        9.0,
+        194.11044921875,
+        330.35498046875
+      ],
+      "declared_M": 47,
+      "run_id": "sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU71",
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.json",
+      "json_sha256": "71429512185d03bd99990a60ff2bbda2e36aaf7de4931c7180115369d90b90e2",
+      "events_sha256": "ea940568f477afe517e5b9561ac80580f019f7db97ab86e9fd18b2791563b23f",
+      "fs": 2048,
+      "channels": 56,
+      "duration": 3600.09375,
+      "recording_type": "continuous",
+      "n_pulses": 481,
+      "before_first_pulse": 126.884765625,
+      "after_last_pulse": 9.8359375,
+      "baseline_stop": 125.85009765625,
+      "starts": [
+        9.0,
+        46.925048828125,
+        84.85009765625
+      ],
+      "declared_M": 56,
+      "run_id": "sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU73",
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.json",
+      "json_sha256": "fd70dcc2dedcf7d9380d67fff73f7ec99e2c1499c52430830a99ef1c5ad6ae2c",
+      "events_sha256": "f66e45350be26899cb535c2e88ee4cf4d9ee613a345e1acc78d8267d71678a90",
+      "fs": 2048,
+      "channels": 48,
+      "duration": 2422.0625,
+      "recording_type": "continuous",
+      "n_pulses": 351,
+      "before_first_pulse": 89.30224609375,
+      "after_last_pulse": 39.16455078125,
+      "baseline_stop": 87.966796875,
+      "starts": [
+        9.0
+      ],
+      "declared_M": 48,
+      "run_id": "sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544"
+    }
+  ],
+  "files": [
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.json",
+      "bytes": 1640,
+      "sha256": "3a67244cc5eefa5b8e9951be66803a299b44b37854af86e2347ff44310531f77",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_events.tsv",
+      "bytes": 67679,
+      "sha256": "35ca43f6680937dfc1203a7debb794a16def86bd121f410f2646576e579df323",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_channels.tsv",
+      "bytes": 7413,
+      "sha256": "1ecc86a1a7d12bb05dd0643e6b9af73906ef48b2dea7c118a37b4666f64f4200",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.eeg",
+      "bytes": 1961207360,
+      "sha256": "ff207d855f594176e9c10a4278c90f1237823573c9842c26627a02ecbd582884",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.vhdr",
+      "bytes": 2258,
+      "sha256": "f56275b2d8db332b963d8ca6cfd1213585d013db9ccfa3a7c51182feafb65a5d",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "3415fa26726073c69a861d4a1581a1dc0fb35420a080880c1ac57d9e6828f171",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.json",
+      "bytes": 1637,
+      "sha256": "c5cf1d58bf726ed83030902d4f3992edb7498d7bbe06f174df3d0c1b643705d4",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_events.tsv",
+      "bytes": 44604,
+      "sha256": "e729fd7bfed9d07542c0f06a4a4e40a86e8cae0d38e8d08e5a59709921ae2d29",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_channels.tsv",
+      "bytes": 7411,
+      "sha256": "2554e7339cfd204563169faa7a270876758fd4e107c36fb0a126567b7c1ee67f",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.eeg",
+      "bytes": 743948800,
+      "sha256": "2d5db9d32cbb274ca95159bbaddd42f53850bce0c00b752b6362a744155c5d33",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.vhdr",
+      "bytes": 2263,
+      "sha256": "da8622408e563c15d8dd5f3eb840b0108589b65ce984d66f245293505b50cc78",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "d15dc7c17f458af634910662919d1a9cdde586d1e34f205d17116b617a5d971f",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.json",
+      "bytes": 1640,
+      "sha256": "de852e4236efc0917ed64a94f163a6ff099fe71a4be761ac5e8867aa5997d055",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_events.tsv",
+      "bytes": 24562,
+      "sha256": "02b882e2727307a37049fa45557037ea4107284b9465d92fd62ef70d29449c6b",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_channels.tsv",
+      "bytes": 7413,
+      "sha256": "1ecc86a1a7d12bb05dd0643e6b9af73906ef48b2dea7c118a37b4666f64f4200",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.eeg",
+      "bytes": 1576635200,
+      "sha256": "11b1ed39b9ac1affb1dbfdfc4f7bdc7d205ab1ebecec99da7fc5a7d5ab8b67c9",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.vhdr",
+      "bytes": 2258,
+      "sha256": "24cc3c5a8b136b0dc484a7bd37a43c7fb5bcd967fecac26660ba5b346366b20a",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "d4903b61dfd0f0f980e08317a10d40fd1b3a59b00ff4d185d44ae72e7e0d04f6",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.json",
+      "bytes": 1640,
+      "sha256": "3a67244cc5eefa5b8e9951be66803a299b44b37854af86e2347ff44310531f77",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_events.tsv",
+      "bytes": 19376,
+      "sha256": "4069dcc791ea261d7a9d7e3bbf8543659c3d3b602cc33ab363ccf74c255519e3",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_channels.tsv",
+      "bytes": 7413,
+      "sha256": "1ecc86a1a7d12bb05dd0643e6b9af73906ef48b2dea7c118a37b4666f64f4200",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.eeg",
+      "bytes": 1961207360,
+      "sha256": "12a825e34a0f2702038a09831c594a13da50e4f7983a618f576d679e4f89f22f",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.vhdr",
+      "bytes": 2258,
+      "sha256": "4519f3f72b03fb27c86bce6d3c9685c4b78ab5e7601adb133a278653944539b7",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "ef9374487166f68f5530b5d739b017f8081be49943f31ed90bc27cd9de667f36",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.json",
+      "bytes": 1638,
+      "sha256": "722df3f748a3050d1ba76ca67877427a5c46b1da230d8797f790d6bcff08930b",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_events.tsv",
+      "bytes": 54141,
+      "sha256": "2d22016077796dfa3e2c79bf0d1fd0e94a9f80f63527242875e5df0c3157e57e",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_channels.tsv",
+      "bytes": 7413,
+      "sha256": "1ecc86a1a7d12bb05dd0643e6b9af73906ef48b2dea7c118a37b4666f64f4200",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.eeg",
+      "bytes": 871526656,
+      "sha256": "a7a90df6822d742653ba92ba9ad44a751669c40b980df2427ee5fe6e9c1717f1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.vhdr",
+      "bytes": 2258,
+      "sha256": "c668e61d78fa63d1befec416f1638a7ce1cd0e8fed88c20469dd18cb9085f10c",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "9c4dfebe353c8434b5cf8b8d97b2cbb05653d1ddabbe5e7f67cbebe5927b1a5e",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.json",
+      "bytes": 1639,
+      "sha256": "6df2f4a662987f61cb9de4e9294a03603cdf2540d320e51b73a33c4c97c989aa",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_events.tsv",
+      "bytes": 74083,
+      "sha256": "f1d8c4596994f066149d91efe26b080ed1dd47bbba8a0e8f22e5699a81e14875",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_channels.tsv",
+      "bytes": 7546,
+      "sha256": "43bd019a6a807aa67c9bee9847ef942c083332d2c09da5b5d8f79b1ba3bf91be",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.eeg",
+      "bytes": 4183954432,
+      "sha256": "b26b8bbd9bcd5d1fc15840fe61c8b518d6df0dca581ed3723724331ca7109a39",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.vhdr",
+      "bytes": 2258,
+      "sha256": "6790b02e5d0af1aead40de2b4525a8add92f59104cc8b89fc710f3823d47cbdb",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "047006286c86401ffc6e4414f1c3f0ad25b8d1fbd64759d3150de14ca40314d8",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.json",
+      "bytes": 1641,
+      "sha256": "86d9717b0ee46f9923d9c0f32dfc6257438d45986a694160f717d6070336e24c",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_events.tsv",
+      "bytes": 48291,
+      "sha256": "724793f73e3183620b4ff068924feb3e8bbe4dfe78904961765f9d4e26ce3cfd",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_channels.tsv",
+      "bytes": 7544,
+      "sha256": "3d88cb6e1cbd93635d9dca0f5df08097d20b5b3d77b729a33629c1330a1217d3",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.eeg",
+      "bytes": 2576037632,
+      "sha256": "d5bee1c59d18009cabc28f55f7bf1f8a8e5ae6e70597dbf70fdd881afef76446",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.vhdr",
+      "bytes": 2263,
+      "sha256": "fe4d40d0c288abecf08ddaec5f0a6e28372b7e9fb0fab32852b1708d69e2c682",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "5923e7bca77f1d748f9e2ac8ca55d602272617077b0fdcf5db500371912fd2ea",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU01/ses-1/ieeg/sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.json",
+      "bytes": 1623,
+      "sha256": "f1ef72c0b4b360ba17682dfac2ca17c2623d77c3d3b2c9b1d7f01734e33f751e",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_events.tsv",
+      "bytes": 129083,
+      "sha256": "8957b9ecb0acb667696e1ed68f5ed49bbc080f4bafe1d2a3c77311e80bd6b520",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_channels.tsv",
+      "bytes": 5394,
+      "sha256": "04403169b6dc75f70fcf300ba2506e746732ddd0f5c3d87b3a2c511e87044469",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.eeg",
+      "bytes": 2712158208,
+      "sha256": "1b5b70688600d8a7378a7ec46da522a154e64091bb4571ab5c8b4833c2c0fce0",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.vhdr",
+      "bytes": 1718,
+      "sha256": "768f74b59e4efd8701877370892c1af7cd89ec71a0a415b69493cfedd2f7f061",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "04d81d900132b556e6406690eb593d4c00a2c6b3f625e933009dd4de7e43ab00",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.json",
+      "bytes": 1604,
+      "sha256": "c7668732e584f972496282676ce09cb4b73f613b1e135022e505fdf298a2cf34",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_events.tsv",
+      "bytes": 133990,
+      "sha256": "050470dc9fc4da6e1d79bf5b15dd6f2a3ae8858d3402628264e80fdf3ebe6e8c",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_channels.tsv",
+      "bytes": 7668,
+      "sha256": "1057b8c7bd68188ce1cb012a444d0664d1411590481c8f38f9c28932e3f1eed4",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.eeg",
+      "bytes": 3694888960,
+      "sha256": "9796cd78ffe5bba3539080cc5b94c871410dd9a3e2ad2caa1ae2657cbeb76de9",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.vhdr",
+      "bytes": 2275,
+      "sha256": "6ede523e6c1d7273633faaff84e162b5f27f74b3ab4214a6182deb9e20d16560",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "eafffd01cdff7beb3d070685eca8f5fbee58232a473e893a30b875d229dc057e",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU03/ses-1/ieeg/sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.json",
+      "bytes": 1648,
+      "sha256": "faaf97b3c0788c897414b88dc4899acc78b18376dc735fa7599dce7434f108c2",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_events.tsv",
+      "bytes": 165219,
+      "sha256": "acce30161c93a1b5916a1180e1e76402444a993dd8b3c90900ef696a20d361ab",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_channels.tsv",
+      "bytes": 7388,
+      "sha256": "f4335b0985f74c2fee2f94de10d4b878b3cc5a0c8d7860692053ddff3df16946",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.eeg",
+      "bytes": 4184056576,
+      "sha256": "0094683cef59dd05f065c0dcb4c63ca2bb8855748d96f04b5a1bd0e319b92db3",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.vhdr",
+      "bytes": 2221,
+      "sha256": "c13917e7c4679cb988d637c8dca94fda3e7cc895975bf3f83136a66459bb901e",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "0ee9b476bb9995cefc7205d3b296b59c6f27e779a52c034de760a424e1259782",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU04/ses-1/ieeg/sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.json",
+      "bytes": 1655,
+      "sha256": "6745a944b0f815ec8b80a4ea18555b5fde7b5f61a9040f14bf92654730afa3ab",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_events.tsv",
+      "bytes": 166975,
+      "sha256": "d9fc9d1f14ed5b0dc050d199c38685bf3d7aee64b562386f32afbe3684b43605",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_channels.tsv",
+      "bytes": 7342,
+      "sha256": "01f85caee5bc084f16a4e4dd9d8e8c928da4603ebcb357e66791ca457fc6b217",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.eeg",
+      "bytes": 4153576960,
+      "sha256": "61fdb04d5638d10c82e0fbf5027ec14a078e988fe69db43f2649053def7d7261",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.vhdr",
+      "bytes": 2291,
+      "sha256": "7f40014d75b8bae14229d4d2536101b88278d54042e9cb25cf9f27516468fc7b",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "1bd772d16389596a5fd6295aaa880ff517257e71f7b4fc5e280ca59bfbead6e1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU07/ses-1/ieeg/sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.json",
+      "bytes": 1637,
+      "sha256": "34d84bdb7567917e172eec568064e1d4d3e16eef6e6b5bff1fea4a603f81307c",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_events.tsv",
+      "bytes": 18263,
+      "sha256": "ea188c659f8412c3b802274c6efd9eb74a6d9776d4324ac242e07ea4a67fe761",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_channels.tsv",
+      "bytes": 7406,
+      "sha256": "48021ba9c9e3956d36671239430117f13ce45bc671f1b4d89c5b43d04611aebf",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.eeg",
+      "bytes": 1865523968,
+      "sha256": "fce4066b935bcbc4b28f203651d07a10f3f26408f62fd839be02843ad383bfb7",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.vhdr",
+      "bytes": 2178,
+      "sha256": "72daba0a997d35d65233e59a504d380a1b2b4097a54b2b6d124306c140e872ac",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "49a9bb34de292501a7ff9ce9082e7c500420e02820da07172914c0d62d417df5",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.json",
+      "bytes": 1636,
+      "sha256": "8430fa4ce5f6768596ea0000c322b6e1f654d6f94f8c8974a5ce302ba34cd5df",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_events.tsv",
+      "bytes": 5720,
+      "sha256": "f0395bd1050e6696b0b534acfa0ef2f308fbc370c6dc405fbc913c7843fedd39",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_channels.tsv",
+      "bytes": 7406,
+      "sha256": "48021ba9c9e3956d36671239430117f13ce45bc671f1b4d89c5b43d04611aebf",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.eeg",
+      "bytes": 386819328,
+      "sha256": "1391c9b23893a8b1213698ce939e9b6ba2897b32d8c57996e1dde60c17a0cf26",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.vhdr",
+      "bytes": 2178,
+      "sha256": "5a7e5f4bfb796a77c3d9058e95d1afc7092599683e0cf02f6ace3e6d48b2460c",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "0f4c50ac66f348a0a95d26be9854d715df09549f4590216edd4dbf0597aec23c",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.json",
+      "bytes": 1613,
+      "sha256": "57a15b973e4e2de7267be2596f21763f442bb506a0632f762b7cef1a09b7aa9b",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_events.tsv",
+      "bytes": 89012,
+      "sha256": "633336b701f34208411f2d63bd3397d65943b145f8237bbbeccc1f319b562203",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_channels.tsv",
+      "bytes": 7680,
+      "sha256": "b0f1a6338cbbb9c90486eb20decb7a85fa5400a544b6c718774343aaca1f6be3",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.eeg",
+      "bytes": 4184090624,
+      "sha256": "dae3c9f79b6fcdba10a656c262aa8109a358bb297a581b8b4c3f8221f4d8a720",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.vhdr",
+      "bytes": 2282,
+      "sha256": "13fc98025c91e1ff8dd352741873ced0ee5332db6237fc65e8adac508de9401c",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "c00cb3999723ca5003831344495a686a11353e3c828a645b53d4a5b9503f32fa",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU20/ses-1/ieeg/sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.json",
+      "bytes": 1604,
+      "sha256": "13aa50e740cdfc6ddca80ec57aa790f37567b47d47fa6caeb38646664ebb5559",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_events.tsv",
+      "bytes": 68281,
+      "sha256": "9a7ff7a11b359c890c88d068430690f8fa2cc260ad219c796e23226608e9e5c4",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_channels.tsv",
+      "bytes": 3911,
+      "sha256": "494d2fbde84da789fe0d2067eae2ef7e24a94c2563f655d6f93e802805424ffb",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.eeg",
+      "bytes": 1419378688,
+      "sha256": "4d1d9e0ff3144e9e214c8c15a7203807ee6e09aa7eb73600de294b24b5b0fd2b",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.vhdr",
+      "bytes": 1332,
+      "sha256": "dba50b4dcab3aefaa71e4c884d392d35bac5b5dfe012912b724e1449b3f51b2e",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "79c38905cc95420668c0f37c5a893bada14f37b1d6fb782122dba4aa7eb5880a",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU23/ses-1/ieeg/sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.json",
+      "bytes": 1628,
+      "sha256": "6e9ff6040f759e5745d710a5cdc555ebd3c657b5e752dba1363f2ec5161615b3",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_events.tsv",
+      "bytes": 57495,
+      "sha256": "729c5deffad3db1feed3dbfb26d480beac7abbe867ddc2e30149196962acf2f7",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_channels.tsv",
+      "bytes": 7470,
+      "sha256": "c9eebbf6f156a7b3a81cd05d9f3a15f963dd48339c473528d07f165afe6de9af",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.eeg",
+      "bytes": 2527349760,
+      "sha256": "8b8bb119e02ceee4124a93a8615228b0182ca7b72416a49b287f4ee38970e233",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.vhdr",
+      "bytes": 2185,
+      "sha256": "0f8dfd2b5c6b221134a0b2edd45e9fb5ae1070394e064fba392bf47fcd9c3142",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "67ca591f7cf53c6efeb0f2551936b1964a3f3d0358bcfb836a19b7603681cfff",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU25/ses-1/ieeg/sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.json",
+      "bytes": 1619,
+      "sha256": "7b7763fda7e350526e1744a3912498cdd6a6eafb5cc9ff32b88ec69f4893aa72",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_events.tsv",
+      "bytes": 68949,
+      "sha256": "86a959f56a8e175c2b1a28d28f06ebe7114c9fc2392c3cf7beea3f974e189eec",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_channels.tsv",
+      "bytes": 7918,
+      "sha256": "5369bab793a514616427dcbc7e9084c638731e54acda6a0392577364af44cf61",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.eeg",
+      "bytes": 2942326016,
+      "sha256": "d4dad0c9cc80ce1bce8549619b1fb43b1f044e27ccb2212bae92d53224f7a349",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.vhdr",
+      "bytes": 2322,
+      "sha256": "86021d680a7ca14c508b6e1026fd02dcda44a7eab2258ce7d1fd2374e895135f",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "109cec653e79113203d9f4acd38b0ace7de2a0a280a1e5c1d392ea6e561113f7",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU26/ses-1/ieeg/sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.json",
+      "bytes": 1634,
+      "sha256": "0e9772db8fe3ffff9fc97e07a75312f9fc0515adb8819dd3d91fc69b0db5b627",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_events.tsv",
+      "bytes": 91984,
+      "sha256": "a5aa5eb6dbacdcc6d75f95b4d2e054a9a900636e7bb5409c16e5b01158058e95",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_channels.tsv",
+      "bytes": 7734,
+      "sha256": "849affa34f51aa9e9399916c1e43e6475e51dfc4b094963869d1865c2439fe52",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.eeg",
+      "bytes": 4183920384,
+      "sha256": "5646cbc557927051c233e5f1d94216ce75573efcb31eb4064b12ef5c476dd5e7",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.vhdr",
+      "bytes": 2274,
+      "sha256": "447c426f414133abf2bff5d9af2d367a4f32cd42da058743b2c6765d2ffec7a4",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "3f08b0b75f6b05f7fed62341edd74482fdb114e837e223fccf3b6d2bd41883b1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU27/ses-1/ieeg/sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.json",
+      "bytes": 1626,
+      "sha256": "2e26690d89207f22926ea91426e14d6c7be94ec01988a99869d7615928b7a852",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_events.tsv",
+      "bytes": 40528,
+      "sha256": "69c594eda7b9bdd24a1d9e516971ed2aa5ea782b6452246e30b8d450eb7ba508",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_channels.tsv",
+      "bytes": 7815,
+      "sha256": "7ea3fc26d9a41ad422b58c1ec93dcc33a8d9ee381ee27d3b5b19db41c75564df",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.eeg",
+      "bytes": 3093158656,
+      "sha256": "4e20d5812219bc3f34247081933ef78a56e3f7fc882f6ad300dd570d6d397a84",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.vhdr",
+      "bytes": 2234,
+      "sha256": "9a9dbf0f7046e4839f4eded06f994178f905dfeea01f943bb3c850a22ea05b71",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "86962a7e9c27136167bf6c8c9f18c55af1a07aabb5fea3defb520d6f996f4dd6",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU32/ses-1/ieeg/sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.json",
+      "bytes": 1616,
+      "sha256": "c5eb7f1e8f54da70e5333d2687c20f51a1c1f385e68864e0f0cffecb42fff22b",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_events.tsv",
+      "bytes": 60715,
+      "sha256": "459ade1611abb52061f7de506dfba20d806842c5ac908e527ea22d3dd935c342",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_channels.tsv",
+      "bytes": 7772,
+      "sha256": "a44c66aa848a97334385a3d7093f3e990f5149af1cfbc64d506d44c2ae418df8",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.eeg",
+      "bytes": 2988903680,
+      "sha256": "c9ec3dbced2c4a01486efd5d9eea1173b3f2b895ffd5867bdb50236ee872f308",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.vhdr",
+      "bytes": 2306,
+      "sha256": "988849e27fe895cb46d49e12074e988fbba40a79bc4154343e7e7a39c294b55f",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "37a669fc986fe3291df24e40c349f377df263831425b769ec6e9fa410f465142",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU39/ses-1/ieeg/sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.json",
+      "bytes": 1622,
+      "sha256": "4c113af89710f95eb757327273bc14d7faf410206eb90d7460d9c657d7fa0c12",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_events.tsv",
+      "bytes": 72254,
+      "sha256": "6d937ba864405afb0a3aa4409234abbc3fab247f94902a62754aaf4ae242749a",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_channels.tsv",
+      "bytes": 3881,
+      "sha256": "bea2e5c6bae956d01a7599c5a483717d2d5b3ae81d06497c08773143e7cf1742",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.eeg",
+      "bytes": 1522573312,
+      "sha256": "40280ab849033f865a047328dcc33105c991dc8890b1bfd1d0a6b3dc8845ce74",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.vhdr",
+      "bytes": 1320,
+      "sha256": "a39d54ad9d4dc645c1c139203812a2e70dc697ad20db2b20c637b661874f47ba",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "12a48522016393ceb1b89d78f9616002c323016344fa1c6945b7d3f6169c05db",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU40/ses-1/ieeg/sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.json",
+      "bytes": 1605,
+      "sha256": "bdf435ccae85bf0bab2d5dc45280199b747198a3a15a2d4428be070f4df87300",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_events.tsv",
+      "bytes": 143640,
+      "sha256": "95e6d4391135cf00c45e8e2f2c32e1861dec31cdf2290427334ff2c0e2762ee5",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_channels.tsv",
+      "bytes": 5298,
+      "sha256": "bd10734a15a3379ef2f9f4aa50c192ce517fb4c35023f11561772df26e290455",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.eeg",
+      "bytes": 2669710080,
+      "sha256": "d4ecba389688aa04cffac494693de15b9d9f60ce26840b30308b36c32ee6eae6",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.vhdr",
+      "bytes": 1637,
+      "sha256": "f3606306ce5092bd62be8b0d50b67bfbb85552746b80a67890c9abb8ef277d62",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "3b7bffcdeb70075d45cc4d572e107004c56e318299e359147c8d08aecc25a318",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU48/ses-1/ieeg/sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.json",
+      "bytes": 1598,
+      "sha256": "76364966d32a23044c8d549b4ec777ec848425bee020f97a8f12b61c10dbfba7",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_events.tsv",
+      "bytes": 110008,
+      "sha256": "29f91a20a40ab4c8afed3a26d899abcdedabb9670e945eb482c31e2309bcf96a",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_channels.tsv",
+      "bytes": 3823,
+      "sha256": "314c154478b9320770f065096faa7b8a9b1360bcf039589f5ed60c5a1e03fc7f",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.eeg",
+      "bytes": 1618160640,
+      "sha256": "20cd8f533a6e3efa5ba33fa707df91876057fd1b18d6e60cbc06bcdb8a5a6c36",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.vhdr",
+      "bytes": 1282,
+      "sha256": "08228f618016fa1d697cc89ab12ce4e8c78d1ad2c1416b4ccd4b6fb6db7d119f",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "21ef5d6079b02f3f481d0690a26008dc8b34a6c9ded9146a98461a2f515f67bb",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU51/ses-1/ieeg/sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.json",
+      "bytes": 1619,
+      "sha256": "23020b212af8cb9520220ebc5a0e570b762336de9cd543a9235d66f3890bdb30",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_events.tsv",
+      "bytes": 110149,
+      "sha256": "3056fc6b631fc0c61ed2dcc955ca0d6ed9161d45c7b2d43551fd85fe47754753",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_channels.tsv",
+      "bytes": 3855,
+      "sha256": "32bacfa0e075df73a87929df89211c399aad0e2e5ef9820689c4aea81b2773c0",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.eeg",
+      "bytes": 1612764160,
+      "sha256": "b1270d8c483e617936eb2afbb1cef4e56d7d1fed4e287b33104b37aa0cf94df3",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.vhdr",
+      "bytes": 1312,
+      "sha256": "e37eb82c166040cd0c203a6e49ff528a56ff96bf2dca0b4ee9a003b98abe3c2b",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "448110d3f3ab7480e5cf6261986ebac462a303bd3405cb99858f250b8fbeb607",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.json",
+      "bytes": 1619,
+      "sha256": "23020b212af8cb9520220ebc5a0e570b762336de9cd543a9235d66f3890bdb30",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_events.tsv",
+      "bytes": 110149,
+      "sha256": "3056fc6b631fc0c61ed2dcc955ca0d6ed9161d45c7b2d43551fd85fe47754753",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_channels.tsv",
+      "bytes": 3855,
+      "sha256": "32bacfa0e075df73a87929df89211c399aad0e2e5ef9820689c4aea81b2773c0",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.eeg",
+      "bytes": 1612764160,
+      "sha256": "b1270d8c483e617936eb2afbb1cef4e56d7d1fed4e287b33104b37aa0cf94df3",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.vhdr",
+      "bytes": 1312,
+      "sha256": "5b69b345f48965f03dc5af270667e7950afc441257069afe74ca2e8b5e784008",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "5422d02bc3e188abad908ff9d11112b2b899cf432affd2722c7d1d55da92ffe5",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU56/ses-1/ieeg/sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.json",
+      "bytes": 1635,
+      "sha256": "3efef6808c0ddfab470da7f0fad20ba950d182b6ae2dcae2078d6a8b65a6d4b3",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_events.tsv",
+      "bytes": 70433,
+      "sha256": "520d3bb2e8623b3acb7d311f92c550220112d294af420906f7165cce875e98db",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_channels.tsv",
+      "bytes": 7780,
+      "sha256": "56044e30dc369da5e3b6ecc12474e45ecfd006cdb0ebd02c8f776e14785f7dc4",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.eeg",
+      "bytes": 3270028288,
+      "sha256": "fcee1668e9c370c2cc2eb947f18709c0f586016f5d07da3cd06fad36decb27be",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.vhdr",
+      "bytes": 2283,
+      "sha256": "2ed2e1ac201581cbe18c66521d4f5cb8e8878700a54c7b4f30ee9da882d34143",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "5fb920ab3ec61f4d98c54d9be02655c7a909b3913a52eaebbd6f3cf29482fe69",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU57/ses-1/ieeg/sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.json",
+      "bytes": 1614,
+      "sha256": "c8e085bb860876244e5e6123312edb4a4c4acad62a011c0c8d982df1726bbe44",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_events.tsv",
+      "bytes": 13458,
+      "sha256": "357525d061461558fc625d6161f4900793d3f45bf9f6703fb59af96bf1c0d6d3",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_channels.tsv",
+      "bytes": 7881,
+      "sha256": "b4d2875733bfc87a04e679c2218ae70ea8045298705f9bacdb77cfd0f3b34b83",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.eeg",
+      "bytes": 714429184,
+      "sha256": "f627c7e56f2eca65d193f554e492b504af4e94136c3faf9e9ebd2243d6e0c944",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.vhdr",
+      "bytes": 2250,
+      "sha256": "c610e0e772a2794b204bdfc711a5d2a62d3213379e3f9395bf07dea42c6bad82",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "318412e848dbd5315dcf5665c011207c4a3dcdaa7f333e36893e694ad7e173a3",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU63/ses-1/ieeg/sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.json",
+      "bytes": 1611,
+      "sha256": "03d3e020a2e7b4d908dec29f69a441e9aa63ae80f3aec249591a6a60f04e81bd",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_events.tsv",
+      "bytes": 75086,
+      "sha256": "c51c13e7347af3cd67d064d5a71c4c4d1a3b38a8547ef6df81c96291b7960d9b",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_channels.tsv",
+      "bytes": 7757,
+      "sha256": "97dd5d5da660fe5bc2e36d69d81c461f1cb3a36dc086476a5c8973a44d6bf9b7",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.eeg",
+      "bytes": 3686172672,
+      "sha256": "ca9b063591351e541d1ebae31f30477cbfb1b713475f8f3c5075a3055fc03697",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.vhdr",
+      "bytes": 2282,
+      "sha256": "3fa1ffbf2ebad79e1cc64e96038cfd92165e157185910223b7f7ef4c0484de58",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "71aa153bd865645d9d8051efa71c21ed73332b36effc107fb7de51b5b0572e55",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU64/ses-1/ieeg/sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.json",
+      "bytes": 1586,
+      "sha256": "71429512185d03bd99990a60ff2bbda2e36aaf7de4931c7180115369d90b90e2",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_events.tsv",
+      "bytes": 67423,
+      "sha256": "ea940568f477afe517e5b9561ac80580f019f7db97ab86e9fd18b2791563b23f",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_channels.tsv",
+      "bytes": 3821,
+      "sha256": "ac1971e3b84022b7de1c1de3ef3fdd74a0a2d4b5c7e777b7f2acd17fcd50bf29",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.eeg",
+      "bytes": 2005453824,
+      "sha256": "2e93e09b60944f75c39bdc2d4980f62e07b61250e8d52219d732a45ec20a0fb6",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.vhdr",
+      "bytes": 1296,
+      "sha256": "8c34dfad65bdbd554bd680ffd15b19146cb49f88d0f61bda30cd4d0a27b2f6e5",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "a58a0a5c72600bfce64973884ae04c1174384ac2f31d08a1c05b6cb241a5796a",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU71/ses-1/ieeg/sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114_ieeg.vmrk"
+    },
+    {
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.json",
+      "bytes": 1593,
+      "sha256": "fd70dcc2dedcf7d9380d67fff73f7ec99e2c1499c52430830a99ef1c5ad6ae2c",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.json"
+    },
+    {
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_events.tsv",
+      "bytes": 57138,
+      "sha256": "f66e45350be26899cb535c2e88ee4cf4d9ee613a345e1acc78d8267d71678a90",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_events.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_channels.tsv",
+      "bytes": 3880,
+      "sha256": "525b14fdc0e46da80ae5315e74fc3266646e1db288c558b6c03834f1ba63cb6c",
+      "url": "https://raw.githubusercontent.com/OpenNeuroDatasets/ds004080/c4fd7418883e33b024292468eb14da1649f51aae/sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_channels.tsv"
+    },
+    {
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.eeg",
+      "bytes": 1349224448,
+      "sha256": "e9f51d9e607dec2729eb6e99b89a51c82d55b6ce31f071e4e261eb35af041de9",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.eeg"
+    },
+    {
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.vhdr",
+      "bytes": 1306,
+      "sha256": "bacbf51aabc8bf4b905d5b9313e1a3791a65677a83c510301b55960d98dce7d9",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.vhdr"
+    },
+    {
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.vmrk",
+      "bytes": 455,
+      "sha256": "3eeecc54dd3d68a937947f57ce6dd2bace6a297c6a954cf1659290682c3e882d",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004080/sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544_ieeg.vmrk"
+    }
+  ],
+  "reuse_pilot": [
+    {
+      "subject": "sub-ccepAgeUMCU02",
+      "path": "sub-ccepAgeUMCU02/ses-1/ieeg/sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-041456_ieeg.json",
+      "json_sha256": "4b06a9adc7e74dc94f482ed97790d935325253d4054a5d3b1f187fd7bf7f2728",
+      "events_sha256": "7e4ad2680be0086e1fd1c78a7f11098b893018889f8c55d4e602c21cee4c6142",
+      "fs": 2048,
+      "channels": 88,
+      "duration": 1314.90625,
+      "recording_type": "continuous",
+      "n_pulses": 160,
+      "before_first_pulse": 255.65966796875,
+      "after_last_pulse": 22.7158203125,
+      "baseline_stop": 255.15576171875,
+      "starts": [
+        44.0986328125,
+        135.61083984375,
+        184.763671875
+      ],
+      "declared_M": 86,
+      "run_id": "sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-041456"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU10",
+      "path": "sub-ccepAgeUMCU10/ses-1/ieeg/sub-ccepAgeUMCU10_ses-1_task-SPESclin_run-041538_ieeg.json",
+      "json_sha256": "e06583772e215f0371ffcf9ee69051df1754c94952c907412f46b3f7870b2a4a",
+      "events_sha256": "c282b4ed528412129d7a1ba230069590b85641cd0b690cf42875c0892af98030",
+      "fs": 2048,
+      "channels": 96,
+      "duration": 3796.1875,
+      "recording_type": "continuous",
+      "n_pulses": 575,
+      "before_first_pulse": 532.599609375,
+      "after_last_pulse": 35.36474609375,
+      "baseline_stop": 531.96435546875,
+      "starts": [
+        9.0,
+        211.74556107954544,
+        380.7001953125
+      ],
+      "declared_M": 88,
+      "run_id": "sub-ccepAgeUMCU10_ses-1_task-SPESclin_run-041538"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU12",
+      "path": "sub-ccepAgeUMCU12/ses-1/ieeg/sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-021828_ieeg.json",
+      "json_sha256": "c189efefce594c0e217ae6e08687f0419e0763e582eb2ce799b0f5bfb4d818cc",
+      "events_sha256": "eccacea2221a90146ecc70fd946cccb375c29b2e276622e538a2a9ea240a5624",
+      "fs": 2048,
+      "channels": 116,
+      "duration": 3272.5,
+      "recording_type": "continuous",
+      "n_pulses": 515,
+      "before_first_pulse": 560.8837890625,
+      "after_last_pulse": 11.18017578125,
+      "baseline_stop": 558.1259765625,
+      "starts": [
+        9.0,
+        232.81298828125,
+        450.89599609375
+      ],
+      "declared_M": 107,
+      "run_id": "sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-021828"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU61",
+      "path": "sub-ccepAgeUMCU61/ses-1/ieeg/sub-ccepAgeUMCU61_ses-1_task-SPESclin_run-021244_ieeg.json",
+      "json_sha256": "f42186e84d5ffa37a98f530e0578022904a91ff91b938f33da4ca2cf0037240b",
+      "events_sha256": "5ea70ca38445fc60a32966d4953ac7309915a3719f392c353825e236eaf45292",
+      "fs": 2048,
+      "channels": 80,
+      "duration": 3579.65625,
+      "recording_type": "continuous",
+      "n_pulses": 560,
+      "before_first_pulse": 355.5673828125,
+      "after_last_pulse": 17.00537109375,
+      "baseline_stop": 354.4423828125,
+      "starts": [
+        9.0,
+        151.79280598958334,
+        313.4423828125
+      ],
+      "declared_M": 64,
+      "run_id": "sub-ccepAgeUMCU61_ses-1_task-SPESclin_run-021244"
+    },
+    {
+      "subject": "sub-ccepAgeUMCU73",
+      "path": "sub-ccepAgeUMCU73/ses-1/ieeg/sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-021140_ieeg.json",
+      "json_sha256": "ee2fb28b1f267924bca3d53427e961fd0800ac97bfc103dfc0921d33eb791d35",
+      "events_sha256": "44972a8b392550fd4f01a0075a5482dcaf577dc45d2ecaf88afe4588caff268f",
+      "fs": 2048,
+      "channels": 48,
+      "duration": 2529.1875,
+      "recording_type": "continuous",
+      "n_pulses": 180,
+      "before_first_pulse": 232.3154296875,
+      "after_last_pulse": 1158.962890625,
+      "baseline_stop": 231.77685546875,
+      "starts": [
+        50.71044921875,
+        129.42138671875,
+        176.5947265625
+      ],
+      "declared_M": 48,
+      "run_id": "sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-021140"
+    }
+  ]
+}
