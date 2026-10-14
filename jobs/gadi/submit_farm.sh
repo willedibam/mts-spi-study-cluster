@@ -61,7 +61,10 @@ for name in TASK_TIMEOUT WORKERS PYSPI_SOURCE; do
 done
 
 echo "[INFO] config=$config selected=$tasks/$total cores_per_recording=$cores_per_recording ncpus=$ncpus mem=${mem_gb}GB walltime=$walltime" >&2
+dependency_args=()
+[[ -n "${DEPENDENCY:-}" ]] && dependency_args=(-W "depend=$DEPENDENCY")
 qsub \
+    "${dependency_args[@]}" \
     -l "ncpus=$ncpus,mem=${mem_gb}GB,walltime=$walltime,jobfs=${jobfs_gb}GB" \
     -v "$variables" \
     jobs/gadi/run_farm.pbs
