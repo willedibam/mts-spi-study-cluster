@@ -1,0 +1,43 @@
+#!/bin/bash
+#PBS -N spi-farm
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8
+#PBS -l mem=48GB
+#PBS -l walltime=06:00:00
+#PBS -l jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${CORPUS_CONFIG:?}" "${INDEX:?}" "${PYSPI_SOURCE:?}" "${CORES_PER_RECORDING:?}"
+cd "$PBS_O_WORKDIR"
+source jobs/gadi/env.sh
+exec >"$RUN_ROOT/logs/recovery-${PBS_JOBID%%.*}.log" 2>&1
+[[ "$INDEX" =~ ^[1-9][0-9]*$ ]]
+[[ "$CORES_PER_RECORDING" == "$PBS_NCPUS" ]]
+python - <<'PY'
+import os
+from pathlib import Path
+import mtsspi, pyspi
+from research.empirical.ccep_pilot.release import EXPECTED_SOURCE
+assert os.environ['PYSPI_SOURCE'] == EXPECTED_SOURCE
+assert Path(pyspi.__file__).resolve().is_relative_to(Path(EXPECTED_SOURCE))
+assert Path(mtsspi.__file__).resolve().is_relative_to(Path.cwd())
+PY
+python -m mtsspi.run_corpus --config "$CORPUS_CONFIG" --validate-source
+# Exercise the frozen version's serial/partial/parallel resume parity before recovery.
+mpirun -np 1 --map-by "node:PE=$CORES_PER_RECORDING" python -m pytest -q -p no:cacheprovider \
+    --basetemp="$PBS_JOBFS/checkpoint-test" \
+    "$PYSPI_SOURCE/tests/test_parallel.py::test_checkpoint_resume_matches_full_run"
+mpirun -np 1 --map-by "node:PE=$CORES_PER_RECORDING" python -u -m mtsspi.run_corpus \
+    --config "$CORPUS_CONFIG" --job-index "$INDEX" --n-jobs "$CORES_PER_RECORDING" \
+    --skip-existing --checkpoints
+python - "$CORPUS_CONFIG" "$INDEX" <<'PY'
+import sys
+from mtsspi.corpus import ArchiveCorpus
+from research.empirical.ccep_pilot.release import validate_table
+corpus = ArchiveCorpus.from_file(sys.argv[1])
+_, coverage = validate_table(corpus, corpus.entries()[int(sys.argv[2])-1])
+print('Recovery validated; finite-edge coverage:', coverage)
+PY
