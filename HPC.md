@@ -44,36 +44,29 @@ Other options are environment variables: `START_INDEX`/`END_INDEX`, `NCPUS`, `WA
 
 Progression: a two-recording smoke on the tiny archive (`$MTS_GDATA/pyspi-optimisation/farm-smoke-261013/tiny.npz`, about 90 s) to check that the configuration runs; one representative recording when time or memory is unknown; then the farm. Prefer a generous memory request to a long smoke.
 
-**Workers per recording** for full tables with the `fd0de71` pyspi. Fix them by size and do not re-measure with more.
-
-| Recording | Workers | Basis |
-| --- | --- | --- |
-| `M` up to 32, `T` up to 2000 | 1 with many recordings, 4 with few | 5 to 30 min of work, so each worker's start-up is a visible share |
-| `M` 32 to 100 | 8, or 12 to 16 for speed | measured: 8.1x on 8 and 15.6x on 16 at `M=64`, `T=1000`; 2.3x from 4 to 12 at `M=86`, `T=4096` |
-| `M` 100 to 200 | 12 to 24 | extrapolated |
-| `M` 200 and up | 16 to 48 for a full table, 8 to 16 for a sampled one | extrapolated above `M=107`; memory alone justifies 8 or more |
-
-Above about 16 a recording gains less per worker and holds more memory, so run a job's recordings side by side (4 recordings of 12 workers on 48 cores) before giving one of them more. Measure one recording of each size class at its longest `T` first, with those workers, for its wall time and memory; then release the rest in one job. `WALLTIME` is twice the measured time.
-
-**Memory before measuring.** One worker needs about `3 GiB + M² × T / 3,000,000 GiB`:
+**Workers and memory by size**, for a full `benchmarked_p90` table with the `fd0de71` pyspi. Each cell is workers · GiB to request · hours. Fix them from this table and do not re-measure with more.
 
 | `M` | `T=256` | `T=1024` | `T=2048` | `T=4096` |
-| ---: | ---: | ---: | ---: | ---: |
-| 16 | 3 | 3 | 3 | 3 |
-| 32 | 3 | 3 | 4 | 4 |
-| 64 | 3 | 4 | 6 | 9 |
-| 128 | 4 | 9 | 14 | 25 |
-| 256 | 9 | 25 | 48 (extrapolated) | 92 (extrapolated) |
-| 512 | 25 (extrapolated) | 92 (extrapolated) | 182 (extrapolated) | 361 (extrapolated) |
+| ---: | --- | --- | --- | --- |
+| 16 | 1 · 4 · under 0.1 | 1 · 4 · under 0.1 | 1 · 5 · 0.1 | 2 · 6 · 0.2 |
+| 32 | 1 · 4 · under 0.1 | 1 · 4 · 0.2 | 2 · 5 · 0.3 | 2 · 7 · 0.9 |
+| 64 | 1 · 4 · 0.1 | 2 · 6 · 0.3 | 4 · 9 · 0.6 | 8 · 24 · 1.1 |
+| 128 | 2 · 6 · 0.3 | 4 · 11 · 0.7 | 8 · 23 · 1.3 | 16 · 60 · 2.7 |
+| 256 | 4 · 11 · 0.5 | 12 · 34 · 1.0 | 24 · 77 · 2.0 | 32 · 174 · 7.1 |
+| 512 | 12 · 34 · 0.7 | 32 · 123 · 1.6 | beyond a node | beyond a node |
 
-The `M² × T` term is the SPIs fitted on every channel (the multitaper and wavelet spectral ones set the peak). Measured alone on one core for `M=16` to `256` and `T=256` to `4096` (`bench/pair_sampling/memory_profile.py` in pyspi), that part is `0.7 GiB + M² × T / 3,000,000` within 20% on each of twelve sizes. The 3 GiB is set from PBS's figures for five full recordings (`M=48` to `243`), which the rule then matches within 1.5 times. Two sizes are still running and are predictions for now: `M=128, T=4096` and `M=256, T=1024`, 23 GiB each for the all-channel part.
+- **The workers are the fewest that the requested memory already pays for**, which is the cheapest count. Doubling them roughly halves the time for up to about 20% more SU; above about 16 a recording gains less per worker. With many recordings of `M` up to 32, use 1.
+- **Memory:** one worker needs about `3 GiB + M² × T / 3,000,000 GiB`, and each further worker about 0.2 GiB at `T=1024` and below, 0.6 at `T=2048` and 1.5 at `T=4096`. The request in the table is that plus a quarter.
+- **Time:** one core takes about 0.2, 1.2, 4 and 13 seconds per channel pair at `T=256`, `1024`, `2048` and `4096`.
+- **Basis:** measured for `M=16` to `256` at `T=256` to `4096` (the all-channel SPIs alone, on one core: `bench/pair_sampling/memory_profile.py` in pyspi; `0.7 GiB + M² × T / 3,000,000` within 20% on each of twelve sizes) and against PBS for five full recordings (`M=48` to `243`, within 1.5 times). Extrapolated: the `T=2048` column, `M=512`, and `M=256` at `T=4096`. Two sizes are still running and are predictions for now: `M=128, T=4096` and `M=256, T=1024`, 23 GiB each for the all-channel part.
+- **Run a job's recordings side by side** (the node holds 48 over the workers, or 190 GiB over the request, whichever is smaller) before giving one of them more workers. Measure one recording of each size class first for its wall time and memory, then release the rest in one job. `WALLTIME` is twice the measured time.
 
 How it varies:
 
 - **Between recordings of one size:** up to 1.3 times in memory and 1.4 times in run time (`M=86` against `M=88`).
 - **With workers:** each adds about 0.2 GiB at `T=1000` and 1 to 2 GiB at `T=4096` (less below `M=64`).
 - **Per-pair caches** are kept for the whole run: at most about 1 MiB per pair at `T=4096` (poorly measured), which would be 30 GiB at `M=256`; not detectable at `T=1024` and below.
-- **SPI set:** the rule is for `benchmarked_p90`; a config without the spectral SPIs needs far less. Sampling does not reduce memory.
+- **Where it goes:** the memory is working space inside single SPIs, not caches. The wavelet phase-slope SPIs build an array over every channel pair, sample and frequency (about 400 bytes per pair and sample); the nonparametric spectral Granger group needs about two-thirds of that. A config without them needs far less. Sampling does not reduce memory.
 - **Beyond a node:** `M=512` at `T=2048` and above, and about `M=306` at `T=5000`, need more than a 190 GiB node once headroom is added. Use `hugemem` or a shorter `T`.
 
 **Workers, memory and charge.** A job is charged 2 SU per hour times the larger of its requested cores and its requested memory over 3.96 GiB, on the request and not on use.
