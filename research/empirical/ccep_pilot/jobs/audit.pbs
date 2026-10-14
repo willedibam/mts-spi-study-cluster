@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N ccep-audit
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -l walltime=00:20:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_PARENT:?}" "${PYSPI_SOURCE:?}"
+cd "$PBS_O_WORKDIR"
+source jobs/gadi/env.sh
+exec >"$RUN_PARENT/ccep-cohort-261014/logs/audit-${PBS_JOBID%%.*}.log" 2>&1
+python -u -m research.empirical.ccep_pilot.audit --parent "$RUN_PARENT"
