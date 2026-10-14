@@ -13,6 +13,8 @@ from .acquire import sha256
 from .prepare import clean_windows, filtered
 
 CONFIG = Path(__file__).parent / 'configs/cohort-selection.json'
+# The first five 512-Hz runs precede only the header-rounding assertion repair.
+COMPATIBLE_PREPARATION_SOURCES = {'e9debbd51dea2e9f8cc8dd37860e2dc79018dfabe0cafbb2dff669409ed43ada'}
 
 
 def native_qc(central):
@@ -41,7 +43,8 @@ def prepare(root, raw_root):
         if destination.exists():
             report = json.loads(destination.read_text())
             assert report['selection_sha256'] == sha256(CONFIG)
-            assert report['script_sha256'] == sha256(__file__)
+            assert report['script_sha256'] in COMPATIBLE_PREPARATION_SOURCES | {sha256(__file__)}
+            assert report['pilot_preprocessing_sha256'] == sha256(Path(__file__).parent/'prepare.py')
             assert sha256(root/'prepared'/f'{run}.npz') == report['prepared_sha256']
             reports.append(report); continue
         channels = pd.read_csv(raw_root/'raw'/(prefix+'_channels.tsv'), sep='\t')
@@ -49,7 +52,7 @@ def prepare(root, raw_root):
         meta = json.loads((raw_root/'raw'/item['path']).read_text())
         raw = mne.io.read_raw_brainvision(raw_root/'raw'/(prefix+'_ieeg.vhdr'), preload=False, verbose='ERROR')
         fs = int(meta['SamplingFrequency'])
-        assert raw.info['sfreq'] == fs and raw.n_times == round(item['duration']*fs)
+        assert abs(raw.info['sfreq']-fs) < .01 and raw.n_times == round(item['duration']*fs)
         assert raw.ch_names == channels.name.tolist()
         pulses = events.query("trial_type == 'electrical_stimulation'")
         timing = float(np.max(abs(pulses.onset*fs-pulses.sample_start)))
