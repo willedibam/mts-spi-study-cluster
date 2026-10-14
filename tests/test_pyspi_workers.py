@@ -130,6 +130,32 @@ def test_runner_seeds_and_records_resources_for_any_worker_count(tmp_path, monke
     assert run_corpus.completion_error(config, entry) is None
 
 
+@pytest.mark.parametrize("version", ["v1", "v2"])
+def test_job_peak_memory_is_read_from_the_pbs_job_cgroup(tmp_path, monkeypatch, version):
+    """Under PBS the job's own cgroup holds its peak; outside a job there is none."""
+    job, path = "181183432.gadi-pbs", "pbspro.service/jobid/181183432.gadi-pbs"
+    cgroups = tmp_path / "cgroup"
+    if version == "v1":
+        cgroups.write_text(f"11:cpuset:/{path}\n7:memory:/{path}\n1:name=systemd:/system.slice\n")
+        peak = tmp_path / "sys" / "memory" / path / "memory.max_usage_in_bytes"
+    else:
+        cgroups.write_text(f"0::/{path}\n")
+        peak = tmp_path / "sys" / path / "memory.peak"
+    peak.parent.mkdir(parents=True)
+    peak.write_text(f"{322 * 2**20}\n")
+
+    monkeypatch.delenv("PBS_JOBID", raising=False)
+    assert provenance.job_peak_memory_mib(cgroups, tmp_path / "sys") is None
+    assert "job" not in provenance.peak_memory_mib()
+
+    monkeypatch.setenv("PBS_JOBID", job)
+    assert provenance.job_peak_memory_mib(cgroups, tmp_path / "sys") == 322.0
+    monkeypatch.setenv("PBS_JOBID", "999.gadi-pbs")          # another job's cgroup is not ours
+    assert provenance.job_peak_memory_mib(cgroups, tmp_path / "sys") is None
+    monkeypatch.setenv("PBS_JOBID", job)
+    assert provenance.job_peak_memory_mib(tmp_path / "missing", tmp_path / "sys") is None
+
+
 def _real_corpus(tmp_path, pair_tolerance=None):
     series = _series(T=150, M=6)
     archive = tmp_path / "source.npz"

@@ -148,14 +148,48 @@ def worker_resources(n_jobs: int) -> dict[str, Any]:
     return {"bound_cores": cores, "thread_variables": threads}
 
 
-def peak_memory_mib() -> dict[str, float]:
-    """Peak resident size of this process and of its largest finished worker.
+def job_peak_memory_mib(cgroups: Path = Path("/proc/self/cgroup"),
+                        mount: Path = Path("/sys/fs/cgroup")) -> float | None:
+    """Peak memory of the PBS job this process runs in, from the job's memory cgroup.
 
-    Workers overlap, so ``parent + n_jobs * largest_worker`` bounds the
-    recording's footprint from above; that bound is what node admission needs.
+    The figure PBS reports as memory used. It covers every process of the job,
+    so for a job running one recording it is that recording's peak. ``None``
+    outside a PBS job or where the cgroup cannot be read.
+    """
+    job = os.environ.get("PBS_JOBID")
+    try:
+        lines = cgroups.read_text().splitlines() if job else []
+    except OSError:
+        return None
+    for line in lines:
+        _, controllers, path = line.split(":", 2)
+        if job not in path:
+            continue
+        if "memory" in controllers.split(","):      # cgroup v1 (Gadi)
+            file = mount / "memory" / path.lstrip("/") / "memory.max_usage_in_bytes"
+        elif not controllers:                         # cgroup v2
+            file = mount / path.lstrip("/") / "memory.peak"
+        else:
+            continue
+        try:
+            return round(int(file.read_text()) / 2**20, 1)
+        except (OSError, ValueError):
+            return None
+    return None
+
+
+def peak_memory_mib() -> dict[str, float]:
+    """Peak resident size of this process and of its largest finished worker,
+    and under PBS the measured peak of the whole job (``job``).
+
+    Size a request from ``job`` of a one-recording job. Without it,
+    ``parent + n_jobs * largest_worker`` bounds the recording from above, by
+    two to four times: only the worker on an all-channel SPI is that large.
     """
     unit = 1 if sys.platform == "darwin" else 1024  # ru_maxrss: bytes or KiB
     def peak(who: int) -> float:
         return round(resource.getrusage(who).ru_maxrss * unit / 2**20, 1)
-    return {"parent": peak(resource.RUSAGE_SELF),
-            "largest_worker": peak(resource.RUSAGE_CHILDREN)}
+    peaks = {"parent": peak(resource.RUSAGE_SELF),
+             "largest_worker": peak(resource.RUSAGE_CHILDREN)}
+    job = job_peak_memory_mib()
+    return peaks if job is None else {**peaks, "job": job}
