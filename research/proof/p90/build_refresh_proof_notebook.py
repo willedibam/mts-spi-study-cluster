@@ -6,7 +6,9 @@ ROOT=Path(__file__).resolve().parents[3]
 md=nbf.v4.new_markdown_cell;code=nbf.v4.new_code_cell
 cells=[md(r'''# SPI–SPI proof of concept — p90, 2026-09-24
 
-Fresh extraction with the current 289-SPI catalogue. The figures compare ten generator classes, then four CML regimes, and finally individual SPI–SPI coordinates that distinguish pairs of classes. These embeddings illustrate organisation; they do not establish invariance to channel count or recording length.'''),
+Historical r7 setup: extraction stopped at 1,078/1,080 recordings without a feature bank. The current rerun is in [proof_p90_261014.ipynb](proof_p90_261014.ipynb).
+
+This setup uses the September 289-SPI catalogue. The figures compare ten generator classes, then four CML regimes, and finally individual SPI–SPI coordinates that distinguish pairs of classes. These embeddings illustrate organisation; they do not establish invariance to channel count or recording length.'''),
 code('''from pathlib import Path
 import sys, json, os
 import matplotlib.pyplot as plt

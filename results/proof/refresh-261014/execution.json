@@ -1,0 +1,107 @@
+{
+  "study": "proof-refresh-261014",
+  "status": "smoke_passed_size_measurements_running",
+  "authorised": "Fresh current p90 in a new dated directory; preserve the September model/grid settings.",
+  "source_commit": "aaad401",
+  "initial_smoke_source_commit": "b9a92f6",
+  "pyspi_commit": "c2d723f",
+  "computation_version": "3.0.0.r9",
+  "spis": 283,
+  "datasets": 1080,
+  "source_snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-aaad401",
+  "pyspi_snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-proof-c2d723f",
+  "remote_root": "/scratch/ql44/we2614/mts-spi-study/proof/refresh-261014",
+  "smoke": {
+    "job": "181220716.gadi-pbs",
+    "indices": [
+      1,
+      2
+    ],
+    "exit_status": 0,
+    "walltime": "00:01:43",
+    "peak_memory_kb": 2956720
+  },
+  "pilots": [
+    {
+      "job": "181222014.gadi-pbs",
+      "index": 3,
+      "M": 8,
+      "T": 500,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222025.gadi-pbs",
+      "index": 11,
+      "M": 8,
+      "T": 1000,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222041.gadi-pbs",
+      "index": 21,
+      "M": 8,
+      "T": 2000,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222042.gadi-pbs",
+      "index": 31,
+      "M": 16,
+      "T": 500,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222047.gadi-pbs",
+      "index": 41,
+      "M": 16,
+      "T": 1000,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222053.gadi-pbs",
+      "index": 51,
+      "M": 16,
+      "T": 2000,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222054.gadi-pbs",
+      "index": 61,
+      "M": 32,
+      "T": 500,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222055.gadi-pbs",
+      "index": 71,
+      "M": 32,
+      "T": 1000,
+      "cores_per_recording": 1
+    },
+    {
+      "job": "181222059.gadi-pbs",
+      "index": 81,
+      "M": 32,
+      "T": 2000,
+      "cores_per_recording": 2
+    }
+  ],
+  "release": {
+    "job": "181222060.gadi-pbs",
+    "afterok": [
+      "181222014.gadi-pbs",
+      "181222025.gadi-pbs",
+      "181222041.gadi-pbs",
+      "181222042.gadi-pbs",
+      "181222047.gadi-pbs",
+      "181222053.gadi-pbs",
+      "181222054.gadi-pbs",
+      "181222055.gadi-pbs",
+      "181222059.gadi-pbs"
+    ]
+  },
+  "production_policy": "one homogeneous farm per M/T cell; same worker count as pilot, PBS whole-job memory times 1.25, twice measured walltime (scaled for waves); source and pyspi snapshots pinned",
+  "historical_run": "September r7 retained at 1078/1080 with only two stochastic replays; no feature bank. Not extended or pooled.",
+  "generator_check": "All 12 M8/T500 instance0 outputs agree with archived September inputs within 1.4e-15 (7 bit-exact).",
+  "plotting_validation": "Four full notebooks executed in disposable copies: July proof, June case, both September cases; restored legacy helpers rendered; 180 DTW sweep correlations independently matched."
+}
