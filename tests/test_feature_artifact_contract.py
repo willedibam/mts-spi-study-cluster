@@ -4,7 +4,23 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mtsspi.process_features import main
+from mtsspi.process_features import main, load_samples_with_flags, validate_source_provenance
+
+
+def test_fixed_estimator_seeds_allow_independent_generator_seeds(tmp_path):
+    for index in range(2):
+        path = tmp_path / "class" / f"I{index}"
+        _write_sample(path, index, constant_directed=False)
+        meta = json.loads((path / "meta.json").read_text())
+        meta["random_seed"] = 100 + index
+        meta["pyspi"]["version"]["computation"] = "3.0.0.r9"
+        meta["job"] = {"estimator_rng_policy": "pyspi_fixed_seeds"}
+        (path / "meta.json").write_text(json.dumps(meta))
+    samples, _, _ = load_samples_with_flags(tmp_path)
+    assert validate_source_provenance(samples)["estimator_rng_policy"] == "pyspi_fixed_seeds"
+    samples[0]["pyspi_provenance"]["estimator_rng_policy"] = None
+    with pytest.raises(ValueError, match="random-seed"):
+        validate_source_provenance(samples)
 
 
 SPI_CATALOG = [

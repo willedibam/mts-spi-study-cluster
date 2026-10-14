@@ -139,6 +139,7 @@ def load_samples_with_flags(
                         "version": meta.get("pyspi", {}).get("version"),
                         "normalise": meta.get("normalise"),
                         "random_seed": meta.get("random_seed"),
+                        "estimator_rng_policy": meta.get("job", {}).get("estimator_rng_policy"),
                     },
                     "experiment_provenance": meta.get("experiment", {}),
                 }
@@ -213,9 +214,16 @@ def validate_source_provenance(samples: Sequence[Dict]) -> dict[str, object]:
         raise ValueError("pooled datasets have different pyspi computation versions")
     if len(signatures["normalise"]) > 1:
         raise ValueError("pooled datasets have different pyspi normalization settings")
-    if len(signatures["random_seed"]) > 1 or (
+    # The unified runner records different generator seeds per synthetic
+    # recording. They do not change estimators whose own seeds are fixed.
+    # Older/unlabelled runs retain the stricter seed-identity check.
+    fixed_estimator_seeds = all(
+        sample.get("pyspi_provenance", {}).get("estimator_rng_policy") == "pyspi_fixed_seeds"
+        for sample in samples
+    )
+    if not fixed_estimator_seeds and (len(signatures["random_seed"]) > 1 or (
         signatures["random_seed"] and missing_counts["random_seed"]
-    ):
+    )):
         raise ValueError("pooled datasets have different pyspi random-seed settings")
 
     return {
@@ -224,6 +232,7 @@ def validate_source_provenance(samples: Sequence[Dict]) -> dict[str, object]:
         "version": sorted(signatures["version"]),
         "normalise": sorted(signatures["normalise"]),
         "random_seed": sorted(signatures["random_seed"]),
+        "estimator_rng_policy": "pyspi_fixed_seeds" if fixed_estimator_seeds else "legacy_or_unspecified",
         "status": "incomplete" if incomplete else "complete",
         "missing_fields": sorted(incomplete),
     }

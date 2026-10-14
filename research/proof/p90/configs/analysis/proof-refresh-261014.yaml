@@ -1,0 +1,69 @@
+study: proof-refresh-261014
+status: authorised_current_p90_rerun
+proof:
+  generation: research/proof/p90/configs/proof-p90-261014.yaml
+  expected_datasets: 1080
+  spi_config: benchmarked_p90
+  expected_spis: 283
+  feature_metric: pearson
+  feature_contract: direction_preserving_v2
+  displayed_block: sym
+  rationale: Preserve the original proof's symmetrized MPI-edge definition for this
+    refresh.
+  inter_class_exclude:
+  - frozen-chaos
+  - fdstc
+  within_cml:
+  - frozen-chaos
+  - sti-i
+  - defect-turbulence
+  - fdstc
+  preprocessing:
+    minimum_finite_fraction: 0.95
+    variance_threshold: 1.0e-08
+    imputation: median
+    scaling: center
+    pca_components: 50
+  embedding_scope: Independent unsupervised fits per panel; illustrative, not an invariance
+    test.
+  umap:
+    n_neighbors: 25
+    min_dist: 0.25
+    metric: euclidean
+    random_state: 260924
+  feature_selection_instances:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  raincloud_display_instances:
+  - 6
+  - 7
+  - 8
+  - 9
+  feature_selection: Largest absolute deviation of training AUC from 0.5; freeze orientation
+    for display AUC.
+  raincloud_scope: All six pairs among four CML regimes, plus Gaussian/Cauchy and
+    all three VAR class pairs.
+  qualification: Exploratory instance split; generator families and earlier outcomes
+    have already been inspected.
+  var_design:
+    topology: ring-symmetric
+    self_total_neighbour:
+    - - 0.7
+      - 0.2
+    - - 0.2
+      - 0.2
+    - - 0.2
+      - 0.7
+    spectral_radii:
+    - 0.9
+    - 0.4
+    - 0.9
+    stability_rescaling: false
+    innovation_std: 0.1
+    burn_in: 100
+  computation_version: 3.0.0.r9
+  estimator_rng_policy: pyspi_fixed_seeds

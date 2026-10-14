@@ -32,7 +32,7 @@ def display_name(name):
     return DISPLAY.get(name,name.replace('var-self-', 'VAR: self ').replace('_total-', ', total coupling ').replace('var-phi-', 'VAR: requested self ').replace('_cpl-', ', neighbour '))
 
 
-def load_bank(path):
+def load_bank(path, *, expected_spis=289):
     # Repository-generated v2 archives store feature-name arrays as objects.
     with np.load(path,allow_pickle=True) as d:
         bank={k:d[k] for k in ['X_sym','y','M','T','instance','spi_order','feature_spi_a','feature_spi_b','feature_block']}
@@ -40,8 +40,8 @@ def load_bank(path):
     bank['y']=bank['y'].astype(str);bank['instance']=bank['instance'].astype(int)
     sym=bank['feature_block'].astype(str)=='sym'
     bank['pairs']=np.column_stack([bank['feature_spi_a'][sym],bank['feature_spi_b'][sym]]).astype(str)
-    assert bank['X_sym'].shape==(1080,41616),bank['X_sym'].shape
-    assert len(bank['spi_order'])==289
+    assert bank['X_sym'].shape==(1080,expected_spis*(expected_spis-1)//2),bank['X_sym'].shape
+    assert len(bank['spi_order'])==expected_spis
     keys=list(zip(bank['y'],bank['M'],bank['T'],bank['instance']))
     assert len(set(keys))==1080
     for cls in np.unique(bank['y']):
@@ -67,9 +67,9 @@ def preprocess(X):
     return Y,keep
 
 
-def embeddings(bank, output):
+def embeddings(bank, output, *, protocol_path=PROTOCOL):
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
-    protocol=yaml.safe_load(PROTOCOL.read_text())['proof']
+    protocol=yaml.safe_load(Path(protocol_path).read_text())['proof']
     selections={'inter':~np.isin(bank['y'],protocol['inter_class_exclude']), 'cml':np.isin(bank['y'],CML)}
     coords={};audit={}
     for name,mask in selections.items():
