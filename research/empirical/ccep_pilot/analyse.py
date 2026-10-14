@@ -16,7 +16,8 @@ EXPECTED_SOURCE='/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-pai
 
 
 def correlation_endpoint(name):
-    return name.startswith(('corr_','xcorr')) or name in {'cov_EmpiricalCovariance','cov-sq_EmpiricalCovariance'}
+    return name.startswith(('corr_','xcorr','cov_','cov-sq_')) or name in {
+        'spearmanr','spearmanr-sq','kendalltau','kendalltau-sq'}
 
 
 def analyse(root):
