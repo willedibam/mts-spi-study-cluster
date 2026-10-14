@@ -117,3 +117,20 @@ def contact_qc_figure(root):
         axes[-1].set(xlabel='Window time (s)',xlim=(0,32))
     fig.suptitle('Participant 73 · excluded first interval · native 2048 Hz; differing voltage scales',fontsize=10)
     save(fig,root/'figures','native-contact-qc')
+
+
+def cohort_native_zoom(root, run_id, filename, half_width=.15):
+    """Replay native excursion inspection from the cohort's retained QC traces."""
+    root=Path(root);plt=style()
+    report=json.loads((root/'scope'/f'{run_id}.json').read_text())
+    fig,axes=plt.subplots(len(report['windows']),2,figsize=(8,2.3*len(report['windows'])),squeeze=False)
+    with np.load(root/'prepared'/f'{run_id}.npz') as bank:
+        fs=int(bank['native_fs'])
+        for window,(ax,zoom) in zip(report['windows'],axes):
+            w=window['window'];y=bank[f'trace{w}'][0]*1e6;t=np.arange(len(y))/fs
+            peak=np.argmax(abs(y-np.median(y)))
+            ax.plot(t,y,lw=.4);ax.set(title=f"w{w}: {bank[f'trace_names{w}'][0]}",xlabel='Time (s)',ylabel='Native µV')
+            lo=max(0,peak-round(half_width*fs));hi=min(len(y),peak+round(half_width*fs))
+            zoom.plot((t[lo:hi]-t[peak])*1000,y[lo:hi],'.-',ms=2,lw=.5)
+            zoom.set(xlabel='Time around peak (ms)',ylabel='Native µV')
+    save(fig,root/'figures',filename)

@@ -1,0 +1,344 @@
+{
+  "status": "complete before cohort SPI extraction",
+  "scope_sha256": "54741b7bfe4312cfaa30405101eebedd514cf3f50378e9f8f6d40b79f5dc4f5b",
+  "selection_sha256": "3929e0a73bae9221b4ef4df48ae03d5cf94e319d61f9bde8abcb52b1c6eb0ab6",
+  "method": "Full-window 0.5\u201345 Hz CAR heatmaps scaled by per-channel median/IQR, plus native traces of the three largest robust excursions; native zooms distinguish resolved waveforms from brief impulsive discontinuities. No SPI outcomes inspected. Frozen numerical QC is necessary but not sufficient; retain clinical waveform variability without diagnosing its origin.",
+  "duplicate_of": {
+    "sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112": "sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112"
+  },
+  "evidence": {
+    "galleries": [
+      "figures/qc-00.png",
+      "figures/qc-01.png",
+      "figures/qc-02.png",
+      "figures/qc-03.png",
+      "figures/qc-04.png",
+      "figures/qc-05.png",
+      "figures/qc-06.png",
+      "figures/qc-07.png",
+      "figures/qc-08.png",
+      "figures/qc-09.png",
+      "figures/qc-10.png",
+      "figures/qc-11.png",
+      "figures/qc-12.png"
+    ],
+    "native_zooms": [
+      "figures/07-native-zoom.png",
+      "figures/32-native-zoom.png"
+    ]
+  },
+  "runs": {
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-021448": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-031422": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041224": {
+      "0": {
+        "accept": false,
+        "reason": "Isolated sT2 slow excursion/tail occupies the initial approximately 6 s; unresolved acquisition-quality concern, same exclusion principle as pilot C26."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041550": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-041750": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": false,
+        "reason": "Two isolated sT2 slow excursions around 5 s and 19 s; unresolved acquisition-quality concern."
+      }
+    },
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061233": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU01_ses-1_task-SPESclin_run-061343": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804": {
+      "0": {
+        "accept": false,
+        "reason": "Isolated F05 slow excursion/recovery across the initial approximately 6 s and a further FB52 excursion; unresolved acquisition-quality concern."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU03_ses-1_task-SPESclin_run-031411": {
+      "0": {
+        "accept": true,
+        "reason": "Retain with sensitivity flag: modest initial F57 drift (approximately 300 \u00b5V, maximum 8.2 robust SD), without the dominant large isolated slow excursions excluded elsewhere; numerical QC passes."
+      }
+    },
+    "sub-ccepAgeUMCU04_ses-1_task-SPESclin_run-031148": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU07_ses-1_task-SPESclin_run-021647": {
+      "0": {
+        "accept": true,
+        "reason": "Pronounced recurrent sharp transients; native zoom resolves smooth approximately 50-ms waveforms without digital clipping/one-sample discontinuity. No new spike-exclusion rule is imposed; retain and flag waveform phenotype, without assigning clinical origin."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Pronounced recurrent sharp transients; native zoom resolves smooth approximately 50-ms waveforms without digital clipping/one-sample discontinuity. No new spike-exclusion rule is imposed; retain and flag waveform phenotype, without assigning clinical origin."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Pronounced recurrent sharp transients; native zoom resolves smooth approximately 50-ms waveforms without digital clipping/one-sample discontinuity. No new spike-exclusion rule is imposed; retain and flag waveform phenotype, without assigning clinical origin."
+      }
+    },
+    "sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-051010": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU12_ses-1_task-SPESclin_run-071106": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU20_ses-1_task-SPESclin_run-011652": {
+      "0": {
+        "accept": true,
+        "reason": "Continuous high-amplitude/high-frequency F41 activity is flagged for channel/spectral sensitivity. Numerical QC passes; no clipping/dropout or isolated slow excursion. Do not impose a new amplitude-based contact exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Continuous high-amplitude/high-frequency F41 activity is flagged for channel/spectral sensitivity. Numerical QC passes; no clipping/dropout or isolated slow excursion. Do not impose a new amplitude-based contact exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Continuous high-amplitude/high-frequency F41 activity is flagged for channel/spectral sensitivity. Numerical QC passes; no clipping/dropout or isolated slow excursion. Do not impose a new amplitude-based contact exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU23_ses-1_task-SPESclin_run-021706": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU25_ses-1_task-SPESclin_run-031729": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU26_ses-1_task-SPESclin_run-011555": {
+      "0": {
+        "accept": false,
+        "reason": "Isolated F08 slow excursion around 4\u20136 s dominates that contact locally; unresolved acquisition-quality concern."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU27_ses-1_task-SPESclin_run-031551": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": false,
+        "reason": "Isolated C04 slow excursion/recovery around 24\u201330 s; unresolved acquisition-quality concern."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Shared transient across C01/C02/C03 retained: numerical QC passes, no isolated-contact discontinuity or clipping; clinical origin not assigned."
+      }
+    },
+    "sub-ccepAgeUMCU32_ses-1_task-SPESclin_run-031446": {
+      "0": {
+        "accept": false,
+        "reason": "Native zoom resolves a few-sample impulsive discontinuity near 31 s, shared by vT4/sT3/sT6; exclude this interval."
+      },
+      "1": {
+        "accept": false,
+        "reason": "Native zoom resolves a few-sample impulsive discontinuity near 9 s, shared by vT4/sT3/sT6; exclude this interval."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU39_ses-1_task-SPESclin_run-021358": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU40_ses-1_task-SPESclin_run-031553": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU48_ses-1_task-SPESclin_run-021147": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU51_ses-1_task-SPESclin_run-030954": {
+      "0": {
+        "accept": true,
+        "reason": "Recurrent sharp/bursty activity retained under frozen numerical/visual QC; no clipping/dropout or isolated slow excursion. Flag waveform phenotype for sensitivity, without assigning clinical origin."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Recurrent sharp/bursty activity retained under frozen numerical/visual QC; no clipping/dropout or isolated slow excursion. Flag waveform phenotype for sensitivity, without assigning clinical origin."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Recurrent sharp/bursty activity retained under frozen numerical/visual QC; no clipping/dropout or isolated slow excursion. Flag waveform phenotype for sensitivity, without assigning clinical origin."
+      }
+    },
+    "sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-021112": {
+      "0": {
+        "accept": false,
+        "reason": "Exact source/prepared duplicate of sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112; reuse that run, not a QC failure."
+      },
+      "1": {
+        "accept": false,
+        "reason": "Exact source/prepared duplicate of sub-ccepAgeUMCU56_ses-1_task-SPESclin_run-011112; reuse that run, not a QC failure."
+      }
+    },
+    "sub-ccepAgeUMCU57_ses-1_task-SPESclin_run-021108": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU63_ses-1_task-SPESclin_run-031718": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    },
+    "sub-ccepAgeUMCU64_ses-1_task-SPESclin_run-031037": {
+      "0": {
+        "accept": true,
+        "reason": "Shared slow excursions are retained with a sensitivity flag: numerical QC passes, no isolated-contact discontinuity or clipping; clinical origin not assigned."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Shared slow excursions are retained with a sensitivity flag: numerical QC passes, no isolated-contact discontinuity or clipping; clinical origin not assigned."
+      }
+    },
+    "sub-ccepAgeUMCU71_ses-1_task-SPESclin_run-021114": {
+      "0": {
+        "accept": true,
+        "reason": "Recurrent sharp/bursty activity retained under frozen numerical/visual QC; no clipping/dropout or isolated slow excursion. Flag waveform phenotype for sensitivity, without assigning clinical origin."
+      },
+      "1": {
+        "accept": true,
+        "reason": "Recurrent sharp/bursty activity retained under frozen numerical/visual QC; no clipping/dropout or isolated slow excursion. Flag waveform phenotype for sensitivity, without assigning clinical origin."
+      },
+      "2": {
+        "accept": true,
+        "reason": "Recurrent sharp/bursty activity retained under frozen numerical/visual QC; no clipping/dropout or isolated slow excursion. Flag waveform phenotype for sensitivity, without assigning clinical origin."
+      }
+    },
+    "sub-ccepAgeUMCU73_ses-1_task-SPESclin_run-041544": {
+      "0": {
+        "accept": true,
+        "reason": "Reviewed full-window CAR median/IQR heatmap and three largest native robust excursions; numerical QC passes, no conspicuous clipping/dropout or isolated slow excursion requiring exclusion."
+      }
+    }
+  }
+}
