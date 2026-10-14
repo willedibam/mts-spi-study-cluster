@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N hardware-r9-smoke
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4
+#PBS -l mem=16GB
+#PBS -l walltime=04:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${PILOT_ROOT:?}" "${PYSPI_SOURCE:?}"
+cd "$PBS_O_WORKDIR"
+source jobs/gadi/env.sh
+mkdir -p "$RUN_ROOT/logs"
+exec >"$RUN_ROOT/logs/smoke-${PBS_JOBID%%.*}.log" 2>&1
+python -u -m research.empirical.hardware_pilot.full_p90_run prepare --root "$RUN_ROOT" --pilot "$PILOT_ROOT" --tiny-archive "$MTS_GDATA/pyspi-optimisation/farm-smoke-261013/tiny.npz"
+python -u -m mtsspi.run_corpus --config "$RUN_ROOT/tiny-serial.yaml" --job-index 1 --n-jobs 1
+python -u -m mtsspi.run_corpus --config "$RUN_ROOT/tiny-parallel.yaml" --job-index 1 --n-jobs 4
+python -u -m mtsspi.run_corpus --config "$RUN_ROOT/tiny-parallel.yaml" --job-index 2 --n-jobs 4
+python -u -m research.empirical.hardware_pilot.full_p90_run check-tiny --root "$RUN_ROOT"
+python -u -m mtsspi.run_corpus --config "$RUN_ROOT/external.yaml" --job-index 34 --n-jobs 4 --checkpoints
