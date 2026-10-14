@@ -69,6 +69,7 @@ def prepare(bank, out):
         archive = out / f"{cohort}.npz"
         names = list(members)
         members.update(__dataset_names__=np.array(names), __axis_order__=np.array(["process", "observation"]),
+                       __labels_json__=np.array([json.dumps([r["topology"], r["window"]]) for r in rows if r["cohort"] == cohort]),
                        __shapes__=np.array([members[n].shape for n in names]))
         atomic_savez(archive, members)
         config = dict(name=f"hardware-si-ids-{cohort}", source=dict(format="named-npz-v1", archive=str(archive.resolve()),
