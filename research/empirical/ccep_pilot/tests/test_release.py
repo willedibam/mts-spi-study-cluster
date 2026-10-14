@@ -42,7 +42,7 @@ def test_duplicate_active_farm_is_rejected(tmp_path,monkeypatch):
     from types import SimpleNamespace
     config=tmp_path/'external.yaml'
     result={'Jobs':{'123.gadi-pbs':dict(Job_Name='spi-farm',job_state='R',Variable_List={'CORPUS_CONFIG':str(config)})}}
-    monkeypatch.setattr('subprocess.run',lambda *a,**k:SimpleNamespace(stdout=json.dumps(result)))
+    monkeypatch.setattr('subprocess.run',lambda argv,**k:SimpleNamespace(stdout='123.gadi-pbs\n' if argv[0]=='qselect' else json.dumps(result)))
     with pytest.raises(RuntimeError,match='Existing farm'):assert_no_active_farm(config)
     result['Jobs']['123.gadi-pbs']['job_state']='F'
     assert_no_active_farm(config)

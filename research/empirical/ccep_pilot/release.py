@@ -63,7 +63,11 @@ def pbs_measurement(job,config,index,workers):
 
 
 def assert_no_active_farm(config):
-    result=subprocess.run(['qstat','-f','-F','json','-u',os.environ['USER']],check=True,text=True,capture_output=True)
+    selected=subprocess.run(['qselect','-u',os.environ['USER']],check=True,text=True,capture_output=True)
+    job_ids=selected.stdout.split()
+    if not job_ids: return
+    # qstat -u switches Gadi to tabular output even with -F json. Explicit IDs preserve JSON.
+    result=subprocess.run(['qstat','-xf','-F','json',*job_ids],check=True,text=True,capture_output=True)
     for jid,job in json.loads(result.stdout).get('Jobs',{}).items():
         configured=job.get('Variable_List',{}).get('CORPUS_CONFIG')
         if job.get('Job_Name')=='spi-farm' and configured and Path(configured).resolve()==config.resolve() and job['job_state'] not in ('F','X'):
