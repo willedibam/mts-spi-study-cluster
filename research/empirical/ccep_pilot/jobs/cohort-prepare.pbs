@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N ccep-cohort-qc
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1
+#PBS -l mem=16GB
+#PBS -l walltime=02:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+: "${RUN_ROOT:?}" "${RAW_ROOT:?}" "${CODE_SNAPSHOT:?}"
+cd "$CODE_SNAPSHOT"
+source jobs/gadi/env.sh
+mkdir -p "$RUN_ROOT/logs"
+exec >"$RUN_ROOT/logs/prepare-${PBS_JOBID%%.*}.log" 2>&1
+python -u -m research.empirical.ccep_pilot.cohort prepare --root "$RUN_ROOT" --raw-root "$RAW_ROOT"
