@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 import json
 from pathlib import Path
+import re
 
 import numpy as np
 import pandas as pd
@@ -343,8 +344,8 @@ def _voltage_axis(ax):
     ax.set_xticks([0, .05, .2, 1, 3.5], ["0", "0.05", "0.2", "1", "3.5"])
 
 
-def plot_overview(bank, models):
-    """Primary frozen geometry, control trajectory and spectrum, with common scales."""
+def plot_overview(bank, models, physical=None):
+    """Frozen geometry and control trajectory, alongside independent physics if supplied."""
     model = models["er"]
     scores = model.project(bank.z)
     if scores.shape[1] < 2:
@@ -359,19 +360,36 @@ def plot_overview(bank, models):
         label = f"{topology} {'fit' if topology == 'ER' else 'projection'} ({valid}/{len(indices)})"
         axes[0].plot(scores[indices, 0], scores[indices, 1], "o-", color=color, label=label)
         axes[1].plot(voltage, scores[indices, 0], "o-", color=color)
+        if physical is not None:
+            frequency = physical.set_index('name').loc[[bank.rows[i]['name'] for i in indices], 'frequency_range']
+            axes[2].plot(voltage, frequency, "o-", color=color)
+            left, right = ((23, 24) if topology == 'ER' else (31, 34))
+            for ax in axes[1:]:
+                ax.axvspan(left*.005, right*.005, color=color, alpha=.12, linewidth=0)
     axes[0].set(xlabel="ER PC1", ylabel="ER PC2")
     axes[0].legend()
     axes[1].set(xlabel="Control voltage (V)", ylabel="ER PC1")
     _voltage_axis(axes[1])
-    count = min(10, len(model.variance_ratio))
-    axes[2].plot(np.arange(1, count + 1), model.variance_ratio[:count] * 100, "o-", color=".2")
-    axes[2].set(xlabel="ER component", ylabel="Variance explained (%)")
+    if physical is None:
+        count = min(10, len(model.variance_ratio))
+        axes[2].plot(np.arange(1, count + 1), model.variance_ratio[:count] * 100, "o-", color=".2")
+        axes[2].set(xlabel="ER component", ylabel="Variance explained (%)")
+    else:
+        axes[2].set(xlabel="Control voltage (V)", ylabel="Carrier frequency range (Hz)", yscale="log")
+        _voltage_axis(axes[2])
     return fig
+
+
+def _spi_label(name):
+    from research.empirical.hardware_pilot.plot_hardware_pilot import short
+    match = re.fullmatch(r'corr_(pearson|spearman|kendall)_tau-(\d+)', name)
+    if match:
+        return f'{match[1].capitalize()} {2*int(match[2])} ms'
+    return {'ids':'IDS', 'si_kernel_W-0.5_k-1':'Kernel SI (W=0.5, k=1)'}.get(name, short(name))
 
 
 def plot_loadings(bank, model, feature_indices=None, *, count=4):
     """A small loading-ranked gallery; caller can pass frozen selected contrasts."""
-    from research.empirical.hardware_pilot.plot_hardware_pilot import short
     table = rank_loadings(bank, model).set_index("feature_index")
     chosen = list(table.index[:count] if feature_indices is None else feature_indices)
     fig, axes = _panels(len(chosen))
@@ -384,15 +402,58 @@ def plot_loadings(bank, model, feature_indices=None, *, count=4):
                 continue
             ax.plot([bank.rows[i]["voltage"] for i in rows], bank.z[rows, index], "o-", color=color, label=topology)
         ax.set(xlabel="Control voltage (V)", ylabel="Ordered-edge Pearson z", ylim=(-1.05, 1.05),
-               title=f"{label}\n{short(spec.spi_a)}\n× {short(spec.spi_b)}")
+               title=f"{label}\n{_spi_label(spec.spi_a)}\n× {_spi_label(spec.spi_b)}")
         _voltage_axis(ax)
     axes[0].legend()
     return fig
 
 
-def plot_edge_contrast(bank, feature_index, row_indices):
+def carrier_groups(bank, contrasts=(("ER", 23, 24), ("SW", 31, 34)), threshold=.95):
+    """Fixed pretransition dyads from central-9-s 90–140 Hz phase coherence."""
+    from research.empirical.hardware_pilot.calibrate_hardware_pilot import phase_properties
+    index = {(row['topology'], row['step']): i for i, row in enumerate(bank.rows)}
+    edge = ~np.eye(28, dtype=bool)
+    groups = {}
+    with np.load(bank.root/'observations.npz', allow_pickle=False) as observations:
+        for topology, before, after in contrasts:
+            left, right = index[topology, before], index[topology, after]
+            physical = phase_properties(observations[bank.rows[left]['name']], (90, 140))
+            mask = physical['plv'][edge] > threshold
+            groups[left] = groups[right] = mask
+    return groups
+
+
+def partition_covariance(bank, feature_index, row_indices, groups):
+    """Exact within/between-group accounting, normalized to sum to observed z."""
+    spec, rows = bank.schema[feature_index], []
+    for index in row_indices:
+        matrices = bank.mpis(index, (spec.spi_a, spec.spi_b))
+        edge = ~np.eye(len(matrices[spec.spi_a]), dtype=bool)
+        x, y = (matrices[name][edge] for name in (spec.spi_a, spec.spi_b))
+        mask = np.asarray(groups[index], dtype=bool)
+        if mask.shape != x.shape or not mask.any() or mask.all():
+            raise ValueError('Both nonempty edge groups are required')
+        normalizer = x.std()*y.std()
+        if not np.isfinite(normalizer) or normalizer <= 0:
+            raise ValueError('Finite nonconstant edge profiles are required')
+        p = mask.mean()
+        def covariance(selection):
+            return np.mean((x[selection]-x[selection].mean())*(y[selection]-y[selection].mean()))
+        within_coherent = p*covariance(mask)/normalizer
+        within_other = (1-p)*covariance(~mask)/normalizer
+        between = p*(1-p)*(x[mask].mean()-x[~mask].mean())*(y[mask].mean()-y[~mask].mean())/normalizer
+        z = _edge_corr(x,y)
+        if abs(within_coherent+within_other+between-z) > 1e-12:
+            raise ArithmeticError('Covariance partition failed to reconstruct z')
+        row = bank.rows[index]
+        rows.append(dict(name=row['name'],topology=row['topology'],step=row['step'],
+                         coherent_ordered_entries=int(mask.sum()),z=z,
+                         within_coherent=within_coherent,within_other=within_other,between=between))
+    return pd.DataFrame(rows)
+
+
+def plot_edge_contrast(bank, feature_index, row_indices, groups=None):
     """Matched axes show the original profiles, including any near-collapse."""
-    from research.empirical.hardware_pilot.plot_hardware_pilot import short
     spec = bank.schema[feature_index]
     diagnostics = edge_diagnostics(bank, feature_index, row_indices).set_index("name")
     fig, axes = _panels(len(row_indices))
@@ -403,9 +464,16 @@ def plot_edge_contrast(bank, feature_index, row_indices):
         edge = ~np.eye(row["M"], dtype=bool)
         x, y = mpi[spec.spi_a][edge], mpi[spec.spi_b][edge]
         profiles.append((x, y))
-        ax.scatter(x, y, s=5, alpha=.4, color=COLORS[row["topology"]], linewidths=0, rasterized=True)
+        if groups is None:
+            ax.scatter(x, y, s=5, alpha=.4, color=COLORS[row["topology"]], linewidths=0, rasterized=True)
+        else:
+            mask = groups[index]
+            ax.scatter(x[~mask], y[~mask], s=5, alpha=.35, color=COLORS[row['topology']],
+                       linewidths=0, rasterized=True, label='Other dyads')
+            ax.scatter(x[mask], y[mask], s=5, alpha=.65, color='#222222',
+                       linewidths=0, rasterized=True, label='Coherent before locking')
         d = diagnostics.loc[row["name"]]
-        ax.set(xlabel=short(spec.spi_a), ylabel=short(spec.spi_b),
+        ax.set(xlabel=_spi_label(spec.spi_a), ylabel=_spi_label(spec.spi_b),
                title=f"{row['topology']} · setting {row['step']}\nz={d.z:+.3f}; SD={d.sd_a:.2g}, {d.sd_b:.2g}")
     for dim, setter in ((0, "set_xlim"), (1, "set_ylim")):
         values = np.concatenate([p[dim] for p in profiles])
@@ -414,4 +482,6 @@ def plot_edge_contrast(bank, feature_index, row_indices):
             pad = max(float(np.ptp(values)) * .04, np.finfo(float).eps * max(1., abs(values).max()))
             for ax in axes:
                 getattr(ax, setter)(values.min() - pad, values.max() + pad)
+    if groups is not None:
+        axes[0].legend(loc='lower right', fontsize=7)
     return fig

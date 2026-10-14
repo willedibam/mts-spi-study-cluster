@@ -14,8 +14,25 @@ from mtsspi.spi_spi_contract import build_unified_features
 from research.empirical.hardware_pilot.calibrate_hardware_pilot import lag_matrix
 from research.empirical.hardware_pilot.full_p90_analysis import (
     FullP90, LAG_PAIR, contrast_contributions, edge_diagnostics, fit_pca,
-    frozen_benchmark, load_run, loading_stability,
+    frozen_benchmark, load_run, loading_stability, partition_covariance,
 )
+
+
+def test_covariance_partition_exposes_positive_mixture_of_negative_groups(tmp_path):
+    edge = ~np.eye(3, dtype=bool)
+    a, b = np.full((3,3),np.nan), np.full((3,3),np.nan)
+    a[edge], b[edge] = [0,1,2,10,11,12], [2,1,0,12,11,10]
+    path = tmp_path/'mixture.npz'; np.savez(path,a=a,b=b)
+    feature = build_unified_features(dict(a=a,b=b),['a','b'])
+    bank = FullP90(tmp_path,({'name':'mixture','topology':'ER','step':0},),feature.z[None],
+                   feature.schema,(path,),(),{})
+    group = np.array([True]*3+[False]*3)
+    row = partition_covariance(bank,0,[0],{0:group}).iloc[0]
+    assert row.z > .9 and row.within_coherent < 0 and row.within_other < 0
+    assert row['between'] > row.z
+    assert_allclose(row.within_coherent+row.within_other+row['between'],np.corrcoef(a[edge],b[edge])[0,1],atol=1e-14)
+    with pytest.raises(ValueError,match='nonempty'):
+        partition_covariance(bank,0,[0],{0:np.ones(6,bool)})
 
 
 def test_er_fit_ignores_sw_values_and_missingness_without_imputation():
