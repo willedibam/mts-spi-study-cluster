@@ -2,6 +2,8 @@
 
 Can an unlabelled SPI–SPI coordinate track a system's order parameter across a phase transition? Each study is one dynamical system, with its physics scouts (to find a well-behaved transition), its corpus configs and its analysis.
 
+Presentation entry points: [lean benchmarks](benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb), [extended benchmarks with cross-frequency locking and feature interpretation](benchmarks/notebooks/order-parameter-benchmarks-lean-extended.ipynb), [full comparison](benchmarks/notebooks/order-parameter-benchmark-comparison.ipynb), and [secondary candidates](benchmarks/notebooks/order-parameter-benchmarks-lean-2.ipynb). Channel-pair sampling is [under methods](../methods/pair_sampling/notebooks/channel-pair-sampling.ipynb). Paths and runtime references were checked after the research-layout move; data/results remain under the repository-level artifact directories.
+
 | Study | System |
 | --- | --- |
 | `kuramoto/` | Kuramoto oscillators: synchronisation |
