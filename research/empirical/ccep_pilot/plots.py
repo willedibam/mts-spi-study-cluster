@@ -134,3 +134,67 @@ def cohort_native_zoom(root, run_id, filename, half_width=.15):
             zoom.plot((t[lo:hi]-t[peak])*1000,y[lo:hi],'.-',ms=2,lw=.5)
             zoom.set(xlabel='Time around peak (ms)',ylabel='Native µV')
     save(fig,root/'figures',filename)
+
+
+def cleaning_examples(root, review_path):
+    """Show frozen review decisions, not new exclusions or corrected waveforms."""
+    import seaborn as sns
+    from scipy.signal import welch
+    from .acquire import sha256
+    root=Path(root);review=json.loads(Path(review_path).read_text());plt=style()
+    assert sha256(root/'scope/runs.json')==review['scope_sha256']
+    cases=[('02','021804',0,'Exclude: slow excursion',None),
+           ('32','031446',0,'Exclude: impulsive discontinuity',.1),
+           ('07','021647',0,'Retain + flag: resolved sharp activity',.15)]
+    fig,axes=plt.subplots(2,3,figsize=(9.6,6.4))
+    evidence=[]
+    for col,(subject,run,w,title,width) in enumerate(cases):
+        key=f'sub-ccepAgeUMCU{subject}_ses-1_task-SPESclin_run-{run}'
+        report=json.loads((root/'scope'/f'{key}.json').read_text())
+        path=root/'prepared'/f'{key}.npz'
+        assert sha256(path)==report['prepared_sha256']
+        decision=review['runs'][key][str(w)]
+        with np.load(path) as bank:
+            x=bank[f'w{w}'];q25,q75=np.quantile(x,[.25,.75],axis=1)
+            scaled=(x-np.median(x,axis=1,keepdims=True))/np.maximum(q75-q25,1e-12)[:,None]
+            ax=axes[0,col]
+            im=ax.imshow(scaled,origin='lower',aspect='auto',extent=(0,32,.5,len(x)+.5),
+                         cmap=sns.color_palette('icefire',as_cmap=True),vmin=-3,vmax=3,interpolation='nearest')
+            ax.set(title=f'{subject} · w{w} · M={len(x)}\n{title}',xlabel='Window time (s)',ylabel='Channel')
+            y=bank[f'trace{w}'][0]*1e6;fs=int(bank['native_fs']);t=np.arange(len(y))/fs
+            peak=int(np.argmax(abs(y-np.median(y))));trace=axes[1,col]
+            if width is None:
+                trace.plot(t,y,lw=.6,color='#333333');trace.set(xlim=(0,32),xlabel='Window time (s)')
+            else:
+                lo=max(0,peak-round(width*fs));hi=min(len(y),peak+round(width*fs)+1)
+                trace.plot((t[lo:hi]-t[peak])*1000,y[lo:hi],'.-',ms=2,lw=.6,color='#333333')
+                trace.set(xlabel='Time around excursion (ms)')
+            trace.set(title=f"Native {fs} Hz · {bank[f'trace_names{w}'][0]}",ylabel='Voltage (µV)')
+            evidence.append(dict(run_id=key,window=w,accept=decision['accept'],reason=decision['reason'],
+                                 prepared_sha256=report['prepared_sha256']))
+    for ax in axes.flat:ax.set_box_aspect(1)
+    fig.colorbar(im,ax=axes[0].tolist(),shrink=.55,pad=.02,label='(Voltage − channel median) / IQR; display ±3')
+    save(fig,root/'figures','cleaning-decisions')
+
+    # A retained interval from the same run as the slow-excursion rejection.
+    key='sub-ccepAgeUMCU02_ses-1_task-SPESclin_run-021804';w=1
+    assert review['runs'][key][str(w)]['accept']
+    fig,axes=plt.subplots(1,3,figsize=(9.6,3.3))
+    with np.load(root/'prepared'/f'{key}.npz') as bank:
+        for ax,label,x in zip(axes[:2],['Acquisition reference','Common-average reference'],[bank[f'a{w}'],bank[f'w{w}']]):
+            q25,q75=np.quantile(x,[.25,.75],axis=1)
+            scaled=(x-np.median(x,axis=1,keepdims=True))/np.maximum(q75-q25,1e-12)[:,None]
+            ax.imshow(scaled,origin='lower',aspect='auto',extent=(0,32,.5,len(x)+.5),
+                      cmap=sns.color_palette('icefire',as_cmap=True),vmin=-3,vmax=3,interpolation='nearest')
+            ax.set(title=label,xlabel='Window time (s)',ylabel='Channel')
+        f=bank[f'freq{w}'];power=bank[f'psd{w}']*1e12;mask=(f>=.5)&(f<=200)
+        axes[2].loglog(f[mask],power[mask],label='Native CAR',color='.5')
+        f,power=welch(bank[f'w{w}'],fs=128,nperseg=512,axis=1);mask=f>=.5
+        axes[2].loglog(f[mask],np.median(power,axis=0)[mask]*1e12,label='Filtered + 128 Hz',color='#26828e')
+        axes[2].axvline(45,color='.5',ls=':',lw=.8)
+        axes[2].set(xlabel='Frequency (Hz)',ylabel='Median PSD (µV²/Hz)',title='Retained bandwidth');axes[2].legend()
+    for ax in axes:ax.set_box_aspect(1)
+    fig.suptitle('02 · retained w1 · same 32 s; heatmaps 0.5–45 Hz, 128 Hz',fontsize=10)
+    save(fig,root/'figures','cleaning-reference-bandwidth')
+    (root/'figures/cleaning-examples.json').write_text(json.dumps(dict(review_sha256=sha256(review_path),
+        examples=evidence,retained_comparison=dict(run_id=key,window=w),script_sha256=sha256(__file__)),indent=2)+'\n')
