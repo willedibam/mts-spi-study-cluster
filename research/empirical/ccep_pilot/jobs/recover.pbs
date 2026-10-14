@@ -27,9 +27,8 @@ assert Path(mtsspi.__file__).resolve().is_relative_to(Path.cwd())
 PY
 python -m mtsspi.run_corpus --config "$CORPUS_CONFIG" --validate-source
 # Exercise the frozen version's serial/partial/parallel resume parity before recovery.
-mpirun -np 1 --map-by "node:PE=$CORES_PER_RECORDING" python -m pytest -q -p no:cacheprovider \
-    --basetemp="$PBS_JOBFS/checkpoint-test" \
-    "$PYSPI_SOURCE/tests/test_parallel.py::test_checkpoint_resume_matches_full_run"
+mpirun -np 1 --map-by "node:PE=$CORES_PER_RECORDING" python -m research.empirical.ccep_pilot.check_resume \
+    --root "$PBS_JOBFS/checkpoint-test"
 mpirun -np 1 --map-by "node:PE=$CORES_PER_RECORDING" python -u -m mtsspi.run_corpus \
     --config "$CORPUS_CONFIG" --job-index "$INDEX" --n-jobs "$CORES_PER_RECORDING" \
     --skip-existing --checkpoints
