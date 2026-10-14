@@ -137,6 +137,7 @@ def build(root, review):
     assert decisions['scope_sha256']==sha256(root/'scope/runs.json')
     for report in reports:
         run=report['run_id'];decision=decisions['runs'][run]
+        assert sha256(root/'prepared'/f'{run}.npz')==report['prepared_sha256']
         assert set(decision)=={str(w['window']) for w in report['windows']}
         retained=[w for w in report['windows'] if decision[str(w['window'])]['accept']]
         assert all(w['qc_pass'] for w in retained), 'Visual review cannot override numerical QC'
