@@ -20,22 +20,29 @@ def latency_ms(samples, time):
     return out
 
 
-def match(root,metadata_root=None):
+def match(root,metadata_root=None, *, selected=None, participants=None, derivative_path=None):
     root=Path(root);out=root/'responses';out.mkdir(exist_ok=True)
     metadata_root=Path(metadata_root) if metadata_root is not None else root/'raw'
-    path=root/'response-reference/raw/derivatives/av_ccep/ccepData_V2.mat'
+    path=Path(derivative_path) if derivative_path is not None else root/'response-reference/raw/derivatives/av_ccep/ccepData_V2.mat'
     expected=json.loads((Path(__file__).parent/'configs/response-reference.json').read_text())
     assert sha256(path)==next(f['sha256'] for f in expected['files'] if f['path'].endswith('ccepData_V2.mat'))
     bank=loadmat(path,simplify_cells=True)['ccepData']
-    selected=json.loads((Path(__file__).parent/'configs/selection.json').read_text())['records']
-    participants=json.loads((root/'scope/participants.json').read_text())
+    selected=selected if selected is not None else json.loads((Path(__file__).parent/'configs/selection.json').read_text())['records']
+    participants=participants if participants is not None else json.loads((root/'scope/participants.json').read_text())
     summaries=[];edges=[];sites=[];examples=[]
     for item in selected:
-        subject=item['subject'];record=next(r for r in participants if r['subject']==subject)
+        subject=item['subject']
+        record=next(r for r in participants if r['subject']==subject and ('path' not in r or r['path']==item['path']))
         parent=next(r for r in bank if r['id']==subject)
         runs=parent['run'] if isinstance(parent['run'],list) else [parent['run']]
         target=Path(item['path']).name.replace('_ieeg.json','_averageCCEPs.mat')
-        run=next(r for r in runs if r['runName']==target)
+        matches=[r for r in runs if r['runName']==target]
+        if not matches:
+            summaries.append(dict(subject=subject,matched_run=target,status='published run unavailable'))
+            continue
+        assert len(matches)==1
+        run=matches[0]
+        np.testing.assert_allclose(np.diff(run['tt']),1/item['fs'],rtol=1e-6,atol=1e-10)
         names=list(run['channel_names']);retained=set(record['channels'])
         channels=pd.read_csv(metadata_root/item['path'].replace('_ieeg.json','_channels.tsv'),sep='\t')
         assert names==channels.name.tolist()
@@ -56,7 +63,7 @@ def match(root,metadata_root=None):
             if len(key)!=2 or not set(key)<=retained:reason='stimulating contact outside retained ECoG'
             elif len(trials)<5:reason='fewer than five matching pulses'
             elif any(onset-2<b and onset+3>a for onset in trials.onset for a,b in bad):reason='published average includes a pulse overlapping exclusion margins'
-            sites.append(dict(subject=subject,site=str(name),pulses=len(trials),eligible=reason is None,reason=reason))
+            sites.append(dict(subject=subject,run=target,site=str(name),pulses=len(trials),eligible=reason is None,reason=reason))
             if reason:continue
             eligible_sites.append(str(name))
             for channel,contact in enumerate(names):
@@ -86,7 +93,7 @@ def match(root,metadata_root=None):
     (out/'provenance.json').write_text(json.dumps(dict(derivative_sha256=sha256(path),script_sha256=sha256(__file__),
         detector='Published V2 N1 samples, indexed through each run tt; no new detector fitted.',
         exclusions='Any pulse epoch -2..3 s intersects annotated artefact ±1 s or seizure ±300 s: exclude whole site; published averages cannot be cleaned retrospectively.',
-        scope='Exactly matched runs and retained surface contacts; unequal stimulation coverage/intensity. Descriptive pilot, not an independent-edge association test.'),indent=2)+'\n')
+        scope='Exactly matched runs and retained surface contacts; unequal stimulation coverage/intensity. Participants, not edges or repeated runs, are independent units.'),indent=2)+'\n')
     return summaries
 
 
