@@ -1,13 +1,28 @@
 {
   "run": "noise-experiments-261016",
-  "stage": "prepared",
+  "stage": "pilots_submitted",
   "records": 3136,
   "manifest_sha256": "c847e04a7465914aaa5ff0b92567a20faf49a2c1d5cf0da096d47f5e1548bc0c",
   "protocol_sha256": "bedb04cb0dd94ede54d8d57d2040a269c9fc625b1a9bd1e2f0292ab3bcea5dd4",
   "source_sha256": "d340fec64a6e71439462418ac800cfbfb60c8d74fb5bfc56146f6cec9a76e94e",
   "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
-  "jobs": [],
+  "jobs": [
+    {
+      "role": "pilot",
+      "experiment": "dose",
+      "job": "181350883.gadi-pbs",
+      "records": 28
+    },
+    {
+      "role": "pilot",
+      "experiment": "random",
+      "job": "181350893.gadi-pbs",
+      "records": 14
+    }
+  ],
   "compute_source_commit": "0de0330",
   "compute_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
-  "software_checks": "3136 input shape/finite/center/scale checks; exact expected noise power; 196 exact regenerated records; parent-disjoint split; synthetic integration of 14 conditions and 9 readouts passed, fixtures removed. Runner unchanged from successful tiny smoke181323853."
+  "software_checks": "3136 input shape/finite/center/scale checks; exact expected noise power; 196 exact regenerated records; parent-disjoint split; synthetic integration of 14 conditions and 9 readouts passed, fixtures removed. Runner unchanged from successful tiny smoke181323853.",
+  "analysis_source_commit": "a3bfcc3",
+  "analysis_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-analysis-a3bfcc3"
 }
