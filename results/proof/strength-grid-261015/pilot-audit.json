@@ -1,0 +1,47 @@
+[
+  {
+    "cell": "M8-T500",
+    "job": "181328515.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:01:54",
+    "peak_memory": "15175100kb",
+    "min_seconds": 74.2643982321024,
+    "max_seconds": 96.79392056912184,
+    "numerical_error_types": {
+      "ValueError": 57,
+      "LinAlgError": 2,
+      "FloatingPointError": 8
+    }
+  },
+  {
+    "cell": "M8-T1000",
+    "job": "181328518.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:02:36",
+    "peak_memory": "15845992kb",
+    "min_seconds": 92.90021769050509,
+    "max_seconds": 140.62101201619953,
+    "numerical_error_types": {
+      "ValueError": 56,
+      "FloatingPointError": 4,
+      "LinAlgError": 2
+    }
+  },
+  {
+    "cell": "M16-T500",
+    "job": "181328526.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:03:04",
+    "peak_memory": "15856164kb",
+    "min_seconds": 77.43377489969134,
+    "max_seconds": 168.46733110398054,
+    "numerical_error_types": {
+      "ValueError": 57,
+      "FloatingPointError": 16,
+      "LinAlgError": 12
+    }
+  }
+]
