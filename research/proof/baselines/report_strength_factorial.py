@@ -25,6 +25,7 @@ ARM_LABELS={'fixed_clean':'Fixed coupling · no sensor noise','fixed_sensor':'Fi
 
 def plots():
     rows=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows']);train,evaluation,_=split(rows)
+    reference=rows.role.eq('reference').to_numpy() & rows.instance.ge(20).to_numpy()
     with np.load(OUT/'coordinates.npz') as archive:spaces={k:archive[k] for k in archive.files}
     coordinates={}
     for name in ['m','z']:
@@ -32,7 +33,7 @@ def plots():
         coordinates[name+'_PCA']=values[:,:2]
         model=UMAP(n_neighbors=25,min_dist=.25,metric='euclidean',random_state=261015,transform_seed=261015,n_jobs=1).fit(values[train])
         # No arm-specific refit: all evaluation conditions share this one transform.
-        result=np.full((len(rows),2),np.nan);result[train]=model.embedding_;result[evaluation]=model.transform(values[evaluation])
+        result=np.full((len(rows),2),np.nan);result[train]=model.embedding_;result[evaluation|reference]=model.transform(values[evaluation|reference])
         coordinates[name+'_UMAP']=result
     np.savez_compressed(OUT/'embedding-coordinates.npz',row_id=rows.row_id.to_numpy(),**coordinates)
     style()
@@ -45,6 +46,9 @@ def plots():
             for c,(name,method) in enumerate([('m','PCA'),('z','PCA'),('m','UMAP'),('z','UMAP')]):
                 ax=axes[r,c];xy=coordinates[name+'_'+method]
                 if coloring=='class':
+                    for label,marker in [('Gaussian-independent','^'),('Cauchy-independent','s')]:
+                        subset=reference & rows.label.eq(label).to_numpy()
+                        ax.scatter(*xy[subset].T,s=14,alpha=.45,facecolors='none',edgecolors='.5',marker=marker,label=label,linewidths=.6)
                     for label in CLASSES:
                         subset=use & rows.label.eq(label).to_numpy()
                         ax.scatter(*xy[subset].T,s=18,alpha=.8,c=COLORS[label],label=DISPLAY[label],linewidths=0)
@@ -80,12 +84,12 @@ The nuisance varies **between recordings within each class**. We cross fixed/var
 For standardized finite-variance signals and independent unit-variance sensor errors, $y_i=x_i+\eta\epsilon_i$ gives $\rho^y_{ij}=\rho^x_{ij}/(1+\eta^2)$ at population level. Here each recording gets its own noise level, with nominal attenuation uniform on [.25,.95]. Finite-record estimates and non-correlation SPIs need not follow this identity; Cauchy population covariance is undefined. Sensor noise leaves latent dynamics fixed, while changing measurement quality.
 
 Physical coupling parameters independently get multipliers uniform on [.5,1.5]: VAR neighbour coefficient, Kuramoto K, wave c² at fixed cadence, CML epsilon, or common-input loading. Multiplication preserves the coupling rule's form, **not necessarily its emergent dependence pattern or regime**. Shared-input loading is functional dependence, not causal coupling. The ranges and seven classes were fixed before SPI results; no severe-noise tail was selected to make a baseline fail.'''),
-        md('Instances 0–19, fixed clean/sensor conditions only, fit all preprocessing and PCA50/UMAP. Instances 20–39 evaluate all four conditions in those same coordinates. The main baseline is the raw MPI mean vector, with training-fitted feature scaling/clipping for differing SPI units; no per-recording mean-vector normalization. z uses the historical symmetrized profile definition and centering. Raw-mean full-vector distances/linear/RBF classifiers, standardized/complete-training z, and validity-only classification are recorded as controls. Retrieval uses the fixed-clean training gallery, so query and gallery never share a simulation parent. This tests system/regime recognition and nuisance robustness; it does not independently identify a nonlinear or lag mechanism.'),
+        md('Instances 0–19, fixed clean/sensor conditions only, fit all preprocessing and PCA50/UMAP. Instances 20–39 evaluate all four conditions in those same coordinates. Hollow grey symbols project independent Gaussian/Cauchy references; they do not enter fitting or the seven-class scores. The main baseline is the raw MPI mean vector, with training-fitted feature scaling/clipping for differing SPI units; no per-recording mean-vector normalization. z uses the historical symmetrized profile definition and centering. Raw-mean full-vector distances/linear/RBF classifiers, standardized/complete-training z, and validity-only classification are recorded as controls. Retrieval uses the fixed-clean training gallery, so query and gallery never share a simulation parent. This tests system/regime recognition and nuisance robustness; it does not independently identify a nonlinear or lag mechanism.'),
         code("from pathlib import Path\nimport json,pandas as pd\nfrom IPython.display import display,Image\nFACTOR_ROOT=Path.cwd().resolve()\nwhile not (FACTOR_ROOT/'pyproject.toml').exists() and FACTOR_ROOT!=FACTOR_ROOT.parent: FACTOR_ROOT=FACTOR_ROOT.parent\nFACTOR_OUT=FACTOR_ROOT/'results/proof/strength-factorial-261015'\ndisplay(Image(filename=str(FACTOR_OUT/'figures/factorial-class.png')))"),
         code("display(Image(filename=str(FACTOR_OUT/'figures/factorial-strength.png')))\ndisplay(Image(filename=str(FACTOR_OUT/'figures/factorial-summary.png')))"),
-        code("factor_scores=pd.read_csv(FACTOR_OUT/'metrics.csv')\ndisplay(factor_scores[factor_scores.representation.isin(['m','z','m+z'])][['arm','representation','spread_to_separation','silhouette','mAP','accuracy']].round(3))\ndisplay(pd.read_csv(FACTOR_OUT/'paired-intervals.csv').round(3))"),
+        code("factor_scores=pd.read_csv(FACTOR_OUT/'metrics.csv')\ndisplay(factor_scores[factor_scores.representation.isin(['m','z','m+z'])].pivot(index='arm',columns='representation',values=['spread_to_separation','mAP','accuracy']).round(3))\ndisplay(pd.read_csv(FACTOR_OUT/'paired-intervals.csv').round(3))"),
         md('Read lower within-class-spread/between-class-separation as more compact class geometry; check retrieval and silhouette alongside it, since mere collapse is not useful invariance. The paired bootstrap resamples evaluation instances, keeping classes and conditions together, conditional on the fitted training space. Marginal information can remain accessible even when its geometry is diffuse. Physical-parameter sensitivity is not automatically a failure: it may reflect an actual change in emergent character. Full classwise results, missingness, controls and provenance are retained in the run folder.'),
-        code("display(pd.read_csv(FACTOR_OUT/'per-class.csv').query(\"arm == 'varying_sensor' and representation in ['m','z']\")[['label','representation','spread_to_separation','mAP']].round(3))\ndisplay(json.loads((FACTOR_OUT/'analysis-audit.json').read_text()))")]
+        code("display(pd.read_csv(FACTOR_OUT/'per-class.csv').query(\"arm == 'varying_sensor' and representation in ['m','z']\").pivot(index='label',columns='representation',values=['spread_to_separation','mAP']).round(3))\nfactor_audit=json.loads((FACTOR_OUT/'analysis-audit.json').read_text())\nprint('SPIs:',factor_audit['catalogue_size'],'; computation:',factor_audit['computation'],'; validity-only accuracy:',factor_audit['validity_only_accuracy'])")]
     for cell in result:cell.metadata['tags']=[TAG]
     return result
 

@@ -1,6 +1,6 @@
 {
   "run": "strength-factorial-261015",
-  "stage": "prepared",
+  "stage": "production_submitted",
   "records": 1200,
   "archive_sha256": "8eb9c8a1aebbe03479934a2a01aaf3e37ecfb4a67e455f82d226dee0f837327c",
   "protocol_sha256": "400221c22ca57599a4d74d93910d4f3a52d807dcefac39def8e17f29327fdd1e",
@@ -23,5 +23,82 @@
     809,
     810
   ],
-  "gadi_jobs": []
+  "gadi_jobs": [
+    {
+      "role": "tiny_smoke",
+      "job": "181323853.gadi-pbs",
+      "records": 2,
+      "ncpus": 2,
+      "mem_gb": 8,
+      "walltime": "00:30:00",
+      "exit_status": 0,
+      "walltime_used": "00:01:42",
+      "peak_memory_kb": 3293020,
+      "complete": 2
+    },
+    {
+      "role": "representative_pilot",
+      "job": "181324194.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "walltime": "01:00:00",
+      "indices": [
+        781,
+        784,
+        785,
+        788,
+        789,
+        792,
+        793,
+        796,
+        797,
+        800,
+        801,
+        804,
+        805,
+        808,
+        809,
+        810
+      ],
+      "exit_status": 0,
+      "complete": 16,
+      "walltime_used": "00:06:44",
+      "peak_memory_kb": 16183760,
+      "min_record_seconds": 158.7,
+      "max_record_seconds": 379.8
+    },
+    {
+      "role": "production_remaining",
+      "job": "181324735.gadi-pbs",
+      "records": 1184,
+      "ncpus": 384,
+      "mem_gb": 768,
+      "walltime": "01:00:00",
+      "task_timeout_seconds": 1200
+    },
+    {
+      "role": "extraction",
+      "job": "181324872.gadi-pbs",
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/strength-factorial-analysis-e6cd116",
+      "ncpus": 4,
+      "mem_gb": 8,
+      "walltime": "00:30:00",
+      "depends_on": [
+        "181324735.gadi-pbs",
+        "181324194.gadi-pbs"
+      ]
+    }
+  ],
+  "compute_source_commit": "da87ef7",
+  "compute_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/strength-factorial-da87ef7",
+  "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+  "pyspi_commit": "c2d723f9422617d668bca1688cb06ada67395aaa",
+  "computation": "3.0.0.r9",
+  "repository_p90_spis": 289,
+  "catalogue_sha256": "bc4bafa16b4add8bb6283db490a9fa3d8dde4fde47093147d32579b989397965",
+  "catalogue_note": "Repository configs/pyspi/benchmarked_p90.yaml; distinct from the currently bundled pyspi p90 config. Fresh r9 computation, no historical r7 data pooling.",
+  "analysis_source_commit": "b54e03b",
+  "pilot_decision": "All16 complete, runner audit passes. Preserve numerical estimator refusals (ties, conditioning, AR-order cap, group-delay undefined). Release remaining1184 with unchanged parameters/catalogue. 384 one-core workers, 2GB/record (>2x measured aggregate per-record peak), 1hour for four waves; per-record timeout20min.",
+  "extraction_source_commit": "e6cd116"
 }
