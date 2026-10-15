@@ -35,21 +35,26 @@ def extract_one(task):
     z=_similarity_matrix(vectors,'pearson')[np.triu_indices(len(names),1)].astype(np.float32)
     lineage=dict(catalogue=meta['pyspi']['config_sha256'],computation=meta['pyspi']['version']['computation'],
                  n_spis=len(names),spi_order=names)
-    return means,z,lineage
+    quality=dict(row_id=row['row_id'],label=row['label'],arm=row['arm'],
+                 finite_mean=int(np.isfinite(means).sum()),finite_z=int(np.isfinite(z).sum()),
+                 error_count=len(meta['pyspi'].get('errors',{})),errors=json.dumps(meta['pyspi'].get('errors',{})),
+                 compute_seconds=meta['job'].get('compute_seconds'))
+    return means,z,lineage,quality
 
 
 def extract(data,out,workers):
     manifest=json.loads((data/'manifest.json').read_text());rows=manifest['rows']
     assert len(rows)==1200 and sha(data/'observations.npz')==manifest['archive_sha256']
-    lineage=None;means=[];zs=[]
+    lineage=None;means=[];zs=[];qualities=[]
     with ProcessPoolExecutor(max_workers=workers) as pool:
-        for i,(m,z,current) in enumerate(pool.map(extract_one,[(str(data),r,manifest['archive_sha256']) for r in rows],chunksize=4)):
+        for i,(m,z,current,quality) in enumerate(pool.map(extract_one,[(str(data),r,manifest['archive_sha256']) for r in rows],chunksize=4)):
             lineage=lineage or current
             assert current==lineage,'Mixed catalogue/computation version/order'
-            means.append(m);zs.append(z)
+            means.append(m);zs.append(z);qualities.append(quality)
             if (i+1)%200==0:print('Extracted',i+1,flush=True)
     out.mkdir(parents=True,exist_ok=True)
     np.savez_compressed(out/'features.npz',mean=np.array(means),z=np.array(zs),row_id=np.array([r['row_id'] for r in rows]),spi_order=np.array(lineage.pop('spi_order')))
+    pd.DataFrame(qualities).to_csv(out/'estimator-quality.csv',index=False)
     audit=dict(records=len(rows),source_archive_sha256=manifest['archive_sha256'],features_sha256=sha(out/'features.npz'),
                extraction_source_sha256=sha(__file__),**lineage)
     (out/'extraction-audit.json').write_text(json.dumps(audit,indent=2)+'\n')

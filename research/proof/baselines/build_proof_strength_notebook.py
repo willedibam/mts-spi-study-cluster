@@ -62,6 +62,9 @@ md(r'''**Reading.**
 Why: $z_{ab}$ is unchanged when each SPI's profile across pairs is shifted and rescaled, per recording. Standardising every profile within a recording therefore sets every mean to zero and leaves $z$ exactly as it was, so $z$ is by construction what remains once the set of strengths is removed. Equal sensor noise on all channels approximates such a rescaling for second-order statistics (attenuation by measurement error), which is why $z$ moves less; it also lowers the reliability of each profile and pulls $z$ toward its independent-noise value, which is the residual strength dependence seen above.
 
 Run: `research/proof/baselines/proof_strength_nuisance.py` (`prepare`, external-corpus farm, `extract`); this notebook is rebuilt by `research/proof/baselines/build_proof_strength_notebook.py`. Full p90, estimator seeds 261102 and 261112, 2,720 recordings including the control, none failed.''')]
+if (ROOT/'results/proof/strength-factorial-261015/figures/factorial-class.png').exists():
+    from research.proof.baselines.report_strength_factorial import cells as factorial_cells
+    cells.extend(factorial_cells())
 nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})
 path=ROOT/'research/proof/baselines/notebooks/proof_strength_nuisance_261006.ipynb'
 NotebookClient(nb,timeout=1800,kernel_name='python3',resources={'metadata':{'path':str(path.parent)}}).execute()
