@@ -1,0 +1,44 @@
+{
+  "source": "strength-factorial-261015",
+  "embedding_sha256": "cde5c1009aae7dded839193714474373696326e718d86c94f9b43defcd033d30",
+  "refitted": false,
+  "instances": [
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "main_classes": [
+    "VAR",
+    "Kuramoto",
+    "Wave",
+    "CML-intermittency",
+    "CML-defect",
+    "Gaussian-shared",
+    "Cauchy-shared"
+  ],
+  "subset_rule": "Secondary display omits shared-input controls categorically; no refit or axis change.",
+  "arms": [
+    "fixed_clean",
+    "fixed_sensor"
+  ],
+  "reference_controls": "Independent references omitted from this focused display; retained in original factorial figures.",
+  "selection": "Post-result presentation of the already-completed noise-only arm, not a new confirmation.",
+  "coloring": "Observed mean absolute Pearson correlation; shared viridis [0,1]. Coordinates, limits and selection unchanged."
+}
