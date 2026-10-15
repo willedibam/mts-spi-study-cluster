@@ -1,0 +1,83 @@
+{
+  "source": "strength-factorial-261015",
+  "arm": "fixed_sensor",
+  "embedding_sha256": "cde5c1009aae7dded839193714474373696326e718d86c94f9b43defcd033d30",
+  "features_sha256": "cb3d613f987a1b20d97b0f987c088764c52b372904acc4dca5271edd5a35a018",
+  "source_sha256": "92359becfc63c846f37c8bd5d86493608e0dd69f67f034cabe376a1fb68e195f",
+  "embedding_refit": false,
+  "classes": [
+    "VAR",
+    "Kuramoto",
+    "Wave",
+    "CML-intermittency",
+    "CML-defect",
+    "Gaussian-shared",
+    "Cauchy-shared"
+  ],
+  "evaluation_instances": [
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "points": 140,
+  "selection": "Three declared class contrasts; maximal oriented AUC within declared diverse candidate families, finite in noisy training instances 0\u201319; catalogue-order ties; exclude coordinates selected for preceding contrasts to obtain three distinct features. No held selection.",
+  "contrast_pairs": [
+    [
+      "CML-intermittency",
+      "CML-defect"
+    ],
+    [
+      "Gaussian-shared",
+      "Cauchy-shared"
+    ],
+    [
+      "VAR",
+      "Wave"
+    ]
+  ],
+  "post_result_presentation": true,
+  "strength_colour_range": [
+    0,
+    1
+  ],
+  "axis_limits": "Identical across colouring rows; reuse noise-focus clean/noisy limits.",
+  "PCA_training_explained_variance": {
+    "z": [
+      0.20214379202272564,
+      0.17167670802088733
+    ],
+    "m": [
+      0.463231276928162,
+      0.13651456768023248
+    ]
+  },
+  "verification": {
+    "previous_cell_sources_unchanged": 43,
+    "previous_cells_preserved_by_append_assertion": 43,
+    "notebook_cells": 45,
+    "new_cell_errors": 0,
+    "unique_features": 3,
+    "all_display_values_finite": 120,
+    "independent_sklearn_auc_check": true,
+    "source_embedding_matches_prior_noise_focus": true,
+    "visual_QA": "Final compact PCA and UMAP checked: square boxed panels, no overlaps, identical coordinates and limits across colour rows."
+  },
+  "selection_revision": "User requested non-covariance-estimator diversity; candidate families constrained before revised training-only ranking. Earlier unrestricted examples replaced, not a fresh confirmation."
+}

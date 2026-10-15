@@ -1,0 +1,4 @@
+class_a,class_b,feature_index,spi_a,spi_b,training_auc,orientation,candidates,candidate_family,display_auc,display_n_a,display_n_b
+CML-intermittency,CML-defect,9076,spearmanr,mi_kraskov_NN-4,1.0,-1,4,Rank/distance versus KSG mutual information,0.99,20.0,20.0
+Gaussian-shared,Cauchy-shared,32,cov_EmpiricalCovariance,spearmanr,1.0,-1,2,Pearson versus rank correlation,1.0,20.0,20.0
+VAR,Wave,10107,corr_pearson_tau-2,cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25,0.97,-1,42,Lagged Pearson versus spectral coherence/phase locking,0.9425,20.0,20.0
