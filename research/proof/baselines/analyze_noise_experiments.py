@@ -107,13 +107,18 @@ def analyze(data,out):
         scale=np.sqrt(geometry(v[gallery],y[gallery])[2])
         for arm in CONDITIONS:
             use=evaluation & rows.arm.eq(arm).to_numpy();a=v[use];labels=y[use]
-            ap,top=average_precision(cdist(a,v[gallery]),labels[:,None]==y[gallery][None,:]);pred=model.predict(a)
+            distances=cdist(a,v[gallery])
+            ap,top=average_precision(distances,labels[:,None]==y[gallery][None,:]);pred=model.predict(a)
+            # Exact expectation for a uniformly randomized query family, holding
+            # each distance ranking fixed. AP's null is not classification chance.
+            null_ap=np.mean([average_precision(distances,np.broadcast_to(y[gallery]==c,distances.shape))[0] for c in CLASSES],axis=0)
             ratio,w,b=geometry(a,labels)
             matched=np.array([lookup[(r.label,r.instance)] for r in rows[use].itertuples()]);movement=np.linalg.norm(a-v[matched],axis=1)/scale
             entry=dict(representation=name,arm=arm,n=len(a),spread_to_separation=ratio,within_variance=w,between_variance=b,silhouette=silhouette_score(a,labels),mAP=float(ap.mean()),top1=float(top.mean()),accuracy=float(np.mean(pred==labels)),paired_movement=float(movement.mean()))
+            entry.update(mAP_label_null=float(null_ap.mean()),mAP_excess=float((ap-null_ap).mean()))
             if rbf is not None:entry['RBF_accuracy']=float(np.mean(rbf.predict(a)==labels))
             scores.append(entry)
-            f=rows.loc[use,['row_id','instance','parent','label','arm']].copy();f['representation']=name;f['AP']=ap;f['correct']=pred==labels;f['movement']=movement;individual.append(f)
+            f=rows.loc[use,['row_id','instance','parent','label','arm']].copy();f['representation']=name;f['AP']=ap;f['AP_label_null']=null_ap;f['correct']=pred==labels;f['movement']=movement;individual.append(f)
             for c in CLASSES:per_class.append(dict(representation=name,arm=arm,label=c,mAP=float(ap[labels==c].mean()),accuracy=float(np.mean(pred[labels==c]==c))))
     scores=pd.DataFrame(scores);individual=pd.concat(individual);scores.to_csv(out/'metrics.csv',index=False);individual.to_csv(out/'individual.csv',index=False)
     pd.DataFrame(per_class).to_csv(out/'per-class.csv',index=False);pd.DataFrame(details).to_csv(out/'preprocessing.csv',index=False);pd.DataFrame(missing).to_csv(out/'missingness.csv',index=False)

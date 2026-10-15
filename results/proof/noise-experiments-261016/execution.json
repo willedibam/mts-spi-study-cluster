@@ -139,5 +139,6 @@
   "software_checks": "3136 input shape/finite/center/scale checks; exact expected noise power; 196 exact regenerated records; parent-disjoint split; synthetic integration of 14 conditions and 9 readouts passed, fixtures removed. Runner unchanged from successful tiny smoke181323853.",
   "analysis_source_commit": "a3bfcc3",
   "analysis_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-analysis-a3bfcc3",
-  "extraction_job": "181351094.gadi-pbs"
+  "extraction_job": "181351094.gadi-pbs",
+  "pre_result_analysis_extension": "Added exact randomized-query-label mAP expectation, before viewing SPI feature outcomes, to distinguish AP null from 1/7 classification chance; frozen primary readouts unchanged."
 }
