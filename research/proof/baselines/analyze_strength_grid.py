@@ -80,8 +80,8 @@ def analyze(data,out):
         spaces[name]=pcs
         if name in ['m','m_unclipped']:spaces[name+'_full']=full
         details.append(dict(representation=name,features=len(transform.keep_indices),PCs=pcs.shape[1],training_variance_retained=float(pca.explained_variance_ratio_.sum())))
-        for (cell,arm),indices in rows[evaluation].groupby(['cell','arm']).groups.items():
-            missing.append(dict(representation=name,cell=cell,arm=arm,fraction=float((~np.isfinite(bank[key][indices][:,transform.keep_indices])).mean())))
+        for (cell,arm,label),indices in rows[evaluation].groupby(['cell','arm','label']).groups.items():
+            missing.append(dict(representation=name,cell=cell,arm=arm,label=label,fraction=float((~np.isfinite(bank[key][indices][:,transform.keep_indices])).mean())))
     fused=np.column_stack([spaces[k]/np.sqrt(spaces[k][train].var(0).sum()) for k in ['m','z']])
     spaces['m+z']=PCA(50,svd_solver='full').fit(fused[train]).transform(fused)
     scalar=rows.mean_abs_r.to_numpy()[:,None];spaces['mean_abs_r']=(scalar-scalar[train].mean(0))/scalar[train].std(0)

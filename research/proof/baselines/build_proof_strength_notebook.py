@@ -65,6 +65,9 @@ Run: `research/proof/baselines/proof_strength_nuisance.py` (`prepare`, external-
 if (ROOT/'results/proof/strength-factorial-261015/figures/factorial-class.png').exists():
     from research.proof.baselines.report_strength_factorial import cells as factorial_cells
     cells.extend(factorial_cells())
+if (ROOT/'results/proof/strength-grid-261015/figures/grid-class.png').exists():
+    from research.proof.baselines.report_strength_grid import cells as grid_cells
+    cells.extend(grid_cells())
 nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})
 path=ROOT/'research/proof/baselines/notebooks/proof_strength_nuisance_261006.ipynb'
 NotebookClient(nb,timeout=1800,kernel_name='python3',resources={'metadata':{'path':str(path.parent)}}).execute()

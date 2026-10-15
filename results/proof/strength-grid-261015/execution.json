@@ -1,6 +1,6 @@
 {
   "run": "strength-grid-261015",
-  "stage": "prepared",
+  "stage": "pilots_running",
   "records": 1350,
   "manifest_sha256": "790c30694c7ed0c445ec8f07417b0c95802f76309ba8be2b13a1287e232f9229",
   "source_sha256": "27d387a861a25b77e8ec73a4d0932fdfaef325d11433983ae015fb49e5a26de2",
@@ -232,5 +232,92 @@
       ]
     }
   ],
-  "jobs": []
+  "jobs": [
+    {
+      "role": "pilot",
+      "cell": "M8-T500",
+      "job": "181328515.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M8-T1000",
+      "job": "181328518.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M8-T2000",
+      "job": "181328521.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M16-T500",
+      "job": "181328526.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M16-T1000",
+      "job": "181328535.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M16-T2000",
+      "job": "181328537.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M32-T500",
+      "job": "181328538.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M32-T1000",
+      "job": "181328539.gadi-pbs",
+      "records": 16,
+      "ncpus": 16,
+      "mem_gb": 64,
+      "cores_per_recording": 1
+    },
+    {
+      "role": "pilot",
+      "cell": "M32-T2000",
+      "job": "181328544.gadi-pbs",
+      "records": 16,
+      "ncpus": 32,
+      "mem_gb": 96,
+      "cores_per_recording": 2
+    }
+  ],
+  "compute_source_commit": "1cf951a",
+  "compute_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/strength-grid-1cf951a",
+  "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+  "analysis_source_commit": "041902b",
+  "reused_tiny_smoke": "181323853: unchanged runner/config/pyspi; new grid has separate representative pilot in every size cell."
 }
