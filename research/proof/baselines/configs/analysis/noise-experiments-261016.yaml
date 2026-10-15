@@ -1,0 +1,31 @@
+run: noise-experiments-261016
+status: prospective_before_SPI_results
+M: 16
+T: 1000
+instances_per_class: 32
+seed: 2610162026
+estimator_seed: 2610152027
+classes: [VAR, Kuramoto, Wave, CML-intermittency, CML-frozen, Gaussian-shared, Cauchy-shared]
+physical_coupling: Fixed at the factorial base settings; frozen CML alpha1.45 eps0.2 replaces defect. Hosts M16; CML lattice100.
+experiments:
+  dose:
+    eta: [0,0.5,1,2,4,8]
+    profiles: [equal, exponential]
+    clean: One shared eta0 recording per parent, not duplicated by profile.
+    exponential: Draw positive channel weights Exp(1), divide by their RMS, then multiply by eta. Mean channel noise variance equals eta^2 exactly before final standardization.
+    endpoint: Normalized Gaussian error array alone; source-family labels retained only to test loss of identifiability, not to imply different noise classes.
+  random:
+    attenuation: {previous: Uniform[0.25,0.95], stronger: Uniform[0.05,0.50]}
+    pairing: Same uniform quantile and same latent/noise realization for previous and stronger; noise SD common to channels. Quantiles matched across classes at each instance.
+noise: Independent standard Gaussian samples per channel/time; same noise array at every dose/profile/random arm of a parent. Exponential relative SD pattern independent of noise/latent data, fixed across doses and shared across classes at each instance.
+normalization: Standardize latent channels; add noise with specified SD; standardize observed channels again. Match expected prestandardization noise power, report realized power too. No calibrated rejection or seed replacement.
+analysis:
+  train: instances0-15, clean + equal_eta1 + exponential_eta1 only
+  evaluation: instances16-31, every condition, no seed/class/dose selection
+  gallery: clean training rows, parent disjoint
+  primary: Raw MPI means with train-fitted feature standardization and +/-5SD clipping; symmetrized SPI-SPI z with train centering; common PCA50. No per-recording normalization of primary means.
+  controls: Full/unclipped means, standardized z, complete-training z, validity-only classification, noise-centred direction-normalized means as explicitly secondary strength-normalization control.
+  inference: Paired bootstrap over instance blocks, retaining classes/conditions; report mAP, relative spread/separation, accuracy and paired movement. Severe-noise failures remain.
+  plots: One training-fitted PCA/UMAP per representation, fixed seed261016, neighbors25,min_dist0.25. Main montage preselected clean/eta2/eta8 for both profiles; curves and full figures retain all doses plus pure-noise endpoint. Separate previous/stronger random-noise view in the same coordinates.
+  interpretation: Representation robustness, not absence of information or identified causal/nonlinear character. Uniform-correlation attenuation is not asserted for Cauchy population moments. Unequal SD changes edgewise attenuation despite equal total power.
+catalogue: repository benchmarked_p90.yaml; 289 SPIs; pyspi c2d723f computation3.0.0.r9; new corpus directories, no historical feature pooling.

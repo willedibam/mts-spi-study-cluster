@@ -1,0 +1,9 @@
+{
+  "records": 3136,
+  "finite_shape_center_scale": true,
+  "paired_noise_power_match": true,
+  "replayed_records": 196,
+  "manifest_sha256": "c847e04a7465914aaa5ff0b92567a20faf49a2c1d5cf0da096d47f5e1548bc0c",
+  "protocol_sha256": "bedb04cb0dd94ede54d8d57d2040a269c9fc625b1a9bd1e2f0292ab3bcea5dd4",
+  "no_seed_replacement": true
+}
