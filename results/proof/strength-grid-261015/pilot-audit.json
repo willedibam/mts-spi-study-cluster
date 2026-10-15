@@ -118,5 +118,20 @@
       "ValueError": 85,
       "LinAlgError": 62
     }
+  },
+  {
+    "cell": "M32-T2000",
+    "job": "181328544.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:36:37",
+    "peak_memory": "31069028kb",
+    "min_seconds": 842.871316655539,
+    "max_seconds": 2139.616869101301,
+    "numerical_error_types": {
+      "ValueError": 62,
+      "FloatingPointError": 12,
+      "LinAlgError": 2
+    }
   }
 ]

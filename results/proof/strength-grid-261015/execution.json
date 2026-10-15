@@ -1,6 +1,6 @@
 {
   "run": "strength-grid-261015",
-  "stage": "eight_cells_released_largest_pilot_running",
+  "stage": "all_cells_released_extraction_dependency_gated",
   "records": 1350,
   "manifest_sha256": "790c30694c7ed0c445ec8f07417b0c95802f76309ba8be2b13a1287e232f9229",
   "source_sha256": "27d387a861a25b77e8ec73a4d0932fdfaef325d11433983ae015fb49e5a26de2",
@@ -392,7 +392,17 @@
       "records": 16,
       "ncpus": 32,
       "mem_gb": 96,
-      "cores_per_recording": 2
+      "cores_per_recording": 2,
+      "exit_status": 0,
+      "walltime": "00:36:37",
+      "peak_memory": "31069028kb",
+      "min_seconds": 842.871316655539,
+      "max_seconds": 2139.616869101301,
+      "numerical_error_types": {
+        "ValueError": 62,
+        "FloatingPointError": 12,
+        "LinAlgError": 2
+      }
     },
     {
       "cell": "M8-T500",
@@ -473,7 +483,10 @@
       "walltime": "01:30:00",
       "task_timeout": 2565,
       "pilot_max_seconds": 854.9925676491112,
-      "role": "production"
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:23:34",
+      "peak_memory": "79344312kb"
     },
     {
       "cell": "M16-T2000",
@@ -498,6 +511,18 @@
       "task_timeout": 3230,
       "pilot_max_seconds": 1076.656592125073,
       "role": "production"
+    },
+    {
+      "cell": "M32-T2000",
+      "job": "181331465.gadi-pbs",
+      "records": 134,
+      "ncpus": 288,
+      "mem_gb": 864,
+      "cores_per_recording": 2,
+      "walltime": "01:30:00",
+      "task_timeout": 6419,
+      "pilot_max_seconds": 2139.616869101301,
+      "role": "production"
     }
   ],
   "compute_source_commit": "1cf951a",
@@ -507,5 +532,7 @@
   "reused_tiny_smoke": "181323853: unchanged runner/config/pyspi; new grid has separate representative pilot in every size cell.",
   "extraction_source_commit": "d3d50c3",
   "extraction_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/strength-grid-analysis-d3d50c3",
-  "software_checks": "Input replay/shape/scaling, parent-disjoint splits, geometry translation/scale invariance, and synthetic full analysis integration pass. Canonical corpus path corrected before extraction."
+  "software_checks": "Input replay/shape/scaling, parent-disjoint splits, geometry translation/scale invariance, and synthetic full analysis integration pass. Canonical corpus path corrected before extraction.",
+  "extraction_job": "181331472.gadi-pbs",
+  "analysis_extension": "Before grid results: add retrieval with both M and T different from the query, and descriptive M/T shares of within-class spread, following user size-robustness clarification. Main frozen preprocessing/readouts unchanged; no feature outcomes inspected."
 }

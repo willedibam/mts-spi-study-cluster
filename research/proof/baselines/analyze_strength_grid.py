@@ -69,6 +69,24 @@ def ratio(values,labels):
     return float(within/between)
 
 
+def size_diagnostics(values,rows):
+    """Balanced descriptive main effects after removing each class centroid."""
+    residual=values.copy()
+    for label in CLASSES:
+        use=rows.label.eq(label).to_numpy()
+        residual[use]-=residual[use].mean(0)
+    total=float(np.square(residual).sum())
+    result={}
+    for factor in ['M','T']:
+        explained=0.
+        for label in CLASSES:
+            for level in rows[factor].unique():
+                use=(rows.label.eq(label)&rows[factor].eq(level)).to_numpy()
+                explained+=use.sum()*np.square(residual[use].mean(0)).sum()
+        result[factor+'_fraction_within_class']=float(explained/total) if total else np.nan
+    return result
+
+
 def analyze(data,out):
     rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows'])
     audit=json.loads((out/'extraction-audit.json').read_text());assert sha(out/'features.npz')==audit['features_sha256']
@@ -86,7 +104,7 @@ def analyze(data,out):
     spaces['m+z']=PCA(50,svd_solver='full').fit(fused[train]).transform(fused)
     scalar=rows.mean_abs_r.to_numpy()[:,None];spaces['mean_abs_r']=(scalar-scalar[train].mean(0))/scalar[train].std(0)
     np.savez_compressed(out/'coordinates.npz',row_id=rows.row_id.to_numpy(dtype=str),**spaces)
-    scores=[];individual=[]
+    scores=[];individual=[];size_effects=[];cross_size=[]
     for name,values in spaces.items():
         model=LogisticRegression(C=1,max_iter=5000).fit(values[train],labels[train])
         rbf=SVC(C=1).fit(values[train],labels[train]) if name.endswith('_full') else None
@@ -94,6 +112,13 @@ def analyze(data,out):
             choose=evaluation & rows.arm.eq(arm).to_numpy();y=labels[choose];v=values[choose]
             ap,top=average_precision(cdist(v,values[gallery]),y[:,None]==labels[gallery][None,:])
             predicted=model.predict(v)
+            size_effects.append(dict(representation=name,arm=arm,**size_diagnostics(v,rows.loc[choose])))
+            for cell,query_rows in rows.loc[choose].groupby('cell'):
+                query=rows.index.isin(query_rows.index)
+                cross_gallery=gallery & rows.M.ne(query_rows.M.iloc[0]).to_numpy() & rows['T'].ne(query_rows['T'].iloc[0]).to_numpy()
+                assert cross_gallery.sum()==84
+                cross_ap,cross_top=average_precision(cdist(values[query],values[cross_gallery]),labels[query,None]==labels[cross_gallery][None,:])
+                cross_size.append(dict(representation=name,arm=arm,cell=cell,n=int(query.sum()),gallery=84,mAP=float(cross_ap.mean()),top1=float(cross_top.mean())))
             f=rows.loc[choose,['row_id','parent','cell','M','T','instance','label','arm']].copy();f['representation']=name;f['AP']=ap;f['top1']=top;f['correct']=predicted==y;f['prediction']=predicted;individual.append(f)
             masks=[('all',np.ones(len(f),bool))]+[(cell,f.cell.eq(cell).to_numpy()) for cell in rows.cell.unique()]
             for cell,mask in masks:
@@ -102,6 +127,8 @@ def analyze(data,out):
                 scores.append(entry)
     pd.DataFrame(scores).to_csv(out/'metrics.csv',index=False);pd.concat(individual).to_csv(out/'individual.csv',index=False)
     pd.DataFrame(details).to_csv(out/'preprocessing.csv',index=False);pd.DataFrame(missing).to_csv(out/'missingness.csv',index=False)
+    pd.DataFrame(size_effects).to_csv(out/'size-effects.csv',index=False)
+    pd.DataFrame(cross_size).to_csv(out/'cross-size-retrieval.csv',index=False)
     validity=np.isfinite(bank['z']).astype(float);keep=validity[train].std(0)>0
     model=LogisticRegression(C=1,max_iter=5000).fit(validity[train][:,keep],labels[train]) if keep.any() else None
     validity_scores={arm:float(np.mean(model.predict(validity[use][:,keep])==labels[use])) if model else 1/7 for arm in ARMS for use in [evaluation & rows.arm.eq(arm).to_numpy()]}
