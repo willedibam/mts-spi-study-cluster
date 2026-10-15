@@ -1,0 +1,11 @@
+{
+  "records": 1350,
+  "all_shape_finite_center_scale_checks": true,
+  "endpoint_checks": "7 classes x gain0.5,1,1.5",
+  "replayed_records": 56,
+  "no_seed_replacement": true,
+  "training": 378,
+  "evaluation": 504,
+  "simulation_parents_disjoint": true,
+  "protocol_sha256": "207b03fbe98092ae623174094a135edcce829ad7d22d57a97cc053fa9d07a302"
+}

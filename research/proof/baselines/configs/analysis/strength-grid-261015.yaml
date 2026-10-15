@@ -1,0 +1,38 @@
+run: strength-grid-261015
+status: exploratory_design_fixed_before_SPI_results
+M: [8,16,32]
+T: [500,1000,2000]
+instances_per_cell: 5
+seed: 2610153026
+estimator_seed: 2610152027
+classes: [VAR, Kuramoto, Wave, CML-intermittency, CML-frozen, Gaussian-shared, Cauchy-shared]
+references: [Gaussian-independent, Cauchy-independent]
+arms: [fixed_clean, fixed_sensor, varying_clean, varying_sensor]
+physical_multiplier: Uniform[0.5,1.5]
+nominal_sensor_attenuation: Uniform[0.25,0.95]
+sensor_SD: sqrt(1/attenuation - 1), relative to each channel's sample SD
+parent: Independent realization for every (M,T,instance,class); arms share initial conditions/innovations and sensor errors. Nuisance draws shared across classes within a cell/instance; independent across cells/instances.
+observation: Simulate 32-channel hosts, then observe a uniformly selected M-channel subset; CML simulates a 100-site lattice and exposes a central 32-site window before subsampling. This changes observed size rather than physical system size. Fixed sampling cadence, variable duration T.
+settings:
+  VAR: {self: 0.5, total_neighbour: 0.2, topology: ring-symmetric, transients: 2000}
+  Kuramoto: {K: 3.5, dt: 0.00625, omega_mean: 3.0, omega_std: 1.73205, transients: 2000}
+  Wave: {c_squared: 100, dt: 0.00125, n_modes: 5, ic_decay: 1.5}
+  CML-intermittency: {alpha: 1.7522, eps: 0.00115, lattice_size: 100, transients: 2000}
+  CML-frozen: {alpha: 1.45, eps: 0.2, lattice_size: 100, transients: 2000}
+  shared_input: {loading: 0.75, channel_loadings: linear_0.5_to_1.5_on_32_host}
+variation: Multiply native neighbour coefficient/K/c_squared/eps/shared loading; no stability rescaling. Normalize latent observed channels, add independent Gaussian sensor errors, normalize observed channels again.
+catalogue: Repository configs/pyspi/benchmarked_p90.yaml, 289 SPIs, frozen pyspi c2d723f computation3.0.0.r9. New output directory, no historical feature pooling.
+analysis:
+  train: instances 0,1,2 in every size cell, fixed_clean/fixed_sensor only
+  evaluation: instances 3,4 in every size cell, all four conditions
+  gallery: fixed_clean training rows, different simulation parents
+  primary: Same m and z preprocessing/PCA50/readouts as factorial; report spread-to-separation and clean-reference retrieval by condition and size cell.
+  controls: Full-vector means, unclipped means, standardized z, complete-training z, validity-only prediction; never infer marginal-information absence from an embedding.
+  plots: Shared training-fitted PCA/UMAP; joint descriptive t-SNE; no arm/class/seed selection; marker area proportional to sqrt(M), distinct marker shape for T; all classes and display-only no-shared view.
+  uncertainty: Only five independent parents per class/cell, two evaluation; cell-specific scores are exploratory. Pooling cells does not establish size invariance.
+qualifications:
+  - T affects precision and estimator validity; 500/1000/2000 avoids a T100 validity-dominated test and includes the previous length.
+  - The user explicitly allowed longer T in this request; this new run does not alter earlier T1000 results.
+  - Frozen-chaos and intermittency are nominal base settings; varying epsilon may change regime. Preserve previous defect-turbulence evidence.
+  - Uniform noise/coupling ranges unchanged; heavier noise is not introduced to force a baseline failure.
+  - Independent Cauchy has no population Pearson covariance; signed sample moments may be unstable.
