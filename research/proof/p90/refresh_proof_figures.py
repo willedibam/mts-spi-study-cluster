@@ -5,6 +5,7 @@ import argparse
 from itertools import combinations
 import json
 from pathlib import Path
+from textwrap import fill
 
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -145,20 +146,22 @@ def rank_features(bank,output):
 
 def plot_discriminative(bank,ranked,scope,output):
     style();subset=ranked[ranked.class_a.isin(CML)&ranked.class_b.isin(CML)] if scope=='cml' else ranked[~ranked.class_a.isin(CML)]
-    n=len(subset);fig,axes=plt.subplots(int(np.ceil(n/2)),2,figsize=(9,4.4*int(np.ceil(n/2))),layout='constrained',squeeze=False)
+    n=len(subset);ncols=3 if scope=='cml' else 2;nrows=int(np.ceil(n/ncols))
+    fig,axes=plt.subplots(nrows,ncols,figsize=(3.2*ncols,3.3*nrows),layout='constrained',squeeze=False)
     for ax,(_,row) in zip(axes.flat,subset.iterrows()):
         col=int(row.feature_index)
         for pos,cls in enumerate([row.class_a,row.class_b]):
             mask=(bank['y']==cls)&(bank['instance']>=6)
-            raincloud(ax,bank['X_sym'][mask,col],pos,bank['colors'][cls],np.random.default_rng(260924+col+pos),width=.65)
+            raincloud(ax,bank['X_sym'][mask,col],pos,bank['colors'][cls],np.random.default_rng(260924+col+pos),width=.65,box=True)
         same_coordinate=ranked[ranked.feature_index==col]
         classes=np.unique(same_coordinate[['class_a','class_b']].to_numpy())
         values=bank['X_sym'][(bank['instance']>=6)&np.isin(bank['y'],classes),col]
         values=values[np.isfinite(values)]
         padding=max(float(np.ptp(values))*.08,.002)
         limits=(max(-1.005,float(values.min())-padding),min(1.005,float(values.max())+padding))
-        names=[display_name(cls).replace(', total coupling ', '\nTotal neighbour ') for cls in [row.class_a,row.class_b]]
-        ax.set(xticks=[0,1],xticklabels=names,ylim=limits,xlim=(-.6,1.6),ylabel='SPI–SPI Pearson correlation')
+        names=[display_name(cls).replace(', total coupling ', '\nTotal ') for cls in [row.class_a,row.class_b]]
+        names=['\n'.join(fill(line,width=21) for line in name.splitlines()) for name in names]
+        ax.set(xticks=[0,1],xticklabels=names,ylim=limits,xlim=(-.6,1.6),ylabel=r'$z_{ab}$')
         ax.set_box_aspect(1)
         ax.spines[['top','right']].set_visible(True)
         ax.ticklabel_format(axis='y',style='plain',useOffset=False)

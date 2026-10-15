@@ -24,16 +24,25 @@ def save(fig, output: Path, name: str):
     return fig
 
 
-def raincloud(ax, values, position, color, rng, width=.2):
+def raincloud(ax, values, position, color, rng, width=.2, *, box=False):
     values = np.asarray(values); values = values[np.isfinite(values)]
+    cloud_position = position + width*.14 if box else position
     if len(values) > 2 and np.std(values) > 1e-9:
-        parts = ax.violinplot(values, positions=[position], widths=width, showextrema=False)
+        parts = ax.violinplot(values, positions=[cloud_position], widths=width, showextrema=False)
         for body in parts['bodies']:
             verts = body.get_paths()[0].vertices
-            verts[:, 0] = np.maximum(verts[:, 0], position)
+            verts[:, 0] = np.maximum(verts[:, 0], cloud_position)
             body.set_facecolor(color); body.set_edgecolor('none'); body.set_alpha(.25)
-    ax.scatter(position-rng.uniform(.025, width*.55, len(values)), values, color=color, s=7, alpha=.5, linewidths=0)
-    ax.plot([position-width*.12, position+width*.12], [np.median(values)]*2, color=color, lw=1.6)
+    ax.scatter(position-rng.uniform(width*.14 if box else .025, width*.55, len(values)), values, color=color, s=7, alpha=.5, linewidths=0)
+    if box:
+        ax.boxplot([values], positions=[position], widths=width*.16, whis=1.5,
+                   showfliers=False, manage_ticks=False, patch_artist=True,
+                   boxprops={'facecolor':'white','edgecolor':color,'linewidth':.9},
+                   whiskerprops={'color':color,'linewidth':.8},
+                   capprops={'color':color,'linewidth':.8},
+                   medianprops={'color':color,'linewidth':1.3})
+    else:
+        ax.plot([position-width*.12, position+width*.12], [np.median(values)]*2, color=color, lw=1.6)
 
 
 def figure_style():

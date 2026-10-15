@@ -126,7 +126,24 @@ def plot_mi_sensitivity(frame, output):
     return save(fig, Path(output), 'mi-temporal-exclusion')
 
 
-def plot_spi_planes(frame, kind, output):
+def rmi_edges(meta):
+    p = meta['generator']['params']
+    return [(0, 1), (0, p['n_linear']), (0, p['n_linear'] + p['n_monotonic'])]
+
+
+def mark_edges(ax, x, y, edges):
+    """Labels A/B/C identify predetermined channel pairs, not selected outliers."""
+    for label, (i, j), offset in zip('ABC', edges, [(5, 7), (-13, -15), (5, 7)]):
+        dx, dy = offset
+        xmin, xmax = ax.get_xlim(); ymin, ymax = ax.get_ylim()
+        if x[i, j] > xmin + .8*(xmax-xmin): dx = -14
+        if y[i, j] > ymin + .8*(ymax-ymin): dy = -15
+        ax.scatter([x[i, j]], [y[i, j]], s=45, facecolors='none', edgecolors='black', lw=.9, zorder=5)
+        ax.annotate(label, (x[i, j], y[i, j]), xytext=(dx, dy), textcoords='offset points',
+                    fontsize=8, zorder=6, bbox={'facecolor':'white','edgecolor':'none','alpha':.8,'pad':.5})
+
+
+def plot_spi_planes(frame, kind, output, *, highlight_edges=False):
     style()
     if kind == 'r-rho-mi':
         subset = frame[(frame.instance==0) & ((frame.beta_tag=='beta-5') | (frame['class']=='iter1_L'))]
@@ -155,6 +172,9 @@ def plot_spi_planes(frame, kind, output):
             ax.set(xlabel=labels[a],ylabel=labels[b]);ax.set_box_aspect(1)
             ax.spines[['top','right']].set_visible(True)
             ax.set_title(f'{title}\nagreement = {corr(x,y):.3f}',fontsize=9)
+            if highlight_edges and (kind=='dtw' or row==2):
+                edges=rmi_edges(meta) if kind=='r-rho-mi' else [(0,meta['M']-1)]
+                mark_edges(ax,bank[a],bank[b],edges)
     if kind=='dtw':fig.colorbar(sc,ax=axes.ravel().tolist(),label='Absolute generating lag difference',shrink=.5)
     else:fig.legend(*axes[-1,-1].get_legend_handles_labels(),fontsize=8,loc='outside lower center',ncols=3)
     return save(fig,Path(output),'spi-planes')
@@ -197,7 +217,7 @@ def plot_pair_rainclouds(frame, output):
     return save(fig, Path(output), 'pair-rainclouds')
 
 
-def plot_rmi_channel_pairs(frame, output):
+def plot_rmi_channel_pairs(frame, output, *, label_edges=False):
     """Predetermined channels, without selecting for the observed SPI values."""
     record = frame[(frame.instance == 0) & (frame.beta_tag == 'beta-5') &
                    (frame['class'] == 'iter3_LMNM')].iloc[0]
@@ -207,7 +227,8 @@ def plot_rmi_channel_pairs(frame, output):
     channels = [1, params['n_linear'], params['n_linear'] + params['n_monotonic']]
     style(); fig, axes = plt.subplots(1, 3, figsize=(10, 3.6), layout='constrained')
     with np.load(path / 'spi_mpis.npz') as bank:
-        for ax, j, name, color in zip(axes, channels, ['Linear–linear', 'Linear–sigmoid', 'Linear–quadratic'], ['.5', COLORS[0], COLORS[1]]):
+        for tag, ax, j, name, color in zip('ABC', axes, channels, ['Linear–linear', 'Linear–sigmoid', 'Linear–quadratic'], ['.5', COLORS[0], COLORS[1]]):
+            if label_edges: name=f'{tag}: {name} (1–{j+1})'
             ax.scatter(x[:, 0], x[:, j], s=3, color=color, alpha=.25, linewidths=0, rasterized=True)
             ax.set(xlabel='Linear channel (standardised)', ylabel='Other channel (standardised)',
                    title=f'{name}\n$r$={bank[R][0,j]:.2f}, $\u03c1$={bank[RHO][0,j]:.2f}, MI={bank[MI][0,j]:.2f} nats')
