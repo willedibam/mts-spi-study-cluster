@@ -64,15 +64,15 @@ def plots():
             fig.suptitle('Fixed latent dynamics · M=16, T=1000 · 16 evaluation instances/class\nOne training-fitted coordinate system per representation; all severe-noise cases retained')
             save(fig,OUT/'figures',figure+'-'+coloring);plt.close(fig)
     metrics=pd.read_csv(OUT/'metrics.csv').set_index(['representation','arm'])
-    fig,axes=plt.subplots(1,3,figsize=(11,3.6),layout='constrained')
+    fig,axes=plt.subplots(1,4,figsize=(14,3.6),layout='constrained')
     for rep,color in [('m','#D55E00'),('z','#0072B2')]:
         for profile,ls in [('equal','-'),('exponential','--')]:
             arms=['clean']+[f'{profile}-eta{e:g}' for e in ETAS[1:]]+['noise-limit']
             d=metrics.loc[[(rep,a) for a in arms]]
-            for ax,key in zip(axes,['mAP','spread_to_separation','accuracy']):
+            for ax,key in zip(axes,['mAP','spread_to_separation','accuracy','paired_movement']):
                 ax.plot(range(7),d[key].to_numpy(),color=color,ls=ls,marker='o',ms=3,label=f'{rep}: {profile}')
                 ax.set(xticks=range(7),xticklabels=['0','.5','1','2','4','8','Noise\nonly'],xlabel=r'Noise SD $\eta$; final point is the pure-noise limit')
-    axes[0].set(ylabel='Clean-reference retrieval mAP',ylim=(0,1.03));axes[1].set(ylabel='Within-class spread / separation',yscale='log');axes[2].set(ylabel='Fixed-readout classification accuracy',ylim=(0,1.03));axes[2].axhline(1/7,color='.6',ls=':',lw=1)
+    axes[0].set(ylabel='Clean-reference retrieval mAP',ylim=(0,1.03));axes[1].set(ylabel='Within-class spread / separation',yscale='log');axes[2].set(ylabel='Fixed-readout classification accuracy',ylim=(0,1.03));axes[2].axhline(1/7,color='.6',ls=':',lw=1);axes[3].set(ylabel='Paired movement from clean\nRelative to training class separation')
     axes[0].legend(fontsize=8);fig.suptitle('All doses · equal and exponential profiles matched in expected total noise power')
     save(fig,OUT/'figures','dose-curves');plt.close(fig)
     (OUT/'plot-audit.json').write_text(json.dumps(dict(source_sha256=sha(__file__),coordinate_sha256=sha(OUT/'embedding-coordinates.npz'),training=336,evaluation=1568,UMAP=dict(neighbors=25,min_dist=.25,seed=261016),selected_main_arms=sets['dose-main'],all_doses_retained=True),indent=2)+'\n')

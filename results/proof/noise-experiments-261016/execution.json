@@ -1,6 +1,6 @@
 {
   "run": "noise-experiments-261016",
-  "stage": "pilots_submitted",
+  "stage": "both_production_batches_running",
   "records": 3136,
   "manifest_sha256": "c847e04a7465914aaa5ff0b92567a20faf49a2c1d5cf0da096d47f5e1548bc0c",
   "protocol_sha256": "bedb04cb0dd94ede54d8d57d2040a269c9fc625b1a9bd1e2f0292ab3bcea5dd4",
@@ -8,21 +8,136 @@
   "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
   "jobs": [
     {
-      "role": "pilot",
       "experiment": "dose",
+      "role": "pilot",
       "job": "181350883.gadi-pbs",
-      "records": 28
+      "records": 28,
+      "indices": [
+        1,
+        10,
+        11,
+        12,
+        13,
+        22,
+        23,
+        24,
+        25,
+        34,
+        35,
+        36,
+        37,
+        46,
+        47,
+        48,
+        49,
+        58,
+        59,
+        60,
+        61,
+        70,
+        71,
+        72,
+        73,
+        82,
+        83,
+        84
+      ],
+      "ncpus": 28,
+      "mem_gb": 112,
+      "walltime": "00:30:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+      "exit_status": 0,
+      "resources_used": {
+        "cpupercent": 2752,
+        "cput": "01:40:39",
+        "jobfs": "8503666b",
+        "mem": "26699012kb",
+        "ncpus": 28,
+        "vmem": "26699012kb",
+        "walltime": "00:06:58"
+      },
+      "max_seconds": 394.7777823554352,
+      "error_types": {
+        "ValueError": 104,
+        "FloatingPointError": 16,
+        "LinAlgError": 20
+      }
     },
     {
-      "role": "pilot",
       "experiment": "random",
+      "role": "pilot",
       "job": "181350893.gadi-pbs",
-      "records": 14
+      "records": 14,
+      "indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ncpus": 14,
+      "mem_gb": 56,
+      "walltime": "00:30:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+      "exit_status": 0,
+      "resources_used": {
+        "cpupercent": 1138,
+        "cput": "00:49:00",
+        "jobfs": "8464601b",
+        "mem": "14031684kb",
+        "ncpus": 14,
+        "vmem": "14031684kb",
+        "walltime": "00:05:46"
+      },
+      "max_seconds": 326.9465545397252,
+      "error_types": {
+        "ValueError": 34
+      }
+    },
+    {
+      "experiment": "random",
+      "role": "production",
+      "job": "181350994.gadi-pbs",
+      "records": 434,
+      "indices": null,
+      "ncpus": 192,
+      "mem_gb": 384,
+      "walltime": "01:00:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f"
+    },
+    {
+      "experiment": "dose",
+      "role": "production",
+      "job": "181351093.gadi-pbs",
+      "records": 2660,
+      "indices": null,
+      "ncpus": 384,
+      "mem_gb": 768,
+      "walltime": "02:00:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f"
     }
   ],
   "compute_source_commit": "0de0330",
   "compute_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
   "software_checks": "3136 input shape/finite/center/scale checks; exact expected noise power; 196 exact regenerated records; parent-disjoint split; synthetic integration of 14 conditions and 9 readouts passed, fixtures removed. Runner unchanged from successful tiny smoke181323853.",
   "analysis_source_commit": "a3bfcc3",
-  "analysis_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-analysis-a3bfcc3"
+  "analysis_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-analysis-a3bfcc3",
+  "extraction_job": "181351094.gadi-pbs"
 }
