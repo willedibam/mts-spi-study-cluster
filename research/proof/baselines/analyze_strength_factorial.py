@@ -143,6 +143,7 @@ def analyze(data,out):
     score_frame.to_csv(out/'metrics.csv',index=False);individual.to_csv(out/'individual.csv',index=False)
     pd.DataFrame(per_class).to_csv(out/'per-class.csv',index=False);pd.DataFrame(details).to_csv(out/'preprocessing.csv',index=False);pd.DataFrame(missing).to_csv(out/'missingness.csv',index=False)
     rng=np.random.default_rng(261015);draws=rng.integers(0,20,size=(2000,20));intervals=[]
+    geometry_boot={}
     for arm in ARMS:
         paired=individual[(individual.arm==arm)&individual.representation.isin(['m','z','m+z'])].groupby(['instance','representation']).AP.mean().unstack()
         for left,right in [('z','m'),('m+z','m')]:
@@ -160,10 +161,24 @@ def analyze(data,out):
                 w=((a-centers[:,None,:])**2).sum(2).mean()
                 b=((centers-centers.mean(0))**2).sum(1).mean()
                 ratios.append(w/b)
-            bootstrap.append(ratios[1]-ratios[0])
+            bootstrap.append(ratios)
+        geometry_boot[arm]=np.asarray(bootstrap)
+        bootstrap=geometry_boot[arm][:,1]-geometry_boot[arm][:,0]
         observed=score_frame[score_frame.arm.eq(arm)].set_index('representation').spread_to_separation
         intervals.append(dict(arm=arm,contrast='z minus m',metric='spread_to_separation',difference=observed['z']-observed['m'],low=np.quantile(bootstrap,.025),high=np.quantile(bootstrap,.975)))
     pd.DataFrame(intervals).to_csv(out/'paired-intervals.csv',index=False)
+    # The protocol's primary question concerns changes across paired arms, not
+    # merely an already-existing difference between m and z in the clean data.
+    interventions=[]
+    point=score_frame.pivot(index='arm',columns='representation',values='spread_to_separation')
+    for arm in ARMS[1:]:
+        delta=geometry_boot[arm]-geometry_boot['fixed_clean']
+        observed=point.loc[arm]-point.loc['fixed_clean']
+        for name,values,value in [('m',delta[:,0],observed['m']),('z',delta[:,1],observed['z']),
+                                   ('z minus m',delta[:,1]-delta[:,0],observed['z']-observed['m'])]:
+            interventions.append(dict(contrast=arm+' minus fixed_clean',representation=name,
+                                      change=value,low=np.quantile(values,.025),high=np.quantile(values,.975)))
+    pd.DataFrame(interventions).to_csv(out/'intervention-intervals.csv',index=False)
     report=dict(training=280,evaluation=560,gallery=140,classes=list(CLASSES),validity_only_accuracy=validity,
                 catalogue_size=int(audit['n_spis']),computation=audit['computation'],source_sha256=sha(__file__),
                 notes=['All preprocessing/PCA fitted only on fixed clean/sensor training instances0-19.',
