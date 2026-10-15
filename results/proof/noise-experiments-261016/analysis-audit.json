@@ -1,0 +1,28 @@
+{
+  "training": 336,
+  "evaluation": 1568,
+  "gallery": 112,
+  "validity_only_accuracy": {
+    "clean": 0.875,
+    "equal-eta0.5": 0.4642857142857143,
+    "exponential-eta0.5": 0.7589285714285714,
+    "equal-eta1": 0.4017857142857143,
+    "exponential-eta1": 0.6964285714285714,
+    "equal-eta2": 0.21428571428571427,
+    "exponential-eta2": 0.625,
+    "equal-eta4": 0.16071428571428573,
+    "exponential-eta4": 0.5446428571428571,
+    "equal-eta8": 0.17857142857142858,
+    "exponential-eta8": 0.39285714285714285,
+    "noise-limit": 0.16964285714285715,
+    "random-previous": 0.4642857142857143,
+    "random-stronger": 0.29464285714285715
+  },
+  "source_sha256": "2c28e17170ef1d25f4794506fc4fd43641919f8c185b975f2d1a5ddb6a63d12f",
+  "notes": [
+    "No outcome-selected doses/classes/seeds.",
+    "Primary m has no per-recording normalization; m_direction is secondary, anchored to training pure-noise mean then L2 normalized.",
+    "Matched expected total noise power is not matched average pair attenuation.",
+    "Intervals resample instance blocks keeping classes/conditions paired; conditional on training."
+  ]
+}

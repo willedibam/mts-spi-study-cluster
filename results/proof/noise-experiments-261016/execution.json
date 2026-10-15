@@ -1,6 +1,6 @@
 {
   "run": "noise-experiments-261016",
-  "stage": "both_production_batches_running",
+  "stage": "complete_report_executed",
   "records": 3136,
   "manifest_sha256": "c847e04a7465914aaa5ff0b92567a20faf49a2c1d5cf0da096d47f5e1548bc0c",
   "protocol_sha256": "bedb04cb0dd94ede54d8d57d2040a269c9fc625b1a9bd1e2f0292ab3bcea5dd4",
@@ -118,7 +118,17 @@
       "walltime": "01:00:00",
       "task_timeout": 1800,
       "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
-      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f"
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+      "exit_status": 0,
+      "resources_used": {
+        "cpupercent": 19142,
+        "cput": "23:31:42",
+        "jobfs": "33509kb",
+        "mem": "152809160kb",
+        "ncpus": 192,
+        "vmem": "152809160kb",
+        "walltime": "00:11:14"
+      }
     },
     {
       "experiment": "dose",
@@ -131,7 +141,17 @@
       "walltime": "02:00:00",
       "task_timeout": 1800,
       "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
-      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f"
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+      "exit_status": 0,
+      "resources_used": {
+        "cpupercent": 38394,
+        "cput": "134:33:51",
+        "jobfs": "67299kb",
+        "mem": "307765668kb",
+        "ncpus": 384,
+        "vmem": "307765668kb",
+        "walltime": "00:26:58"
+      }
     }
   ],
   "compute_source_commit": "0de0330",
@@ -140,5 +160,42 @@
   "analysis_source_commit": "a3bfcc3",
   "analysis_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-analysis-a3bfcc3",
   "extraction_job": "181351094.gadi-pbs",
-  "pre_result_analysis_extension": "Added exact randomized-query-label mAP expectation, before viewing SPI feature outcomes, to distinguish AP null from 1/7 classification chance; frozen primary readouts unchanged."
+  "pre_result_analysis_extension": "Added exact randomized-query-label mAP expectation, before viewing SPI feature outcomes, to distinguish AP null from 1/7 classification chance; frozen primary readouts unchanged.",
+  "extraction_status": {
+    "job_state": "F",
+    "Exit_status": 0,
+    "resources_used": {
+      "cpupercent": 168,
+      "cput": "00:02:15",
+      "jobfs": "0b",
+      "mem": "15541288kb",
+      "ncpus": 4,
+      "vmem": "15541288kb",
+      "walltime": "00:01:32"
+    },
+    "comment": "Job run at Fri Oct 16 at 09:48 on (gadi-cpu-clx-0173:ncpus=4:mem=25165824kb:jobfs=2097152kb) and finished"
+  },
+  "local_analysis_commit": "5aa9c1b",
+  "extraction_audit": {
+    "records": 3136,
+    "features_sha256": "4dad0130a3dc6e1059e2e3add476f474ddfdea92bd1040b84ea6f9ca3cfc4e0d",
+    "manifest_sha256": "c847e04a7465914aaa5ff0b92567a20faf49a2c1d5cf0da096d47f5e1548bc0c",
+    "source_sha256": "002e343d52eea71dcfa4ed719cd99792e60628a62ca172bf6181852f0942c601",
+    "code_hashes": {
+      "run_corpus.py": "434e3bfea792176762cd2f8ea039fbdd036e959dec16fb03a02a954d6852449e",
+      "corpus.py": "ac57c3fd99359f5893e4973539bbd8251c9975d050bba59151f89f9fc876b114",
+      "generated_corpus.py": "f57106244b0c8b69b561f314ece1a85fc309a453ab38d772e128e5247e1b1610",
+      "compute.py": "7fd51844d88ac5096f6c57e8e157000068e21fb0869f540ec4a7705f6c7479e9"
+    },
+    "catalogue_size": 289,
+    "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+    "computation": "3.0.0.r9",
+    "independent_records": 98,
+    "max_independent_error": 2.97617409605877e-08
+  },
+  "analysis_audit_sha256": "1ab4dcc83a6c9fad689b8dcaddbae1abca56ce46e48b3849f2211e7420de4999",
+  "report_source_sha256": "9981bd3d215feea2ccaeed18c3f4af26862d7d8920c5359cf9bd46ca3b46b0da",
+  "notebook_sha256": "350dcc484ff7a1caa320c92852d81ee26974285291863f7ee90e27d4caae6693",
+  "all_jobs_complete": true,
+  "interpretation": "Raw means lose clean-reference retrieval before information disappears. Stronger random noise does not enlarge the gap; equal eta8 breaks both primary readouts. Noise-centred direction-normalized means match z on stronger random noise and outperform it at exponential eta8. No outcome-selected parameters or plots."
 }

@@ -1,0 +1,22 @@
+{
+  "source_sha256": "92ee4ba7704d356d312cf8881e27ca636de5c03b7e71665a58f56cdb73fdfa8d",
+  "coordinate_sha256": "a1d920b22d2d206c92a0e9d16c06bb026bd4caca331f93a5658e0233aed6c57d",
+  "training": 336,
+  "evaluation": 1568,
+  "UMAP": {
+    "neighbors": 25,
+    "min_dist": 0.25,
+    "seed": 261016
+  },
+  "selected_main_arms": [
+    "clean",
+    "equal-eta2",
+    "exponential-eta2",
+    "equal-eta8",
+    "exponential-eta8",
+    "noise-limit"
+  ],
+  "all_doses_retained": true,
+  "visual_inspection": "All seven PNG figures checked: boxed square axes, same coordinates/limits across conditions, readable labels and no clipping; severe-noise and pure-noise endpoints retained.",
+  "append_source_sha256": "9981bd3d215feea2ccaeed18c3f4af26862d7d8920c5359cf9bd46ca3b46b0da"
+}

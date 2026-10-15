@@ -1,0 +1,203 @@
+{
+  "jobs": [
+    {
+      "experiment": "dose",
+      "role": "pilot",
+      "job": "181350883.gadi-pbs",
+      "records": 28,
+      "indices": [
+        1,
+        10,
+        11,
+        12,
+        13,
+        22,
+        23,
+        24,
+        25,
+        34,
+        35,
+        36,
+        37,
+        46,
+        47,
+        48,
+        49,
+        58,
+        59,
+        60,
+        61,
+        70,
+        71,
+        72,
+        73,
+        82,
+        83,
+        84
+      ],
+      "ncpus": 28,
+      "mem_gb": 112,
+      "walltime": "00:30:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+      "exit_status": 0,
+      "resources_used": {
+        "cpupercent": 2752,
+        "cput": "01:40:39",
+        "jobfs": "8503666b",
+        "mem": "26699012kb",
+        "ncpus": 28,
+        "vmem": "26699012kb",
+        "walltime": "00:06:58"
+      },
+      "max_seconds": 394.7777823554352,
+      "error_types": {
+        "ValueError": 104,
+        "FloatingPointError": 16,
+        "LinAlgError": 20
+      }
+    },
+    {
+      "experiment": "random",
+      "role": "pilot",
+      "job": "181350893.gadi-pbs",
+      "records": 14,
+      "indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ncpus": 14,
+      "mem_gb": 56,
+      "walltime": "00:30:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
+      "exit_status": 0,
+      "resources_used": {
+        "cpupercent": 1138,
+        "cput": "00:49:00",
+        "jobfs": "8464601b",
+        "mem": "14031684kb",
+        "ncpus": 14,
+        "vmem": "14031684kb",
+        "walltime": "00:05:46"
+      },
+      "max_seconds": 326.9465545397252,
+      "error_types": {
+        "ValueError": 34
+      }
+    },
+    {
+      "experiment": "random",
+      "role": "production",
+      "job": "181350994.gadi-pbs",
+      "records": 434,
+      "indices": null,
+      "ncpus": 192,
+      "mem_gb": 384,
+      "walltime": "01:00:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f"
+    },
+    {
+      "experiment": "dose",
+      "role": "production",
+      "job": "181351093.gadi-pbs",
+      "records": 2660,
+      "indices": null,
+      "ncpus": 384,
+      "mem_gb": 768,
+      "walltime": "02:00:00",
+      "task_timeout": 1800,
+      "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/noise-experiments-0de0330",
+      "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f"
+    }
+  ],
+  "extraction": "181351094.gadi-pbs",
+  "status": {
+    "181350883.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 2752,
+        "cput": "01:40:39",
+        "jobfs": "8503666b",
+        "mem": "26699012kb",
+        "ncpus": 28,
+        "vmem": "26699012kb",
+        "walltime": "00:06:58"
+      },
+      "comment": "Job run at Fri Oct 16 at 09:11 on (gadi-cpu-clx-2949:ncpus=28:mem=117440512kb:jobfs=10485760kb) and finished"
+    },
+    "181350893.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 1138,
+        "cput": "00:49:00",
+        "jobfs": "8464601b",
+        "mem": "14031684kb",
+        "ncpus": 14,
+        "vmem": "14031684kb",
+        "walltime": "00:05:46"
+      },
+      "comment": "Job run at Fri Oct 16 at 09:11 on (gadi-cpu-clx-0083:ncpus=14:mem=58720256kb:jobfs=10485760kb) and finished"
+    },
+    "181350994.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 19142,
+        "cput": "23:31:42",
+        "jobfs": "33509kb",
+        "mem": "152809160kb",
+        "ncpus": 192,
+        "vmem": "152809160kb",
+        "walltime": "00:11:14"
+      },
+      "comment": "Job run at Fri Oct 16 at 09:20 on (gadi-cpu-clx-0024:ncpus=48:mem=100663296kb:jobfs=2621440kb)+(gadi-cpu-clx-0025:ncpus=48:mem=100663296kb:jobfs=2621440kb)+(gadi-cpu-clx-0026:ncpus=48:mem=100663296kb:jobfs=2621440kb)+(gadi-cpu-clx-0030:ncpus=48:mem=100... and finished"
+    },
+    "181351093.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 38394,
+        "cput": "134:33:51",
+        "jobfs": "67299kb",
+        "mem": "307765668kb",
+        "ncpus": 384,
+        "vmem": "307765668kb",
+        "walltime": "00:26:58"
+      },
+      "comment": "Job run at Fri Oct 16 at 09:20 on (gadi-cpu-clx-2809:ncpus=48:mem=100663296kb:jobfs=1310720kb)+(gadi-cpu-clx-2810:ncpus=48:mem=100663296kb:jobfs=1310720kb)+(gadi-cpu-clx-2811:ncpus=48:mem=100663296kb:jobfs=1310720kb)+(gadi-cpu-clx-2812:ncpus=48:mem=100... and finished"
+    },
+    "181351094.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "resources_used": {
+        "cpupercent": 168,
+        "cput": "00:02:15",
+        "jobfs": "0b",
+        "mem": "15541288kb",
+        "ncpus": 4,
+        "vmem": "15541288kb",
+        "walltime": "00:01:32"
+      },
+      "comment": "Job run at Fri Oct 16 at 09:48 on (gadi-cpu-clx-0173:ncpus=4:mem=25165824kb:jobfs=2097152kb) and finished"
+    }
+  }
+}

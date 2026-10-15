@@ -1,0 +1,22 @@
+{
+  "records": 3136,
+  "hashes_verified": [
+    "local feature bank versus Gadi extraction",
+    "input manifest versus frozen execution",
+    "protocol versus frozen execution",
+    "extraction source versus a3bfcc3",
+    "local analysis source versus audit"
+  ],
+  "independent_mean_checks": 28322,
+  "independent_z_checks": 9800,
+  "max_error": 2.97617409605877e-08,
+  "previous_notebook_cells_preserved": 38,
+  "total_notebook_cells": 43,
+  "notebook_errors": 0,
+  "estimator_error_types": {
+    "ValueError": 10423,
+    "FloatingPointError": 756,
+    "LinAlgError": 3389
+  },
+  "all_severe_conditions_retained": true
+}
