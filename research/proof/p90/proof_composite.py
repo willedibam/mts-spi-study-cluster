@@ -71,11 +71,11 @@ def plot_composite(bank, coords, selected, method, output):
     if method not in {'pca', 'tsne'} or len(selected) != 3:
         raise ValueError('Use PCA or t-SNE with exactly three selected contrasts.')
     style()
-    # Inch-based geometry: 3.25-inch embeddings, 1.90-inch rainclouds, with
+    # Inch-based geometry: 3.25-inch embeddings, 2.20-inch rainclouds, with
     # the lower row extending 0.65 inches beyond each upper side.
-    fig = plt.figure(figsize=(9, 7.08))
-    upper = [fig.add_axes([left/9, 3.58/7.08, 3.25/9, 3.25/7.08]) for left in [.95, 4.80]]
-    lower = [fig.add_axes([left/9, 1/7.08, 1.9/9, 1.9/7.08]) for left in [.30, 3.55, 6.80]]
+    fig = plt.figure(figsize=(9, 7.38))
+    upper = [fig.add_axes([left/9, 3.88/7.38, 3.25/9, 3.25/7.38]) for left in [.95, 4.80]]
+    lower = [fig.add_axes([left/9, 1/7.38, 2.2/9, 2.2/7.38]) for left in [.30, 3.40, 6.50]]
     for ax, panel, title in zip(upper, ['inter', 'cml'], ['Inter-class', 'Within CML']):
         indices = coords[panel+'_indices']; labels = bank['y'][indices]
         xy = coords[panel+'_'+method]; sizes = marker_areas(bank['M'][indices])
