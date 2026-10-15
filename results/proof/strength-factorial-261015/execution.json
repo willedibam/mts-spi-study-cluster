@@ -131,5 +131,19 @@
     "matplotlib": "3.11.1",
     "nbformat": "5.11.1",
     "nbclient": "0.11.0"
+  },
+  "display_extension": {
+    "tsne": {
+      "perplexity": 30,
+      "init": "pca",
+      "learning_rate": "auto",
+      "max_iter": 1000,
+      "random_state": 261015,
+      "n_jobs": 1,
+      "fit": "joint 280 training + 560 evaluation + 40 reference rows; descriptive only"
+    },
+    "existing_PCA_UMAP_coordinates_unchanged": true,
+    "no_shared": "Display-only omission of shared-input Gaussian/Cauchy under both variations; no refit, independent references retained.",
+    "report_source_sha256": "1d2a7e148f8c2b269aa36ea646a759eacbb8eacc3ea34eabbae5bee555dc6370"
   }
 }
