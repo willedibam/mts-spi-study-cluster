@@ -1,0 +1,27 @@
+{
+  "training": 378,
+  "evaluation": 504,
+  "gallery": 189,
+  "classes": [
+    "VAR",
+    "Kuramoto",
+    "Wave",
+    "CML-intermittency",
+    "CML-frozen",
+    "Gaussian-shared",
+    "Cauchy-shared"
+  ],
+  "validity_only_accuracy": {
+    "fixed_clean": 0.7936507936507936,
+    "fixed_sensor": 0.4126984126984127,
+    "varying_clean": 0.7619047619047619,
+    "varying_sensor": 0.40476190476190477
+  },
+  "source_sha256": "72ee647d64786c9c0e867377e1d988c894f93cf974437e78d1567f3c53c474c9",
+  "notes": [
+    "Independent parent in every size cell; paired interventions within parent.",
+    "Only 2 evaluation instances/class/cell: individual cell geometry is descriptive.",
+    "PCA/UMAP training fixed conditions only; t-SNE is separate joint descriptive fit.",
+    "No distribution summaries or within-recording normalization of mean vectors."
+  ]
+}

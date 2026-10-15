@@ -1,0 +1,16 @@
+{
+  "records": 1350,
+  "code_sha256": {
+    "run_corpus.py": "434e3bfea792176762cd2f8ea039fbdd036e959dec16fb03a02a954d6852449e",
+    "corpus.py": "ac57c3fd99359f5893e4973539bbd8251c9975d050bba59151f89f9fc876b114",
+    "generated_corpus.py": "f57106244b0c8b69b561f314ece1a85fc309a453ab38d772e128e5247e1b1610",
+    "compute.py": "7fd51844d88ac5096f6c57e8e157000068e21fb0869f540ec4a7705f6c7479e9"
+  },
+  "independent_records": 16,
+  "mean_checks": 4624,
+  "z_checks": 1600,
+  "undefined_z_checks": 387,
+  "max_z_error": 2.9726905048654828e-08,
+  "features_sha256": "43d09e9cb5517ed6e90f58c052e41f4252ad11b1ca9f0591f353ee2c437e0990",
+  "source_sha256": "7fdcfcc806c46ec23129aab7c80ecc38c2b3f0b3330a1319a0ad565efa66f535"
+}

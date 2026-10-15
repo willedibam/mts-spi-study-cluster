@@ -1,6 +1,6 @@
 {
   "run": "strength-grid-261015",
-  "stage": "all_cells_released_extraction_dependency_gated",
+  "stage": "complete_audited_analyzed_notebook_appended",
   "records": 1350,
   "manifest_sha256": "790c30694c7ed0c445ec8f07417b0c95802f76309ba8be2b13a1287e232f9229",
   "source_sha256": "27d387a861a25b77e8ec73a4d0932fdfaef325d11433983ae015fb49e5a26de2",
@@ -498,7 +498,10 @@
       "walltime": "01:30:00",
       "task_timeout": 3054,
       "pilot_max_seconds": 1017.7257186258212,
-      "role": "production"
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:25:12",
+      "peak_memory": "87118916kb"
     },
     {
       "cell": "M32-T1000",
@@ -510,7 +513,10 @@
       "walltime": "01:30:00",
       "task_timeout": 3230,
       "pilot_max_seconds": 1076.656592125073,
-      "role": "production"
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:44:33",
+      "peak_memory": "84553800kb"
     },
     {
       "cell": "M32-T2000",
@@ -522,17 +528,49 @@
       "walltime": "01:30:00",
       "task_timeout": 6419,
       "pilot_max_seconds": 2139.616869101301,
-      "role": "production"
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:37:10",
+      "peak_memory": "249785056kb"
     }
   ],
   "compute_source_commit": "1cf951a",
   "compute_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/strength-grid-1cf951a",
   "pyspi_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f",
-  "analysis_source_commit": "041902b",
+  "analysis_source_commit": "e3930b0",
   "reused_tiny_smoke": "181323853: unchanged runner/config/pyspi; new grid has separate representative pilot in every size cell.",
   "extraction_source_commit": "d3d50c3",
   "extraction_source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/strength-grid-analysis-d3d50c3",
   "software_checks": "Input replay/shape/scaling, parent-disjoint splits, geometry translation/scale invariance, and synthetic full analysis integration pass. Canonical corpus path corrected before extraction.",
   "extraction_job": "181331472.gadi-pbs",
-  "analysis_extension": "Before grid results: add retrieval with both M and T different from the query, and descriptive M/T shares of within-class spread, following user size-robustness clarification. Main frozen preprocessing/readouts unchanged; no feature outcomes inspected."
+  "analysis_extension": "Before grid results: add retrieval with both M and T different from the query, and descriptive M/T shares of within-class spread, following user size-robustness clarification. Main frozen preprocessing/readouts unchanged; no feature outcomes inspected.",
+  "base_analysis_source_commit": "041902b",
+  "extraction_resources": {
+    "cpupercent": 240,
+    "cput": "00:02:34",
+    "jobfs": "0b",
+    "mem": "6982256kb",
+    "ncpus": 4,
+    "vmem": "6982256kb",
+    "walltime": "00:01:35"
+  },
+  "extraction_exit_status": 0,
+  "analysis_source_sha256": "72ee647d64786c9c0e867377e1d988c894f93cf974437e78d1567f3c53c474c9",
+  "report_source_sha256": "cca5c1537c47fc55cd6fe5280f87bb573bafbb9c4e8d804dc3508f75bed781db",
+  "notebook_sha256": "3fde6745df6a6605960d91079c4800894e4c772670279bfb0dc5a602f7a69670",
+  "features_sha256": "43d09e9cb5517ed6e90f58c052e41f4252ad11b1ca9f0591f353ee2c437e0990",
+  "validation": "All 1350 input/source/config/catalogue/RNG identities verified; 4624 independent mean and 1600 z checks on 16 predetermined pilots; all 28 pre-existing notebook cells and outputs preserved; three fixed figure panels visually inspected.",
+  "results": {
+    "both_variations": {
+      "mean_mAP": 0.4078,
+      "z_mAP": 0.6938,
+      "mean_spread_ratio": 0.9723,
+      "z_spread_ratio": 0.4786,
+      "mean_full_accuracy": 0.9603,
+      "z_accuracy": 0.9365,
+      "cross_size_mean_mAP": 0.4178,
+      "cross_size_z_mAP": 0.7029
+    },
+    "claim": "Exploratory geometry/retrieval advantage across the size grid; means remain highly informative. Duration-associated within-class spread is lower for z; channel-count-associated shares are similar."
+  }
 }

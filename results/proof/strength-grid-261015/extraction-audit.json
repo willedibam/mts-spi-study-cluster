@@ -1,0 +1,9 @@
+{
+  "records": 1350,
+  "features_sha256": "43d09e9cb5517ed6e90f58c052e41f4252ad11b1ca9f0591f353ee2c437e0990",
+  "manifest_sha256": "790c30694c7ed0c445ec8f07417b0c95802f76309ba8be2b13a1287e232f9229",
+  "source_sha256": "c2371bf284687e0f17f3de9ebb743be13b18d18d6970fd47f0ef2b15d494a38d",
+  "catalogue": "bc4bafa16b4add8bb6283db490a9fa3d8dde4fde47093147d32579b989397965",
+  "computation": "3.0.0.r9",
+  "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-strength-factorial-c2d723f/pyspi"
+}
