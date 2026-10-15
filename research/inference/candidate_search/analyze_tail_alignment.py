@@ -90,7 +90,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['extract','analyze']);p.add_argument('--data',type=Path,default=DATA)
     p.add_argument('--output',type=Path,default=OUT/'p90');a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
     if a.stage=='extract':
-        from research.proof.strength_controls.analyze_native_coupling import extract
+        from research.proof.baselines.analyze_native_coupling import extract
         manifest=json.loads((a.data/'manifest.json').read_text())
         extract(a.data,a.output,corpus=manifest.get('corpus','tail-alignment-261005'))
     else:

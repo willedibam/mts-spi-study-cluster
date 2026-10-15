@@ -1,0 +1,166 @@
+"""Lean report for the selected Gaussian factor contrast, from audited caches."""
+from pathlib import Path
+import argparse
+import json
+import pandas as pd
+import nbformat as nbf
+import yaml
+
+ROOT=Path(__file__).resolve().parents[3]
+RUN='factor-parity-dominant-261004'
+
+
+def build_resource_report(run):
+    """Report a failed resource gate without inventing classification outcomes."""
+    out=ROOT/'results/representation'/run
+    receipt=json.loads((out/'execution.json').read_text())
+    assert receipt['smoke_outcome']['complete']==0
+    cells=[nbf.v4.new_markdown_cell(r'''# Longer recordings: full-catalogue evaluation incomplete
+
+The target is weak raw per-SPI means with discernible SPI–SPI structure across the full 289-SPI catalogue. The $T=4000$ follow-up has **no full-catalogue result**: both development smoke recordings exceeded the 110-minute task limit before writing complete outputs. Neither development classification nor held evaluation was run. This is a computational limit, not evidence for or against the scientific hypothesis.
+
+The completed $T=1000$ experiment remains the strongest relevant evidence: held centered SPI–SPI accuracy was 68.8%, versus 45.3–56.3% across four mean readouts. Its 12.5-percentage-point advantage over the primary mean baseline had a paired conditional 95% interval of −3.1 to 28.1 points. The intended strong separation was not established, and its fixed two-dimensional embeddings were largely mixed. See [the executed T1000 report](spi_factor_parity_261004.ipynb).'''),
+    nbf.v4.new_code_cell(f'''from pathlib import Path
+import json
+import pandas as pd
+from IPython.display import display
+ROOT=Path.cwd().resolve()
+while not (ROOT/'pyproject.toml').exists() and ROOT!=ROOT.parent: ROOT=ROOT.parent
+RUN={run!r}
+OUT=ROOT/'results/representation'/RUN
+receipt=json.loads((OUT/'execution.json').read_text())
+display(pd.DataFrame([receipt['smoke_outcome']])[['attempted','complete','task_timeout_seconds','walltime','cpu_time','peak_memory_kb','exit_status']])'''),
+    nbf.v4.new_markdown_cell(r'''## What remains fixed
+
+Each recording has 16 Gaussian channels with independent observations and covariance $C=(1-\lambda)I+\lambda\sum_{a=1}^3 w_a v_av_a^\top$, with $\lambda=.25$ and $w=(.9,.075,.025)$. Balanced orthogonal signs use Walsh masks $(1,2,3)$ for linked signs and $(1,2,4)$ for unlinked signs. The classes share signed mean covariance, absolute covariance distributions, per-channel absolute covariance sums, eigenvalues and nonzero-lag population covariances. Their **signed distributions differ**. These are shared-input functional dependencies, not direct causal channel couplings or a linear-versus-nonlinear contrast.
+
+This follow-up changes recording length from 1,000 to 4,000 and uses fresh RNG blocks: 64–87 train, 88–95 validate and 96–127 remain held. The covariance and centered PCA20/linear readout were fixed before its full-catalogue computation. The prior held seeds are not reused. Raw inputs and frozen analysis-source hashes were reverified after the timeout.
+
+The choice of length used a cheap, development-only scout. Its results below concern a focused catalogue and cannot substitute for the full-289 comparison. At $T=4000$, raw covariance and Pearson distribution summaries also scored .875; information is not absent from all marginal descriptions.'''),
+    nbf.v4.new_code_cell("display(pd.read_csv(ROOT/'results/representation/factor-length-scout-261004/results.csv').pivot(index='T',columns='method',values='BA'))"),
+    nbf.v4.new_markdown_cell(r'''## Resource gate and decision
+
+Gadi job `180432847` requested two CPUs and 24 GB, with a 110-minute timeout per recording. Both tasks timed out; the job ended after 1:50:49 with 3:37:41 total CPU time and 4,677,736 KB peak memory. The log does not reveal which estimator was running at termination, so no specific bottleneck is attributed. There are zero complete SPI archives and no estimator-validity audit is possible for these inputs.
+
+At the failure review, less than 3 hours 35 minutes remained before the authorized 22:07 UTC stop. The observed lower bound of 110 minutes per recording leaves insufficient time for sequential development and held stages, even before node validation, queueing and analysis. No larger batch or held job was submitted. Missing outputs are not converted to zeros, and no reduced-catalogue result is presented as full-catalogue evidence.
+
+Continuation needs a separately authorized compute window. First obtain per-estimator timing on development input while preserving estimator definitions and RNG policy, then complete a bounded smoke and representative node test. Release held data only if the frozen development gate passes. The immutable bank and prospective protocol remain available; there has been no held-out selection.
+
+The failed all-proof gain-matching and band-swap reports remain intact. Overall, the work establishes limitations of simple strength matching and provides a partial Gaussian mean-baseline contrast; it does **not yet establish the requested full-catalogue weak-mean/strong-SPI–SPI demonstration**.'''),
+    nbf.v4.new_markdown_cell(f"Protocol: `configs/analysis/{run}.yaml`. Runtime evidence and source bindings: `results/representation/{run}/resource-audit/`. Rebuild this report with `python -m research.proof.baselines.build_factor_parity_notebook --run {run} --stage resource`. No SPI computation is performed while rendering.")]
+    nb=nbf.v4.new_notebook(cells=cells)
+    nb.metadata.kernelspec=dict(display_name='Python 3',language='python',name='python3')
+    nbf.write(nb,ROOT/'notebooks/embeddings'/('spi_'+run.replace('-','_')+'.ipynb'))
+
+
+def build(stage,run=RUN):
+    if stage=='resource':
+        return build_resource_report(run)
+    settings=yaml.safe_load((ROOT/f'configs/analysis/{run}.yaml').read_text())
+    result=ROOT/'results/representation'/run/stage
+    score=pd.read_csv(result/'metrics.csv').set_index('method').BA
+    summary=f"MPI means: **{score['mean']:.1%}**; full means: **{score['mean_full']:.1%}**; RBF means: **{score['mean_RBF']:.1%}**; tree means: **{score['mean_trees']:.1%}**; centered SPI–SPI: **{score['z_center']:.1%}**. Chance is 50%. The original standardized SPI–SPI readout scores {score['z']:.1%}."
+    if stage=='development':
+        met=score[['mean','mean_full','mean_RBF','mean_trees']].max()<=.65 and score['z_center']>=.8 and score['z_validity']<=.65
+        summary+=f" The frozen development gate was {'met' if met else 'not met'}; these are development results, not held confirmation."
+    if stage=='final':
+        paired=pd.read_csv(result/'paired.csv').set_index('comparison').loc['z_center - mean']
+        met=score[['mean','mean_full','mean_RBF','mean_trees']].max()<=.65 and score['z_center']>=.8 and score['z_validity']<=.65
+        summary+=f" The prespecified weak-mean/strong-z numerical target was {'met' if met else 'not met'}. The paired z-minus-mean difference is {paired['difference']*100:.1f} percentage points (95% conditional interval {paired['low']*100:.1f} to {paired['high']*100:.1f}); "+('the advantage is resolved under this conditional analysis.' if paired['low']>0 else 'the advantage over the primary mean baseline remains unresolved.')
+    cells=[('md',r'''# Equal interaction magnitudes, different sign–magnitude organization
+
+The main comparison uses the complete 289-SPI catalogue: raw off-diagonal MPI means $m$ versus signed Pearson SPI–SPI $z$. Distribution summaries are secondary. These are deliberately constructed Gaussian controls, not a benchmark of general superiority or nonlinear dynamics.
+
+The preceding band-swap experiment failed: its full mean vector and SPI–SPI both classified every development validation recording. Squared lagged-correlation means exposed residual temporal-strength differences. That executed negative report is retained as `spi_band_swap_261004.ipynb`; its held set remains unopened. Here temporal dependence is removed and interaction magnitudes are matched more strongly.'''),
+('md',f'**{stage.capitalize()} result.** '+summary),
+('code',f'''from pathlib import Path
+import sys,json
+ROOT=Path.cwd().resolve()
+while not (ROOT/'pyproject.toml').exists() and ROOT!=ROOT.parent:ROOT=ROOT.parent
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+import numpy as np
+import pandas as pd
+%matplotlib inline
+import matplotlib.pyplot as plt
+from IPython.display import display
+from research.proof.baselines.build_factor_parity import covariance,CLASSES
+from research.proof.baselines.plot_band_swap import plot
+RUN={run!r};STAGE={stage!r}
+OUT=ROOT/'results/representation'/RUN
+RESULT=OUT/STAGE
+metrics=pd.read_csv(RESULT/'metrics.csv')
+analysis=json.loads((RESULT/'analysis.json').read_text())
+display(metrics[metrics.method.isin(['mean','mean_full','mean_RBF','mean_trees','z_center','z'])].round(3))'''),
+('md',r'''## Generator and strength control
+
+Let $f_{at}$ and $\epsilon_{it}$ be independent standard Gaussian variables across factors, channels and time. A recording has 16 channels and 1,000 observations, with
+
+$$x_{it}=\sqrt{1-\lambda}\,\epsilon_{it}+\sqrt{\lambda}\sum_{a=1}^3\sqrt{w_a}\,v_{ai}f_{at},\qquad \lambda=.25,\quad w=(.9,.075,.025).$$
+
+Equivalently, $x_t\sim N(0,C)$ independently in time, where $C=(1-\lambda)I+\lambda\sum_a w_a v_av_a^\top$. The implementation samples this covariance by a Cholesky transform. The private variance is .75 and total shared-factor variance .25; the weights divide the latter between factors. These describe **functional dependence through shared inputs**, not direct causal channel-to-channel coupling.
+
+Channels are indexed by four binary bits. The first two sign vectors are $v_{1i}=(-1)^{b_1(i)}$ and $v_{2i}=(-1)^{b_2(i)}$. In the **linked-signs** class, $v_3=v_1v_2$ elementwise; in the **unlinked-signs** class, $v_{3i}=(-1)^{b_3(i)}$. In both classes the three vectors are balanced and mutually orthogonal. A fresh channel permutation accompanies each recording.
+
+Both classes have unit population channel variance, identical covariance eigenvalues, the same complete multiset of off-diagonal absolute correlations, and identical positive/negative edge counts. Every channel has total absolute off-diagonal covariance 3.35; mean absolute coupling is $3.35/15=.223\overline3$, and mean signed coupling is $-.25/15=-.016\overline6$. All nonzero-lag population covariances vanish. These equalities hold at the generator level; empirical estimates fluctuate between recordings. No MPI normalization or whitening is applied afterward.
+
+For a temporally iid Gaussian pair, reversing one channel changes only the sign of its correlation. Consequently every sign-invariant bivariate population SPI has the same off-diagonal value multiset in the two classes. **Signed distributions, sign-sensitive nonlinear statistics, multivariate estimators and finite-sample aggregate laws need not match.** This is a claim about specified functional strengths, not a universal coupling metric.'''),
+('code',r'''mask=~np.eye(16,dtype=bool)
+checks=[]
+for label in CLASSES:
+    C=covariance(label,.25,[.9,.075,.025]);r=C[mask]
+    checks.append(dict(label=label,mean=r.mean(),mean_absolute=np.abs(r).mean(),mean_square=np.mean(r*r),mean_cube=np.mean(r**3),mean_ED=np.sqrt(2-2*r).mean(),negative_fraction=np.mean(r<0),z_linear_square=np.corrcoef(r,r*r)[0,1]))
+display(pd.DataFrame(checks).round(6))'''),
+('md',r'''## Why these parameters?
+
+The first factor is dominant so that sign counts match and regularized covariance/precision estimates have more stable sign patterns. The initial factor candidate (.35; weights .7/.2/.1) was rejected before any p90 computation because graphical-lasso means differed even at population level. Five stronger-dominance/lower-strength settings were checked using cheap statistics on development blocks, followed by five more when those retained mean information. The selected setting was candidate 8: the weakest worst mean readout among candidates with nearly equal population graphical-lasso means and probe-z accuracy at least .8. Its cheap mean classifiers scored .5625/.6875/.5 versus .875 for probe z on 16 validation recordings.
+
+This is openly **development-based experimental design**, not preregistration of the entire search. No full-p90 or held results selected these parameters. All scout outcomes are retained below. The complete catalogue and a separate held set are required to assess whether that promising cheap result survives.'''),
+('code',"display(pd.read_csv(ROOT/'results/representation/factor-parity-261004/scout-results.csv').round(4))"),
+('md',r'''## Full-catalogue comparison
+
+Training uses development blocks 0–23, validation blocks 24–31; each block contains both classes. The separate held blocks 32–63 are evaluated only after a documented development decision, using training blocks 0–31. Training-only preprocessing selects 95% finite features and imputes medians. Means/distributions use SD scaling, clipping at five SD and 20 PCs; the preferred SPI–SPI readout centers correlations without rescaling or clipping, then uses 20 PCs. Logistic regression fixes $C=1$. Full-mean logistic, RBF and tree readouts test whether a PCA/linear bottleneck hides mean information. Distributions contain mean, SD and 10/25/50/75/90 percentiles per SPI.
+
+**Readout refinement before confirmation.** The initial standardized full-catalogue z readout scored .625 on development, failing the target despite weak means (.4375–.625). Center-only z, as used in the earlier proof analysis, scored .8125 with the same 20 PCs and linear classifier; features already share a correlation scale, so there is no unit-conversion reason to standardize them individually. An exploratory audit retained both scalings, PCA20/full features and linear/RBF results; the center-only PCA20 linear model was selected for confirmation, not the highest-scoring RBF model. This choice was made after seeing development outcomes and frozen in `factor-parity-dominant-261004-confirmation.yaml` before releasing any held MPI. The original standardized result remains reported. A secondary training-complete z subset and edge-shuffled control use the same centered preprocessing.
+
+The figures use fixed PCA/UMAP settings and training-fit/evaluation-transform, without searching seeds or selecting points. Numerical performance takes precedence over appearance. Conditional bootstrap intervals resample paired recording blocks, keeping fitted models fixed; they omit training and parameter-selection uncertainty. Near-chance finite-sample performance is not proof of information-theoretic absence.'''),
+('code',"plot(STAGE,focused=False,run=RUN,z_method='z_center');plt.show()\npaired=pd.read_csv(RESULT/'paired.csv')\ndisplay(paired[paired.comparison.str.startswith('z_center - ')].round(3))\ndisplay(metrics[metrics.method.isin(['distribution','z_validity','z_shuffled_center','z_center_complete'])].round(3))"),
+('md',r'''## Mechanism and limits
+
+The classes differ in how signs associate with interaction magnitudes, even though their mean signed strength and entire absolute-strength distribution agree. A pair such as covariance versus squared covariance can respond to this association. For the selected population matrices, that z value is approximately −.0183 versus −.1054. Its numerator is $E[r^3]-E[r]E[r^2]$ across edges; the first, second and fourth moments agree between classes, while the third differs. This is not evidence of nonlinear dynamics: both models are Gaussian. Since the second probe is a function of the first, this particular feature also reflects the shape of the signed covariance distribution. It cannot establish information inaccessible to every marginal-distribution description.
+
+Not every population MPI mean is identical either. With unit channel variances, population root-mean-square Euclidean distance is $\sqrt{2-2r}$ per edge. Its mean is 1.41704644 versus 1.41706254, a difference of about $1.61\times10^{-5}$. A weak finite-data mean classifier is therefore not proof that its input has zero class information.
+
+The validity-only control uses missingness without numerical z values. The independently shuffled-edge control preserves every MPI marginal while removing alignment; it is a diagnostic transformation, not a realizable-MTS claim. Any class information in these controls must qualify the interpretation. Means of the full catalogue are not inherently blind to dependence character, so informative means would constitute another negative result for the proposed picture.'''),
+('code',"display(metrics[metrics.method.isin(['probe_mean','probe_z','raw_covariance','raw_Pearson'])].round(3))\ndisplay(pd.read_csv(RESULT/'diagnostic-features.csv').round(3))\ndisplay(pd.DataFrame(analysis['diagnostics']).T.round(3))"),
+('md',r'''The protocol is `research/proof/baselines/configs/analysis/factor-parity-dominant-261004.yaml`; `build_factor_parity.py` constructs the immutable raw bank. `analyze_band_swap.py --run factor-parity-dominant-261004` audits input/member/catalogue/RNG provenance, extracts features and evaluates the fixed readouts. `sources.json` binds MPI hashes; `execution.json` records cluster jobs and the held-release decision. Rendering uses cached outputs and does not recompute SPIs.'''),
+('code',"print(json.dumps(analysis.get('centered_development_goal',{}),indent=2))\nprint(json.dumps(json.loads((OUT/'execution.json').read_text()),indent=2))")]
+    cells=[(kind,source.replace('16 channels and 1,000 observations',f"16 channels and {settings['T']:,} observations") if kind=='md' else source) for kind,source in cells]
+    if settings.get('independent_blocks',64)!=64:
+        train_end=settings['development_training_blocks'][1]
+        val_start,val_end=settings['development_validation_blocks']
+        held_start,held_end=settings['held_blocks']
+        old='Training uses development blocks 0–23, validation blocks 24–31; each block contains both classes. The separate held blocks 32–63 are evaluated only after a documented development decision, using training blocks 0–31.'
+        new=f'Training uses development blocks 0–{train_end}, validation blocks {val_start}–{val_end}; each block contains both classes. The separate held blocks {held_start}–{held_end} are evaluated only after a documented development decision, using training blocks 0–{val_end}.'
+        cells=[(kind,source.replace(old,new).replace('The protocol is `research/proof/baselines/configs/analysis/factor-parity-dominant-261004.yaml`',f'The protocol is `configs/analysis/{run}.yaml`').replace('analyze_band_swap.py --run factor-parity-dominant-261004',f'analyze_band_swap.py --run {run}') if kind=='md' else source) for kind,source in cells]
+        cells.insert(2,('md',r'''**More independent recordings, fixed $T=1000$.** The user capped observation length at 1,000. An exploratory grouped learning-curve check reused all previously examined T1000 recordings: centered z averaged .6875/.6602/.7266 with 32/64/96 training recordings, respectively, while mean readouts remained near .5. This provides modest motivation for a larger training bank, not a prediction of success. The covariance and centered PCA20/linear readout remain fixed. This experiment uses 192 development-training recordings, 64 validation recordings and 128 held recordings, from entirely fresh RNG blocks 256–447. No new held outcomes choose a generator, readout or figure. The refinement history described below concerns the earlier T1000 experiment; its selected readout was fixed before this replication.'''))
+        cells.insert(4,('code',"display(pd.read_csv(ROOT/'results/representation/factor-sample-size-261004/summary.csv').round(3))"))
+        if (result/'readout-audit.csv').exists():
+            cells.extend([('md',r'''## Development diagnosis after the fixed readout failed
+
+Increasing independent training recordings did not deliver the prespecified strong-z result. A separate development-only audit tested PCA20 versus all features, linear versus RBF classifiers, and both z scalings; means received the corresponding PCA/full and linear/RBF comparisons. The primary centered PCA20 linear result remains .6875. All-feature centered linear z reaches .78125, while centered PCA20 RBF is .640625. No tested variant reaches .8, so the 128 held recordings remain unevaluated. The diagnostic does not replace the failed primary result.
+
+The fixed full-catalogue PCA/UMAP plots remain substantially mixed; ring-like layouts occur for both representations and are not class separation. The narrow probe catalogue is more discriminative (.890625), but this cannot establish the full-catalogue target. Raw covariance/Pearson distribution summaries score .765625/.796875, supporting the stated limit of the mean-compression comparison.
+
+Reusing development scores to choose an analysis can create optimistic estimates; these diagnostics are exploratory, and any later chosen readout needs untouched confirmation ([Cawley and Talbot, 2010](https://www.jmlr.org/papers/v11/cawley10a.html)). The present evidence does not establish either a clean unsupervised embedding or information absent from every marginal description.'''),
+                ('code',"display(pd.read_csv(RESULT/'readout-audit.csv').round(4))")])
+    if settings['T']!=1000:
+        cells.insert(2,('md',r'''**Fresh-seed length follow-up.** The preceding $T=1000$ held test gave centered z .6875 versus primary means .5625, with an unresolved paired difference. This experiment keeps the covariance, strength and centered readout fixed and increases $T$ to 4000. A cheap comparison of $T=2000$ and $T=4000$ on fresh development RNG blocks 64–95 gave probe-z .8125 and 1.0, respectively; the latter was the shortest meeting the declared criterion while cheap means stayed weak. Signed distribution summaries also improved, as expected. Local training blocks 0–23 correspond to RNG64–87, validation 24–31 to RNG88–95, and held 32–63 to **previously unseen RNG96–127**. No previous held block is reused as new confirmation data. The full-catalogue centered readout was fixed before this experiment's p90 outcomes.'''))
+        cells.insert(4,('code',"display(pd.read_csv(ROOT/'results/representation/factor-length-scout-261004/results.csv'))"))
+    nb=nbf.v4.new_notebook(cells=[nbf.v4.new_markdown_cell(s) if k=='md' else nbf.v4.new_code_cell(s) for k,s in cells])
+    nb.metadata.kernelspec=dict(display_name='Python 3',language='python',name='python3')
+    filename='spi_factor_parity_261004.ipynb' if run==RUN else 'spi_'+run.replace('-','_')+'.ipynb'
+    nbf.write(nb,ROOT/'notebooks/embeddings'/filename)
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['development','final','resource'],default='development');p.add_argument('--run',default=RUN);a=p.parse_args();build(a.stage,a.run)

@@ -181,7 +181,7 @@ if __name__=='__main__':
     else:
         a.output.mkdir(parents=True,exist_ok=True)
         if a.stage=='extract':
-            from research.proof.strength_controls.analyze_native_coupling import extract
+            from research.proof.baselines.analyze_native_coupling import extract
             extract(a.data,a.output,corpus=RUN)
         elif a.stage=='figure':figure(pd.read_csv(a.output/'scores.csv'),a.output)
         elif a.stage=='scatter':scatter(a.output)

@@ -196,7 +196,7 @@ if __name__=='__main__':
     if a.stage=='prepare':prepare()
     elif a.stage=='extract':
         a.output.mkdir(parents=True,exist_ok=True)
-        from research.proof.strength_controls.analyze_native_coupling import extract
+        from research.proof.baselines.analyze_native_coupling import extract
         extract(a.data,a.output,corpus=RUN)
     else:
         from threadpoolctl import threadpool_limits

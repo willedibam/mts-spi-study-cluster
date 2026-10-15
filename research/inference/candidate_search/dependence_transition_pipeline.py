@@ -149,7 +149,7 @@ if __name__=='__main__':
     a.output.mkdir(parents=True,exist_ok=True)
     if a.stage=='prepare':prepare(a.workers)
     elif a.stage=='extract':
-        from research.proof.strength_controls.analyze_native_coupling import extract
+        from research.proof.baselines.analyze_native_coupling import extract
         extract(a.data,a.output,corpus=RUN)
     else:
         with threadpool_limits(limits=4):analyze(a.data,a.output)

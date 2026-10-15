@@ -236,7 +236,7 @@ def audit():
     report['preserved_files']=originals
     report['validated_cached_MPI_count']=len(json.loads((DATA/'extension-sources.json').read_text())['sources'])
     import nbformat
-    notebook=ROOT/'research/proof/p90/notebooks/spi_baseline_exploration_260921.ipynb'
+    notebook=ROOT/'research/proof/baselines/notebooks/spi_baseline_exploration_260921.ipynb'
     n=nbformat.read(notebook,as_version=4)
     for c in n.cells:
         if c.cell_type=='code':assert c.execution_count is not None and all(o.output_type!='error' for o in c.outputs)

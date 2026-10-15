@@ -114,7 +114,7 @@ PAIRS={'beta':('cov_EmpiricalCovariance','mi_kraskov_NN-4'),'spread':('cov_Empir
 
 
 def load():
-    from research.proof.strength_controls import proof_strength_nuisance as P
+    from research.proof.baselines import proof_strength_nuisance as P
     rows=pd.DataFrame(json.loads((DATA/'manifest.json').read_text())['rows']);bank=dict(np.load(OUT/'features.npz'))
     np.testing.assert_array_equal(bank['row_id'],rows.row_id);rows['arm']=rows.system;rows['system']=np.where(rows.system.eq('class'),'class',rows.label.str.rstrip('0123456789'))
     return rows,bank,P
@@ -191,5 +191,5 @@ if __name__=='__main__':
     if a.stage=='scout':scout(a.workers)
     elif a.stage=='prepare':prepare(a.workers)
     else:
-        from research.proof.strength_controls.proof_strength_nuisance import extract
+        from research.proof.baselines.proof_strength_nuisance import extract
         extract(DATA,OUT,run=RUN,ordered=True)

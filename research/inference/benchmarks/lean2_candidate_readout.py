@@ -188,7 +188,7 @@ if __name__=='__main__':
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
     if a.stage=='bundle':bundle(a.data,a.out,a.corpus,a.remote,a.fit_seed_stop)
     elif a.stage=='extract':
-        from research.proof.strength_controls.analyze_native_coupling import extract
+        from research.proof.baselines.analyze_native_coupling import extract
         extract(a.data,a.out,corpus=a.corpus)
     else:
         from threadpoolctl import threadpool_limits

@@ -38,7 +38,7 @@ A focused exploratory comparison: an exactly specified intuition example, the pr
 
 **Question:** do relationships among dependence measures add useful structure beyond the average level or distribution of each measure? This is an empirical question. A more elaborate representation need not win.
 
-The new comparisons reuse previously inspected data. They are retrospective, even when a system's original SPI–SPI result was independently confirmed. The separate [Zenodo appendix](spi_baseline_zenodo_260921.ipynb) explores the heterogeneous corpus without assigning a superiority score to its appearance."""),
+The new comparisons reuse previously inspected data. They are retrospective, even when a system's original SPI–SPI result was independently confirmed. The separate [Zenodo appendix](../../../zenodo/atlas/notebooks/spi_baseline_zenodo_260921.ipynb) explores the heterogeneous corpus without assigning a superiority score to its appearance."""),
 ("code", SETUP),
 ("md", r"""## The abstraction and the baselines
 
@@ -149,13 +149,13 @@ This notebook renders the compact results produced by `research/proof/p90/spi_ba
 From the repository root, use the project Python to run `python -m research.proof.p90.spi_baseline_exploration toy`, `extract-proof`, `proof`, `inference`, and optionally `zenodo`. Missing cached proof files can be inventoried with `research/proof/p90/prepare_spi_baseline_data.py`; the resulting rsync list is for Gadi data-mover retrieval, not simulation. The original notebooks are unchanged. The separate corpus appendix is descriptive and transductive. Static figure files, scores, per-record outcomes and provenance live in `results/baseline-comparison_260921/`."""),
 ("md", """The six-system extension is reproduced with `python -m research.proof.p90.extend_spi_baseline_inference prepare`, `extract`, and `analyze`, using the cached-file transfer list produced by `prepare`. Its protocol is `research/inference/benchmarks/configs/analysis/spi-baseline-lean-extension-260921.yaml`; fitted states, source hashes and independent SVD replay errors are retained with the extension outputs. The reference lean notebook and figure-style document had user edits when this update began; those edits are preserved."""),
     ]
-    notebook(cells, ROOT / "research/proof/p90/notebooks/spi_baseline_exploration_260921.ipynb")
+    notebook(cells, ROOT / "research/proof/baselines/notebooks/spi_baseline_exploration_260921.ipynb")
     if not include_zenodo:
         return
     notebook([
 ("md", """# Per-SPI baselines on the 1,053-record corpus
 
-Companion to the [baseline notebook](spi_baseline_exploration_260921.ipynb). This is a descriptive comparison of common spaces, not a claim that one arrangement is scientifically superior. All three views use the same 1,053 recordings and the same seeded p90 run. No new SPIs are computed.
+Companion to the [baseline notebook](../../../proof/baselines/notebooks/spi_baseline_exploration_260921.ipynb). This is a descriptive comparison of common spaces, not a claim that one arrangement is scientifically superior. All three views use the same 1,053 recordings and the same seeded p90 run. No new SPIs are computed.
 
 The source archive stores arrays as M × T, with M=5–29 and T=30–3000. The original runner z-scored channels. Ordered off-diagonal entries retain both directions. Each MPI contributes its mean, or seven marginal summaries; SPI–SPI uses the existing 41,616 Pearson cross-statistic correlations.
 
