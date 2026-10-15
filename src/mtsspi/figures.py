@@ -24,8 +24,14 @@ def save(fig, output: Path, name: str):
     return fig
 
 
-def raincloud(ax, values, position, color, rng, width=.2, *, box=False):
-    values = np.asarray(values); values = values[np.isfinite(values)]
+def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_sizes=7):
+    values = np.asarray(values); finite = np.isfinite(values)
+    point_sizes = np.asarray(point_sizes)
+    if point_sizes.ndim:
+        if point_sizes.shape != values.shape:
+            raise ValueError('Point sizes must align with the unfiltered values.')
+        point_sizes = point_sizes[finite]
+    values = values[finite]
     cloud_position = position + width*.14 if box else position
     if len(values) > 2 and np.std(values) > 1e-9:
         parts = ax.violinplot(values, positions=[cloud_position], widths=width, showextrema=False)
@@ -33,7 +39,7 @@ def raincloud(ax, values, position, color, rng, width=.2, *, box=False):
             verts = body.get_paths()[0].vertices
             verts[:, 0] = np.maximum(verts[:, 0], cloud_position)
             body.set_facecolor(color); body.set_edgecolor('none'); body.set_alpha(.25)
-    ax.scatter(position-rng.uniform(width*.14 if box else .025, width*.55, len(values)), values, color=color, s=7, alpha=.5, linewidths=0)
+    ax.scatter(position-rng.uniform(width*.14 if box else .025, width*.55, len(values)), values, color=color, s=point_sizes, alpha=.5, linewidths=0)
     if box:
         ax.boxplot([values], positions=[position], widths=width*.16, whis=1.5,
                    showfliers=False, manage_ticks=False, patch_artist=True,

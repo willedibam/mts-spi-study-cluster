@@ -28,8 +28,8 @@ def replay(record):
     return observed, meta, internals, float(np.max(abs(generated - observed)))
 
 
-def rmi_example(frame):
-    return frame[(frame.instance == 0) & (frame.beta_tag == 'beta-5') &
+def rmi_example(frame, beta_tag='beta-5'):
+    return frame[(frame.instance == 0) & (frame.beta_tag == beta_tag) &
                  (frame['class'] == 'iter3_LMNM')].iloc[0]
 
 
@@ -43,8 +43,8 @@ def square(ax):
     ax.spines[['top', 'right']].set_visible(True)
 
 
-def plot_rmi_construction(frame, output):
-    x, meta, internal, error = replay(rmi_example(frame))
+def plot_rmi_construction(frame, output, *, beta_tag='beta-5'):
+    x, meta, internal, error = replay(rmi_example(frame, beta_tag))
     start, stop = 100, 250
     style(); fig, axes = plt.subplots(2, 1, figsize=(7, 4.3), sharex=True,
                                      height_ratios=[1, 2], layout='constrained')
@@ -60,8 +60,8 @@ def plot_rmi_construction(frame, output):
     return save(fig, Path(output), 'mts-construction')
 
 
-def plot_rmi_matrices(frame, output):
-    record = rmi_example(frame); path = Path(record['path'])
+def plot_rmi_matrices(frame, output, *, beta_tag='beta-5'):
+    record = rmi_example(frame, beta_tag); path = Path(record['path'])
     meta = json.loads((path / 'meta.json').read_text()); p = meta['generator']['params']
     style(); fig, axes = plt.subplots(1, 3, figsize=(9, 3.3), layout='constrained')
     with np.load(path / 'spi_mpis.npz') as bank:
@@ -100,9 +100,9 @@ def correlation_decomposition(x, y, groups):
     return within/denominator, between/denominator, total
 
 
-def analyze_rmi_composition(frame, output):
+def analyze_rmi_composition(frame, output, *, beta_tag='beta-5'):
     rows = []
-    for _, record in frame[(frame.beta_tag == 'beta-5') | (frame['class'] == 'iter1_L')].iterrows():
+    for _, record in frame[(frame.beta_tag == beta_tag) | (frame['class'] == 'iter1_L')].iterrows():
         path = Path(record['path']); meta = json.loads((path/'meta.json').read_text())
         types = meta['generator']['types']; iu = np.triu_indices(meta['M'], 1)
         groups = ['|'.join(sorted((types[i], types[j]))) for i, j in zip(*iu)]
@@ -129,7 +129,7 @@ def plot_rmi_composition(result, output):
     return save(fig, Path(output), 'pair-type-decomposition')
 
 
-def plot_dtw_construction(frame, output):
+def plot_dtw_construction(frame, output, *, full_maps=False):
     style(); fig, axes = plt.subplots(2, 3, figsize=(9.5, 6.5), layout='constrained')
     start, stop = 100, 160
     for col, (record, title) in enumerate(zip(dtw_examples(frame), ['No lag / no warp', 'Lag only', 'Lag + heavy warp'])):
@@ -137,14 +137,24 @@ def plot_dtw_construction(frame, output):
         ax = axes[0, col]
         im = ax.imshow(x[start:stop].T, origin='lower', aspect='auto', cmap='RdBu_r', vmin=-3, vmax=3,
                        extent=(start-.5, stop-.5, .5, meta['M']+.5))
-        ax.set(title=title, xlabel='Observed sample', ylabel='Channel', yticks=[1, 5, 10, 15, 20]); square(ax)
-        ax = axes[1, col]; t = np.arange(start, stop)
-        ax.plot([start-7, stop+2], [start-7, stop+2], color='.6', ls='--', lw=.8, label='Identity')
+        ax.set(title=title, xlabel='Observed sample (detail)', ylabel='Channel', yticks=[1, 5, 10, 15, 20]); square(ax)
+        ax = axes[1, col]; t = np.arange(meta['T']) if full_maps else np.arange(start, stop)
+        limits = (0, meta['T']-1) if full_maps else (start-7, stop+2)
+        ax.plot(limits, limits, color='.6', ls='--', lw=.8, label='Identity')
         for i, color in zip([0, meta['M']-1], COLORS[:2]):
-            ax.step(t, internal.mappings[i][start:stop]-internal.lags[i], where='mid',
+            ax.step(t, internal.mappings[i][t]-internal.lags[i], where='mid',
                     color=color, lw=1.1, label=f'Channel {i+1}')
         ax.set(xlabel=r'$t_{\rm warp}$ (observed index)', ylabel=r'$t_{\rm orig}$ (mother index)',
-               xlim=(start-7, stop+2), ylim=(start-7, stop+2)); square(ax)
+               xlim=limits, ylim=(-int(internal.lags.max()), meta['T']-1) if full_maps else limits); square(ax)
+        if full_maps:
+            inset = ax.inset_axes([.12, .53, .40, .40])
+            zoom_t = np.arange(start, stop)
+            inset.plot([start-7, stop+2], [start-7, stop+2], '--', color='.6', lw=.6)
+            for i, color in zip([0, meta['M']-1], COLORS[:2]):
+                inset.step(zoom_t, internal.mappings[i][zoom_t]-internal.lags[i], where='mid', color=color, lw=.8)
+            inset.set(xlim=(start-7, stop+2), ylim=(start-7, stop+2), xticks=[100, 160], yticks=[100, 160])
+            inset.tick_params(labelsize=6, length=2); square(inset)
+            ax.indicate_inset_zoom(inset, edgecolor='.6', alpha=.7)
     fig.colorbar(im, ax=axes[0].tolist(), label='Channel SD units', shrink=.65, extend='both')
     fig.legend(*axes[1, 0].get_legend_handles_labels(), loc='outside lower center', ncols=3, fontsize=8)
     return save(fig, Path(output), 'mts-and-generating-maps')

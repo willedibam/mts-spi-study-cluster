@@ -143,10 +143,10 @@ def mark_edges(ax, x, y, edges):
                     fontsize=8, zorder=6, bbox={'facecolor':'white','edgecolor':'none','alpha':.8,'pad':.5})
 
 
-def plot_spi_planes(frame, kind, output, *, highlight_edges=False):
+def plot_spi_planes(frame, kind, output, *, highlight_edges=False, beta_tag='beta-5'):
     style()
     if kind == 'r-rho-mi':
-        subset = frame[(frame.instance==0) & ((frame.beta_tag=='beta-5') | (frame['class']=='iter1_L'))]
+        subset = frame[(frame.instance==0) & ((frame.beta_tag==beta_tag) | (frame['class']=='iter1_L'))]
         selected = [subset[subset['class']==c].iloc[0] for c in CASE_LABELS]
         pairs = [(R,RHO),(R,MI),(RHO,MI)]; titles = list(CASE_LABELS.values()); labels={R:'Pearson r',RHO:r'Spearman $\rho$',MI:'MI (nats)'}
     else:
@@ -192,17 +192,21 @@ def plot_dtw_sweep(frame, output):
     return save(fig,Path(output),'warp-sweep')
 
 
-def plot_pair_rainclouds(frame, output):
+def plot_pair_rainclouds(frame, output, *, beta_tag=None):
     """One SPI pair per row; share its limits across beta, never across SPI pairs."""
     style()
-    fig, axes = plt.subplots(3, 3, figsize=(10, 10), sharey='row', layout='constrained')
+    betas = BETA_LABELS if beta_tag is None else {beta_tag: BETA_LABELS[beta_tag]}
+    fig, axes = plt.subplots(3 if beta_tag is None else 1, 3,
+                             figsize=(10, 10 if beta_tag is None else 3.6),
+                             sharey='row' if beta_tag is None else False,
+                             squeeze=False, layout='constrained')
     for row, (key, label, color) in enumerate(zip(
             ['r_rho', 'r_mi', 'rho_mi'], [r'$z_{r,\rho}$', r'$z_{r,\mathrm{MI}}$', r'$z_{\rho,\mathrm{MI}}$'], COLORS)):
         values = frame[key].to_numpy()
         pad = max(np.ptp(values) * .08, .002)
         limits = (max(-1.02, values.min() - pad), min(1.02, values.max() + pad))
-        for col, (beta, beta_label) in enumerate(BETA_LABELS.items()):
-            ax = axes[row, col]
+        for col, (beta, beta_label) in enumerate(betas.items()):
+            ax = axes[row, col] if beta_tag is None else axes[0, row]
             subset = frame[(frame.beta_tag == beta) | (frame['class'] == 'iter1_L')]
             for j, cls in enumerate(CASE_LABELS):
                 raincloud(ax, subset[subset['class'] == cls][key], j, color,
@@ -212,14 +216,18 @@ def plot_pair_rainclouds(frame, output):
             ax.tick_params(axis='x', labelsize=8)
             ax.ticklabel_format(axis='y', style='plain', useOffset=False)
             ax.set_box_aspect(1); ax.spines[['top', 'right']].set_visible(True)
-            if row == 0: ax.set_title(beta_label)
-            if col == 0: ax.set_ylabel(label + ' (Pearson across pairs)')
+            if beta_tag is None:
+                if row == 0: ax.set_title(beta_label)
+                if col == 0: ax.set_ylabel(label + ' (Pearson across pairs)')
+            else:
+                ax.set_title(label)
+                if row == 0: ax.set_ylabel('Pearson agreement across pairs')
     return save(fig, Path(output), 'pair-rainclouds')
 
 
-def plot_rmi_channel_pairs(frame, output, *, label_edges=False):
+def plot_rmi_channel_pairs(frame, output, *, label_edges=False, beta_tag='beta-5'):
     """Predetermined channels, without selecting for the observed SPI values."""
-    record = frame[(frame.instance == 0) & (frame.beta_tag == 'beta-5') &
+    record = frame[(frame.instance == 0) & (frame.beta_tag == beta_tag) &
                    (frame['class'] == 'iter3_LMNM')].iloc[0]
     path = Path(record['path'])
     params = json.loads((path / 'meta.json').read_text())['generator']['params']
