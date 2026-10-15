@@ -1,0 +1,41 @@
+run: strength-factorial-261015
+status: exploratory_new_corpus_design_fixed_before_SPI_results
+M: 16
+T: 1000
+instances: 40
+seed: 2610152026
+arms: [fixed_clean, fixed_sensor, varying_clean, varying_sensor]
+classes: [VAR, Kuramoto, Wave, CML-intermittency, CML-defect, Gaussian-shared, Cauchy-shared]
+controls: [Gaussian-independent, Cauchy-independent]
+physical_multiplier: Uniform[0.5,1.5], independently drawn per instance, same draw across classes
+sensor_attenuation: Uniform[0.25,0.95], independently drawn per instance, same draw across classes
+sensor_SD: sqrt(1/attenuation - 1), relative to each channel's sample SD
+pairing: The four arms share initial conditions/innovations and a sensor-noise realization within class-instance. Noise is independent across channels/time and independent of latent dynamics.
+native_settings:
+  VAR: {self: 0.5, total_neighbour: 0.2, topology: ring-symmetric}
+  Kuramoto: {K: 3.5, dt: 0.00625, omega_mean: 3.0, omega_std: 1.73205}
+  Wave: {c_squared: 100.0, dt: 0.00125, n_modes: 5, ic_decay: 1.5}
+  CML-intermittency: {alpha: 1.7522, eps: 0.00115}
+  CML-defect: {alpha: 1.895, eps: 0.1}
+  Gaussian-shared: {common_loading: 0.75, channel_loadings: linear_0.5_to_1.5}
+  Cauchy-shared: {common_loading: 0.75, channel_loadings: linear_0.5_to_1.5}
+variation: Multiply total VAR neighbour coefficient, Kuramoto K, wave c_squared, CML eps, or common-input loading by physical_multiplier. Keep all other settings fixed. No stability rescaling is allowed.
+catalogue: benchmarked_p90 only; new output directory and one computation version throughout
+analysis:
+  baseline: raw off-diagonal MPI means, with training-fitted per-feature scaling only
+  representation: historical symmetrized MPI profile correlations for comparability; no mixing of historical/current SPI banks
+  train_instances: [0,19]
+  evaluation_instances: [20,39]
+  fitting: fit validity, imputation, scaling, PCA50 and UMAP using fixed_clean and fixed_sensor training instances only; project every other condition without refitting
+  primary: paired changes in within-class spread relative to between-class separation across the four conditions; all seven classes retained
+  secondary: class-macro retrieval mAP to fixed_clean training gallery, top1, fixed logistic classification; mean plus z as an incremental-information sensitivity
+  mean_controls: full-vector Euclidean retrieval, full linear and RBF classification in addition to PCA50
+  validity_control: report selected-feature missingness by class/condition and validity-only classification
+  uncertainty: paired bootstrap over evaluation instances, all classes and arms kept together; conditional on fitted training representation
+  plots: fixed PCA/UMAP comparisons coloured by class and observed mean absolute Pearson; classwise intervention effects
+qualifications:
+  - Coupling-rule form stays fixed; varying its coefficient can change emergent regime or dependence character. Nominal CML labels do not certify regime invariance.
+  - Sensor noise leaves latent dynamics fixed but changes measurement quality and possibly the estimated dependence character.
+  - Shared-input loading is functional dependence, not causal coupling; Cauchy population covariance is undefined.
+  - Independent references are outside the primary seven-class geometry/retrieval comparison.
+  - No outcome-based family, parameter, seed, noise-distribution or embedding selection. No mean-vector normalization across recordings.

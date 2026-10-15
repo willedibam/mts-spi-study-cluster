@@ -1,0 +1,18 @@
+{
+  "records": 1200,
+  "core_records": 1120,
+  "reference_records": 80,
+  "all_cells_40": true,
+  "paired_replay_classes": [
+    "VAR",
+    "Kuramoto",
+    "Wave",
+    "CML-intermittency",
+    "CML-defect",
+    "Gaussian-shared",
+    "Cauchy-shared"
+  ],
+  "archive_sha256": "8eb9c8a1aebbe03479934a2a01aaf3e37ecfb4a67e455f82d226dee0f837327c",
+  "expected_train_evaluation_parent_disjoint": true,
+  "checks": "Seven classes x four arms replay bit-exact; gain endpoints and all shape/variance checks passed before generation; no rejected or replaced seeds."
+}

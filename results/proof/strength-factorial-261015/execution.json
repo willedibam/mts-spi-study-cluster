@@ -1,0 +1,27 @@
+{
+  "run": "strength-factorial-261015",
+  "stage": "prepared",
+  "records": 1200,
+  "archive_sha256": "8eb9c8a1aebbe03479934a2a01aaf3e37ecfb4a67e455f82d226dee0f837327c",
+  "protocol_sha256": "400221c22ca57599a4d74d93910d4f3a52d807dcefac39def8e17f29327fdd1e",
+  "source_sha256": "9dff11ddeb606a3d5e2e7a40af85ea292a495f3f7e24c15791139aeb31778401",
+  "pilot_indices": [
+    781,
+    784,
+    785,
+    788,
+    789,
+    792,
+    793,
+    796,
+    797,
+    800,
+    801,
+    804,
+    805,
+    808,
+    809,
+    810
+  ],
+  "gadi_jobs": []
+}
