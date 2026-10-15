@@ -1,6 +1,6 @@
 {
   "run": "strength-grid-261015",
-  "stage": "pilots_and_partial_production",
+  "stage": "eight_cells_released_largest_pilot_running",
   "records": 1350,
   "manifest_sha256": "790c30694c7ed0c445ec8f07417b0c95802f76309ba8be2b13a1287e232f9229",
   "source_sha256": "27d387a861a25b77e8ec73a4d0932fdfaef325d11433983ae015fb49e5a26de2",
@@ -278,7 +278,17 @@
       "records": 16,
       "ncpus": 16,
       "mem_gb": 64,
-      "cores_per_recording": 1
+      "cores_per_recording": 1,
+      "exit_status": 0,
+      "walltime": "00:04:29",
+      "peak_memory": "16698796kb",
+      "min_seconds": 137.28479215782136,
+      "max_seconds": 254.1792711475864,
+      "numerical_error_types": {
+        "ValueError": 72,
+        "FloatingPointError": 8,
+        "LinAlgError": 2
+      }
     },
     {
       "role": "pilot",
@@ -306,7 +316,17 @@
       "records": 16,
       "ncpus": 16,
       "mem_gb": 64,
-      "cores_per_recording": 1
+      "cores_per_recording": 1,
+      "exit_status": 0,
+      "walltime": "00:07:09",
+      "peak_memory": "15952616kb",
+      "min_seconds": 163.0954558774829,
+      "max_seconds": 412.92513353936374,
+      "numerical_error_types": {
+        "ValueError": 71,
+        "FloatingPointError": 16,
+        "LinAlgError": 16
+      }
     },
     {
       "role": "pilot",
@@ -315,7 +335,17 @@
       "records": 16,
       "ncpus": 16,
       "mem_gb": 64,
-      "cores_per_recording": 1
+      "cores_per_recording": 1,
+      "exit_status": 0,
+      "walltime": "00:17:13",
+      "peak_memory": "16574032kb",
+      "min_seconds": 433.44061111845076,
+      "max_seconds": 1017.7257186258212,
+      "numerical_error_types": {
+        "ValueError": 67,
+        "FloatingPointError": 20,
+        "LinAlgError": 92
+      }
     },
     {
       "role": "pilot",
@@ -324,7 +354,17 @@
       "records": 16,
       "ncpus": 16,
       "mem_gb": 64,
-      "cores_per_recording": 1
+      "cores_per_recording": 1,
+      "exit_status": 0,
+      "walltime": "00:14:31",
+      "peak_memory": "16149724kb",
+      "min_seconds": 295.7266472950578,
+      "max_seconds": 854.9925676491112,
+      "numerical_error_types": {
+        "ValueError": 42,
+        "FloatingPointError": 16,
+        "LinAlgError": 2
+      }
     },
     {
       "role": "pilot",
@@ -333,7 +373,17 @@
       "records": 16,
       "ncpus": 16,
       "mem_gb": 64,
-      "cores_per_recording": 1
+      "cores_per_recording": 1,
+      "exit_status": 0,
+      "walltime": "00:18:13",
+      "peak_memory": "15986160kb",
+      "min_seconds": 628.563318147324,
+      "max_seconds": 1076.656592125073,
+      "numerical_error_types": {
+        "FloatingPointError": 28,
+        "ValueError": 85,
+        "LinAlgError": 62
+      }
     },
     {
       "role": "pilot",
@@ -352,7 +402,10 @@
       "mem_gb": 384,
       "cores_per_recording": 1,
       "walltime": "00:30:00",
-      "role": "production"
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:02:09",
+      "peak_memory": "72041164kb"
     },
     {
       "cell": "M8-T1000",
@@ -362,7 +415,10 @@
       "mem_gb": 384,
       "cores_per_recording": 1,
       "walltime": "00:30:00",
-      "role": "production"
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:02:51",
+      "peak_memory": "74799824kb"
     },
     {
       "cell": "M16-T500",
@@ -372,6 +428,75 @@
       "mem_gb": 384,
       "cores_per_recording": 1,
       "walltime": "00:30:00",
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:05:35",
+      "peak_memory": "73540804kb"
+    },
+    {
+      "cell": "M16-T1000",
+      "job": "181329140.gadi-pbs",
+      "records": 134,
+      "ncpus": 96,
+      "mem_gb": 384,
+      "cores_per_recording": 1,
+      "walltime": "01:00:00",
+      "task_timeout": 1239,
+      "pilot_max_seconds": 412.92513353936374,
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:09:22",
+      "peak_memory": "75192000kb"
+    },
+    {
+      "cell": "M8-T2000",
+      "job": "181329340.gadi-pbs",
+      "records": 134,
+      "ncpus": 96,
+      "mem_gb": 384,
+      "cores_per_recording": 1,
+      "walltime": "00:30:00",
+      "task_timeout": 1200,
+      "pilot_max_seconds": 254.1792711475864,
+      "role": "production",
+      "exit_status": 0,
+      "walltime_used": "00:07:02",
+      "peak_memory": "85221560kb"
+    },
+    {
+      "cell": "M32-T500",
+      "job": "181329488.gadi-pbs",
+      "records": 134,
+      "ncpus": 96,
+      "mem_gb": 384,
+      "cores_per_recording": 1,
+      "walltime": "01:30:00",
+      "task_timeout": 2565,
+      "pilot_max_seconds": 854.9925676491112,
+      "role": "production"
+    },
+    {
+      "cell": "M16-T2000",
+      "job": "181329721.gadi-pbs",
+      "records": 134,
+      "ncpus": 96,
+      "mem_gb": 384,
+      "cores_per_recording": 1,
+      "walltime": "01:30:00",
+      "task_timeout": 3054,
+      "pilot_max_seconds": 1017.7257186258212,
+      "role": "production"
+    },
+    {
+      "cell": "M32-T1000",
+      "job": "181329723.gadi-pbs",
+      "records": 134,
+      "ncpus": 96,
+      "mem_gb": 384,
+      "cores_per_recording": 1,
+      "walltime": "01:30:00",
+      "task_timeout": 3230,
+      "pilot_max_seconds": 1076.656592125073,
       "role": "production"
     }
   ],

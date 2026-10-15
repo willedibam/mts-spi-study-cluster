@@ -30,6 +30,21 @@
     }
   },
   {
+    "cell": "M8-T2000",
+    "job": "181328521.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:04:29",
+    "peak_memory": "16698796kb",
+    "min_seconds": 137.28479215782136,
+    "max_seconds": 254.1792711475864,
+    "numerical_error_types": {
+      "ValueError": 72,
+      "FloatingPointError": 8,
+      "LinAlgError": 2
+    }
+  },
+  {
     "cell": "M16-T500",
     "job": "181328526.gadi-pbs",
     "records": 16,
@@ -42,6 +57,66 @@
       "ValueError": 57,
       "FloatingPointError": 16,
       "LinAlgError": 12
+    }
+  },
+  {
+    "cell": "M16-T1000",
+    "job": "181328535.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:07:09",
+    "peak_memory": "15952616kb",
+    "min_seconds": 163.0954558774829,
+    "max_seconds": 412.92513353936374,
+    "numerical_error_types": {
+      "ValueError": 71,
+      "FloatingPointError": 16,
+      "LinAlgError": 16
+    }
+  },
+  {
+    "cell": "M16-T2000",
+    "job": "181328537.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:17:13",
+    "peak_memory": "16574032kb",
+    "min_seconds": 433.44061111845076,
+    "max_seconds": 1017.7257186258212,
+    "numerical_error_types": {
+      "ValueError": 67,
+      "FloatingPointError": 20,
+      "LinAlgError": 92
+    }
+  },
+  {
+    "cell": "M32-T500",
+    "job": "181328538.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:14:31",
+    "peak_memory": "16149724kb",
+    "min_seconds": 295.7266472950578,
+    "max_seconds": 854.9925676491112,
+    "numerical_error_types": {
+      "ValueError": 42,
+      "FloatingPointError": 16,
+      "LinAlgError": 2
+    }
+  },
+  {
+    "cell": "M32-T1000",
+    "job": "181328539.gadi-pbs",
+    "records": 16,
+    "exit_status": 0,
+    "walltime": "00:18:13",
+    "peak_memory": "15986160kb",
+    "min_seconds": 628.563318147324,
+    "max_seconds": 1076.656592125073,
+    "numerical_error_types": {
+      "FloatingPointError": 28,
+      "ValueError": 85,
+      "LinAlgError": 62
     }
   }
 ]

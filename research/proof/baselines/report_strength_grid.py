@@ -42,7 +42,7 @@ def legend(fig,labels):
     handles=[Line2D([],[],ls='',marker='o',color=COLORS[c],markerfacecolor='none' if c.endswith('independent') else COLORS[c],markersize=4,label=DISPLAY[c]) for c in labels]
     handles += [Line2D([],[],ls='',marker='o',color='.3',markersize=np.sqrt(16*np.sqrt(m/8)),label=f'M={m}') for m in MS]
     handles += [Line2D([],[],ls='',marker=MARKERS[t],color='.3',markersize=4,label=f'T={t}') for t in TS]
-    fig.legend(handles=handles,loc='outside lower center',ncol=5,fontsize=8)
+    fig.legend(handles=handles,loc='outside lower center',ncol=5 if labels else 6,fontsize=8)
 
 
 def plots():
@@ -71,7 +71,9 @@ def plots():
                 ax.set(xticks=[],yticks=[],xlabel=method+' 1',ylabel=(ARM_LABELS[arm]+'\n' if c==0 else '')+method+' 2')
                 if r==0:ax.set_title((r'Mean-MPI $m$' if name=='m' else r'SPI–SPI $z$')+' — '+method)
         if coloring=='class':legend(fig,all_labels)
-        else:fig.colorbar(artist,ax=axes.ravel().tolist(),shrink=.8,label=r'Observed mean $|r|$')
+        else:
+            fig.colorbar(artist,ax=axes.ravel().tolist(),shrink=.8,label=r'Observed mean $|r|$')
+            legend(fig,[])
         fig.suptitle('Size grid: M=8/16/32, T=500/1000/2000 · five instances per class/cell\nEvaluation points; marker area ∝ √M, shape indicates T; t-SNE is a joint descriptive fit')
         save(fig,OUT/'figures','grid-'+coloring);plt.close(fig)
     labels=[c for c in all_labels if not c.endswith('shared')]

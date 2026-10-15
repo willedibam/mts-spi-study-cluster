@@ -1,0 +1,8 @@
+{
+  "records": 16,
+  "mean_checks": 4624,
+  "z_checks": 1600,
+  "undefined_z_checks": 387,
+  "max_z_error": 2.9726905048654828e-08,
+  "scope": "Four early size-cell pilots, fixed/varying-noise VAR and frozen CML, predetermined indices1/4/17/20; validate extraction without outcome-based selection."
+}
