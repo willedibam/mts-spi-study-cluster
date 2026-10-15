@@ -1,6 +1,6 @@
 {
   "run": "strength-factorial-261015",
-  "stage": "production_submitted",
+  "stage": "complete",
   "records": 1200,
   "archive_sha256": "8eb9c8a1aebbe03479934a2a01aaf3e37ecfb4a67e455f82d226dee0f837327c",
   "protocol_sha256": "400221c22ca57599a4d74d93910d4f3a52d807dcefac39def8e17f29327fdd1e",
@@ -75,7 +75,11 @@
       "ncpus": 384,
       "mem_gb": 768,
       "walltime": "01:00:00",
-      "task_timeout_seconds": 1200
+      "task_timeout_seconds": 1200,
+      "exit_status": 0,
+      "complete": 1184,
+      "walltime_used": "00:18:47",
+      "peak_memory_kb": 303163148
     },
     {
       "role": "extraction",
@@ -87,7 +91,11 @@
       "depends_on": [
         "181324735.gadi-pbs",
         "181324194.gadi-pbs"
-      ]
+      ],
+      "exit_status": 0,
+      "walltime_used": "00:01:13",
+      "peak_memory_kb": 6195036,
+      "complete": 1200
     }
   ],
   "compute_source_commit": "da87ef7",
@@ -100,5 +108,28 @@
   "catalogue_note": "Repository configs/pyspi/benchmarked_p90.yaml; distinct from the currently bundled pyspi p90 config. Fresh r9 computation, no historical r7 data pooling.",
   "analysis_source_commit": "b54e03b",
   "pilot_decision": "All16 complete, runner audit passes. Preserve numerical estimator refusals (ties, conditioning, AR-order cap, group-delay undefined). Release remaining1184 with unchanged parameters/catalogue. 384 one-core workers, 2GB/record (>2x measured aggregate per-record peak), 1hour for four waves; per-record timeout20min.",
-  "extraction_source_commit": "e6cd116"
+  "extraction_source_commit": "e6cd116",
+  "primary_intervention_interval_source": "38b11e5: explicitly reports the protocol-defined paired change relative to fixed_clean; all four arm readouts unchanged.",
+  "source_hashes_verified": [
+    "generation",
+    "protocol",
+    "linear.py",
+    "dynamical.py",
+    "pde.py"
+  ],
+  "local_analysis_sha256": "683b1519ff3c1ab7a3f48dd2320d46160b96b488e32f45411d32185e8dbcfc1d",
+  "report_source_sha256": "3f3fa9373b1beb6d383b6ee9a258557f43312cf0eec00d325fe9f14919f41ea3",
+  "post_result_control": "Unclipped means added; all original metric rows verified exactly unchanged.",
+  "notebook": "research/proof/baselines/notebooks/proof_strength_nuisance_261006.ipynb",
+  "open_jobs": 0,
+  "local_analysis_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.17.0",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "umap-learn": "0.5.11",
+    "matplotlib": "3.10.8",
+    "nbformat": "5.11.1",
+    "nbclient": "0.11.0"
+  }
 }

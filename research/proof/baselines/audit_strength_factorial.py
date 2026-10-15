@@ -1,5 +1,5 @@
+"""Independent off-diagonal means and Pearson checks on the 16 pilot MPIs."""
 import json
-from pathlib import Path
 import numpy as np
 from research.proof.baselines.strength_factorial import DATA,OUT,sha
 
@@ -19,7 +19,7 @@ def audit():
             vectors=((raw+raw.transpose(0,2,1))/2)[:,np.triu_indices(16,1)[0],np.triu_indices(16,1)[1]]
             for k in np.linspace(0,len(upper[0])-1,100,dtype=int):
                 u,v=vectors[upper[0][k]],vectors[upper[1][k]]
-                if not (np.isfinite(u).all() and np.isfinite(v).all()) or u.std()==0 or v.std()==0:
+                if not (np.isfinite(u).all() and np.isfinite(v).all()) or np.linalg.norm(u-u.mean())<1e-12 or np.linalg.norm(v-v.mean())<1e-12:
                     assert not np.isfinite(z[i,k]); missing+=1
                 else:
                     value=np.corrcoef(u,v)[0,1]; error=abs(value-z[i,k]); errors.append(error)

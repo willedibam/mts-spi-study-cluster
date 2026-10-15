@@ -1,0 +1,8 @@
+{
+  "pilot_records": 16,
+  "independent_mean_checks": 4624,
+  "independent_z_checks": 1600,
+  "undefined_z_checks": 366,
+  "max_z_error": 2.9801942802443193e-08,
+  "features_sha256": "cb3d613f987a1b20d97b0f987c088764c52b372904acc4dca5271edd5a35a018"
+}

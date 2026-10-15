@@ -1,0 +1,9 @@
+{
+  "records": 1200,
+  "source_archive_sha256": "8eb9c8a1aebbe03479934a2a01aaf3e37ecfb4a67e455f82d226dee0f837327c",
+  "features_sha256": "cb3d613f987a1b20d97b0f987c088764c52b372904acc4dca5271edd5a35a018",
+  "extraction_source_sha256": "8808c10adab93791055b2f6168790bc9282d77a25a223d6b7bb72dc4964b8b82",
+  "catalogue": "bc4bafa16b4add8bb6283db490a9fa3d8dde4fde47093147d32579b989397965",
+  "computation": "3.0.0.r9",
+  "n_spis": 289
+}

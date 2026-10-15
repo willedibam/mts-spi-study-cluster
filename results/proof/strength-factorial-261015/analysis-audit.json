@@ -1,0 +1,31 @@
+{
+  "training": 280,
+  "evaluation": 560,
+  "gallery": 140,
+  "classes": [
+    "VAR",
+    "Kuramoto",
+    "Wave",
+    "CML-intermittency",
+    "CML-defect",
+    "Gaussian-shared",
+    "Cauchy-shared"
+  ],
+  "validity_only_accuracy": {
+    "fixed_clean": 0.7142857142857143,
+    "fixed_sensor": 0.39285714285714285,
+    "varying_clean": 0.7,
+    "varying_sensor": 0.37142857142857144
+  },
+  "catalogue_size": 289,
+  "computation": "3.0.0.r9",
+  "source_sha256": "683b1519ff3c1ab7a3f48dd2320d46160b96b488e32f45411d32185e8dbcfc1d",
+  "notes": [
+    "All preprocessing/PCA fitted only on fixed clean/sensor training instances0-19.",
+    "Evaluation instances20-39 are disjoint; every retrieval gallery item has a different parent.",
+    "m is raw MPI means with training feature scaling/clipping; no within-recording mean-vector normalization.",
+    "m_unclipped/m_full_unclipped were added after primary results to audit clipping; primary readouts unchanged.",
+    "Bootstrap intervals are conditional on fitted training data and retain class/arm pairing.",
+    "z is symmetrized to match the historical proof; no directional-mechanism claim."
+  ]
+}

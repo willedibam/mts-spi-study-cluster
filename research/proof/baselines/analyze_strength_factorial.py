@@ -72,10 +72,10 @@ def split(rows):
     return train,evaluation,gallery
 
 
-def project(raw,train,standard,valid=.95):
+def project(raw,train,standard,valid=.95,clip=True):
     transform=fit_geometry_transform(raw[train],scaling='standard' if standard else 'center',minimum_valid_fraction=valid)
     values=transform.transform(raw)
-    if standard:values=np.clip(values,-5,5)
+    if standard and clip:values=np.clip(values,-5,5)
     pca=PCA(n_components=min(50,train.sum()-1,values.shape[1]),svd_solver='randomized',random_state=261015).fit(values[train])
     return values,pca.transform(values),transform,pca
 
@@ -102,10 +102,13 @@ def analyze(data,out):
     np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     train,evaluation,gallery=split(rows);labels=rows.label.to_numpy()
     spaces={};details=[];missing=[]
-    for name,key,standard,valid in [('m','mean',True,.95),('z','z',False,.95),('z_standard','z',True,.95),('z_complete','z',False,1.)]:
-        full,pcs,transform,pca=project(bank[key],train,standard,valid)
+    for name,key,standard,valid in [('m','mean',True,.95),('z','z',False,.95),('z_standard','z',True,.95),('z_complete','z',False,1.),('m_unclipped','mean',True,.95)]:
+        # Unclipped means are an explicitly post-result robustness audit of the
+        # historical +/-5 SD plotting convention, not a replacement readout.
+        full,pcs,transform,pca=project(bank[key],train,standard,valid,clip=name!='m_unclipped')
         spaces[name]=pcs
         if name=='m':spaces['m_full']=full
+        if name=='m_unclipped':spaces['m_full_unclipped']=full
         details.append(dict(representation=name,features=len(transform.keep_indices),PCs=pcs.shape[1],training_variance_retained=pca.explained_variance_ratio_.sum()))
         for arm in ARMS:
             for label in CLASSES:
@@ -122,7 +125,7 @@ def analyze(data,out):
     for name,values in spaces.items():
         model=LogisticRegression(C=1,max_iter=5000).fit(values[train],labels[train])
         # Includes a strong raw-mean readout without PCA, alongside the common linear readout.
-        rbf=SVC(C=1).fit(values[train],labels[train]) if name=='m_full' else None
+        rbf=SVC(C=1).fit(values[train],labels[train]) if name in ['m_full','m_full_unclipped'] else None
         for arm in ARMS:
             choose=evaluation & rows.arm.eq(arm).to_numpy();y=labels[choose];v=values[choose]
             distances=cdist(v,values[gallery]);ap,top=average_precision(distances,y[:,None]==labels[gallery][None,:])
@@ -184,6 +187,7 @@ def analyze(data,out):
                 notes=['All preprocessing/PCA fitted only on fixed clean/sensor training instances0-19.',
                        'Evaluation instances20-39 are disjoint; every retrieval gallery item has a different parent.',
                        'm is raw MPI means with training feature scaling/clipping; no within-recording mean-vector normalization.',
+                       'm_unclipped/m_full_unclipped were added after primary results to audit clipping; primary readouts unchanged.',
                        'Bootstrap intervals are conditional on fitted training data and retain class/arm pairing.',
                        'z is symmetrized to match the historical proof; no directional-mechanism claim.'])
     (out/'analysis-audit.json').write_text(json.dumps(report,indent=2)+'\n')
