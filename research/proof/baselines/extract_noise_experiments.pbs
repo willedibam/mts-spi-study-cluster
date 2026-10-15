@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N noise-experiments-extract
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=24GB,walltime=00:30:00,jobfs=2GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -m research.proof.baselines.analyze_noise_experiments extract --data "$MTS_SCRATCH/proof/noise-experiments-261016" --out "$MTS_SCRATCH/proof/noise-experiments-261016/analysis" --workers 4
