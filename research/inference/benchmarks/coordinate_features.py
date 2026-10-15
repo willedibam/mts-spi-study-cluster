@@ -1,14 +1,11 @@
 """Frozen-coordinate galleries and original-edge explanations; no model fitting."""
 import json
 import textwrap
-from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
 
-from mtsspi.spi_spi_contract import build_unified_feature_values
 from research.inference.benchmarks.three_systems import ROOT, OUT, check, sha, save, curve, heatmaps, dual, Z_COLOR
 from research.inference.benchmarks.spi_feature_gallery import correlation_endpoint, short_name as catalogue_name
 
@@ -33,54 +30,7 @@ def ranking(order, indices, weights):
     return table
 
 
-def load_quadratic():
-    source=ROOT/'results/baseline-comparison_260921/inference-KanekoBand.csv'
-    frame=pd.read_csv(source).query('evaluation').reset_index(drop=True)
-    check(len(frame)==164 and frame.M.eq(32).all() and frame.common_eligible.sum()==140,'Quadratic scope changed')
-    inventory=json.loads((ROOT/'data/baseline-comparison_260921/legacy-feature-inventory.json').read_text())
-    order=inventory['quadratic_cml_development_full_p90']['spi_order']
-    records=json.loads((ROOT/'data/baseline-comparison_260921/extension-inputs.json').read_text())['records']
-    records={r['dataset_path']:r for r in records if r.get('bank')=='quadratic_cml_development_full_p90'}
-    paths=[];zs=[]
-    for row in frame.itertuples():
-        record=records[row.row_id]
-        path=ROOT/record['mpi_path'].replace('spi_baseline_exploration_260921','baseline-comparison_260921')
-        check(sha(path)==record['mpi_sha256'],f'Quadratic MPI changed: {path}')
-        with np.load(path) as a:
-            zs.append(build_unified_feature_values({n:a[n] for n in order},order)[0])
-        paths.append(path)
-    z=np.asarray(zs)
-    modelpath=ROOT/'results/order-parameter-inference/quadratic-cml/quadratic_cml_development_analysis/fitted_target_blind_model.npz'
-    with np.load(modelpath) as m:
-        selected=z[:,m['keep_indices']]
-        replay=((np.where(np.isfinite(selected),selected,m['impute_values'])-m['center'])/m['block_scale'])@m['q_components'][0]
-        error=float(np.max(abs(replay-frame.q)))
-        check(error<1e-5,f'Quadratic frozen score replay failed: {error}')
-        ranks=ranking(order,m['keep_indices'],m['q_components'][0])
-    examples=[]
-    for value in (1.6,1.75,2.):
-        with np.load(ROOT/f'data/order-parameter-inference/figure-examples_260916/quadratic-cml-{value:g}.npz') as a:
-            examples.append(dict(control=value,x=a['X'],field=a['field']))
-    return dict(frame=frame,z=z,ranks=ranks,paths=paths,examples=examples,control='control',
-                label='Quadratic CML',slug='quadratic-cml',xlabel=r'Local nonlinearity $\alpha$',
-                score_sha256=sha(source),model_sha256=sha(modelpath),replay_error=error,
-                rho=float(spearmanr(frame.q,frame.Q_reference).statistic))
-
-
-def draw_quadratic(data):
-    fig,axes=plt.subplots(3,3,figsize=(10,7.2),layout='constrained',gridspec_kw={'height_ratios':[1,1,1.15]})
-    for ax,e in zip(axes[0],data['examples']):
-        image=ax.imshow(e['field'],origin='lower',aspect='auto',cmap='viridis',vmin=-1,vmax=1,extent=(0,100,1,512),rasterized=True)
-        ax.set(title=rf"$\alpha={e['control']:g}$",xlabel='Consecutive step',ylabel='All lattice sites')
-    fig.colorbar(image,ax=list(axes[0]),shrink=.7,label='Map state $x$')
-    heatmaps(fig,axes[1],data['examples'],count=100,dt=1)
-    for ax,key,label in zip(axes[2],['q','mean_PC1','mean_abs_correlation'],['SPI–SPI PC1','Mean-MPI PC1',r'Mean $|r_{ij}|$']):
-        dual(ax,data['frame'].query('common_eligible'),'control','Q_reference',key,xlabel=data['xlabel'],truthlabel='Spatial band power',scorelabel=label)
-        ax.set_title(label)
-    return save(fig,'quadratic-cml')
-
-
-def feature_banks(cml,locking,hardware,quadratic):
+def feature_banks(cml,locking,hardware):
     cpath=ROOT/'data/order-parameter-inference/cml2d/cml2d_confirmation_260911/primary-analysis'
     with np.load(cpath/'features.npz') as f,np.load(cpath/'model.npz') as m:
         c=dict(frame=cml['frame'].copy(),z=f['z'],ranks=ranking(f['spi_order'],m['keep'],m['component']),
@@ -105,7 +55,7 @@ def feature_banks(cml,locking,hardware,quadratic):
     with np.load(hpath/'features.npz') as f:
         h=dict(frame=hardware['frame'].copy(),z=f['z'],ranks=ranking(f['spi_order'],f['er_features'],f['er_components'][0]),
                control='voltage',label='Hardware (ER-fitted)',slug='hardware',xlabel='Coupling voltage (V)')
-    return dict(cml2d=c,quadratic=quadratic,locking=l,hardware=h)
+    return dict(cml2d=c,locking=l,hardware=h)
 
 
 def selections(data):
@@ -130,7 +80,7 @@ def gallery(data,filtered=False):
     if filtered and table.feature_index.tolist()==full.feature_index.tolist():
         print(f"{data['label']}: filtering leaves the top 16 unchanged; duplicate panel omitted.")
         return None
-    fig,axes=plt.subplots(4,4,figsize=(9,10.5),layout='constrained')
+    fig,axes=plt.subplots(4,4,figsize=(8,9.4),layout='constrained')
     for ax,row in zip(axes.flat,table.itertuples()):
         f=data['frame'].copy();f['value']=data['z'][:,row.feature_index]
         groups=[('ER',Z_COLOR),('SW','#d95f02')] if 'topology' in f else [(None,Z_COLOR)]
@@ -167,9 +117,6 @@ def edge_sources(data,key,hardware=None):
             check(sha(path)==source[row.row_id]['mpi_sha256'],'CML edge archive changed')
             result.append((index,path,rf'$r={row.r:g}$',row.row_id))
         return result
-    if key=='quadratic':
-        frame=data['frame'];rows=frame[frame.instance.eq(4)&frame.control.isin([1.6,1.75,2.])].sort_values('control')
-        return [(i,data['paths'][i],rf'$\alpha={r.control:g}$',r.row_id) for i,r in rows.iterrows()]
     if key=='locking':
         from research.inference.locking.plot_locking_m24_edge_profiles import choose_records
         rows=choose_records(pd.read_csv(ROOT/'results/order-parameter-inference/cross-frequency-locking-snr-261006/scores.csv'))
@@ -188,14 +135,13 @@ def edge_sources(data,key,hardware=None):
 
 PAIRS={
     'cml2d':[('pec_orth','pec_orth_abs'),('corr_pearson_tau-5','pec_orth_abs')],
-    'quadratic':[('corr_spearman_tau-2-sq','corr_spearman_tau-4-sq'),('cov-sq_EmpiricalCovariance','dcorr')],
     'locking':[('corr_pearson_tau-2','corr_pearson_tau-20-sq'),('lcss','te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1')],
     'hardware':[('si_kernel_W-0.5_k-1','ids'),('corr_pearson_tau-1','corr_pearson_tau-10')],
 }
 
 
 def edges(data,key,hardware=None):
-    sources=edge_sources(data,key,hardware);fig,axes=plt.subplots(2,len(sources),figsize=(9,5.2 if key=='hardware' else 6.4),layout='constrained',squeeze=False)
+    sources=edge_sources(data,key,hardware);fig,axes=plt.subplots(2,len(sources),figsize=(8,4.8 if key=='hardware' else 5.8),layout='constrained',squeeze=False)
     receipts=[];groups=None
     if key=='hardware':
         from research.empirical.hardware_pilot.full_p90_analysis import carrier_groups

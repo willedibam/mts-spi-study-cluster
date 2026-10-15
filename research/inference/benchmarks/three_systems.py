@@ -220,19 +220,27 @@ def dual(ax, frame, control, truth, score, *, xlabel, truthlabel, scorelabel='Fr
 
 
 def draw_cml(data):
-    fig,axes=plt.subplots(3,3,figsize=(10,7.1),layout='constrained',gridspec_kw={'height_ratios':[.8,1,1.15]})
+    fig,axes=plt.subplots(4,3,figsize=(10,9.6),layout='constrained',gridspec_kw={'height_ratios':[.8,1,1.05,1.15]})
     for ax,e in zip(axes[0],data['examples'],strict=True):
         ax.plot(np.arange(100),e['mean'],color=Q_COLOR,lw=.8)
         ax.set(title=rf"$r={e['control']:g}$",ylabel=r'Global $\bar{x}(t)$',xlabel='Consecutive step',ylim=(.3,.9))
     heatmaps(fig,axes[1],data['examples'],count=100,dt=1)
+    for ax,e in zip(axes[2],data['examples'],strict=True):
+        image=ax.imshow(e['field'],origin='lower',cmap='viridis',vmin=0,vmax=1,
+                        extent=(-.5,255.5,-.5,255.5),interpolation='nearest',rasterized=True)
+        sensors=e['sensors']
+        ax.scatter(sensors%256,sensors//256,s=5,facecolors='none',edgecolors='white',lw=.35)
+        ax.set(xlabel='Lattice column',ylabel='Lattice row',xticks=[0,128,255],yticks=[0,128,255])
+        ax.set_box_aspect(1)
+    fig.colorbar(image,ax=list(axes[2]),shrink=.7,label='Final lattice state $x$')
     f=data['frame']
-    dual(axes[2,0],f,'r','Q_reference','q',xlabel='Local nonlinearity $r$',truthlabel='Period-two $Q$')
-    axes[2,0].set_title('SPI–SPI PC1: fresh seeds')
-    axes[2,0].axvline(3.86212,color='.5',lw=.8,ls=':')
-    dual(axes[2,1],f,'r','Q_reference','mean_PC1',xlabel='Local nonlinearity $r$',truthlabel='Period-two $Q$',scorelabel='Mean-MPI PC1')
-    axes[2,1].set_title('Mean-MPI PC1')
-    dual(axes[2,2],f,'r','Q_reference','mean_abs_correlation',xlabel='Local nonlinearity $r$',truthlabel='Period-two $Q$',scorelabel=r'Mean $|r_{ij}|$')
-    axes[2,2].set_title('Strength also tracks this transition')
+    dual(axes[3,0],f,'r','Q_reference','q',xlabel='Local nonlinearity $r$',truthlabel='Period-two $Q$')
+    axes[3,0].set_title('SPI–SPI PC1: fresh seeds')
+    axes[3,0].axvline(3.86212,color='.5',lw=.8,ls=':')
+    dual(axes[3,1],f,'r','Q_reference','mean_PC1',xlabel='Local nonlinearity $r$',truthlabel='Period-two $Q$',scorelabel='Mean-MPI PC1')
+    axes[3,1].set_title('Mean-MPI PC1')
+    dual(axes[3,2],f,'r','Q_reference','mean_abs_correlation',xlabel='Local nonlinearity $r$',truthlabel='Period-two $Q$',scorelabel=r'Mean $|r_{ij}|$')
+    axes[3,2].set_title('Strength also tracks this transition')
     return save(fig,'cml2d')
 
 
@@ -284,12 +292,10 @@ def draw_hardware_edges(data):
     return save(fig,'hardware-edge-explanation')
 
 
-def write_receipt(cml,locking,hardware,quadratic=None):
+def write_receipt(cml,locking,hardware):
     rows=[dict(system='CML2D',observed='M32 / N65536',samples=1000,fit='4 development seeds × 9 controls',evaluation='32 new seeds × 17 controls',reference='Disjoint future period-two Q',z_rho=cml['rho']),
           dict(system='Noisy 2:1 locking',observed='M=N=24',samples=1000,fit='8 development seeds × 21 controls',evaluation='8 held seeds × 21 controls',reference='Disjoint future harmonic-locking Q',z_rho=locking['metrics']['z_PC1']),
           dict(system='Hardware',observed='M=N=28',samples=5000,fit='29 ER recordings',evaluation='16 small-world recordings',reference='Measured carrier dispersion; no known universal Q',z_rho=None)]
-    if quadratic is not None:
-        rows.insert(1,dict(system='Quadratic CML',observed='M32 / N512',samples=1000,fit='4 development instances × 41 controls × 3 M',evaluation='4 held instances × 41 controls; M32',reference='Selected spatial-band power; operational descriptor',z_rho=quadratic['rho']))
     pd.DataFrame(rows).to_csv(OUT/'study-summary.csv',index=False)
     record=dict(studies=rows,source_score_hashes={k:v['score_sha256'] for k,v in [('cml',cml),('locking',locking),('hardware',hardware)]},
         cml_replay_max_error=cml['replay_error'],hardware_records=45,hardware_version=hardware['report']['computation'],
@@ -299,9 +305,8 @@ def write_receipt(cml,locking,hardware,quadratic=None):
         fitting='No fitting in this presentation; independent frozen models, no pooling across systems or versions.',
         plotting='Shared full-record robust heatmap scaling within each system; display crops only. Curves retain original units/signs; dual axes independently ranged. Synthetic bands are 10–90% seed-instance ranges, not confidence intervals. No hardware uncertainty bands.',
         source_sha256=sha(__file__))
-    if quadratic is not None:
-        record['quadratic']=dict(score_sha256=quadratic['score_sha256'],model_sha256=quadratic['model_sha256'],replay_max_error=quadratic['replay_error'])
     record['feature_gallery_source_sha256']=sha(Path(__file__).with_name('coordinate_features.py'))
+    record['lattice']='Archived final state after the future reference window, same fixed held seed/control as the observed portraits; white circles show sensor locations, not simultaneous observation snapshots.'
     record['galleries']='Original PC1 coefficients; filtered views exclude two classical-correlation endpoints and duplicate displayed curves (atol 1e-7), without refitting. Edges replay archived ordered profiles.'
     (OUT/'provenance.json').write_text(json.dumps(record,indent=2)+'\n')
     return pd.DataFrame(rows)
