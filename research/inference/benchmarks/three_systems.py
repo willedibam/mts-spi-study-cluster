@@ -29,9 +29,9 @@ def sha(path):
 
 
 def style():
-    from scripts.benchmark_latex_style import latex_style
-    latex_style()
-    plt.rcParams.update({'font.family':'serif', 'font.serif':['Computer Modern Roman','DejaVu Serif'],
+    """Portable notebook typography; no external TeX executables required."""
+    plt.rcParams.update({'text.usetex':False, 'mathtext.fontset':'cm',
+        'font.family':'serif', 'font.serif':['DejaVu Serif'],
         'font.size':9, 'axes.labelsize':9, 'axes.titlesize':10, 'legend.fontsize':7,
         'xtick.labelsize':8, 'ytick.labelsize':8, 'axes.spines.top':False,
         'axes.spines.right':False, 'legend.frameon':False, 'figure.dpi':180,
@@ -40,9 +40,7 @@ def style():
 
 
 def save(fig, name):
-    from scripts.benchmark_latex_style import prepare_latex_figure
     OUT.mkdir(parents=True, exist_ok=True)
-    prepare_latex_figure(fig)
     for ext in ('png','svg','pdf'):
         fig.savefig(OUT/f'{name}.{ext}', dpi=180 if ext=='png' else 600, bbox_inches='tight')
     plt.close(fig)

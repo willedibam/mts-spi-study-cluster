@@ -26,3 +26,25 @@ def test_filtered_display_preserves_weights_and_rejects_only_display_redundancy(
     pd.testing.assert_frame_equal(table,original)
     # The API never consumes physical outcomes or changes the original feature bank.
     np.testing.assert_equal(z[:,1],z[:,2])
+
+
+def test_notebook_exports_without_external_tex(monkeypatch, tmp_path):
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    from matplotlib.texmanager import TexManager
+    from research.inference.benchmarks import three_systems
+
+    def no_tex(*args, **kwargs):
+        raise AssertionError('The coordinate notebook must not invoke TeX')
+
+    monkeypatch.setattr(TexManager, '_run_checked_subprocess', no_tex)
+    monkeypatch.setattr(three_systems, 'OUT', tmp_path)
+    # Also recover from a previous notebook having enabled external TeX globally.
+    with mpl.rc_context({'text.usetex': True}):
+        three_systems.style()
+        fig, ax = plt.subplots(figsize=(3, 3))
+        ax.plot([0, 1], [0, 1])
+        ax.set(title='SI × IDS → agreement', xlabel=r'$z_{ab}$', ylabel=r'Mean $|r_{ij}|$')
+        three_systems.save(fig, 'native-text')
+    for suffix in ('png', 'svg', 'pdf'):
+        assert (tmp_path / f'native-text.{suffix}').stat().st_size > 0
