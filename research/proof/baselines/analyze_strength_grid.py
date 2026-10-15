@@ -19,7 +19,7 @@ from research.proof.baselines.analyze_strength_factorial import project,average_
 
 def extract_one(task):
     data,row=task
-    folder=Path(data)/'mpis'/row['cell_name']/f'{row["local_index"]:04d}-{slugify(row["row_id"],"dataset")}'
+    folder=Path(data)/'mpis'/slugify(row['cell_name'],'external-corpus')/f'{row["local_index"]:04d}-{slugify(row["row_id"],"dataset")}'
     meta=json.loads((folder/'meta.json').read_text())
     assert meta['status']=='complete' and meta['dataset_name']==row['row_id']
     assert (meta['M'],meta['T'])==(row['M'],row['T'])
