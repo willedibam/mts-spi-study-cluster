@@ -1,0 +1,21 @@
+# Catalogue members of the timing triplet (zero-lag Pearson, max cross-correlation)
+# and the catalogue's coherence magnitude (mean magnitude-squared coherence,
+# 5-taper multitaper over [0, 0.5]). The phase-aligned correlation P is not a
+# pyspi SPI; timing_triplet.py computes it in numpy.
+.statistics.basic:
+  Covariance:
+    labels: [undirected, linear, signed, multivariate, contemporaneous]
+    dependencies:
+    configs:
+    - estimator: EmpiricalCovariance
+  CrossCorrelation:
+    labels: [undirected, linear, signed, bivariate, time-dependent]
+    dependencies:
+    configs:
+    - statistic: max
+.statistics.spectral:
+  CoherenceMagnitude:
+    labels: [undirected, linear, unsigned, bivariate, frequency-dependent]
+    dependencies:
+    configs:
+    - fs: 1

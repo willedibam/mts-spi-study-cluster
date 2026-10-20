@@ -1,5 +1,12 @@
 """MTS generators package — split from the monolithic src/generate.py."""
 from ._common import GeneratorFn, _maybe_zscore, _resolve_rng, _zscore_channels
+from .band_delay import (
+    BandDelayInternals,
+    band_delay_cross_spectrum,
+    band_delay_structure,
+    band_spectrum,
+    generate_band_delayed_mts,
+)
 from .cases import (
     generate_case_i,
     generate_case_ii,
@@ -81,6 +88,11 @@ __all__ = [
     "generate_cauchy_noise",
     "generate_cml_logistic",
     "generate_delay_aliased_mts",
+    "generate_band_delayed_mts",
+    "BandDelayInternals",
+    "band_delay_cross_spectrum",
+    "band_delay_structure",
+    "band_spectrum",
     "DelayAliasInternals",
     "ar1_lag_attenuation",
     "delay_alias_structure",
