@@ -3,7 +3,7 @@
 Synchronous and delayed Gaussian MTS whose zero-lag correlation matrices are identical entry for entry: the constructed example of [`drafts/introduction_rewrite.md`](../../../drafts/introduction_rewrite.md), paragraph 4.
 
 - Generator: `mtsspi.generators.generate_delay_aliased_mts` (registry name `delay_aliased_mts`). `lag_range=0` is family A; `lag_range>0` is family B; `structure_seed` fixes the shared target matrix.
-- `spis/delay_alias.yaml`: the five-SPI pyspi subset (zero-lag Pearson, Spearman, max cross-correlation, min cross-distance at τ=30, coherence magnitude). It runs locally in about 0.2 s per recording at M=20, T=5,000.
+- `spis/delay_alias.yaml`: the five-SPI pyspi subset (zero-lag Pearson, Spearman, max cross-correlation, min cross-distance at τ=30, and `cohmag`, the mean magnitude-squared coherence). It runs locally in about 0.2 s per recording at M=20, T=5,000.
 - `delay_alias.py`: measurement, summaries, generic-feasibility scan and the Fig. 1 plot.
 - `notebooks/delay-alias_261020.ipynb`: executed checks and figures; outputs in `results/cases/delay-alias-261020/`.
 
