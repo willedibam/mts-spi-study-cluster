@@ -1,0 +1,33 @@
+# Five SPIs for the delay-aliasing case (Fig. 1). All but the cross distance are
+# benchmarked_p90 catalogue entries; the catalogue's cross distance uses tau=1,
+# which cannot reach delay differences of up to 15 samples, so tau=30 here.
+.statistics.basic:
+  Covariance:
+    labels: [undirected, linear, signed, multivariate, contemporaneous]
+    dependencies:
+    configs:
+    - estimator: EmpiricalCovariance
+  SpearmanR:
+    labels: [undirected, nonlinear, signed, bivariate, contemporaneous]
+    dependencies:
+    configs:
+    - squared: false
+  CrossCorrelation:
+    labels: [undirected, linear, signed, bivariate, time-dependent]
+    dependencies:
+    configs:
+    - statistic: max
+.statistics.distance:
+  CrossPairwiseDistance:
+    labels: [undirected, nonlinear, unsigned, bivariate, time-dependent]
+    dependencies:
+    configs:
+    - metric: euclidean
+      tau: 30
+      statistic: min
+.statistics.spectral:
+  CoherenceMagnitude:
+    labels: [undirected, linear, unsigned, bivariate, frequency-dependent]
+    dependencies:
+    configs:
+    - fs: 1

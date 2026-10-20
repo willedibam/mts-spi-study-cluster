@@ -6,6 +6,12 @@ from .cases import (
     generate_case_iii,
     generate_mts_master,
 )
+from .delay_alias import (
+    DelayAliasInternals,
+    ar1_lag_attenuation,
+    delay_alias_structure,
+    generate_delay_aliased_mts,
+)
 from .dynamical import (
     generate_cml_logistic,
     generate_kuramoto,
@@ -74,6 +80,10 @@ __all__ = [
     "generate_case_iii",
     "generate_cauchy_noise",
     "generate_cml_logistic",
+    "generate_delay_aliased_mts",
+    "DelayAliasInternals",
+    "ar1_lag_attenuation",
+    "delay_alias_structure",
     "generate_desai_zwanzig",
     "generate_exponential_noise",
     "generate_filter_roll_mts",

@@ -139,6 +139,19 @@ def _lagged_warping_mts(spec, generator_params):
     return data, gen_extras
 
 
+@_outputs("delay_aliased_mts")
+def _delay_aliased_mts(spec, generator_params):
+    data, internals = generate.generate_delay_aliased_mts(
+        M=spec.M,
+        T=spec.T,
+        rng=np.random.default_rng(spec.rng_seed),
+        return_internals=True,
+        **generator_params,
+    )
+    gen_extras = {"lags": internals.lags.tolist()}
+    return data, gen_extras
+
+
 @_outputs("filter_roll_mts")
 def _filter_roll_mts(spec, generator_params):
     data, internals = generate.generate_filter_roll_mts(

@@ -11,6 +11,7 @@ from .cases import (
     generate_case_iii,
     generate_mts_master,
 )
+from .delay_alias import generate_delay_aliased_mts
 from .dynamical import (
     generate_cml_logistic,
     generate_kuramoto,
@@ -70,6 +71,7 @@ GENERATOR_REGISTRY: Dict[str, GeneratorFn] = {
     "warping_mts": generate_warping_mts,
     "lagged_mts": generate_lagged_mts,
     "lagged_warping_mts": generate_lagged_warping_mts,
+    "delay_aliased_mts": generate_delay_aliased_mts,
     "varma": generate_varma,
     "var": generate_varma,
     "varma_shuffled": generate_varma_shuffled,

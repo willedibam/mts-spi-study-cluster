@@ -1,0 +1,176 @@
+{
+ "params": {
+  "M": 20,
+  "T": 20000,
+  "max_lag_range": 15,
+  "ar1_a": 0.9,
+  "loading_low": 0.6,
+  "loading_high": 0.8,
+  "structure_seed": 0
+ },
+ "lag_ranges": [
+  0,
+  3,
+  6,
+  9,
+  12,
+  15
+ ],
+ "n_rep": 20,
+ "pyspi": "3.0.0.r9",
+ "correlation_time": 9.491221581029905,
+ "zero_lag_error": {
+  "rms": {
+   "A (sync)": 0.019593978900035218,
+   "B (range 15)": 0.01785689813693134
+  },
+  "mean_abs": {
+   "A (sync)": 0.01558677653463556,
+   "B (range 15)": 0.014131721984527647
+  },
+  "max_abs_per_rec": {
+   "A (sync)": 0.0564833909832738,
+   "B (range 15)": 0.05298697521493301
+  },
+  "replicate_mean_max_abs": {
+   "A (sync)": 0.01361668706062905,
+   "B (range 15)": 0.010366293685812527
+  }
+ },
+ "z_median": {
+  "0": {
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.966304380208961,
+   "cov_EmpiricalCovariance": 1.0,
+   "spearmanr": 0.9991511479900845,
+   "xcorr_max_sig-True": 0.9999999999999999,
+   "xpdist_euclidean_tau-30_min_rmse": 0.9989458834811223
+  },
+  "3": {
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.9570935752572045,
+   "cov_EmpiricalCovariance": 1.0,
+   "spearmanr": 0.9992153106052415,
+   "xcorr_max_sig-True": 0.9870787687844196,
+   "xpdist_euclidean_tau-30_min_rmse": 0.985710862852035
+  },
+  "6": {
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.94015186521357,
+   "cov_EmpiricalCovariance": 1.0,
+   "spearmanr": 0.9991832639162835,
+   "xcorr_max_sig-True": 0.968841445779505,
+   "xpdist_euclidean_tau-30_min_rmse": 0.9671449373116505
+  },
+  "9": {
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.8919604471082667,
+   "cov_EmpiricalCovariance": 1.0,
+   "spearmanr": 0.9990819536050703,
+   "xcorr_max_sig-True": 0.9121585388106085,
+   "xpdist_euclidean_tau-30_min_rmse": 0.9106751392905924
+  },
+  "12": {
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.7738112441546996,
+   "cov_EmpiricalCovariance": 1.0,
+   "spearmanr": 0.9992152256657774,
+   "xcorr_max_sig-True": 0.7896029321418627,
+   "xpdist_euclidean_tau-30_min_rmse": 0.7896414934649638
+  },
+  "15": {
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.4387759060749634,
+   "cov_EmpiricalCovariance": 1.0,
+   "spearmanr": 0.9992187837846089,
+   "xcorr_max_sig-True": 0.45384981515597245,
+   "xpdist_euclidean_tau-30_min_rmse": 0.45683306542654956
+  }
+ },
+ "separation": {
+  "A mean": {
+   "mean r": 0.29734435133238546,
+   "lambda_1": 6.782594550522151,
+   "lambda_2": 2.2487822462252973,
+   "lambda_M": 0.4062317590255014,
+   "weighted clustering": 0.5143227912163622,
+   "z: max cross-correlation": 0.9999939566942503,
+   "z: $-$min cross-distance": 0.9989320766723958,
+   "z: coherence magnitude": 0.9660898850251478,
+   "z: Spearman (zero-lag control)": 0.9991787829587938,
+   "mean: max cross-correlation": 0.29735684726962913,
+   "mean: coherence magnitude": 0.2689483336940849
+  },
+  "B mean": {
+   "mean r": 0.29867367989407534,
+   "lambda_1": 6.804435598169914,
+   "lambda_2": 2.2405974373544524,
+   "lambda_M": 0.4091165346027171,
+   "weighted clustering": 0.5132238680849757,
+   "z: max cross-correlation": 0.448365348921099,
+   "z: $-$min cross-distance": 0.4519784411773592,
+   "z: coherence magnitude": 0.4418081687670631,
+   "z: Spearman (zero-lag control)": 0.9992089863439905,
+   "mean: max cross-correlation": 0.49290254462762456,
+   "mean: coherence magnitude": 0.3712080453003813
+  },
+  "AUC": {
+   "mean r": 0.54,
+   "lambda_1": 0.53,
+   "lambda_2": 0.495,
+   "lambda_M": 0.595,
+   "weighted clustering": 0.4325,
+   "z: max cross-correlation": 0.0,
+   "z: $-$min cross-distance": 0.0,
+   "z: coherence magnitude": 0.0,
+   "z: Spearman (zero-lag control)": 0.5575,
+   "mean: max cross-correlation": 1.0,
+   "mean: coherence magnitude": 1.0
+  },
+  "p": {
+   "mean r": 0.6750141566504884,
+   "lambda_1": 0.7557428276359095,
+   "lambda_2": 0.9676346083712113,
+   "lambda_M": 0.31040225614615824,
+   "weighted clustering": 0.4734806277722057,
+   "z: max cross-correlation": 6.152933775362741e-08,
+   "z: $-$min cross-distance": 6.795615128173357e-08,
+   "z: coherence magnitude": 6.795615128173357e-08,
+   "z: Spearman (zero-lag control)": 0.5427717015170068,
+   "mean: max cross-correlation": 6.795615128173357e-08,
+   "mean: coherence magnitude": 6.795615128173357e-08
+  }
+ },
+ "population": {
+  "lambda_min": {
+   "0": 0.43825601210010967,
+   "1": 0.3972987564321405,
+   "2": 0.4022083726396566,
+   "3": 0.39729873915164626,
+   "4": 0.43766197416618147,
+   "5": 0.39728125807967274,
+   "6": 0.401947425492488,
+   "7": 0.39723543055105476,
+   "8": 0.40203634775991864,
+   "9": 0.3968684075979051,
+   "10": 0.39851259900141045,
+   "11": 0.38824874322472885,
+   "12": 0.38370123051495086,
+   "13": 0.38333324048039086,
+   "14": 0.38362153888736295,
+   "15": 0.38286946197534266
+  },
+  "z_population": {
+   "0": 1.0,
+   "1": 0.9910059201403446,
+   "2": 0.9903378383556036,
+   "3": 0.9870057991718408,
+   "4": 0.984947239911611,
+   "5": 0.9781992417400485,
+   "6": 0.9700007683587869,
+   "7": 0.9600801862679925,
+   "8": 0.9476806145947302,
+   "9": 0.9124036909014319,
+   "10": 0.8915785947643482,
+   "11": 0.8090399280417624,
+   "12": 0.7874109679990087,
+   "13": 0.695674074533958,
+   "14": 0.6426983469301579,
+   "15": 0.43955422151068974
+  }
+ }
+}
