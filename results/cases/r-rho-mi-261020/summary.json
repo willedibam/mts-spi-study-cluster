@@ -1,0 +1,308 @@
+{
+ "source": "data/cases/r-rho-mi-260924 (pyspi r7, archived; not recomputed)",
+ "beta_figure": "beta-pi",
+ "figure_instance": 0,
+ "mi_scale_in_figure": "Linfoot sqrt(1-exp(-2 MI))",
+ "z": {
+  "iter1_L|baseline": {
+   "z_r_rho": {
+    "mean": 0.9998,
+    "sd": 0.0001,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.9992,
+    "sd": 0.0003,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.9994,
+    "sd": 0.0002,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.8306,
+    "sd": 0.0389,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.8293,
+    "sd": 0.0392,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": NaN,
+    "sd": NaN,
+    "n": 50
+   }
+  },
+  "iter2_LM|beta-2pi": {
+   "z_r_rho": {
+    "mean": 0.2697,
+    "sd": 0.0312,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.8394,
+    "sd": 0.066,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.3793,
+    "sd": 0.0635,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.83,
+    "sd": 0.0368,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.4651,
+    "sd": 0.0293,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": 0.7335,
+    "sd": 0.101,
+    "n": 50
+   }
+  },
+  "iter2_LM|beta-5": {
+   "z_r_rho": {
+    "mean": 0.2154,
+    "sd": 0.036,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.8738,
+    "sd": 0.0601,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.3375,
+    "sd": 0.0582,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.827,
+    "sd": 0.0331,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.4102,
+    "sd": 0.0308,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": 0.7848,
+    "sd": 0.0877,
+    "n": 50
+   }
+  },
+  "iter2_LM|beta-pi": {
+   "z_r_rho": {
+    "mean": 0.1878,
+    "sd": 0.0649,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.9697,
+    "sd": 0.0177,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.2916,
+    "sd": 0.0534,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.8471,
+    "sd": 0.0298,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.3068,
+    "sd": 0.0448,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": 0.9305,
+    "sd": 0.0359,
+    "n": 50
+   }
+  },
+  "iter3_LMNM|beta-2pi": {
+   "z_r_rho": {
+    "mean": 0.9947,
+    "sd": 0.001,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.4812,
+    "sd": 0.0372,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.4796,
+    "sd": 0.0426,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.4162,
+    "sd": 0.0741,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.4201,
+    "sd": 0.0778,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": 0.7738,
+    "sd": 0.125,
+    "n": 50
+   }
+  },
+  "iter3_LMNM|beta-5": {
+   "z_r_rho": {
+    "mean": 0.9957,
+    "sd": 0.0009,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.4701,
+    "sd": 0.0446,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.4683,
+    "sd": 0.0484,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.4459,
+    "sd": 0.0779,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.4477,
+    "sd": 0.0799,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": 0.8154,
+    "sd": 0.114,
+    "n": 50
+   }
+  },
+  "iter3_LMNM|beta-pi": {
+   "z_r_rho": {
+    "mean": 0.9978,
+    "sd": 0.0006,
+    "n": 50
+   },
+   "z_rho_mil": {
+    "mean": 0.4601,
+    "sd": 0.0637,
+    "n": 50
+   },
+   "z_r_mil": {
+    "mean": 0.4573,
+    "sd": 0.0648,
+    "n": 50
+   },
+   "z_rho_mi": {
+    "mean": 0.4907,
+    "sd": 0.0789,
+    "n": 50
+   },
+   "z_r_mi": {
+    "mean": 0.4872,
+    "sd": 0.0783,
+    "n": 50
+   },
+   "z_r_rho_LM_only": {
+    "mean": 0.9335,
+    "sd": 0.0541,
+    "n": 50
+   }
+  }
+ },
+ "linear_baseline_gaussian_mi_z": {
+  "mean": 0.99973,
+  "min": 0.9996
+ },
+ "pair_type_means": {
+  "iter1_L|L\u2013L": {
+   "r": 0.9953,
+   "rho": 0.9948,
+   "MI Linfoot": 0.9955,
+   "rho - r": -0.0006,
+   "MI Linfoot - rho": 0.0007
+  },
+  "iter2_LM|L\u2013L": {
+   "r": 0.9953,
+   "rho": 0.9947,
+   "MI Linfoot": 0.9954,
+   "rho - r": -0.0005,
+   "MI Linfoot - rho": 0.0007
+  },
+  "iter2_LM|L\u2013M": {
+   "r": 0.9299,
+   "rho": 0.9904,
+   "MI Linfoot": 0.9909,
+   "rho - r": 0.0605,
+   "MI Linfoot - rho": 0.0005
+  },
+  "iter2_LM|M\u2013M": {
+   "r": 0.9954,
+   "rho": 0.9872,
+   "MI Linfoot": 0.9907,
+   "rho - r": -0.0082,
+   "MI Linfoot - rho": 0.0035
+  },
+  "iter3_LMNM|L\u2013L": {
+   "r": 0.9958,
+   "rho": 0.9954,
+   "MI Linfoot": 0.996,
+   "rho - r": -0.0005,
+   "MI Linfoot - rho": 0.0006
+  },
+  "iter3_LMNM|L\u2013M": {
+   "r": 0.9299,
+   "rho": 0.9905,
+   "MI Linfoot": 0.9911,
+   "rho - r": 0.0606,
+   "MI Linfoot - rho": 0.0006
+  },
+  "iter3_LMNM|L\u2013Q": {
+   "r": -0.0002,
+   "rho": -0.0001,
+   "MI Linfoot": 0.984,
+   "rho - r": 0.0,
+   "MI Linfoot - rho": 0.9842
+  },
+  "iter3_LMNM|M\u2013M": {
+   "r": 0.9953,
+   "rho": 0.9868,
+   "MI Linfoot": 0.9904,
+   "rho - r": -0.0085,
+   "MI Linfoot - rho": 0.0036
+  },
+  "iter3_LMNM|M\u2013Q": {
+   "r": -0.0005,
+   "rho": -0.0002,
+   "MI Linfoot": 0.9527,
+   "rho - r": 0.0003,
+   "MI Linfoot - rho": 0.9529
+  },
+  "iter3_LMNM|Q\u2013Q": {
+   "r": 0.9951,
+   "rho": 0.9588,
+   "MI Linfoot": 0.9858,
+   "rho - r": -0.0362,
+   "MI Linfoot - rho": 0.027
+  }
+ }
+}
