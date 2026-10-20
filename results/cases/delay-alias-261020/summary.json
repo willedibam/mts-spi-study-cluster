@@ -1,7 +1,7 @@
 {
  "params": {
   "M": 20,
-  "T": 20000,
+  "T": 5000,
   "max_lag_range": 15,
   "ar1_a": 0.9,
   "loading_low": 0.6,
@@ -21,116 +21,116 @@
  "correlation_time": 9.491221581029905,
  "zero_lag_error": {
   "rms": {
-   "A (sync)": 0.019593978900035218,
-   "B (range 15)": 0.01785689813693134
+   "A (sync)": 0.03864415980737978,
+   "B (range 15)": 0.038178133801236996
   },
   "mean_abs": {
-   "A (sync)": 0.01558677653463556,
-   "B (range 15)": 0.014131721984527647
+   "A (sync)": 0.031022065204380767,
+   "B (range 15)": 0.03038499049424153
   },
   "max_abs_per_rec": {
-   "A (sync)": 0.0564833909832738,
-   "B (range 15)": 0.05298697521493301
+   "A (sync)": 0.11202118641911682,
+   "B (range 15)": 0.1090314800069313
   },
   "replicate_mean_max_abs": {
-   "A (sync)": 0.01361668706062905,
-   "B (range 15)": 0.010366293685812527
+   "A (sync)": 0.023139368919443203,
+   "B (range 15)": 0.01906222273403669
   }
  },
  "z_median": {
   "0": {
-   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.966304380208961,
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.9343955936166973,
    "cov_EmpiricalCovariance": 1.0,
-   "spearmanr": 0.9991511479900845,
-   "xcorr_max_sig-True": 0.9999999999999999,
-   "xpdist_euclidean_tau-30_min_rmse": 0.9989458834811223
+   "spearmanr": 0.9970548732022833,
+   "xcorr_max_sig-True": 0.9977791842892667,
+   "xpdist_euclidean_tau-30_min_rmse": 0.9987415127808006
   },
   "3": {
-   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.9570935752572045,
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.9262309636678475,
    "cov_EmpiricalCovariance": 1.0,
-   "spearmanr": 0.9992153106052415,
-   "xcorr_max_sig-True": 0.9870787687844196,
-   "xpdist_euclidean_tau-30_min_rmse": 0.985710862852035
+   "spearmanr": 0.9972517370978118,
+   "xcorr_max_sig-True": 0.9862182720878155,
+   "xpdist_euclidean_tau-30_min_rmse": 0.9856913828473627
   },
   "6": {
-   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.94015186521357,
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.9066975823090486,
    "cov_EmpiricalCovariance": 1.0,
-   "spearmanr": 0.9991832639162835,
-   "xcorr_max_sig-True": 0.968841445779505,
-   "xpdist_euclidean_tau-30_min_rmse": 0.9671449373116505
+   "spearmanr": 0.9970290275912803,
+   "xcorr_max_sig-True": 0.9675550811207596,
+   "xpdist_euclidean_tau-30_min_rmse": 0.967095610276067
   },
   "9": {
-   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.8919604471082667,
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.8640354047676251,
    "cov_EmpiricalCovariance": 1.0,
-   "spearmanr": 0.9990819536050703,
-   "xcorr_max_sig-True": 0.9121585388106085,
-   "xpdist_euclidean_tau-30_min_rmse": 0.9106751392905924
+   "spearmanr": 0.9972036547812566,
+   "xcorr_max_sig-True": 0.9123580176898127,
+   "xpdist_euclidean_tau-30_min_rmse": 0.9126909943327877
   },
   "12": {
-   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.7738112441546996,
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.7494301142122171,
    "cov_EmpiricalCovariance": 1.0,
-   "spearmanr": 0.9992152256657774,
-   "xcorr_max_sig-True": 0.7896029321418627,
-   "xpdist_euclidean_tau-30_min_rmse": 0.7896414934649638
+   "spearmanr": 0.9972312634787833,
+   "xcorr_max_sig-True": 0.80100441850117,
+   "xpdist_euclidean_tau-30_min_rmse": 0.8014772715053149
   },
   "15": {
-   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.4387759060749634,
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": 0.42273079772798844,
    "cov_EmpiricalCovariance": 1.0,
-   "spearmanr": 0.9992187837846089,
-   "xcorr_max_sig-True": 0.45384981515597245,
-   "xpdist_euclidean_tau-30_min_rmse": 0.45683306542654956
+   "spearmanr": 0.9973978992303607,
+   "xcorr_max_sig-True": 0.4638600045433543,
+   "xpdist_euclidean_tau-30_min_rmse": 0.4695918431689102
   }
  },
  "separation": {
   "A mean": {
-   "mean r": 0.29734435133238546,
-   "lambda_1": 6.782594550522151,
-   "lambda_2": 2.2487822462252973,
-   "lambda_M": 0.4062317590255014,
-   "weighted clustering": 0.5143227912163622,
-   "z: max cross-correlation": 0.9999939566942503,
-   "z: $-$min cross-distance": 0.9989320766723958,
-   "z: coherence magnitude": 0.9660898850251478,
-   "z: Spearman (zero-lag control)": 0.9991787829587938,
-   "mean: max cross-correlation": 0.29735684726962913,
-   "mean: coherence magnitude": 0.2689483336940849
+   "mean r": 0.29747327328532647,
+   "lambda_1": 6.797292055574016,
+   "lambda_2": 2.2871490589903867,
+   "lambda_M": 0.3593645684124442,
+   "weighted clustering": 0.499189543252715,
+   "z: max cross-correlation": 0.9972396941081335,
+   "z: $-$min cross-distance": 0.9986570796639634,
+   "z: coherence magnitude": 0.9345099196272504,
+   "z: Spearman (zero-lag control)": 0.9971035800863044,
+   "mean: max cross-correlation": 0.2993865349757287,
+   "mean: coherence magnitude": 0.26878503273072496
   },
   "B mean": {
-   "mean r": 0.29867367989407534,
-   "lambda_1": 6.804435598169914,
-   "lambda_2": 2.2405974373544524,
-   "lambda_M": 0.4091165346027171,
-   "weighted clustering": 0.5132238680849757,
-   "z: max cross-correlation": 0.448365348921099,
-   "z: $-$min cross-distance": 0.4519784411773592,
-   "z: coherence magnitude": 0.4418081687670631,
-   "z: Spearman (zero-lag control)": 0.9992089863439905,
-   "mean: max cross-correlation": 0.49290254462762456,
-   "mean: coherence magnitude": 0.3712080453003813
+   "mean r": 0.2979722731582381,
+   "lambda_1": 6.7997460972058175,
+   "lambda_2": 2.2739175799521405,
+   "lambda_M": 0.36780760592605005,
+   "weighted clustering": 0.49920421600092724,
+   "z: max cross-correlation": 0.47081351328625065,
+   "z: $-$min cross-distance": 0.4773695212989518,
+   "z: coherence magnitude": 0.4185881679497759,
+   "z: Spearman (zero-lag control)": 0.9973683029899634,
+   "mean: max cross-correlation": 0.4935385675743612,
+   "mean: coherence magnitude": 0.3701967768194091
   },
   "AUC": {
-   "mean r": 0.54,
-   "lambda_1": 0.53,
-   "lambda_2": 0.495,
-   "lambda_M": 0.595,
-   "weighted clustering": 0.4325,
+   "mean r": 0.515,
+   "lambda_1": 0.505,
+   "lambda_2": 0.4725,
+   "lambda_M": 0.6225,
+   "weighted clustering": 0.5,
    "z: max cross-correlation": 0.0,
    "z: $-$min cross-distance": 0.0,
    "z: coherence magnitude": 0.0,
-   "z: Spearman (zero-lag control)": 0.5575,
+   "z: Spearman (zero-lag control)": 0.67,
    "mean: max cross-correlation": 1.0,
    "mean: coherence magnitude": 1.0
   },
   "p": {
-   "mean r": 0.6750141566504884,
-   "lambda_1": 0.7557428276359095,
-   "lambda_2": 0.9676346083712113,
-   "lambda_M": 0.31040225614615824,
-   "weighted clustering": 0.4734806277722057,
-   "z: max cross-correlation": 6.152933775362741e-08,
+   "mean r": 0.8817307917391243,
+   "lambda_1": 0.9676346083712113,
+   "lambda_2": 0.7763905055505131,
+   "lambda_M": 0.1895439841589811,
+   "weighted clustering": 1.0,
+   "z: max cross-correlation": 6.795615128173357e-08,
    "z: $-$min cross-distance": 6.795615128173357e-08,
    "z: coherence magnitude": 6.795615128173357e-08,
-   "z: Spearman (zero-lag control)": 0.5427717015170068,
+   "z: Spearman (zero-lag control)": 0.0678681872124844,
    "mean: max cross-correlation": 6.795615128173357e-08,
    "mean: coherence magnitude": 6.795615128173357e-08
   }
