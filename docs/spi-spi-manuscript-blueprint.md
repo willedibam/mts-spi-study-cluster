@@ -1,6 +1,53 @@
 # SPI–SPI research: manuscript blueprint and evidence boundaries
 
-Working synthesis, 2026-09-11. This preserves the overall programme while making the representation/transfer contribution independently assessable. It does not choose one paper versus two, declare a venue, or authorize new experiments. Numbers below come from the linked completed reports; InceptionTime is now independently verified; its synthetic failure and stronger real-data ensemble narrow the claim in different ways.
+Working synthesis, 2026-09-11. This preserves the overall programme while making the representation/transfer contribution independently assessable. It does not declare a venue or authorize new experiments. The first paper's scope was decided on 2026-10-21; see the next section. Numbers below come from the linked completed reports. InceptionTime is now independently verified, and its synthetic failure and stronger real-data ensemble narrow the claim in different ways.
+
+## First paper: scope and structure (user decision, 2026-10-21)
+
+The first paper is the Paper A capability set described below, framed character-first; see the [introduction draft](../drafts/introduction_rewrite.md). Its purpose is to demonstrate two things:
+- interpreting the character of dependence in MTS is an important open problem;
+- agreement across a broad library of statistics can address it.
+
+Follow-up work can strengthen individual points and add genuine applications.
+
+Out of scope:
+- supervised co-organisation, NeuroTycho and the rest of `research/representation/` (candidate Paper B);
+- `research/empirical/`, except the hardware recordings used for order-parameter inference, which enters only if strong results emerge.
+
+The paper has four sections. Current notebook prose is placeholder: rewrite it for meaning and interpretation, with fewer tables, before the figures are polished externally.
+
+**1. Case studies.** Agreement between statistics with nested assumptions reads a named character axis by construction.
+- *Sources:* [`r_rho_mi_261016`](../research/cases/r_rho_mi/notebooks/r_rho_mi_261016.ipynb) and [`pdist-euclid_dtw_261016`](../research/cases/dtw_euclidean/notebooks/pdist-euclid_dtw_261016.ipynb).
+- *Candidate third:* the timing triplet (r, maximum cross-correlation, phase-aligned P) on branch `claude/festive-poitras-ecb972`. Admit it only if it isolates an axis the first two miss.
+- *Figure plan:* one panel set per triplet.
+
+**2. Proof of concept.** z embeds systems of different M into one space whose class structure and selected feature axes follow the generative process.
+- *Source:* [`proof_p90_261015`](../research/proof/p90/notebooks/proof_p90_261015.ipynb).
+- *Appendix candidate:* [`proof_strength_nuisance_261006`](../research/proof/baselines/notebooks/proof_strength_nuisance_261006.ipynb).
+- *Definition to reproduce (user decision, 2026-10-21):* z uses all M(M−1) ordered off-diagonal entries, which is `unified_ordered_v3`, the library default. The proof and the 6–7 October strength-nuisance baselines were recomputed on 2026-10-21 (`proof_p90_261021`, `proof_strength_nuisance_261021`). The 15–16 October factorial, size-grid and noise baselines still need a Gadi extraction. The order-parameter and corpus studies already use the ordered contract. The cases' upper-triangle extraction is equivalent for their symmetric statistics.
+- *Figure plan:*
+  - embeddings with class MTS heatmaps;
+  - a clustering statistic for z against baselines above each embedding;
+  - selected discriminating features whose joint reading matches the generators.
+
+**3. Corpus atlas.** Across 1,053 heterogeneous MTS, processes of different origin and appearance share regions of SPI–SPI space.
+- *Sources:* [`zenodo_1053_geometry`](../research/zenodo/atlas/notebooks/zenodo_1053_geometry.ipynb) and the [v2 gallery](../research/zenodo/atlas/zenodo_gallery_v2.html).
+- *Figure plan:* one embedding with selected clusters and member heatmaps. Cover homogeneous and heterogeneous clusters, each from synthetic sources, real sources, or both.
+
+**4. Unsupervised order parameter.** PC1 of z tracks a change in dynamics without state labels.
+- *Sources:* [`lean-extended`](../research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean-extended.ipynb), [`three-systems`](../research/inference/benchmarks/notebooks/order-coordinate-three-systems.ipynb) and [`baselines`](../research/inference/benchmarks/notebooks/order-parameter-benchmarks-baselines.ipynb).
+- *Figure plan (detailed specification pending):*
+  - headline: cross-frequency locking;
+  - one or two of CML2D, Kuramoto, Stuart–Landau and hardware;
+  - snapshots through the transition;
+  - mean-|r| and mean-MPI comparisons;
+  - unpacked contributing features.
+
+Boundaries specific to these sections. These apply the evidence table below and the [premise file](context/premise-and-character-axes.md).
+- **Corpus.** Co-location means a shared dependence-organisation signature, not a shared mechanism. Select clusters from feature-space partitions, not t-SNE map regions, and present them as illustrative selections.
+- **Proof.** Marginal summaries also carry substantial class information. The defensible advantage is interpretable joint axes and cross-M comparability, not better clustering by default.
+- **Order parameter.** Simple observables can be better in some systems, so report baselines for each system shown.
+- **Novelty.** To our knowledge, this is the first per-recording representation built from the full agreement profile. It is not the first to read character from contrasts between two measures: Paluš 1995, Donges 2009, Haluszczynski 2017 and Nolte 2020 already do.
 
 ## Central question and motivation
 
