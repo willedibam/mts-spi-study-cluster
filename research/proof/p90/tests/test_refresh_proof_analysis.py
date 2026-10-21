@@ -12,7 +12,7 @@ def test_raincloud_selection_and_orientation_ignore_display_rows():
     x[16:,1]=100
     # The selected feature reverses on display: report AUC=0, never reorient.
     x[6:10,0]=1
-    bank={'instance':instances,'y':labels,'X_sym':x,'pairs':np.array([['x','y'],['x','z']])}
+    bank={'instance':instances,'y':labels,'X':x,'pairs':np.array([['x','y'],['x','z']])}
     row=rank_pair(bank,'a','b')
     assert row['feature_index']==0
     assert row['training_auc_oriented']==1

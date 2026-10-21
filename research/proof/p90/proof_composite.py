@@ -56,7 +56,7 @@ def select_examples(bank, output, *, pairs=DEFAULT_PAIRS, feature_pairs=None):
         else:
             columns = np.arange(len(names))
             family = 'all finite training coordinates'
-        focused = dict(bank, X_sym=bank['X_sym'][:, columns], pairs=bank['pairs'][columns])
+        focused = dict(bank, X=bank['X'][:, columns], pairs=bank['pairs'][columns])
         row = rank_pair(focused, a, b)
         row['feature_index'] = int(columns[row['feature_index']])
         row['candidate_family'] = family
@@ -100,10 +100,10 @@ def plot_composite(bank, coords, selected, method, output):
         col = int(row.feature_index)
         for pos, cls in enumerate([row.class_a, row.class_b]):
             mask = (bank['y']==cls) & (bank['instance']>=6)
-            values = bank['X_sym'][mask, col]
+            values = bank['X'][mask, col]
             raincloud(ax, values, pos, bank['colors'][cls], np.random.default_rng(260924+col+pos),
                       width=.65, box=True, point_sizes=marker_areas(bank['M'][mask]))
-        values = bank['X_sym'][(bank['instance']>=6) & np.isin(bank['y'], [row.class_a, row.class_b]), col]
+        values = bank['X'][(bank['instance']>=6) & np.isin(bank['y'], [row.class_a, row.class_b]), col]
         values = values[np.isfinite(values)]; pad = max(np.ptp(values)*.08, .0001)
         ax.set(ylim=(values.min()-pad, values.max()+pad),
                xlim=(-.6, 1.6), xticks=[0, 1],

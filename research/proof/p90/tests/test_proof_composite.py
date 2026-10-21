@@ -11,7 +11,7 @@ def test_focused_kuramoto_selection_remaps_columns_and_freezes_orientation(tmp_p
     x[10:16, 0] = 1  # Perfect but outside the named temporal candidate family.
     x[10:16, 2] = 1  # Second eligible coordinate, original bank column 2.
     x[6:10, 2] = 1   # Reverse the selected feature on display observations.
-    bank = {'instance':np.tile(np.arange(10), 2), 'y':labels, 'X_sym':x,
+    bank = {'instance':np.tile(np.arange(10), 2), 'y':labels, 'X':x,
             'pairs':np.array([['cov_A', 'cov_B'],
                               ['corr_pearson_tau-1', 'corr_pearson_tau-2'],
                               ['corr_pearson_tau-10', 'corr_pearson_tau-20']])}
@@ -27,7 +27,7 @@ def test_fixed_coordinate_is_not_reselected(tmp_path):
     labels = np.repeat(['a', 'b'], 10)
     x = np.zeros((20, 2))
     x[10:, 0] = 1  # A stronger but unrequested coordinate.
-    bank = {'instance':np.tile(np.arange(10), 2), 'y':labels, 'X_sym':x,
+    bank = {'instance':np.tile(np.arange(10), 2), 'y':labels, 'X':x,
             'pairs':np.array([['x', 'y'], ['x', 'z']])}
     selected = select_examples(bank, tmp_path, pairs=[('a', 'b')]*3,
                                feature_pairs=[('x', 'z')]*3)

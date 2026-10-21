@@ -7,7 +7,11 @@ from mtsspi.process_features import (
     _pearson_corr_matrix,
     _spearman_corr_matrix,
 )
-from mtsspi.spi_spi_contract import build_feature_blocks, build_unified_features
+from mtsspi.spi_spi_contract import (
+    build_feature_blocks,
+    build_unified_features,
+    unified_from_feature_blocks,
+)
 
 
 def _schema_index(result, relation: str, first: str, second: str) -> int:
@@ -249,3 +253,29 @@ def test_unified_contract_marks_invalid_spi_pairs_nan() -> None:
     assert np.isnan(result.z[0])
     assert not result.valid[0]
     assert result.invalid_reasons == {"constant": {"ordered": "constant"}}
+
+
+def test_unified_assembled_from_blocks_matches_direct_computation() -> None:
+    rng = np.random.default_rng(0)
+    raw = rng.normal(size=(5, 6, 6))
+    mpis = {
+        "s1": raw[0] + raw[0].T,
+        "s2": np.exp(raw[1] + raw[1].T),
+        "d": raw[2],
+        "anti": raw[3] - raw[3].T,
+        "flat": np.ones((6, 6)),
+    }
+    order = ["s1", "d", "s2", "anti", "flat"]
+    flags = [False, True, False, True, False]
+    blocks = build_feature_blocks(mpis, order, flags)
+    direct = build_unified_features(mpis, order)
+    rows = np.vstack([blocks.z_sym, blocks.z_sym])
+    values, valid = unified_from_feature_blocks(
+        rows, np.vstack([blocks.z_dir, blocks.z_dir]), blocks.augmented_schema, order, flags
+    )
+
+    np.testing.assert_allclose(values[0], direct.z, atol=1e-6)
+    np.testing.assert_array_equal(valid[1], direct.valid)
+    # Folding the antisymmetric MPI leaves no symmetrized information.
+    assert np.isnan(blocks.z_sym[[i for i, s in enumerate(blocks.sym_schema) if "anti" in (s.spi_a, s.spi_b)]]).all()
+    assert np.isfinite(values[0][[i for i, s in enumerate(direct.schema) if "anti" in (s.spi_a, s.spi_b) and "flat" not in (s.spi_a, s.spi_b)]]).all()

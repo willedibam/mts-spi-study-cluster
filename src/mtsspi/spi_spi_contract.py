@@ -366,3 +366,44 @@ def build_feature_blocks(
         dir_valid=np.isfinite(dir_array),
         invalid_reasons=invalid_reasons,
     )
+
+
+def unified_from_feature_blocks(
+    z_sym: np.ndarray,
+    z_dir: np.ndarray,
+    schema: Sequence[FeatureSpec],
+    spi_order: Sequence[str],
+    directed_flags: Sequence[bool],
+) -> tuple[np.ndarray, np.ndarray]:
+    """Assemble unified ordered features from stored direction-preserving blocks.
+
+    Pairs involving a directed SPI take their ``parallel`` ordered-edge
+    correlation.  Undirected--undirected pairs take the symmetrized value,
+    which equals the ordered value because ``build_feature_blocks`` omits
+    them as exact duplicates; this holds when undirected MPIs are symmetric,
+    as ``compute`` stores them.  Accepts one sample (1-D) or rows (2-D) and
+    returns values and finite masks in ``build_unified_schema`` order.
+    """
+
+    sym_specs = [spec for spec in schema if spec.block == "sym"]
+    dir_specs = [spec for spec in schema if spec.block == "dir"]
+    if len(sym_specs) != np.shape(z_sym)[-1] or len(dir_specs) != np.shape(z_dir)[-1]:
+        raise ValueError("schema does not match the stored feature blocks")
+    sym_index = {(spec.spi_a, spec.spi_b): i for i, spec in enumerate(sym_specs)}
+    parallel_index = {
+        (spec.spi_a, spec.spi_b): i
+        for i, spec in enumerate(dir_specs)
+        if spec.relation == "parallel"
+    }
+    directed = dict(zip(spi_order, directed_flags, strict=True))
+    unified = build_unified_schema(spi_order)
+    from_dir = np.array([directed[s.spi_a] or directed[s.spi_b] for s in unified])
+    source = np.array([
+        parallel_index[(s.spi_a, s.spi_b)] if flag else sym_index[(s.spi_a, s.spi_b)]
+        for s, flag in zip(unified, from_dir)
+    ])
+    z_sym, z_dir = np.asarray(z_sym), np.asarray(z_dir)
+    values = np.empty(z_sym.shape[:-1] + (len(unified),), dtype=np.result_type(z_sym, z_dir))
+    values[..., ~from_dir] = z_sym[..., source[~from_dir]]
+    values[..., from_dir] = z_dir[..., source[from_dir]]
+    return values, np.isfinite(values)

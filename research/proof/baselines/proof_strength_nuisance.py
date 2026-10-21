@@ -157,6 +157,29 @@ def extract(data=DATA,out=OUT,run=RUN,ordered=False):
     print(len(z),'records; compute seconds median/max',np.median(seconds).round(),np.max(seconds).round(),'; finite z fraction',np.isfinite(z).mean().round(4))
 
 
+def extract_ordered(size=SIZE):
+    """The paper's definition (unified_ordered_v3): per-SPI summaries and SPI-SPI z over all M(M-1) ordered
+    off-diagonal entries, written beside the symmetrised features.npz as features-ordered.npz."""
+    from research.proof.p90.spi_baseline_exploration import sha,summarize
+    from mtsspi.spi_spi_contract import build_unified_feature_values
+    from mtsspi.utils import slugify
+    run=RUNS[size]['run'];data,out=(ROOT/kind/'proof'/run for kind in ('data','results'))
+    manifest=json.loads((data/'manifest.json').read_text());mean,spread,z=[],[],[];order=None
+    config=sha(ROOT/'configs/pyspi/benchmarked_p90.yaml')
+    for r in manifest['rows']:
+        folder=data/'mpis'/run/f"{r['corpus_index']+1:04d}-{slugify(r['row_id'],'dataset')}";meta=json.loads((folder/'meta.json').read_text())
+        assert meta['status']=='complete' and meta['dataset_name']==r['row_id'] and (meta['M'],meta['T'])==(r['M'],r['T'])
+        assert meta['source']['archive_sha256']==manifest['archive_sha256'] and meta['pyspi']['config_sha256']==config
+        names=[x['name'] for x in meta['pyspi']['spis']];order=order or names;assert order==names and len(names)==289
+        with np.load(folder/'spi_mpis.npz') as a:mpis={k:a[k] for k in order}
+        # The mean over all M(M-1) entries equals the symmetrised upper-triangle mean; that form cancels antisymmetric SPIs exactly.
+        mean.append(summarize(mpis,order,symmetric=True)[:,0]);spread.append(summarize(mpis,order)[:,1])
+        with np.errstate(all='ignore'):z.append(build_unified_feature_values(mpis,order)[0])
+    np.savez_compressed(out/'features-ordered.npz',mean=np.array(mean),spread=np.array(spread),z=np.array(z),
+        row_id=np.array([r['row_id'] for r in manifest['rows']]),spi_order=np.array(order),contract='unified_ordered_v3')
+    print(run,len(z),'records; finite z fraction',np.isfinite(z).mean().round(4))
+
+
 # ---- analysis: every fit is unsupervised and separate per arm and panel, as in the proof notebook ----
 PANELS={'inter':INTER_PANEL,'cml':CML_PANEL}
 REPRESENTATIONS={'corr':'Correlation-family means','mean':'Mean of each SPI, $m$','z':'SPI-SPI, $z$'}
@@ -169,9 +192,12 @@ COLORS={'frozen-chaos':'#CC79A7','sti-i':'#E69F00','defect-turbulence':'#009E73'
 UMAP_SETTINGS=dict(n_neighbors=25,min_dist=.25,metric='euclidean',random_state=260924)
 
 
-def load(size=SIZE):
+FEATURES={'legacy_symmetrized_v1':'features.npz','unified_ordered_v3':'features-ordered.npz'}
+
+
+def load(size=SIZE,contract='legacy_symmetrized_v1'):
     data,out=(ROOT/kind/'proof'/RUNS[size]['run'] for kind in ('data','results'))
-    rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows']);bank=dict(np.load(out/'features.npz'))
+    rows=pd.DataFrame(json.loads((data/'manifest.json').read_text())['rows']);bank=dict(np.load(out/FEATURES[contract]))
     np.testing.assert_array_equal(bank['row_id'],rows.row_id)
     family=np.array([str(s).split('_')[0] for s in bank['spi_order']]);bank['corr']=bank['mean'][:,np.isin(family,CORRELATION)]
     return rows,bank
@@ -273,9 +299,9 @@ COUPLED=tuple(n for n in CLASSES if n not in NOISE)
 SCOPES={'eight classes':COUPLED,'CML four':CML_PANEL,'VAR pair':('var-self-0.2','var-self-0.7')}
 
 
-def load_control():
+def load_control(contract='legacy_symmetrized_v1'):
     """Native coupled recordings of the M=16 run with the uncoupled control; arms are named coupled and uncoupled."""
-    rows,bank=load('m16');keep=np.flatnonzero(rows.system.eq('native').to_numpy());urows,ubank=load('uncoupled')
+    rows,bank=load('m16',contract);keep=np.flatnonzero(rows.system.eq('native').to_numpy());urows,ubank=load('uncoupled',contract)
     rows=pd.concat([rows.iloc[keep].assign(system='coupled'),urows.assign(system='uncoupled')],ignore_index=True)
     return rows,{k:np.concatenate([bank[k][keep],ubank[k]]) for k in ('mean','z','corr')}|{'spi_order':bank['spi_order']}
 
@@ -404,8 +430,9 @@ def embedding_figure(rows,bank,panel,arms,out,keys=('mean','z'),color='class',ca
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','extract-ordered'])
     p.add_argument('--data',type=Path,default=DATA);p.add_argument('--output',type=Path,default=OUT)
     p.add_argument('--workers',type=int,default=8);a=p.parse_args()
     if a.stage=='prepare':prepare(a.workers)
+    elif a.stage=='extract-ordered':extract_ordered()
     else:extract(a.data,a.output)

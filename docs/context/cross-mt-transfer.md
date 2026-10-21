@@ -4,6 +4,21 @@ Updated 2026-10-16. Historical cross-size confirmation and earlier strength cont
 
 Notebook/source relocation, 2026-10-15: the pending `strength_controls` → `research/proof/baselines` move is completed, with imports, builders and live documentation updated. All 13 baseline/control notebooks now live in `research/proof/baselines/notebooks/`; the September comparison helpers remain in `p90/`, and Zenodo/inference notebooks retain their stream homes. The [baseline study index](../../research/proof/baselines/README.md) summarizes established, partial and rejected evidence. Stored notebook outputs/execution counts and frozen configuration bindings are preserved; no scientific rerun or catalogue change. Exact historical hash replay still requires the original source revisions. The proof README no longer claims marginal explanations have generally been ruled out.
 
+## Ordered-entry recomputation, 2026-10-21
+
+User decision: z uses all M(M−1) ordered off-diagonal entries (`unified_ordered_v3`), not the symmetrised upper triangle.
+
+**Proof.** [proof_p90_261021](../../research/proof/p90/notebooks/proof_p90_261021.ipynb) assembles ordered z exactly from the stored v2 blocks with `mtsspi.spi_spi_contract.unified_from_feature_blocks`. The assembly relies on undirected pairs being identical in both views; the strength-nuisance MPIs confirm this exactly (zero difference, identical NaN pattern).
+- Symmetrisation had zeroed 13 antisymmetric SPIs: phase, PSI, PLI/wPLI and group delay. The ordered view keeps 228 SPIs (inter) and 233 (CML), against 215 and 220.
+- Training-selected and composite coordinates are unchanged, with identical AUCs, because all of them pair undirected SPIs.
+- The embeddings are refitted in `results/proof/viewer-261021`.
+
+**Strength nuisance (M=16, M=24, uncoupled).** `extract-ordered` writes `features-ordered.npz`, and [proof_strength_nuisance_261021](../../research/proof/baselines/notebooks/proof_strength_nuisance_261021.ipynb) re-runs the analysis.
+- Per-SPI means are bit-identical. Means are taken from the symmetrised form, which equals the ordered mean exactly and avoids rounding residue for antisymmetric SPIs.
+- z silhouettes move by at most .011, and every conclusion holds.
+
+**Pending.** The `strength-factorial-261015`, `strength-grid-261015` and `noise-experiments-261016` MPIs exist only on Gadi, so their ordered features need a cluster extraction.
+
 ## Physical coupling × sensor noise follow-up, 2026-10-15
 
 Completed `noise-experiments-261016`, five executed cells appended to the same notebook, preserving all 38 existing cells/outputs. Fresh M16/T1000, 32 parents/class, seven classes including CML intermittency/frozen chaos; fixed physical coupling. Paired eta0/.5/1/2/4/8 with equal versus RMS-normalized exponential channel SDs and pure Gaussian-noise endpoint (2,688 records), plus matched-quantile previous/stronger random attenuation U[.25,.95]/U[.05,.50] (448). Same latent/noise per parent; expected prestandardization noise power matched, not average edge attenuation. Training instances 0–15 at clean/equal1/exponential1 only; held 16–31; disjoint clean retrieval gallery. Frozen transforms, PCA/UMAP, readouts and all severe outcomes retained; raw means primary. Source/protocol under `research/proof/baselines/*noise_experiments*`, compact evidence `results/proof/noise-experiments-261016/`.

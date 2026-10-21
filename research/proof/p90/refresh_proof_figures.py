@@ -18,6 +18,7 @@ from umap import UMAP
 import yaml
 
 from mtsspi.figures import style, save, raincloud
+from mtsspi.spi_spi_contract import FeatureSpec, unified_from_feature_blocks
 
 ROOT=Path(__file__).resolve().parents[3]
 PROTOCOL=ROOT/'research/proof/p90/configs/analysis/proof-cases-refresh-260924.yaml'
@@ -34,15 +35,27 @@ def display_name(name):
     return DISPLAY.get(name,name.replace('var-self-', 'VAR: self ').replace('_total-', ', total coupling ').replace('var-phi-', 'VAR: requested self ').replace('_cpl-', ', neighbour '))
 
 
-def load_bank(path, *, expected_spis=289):
+def load_bank(path, *, expected_spis=289, contract='legacy_symmetrized_v1'):
+    """Load a v2 bank; ``bank['X']`` holds the requested contract's coordinates.
+
+    ``legacy_symmetrized_v1`` (default, as in the dated notebooks up to 261015)
+    uses the stored symmetrized block. ``unified_ordered_v3`` compares all
+    M(M-1) ordered off-diagonal entries, assembled exactly from the stored blocks.
+    """
     # Repository-generated v2 archives store feature-name arrays as objects.
     with np.load(path,allow_pickle=True) as d:
         bank={k:d[k] for k in ['X_sym','y','M','T','instance','spi_order','feature_spi_a','feature_spi_b','feature_block']}
         bank['provenance']=json.loads(str(d['pyspi_provenance_json']))
+        if contract=='unified_ordered_v3':
+            schema=[FeatureSpec(*fields) for fields in zip(*(d[k].astype(str) for k in ['feature_block','feature_relation','feature_spi_a','feature_spi_b']))]
+            bank['X'],_=unified_from_feature_blocks(d['X_sym'],d['X_dir'],schema,d['spi_order'].astype(str),d['directed_flags'])
+        elif contract!='legacy_symmetrized_v1':
+            raise ValueError(f'unsupported contract {contract!r}')
+    bank.setdefault('X',bank['X_sym']);bank['contract']=contract
     bank['y']=bank['y'].astype(str);bank['instance']=bank['instance'].astype(int)
     sym=bank['feature_block'].astype(str)=='sym'
     bank['pairs']=np.column_stack([bank['feature_spi_a'][sym],bank['feature_spi_b'][sym]]).astype(str)
-    assert bank['X_sym'].shape==(1080,expected_spis*(expected_spis-1)//2),bank['X_sym'].shape
+    assert bank['X'].shape==(1080,expected_spis*(expected_spis-1)//2),bank['X'].shape
     assert len(bank['spi_order'])==expected_spis
     keys=list(zip(bank['y'],bank['M'],bank['T'],bank['instance']))
     assert len(set(keys))==1080
@@ -75,7 +88,7 @@ def embeddings(bank, output, *, protocol_path=PROTOCOL):
     selections={'inter':~np.isin(bank['y'],protocol['inter_class_exclude']), 'cml':np.isin(bank['y'],CML)}
     coords={};audit={}
     for name,mask in selections.items():
-        Y,keep=preprocess(bank['X_sym'][mask]);pca=PCA(n_components=min(50,*Y.shape),svd_solver='randomized',random_state=260924)
+        Y,keep=preprocess(bank['X'][mask]);pca=PCA(n_components=min(50,*Y.shape),svd_solver='randomized',random_state=260924)
         scores=pca.fit_transform(Y)
         umap=UMAP(**protocol['umap'],n_jobs=1).fit_transform(scores)
         coords.update({name+'_indices':np.flatnonzero(mask),name+'_pca':scores[:,:2],name+'_umap':umap,name+'_variance':pca.explained_variance_ratio_[:2]})
@@ -84,7 +97,7 @@ def embeddings(bank, output, *, protocol_path=PROTOCOL):
                        name+'_pca_loadings':pca.components_[:2],name+'_pca_center':pca.mean_})
         if 'tsne' in protocol:
             coords[name+'_tsne']=TSNE(**protocol['tsne'],n_jobs=1).fit_transform(scores)
-        audit[name]={'datasets':int(mask.sum()),'features':int(keep.sum()),'pca50_variance':float(pca.explained_variance_ratio_.sum()),'imputed_values':int((~np.isfinite(bank['X_sym'][mask][:,keep])).sum())}
+        audit[name]={'datasets':int(mask.sum()),'features':int(keep.sum()),'pca50_variance':float(pca.explained_variance_ratio_.sum()),'imputed_values':int((~np.isfinite(bank['X'][mask][:,keep])).sum())}
     np.savez_compressed(output/'embedding-coordinates.npz',**coords)
     (output/'embedding-audit.json').write_text(json.dumps(audit,indent=2)+'\n')
     return coords
@@ -120,13 +133,13 @@ def auc(a,b):
 
 def rank_pair(bank,class_a,class_b):
     train=bank['instance']<6
-    a=bank['X_sym'][train&(bank['y']==class_a)];b=bank['X_sym'][train&(bank['y']==class_b)]
+    a=bank['X'][train&(bank['y']==class_a)];b=bank['X'][train&(bank['y']==class_b)]
     valid=np.isfinite(a).all(0)&np.isfinite(b).all(0)
     both=np.vstack([a[:,valid],b[:,valid]])
     ranks=rankdata(both,axis=0);aucs=(ranks[len(a):].sum(0)-len(b)*(len(b)+1)/2)/(len(a)*len(b))
     separation=np.abs(aucs-.5);winner=int(np.argmax(separation));col=int(np.flatnonzero(valid)[winner])
     test=bank['instance']>=6
-    aa=bank['X_sym'][test&(bank['y']==class_a),col];bb=bank['X_sym'][test&(bank['y']==class_b),col]
+    aa=bank['X'][test&(bank['y']==class_a),col];bb=bank['X'][test&(bank['y']==class_b),col]
     orientation=1 if aucs[winner]>=.5 else -1
     held=auc(aa,bb);held=held if orientation>0 else 1-held
     return {'class_a':class_a,'class_b':class_b,'feature_index':col,'spi_a':bank['pairs'][col,0], 'spi_b':bank['pairs'][col,1],
@@ -152,10 +165,10 @@ def plot_discriminative(bank,ranked,scope,output):
         col=int(row.feature_index)
         for pos,cls in enumerate([row.class_a,row.class_b]):
             mask=(bank['y']==cls)&(bank['instance']>=6)
-            raincloud(ax,bank['X_sym'][mask,col],pos,bank['colors'][cls],np.random.default_rng(260924+col+pos),width=.65,box=True)
+            raincloud(ax,bank['X'][mask,col],pos,bank['colors'][cls],np.random.default_rng(260924+col+pos),width=.65,box=True)
         same_coordinate=ranked[ranked.feature_index==col]
         classes=np.unique(same_coordinate[['class_a','class_b']].to_numpy())
-        values=bank['X_sym'][(bank['instance']>=6)&np.isin(bank['y'],classes),col]
+        values=bank['X'][(bank['instance']>=6)&np.isin(bank['y'],classes),col]
         values=values[np.isfinite(values)]
         padding=max(float(np.ptp(values))*.08,.002)
         limits=(max(-1.005,float(values.min())-padding),min(1.005,float(values.max())+padding))
