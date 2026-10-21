@@ -1,0 +1,23 @@
+# Corpus-atlas t-SNE selection (2026-10-21). Sensitivity grid around one declared baseline,
+# not a search for the most flattering map; see the notebook for what each setting trades away.
+features: data/zenodo_7118947/features/pearson-unified-v3-seed1729.npz
+database: data/zenodo_7118947/inputs/database.npz
+label_corrections: research/zenodo/atlas/configs/zenodo-7118947-label-corrections.yaml
+mpi_runs: data/zenodo_7118947/features/runs/p90-zscore/zenodo-7118947-p90-zscore-seed1729
+heatmaps: results/zenodo_7118947/visual-exploration
+output: results/zenodo_7118947/tsne-261021
+threads: 8
+seed: 1729
+seeds: [1729, 2718, 3141, 4242, 5555]
+max_iter: 1500
+knn: [5, 15, 50]
+map_hdbscan: {min_cluster_size: 10, min_samples: 5}
+# Baseline: primary preprocessing, exact full-rank input, PCA initialisation, perplexity 30, no exaggeration.
+perplexities: [5, 10, 30, 50, 100]
+exaggerations: [1, 2, 4]
+pca_dimensions: [10, 50, 200]
+variants: [complete, valid90, standardised, historical]
+subsample: {fraction: 0.8, replicates: 50, map_replicates: 10}
+ward_k: [20, 40, 60]
+primary_partition: ward40
+subsample_maps: [primary-p30-x1-pca, primary-p30-x2-pca, primary-p50-x2-pca, primary-p30-x4-pca]

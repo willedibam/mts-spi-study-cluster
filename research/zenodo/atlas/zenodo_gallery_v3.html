@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTS corpus atlas v3</title>
+<style>
+:root{color-scheme:light;--ink:#242424;--muted:#666;--accent:#31688e;--line:#ddd}
+*{box-sizing:border-box}body{font:15px Georgia,serif;color:var(--ink);background:#fff;max-width:1450px;margin:28px auto;padding:0 24px}h1{font-size:26px;font-weight:normal;margin:0 0 10px}h2{font-size:17px;font-weight:normal;margin:6px 0}p{line-height:1.5;margin:10px 0}a{color:#315875;text-underline-offset:3px}small,.muted{color:var(--muted);line-height:1.5}
+button,select,input{font:13px system-ui;color:var(--ink);padding:6px 7px;border:1px solid #bbb;border-radius:3px;background:#fff}button{cursor:pointer}button:hover{background:#f4f4f4}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:13px system-ui}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.layout{display:grid;grid-template-columns:minmax(360px,1.2fr) minmax(300px,1fr);gap:28px;margin-top:12px}#map{width:100%;aspect-ratio:1;display:block;touch-action:none;background:#fff}#map circle,#map path.kde{cursor:pointer}
+.candidates{display:grid;gap:8px;margin:8px 0 14px}.candidate{border:1px solid #e3e3e3;border-radius:4px;padding:8px 10px;cursor:pointer;background:#fff;text-align:left;font:14px/1.45 Georgia,serif}.candidate[aria-pressed=true]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}.candidate b{font-weight:600}.candidate small{display:block;font:12px/1.5 system-ui}
+#detail{min-height:180px;overflow-wrap:anywhere}#detail img{width:100%;max-height:220px;object-fit:contain;image-rendering:pixelated;background:#fafafa}.facts{font:13px/1.6 system-ui}.axes{font:12px/1.5 system-ui;border-collapse:collapse;margin:6px 0}.axes td{padding:1px 8px 1px 0}.axes td:last-child{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px;margin:18px 0}.card{min-width:0;overflow-wrap:anywhere;border-top:1px solid #e4e4e4;padding-top:8px}.card label{align-items:flex-start;font:14px Georgia,serif}.card img{width:100%;height:120px;object-fit:fill;image-rendering:pixelated;background:#fafafa}.card small{display:block;margin:4px 0}
+.pager{display:flex;align-items:center;gap:12px}#search{width:200px}#cluster{max-width:300px}details{margin:12px 0}summary{cursor:pointer}footer{margin-top:25px;padding-top:14px;border-top:1px solid var(--line);font-size:13px}
+@media(max-width:850px){body{padding:0 14px;margin-top:18px}.layout{display:block}.toolbar label{display:flex;width:100%}.toolbar select{flex:1;min-width:0}}
+</style>
+<h1>MTS corpus atlas <span class="muted">/ v3 · one t-SNE map, feature-space clusters</span></h1>
+<p>1,053 recordings placed by their SPI–SPI agreement profile z (289 statistics, all M(M−1) ordered entries). Clusters are Ward groups fitted in the full feature space and only <em>drawn</em> here. Co-location means a shared dependence-organisation signature, not a shared mechanism. Gaps and blob sizes on a t-SNE map are partly set by perplexity and exaggeration.</p>
+<div class="toolbar">
+ <label>Map <select id="map-select"></select></label>
+ <label>Cluster <select id="cluster"></select></label>
+ <label>Find MTS <input id="search" type="search" placeholder="Dataset name"></label>
+ <button id="all">Show all</button>
+ <label>Shading <select id="shading"><option value="candidates">KDE · candidate clusters</option><option value="all">KDE · all clusters</option><option value="none">None</option></select></label>
+ <label><input type="checkbox" id="origin" checked>Real / synthetic shading</label>
+</div>
+<div class="layout">
+ <div>
+  <svg id="map" viewBox="0 0 680 680" role="img" aria-label="Interactive MTS embedding"></svg>
+  <div class="toolbar"><button id="reset-view">Reset zoom</button><button id="export-svg">Save map SVG</button><label><input id="only-selected" type="checkbox">Selected only</label></div>
+  <p class="muted"><small>Dark grey = real, light grey = synthetic, hollow = unlabelled in the archive. Dot area grows with process count M on a fixed scale. Shaded regions are approximate 80%/50% KDE mass contours of a feature-space cluster's projected points: display guides, not boundaries or confidence regions. Scroll to zoom; drag to pan.</small></p>
+  <div id="map-note" class="facts"></div>
+ </div>
+ <div>
+  <h2>Candidate clusters <span class="muted">· illustrative selections</span></h2>
+  <div class="candidates" id="candidates"></div>
+  <div id="group-note" class="facts"></div>
+  <div id="detail"><p class="muted">Click a point to see its MTS heatmap and archive metadata.</p></div>
+  <p><label>Post-hoc label <input id="label" placeholder="Your interpretation"></label></p>
+  <p id="selection-status" class="facts"></p>
+  <button id="choose">Select all matching MTS</button><button id="clear">Clear selection</button><button id="download">Export selection CSV</button>
+ </div>
+</div>
+<p id="status" class="facts" aria-live="polite"></p>
+<div class="pager"><button id="previous-page">Previous page</button><span id="page-status"></span><button id="next-page">Next page</button></div>
+<div class="cards" id="cards"></div>
+<details><summary>Method and boundaries</summary><div id="methods"></div></details>
+<footer><a href="../visual-exploration-v2/index.html">Explorer v2 (many embeddings and partitions)</a> · <a href="embedding-grid.csv">Embedding grid metrics</a> · <a href="partition-clusters.csv">Cluster metrics</a> · <a href="dataset-metadata.csv">Dataset metadata</a> · <a href="manifest.json">Manifest</a></footer>
+<script>
+__KDE_SCRIPT__
+const data=__CORPUS_DATA__;
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',selected=new Set(),pageSize=24;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let page=0,focused=null,viewport=[0,0,680,680],drag=null,dragged=false,kdeCache={key:null,groups:{}};
+const letterOf=Object.fromEntries(data.candidates.map(c=>[c.cluster,c.letter]));
+function option(select,value,text){const o=document.createElement('option');o.value=value;o.textContent=text;select.appendChild(o)}
+function svgElement(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e}
+function currentMap(){return data.maps[$('map-select').value]}
+function clusterName(c){return letterOf[c]?`${letterOf[c]} · cluster ${c}`:`cluster ${c}`}
+function visibleRows(){const c=$('cluster').value,term=$('search').value.toLowerCase();return data.rows.filter(r=>(c==='all'||r.cluster===Number(c))&&r.dataset.toLowerCase().includes(term)&&(!$('only-selected').checked||selected.has(r.row)))}
+function selectCluster(c){$('cluster').value=String(c);$('search').value='';$('only-selected').checked=false;page=0;render()}
+function inspect(row){focused=row;$('cluster').value=String(data.rows[row].cluster);$('search').value='';page=0;render()}
+function scaled(m){const xs=m.xy.map(v=>v[0]),ys=m.xy.map(v=>v[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];const s=Math.min(570/(hi[0]-lo[0]||1),570/(hi[1]-lo[1]||1));return m.xy.map(v=>[350+s*(v[0]-(lo[0]+hi[0])/2),325-s*(v[1]-(lo[1]+hi[1])/2)])}
+function draw(){
+ const m=currentMap(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row)),xy=scaled(m),active=$('cluster').value;svg.replaceChildren();
+ svg.appendChild(svgElement('path',{d:'M60 35 V615 H640 V35 Z',fill:'none',stroke:'#777','stroke-width':'.8'}));
+ svg.appendChild(svgElement('text',{x:350,y:655,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[0]));
+ svg.appendChild(svgElement('text',{x:18,y:325,transform:'rotate(-90 18 325)','text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[1]));
+ data.size_legend.forEach((item,i)=>{const x=420+i*75;svg.appendChild(svgElement('circle',{cx:x,cy:18,r:item.radius,fill:'#555',stroke:'white','stroke-width':.55}));svg.appendChild(svgElement('text',{x:x+9,y:22,'font-family':'Georgia, serif','font-size':12},`M = ${item.M}`))});
+ if($('origin').checked)Object.entries(data.origin_counts).filter(([,n])=>n>0).forEach(([origin],i)=>{const st=data.origin_styles[origin],x=75+i*95;svg.appendChild(svgElement('circle',{cx:x,cy:18,r:3.2,fill:st.fill,stroke:st.stroke,'stroke-width':.9}));svg.appendChild(svgElement('text',{x:x+9,y:22,'font-family':'Georgia, serif','font-size':12},origin))});
+ const shading=$('shading').value;
+ if(shading!=='none'){
+  const key=$('map-select').value+'|'+shading;
+  if(kdeCache.key!==key){const labels=data.rows.map(r=>shading==='all'||letterOf[r.cluster]?r.cluster:-1);const groups=assignedGroups(xy,data.rows.map(r=>r.row),labels);kdeCache={key,groups:Object.fromEntries(Object.entries(groups).map(([c,p])=>[c,densityContours(p)]))}}
+  const defs=svgElement('defs'),clip=svgElement('clipPath',{id:'kde-clip'});clip.appendChild(svgElement('rect',{x:60,y:35,width:580,height:580}));defs.appendChild(clip);svg.appendChild(defs);
+  const layer=svgElement('g',{'clip-path':'url(#kde-clip)'});
+  for(const [c,levels] of Object.entries(kdeCache.groups)){const on=active==='all'||active===c,base=letterOf[c]?1:.55;
+   for(const level of levels){const path=svgElement('path',{class:'kde',d:level.path,fill:'#666','fill-rule':'evenodd','fill-opacity':(level.mass===.8?.06:.09)*base*(on?1:.25)});path.appendChild(svgElement('title',{},`${clusterName(c)} · KDE ${Math.round(100*level.mass)}% mass`));path.onclick=()=>{if(!dragged)selectCluster(c)};layer.appendChild(path)}}
+  svg.appendChild(layer);
+ }
+ data.rows.forEach((r,i)=>{const st=$('origin').checked?data.origin_styles[r.origin]:{fill:'#444',stroke:'#fff'},isSel=selected.has(r.row);
+  const circle=svgElement('circle',{cx:xy[i][0],cy:xy[i][1],r:r.marker_radius,fill:isSel?'#31688e':st.fill,stroke:r.origin==='unlabelled'?st.stroke:'#ffffff','stroke-width':focused===r.row?1.3:.5,opacity:visible.has(r.row)?.88:.12,tabindex:0,role:'button','aria-label':r.dataset});
+  circle.appendChild(svgElement('title',{},`${r.dataset} · ${r.source} · M=${r.M}, T=${r.T} · ${r.origin} · ${clusterName(r.cluster)}`));circle.onclick=()=>{if(!dragged)inspect(r.row)};circle.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();inspect(r.row)}};svg.appendChild(circle)});
+ data.candidates.forEach(c=>{const pts=data.rows.filter(r=>r.cluster===c.cluster).map(r=>xy[r.row]);if(!pts.length)return;const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length,cy=Math.min(...pts.map(p=>p[1]))-8;svg.appendChild(svgElement('text',{x:cx,y:cy,'text-anchor':'middle','font-family':'Georgia, serif','font-size':15,'font-weight':'bold',fill:'#222',stroke:'#fff','stroke-width':3,'paint-order':'stroke'},c.letter))});
+ svg.setAttribute('viewBox',viewport.join(' '));
+}
+function detail(){
+ if(focused===null)return;const r=data.rows[focused];
+ $('detail').innerHTML=`<h2>${esc(r.dataset)}</h2><p class="facts">${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T} · ${clusterName(r.cluster)}<br>parent key ${esc(r.parent)}<br>archive tags: ${esc(r.tags.join(', '))}</p><a href="${r.png}" target="_blank" rel="noopener"><img src="${r.thumb}" alt="${esc(r.dataset)} heatmap"></a><p class="facts">Native heatmap <a href="${r.png}" target="_blank" rel="noopener">PNG</a> · <a href="${r.svg}" target="_blank" rel="noopener">SVG</a> (needs the v1 asset folder beside this page) · colour limit ±${r.display_limit.toPrecision(3)} · <button id="select-focused">${selected.has(focused)?'Deselect':'Select'}</button></p>`;
+ $('select-focused').onclick=()=>{selected.has(focused)?selected.delete(focused):selected.add(focused);render()};
+}
+function candidatePanel(){
+ $('candidates').innerHTML=data.candidates.map(c=>`<button class="candidate" data-cluster="${c.cluster}" aria-pressed="${$('cluster').value===String(c.cluster)}"><b>${c.letter}</b> · ${esc(c.title)}<small>${c.composition} · ${c.origin} · ${c.size} MTS from ${c.parents} parent recordings · full-space silhouette ${c.silhouette.toFixed(2)} · grouped-subsample Jaccard ${c.jaccard.toFixed(2)}</small><small>${esc(c.sources)}</small></button>`).join('');
+ document.querySelectorAll('.candidate').forEach(b=>b.onclick=()=>selectCluster(b.dataset.cluster));
+}
+function groupNote(){
+ const c=$('cluster').value;$('group-note').replaceChildren();if(c==='all')return;const g=data.clusters[c],cand=data.candidates.find(x=>String(x.cluster)===c);
+ let html=`<p><b>${clusterName(Number(c))}</b> · ${g.size} MTS · ${g.parents} parents · silhouette ${g.silhouette.toFixed(2)} · Jaccard ${g.jaccard.toFixed(2)}<br>${esc(g.source_mix)}</p>`;
+ if(cand){html+=`<p>${esc(cand.note)}</p><table class="axes"><tr><td><b>Case-study axis</b></td><td><b>median z here</b></td><td>corpus median</td></tr>${cand.axes.map(a=>`<tr><td>${esc(a.axis)}</td><td>${a.cluster===null?'undefined':a.cluster.toFixed(2)}</td><td>${a.corpus.toFixed(2)}</td></tr>`).join('')}</table><p class="facts">Most distinguishing SPI-family blocks: ${esc(cand.families)}</p>`}
+ $('group-note').innerHTML=html;const b=document.createElement('button');b.textContent='Inspect medoid';b.onclick=()=>inspect(g.medoid);$('group-note').appendChild(b);
+}
+function render(){
+ const m=currentMap(),rows=visibleRows();page=Math.max(0,Math.min(page,Math.ceil(rows.length/pageSize)-1));
+ $('map-note').textContent=`${m.title} · ${m.note}`;
+ $('selection-status').textContent=`${selected.size} MTS selected for export.`;$('download').disabled=!selected.size;
+ $('status').textContent=`${rows.length} matching MTS.`;
+ $('cards').innerHTML=rows.slice(page*pageSize,(page+1)*pageSize).map(r=>`<article class="card"><label><input type="checkbox" data-select="${r.row}" ${selected.has(r.row)?'checked':''}>${esc(r.dataset)}</label><img loading="lazy" src="${r.thumb}" alt="${esc(r.dataset)} heatmap" data-inspect="${r.row}"><small>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T} · ${clusterName(r.cluster)}</small><button data-inspect="${r.row}">Inspect</button></article>`).join('');
+ document.querySelectorAll('[data-select]').forEach(b=>b.onchange=()=>{const r=Number(b.dataset.select);b.checked?selected.add(r):selected.delete(r);render()});
+ document.querySelectorAll('[data-inspect]').forEach(b=>b.onclick=()=>inspect(Number(b.dataset.inspect)));
+ $('page-status').textContent=rows.length?`${page*pageSize+1}–${Math.min(rows.length,(page+1)*pageSize)} of ${rows.length}`:'No matching datasets';
+ $('previous-page').disabled=page===0;$('next-page').disabled=(page+1)*pageSize>=rows.length;
+ candidatePanel();groupNote();detail();draw();
+ try{history.replaceState(null,'','#'+new URLSearchParams({map:$('map-select').value,cluster:$('cluster').value,shading:$('shading').value}).toString())}catch{}
+}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+for(const [key,m] of Object.entries(data.maps))option($('map-select'),key,m.title);
+option($('cluster'),'all','All clusters');data.candidates.forEach(c=>option($('cluster'),String(c.cluster),`${c.letter} · ${c.title} (${c.size})`));
+Object.keys(data.clusters).map(Number).sort((a,b)=>a-b).forEach(c=>{if(!letterOf[c])option($('cluster'),String(c),`Cluster ${c} · ${data.clusters[c].size} MTS`)});
+$('methods').innerHTML=data.methods.map(p=>`<p>${esc(p)}</p>`).join('');
+$('map-select').onchange=()=>{viewport=[0,0,680,680];render()};$('cluster').onchange=$('search').oninput=$('only-selected').onchange=()=>{page=0;render()};
+$('shading').onchange=$('origin').onchange=render;$('all').onclick=()=>{$('cluster').value='all';$('search').value='';$('only-selected').checked=false;page=0;render()};
+$('reset-view').onclick=()=>{viewport=[0,0,680,680];draw()};$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
+$('previous-page').onclick=()=>{page--;render()};$('next-page').onclick=()=>{page++;render()};
+$('download').onclick=()=>{const m=currentMap(),q=x=>'"'+String(x??'').replaceAll('"','""')+'"';const rec=[['row','dataset','source','origin','M','T','parent','cluster','candidate','map','x','y','user_label'],...[...selected].sort((a,b)=>a-b).map(i=>{const r=data.rows[i];return [i,r.dataset,r.source,r.origin,r.M,r.T,r.parent,r.cluster,letterOf[r.cluster]||'',$('map-select').value,...m.xy[i],$('label').value]})];download(new Blob([rec.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),'mts-selection.csv')};
+$('export-svg').onclick=()=>{const clone=$('map').cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width','1360');clone.setAttribute('height','1360');clone.querySelectorAll('[tabindex]').forEach(x=>x.removeAttribute('tabindex'));download(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),'mts-atlas-map.svg')};
+function svgPoint(e){return new DOMPoint(e.clientX,e.clientY).matrixTransform($('map').getScreenCTM().inverse())}
+$('map').addEventListener('wheel',e=>{e.preventDefault();const p=svgPoint(e),f=e.deltaY>0?1.12:1/1.12;if(viewport[2]*f<35||viewport[2]*f>4000)return;viewport=[p.x+(viewport[0]-p.x)*f,p.y+(viewport[1]-p.y)*f,viewport[2]*f,viewport[3]*f];$('map').setAttribute('viewBox',viewport.join(' '))},{passive:false});
+$('map').onpointerdown=e=>{dragged=false;drag={x:e.clientX,y:e.clientY,view:[...viewport]}};
+window.addEventListener('pointermove',e=>{if(!drag)return;const rect=$('map').getBoundingClientRect(),dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)dragged=true;if(dragged){viewport=[drag.view[0]-dx*drag.view[2]/rect.width,drag.view[1]-dy*drag.view[3]/rect.height,drag.view[2],drag.view[3]];$('map').setAttribute('viewBox',viewport.join(' '))}});
+window.addEventListener('pointerup',()=>{drag=null});window.addEventListener('pointercancel',()=>{drag=null});
+const initial=new URLSearchParams(location.hash.slice(1));
+if(data.maps[initial.get('map')])$('map-select').value=initial.get('map');else $('map-select').value=data.default_map;
+if([...$('cluster').options].some(o=>o.value===initial.get('cluster')))$('cluster').value=initial.get('cluster');
+if(['candidates','all','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
+render();
+</script>
+</html>
