@@ -1248,6 +1248,86 @@ def receipt(datasets, out=OUT):
     return out/'provenance.json'
 
 
+# --------------------------------------------------------------------------- feature audit (locking)
+
+def locking_feature_audit(extra=(('corr_pearson_tau-2', 'corr_pearson_tau-20-sq'),)):
+    """Which axes do the leading locking features read? Descriptive, retrospective, held records only.
+
+    Uses the filtered top-16 PC1 coordinates of the three-systems notebook plus `extra`. Returns a per-feature
+    table (|rho_s| with Q, with sensor noise eta and with mean-|r|; held z at gamma 0 and .20), the
+    feature-by-feature correlation across held records, and an edge-block decomposition on the four local
+    MPIs: z over all ordered pairs, without A-B pairs, and over A-A and B-B pairs only.
+    """
+    results = ROOT/'results/order-parameter-inference'
+    top = pd.read_csv(results/'three-systems-261015/noisy-locking-loadings-filtered.csv')
+    scores = pd.read_csv(results/LOCKING_RUN/'scores.csv')
+    held = scores.system.eq('random-noise') & scores.role.eq('evaluation') & scores.comparison_eligible
+    with np.load(results/LOCKING_RUN/'features.npz') as bank:
+        order = list(bank['spi_order'])
+        Z = bank['z'][held.to_numpy()].astype(float)
+    H = scores[held].reset_index(drop=True)
+    pairs = [(r.spi_a, r.spi_b, int(r['rank'])) for _, r in top.iterrows()]+[(a, b, None) for a, b in extra]
+    rows, curves = [], {}
+    for a, b, rank in pairs:
+        z = Z[:, pair_index(order, a, b)]
+        name = f'{a} x {b}'
+        curves[name] = z
+        rows.append(dict(rank=rank, pair=name, abs_rho_Q=abs(spearmanr(z, H.Q_lock).statistic),
+                         abs_rho_eta=abs(spearmanr(z, H.eta).statistic), abs_rho_mean_abs_r=abs(spearmanr(z, H.mean_abs_r).statistic),
+                         z_gamma0=float(np.nanmean(z[np.isclose(H.control, 0)])), z_gamma20=float(np.nanmean(z[np.isclose(H.control, .2)]))))
+    summary = pd.DataFrame(rows)
+    redundancy = pd.DataFrame(np.corrcoef(np.array(list(curves.values()))), index=list(curves), columns=list(curves))
+    i, j = np.where(~np.eye(24, dtype=bool)); a_, b_ = i//8, j//8
+    ab = ((a_ == 0) & (b_ == 1)) | ((a_ == 1) & (b_ == 0)); within = (a_ == b_) & (a_ < 2)
+    blocks = []
+    for path in sorted((results/'locking-features-m24-261009/mpi-examples').glob('g*-s*.npz')):
+        with np.load(path) as m:
+            for a, b, rank in [pairs[0], pairs[6], pairs[11], *[(x, y, None) for x, y in extra]]:
+                x, y = ordered_edges(m[a]), ordered_edges(m[b])
+                blocks.append(dict(record=path.stem, pair=f'{a} x {b}', z_all=np.corrcoef(x, y)[0, 1],
+                                   z_without_AB=np.corrcoef(x[~ab], y[~ab])[0, 1], z_AA_BB=np.corrcoef(x[within], y[within])[0, 1]))
+    return summary, redundancy, pd.DataFrame(blocks)
+
+
+# --------------------------------------------------------------------------- feature audit (locking)
+
+def locking_feature_audit(extra=(('corr_pearson_tau-2', 'corr_pearson_tau-20-sq'),)):
+    """Which axes do the leading locking features read? Descriptive and retrospective; held records only.
+
+    Inputs: the filtered top-16 PC1 coordinates of the three-systems notebook plus `extra`. Returns a per-feature
+    table (|rho_s| with Q, sensor noise eta and mean-|r|; mean held z at gamma 0 and .20), the feature-by-feature
+    correlation across held records, and an edge-block decomposition on the four local MPIs (z over all ordered
+    pairs, without A-B pairs, and over A-A and B-B pairs only).
+    """
+    results = ROOT/'results/order-parameter-inference'
+    top = pd.read_csv(results/'three-systems-261015/noisy-locking-loadings-filtered.csv')
+    scores = pd.read_csv(results/LOCKING_RUN/'scores.csv')
+    held = scores.system.eq('random-noise') & scores.role.eq('evaluation') & scores.comparison_eligible
+    with np.load(results/LOCKING_RUN/'features.npz') as bank:
+        order = list(bank['spi_order'])
+        Z = bank['z'][held.to_numpy()].astype(float)
+    H = scores[held].reset_index(drop=True)
+    pairs = [(r.spi_a, r.spi_b, int(r['rank'])) for _, r in top.iterrows()]+[(a, b, None) for a, b in extra]
+    rows, curves = [], {}
+    for a, b, rank in pairs:
+        z = Z[:, pair_index(order, a, b)]
+        curves[f'{a} x {b}'] = z
+        rows.append(dict(rank=rank, pair=f'{a} x {b}', abs_rho_Q=abs(spearmanr(z, H.Q_lock).statistic),
+                         abs_rho_eta=abs(spearmanr(z, H.eta).statistic), abs_rho_mean_abs_r=abs(spearmanr(z, H.mean_abs_r).statistic),
+                         z_gamma0=float(np.nanmean(z[np.isclose(H.control, 0)])), z_gamma20=float(np.nanmean(z[np.isclose(H.control, .2)]))))
+    redundancy = pd.DataFrame(np.corrcoef(np.array(list(curves.values()))), index=list(curves), columns=list(curves))
+    i, j = np.where(~np.eye(24, dtype=bool)); a_, b_ = i//8, j//8
+    ab = ((a_ == 0) & (b_ == 1)) | ((a_ == 1) & (b_ == 0)); within = (a_ == b_) & (a_ < 2)
+    blocks = []
+    for path in sorted((results/'locking-features-m24-261009/mpi-examples').glob('g*-s*.npz')):
+        with np.load(path) as m:
+            for a, b, _ in [pairs[0], pairs[6], pairs[11], *[(x, y, None) for x, y in extra]]:
+                x, y = ordered_edges(m[a]), ordered_edges(m[b])
+                blocks.append(dict(record=path.stem, pair=f'{a} x {b}', z_all=np.corrcoef(x, y)[0, 1],
+                                   z_without_AB=np.corrcoef(x[~ab], y[~ab])[0, 1], z_AA_BB=np.corrcoef(x[within], y[within])[0, 1]))
+    return pd.DataFrame(rows), redundancy, pd.DataFrame(blocks)
+
+
 # --------------------------------------------------------------------------- registry
 
 LOCKING_FEATURES = (
@@ -1270,7 +1350,7 @@ SYSTEMS = {
         control_label=r'Cross-coupling $\gamma$', control_short=r'$\gamma$', Q_label=r'Locking index $Q$',
         boundary=.1017, features=LOCKING_FEATURES, edge_features=(0,), glyphs=('wrapped', 'spiral', 'lissajous'),
         glyph_titles={'wrapped': r'$\Phi$'}, heatmap_window=(0, 80), dt=.5, communities=3, edge_groups=LOCKING_GROUPS,
-        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .35), (.50, .10), (.76, .49)),
+        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .386), (.535, .10), (.76, .535)),
         Q_limits=(-.04, 1.06), community_labels=('A', 'B', 'C'), snapshot_controls=(0., .10, .20),
         note='M=N=24, T=1000, recording-specific sensor noise; 168 held records (8 seeds x 21 controls).'),
     'hardware': Spec(

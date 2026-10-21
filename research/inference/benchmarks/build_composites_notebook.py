@@ -100,6 +100,30 @@ Values are $|\rho_s|$ with $Q$. Only locking separates $q$ from both baselines; 
 **Hardware $Q$ and range.** Keep the carrier frequency range on settings ≤ 87. It measures the calibrated event, the cessation of phase slips, and it steps exactly where $q$ steps. $R_1$ is effectively a strength measure (rank correlation 1.00 with mean-$|r|$), so choosing it would turn $Q$ into a baseline. Beyond 0.435 V the grid is sparse (six settings to 3.5 V), $q$ dips at 0.875 V without a change in $Q$, and the calibrated spectral explanation fails at settings 175–437. The caption should say that $q$ is fitted on all 29 ER recordings and give the full-sweep association (.822).
 
 **Which systems have $M<32$?** Locking: $M=24$ (with an $M=48$ confirmation); hardware: $M=28$. Fine Stuart–Landau and full Kuramoto: $M=N=32$ only. The broad Stuart–Landau sweep ($\gamma=.55$–$1.25$) has separate $M=N=8,16,32$ systems at $T=100/500/1000$. CML2D has paired $M=16$ views at $T=500$ and $1000$ (288 rows each, nested sensors from the same masters, 9 old-grid controls) beside the primary $M=32$. All panels use $M=32$ or the full system.'''),
+        md(r'''## Which axes do the leading locking features read?
+
+The filtered top 16 of the locking PC1 hold three families: nine Johansen short- against long-history statistic pairs, six squared lag-20 rank correlations against one-step entropy or time-lagged MI, and two LCSS × TE variants. The table adds Pearson lag 2 × lag 20². Retrospective and descriptive: held records, no refitting.'''),
+        code('''summary, redundancy, blocks = cf.locking_feature_audit()
+display(summary.round(3))
+families = {'Johansen': redundancy.index.str.startswith('coint'), 'lag-20 x one-step': redundancy.index.str.contains('tau-20-sq x'),
+            'LCSS x TE': redundancy.index.str.startswith('lcss'), 'Pearson lag 2 x lag 20^2': redundancy.index.str.startswith('corr_pearson_tau-2 ')}
+display(pd.DataFrame({f: {g: redundancy.loc[m, n].abs().to_numpy()[~(m[:, None] & n[None, :] & (redundancy.index.to_numpy()[:, None] == redundancy.index.to_numpy()[None, :]))[m][:, n]].mean()
+                          for g, n in families.items()} for f, m in families.items()}).round(2))
+blocks.assign(pair=blocks.pair.str.replace('_', ' ')).round(2)'''),
+        md(r'''**Reading.** The first table gives each feature's association with $Q$, sensor noise and mean-$|r|$. The second gives the mean $|r|$ between feature families across held records. The third decomposes $z$ on the four local snapshot MPIs.
+
+- **One within-community lag-profile axis.** Johansen, lag-20² × one-step dependence and Pearson lag 2 × lag 20² are near-copies across records (family-mean $|r|$ ≈ .85–1.0). Their change is carried by A–A and B–B pairs: removing the A–B pairs barely moves $z$, while the A–A/B–B-only $z$ flips sign. As B's frequency is pulled to twice A's, within-community dependence at long lags reorganises. This is temporal redistribution, compatible with frequency pulling, not a reading of the A–B coupling.
+- **Why so many lag-20² × entropy/TLMI pairs.** One-step conditional entropy and lag-1 MI are short-lag dependence measures, so each pair contrasts long-lag with short-lag dependence across pairs, the same contrast as Pearson lag 2 × lag 20². Pearson, Spearman and Kendall at lag 20 are interchangeable here, and PCA spreads loading over near-duplicates, so one contrast fills six slots. Gaussian lag-1 MI is related to squared lag-1 Pearson (rank .75–.79 across edges) but is not a copy, so the correlation filter is not simply leaking.
+- **LCSS × TE is the one feature that reads the coupled pairs.** Without the A–B pairs its $z$ stays at .55–.66 at every $\gamma$; the full $z$ falls from .62 to −.14 only because of the A–B pairs. Between A and B, TE rises from about 0 to .05–.09 at locking while LCSS stays at about .78, as expected for 2:1 locking: one oscillator becomes predictive of the other without waveform alignment. It also has the lowest noise association (.08) at $|\rho_s(Q)|$ .89. Caveats: the TE values are small KSG estimates on noisy data, and frequency- and spectrum-matched controls are still pending.'''),
+        md(r'''## Which axes do the leading locking features read?
+
+The filtered top 16 hold three families: Johansen short- against long-history statistics, squared lag-20 rank correlation against one-step entropy or lag-1 MI, and LCSS × TE. Pearson lag 2 × lag 20² is added for reference. The tables give association with $Q$, noise and mean-$|r|$; correlation across held records; and $z$ on the local MPIs with the A–B pairs removed or with A–A/B–B pairs only. Retrospective and descriptive.'''),
+        code('''summary, redundancy, blocks = cf.locking_feature_audit()
+display(summary.round(3))
+display(redundancy.round(2).set_axis(range(len(redundancy)), axis=1))
+blocks.round(2)'''),
+        md(r'''- **Johansen, lag-20² × one-step and Pearson lag 2 × lag 20² are one axis.** They correlate at $|r|$ ≈ .85–1.0 across held records, and their change is carried by A–A and B–B pairs, not A–B pairs. This is within-community redistribution of long-lag dependence as B's frequency is pulled to twice A's. It is compatible with frequency pulling and does not read the coupling itself. Six slots go to the lag-20² family because Pearson, Spearman and Kendall at lag 20 are interchangeable here, and PCA spreads loading over near-duplicates.
+- **LCSS × TE reads the coupled pairs.** Without the A–B pairs its $z$ stays at .55–.66 at every $\gamma$. Between A and B, TE rises from about 0 to .05–.09 at locking while LCSS stays at about .78: predictive dependence without waveform alignment, as expected for 2:1 locking. It has the lowest noise association (.08). The TE values are small KSG estimates, and frequency-matched controls are still pending.'''),
         md(r'''## Export individual panels'''),
         code('''written = {'locking': cf.export_panels(locking)}
 for name in ('hardware', 'stuart-landau', 'kuramoto', 'cml2d'):
