@@ -129,6 +129,7 @@ class Spec:
     edge_scale: str = 'shared'                       # 'shared' within a row, or 'panel' (z is scale-free)
     primary_label: str = 'held records'
     community_labels: tuple = ()                     # bottom-to-top block letters on the first heatmap
+    snapshot_controls: tuple = ()                    # loader-specific fixed snapshot controls
     stack_legend_loc: str | tuple = 'lower left'     # legend position when baselines are overlaid
     inset_boxes: tuple = ((.05, .62), (.55, .12), (.78, .12))   # heatmap lower-left, headline axes fraction
     Q_limits: tuple | None = None
@@ -271,8 +272,20 @@ def locking_groups(n=8):
     return np.select([((a == 0) & (b == 1)) | ((a == 1) & (b == 0)), (a == 0) & (b == 0), (a == 1) & (b == 1)], [0, 1, 2], 3)
 
 
+def choose_locking_records(scores, controls):
+    """Held random-noise records with sensor noise nearest eta = .6 at each control (ties by row ID).
+
+    The rule of `plot_locking_m24_edge_profiles.choose_records`, for any controls; never uses Q or q.
+    """
+    held = scores[scores.system.eq('random-noise') & scores.role.eq('evaluation') & scores.comparison_eligible]
+    chosen = []
+    for gamma in controls:
+        part = held[np.isclose(held.control, gamma)].sort_values('row_id')
+        chosen.append(part.iloc[np.argmin(abs(part.eta.to_numpy()-.6))])
+    return chosen
+
+
 def load_locking(spec):
-    from research.inference.locking.plot_locking_m24_edge_profiles import choose_records
     result = ROOT/'results/order-parameter-inference'/LOCKING_RUN
     scores = pd.read_csv(result/'scores.csv')
     analysis = json.loads((result/'analysis.json').read_text())
@@ -286,7 +299,7 @@ def load_locking(spec):
         order = list(bank['spi_order'])
         columns = [pair_index(order, f.spi_a, f.spi_b) for f in spec.features]
         z_rows = bank['z'][held.to_numpy()][:, columns].astype(float)
-        chosen = choose_records(scores)
+        chosen = choose_locking_records(scores, spec.snapshot_controls)
         stored_rows = {r.row_id: bank['z'][int(np.flatnonzero(scores.row_id.eq(r.row_id))[0])].astype(float) for r in chosen}
     part = scores[held]
     frame = pd.DataFrame(dict(row_id=part.row_id.to_numpy(), control=part.control.to_numpy(), Q=part.Q_lock.to_numpy(),
@@ -332,8 +345,8 @@ def load_locking(spec):
     provenance = dict(run=LOCKING_RUN, scores_sha256=sha(result/'scores.csv'), features_sha256=analysis['features_sha256'],
                       held_records=int(held.sum()), snapshots=[s.row_id for s in snapshots], snapshot_checks=checks,
                       edge_receipts=receipts,
-                      selection='plot_locking_m24_edge_profiles.choose_records: held, eta nearest .6 at gamma 0/.10/.14; '
-                                'the only held records whose MPIs are local.')
+                      selection=f'held, eta nearest .6 (ties by row ID) at gamma {spec.snapshot_controls}; the gamma=.20 MPI '
+                                'was fetched read-only from Gadi on 2026-10-21 and matches sources.json.')
     return SystemData(spec, frame, snapshots, metrics, provenance, primary='held')
 
 
@@ -867,8 +880,34 @@ def edge_limits(data, k):
     return limits
 
 
-def draw_edge_plane(ax, data, k, i, *, limits=None, axis_labels=True):
-    """SPI a against SPI b across all ordered channel pairs at one snapshot: boxed, no ticks."""
+CORNERS = {'upper left': (.05, .95, 'left', 'top'), 'upper right': (.95, .95, 'right', 'top'),
+           'lower left': (.05, .05, 'left', 'bottom'), 'lower right': (.95, .05, 'right', 'bottom')}
+
+
+def emptiest_corner(axes, points, box=(.42, .2)):
+    """Corner whose (box-sized) region holds the fewest points across all `axes` (axes-fraction units)."""
+    counts = dict.fromkeys(CORNERS, 0)
+    for ax, (a, b) in zip(axes, points):
+        (x0, x1), (y0, y1) = ax.get_xlim(), ax.get_ylim()
+        u, v = (np.asarray(a)-x0)/(x1-x0), (np.asarray(b)-y0)/(y1-y0)
+        for name, (x, y, ha, va) in CORNERS.items():
+            inside_u = u < box[0] if ha == 'left' else u > 1-box[0]
+            inside_v = v > 1-box[1] if va == 'top' else v < box[1]
+            counts[name] += int(np.sum(inside_u & inside_v))
+    return min(counts, key=counts.get)
+
+
+def annotate_z(ax, z, corner):
+    x, y, ha, va = CORNERS[corner]
+    ax.text(x, y, rf'$z={z:+.2f}$', transform=ax.transAxes, ha=ha, va=va, fontsize=6,
+            bbox=dict(boxstyle='square,pad=.15', facecolor='white', edgecolor='none', alpha=.8))
+
+
+def draw_edge_plane(ax, data, k, i, *, limits=None, axis_labels=True, z_corner=None):
+    """SPI a against SPI b across all ordered channel pairs at one snapshot: boxed, no ticks.
+
+    z is written in `z_corner` (one corner per row, chosen as the emptiest), or under the title if None.
+    """
     spec, snapshot = data.spec, data.snapshots[i]
     a, b, z = snapshot.edges[k]
     order = np.argsort(snapshot.groups, kind='stable')[::-1]   # first-listed group drawn on top
@@ -880,7 +919,11 @@ def draw_edge_plane(ax, data, k, i, *, limits=None, axis_labels=True):
         ax.margins(.06)
     _no_ticks(ax)
     _box(ax, .5)
-    ax.set_title(snapshot.label+'\n'+rf'$z={z:+.2f}$', fontsize=6, pad=2, linespacing=1.1)
+    if z_corner is None:
+        ax.set_title(snapshot.label+'\n'+rf'$z={z:+.2f}$', fontsize=6, pad=2, linespacing=1.1)
+    else:
+        ax.set_title(snapshot.label, fontsize=6, pad=2)
+        annotate_z(ax, z, z_corner)
     f = spec.features[k]
     if axis_labels:
         ax.set_xlabel(short_spi(f.spi_a), fontsize=6, labelpad=1)
@@ -921,7 +964,7 @@ def cohort_legend(ax, spec):
 GEOMETRY = dict(width=3.55, left=.42, right=.30, title=.20, curves=2.55, curves_bottom=.30,
                 inset_width=.62, inset_heat=.24, inset_glyph=.22, inset_glyph_square=.40,
                 row_gap=.10, baseline_title=.14, baseline=.50, baseline_bottom=.16,
-                feature_title=.36, feature=.80, feature_bottom=.20, edge_title=.24, edge=.80, edge_legend=.32)
+                feature_title=.36, feature=.80, feature_bottom=.20, edge_title=.14, edge=.80, edge_legend=.32)
 STACK = dict(title=.20, glyph=.22, glyph_square=.44, glyph_label=.10, gap=.03, heat=.26, leader=.12, curves=1.05,
              curves_bottom=.30)
 
@@ -1040,8 +1083,13 @@ def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd', sp
         panel_label(fig, x0, y, labels[3] if r == 0 else None)
         y += g['edge_title']
         limits = edge_limits(data, k) if spec.edge_scale == 'shared' else None
-        for i in range(3):
-            draw_edge_plane(axes_at(fig, left+i*step, y, side, side), data, k, i, limits=limits, axis_labels=i == 0)
+        axes = [axes_at(fig, left+i*step, y, side, side) for i in range(3)]
+        for i, ax in enumerate(axes):
+            draw_edge_plane(ax, data, k, i, limits=limits, axis_labels=i == 0)
+        corner = emptiest_corner(axes, [s.edges[k][:2] for s in data.snapshots])
+        for ax, snapshot in zip(axes, data.snapshots):
+            ax.set_title(snapshot.label, fontsize=6, pad=2)
+            annotate_z(ax, snapshot.edges[k][2], corner)
         y += side
     if edge_rows:
         edge_legend(axes_at(fig, left, y+.17, width, g['edge_legend']-.17), spec)
@@ -1138,9 +1186,13 @@ def export_panels(data, out=OUT, *, stacked=False, spread='band'):
         draw_feature(ax, data, k)
         emit(fig, f'feature-{k+1}')
         limits = edge_limits(data, k) if spec.edge_scale == 'shared' else None
-        for i in range(len(data.snapshots)):
-            fig, ax = single(g['edge'], g['edge'])
+        pairs = [single(g['edge'], g['edge']) for _ in data.snapshots]
+        for i, (_, ax) in enumerate(pairs):
             draw_edge_plane(ax, data, k, i, limits=limits)
+        corner = emptiest_corner([ax for _, ax in pairs], [s.edges[k][:2] for s in data.snapshots])
+        for i, ((fig, ax), snapshot) in enumerate(zip(pairs, data.snapshots)):
+            ax.set_title(snapshot.label, fontsize=6, pad=2)
+            annotate_z(ax, snapshot.edges[k][2], corner)
             emit(fig, f'edges-{k+1}-{i+1}')
     fig, ax = single(2.4, .2)
     edge_legend(ax, spec)
@@ -1218,8 +1270,8 @@ SYSTEMS = {
         control_label=r'Cross-coupling $\gamma$', control_short=r'$\gamma$', Q_label=r'Locking index $Q$',
         boundary=.1017, features=LOCKING_FEATURES, edge_features=(0,), glyphs=('wrapped', 'spiral', 'lissajous'),
         glyph_titles={'wrapped': r'$\Phi$'}, heatmap_window=(0, 80), dt=.5, communities=3, edge_groups=LOCKING_GROUPS,
-        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .35), (.50, .10), (.76, .10)),
-        Q_limits=(-.04, 1.06), community_labels=('A', 'B', 'C'),
+        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .35), (.50, .10), (.76, .49)),
+        Q_limits=(-.04, 1.06), community_labels=('A', 'B', 'C'), snapshot_controls=(0., .10, .20),
         note='M=N=24, T=1000, recording-specific sensor noise; 168 held records (8 seeds x 21 controls).'),
     'hardware': Spec(
         name='hardware', title='Electronic oscillators', loader=load_hardware,

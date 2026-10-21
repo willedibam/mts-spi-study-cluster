@@ -94,6 +94,29 @@ def test_late_channels_finds_the_slipping_minority():
     assert late.tolist() == [24, 25, 26, 27] and reference < 24
 
 
+SNR_SCORES = cf.ROOT/'results/order-parameter-inference/cross-frequency-locking-snr-261006/scores.csv'
+
+
+@pytest.mark.skipif(not SNR_SCORES.exists(), reason='locking scores not local')
+def test_locking_snapshot_rule_matches_the_archived_edge_profile_selection():
+    from research.inference.locking.plot_locking_m24_edge_profiles import choose_records
+    scores = pd.read_csv(SNR_SCORES)
+    original = [r.row_id for r in choose_records(scores)]
+    assert [r.row_id for r in cf.choose_locking_records(scores, (0., .10, .14))] == original
+    assert cf.choose_locking_records(scores, (.20,))[0].row_id == 'xfreq21-random-noise-g200-s215'
+
+
+def test_z_goes_to_the_emptiest_corner():
+    import matplotlib.pyplot as plt
+    fig, axes = plt.subplots(1, 2)
+    points = []
+    for ax in axes:
+        a, b = np.random.default_rng(0).random((2, 200))*.5+.5   # everything in the upper right
+        ax.set(xlim=(0, 1), ylim=(0, 1)); points.append((a, b))
+    assert cf.emptiest_corner(axes, points) != 'upper right'
+    plt.close(fig)
+
+
 def test_registry_names_and_glyphs_resolve():
     for name, spec in cf.SYSTEMS.items():
         assert spec.name == name and spec.glyphs and all(g in cf.GLYPHS for g in spec.glyphs)
