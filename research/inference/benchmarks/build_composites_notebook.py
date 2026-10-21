@@ -13,11 +13,11 @@ def cells():
     return [
         md(r'''# Order-parameter composites: unsupervised $q$ tracking a physical $Q$
 
-The paper's section-4 figure (iteration 2, 2026-10-21). The left column is the main case, 2:1 cross-frequency locking between resonant oscillator communities (the M24 varying-sensor-noise arm). The right column stacks three further systems: the measured electronic oscillators (ER sweep), the fine Stuart–Landau locked-to-unsteady sweep, and the collective period-two 2D coupled map lattice. In every panel $q$ is the centred PC1 of SPI–SPI $z$, fitted without $Q$, control or nuisance labels; $Q$ is computed independently from the physics. Code: [`composite_figures.py`](../composite_figures.py) (registry `SYSTEMS`). Every panel is also exported on its own (SVG, PDF, 600-dpi PNG) under `results/order-parameter-inference/composites-261021/panels/<system>/`. Text is typeset by LaTeX in Computer Modern when `latex` and `dvipng` are available, with a native Computer Modern-math fallback otherwise.
+The paper's section-4 figure (iteration 3, 2026-10-21). The left column is the main case, 2:1 cross-frequency locking between resonant oscillator communities (the M24 varying-sensor-noise arm). The right column stacks three further systems: the measured electronic oscillators (ER sweep), the fine Stuart–Landau locked-to-unsteady sweep, and the collective period-two 2D coupled map lattice. In every panel $q$ is the centred PC1 of SPI–SPI $z$, fitted without $Q$, control or nuisance labels; $Q$ is computed independently from the physics. Code: [`composite_figures.py`](../composite_figures.py) (registry `SYSTEMS`). Every panel is also exported on its own (SVG, PDF, 600-dpi PNG) under `results/order-parameter-inference/composites-261021/panels/<system>/`. Text is typeset by LaTeX in Computer Modern when `latex` and `dvipng` are available, with a native Computer Modern-math fallback otherwise.
 
-**Reading the figure.** (a) Control against $Q$ (black, left axis) and $q$ (teal, right axis). Thick lines are means over held instances; faint lines are the individual instances. Each inset is a robust-scaled MTS heatmap (boxed) of a short window of one recording, with a physical glyph of the same recording above it and a leader line to its control on $Q$. (b) $Q$ against mean-$|r|$ and mean-MPI PC1, without ticks. (c) $z_{ab}$ for named feature pairs against control on a fixed $[-1,1]$ range, with 10–90% bands; triangles mark the snapshot controls. (d) Edge planes: SPI $a$ against SPI $b$ across all $M(M-1)$ ordered channel pairs of the snapshot recordings, in the same columns as (c). (e–g) Compact panels: heatmaps with glyphs above the $Q$/$q$ curves; the subtitle gives $|\rho_s|$ with $Q$ for $q$ and both baselines.
+**Reading the figure.** (a) Control against $Q$ (black, left axis, physical units) and $q$ (teal, right axis). Lines are means over held instances, and bands are their 10–90% range (not confidence intervals). The hardware has one recording per setting. $q$ is a PC score with arbitrary scale and sign, so its axis carries no ticks. Each inset is a robust-scaled MTS heatmap (boxed; locking communities A/B/C marked on the first) of a short window of one recording, with a physical glyph above it and a leader line to its control on $Q$. Legends give $|\rho_s|$ with $Q$. (b) $Q$ against mean-$|r|$ and mean-MPI PC1, without ticks. (c) $z_{ab}$ for named feature pairs against control on a fixed $[-1,1]$ range; triangles mark the snapshot controls. (d) Edge planes: SPI $a$ against SPI $b$ across all $M(M-1)$ ordered channel pairs of the snapshot recordings, in the same columns as (c). (e–g) Compact panels: heatmaps with glyphs above the curves. $Q$ (left axis) is overlaid with $q$, mean-$|r|$ and mean-MPI PC1, each affinely rescaled so its mean curve spans $[0,1]$. Bands are drawn for $Q$ and $q$ only. The mean-MPI sign is arbitrary and is shown correlating positively with $q$; display only, no statistic changes.
 
-**Faint lines.** In Stuart–Landau, Kuramoto and CML2D an instance (seed) is paired across controls, so a faint line follows one population or start through the sweep. In locking every control–seed pair is an independent realisation; lines join realisations with the same seed index and only display spread. The hardware has one recording per setting.
+**Trajectories or bands.** Bands are the default. In locking every control–seed pair is an independent realisation, so faint lines joining equal seed indices would suggest paths that do not exist. Bands also keep the overlaid right-column panels legible. A trajectory version is kept below. It shows something bands hide: in Stuart–Landau, Kuramoto and CML2D, where seeds are paired across controls, individual instances step more sharply than their mean.
 
 **What is claimed.** $q$ tracks $Q$ across controls. This is not a calibration of $Q$, not a mechanism, and not superiority over simple statistics: in hardware, Stuart–Landau and CML2D the baselines track $Q$ as well or better by rank. Feature names follow what calibration supports.
 
@@ -55,16 +55,16 @@ checks['row_contract'] = checks.row_contract.map(lambda c: c if isinstance(c, fl
 display(checks)
 edges = pd.DataFrame([dict(system=d.spec.name, **r) for d in (locking, hardware) for r in d.provenance['edge_receipts']])
 edges.assign(feature=edges.feature.str.replace('\\n', ' ', regex=False)).round(4)'''),
-        md(r'''## Composite, default: faint instance trajectories
+        md(r'''## Composite, default: bands
 
-Means are thick lines with small markers; the faint lines are individual held instances. The main headline grows to balance the column heights.'''),
+The main headline grows to balance the column heights.'''),
+        code('''show(cf.save(cf.composite_stacked(locking, [hardware, sl, cml]), 'composite-stacked-band'))'''),
+        md(r'''## The same with faint instance trajectories'''),
         code('''show(cf.save(cf.composite_stacked(locking, [hardware, sl, cml], spread='trajectories'), 'composite-stacked-trajectories'))'''),
-        md(r'''## The same with 10–90% bands instead of trajectories'''),
-        code('''show(cf.save(cf.composite_stacked(locking, [hardware, sl, cml], spread='band'), 'composite-stacked-band'))'''),
         md(r'''## Alternative middle panel: Kuramoto instead of Stuart–Landau
 
 At $M=N=32$ the Kuramoto sweep is a gradual finite-size crossover with wide seed spread. Its $q$ is the weakest of the candidate systems (.83), the PC1-dominance screen was not met, and mean-$|r|$ (1.00) and mean-MPI (.99) are near-perfect, because synchronisation strength is the order parameter here. Stuart–Landau is recommended for the panel; see the notes below.'''),
-        code('''show(cf.save(cf.composite_stacked(locking, [hardware, kuramoto, cml], spread='trajectories'), 'composite-stacked-kuramoto'))'''),
+        code('''show(cf.save(cf.composite_stacked(locking, [hardware, kuramoto, cml]), 'composite-stacked-kuramoto'))'''),
         md(r'''## Glyph options
 
 All variants at the three snapshots. Locking: wrapped $\Phi$ (default), spiral ($\Phi$ as angle, time as radius), Lissajous ($\cos\arg Z_A$ against $\cos\arg Z_B$ over 60 time units). Hardware: wrapped late-channel phase (default), $R(t)$, phase raster. CML2D: lattice (default) or the global mean $\bar x(t)$ over 40 steps.'''),
@@ -93,6 +93,12 @@ Values are $|\rho_s|$ with $Q$. Only locking separates $q$ from both baselines; 
 
 **CML2D: what to show.** $Q$ is the period-two amplitude of the spatially averaged state on a disjoint future window. The default glyph is the whole lattice with the observed sites circled. It shows why $Q$ falls: one period-two phase fills the lattice at $r=3.84$, large domains of both phases coexist near $3.862$, and fine domains at $3.89$ average the collective oscillation away. It also shows that 32 scattered sensors sample this structure. Caveat: the lattice is the archived state after the reference window, not simultaneous with the observed window, and comes from the pilot seed. The alternative, the global mean $\bar x(t)$ (a large zigzag when ordered), is $Q$ itself and so partly redundant with the curve.
 
+**Edge-plane groups.** Within-community pairs are split into A–A and B–B (two blues), and C–C joins the pairs involving the reference community C. For LCSS × TE the split adds little: A–A, B–B and C–C sit together (LCSS ≈ .9, TE ≈ .05), and the change is in the A–B pairs (TE .00 → .06 at almost constant LCSS ≈ .78). The split matters for the other two locking pairs, so one scheme serves any edge row. For Pearson lag 2 × lag 20², A–A and B–B move apart: at γ = 0.14 the A–A centroid is (.35, .00) and B–B is (−.44, .56), the documented within-community redistribution. For Johansen, B–B separates on the trace axis.
+
+**Post-transition snapshot.** γ = .14 is kept. The .20 record would restore the symmetric 0/.10/.20 layout (start, transition, end). Its MTS and Φ glyph are local; only its MPI, needed for the edge planes, would have to come from Gadi. Q is already ≈ 1 from γ = .12, so .14 and .20 show the same regime.
+
+**Hardware $Q$ and range.** Keep the carrier frequency range on settings ≤ 87. It measures the calibrated event, the cessation of phase slips, and it steps exactly where $q$ steps. $R_1$ is effectively a strength measure (rank correlation 1.00 with mean-$|r|$), so choosing it would turn $Q$ into a baseline. Beyond 0.435 V the grid is sparse (six settings to 3.5 V), $q$ dips at 0.875 V without a change in $Q$, and the calibrated spectral explanation fails at settings 175–437. The caption should say that $q$ is fitted on all 29 ER recordings and give the full-sweep association (.822).
+
 **Which systems have $M<32$?** Locking: $M=24$ (with an $M=48$ confirmation); hardware: $M=28$. Fine Stuart–Landau and full Kuramoto: $M=N=32$ only. The broad Stuart–Landau sweep ($\gamma=.55$–$1.25$) has separate $M=N=8,16,32$ systems at $T=100/500/1000$. CML2D has paired $M=16$ views at $T=500$ and $1000$ (288 rows each, nested sensors from the same masters, 9 old-grid controls) beside the primary $M=32$. All panels use $M=32$ or the full system.'''),
         md(r'''## Export individual panels'''),
         code('''written = {'locking': cf.export_panels(locking)}
@@ -103,12 +109,13 @@ print({k: len(v) for k, v in written.items()}, 'panels (each as SVG, PDF and 600
 print('provenance:', receipt.relative_to(ROOT))'''),
         md(r'''## Open choices
 
-1. **Spread.** Faint trajectories (default) or bands.
-2. **Glyphs.** Locking wrapped $\Phi$ (recommended), Lissajous or spiral; hardware wrapped phase, $R(t)$ or raster; CML2D lattice or $\bar x(t)$.
-3. **Middle panel.** Stuart–Landau (recommended) or Kuramoto.
-4. **Hardware $Q$ and range.** Frequency range on settings ≤ 87 (default), $R_1$, or the full 0–3.5 V sweep, where $q$ is non-monotone.
-5. **Locking post-transition snapshot.** $\gamma=.14$ (local MPI) or $\gamma=.20$, which needs one held MPI fetched from Gadi.
-6. **Heatmap window.** Currently 80/40/150/200/40 samples. Shorter still is possible, at the cost of showing fewer cycles of the slower components.'''),
+Decided (2026-10-21): Stuart–Landau over Kuramoto; wrapped $\Phi$ and the other default glyphs.
+
+1. **Spread.** Bands (default) or trajectories.
+2. **Hardware $Q$ and range.** Frequency range on settings ≤ 87 (recommended), $R_1$, or the full sweep.
+3. **Locking post-transition snapshot.** $\gamma=.14$ (kept) or $\gamma=.20$ for symmetry, which needs one MPI from Gadi.
+4. **Feature titles.** Spell out the SPIs: LCSS similarity (unconstrained) × KSG transfer entropy (4 neighbours, history 1); Johansen max-eigenvalue statistic (constant term, 10 lagged differences) × trace statistic (linear trend, 1 lagged difference); Pearson $r$ at lag 2 × squared Pearson $r$ at lag 20 (samples, i.e. 1 and 10 time units); kernel stochastic interaction × interdependence score; Pearson $r$ at 2 ms × 20 ms.
+5. **$Q$ definitions.** In the caption or methods rather than in-panel: each needs symbols that only the caption can define.'''),
     ]
 
 

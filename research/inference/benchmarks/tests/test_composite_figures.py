@@ -81,7 +81,7 @@ def test_steepest_reports_step_location_and_share():
 def test_locking_edge_groups_partition_ordered_pairs():
     groups = cf.locking_groups(8)
     assert groups.shape == (24*23,)
-    assert np.bincount(groups).tolist() == [2*64, 3*8*7, 24*23-128-168]
+    assert np.bincount(groups).tolist() == [2*64, 8*7, 8*7, 24*23-128-2*56]
 
 
 def test_late_channels_finds_the_slipping_minority():
@@ -153,13 +153,17 @@ def test_composites_and_panels_export_without_external_tex(monkeypatch, tmp_path
     main, stack = all_systems()
     for spread in cf.SPREADS:
         cf.save(cf.composite_stacked(main, stack[:3], spread=spread), f'stacked-{spread}', tmp_path)
+    shown = cf.display_readouts(stack[1])
+    means = shown.frame.groupby('control')[['q (display)', 'mean-|r| (display)', 'mean-MPI (display)']].mean()
+    np.testing.assert_allclose(means.min(), 0, atol=1e-12)
+    np.testing.assert_allclose(means.max(), 1, atol=1e-12)
     for glyph in main.spec.glyphs:
         cf.save(cf.composite([main, main], glyphs={'locking': glyph}), f'composite-{glyph}', tmp_path)
     written = cf.export_panels(main, tmp_path)
     for data in stack:
         written += cf.export_panels(data, tmp_path, stacked=True)
     for suffix in ('png', 'svg', 'pdf'):
-        assert (tmp_path/f'stacked-trajectories.{suffix}').stat().st_size > 0
+        assert (tmp_path/f'stacked-band.{suffix}').stat().st_size > 0
     names = {p.stem for p in written}
     assert {'curves-trajectories', 'curves-band', 'heatmap-1', 'baseline-mean-abs-r', 'feature-2', 'edges-2-3',
             'panel-synchrony', 'panel-lattice', 'glyph-lattice-3'} <= names

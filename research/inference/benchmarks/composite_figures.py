@@ -128,6 +128,8 @@ class Spec:
     legend_loc: str | tuple = 'lower right'           # or (loc, bbox_to_anchor)
     edge_scale: str = 'shared'                       # 'shared' within a row, or 'panel' (z is scale-free)
     primary_label: str = 'held records'
+    community_labels: tuple = ()                     # bottom-to-top block letters on the first heatmap
+    stack_legend_loc: str | tuple = 'lower left'     # legend position when baselines are overlaid
     inset_boxes: tuple = ((.05, .62), (.55, .12), (.78, .12))   # heatmap lower-left, headline axes fraction
     Q_limits: tuple | None = None
     q_limits: tuple | None = None
@@ -259,14 +261,14 @@ def locking_observation(row, raw, truth):
 
 
 LOCKING_RUN = 'cross-frequency-locking-snr-261006'
-LOCKING_GROUPS = (('A--B pairs', '#CC79A7'), ('within a community', '#0072B2'), ('pairs with C', '#b5b5b5'))
+LOCKING_GROUPS = (('A--B', '#CC79A7'), ('A--A', '#0072B2'), ('B--B', '#56B4E9'), ('pairs with C', '#b5b5b5'))
 
 
 def locking_groups(n=8):
-    """Group per ordered edge: 0 = A–B (the locking pair), 1 = within a community, 2 = involving C."""
+    """Group per ordered edge: 0 = A–B (the locking pair), 1 = A–A, 2 = B–B, 3 = involving C (C is the reference)."""
     i, j = np.where(~np.eye(3*n, dtype=bool))
     a, b = i//n, j//n
-    return np.where(((a == 0) & (b == 1)) | ((a == 1) & (b == 0)), 0, np.where(a == b, 1, 2))
+    return np.select([((a == 0) & (b == 1)) | ((a == 1) & (b == 0)), (a == 0) & (b == 0), (a == 1) & (b == 1)], [0, 1, 2], 3)
 
 
 def load_locking(spec):
@@ -669,6 +671,10 @@ def draw_heatmaps(axes, data):
         if spec.communities:
             for k in range(1, spec.communities):
                 ax.axhline(k*m/spec.communities+.5, color='white', lw=.4)
+            if ax is axes[0] and spec.community_labels:
+                for k, letter in enumerate(spec.community_labels):
+                    ax.text(-.025, (k+.5)/spec.communities, letter, transform=ax.transAxes, ha='right', va='center',
+                            fontsize=4.5, color='.25')
         _no_ticks(ax)
         _box(ax, .5)
 
@@ -705,33 +711,64 @@ def _series(axis, data, column, color, marker, *, ms=1.6, lw=1.3, spread='band',
     return handle
 
 
-def draw_curves(ax, data, *, legend=True, spread='trajectories', fontsize=7):
-    """Control against Q (left, black) and q (right, teal)."""
+def display_readouts(data, columns=('q', 'mean-|r|', 'mean-MPI')):
+    """Copy of `data` with readouts affinely rescaled so their control-mean curves span [0, 1] (display only).
+
+    q keeps its displayed sign and mean-|r| its natural sign; the mean-MPI PC1 sign is arbitrary, so it is
+    shown with the sign that correlates positively with q. No value enters any statistic.
+    """
+    frame = data.frame.copy()
+    for column in columns:
+        values = frame[column].astype(float)
+        if column == 'mean-MPI' and spearmanr(values, frame.q).statistic < 0:
+            values = -values
+        mean = values[frame.cohort.eq(data.primary)].groupby(frame.control).mean()
+        frame[column+' (display)'] = (values-mean.min())/(mean.max()-mean.min())
+    return replace(data, frame=frame)
+
+
+def draw_curves(ax, data, *, legend=True, spread='band', fontsize=7, baselines=False):
+    """Control against Q (left, black, physical units) and readouts (right, arbitrary units, no ticks).
+
+    With `baselines`, q, mean-|r| and mean-MPI PC1 are each rescaled to their own range and overlaid (baselines as
+    mean lines only, to keep four curves legible); legend entries carry |rho_s| with Q over the displayed records.
+    """
     spec = data.spec
     right = ax.twinx()
-    handles = [_series(ax, data, 'Q', Q_COLOR, 'o', spread=spread, label='$Q$'),
-               _series(right, data, 'q', Z_COLOR, 's', spread=spread, label='$q$')]
+    handles = [_series(ax, data, 'Q', Q_COLOR, 'o', spread=spread, label='$Q$')]
+    if baselines:
+        shown = display_readouts(data)
+        for column, color, marker, label in [('q', Z_COLOR, 's', '$q$'), ('mean-|r|', BASELINES['mean-|r|'], '', BASELINE_TITLES['mean-|r|']),
+                                             ('mean-MPI', BASELINES['mean-MPI'], '', BASELINE_TITLES['mean-MPI'])]:
+            handles.append(_series(right, shown, column+' (display)', color, marker, spread=spread if column == 'q' else 'none',
+                                   lw=1.3 if column == 'q' else 1.0, label=f"{label} {data.metrics[column]:.2f}"))
+        right.set_ylim(-.12, 1.12)
+        right.set_ylabel('readouts, rescaled', labelpad=2, fontsize=fontsize)
+    else:
+        handles.append(_series(right, data, 'q', Z_COLOR, 's', spread=spread, label=f"$q$ {data.metrics['q']:.2f}"))
+        if spec.q_limits:
+            right.set_ylim(spec.q_limits)
+        right.set_ylabel(spec.q_label, color=Z_COLOR, labelpad=2, fontsize=fontsize)
     if spec.Q_log:
         ax.set_yscale('log')
         ax.yaxis.set_major_locator(plt.LogLocator(base=10, numticks=4))
         ax.yaxis.set_minor_locator(plt.NullLocator())
     if spec.Q_limits:
         ax.set_ylim(spec.Q_limits)
-    if spec.q_limits:
-        right.set_ylim(spec.q_limits)
     mark_boundary(ax, spec)
     ax.set_ylabel(spec.Q_label, color=Q_COLOR, labelpad=1.5, fontsize=fontsize)
-    right.set_ylabel(spec.q_label, color=Z_COLOR, labelpad=1.5, fontsize=fontsize)
-    right.tick_params(axis='y', labelcolor=Z_COLOR, labelsize=fontsize-.5, pad=1.5)
+    right.set_yticks([]); right.set_yticks([], minor=True)       # q and rescaled readouts have no physical units
     ax.tick_params(labelsize=fontsize-.5, pad=1.5)
     ax.set_xlabel(spec.control_label, labelpad=1.5, fontsize=fontsize)
     if spec.control_ticks:
         ax.set_xticks(spec.control_ticks)
     _box(ax); _box(right)
     if legend:
-        loc, anchor = spec.legend_loc if isinstance(spec.legend_loc, tuple) else (spec.legend_loc, None)
-        right.legend(handles=handles, loc=loc, bbox_to_anchor=anchor, fontsize=fontsize-.5, handlelength=1.4,
-                     borderaxespad=.4)
+        loc = spec.stack_legend_loc if baselines else spec.legend_loc
+        loc, anchor = loc if isinstance(loc, tuple) else (loc, None)
+        right.legend(handles=handles, loc=loc, bbox_to_anchor=anchor, fontsize=fontsize-1, handlelength=1.3,
+                     borderaxespad=.3, labelspacing=.25, title=r'$|\rho_s|$ with $Q$', title_fontsize=fontsize-1.5,
+                     alignment='left')
     return right
 
 
@@ -780,7 +817,7 @@ def draw_insets(ax, right, data, glyph):
     return glyph_axes, heat_axes
 
 
-def draw_baseline(ax, data, key, *, spread='trajectories'):
+def draw_baseline(ax, data, key, *, spread='band'):
     """Q (black) and one simple baseline against control: boxed, no ticks."""
     spec = data.spec
     right = ax.twinx()
@@ -881,11 +918,11 @@ def cohort_legend(ax, spec):
 
 # --------------------------------------------------------------------------- inch-based layout
 
-GEOMETRY = dict(width=3.55, left=.42, right=.42, title=.42, curves=2.55, curves_bottom=.30,
+GEOMETRY = dict(width=3.55, left=.42, right=.30, title=.20, curves=2.55, curves_bottom=.30,
                 inset_width=.62, inset_heat=.24, inset_glyph=.22, inset_glyph_square=.40,
                 row_gap=.10, baseline_title=.14, baseline=.50, baseline_bottom=.16,
                 feature_title=.36, feature=.80, feature_bottom=.20, edge_title=.24, edge=.80, edge_legend=.32)
-STACK = dict(title=.42, glyph=.22, glyph_square=.44, glyph_label=.10, gap=.03, heat=.26, leader=.12, curves=1.05,
+STACK = dict(title=.20, glyph=.22, glyph_square=.44, glyph_label=.10, gap=.03, heat=.26, leader=.12, curves=1.05,
              curves_bottom=.30)
 
 
@@ -926,24 +963,17 @@ def panel_label(fig, x, y, text):
         fig.text(x/fw, 1-y/fh, fontsize=9, va='top', ha='left', **bold(text))
 
 
-def association(metrics):
-    return (rf"$|\rho_s|$ with $Q$: $q$ {metrics['q']:.2f}, mean-$|r|$ {metrics['mean-|r|']:.2f}, "
-            rf"mean-MPI {metrics['mean-MPI']:.2f}")
-
-
-def _titles(fig, x, y, title, subtitle, data):
+def _titles(fig, x, y, title):
     fw, fh = fig.get_size_inches()
     fig.text(x/fw, 1-(y+.02)/fh, fontsize=7.5, va='top', **bold(title))
-    fig.text(x/fw, 1-(y+.15)/fh, subtitle+'\n'+association(data.metrics), fontsize=6, va='top', color='.3',
-             linespacing=1.15)
 
 
-def draw_headline(fig, x0, y0, data, glyph=None, *, label=None, spread='trajectories', curves=None):
+def draw_headline(fig, x0, y0, data, glyph=None, *, label=None, spread='band', curves=None):
     """Title, boxed Q/q curves, and MTS+glyph insets inside the axes; returns the bottom (in)."""
     g, spec = GEOMETRY, data.spec
     glyph = glyph or spec.glyphs[0]
     left, width = x0+g['left'], g['width']-g['left']-g['right']
-    _titles(fig, left, y0, spec.title, spec.subtitle, data)
+    _titles(fig, left, y0, spec.title)
     panel_label(fig, x0, y0, label)
     y = y0+g['title']
     height = curves or g['curves']
@@ -953,12 +983,12 @@ def draw_headline(fig, x0, y0, data, glyph=None, *, label=None, spread='trajecto
     return y+height+g['curves_bottom'], dict(curves=ax, right=right, glyphs=glyphs, heatmaps=heats)
 
 
-def draw_stack_panel(fig, x0, y0, data, glyph=None, *, label=None, spread='trajectories', curves=None):
+def draw_stack_panel(fig, x0, y0, data, glyph=None, *, label=None, spread='band', curves=None):
     """Compact system panel: MTS heatmaps with glyphs above the Q/q curves; baselines summarised in text."""
     g, s, spec = GEOMETRY, STACK, data.spec
     glyph = glyph or spec.glyphs[0]
     left, width = x0+g['left'], g['width']-g['left']-g['right']
-    _titles(fig, left, y0, spec.title, spec.subtitle, data)
+    _titles(fig, left, y0, spec.title)
     panel_label(fig, x0, y0, label)
     y = y0+s['title']+s['glyph_label']
     gap = .14
@@ -977,13 +1007,13 @@ def draw_stack_panel(fig, x0, y0, data, glyph=None, *, label=None, spread='traje
     y += gh+s['gap']+s['heat']+s['leader']
     height = curves or s['curves']
     ax = axes_at(fig, left, y, width, height)
-    right = draw_curves(ax, data, spread=spread, fontsize=6.5)
+    right = draw_curves(ax, data, spread=spread, fontsize=6.5, baselines=True)
     for hax, snapshot in zip(heat_axes, data.snapshots):
         _leader(ax, hax, (.5, 0), snapshot.control, value_at(data.frame, 'Q', snapshot.control, data.primary))
     return y+height+s['curves_bottom']
 
 
-def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd', spread='trajectories', curves=None):
+def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd', spread='band', curves=None):
     g, spec = GEOMETRY, data.spec
     edge_rows = spec.edge_features if edge_rows is None else edge_rows
     left, width = x0+g['left'], g['width']-g['left']-g['right']
@@ -1019,7 +1049,7 @@ def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd', sp
     return y
 
 
-def composite(systems, glyphs=None, edge_rows=None, gap=.08, spread='trajectories'):
+def composite(systems, glyphs=None, edge_rows=None, gap=.08, spread='band'):
     """System columns side by side (full columns); `glyphs` maps name to glyph variant."""
     style()
     glyphs, edge_rows = glyphs or {}, edge_rows or {}
@@ -1034,7 +1064,7 @@ def composite(systems, glyphs=None, edge_rows=None, gap=.08, spread='trajectorie
     return fig
 
 
-def composite_stacked(main, stack, glyphs=None, edge_rows=None, gap=.08, spread='trajectories'):
+def composite_stacked(main, stack, glyphs=None, edge_rows=None, gap=.08, spread='band'):
     """Main system as a full column (left); `stack` systems as compact panels (right), heights balanced."""
     style()
     glyphs = glyphs or {}
@@ -1061,7 +1091,7 @@ def save(fig, name, out=OUT, formats=('svg', 'pdf', 'png'), dpi=600):
     return out/f'{name}.png'
 
 
-def export_panels(data, out=OUT, *, stacked=False, spread='trajectories'):
+def export_panels(data, out=OUT, *, stacked=False, spread='band'):
     """Every panel as its own SVG/PDF/PNG (600 dpi), at the size it occupies in the composite."""
     style()
     g, spec, folder, written = GEOMETRY, data.spec, out/'panels'/data.spec.name, []
@@ -1140,7 +1170,7 @@ def glyph_gallery(datasets, size=(.95, .34)):
     return fig
 
 
-def compare_Q(datasets, titles, spread='trajectories'):
+def compare_Q(datasets, titles, spread='band'):
     """Headline curves only, side by side, e.g. for alternative physical quantities or systems."""
     style()
     g = GEOMETRY
@@ -1188,8 +1218,8 @@ SYSTEMS = {
         control_label=r'Cross-coupling $\gamma$', control_short=r'$\gamma$', Q_label=r'Locking index $Q$',
         boundary=.1017, features=LOCKING_FEATURES, edge_features=(0,), glyphs=('wrapped', 'spiral', 'lissajous'),
         glyph_titles={'wrapped': r'$\Phi$'}, heatmap_window=(0, 80), dt=.5, communities=3, edge_groups=LOCKING_GROUPS,
-        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .53), (.50, .10), (.76, .10)),
-        Q_limits=(-.04, 1.06),
+        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .35), (.50, .10), (.76, .10)),
+        Q_limits=(-.04, 1.06), community_labels=('A', 'B', 'C'),
         note='M=N=24, T=1000, recording-specific sensor noise; 168 held records (8 seeds x 21 controls).'),
     'hardware': Spec(
         name='hardware', title='Electronic oscillators', loader=load_hardware,
@@ -1200,6 +1230,7 @@ SYSTEMS = {
         glyph_titles={'wrapped': r'$\Delta\phi$', 'synchrony': '$R$', 'raster': r'$\Delta\phi$'},
         heatmap_window=(500, 40), dt=.002, edge_groups=HARDWARE_GROUPS, secondary_style={'SW': '--'},
         control_ticks=(0, .2, .4), legend_loc=('center left', (.0, .68)), edge_scale='panel', primary_label='ER (fit)',
+        stack_legend_loc='center right',
         inset_boxes=((.04, .30), (.40, .34), (.70, .34)),
         note='M=N=28, T=5000 at 500 Hz; one record per setting; q fitted on all 29 ER records, SW projected.'),
     'stuart-landau': Spec(
@@ -1207,12 +1238,14 @@ SYSTEMS = {
         subtitle='$M=N=32$, $T=1000$; 8 held instances', control_label=r'Frequency half-width $\gamma$',
         control_short=r'$\gamma$', Q_label=r'Mean $R$', glyphs=('synchrony',), glyph_titles={'synchrony': '$R$'},
         heatmap_window=(0, 150), dt=.1, control_ticks=(.68, .72, .76), legend_loc='lower left', boundary=(.72, .725),
+        stack_legend_loc='lower left',
         note='Fine confirmation, frozen coordinate; Matthews-Strogatz K=.8 path.'),
     'kuramoto': Spec(
         name='kuramoto', title='Kuramoto: phase synchronisation', loader=load_kuramoto,
         subtitle='$M=N=32$, $T=1000$; 8 held seeds; exploratory', control_label=r'Reduced coupling $\kappa$',
         control_short=r'$\kappa$', Q_label=r'Mean $R$', glyphs=('synchrony',), glyph_titles={'synchrony': '$R$'},
         heatmap_window=(0, 200), dt=.1, control_ticks=(.75, 1., 1.25, 1.5), legend_loc='lower right', boundary=1.,
+        stack_legend_loc='upper left',
         note='Full observation; PC1 dominance screen unmet (1.478 < 1.5).'),
     'cml2d': Spec(
         name='cml2d', title='2D coupled maps: collective period two', loader=load_cml2d,
