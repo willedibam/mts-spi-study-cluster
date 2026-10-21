@@ -2,19 +2,19 @@
 
 Presentation and verification only. Every q, baseline and z value is an archived, target-blind
 readout; nothing here refits a coordinate or uses Q to choose what is shown. Snapshot records
-follow fixed, pre-existing rules (never Q or q), and every displayed edge profile is replayed from
-its archived MPI over all M(M-1) ordered off-diagonal entries (`unified_ordered_v3`).
+follow fixed, pre-existing rules (never Q or q); displayed edge profiles are replayed from archived
+MPIs over all M(M-1) ordered off-diagonal entries (`unified_ordered_v3`), and physical glyphs are
+regenerated from the archived generators and checked against the archived inputs.
 
-Layout per system (one column each): a headline (control against Q and q) with three MTS insets,
-leader lines to the Q curve and a physical glyph above each inset; two baseline glyphs (mean-|r|,
-mean-MPI PC1); z_ab against control for named features; and edge planes (SPI a against SPI b across
-ordered channel pairs) at the three snapshot controls.
+Layouts. `composite_stacked(main, stack)`: the main system as a full column (headline Q/q with
+in-axes MTS insets and glyphs, mean-|r| and mean-MPI glyphs, z_ab feature curves, edge planes) beside
+compact panels for further systems (MTS heatmaps with glyphs above Q/q curves; baselines in text).
+`composite(systems)` puts full columns side by side. Spread across instances: faint per-instance
+paths ('trajectories'), 10-90% bands ('band'), 'both' or 'none'; feature curves always use bands.
 
-Registry: `SYSTEMS[name]` is a `Spec` (presentation choices) whose `loader` returns a `SystemData`.
-Adding a benchmarked system (Kuramoto, Stuart–Landau, ...) means writing one loader that returns a
-per-record frame with columns control/Q/q/mean-|r|/mean-MPI/cohort plus `z0..zk` for the listed
-features, three `Snapshot`s (MTS, glyph arrays, ordered edge profiles) and provenance; the drawing
-code is shared. `cml2d` is registered as a working example outside the two-system composite.
+Registry: `SYSTEMS[name]` is a `Spec` (presentation choices) whose `loader` returns a `SystemData`
+(per-record frame with control/Q/q/mean-|r|/mean-MPI/cohort[/trajectory, z0..zk], three `Snapshot`s,
+metrics, provenance). Registered: locking, hardware, stuart-landau, kuramoto, cml2d.
 """
 from __future__ import annotations
 
@@ -49,16 +49,27 @@ def check(condition, message):
         raise ValueError(message)
 
 
-def style():
-    """Portable typography (no external TeX); editable text in SVG/PDF for external assembly."""
+def style(tex=None):
+    """Computer Modern typography: LaTeX (`text.usetex`) when latex and dvipng exist, else mathtext.
+
+    Pass tex=False to force the native renderer (no external processes). All figure strings are written
+    to be valid in both modes. With usetex, SVG/PDF text is embedded as glyph outlines.
+    """
     import logging
+    import shutil
     from research.inference.benchmarks.three_systems import style as base
     base()
     logging.getLogger('fontTools').setLevel(logging.ERROR)  # Type 42 embedding warns about font timestamps
-    plt.rcParams.update({'svg.fonttype': 'none', 'pdf.fonttype': 42, 'axes.linewidth': .6,
+    tex = bool(shutil.which('latex') and shutil.which('dvipng')) if tex is None else tex
+    plt.rcParams.update({'text.usetex': tex, 'font.family': 'serif',
+                         'font.serif': ['Computer Modern Roman'] if tex else ['DejaVu Serif'],
+                         'text.latex.preamble': r'\usepackage{amsmath}',
+                         'svg.fonttype': 'none', 'pdf.fonttype': 42, 'axes.linewidth': .6,
                          'xtick.major.width': .6, 'ytick.major.width': .6, 'xtick.major.size': 2.5,
                          'ytick.major.size': 2.5, 'legend.fontsize': 7, 'axes.titlesize': 8,
-                         'axes.labelsize': 8, 'xtick.labelsize': 7, 'ytick.labelsize': 7})
+                         'axes.labelsize': 8, 'xtick.labelsize': 7, 'ytick.labelsize': 7,
+                         'figure.dpi': 180, 'savefig.dpi': 600})
+    return tex
 
 
 # --------------------------------------------------------------------------- data structures
@@ -248,7 +259,7 @@ def locking_observation(row, raw, truth):
 
 
 LOCKING_RUN = 'cross-frequency-locking-snr-261006'
-LOCKING_GROUPS = (('A–B pairs', '#CC79A7'), ('within a community', '#0072B2'), ('pairs with C', '#b5b5b5'))
+LOCKING_GROUPS = (('A--B pairs', '#CC79A7'), ('within a community', '#0072B2'), ('pairs with C', '#b5b5b5'))
 
 
 def locking_groups(n=8):
@@ -277,7 +288,8 @@ def load_locking(spec):
         stored_rows = {r.row_id: bank['z'][int(np.flatnonzero(scores.row_id.eq(r.row_id))[0])].astype(float) for r in chosen}
     part = scores[held]
     frame = pd.DataFrame(dict(row_id=part.row_id.to_numpy(), control=part.control.to_numpy(), Q=part.Q_lock.to_numpy(),
-                              q=part.z_PC1.to_numpy(), seed=part.seed.to_numpy(), eta=part.eta.to_numpy(), cohort='held'))
+                              q=part.z_PC1.to_numpy(), seed=part.seed.to_numpy(), eta=part.eta.to_numpy(), cohort='held',
+                              trajectory=part.seed.to_numpy()))  # same seed index; realisations independent per control
     frame['mean-|r|'] = part.mean_abs_r.to_numpy()
     frame['mean-MPI'] = part.mean_PC1.to_numpy()
     for k in range(len(columns)):
@@ -326,7 +338,7 @@ def load_locking(spec):
 # --------------------------------------------------------------------------- hardware
 
 HARDWARE_RUN = ROOT/'results/hardware-pilot-261012/full-p90-r9-261014'
-HARDWARE_GROUPS = (('pairs with a\nlate-locking channel', '#d95f02'), ('coherent-core pairs', '#26828e'))
+HARDWARE_GROUPS = (('pairs with a late-locking channel', '#d95f02'), ('coherent-core pairs', '#26828e'))
 
 
 def late_channels(x, threshold=.9):
@@ -410,52 +422,114 @@ def load_hardware(spec, steps=(0, 23, 87), display_max=87):
     return SystemData(spec, shown, snapshots, metrics, provenance, primary='ER')
 
 
-# --------------------------------------------------------------------------- CML2D (registry example)
+# --------------------------------------------------------------------------- stacked systems (no SPI–SPI inspection)
 
-def load_cml2d(spec, controls=(3.84, 3.86212, 3.89)):
-    """Collective period-two CML, confirmation bank (544 held rows, M=32 of N=65,536, T=1000).
+BASELINE_SCORES = ROOT/'results/baseline-comparison_260921'
 
-    Snapshots: the first confirmation seed at three fixed r values (as in three_systems); MTS, MPIs and
-    z all come from those rows. The glyph is the mean of the 32 observed sensors over the first 100
-    steps (a period-two proxy, not the global Q, whose lattice masters are not local)."""
+
+def load_cml2d(spec):
+    """Collective period-two CML: confirmation bank curves (544 rows, 32 seeds, M=32 of N=65,536).
+
+    Snapshot MTS, global mean and final lattice come from the fixed pilot seed used in three_systems
+    (26091115, a held seed of the pilot), at r = 3.84, 3.86212 and 3.89. The lattice is the archived
+    state after the future reference window, not simultaneous with the observed window."""
     from research.inference.benchmarks.three_systems import load_cml
-    data = load_cml()
-    base = data['frame'].query('eligible').reset_index(drop=True)
-    root = ROOT/'data/order-parameter-inference/cml2d/cml2d_confirmation_260911'
-    eligibility = json.loads((root/'primary-analysis/eligibility.json').read_text())
-    hashes = {r['row_id']: r['mpi_sha256'] for r in eligibility['sources']}
-    with np.load(root/'primary-analysis/features.npz') as bank:
-        rows = list(bank['row_id'])
-        order = list(bank['spi_order'])
-        columns = [pair_index(order, f.spi_a, f.spi_b) for f in spec.features]
-        full = bank['z'][[rows.index(r) for r in base.row_id]].astype(float)
-    frame = pd.DataFrame(dict(row_id=base.row_id, control=base.r, Q=base.Q_reference, q=base.q, seed=base.seed, cohort='all'))
+    data = load_cml()       # checks frozen hashes, replays every q from the frozen model
+    base = data['frame']
+    sign = json.loads((ROOT/'data/order-parameter-inference/cml2d/cml2d_confirmation_260911/primary-analysis/summary.json')
+                      .read_text())['display_sign']
+    frame = pd.DataFrame(dict(row_id=base.row_id, control=base.r, Q=base.Q_reference, q=sign*base.q,
+                              trajectory=base.seed, cohort='held'))
     frame['mean-|r|'] = base.mean_abs_correlation.to_numpy()
     frame['mean-MPI'] = base.mean_PC1.to_numpy()
-    for k, column in enumerate(columns):
-        frame[f'z{k}'] = full[:, column]
-    seed = int(base.seed.min())
+    snapshots = [Snapshot(control=e['control'], label=rf"$r={e['control']:g}$", row_id=e['row_id'], x=e['x'],
+                          glyph=dict(t=np.arange(100), trace=e['mean'], lattice=e['field'], sensors=e['sensors'],
+                                     window=(0., 99.)))
+                 for e in data['examples']]
+    metrics = {key: rho(frame, key, 'held') for key in ['q', 'mean-|r|', 'mean-MPI']}
+    provenance = dict(scores_sha256=data['score_sha256'], q_replay_max_error=data['replay_error'],
+                      snapshots=[s.row_id for s in snapshots], note=load_cml2d.__doc__.split('\n\n', 1)[1].strip())
+    return SystemData(spec, frame, snapshots, metrics, provenance, primary='held')
+
+
+SL_RUN = ROOT/'data/order-parameter-inference/stuart-landau/stuart_landau_locking_boundary_confirmation/stuart-landau-locking-boundary-confirmation'
+SL_ANALYSIS = ROOT/'results/order-parameter-inference/stuart-landau/stuart_landau_locking_boundary_confirmation_analysis'
+
+
+def load_stuart_landau(spec, controls=(.68, .725, .77), instance=0):
+    """Fine Stuart–Landau locking-to-unsteady confirmation (152 rows: 19 gamma x 8 instances, M=N=32).
+
+    q is the frozen coordinate applied without refitting. Snapshots: instance 0 at the range ends and the
+    steepest interval; |Z(t)| is regenerated from the stored seed and checked against the archived input."""
+    from mtsspi.generators.order_parameter import generate_stuart_landau
+    scores = pd.read_csv(SL_ANALYSIS/'scores.csv')
+    check(len(scores) == 152 and scores.instance.nunique() == 8 and scores.gamma.nunique() == 19, 'SL fine scope changed')
+    base = pd.read_csv(BASELINE_SCORES/'inference-StuartLandauFine.csv').query('evaluation')
+    merged = scores.merge(base[['instance', 'gamma', 'q', 'mean_PC1']], on=['instance', 'gamma'], validate='one_to_one',
+                          suffixes=('', '_baseline'))
+    np.testing.assert_allclose(merged.q, merged.q_baseline, atol=1e-8)
+    frame = pd.DataFrame(dict(row_id=[f'I{i}-gamma{g:.3f}' for i, g in zip(merged.instance, merged.gamma)],
+                              control=merged.gamma, Q=merged.Q_R_mean, q=merged.q, trajectory=merged.instance, cohort='held'))
+    frame['mean-|r|'] = merged.mean_abs_correlation.to_numpy()
+    frame['mean-MPI'] = merged.mean_PC1.to_numpy()
     snapshots, checks = [], []
-    with np.load(root/'primary/observations.npz') as observations:
-        for r in controls:
-            i = int(np.flatnonzero(base.seed.eq(seed) & np.isclose(base.r, r))[0])
-            row_id = base.row_id[i]
-            path, = (root/'primary/mpi/primary').glob(f"*-{row_id.replace('.', '-')}/spi_mpis.npz")
-            check(sha(path) == hashes[row_id], f'CML MPI changed: {row_id}')
-            with np.load(path) as m:
-                mpis = {k: m[k] for k in order}
-            contract = verify_ordered_row(mpis, order, full[i])
-            check(contract['passes'], f'CML z row is not the ordered contract: {row_id}')
-            edges = {k: edge_z(mpis[f.spi_a], mpis[f.spi_b]) for k, f in enumerate(spec.features)}
-            x = observations[row_id]
-            trace = x[:, :100].mean(0)
-            snapshots.append(Snapshot(control=r, label=rf'$r={r:g}$', row_id=row_id, x=x,
-                                      glyph=dict(t=np.arange(100), trace=trace, window=(0., 99.)),
-                                      edges=edges, groups=np.zeros(32*31, int)))
-            checks.append(dict(row_id=row_id, row_contract=contract))
-    metrics = {key: rho(frame, key, 'all') for key in ['q', 'mean-|r|', 'mean-MPI']}
-    provenance = dict(snapshot_checks=checks, scores_sha256=data['score_sha256'], note=load_cml2d.__doc__.split('\n\n', 1)[1].strip())
-    return SystemData(spec, frame, snapshots, metrics, provenance, primary='all')
+    for gamma in controls:
+        folder = SL_RUN/f"M32_T1000_I{instance}_gamma{gamma:.3f}".replace('gamma0.', 'gamma0p')
+        meta = json.loads((folder/'meta.json').read_text())
+        x = np.load(folder/'timeseries.npy').T.astype(float)
+        params = dict(meta['generator']['resolved_params']); params.pop('N_full')
+        regenerated, internals = generate_stuart_landau(M=32, T=1000, N_full=32, **params, return_internals=True,
+                                                        rng=np.random.default_rng(meta['generator']['seed']))
+        error = float(np.max(abs(regenerated.T-x)))
+        check(error < 1e-6, f'Stuart–Landau regeneration differs from the archive: {folder.name}')
+        R = np.abs(internals.order_parameter)
+        snapshots.append(Snapshot(control=gamma, label=rf'$\gamma={gamma:g}$', row_id=folder.name, x=x,
+                                  glyph=dict(t=np.arange(len(R))*params['sample_dt'], synchrony=R,
+                                             window=(0., (len(R)-1)*params['sample_dt']))))
+        checks.append(dict(row_id=folder.name, regeneration_max_error=error))
+    metrics = {key: rho(frame, key, 'held') for key in ['q', 'mean-|r|', 'mean-MPI']}
+    provenance = dict(scores_sha256=sha(SL_ANALYSIS/'scores.csv'), snapshot_checks=checks,
+                      note=load_stuart_landau.__doc__.split('\n\n', 1)[1].strip())
+    return SystemData(spec, frame, snapshots, metrics, provenance, primary='held')
+
+
+KURAMOTO_RUN = ROOT/'data/order-parameter-inference/kuramoto/kuramoto_full_observation_260916/primary'
+
+
+def load_kuramoto(spec, controls=(.625, 1.0075, 1.65), seed=260916009):
+    """Full-observation Kuramoto (M=N=32): 128 held rows, 16 kappa x 8 seeds; exploratory (dominance screen
+    1.478 < 1.5 unmet). Snapshots: the first held seed; R(t) regenerated with the pilot's generator call."""
+    from research.inference.kuramoto import kuramoto_full_observation_260916 as K
+    from mtsspi.generators.order_parameter import generate_kuramoto_order_parameter
+    scores = pd.read_csv(KURAMOTO_RUN/'analysis/scores.csv').query("role == 'evaluation' and eligible")
+    sign = json.loads((KURAMOTO_RUN/'analysis/summary.json').read_text())['display_sign']
+    base = pd.read_csv(BASELINE_SCORES/'inference-Kuramoto.csv').set_index('row_id').loc[scores.row_id]
+    np.testing.assert_allclose(base.q, scores.q, atol=1e-8)
+    frame = pd.DataFrame(dict(row_id=scores.row_id, control=scores.control, Q=scores.Q_reference, q=sign*scores.q,
+                              trajectory=scores.seed, cohort='held'))
+    frame['mean-|r|'] = scores.mean_abs_correlation.to_numpy()
+    frame['mean-MPI'] = base.mean_PC1.to_numpy()
+    rows = json.loads((KURAMOTO_RUN/'manifest.json').read_text())['rows']
+    snapshots, checks = [], []
+    with np.load(KURAMOTO_RUN/'observations.npz') as observations:
+        for kappa in controls:
+            row, = [r for r in rows if r['seed'] == seed and np.isclose(r['control'], kappa)]
+            x = observations[row['row_id']]
+            y, truth = generate_kuramoto_order_parameter(
+                M=32, T=1000, N_full=32, K=kappa*np.sqrt(8/np.pi), dt=.02, sample_dt=.1, burn_time=200,
+                future_truth_T=10000, omega_mean=1, omega_std=1, frequency_distribution='gaussian',
+                frequency_sampling='random', output='cos', rng=np.random.default_rng(seed),
+                return_internals=True, store_full_phases=False)
+            error = float(np.max(abs(y.T-x)))
+            check(error < 1e-6, f"Kuramoto regeneration differs from the archive: {row['row_id']}")
+            snapshots.append(Snapshot(control=kappa, label=rf'$\kappa={kappa:g}$', row_id=row['row_id'], x=x,
+                                      glyph=dict(t=np.arange(len(truth.r_full))*.1, synchrony=truth.r_full,
+                                                 window=(0., (len(truth.r_full)-1)*.1))))
+            checks.append(dict(row_id=row['row_id'], regeneration_max_error=error))
+    assert K.CONTROLS[0] == controls[0] and K.CONTROLS[-1] == controls[-1]
+    metrics = {key: rho(frame, key, 'held') for key in ['q', 'mean-|r|', 'mean-MPI']}
+    provenance = dict(display_sign=sign, snapshot_checks=checks, note=load_kuramoto.__doc__.split('\n\n', 1)[0])
+    return SystemData(spec, frame, snapshots, metrics, provenance, primary='held')
 
 
 # --------------------------------------------------------------------------- glyphs
@@ -471,7 +545,7 @@ def glyph_wrapped(ax, g, color=GLYPH_COLOR):
     """Wrapped relative phase: a sawtooth while phases slip, a flat band once locked."""
     stride = max(1, g['phase'].shape[1]//2500)
     for row in g['phase']:
-        ax.scatter(g['t'][::stride], wrap_cycles(row)[::stride], s=.35, lw=0, color=color,
+        ax.scatter(g['t'][::stride], wrap_cycles(row)[::stride], s=.3, lw=0, color=color,
                    alpha=.55 if len(g['phase']) > 1 else .8, rasterized=True)
     ax.set(xlim=g['window'], ylim=(-.56, .56))
     ax.axhline(0, color='.82', lw=.4, zorder=0)
@@ -498,6 +572,7 @@ def glyph_spiral(ax, g, color=GLYPH_COLOR):
 
 
 def glyph_synchrony(ax, g, color=GLYPH_COLOR):
+    """Order-parameter magnitude over the record; dotted line at 1."""
     ax.plot(g['t'], g['synchrony'], color=color, lw=.6)
     ax.axhline(1, color='.75', lw=.4, ls=':')
     ax.set(xlim=g['window'], ylim=(0, 1.06))
@@ -522,20 +597,28 @@ def glyph_raster(ax, g, color=None):
     _bare(ax, ())
 
 
-def glyph_trace(ax, g, color=GLYPH_COLOR):
-    ax.plot(g['t'], g['trace'], color=color, lw=.6)
-    ax.set(xlim=g['window'])
+def glyph_trace(ax, g, color=GLYPH_COLOR, steps=40):
+    """Global mean over the first `steps` iterations: a large zigzag is collective period-two order."""
+    ax.plot(g['t'][:steps], g['trace'][:steps], color=color, lw=.6)
+    ax.set(xlim=(0, steps-1), ylim=(.3, .9))
     _bare(ax, ('bottom', 'left'))
 
 
-def glyph_field(ax, g, color=None):
-    ax.imshow(g['field'], origin='lower', cmap='viridis', vmin=0, vmax=1, interpolation='nearest', rasterized=True)
+def glyph_lattice(ax, g, color=None):
+    """Whole 256 x 256 lattice (state in [0, 1]); white circles mark the 32 observed sites."""
+    field = g['lattice']
+    side = field.shape[0]
+    ax.imshow(field, origin='lower', cmap='viridis', vmin=0, vmax=1, interpolation='nearest', rasterized=True,
+              extent=(-.5, side-.5, -.5, side-.5))
+    sensors = np.asarray(g['sensors'])
+    ax.scatter(sensors % side, sensors//side, s=1.1, facecolors='none', edgecolors='white', lw=.3)
     _bare(ax, ())
 
 
 GLYPHS = {'wrapped': glyph_wrapped, 'unwrapped': glyph_unwrapped, 'spiral': glyph_spiral,
           'synchrony': glyph_synchrony, 'lissajous': glyph_lissajous, 'raster': glyph_raster, 'trace': glyph_trace,
-          'field': glyph_field}
+          'lattice': glyph_lattice}
+SQUARE_GLYPHS = ('spiral', 'lissajous', 'lattice')
 
 
 def draw_glyphs(axes, data, kind):
@@ -566,6 +649,13 @@ def _no_ticks(*axes):
         ax.set_xticks([]); ax.set_yticks([]); ax.set_xticks([], minor=True); ax.set_yticks([], minor=True)
 
 
+def italic(lines):
+    """Italic multi-line text for either renderer (usetex ignores fontstyle)."""
+    if plt.rcParams['text.usetex']:
+        return dict(s='\n'.join(rf'\textit{{{line}}}' for line in lines))
+    return dict(s='\n'.join(lines), style='italic')
+
+
 def draw_heatmaps(axes, data):
     spec = data.spec
     start, count = spec.heatmap_window or (0, data.snapshots[0].x.shape[1])
@@ -575,7 +665,7 @@ def draw_heatmaps(axes, data):
     for ax, x in zip(axes, scaled, strict=True):
         m = x.shape[0]
         ax.imshow(x[:, start:start+count], origin='lower', aspect='auto', cmap=cmap, vmin=-limit, vmax=limit,
-                  extent=(start, start+count, .5, m+.5), interpolation='antialiased', rasterized=True)
+                  extent=(start, start+count, .5, m+.5), interpolation='nearest', rasterized=True)
         if spec.communities:
             for k in range(1, spec.communities):
                 ax.axhline(k*m/spec.communities+.5, color='white', lw=.4)
@@ -590,11 +680,24 @@ def mark_boundary(ax, spec):
         ax.axvline(spec.boundary, color='.5', lw=.6, ls=':')
 
 
-def _series(axis, data, column, color, marker, *, ms=2.4, lw=1.1, secondary=False, label=None):
+SPREADS = ('trajectories', 'band', 'both', 'none')
+
+
+def _series(axis, data, column, color, marker, *, ms=1.6, lw=1.3, spread='band', secondary=False, label=None):
+    """Mean across instances (thick), with faint per-instance paths and/or a 10-90% band behind it."""
+    if spread not in SPREADS:
+        raise ValueError(f'spread must be one of {SPREADS}')
+    part = data.frame[data.frame.cohort.eq(data.primary)]
     mean, lo, hi = curve(data.frame, column, data.primary)
-    handle, = axis.plot(mean.index, mean, marker+'-', color=color, ms=ms, lw=lw, label=label)
-    if data.frame.cohort.eq(data.primary).sum() > len(mean):
-        axis.fill_between(mean.index, lo, hi, color=color, alpha=.15, lw=0)
+    replicated = part.groupby('control').size().max() > 1
+    if replicated and spread in ('trajectories', 'both') and 'trajectory' in part:
+        paths = part.trajectory.nunique()
+        alpha = float(np.clip(2.4/paths, .1, .32))
+        for _, path in part.sort_values('control').groupby('trajectory'):
+            axis.plot(path.control, path[column], color=color, lw=.45, alpha=alpha, zorder=1, solid_capstyle='round')
+    if replicated and spread in ('band', 'both'):
+        axis.fill_between(mean.index, lo, hi, color=color, alpha=.15, lw=0, zorder=1)
+    handle, = axis.plot(mean.index, mean, marker+'-', color=color, ms=ms, lw=lw, label=label, zorder=3)
     if secondary:
         for cohort, ls in data.spec.secondary_style.items():
             mean, _, _ = curve(data.frame, column, cohort)
@@ -602,11 +705,12 @@ def _series(axis, data, column, color, marker, *, ms=2.4, lw=1.1, secondary=Fals
     return handle
 
 
-def draw_curves(ax, data, *, legend=True):
-    """Control against Q (left, black) and q (right, teal); bands are 10-90% across held instances."""
+def draw_curves(ax, data, *, legend=True, spread='trajectories', fontsize=7):
+    """Control against Q (left, black) and q (right, teal)."""
     spec = data.spec
     right = ax.twinx()
-    handles = [_series(ax, data, 'Q', Q_COLOR, 'o', label='$Q$'), _series(right, data, 'q', Z_COLOR, 's', label='$q$')]
+    handles = [_series(ax, data, 'Q', Q_COLOR, 'o', spread=spread, label='$Q$'),
+               _series(right, data, 'q', Z_COLOR, 's', spread=spread, label='$q$')]
     if spec.Q_log:
         ax.set_yscale('log')
         ax.yaxis.set_major_locator(plt.LogLocator(base=10, numticks=4))
@@ -616,18 +720,25 @@ def draw_curves(ax, data, *, legend=True):
     if spec.q_limits:
         right.set_ylim(spec.q_limits)
     mark_boundary(ax, spec)
-    ax.set_ylabel(spec.Q_label, color=Q_COLOR, labelpad=1.5, fontsize=7)
-    right.set_ylabel(spec.q_label, color=Z_COLOR, labelpad=1.5, fontsize=7)
-    right.tick_params(axis='y', labelcolor=Z_COLOR, labelsize=6.5, pad=1.5)
-    ax.tick_params(labelsize=6.5, pad=1.5)
-    ax.set_xlabel(spec.control_label, labelpad=1.5, fontsize=7)
+    ax.set_ylabel(spec.Q_label, color=Q_COLOR, labelpad=1.5, fontsize=fontsize)
+    right.set_ylabel(spec.q_label, color=Z_COLOR, labelpad=1.5, fontsize=fontsize)
+    right.tick_params(axis='y', labelcolor=Z_COLOR, labelsize=fontsize-.5, pad=1.5)
+    ax.tick_params(labelsize=fontsize-.5, pad=1.5)
+    ax.set_xlabel(spec.control_label, labelpad=1.5, fontsize=fontsize)
     if spec.control_ticks:
         ax.set_xticks(spec.control_ticks)
     _box(ax); _box(right)
     if legend:
         loc, anchor = spec.legend_loc if isinstance(spec.legend_loc, tuple) else (spec.legend_loc, None)
-        right.legend(handles=handles, loc=loc, bbox_to_anchor=anchor, fontsize=6.5, handlelength=1.4, borderaxespad=.4)
+        right.legend(handles=handles, loc=loc, bbox_to_anchor=anchor, fontsize=fontsize-.5, handlelength=1.4,
+                     borderaxespad=.4)
     return right
+
+
+def _leader(ax, source, anchor, control, value):
+    ax.plot(control, value, 'o', ms=3.6, mfc='none', mec='.25', mew=.55, zorder=6, clip_on=False)
+    ax.figure.add_artist(ConnectionPatch(xyA=anchor, coordsA=source.transAxes, xyB=(control, value),
+                                         coordsB=ax.transData, color='.45', lw=.4, zorder=7))
 
 
 def draw_insets(ax, right, data, glyph):
@@ -657,7 +768,6 @@ def draw_insets(ax, right, data, glyph):
     for gax, hax, snapshot, (x, y) in zip(glyph_axes, heat_axes, data.snapshots, spec.inset_boxes):
         hax.text(.5, -.06, snapshot.label, transform=hax.transAxes, ha='center', va='top', fontsize=6)
         value = value_at(data.frame, 'Q', snapshot.control, data.primary)
-        ax.plot(snapshot.control, value, 'o', ms=4.2, mfc='none', mec='.25', mew=.6, zorder=6, clip_on=False)
         px, py = ax.transAxes.inverted().transform(ax.transData.transform((snapshot.control, value)))
         top = y+hh+.012+gh
         if py < y:
@@ -666,17 +776,16 @@ def draw_insets(ax, right, data, glyph):
             anchor, source = (.5, 1.02), gax
         else:
             anchor, source = ((1., .5) if px > x+w else (0., .5)), hax
-        fig.add_artist(ConnectionPatch(xyA=anchor, coordsA=source.transAxes, xyB=(snapshot.control, value),
-                                       coordsB=ax.transData, color='.45', lw=.45, zorder=7))
+        _leader(ax, source, anchor, snapshot.control, value)
     return glyph_axes, heat_axes
 
 
-def draw_baseline(ax, data, key):
+def draw_baseline(ax, data, key, *, spread='trajectories'):
     """Q (black) and one simple baseline against control: boxed, no ticks."""
     spec = data.spec
     right = ax.twinx()
-    _series(ax, data, 'Q', Q_COLOR, 'o', ms=1.4, lw=.8)
-    _series(right, data, key, BASELINES[key], 's', ms=1.4, lw=.8)
+    _series(ax, data, 'Q', Q_COLOR, 'o', ms=1.2, lw=.9, spread=spread)
+    _series(right, data, key, BASELINES[key], 's', ms=1.2, lw=.9, spread=spread)
     if spec.Q_log:
         ax.set_yscale('log')
     if spec.Q_limits:
@@ -691,21 +800,21 @@ def draw_baseline(ax, data, key):
 
 
 def draw_feature(ax, data, k, *, ylabel=True):
-    """z_ab against control on a fixed [-1, 1] range: boxed, no ticks, snapshot controls marked."""
+    """z_ab against control on a fixed [-1, 1] range (10-90% band): boxed, no ticks, snapshots marked."""
     spec = data.spec
     f = spec.features[k]
     ax.axhline(0, color='.85', lw=.5, zorder=0)
-    _series(ax, data, f'z{k}', Z_COLOR, 'o', ms=1.4, lw=.85, secondary=True)
+    _series(ax, data, f'z{k}', Z_COLOR, 'o', ms=1.2, lw=.9, spread='band', secondary=True)
     mark_boundary(ax, spec)
     for snapshot in data.snapshots:
         ax.plot(snapshot.control, 1.0, 'v', color='.45', ms=2.2, zorder=5)
     ax.set(ylim=(-1.1, 1.1))
     _no_ticks(ax)
     _box(ax, .5)
-    reading = textwrap.wrap(f.reading, 24)
-    ax.set_title(f.label, fontsize=6.3, pad=3+6.2*len(reading), linespacing=1.0)
-    ax.text(.5, 1.03, '\n'.join(reading), transform=ax.transAxes, ha='center', va='bottom',
-            fontsize=5.4, style='italic', color='.35', linespacing=1.0)
+    reading = textwrap.wrap(f.reading, 26)
+    ax.set_title(f.label, fontsize=6.5, pad=3+6.3*len(reading), linespacing=1.0)
+    ax.text(.5, 1.03, transform=ax.transAxes, ha='center', va='bottom', fontsize=5.6, color='.35', linespacing=1.0,
+            **italic(reading))
     ax.set_xlabel(spec.control_short, fontsize=6, labelpad=1)
     if ylabel:
         ax.set_ylabel(r'$z_{ab}\in[-1,1]$', fontsize=6, labelpad=1)
@@ -732,7 +841,6 @@ def draw_edge_plane(ax, data, k, i, *, limits=None, axis_labels=True):
         ax.set(xlim=limits[0], ylim=limits[1])
     else:
         ax.margins(.06)
-    ax.set_box_aspect(1)
     _no_ticks(ax)
     _box(ax, .5)
     ax.set_title(snapshot.label+'\n'+rf'$z={z:+.2f}$', fontsize=6, pad=2, linespacing=1.1)
@@ -747,18 +855,17 @@ SPI_NAMES = {'lcss': 'LCSS', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1': 'TE (
              'coint_johansen_trace_stat_order-1_ardiff-1': 'Johansen trace',
              'corr_pearson_tau-2': 'Pearson lag 2', 'corr_pearson_tau-20-sq': r'Pearson lag 20$^2$',
              'si_kernel_W-0.5_k-1': 'SI (kernel)', 'ids': 'IDS',
-             'corr_pearson_tau-1': 'Pearson 2 ms', 'corr_pearson_tau-10': 'Pearson 20 ms',
-             'pec_orth': 'Envelope corr.', 'pec_orth_abs': '|Envelope corr.|', 'corr_pearson_tau-5': 'Pearson lag 5'}
+             'corr_pearson_tau-1': 'Pearson 2 ms', 'corr_pearson_tau-10': 'Pearson 20 ms'}
 
 
 def short_spi(name):
     return SPI_NAMES.get(name, name)
 
 
-def edge_legend(ax, spec, title=None):
+def edge_legend(ax, spec, ncol=None):
     handles = [Line2D([], [], marker='o', ls='', color=c, ms=2.6, label=g) for g, c in spec.edge_groups]
-    ax.legend(handles=handles, loc='center left', fontsize=5.8, handletextpad=.15, borderaxespad=0, frameon=False,
-              title=title, title_fontsize=6, alignment='left', labelspacing=.3)
+    ax.legend(handles=handles, loc='center', fontsize=6, handletextpad=.15, borderaxespad=0, frameon=False,
+              ncol=ncol or len(handles), columnspacing=1.0)
     ax.axis('off')
 
 
@@ -774,11 +881,12 @@ def cohort_legend(ax, spec):
 
 # --------------------------------------------------------------------------- inch-based layout
 
-GEOMETRY = dict(width=3.55, left=.42, right=.42, title=.30, curves=2.30, curves_bottom=.30,
+GEOMETRY = dict(width=3.55, left=.42, right=.42, title=.42, curves=2.55, curves_bottom=.30,
                 inset_width=.62, inset_heat=.24, inset_glyph=.22, inset_glyph_square=.40,
                 row_gap=.10, baseline_title=.14, baseline=.50, baseline_bottom=.16,
-                feature_title=.34, feature=.62, feature_bottom=.16, edge_title=.13, edge=.66, edge_bottom=.16)
-SQUARE_GLYPHS = ('spiral', 'lissajous', 'field')
+                feature_title=.36, feature=.80, feature_bottom=.20, edge_title=.24, edge=.80, edge_legend=.32)
+STACK = dict(title=.42, glyph=.22, glyph_square=.44, glyph_label=.10, gap=.03, heat=.26, leader=.12, curves=1.05,
+             curves_bottom=.30)
 
 
 def axes_at(fig, x, y, w, h, **kw):
@@ -787,77 +895,132 @@ def axes_at(fig, x, y, w, h, **kw):
     return fig.add_axes([x/fw, 1-(y+h)/fh, w/fw, h/fh], **kw)
 
 
-def headline_height():
+def headline_height(curves=None):
     g = GEOMETRY
-    return g['title']+g['curves']+g['curves_bottom']
+    return g['title']+(curves or g['curves'])+g['curves_bottom']
 
 
-def column_height(spec, edge_rows):
+def column_height(spec, edge_rows, curves=None):
     g = GEOMETRY
-    return (headline_height()+g['row_gap']+g['baseline_title']+g['baseline']+g['baseline_bottom']+g['row_gap']
-            +g['feature_title']+g['feature']+g['feature_bottom']+len(edge_rows)*(g['edge_title']+g['edge']+g['edge_bottom']))
+    return (headline_height(curves)+g['row_gap']+g['baseline_title']+g['baseline']+g['baseline_bottom']+g['row_gap']
+            +g['feature_title']+g['feature']+g['feature_bottom']+len(edge_rows)*(g['edge_title']+g['edge'])
+            +(g['edge_legend'] if edge_rows else 0))
+
+
+def stack_height(glyph, curves=None):
+    s = STACK
+    return (s['title']+s['glyph_label']+(s['glyph_square'] if glyph in SQUARE_GLYPHS else s['glyph'])+s['gap']+s['heat']
+            +s['leader']+(s['curves'] if curves is None else curves)+s['curves_bottom'])
+
+
+def bold(text):
+    """Bold text for either renderer (usetex ignores fontweight)."""
+    if plt.rcParams['text.usetex']:
+        return dict(s=rf'\textbf{{{text}}}')
+    return dict(s=text, fontweight='bold')
 
 
 def panel_label(fig, x, y, text):
     if text:
         fw, fh = fig.get_size_inches()
-        fig.text(x/fw, 1-y/fh, text, fontsize=9, fontweight='bold', va='top', ha='left')
+        fig.text(x/fw, 1-y/fh, fontsize=9, va='top', ha='left', **bold(text))
 
 
-def draw_headline(fig, x0, y0, data, glyph=None, *, label=None):
+def association(metrics):
+    return (rf"$|\rho_s|$ with $Q$: $q$ {metrics['q']:.2f}, mean-$|r|$ {metrics['mean-|r|']:.2f}, "
+            rf"mean-MPI {metrics['mean-MPI']:.2f}")
+
+
+def _titles(fig, x, y, title, subtitle, data):
+    fw, fh = fig.get_size_inches()
+    fig.text(x/fw, 1-(y+.02)/fh, fontsize=7.5, va='top', **bold(title))
+    fig.text(x/fw, 1-(y+.15)/fh, subtitle+'\n'+association(data.metrics), fontsize=6, va='top', color='.3',
+             linespacing=1.15)
+
+
+def draw_headline(fig, x0, y0, data, glyph=None, *, label=None, spread='trajectories', curves=None):
     """Title, boxed Q/q curves, and MTS+glyph insets inside the axes; returns the bottom (in)."""
     g, spec = GEOMETRY, data.spec
     glyph = glyph or spec.glyphs[0]
     left, width = x0+g['left'], g['width']-g['left']-g['right']
-    fw, fh = fig.get_size_inches()
-    fig.text(left/fw, 1-(y0+.03)/fh, spec.title, fontsize=7.5, fontweight='bold', va='top')
-    fig.text(left/fw, 1-(y0+.16)/fh, spec.subtitle+rf"; $|\rho_s(q,Q)|={data.metrics['q']:.2f}$",
-             fontsize=6, va='top', color='.3')
+    _titles(fig, left, y0, spec.title, spec.subtitle, data)
     panel_label(fig, x0, y0, label)
     y = y0+g['title']
-    ax = axes_at(fig, left, y, width, g['curves'])
-    right = draw_curves(ax, data)
+    height = curves or g['curves']
+    ax = axes_at(fig, left, y, width, height)
+    right = draw_curves(ax, data, spread=spread)
     glyphs, heats = draw_insets(ax, right, data, glyph)
-    return y+g['curves']+g['curves_bottom'], dict(curves=ax, right=right, glyphs=glyphs, heatmaps=heats)
+    return y+height+g['curves_bottom'], dict(curves=ax, right=right, glyphs=glyphs, heatmaps=heats)
 
 
-def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd'):
+def draw_stack_panel(fig, x0, y0, data, glyph=None, *, label=None, spread='trajectories', curves=None):
+    """Compact system panel: MTS heatmaps with glyphs above the Q/q curves; baselines summarised in text."""
+    g, s, spec = GEOMETRY, STACK, data.spec
+    glyph = glyph or spec.glyphs[0]
+    left, width = x0+g['left'], g['width']-g['left']-g['right']
+    _titles(fig, left, y0, spec.title, spec.subtitle, data)
+    panel_label(fig, x0, y0, label)
+    y = y0+s['title']+s['glyph_label']
+    gap = .14
+    inset = (width-2*gap)/3
+    square = glyph in SQUARE_GLYPHS
+    gh = s['glyph_square'] if square else s['glyph']
+    glyph_axes, heat_axes = [], []
+    for k in range(3):
+        xk = left+k*(inset+gap)
+        glyph_axes.append(axes_at(fig, xk+(inset-gh)/2, y, gh, gh) if square else axes_at(fig, xk, y, inset, gh))
+        heat_axes.append(axes_at(fig, xk, y+gh+s['gap'], inset, s['heat']))
+    draw_glyphs(glyph_axes, data, glyph)
+    for gax, snapshot in zip(glyph_axes, data.snapshots):
+        gax.set_title(snapshot.label, fontsize=6, pad=1.5)
+    draw_heatmaps(heat_axes, data)
+    y += gh+s['gap']+s['heat']+s['leader']
+    height = curves or s['curves']
+    ax = axes_at(fig, left, y, width, height)
+    right = draw_curves(ax, data, spread=spread, fontsize=6.5)
+    for hax, snapshot in zip(heat_axes, data.snapshots):
+        _leader(ax, hax, (.5, 0), snapshot.control, value_at(data.frame, 'Q', snapshot.control, data.primary))
+    return y+height+s['curves_bottom']
+
+
+def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd', spread='trajectories', curves=None):
     g, spec = GEOMETRY, data.spec
     edge_rows = spec.edge_features if edge_rows is None else edge_rows
     left, width = x0+g['left'], g['width']-g['left']-g['right']
-    y, _ = draw_headline(fig, x0, y0, data, glyph, label=labels[0])
+    y, _ = draw_headline(fig, x0, y0, data, glyph, label=labels[0], spread=spread, curves=curves)
     y += g['row_gap']
     panel_label(fig, x0, y, labels[1])
     y += g['baseline_title']
     gap = .22
     for j, key in enumerate(BASELINES):
-        draw_baseline(axes_at(fig, left+j*((width-gap)/2+gap), y, (width-gap)/2, g['baseline']), data, key)
+        draw_baseline(axes_at(fig, left+j*((width-gap)/2+gap), y, (width-gap)/2, g['baseline']), data, key, spread=spread)
     y += g['baseline']+g['baseline_bottom']+g['row_gap']
+    # Features and edge planes share columns: three equal boxes spanning the curve width.
+    side = g['feature']
+    step = (width-side)/2
     panel_label(fig, x0, y, labels[2])
     y += g['feature_title']
-    side, gap = g['feature'], (width-3*g['feature'])/2
     for k in range(3):
-        xk = left+k*(side+gap)
         if k < len(spec.features):
-            draw_feature(axes_at(fig, xk, y, side, side), data, k, ylabel=k == 0)
+            draw_feature(axes_at(fig, left+k*step, y, side, side), data, k, ylabel=k == 0)
         else:
-            cohort_legend(axes_at(fig, xk-.05, y, side+.35, side), spec)
+            cohort_legend(axes_at(fig, left+k*step-.05, y, side+.4, side), spec)
     y += side+g['feature_bottom']
     for r, k in enumerate(edge_rows):
         panel_label(fig, x0, y, labels[3] if r == 0 else None)
         y += g['edge_title']
-        size, gap = g['edge'], .08
         limits = edge_limits(data, k) if spec.edge_scale == 'shared' else None
         for i in range(3):
-            draw_edge_plane(axes_at(fig, left+i*(size+gap), y, size, size), data, k, i, limits=limits, axis_labels=i == 0)
-        legend = axes_at(fig, left+3*(size+gap)+.04, y, g['width']-g['left']-3*(size+gap), size)
-        edge_legend(legend, spec, spec.features[k].label.replace('\n', ' '))
-        y += size+g['edge_bottom']
+            draw_edge_plane(axes_at(fig, left+i*step, y, side, side), data, k, i, limits=limits, axis_labels=i == 0)
+        y += side
+    if edge_rows:
+        edge_legend(axes_at(fig, left, y+.17, width, g['edge_legend']-.17), spec)
+        y += g['edge_legend']
     return y
 
 
-def composite(systems, glyphs=None, edge_rows=None, gap=.08):
-    """System columns side by side; `glyphs` maps name to glyph variant, `edge_rows` to feature indices."""
+def composite(systems, glyphs=None, edge_rows=None, gap=.08, spread='trajectories'):
+    """System columns side by side (full columns); `glyphs` maps name to glyph variant."""
     style()
     glyphs, edge_rows = glyphs or {}, edge_rows or {}
     heights = [column_height(d.spec, edge_rows.get(d.spec.name, d.spec.edge_features)) for d in systems]
@@ -866,20 +1029,40 @@ def composite(systems, glyphs=None, edge_rows=None, gap=.08):
     letters = 'abcdefghijklmnop'
     for c, data in enumerate(systems):
         labels = [letters[c+len(systems)*r] for r in range(4)]
-        draw_column(fig, c*(GEOMETRY['width']+gap), 0, data, glyphs.get(data.spec.name), edge_rows.get(data.spec.name), labels)
+        draw_column(fig, c*(GEOMETRY['width']+gap), 0, data, glyphs.get(data.spec.name),
+                    edge_rows.get(data.spec.name), labels, spread)
     return fig
 
 
-def save(fig, name, out=OUT, formats=('svg', 'pdf', 'png')):
+def composite_stacked(main, stack, glyphs=None, edge_rows=None, gap=.08, spread='trajectories'):
+    """Main system as a full column (left); `stack` systems as compact panels (right), heights balanced."""
+    style()
+    glyphs = glyphs or {}
+    rows = main.spec.edge_features if edge_rows is None else edge_rows
+    left = column_height(main.spec, rows)
+    kinds = [glyphs.get(d.spec.name, d.spec.glyphs[0]) for d in stack]
+    fixed = sum(stack_height(k, 0) for k in kinds)
+    curves = max(STACK['curves'], (left-fixed)/len(stack))
+    height = max(left, fixed+curves*len(stack))
+    main_curves = GEOMETRY['curves']+height-left      # the main headline absorbs any height difference
+    fig = plt.figure(figsize=(2*GEOMETRY['width']+gap, height))
+    draw_column(fig, 0, 0, main, glyphs.get(main.spec.name), rows, 'abcd', spread, main_curves)
+    y = 0.
+    for data, kind, label in zip(stack, kinds, 'efgh'):
+        y = draw_stack_panel(fig, GEOMETRY['width']+gap, y, data, kind, label=label, spread=spread, curves=curves)
+    return fig
+
+
+def save(fig, name, out=OUT, formats=('svg', 'pdf', 'png'), dpi=600):
     out.mkdir(parents=True, exist_ok=True)
     for ext in formats:
-        fig.savefig(out/f'{name}.{ext}', dpi=180 if ext == 'png' else 600, bbox_inches='tight', pad_inches=.03)
+        fig.savefig(out/f'{name}.{ext}', dpi=dpi, bbox_inches='tight', pad_inches=.03)
     plt.close(fig)
     return out/f'{name}.png'
 
 
-def export_panels(data, out=OUT):
-    """Every panel as its own SVG/PDF (+PNG preview), at the size it occupies in the composite."""
+def export_panels(data, out=OUT, *, stacked=False, spread='trajectories'):
+    """Every panel as its own SVG/PDF/PNG (600 dpi), at the size it occupies in the composite."""
     style()
     g, spec, folder, written = GEOMETRY, data.spec, out/'panels'/data.spec.name, []
     width = g['width']-g['left']-g['right']
@@ -892,25 +1075,33 @@ def export_panels(data, out=OUT):
         return fig, axes_at(fig, .3, .2, w, h)
 
     for glyph in spec.glyphs:
-        fig = plt.figure(figsize=(g['width'], headline_height()))
-        draw_headline(fig, 0, 0, data, glyph)
-        emit(fig, f'headline-{glyph}')
+        if stacked:
+            fig = plt.figure(figsize=(g['width'], stack_height(glyph)))
+            draw_stack_panel(fig, 0, 0, data, glyph, spread=spread)
+            emit(fig, f'panel-{glyph}')
+        else:
+            fig = plt.figure(figsize=(g['width'], headline_height()))
+            draw_headline(fig, 0, 0, data, glyph, spread=spread)
+            emit(fig, f'headline-{glyph}')
         square = glyph in SQUARE_GLYPHS
         gw, gh = (g['inset_glyph_square'],)*2 if square else (g['inset_width'], g['inset_glyph'])
         pairs = [single(gw, gh) for _ in data.snapshots]
         draw_glyphs([ax for _, ax in pairs], data, glyph)
         for i, (fig, _) in enumerate(pairs):
             emit(fig, f'glyph-{glyph}-{i+1}')
-    fig = plt.figure(figsize=(g['width'], g['curves']+g['curves_bottom']+.2))
-    draw_curves(axes_at(fig, g['left'], .1, width, g['curves']), data)
-    emit(fig, 'curves')
+    for mode in ('trajectories', 'band'):
+        fig = plt.figure(figsize=(g['width'], (STACK['curves'] if stacked else g['curves'])+g['curves_bottom']+.2))
+        draw_curves(axes_at(fig, g['left'], .1, width, STACK['curves'] if stacked else g['curves']), data, spread=mode)
+        emit(fig, f'curves-{mode}')
     pairs = [single(g['inset_width'], g['inset_heat']) for _ in data.snapshots]
     draw_heatmaps([ax for _, ax in pairs], data)
     for i, (fig, _) in enumerate(pairs):
         emit(fig, f'heatmap-{i+1}')
+    if stacked:
+        return written
     for key, slug in zip(BASELINES, ('mean-abs-r', 'mean-mpi')):
         fig, ax = single((width-.22)/2, g['baseline'])
-        draw_baseline(ax, data, key)
+        draw_baseline(ax, data, key, spread=spread)
         emit(fig, f'baseline-{slug}')
     for k in range(len(spec.features)):
         fig, ax = single(g['feature'], g['feature'])
@@ -921,7 +1112,7 @@ def export_panels(data, out=OUT):
             fig, ax = single(g['edge'], g['edge'])
             draw_edge_plane(ax, data, k, i, limits=limits)
             emit(fig, f'edges-{k+1}-{i+1}')
-    fig, ax = single(1.0, .5)
+    fig, ax = single(2.4, .2)
     edge_legend(ax, spec)
     emit(fig, 'edges-legend')
     fig, ax = single(1.0, .5)
@@ -938,8 +1129,8 @@ def glyph_gallery(datasets, size=(.95, .34)):
     y = .1
     for data, kind in rows:
         h = .62 if kind in SQUARE_GLYPHS else size[1]
-        axes = [axes_at(fig, 1.0+i*(size[0]+.15)+((size[0]-h)/2 if kind in SQUARE_GLYPHS else 0), y+.14, h if kind in SQUARE_GLYPHS else size[0], h)
-                for i in range(3)]
+        axes = [axes_at(fig, 1.0+i*(size[0]+.15)+((size[0]-h)/2 if kind in SQUARE_GLYPHS else 0), y+.14,
+                        h if kind in SQUARE_GLYPHS else size[0], h) for i in range(3)]
         draw_glyphs(axes, data, kind)
         for ax, snapshot in zip(axes, data.snapshots):
             ax.set_title(snapshot.label, fontsize=6, pad=1)
@@ -949,15 +1140,17 @@ def glyph_gallery(datasets, size=(.95, .34)):
     return fig
 
 
-def compare_Q(datasets, titles):
-    """Headline curves only, side by side, e.g. for alternative physical quantities."""
+def compare_Q(datasets, titles, spread='trajectories'):
+    """Headline curves only, side by side, e.g. for alternative physical quantities or systems."""
     style()
     g = GEOMETRY
-    fig = plt.figure(figsize=(len(datasets)*g['width'], g['curves']*.8+.75))
+    fig = plt.figure(figsize=(len(datasets)*g['width'], g['curves']*.6+.75))
     for i, (data, title) in enumerate(zip(datasets, titles)):
-        ax = axes_at(fig, i*g['width']+g['left'], .3, g['width']-g['left']-g['right'], g['curves']*.8)
-        draw_curves(ax, data)
-        ax.set_title(title+rf"   $|\rho_s(q,Q)|={data.metrics['q']:.2f}$", fontsize=7)
+        ax = axes_at(fig, i*g['width']+g['left'], .3, g['width']-g['left']-g['right'], g['curves']*.6)
+        draw_curves(ax, data, spread=spread)
+        m = data.metrics
+        ax.set_title(title+rf"; $|\rho_s|$: $q$ {m['q']:.2f}, mean-$|r|$ {m['mean-|r|']:.2f}, mean-MPI {m['mean-MPI']:.2f}",
+                     fontsize=6.5)
     return fig
 
 
@@ -966,7 +1159,9 @@ def receipt(datasets, out=OUT):
     record = {d.spec.name: dict(metrics=d.metrics, provenance=d.provenance) for d in datasets}
     record['source_sha256'] = sha(__file__)
     record['claims'] = ('q tracks Q across controls; no calibration, mechanism or superiority is claimed. '
-                        'Bands are 10-90% across held instances (locking), not confidence intervals; hardware has one record per setting.')
+                        'Faint lines are individual held instances (paired across controls except locking, whose '
+                        'realisations are independent per control); bands are 10-90% across instances, not confidence '
+                        'intervals; hardware has one record per setting.')
     (out/'provenance.json').write_text(json.dumps(record, indent=2, default=float)+'\n')
     return out/'provenance.json'
 
@@ -974,49 +1169,58 @@ def receipt(datasets, out=OUT):
 # --------------------------------------------------------------------------- registry
 
 LOCKING_FEATURES = (
-    Feature('lcss', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1', 'LCSS\n× TE',
+    Feature('lcss', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1', 'LCSS\n$\\times$ TE',
             'predictive dependence vs waveform similarity (candidate)'),
     Feature('coint_johansen_max_eig_stat_order-0_ardiff-10', 'coint_johansen_trace_stat_order-1_ardiff-1',
-            'Johansen ×\nJohansen', 'short- vs long-history model sensitivity'),
-    Feature('corr_pearson_tau-2', 'corr_pearson_tau-20-sq', 'Pearson lag 2\n× lag 20$^2$',
+            'Johansen $\\times$\nJohansen', 'short- vs long-history model sensitivity'),
+    Feature('corr_pearson_tau-2', 'corr_pearson_tau-20-sq', 'Pearson lag 2\n$\\times$ lag 20$^2$',
             'within-community lag-profile redistribution'),
 )
 HARDWARE_FEATURES = (
-    Feature('si_kernel_W-0.5_k-1', 'ids', 'kernel SI\n× IDS', 'recruitment-associated profile reorganisation'),
-    Feature('corr_pearson_tau-1', 'corr_pearson_tau-10', 'Pearson 2 ms\n× 20 ms', 'lag-profile / spectral organisation'),
+    Feature('si_kernel_W-0.5_k-1', 'ids', 'kernel SI\n$\\times$ IDS', 'recruitment-associated profile reorganisation'),
+    Feature('corr_pearson_tau-1', 'corr_pearson_tau-10', 'Pearson 2 ms\n$\\times$ 20 ms', 'lag-profile / spectral organisation'),
 )
 
 SYSTEMS = {
     'locking': Spec(
         name='locking', title='2:1 cross-frequency locking', loader=load_locking,
-        subtitle='M = N = 24, T = 1000, varying sensor noise; 168 held records',
+        subtitle='$M=N=24$, $T=1000$, varying sensor noise; 168 held records',
         control_label=r'Cross-coupling $\gamma$', control_short=r'$\gamma$', Q_label=r'Locking index $Q$',
         boundary=.1017, features=LOCKING_FEATURES, edge_features=(0,), glyphs=('wrapped', 'spiral', 'lissajous'),
-        glyph_titles={'wrapped': r'$\Phi$'}, heatmap_window=(0, 200), dt=.5, communities=3, edge_groups=LOCKING_GROUPS,
-        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .50), (.50, .10), (.76, .10)),
+        glyph_titles={'wrapped': r'$\Phi$'}, heatmap_window=(0, 80), dt=.5, communities=3, edge_groups=LOCKING_GROUPS,
+        control_ticks=(0, .1, .2), legend_loc='upper left', inset_boxes=((.06, .53), (.50, .10), (.76, .10)),
         Q_limits=(-.04, 1.06),
         note='M=N=24, T=1000, recording-specific sensor noise; 168 held records (8 seeds x 21 controls).'),
     'hardware': Spec(
         name='hardware', title='Electronic oscillators', loader=load_hardware,
-        subtitle='M = N = 28, T = 5000 at 500 Hz; ER sweep, one recording per setting',
+        subtitle='$M=N=28$, $T=5000$ at 500 Hz; ER sweep, one recording per setting',
         control_label='Coupling-control voltage (V)', control_short='V', Q_label='Carrier frequency range (Hz)',
         Q_log=True, boundary=(.115, .12), features=HARDWARE_FEATURES, edge_features=(0,),
         glyphs=('wrapped', 'synchrony', 'raster'),
         glyph_titles={'wrapped': r'$\Delta\phi$', 'synchrony': '$R$', 'raster': r'$\Delta\phi$'},
-        heatmap_window=(500, 100), dt=.002, edge_groups=HARDWARE_GROUPS, secondary_style={'SW': '--'},
+        heatmap_window=(500, 40), dt=.002, edge_groups=HARDWARE_GROUPS, secondary_style={'SW': '--'},
         control_ticks=(0, .2, .4), legend_loc=('center left', (.0, .68)), edge_scale='panel', primary_label='ER (fit)',
         inset_boxes=((.04, .30), (.40, .34), (.70, .34)),
         note='M=N=28, T=5000 at 500 Hz; one record per setting; q fitted on all 29 ER records, SW projected.'),
+    'stuart-landau': Spec(
+        name='stuart-landau', title='Stuart--Landau: locked to unsteady', loader=load_stuart_landau,
+        subtitle='$M=N=32$, $T=1000$; 8 held instances', control_label=r'Frequency half-width $\gamma$',
+        control_short=r'$\gamma$', Q_label=r'Mean $R$', glyphs=('synchrony',), glyph_titles={'synchrony': '$R$'},
+        heatmap_window=(0, 150), dt=.1, control_ticks=(.68, .72, .76), legend_loc='lower left', boundary=(.72, .725),
+        note='Fine confirmation, frozen coordinate; Matthews-Strogatz K=.8 path.'),
+    'kuramoto': Spec(
+        name='kuramoto', title='Kuramoto: phase synchronisation', loader=load_kuramoto,
+        subtitle='$M=N=32$, $T=1000$; 8 held seeds; exploratory', control_label=r'Reduced coupling $\kappa$',
+        control_short=r'$\kappa$', Q_label=r'Mean $R$', glyphs=('synchrony',), glyph_titles={'synchrony': '$R$'},
+        heatmap_window=(0, 200), dt=.1, control_ticks=(.75, 1., 1.25, 1.5), legend_loc='lower right', boundary=1.,
+        note='Full observation; PC1 dominance screen unmet (1.478 < 1.5).'),
     'cml2d': Spec(
-        name='cml2d', title='Collective period-two CML', loader=load_cml2d,
-        subtitle='M = 32 of N = 65,536 sites, T = 1000; confirmation seeds',
+        name='cml2d', title='2D coupled maps: collective period two', loader=load_cml2d,
+        subtitle='$M=32$ of $N=65{,}536$ sites, $T=1000$; 32 confirmation seeds',
         control_label='Local nonlinearity $r$', control_short='$r$', Q_label='Period-two $Q$', boundary=3.86212,
-        features=(Feature('pec_orth', 'pec_orth_abs', 'Envelope ×\n|envelope| (orth.)', 'signed/absolute transformation geometry'),
-                  Feature('corr_pearson_tau-5', 'pec_orth_abs', 'Pearson lag 5\n× |envelope|', 'descriptive')),
-        glyphs=('trace',), glyph_titles={'trace': r'$\bar x$'}, heatmap_window=(0, 100),
-        edge_groups=(('channel pairs', '#26828e'),), control_ticks=(3.84, 3.865, 3.89), edge_scale='panel',
-        inset_boxes=((.05, .12), (.52, .62), (.76, .62)),
-        primary_label='all seeds', note='Registry example only; not part of the two-system composite.'),
+        glyphs=('lattice', 'trace'), glyph_titles={'trace': r'$\bar x$'}, heatmap_window=(0, 40),
+        control_ticks=(3.84, 3.865, 3.89), legend_loc='lower left',
+        note='Confirmation curves; snapshots from the fixed pilot seed (lattice after the reference window).'),
 }
 
 

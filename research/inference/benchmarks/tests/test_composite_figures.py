@@ -1,5 +1,6 @@
 """Composite order-parameter figure: data handling must replay archives and never refit or relabel."""
 from dataclasses import replace
+import shutil
 
 import numpy as np
 import pandas as pd
@@ -96,18 +97,18 @@ def test_late_channels_finds_the_slipping_minority():
 def test_registry_names_and_glyphs_resolve():
     for name, spec in cf.SYSTEMS.items():
         assert spec.name == name and spec.glyphs and all(g in cf.GLYPHS for g in spec.glyphs)
-        assert spec.edge_groups and len(spec.inset_boxes) == 3
+        assert len(spec.inset_boxes) == 3 and (spec.edge_groups or not spec.features)
     with pytest.raises(KeyError):
         cf.load('not-a-system')
 
 
-def synthetic_system():
+def synthetic_system(spec, *, replicated=True, features=None):
     rng = np.random.default_rng(5)
-    controls = np.repeat(np.linspace(0, .2, 6), 3)
-    frame = pd.DataFrame(dict(control=controls, Q=np.tanh(20*controls), q=np.tanh(20*controls)+.1*rng.normal(size=18),
-                              cohort='held'))
-    frame['mean-|r|'] = rng.normal(size=18)
-    frame['mean-MPI'] = rng.normal(size=18)
+    controls = np.repeat(np.linspace(0, .2, 6), 3 if replicated else 1)
+    frame = pd.DataFrame(dict(control=controls, Q=np.tanh(20*controls)+.01, q=np.tanh(20*controls)+.1*rng.normal(size=len(controls)),
+                              cohort='held', trajectory=np.tile(np.arange(3 if replicated else 1), 6)))
+    frame['mean-|r|'] = rng.normal(size=len(frame))
+    frame['mean-MPI'] = rng.normal(size=len(frame))
     frame['z0'] = np.tanh(10*controls-1)
     frame['z1'] = -frame.z0
     groups = cf.locking_groups(2)
@@ -116,30 +117,89 @@ def synthetic_system():
         t = np.linspace(0, 10, 300)
         phase = (1-5*c)*t[None]
         glyph = dict(t=t, phase=phase, lissajous=(np.cos(t), np.cos(2*t)), synchrony=np.full(300, .5+c),
-                     raster=np.angle(np.exp(1j*np.vstack([phase]*6))), raster_marked=2, window=(0., 10.))
+                     raster=np.angle(np.exp(1j*np.vstack([phase]*6))), raster_marked=2, window=(0., 10.),
+                     trace=.6+.2*np.cos(np.pi*np.arange(300)), lattice=rng.random((16, 16)), sensors=np.arange(0, 256, 9))
         edges = {k: (rng.normal(size=30), rng.normal(size=30), .1*k) for k in (0, 1)}
-        snapshots.append(cf.Snapshot(control=c, label=f'c={c}', row_id=f'r{c}', x=rng.normal(size=(6, 80)),
+        snapshots.append(cf.Snapshot(control=c, label=rf'$c={c}$', row_id=f'r{c}', x=rng.normal(size=(6, 80)),
                                      glyph=glyph, edges=edges, groups=groups))
-    spec = replace(cf.SYSTEMS['locking'], features=cf.LOCKING_FEATURES[:2], communities=3, heatmap_window=(0, 40),
-                   glyphs=('wrapped', 'spiral', 'lissajous', 'synchrony', 'raster'))
-    return cf.SystemData(spec, frame, snapshots, {'q': .9, 'mean-|r|': .1, 'mean-MPI': .2}, {}, primary='held')
+    changes = dict(heatmap_window=(0, 40), control_ticks=None, boundary=.1, Q_limits=None)
+    if features is not None:
+        changes['features'] = features
+    return cf.SystemData(replace(spec, **changes), frame, snapshots, {'q': .9, 'mean-|r|': .1, 'mean-MPI': .2}, {},
+                         primary='held')
 
 
-def test_composite_and_panels_export_without_external_tex(monkeypatch, tmp_path):
-    import matplotlib as mpl
+def all_systems():
+    main = synthetic_system(replace(cf.SYSTEMS['locking'], communities=3, glyphs=('wrapped', 'spiral', 'lissajous')),
+                            features=cf.LOCKING_FEATURES[:2])
+    stack = [synthetic_system(replace(cf.SYSTEMS['hardware'], Q_log=False), replicated=False, features=cf.HARDWARE_FEATURES)]
+    stack += [synthetic_system(cf.SYSTEMS[name]) for name in ('stuart-landau', 'kuramoto', 'cml2d')]
+    return main, stack
+
+
+def no_tex(monkeypatch):
     from matplotlib.texmanager import TexManager
 
-    def no_tex(*args, **kwargs):
-        raise AssertionError('Composite export must not invoke TeX')
+    def blocked(*args, **kwargs):
+        raise AssertionError('The native renderer must not invoke TeX')
 
-    monkeypatch.setattr(TexManager, '_run_checked_subprocess', no_tex)
-    data = synthetic_system()
-    with mpl.rc_context({'text.usetex': True}):
-        for glyph in data.spec.glyphs:
-            cf.save(cf.composite([data, data], glyphs={'locking': glyph}), f'composite-{glyph}', tmp_path)
-        written = cf.export_panels(data, tmp_path)
+    monkeypatch.setattr(TexManager, '_run_checked_subprocess', blocked)
+    original = cf.style
+    monkeypatch.setattr(cf, 'style', lambda tex=None: original(tex=False))
+
+
+def test_composites_and_panels_export_without_external_tex(monkeypatch, tmp_path):
+    no_tex(monkeypatch)
+    main, stack = all_systems()
+    for spread in cf.SPREADS:
+        cf.save(cf.composite_stacked(main, stack[:3], spread=spread), f'stacked-{spread}', tmp_path)
+    for glyph in main.spec.glyphs:
+        cf.save(cf.composite([main, main], glyphs={'locking': glyph}), f'composite-{glyph}', tmp_path)
+    written = cf.export_panels(main, tmp_path)
+    for data in stack:
+        written += cf.export_panels(data, tmp_path, stacked=True)
     for suffix in ('png', 'svg', 'pdf'):
-        assert (tmp_path/f'composite-wrapped.{suffix}').stat().st_size > 0
+        assert (tmp_path/f'stacked-trajectories.{suffix}').stat().st_size > 0
     names = {p.stem for p in written}
-    assert {'curves', 'heatmap-1', 'baseline-mean-abs-r', 'baseline-mean-mpi', 'feature-2', 'edges-2-3'} <= names
-    assert all((p.with_suffix('.svg')).exists() and (p.with_suffix('.pdf')).exists() for p in written)
+    assert {'curves-trajectories', 'curves-band', 'heatmap-1', 'baseline-mean-abs-r', 'feature-2', 'edges-2-3',
+            'panel-synchrony', 'panel-lattice', 'glyph-lattice-3'} <= names
+    assert all(p.with_suffix('.svg').exists() and p.with_suffix('.pdf').exists() for p in written)
+
+
+@pytest.mark.skipif(not (shutil.which('latex') and shutil.which('dvipng')), reason='LaTeX unavailable')
+def test_every_registered_string_compiles_under_usetex(tmp_path):
+    main, stack = all_systems()
+    for data in [main, *stack]:
+        assert data.spec.glyphs
+    cf.save(cf.composite_stacked(main, stack[:3]), 'tex-stacked', tmp_path, formats=('pdf',))
+    cf.save(cf.composite_stacked(main, [stack[0], stack[3], stack[2]], glyphs={'cml2d': 'trace'}), 'tex-alt', tmp_path,
+            formats=('pdf',))
+    cf.save(cf.glyph_gallery([main, *stack]), 'tex-gallery', tmp_path, formats=('pdf',))
+    assert (tmp_path/'tex-stacked.pdf').stat().st_size > 0
+
+
+def test_spread_modes_draw_paths_or_bands(monkeypatch):
+    import matplotlib.pyplot as plt
+    from matplotlib.collections import PolyCollection
+    no_tex(monkeypatch)
+    cf.style()
+    data = synthetic_system(cf.SYSTEMS['stuart-landau'])
+    for spread, paths, bands in [('trajectories', 3, 0), ('band', 0, 1), ('both', 3, 1), ('none', 0, 0)]:
+        fig, ax = plt.subplots()
+        cf._series(ax, data, 'q', 'k', 'o', spread=spread)
+        assert len(ax.lines) == paths+1
+        assert sum(isinstance(c, PolyCollection) for c in ax.collections) == bands
+        plt.close(fig)
+    with pytest.raises(ValueError):
+        cf._series(plt.subplots()[1], data, 'q', 'k', 'o', spread='bars')
+
+
+def test_stacked_layout_balances_heights_and_honours_zero_curve_height():
+    assert cf.stack_height('synchrony', 0) == pytest.approx(cf.stack_height('synchrony')-cf.STACK['curves'])
+    main, stack = all_systems()
+    rows = main.spec.edge_features
+    kinds = [d.spec.glyphs[0] for d in stack[:3]]
+    fixed = sum(cf.stack_height(k, 0) for k in kinds)
+    left = cf.column_height(main.spec, rows)
+    curves = max(cf.STACK['curves'], (left-fixed)/3)
+    assert fixed+3*curves >= left-1e-12

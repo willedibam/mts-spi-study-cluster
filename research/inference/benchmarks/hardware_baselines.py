@@ -140,10 +140,11 @@ def figure(frame, max_step=87):
     import matplotlib.pyplot as plt
     fig, axes = plt.subplots(2, 3, figsize=(9.2, 5.0), layout='constrained', sharex=True)
     colors = {'er_pc1': '#26828e', 'mean_abs_r': '#7570b3', 'mean_PC1': '#d95f02'}
+    labels = {'er_pc1': 'SPI--SPI PC1', 'mean_abs_r': r'mean-$|r|$', 'mean_PC1': 'mean-MPI PC1'}  # valid with or without usetex
     for row, topology in enumerate(LOCKING):
         part = frame.query('topology == @topology and step <= @max_step').sort_values('voltage')
         before, after = LOCKING[topology]
-        for ax, (column, label) in zip(axes[row], READOUTS.items()):
+        for ax, (column, label) in zip(axes[row], labels.items()):
             ax.plot(part.voltage, part.frequency_range, 'o-', color='#222222', ms=2.7, lw=1.2)
             ax.set_yscale('log')
             ax.axvspan(before*.005, after*.005, color='.5', alpha=.15, lw=0)
@@ -152,7 +153,7 @@ def figure(frame, max_step=87):
             right.plot(part.voltage, part[column], 's-', color=colors[column], ms=2.7, lw=1.2)
             right.tick_params(axis='y', labelcolor=colors[column])
             rho = abs(spearmanr(part[column], part.frequency_range).statistic)
-            ax.set_title(f'{topology} · {label}\n' + rf'$|\rho_s|={rho:.2f}$', fontsize=9)
+            ax.set_title(f'{topology}, {label}\n' + rf'$|\rho_s|={rho:.2f}$', fontsize=9)
             if ax is axes[row, 0]:
                 ax.set_ylabel('Carrier frequency range (Hz)')
             if row == 1:
