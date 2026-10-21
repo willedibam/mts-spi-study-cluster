@@ -12,7 +12,7 @@ Active workstream; the paper's corpus-atlas figure was settled on 2026-10-21 (ne
 - Exaggeration uses a subclass that overrides scikit-learn's private `TSNE._tsne` (checked on 1.9; ρ = 1 is bit-identical to stock). openTSNE is not installed.
 - Clusters: Ward on the full-rank geometry, k = 40, fitted once and only drawn on maps. Hennig cluster-wise Jaccard over 50 subsets keeping 80% of 688 parent keys: median .80 with 25 groups ≥ .75, against median .63 for K-means k = 40. Global separation is weak (Ward-40 silhouette .10), so the map is mostly a continuum with a minority of compact groups.
 - Candidates (illustrative; readings checked against raw-series descriptors):
-  - **A** NATOPS: homogeneous real; Jaccard .98, silhouette .31. The only source at 24 × 51. The selection notebook's caveat (T ≈ 2M near-singular precision estimates) is not supported: A is unchanged without the precision-estimator pairs (M/T control below).
+  - **A** NATOPS: homogeneous real; Jaccard .98, silhouette .31; the only source at 24 × 51. A T ≈ 2M precision-estimator explanation is ruled out: without the 1,612 precision-estimator pairs A is unchanged (silhouette .31, Ward-40 refit Jaccard 1.00). The notebook and explorer were corrected after the M/T control.
   - **B** NetSim: homogeneous synthetic; Jaccard .90. The complete-feature refit is weaker (.62).
   - **C** CML lattices with TestWEATH: heterogeneous synthetic. The shared trait is short-lag anti-persistence (CML lag-1 −.66 to −.91).
   - **D** Cricket with ForEx price levels: heterogeneous real; 75% of the strongest edges are negative, against 27% corpus-wide. The two sources form adjacent sub-groups.
