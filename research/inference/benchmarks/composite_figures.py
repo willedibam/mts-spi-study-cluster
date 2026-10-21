@@ -931,11 +931,11 @@ def draw_edge_plane(ax, data, k, i, *, limits=None, axis_labels=True, z_corner=N
 
 
 SPI_NAMES = {'lcss': 'LCSS', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1': 'TE (KSG)',
-             'coint_johansen_max_eig_stat_order-0_ardiff-10': 'Johansen max-eig.',
-             'coint_johansen_trace_stat_order-1_ardiff-1': 'Johansen trace',
-             'corr_pearson_tau-2': 'Pearson lag 2', 'corr_pearson_tau-20-sq': r'Pearson lag 20$^2$',
+             'coint_johansen_max_eig_stat_order-0_ardiff-10': r'Johansen max-eig. $(k{=}10)$',
+             'coint_johansen_trace_stat_order-1_ardiff-1': r'Johansen trace $(k{=}1)$',
+             'corr_pearson_tau-2': r'Pearson $r(\tau{=}2)$', 'corr_pearson_tau-20-sq': r'Pearson $r(\tau{=}20)^2$',
              'si_kernel_W-0.5_k-1': 'SI (kernel)', 'ids': 'IDS',
-             'corr_pearson_tau-1': 'Pearson 2 ms', 'corr_pearson_tau-10': 'Pearson 20 ms'}
+             'corr_pearson_tau-1': r'Pearson $r(2\,\mathrm{ms})$', 'corr_pearson_tau-10': r'Pearson $r(20\,\mathrm{ms})$'}
 
 
 def short_spi(name):
@@ -1331,16 +1331,17 @@ def locking_feature_audit(extra=(('corr_pearson_tau-2', 'corr_pearson_tau-20-sq'
 # --------------------------------------------------------------------------- registry
 
 LOCKING_FEATURES = (
-    Feature('lcss', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1', 'LCSS\n$\\times$ TE',
+    Feature('lcss', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1', 'LCSS similarity\n$\\times$ TE (KSG)',
             'predictive dependence vs waveform similarity (candidate)'),
     Feature('coint_johansen_max_eig_stat_order-0_ardiff-10', 'coint_johansen_trace_stat_order-1_ardiff-1',
-            'Johansen $\\times$\nJohansen', 'short- vs long-history model sensitivity'),
-    Feature('corr_pearson_tau-2', 'corr_pearson_tau-20-sq', 'Pearson lag 2\n$\\times$ lag 20$^2$',
+            'Johansen\n$\\lambda_{\\max}(k{=}10)\\times\\mathrm{tr}(k{=}1)$', 'short- vs long-history model sensitivity'),
+    Feature('corr_pearson_tau-2', 'corr_pearson_tau-20-sq', 'Pearson $r(\\tau{=}2)$\n$\\times\\, r(\\tau{=}20)^2$',
             'within-community lag-profile redistribution'),
 )
 HARDWARE_FEATURES = (
-    Feature('si_kernel_W-0.5_k-1', 'ids', 'kernel SI\n$\\times$ IDS', 'recruitment-associated profile reorganisation'),
-    Feature('corr_pearson_tau-1', 'corr_pearson_tau-10', 'Pearson 2 ms\n$\\times$ 20 ms', 'lag-profile / spectral organisation'),
+    Feature('si_kernel_W-0.5_k-1', 'ids', 'Kernel SI\n$\\times$ IDS', 'recruitment-associated profile reorganisation'),
+    Feature('corr_pearson_tau-1', 'corr_pearson_tau-10', 'Pearson $r(2\\,\\mathrm{ms})$\n$\\times\\, r(20\\,\\mathrm{ms})$',
+            'lag-profile / spectral organisation'),
 )
 
 SYSTEMS = {

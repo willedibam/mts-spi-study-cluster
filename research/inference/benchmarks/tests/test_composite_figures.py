@@ -134,6 +134,7 @@ def synthetic_system(spec, *, replicated=True, features=None):
     frame['mean-MPI'] = rng.normal(size=len(frame))
     frame['z0'] = np.tanh(10*controls-1)
     frame['z1'] = -frame.z0
+    frame['z2'] = .5*frame.z0
     groups = cf.locking_groups(2)
     snapshots = []
     for c in (0., .1, .2):
@@ -142,7 +143,7 @@ def synthetic_system(spec, *, replicated=True, features=None):
         glyph = dict(t=t, phase=phase, lissajous=(np.cos(t), np.cos(2*t)), synchrony=np.full(300, .5+c),
                      raster=np.angle(np.exp(1j*np.vstack([phase]*6))), raster_marked=2, window=(0., 10.),
                      trace=.6+.2*np.cos(np.pi*np.arange(300)), lattice=rng.random((16, 16)), sensors=np.arange(0, 256, 9))
-        edges = {k: (rng.normal(size=30), rng.normal(size=30), .1*k) for k in (0, 1)}
+        edges = {k: (rng.normal(size=30), rng.normal(size=30), .1*k) for k in (0, 1, 2)}
         snapshots.append(cf.Snapshot(control=c, label=rf'$c={c}$', row_id=f'r{c}', x=rng.normal(size=(6, 80)),
                                      glyph=glyph, edges=edges, groups=groups))
     changes = dict(heatmap_window=(0, 40), control_ticks=None, boundary=.1, Q_limits=None)
@@ -154,7 +155,7 @@ def synthetic_system(spec, *, replicated=True, features=None):
 
 def all_systems():
     main = synthetic_system(replace(cf.SYSTEMS['locking'], communities=3, glyphs=('wrapped', 'spiral', 'lissajous')),
-                            features=cf.LOCKING_FEATURES[:2])
+                            features=cf.LOCKING_FEATURES)
     stack = [synthetic_system(replace(cf.SYSTEMS['hardware'], Q_log=False), replicated=False, features=cf.HARDWARE_FEATURES)]
     stack += [synthetic_system(cf.SYSTEMS[name]) for name in ('stuart-landau', 'kuramoto', 'cml2d')]
     return main, stack
@@ -188,7 +189,7 @@ def test_composites_and_panels_export_without_external_tex(monkeypatch, tmp_path
     for suffix in ('png', 'svg', 'pdf'):
         assert (tmp_path/f'stacked-band.{suffix}').stat().st_size > 0
     names = {p.stem for p in written}
-    assert {'curves-trajectories', 'curves-band', 'heatmap-1', 'baseline-mean-abs-r', 'feature-2', 'edges-2-3',
+    assert {'curves-trajectories', 'curves-band', 'heatmap-1', 'baseline-mean-abs-r', 'feature-3', 'edges-3-3',
             'panel-synchrony', 'panel-lattice', 'glyph-lattice-3'} <= names
     assert all(p.with_suffix('.svg').exists() and p.with_suffix('.pdf').exists() for p in written)
 
@@ -199,6 +200,7 @@ def test_every_registered_string_compiles_under_usetex(tmp_path):
     for data in [main, *stack]:
         assert data.spec.glyphs
     cf.save(cf.composite_stacked(main, stack[:3]), 'tex-stacked', tmp_path, formats=('pdf',))
+    cf.save(cf.composite_stacked(main, stack[:3], edge_rows=(0, 1, 2)), 'tex-edges', tmp_path, formats=('pdf',))
     cf.save(cf.composite_stacked(main, [stack[0], stack[3], stack[2]], glyphs={'cml2d': 'trace'}), 'tex-alt', tmp_path,
             formats=('pdf',))
     cf.save(cf.glyph_gallery([main, *stack]), 'tex-gallery', tmp_path, formats=('pdf',))
