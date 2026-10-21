@@ -1,0 +1,145 @@
+"""Composite order-parameter figure: data handling must replay archives and never refit or relabel."""
+from dataclasses import replace
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from research.inference.benchmarks import composite_figures as cf
+from research.inference.benchmarks import hardware_baselines as hb
+
+
+def test_locking_trajectory_mirrors_the_archived_generator():
+    from research.inference.locking.cross_frequency_locking import simulate, STEP
+    kwargs = dict(burn=5., reference=10., samples=40)
+    raw, truth = simulate(.1, 3, **kwargs)
+    mirror, mirror_truth, mean_field = cf.locking_trajectory(.1, 3, **kwargs, every_fine=25)
+    np.testing.assert_array_equal(mirror, raw)
+    assert mirror_truth == truth
+    # With every_fine = STEP/dt the mean-field record lands exactly on the observed samples.
+    np.testing.assert_allclose(mean_field['t'], STEP*np.arange(1, 41))
+    assert mean_field['phi'].shape == (40,)
+
+
+def test_pair_index_matches_the_unified_builder():
+    from mtsspi.spi_spi_contract import build_unified_feature_values
+    rng = np.random.default_rng(0)
+    order = ['a', 'b', 'c', 'd', 'e']
+    mpis = {k: rng.normal(size=(6, 6)) for k in order}
+    z, _, _ = build_unified_feature_values(mpis, order)
+    for i, a in enumerate(order):
+        for b in order[i+1:]:
+            assert abs(z[cf.pair_index(order, a, b)]-cf.edge_z(mpis[a], mpis[b])[2]) < 1e-6
+            assert cf.pair_index(order, a, b) == cf.pair_index(order, b, a)
+
+
+def test_ordered_contract_check_rejects_the_legacy_symmetrized_contract():
+    from mtsspi.spi_spi_contract import build_unified_feature_values
+    rng = np.random.default_rng(1)
+    order = ['directed', 'other', 'symmetric']
+    s = rng.normal(size=(7, 7))
+    mpis = {'directed': rng.normal(size=(7, 7)), 'other': rng.normal(size=(7, 7)), 'symmetric': s+s.T}
+    ordered, _, _ = build_unified_feature_values(mpis, order)
+    assert cf.verify_ordered_row(mpis, order, ordered)['passes']
+    legacy = ordered.astype(float).copy()
+    legacy[cf.pair_index(order, 'directed', 'other')] = cf.upper_symmetrized_z(mpis['directed'], mpis['other'])
+    assert not cf.verify_ordered_row(mpis, order, legacy)['passes']
+    # Symmetric pairs are identical under both contracts, so only directed pairs discriminate.
+    sym = mpis['symmetric']
+    assert abs(cf.upper_symmetrized_z(sym, sym*2+1)-cf.edge_z(sym, sym*2+1)[2]) < 1e-12
+
+
+def test_mean_mpi_pc1_is_fitted_on_er_rows_only():
+    rng = np.random.default_rng(2)
+    means = rng.normal(size=(10, 4))
+    fit = np.r_[np.ones(6, bool), np.zeros(4, bool)]
+    first, _, _ = hb.mean_mpi_pc1(means, fit)
+    changed = means.copy()
+    changed[~fit] += 100
+    second, _, _ = hb.mean_mpi_pc1(changed, fit)
+    np.testing.assert_allclose(first[fit], second[fit])
+    # An SPI undefined on any fit record is dropped, never imputed from projected records.
+    missing = means.copy()
+    missing[0, 3] = np.nan
+    np.testing.assert_allclose(hb.mean_mpi_pc1(missing, fit)[0], hb.mean_mpi_pc1(means[:, :3], fit)[0])
+
+
+def test_mean_abs_r_uses_every_ordered_entry():
+    x = np.random.default_rng(3).normal(size=(5, 200))
+    r = np.corrcoef(x)
+    assert abs(hb.mean_abs_r(x)-abs(r[np.triu_indices(5, 1)]).mean()) < 1e-12
+
+
+def test_steepest_reports_step_location_and_share():
+    part = pd.DataFrame(dict(voltage=[0, .1, .2, .3], step=[0, 20, 40, 60], value=[0., .1, .9, 1.]))
+    result = hb.steepest(part, 'value')
+    assert result['largest_step'] == '20→40' and result['steepest_slope'] == '20→40'
+    assert abs(result['largest_step_share']-.8) < 1e-12
+
+
+def test_locking_edge_groups_partition_ordered_pairs():
+    groups = cf.locking_groups(8)
+    assert groups.shape == (24*23,)
+    assert np.bincount(groups).tolist() == [2*64, 3*8*7, 24*23-128-168]
+
+
+def test_late_channels_finds_the_slipping_minority():
+    t = np.arange(5000)/500
+    rng = np.random.default_rng(4)
+    # Four channels wobble in phase (PLV with the core ~J0(.9) = .81); the core stays coherent overall.
+    phases = np.r_[np.zeros(24), np.full(4, .9)][:, None]*np.sin(2*np.pi*.3*t)
+    x = np.sin(2*np.pi*116*t+phases)+.05*rng.normal(size=(28, 5000))
+    late, reference = cf.late_channels(x)
+    assert late.tolist() == [24, 25, 26, 27] and reference < 24
+
+
+def test_registry_names_and_glyphs_resolve():
+    for name, spec in cf.SYSTEMS.items():
+        assert spec.name == name and spec.glyphs and all(g in cf.GLYPHS for g in spec.glyphs)
+        assert spec.edge_groups and len(spec.inset_boxes) == 3
+    with pytest.raises(KeyError):
+        cf.load('not-a-system')
+
+
+def synthetic_system():
+    rng = np.random.default_rng(5)
+    controls = np.repeat(np.linspace(0, .2, 6), 3)
+    frame = pd.DataFrame(dict(control=controls, Q=np.tanh(20*controls), q=np.tanh(20*controls)+.1*rng.normal(size=18),
+                              cohort='held'))
+    frame['mean-|r|'] = rng.normal(size=18)
+    frame['mean-MPI'] = rng.normal(size=18)
+    frame['z0'] = np.tanh(10*controls-1)
+    frame['z1'] = -frame.z0
+    groups = cf.locking_groups(2)
+    snapshots = []
+    for c in (0., .1, .2):
+        t = np.linspace(0, 10, 300)
+        phase = (1-5*c)*t[None]
+        glyph = dict(t=t, phase=phase, lissajous=(np.cos(t), np.cos(2*t)), synchrony=np.full(300, .5+c),
+                     raster=np.angle(np.exp(1j*np.vstack([phase]*6))), raster_marked=2, window=(0., 10.))
+        edges = {k: (rng.normal(size=30), rng.normal(size=30), .1*k) for k in (0, 1)}
+        snapshots.append(cf.Snapshot(control=c, label=f'c={c}', row_id=f'r{c}', x=rng.normal(size=(6, 80)),
+                                     glyph=glyph, edges=edges, groups=groups))
+    spec = replace(cf.SYSTEMS['locking'], features=cf.LOCKING_FEATURES[:2], communities=3, heatmap_window=(0, 40),
+                   glyphs=('wrapped', 'spiral', 'lissajous', 'synchrony', 'raster'))
+    return cf.SystemData(spec, frame, snapshots, {'q': .9, 'mean-|r|': .1, 'mean-MPI': .2}, {}, primary='held')
+
+
+def test_composite_and_panels_export_without_external_tex(monkeypatch, tmp_path):
+    import matplotlib as mpl
+    from matplotlib.texmanager import TexManager
+
+    def no_tex(*args, **kwargs):
+        raise AssertionError('Composite export must not invoke TeX')
+
+    monkeypatch.setattr(TexManager, '_run_checked_subprocess', no_tex)
+    data = synthetic_system()
+    with mpl.rc_context({'text.usetex': True}):
+        for glyph in data.spec.glyphs:
+            cf.save(cf.composite([data, data], glyphs={'locking': glyph}), f'composite-{glyph}', tmp_path)
+        written = cf.export_panels(data, tmp_path)
+    for suffix in ('png', 'svg', 'pdf'):
+        assert (tmp_path/f'composite-wrapped.{suffix}').stat().st_size > 0
+    names = {p.stem for p in written}
+    assert {'curves', 'heatmap-1', 'baseline-mean-abs-r', 'baseline-mean-mpi', 'feature-2', 'edges-2-3'} <= names
+    assert all((p.with_suffix('.svg')).exists() and (p.with_suffix('.pdf')).exists() for p in written)
