@@ -263,7 +263,7 @@ $$\bar x(t)=L^{-2}\sum_{ij}x_{ij}(t),\qquad Q=\langle|\bar x(2t+1)-\bar x(2t)|\r
 
 The separation between alternating global-mean levels. Increasing $r$ merges the two levels while individual sites remain chaotic. Mean activity itself is not $Q$; the quoted boundary is numerical and infinite-size, not exact for finite $L$.
 
-**Results:** frozen dispersed-view confirmation $\rho=.883$, all 1408 primary/secondary records valid. Contiguous-patch transfer and small full-lattice tests failed their respective gates; these remain labelled diagnostics.''')
+**Results:** frozen dispersed-view confirmation $\rho=.883$, all 1408 primary/secondary records valid. Contiguous-patch transfer and small full-lattice tests failed their respective gates; the small-lattice diagnostics are omitted here.''')
     code('''CML2D_ROOT=ROOT/"data/order_parameter/cml2d_period_doubling_260911"
 cml2d_snapshot_dir=FIGURE_DIR/"cml2d-period-doubling"
 cml2d_scores=pd.read_csv(CML2D_ROOT/"primary-analysis/scores.csv")''')
@@ -272,10 +272,6 @@ cml2d_scores=pd.read_csv(CML2D_ROOT/"primary-analysis/scores.csv")''')
 
 The top row is the global-mean time trace, not $Q$. The lattice images are later saved fields at the same control and seed, not the exact first 100 displayed steps. The bottom row is the independent across-control confirmation. Changing $M$ or $T$ can shift $q$; no exact invariance or arbitrary-patch transfer is claimed.''')
     reuse(36)
-    md(r'''### Full small lattices: diagnostic failures, not successful inference
-
-$L=6$ gives $M=N=36$; $L=8$ gives $M=N=64$. Both use the same 17 controls, $T=1000$, eight development and 32 held seeds, and the same burn/reference lengths. $L=6$ retains all rows but its fitted PC1 fails seed-stability; plotted $q$ is **descriptive only**. $L=8$ has constant-channel records and stopped before p90. Grey MTS rows mask numerical constancy. These finite lattices often settle onto periodic attractors, so they are not small replicas of the large-lattice chaotic transition.''')
-    reuse(47);reuse(49);reuse(51)
     md(r'''## 6. Coupled Rössler oscillators — mean-frequency entrainment
 
 **System**

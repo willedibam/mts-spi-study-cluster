@@ -1,7 +1,6 @@
 """Read-only, result-driven comparison-notebook cells for the CML2D benchmark."""
 import nbformat
 from research.inference.cml.cml2d_confirmation_cells import build_cells as confirmation_cells
-from research.inference.cml.cml2d_full_observation_cells import build_cells as full_observation_cells
 
 
 def build_cells():
@@ -288,4 +287,4 @@ controls, and the identical frozen q; primary M32/T1000, with a restricted
 paired M16/32,T500/1000 sensitivity on the original controls. More seeds
 improve uncertainty and reproducibility; more control values improve resolution
 along the sweep. Its availability and results are reported below.
-[Prospective confirmation protocol](../../research/inference/cml/notes/cml2d-confirmation-protocol-260911.md).''')] + confirmation_cells() + full_observation_cells()
+[Prospective confirmation protocol](../../research/inference/cml/notes/cml2d-confirmation-protocol-260911.md).''')] + confirmation_cells()
