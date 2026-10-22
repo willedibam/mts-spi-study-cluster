@@ -769,7 +769,8 @@ def draw_curves(ax, data, *, legend=True, spread='band', fontsize=7, baselines=F
     if spec.Q_limits:
         ax.set_ylim(spec.Q_limits)
     mark_boundary(ax, spec)
-    ax.set_ylabel(spec.Q_label, color=Q_COLOR, labelpad=1.5, fontsize=fontsize)
+    Q_label = spec.Q_label.replace('freq. ', 'freq.\\ ') if plt.rcParams['text.usetex'] else spec.Q_label  # inter-word space
+    ax.set_ylabel(Q_label, color=Q_COLOR, labelpad=1.5, fontsize=fontsize)
     right.set_yticks([]); right.set_yticks([], minor=True)       # q and rescaled readouts have no physical units
     ax.tick_params(labelsize=fontsize-.5, pad=1.5)
     ax.set_xlabel(spec.control_label, labelpad=1.5, fontsize=fontsize)
@@ -965,7 +966,7 @@ GEOMETRY = dict(width=3.55, left=.42, right=.30, title=.20, curves=2.55, curves_
                 inset_width=.62, inset_heat=.24, inset_glyph=.22, inset_glyph_square=.40,
                 row_gap=.10, baseline_title=.14, baseline=.50, baseline_bottom=.16,
                 feature_title=.36, feature=.80, feature_bottom=.20, edge_title=.14, edge=.80, edge_legend=.32)
-STACK = dict(title=.20, glyph=.22, glyph_square=.44, glyph_label=.10, gap=.03, heat=.26, leader=.12, curves=1.05,
+STACK = dict(title=.20, glyph=.22, glyph_square=.44, glyph_label=.10, gap=.03, heat=.33, leader=.05, curves=1.05,
              curves_bottom=.30)
 
 
@@ -1276,7 +1277,7 @@ SYSTEMS = {
     'hardware': Spec(
         name='hardware', title='Electronic oscillators', loader=load_hardware,
         subtitle='$M=N=28$, $T=5000$ at 500 Hz; ER sweep, one recording per setting',
-        control_label='Coupling-control voltage (V)', control_short='V', Q_label='Carrier frequency range (Hz)',
+        control_label='Coupling-control voltage (V)', control_short='V', Q_label='Carrier freq. range (Hz)',
         Q_log=True, boundary=(.115, .12), features=HARDWARE_FEATURES, edge_features=(0,),
         glyphs=('wrapped', 'synchrony', 'raster'),
         glyph_titles={'wrapped': r'$\Delta\phi$', 'synchrony': '$R$', 'raster': r'$\Delta\phi$'},
