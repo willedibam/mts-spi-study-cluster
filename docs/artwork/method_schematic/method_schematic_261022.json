@@ -1,0 +1,32 @@
+{
+ "contract": "unified_ordered_v3",
+ "M": 6,
+ "T": 1000,
+ "K": 5,
+ "statistics": {
+  "lag1": "lag-1 cross-correlation corr(x_i(t), x_j(t+1)) (directed)",
+  "granger": "linear Granger log-variance ratio, order 2 (directed)",
+  "pearson": "Pearson correlation",
+  "spearman": "Spearman correlation",
+  "euclid": "Euclidean distance (z-scored series)"
+ },
+ "pair_ij_1based": [
+  5,
+  6
+ ],
+ "A_a_ij": 0.4276260309556387,
+ "A_a_ji": 0.1725796740553169,
+ "z_ab": 0.6700906460216223,
+ "z": [
+  0.6701,
+  0.4343,
+  0.4351,
+  -0.418,
+  -0.2073,
+  -0.2064,
+  0.2045,
+  0.9974,
+  -0.9933,
+  -0.9949
+ ]
+}
