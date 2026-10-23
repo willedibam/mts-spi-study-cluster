@@ -28,6 +28,7 @@ from PIL import Image
 from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial import procrustes
 from scipy.spatial.distance import pdist, squareform
+from scipy.stats import gaussian_kde
 from sklearn.cluster import HDBSCAN, KMeans
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
@@ -267,6 +268,18 @@ def ward(scores, k):
     return fcluster(linkage(scores, method="ward"), k, criterion="maxclust") - 1
 
 
+def knn_louvain(distances, k=15, resolution=1., seed=1729):
+    """Louvain communities of the symmetrised k-NN graph of the full space (the graph t-SNE's affinities approximate)."""
+    import networkx as nx
+    graph = nx.Graph()
+    graph.add_nodes_from(range(len(distances)))
+    graph.add_edges_from((i, int(j)) for i, row in enumerate(distance_neighbors(distances, k)) for j in row)
+    labels = np.empty(len(distances), int)
+    for c, members in enumerate(sorted(nx.community.louvain_communities(graph, resolution=resolution, seed=seed), key=len, reverse=True)):
+        labels[list(members)] = c
+    return labels
+
+
 def kmeans(scores, k, seed=1729):
     return KMeans(n_clusters=k, n_init=20, random_state=seed).fit_predict(scores)
 
@@ -398,17 +411,57 @@ def notebook_style():
                          "axes.unicode_minus": False, "figure.constrained_layout.use": True})
 
 
-def plot_atlas(ax, xy, meta, labels=None, letters=None, *, shade=True, annotate=True, size=1.1, seed=1729):
-    """Paper-style map: grey by origin (hollow if unlabelled), area by M, faint KDE around lettered clusters."""
+MAP_REGIONS = {"min_cluster_size": 5, "min_samples": 5}  # the old figure's HDBSCAN setting, here on the chosen map
+
+
+def kde_levels(points, masses=(.8,), grid=60):
+    """Gaussian KDE (Scott x 1.2, as v1/v2) on a padded grid, with density levels enclosing the given masses."""
+    if len(points) < 5 or np.linalg.matrix_rank(np.cov(points.T)) < 2:
+        return None
+    kde = gaussian_kde(points.T, bw_method="scott")
+    kde.set_bandwidth(kde.factor * 1.2)
+    pad = 3 * np.sqrt(np.diag(kde.covariance))
+    lo, hi = points.min(0) - pad, points.max(0) + pad
+    gx, gy = np.meshgrid(np.linspace(lo[0], hi[0], grid), np.linspace(lo[1], hi[1], grid))
+    density = kde(np.vstack([gx.ravel(), gy.ravel()])).reshape(gx.shape)
+    ordered = np.sort(density.ravel())[::-1]
+    mass = np.cumsum(ordered) / ordered.sum()
+    return gx, gy, density, sorted(float(ordered[np.searchsorted(mass, m)]) for m in masses)
+
+
+def plot_atlas(ax, xy, meta, labels=None, letters=None, *, regions=None, outline=False, shade=True, annotate=True,
+               size=1.1, seed=1729):
+    """Paper-style map: grey by origin (hollow if unlabelled), area by M.
+
+    `regions` (descriptive 2-D map regions, -1 = none) get faint filled KDEs, and their unassigned points are drawn
+    small and faint. Lettered feature-space clusters get a filled KDE, or an 80%-mass outline when `outline`, so the
+    two kinds of grouping stay distinguishable."""
     letters = letters or {}
+    if regions is not None:
+        for region in np.unique(regions[regions >= 0]):
+            found = kde_levels(xy[regions == region], masses=(.8,))
+            if found:
+                gx, gy, density, levels = found
+                ax.contourf(gx, gy, density, levels=[levels[0], density.max() + 1e-12], colors=["0.5"], alpha=.11, zorder=0)
     if shade and labels is not None and letters:
-        density_overlay(ax, xy, np.where(np.isin(labels, list(letters)), labels, -1))
+        if outline:
+            for cluster in letters:
+                found = kde_levels(xy[labels == cluster], masses=(.8,))
+                if found:
+                    gx, gy, density, levels = found
+                    ax.contour(gx, gy, density, levels=levels, colors=["0.15"], linewidths=.7, zorder=1)
+        else:
+            density_overlay(ax, xy, np.where(np.isin(labels, list(letters)), labels, -1))
     radii = marker_radii(meta["M"].to_numpy(), meta["M"].min(), meta["M"].max())
     order = np.random.default_rng(seed).permutation(len(xy))  # no origin drawn systematically on top
     origin = meta["origin"].to_numpy()[order]
+    faint = np.zeros(len(xy), bool) if regions is None else (regions < 0)[order]
     fill = [ORIGIN_FILL.get(o, "none") for o in origin]
     edge = ["white" if o in ORIGIN_FILL else "0.3" for o in origin]
-    ax.scatter(*xy[order].T, s=size * radii[order] ** 2, c=fill, edgecolors=edge, linewidths=.3, zorder=2)
+    for subset, scale, alpha in [(faint, .45, .35), (~faint, 1., 1.)]:
+        idx = np.flatnonzero(subset)
+        ax.scatter(*xy[order][idx].T, s=size * scale * radii[order][idx] ** 2, c=[fill[i] for i in idx],
+                   edgecolors=[edge[i] for i in idx], linewidths=.3 * scale, alpha=alpha, zorder=2)
     if annotate and labels is not None:
         for cluster, letter in letters.items():
             points = xy[labels == cluster]
@@ -509,7 +562,8 @@ def candidate_table(candidates, labels, clusters, arrays, meta, xy, corpus, keep
     return pd.DataFrame(rows), readings
 
 
-def gallery_payload(meta, labels, clusters, table, readings, maps, default_map, methods):
+def gallery_payload(meta, labels, clusters, table, readings, maps, default_map, methods, representatives_by_cluster, size_control=None):
+    """Explorer data: rows, maps (each with its own descriptive 2-D regions), feature-space clusters and candidates."""
     radii = marker_radii(meta["M"].to_numpy(), meta["M"].min(), meta["M"].max())
     legend = sorted({int(meta["M"].min()), int(meta["M"].median()), int(meta["M"].max())})
     info = clusters.set_index("cluster")
@@ -519,12 +573,16 @@ def gallery_payload(meta, labels, clusters, table, readings, maps, default_map, 
     candidates = []
     for c in table.itertuples():
         reading = readings[c.cluster]
-        candidates.append({"letter": c.letter, "cluster": int(c.cluster), "title": c.title, "composition": c.composition,
-                           "origin": c.origin, "size": int(c.size), "parents": int(c.parents), "sources": c.sources,
-                           "silhouette": float(c.silhouette_full), "jaccard": float(c.jaccard), "note": c.note,
-                           "families": f"higher agreement: {c.families_up}; lower: {c.families_down}",
-                           "axes": [{"axis": a, "cluster": None if np.isnan(reading["axes"][a]) else float(reading["axes"][a]),
-                                     "corpus": float(reading["corpus_axes"][a])} for a in CASE_AXES]})
+        entry = {"letter": c.letter, "cluster": int(c.cluster), "title": c.title, "composition": c.composition,
+                 "origin": c.origin, "size": int(c.size), "parents": int(c.parents), "sources": c.sources,
+                 "silhouette": float(c.silhouette_full), "jaccard": float(c.jaccard), "note": c.note,
+                 "reps": [int(i) for i in representatives_by_cluster[c.cluster]],
+                 "families": f"higher agreement: {c.families_up}; lower: {c.families_down}",
+                 "axes": [{"axis": a, "cluster": None if np.isnan(reading["axes"][a]) else float(reading["axes"][a]),
+                           "corpus": float(reading["corpus_axes"][a])} for a in CASE_AXES]}
+        if size_control is not None and c.letter in size_control.index:
+            entry["size_control"] = {"survival": float(size_control.loc[c.letter, "survival vs matched"])}
+        candidates.append(entry)
     return {"rows": rows, "maps": maps, "default_map": default_map, "candidates": candidates, "methods": methods,
             "clusters": {str(c): {"size": int(i["size"]), "parents": int(i.parents), "silhouette": float(i.silhouette_full),
                                   "jaccard": float(i.jaccard_mean), "medoid": int(i.medoid), "source_mix": i.source_mix}
