@@ -30,31 +30,35 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap, Normalize, to_rgb
 from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch, Polygon
+from matplotlib.transforms import Bbox
 from seaborn import color_palette
 
 from mtsspi.corpus_visualization import scale_timeseries
 from mtsspi.spi_spi_contract import UNIFIED_CONTRACT_VERSION, build_unified_feature_values
 
 HERE = Path(__file__).resolve().parent
+PANEL_DIR = HERE / "panels"
 STAMP = "261022"
-# Statistic order: a and b first, so z_ab is R[0, 1] and the first entry of z.
+DPI = 600
 SPIS = {
-    "lag1": "lag-1 cross-correlation corr(x_i(t), x_j(t+1)) (directed)",
-    "granger": "linear Granger log-variance ratio, order 2 (directed)",
     "pearson": "Pearson correlation",
     "spearman": "Spearman correlation",
+    "lag1": "lag-1 cross-correlation corr(x_i(t), x_j(t+1)) (directed)",
+    "granger": "linear Granger log-variance ratio, order 2 (directed)",
     "euclid": "Euclidean distance (z-scored series)",
 }
+# a and b are the 3rd and 4th statistics, so z_ab's kept cell (b, a) of R sits low and right, next to panel c.
+A_IDX, B_IDX = 2, 3
 SIMILARITY_SIGN = {"euclid": -1}  # distances are flipped only for drawing graph edges
 DIRECTED = {"lag1", "granger"}
 # Channel labels are arbitrary (z is invariant to relabelling); this order puts the strongly
-# asymmetric pair at the matrix corner, so i -> j is in the last column and j -> i in the last row.
-CHANNEL_ORDER = [0, 1, 2, 4, 3, 5]
-PAIR = (4, 5)  # highlighted channel pair (i, j), 0-based, after CHANNEL_ORDER
-EXTRA = 1  # one further channel annotated in panel a (channel 2), bottom node of the graph
+# asymmetric pair on channels 2 and 6: i -> j sits in the last column, j -> i in the last row.
+CHANNEL_ORDER = [0, 3, 2, 1, 4, 5]
+PAIR = (1, 5)  # highlighted channel pair (i, j) = channels 2 and 6, 0-based, after CHANNEL_ORDER
 WINDOW = (200, 300)  # samples shown in the carpet and traces
-# Irregular node layout in the unit square; i and j (nodes 4, 5) sit on top, under their traces.
-LAYOUT = np.array([[0.04, 0.50], [0.30, 0.06], [0.97, 0.44], [0.68, 0.12], [0.27, 0.84], [0.77, 0.93]])
+TRACE_W, TRACE_H = 0.4, 0.13  # every single-channel trace, beside the carpet and on the graph
+# Irregular node layout in the unit square; i and j (nodes 1, 5) sit on top, under their traces.
+LAYOUT = np.array([[0.04, 0.50], [0.27, 0.84], [0.97, 0.44], [0.68, 0.12], [0.30, 0.06], [0.77, 0.93]])
 
 # Soft palette: a pastel hue for statistics a and b, quiet greys for the rest of the K, a
 # pastel diverging map for R and z, a dark ink for the channel pair (i, j), and white cells
@@ -87,7 +91,7 @@ def style():
         "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}",
         "font.family": "serif", "font.serif": ["Computer Modern Roman"], "mathtext.fontset": "cm",
         "font.size": 8, "figure.facecolor": "white",
-        "pdf.fonttype": 42, "figure.dpi": 180, "savefig.dpi": 600,
+        "pdf.fonttype": 42, "figure.dpi": 180, "savefig.dpi": DPI,
     })
 
 
@@ -224,7 +228,8 @@ def cell(ax, x, y, s, fc, z=1, **kw):
 
 
 def unused(ax, x, y, s, z=1):
-    cell(ax, x, y, s, "white", z=z, ec=HAIR, lw=0.4)
+    """A never-used entry (every diagonal): an empty dashed outline, unlike a near-zero value."""
+    cell(ax, x, y, s, "none", z=z, ec="#C9CBCF", lw=0.45, ls=(0, (1.6, 1.2)))
 
 
 def ring(ax, x, y, s, ls="-", lw=0.8, z=3, color=INK):
@@ -326,193 +331,212 @@ def box_scatter(x0, y0, w, h, xs, ys, pad=0.08):
 
 # --- figure ------------------------------------------------------------------------------------
 
+PANELS = "abcde"
+# Panel extents in figure inches (x0, y0, x1, y1), used to crop single-panel exports.
+PANEL_BOXES = {"a": (0.0, 2.42, 3.2, 4.92), "b": (3.16, 2.42, 7.2, 4.92), "e": (0.0, 0.0, 2.36, 2.42),
+               "d": (2.36, 0.0, 4.72, 2.42), "c": (4.72, 0.0, 7.2, 2.42)}
+SHOW_ALL_EXTRACTION = False  # True adds a faint line from every off-diagonal entry of A^(a) and A^(b)
+SHOW_SLIDING_WINDOW = False  # a fourth, exploratory use in panel e: z over sliding windows (not shown in the paper)
+
+
 def figure(x, coupling, mats, c):
+    """Draw the full schematic. Returns the figure and, per panel, the axes that belong to it."""
     M, edges, P, R, z = c["M"], c["edges"], c["P"], c["R"], c["z"]
-    K = len(P)
+    K, A, B = len(P), A_IDX, B_IDX
     i, j = PAIR
     names = list(mats)
     fig = plt.figure(figsize=(7.09, 4.9))
-    back = layer(fig, "lines_behind", 0)
-    base = layer(fig, "panels", 1)
-    front = layer(fig, "lines_front", 2)
+    L = {p: {d: layer(fig, f"{p}_{d}", zo) for d, zo in (("back", 0), ("base", 1), ("front", 2))} for p in PANELS}
+    links = {d: layer(fig, f"links_{d}", zo) for d, zo in (("back", 0.5), ("front", 2.5))}
+    for p in "bc":  # glyphs and labels that must sit above the cross-panel lines
+        L[p]["top"] = layer(fig, f"{p}_top", 3)
+    parts = {p: list(L[p].values()) for p in PANELS}
 
-    # (a) Recording: carpet (one card, rows are channels) -> directed coupling graph. -------------
-    title(base, 0.02, 4.75, "a", "Recording", r"$M$ channels $\times$ $T$ samples")
+    # (a) Recording as a carpet (rows are channels) and as a directed coupling graph. --------------
+    a = L["a"]["base"]
+    title(a, 0.02, 4.75, "a", "Recording", r"$M$ channels $\times$ $T$ samples")
     scaled, limit = robust_scaled(x)
     t0, t1 = WINDOW
-    cx, cy, cw, ch = 0.46, 3.0, 1.5, 0.92
+    cx, cy, cw, ch = 0.18, 3.0, 1.38, 0.88
     pitch, gap = ch / M, 0.012
-    rounded(base, cx - 0.03, cy - 0.03, cw + 0.06, ch + 0.06, "white", r=0.04, z=0.5, ec=HAIR, lw=0.5)
+    rounded(a, cx - 0.03, cy - 0.03, cw + 0.06, ch + 0.06, "white", r=0.04, z=0.5, ec=HAIR, lw=0.5)
     for m in range(M):
         y = cy + (M - 1 - m) * pitch
         clip = FancyBboxPatch((cx, y + gap), cw, pitch - 2 * gap, boxstyle="round,pad=0,rounding_size=0.025",
-                              fc="none", ec="none", transform=base.transData)
-        base.add_patch(clip)
-        im = base.imshow(scaled[m:m + 1, t0:t1], cmap=MTS, vmin=-limit, vmax=limit, aspect="auto",
-                         interpolation="nearest", extent=(cx, cx + cw, y + gap, y + pitch - gap), zorder=1)
+                              fc="none", ec="none", transform=a.transData)
+        a.add_patch(clip)
+        im = a.imshow(scaled[m:m + 1, t0:t1], cmap=MTS, vmin=-limit, vmax=limit, aspect="auto",
+                      interpolation="nearest", extent=(cx, cx + cw, y + gap, y + pitch - gap), zorder=1)
         im.set_clip_path(clip)
-        text(base, cx - 0.06, y + pitch / 2, f"${m + 1}$", 7, MUTED, ha="right", va="center")
-    text(base, cx + cw * 0.62, cy - 0.06, "time", 8, MUTED, ha="center", va="top")
-    text(base, 0.07, cy + ch / 2, "channel", 8, MUTED, ha="center", va="center", rotation=90)
+    text(a, cx + cw / 2, cy - 0.06, "time", 8, MUTED, ha="center", va="top")
+    text(a, cx - 0.1, cy + ch / 2, "channel", 8, MUTED, ha="center", va="center", rotation=90)
     row_y = lambda m: cy + (M - 1 - m) * pitch + pitch / 2
-    # Annotated channels: the pair (i, j) in ink, one further channel (EXTRA) muted. Channel 2's trace sits
-    # above-left of the carpet, i's and j's underneath; dashed leaders curve to each row's number.
-    annotated = [(EXTRA, f"$x_{{{EXTRA + 1}}}$", MUTED, (0.02, cy + ch + 0.1), 0.35),
-                 (i, "$x_i$", INK, (0.02, cy - 0.44), 0.15), (j, "$x_j$", INK, (0.5, cy - 0.44), 0.3)]
-    for m, lab, col, (tx, ty), rad in annotated:
+    for m, lab, ty, rad in [(i, "$x_i$", cy + ch + 0.1, 0.45), (j, "$x_j$", cy - 0.36, -0.45)]:
         y = cy + (M - 1 - m) * pitch
-        rounded(base, cx - 0.012, y + gap - 0.012, cw + 0.024, pitch - 2 * gap + 0.024, "none", r=0.03, z=2,
-                ec=col, lw=0.7)
-        trace(base, tx, ty, 0.36, 0.13, scaled[m, t0:t1], lw=0.5, color=col)
-        text(base, tx, ty + 0.15, lab, 8, col, ha="left", va="bottom")
-        start = (tx + 0.38, ty + 0.065) if m == EXTRA else (tx + 0.34, ty + 0.15)
-        arrow(back, start, (cx - 0.16, row_y(m)), rad=rad, lw=0.5, ls=(0, (2, 1.5)), head=False)
-
-    gx, gy, gs = 2.18, 2.94, 0.98
+        rounded(a, cx - 0.012, y + gap - 0.012, cw + 0.024, pitch - 2 * gap + 0.024, "none", r=0.03, z=2,
+                ec=INK, lw=0.7)
+        trace(a, cx + 0.05, ty, TRACE_W, TRACE_H, scaled[m, t0:t1], lw=0.5)
+        text(a, cx + 0.05 + TRACE_W + 0.04, ty + 0.065, lab, 8, ha="left", va="center")
+        arrow(L["a"]["back"], (cx + 0.04, ty + 0.065), (cx - 0.035, row_y(m)), rad=rad, lw=0.5,
+              ls=(0, (2, 1.5)), head=False)
+    gx, gy, gs = cx + cw + 0.38, 2.9, 1.08
     pos = np.column_stack([gx + LAYOUT[:, 0] * gs, gy + LAYOUT[:, 1] * gs])
-    graph(base, pos, coupling ** 1.3, NODE, "#8C929E", 0.042, 0.026, z=1, floor=0.08, rings=PAIR, directed=True)
-    base.add_patch(Circle(pos[EXTRA], 1.55 * 0.042, fc="none", ec=MUTED, lw=0.6, zorder=1.3))
-    for m in PAIR:
-        trace(base, pos[m, 0] - 0.15, pos[m, 1] + 0.065, 0.3, 0.11, scaled[m, t0:t1], lw=0.45)
-    trace(base, pos[EXTRA, 0] - 0.15, pos[EXTRA, 1] - 0.18, 0.3, 0.11, scaled[EXTRA, t0:t1], lw=0.45, color=MUTED)
-    arrow(base, (cx + cw + 0.07, cy + ch / 2), (gx - 0.06, cy + ch / 2))
+    graph(a, pos, coupling ** 1.3, NODE, "#8C929E", 0.044, 0.027, z=1, floor=0.08, rings=PAIR, directed=True)
+    for m, lab in zip(PAIR, ("$x_i$", "$x_j$")):  # the same series, at the same size, as beside the carpet
+        trace(a, pos[m, 0] - TRACE_W / 2, pos[m, 1] + 0.07, TRACE_W, TRACE_H, scaled[m, t0:t1], lw=0.5)
+        text(a, pos[m, 0] + TRACE_W / 2 + 0.03, pos[m, 1] + 0.07 + TRACE_H / 2, lab, 8, ha="left", va="center")
+    text(a, (cx + cw + gx) / 2, cy + ch / 2, r"$\Longleftrightarrow$", 9, MUTED, ha="center", va="center")
 
-    # (b) K statistics: layers of the same graph (a, b, one more, then dots), and the K matrices. --
-    title(base, 3.22, 4.75, "b", r"$K$ statistics", r"one weighted graph and one $M \times M$ matrix each")
-    O = np.array([gx + gs + 0.1, gy + gs * 0.5])
-    LW, LH, SKEW, GAPL = 1.18, 0.38, 0.32, 0.14
-    who = [0, 1, 2]  # a, b, then one representative of the rest; the dots stand for the remainder
-    lx, top = 3.36, 4.36
-    for k, s_idx in enumerate(who):
-        o = np.array([lx, top - LH - k * (LH + GAPL)])
-        u, v = np.array([LW, 0.0]), np.array([SKEW, LH])
-        coloured = s_idx < 2
-        hue = HUES[s_idx] if coloured else None
-        base.add_patch(Polygon([o, o + u, o + u + v, o + v], closed=True, fc=tint(hue, 0.13) if coloured else CARD,
-                               ec=shade(hue, 0.85) if coloured else HAIR, lw=0.5, joinstyle="round", zorder=3))
+    # (b) K statistics: layers of the same graph (a, b, dots, K) and the stacked matrices. ---------
+    b = L["b"]["base"]
+    title(b, 3.2, 4.75, "b", r"$K$ statistics", r"one weighted graph and one $M \times M$ matrix each")
+    O = np.array([gx + gs + 0.08, gy + gs * 0.5])
+    LW, LH, SKEW, GAPL = 1.05, 0.36, 0.3, 0.12
+    lx = 3.3
+    layer_y = {A: 4.0, B: 4.0 - LH - GAPL, K - 1: 4.0 - 2 * (LH + GAPL) - 0.22}
+    for s_idx, ly in layer_y.items():
+        o, u, v = np.array([lx, ly]), np.array([LW, 0.0]), np.array([SKEW, LH])
+        hue = HUES[0] if s_idx == A else HUES[1] if s_idx == B else None
+        b.add_patch(Polygon([o, o + u, o + u + v, o + v], closed=True, fc=tint(hue, 0.13) if hue else CARD,
+                            ec=shade(hue, 0.85) if hue else HAIR, lw=0.5, joinstyle="round", zorder=3))
         local = o + (0.08 + 0.84 * LAYOUT[:, :1]) * u + (0.1 + 0.8 * LAYOUT[:, 1:]) * v
         name = names[s_idx]
         w = edge_weights(mats[name], SIMILARITY_SIGN.get(name, 1), name in DIRECTED)
-        graph(base, local, w, shade(hue, 0.85) if coloured else NODE, shade(hue, 0.75) if coloured else "#9BA1AC",
-              0.024, 0.018, z=3.2, floor=0.15, directed=name in DIRECTED)
-        if coloured:
-            text(base, *(o + u + v / 2 + np.array([0.06, 0])), f"$A^{{({'ab'[s_idx]})}}$", 8, shade(hue, 0.7),
-                 ha="left", va="center", zorder=4)
-        arrow(back, O, o + 0.5 * v + np.array([0.02, 0]), color=HAIR, lw=0.5, head=False)
-    last = top - LH - (len(who) - 1) * (LH + GAPL)
-    text(base, lx + (LW + SKEW) / 2, last - 0.06, r"$\vdots$", 10, MUTED, ha="center", va="top")
+        graph(b, local, w, shade(hue, 0.85) if hue else NODE, shade(hue, 0.75) if hue else "#9BA1AC",
+              0.023, 0.017, z=3.2, floor=0.15, directed=name in DIRECTED)
+        lab = "a" if s_idx == A else "b" if s_idx == B else "K"
+        text(b, *(o + u + v / 2 + np.array([0.05, 0])), f"$A^{{({lab})}}$", 8, shade(hue, 0.7) if hue else MUTED,
+             ha="left", va="center", zorder=4)
+        arrow(links["back"], O, o + 0.5 * v + np.array([0.02, 0]), color=HAIR, lw=0.5, head=False)
+    text(b, lx + (LW + SKEW) / 2, layer_y[B] - 0.04, r"$\vdots$", 10, MUTED, ha="center", va="top")
 
     s = 0.15
-    Gx, Gy = 5.2, 2.84
-    off = 0.45 * M * s  # A^(b) sits up-right; A^(a) covers its lower-left ~30%
-    Bx, By = Gx + off, Gy + off
+    Gx, Gy = 5.3, 3.35
+    off = 0.45 * M * s  # A^(b) sits down-right; A^(a) covers its upper-left ~30%
+    Bx, By = Gx + off, Gy - off
     for d in reversed(range(1, K - 1)):
-        card(base, Bx + d * 0.08, By + d * 0.08, M, s, fc=CARD, z=6 - d * 0.5)
-    cb = matrix(base, mats[names[1]], HUES[1], Bx, By, s, z=7, mark=True)
-    ca = matrix(base, mats[names[0]], HUES[0], Gx, Gy, s, z=9, mark=True)
-    text(base, Gx + M * s / 2, Gy - 0.06, "$A^{(a)}$", 8, shade(HUES[0], 0.7), ha="center", va="top", zorder=30)
-    text(base, Bx - 0.05, By + M * s - 0.08, "$A^{(b)}$", 8, shade(HUES[1], 0.7), ha="right", va="center",
-         zorder=30)
-    text(base, Bx + (K - 2) * 0.08 + M * s, By + (K - 2) * 0.08 + M * s + 0.03, "$A^{(K)}$", 8, MUTED, ha="right",
-         va="bottom", zorder=30)
-    A_a = mats[names[0]]
-    gsz, gxg = 0.29, Gx + M * s + 0.12
-    for (src, dst), gyg, lab, ls in [((i, j), Gy + 0.03, r"$i \to j$", "-"), ((j, i), Gy - 0.34, r"$j \to i$", (0, (1.5, 1)))]:
-        rounded(base, gxg, gyg, gsz, gsz, "white", r=0.02, z=14, ec=HAIR, lw=0.5)
-        fx, fy = box_scatter(gxg, gyg, gsz, gsz, x[:-1, src], x[1:, dst], pad=0.06)
-        base.scatter(fx(x[:-1, src]), fy(x[1:, dst]), s=0.3, color=HUES[0], lw=0, alpha=0.55, zorder=14.5,
-                     rasterized=True)
-        text(base, gxg + gsz + 0.04, gyg + gsz * 0.66, lab, 7, ha="left", va="center")
-        text(base, gxg + gsz + 0.04, gyg + gsz * 0.3, f"${A_a[src, dst]:.2f}$", 7, shade(HUES[0], 0.6),
-             ha="left", va="center")
-        arrow(front, (gxg - 0.01, gyg + gsz / 2), ca[src, dst], lw=0.5, ls=ls, head=False, color=INK, z=20)
+        card(b, Bx + d * 0.08, By - d * 0.08, M, s, fc=CARD, z=6 - d * 0.5)
+    cb = matrix(b, mats[names[B]], HUES[1], Bx, By, s, z=7, mark=True)
+    ca = matrix(b, mats[names[A]], HUES[0], Gx, Gy, s, z=9, mark=True)
+    text(b, Gx, Gy + M * s + 0.05, "$A^{(a)}$", 8, shade(HUES[0], 0.7), ha="left", va="bottom", zorder=30)
+    text(b, Bx + 0.07, By - 0.03, "$A^{(b)}$", 8, shade(HUES[1], 0.7), ha="right", va="top", zorder=30)
+    text(b, Bx + (K - 2) * 0.08 + M * s, By - (K - 2) * 0.08 - 0.05, "$A^{(K)}$", 8, MUTED, ha="right",
+         va="top", zorder=30)
+    A_a = mats[names[A]]
+    gsz = 0.29
+    glyphs = [((i, j), (Gx + M * s + 0.1, Gy + 0.56), r"$i \to j$", "-", "right"),
+              ((j, i), (Gx + (i + 0.5) * s - gsz / 2, Gy - 0.36), r"$j \to i$", (0, (1.5, 1)), "left")]
+    for (src, dst), (gx0, gy0), lab, ls, side in glyphs:
+        top = L["b"]["top"]
+        rounded(top, gx0, gy0, gsz, gsz, "white", r=0.02, z=14, ec=HAIR, lw=0.5)
+        fx, fy = box_scatter(gx0, gy0, gsz, gsz, x[:-1, src], x[1:, dst], pad=0.06)
+        top.scatter(fx(x[:-1, src]), fy(x[1:, dst]), s=0.3, color=HUES[0], lw=0, alpha=0.55, zorder=14.5,
+                    rasterized=True)
+        lx0, ha = (gx0 + gsz + 0.04, "left") if side == "right" else (gx0 - 0.04, "right")
+        text(top, lx0, gy0 + gsz * 0.66, lab, 7, ha=ha, va="center")
+        text(top, lx0, gy0 + gsz * 0.3, f"${A_a[src, dst]:.2f}$", 7, shade(HUES[0], 0.6), ha=ha, va="center")
+        anchor = (gx0 - 0.01, gy0 + gsz / 2) if side == "right" else (gx0 + gsz / 2, gy0 + gsz + 0.01)
+        arrow(L["b"]["front"], anchor, ca[src, dst], lw=0.5, ls=ls, head=False, color=INK, z=20)
 
-    # (c) z_ab: every off-diagonal entry of A^(a) and A^(b) drawn out into one boxed scatter. ------
-    title(base, 4.78, 2.25, "c", r"$z_{ab}$")
+    # (c) z_ab: the off-diagonal entries of A^(a) and A^(b), paired by ordered channel pair. -------
+    cc = L["c"]["base"]
+    title(cc, 4.78, 2.25, "c", r"$z_{ab}$")
     sx0, sy0, sw = 5.05, 0.28, 1.72
-    rounded(base, sx0, sy0, sw, sw, "white", r=0.04, z=1.5, ec=MUTED, lw=0.5)
-    fx, fy = box_scatter(sx0, sy0, sw, sw, P[0], P[1], pad=0.1)
-    pts = np.column_stack([fx(P[0]), fy(P[1])])
-    slope, icpt = np.polyfit(P[0], P[1], 1)
-    xl = np.array([P[0].min(), P[0].max()])
-    base.plot(fx(xl), fy(slope * xl + icpt), color=FEATURE, lw=1.4, zorder=3, solid_capstyle="round")
-    # Rugs: each axis is one statistic's edge profile.
-    for k in range(len(edges)):
-        base.plot([pts[k, 0]] * 2, [sy0, sy0 + 0.055], color=shade(HUES[0], 0.85), lw=0.6, zorder=2)
-        base.plot([sx0, sx0 + 0.055], [pts[k, 1]] * 2, color=shade(HUES[1], 0.85), lw=0.6, zorder=2)
+    rounded(cc, sx0, sy0, sw, sw, "white", r=0.04, z=1.5, ec=MUTED, lw=0.5)
+    fx, fy = box_scatter(sx0, sy0, sw, sw, P[A], P[B], pad=0.1)
+    pts = np.column_stack([fx(P[A]), fy(P[B])])
+    slope, icpt = np.polyfit(P[A], P[B], 1)
+    xl = np.array([P[A].min(), P[A].max()])
+    cc.plot(fx(xl), fy(slope * xl + icpt), color=FEATURE, lw=1.4, zorder=3, solid_capstyle="round")
+    for k in range(len(edges)):  # rugs: each axis is one statistic's edge profile
+        cc.plot([pts[k, 0]] * 2, [sy0, sy0 + 0.055], color=shade(HUES[0], 0.85), lw=0.6, zorder=2)
+        cc.plot([sx0, sx0 + 0.055], [pts[k, 1]] * 2, color=shade(HUES[1], 0.85), lw=0.6, zorder=2)
     for k, (r_, c_) in enumerate(edges):
         pt = tuple(pts[k])
         hot = (r_, c_) in (PAIR, PAIR[::-1])
-        base.add_patch(Circle(pt, 0.033 if hot else 0.024, fc=(INK if (r_, c_) == PAIR else "white") if hot else MUTED,
-                              ec=INK if hot else "none", lw=0.6, zorder=4, alpha=1 if hot else 0.85))
-        ls = "-" if (r_, c_) == PAIR else (0, (1.5, 1))
-        style_a = dict(color=shade(HUES[0], 0.8) if hot else HUES[0], lw=0.6 if hot else 0.3,
-                       alpha=0.85 if hot else 0.12, ls=ls if hot else "-", head=False)
-        style_b = dict(style_a, color=shade(HUES[1], 0.8) if hot else HUES[1], alpha=0.85 if hot else 0.16)
-        arrow(front, ca[r_, c_], pt, rad=0.12, z=1, **style_a)
-        arrow(back, cb[r_, c_], pt, rad=0.18, **style_b)  # A^(b) sits behind, so its lines do too
-    text(base, sx0 + sw / 2, sy0 - 0.06, "$A^{(a)}_{ij}$", 8, shade(HUES[0], 0.7), ha="center", va="top")
-    text(base, sx0 - 0.06, sy0 + sw / 2, "$A^{(b)}_{ij}$", 8, shade(HUES[1], 0.7), ha="right", va="center")
-    zlab = text(base, sx0 + 0.11, sy0 + sw - 0.09, f"$z_{{ab}} = {R[0, 1]:.2f}$", 8, ha="left", va="top", zorder=6)
+        cc.add_patch(Circle(pt, 0.033 if hot else 0.024, fc=(INK if (r_, c_) == PAIR else "white") if hot else MUTED,
+                            ec=INK if hot else "none", lw=0.6, zorder=4, alpha=1 if hot else 0.85))
+        if hot or SHOW_ALL_EXTRACTION:
+            ls = ("-" if (r_, c_) == PAIR else (0, (1.5, 1))) if hot else "-"
+            for cells, hue, rad, alpha, lay in [(ca, HUES[0], 0.12, 0.12, links["front"]),
+                                                (cb, HUES[1], 0.18, 0.16, links["back"])]:
+                arrow(links["front"] if hot else lay, cells[r_, c_], pt, rad=rad, ls=ls, head=False, z=1,
+                      color=shade(hue, 0.8) if hot else hue, lw=0.6 if hot else 0.3, alpha=0.85 if hot else alpha)
+    text(cc, sx0 + sw / 2, sy0 - 0.06, "$A^{(a)}_{ij}$", 8, shade(HUES[0], 0.7), ha="center", va="top")
+    text(cc, sx0 - 0.06, sy0 + sw / 2, "$A^{(b)}_{ij}$", 8, shade(HUES[1], 0.7), ha="right", va="center")
+    zlab = text(L["c"]["top"], sx0 + 0.11, sy0 + sw - 0.09, f"$z_{{ab}} = {R[A, B]:.2f}$", 8, ha="left", va="top",
+                zorder=6)
     zlab.set_bbox(dict(boxstyle="round,pad=0.25,rounding_size=0.2", fc="white", ec=FEATURE, lw=1.0))
 
-    # (d) R, with z_ab's cell; its strict lower triangle drawn out into z. --------------------------
-    title(base, 2.38, 2.25, "d", r"Agreement matrix $R$")
+    # (d) R, one strict triangle of which is z; z_ab's cell projects out to panel c. ---------------
+    d = L["d"]["base"]
+    title(d, 2.38, 2.25, "d", r"Agreement matrix $R$")
     rs, rx, ry = 0.26, 3.0, 0.62
-    norm = Normalize(-1, 1)
     zs, zx, zy = 0.15, 2.52, 0.42
+    norm = Normalize(-1, 1)
     n = len(z)
-    brackets(base, rx - 0.03, ry - 0.03, K * rs + 0.06, K * rs + 0.06)
-    order = {pair: k for k, pair in enumerate((a, b) for a in range(K) for b in range(a + 1, K))}
+    brackets(d, rx - 0.03, ry - 0.03, K * rs + 0.06, K * rs + 0.06)
+    order = {pair: k for k, pair in enumerate((p_, q_) for p_ in range(K) for q_ in range(p_ + 1, K))}
     for r_ in range(K):
         for c_ in range(K):
             X, Y = rx + c_ * rs, ry + (K - 1 - r_) * rs
             if r_ == c_:
-                unused(base, X, Y, rs, z=2)
+                unused(d, X, Y, rs, z=2)
                 continue
             col = DIV(norm(R[r_, c_]))
-            cell(base, X, Y, rs, col, z=2, alpha=1.0 if c_ < r_ else 0.16)
+            cell(d, X, Y, rs, col, z=2, alpha=1.0 if c_ < r_ else 0.16)
             if c_ < r_:  # kept entry (r, c) is z's coordinate for the pair (c, r)
                 k = order[c_, r_]
-                arrow(back, (X + rs * 0.2, Y + rs / 2), (zx + zs, zy + (n - 1 - k) * zs + zs / 2), rad=-0.12,
-                      color=col, lw=0.5, alpha=0.55, head=False)
-    ring(base, rx, ry + (K - 2) * rs, rs, lw=1.1, color=FEATURE)
-    for kk, lab in [(0, "$a$"), (1, "$b$"), (K - 1, "$K$")]:
-        color = shade(HUES[kk], 0.7) if kk < 2 else MUTED
-        text(base, rx + (kk + 0.5) * rs, ry + K * rs + 0.05, lab, 8, color, ha="center", va="bottom")
-        text(base, rx + K * rs + 0.07, ry + (K - 1 - kk + 0.5) * rs, lab, 8, color, ha="left", va="center")
+                arrow(L["d"]["back"], (X + rs * 0.2, Y + rs / 2), (zx + zs, zy + (n - 1 - k) * zs + zs / 2),
+                      rad=-0.12, color=col, lw=0.5, alpha=0.55, head=False)
+    labels = {0: ("$1$", MUTED), A: ("$a$", shade(HUES[0], 0.7)), B: ("$b$", shade(HUES[1], 0.7)),
+              K - 1: ("$K$", MUTED)}
+    for kk, (lab, colr) in labels.items():
+        text(d, rx + (kk + 0.5) * rs, ry + K * rs + 0.05, lab, 8, colr, ha="center", va="bottom")
+        text(d, rx + K * rs + 0.07, ry + (K - 1 - kk + 0.5) * rs, lab, 8, colr, ha="left", va="center")
+    cell_x, cell_y = rx + A * rs, ry + (K - 1 - B) * rs
+    ring(d, cell_x, cell_y, rs, lw=1.1, color=FEATURE)
     for kk, v in enumerate(z):
-        cell(base, zx, zy + (n - 1 - kk) * zs, zs, DIV(norm(v)), z=2)
-    ring(base, zx, zy + (n - 1) * zs, zs, lw=1.0, color=FEATURE)
-    brackets(base, zx - 0.03, zy - 0.03, zs + 0.06, n * zs + 0.06, arm=0.035)
-    text(base, zx + zs / 2, zy + n * zs + 0.06, "$z$", 8, ha="center", va="bottom")
+        cell(d, zx, zy + (n - 1 - kk) * zs, zs, DIV(norm(v)), z=2)
+    ring(d, zx, zy + (n - 1 - order[A, B]) * zs, zs, lw=1.0, color=FEATURE)
+    brackets(d, zx - 0.03, zy - 0.03, zs + 0.06, n * zs + 0.06, arm=0.035)
+    text(d, zx + zs / 2, zy + n * zs + 0.06, "$z$", 8, ha="center", va="bottom")
     W, H = fig.get_size_inches()
     cax = fig.add_axes((rx / W, 0.4 / H, K * rs / W, 0.035 / H), zorder=3)
     cax.set_gid("d_colorbar")
     bar = fig.colorbar(plt.cm.ScalarMappable(norm, DIV), cax=cax, orientation="horizontal", ticks=[-1, 0, 1])
     bar.outline.set_visible(False); cax.tick_params(length=0, pad=1.5, labelsize=7, colors=MUTED)
-    text(base, rx + K * rs / 2, 0.2, r"agreement $z_{ab}$", 7, MUTED, ha="center", va="top")
+    text(d, rx + K * rs / 2, 0.2, r"feature value $z_{ab}$", 7, MUTED, ha="center", va="top")
+    parts["d"].append(cax)
+    # Projection: z_ab's cell of R opens out into the scatter of panel c.
+    beam = [(cell_x + rs, cell_y + rs), (sx0, sy0 + sw), (sx0, sy0), (cell_x + rs, cell_y)]
+    links["back"].add_patch(Polygon(beam, closed=True, fc=FEATURE, ec="none", alpha=0.06, zorder=1))
+    for p0, p1 in [(beam[0], beam[1]), (beam[3], beam[2])]:
+        links["back"].plot(*zip(p0, p1), color=FEATURE, lw=0.6, alpha=0.55, zorder=1.1)
 
     # (e) What one z per recording supports: schematic icons, not data. --------------------------
-    title(base, 0.02, 2.25, "e", "Statistical learning")
-    uses(base)
-    return fig
+    title(L["e"]["base"], 0.02, 2.25, "e", "Statistical learning")
+    uses(L["e"]["base"])
+    return fig, parts
 
 
-def uses(ax, sz=0.86):
-    """Embedding (top left), unsupervised tracking (middle right), one coordinate (lower left)."""
+def uses(ax, sz=0.86, sliding=None):
+    """Embedding, unsupervised tracking, one coordinate and, optionally, z over sliding windows."""
+    sliding = SHOW_SLIDING_WINDOW if sliding is None else sliding
     rng = np.random.default_rng(3)
     sage, lav, amber, rose, sky = PASTELS
+    spots = ({"embed": (0.08, 1.24), "track": (1.32, 1.04), "coord": (0.2, 0.12), "slide": (1.44, 0.08)} if sliding
+             else {"embed": (0.1, 1.16), "track": (1.3, 0.62), "coord": (0.24, 0.08)})
     # Embedding: four clusters, each mixing recordings of three sizes M.
-    x0, y0 = 0.1, 1.16
+    x0, y0 = spots["embed"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
-    for c, (centre, hue) in enumerate(zip([(0.27, 0.71), (0.73, 0.75), (0.3, 0.27), (0.71, 0.31)],
-                                          [shade(sage, 0.85), shade(lav, 0.9), shade(amber, 0.9), shade(rose, 0.9)])):
+    for centre, hue in zip([(0.27, 0.71), (0.73, 0.75), (0.3, 0.27), (0.71, 0.31)],
+                           [shade(sage, 0.85), shade(lav, 0.9), shade(amber, 0.9), shade(rose, 0.9)]):
         p = np.array(centre) + rng.normal(0, 0.055, (9, 2))
         ax.scatter(x0 + p[:, 0] * sz, y0 + p[:, 1] * sz, s=np.repeat([1.8, 3.8, 6.5], 3), color=hue, lw=0,
                    alpha=0.95, zorder=3)
     # Tracking: PC1 of z (band = spread over replicates) follows an order parameter.
-    x0, y0 = 1.14, 0.62
+    x0, y0 = spots["track"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
     g = np.linspace(0, 1, 16)
     Q = 0.12 + 0.76 / (1 + np.exp(-(g - 0.5) / 0.08))
@@ -525,9 +549,9 @@ def uses(ax, sz=0.86):
     ax.plot([x0 + 0.53 * sz] * 2, [y0 + 0.08 * sz, y0 + 0.92 * sz], color=MUTED, lw=0.4, ls=(0, (1.5, 1.5)),
             zorder=2)
     # One named coordinate z_ab separating two conditions (rainclouds).
-    x0, y0 = 0.24, 0.08
+    x0, y0 = spots["coord"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
-    for c, (cx, mu, hue) in enumerate([(0.3, 0.72, shade(rose, 0.9)), (0.68, 0.3, shade(sky, 0.85))]):
+    for cx, mu, hue in [(0.3, 0.72, shade(rose, 0.9)), (0.68, 0.3, shade(sky, 0.85))]:
         vals = mu + rng.normal(0, 0.07, 12)
         yy = np.linspace(vals.min(), vals.max(), 30)
         dens = np.exp(-0.5 * ((yy - mu) / 0.07) ** 2)
@@ -537,23 +561,78 @@ def uses(ax, sz=0.86):
                    zorder=3)
         ax.plot([x0 + (cx + 0.01) * sz] * 2, [y0 + (mu - 0.06) * sz, y0 + (mu + 0.06) * sz], color=hue, lw=1.3,
                 solid_capstyle="round", zorder=3)
+    if not sliding:
+        return
+    # Sliding windows: z recomputed per window of one recording; its coordinates reorganise at a change point.
+    x0, y0 = spots["slide"]
+    rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
+    t = np.linspace(0, 1, 160)
+    sig = 0.5 * np.sin(2 * np.pi * 7 * t) * (1 + 0.6 * (t > 0.58)) + rng.normal(0, 0.18, t.size)
+    ax.plot(x0 + (0.1 + 0.8 * t) * sz, y0 + (0.84 + 0.05 * sig) * sz, color=MUTED, lw=0.45, zorder=3)
+    rounded(ax, x0 + 0.3 * sz, y0 + 0.75 * sz, 0.16 * sz, 0.18 * sz, "none", r=0.01, z=3.5, ec=INK, lw=0.6)
+    arrow(ax, (x0 + 0.48 * sz, y0 + 0.69 * sz), (x0 + 0.62 * sz, y0 + 0.69 * sz), lw=0.5, color=INK, z=3.5)
+    n_win, n_coord = 14, 5
+    before, after = rng.uniform(-0.9, 0.9, n_coord), rng.uniform(-0.9, 0.9, n_coord)
+    after[:2] = -np.sign(before[:2]) * np.abs(after[:2])  # a few coordinates flip sign at the change
+    cw_, ch_ = 0.8 * sz / n_win, 0.48 * sz / n_coord
+    norm = Normalize(-1, 1)
+    for w_ in range(n_win):
+        vals = (before if w_ < 8 else after) + rng.normal(0, 0.1, n_coord)
+        for r_ in range(n_coord):
+            cell(ax, x0 + 0.1 * sz + w_ * cw_, y0 + 0.1 * sz + (n_coord - 1 - r_) * ch_, cw_,
+                 DIV(norm(np.clip(vals[r_], -1, 1))), z=3)
+    ax.plot([x0 + 0.1 * sz + 8 * cw_] * 2, [y0 + 0.07 * sz, y0 + 0.62 * sz], color=INK, lw=0.6,
+            ls=(0, (1.5, 1.2)), zorder=4)
 
 
-def main():
+# --- build and export ------------------------------------------------------------------------------
+
+def build():
+    """Compute the toy, its statistics and z, and draw the full figure. Returns (fig, parts, summary)."""
     style()
     x, coupling = toy_recording()
     mats = statistics(x)
     c = construction(mats)
-    fig = figure(x, coupling, mats, c)
-    out = HERE / f"method_schematic_{STAMP}"
-    for ext in ("svg", "pdf", "png"):
-        fig.savefig(out.with_suffix(f".{ext}"), dpi=180 if ext == "png" else 600, bbox_inches="tight")
+    fig, parts = figure(x, coupling, mats, c)
+    names = list(mats)
     summary = {
         "contract": UNIFIED_CONTRACT_VERSION, "M": c["M"], "T": len(x), "K": len(c["P"]),
-        "statistics": SPIS, "pair_ij_1based": [PAIR[0] + 1, PAIR[1] + 1],
-        "A_a_ij": float(mats["lag1"][PAIR]), "A_a_ji": float(mats["lag1"][PAIR[::-1]]),
-        "z_ab": float(c["R"][0, 1]), "z": np.round(c["z"], 4).tolist(),
+        "statistics": SPIS, "a": names[A_IDX], "b": names[B_IDX], "pair_ij_1based": [PAIR[0] + 1, PAIR[1] + 1],
+        "A_a_ij": float(mats[names[A_IDX]][PAIR]), "A_a_ji": float(mats[names[A_IDX]][PAIR[::-1]]),
+        "z_ab": float(c["R"][A_IDX, B_IDX]), "z": np.round(c["z"], 4).tolist(),
     }
+    return fig, parts, summary
+
+
+def save_full(fig, stem: str = f"method_schematic_{STAMP}") -> Path:
+    """Write the full figure as SVG, PDF and PNG (all at DPI) beside this script; returns the SVG path."""
+    out = HERE / stem
+    for ext in ("svg", "pdf", "png"):
+        fig.savefig(out.with_suffix(f".{ext}"), dpi=DPI, bbox_inches="tight")
+    return out.with_suffix(".svg")
+
+
+def save_panel(fig, parts, panel: str, fmt: str = "svg") -> Path:
+    """Write one panel alone (other panels and cross-panel links hidden) to panels/panel_<x>.<fmt>."""
+    keep = set(parts[panel])
+    shown = {ax: ax.get_visible() for ax in fig.axes}
+    for ax in fig.axes:
+        ax.set_visible(ax in keep)
+    PANEL_DIR.mkdir(exist_ok=True)
+    path = PANEL_DIR / f"panel_{panel}.{fmt}"
+    try:
+        fig.savefig(path, dpi=DPI, bbox_inches=Bbox.from_extents(*PANEL_BOXES[panel]))
+    finally:
+        for ax, vis in shown.items():
+            ax.set_visible(vis)
+    return path
+
+
+def main():
+    fig, parts, summary = build()
+    save_full(fig)
+    for panel in PANELS:
+        save_panel(fig, parts, panel)
     (HERE / f"method_schematic_{STAMP}.json").write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k not in ("statistics", "z")}, indent=1))
 
