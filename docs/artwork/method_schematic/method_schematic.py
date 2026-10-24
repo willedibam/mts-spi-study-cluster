@@ -399,8 +399,12 @@ def figure(x, coupling, mats, c):
             rounded(a, tx, ty, tw, th, "white", r=0.03, z=1.5, ec=HAIR, lw=0.5)
             edge = ty if up else ty + th  # the box edge facing the carpet and graph
             half = pitch / 2 - gap
-            beams = [[(row_end[0], row_end[1] + half), (tx, edge), (tx + 0.38 * tw, edge),
-                      (row_end[0], row_end[1] - half)],
+            # The row's beam lands just right of the carpet's card, so no edge runs behind it. The row corner
+            # nearer the box goes to the landing's inner end, so the two edges do not cross.
+            land = cx + cw + 0.07
+            s = half if up else -half
+            near, far = (row_end[0], row_end[1] + s), (row_end[0], row_end[1] - s)
+            beams = [[near, (land, edge), (land + 0.16, edge), far],
                      [(tx + 0.62 * tw, edge), (tx + tw, edge), tuple(pos[m])]]
             for poly in beams:
                 L["a"]["back"].add_patch(Polygon(poly, closed=True, fc=MUTED, ec="none", alpha=0.08, zorder=0.7))

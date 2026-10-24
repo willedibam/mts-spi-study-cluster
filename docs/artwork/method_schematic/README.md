@@ -11,7 +11,8 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Panel a:** carpet → shared traces → graph.
   - The carpet sits on one hairline card with a vertical "channel" label and no row numbers.
   - x_i (channel 2) and x_j (channel 6) are each drawn once, as a bare trace centred over the gap between the carpet and the graph: x_i above, x_j below, both on a common time axis. A ⟺ joins carpet and graph between them.
-  - Each trace sits in a hairline box, and its carpet row and its graph node project into the box's facing edge (under x_i, above x_j) as faint beams, like panel d's projection.
+  - Each trace sits in a hairline box, and its carpet row and its graph node project into the box's facing edge (under x_i, above x_j) as faint straight beams, like panel d's projection.
+  - The row's beam lands just right of the carpet's card. Where the box overhangs the carpet, a beam would have to run behind the card and seem to leave from its corner. Curved beams and beams drawn under the carpet were tried and set aside: the first adds a second line style, and the second reads as the top row's beam unless i is that row.
   - `TRACE_LINKS = "curve"` swaps the beams for two curved dotted lines and drops the box.
   - Nodes i and j sit on the graph's left, and the central node is raised clear of the strongest connection.
 - **Panel a graph:** the generator's coupling per ordered pair s→t, |lagged coupling of t on s| plus |innovation correlation|, scaled to [0, 1].
