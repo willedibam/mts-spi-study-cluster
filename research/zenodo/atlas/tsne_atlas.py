@@ -19,6 +19,7 @@ import json
 from pathlib import Path
 import re
 import time
+import warnings
 
 from matplotlib import patheffects
 import matplotlib.pyplot as plt
@@ -335,12 +336,13 @@ def contrasts(raw, keep, rows, pairs, spis):
     values = raw[:, keep]
     inside = np.zeros(len(raw), bool)
     inside[rows] = True
-    with np.errstate(invalid="ignore"):
+    with np.errstate(invalid="ignore"), warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)  # features never observed inside a group stay NaN
         delta = (np.nanmean(values[inside], axis=0) - np.nanmean(values[~inside], axis=0)) / np.nanstd(values, axis=0)
+        inside_median, corpus_median = np.nanmedian(values[inside], axis=0), np.nanmedian(values, axis=0)
     a, b = pairs[keep, 0], pairs[keep, 1]
     frame = pd.DataFrame({"spi_a": np.array(spis)[a], "spi_b": np.array(spis)[b], "effect": delta,
-                          "cluster_median": np.nanmedian(values[inside], axis=0),
-                          "corpus_median": np.nanmedian(values, axis=0)})
+                          "cluster_median": inside_median, "corpus_median": corpus_median})
     cats = sorted(set(SPI_CATEGORY.values()))
     frame["family_pair"] = [" × ".join(sorted((spi_category(x), spi_category(y)), key=cats.index))
                             for x, y in zip(frame.spi_a, frame.spi_b)]
@@ -430,12 +432,12 @@ def kde_levels(points, masses=(.8,), grid=60):
 
 
 def plot_atlas(ax, xy, meta, labels=None, letters=None, *, regions=None, outline=False, shade=True, annotate=True,
-               size=1.1, seed=1729):
+               size=1.1, seed=1729, faint=None):
     """Paper-style map: grey by origin (hollow if unlabelled), area by M.
 
     `regions` (descriptive 2-D map regions, -1 = none) get faint filled KDEs, and their unassigned points are drawn
     small and faint. Lettered feature-space clusters get a filled KDE, or an 80%-mass outline when `outline`, so the
-    two kinds of grouping stay distinguishable."""
+    two kinds of grouping stay distinguishable. `faint` overrides which points are drawn small and faint."""
     letters = letters or {}
     if regions is not None:
         for region in np.unique(regions[regions >= 0]):
@@ -455,7 +457,9 @@ def plot_atlas(ax, xy, meta, labels=None, letters=None, *, regions=None, outline
     radii = marker_radii(meta["M"].to_numpy(), meta["M"].min(), meta["M"].max())
     order = np.random.default_rng(seed).permutation(len(xy))  # no origin drawn systematically on top
     origin = meta["origin"].to_numpy()[order]
-    faint = np.zeros(len(xy), bool) if regions is None else (regions < 0)[order]
+    if faint is None:  # explicit mask wins; otherwise points outside the background regions are faint
+        faint = np.zeros(len(xy), bool) if regions is None else regions < 0
+    faint = np.asarray(faint)[order]
     fill = [ORIGIN_FILL.get(o, "none") for o in origin]
     edge = ["white" if o in ORIGIN_FILL else "0.3" for o in origin]
     for subset, scale, alpha in [(faint, .45, .35), (~faint, 1., 1.)]:

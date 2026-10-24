@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTS corpus atlas v4</title>
+<style>
+:root{color-scheme:light;--ink:#242424;--muted:#666;--accent:#31688e;--line:#ddd}
+*{box-sizing:border-box}body{font:15px Georgia,serif;color:var(--ink);background:#fff;max-width:1500px;margin:26px auto;padding:0 24px}h1{font-size:26px;font-weight:normal;margin:0 0 8px}h2{font-size:17px;font-weight:normal;margin:4px 0 8px}p{line-height:1.5;margin:8px 0}a{color:#315875;text-underline-offset:3px}.muted{color:var(--muted)}
+button,select,input{font:13px system-ui;color:var(--ink);padding:6px 7px;border:1px solid #bbb;border-radius:3px;background:#fff}button{cursor:pointer}button:hover{background:#f4f4f4}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:13px system-ui}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.layout{display:grid;grid-template-columns:minmax(380px,1.2fr) minmax(340px,1fr);gap:28px;margin-top:10px}#map{width:100%;aspect-ratio:1;display:block;touch-action:none;background:#fff}#map circle,#map path.hit{cursor:pointer}
+.facts{font:13px/1.6 system-ui}.legend{font:12px/1.5 system-ui;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px;margin:6px 0}.swatch{display:inline-block;width:22px;height:11px;vertical-align:-1px;margin-right:5px}
+#groups{display:grid;gap:7px;margin:6px 0 12px;max-height:620px;overflow:auto;padding-right:4px}.group{border:1px solid #e3e3e3;border-radius:4px;padding:7px 9px;cursor:pointer;background:#fff;text-align:left;font:14px/1.4 Georgia,serif;width:100%}.group[aria-pressed=true]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}.group small{display:block;font:12px/1.5 system-ui;color:var(--muted)}.badge{display:inline-block;font:11px system-ui;border:1px solid #bbb;border-radius:9px;padding:0 6px;margin-left:4px;color:#444}.badge.t1{background:#ececec;border-color:#888}.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:5px}.strip img{width:100%;height:30px;object-fit:fill;image-rendering:pixelated;background:#fafafa}
+#detail{min-height:110px;overflow-wrap:anywhere}#detail img{width:100%;max-height:190px;object-fit:fill;image-rendering:pixelated;background:#fafafa}#group-note{border-top:1px solid var(--line);padding-top:8px}
+.tbl{font:12px/1.45 system-ui;border-collapse:collapse;margin:6px 0}.tbl td{padding:1px 10px 1px 0}.tbl td:last-child{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin:16px 0}.card{min-width:0;overflow-wrap:anywhere;border-top:1px solid #e4e4e4;padding-top:8px}.card label{align-items:flex-start;font:14px Georgia,serif}.card img{width:100%;height:110px;object-fit:fill;image-rendering:pixelated;background:#fafafa;cursor:pointer}.card small{display:block;margin:4px 0;font:12px/1.5 system-ui;color:var(--muted)}
+#tip{position:fixed;pointer-events:none;background:#fff;border:1px solid #ccc;border-radius:3px;padding:6px;font:12px/1.4 system-ui;max-width:260px;box-shadow:0 2px 8px rgba(0,0,0,.12);display:none;z-index:5}#tip img{display:block;width:240px;height:60px;object-fit:fill;image-rendering:pixelated;margin-top:4px}
+.pager{display:flex;align-items:center;gap:12px}#search{width:190px}#view{max-width:330px}details{margin:12px 0}summary{cursor:pointer}footer{margin-top:24px;padding-top:12px;border-top:1px solid var(--line);font-size:13px}
+@media(max-width:860px){body{padding:0 14px;margin-top:16px}.layout{display:block}.toolbar label{display:flex;width:100%}.toolbar select{flex:1;min-width:0}}
+</style>
+<h1>MTS corpus atlas <span class="muted">/ v4 · consensus groups</span></h1>
+<p>1,053 recordings placed by their SPI–SPI agreement profile z. Groups are density cores found in feature space (HDBSCAN on the first 50 principal components), not on the map. <b>Tier 1</b> groups are stable under resampling by parent recording, span at least three parent recordings, and appear as a single region on the displayed map; only they are shaded by default. <b>Tier 2</b> pass the first two tests but split on the map. <b>Tier 3</b> are the remaining density groups. Recordings in no group are drawn small and faint. Co-location means a shared dependence-organisation signature, not a shared mechanism.</p>
+<div class="toolbar">
+ <label>Map <select id="map-select"></select></label>
+ <label>Show <select id="view"></select></label>
+ <label>Find MTS <input id="search" type="search" placeholder="Dataset name"></label>
+ <button id="all">Show all</button>
+ <label>Shading <select id="shading"><option value="consensus">Tier 1 groups on this map</option><option value="pool">Tier 1 filled, tier 2 outlined</option><option value="all">All density groups</option><option value="regions">2-D map regions (descriptive)</option><option value="none">None</option></select></label>
+ <label><input type="checkbox" id="origin" checked>Real / synthetic shading</label>
+</div>
+<div class="layout">
+ <div>
+  <svg id="map" viewBox="0 0 680 680" role="img" aria-label="Interactive MTS embedding"></svg>
+  <div class="legend"><span><span class="swatch" style="background:#333"></span>real</span><span><span class="swatch" style="background:#9e9e9e"></span>synthetic</span><span><span class="swatch" style="background:#e3e3e3"></span>shaded group</span><span><span class="swatch" style="border:1.5px dashed #262626;border-radius:6px"></span>tier 2 (splits on map)</span><span>small faint dots: in no density group</span></div>
+  <div class="toolbar"><button id="reset-view">Reset zoom</button><button id="export-svg">Save map SVG</button><label><input id="only-selected" type="checkbox">Selected only</label></div>
+  <p id="map-note" class="facts"></p>
+ </div>
+ <div>
+  <h2>Candidate groups <label style="margin-left:8px">List <select id="tier-filter"><option value="1">tier 1</option><option value="2" selected>tiers 1–2</option><option value="3">all groups</option></select></label></h2>
+  <div id="groups"></div>
+  <div id="group-note" class="facts"></div>
+  <div id="detail"><p class="muted facts">Hover a point for a preview; click it for details.</p></div>
+  <p><label>Post-hoc label <input id="label" placeholder="Your interpretation"></label></p>
+  <p id="selection-status" class="facts"></p>
+  <button id="choose">Select all shown</button><button id="clear">Clear selection</button><button id="download">Export selection CSV</button>
+ </div>
+</div>
+<p id="status" class="facts" aria-live="polite"></p>
+<div class="pager"><button id="previous-page">Previous page</button><span id="page-status"></span><button id="next-page">Next page</button></div>
+<div class="cards" id="cards"></div>
+<details><summary>Method and boundaries</summary><div id="methods"></div></details>
+<footer><a href="../tsne-261021/index.html">Explorer v3 (Ward candidates)</a> · <a href="groups.csv">Group metrics</a> · <a href="display-sweep.csv">Display sweep</a> · <a href="source-agreement-by-dims.csv">PCA dimension check</a></footer>
+<div id="tip"></div>
+<script>
+__KDE_SCRIPT__
+const data=__CORPUS_DATA__;
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',selected=new Set(),pageSize=24;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let page=0,focused=null,viewport=[0,0,680,680],drag=null,dragged=false,cache={};
+const byId=Object.fromEntries(data.groups.map(g=>[g.id,g]));
+const fmt=(x,d=2)=>x===null||x===undefined||Number.isNaN(x)?'n/a':x.toFixed(d);
+function option(parent,value,text){const o=document.createElement('option');o.value=value;o.textContent=text;parent.appendChild(o)}
+function el(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e}
+function currentMap(){return data.maps[$('map-select').value]}
+function regionOf(row){return currentMap().regions[row]}
+function groupName(g){return g<0?'no density group':`G${g} · ${byId[g].title}`}
+function filter(){const [kind,id]=($('view').value||'all:').split(':');return {kind,id:Number(id)}}
+function inView(r){const f=filter();return f.kind==='all'||(f.kind==='g'&&r.group===f.id)||(f.kind==='r'&&regionOf(r.row)===f.id)}
+function visibleRows(){const term=$('search').value.toLowerCase();return data.rows.filter(r=>inView(r)&&r.dataset.toLowerCase().includes(term)&&(!$('only-selected').checked||selected.has(r.row)))}
+function viewOptions(keep){
+ const v=$('view');v.replaceChildren();option(v,'all:','All recordings');
+ for(const t of [1,2,3]){const og=document.createElement('optgroup');og.label=`Tier ${t} groups`;data.groups.filter(g=>g.tier===t).forEach(g=>option(og,`g:${g.id}`,`G${g.id} · ${g.title} (${g.size})`));v.appendChild(og)}
+ option(v,'g:-1',`In no density group (${data.rows.filter(r=>r.group<0).length})`);
+ const counts={};currentMap().regions.forEach(r=>{counts[r]=(counts[r]||0)+1});
+ const og=document.createElement('optgroup');og.label='2-D map regions on this map (descriptive)';Object.keys(counts).map(Number).filter(r=>r>=0).sort((a,b)=>a-b).forEach(r=>option(og,`r:${r}`,`Region ${r} (${counts[r]})`));v.appendChild(og);
+ if([...v.options].some(o=>o.value===keep))v.value=keep;
+}
+function select(value){$('view').value=value;$('search').value='';$('only-selected').checked=false;page=0;render()}
+function inspect(row){focused=row;render()}
+function scaled(m){const xs=m.xy.map(v=>v[0]),ys=m.xy.map(v=>v[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];const s=Math.min(570/(hi[0]-lo[0]||1),570/(hi[1]-lo[1]||1));return m.xy.map(v=>[350+s*(v[0]-(lo[0]+hi[0])/2),325-s*(v[1]-(lo[1]+hi[1])/2)])}
+function contours(key,labels,xy){if(!cache[key]){const groups=assignedGroups(xy,data.rows.map(r=>r.row),labels);cache[key]=Object.fromEntries(Object.entries(groups).map(([c,p])=>[c,densityContours(p)]))}return cache[key]}
+function tip(event,r){const t=$('tip');t.innerHTML=`<b>${esc(r.dataset)}</b><br>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' (tier '+byId[r.group].tier+')':'no density group'} · ${regionOf(r.row)>=0?'map region '+regionOf(r.row):'no map region'}<img src="${r.thumb}" alt="">`;t.style.display='block';t.style.left=Math.min(event.clientX+14,window.innerWidth-280)+'px';t.style.top=Math.min(event.clientY+14,window.innerHeight-130)+'px'}
+function untip(){$('tip').style.display='none'}
+function draw(){
+ const m=currentMap(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row)),xy=scaled(m),f=filter(),shading=$('shading').value,mapKey=$('map-select').value,agree=new Set(m.agree);svg.replaceChildren();
+ svg.appendChild(el('path',{d:'M60 35 V615 H640 V35 Z',fill:'none',stroke:'#777','stroke-width':'.8'}));
+ svg.appendChild(el('text',{x:350,y:655,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[0]));
+ svg.appendChild(el('text',{x:18,y:325,transform:'rotate(-90 18 325)','text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[1]));
+ data.size_legend.forEach((item,i)=>{const x=430+i*72;svg.appendChild(el('circle',{cx:x,cy:18,r:item.radius,fill:'#555',stroke:'white','stroke-width':.55}));svg.appendChild(el('text',{x:x+9,y:22,'font-family':'Georgia, serif','font-size':12},`M = ${item.M}`))});
+ const defs=el('defs'),clip=el('clipPath',{id:'clip'});clip.appendChild(el('rect',{x:60,y:35,width:580,height:580}));defs.appendChild(clip);svg.appendChild(defs);
+ const layer=el('g',{'clip-path':'url(#clip)'});svg.appendChild(layer);
+ const groupLabels=data.rows.map(r=>r.group),filled=new Set(),dashed=new Set();
+ if(shading==='consensus'||shading==='pool')data.groups.forEach(g=>{if(g.tier<=2&&agree.has(g.id))filled.add(g.id);else if(shading==='pool'&&g.tier<=2)dashed.add(g.id)});
+ if(shading==='all')data.groups.forEach(g=>filled.add(g.id));
+ if(shading==='regions'){for(const [r,levels] of Object.entries(contours(mapKey+'|regions',m.regions,xy)))for(const level of levels){if(level.mass!==.8)continue;const on=f.kind==='all'||(f.kind==='r'&&f.id===Number(r));const p=el('path',{class:'hit',d:level.path,fill:'#8a8a8a','fill-rule':'evenodd','fill-opacity':on?.13:.04});p.appendChild(el('title',{},`Map region ${r} (2-D, descriptive)`));p.onclick=()=>{if(!dragged)select(`r:${r}`)};layer.appendChild(p)}}
+ for(const [g,levels] of Object.entries(contours(mapKey+'|groups',groupLabels,xy))){const id=Number(g);if(!filled.has(id)&&!dashed.has(id))continue;const on=f.kind==='all'||(f.kind==='g'&&f.id===id);
+  for(const level of levels){if(dashed.has(id)&&level.mass!==.8)continue;const p=dashed.has(id)?el('path',{class:'hit',d:level.path,fill:'none',stroke:'#262626','stroke-width':.8,'stroke-dasharray':'4 3','stroke-opacity':on?.8:.3,'pointer-events':'stroke'}):el('path',{class:'hit',d:level.path,fill:'#777','fill-rule':'evenodd','fill-opacity':(level.mass===.8?.08:.11)*(on?1:.3)});p.appendChild(el('title',{},`G${id} · tier ${byId[id].tier} · ${byId[id].title}`));p.onclick=()=>{if(!dragged)select(`g:${id}`)};layer.appendChild(p)}}
+ data.rows.forEach((r,i)=>{const st=$('origin').checked?data.origin_styles[r.origin]:{fill:'#444',stroke:'#fff'},faint=r.group<0,isSel=selected.has(r.row);
+  const c=el('circle',{cx:xy[i][0],cy:xy[i][1],r:faint?r.marker_radius*.6:r.marker_radius,fill:isSel?'#31688e':st.fill,stroke:r.origin==='unlabelled'?st.stroke:'#ffffff','stroke-width':focused===r.row?1.4:(faint?.3:.5),opacity:visible.has(r.row)?(faint?.4:.9):.1,tabindex:0,role:'button','aria-label':r.dataset});
+  c.onmouseenter=e=>tip(e,r);c.onmousemove=e=>tip(e,r);c.onmouseleave=untip;c.onclick=()=>{if(!dragged)inspect(r.row)};c.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();inspect(r.row)}};layer.appendChild(c)});
+ for(const id of [...filled,...dashed]){if(shading==='all')break;const pts=data.rows.filter(r=>r.group===id).map(r=>xy[r.row]);const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length,cy=Math.min(...pts.map(p=>p[1]))-8;layer.appendChild(el('text',{x:cx,y:cy,'text-anchor':'middle','font-family':'Georgia, serif','font-size':12,fill:'#222',stroke:'#fff','stroke-width':3,'paint-order':'stroke'},`G${id}`))}
+ svg.setAttribute('viewBox',viewport.join(' '));
+}
+function detail(){
+ if(focused===null)return;const r=data.rows[focused],reg=regionOf(focused);
+ $('detail').innerHTML=`<h2>${esc(r.dataset)}</h2><p class="facts">${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${esc(groupName(r.group))} · ${reg>=0?'map region '+reg:'in no map region'} · parent key ${esc(r.parent)}<br>archive tags: ${esc(r.tags.join(', '))}</p><a href="${r.png}" target="_blank" rel="noopener"><img src="${r.thumb}" alt="${esc(r.dataset)} heatmap"></a><p class="facts">Native heatmap <a href="${r.png}" target="_blank" rel="noopener">PNG</a> · <a href="${r.svg}" target="_blank" rel="noopener">SVG</a> (needs the v1 asset folder beside this page) · colour limit ±${r.display_limit.toPrecision(3)} · <button id="select-focused">${selected.has(focused)?'Deselect':'Select'}</button>${r.group>=0?' <button id="show-group">Show its group</button>':''}</p>`;
+ $('select-focused').onclick=()=>{selected.has(focused)?selected.delete(focused):selected.add(focused);render()};if(r.group>=0)$('show-group').onclick=()=>select(`g:${r.group}`);
+}
+function groupPanel(){
+ const f=filter(),maxTier=Number($('tier-filter').value),agree=new Set(currentMap().agree);
+ $('groups').innerHTML=data.groups.filter(g=>g.tier<=maxTier).map(g=>`<button class="group" data-group="${g.id}" aria-pressed="${f.kind==='g'&&f.id===g.id}"><b>G${g.id}</b> · ${esc(g.title)}<span class="badge ${g.tier===1?'t1':''}">tier ${g.tier}</span>${agree.has(g.id)?'<span class="badge">one region here</span>':''}${g.cross_source?'<span class="badge">cross-source</span>':''}<small>${g.composition} · ${g.origin} · ${g.size} MTS, ${g.parents} parents · stability ${fmt(g.stability)} · silhouette ${fmt(g.silhouette_full)} full / ${fmt(g.silhouette_pca)} PCA50 · size-matched survival ${fmt(g.size_survival)}</small><span class="strip">${g.reps.map(i=>`<img src="${data.rows[i].thumb}" alt="" title="${esc(data.rows[i].dataset)} · ${esc(data.rows[i].source)}">`).join('')}</span></button>`).join('');
+ document.querySelectorAll('.group').forEach(b=>b.onclick=()=>select(`g:${b.dataset.group}`));
+}
+function groupNote(){
+ const f=filter(),box=$('group-note');box.replaceChildren();if(f.kind==='all')return;
+ const members=data.rows.filter(r=>inView(r));const tally=key=>{const t={};members.forEach(r=>{const k=key(r);t[k]=(t[k]||0)+1});return Object.entries(t).sort((a,b)=>b[1]-a[1])};
+ if(f.kind==='r'){box.innerHTML=`<p><b>Map region ${f.id}</b> · ${members.length} MTS · HDBSCAN on this 2-D map: descriptive, not a feature-space group<br>Sources: ${esc(tally(r=>r.source).map(([s,n])=>`${s} ${n}`).join('; '))}<br>Density groups among members: ${esc(tally(r=>r.group).map(([g,n])=>`${Number(g)<0?'none':'G'+g}: ${n}`).join('; '))}</p>`;return}
+ if(f.id<0){box.innerHTML=`<p><b>In no density group</b> · ${members.length} MTS. The lower-density continuum; drawn faint on the map.</p>`;return}
+ const g=byId[f.id];
+ const regions=tally(r=>regionOf(r.row)).map(([k,n])=>`${Number(k)<0?'none':k}: ${n}`).join('; ');
+ const raw=Object.entries(g.raw).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${fmt(v)}</td><td>${fmt(data.corpus_raw[k])}</td></tr>`).join('');
+ const axes=g.axes.map(a=>`<tr><td>${esc(a.axis)}</td><td>${fmt(a.cluster)}</td><td>${fmt(a.corpus)}</td></tr>`).join('');
+ box.innerHTML=`<p><b>G${g.id} · ${esc(g.title)}</b> · tier ${g.tier} · ${g.composition}, ${g.origin} · ${g.size} MTS from ${g.parents} parents · M ${g.M}, T ${g.T}<br>${esc(g.sources)}<br>Stability ${fmt(g.stability)} · silhouette ${fmt(g.silhouette_full)} (full), ${fmt(g.silhouette_pca)} (PCA50) · cohesion beats size-matched sets with survival ${fmt(g.size_survival)} (p ${fmt(g.p_matched,3)}) · on the chosen map ${Math.round(100*g.in_modal_region)}% in one region<br>Map regions here: ${esc(regions)}</p>${g.note?`<p>${esc(g.note)}</p>`:''}<table class="tbl"><tr><td><b>Case-study axis (median z)</b></td><td><b>group</b></td><td>corpus</td></tr>${axes}</table><table class="tbl"><tr><td><b>Raw-series check (median)</b></td><td><b>group</b></td><td>corpus</td></tr>${raw}</table><p class="facts">SPI-family blocks: ${esc(g.families)}</p>`;
+ const b=document.createElement('button');b.textContent='Inspect medoid';b.onclick=()=>inspect(g.medoid);box.appendChild(b);
+}
+function render(){
+ const m=currentMap(),rows=visibleRows();page=Math.max(0,Math.min(page,Math.ceil(rows.length/pageSize)-1));
+ $('map-note').textContent=`${m.title}. ${m.note}`;
+ $('selection-status').textContent=`${selected.size} MTS selected for export.`;$('download').disabled=!selected.size;
+ $('status').textContent=`${rows.length} matching MTS.`;
+ $('cards').innerHTML=rows.slice(page*pageSize,(page+1)*pageSize).map(r=>`<article class="card"><label><input type="checkbox" data-select="${r.row}" ${selected.has(r.row)?'checked':''}>${esc(r.dataset)}</label><img loading="lazy" src="${r.thumb}" alt="${esc(r.dataset)} heatmap" data-inspect="${r.row}"><small>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' · tier '+byId[r.group].tier:'no density group'} · ${regionOf(r.row)>=0?'region '+regionOf(r.row):'no region'}</small></article>`).join('');
+ document.querySelectorAll('[data-select]').forEach(b=>b.onchange=()=>{const r=Number(b.dataset.select);b.checked?selected.add(r):selected.delete(r);render()});
+ document.querySelectorAll('[data-inspect]').forEach(b=>b.onclick=()=>inspect(Number(b.dataset.inspect)));
+ $('page-status').textContent=rows.length?`${page*pageSize+1}–${Math.min(rows.length,(page+1)*pageSize)} of ${rows.length}`:'No matching datasets';
+ $('previous-page').disabled=page===0;$('next-page').disabled=(page+1)*pageSize>=rows.length;
+ groupPanel();groupNote();detail();draw();
+ try{history.replaceState(null,'','#'+new URLSearchParams({map:$('map-select').value,view:$('view').value,shading:$('shading').value}).toString())}catch{}
+}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+for(const [key,m] of Object.entries(data.maps))option($('map-select'),key,m.title);
+$('methods').innerHTML=data.methods.map(p=>`<p>${esc(p)}</p>`).join('');
+$('map-select').onchange=()=>{const keep=$('view').value.startsWith('r:')?'all:':$('view').value;viewport=[0,0,680,680];viewOptions(keep);render()};
+$('view').onchange=$('search').oninput=$('only-selected').onchange=()=>{page=0;render()};
+$('shading').onchange=$('origin').onchange=$('tier-filter').onchange=render;$('all').onclick=()=>select('all:');
+$('reset-view').onclick=()=>{viewport=[0,0,680,680];draw()};$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
+$('previous-page').onclick=()=>{page--;render()};$('next-page').onclick=()=>{page++;render()};
+$('download').onclick=()=>{const m=currentMap(),q=x=>'"'+String(x??'').replaceAll('"','""')+'"';const rec=[['row','dataset','source','origin','M','T','parent','density_group','tier','map','map_region','x','y','user_label'],...[...selected].sort((a,b)=>a-b).map(i=>{const r=data.rows[i];return [i,r.dataset,r.source,r.origin,r.M,r.T,r.parent,r.group,r.group>=0?byId[r.group].tier:'',$('map-select').value,m.regions[i],...m.xy[i],$('label').value]})];download(new Blob([rec.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),'mts-selection.csv')};
+$('export-svg').onclick=()=>{const clone=$('map').cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width','1360');clone.setAttribute('height','1360');clone.querySelectorAll('[tabindex]').forEach(x=>x.removeAttribute('tabindex'));download(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),'mts-atlas-map.svg')};
+function svgPoint(e){return new DOMPoint(e.clientX,e.clientY).matrixTransform($('map').getScreenCTM().inverse())}
+$('map').addEventListener('wheel',e=>{e.preventDefault();const p=svgPoint(e),k=e.deltaY>0?1.12:1/1.12;if(viewport[2]*k<35||viewport[2]*k>4000)return;viewport=[p.x+(viewport[0]-p.x)*k,p.y+(viewport[1]-p.y)*k,viewport[2]*k,viewport[3]*k];$('map').setAttribute('viewBox',viewport.join(' '))},{passive:false});
+$('map').onpointerdown=e=>{dragged=false;drag={x:e.clientX,y:e.clientY,view:[...viewport]}};
+window.addEventListener('pointermove',e=>{if(!drag)return;const rect=$('map').getBoundingClientRect(),dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)dragged=true;if(dragged){untip();viewport=[drag.view[0]-dx*drag.view[2]/rect.width,drag.view[1]-dy*drag.view[3]/rect.height,drag.view[2],drag.view[3]];$('map').setAttribute('viewBox',viewport.join(' '))}});
+window.addEventListener('pointerup',()=>{drag=null});window.addEventListener('pointercancel',()=>{drag=null});
+const initial=new URLSearchParams(location.hash.slice(1));
+$('map-select').value=data.maps[initial.get('map')]?initial.get('map'):data.default_map;
+if(['consensus','pool','all','regions','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
+viewOptions(initial.get('view')||'all:');
+render();
+</script>
+</html>

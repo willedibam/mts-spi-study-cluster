@@ -1,6 +1,23 @@
 # Zenodo MTS corpus map
 
-Active workstream; the paper's corpus-atlas figure was settled on 2026-10-21 (next section). This is exploratory representation analysis; proximity is SPI interaction-profile similarity, not established mechanistic identity.
+Active workstream. The current candidate pool is the 2026-10-24 consensus selection (next section); the 2026-10-21 Ward selection below is its predecessor. This is exploratory representation analysis; proximity is SPI interaction-profile similarity, not established mechanistic identity.
+
+## Consensus selection (2026-10-24): current candidate pool
+
+- Supersedes the 21 October Ward candidates as the selection protocol. Artefacts: [notebook](../../research/zenodo/atlas/notebooks/zenodo_1053_consensus_261024.ipynb), `research/zenodo/atlas/consensus_atlas.py`, config `research/zenodo/atlas/configs/analysis/zenodo-consensus-261024.yaml` (criteria fixed before reading groups), explorer template `zenodo_gallery_v4.html`. The rendered page and figures go to `results/zenodo_7118947/consensus-261024/`. Rebuild with `.venv/bin/python -m research.zenodo.atlas.consensus_atlas` (about 4 min), then execute the notebook.
+- Analysis space: PCA50 of the primary z. 5-NN source agreement, counting only other parents, peaks there (.64 against .54 at full rank and .60 at PCA200), so the tail behaves mostly like noise. This is light supervision of one hyperparameter; disclose it.
+- Groups: HDBSCAN 5/5 in PCA50. 30 groups, 43% of recordings assigned, 60% of groups single-source. Pool: parent-grouped Jaccard ≥ .75 and ≥ 3 parents gives 10 groups.
+- Map chosen by display fidelity. A sweep of input × perplexity × exaggeration × 3 seeds scores each map by how many pool groups sit ≥ 80% in one 2-D map region that is ≥ 50% theirs, within 95% of the best recall. Winner: PCA50 input, perplexity 50, ρ = 1, with 9 of 10. The 21 October map shows 8; the fragmented low-perplexity maps show 3–6; PC1–PC2 shows 0.
+- Tier 1 (pool and one map region, 9 groups):
+  - mostly source families: HandMovementDirection, NATOPS, SCP1+SCP2 EEG, UCLA fMRI, NetSim, FingerMovements;
+  - Cricket, whose cohesion size-matched sets fully explain (survival −.05);
+  - two oscillator groups that are the cross-model examples: Kuramoto–Sakaguchi with Van der Pol (G15), and Kuramoto–Sakaguchi with one seismogram (G20). Reading: phase-lagged coupling, where zero-lag r misses coherence and time and spectral Granger disagree.
+- Tier 2: the 86-member little-or-no-dependence group (IID noise, VAR, VMA, strongly coupled phase oscillators). It is stable but splits on the map.
+- Near misses kept outside by the fixed rule:
+  - Mouse fMRI with S&P/DJIA log-returns (G17): stability .74, one map region, size survival .95. Contemporaneous positive dependence between white signals. The strongest real–real cross-mechanism example; its exclusion is within resampling error.
+  - HCP task and resting fMRI: .65.
+- The 21 October mixed candidates C–F are not density cores (28–67% of members in any group): they are co-locations in the continuum. Tight cores are mostly source families.
+- Open: pool sensitivity to the HDBSCAN setting and analysis dimension; the stability error bar near .75.
 
 ## Paper atlas figure: chosen map and candidate clusters (2026-10-21)
 

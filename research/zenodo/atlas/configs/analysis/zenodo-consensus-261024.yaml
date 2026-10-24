@@ -1,0 +1,23 @@
+# Consensus atlas (2026-10-24). Criteria fixed here before any group was read for the narrative.
+# Groups are defined in feature space; the 2-D map is chosen afterwards to display them faithfully.
+base: research/zenodo/atlas/configs/analysis/zenodo-tsne-261021.yaml   # bank, metadata, cached full-rank scores
+output: results/zenodo_7118947/consensus-261024
+threads: 8
+seed: 1729
+# Analysis space: first 50 principal components of the primary (centred, 95%-valid, median-imputed) z.
+# Chosen because 5-NN source agreement (other parents only) peaks there (.64 vs .54 full rank): a denoising
+# check against labels never used for fitting. Disclose as light supervision of one hyperparameter.
+analysis_dims: 50
+density: {min_cluster_size: 5, min_samples: 5}          # HDBSCAN, excess-of-mass selection
+pool: {min_stability: 0.75, min_parents: 3}             # Hennig cluster-wise Jaccard; parent recordings, not windows
+stability: {replicates: 50, fraction: 0.8}              # subsets keep 80% of parent recordings
+map_regions: {min_cluster_size: 5, min_samples: 5}      # HDBSCAN on the 2-D map (descriptive)
+agreement: {modal_share: 0.8, region_share: 0.5}        # >=80% of members in one map region that is >=50% theirs
+sweep:
+  inputs: [pca20, pca50, pca100, full]
+  perplexities: [5, 10, 20, 30, 50, 80]
+  exaggerations: [1, 2]
+  seeds: [1729, 2718, 3141]
+  max_iter: 1500
+  recall_floor: 0.95   # keep maps with 15-NN recall (vs the analysis space) >= 95% of the best in the sweep
+size_null: {replicates: 1000, k: 5}
