@@ -87,8 +87,12 @@ function untip(){$('tip').style.display='none'}
 function placeLabels(layer,ids,muted,xy,key,H){
  // As tsne_atlas.place_labels: largest group first, 16 directions around its outline, fewest grouped points covered, no overlap.
  const crowd=data.rows.filter(r=>r.group>=0).map(r=>xy[r.row]),taken=[];
- for(const id of [...ids].sort((a,b)=>byId[b].size-byId[a].size)){const v=(outline(key,id,xy).match(/-?[\d.]+/g)||[]).map(Number),pts=[];for(let i=0;i+1<v.length;i+=2)pts.push([v[i],v[i+1]]);
-  const members=data.rows.filter(r=>r.group===id).map(r=>xy[r.row]);if(!pts.length)pts.push(...members);const c=[members.reduce((a,p)=>a+p[0],0)/members.length,members.reduce((a,p)=>a+p[1],0)/members.length],text=`G${id}`,w=text.length*7+4,h=14;let best=null;
+ for(const id of [...ids].sort((a,b)=>byId[b].size-byId[a].size)){const members=data.rows.filter(r=>r.group===id).map(r=>xy[r.row]);
+  // label the island that holds most members (as tsne_atlas.place_labels)
+  const loops=outline(key,id,xy).split('M').filter(Boolean).map(seg=>{const v=(seg.match(/-?[\d.]+/g)||[]).map(Number),q=[];for(let i=0;i+1<v.length;i+=2)q.push([v[i],v[i+1]]);return q});
+  const inside=(poly,p)=>{let o=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])o=!o}return o};
+  const held=loops.map(l=>members.filter(p=>inside(l,p))),k=held.reduce((m,h,i)=>h.length>held[m].length?i:m,0),pts=loops.length?loops[k]:[...members],own=loops.length&&held[k].length?held[k]:members;
+  const c=[own.reduce((a,p)=>a+p[0],0)/own.length,own.reduce((a,p)=>a+p[1],0)/own.length],text=`G${id}`,w=text.length*7+4,h=14;let best=null;
   for(let k=0;k<16;k++){const t=2*Math.PI*k/16,u=[Math.cos(t),Math.sin(t)];let anchor=pts[0],far=-Infinity;for(const p of pts){const d=(p[0]-c[0])*u[0]+(p[1]-c[1])*u[1];if(d>far){far=d;anchor=p}}
    const x=anchor[0]+4*u[0],y=anchor[1]+4*u[1],x0=u[0]>.38?x:u[0]<-.38?x-w:x-w/2,y0=u[1]>.38?y:u[1]<-.38?y-h:y-h/2,box=[x0,y0,x0+w,y0+h];
    const covered=crowd.filter(p=>p[0]>box[0]&&p[0]<box[2]&&p[1]>box[1]&&p[1]<box[3]).length,clash=taken.filter(b=>b[0]<box[2]&&box[0]<b[2]&&b[1]<box[3]&&box[1]<b[3]).length,outside=box[0]<60||box[2]>640||box[1]<35||box[3]>35+H;

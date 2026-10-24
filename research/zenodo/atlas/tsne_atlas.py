@@ -516,9 +516,11 @@ def draw_groups(ax, xy, labels, filled=(), dashed=(), *, fill=True, line=True):
 
 
 def place_labels(ax, xy, labels, texts, *, avoid=None, muted=(), fontsize=8):
-    """Label each group just outside its outline. Greedy, largest group first: of 16 directions, take the one whose
-    label covers the fewest points in `avoid` (default all), overlaps no earlier label and stays inside the axes."""
+    """Label each group just outside the outline of its main island (the one holding most members). Greedy, largest
+    group first: of 16 directions, take the one whose label covers the fewest points in `avoid` (default all),
+    overlaps no earlier label and stays inside the axes."""
     import contourpy
+    from matplotlib.path import Path as MplPath
     figure = ax.figure
     figure.draw_without_rendering()
     renderer = figure.canvas.get_renderer()
@@ -528,8 +530,10 @@ def place_labels(ax, xy, labels, texts, *, avoid=None, muted=(), fontsize=8):
     for group in sorted(texts, key=lambda g: -np.sum(labels == g)):
         members = xy[labels == group]
         gx, gy, density, level = group_contour(members, bandwidth)
-        edge = np.vstack(contourpy.contour_generator(gx, gy, density).lines(level))
-        centre, best = members.mean(0), None
+        loops = contourpy.contour_generator(gx, gy, density).lines(level)
+        held = [MplPath(loop).contains_points(members) for loop in loops]
+        main = int(np.argmax([h.sum() for h in held]))  # label the island that holds most members
+        edge, centre, best = loops[main], members[held[main]].mean(0) if held[main].any() else members.mean(0), None
         for theta in np.linspace(0, 2 * np.pi, 16, endpoint=False):
             u = np.array([np.cos(theta), np.sin(theta)])
             text = ax.annotate(texts[group], edge[np.argmax((edge - centre) @ u)], xytext=3 * u, textcoords="offset points",
