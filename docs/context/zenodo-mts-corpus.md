@@ -15,7 +15,13 @@ Active workstream. For paper exemplars, the 2026-10-24 neighbourhood analysis (n
 - The same four market windows sit in R11 as log-returns and in R28 as prices: z follows the observable's dependence organisation, not source identity.
 - Stability is reported with Monte Carlo error. G17 is .74 ± .09 (2 SE), so the .75 cutoff is not resolvable there. The pool grows from 10 to 13 groups at .70 and to 18 at .60. Hennig's .6–.75 band means "pattern, membership doubtful", which fits G17 against its .99-stable map region.
 - Novelty context: [Navarro et al. 2023](https://proceedings.mlr.press/v224/navarro23a.html) embedded MTS datasets with per-channel catch22, which is univariate dynamics. The claim to make is organisation by pairwise-dependence structure, a multivariate counterpart to hctsa.
-- Open: a synthetic ground-truth test (do neighbours share known coupling form across generators more than generator identity or size?); a check of the FingerMovements–oscillator sync anti-phase reading; whether explorer v4 should browse validated regions.
+- Synthetic ground truth (2026-10-24): [notebook](../../research/zenodo/atlas/notebooks/zenodo_1053_ground_truth_261024.ipynb), `research/zenodo/atlas/ground_truth.py`, config `configs/analysis/zenodo-ground-truth-261024.yaml`; about 1 min. Classes come from the archive's own equations (Cliff et al., arXiv:2201.11941v2, Sec. S2) and were committed (`7c9118b`) before results; the repo's generators did not make these rows.
+  - Among 487 synthetic recordings (19 generator units), coarse/fine coupling class explains 26%/32% of PCA50 variance, against 41% for family, 2.5% for size and 70% for parent. Classes beat random groupings of the same units (p ≈ .007). Same-class cross-family nearest neighbours occur at 2.6–5.2× the unit null.
+  - Against it: family adds 8.5–15% beyond class; coupled versus uncoupled VAR/VMA is unresolved (p = .11); and given toolbox (BDT, pyclustering, authors' code, CauseMe, NetSim) the class advantage vanishes (p = .41 coarse, .055 fine).
+  - Kuramoto–Van der Pol shares the coarse class but not the coupling function, and shares toolbox and size grid. Kuramoto sync joins it only at its smooth settings; its aliased settings (lag-1 ≈ 0) sit with noise.
+  - Reading: co-location means a shared observable dependence organisation, which tracks coupling form above chance but is not separable from sampling and simulation conventions. Keep the cross-source "mechanism" claim at that level. Closing the gap needs a factorial generator set: coupling function × toolbox/solver × sampling × density.
+  - Method lesson: a parent bootstrap with replacement inflates between-parent variance fractions (its intervals sat above the estimates), so use a delete-one-parent jackknife.
+- Open: a check of the FingerMovements–oscillator sync anti-phase reading; whether explorer v4 should browse validated regions.
 
 ## Consensus selection (2026-10-24): density cores
 
