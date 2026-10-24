@@ -1,0 +1,26 @@
+# Neighbourhoods (2026-10-24): which source families are nearer each other in z than size and nesting explain,
+# and which 2-D map regions are real feature-space neighbourhoods. Settings fixed before any result was read.
+base: research/zenodo/atlas/configs/analysis/zenodo-tsne-261021.yaml            # bank, metadata, cached scores
+consensus: research/zenodo/atlas/configs/analysis/zenodo-consensus-261024.yaml  # density groups, display sweep, chosen map
+output: results/zenodo_7118947/neighbourhoods-261024
+threads: 8
+seed: 1729
+analysis_dims: 50
+enrichment:
+  # Directed k-NN edges in PCA50 that skip neighbours from the same parent recording. Null: source labels permuted
+  # across parent recordings within strata of the parent's median log M and log T (quantile bins per axis; 0 = none).
+  k: [5, 10, 20]
+  bins: [0, 3, 4]
+  primary: {k: 10, bins: 3}
+  permutations: 5000
+regions:
+  # Map regions are HDBSCAN on the chosen map (consensus map_regions setting), validated in PCA50.
+  k: 10                                   # neighbour lift and cross-source neighbours use the k=10 edges above
+  random_sets: 1000                       # cohesion against random same-size sets
+  size_null: {replicates: 1000, k: 5}     # cohesion against other-source sets matched on (log M, log T)
+  stability: {replicates: 50, fraction: 0.8}   # re-embed (same t-SNE settings) on parent subsets, re-find regions
+stability:
+  # Density groups: Monte Carlo error and spread of the parent-grouped Jaccard, cutoff and setting sensitivity.
+  thresholds: [0.6, 0.65, 0.7, 0.75, 0.8, 0.85]
+  settings: [[4, 4], [5, 3], [8, 5], [10, 5]]   # HDBSCAN (min_cluster_size, min_samples) alternatives in PCA50
+  dims: [20, 100]                               # analysis-dimension alternatives at the primary setting

@@ -1,24 +1,33 @@
 # Zenodo MTS corpus map
 
-Active workstream. The current candidate pool is the 2026-10-24 consensus selection (next section); the 2026-10-21 Ward selection below is its predecessor. This is exploratory representation analysis; proximity is SPI interaction-profile similarity, not established mechanistic identity.
+Active workstream. For paper exemplars, the 2026-10-24 neighbourhood analysis (next section) supersedes the consensus density groups as the selection basis; the consensus and 2026-10-21 Ward selections below are its predecessors. This is exploratory representation analysis; proximity is SPI interaction-profile similarity, not established mechanistic identity.
 
-## Consensus selection (2026-10-24): current candidate pool
+## Neighbourhoods and family enrichment (2026-10-24): current selection basis
+
+- Artefacts: [notebook](../../research/zenodo/atlas/notebooks/zenodo_1053_neighbourhoods_261024.ipynb), `research/zenodo/atlas/neighbourhood_atlas.py`, config `configs/analysis/zenodo-neighbourhoods-261024.yaml`; outputs `results/zenodo_7118947/neighbourhoods-261024/` (about 2 min; needs the tsne and consensus caches).
+- Why: density cores are biased toward homogeneity (60% single-source), and the claim concerns neighbourhoods across sources and sizes. HDBSCAN "noise" (57%) is the continuum, not bad data: unassigned recordings have 46% of their 10-NN in groups. Never drop them from figures or corpus statistics.
+- Family enrichment: other-parent 10-NN edges in PCA50; family labels permuted across parents within 3 × 3 strata of median log M, log T, with the graph fixed. Stratification adds evidence for pairs of different sizes, because their expected count is small. Robust pairs: Kuramoto–Van der Pol (63–283×), Kuramoto–oscillator sync, Brownian motion–AWR/Cricket (co-trending), FingerMovements–oscillator sync, VAR–VMA–IID noise. Mouse fMRI–S&P/DJIA returns is 5× (q ≈ .2) at 3 × 3 but 14–18× (q ≤ .012) at 4 × 4 strata: setting-dependent; disclose.
+- Map-proposed, feature-validated regions: HDBSCAN 5/5 on the chosen consensus map; validated by cohesion against random and size-matched sets, neighbours inside, cross-source neighbours, re-embedding on parent subsets, and recurrence on eligible maps. The strongest multi-source, size-heterogeneous candidates:
+  - R11 mouse fMRI with DJIA/S&P log-returns (stability .99, survival .93): common instantaneous factor;
+  - R34 Kuramoto–Van der Pol–hysteresis (.83, 1.04) and R38 Kuramoto–oscillator sync–seismograms (.61, .96): phase-lagged oscillation;
+  - R28 AWR, DJIA/S&P price levels and Brownian motion (.74, 1.00): co-trending, a nonstationary regime rather than a coupling form.
+  - Cautionary: R5 (TestWEATH–CML) is multi-source but size-explained (survival −.03).
+- The same four market windows sit in R11 as log-returns and in R28 as prices: z follows the observable's dependence organisation, not source identity.
+- Stability is reported with Monte Carlo error. G17 is .74 ± .09 (2 SE), so the .75 cutoff is not resolvable there. The pool grows from 10 to 13 groups at .70 and to 18 at .60. Hennig's .6–.75 band means "pattern, membership doubtful", which fits G17 against its .99-stable map region.
+- Novelty context: [Navarro et al. 2023](https://proceedings.mlr.press/v224/navarro23a.html) embedded MTS datasets with per-channel catch22, which is univariate dynamics. The claim to make is organisation by pairwise-dependence structure, a multivariate counterpart to hctsa.
+- Open: a synthetic ground-truth test (do neighbours share known coupling form across generators more than generator identity or size?); a check of the FingerMovements–oscillator sync anti-phase reading; whether explorer v4 should browse validated regions.
+
+## Consensus selection (2026-10-24): density cores
 
 - Supersedes the 21 October Ward candidates as the selection protocol. Artefacts: [notebook](../../research/zenodo/atlas/notebooks/zenodo_1053_consensus_261024.ipynb), `research/zenodo/atlas/consensus_atlas.py`, config `research/zenodo/atlas/configs/analysis/zenodo-consensus-261024.yaml` (criteria fixed before reading groups), explorer template `zenodo_gallery_v4.html`. The rendered page and figures go to `results/zenodo_7118947/consensus-261024/`. Rebuild with `.venv/bin/python -m research.zenodo.atlas.consensus_atlas` (about 4 min), then execute the notebook.
 - Analysis space: PCA50 of the primary z. 5-NN source agreement, counting only other parents, peaks there (.64 against .54 at full rank and .60 at PCA200), so the tail behaves mostly like noise. This is light supervision of one hyperparameter; disclose it.
 - Groups: HDBSCAN 5/5 in PCA50. 30 groups, 43% of recordings assigned, 60% of groups single-source. Pool: parent-grouped Jaccard ≥ .75 and ≥ 3 parents gives 10 groups.
 - Map chosen by display fidelity. A sweep of input × perplexity × exaggeration × 3 seeds scores each map by how many pool groups sit ≥ 80% in one 2-D map region that is ≥ 50% theirs, within 95% of the best recall. Winner: PCA50 input, perplexity 50, ρ = 1, with 9 of 10. The 21 October map shows 8; the fragmented low-perplexity maps show 3–6; PC1–PC2 shows 0.
-- Tier 1 (pool and one map region, 9 groups):
-  - mostly source families: HandMovementDirection, NATOPS, SCP1+SCP2 EEG, UCLA fMRI, NetSim, FingerMovements;
-  - Cricket, whose cohesion size-matched sets fully explain (survival −.05);
-  - two oscillator groups that are the cross-model examples: Kuramoto–Sakaguchi with Van der Pol (G15), and Kuramoto–Sakaguchi with one seismogram (G20). Reading: phase-lagged coupling, where zero-lag r misses coherence and time and spectral Granger disagree.
-- Tier 2: the 86-member little-or-no-dependence group (IID noise, VAR, VMA, strongly coupled phase oscillators). It is stable but splits on the map.
-- Near misses kept outside by the fixed rule:
-  - Mouse fMRI with S&P/DJIA log-returns (G17): stability .74, one map region, size survival .95. Contemporaneous positive dependence between white signals. The strongest real–real cross-mechanism example; its exclusion is within resampling error.
-  - HCP task and resting fMRI: .65.
+- Tier 1 (pool and one map region, 9 groups): mostly source families (HandMovementDirection, NATOPS, SCP1+SCP2, UCLA fMRI, NetSim, FingerMovements); Cricket, which size explains (survival −.05); and two oscillator groups, Kuramoto–Sakaguchi with Van der Pol (G15) and with one seismogram (G20), read as phase-lagged coupling.
+- Tier 2: the 86-member little-or-no-dependence group (IID noise, VAR, VMA), stable but split on the map. Near misses: G17 mouse fMRI with S&P/DJIA log-returns (.74; see neighbourhoods) and G14 HCP task and rest (.65).
 - The 21 October mixed candidates C–F are not density cores (28–67% of members in any group): they are co-locations in the continuum. Tight cores are mostly source families.
 - Display: groups are drawn as member outlines, a sum of isotropic kernels with one bandwidth for all groups (1.5 × the map's median nearest-neighbour distance), cut at half the 10th-percentile member density. The per-group Scott KDE bridged separated clumps into elongated shapes and merged G28's split into one blob. The frame is fitted to the map, because a square frame leaves about 40% blank. Labels are placed greedily outside the outlines. Helpers: `tsne_atlas.group_contour`, `draw_groups`, `place_labels`, `atlas_legend`; `consensus_atlas.plot_consensus`; `memberContour` in `zenodo_kde.js` for explorer v4.
-- Open: pool sensitivity to the HDBSCAN setting and analysis dimension; the stability error bar near .75.
+- Pool sensitivity to the HDBSCAN setting, analysis dimension and cutoff is now in the neighbourhoods notebook.
 
 ## Paper atlas figure: chosen map and candidate clusters (2026-10-21)
 
@@ -30,22 +39,13 @@ Active workstream. The current candidate pool is the 2026-10-24 consensus select
 - Exaggeration uses a subclass that overrides scikit-learn's private `TSNE._tsne` (checked on 1.9; ρ = 1 is bit-identical to stock). openTSNE is not installed.
 - Clusters: Ward on the full-rank geometry, k = 40, fitted once and only drawn on maps. Hennig cluster-wise Jaccard over 50 subsets keeping 80% of 688 parent keys: median .80 with 25 groups ≥ .75, against median .63 for K-means k = 40. Global separation is weak (Ward-40 silhouette .10), so the map is mostly a continuum with a minority of compact groups.
 - Candidates (illustrative; readings checked against raw-series descriptors):
-  - **A** NATOPS: homogeneous real; Jaccard .98, silhouette .31; the only source at 24 × 51. A T ≈ 2M precision-estimator explanation is ruled out: without the 1,612 precision-estimator pairs A is unchanged (silhouette .31, Ward-40 refit Jaccard 1.00). The notebook and explorer were corrected after the M/T control.
-  - **B** NetSim: homogeneous synthetic; Jaccard .90. The complete-feature refit is weaker (.62).
-  - **C** CML lattices with TestWEATH: heterogeneous synthetic. The shared trait is short-lag anti-persistence (CML lag-1 −.66 to −.91).
-  - **D** Cricket with ForEx price levels: heterogeneous real; 75% of the strongest edges are negative, against 27% corpus-wide. The two sources form adjacent sub-groups.
-  - **E** PEMS-SF with LEGION and geometric Brownian motion: mixed; common-mode first-PC share .68. Less stable (Jaccard .72; K-means .49).
-  - **F** Trending series (articulation, cricket, Brownian motion, stock price levels): mixed; trend R² .47 and cross-source 5-NN .52, but silhouette .04, so it is a region of the continuum. The log-return versions of the same market windows sit elsewhere.
-  - **G** Heavy-tailed noise with TestWEATHmiss: cautionary. All ten TestWEATHmiss arrays code missing values as 999.0 (about 1% of entries); no other archive member has such sentinels.
+  - **A** NATOPS (Jaccard .98; the only source at 24 × 51; a precision-estimator explanation is ruled out: without the 1,612 precision pairs A is unchanged). **B** NetSim (.90; complete-feature refit .62).
+  - **C** CML with TestWEATH (short-lag anti-persistence). **D** Cricket with ForEx prices (75% negative strong edges; adjacent sub-groups). **E** PEMS-SF with LEGION and geometric Brownian motion (common mode .68; Jaccard .72).
+  - **F** Trending series (trend R² .47, silhouette .04: a continuum region). **G** Cautionary: all ten TestWEATHmiss arrays code missing values as 999.0 (about 1% of entries), unique in the archive.
 - Runners-up: HandMovementDirection MEG with two windows of one CML intermittency simulation; SCP1 and SCP2 EEG; a 149-member group of uncoupled or weakly coupled linear processes.
 - The case axis r–MI uses kernel MI, because Kraskov MI is undefined for 40% of recordings.
 - Display (2026-10-23): the notebook and explorer draw candidates as 80%-mass outlines over one of two faint backgrounds, or none. One background is 2-D map regions (HDBSCAN 5/5 on the chosen map: 45 regions, 193 recordings in none). The other is feature-space density groups (HDBSCAN 5/5 on PCA50: 30 groups, 601 in none). Recordings outside the groups are drawn small and faint, never hidden. Figure files: `atlas-map`, `atlas-map-density` and `atlas-map-candidates-only` (svg/pdf/png).
-- Why the old group figure looked fully clustered. Verified from `old/plot_clusters.py` at `e73ade0^`:
-  - t-SNE perplexity 10 on zero-filled features;
-  - HDBSCAN on the 2-D coordinates, so clusters are contiguous by construction;
-  - unassigned points dropped before both the KDE and the scatter (138 of 1,053 on our bank);
-  - five-level KDE in a random grey for every cluster.
-  - Its corpus also differed: `old/info.yaml` lists 2,305 recordings, about 1,060 of which match the Zenodo names; it includes 48 Hodgkin–Huxley network and 72 fsync recordings absent here.
+- Why the old group figure looked fully clustered (verified from `old/plot_clusters.py` at `e73ade0^`): t-SNE perplexity 10 on zero-filled features, then HDBSCAN on the 2-D coordinates, so clusters are contiguous by construction. Unassigned points were dropped before the KDE and the scatter (138 of 1,053 on our bank), and each cluster got a five-level KDE in a random grey. Its corpus also differed: `old/info.yaml` lists 2,305 recordings, about 1,060 matching Zenodo names, plus 48 Hodgkin–Huxley network and 72 fsync recordings absent here.
 - Validity. Map clusters are no better separated than feature-space ones: 2-D silhouette .56–.59, full-space .09–.10, the same as Ward-40's .10. Clustering the plane partitions blobs that t-SNE drew. Full-space kNN-graph Louvain gives map-contiguous groups (same-group share of map neighbours .87–.91) but coarse and no better separated (.07–.08). Feature-space density groups are genuinely better separated (full .22, 2-D .66) but cover 43% of recordings and are mostly single-source (60%); only .28–.67 of the members of cross-source candidates C–G fall inside them. Reading: tight cores are source families, and cross-mechanism co-location sits in the lower-density continuum.
 - M/T control ([notebook](../../research/zenodo/atlas/notebooks/zenodo_1053_mt_control_261021.ipynb), `research/zenodo/atlas/mt_control.py`): no candidate's separation is explained by shared size, but size and source are aliased (57% of rows share their exact M × T only with their own source), so this rests on three partial controls.
   - Size-matched null: every candidate exceeds all 1,000 same-size sets drawn from other sources, matched per member on (log M, log T). Share of the margin over random sets that survives: B .93, D .89, E .86, G .81, F > 1. A (.51) and C (.30) are lower because their matched pools are themselves cohesive: FingerMovements (28 × 50) forms its own equally distinct cluster next to A, and the generator grid that matches C is not drawn toward C.

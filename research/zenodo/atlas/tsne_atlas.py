@@ -285,15 +285,16 @@ def kmeans(scores, k, seed=1729):
     return KMeans(n_clusters=k, n_init=20, random_state=seed).fit_predict(scores)
 
 
-def grouped_jaccard(scores, labels, fit, parents, *, replicates, fraction, seed):
+def grouped_jaccard(scores, labels, fit, parents, *, replicates, fraction, seed, values=False):
     """Hennig (2007) cluster-wise stability with subsets drawn by parent recording, not by row.
 
     Each replicate keeps a random `fraction` of parent keys, refits on those rows and records, for every
-    original cluster, the best Jaccard match among the refitted clusters (restricted to retained rows)."""
+    original cluster, the best Jaccard match among the refitted clusters (restricted to retained rows).
+    `values=True` also returns the replicate x cluster matrix."""
     rng = np.random.default_rng(seed)
     keys = np.unique(parents)
     clusters = np.unique(labels[labels >= 0])
-    values = np.full((replicates, len(clusters)), np.nan)
+    matrix = np.full((replicates, len(clusters)), np.nan)
     for b in range(replicates):
         rows = np.flatnonzero(np.isin(parents, rng.choice(keys, size=round(fraction * len(keys)), replace=False)))
         refit = fit(scores[rows])
@@ -301,10 +302,11 @@ def grouped_jaccard(scores, labels, fit, parents, *, replicates, fraction, seed)
             original = set(rows[labels[rows] == c])
             if not original:
                 continue
-            values[b, j] = max(len(original & set(rows[refit == s])) / len(original | set(rows[refit == s]))
+            matrix[b, j] = max(len(original & set(rows[refit == s])) / len(original | set(rows[refit == s]))
                                for s in np.unique(refit[refit >= 0]))
-    return pd.DataFrame({"cluster": clusters, "jaccard_mean": np.nanmean(values, axis=0),
-                         "dissolved_fraction": np.nanmean(values < .5, axis=0)})
+    frame = pd.DataFrame({"cluster": clusters, "jaccard_mean": np.nanmean(matrix, axis=0),
+                          "dissolved_fraction": np.nanmean(matrix < .5, axis=0)})
+    return (frame, matrix) if values else frame
 
 
 def cluster_table(labels, distances, meta, jaccard):
