@@ -1,0 +1,264 @@
+# Synthetic ground truth (2026-10-24): among the 487 synthetic recordings, does z-proximity follow the generators'
+# coupling form more than generator identity or recording size? The descriptors and classes below were assigned from
+# the generator equations before any z result was read. Source of the equations: Cliff et al., "Unifying pairwise
+# interactions in complex dynamics", arXiv:2201.11941v2, Supplementary Sec. S2 (pp. 18-24), which describes this
+# archive (Zenodo 7118947). The repo's src/mtsspi/generators/ did not produce these recordings and is not used.
+base: research/zenodo/atlas/configs/analysis/zenodo-tsne-261021.yaml   # bank, metadata, cached PCA scores
+output: results/zenodo_7118947/ground-truth-261024
+threads: 8
+seed: 1729
+analysis_dims: 50
+# Row-level size strata (edges on M and T). The archive's grids are M {5, 10, 20} (NumPy, pyclustering) and
+# {9, 16, 25} (Brain Dynamics Toolbox), T {100, 500, 1000, 2000} or {101, 501, 1001, 2001}; these edges put each
+# grid value with its counterpart. Parent strata use the parent's median size.
+size_strata: {M: [7.5, 13.5], T: [300, 750, 1500]}
+permutations: 5000
+bootstrap: 1000
+knn: [1, 5]                     # nearest other-parent synthetic neighbours; 1 is primary
+enrichment: {k: 10, bins: 3, permutations: 5000}   # generator-unit pairs, neighbourhood_atlas.enrichment
+schemes: [coarse, fine]         # coarse is primary; fine splits the oscillators by coupling function
+
+# First matching pattern (on the dataset name) wins. `family` must equal tsne_atlas.source_family; `unit` is the
+# generator unit (family x coupling present), the exchangeable unit of the class-label null. `evidence` names
+# where each descriptor comes from; `caveat` records what could not be recovered.
+generators:
+  - pattern: ^noise_
+    family: IID noise
+    unit: IID noise
+    toolbox: NumPy
+    coupling: none
+    interaction: none
+    lag: none
+    marginal: white
+    observable: samples
+    coarse: uncoupled-white
+    fine: uncoupled-white
+    evidence: S2.1.1 (normal, Cauchy, exponential, gamma, t2)
+  - pattern: ^var_d-0_
+    family: VAR
+    unit: VAR uncoupled
+    toolbox: authors' code
+    coupling: none
+    interaction: none (diagonal Phi)
+    lag: none
+    marginal: serial (AR(1), |phi| in [0, .5] or [.5, 1], random sign)
+    observable: state
+    coarse: uncoupled-serial
+    fine: uncoupled-serial
+    evidence: S2.2 (coupling density 0 = independent)
+  - pattern: ^vma_d-0_
+    family: VMA
+    unit: VMA uncoupled
+    toolbox: authors' code
+    coupling: none
+    interaction: none (diagonal Theta)
+    lag: none
+    marginal: serial (MA(1))
+    observable: state
+    coarse: uncoupled-serial
+    fine: uncoupled-serial
+    evidence: S2.2
+  - pattern: ^ornstein
+    family: Ornstein–Uhlenbeck
+    unit: Ornstein–Uhlenbeck
+    toolbox: Brain Dynamics Toolbox
+    coupling: none
+    interaction: none (M independent SDEs)
+    lag: none
+    marginal: serial (mean-reverting to mu = .5 from z0 in [0, 1])
+    observable: state
+    coarse: uncoupled-serial
+    fine: uncoupled-serial
+    evidence: S2.1.2
+    caveat: theta not stated; the shared relaxation from z0 toward mu adds a common transient
+  - pattern: ^brownian
+    family: Brownian motion
+    unit: Brownian motion
+    toolbox: Brain Dynamics Toolbox
+    coupling: none
+    interaction: none (M independent SDEs)
+    lag: none
+    marginal: integrated with a common drift (arithmetic mu = 1; geometric mu = .5)
+    observable: state
+    coarse: uncoupled-trending
+    fine: uncoupled-trending
+    evidence: S2.1.2
+    caveat: a shared deterministic drift makes independent channels co-trend (spurious zero-lag correlation)
+  - pattern: ^var_d-0\.1_
+    family: VAR
+    unit: VAR coupled
+    toolbox: authors' code
+    coupling: linear
+    interaction: z_i,t <- Phi_ij z_j,t-1, 10% random directed density, symmetric or asymmetric Phi
+    lag: 1 sample
+    marginal: serial (AR(1))
+    observable: state
+    coarse: linear-lagged
+    fine: linear-lagged
+    evidence: S2.2
+    caveat: innovation covariance Sigma not stated, so zero-lag innovation coupling cannot be excluded
+  - pattern: ^vma_d-0\.1_
+    family: VMA
+    unit: VMA coupled
+    toolbox: authors' code
+    coupling: linear
+    interaction: z_i,t <- Theta_ij a_j,t-1, 10% random directed density
+    lag: 1 sample (shared lagged shocks also give zero-lag covariance)
+    marginal: serial (MA(1))
+    observable: state
+    coarse: linear-lagged
+    fine: linear-lagged
+    evidence: S2.2
+    caveat: innovation covariance Sigma not stated
+  - pattern: ^TestCLIM
+    family: TestCLIM
+    unit: TestCLIM
+    toolbox: CauseMe (external)
+    coupling: linear
+    interaction: linear with time delays (CLIM), monthly aggregation; CLIMnoise adds observation noise, CLIMnonstat nonstationarity
+    lag: delays up to a couple of months (1-3 samples), blurred by aggregation
+    marginal: serial; nonstationary in CLIMnonstat
+    observable: subsampled channels of a 40-process system
+    coarse: linear-lagged
+    fine: linear-lagged
+    evidence: S2.4.4; archive tags (var, linear, time delay, time-aggregation); Runge et al. 2019 (CauseMe)
+    caveat: exact CauseMe equations, coefficients and the form of the nonstationarity not recovered
+  - pattern: ^TestWEATH
+    family: TestWEATH
+    unit: TestWEATH
+    toolbox: CauseMe (external)
+    coupling: nonlinear
+    interaction: nonlinear with time delays (WEATH), 5-day resolution; WEATHsub keeps every third step, WEATHnoise adds noise
+    lag: delays up to a couple of months (several samples)
+    marginal: serial
+    observable: subsampled channels of a 40-process system
+    coarse: nonlinear-lagged
+    fine: nonlinear-lagged
+    evidence: S2.4.4; archive tags (nonlinear, time delay)
+    caveat: exact CauseMe equations not recovered; TestWEATHmiss is absent from S2 and codes missing values as 999.0
+  - pattern: ^sim\d+$
+    family: NetSim fMRI
+    unit: NetSim fMRI
+    toolbox: NetSim (external)
+    coupling: linear
+    interaction: linear directed neural coupling (DCM) seen through balloon-model haemodynamics
+    lag: neural delays far below the sampling interval for most simulations
+    marginal: serial (haemodynamically smoothed)
+    observable: simulated BOLD
+    coarse: linear-instantaneous
+    fine: linear-instantaneous
+    evidence: not described in S2; recognised from the names sim1-sim28 and archive tags (neuroscience, fmri) as Smith et al. 2011 NetSim
+    caveat: per-simulation settings (TR, networks, confounds) taken as unverified; lag class rests on the general NetSim design
+  - pattern: ^(spatiotemporal_intermittency_ii?|chaotic_brownian_motion_of_defect|defect_turbulence|pattern_selection|spatiotemporal_chaos|traveling_wave)
+    family: CML
+    unit: CML
+    toolbox: authors' code
+    coupling: nonlinear
+    interaction: diffusive nearest-neighbour coupling on a ring through the logistic map f(z) = 1 - alpha z^2
+    lag: 1 map step (STI-I observed every 12 steps, travelling wave every 2,000)
+    marginal: chaotic or periodic map dynamics
+    observable: state
+    coarse: nonlinear-lagged
+    fine: nonlinear-lagged
+    evidence: S2.3.1 (Kaneko regimes)
+    caveat: STI-I has epsilon = .00115, so it is nearly uncoupled; the travelling-wave sampling removes the one-step lag
+  - pattern: ^kuramoto-sakaguchi
+    family: Kuramoto–Sakaguchi
+    unit: Kuramoto–Sakaguchi
+    toolbox: Brain Dynamics Toolbox
+    coupling: phase
+    interaction: K/M sum_j a_ij sin(theta_j - theta_i - A_ij), frustration A_ij = a_ij (1 rad on edges); all-to-all, circular or random
+    lag: emergent (not fixed by the equation)
+    marginal: oscillation
+    observable: sin(theta)
+    coarse: oscillator
+    fine: phase-difference
+    evidence: S2.3.2 eq. 4
+    caveat: K and omega distribution not stated
+  - pattern: ^oscillator_sync
+    family: Oscillator sync
+    unit: Oscillator sync
+    toolbox: pyclustering
+    coupling: phase
+    interaction: K/M sum_j a_ij sin(theta_j - theta_i), no frustration; K in {-20, -4, -1, 4, 20}; all-to-all, bidirectional list or grid-four
+    lag: emergent (in-phase favoured for K > 0, dispersed for K < 0)
+    marginal: oscillation
+    observable: sin(theta)
+    coarse: oscillator
+    fine: phase-difference
+    evidence: S2.3.2 eq. 3
+    caveat: omega distribution and solver step not stated
+  - pattern: ^vanderpol
+    family: Van der Pol
+    unit: Van der Pol
+    toolbox: Brain Dynamics Toolbox
+    coupling: linear forcing of a limit cycle
+    interaction: coupling linear in position and entering the acceleration; ring or random a_ij in [0, 1]
+    lag: emergent
+    marginal: relaxation/limit-cycle oscillation
+    observable: z (position)
+    coarse: oscillator
+    fine: position-forcing
+    evidence: S2.3.2 eqs. 8-9
+    caveat: eq. 9 as printed sums a_ij z_i (own position); read as the toolbox's network coupling of neighbours' positions, not checked against its source; mu and nu not stated
+  - pattern: ^oscillator_legion
+    family: LEGION
+    unit: LEGION
+    toolbox: pyclustering
+    coupling: relaxation (excitatory local, global inhibitor)
+    interaction: Terman-Wang relaxation oscillators, local excitation on a bidirectional list plus a global inhibitor
+    lag: emergent
+    marginal: relaxation oscillation
+    observable: oscillator output (not stated in S2)
+    coarse: oscillator
+    fine: relaxation
+    evidence: S2.3.2 (LEGION configurations); names map split = three-way uniform, rsplit = random split, params-1 = Wt 4 / fi 10, params-2 = Wt 4 / fi .8
+  - pattern: ^oscillator_hysteresis
+    family: Oscillator hysteresis
+    unit: Oscillator hysteresis
+    toolbox: pyclustering
+    coupling: relaxation (hysteretic, inhibitory)
+    interaction: dz_i/dt = -z_i + sum_j a_ij u_j with bipolar hysteretic u; all-to-all, a_ii = -4, a_ij = -1
+    lag: emergent
+    marginal: relaxation oscillation
+    observable: state (not stated in S2)
+    coarse: oscillator
+    fine: relaxation
+    evidence: S2.3.2 eqs. 6-7 (configurations with a_ij = -1 and negative initial outputs)
+  - pattern: ^wilson-cowan
+    family: Wilson–Cowan
+    unit: Wilson–Cowan
+    toolbox: Brain Dynamics Toolbox
+    coupling: sigmoidal rate
+    interaction: excitatory rates coupled through a sigmoid over the CoCoMac connectome
+    lag: none in the equation (continuous time)
+    marginal: E-I rate dynamics
+    observable: u (excitatory rate)
+    coarse: oscillator
+    fine: sigmoid-rate
+    evidence: S2.3.2 eqs. 10-11 (listed with the coupled oscillators)
+    caveat: whether these parameters give a limit cycle is not stated
+  - pattern: ^wave-1D
+    family: Wave 1D
+    unit: Wave 1D
+    toolbox: Brain Dynamics Toolbox
+    coupling: linear field
+    interaction: wave equation, c = 10, periodic boundary, Gaussian initial condition (sd M/20)
+    lag: propagation (spatial distance sets the lag)
+    marginal: oscillation
+    observable: field sampled uniformly in space
+    coarse: wave-field
+    fine: wave-field
+    evidence: S2.3.3 eq. 12
+  - pattern: ^wave-2D
+    family: Wave 2D
+    unit: Wave 2D
+    toolbox: Brain Dynamics Toolbox
+    coupling: linear field
+    interaction: wave equation on a 2-D periodic grid, c = 10
+    lag: propagation
+    marginal: oscillation
+    observable: field sampled uniformly in space
+    coarse: wave-field
+    fine: wave-field
+    evidence: S2.3.3 eq. 13
