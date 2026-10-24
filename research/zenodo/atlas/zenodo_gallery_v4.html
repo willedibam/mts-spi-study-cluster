@@ -7,7 +7,7 @@
 *{box-sizing:border-box}body{font:15px Georgia,serif;color:var(--ink);background:#fff;max-width:1500px;margin:26px auto;padding:0 24px}h1{font-size:26px;font-weight:normal;margin:0 0 8px}h2{font-size:17px;font-weight:normal;margin:4px 0 8px}p{line-height:1.5;margin:8px 0}a{color:#315875;text-underline-offset:3px}.muted{color:var(--muted)}
 button,select,input{font:13px system-ui;color:var(--ink);padding:6px 7px;border:1px solid #bbb;border-radius:3px;background:#fff}button{cursor:pointer}button:hover{background:#f4f4f4}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:13px system-ui}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
-.layout{display:grid;grid-template-columns:minmax(380px,1.2fr) minmax(340px,1fr);gap:28px;margin-top:10px}#map{width:100%;aspect-ratio:1;display:block;touch-action:none;background:#fff}#map circle,#map path.hit{cursor:pointer}
+.layout{display:grid;grid-template-columns:minmax(380px,1.2fr) minmax(340px,1fr);gap:28px;margin-top:10px}#map{width:100%;height:auto;display:block;touch-action:none;background:#fff}#map circle,#map path.hit{cursor:pointer}
 .facts{font:13px/1.6 system-ui}.legend{font:12px/1.5 system-ui;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px;margin:6px 0}.swatch{display:inline-block;width:22px;height:11px;vertical-align:-1px;margin-right:5px}
 #groups{display:grid;gap:7px;margin:6px 0 12px;max-height:620px;overflow:auto;padding-right:4px}.group{border:1px solid #e3e3e3;border-radius:4px;padding:7px 9px;cursor:pointer;background:#fff;text-align:left;font:14px/1.4 Georgia,serif;width:100%}.group[aria-pressed=true]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}.group small{display:block;font:12px/1.5 system-ui;color:var(--muted)}.badge{display:inline-block;font:11px system-ui;border:1px solid #bbb;border-radius:9px;padding:0 6px;margin-left:4px;color:#444}.badge.t1{background:#ececec;border-color:#888}.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:5px}.strip img{width:100%;height:30px;object-fit:fill;image-rendering:pixelated;background:#fafafa}
 #detail{min-height:110px;overflow-wrap:anywhere}#detail img{width:100%;max-height:190px;object-fit:fill;image-rendering:pixelated;background:#fafafa}#group-note{border-top:1px solid var(--line);padding-top:8px}
@@ -25,12 +25,13 @@ label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:
  <label>Find MTS <input id="search" type="search" placeholder="Dataset name"></label>
  <button id="all">Show all</button>
  <label>Shading <select id="shading"><option value="consensus">Tier 1 groups on this map</option><option value="pool">Tier 1 filled, tier 2 outlined</option><option value="all">All density groups</option><option value="regions">2-D map regions (descriptive)</option><option value="none">None</option></select></label>
+ <label>Groups as <select id="style"><option value="both">fill + outline</option><option value="outline">outline</option><option value="fill">fill</option></select></label>
  <label><input type="checkbox" id="origin" checked>Real / synthetic shading</label>
 </div>
 <div class="layout">
  <div>
   <svg id="map" viewBox="0 0 680 680" role="img" aria-label="Interactive MTS embedding"></svg>
-  <div class="legend"><span><span class="swatch" style="background:#333"></span>real</span><span><span class="swatch" style="background:#9e9e9e"></span>synthetic</span><span><span class="swatch" style="background:#e3e3e3"></span>shaded group</span><span><span class="swatch" style="border:1.5px dashed #262626;border-radius:6px"></span>tier 2 (splits on map)</span><span>small faint dots: in no density group</span></div>
+  <div class="legend"><span><span class="swatch" style="background:#333"></span>real</span><span><span class="swatch" style="background:#9e9e9e"></span>synthetic</span><span><span class="swatch" style="background:#e8e8e8;border:1px solid #333;border-radius:6px"></span>tier 1 group</span><span><span class="swatch" style="border:1.5px dashed #262626;border-radius:6px"></span>tier 2 (splits on map)</span><span>small faint dots: in no density group</span></div>
   <div class="toolbar"><button id="reset-view">Reset zoom</button><button id="export-svg">Save map SVG</button><label><input id="only-selected" type="checkbox">Selected only</label></div>
   <p id="map-note" class="facts"></p>
  </div>
@@ -55,7 +56,7 @@ __KDE_SCRIPT__
 const data=__CORPUS_DATA__;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',selected=new Set(),pageSize=24;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let page=0,focused=null,viewport=[0,0,680,680],drag=null,dragged=false,cache={};
+let page=0,focused=null,viewport=null,drag=null,dragged=false,cache={};
 const byId=Object.fromEntries(data.groups.map(g=>[g.id,g]));
 const fmt=(x,d=2)=>x===null||x===undefined||Number.isNaN(x)?'n/a':x.toFixed(d);
 function option(parent,value,text){const o=document.createElement('option');o.value=value;o.textContent=text;parent.appendChild(o)}
@@ -76,28 +77,44 @@ function viewOptions(keep){
 }
 function select(value){$('view').value=value;$('search').value='';$('only-selected').checked=false;page=0;render()}
 function inspect(row){focused=row;render()}
-function scaled(m){const xs=m.xy.map(v=>v[0]),ys=m.xy.map(v=>v[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];const s=Math.min(570/(hi[0]-lo[0]||1),570/(hi[1]-lo[1]||1));return m.xy.map(v=>[350+s*(v[0]-(lo[0]+hi[0])/2),325-s*(v[1]-(lo[1]+hi[1])/2)])}
+function extent(m){const xs=m.xy.map(v=>v[0]),ys=m.xy.map(v=>v[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];return {lo,hi,h:Math.max(300,Math.min(580,580*(hi[1]-lo[1])/((hi[0]-lo[0])||1)))}}
+function home(){return [0,0,680,extent(currentMap()).h+100]}
+function scaled(m){const {lo,hi,h}=extent(m);const s=Math.min(570/(hi[0]-lo[0]||1),(h-10)/(hi[1]-lo[1]||1));return m.xy.map(v=>[350+s*(v[0]-(lo[0]+hi[0])/2),35+h/2-s*(v[1]-(lo[1]+hi[1])/2)])}
+function outline(key,id,xy){const k=`${key}|outline|${id}`;if(!(k in cache)){const b=`${key}|bandwidth`;if(!(b in cache))cache[b]=outlineBandwidth(xy);cache[k]=memberContour(data.rows.filter(r=>r.group===id).map(r=>xy[r.row]),cache[b])}return cache[k]}
 function contours(key,labels,xy){if(!cache[key]){const groups=assignedGroups(xy,data.rows.map(r=>r.row),labels);cache[key]=Object.fromEntries(Object.entries(groups).map(([c,p])=>[c,densityContours(p)]))}return cache[key]}
 function tip(event,r){const t=$('tip');t.innerHTML=`<b>${esc(r.dataset)}</b><br>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' (tier '+byId[r.group].tier+')':'no density group'} · ${regionOf(r.row)>=0?'map region '+regionOf(r.row):'no map region'}<img src="${r.thumb}" alt="">`;t.style.display='block';t.style.left=Math.min(event.clientX+14,window.innerWidth-280)+'px';t.style.top=Math.min(event.clientY+14,window.innerHeight-130)+'px'}
 function untip(){$('tip').style.display='none'}
+function placeLabels(layer,ids,muted,xy,key,H){
+ // As tsne_atlas.place_labels: largest group first, 16 directions around its outline, fewest grouped points covered, no overlap.
+ const crowd=data.rows.filter(r=>r.group>=0).map(r=>xy[r.row]),taken=[];
+ for(const id of [...ids].sort((a,b)=>byId[b].size-byId[a].size)){const v=(outline(key,id,xy).match(/-?[\d.]+/g)||[]).map(Number),pts=[];for(let i=0;i+1<v.length;i+=2)pts.push([v[i],v[i+1]]);
+  const members=data.rows.filter(r=>r.group===id).map(r=>xy[r.row]);if(!pts.length)pts.push(...members);const c=[members.reduce((a,p)=>a+p[0],0)/members.length,members.reduce((a,p)=>a+p[1],0)/members.length],text=`G${id}`,w=text.length*7+4,h=14;let best=null;
+  for(let k=0;k<16;k++){const t=2*Math.PI*k/16,u=[Math.cos(t),Math.sin(t)];let anchor=pts[0],far=-Infinity;for(const p of pts){const d=(p[0]-c[0])*u[0]+(p[1]-c[1])*u[1];if(d>far){far=d;anchor=p}}
+   const x=anchor[0]+4*u[0],y=anchor[1]+4*u[1],x0=u[0]>.38?x:u[0]<-.38?x-w:x-w/2,y0=u[1]>.38?y:u[1]<-.38?y-h:y-h/2,box=[x0,y0,x0+w,y0+h];
+   const covered=crowd.filter(p=>p[0]>box[0]&&p[0]<box[2]&&p[1]>box[1]&&p[1]<box[3]).length,clash=taken.filter(b=>b[0]<box[2]&&box[0]<b[2]&&b[1]<box[3]&&box[1]<b[3]).length,outside=box[0]<60||box[2]>640||box[1]<35||box[3]>35+H;
+   const score=covered+100*clash+100*outside+.3*(1+u[1])/2;if(!best||score<best.score)best={score,box,x,y,u}}
+  taken.push(best.box);layer.appendChild(el('text',{x:best.x,y:best.y,'text-anchor':best.u[0]>.38?'start':best.u[0]<-.38?'end':'middle','dominant-baseline':best.u[1]>.38?'hanging':best.u[1]<-.38?'auto':'middle','font-family':'Georgia, serif','font-size':12,fill:muted.has(id)?'#595959':'#222',stroke:'#fff','stroke-width':3,'paint-order':'stroke','pointer-events':'none'},text))}
+}
 function draw(){
- const m=currentMap(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row)),xy=scaled(m),f=filter(),shading=$('shading').value,mapKey=$('map-select').value,agree=new Set(m.agree);svg.replaceChildren();
- svg.appendChild(el('path',{d:'M60 35 V615 H640 V35 Z',fill:'none',stroke:'#777','stroke-width':'.8'}));
- svg.appendChild(el('text',{x:350,y:655,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[0]));
- svg.appendChild(el('text',{x:18,y:325,transform:'rotate(-90 18 325)','text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[1]));
+ const m=currentMap(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row)),xy=scaled(m),f=filter(),shading=$('shading').value,style=$('style').value,mapKey=$('map-select').value,agree=new Set(m.agree),H=extent(m).h;svg.replaceChildren();
+ svg.appendChild(el('path',{d:`M60 35 V${35+H} H640 V35 Z`,fill:'none',stroke:'#777','stroke-width':'.8'}));
+ svg.appendChild(el('text',{x:350,y:H+75,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[0]));
+ svg.appendChild(el('text',{x:18,y:35+H/2,transform:`rotate(-90 18 ${35+H/2})`,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[1]));
  data.size_legend.forEach((item,i)=>{const x=430+i*72;svg.appendChild(el('circle',{cx:x,cy:18,r:item.radius,fill:'#555',stroke:'white','stroke-width':.55}));svg.appendChild(el('text',{x:x+9,y:22,'font-family':'Georgia, serif','font-size':12},`M = ${item.M}`))});
- const defs=el('defs'),clip=el('clipPath',{id:'clip'});clip.appendChild(el('rect',{x:60,y:35,width:580,height:580}));defs.appendChild(clip);svg.appendChild(defs);
+ const defs=el('defs'),clip=el('clipPath',{id:'clip'});clip.appendChild(el('rect',{x:60,y:35,width:580,height:H}));defs.appendChild(clip);svg.appendChild(defs);
  const layer=el('g',{'clip-path':'url(#clip)'});svg.appendChild(layer);
- const groupLabels=data.rows.map(r=>r.group),filled=new Set(),dashed=new Set();
+ const filled=new Set(),dashed=new Set();
  if(shading==='consensus'||shading==='pool')data.groups.forEach(g=>{if(g.tier<=2&&agree.has(g.id))filled.add(g.id);else if(shading==='pool'&&g.tier<=2)dashed.add(g.id)});
  if(shading==='all')data.groups.forEach(g=>filled.add(g.id));
  if(shading==='regions'){for(const [r,levels] of Object.entries(contours(mapKey+'|regions',m.regions,xy)))for(const level of levels){if(level.mass!==.8)continue;const on=f.kind==='all'||(f.kind==='r'&&f.id===Number(r));const p=el('path',{class:'hit',d:level.path,fill:'#8a8a8a','fill-rule':'evenodd','fill-opacity':on?.13:.04});p.appendChild(el('title',{},`Map region ${r} (2-D, descriptive)`));p.onclick=()=>{if(!dragged)select(`r:${r}`)};layer.appendChild(p)}}
- for(const [g,levels] of Object.entries(contours(mapKey+'|groups',groupLabels,xy))){const id=Number(g);if(!filled.has(id)&&!dashed.has(id))continue;const on=f.kind==='all'||(f.kind==='g'&&f.id===id);
-  for(const level of levels){if(dashed.has(id)&&level.mass!==.8)continue;const p=dashed.has(id)?el('path',{class:'hit',d:level.path,fill:'none',stroke:'#262626','stroke-width':.8,'stroke-dasharray':'4 3','stroke-opacity':on?.8:.3,'pointer-events':'stroke'}):el('path',{class:'hit',d:level.path,fill:'#777','fill-rule':'evenodd','fill-opacity':(level.mass===.8?.08:.11)*(on?1:.3)});p.appendChild(el('title',{},`G${id} · tier ${byId[id].tier} · ${byId[id].title}`));p.onclick=()=>{if(!dragged)select(`g:${id}`)};layer.appendChild(p)}}
+ for(const id of [...filled,...dashed]){const d=outline(mapKey,id,xy);if(!d)continue;const on=f.kind==='all'||(f.kind==='g'&&f.id===id),solid=filled.has(id),shaded=solid&&style!=='outline',lined=!solid||style!=='fill';
+  const a={class:'hit',d,'fill-rule':'evenodd',fill:shaded?'#8c8c8c':'none','fill-opacity':on?.18:.07,stroke:lined?(solid?'#333':'#4d4d4d'):'none','stroke-width':.8,'stroke-opacity':on?.9:.35,'pointer-events':shaded?'visiblePainted':'stroke'};if(!solid)a['stroke-dasharray']='4 3';
+  const p=el('path',a);p.appendChild(el('title',{},`G${id} · tier ${byId[id].tier} · ${byId[id].title}`));p.onclick=()=>{if(!dragged)select(`g:${id}`)};layer.appendChild(p)}
  data.rows.forEach((r,i)=>{const st=$('origin').checked?data.origin_styles[r.origin]:{fill:'#444',stroke:'#fff'},faint=r.group<0,isSel=selected.has(r.row);
   const c=el('circle',{cx:xy[i][0],cy:xy[i][1],r:faint?r.marker_radius*.6:r.marker_radius,fill:isSel?'#31688e':st.fill,stroke:r.origin==='unlabelled'?st.stroke:'#ffffff','stroke-width':focused===r.row?1.4:(faint?.3:.5),opacity:visible.has(r.row)?(faint?.4:.9):.1,tabindex:0,role:'button','aria-label':r.dataset});
   c.onmouseenter=e=>tip(e,r);c.onmousemove=e=>tip(e,r);c.onmouseleave=untip;c.onclick=()=>{if(!dragged)inspect(r.row)};c.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();inspect(r.row)}};layer.appendChild(c)});
- for(const id of [...filled,...dashed]){if(shading==='all')break;const pts=data.rows.filter(r=>r.group===id).map(r=>xy[r.row]);const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length,cy=Math.min(...pts.map(p=>p[1]))-8;layer.appendChild(el('text',{x:cx,y:cy,'text-anchor':'middle','font-family':'Georgia, serif','font-size':12,fill:'#222',stroke:'#fff','stroke-width':3,'paint-order':'stroke'},`G${id}`))}
+ if(shading!=='all')placeLabels(layer,[...filled,...dashed],dashed,xy,mapKey,H);
+ if(!viewport)viewport=home();
  svg.setAttribute('viewBox',viewport.join(' '));
 }
 function detail(){
@@ -133,18 +150,18 @@ function render(){
  $('page-status').textContent=rows.length?`${page*pageSize+1}–${Math.min(rows.length,(page+1)*pageSize)} of ${rows.length}`:'No matching datasets';
  $('previous-page').disabled=page===0;$('next-page').disabled=(page+1)*pageSize>=rows.length;
  groupPanel();groupNote();detail();draw();
- try{history.replaceState(null,'','#'+new URLSearchParams({map:$('map-select').value,view:$('view').value,shading:$('shading').value}).toString())}catch{}
+ try{history.replaceState(null,'','#'+new URLSearchParams({map:$('map-select').value,view:$('view').value,shading:$('shading').value,style:$('style').value}).toString())}catch{}
 }
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 for(const [key,m] of Object.entries(data.maps))option($('map-select'),key,m.title);
 $('methods').innerHTML=data.methods.map(p=>`<p>${esc(p)}</p>`).join('');
-$('map-select').onchange=()=>{const keep=$('view').value.startsWith('r:')?'all:':$('view').value;viewport=[0,0,680,680];viewOptions(keep);render()};
+$('map-select').onchange=()=>{const keep=$('view').value.startsWith('r:')?'all:':$('view').value;viewport=null;viewOptions(keep);render()};
 $('view').onchange=$('search').oninput=$('only-selected').onchange=()=>{page=0;render()};
-$('shading').onchange=$('origin').onchange=$('tier-filter').onchange=render;$('all').onclick=()=>select('all:');
-$('reset-view').onclick=()=>{viewport=[0,0,680,680];draw()};$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
+$('shading').onchange=$('style').onchange=$('origin').onchange=$('tier-filter').onchange=render;$('all').onclick=()=>select('all:');
+$('reset-view').onclick=()=>{viewport=home();draw()};$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
 $('previous-page').onclick=()=>{page--;render()};$('next-page').onclick=()=>{page++;render()};
 $('download').onclick=()=>{const m=currentMap(),q=x=>'"'+String(x??'').replaceAll('"','""')+'"';const rec=[['row','dataset','source','origin','M','T','parent','density_group','tier','map','map_region','x','y','user_label'],...[...selected].sort((a,b)=>a-b).map(i=>{const r=data.rows[i];return [i,r.dataset,r.source,r.origin,r.M,r.T,r.parent,r.group,r.group>=0?byId[r.group].tier:'',$('map-select').value,m.regions[i],...m.xy[i],$('label').value]})];download(new Blob([rec.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),'mts-selection.csv')};
-$('export-svg').onclick=()=>{const clone=$('map').cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width','1360');clone.setAttribute('height','1360');clone.querySelectorAll('[tabindex]').forEach(x=>x.removeAttribute('tabindex'));download(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),'mts-atlas-map.svg')};
+$('export-svg').onclick=()=>{const clone=$('map').cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width','1360');clone.setAttribute('height',String(Math.round(1360*viewport[3]/viewport[2])));clone.querySelectorAll('[tabindex]').forEach(x=>x.removeAttribute('tabindex'));download(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),'mts-atlas-map.svg')};
 function svgPoint(e){return new DOMPoint(e.clientX,e.clientY).matrixTransform($('map').getScreenCTM().inverse())}
 $('map').addEventListener('wheel',e=>{e.preventDefault();const p=svgPoint(e),k=e.deltaY>0?1.12:1/1.12;if(viewport[2]*k<35||viewport[2]*k>4000)return;viewport=[p.x+(viewport[0]-p.x)*k,p.y+(viewport[1]-p.y)*k,viewport[2]*k,viewport[3]*k];$('map').setAttribute('viewBox',viewport.join(' '))},{passive:false});
 $('map').onpointerdown=e=>{dragged=false;drag={x:e.clientX,y:e.clientY,view:[...viewport]}};
@@ -153,6 +170,7 @@ window.addEventListener('pointerup',()=>{drag=null});window.addEventListener('po
 const initial=new URLSearchParams(location.hash.slice(1));
 $('map-select').value=data.maps[initial.get('map')]?initial.get('map'):data.default_map;
 if(['consensus','pool','all','regions','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
+if(['both','outline','fill'].includes(initial.get('style')))$('style').value=initial.get('style');
 viewOptions(initial.get('view')||'all:');
 render();
 </script>

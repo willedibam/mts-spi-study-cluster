@@ -27,8 +27,8 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 from scipy.cluster.hierarchy import fcluster, linkage
-from scipy.spatial import procrustes
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial import cKDTree, procrustes
+from scipy.spatial.distance import cdist, pdist, squareform
 from scipy.stats import gaussian_kde
 from sklearn.cluster import HDBSCAN, KMeans
 from sklearn.decomposition import PCA
@@ -431,9 +431,27 @@ def kde_levels(points, masses=(.8,), grid=60):
     return gx, gy, density, sorted(float(ordered[np.searchsorted(mass, m)]) for m in masses)
 
 
+def outline_bandwidth(xy, scale=1.5):
+    """Bandwidth shared by every group outline on a map: `scale` x the median nearest-neighbour distance."""
+    return scale * float(np.median(cKDTree(xy).query(xy, k=2)[0][:, 1]))
+
+
+def group_contour(points, bandwidth, inside=.9, margin=.5):
+    """Outline of a group's members: an isotropic Gaussian kernel sum at the level that keeps a share `inside` of
+    them within it, times `margin` so the line clears them. A bandwidth shared across groups pads them all alike and
+    keeps separated clumps of one group apart (a per-group Scott bandwidth bridges them). It traces where members are
+    drawn, not a probability-mass region."""
+    step = bandwidth / 3
+    lo, hi = points.min(0) - 4 * bandwidth, points.max(0) + 4 * bandwidth
+    gx, gy = np.meshgrid(np.arange(lo[0], hi[0] + step, step), np.arange(lo[1], hi[1] + step, step))
+    kernel = lambda at: np.exp(-cdist(at, points, "sqeuclidean") / (2 * bandwidth ** 2)).sum(1)
+    density = kernel(np.column_stack([gx.ravel(), gy.ravel()])).reshape(gx.shape)
+    return gx, gy, density, margin * float(np.quantile(kernel(points), 1 - inside))
+
+
 def plot_atlas(ax, xy, meta, labels=None, letters=None, *, regions=None, outline=False, shade=True, annotate=True,
-               size=1.1, seed=1729, faint=None):
-    """Paper-style map: grey by origin (hollow if unlabelled), area by M.
+               size=1.1, seed=1729, faint=None, square=True):
+    """Paper-style map: grey by origin (hollow if unlabelled), area by M. `square=False` frames the map tightly.
 
     `regions` (descriptive 2-D map regions, -1 = none) get faint filled KDEs, and their unassigned points are drawn
     small and faint. Lettered feature-space clusters get a filled KDE, or an 80%-mass outline when `outline`, so the
@@ -474,10 +492,80 @@ def plot_atlas(ax, xy, meta, labels=None, letters=None, *, regions=None, outline
                         path_effects=[patheffects.withStroke(linewidth=2.5, foreground="white")])
     lo, hi = xy.min(axis=0), xy.max(axis=0)
     middle, radius = (lo + hi) / 2, max(float(np.max(hi - lo)), 1e-6) * .55
-    ax.set(xlim=(middle[0] - radius, middle[0] + radius), ylim=(middle[1] - radius, middle[1] + radius), xticks=[], yticks=[])
+    half = np.full(2, radius) if square else (hi - lo) / 2 + .04 * float(np.max(hi - lo))
+    ax.set(xlim=(middle[0] - half[0], middle[0] + half[0]), ylim=(middle[1] - half[1], middle[1] + half[1]), xticks=[], yticks=[])
     ax.set_aspect("equal", adjustable="box")
     ax.spines[["top", "right"]].set_visible(True)
 
+
+
+def draw_groups(ax, xy, labels, filled=(), dashed=(), *, fill=True, line=True):
+    """Groups as member outlines (`group_contour`): `filled` get a light fill and/or a thin solid line, `dashed` a
+    dashed line only."""
+    bandwidth = outline_bandwidth(xy)
+    for group in [*filled, *dashed]:
+        gx, gy, density, level = group_contour(xy[labels == group], bandwidth)
+        solid = group in filled
+        if solid and fill:
+            ax.contourf(gx, gy, density, levels=[level, density.max() + 1e-12], colors=["0.55"], alpha=.16, zorder=0)
+        if line or not solid:
+            ax.contour(gx, gy, density, levels=[level], colors=["0.2" if solid else "0.3"], linewidths=.6,
+                       linestyles=["solid" if solid else (0, (3, 2))], zorder=1)
+
+
+def place_labels(ax, xy, labels, texts, *, avoid=None, muted=(), fontsize=8):
+    """Label each group just outside its outline. Greedy, largest group first: of 16 directions, take the one whose
+    label covers the fewest points in `avoid` (default all), overlaps no earlier label and stays inside the axes."""
+    import contourpy
+    figure = ax.figure
+    figure.draw_without_rendering()
+    renderer = figure.canvas.get_renderer()
+    screen = ax.transData.transform(xy)
+    avoid = np.ones(len(xy), bool) if avoid is None else np.asarray(avoid)
+    frame, taken, bandwidth = ax.get_window_extent(renderer), [], outline_bandwidth(xy)
+    for group in sorted(texts, key=lambda g: -np.sum(labels == g)):
+        members = xy[labels == group]
+        gx, gy, density, level = group_contour(members, bandwidth)
+        edge = np.vstack(contourpy.contour_generator(gx, gy, density).lines(level))
+        centre, best = members.mean(0), None
+        for theta in np.linspace(0, 2 * np.pi, 16, endpoint=False):
+            u = np.array([np.cos(theta), np.sin(theta)])
+            text = ax.annotate(texts[group], edge[np.argmax((edge - centre) @ u)], xytext=3 * u, textcoords="offset points",
+                               ha="left" if u[0] > .38 else "right" if u[0] < -.38 else "center",
+                               va="bottom" if u[1] > .38 else "top" if u[1] < -.38 else "center", fontsize=fontsize,
+                               color="0.35" if group in muted else "0.1", zorder=5,
+                               path_effects=[patheffects.withStroke(linewidth=2.2, foreground="white")])
+            box = text.get_window_extent(renderer).expanded(1.15, 1.25)
+            covered = np.sum(avoid & (screen[:, 0] > box.x0) & (screen[:, 0] < box.x1) & (screen[:, 1] > box.y0)
+                             & (screen[:, 1] < box.y1))
+            inside = frame.x0 < box.x0 and box.x1 < frame.x1 and frame.y0 < box.y0 and box.y1 < frame.y1
+            score = covered + 100 * sum(box.overlaps(t) for t in taken) + 100 * (not inside) + .3 * abs(np.sin(theta / 2 - np.pi / 4))
+            if best is None or score < best[0]:
+                if best is not None:
+                    best[1].remove()
+                best = (score, text, box)
+            else:
+                text.remove()
+        taken.append(best[2])
+
+
+def atlas_legend(figure, meta, *, size=1.1, filled="tier 1 group", dashed="tier 2: splits on the map", ncol=4):
+    """Legend below the map for `plot_atlas` points (origin, M) and `draw_groups` styles (None omits one)."""
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    lo, hi = int(meta["M"].min()), int(meta["M"].max())
+    middle = float(np.sqrt(size) * marker_radii(int(meta["M"].median()), lo, hi))
+    handles = [Line2D([], [], ls="", marker="o", ms=middle, mfc=ORIGIN_FILL[o], mec="white", mew=.3, label=o) for o in ORIGIN_FILL]
+    if (~meta["origin"].isin(list(ORIGIN_FILL))).any():
+        handles.append(Line2D([], [], ls="", marker="o", ms=middle, mfc="none", mec="0.3", mew=.3, label="unlabelled"))
+    handles += [Line2D([], [], ls="", marker="o", ms=middle * .67, mfc="0.6", mec="none", alpha=.4, label="in no density group")]
+    handles += [Line2D([], [], ls="", marker="o", ms=float(np.sqrt(size) * marker_radii(m, lo, hi)), mfc="0.45", mec="white",
+                       mew=.3, label=f"$M={m}$") for m in sorted({lo, int(meta["M"].median()), hi})]
+    if filled:
+        handles.append(Patch(fc=(.55, .55, .55, .16), ec="0.2", lw=.6, label=filled))
+    if dashed:
+        handles.append(Patch(fc="none", ec="0.3", lw=.6, ls=(0, (3, 2)), label=dashed))
+    figure.legend(handles=handles, loc="outside lower center", ncol=ncol, fontsize=7, handlelength=1.3, columnspacing=1.2)
 
 def heatmap(ax, values, title=None):
     """Same per-process robust scaling and icefire map as the v1 heatmap assets."""

@@ -1,10 +1,11 @@
-"""Exaggeration hook, parent grouping and cluster-stability helpers of the 2026-10-21 atlas."""
+"""Exaggeration hook, parent grouping, cluster-stability and outline helpers of the 2026-10-21 atlas."""
+import contourpy
 import numpy as np
 import pandas as pd
 from sklearn.manifold import TSNE
 
-from research.zenodo.atlas.tsne_atlas import (best_jaccard, grouped_jaccard, nested_parents, parent_key, raw_descriptors,
-                                              representatives, source_family, tsne, ward)
+from research.zenodo.atlas.tsne_atlas import (best_jaccard, group_contour, grouped_jaccard, nested_parents, outline_bandwidth,
+                                              parent_key, raw_descriptors, representatives, source_family, tsne, ward)
 
 
 def blobs(seed=0):
@@ -69,3 +70,13 @@ def test_raw_descriptors_read_sign_trend_and_outliers():
     spiky = rng.normal(size=(3, 500))
     spiky[0, 10] = 999.
     assert raw_descriptors(spiky)["max_robust_z"] > 100
+
+
+def test_group_outline_keeps_separated_clumps_apart_and_clears_members():
+    rng = np.random.default_rng(2)
+    members = np.vstack([rng.normal(0, .3, size=(15, 2)), rng.normal((10, 0), .3, size=(15, 2))])
+    bandwidth = outline_bandwidth(np.vstack([members, rng.uniform(-5, 15, size=(200, 2))]))
+    gx, gy, density, level = group_contour(members, bandwidth)
+    assert len(contourpy.contour_generator(gx, gy, density).lines(level)) == 2
+    at_members = np.exp(-((members[:, None] - members[None]) ** 2).sum(-1) / (2 * bandwidth ** 2)).sum(1)
+    assert np.mean(at_members > level) >= .9

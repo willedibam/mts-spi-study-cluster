@@ -17,6 +17,7 @@ Active workstream. The current candidate pool is the 2026-10-24 consensus select
   - Mouse fMRI with S&P/DJIA log-returns (G17): stability .74, one map region, size survival .95. Contemporaneous positive dependence between white signals. The strongest real–real cross-mechanism example; its exclusion is within resampling error.
   - HCP task and resting fMRI: .65.
 - The 21 October mixed candidates C–F are not density cores (28–67% of members in any group): they are co-locations in the continuum. Tight cores are mostly source families.
+- Display: groups are drawn as member outlines, a sum of isotropic kernels with one bandwidth for all groups (1.5 × the map's median nearest-neighbour distance), cut at half the 10th-percentile member density. The per-group Scott KDE bridged separated clumps into elongated shapes and merged G28's split into one blob. The frame is fitted to the map, because a square frame leaves about 40% blank. Labels are placed greedily outside the outlines. Helpers: `tsne_atlas.group_contour`, `draw_groups`, `place_labels`, `atlas_legend`; `consensus_atlas.plot_consensus`; `memberContour` in `zenodo_kde.js` for explorer v4.
 - Open: pool sensitivity to the HDBSCAN setting and analysis dimension; the stability error bar near .75.
 
 ## Paper atlas figure: chosen map and candidate clusters (2026-10-21)

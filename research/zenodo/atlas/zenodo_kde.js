@@ -100,4 +100,29 @@ function contourPath(values, n, min, step, threshold) {
   return paths.join('');
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = {assignedGroups, densityContours, contourPath};
+function outlineBandwidth(coordinates, scale = 1.5) {
+  // One bandwidth for every group outline on a map: scale × the median nearest-neighbour distance.
+  const nearest = coordinates.map((p, i) => {
+    let best = Infinity;
+    coordinates.forEach((q, j) => { if (j !== i) best = Math.min(best, (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2); });
+    return Math.sqrt(best);
+  }).sort((a, b) => a - b), n = nearest.length;
+  return n ? scale * (n % 2 ? nearest[(n - 1) / 2] : (nearest[n / 2 - 1] + nearest[n / 2]) / 2) : 0;
+}
+
+function memberContour(points, bandwidth, inside = .9, margin = .5) {
+  // Outline of a group's members, as tsne_atlas.group_contour: an isotropic kernel sum with a shared bandwidth, at the
+  // level that keeps `inside` of the members within it, times `margin` so the line clears them.
+  if (!points.length || !(bandwidth > 0)) return '';
+  const h2 = 2 * bandwidth * bandwidth, pad = 4 * bandwidth;
+  const kernel = (x, y) => points.reduce((sum, p) => sum + Math.exp(-((x - p[0]) ** 2 + (y - p[1]) ** 2) / h2), 0);
+  const min = [Math.min(...points.map(p => p[0])) - pad, Math.min(...points.map(p => p[1])) - pad];
+  const max = [Math.max(...points.map(p => p[0])) + pad, Math.max(...points.map(p => p[1])) + pad];
+  const n = Math.max(24, Math.min(160, Math.ceil(Math.max(max[0] - min[0], max[1] - min[1]) * 3 / bandwidth) + 1));
+  const step = [(max[0] - min[0]) / (n - 1), (max[1] - min[1]) / (n - 1)], values = new Float64Array(n * n);
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) values[j * n + i] = kernel(min[0] + i * step[0], min[1] + j * step[1]);
+  const at = points.map(p => kernel(p[0], p[1])).sort((a, b) => a - b), q = (1 - inside) * (at.length - 1), lo = Math.floor(q);
+  return contourPath(values, n, min, step, margin * (at[lo] + (q - lo) * ((at[lo + 1] ?? at[lo]) - at[lo])));
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = {assignedGroups, densityContours, contourPath, outlineBandwidth, memberContour};

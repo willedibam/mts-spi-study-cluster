@@ -201,6 +201,17 @@ def compute(config, out: Path):
     return out
 
 
+def plot_consensus(ax, xy, meta, labels, filled, dashed=(), *, fill=True, line=True, square=False, size=.8,
+                   annotate=True):
+    """Consensus map: `filled` groups shaded and outlined, `dashed` outlined, labels outside the outlines, and recordings
+    in no density group small and faint."""
+    ta.draw_groups(ax, xy, labels, filled, dashed, fill=fill, line=line)
+    ta.plot_atlas(ax, xy, meta, faint=labels < 0, size=size, annotate=False, shade=False, square=square)
+    ax.set(xlabel="t-SNE 1", ylabel="t-SNE 2")
+    if annotate:
+        ta.place_labels(ax, xy, labels, {g: f"G{g}" for g in [*filled, *dashed]}, avoid=labels >= 0, muted=dashed)
+
+
 def load(out: Path):
     with np.load(out / "consensus.npz", allow_pickle=False) as z:
         arrays = {k: z[k] for k in z.files}
