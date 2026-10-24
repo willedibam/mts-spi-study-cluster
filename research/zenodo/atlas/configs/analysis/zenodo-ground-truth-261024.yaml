@@ -13,7 +13,7 @@ analysis_dims: 50
 # grid value with its counterpart. Parent strata use the parent's median size.
 size_strata: {M: [7.5, 13.5], T: [300, 750, 1500]}
 permutations: 5000
-bootstrap: 1000
+bootstrap: 1000                 # parent-cluster bootstrap of the neighbour shares; fractions use a delete-one-parent jackknife
 knn: [1, 5]                     # nearest other-parent synthetic neighbours; 1 is primary
 enrichment: {k: 10, bins: 3, permutations: 5000}   # generator-unit pairs, neighbourhood_atlas.enrichment
 schemes: [coarse, fine]         # coarse is primary; fine splits the oscillators by coupling function
