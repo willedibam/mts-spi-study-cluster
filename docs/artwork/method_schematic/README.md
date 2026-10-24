@@ -8,10 +8,12 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Recording:** a directed VAR(1) with heterogeneous lagged coupling and correlated innovations, M = 6, T = 1,000, seed 0.
   - Channels are relabelled (`CHANNEL_ORDER`) so that the illustrated, strongly asymmetric pair is (i, j) = (2, 6). z is unchanged by the relabelling, and so are the drawn values.
   - The carpet and traces show samples 200–300, with the order-parameter composite's heatmap glyph: robust scaling per channel, icefire, limit at the 99th percentile of |x|.
-- **Panel a carpet:** drawn on one hairline card with a vertical "channel" label and no row numbers.
-  - x_i (channel 2) is traced above the carpet and x_j (channel 6) below it, each with a dashed leader to its row.
-  - The graph repeats both traces at their nodes, at the same size (`TRACE_W`, `TRACE_H`) and with the same labels.
-  - A ⟺ joins carpet and graph: the same system, seen two ways.
+- **Panel a:** carpet → shared traces → graph.
+  - The carpet sits on one hairline card with a vertical "channel" label and no row numbers.
+  - x_i (channel 2) and x_j (channel 6) are each drawn once, as a bare trace centred over the gap between the carpet and the graph: x_i above, x_j below, both on a common time axis. A ⟺ joins carpet and graph between them.
+  - Each trace sits in a hairline box, and its carpet row and its graph node project into the box's facing edge (under x_i, above x_j) as faint beams, like panel d's projection.
+  - `TRACE_LINKS = "curve"` swaps the beams for two curved dotted lines and drops the box.
+  - Nodes i and j sit on the graph's left, and the central node is raised clear of the strongest connection.
 - **Panel a graph:** the generator's coupling per ordered pair s→t, |lagged coupling of t on s| plus |innovation correlation|, scaled to [0, 1].
   - Each direction is a tapered arc, wide at the source; the two arcs of a pair bow apart.
   - The node layout (`LAYOUT`) is irregular, and i and j sit on top under their traces.
@@ -20,7 +22,8 @@ How z is constructed, with its geometric reading: one recording, viewed through 
   - Each layer's edges are its statistic's min–max scaled strength raised to the power 1.6, so weak edges recede. Euclidean distance is flipped to a similarity for drawing only.
   - The directed statistics (a, b) are drawn with one tapered arc per direction and the symmetric ones with one line per pair, so the layers show which statistics are directed.
   - The matrices stack down-right: A⁽ᵇ⁾ is offset by 0.45 of a matrix, so A⁽ᵃ⁾ covers about 30% of it, and the rest of the K are grey cards behind.
-  - Both matrices outline the (i, j) and (j, i) entries. A⁽ᵃ⁾'s glyphs attach from the right (i→j, last column) and from below (j→i, last row), so both leaders are short.
+  - Both matrices outline the (i, j) and (j, i) entries.
+  - A⁽ᵃ⁾'s two glyphs sit in the gaps the offset leaves, right of A⁽ᵃ⁾ and below it, 0.07 in clear of the matrices and flush with the outer edges of the stack's rectangle. The leaders are short.
   - The glyphs (`b_top`) and panel c's z_ab label (`c_top`) sit on a layer above the cross-panel lines.
 - **Row 2:** panels e, d and c each take one third of the width, with titles only. Hand-off arrows between them are left to add by hand.
 - **Panel e (statistical learning):** three schematic icons fed by z, in the order the paper uses them:
@@ -30,11 +33,16 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 
   They are drawn from seeded noise, not data; replace them with thumbnails once those results are frozen. Classification is left out, because supervised use is outside the first paper's scope.
 
-  Exploratory fourth icon (`SHOW_SLIDING_WINDOW`, on for now): z over sliding windows of one recording, reorganising at a change point. It is not demonstrated in this paper. Its requirements are a fixed window length, surrogate nulls for window-to-window noise, and a reduced statistic set for cost.
+  A fourth, prospective icon (`SHOW_SLIDING_WINDOW`, on) completes a 2 × 2 grid. It shows overlapping windows along one recording, drawn as a small pastel cell heatmap (not icefire), with older windows fainter and the window length w marked; one z per window; and, in a small square 2-D inset, the trajectory those z trace out.
+  - The paper does not demonstrate this use, so the caption should mark it as prospective.
+  - Its requirements are a fixed window length, surrogate nulls for window-to-window noise, and a reduced statistic set for cost.
+  - Setting the switch to False restores the three-icon layout.
 - **Statistics (K = 5):**
-  - The order is Pearson, Spearman, a, b, Euclidean distance (`A_IDX`, `B_IDX` = 2, 3), so that z_ab's kept cell (b, a) of R sits at row 4, column 3, next to panel c. The order is arbitrary.
+  - The order is a, b, Pearson, Spearman, Granger (`A_IDX`, `B_IDX` = 0, 1). R therefore reads a, b, ⋯, K, and z_ab is z's first coordinate. The order is arbitrary, and any choice renders.
   - a: lag-1 cross-correlation, corr(x_i(t), x_j(t+1)), directed. The figure does not name it; the caption should.
-  - b: order-2 linear Granger log-variance ratio, directed.
+  - b: Euclidean distance between z-scored series, symmetric. Because b is a distance, z_ab = −0.42 is negative: the two statistics order pairs alike in opposite orientations, and 0.42 is the real disagreement. Its i→j and j→i values are equal, so the scatter's points pair up horizontally.
+  - The K-th (grey) statistic is order-2 linear Granger, directed.
+  - b's matrix shows raw distance (darker is farther), but its graph layer is drawn as similarity (thicker is closer), like every edge in the figure.
   - M = 6 is kept deliberately unequal to K, so the two kinds of matrix cannot be mistaken for one another.
 - **Contract check:** z is asserted equal to `build_unified_feature_values` (`unified_ordered_v3`), which uses all M(M−1) ordered entries in row-major order.
 - **Extraction lines:**
@@ -64,9 +72,9 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 **Construction of the SPI–SPI representation.**
 - **(a)** A recording of M channels and T samples, drawn as a carpet whose rows are channels, and as a graph of the same channels, here with the simulated system's couplings as edges.
 - **(b)** Each of K statistics of pairwise interaction scores every ordered channel pair. This gives one weighted graph on the same nodes, equivalently an M × M matrix A⁽ᵏ⁾. For a directed statistic, such as the lag-1 cross-correlation in the glyphs, i→j and j→i differ.
-- **(c)** The M(M−1) off-diagonal entries of A⁽ᵃ⁾ and A⁽ᵇ⁾ are paired by ordered channel pair. z_ab is their Pearson correlation (fitted line). Filled and open markers are the two directions of one pair, and the rugs mark each statistic's edge profile.
+- **(c)** The M(M−1) off-diagonal entries of A⁽ᵃ⁾ and A⁽ᵇ⁾ are paired by ordered channel pair. z_ab is their Pearson correlation (fitted line); it is negative here because b is a distance. Filled and open markers are the two directions of one pair, and the rugs mark each statistic's edge profile.
 - **(d)** z_ab is one entry of the K × K agreement matrix R (outlined; panel c is that cell opened out). R is symmetric with a unit diagonal, so one strict triangle (here the lower) is z, with K(K−1)/2 entries for any M and T. K = 5 is drawn; the 289 statistics used here give 41,616.
-- **(e)** One fixed-length z per recording supports comparison across recordings of different size, unsupervised tracking of a change in dynamics, and reading named coordinates (schematic).
+- **(e)** One fixed-length z per recording supports comparison across recordings of different size, unsupervised tracking of a change in dynamics, and reading named coordinates; z over sliding windows of one recording is a prospective use (schematic).
 
 `[ALIGN: validity policy — z_ab is undefined for constant or non-finite profiles.]`
 

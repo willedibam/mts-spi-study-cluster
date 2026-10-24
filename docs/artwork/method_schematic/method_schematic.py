@@ -41,14 +41,15 @@ PANEL_DIR = HERE / "panels"
 STAMP = "261022"
 DPI = 600
 SPIS = {
+    "lag1": "lag-1 cross-correlation corr(x_i(t), x_j(t+1)) (directed)",
+    "euclid": "Euclidean distance (z-scored series)",
     "pearson": "Pearson correlation",
     "spearman": "Spearman correlation",
-    "lag1": "lag-1 cross-correlation corr(x_i(t), x_j(t+1)) (directed)",
     "granger": "linear Granger log-variance ratio, order 2 (directed)",
-    "euclid": "Euclidean distance (z-scored series)",
 }
-# a and b are the 3rd and 4th statistics, so z_ab's kept cell (b, a) of R sits low and right, next to panel c.
-A_IDX, B_IDX = 2, 3
+# a and b are the first two statistics, so R reads a, b, ..., K and z_ab is z's first coordinate.
+# b is a distance, so z_ab < 0 here: the two statistics order pairs alike in opposite orientations.
+A_IDX, B_IDX = 0, 1
 SIMILARITY_SIGN = {"euclid": -1}  # distances are flipped only for drawing graph edges
 DIRECTED = {"lag1", "granger"}
 # Channel labels are arbitrary (z is invariant to relabelling); this order puts the strongly
@@ -56,9 +57,8 @@ DIRECTED = {"lag1", "granger"}
 CHANNEL_ORDER = [0, 3, 2, 1, 4, 5]
 PAIR = (1, 5)  # highlighted channel pair (i, j) = channels 2 and 6, 0-based, after CHANNEL_ORDER
 WINDOW = (200, 300)  # samples shown in the carpet and traces
-TRACE_W, TRACE_H = 0.4, 0.13  # every single-channel trace, beside the carpet and on the graph
-# Irregular node layout in the unit square; i and j (nodes 1, 5) sit on top, under their traces.
-LAYOUT = np.array([[0.04, 0.50], [0.27, 0.84], [0.97, 0.44], [0.68, 0.12], [0.30, 0.06], [0.77, 0.93]])
+# Irregular node layout in the unit square; i and j (nodes 1, 5) sit on the left, facing their traces.
+LAYOUT = np.array([[0.42, 0.98], [0.02, 0.74], [0.96, 0.70], [0.55, 0.62], [0.88, 0.06], [0.14, 0.12]])
 
 # Soft palette: a pastel hue for statistics a and b, quiet greys for the rest of the K, a
 # pastel diverging map for R and z, a dark ink for the channel pair (i, j), and white cells
@@ -335,7 +335,8 @@ PANELS = "abcde"
 PANEL_BOXES = {"a": (0.0, 2.42, 3.2, 4.92), "b": (3.16, 2.42, 7.2, 4.92), "e": (0.0, 0.0, 2.36, 2.42),
                "d": (2.36, 0.0, 4.72, 2.42), "c": (4.72, 0.0, 7.2, 2.42)}
 SHOW_ALL_EXTRACTION = False  # True adds a faint line from every off-diagonal entry of A^(a) and A^(b)
-SHOW_SLIDING_WINDOW = False  # a fourth, exploratory use in panel e: z over sliding windows (not shown in the paper)
+TRACE_LINKS = "beam"  # panel a: "beam" (boxed traces, faint projections like panel d's) or "curve" (dotted lines)
+SHOW_SLIDING_WINDOW = True  # a fourth, prospective use in panel e: z over sliding windows (not shown in the paper)
 
 
 def figure(x, coupling, mats, c):
@@ -357,12 +358,13 @@ def figure(x, coupling, mats, c):
     # Strokes: the same side of the map, pushed towards its end so they stay legible; neutral grey near z = 0.
     feat_ink = DIV(norm(np.sign(z_ab) * (0.55 + 0.45 * abs(z_ab)))) if abs(z_ab) > 0.05 else MUTED
 
-    # (a) Recording as a carpet (rows are channels) and as a directed coupling graph. --------------
+    # (a) Recording: carpet -> the two shared traces -> coupling graph, linked by zoom lines. -------
     a = L["a"]["base"]
     title(a, 0.02, 4.75, "a", "Recording", r"$M$ channels $\times$ $T$ samples")
     scaled, limit = robust_scaled(x)
     t0, t1 = WINDOW
-    cx, cy, cw, ch = 0.18, 3.0, 1.38, 0.88
+    lift = 0.12  # centre panel a against the layer stack in panel b
+    cx, cy, cw, ch = 0.17, 3.02 + lift, 1.12, 0.8
     pitch, gap = ch / M, 0.012
     rounded(a, cx - 0.03, cy - 0.03, cw + 0.06, ch + 0.06, "white", r=0.04, z=0.5, ec=HAIR, lw=0.5)
     for m in range(M):
@@ -375,22 +377,43 @@ def figure(x, coupling, mats, c):
         im.set_clip_path(clip)
     text(a, cx + cw / 2, cy - 0.06, "time", 8, MUTED, ha="center", va="top")
     text(a, cx - 0.1, cy + ch / 2, "channel", 8, MUTED, ha="center", va="center", rotation=90)
-    row_y = lambda m: cy + (M - 1 - m) * pitch + pitch / 2
-    for m, lab, ty, rad in [(i, "$x_i$", cy + ch + 0.1, 0.45), (j, "$x_j$", cy - 0.36, -0.45)]:
+    gx, gy, gs = 1.78, 2.95 + lift, 1.05
+    pos = np.column_stack([gx + LAYOUT[:, 0] * gs, gy + LAYOUT[:, 1] * gs])
+    graph(a, pos, coupling ** 1.3, NODE, "#8C929E", 0.042, 0.026, z=1, floor=0.08, rings=PAIR, directed=True)
+    # One shared trace per highlighted channel, centred over the gap between carpet and graph: x_i above,
+    # x_j below. With TRACE_LINKS = "beam" (default) each trace sits in a hairline box that its carpet row and
+    # its graph node project into, like panel d's projection; "curve" uses two dotted lines and no box.
+    tx, tw, th = 1.12, 0.74, 0.24
+    link = dict(lw=0.5, ls=(0, (1.2, 1.4)), head=False, color=MUTED, z=0.8)
+    for m, lab, ty, up in [(i, "$x_i$", 4.12, True), (j, "$x_j$", 2.72, False)]:
         y = cy + (M - 1 - m) * pitch
         rounded(a, cx - 0.012, y + gap - 0.012, cw + 0.024, pitch - 2 * gap + 0.024, "none", r=0.03, z=2,
                 ec=INK, lw=0.7)
-        trace(a, cx + 0.05, ty, TRACE_W, TRACE_H, scaled[m, t0:t1], lw=0.5)
-        text(a, cx + 0.05 + TRACE_W + 0.04, ty + 0.065, lab, 8, ha="left", va="center")
-        arrow(L["a"]["back"], (cx + 0.04, ty + 0.065), (cx - 0.035, row_y(m)), rad=rad, lw=0.5,
-              ls=(0, (2, 1.5)), head=False)
-    gx, gy, gs = cx + cw + 0.38, 2.9, 1.08
-    pos = np.column_stack([gx + LAYOUT[:, 0] * gs, gy + LAYOUT[:, 1] * gs])
-    graph(a, pos, coupling ** 1.3, NODE, "#8C929E", 0.044, 0.027, z=1, floor=0.08, rings=PAIR, directed=True)
-    for m, lab in zip(PAIR, ("$x_i$", "$x_j$")):  # the same series, at the same size, as beside the carpet
-        trace(a, pos[m, 0] - TRACE_W / 2, pos[m, 1] + 0.07, TRACE_W, TRACE_H, scaled[m, t0:t1], lw=0.5)
-        text(a, pos[m, 0] + TRACE_W / 2 + 0.03, pos[m, 1] + 0.07 + TRACE_H / 2, lab, 8, ha="left", va="center")
-    text(a, (cx + cw + gx) / 2, cy + ch / 2, r"$\Longleftrightarrow$", 9, MUTED, ha="center", va="center")
+        trace(a, tx + (0.04 if TRACE_LINKS == "beam" else 0), ty + (0.03 if TRACE_LINKS == "beam" else 0),
+              tw - (0.08 if TRACE_LINKS == "beam" else 0), th - (0.06 if TRACE_LINKS == "beam" else 0),
+              scaled[m, t0:t1], lw=0.6)
+        text(a, tx + tw / 2, ty + th + 0.03 if up else ty - 0.03, lab, 8, ha="center",
+             va="bottom" if up else "top")
+        row_end = (cx + cw + 0.05, y + pitch / 2)  # just outside the carpet's card
+        if TRACE_LINKS == "beam":
+            rounded(a, tx, ty, tw, th, "white", r=0.03, z=1.5, ec=HAIR, lw=0.5)
+            edge = ty if up else ty + th  # the box edge facing the carpet and graph
+            half = pitch / 2 - gap
+            beams = [[(row_end[0], row_end[1] + half), (tx, edge), (tx + 0.38 * tw, edge),
+                      (row_end[0], row_end[1] - half)],
+                     [(tx + 0.62 * tw, edge), (tx + tw, edge), tuple(pos[m])]]
+            for poly in beams:
+                L["a"]["back"].add_patch(Polygon(poly, closed=True, fc=MUTED, ec="none", alpha=0.08, zorder=0.7))
+            for p0, p1 in [(beams[0][0], beams[0][1]), (beams[0][3], beams[0][2]), (beams[1][0], beams[1][2]),
+                           (beams[1][1], beams[1][2])]:
+                L["a"]["back"].plot(*zip(p0, p1), color=MUTED, lw=0.5, alpha=0.45, zorder=0.75)
+        else:
+            edge = ty - 0.025 if up else ty + th + 0.025
+            bend = 0.3 if up else -0.3
+            arrow(L["a"]["back"], (tx + 0.1, edge), row_end, rad=bend, **link)
+            arrow(L["a"]["back"], (tx + tw - 0.1, edge), tuple(pos[m]), rad=-bend, **link)
+
+    text(a, (cx + cw + pos[i, 0]) / 2, cy + ch / 2, r"$\Longleftrightarrow$", 9, MUTED, ha="center", va="center")
 
     # (b) K statistics: layers of the same graph (a, b, dots, K) and the stacked matrices. ---------
     b = L["b"]["base"]
@@ -414,7 +437,8 @@ def figure(x, coupling, mats, c):
         text(b, *(o + u + v / 2 + np.array([0.05, 0])), f"$A^{{({lab})}}$", 8, shade(hue, 0.7) if hue else MUTED,
              ha="left", va="center", zorder=4)
         arrow(links["back"], O, o + 0.5 * v + np.array([0.02, 0]), color=HAIR, lw=0.5, head=False)
-    text(b, lx + (LW + SKEW) / 2, layer_y[B] - 0.04, r"$\vdots$", 10, MUTED, ha="center", va="top")
+    text(b, lx + (LW + SKEW) / 2, (layer_y[B] + layer_y[rest] + LH) / 2, r"$\vdots$", 10, MUTED, ha="center",
+         va="center")
 
     s = 0.15
     Gx, Gy = 5.3, 3.35
@@ -429,9 +453,10 @@ def figure(x, coupling, mats, c):
     text(b, Bx + (K - 2) * 0.08 + M * s, By - (K - 2) * 0.08 - 0.05, "$A^{(K)}$", 8, MUTED, ha="right",
          va="top", zorder=30)
     A_a = mats[names[A]]
-    gsz = 0.29
-    glyphs = [((i, j), (Gx + M * s + 0.1, Gy + 0.56), r"$i \to j$", "-", "right"),
-              ((j, i), (Gx + (i + 0.5) * s - gsz / 2, Gy - 0.36), r"$j \to i$", (0, (1.5, 1)), "left")]
+    clear = 0.07  # gap to the matrices; each glyph sits flush with the outer edge of the stack's rectangle
+    gsz = off - clear
+    glyphs = [((i, j), (Gx + M * s + clear, Gy + M * s - gsz), r"$i \to j$", "-", "right"),
+              ((j, i), (Gx, By), r"$j \to i$", (0, (1.5, 1)), "left")]
     for (src, dst), (gx0, gy0), lab, ls, side in glyphs:
         top = L["b"]["top"]
         rounded(top, gx0, gy0, gsz, gsz, "white", r=0.02, z=14, ec=HAIR, lw=0.5)
@@ -469,7 +494,8 @@ def figure(x, coupling, mats, c):
                 arrow(links["front"] if hot else lay, cells[r_, c_], pt, rad=rad, ls=ls, head=False, z=1,
                       color=shade(hue, 0.8) if hot else hue, lw=0.6 if hot else 0.3, alpha=0.85 if hot else alpha)
     text(cc, sx0 + sw / 2, sy0 - 0.06, "$A^{(a)}_{ij}$", 8, shade(HUES[0], 0.7), ha="center", va="top")
-    text(cc, sx0 - 0.06, sy0 + sw / 2, "$A^{(b)}_{ij}$", 8, shade(HUES[1], 0.7), ha="right", va="center")
+    text(L["c"]["top"], sx0 - 0.06, sy0 + sw / 2, "$A^{(b)}_{ij}$", 8, shade(HUES[1], 0.7), ha="right",
+         va="center")  # on the top layer, above the projection beam
     zlab = text(L["c"]["top"], sx0 + 0.11, sy0 + sw - 0.09, f"$z_{{ab}} = {R[A, B]:.2f}$", 8, ha="left", va="top",
                 zorder=6)
     zlab.set_bbox(dict(boxstyle="round,pad=0.25,rounding_size=0.2", fc="white", ec=feat_ink, lw=1.0))
@@ -499,6 +525,9 @@ def figure(x, coupling, mats, c):
     for kk, (lab, colr) in labels.items():
         text(d, rx + (kk + 0.5) * rs, ry + K * rs + 0.05, lab, 8, colr, ha="center", va="bottom")
         text(d, rx + K * rs + 0.07, ry + (K - 1 - kk + 0.5) * rs, lab, 8, colr, ha="left", va="center")
+    if {A, B} == {0, 1}:  # a, b, ..., K: dots stand for the statistics between b and K
+        text(d, rx + (K / 2 + 0.5) * rs, ry + K * rs + 0.05, r"$\cdots$", 8, MUTED, ha="center", va="bottom")
+        text(d, rx + K * rs + 0.09, ry + (K / 2 - 0.5) * rs, r"$\vdots$", 8, MUTED, ha="left", va="center")
     cell_x, cell_y = rx + A * rs, ry + (K - 1 - B) * rs
     ring(d, cell_x, cell_y, rs, lw=1.1, color=feat_ink)
     for kk, v in enumerate(z):
@@ -530,8 +559,8 @@ def uses(ax, sz=0.86, sliding=None):
     sliding = SHOW_SLIDING_WINDOW if sliding is None else sliding
     rng = np.random.default_rng(3)
     sage, lav, amber, rose, sky = PASTELS
-    spots = ({"embed": (0.08, 1.24), "track": (1.32, 1.04), "coord": (0.2, 0.12), "slide": (1.44, 0.08)} if sliding
-             else {"embed": (0.1, 1.16), "track": (1.3, 0.62), "coord": (0.24, 0.08)})
+    spots = ({"embed": (0.14, 1.2), "track": (1.32, 1.2), "coord": (0.14, 0.1), "slide": (1.32, 0.1)} if sliding
+             else {"embed": (0.1, 1.16), "track": (1.3, 0.62), "coord": (0.24, 0.08)})  # 2 x 2 grid with four
     # Embedding: four clusters, each mixing recordings of three sizes M.
     x0, y0 = spots["embed"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
@@ -568,26 +597,49 @@ def uses(ax, sz=0.86, sliding=None):
                 solid_capstyle="round", zorder=3)
     if not sliding:
         return
-    # Sliding windows: z recomputed per window of one recording; its coordinates reorganise at a change point.
+    # Sliding windows: overlapping windows along one recording (older ones fainter), one z per window,
+    # and the trajectory those z trace out in a small 2-D projection. Schematic: seeded noise, not data.
     x0, y0 = spots["slide"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
-    t = np.linspace(0, 1, 160)
-    sig = 0.5 * np.sin(2 * np.pi * 7 * t) * (1 + 0.6 * (t > 0.58)) + rng.normal(0, 0.18, t.size)
-    ax.plot(x0 + (0.1 + 0.8 * t) * sz, y0 + (0.84 + 0.05 * sig) * sz, color=MUTED, lw=0.45, zorder=3)
-    rounded(ax, x0 + 0.3 * sz, y0 + 0.75 * sz, 0.16 * sz, 0.18 * sz, "none", r=0.01, z=3.5, ec=INK, lw=0.6)
-    arrow(ax, (x0 + 0.48 * sz, y0 + 0.69 * sz), (x0 + 0.62 * sz, y0 + 0.69 * sz), lw=0.5, color=INK, z=3.5)
-    n_win, n_coord = 14, 5
-    before, after = rng.uniform(-0.9, 0.9, n_coord), rng.uniform(-0.9, 0.9, n_coord)
-    after[:2] = -np.sign(before[:2]) * np.abs(after[:2])  # a few coordinates flip sign at the change
-    cw_, ch_ = 0.8 * sz / n_win, 0.48 * sz / n_coord
+    n_col, n_row = 20, 3  # a small pastel cell heatmap of one recording, glyph-like rather than icefire
+    vals = np.cumsum(rng.normal(0, 1, (n_row, n_col)), axis=1)
+    vals = (vals - vals.min(1, keepdims=True)) / np.ptp(vals, axis=1, keepdims=True)
+    pitch_ = 0.84 * sz / n_col
+    sky_map = seq(PASTELS[4])
+    for r_ in range(n_row):
+        for c_ in range(n_col):
+            cell(ax, x0 + 0.08 * sz + c_ * pitch_, y0 + 0.7 * sz + (n_row - 1 - r_) * pitch_, pitch_,
+                 sky_map(vals[r_, c_]), z=3)
+    starts, width = np.array([0.1, 0.27, 0.44, 0.61]), 0.27
+    alphas = [0.25, 0.45, 0.7, 1.0]  # older windows fade
     norm = Normalize(-1, 1)
-    for w_ in range(n_win):
-        vals = (before if w_ < 8 else after) + rng.normal(0, 0.1, n_coord)
-        for r_ in range(n_coord):
-            cell(ax, x0 + 0.1 * sz + w_ * cw_, y0 + 0.1 * sz + (n_coord - 1 - r_) * ch_, cw_,
-                 DIV(norm(np.clip(vals[r_], -1, 1))), z=3)
-    ax.plot([x0 + 0.1 * sz + 8 * cw_] * 2, [y0 + 0.07 * sz, y0 + 0.62 * sz], color=INK, lw=0.6,
-            ls=(0, (1.5, 1.2)), zorder=4)
+    v = rng.uniform(-0.8, 0.8, 5)
+    for k, (st, al) in enumerate(zip(starts, alphas)):
+        wx0 = x0 + st * sz
+        rounded(ax, wx0, y0 + 0.68 * sz, width * sz, n_row * pitch_ + 0.04 * sz, "none", r=0.012, z=4, ec=INK,
+                lw=0.7, alpha=al)
+        zc = wx0 + width * sz / 2
+        v = np.clip(v + rng.normal(0, 0.18, 5) + (0.25 if k == 2 else 0) * np.array([1, -1, 1, 0, -1]), -1, 1)
+        zs_ = 0.04
+        for r_ in range(5):  # this window's z, as a short column of cells
+            cell(ax, zc - zs_ / 2, y0 + 0.6 * sz - (r_ + 1) * zs_, zs_, DIV(norm(v[r_])), z=3, alpha=max(al, 0.35))
+        ax.plot([zc, zc], [y0 + 0.68 * sz, y0 + 0.6 * sz + 0.008], color=INK, lw=0.4, alpha=al, zorder=3)
+    # Window length w, marked over the newest window.
+    wx0, wx1, wy = x0 + starts[-1] * sz, x0 + (starts[-1] + width) * sz, y0 + 0.9 * sz
+    ax.plot([wx0, wx1], [wy, wy], color=INK, lw=0.5, zorder=4)
+    for xe in (wx0, wx1):
+        ax.plot([xe, xe], [wy - 0.012, wy + 0.012], color=INK, lw=0.5, zorder=4)
+    text(ax, (wx0 + wx1) / 2, wy + 0.012, "$w$", 7, ha="center", va="bottom", zorder=4)
+    # Inset: the windows' z projected onto two axes, oldest faint, newest solid.
+    ix0, iy0, iw, ih = x0 + 0.38 * sz, y0 + 0.05 * sz, 0.26 * sz, 0.26 * sz  # square inset
+    ax.plot([ix0, ix0, ix0 + iw], [iy0 + ih, iy0, iy0], color=MUTED, lw=0.45, zorder=3)
+    path = np.array([[0.12, 0.25], [0.3, 0.38], [0.52, 0.32], [0.82, 0.78]])  # a turn, then a jump
+    pts_ = np.column_stack([ix0 + path[:, 0] * iw, iy0 + path[:, 1] * ih])
+    hue = shade(PASTELS[4], 0.72)
+    for k in range(len(pts_) - 1):
+        ax.plot(*pts_[k:k + 2].T, color=hue, lw=0.8, alpha=alphas[k + 1], zorder=3)
+    for (px, py), al in zip(pts_, alphas):
+        ax.add_patch(Circle((px, py), 0.02, fc=hue, ec="white", lw=0.4, alpha=al, zorder=4))
 
 
 # --- build and export ------------------------------------------------------------------------------
