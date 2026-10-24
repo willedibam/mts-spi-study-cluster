@@ -39,9 +39,9 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Contract check:** z is asserted equal to `build_unified_feature_values` (`unified_ordered_v3`), which uses all M(M−1) ordered entries in row-major order.
 - **Extraction lines:**
   - Only the highlighted pair's four lines (from A⁽ᵃ⁾ and A⁽ᵇ⁾, solid for i→j and dotted for j→i) run into the scatter. `SHOW_ALL_EXTRACTION = True` restores a faint line for every entry.
-  - z_ab's cell of R projects into panel c as a faint ochre beam from its right corners to the scatter's left corners.
+  - z_ab's cell of R projects into panel c as a faint beam in that cell's colour, from its right corners to the scatter's left corners.
   - Panel c is boxed, with no ticks. The fitted line carries the correlation.
-  - z_ab has its own accent, ochre (`FEATURE`): the fitted line, the outlined value, and the outlined cells in R and z.
+  - z_ab is drawn in its own value's colour from R's colour map, wherever it is marked: its R and z cells, the projection beam, the fitted line and the outlined label. Fills use the exact cell colour; strokes use a stronger colour from the same side of the map (grey when |z_ab| < 0.05).
   - Rugs on the bottom (sage) and left (lavender) edges show that each axis is one statistic's edge profile.
   - The outlined z_ab label matches the outlined cell in R.
   - In panel d, z and R are drawn in matrix brackets, with a colour bar labelled "feature value z_ab". A vertical label for z is left to add by hand. Each lower-triangle cell of R has a line to its entry of z, in the cell's colour. Because R is symmetric, cell (r, c) with r > c is z's coordinate for the pair (c, r), so the order of z matches the library's upper-triangle order.

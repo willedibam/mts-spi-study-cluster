@@ -64,7 +64,6 @@ LAYOUT = np.array([[0.04, 0.50], [0.27, 0.84], [0.97, 0.44], [0.68, 0.12], [0.30
 # pastel diverging map for R and z, a dark ink for the channel pair (i, j), and white cells
 # with a hairline for entries that are never used (all diagonals).
 HUES = ["#74B49B", "#9D8FCB"]
-FEATURE = "#C98A2E"  # z_ab itself: a warm ochre, unused elsewhere (fitted line, outlined value and cells)
 PASTELS = ["#74B49B", "#9D8FCB", "#E0B060", "#D98FA5", "#86B3D9"]  # sage, lavender, amber, rose, sky
 INK, MUTED, HAIR, CARD, NODE = "#2E3440", "#7B8190", "#DEDEDB", "#F3F3F1", "#AEB4BF"
 DIV = LinearSegmentedColormap.from_list("soft_div", ["#5D83C2", "#B9CBE6", "#F7F7F5", "#EDB9A6", "#CF7458"])
@@ -351,6 +350,12 @@ def figure(x, coupling, mats, c):
     for p in "bc":  # glyphs and labels that must sit above the cross-panel lines
         L[p]["top"] = layer(fig, f"{p}_top", 3)
     parts = {p: list(L[p].values()) for p in PANELS}
+    # z_ab wears its own value's colour everywhere it is marked: R's cell, the beam, the line and the label.
+    norm = Normalize(-1, 1)
+    z_ab = R[A, B]
+    feat = DIV(norm(z_ab))  # fills: the cell's exact colour
+    # Strokes: the same side of the map, pushed towards its end so they stay legible; neutral grey near z = 0.
+    feat_ink = DIV(norm(np.sign(z_ab) * (0.55 + 0.45 * abs(z_ab)))) if abs(z_ab) > 0.05 else MUTED
 
     # (a) Recording as a carpet (rows are channels) and as a directed coupling graph. --------------
     a = L["a"]["base"]
@@ -393,7 +398,8 @@ def figure(x, coupling, mats, c):
     O = np.array([gx + gs + 0.08, gy + gs * 0.5])
     LW, LH, SKEW, GAPL = 1.05, 0.36, 0.3, 0.12
     lx = 3.3
-    layer_y = {A: 4.0, B: 4.0 - LH - GAPL, K - 1: 4.0 - 2 * (LH + GAPL) - 0.22}
+    rest = max(k for k in range(K) if k not in (A, B))  # the grey layer: the last statistic that is neither a nor b
+    layer_y = {A: 4.0, B: 4.0 - LH - GAPL, rest: 4.0 - 2 * (LH + GAPL) - 0.22}
     for s_idx, ly in layer_y.items():
         o, u, v = np.array([lx, ly]), np.array([LW, 0.0]), np.array([SKEW, LH])
         hue = HUES[0] if s_idx == A else HUES[1] if s_idx == B else None
@@ -404,7 +410,7 @@ def figure(x, coupling, mats, c):
         w = edge_weights(mats[name], SIMILARITY_SIGN.get(name, 1), name in DIRECTED)
         graph(b, local, w, shade(hue, 0.85) if hue else NODE, shade(hue, 0.75) if hue else "#9BA1AC",
               0.023, 0.017, z=3.2, floor=0.15, directed=name in DIRECTED)
-        lab = "a" if s_idx == A else "b" if s_idx == B else "K"
+        lab = "a" if s_idx == A else "b" if s_idx == B else "K" if s_idx == K - 1 else "k"
         text(b, *(o + u + v / 2 + np.array([0.05, 0])), f"$A^{{({lab})}}$", 8, shade(hue, 0.7) if hue else MUTED,
              ha="left", va="center", zorder=4)
         arrow(links["back"], O, o + 0.5 * v + np.array([0.02, 0]), color=HAIR, lw=0.5, head=False)
@@ -447,7 +453,7 @@ def figure(x, coupling, mats, c):
     pts = np.column_stack([fx(P[A]), fy(P[B])])
     slope, icpt = np.polyfit(P[A], P[B], 1)
     xl = np.array([P[A].min(), P[A].max()])
-    cc.plot(fx(xl), fy(slope * xl + icpt), color=FEATURE, lw=1.4, zorder=3, solid_capstyle="round")
+    cc.plot(fx(xl), fy(slope * xl + icpt), color=feat_ink, lw=1.4, zorder=3, solid_capstyle="round")
     for k in range(len(edges)):  # rugs: each axis is one statistic's edge profile
         cc.plot([pts[k, 0]] * 2, [sy0, sy0 + 0.055], color=shade(HUES[0], 0.85), lw=0.6, zorder=2)
         cc.plot([sx0, sx0 + 0.055], [pts[k, 1]] * 2, color=shade(HUES[1], 0.85), lw=0.6, zorder=2)
@@ -466,14 +472,13 @@ def figure(x, coupling, mats, c):
     text(cc, sx0 - 0.06, sy0 + sw / 2, "$A^{(b)}_{ij}$", 8, shade(HUES[1], 0.7), ha="right", va="center")
     zlab = text(L["c"]["top"], sx0 + 0.11, sy0 + sw - 0.09, f"$z_{{ab}} = {R[A, B]:.2f}$", 8, ha="left", va="top",
                 zorder=6)
-    zlab.set_bbox(dict(boxstyle="round,pad=0.25,rounding_size=0.2", fc="white", ec=FEATURE, lw=1.0))
+    zlab.set_bbox(dict(boxstyle="round,pad=0.25,rounding_size=0.2", fc="white", ec=feat_ink, lw=1.0))
 
     # (d) R, one strict triangle of which is z; z_ab's cell projects out to panel c. ---------------
     d = L["d"]["base"]
     title(d, 2.38, 2.25, "d", r"Agreement matrix $R$")
     rs, rx, ry = 0.26, 3.0, 0.62
     zs, zx, zy = 0.15, 2.52, 0.42
-    norm = Normalize(-1, 1)
     n = len(z)
     brackets(d, rx - 0.03, ry - 0.03, K * rs + 0.06, K * rs + 0.06)
     order = {pair: k for k, pair in enumerate((p_, q_) for p_ in range(K) for q_ in range(p_ + 1, K))}
@@ -489,16 +494,16 @@ def figure(x, coupling, mats, c):
                 k = order[c_, r_]
                 arrow(L["d"]["back"], (X + rs * 0.2, Y + rs / 2), (zx + zs, zy + (n - 1 - k) * zs + zs / 2),
                       rad=-0.12, color=col, lw=0.5, alpha=0.55, head=False)
-    labels = {0: ("$1$", MUTED), A: ("$a$", shade(HUES[0], 0.7)), B: ("$b$", shade(HUES[1], 0.7)),
-              K - 1: ("$K$", MUTED)}
+    labels = {0: ("$1$", MUTED), K - 1: ("$K$", MUTED)}
+    labels.update({A: ("$a$", shade(HUES[0], 0.7)), B: ("$b$", shade(HUES[1], 0.7))})  # a, b win if they are 1 or K
     for kk, (lab, colr) in labels.items():
         text(d, rx + (kk + 0.5) * rs, ry + K * rs + 0.05, lab, 8, colr, ha="center", va="bottom")
         text(d, rx + K * rs + 0.07, ry + (K - 1 - kk + 0.5) * rs, lab, 8, colr, ha="left", va="center")
     cell_x, cell_y = rx + A * rs, ry + (K - 1 - B) * rs
-    ring(d, cell_x, cell_y, rs, lw=1.1, color=FEATURE)
+    ring(d, cell_x, cell_y, rs, lw=1.1, color=feat_ink)
     for kk, v in enumerate(z):
         cell(d, zx, zy + (n - 1 - kk) * zs, zs, DIV(norm(v)), z=2)
-    ring(d, zx, zy + (n - 1 - order[A, B]) * zs, zs, lw=1.0, color=FEATURE)
+    ring(d, zx, zy + (n - 1 - order[A, B]) * zs, zs, lw=1.0, color=feat_ink)
     brackets(d, zx - 0.03, zy - 0.03, zs + 0.06, n * zs + 0.06, arm=0.035)
     text(d, zx + zs / 2, zy + n * zs + 0.06, "$z$", 8, ha="center", va="bottom")
     W, H = fig.get_size_inches()
@@ -510,9 +515,9 @@ def figure(x, coupling, mats, c):
     parts["d"].append(cax)
     # Projection: z_ab's cell of R opens out into the scatter of panel c.
     beam = [(cell_x + rs, cell_y + rs), (sx0, sy0 + sw), (sx0, sy0), (cell_x + rs, cell_y)]
-    links["back"].add_patch(Polygon(beam, closed=True, fc=FEATURE, ec="none", alpha=0.06, zorder=1))
+    links["back"].add_patch(Polygon(beam, closed=True, fc=feat, ec="none", alpha=0.16, zorder=1))
     for p0, p1 in [(beam[0], beam[1]), (beam[3], beam[2])]:
-        links["back"].plot(*zip(p0, p1), color=FEATURE, lw=0.6, alpha=0.55, zorder=1.1)
+        links["back"].plot(*zip(p0, p1), color=feat_ink, lw=0.6, alpha=0.55, zorder=1.1)
 
     # (e) What one z per recording supports: schematic icons, not data. --------------------------
     title(L["e"]["base"], 0.02, 2.25, "e", "Statistical learning")
