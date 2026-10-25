@@ -1,0 +1,19 @@
+name: zenodo-7118947-phasealigned-zscore
+
+# Companion corpus: phase-aligned correlation P alone over the p90 corpus's
+# recordings (zenodo-7118947-p90.yaml), joined per recording with
+# mtsspi.companion. Paths are the local mirror's: the whole archive runs locally
+# in under a minute, so it is not run on Gadi.
+source:
+  format: named-npz-v1
+  archive: data/zenodo_7118947/inputs/database.npz
+  sha256: 928ce41fc8f97b19ac6225c02e0665ddcd228b23ee947365face64ca7b77ba84
+  axis_order: [process, observation]
+
+base_output_dir: data/zenodo_7118947/features/runs/phasealigned-zscore
+pyspi_config: configs/pyspi/subsets/phasealigned.yaml
+
+# As in the p90 corpus. P is invariant to per-process standardisation and uses
+# no random numbers, so neither changes its values.
+normalise: true
+random_seed: 1729

@@ -1,0 +1,15 @@
+# Phase-aligned correlation P alone (pyspi >= c3de193 on v3), for companion
+# corpora joined onto existing corpora with mtsspi.companion. Same entry as in
+# pyspi's full.yaml; nperseg null is the automatic segment length.
+.statistics.spectral:
+  PhaseAlignedCorrelation:
+    labels:
+      - undirected
+      - linear
+      - unsigned
+      - bivariate
+      - frequency-dependent
+      - MXX
+    dependencies:
+    configs:
+      - nperseg: null

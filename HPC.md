@@ -9,6 +9,7 @@ How this repository runs on NCI Gadi and the USyd Physics cluster: what is fixed
 - **One environment definition.** `uv.lock` is the environment on every machine (Python 3.12; pyspi is the editable sibling checkout `../pyspi-fork`). After a dependency change: `uv lock` locally, commit, then `uv sync --locked --inexact` in each checkout. `aeon` cannot be locked with pyspi 3.0's numpy; use a separate environment for it.
 - **pyspi.** The shared checkout stays on `v3`, the 3.0 release branch. A pyspi development branch is used per job with `PYSPI_SOURCE=<snapshot>`, never by switching the shared checkout; `meta.json` records which pyspi ran.
 - **Never extend a corpus with a different pyspi computation version** (`pyspi.COMPUTATION_VERSION`). The runner treats such a recording as incomplete and `--audit` fails on a mixed corpus; give a re-run a new `base_output_dir`.
+- **Add SPIs to an existing corpus as a companion corpus**: the same recordings under a new SPI set, in a new `base_output_dir`, joined per recording with `mtsspi.companion` (see `configs/pyspi/README.md`). Changing the catalogue of a running corpus changes `pyspi_config_sha256`, so every recording reads as incomplete.
 
 ## Running a corpus
 
