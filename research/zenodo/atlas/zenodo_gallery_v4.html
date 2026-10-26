@@ -14,29 +14,31 @@ label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:
 .tbl{font:12px/1.45 system-ui;border-collapse:collapse;margin:6px 0}.tbl td{padding:1px 10px 1px 0}.tbl td:last-child{color:var(--muted)}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin:16px 0}.card{min-width:0;overflow-wrap:anywhere;border-top:1px solid #e4e4e4;padding-top:8px}.card label{align-items:flex-start;font:14px Georgia,serif}.card img{width:100%;height:110px;object-fit:fill;image-rendering:pixelated;background:#fafafa;cursor:pointer}.card small{display:block;margin:4px 0;font:12px/1.5 system-ui;color:var(--muted)}
 #tip{position:fixed;pointer-events:none;background:#fff;border:1px solid #ccc;border-radius:3px;padding:6px;font:12px/1.4 system-ui;max-width:260px;box-shadow:0 2px 8px rgba(0,0,0,.12);display:none;z-index:5}#tip img{display:block;width:240px;height:60px;object-fit:fill;image-rendering:pixelated;margin-top:4px}
+.bar{display:flex;height:9px;margin:5px 0 3px;border:1px solid #aaa;background:#fff}.bar span{border-right:1px solid #fff}.bar span:last-child{border-right:0}
+.nn td{vertical-align:top}.nn td:first-child{max-width:210px}.link{border:0;padding:0;background:none;color:#315875;text-decoration:underline;text-underline-offset:3px;font:12px system-ui;text-align:left;overflow-wrap:anywhere}.link:hover{background:none}
 .pager{display:flex;align-items:center;gap:12px}#search{width:190px}#view{max-width:330px}details{margin:12px 0}summary{cursor:pointer}footer{margin-top:24px;padding-top:12px;border-top:1px solid var(--line);font-size:13px}
 @media(max-width:860px){body{padding:0 14px;margin-top:16px}.layout{display:block}.toolbar label{display:flex;width:100%}.toolbar select{flex:1;min-width:0}}
 </style>
-<h1>MTS corpus atlas <span class="muted">/ v4 · consensus groups</span></h1>
-<p>1,053 recordings placed by their SPI–SPI agreement profile z. Groups are density cores found in feature space (HDBSCAN on the first 50 principal components), not on the map. <b>Tier 1</b> groups are stable under resampling by parent recording, span at least three parent recordings, and appear as a single region on the displayed map; only they are shaded by default. <b>Tier 2</b> pass the first two tests but split on the map. <b>Tier 3</b> are the remaining density groups. Recordings in no group are drawn small and faint. Co-location means a shared dependence-organisation signature, not a shared mechanism.</p>
+<h1>MTS corpus atlas <span class="muted">/ v4 · map regions and density groups</span></h1>
+<p>1,053 recordings placed by their SPI–SPI agreement profile z. Two kinds of unit. <b>Map regions (R)</b> are found on the chosen 2-D map, then checked in feature space (the first 50 principal components): tighter than random and size-matched sets, and stable when the map is refitted on subsets of recordings. <b>Candidates</b>, shaded by default, are checked regions that hold at least two sources with two or more parent recordings each; they are the current basis for picking examples. <b>Density groups (G)</b> are found in feature space directly; <b>tier 1</b> groups are stable, span at least three parent recordings and appear as one region on the displayed map, and <b>tier 2</b> split on the map. Recordings in no density group are drawn small and faint. Co-location means a shared dependence-organisation signature, not a shared mechanism.</p>
 <div class="toolbar">
  <label>Map <select id="map-select"></select></label>
  <label>Show <select id="view"></select></label>
  <label>Find MTS <input id="search" type="search" placeholder="Dataset name"></label>
  <button id="all">Show all</button>
- <label>Shading <select id="shading"><option value="consensus">Tier 1 groups on this map</option><option value="pool">Tier 1 filled, tier 2 outlined</option><option value="all">All density groups</option><option value="regions">2-D map regions (descriptive)</option><option value="none">None</option></select></label>
+ <label>Shading <select id="shading"><option value="candidates">Candidate map regions</option><option value="consensus">Tier 1 groups on this map</option><option value="pool">Tier 1 filled, tier 2 outlined</option><option value="all">All density groups</option><option value="regions">All map regions on this map</option><option value="none">None</option></select></label>
  <label>Groups as <select id="style"><option value="both">fill + outline</option><option value="outline">outline</option><option value="fill">fill</option></select></label>
  <label><input type="checkbox" id="origin" checked>Real / synthetic shading</label>
 </div>
 <div class="layout">
  <div>
   <svg id="map" viewBox="0 0 680 680" role="img" aria-label="Interactive MTS embedding"></svg>
-  <div class="legend"><span><span class="swatch" style="background:#333"></span>real</span><span><span class="swatch" style="background:#9e9e9e"></span>synthetic</span><span><span class="swatch" style="background:#e8e8e8;border:1px solid #333;border-radius:6px"></span>tier 1 group</span><span><span class="swatch" style="border:1.5px dashed #262626;border-radius:6px"></span>tier 2 (splits on map)</span><span>small faint dots: in no density group</span></div>
-  <div class="toolbar"><button id="reset-view">Reset zoom</button><button id="export-svg">Save map SVG</button><label><input id="only-selected" type="checkbox">Selected only</label></div>
+  <div class="legend"><span><span class="swatch" style="background:#333"></span>real</span><span><span class="swatch" style="background:#9e9e9e"></span>synthetic</span><span id="legend-filled"><span class="swatch" style="background:#e8e8e8;border:1px solid #333;border-radius:6px"></span><span></span></span><span id="legend-dashed"><span class="swatch" style="border:1.5px dashed #262626;border-radius:6px"></span>tier 2 (splits on map)</span><span>small faint dots: in no density group</span><span><span class="swatch" style="border-top:1.5px solid #31688e;height:0;vertical-align:3px"></span>feature-space neighbours of the clicked MTS</span></div>
+  <div class="toolbar"><button id="reset-view">Reset zoom</button><button id="export-svg">Save map SVG</button><label><input id="only-selected" type="checkbox">Selected only</label><label><input id="neighbours" type="checkbox" checked>Neighbour lines</label></div>
   <p id="map-note" class="facts"></p>
  </div>
  <div>
-  <h2>Candidate groups <label style="margin-left:8px">List <select id="tier-filter"><option value="1">tier 1</option><option value="2" selected>tiers 1–2</option><option value="3">all groups</option></select></label></h2>
+  <h2>Browse <label style="margin-left:8px"><select id="tier-filter"><option value="cand" selected>candidate map regions</option><option value="valid">checked map regions (core + neighbourhood)</option><option value="regions">all map regions</option><option value="1">tier 1 density groups</option><option value="2">tier 1–2 density groups</option><option value="3">all density groups</option></select></label></h2>
   <div id="groups"></div>
   <div id="group-note" class="facts"></div>
   <div id="detail"><p class="muted facts">Hover a point for a preview; click it for details.</p></div>
@@ -49,7 +51,7 @@ label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:
 <div class="pager"><button id="previous-page">Previous page</button><span id="page-status"></span><button id="next-page">Next page</button></div>
 <div class="cards" id="cards"></div>
 <details><summary>Method and boundaries</summary><div id="methods"></div></details>
-<footer><a href="../tsne-261021/index.html">Explorer v3 (Ward candidates)</a> · <a href="groups.csv">Group metrics</a> · <a href="display-sweep.csv">Display sweep</a> · <a href="source-agreement-by-dims.csv">PCA dimension check</a></footer>
+<footer><a href="../tsne-261021/index.html">Explorer v3 (Ward candidates)</a> · <a href="../neighbourhoods-261024/regions.csv">Region metrics</a> · <a href="groups.csv">Group metrics</a> · <a href="display-sweep.csv">Display sweep</a> · <a href="source-agreement-by-dims.csv">PCA dimension check</a></footer>
 <div id="tip"></div>
 <script>
 __KDE_SCRIPT__
@@ -57,22 +59,36 @@ const data=__CORPUS_DATA__;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',selected=new Set(),pageSize=24;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let page=0,focused=null,viewport=null,drag=null,dragged=false,cache={};
-const byId=Object.fromEntries(data.groups.map(g=>[g.id,g]));
+const byId=Object.fromEntries(data.groups.map(g=>[g.id,g])),byRegion=Object.fromEntries(data.regions.map(r=>[r.id,r])),regionMap=data.maps[data.region_map];
 const fmt=(x,d=2)=>x===null||x===undefined||Number.isNaN(x)?'n/a':x.toFixed(d);
+const pct=x=>x===null||x===undefined||Number.isNaN(x)?'n/a':Math.round(100*x)+'%';
+const plural=(n,w)=>`${n} ${w}${n===1?'':'s'}`;
+const fmtP=x=>x!==null&&x!==undefined&&x<.0015?'≤ 0.001':'= '+fmt(x,3);  // 1,000 random or matched sets: the floor is 1/1,001
 function option(parent,value,text){const o=document.createElement('option');o.value=value;o.textContent=text;parent.appendChild(o)}
 function el(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e}
 function currentMap(){return data.maps[$('map-select').value]}
+function onRegionMap(){return $('map-select').value===data.region_map}
 function regionOf(row){return currentMap().regions[row]}
+// Map regions R are found on the chosen map and checked in feature space; their membership is fixed across maps.
+function validatedOf(row){return regionMap.regions[row]}
 function groupName(g){return g<0?'no density group':`G${g} · ${byId[g].title}`}
+function regionName(v){return v<0?'no map region':`R${v} · ${byRegion[v].title}`}
+function regionLabel(row){const v=validatedOf(row);return v>=0?`R${v}`:'no map region'}
+// A unit is 'g<id>' (density group) or 'v<id>' (map region); its view value is 'g:<id>' or 'v:<id>'.
+function unitRows(u){const id=Number(u.slice(1));return u[0]==='g'?data.rows.filter(r=>r.group===id):data.rows.filter(r=>validatedOf(r.row)===id)}
+function unitName(u){const id=Number(u.slice(1));return u[0]==='g'?`G${id} · tier ${byId[id].tier} · ${byId[id].title}`:`R${id} · ${byRegion[id].candidate?'candidate':byRegion[id].kind} · ${byRegion[id].title}`}
 function filter(){const [kind,id]=($('view').value||'all:').split(':');return {kind,id:Number(id)}}
-function inView(r){const f=filter();return f.kind==='all'||(f.kind==='g'&&r.group===f.id)||(f.kind==='r'&&regionOf(r.row)===f.id)}
+function inView(r){const f=filter();return f.kind==='all'||(f.kind==='g'&&r.group===f.id)||(f.kind==='v'&&validatedOf(r.row)===f.id)||(f.kind==='r'&&regionOf(r.row)===f.id)}
 function visibleRows(){const term=$('search').value.toLowerCase();return data.rows.filter(r=>inView(r)&&r.dataset.toLowerCase().includes(term)&&(!$('only-selected').checked||selected.has(r.row)))}
 function viewOptions(keep){
  const v=$('view');v.replaceChildren();option(v,'all:','All recordings');
- for(const t of [1,2,3]){const og=document.createElement('optgroup');og.label=`Tier ${t} groups`;data.groups.filter(g=>g.tier===t).forEach(g=>option(og,`g:${g.id}`,`G${g.id} · ${g.title} (${g.size})`));v.appendChild(og)}
+ const rg=document.createElement('optgroup');rg.label='Map regions (found on the chosen map, checked in feature space)';
+ [...data.regions].sort((a,b)=>b.candidate-a.candidate||a.id-b.id).forEach(r=>option(rg,`v:${r.id}`,`R${r.id} · ${r.title} (${r.size}) · ${r.candidate?'candidate':r.kind}`));
+ option(rg,'v:-1',`In no map region (${data.rows.filter(r=>validatedOf(r.row)<0).length})`);v.appendChild(rg);
+ for(const t of [1,2,3]){const og=document.createElement('optgroup');og.label=`Tier ${t} density groups`;data.groups.filter(g=>g.tier===t).forEach(g=>option(og,`g:${g.id}`,`G${g.id} · ${g.title} (${g.size})`));v.appendChild(og)}
  option(v,'g:-1',`In no density group (${data.rows.filter(r=>r.group<0).length})`);
- const counts={};currentMap().regions.forEach(r=>{counts[r]=(counts[r]||0)+1});
- const og=document.createElement('optgroup');og.label='2-D map regions on this map (descriptive)';Object.keys(counts).map(Number).filter(r=>r>=0).sort((a,b)=>a-b).forEach(r=>option(og,`r:${r}`,`Region ${r} (${counts[r]})`));v.appendChild(og);
+ if(!onRegionMap()){const counts={};currentMap().regions.forEach(r=>{counts[r]=(counts[r]||0)+1});
+  const og=document.createElement('optgroup');og.label='2-D map regions on this map (descriptive)';Object.keys(counts).map(Number).filter(r=>r>=0).sort((a,b)=>a-b).forEach(r=>option(og,`r:${r}`,`Region ${r} (${counts[r]})`));v.appendChild(og)}
  if([...v.options].some(o=>o.value===keep))v.value=keep;
 }
 function select(value){$('view').value=value;$('search').value='';$('only-selected').checked=false;page=0;render()}
@@ -80,27 +96,31 @@ function inspect(row){focused=row;render()}
 function extent(m){const xs=m.xy.map(v=>v[0]),ys=m.xy.map(v=>v[1]),lo=[Math.min(...xs),Math.min(...ys)],hi=[Math.max(...xs),Math.max(...ys)];return {lo,hi,h:Math.max(300,Math.min(580,580*(hi[1]-lo[1])/((hi[0]-lo[0])||1)))}}
 function home(){return [0,0,680,extent(currentMap()).h+100]}
 function scaled(m){const {lo,hi,h}=extent(m);const s=Math.min(570/(hi[0]-lo[0]||1),(h-10)/(hi[1]-lo[1]||1));return m.xy.map(v=>[350+s*(v[0]-(lo[0]+hi[0])/2),35+h/2-s*(v[1]-(lo[1]+hi[1])/2)])}
-function outline(key,id,xy){const k=`${key}|outline|${id}`;if(!(k in cache)){const b=`${key}|bandwidth`;if(!(b in cache))cache[b]=outlineBandwidth(xy);cache[k]=memberContour(data.rows.filter(r=>r.group===id).map(r=>xy[r.row]),cache[b])}return cache[k]}
+function outline(key,u,xy){const k=`${key}|outline|${u}`;if(!(k in cache)){const b=`${key}|bandwidth`;if(!(b in cache))cache[b]=outlineBandwidth(xy);cache[k]=memberContour(unitRows(u).map(r=>xy[r.row]),cache[b])}return cache[k]}
 function contours(key,labels,xy){if(!cache[key]){const groups=assignedGroups(xy,data.rows.map(r=>r.row),labels);cache[key]=Object.fromEntries(Object.entries(groups).map(([c,p])=>[c,densityContours(p)]))}return cache[key]}
-function tip(event,r){const t=$('tip');t.innerHTML=`<b>${esc(r.dataset)}</b><br>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' (tier '+byId[r.group].tier+')':'no density group'} · ${regionOf(r.row)>=0?'map region '+regionOf(r.row):'no map region'}<img src="${r.thumb}" alt="">`;t.style.display='block';t.style.left=Math.min(event.clientX+14,window.innerWidth-280)+'px';t.style.top=Math.min(event.clientY+14,window.innerHeight-130)+'px'}
+function composition(rows){const t={};rows.forEach(r=>{const s=t[r.source]||(t[r.source]={source:r.source,n:0,p:new Set(),origin:r.origin});s.n++;s.p.add(r.parent)});return Object.values(t).map(s=>({source:s.source,n:s.n,parents:s.p.size,origin:s.origin})).sort((a,b)=>b.n-a.n||b.parents-a.parents||a.source.localeCompare(b.source))}
+function compositionBar(c){return `<span class="bar" role="img" aria-label="members by source, dark real, light synthetic">${c.map(s=>{const f=data.origin_styles[s.origin]?.fill;return `<span style="flex:${s.n};background:${!f||f==='none'?'#fff':f}" title="${esc(s.source)} ${s.n} (${plural(s.parents,'parent')})"></span>`}).join('')}</span>`}
+function compositionText(c){return c.map(s=>`${esc(s.source)} ${s.n} (${plural(s.parents,'parent')})`).join('; ')}
+function mapNeighbours(row,k){const m=currentMap(),p=m.xy[row],parent=data.rows[row].parent;return data.rows.filter(r=>r.parent!==parent).map(r=>[r.row,(m.xy[r.row][0]-p[0])**2+(m.xy[r.row][1]-p[1])**2]).sort((a,b)=>a[1]-b[1]).slice(0,k).map(v=>v[0])}
+function tip(event,r){const t=$('tip');t.innerHTML=`<b>${esc(r.dataset)}</b><br>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' (tier '+byId[r.group].tier+')':'no density group'} · ${regionLabel(r.row)}<img src="${r.thumb}" alt="">`;t.style.display='block';t.style.left=Math.min(event.clientX+14,window.innerWidth-280)+'px';t.style.top=Math.min(event.clientY+14,window.innerHeight-130)+'px'}
 function untip(){$('tip').style.display='none'}
-function placeLabels(layer,ids,muted,xy,key,H){
- // As tsne_atlas.place_labels: largest group first, 16 directions around its outline, fewest grouped points covered, no overlap.
+function placeLabels(layer,units,muted,xy,key,H){
+ // As tsne_atlas.place_labels: largest unit first, 16 directions around its outline, fewest grouped points covered, no overlap.
  const crowd=data.rows.filter(r=>r.group>=0).map(r=>xy[r.row]),taken=[];
- for(const id of [...ids].sort((a,b)=>byId[b].size-byId[a].size)){const members=data.rows.filter(r=>r.group===id).map(r=>xy[r.row]);
+ for(const u of [...units].sort((a,b)=>unitRows(b).length-unitRows(a).length)){const members=unitRows(u).map(r=>xy[r.row]);
   // label the island that holds most members (as tsne_atlas.place_labels)
-  const loops=outline(key,id,xy).split('M').filter(Boolean).map(seg=>{const v=(seg.match(/-?[\d.]+/g)||[]).map(Number),q=[];for(let i=0;i+1<v.length;i+=2)q.push([v[i],v[i+1]]);return q});
+  const loops=outline(key,u,xy).split('M').filter(Boolean).map(seg=>{const v=(seg.match(/-?[\d.]+/g)||[]).map(Number),q=[];for(let i=0;i+1<v.length;i+=2)q.push([v[i],v[i+1]]);return q});
   const inside=(poly,p)=>{let o=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])o=!o}return o};
   const held=loops.map(l=>members.filter(p=>inside(l,p))),k=held.reduce((m,h,i)=>h.length>held[m].length?i:m,0),pts=loops.length?loops[k]:[...members],own=loops.length&&held[k].length?held[k]:members;
-  const c=[own.reduce((a,p)=>a+p[0],0)/own.length,own.reduce((a,p)=>a+p[1],0)/own.length],text=`G${id}`,w=text.length*7+4,h=14;let best=null;
+  const c=[own.reduce((a,p)=>a+p[0],0)/own.length,own.reduce((a,p)=>a+p[1],0)/own.length],text=(u[0]==='g'?'G':'R')+u.slice(1),w=text.length*7+4,h=14;let best=null;
   for(let k=0;k<16;k++){const t=2*Math.PI*k/16,u=[Math.cos(t),Math.sin(t)];let anchor=pts[0],far=-Infinity;for(const p of pts){const d=(p[0]-c[0])*u[0]+(p[1]-c[1])*u[1];if(d>far){far=d;anchor=p}}
    const x=anchor[0]+4*u[0],y=anchor[1]+4*u[1],x0=u[0]>.38?x:u[0]<-.38?x-w:x-w/2,y0=u[1]>.38?y:u[1]<-.38?y-h:y-h/2,box=[x0,y0,x0+w,y0+h];
    const covered=crowd.filter(p=>p[0]>box[0]&&p[0]<box[2]&&p[1]>box[1]&&p[1]<box[3]).length,clash=taken.filter(b=>b[0]<box[2]&&box[0]<b[2]&&b[1]<box[3]&&box[1]<b[3]).length,outside=box[0]<60||box[2]>640||box[1]<35||box[3]>35+H;
    const score=covered+100*clash+100*outside+.3*(1+u[1])/2;if(!best||score<best.score)best={score,box,x,y,u}}
-  taken.push(best.box);layer.appendChild(el('text',{x:best.x,y:best.y,'text-anchor':best.u[0]>.38?'start':best.u[0]<-.38?'end':'middle','dominant-baseline':best.u[1]>.38?'hanging':best.u[1]<-.38?'auto':'middle','font-family':'Georgia, serif','font-size':12,fill:muted.has(id)?'#595959':'#222',stroke:'#fff','stroke-width':3,'paint-order':'stroke','pointer-events':'none'},text))}
+  taken.push(best.box);layer.appendChild(el('text',{x:best.x,y:best.y,'text-anchor':best.u[0]>.38?'start':best.u[0]<-.38?'end':'middle','dominant-baseline':best.u[1]>.38?'hanging':best.u[1]<-.38?'auto':'middle','font-family':'Georgia, serif','font-size':12,fill:muted.has(u)?'#595959':'#222',stroke:'#fff','stroke-width':3,'paint-order':'stroke','pointer-events':'none'},text))}
 }
 function draw(){
- const m=currentMap(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row)),xy=scaled(m),f=filter(),shading=$('shading').value,style=$('style').value,mapKey=$('map-select').value,agree=new Set(m.agree),H=extent(m).h;svg.replaceChildren();
+ const m=currentMap(),svg=$('map'),visible=new Set(visibleRows().map(r=>r.row)),xy=scaled(m),f=filter(),view=`${f.kind}:${f.id}`,shading=$('shading').value,style=$('style').value,mapKey=$('map-select').value,agree=new Set(m.agree),H=extent(m).h;svg.replaceChildren();
  svg.appendChild(el('path',{d:`M60 35 V${35+H} H640 V35 Z`,fill:'none',stroke:'#777','stroke-width':'.8'}));
  svg.appendChild(el('text',{x:350,y:H+75,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[0]));
  svg.appendChild(el('text',{x:18,y:35+H/2,transform:`rotate(-90 18 ${35+H/2})`,'text-anchor':'middle','font-family':'Georgia, serif','font-size':13},m.axis_labels[1]));
@@ -108,63 +128,86 @@ function draw(){
  const defs=el('defs'),clip=el('clipPath',{id:'clip'});clip.appendChild(el('rect',{x:60,y:35,width:580,height:H}));defs.appendChild(clip);svg.appendChild(defs);
  const layer=el('g',{'clip-path':'url(#clip)'});svg.appendChild(layer);
  const filled=new Set(),dashed=new Set();
- if(shading==='consensus'||shading==='pool')data.groups.forEach(g=>{if(g.tier<=2&&agree.has(g.id))filled.add(g.id);else if(shading==='pool'&&g.tier<=2)dashed.add(g.id)});
- if(shading==='all')data.groups.forEach(g=>filled.add(g.id));
- if(shading==='regions'){for(const [r,levels] of Object.entries(contours(mapKey+'|regions',m.regions,xy)))for(const level of levels){if(level.mass!==.8)continue;const on=f.kind==='all'||(f.kind==='r'&&f.id===Number(r));const p=el('path',{class:'hit',d:level.path,fill:'#8a8a8a','fill-rule':'evenodd','fill-opacity':on?.13:.04});p.appendChild(el('title',{},`Map region ${r} (2-D, descriptive)`));p.onclick=()=>{if(!dragged)select(`r:${r}`)};layer.appendChild(p)}}
- for(const id of [...filled,...dashed]){const d=outline(mapKey,id,xy);if(!d)continue;const on=f.kind==='all'||(f.kind==='g'&&f.id===id),solid=filled.has(id),shaded=solid&&style!=='outline',lined=!solid||style!=='fill';
+ if(shading==='candidates')data.regions.filter(r=>r.candidate).forEach(r=>filled.add('v'+r.id));
+ if(shading==='consensus'||shading==='pool')data.groups.forEach(g=>{if(g.tier<=2&&agree.has(g.id))filled.add('g'+g.id);else if(shading==='pool'&&g.tier<=2)dashed.add('g'+g.id)});
+ if(shading==='all')data.groups.forEach(g=>filled.add('g'+g.id));
+ if(shading==='regions'){const own=onRegionMap();for(const [r,levels] of Object.entries(contours(mapKey+'|regions',m.regions,xy)))for(const level of levels){if(level.mass!==.8)continue;const target=own?`v:${r}`:`r:${r}`,on=f.kind==='all'||view===target;const p=el('path',{class:'hit',d:level.path,fill:'#8a8a8a','fill-rule':'evenodd','fill-opacity':on?.13:.04});p.appendChild(el('title',{},own?unitName('v'+r):`Map region ${r} (this map, descriptive)`));p.onclick=()=>{if(!dragged)select(target)};layer.appendChild(p)}}
+ for(const u of [...filled,...dashed]){const d=outline(mapKey,u,xy);if(!d)continue;const target=`${u[0]}:${u.slice(1)}`,on=f.kind==='all'||view===target,solid=filled.has(u),shaded=solid&&style!=='outline',lined=!solid||style!=='fill';
   const a={class:'hit',d,'fill-rule':'evenodd',fill:shaded?'#8c8c8c':'none','fill-opacity':on?.18:.07,stroke:lined?(solid?'#333':'#4d4d4d'):'none','stroke-width':.8,'stroke-opacity':on?.9:.35,'pointer-events':shaded?'visiblePainted':'stroke'};if(!solid)a['stroke-dasharray']='4 3';
-  const p=el('path',a);p.appendChild(el('title',{},`G${id} · tier ${byId[id].tier} · ${byId[id].title}`));p.onclick=()=>{if(!dragged)select(`g:${id}`)};layer.appendChild(p)}
+  const p=el('path',a);p.appendChild(el('title',{},unitName(u)));p.onclick=()=>{if(!dragged)select(target)};layer.appendChild(p)}
+ const lines=el('g',{'pointer-events':'none'});layer.appendChild(lines);
  data.rows.forEach((r,i)=>{const st=$('origin').checked?data.origin_styles[r.origin]:{fill:'#444',stroke:'#fff'},faint=r.group<0,isSel=selected.has(r.row);
   const c=el('circle',{cx:xy[i][0],cy:xy[i][1],r:faint?r.marker_radius*.6:r.marker_radius,fill:isSel?'#31688e':st.fill,stroke:r.origin==='unlabelled'?st.stroke:'#ffffff','stroke-width':focused===r.row?1.4:(faint?.3:.5),opacity:visible.has(r.row)?(faint?.4:.9):.1,tabindex:0,role:'button','aria-label':r.dataset});
   c.onmouseenter=e=>tip(e,r);c.onmousemove=e=>tip(e,r);c.onmouseleave=untip;c.onclick=()=>{if(!dragged)inspect(r.row)};c.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();inspect(r.row)}};layer.appendChild(c)});
+ if(focused!==null&&$('neighbours').checked){const a=xy[focused];data.rows[focused].nn.forEach(j=>{const b=xy[j];lines.appendChild(el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#31688e','stroke-width':.9,'stroke-opacity':.75}));layer.appendChild(el('circle',{cx:b[0],cy:b[1],r:data.rows[j].marker_radius+2.2,fill:'none',stroke:'#31688e','stroke-width':1.1,'pointer-events':'none'}))})}
  if(shading!=='all')placeLabels(layer,[...filled,...dashed],dashed,xy,mapKey,H);
+ const lf=$('legend-filled');lf.style.display=shading==='none'?'none':'';lf.lastElementChild.textContent={candidates:'candidate map region',consensus:'tier 1 group',pool:'tier 1 group',all:'density group',regions:'map region (80% of members)'}[shading]||'';$('legend-dashed').style.display=shading==='pool'?'':'none';
  if(!viewport)viewport=home();
  svg.setAttribute('viewBox',viewport.join(' '));
 }
 function detail(){
- if(focused===null)return;const r=data.rows[focused],reg=regionOf(focused);
- $('detail').innerHTML=`<h2>${esc(r.dataset)}</h2><p class="facts">${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${esc(groupName(r.group))} · ${reg>=0?'map region '+reg:'in no map region'} · parent key ${esc(r.parent)}<br>archive tags: ${esc(r.tags.join(', '))}</p><a href="${r.png}" target="_blank" rel="noopener"><img src="${r.thumb}" alt="${esc(r.dataset)} heatmap"></a><p class="facts">Native heatmap <a href="${r.png}" target="_blank" rel="noopener">PNG</a> · <a href="${r.svg}" target="_blank" rel="noopener">SVG</a> (needs the v1 asset folder beside this page) · colour limit ±${r.display_limit.toPrecision(3)} · <button id="select-focused">${selected.has(focused)?'Deselect':'Select'}</button>${r.group>=0?' <button id="show-group">Show its group</button>':''}</p>`;
- $('select-focused').onclick=()=>{selected.has(focused)?selected.delete(focused):selected.add(focused);render()};if(r.group>=0)$('show-group').onclick=()=>select(`g:${r.group}`);
+ if(focused===null)return;const r=data.rows[focused],v=validatedOf(focused),onMap=mapNeighbours(focused,10),kept=r.nn.filter(j=>onMap.includes(j)).length;
+ const nn=r.nn.map((j,k)=>{const o=data.rows[j],vo=validatedOf(j);return `<tr><td><button class="link" data-nn="${j}">${esc(o.dataset)}</button></td><td>${esc(o.source)} · ${o.origin}</td><td>${fmt(r.nn_d[k],1)}</td><td>${o.group>=0?'G'+o.group:'–'}</td><td>${vo>=0?'R'+vo:'–'}</td></tr>`}).join('');
+ $('detail').innerHTML=`<h2>${esc(r.dataset)}</h2><p class="facts">${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${esc(groupName(r.group))} · ${esc(regionName(v))} · parent key ${esc(r.parent)}<br>archive tags: ${esc(r.tags.join(', '))}</p><a href="${r.png}" target="_blank" rel="noopener"><img src="${r.thumb}" alt="${esc(r.dataset)} heatmap"></a><p class="facts">Native heatmap <a href="${r.png}" target="_blank" rel="noopener">PNG</a> · <a href="${r.svg}" target="_blank" rel="noopener">SVG</a> (needs the v1 asset folder beside this page) · colour limit ±${r.display_limit.toPrecision(3)} · <button id="select-focused">${selected.has(focused)?'Deselect':'Select'}</button>${r.group>=0?' <button id="show-group">Show its group</button>':''}${v>=0?' <button id="show-region">Show its region</button>':''}</p>`
+  +`<p class="facts"><b>Nearest in feature space.</b> The 10 closest recordings in the analysis space (PCA50) from other parent recordings${r.siblings?`; ${plural(r.siblings,'recording')} with the same parent key (windows or transforms of one source recording) skipped`:''}. On this map, ${kept} of them are also among its 10 nearest other-parent points. Typical nearest-neighbour distance in the corpus: ${fmt(data.nn_scale,1)}.</p><table class="tbl nn"><tr><td><b>recording</b></td><td><b>source</b></td><td><b>distance</b></td><td>G</td><td>R</td></tr>${nn}</table>`;
+ $('select-focused').onclick=()=>{selected.has(focused)?selected.delete(focused):selected.add(focused);render()};if(r.group>=0)$('show-group').onclick=()=>select(`g:${r.group}`);if(v>=0)$('show-region').onclick=()=>select(`v:${v}`);
+ document.querySelectorAll('[data-nn]').forEach(b=>b.onclick=()=>inspect(Number(b.dataset.nn)));
 }
 function groupPanel(){
- const f=filter(),maxTier=Number($('tier-filter').value),agree=new Set(currentMap().agree);
- $('groups').innerHTML=data.groups.filter(g=>g.tier<=maxTier).map(g=>`<button class="group" data-group="${g.id}" aria-pressed="${f.kind==='g'&&f.id===g.id}"><b>G${g.id}</b> · ${esc(g.title)}<span class="badge ${g.tier===1?'t1':''}">tier ${g.tier}</span>${agree.has(g.id)?'<span class="badge">one region here</span>':''}${g.cross_source?'<span class="badge">cross-source</span>':''}<small>${g.composition} · ${g.origin} · ${g.size} MTS, ${g.parents} parents · stability ${fmt(g.stability)} · silhouette ${fmt(g.silhouette_full)} full / ${fmt(g.silhouette_pca)} PCA50 · size-matched survival ${fmt(g.size_survival)}</small><span class="strip">${g.reps.map(i=>`<img src="${data.rows[i].thumb}" alt="" title="${esc(data.rows[i].dataset)} · ${esc(data.rows[i].source)}">`).join('')}</span></button>`).join('');
- document.querySelectorAll('.group').forEach(b=>b.onclick=()=>select(`g:${b.dataset.group}`));
+ const f=filter(),view=`${f.kind}:${f.id}`,mode=$('tier-filter').value,agree=new Set(currentMap().agree);
+ const strip=reps=>`<span class="strip">${reps.map(i=>`<img src="${data.rows[i].thumb}" alt="" title="${esc(data.rows[i].dataset)} · ${esc(data.rows[i].source)}">`).join('')}</span>`;
+ if(['cand','valid','regions'].includes(mode)){
+  const list=data.regions.filter(r=>mode==='regions'||(mode==='cand'?r.candidate:['core','neighbourhood'].includes(r.kind))).sort((a,b)=>b.candidate-a.candidate||a.priority.localeCompare(b.priority)||b.stability-a.stability);
+  $('groups').innerHTML=list.map(r=>`<button class="group" data-unit="v:${r.id}" aria-pressed="${view==='v:'+r.id}"><b>R${r.id}</b> · ${esc(r.title)}<span class="badge ${r.candidate?'t1':''}">${r.candidate?'candidate':r.kind}</span>${r.candidate?`<span class="badge" title="${esc(r.priority)}">priority ${r.priority[0]}</span>`:''}<small>${r.kind} · ${r.origin} · ${r.size} MTS, ${r.parents} parents · stability ${fmt(r.stability)} · size survival ${fmt(r.size_survival)} · neighbours inside ${pct(r.nn_inside)} · cross-source members ${pct(r.cross_members)}</small>${compositionBar(composition(unitRows('v'+r.id)))}${strip(r.reps)}</button>`).join('');
+ }else{
+  const maxTier=Number(mode);
+  $('groups').innerHTML=data.groups.filter(g=>g.tier<=maxTier).map(g=>`<button class="group" data-unit="g:${g.id}" aria-pressed="${view==='g:'+g.id}"><b>G${g.id}</b> · ${esc(g.title)}<span class="badge ${g.tier===1?'t1':''}">tier ${g.tier}</span>${agree.has(g.id)?'<span class="badge">one region here</span>':''}${g.cross_source?'<span class="badge">cross-source</span>':''}<small>${g.composition} · ${g.origin} · ${g.size} MTS, ${g.parents} parents · stability ${fmt(g.stability)} · silhouette ${fmt(g.silhouette_full)} full / ${fmt(g.silhouette_pca)} PCA50 · size-matched survival ${fmt(g.size_survival)}</small>${strip(g.reps)}</button>`).join('');
+ }
+ document.querySelectorAll('.group').forEach(b=>b.onclick=()=>select(b.dataset.unit));
+}
+function signature(u){
+ const axes=u.axes.map(a=>`<tr><td>${esc(a.axis)}</td><td>${fmt(a.cluster)}</td><td>${fmt(a.corpus)}</td></tr>`).join('');
+ const raw=Object.entries(u.raw).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${fmt(v)}</td><td>${fmt(data.corpus_raw[k])}</td></tr>`).join('');
+ return `<table class="tbl"><tr><td><b>Case-study axis (median z)</b></td><td><b>members</b></td><td>corpus</td></tr>${axes}</table><table class="tbl"><tr><td><b>Raw-series check (median)</b></td><td><b>members</b></td><td>corpus</td></tr>${raw}</table>`;
 }
 function groupNote(){
  const f=filter(),box=$('group-note');box.replaceChildren();if(f.kind==='all')return;
- const members=data.rows.filter(r=>inView(r));const tally=key=>{const t={};members.forEach(r=>{const k=key(r);t[k]=(t[k]||0)+1});return Object.entries(t).sort((a,b)=>b[1]-a[1])};
- if(f.kind==='r'){box.innerHTML=`<p><b>Map region ${f.id}</b> · ${members.length} MTS · HDBSCAN on this 2-D map: descriptive, not a feature-space group<br>Sources: ${esc(tally(r=>r.source).map(([s,n])=>`${s} ${n}`).join('; '))}<br>Density groups among members: ${esc(tally(r=>r.group).map(([g,n])=>`${Number(g)<0?'none':'G'+g}: ${n}`).join('; '))}</p>`;return}
+ const members=data.rows.filter(r=>inView(r)),c=composition(members);const tally=key=>{const t={};members.forEach(r=>{const k=key(r);t[k]=(t[k]||0)+1});return Object.entries(t).sort((a,b)=>b[1]-a[1])};
+ const groupsHere=esc(tally(r=>r.group).map(([g,n])=>`${Number(g)<0?'none':'G'+g}: ${n}`).join('; '));
+ const medoid=row=>{const b=document.createElement('button');b.textContent='Inspect medoid';b.onclick=()=>inspect(row);box.appendChild(b)};
+ if(f.kind==='r'){box.innerHTML=`<p><b>Map region ${f.id} on this map</b> · ${members.length} MTS · HDBSCAN on this 2-D map, descriptive; checked statistics exist only for regions of the chosen map<br>${compositionBar(c)}${compositionText(c)}<br>Density groups among members: ${groupsHere}</p>`;return}
+ if(f.kind==='v'&&f.id<0){box.innerHTML=`<p><b>In no map region</b> · ${members.length} MTS left unassigned by HDBSCAN on the chosen map.</p>`;return}
+ if(f.kind==='v'){const rg=byRegion[f.id];
+  box.innerHTML=`<p><b>R${rg.id} · ${esc(rg.title)}</b> · ${rg.candidate?`candidate, priority ${esc(rg.priority)} · `:''}${rg.kind} · ${rg.origin} · ${rg.size} MTS from ${rg.parents} parents · M ${rg.M}, T ${rg.T}<br>${compositionBar(c)}${compositionText(c)}<br>Stability ${fmt(rg.stability)} over 50 map refits on 80% of parent recordings · re-found (Jaccard ≥ 0.5) on ${pct(rg.recurs_share)} of comparable sweep maps · tighter than random same-size sets (z ${fmt(rg.cohesion_z,1)}, p ${fmtP(rg.p_random)}) · size-matched survival ${fmt(rg.size_survival)} (p ${fmtP(rg.p_matched)}) · ${pct(rg.nn_inside)} of members' 10 feature-space neighbours inside · ${pct(rg.cross_members)} of members linked to another source inside<br>Density groups among members: ${groupsHere}${onRegionMap()?'':'<br>Found on the chosen map; drawn here by membership.'}</p>${rg.note?`<p>${esc(rg.note)}</p>`:''}${signature(rg)}`;
+  medoid(rg.medoid);return}
  if(f.id<0){box.innerHTML=`<p><b>In no density group</b> · ${members.length} MTS. The lower-density continuum; drawn faint on the map.</p>`;return}
  const g=byId[f.id];
- const regions=tally(r=>regionOf(r.row)).map(([k,n])=>`${Number(k)<0?'none':k}: ${n}`).join('; ');
- const raw=Object.entries(g.raw).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${fmt(v)}</td><td>${fmt(data.corpus_raw[k])}</td></tr>`).join('');
- const axes=g.axes.map(a=>`<tr><td>${esc(a.axis)}</td><td>${fmt(a.cluster)}</td><td>${fmt(a.corpus)}</td></tr>`).join('');
- box.innerHTML=`<p><b>G${g.id} · ${esc(g.title)}</b> · tier ${g.tier} · ${g.composition}, ${g.origin} · ${g.size} MTS from ${g.parents} parents · M ${g.M}, T ${g.T}<br>${esc(g.sources)}<br>Stability ${fmt(g.stability)} · silhouette ${fmt(g.silhouette_full)} (full), ${fmt(g.silhouette_pca)} (PCA50) · cohesion beats size-matched sets with survival ${fmt(g.size_survival)} (p ${fmt(g.p_matched,3)}) · on the chosen map ${Math.round(100*g.in_modal_region)}% in one region<br>Map regions here: ${esc(regions)}</p>${g.note?`<p>${esc(g.note)}</p>`:''}<table class="tbl"><tr><td><b>Case-study axis (median z)</b></td><td><b>group</b></td><td>corpus</td></tr>${axes}</table><table class="tbl"><tr><td><b>Raw-series check (median)</b></td><td><b>group</b></td><td>corpus</td></tr>${raw}</table><p class="facts">SPI-family blocks: ${esc(g.families)}</p>`;
- const b=document.createElement('button');b.textContent='Inspect medoid';b.onclick=()=>inspect(g.medoid);box.appendChild(b);
+ const regions=esc(tally(r=>validatedOf(r.row)).map(([k,n])=>`${Number(k)<0?'none':'R'+k}: ${n}`).join('; '));
+ box.innerHTML=`<p><b>G${g.id} · ${esc(g.title)}</b> · tier ${g.tier} · ${g.composition}, ${g.origin} · ${g.size} MTS from ${g.parents} parents · M ${g.M}, T ${g.T}<br>${compositionBar(c)}${compositionText(c)}<br>Stability ${fmt(g.stability)} · silhouette ${fmt(g.silhouette_full)} (full), ${fmt(g.silhouette_pca)} (PCA50) · cohesion beats size-matched sets with survival ${fmt(g.size_survival)} (p ${fmtP(g.p_matched)}) · on the chosen map ${Math.round(100*g.in_modal_region)}% in one region<br>Map regions (chosen map): ${regions}</p>${g.note?`<p>${esc(g.note)}</p>`:''}${signature(g)}<p class="facts">SPI-family blocks: ${esc(g.families)}</p>`;
+ medoid(g.medoid);
 }
 function render(){
  const m=currentMap(),rows=visibleRows();page=Math.max(0,Math.min(page,Math.ceil(rows.length/pageSize)-1));
  $('map-note').textContent=`${m.title}. ${m.note}`;
  $('selection-status').textContent=`${selected.size} MTS selected for export.`;$('download').disabled=!selected.size;
  $('status').textContent=`${rows.length} matching MTS.`;
- $('cards').innerHTML=rows.slice(page*pageSize,(page+1)*pageSize).map(r=>`<article class="card"><label><input type="checkbox" data-select="${r.row}" ${selected.has(r.row)?'checked':''}>${esc(r.dataset)}</label><img loading="lazy" src="${r.thumb}" alt="${esc(r.dataset)} heatmap" data-inspect="${r.row}"><small>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' · tier '+byId[r.group].tier:'no density group'} · ${regionOf(r.row)>=0?'region '+regionOf(r.row):'no region'}</small></article>`).join('');
+ $('cards').innerHTML=rows.slice(page*pageSize,(page+1)*pageSize).map(r=>`<article class="card"><label><input type="checkbox" data-select="${r.row}" ${selected.has(r.row)?'checked':''}>${esc(r.dataset)}</label><img loading="lazy" src="${r.thumb}" alt="${esc(r.dataset)} heatmap" data-inspect="${r.row}"><small>${esc(r.source)} · ${r.origin} · M=${r.M}, T=${r.T}<br>${r.group>=0?'G'+r.group+' · tier '+byId[r.group].tier:'no density group'} · ${regionLabel(r.row)}</small></article>`).join('');
  document.querySelectorAll('[data-select]').forEach(b=>b.onchange=()=>{const r=Number(b.dataset.select);b.checked?selected.add(r):selected.delete(r);render()});
  document.querySelectorAll('[data-inspect]').forEach(b=>b.onclick=()=>inspect(Number(b.dataset.inspect)));
  $('page-status').textContent=rows.length?`${page*pageSize+1}–${Math.min(rows.length,(page+1)*pageSize)} of ${rows.length}`:'No matching datasets';
  $('previous-page').disabled=page===0;$('next-page').disabled=(page+1)*pageSize>=rows.length;
  groupPanel();groupNote();detail();draw();
- try{history.replaceState(null,'','#'+new URLSearchParams({map:$('map-select').value,view:$('view').value,shading:$('shading').value,style:$('style').value}).toString())}catch{}
+ try{history.replaceState(null,'','#'+new URLSearchParams({map:$('map-select').value,view:$('view').value,shading:$('shading').value,style:$('style').value,list:$('tier-filter').value}).toString())}catch{}
 }
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 for(const [key,m] of Object.entries(data.maps))option($('map-select'),key,m.title);
 $('methods').innerHTML=data.methods.map(p=>`<p>${esc(p)}</p>`).join('');
 $('map-select').onchange=()=>{const keep=$('view').value.startsWith('r:')?'all:':$('view').value;viewport=null;viewOptions(keep);render()};
 $('view').onchange=$('search').oninput=$('only-selected').onchange=()=>{page=0;render()};
-$('shading').onchange=$('style').onchange=$('origin').onchange=$('tier-filter').onchange=render;$('all').onclick=()=>select('all:');
+$('shading').onchange=$('style').onchange=$('origin').onchange=$('tier-filter').onchange=$('neighbours').onchange=render;$('all').onclick=()=>select('all:');
 $('reset-view').onclick=()=>{viewport=home();draw()};$('choose').onclick=()=>{visibleRows().forEach(r=>selected.add(r.row));render()};$('clear').onclick=()=>{selected.clear();render()};
 $('previous-page').onclick=()=>{page--;render()};$('next-page').onclick=()=>{page++;render()};
-$('download').onclick=()=>{const m=currentMap(),q=x=>'"'+String(x??'').replaceAll('"','""')+'"';const rec=[['row','dataset','source','origin','M','T','parent','density_group','tier','map','map_region','x','y','user_label'],...[...selected].sort((a,b)=>a-b).map(i=>{const r=data.rows[i];return [i,r.dataset,r.source,r.origin,r.M,r.T,r.parent,r.group,r.group>=0?byId[r.group].tier:'',$('map-select').value,m.regions[i],...m.xy[i],$('label').value]})];download(new Blob([rec.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),'mts-selection.csv')};
+$('download').onclick=()=>{const m=currentMap(),q=x=>'"'+String(x??'').replaceAll('"','""')+'"';const rec=[['row','dataset','source','origin','M','T','parent','density_group','tier','map_region_chosen','map','map_region_this_map','x','y','user_label'],...[...selected].sort((a,b)=>a-b).map(i=>{const r=data.rows[i];return [i,r.dataset,r.source,r.origin,r.M,r.T,r.parent,r.group,r.group>=0?byId[r.group].tier:'',validatedOf(i),$('map-select').value,m.regions[i],...m.xy[i],$('label').value]})];download(new Blob([rec.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}),'mts-selection.csv')};
 $('export-svg').onclick=()=>{const clone=$('map').cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width','1360');clone.setAttribute('height',String(Math.round(1360*viewport[3]/viewport[2])));clone.querySelectorAll('[tabindex]').forEach(x=>x.removeAttribute('tabindex'));download(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),'mts-atlas-map.svg')};
 function svgPoint(e){return new DOMPoint(e.clientX,e.clientY).matrixTransform($('map').getScreenCTM().inverse())}
 $('map').addEventListener('wheel',e=>{e.preventDefault();const p=svgPoint(e),k=e.deltaY>0?1.12:1/1.12;if(viewport[2]*k<35||viewport[2]*k>4000)return;viewport=[p.x+(viewport[0]-p.x)*k,p.y+(viewport[1]-p.y)*k,viewport[2]*k,viewport[3]*k];$('map').setAttribute('viewBox',viewport.join(' '))},{passive:false});
@@ -173,8 +216,9 @@ window.addEventListener('pointermove',e=>{if(!drag)return;const rect=$('map').ge
 window.addEventListener('pointerup',()=>{drag=null});window.addEventListener('pointercancel',()=>{drag=null});
 const initial=new URLSearchParams(location.hash.slice(1));
 $('map-select').value=data.maps[initial.get('map')]?initial.get('map'):data.default_map;
-if(['consensus','pool','all','regions','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
+if(['candidates','consensus','pool','all','regions','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
 if(['both','outline','fill'].includes(initial.get('style')))$('style').value=initial.get('style');
+if([...$('tier-filter').options].some(o=>o.value===initial.get('list')))$('tier-filter').value=initial.get('list');
 viewOptions(initial.get('view')||'all:');
 render();
 </script>

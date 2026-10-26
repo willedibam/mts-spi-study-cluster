@@ -22,7 +22,8 @@ Active workstream. For paper exemplars, the 2026-10-24 neighbourhood analysis (n
   - Kuramoto–Van der Pol shares the coarse class but not the coupling function, and shares toolbox and size grid. Kuramoto sync joins it only at its smooth settings; its aliased settings (lag-1 ≈ 0) sit with noise.
   - Reading: co-location means a shared observable dependence organisation, which tracks coupling form above chance but is not separable from sampling and simulation conventions. Keep the cross-source "mechanism" claim at that level. Closing the gap needs a factorial generator set: coupling function × toolbox/solver × sampling × density.
   - Method lesson: a parent bootstrap with replacement inflates between-parent variance fractions (its intervals sat above the estimates), so use a delete-one-parent jackknife.
-- Open: a check of the FingerMovements–oscillator sync anti-phase reading; whether explorer v4 should browse validated regions.
+- Explorer v4 (2026-10-26) leads with map regions: the default shading and list are the candidates, chosen by `neighbourhood_atlas.classify_regions`, the same rule as the notebook's candidate map (asserted there). Region notes give members and parent recordings per source, the validation statistics and signatures. Each recording's detail lists its 10 nearest other-parent PCA50 neighbours, draws them on the map and counts how many are also map neighbours. The consensus notebook's explorer cell reads the neighbourhoods cache, so run `neighbourhood_atlas` before executing that notebook.
+- Open: a check of the FingerMovements–oscillator sync anti-phase reading.
 
 ## Consensus selection (2026-10-24): density cores
 

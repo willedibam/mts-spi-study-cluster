@@ -162,6 +162,32 @@ def validate_regions(regions, meta, distances, edges, density, *, random_sets, s
     return pd.DataFrame(rows)
 
 
+PRIORITY = ["A multi-source, size-heterogeneous", "B multi-source", "C second source from one parent", "D size-heterogeneous only"]
+
+
+def priority(frame):
+    """Candidate priority. Multi-source means at least two sources with two or more parent recordings each;
+    size-heterogeneous means an M or T ratio of at least 2 (needs a `size_heterogeneous` column)."""
+    multi = frame.sources_2p >= 2
+    return np.select([multi & frame.size_heterogeneous, multi, frame.sources >= 2], PRIORITY[:3], PRIORITY[3])
+
+
+def classify_regions(table, tiers):
+    """Kind and priority of each validated map region; `tiers` maps density group to tier.
+    core: ≥ 80% of members in one tier 1–2 density group. one parent: windows of one recording. neighbourhood: tighter
+    than random sets (p ≤ .01), stability ≥ .6 and ≥ 30% of members' neighbours inside. Otherwise map-only.
+    Candidates are core or neighbourhood regions that are multi-source (priority A or B)."""
+    t = table.copy()
+    t["kind"] = np.select([(t.modal_group_share >= .8) & t.modal_group.map(lambda g: tiers.get(g, 3) <= 2), t.parents == 1,
+                           (t.p_random <= .01) & (t.stability >= .6) & (t.nn_inside >= .3)],
+                          ["core", "one parent", "neighbourhood"], "map-only")
+    t["multi_source"] = t.sources_2p >= 2
+    t["size_heterogeneous"] = (t.M_ratio >= 2) | (t.T_ratio >= 2)
+    t["priority"] = priority(t)
+    t["candidate"] = t.kind.isin(["core", "neighbourhood"]) & t.multi_source
+    return t
+
+
 def setting_robustness(scores, labels, dims, density, settings, dims_list):
     """Best Jaccard match of each density group under alternative HDBSCAN settings and analysis dimensions."""
     clusters = np.unique(labels[labels >= 0])

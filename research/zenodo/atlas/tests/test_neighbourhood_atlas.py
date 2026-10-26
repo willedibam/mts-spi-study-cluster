@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 
-from research.zenodo.atlas.neighbourhood_atlas import bh, enrichment, neighbour_edges, parent_strata
+from research.zenodo.atlas.neighbourhood_atlas import bh, classify_regions, enrichment, neighbour_edges, parent_strata
 
 
 def corpus(seed=0):
@@ -43,3 +43,15 @@ def test_one_stratum_without_bins():
 
 def test_bh_matches_hand_values():
     np.testing.assert_allclose(bh(np.array([.01, .04, .03, .5])), [.04, .16 / 3, .16 / 3, .5])
+
+
+def test_region_kinds_and_candidates():
+    table = pd.DataFrame({
+        "region": [0, 1, 2, 3, 4],
+        "modal_group": [7, -1, 3, -1, 3], "modal_group_share": [.9, 0., .2, 0., .1], "parents": [9, 1, 12, 8, 6],
+        "p_random": [.001, .001, .001, .001, .2], "stability": [.9, .99, .7, .5, .9], "nn_inside": [.8, 0., .6, .6, .6],
+        "sources": [2, 1, 3, 2, 2], "sources_2p": [2, 0, 2, 2, 1], "M_ratio": [1., 1., 3., 1., 1.], "T_ratio": [1., 1., 1., 1., 4.]})
+    out = classify_regions(table, pd.Series({7: 1, 3: 3}))
+    assert out.kind.tolist() == ["core", "one parent", "neighbourhood", "map-only", "map-only"]
+    assert out.priority.str[0].tolist() == ["B", "D", "A", "B", "C"]
+    assert out.candidate.tolist() == [True, False, True, False, False]
