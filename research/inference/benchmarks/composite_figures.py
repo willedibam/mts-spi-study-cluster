@@ -702,7 +702,7 @@ def mark_boundary(ax, spec):
 SPREADS = ('trajectories', 'band', 'both', 'none')
 
 
-def _series(axis, data, column, color, marker, *, ms=1.6, lw=1.3, spread='band', secondary=False, label=None):
+def _series(axis, data, column, color, marker, *, ms=1.6, lw=1.3, alpha=1., spread='band', secondary=False, label=None):
     """Mean across instances (thick), with faint per-instance paths and/or a 10-90% band behind it."""
     if spread not in SPREADS:
         raise ValueError(f'spread must be one of {SPREADS}')
@@ -716,7 +716,7 @@ def _series(axis, data, column, color, marker, *, ms=1.6, lw=1.3, spread='band',
             axis.plot(path.control, path[column], color=color, lw=.45, alpha=alpha, zorder=1, solid_capstyle='round')
     if replicated and spread in ('band', 'both'):
         axis.fill_between(mean.index, lo, hi, color=color, alpha=.15, lw=0, zorder=1)
-    handle, = axis.plot(mean.index, mean, marker+'-', color=color, ms=ms, lw=lw, label=label, zorder=3)
+    handle, = axis.plot(mean.index, mean, marker+'-', color=color, ms=ms, lw=lw, alpha=alpha, label=label, zorder=3)
     if secondary:
         for cohort, ls in data.spec.secondary_style.items():
             mean, _, _ = curve(data.frame, column, cohort)
@@ -754,7 +754,8 @@ def draw_curves(ax, data, *, legend=True, spread='band', fontsize=7, baselines=F
         for column, color, marker, label in [('q', Z_COLOR, 's', '$q$'), ('mean-|r|', BASELINES['mean-|r|'], '', BASELINE_TITLES['mean-|r|']),
                                              ('mean-MPI', BASELINES['mean-MPI'], '', BASELINE_TITLES['mean-MPI'])]:
             handles.append(_series(right, shown, column+' (display)', color, marker, spread=spread if column == 'q' else 'none',
-                                   lw=1.3 if column == 'q' else 1.0, label=f"{label} {data.metrics[column]:.2f}"))
+                                   lw=1.3 if column == 'q' else .8, alpha=1. if column == 'q' else .8,  # baselines: context, not focus
+                                   label=f"{label} {data.metrics[column]:.2f}"))
         right.set_ylim(-.12, 1.12)
         right.set_ylabel('readouts, rescaled', labelpad=2, fontsize=fontsize)
     else:
@@ -1257,7 +1258,7 @@ LOCKING_FEATURES = (
     Feature('coint_johansen_max_eig_stat_order-0_ardiff-10', 'coint_johansen_trace_stat_order-1_ardiff-1',
             'Johansen $\\times$\nJohansen', 'short- vs long-history model sensitivity'),
     Feature('corr_pearson_tau-2', 'corr_pearson_tau-20-sq', 'Pearson lag 2\n$\\times$ lag 20$^2$',
-            'within-community lag-profile redistribution'),
+            'lag profile (frequency entrainment)'),
 )
 HARDWARE_FEATURES = (
     Feature('si_kernel_W-0.5_k-1', 'ids', 'kernel SI\n$\\times$ IDS', 'recruitment-associated profile reorganisation'),
