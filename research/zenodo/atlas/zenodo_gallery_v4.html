@@ -26,7 +26,7 @@ label{display:inline-flex;align-items:center;gap:7px;margin:4px 10px 4px 0;font:
  <label>Show <select id="view"></select></label>
  <label>Find MTS <input id="search" type="search" placeholder="Dataset name"></label>
  <button id="all">Show all</button>
- <label>Shading <select id="shading"><option value="candidates">Candidate map regions</option><option value="consensus">Tier 1 groups on this map</option><option value="pool">Tier 1 filled, tier 2 outlined</option><option value="all">All density groups</option><option value="regions">All map regions on this map</option><option value="none">None</option></select></label>
+ <label>Shading <select id="shading"><option value="candidates">Candidate map regions</option><option value="cores">Candidate regions with density cores</option><option value="consensus">Tier 1 groups on this map</option><option value="pool">Tier 1 filled, tier 2 outlined</option><option value="all">All density groups</option><option value="regions">All map regions on this map</option><option value="none">None</option></select></label>
  <label>Groups as <select id="style"><option value="both">fill + outline</option><option value="outline">outline</option><option value="fill">fill</option></select></label>
  <label><input type="checkbox" id="origin" checked>Real / synthetic shading</label>
 </div>
@@ -74,9 +74,12 @@ function validatedOf(row){return regionMap.regions[row]}
 function groupName(g){return g<0?'no density group':`G${g} · ${byId[g].title}`}
 function regionName(v){return v<0?'no map region':`R${v} · ${byRegion[v].title}`}
 function regionLabel(row){const v=validatedOf(row);return v>=0?`R${v}`:'no map region'}
-// A unit is 'g<id>' (density group) or 'v<id>' (map region); its view value is 'g:<id>' or 'v:<id>'.
-function unitRows(u){const id=Number(u.slice(1));return u[0]==='g'?data.rows.filter(r=>r.group===id):data.rows.filter(r=>validatedOf(r.row)===id)}
-function unitName(u){const id=Number(u.slice(1));return u[0]==='g'?`G${id} · tier ${byId[id].tier} · ${byId[id].title}`:`R${id} · ${byRegion[id].candidate?'candidate':byRegion[id].kind} · ${byRegion[id].title}`}
+// A region's density core is its most common density group (ties: lowest id), as modal_group in neighbourhood_atlas.
+const cores={};function coreOf(id){if(!(id in cores)){const n={};data.rows.forEach(r=>{if(validatedOf(r.row)===id&&r.group>=0)n[r.group]=(n[r.group]||0)+1});const best=Object.entries(n).sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0];cores[id]=best?Number(best[0]):-1}return cores[id]}
+// A unit is 'g<id>' (density group), 'v<id>' (map region) or 'c<id>' (the density core of region id).
+function unitRows(u){const id=Number(u.slice(1));return u[0]==='g'?data.rows.filter(r=>r.group===id):u[0]==='c'?data.rows.filter(r=>validatedOf(r.row)===id&&r.group===coreOf(id)):data.rows.filter(r=>validatedOf(r.row)===id)}
+function unitName(u){const id=Number(u.slice(1));return u[0]==='g'?`G${id} · tier ${byId[id].tier} · ${byId[id].title}`:u[0]==='c'?`Density core of R${id}: its members in G${coreOf(id)}`:`R${id} · ${byRegion[id].candidate?'candidate':byRegion[id].kind} · ${byRegion[id].title}`}
+function unitLabel(u){const id=u.slice(1);return u[0]==='g'?'G'+id:$('shading').value==='cores'&&coreOf(Number(id))>=0?`R${id} · G${coreOf(Number(id))}`:'R'+id}
 function filter(){const [kind,id]=($('view').value||'all:').split(':');return {kind,id:Number(id)}}
 function inView(r){const f=filter();return f.kind==='all'||(f.kind==='g'&&r.group===f.id)||(f.kind==='v'&&validatedOf(r.row)===f.id)||(f.kind==='r'&&regionOf(r.row)===f.id)}
 function visibleRows(){const term=$('search').value.toLowerCase();return data.rows.filter(r=>inView(r)&&r.dataset.toLowerCase().includes(term)&&(!$('only-selected').checked||selected.has(r.row)))}
@@ -112,7 +115,7 @@ function placeLabels(layer,units,muted,xy,key,H){
   const loops=outline(key,u,xy).split('M').filter(Boolean).map(seg=>{const v=(seg.match(/-?[\d.]+/g)||[]).map(Number),q=[];for(let i=0;i+1<v.length;i+=2)q.push([v[i],v[i+1]]);return q});
   const inside=(poly,p)=>{let o=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])o=!o}return o};
   const held=loops.map(l=>members.filter(p=>inside(l,p))),k=held.reduce((m,h,i)=>h.length>held[m].length?i:m,0),pts=loops.length?loops[k]:[...members],own=loops.length&&held[k].length?held[k]:members;
-  const c=[own.reduce((a,p)=>a+p[0],0)/own.length,own.reduce((a,p)=>a+p[1],0)/own.length],text=(u[0]==='g'?'G':'R')+u.slice(1),w=text.length*7+4,h=14;let best=null;
+  const c=[own.reduce((a,p)=>a+p[0],0)/own.length,own.reduce((a,p)=>a+p[1],0)/own.length],text=unitLabel(u),w=text.length*7+4,h=14;let best=null;
   for(let k=0;k<16;k++){const t=2*Math.PI*k/16,u=[Math.cos(t),Math.sin(t)];let anchor=pts[0],far=-Infinity;for(const p of pts){const d=(p[0]-c[0])*u[0]+(p[1]-c[1])*u[1];if(d>far){far=d;anchor=p}}
    const x=anchor[0]+4*u[0],y=anchor[1]+4*u[1],x0=u[0]>.38?x:u[0]<-.38?x-w:x-w/2,y0=u[1]>.38?y:u[1]<-.38?y-h:y-h/2,box=[x0,y0,x0+w,y0+h];
    const covered=crowd.filter(p=>p[0]>box[0]&&p[0]<box[2]&&p[1]>box[1]&&p[1]<box[3]).length,clash=taken.filter(b=>b[0]<box[2]&&box[0]<b[2]&&b[1]<box[3]&&box[1]<b[3]).length,outside=box[0]<60||box[2]>640||box[1]<35||box[3]>35+H;
@@ -128,11 +131,12 @@ function draw(){
  const defs=el('defs'),clip=el('clipPath',{id:'clip'});clip.appendChild(el('rect',{x:60,y:35,width:580,height:H}));defs.appendChild(clip);svg.appendChild(defs);
  const layer=el('g',{'clip-path':'url(#clip)'});svg.appendChild(layer);
  const filled=new Set(),dashed=new Set();
- if(shading==='candidates')data.regions.filter(r=>r.candidate).forEach(r=>filled.add('v'+r.id));
+ const coreLines=new Set();
+ if(shading==='candidates'||shading==='cores')data.regions.filter(r=>r.candidate).forEach(r=>{filled.add('v'+r.id);if(shading==='cores'&&coreOf(r.id)>=0)coreLines.add('c'+r.id)});
  if(shading==='consensus'||shading==='pool')data.groups.forEach(g=>{if(g.tier<=2&&agree.has(g.id))filled.add('g'+g.id);else if(shading==='pool'&&g.tier<=2)dashed.add('g'+g.id)});
  if(shading==='all')data.groups.forEach(g=>filled.add('g'+g.id));
  if(shading==='regions'){const own=onRegionMap();for(const [r,levels] of Object.entries(contours(mapKey+'|regions',m.regions,xy)))for(const level of levels){if(level.mass!==.8)continue;const target=own?`v:${r}`:`r:${r}`,on=f.kind==='all'||view===target;const p=el('path',{class:'hit',d:level.path,fill:'#8a8a8a','fill-rule':'evenodd','fill-opacity':on?.13:.04});p.appendChild(el('title',{},own?unitName('v'+r):`Map region ${r} (this map, descriptive)`));p.onclick=()=>{if(!dragged)select(target)};layer.appendChild(p)}}
- for(const u of [...filled,...dashed]){const d=outline(mapKey,u,xy);if(!d)continue;const target=`${u[0]}:${u.slice(1)}`,on=f.kind==='all'||view===target,solid=filled.has(u),shaded=solid&&style!=='outline',lined=!solid||style!=='fill';
+ for(const u of [...filled,...dashed,...coreLines]){const d=outline(mapKey,u,xy);if(!d)continue;const core=u[0]==='c',target=`${core?'v':u[0]}:${u.slice(1)}`,on=f.kind==='all'||view===target,solid=filled.has(u)||core,shaded=!core&&solid&&(shading==='cores'||style!=='outline'),lined=core||(shading!=='cores'&&(!solid||style!=='fill'));
   const a={class:'hit',d,'fill-rule':'evenodd',fill:shaded?'#8c8c8c':'none','fill-opacity':on?.18:.07,stroke:lined?(solid?'#333':'#4d4d4d'):'none','stroke-width':.8,'stroke-opacity':on?.9:.35,'pointer-events':shaded?'visiblePainted':'stroke'};if(!solid)a['stroke-dasharray']='4 3';
   const p=el('path',a);p.appendChild(el('title',{},unitName(u)));p.onclick=()=>{if(!dragged)select(target)};layer.appendChild(p)}
  const lines=el('g',{'pointer-events':'none'});layer.appendChild(lines);
@@ -141,7 +145,7 @@ function draw(){
   c.onmouseenter=e=>tip(e,r);c.onmousemove=e=>tip(e,r);c.onmouseleave=untip;c.onclick=()=>{if(!dragged)inspect(r.row)};c.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();inspect(r.row)}};layer.appendChild(c)});
  if(focused!==null&&$('neighbours').checked){const a=xy[focused];data.rows[focused].nn.forEach(j=>{const b=xy[j];lines.appendChild(el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#31688e','stroke-width':.9,'stroke-opacity':.75}));layer.appendChild(el('circle',{cx:b[0],cy:b[1],r:data.rows[j].marker_radius+2.2,fill:'none',stroke:'#31688e','stroke-width':1.1,'pointer-events':'none'}))})}
  if(shading!=='all')placeLabels(layer,[...filled,...dashed],dashed,xy,mapKey,H);
- const lf=$('legend-filled');lf.style.display=shading==='none'?'none':'';lf.lastElementChild.textContent={candidates:'candidate map region',consensus:'tier 1 group',pool:'tier 1 group',all:'density group',regions:'map region (80% of members)'}[shading]||'';$('legend-dashed').style.display=shading==='pool'?'':'none';
+ const lf=$('legend-filled');lf.style.display=shading==='none'?'none':'';lf.lastElementChild.textContent={candidates:'candidate map region',cores:'candidate region (shading), its density core (line)',consensus:'tier 1 group',pool:'tier 1 group',all:'density group',regions:'map region (80% of members)'}[shading]||'';$('legend-dashed').style.display=shading==='pool'?'':'none';
  if(!viewport)viewport=home();
  svg.setAttribute('viewBox',viewport.join(' '));
 }
@@ -178,7 +182,8 @@ function groupNote(){
  if(f.kind==='r'){box.innerHTML=`<p><b>Map region ${f.id} on this map</b> · ${members.length} MTS · HDBSCAN on this 2-D map, descriptive; checked statistics exist only for regions of the chosen map<br>${compositionBar(c)}${compositionText(c)}<br>Density groups among members: ${groupsHere}</p>`;return}
  if(f.kind==='v'&&f.id<0){box.innerHTML=`<p><b>In no map region</b> · ${members.length} MTS left unassigned by HDBSCAN on the chosen map.</p>`;return}
  if(f.kind==='v'){const rg=byRegion[f.id];
-  box.innerHTML=`<p><b>R${rg.id} · ${esc(rg.title)}</b> · ${rg.candidate?`candidate, priority ${esc(rg.priority)} · `:''}${rg.kind} · ${rg.origin} · ${rg.size} MTS from ${rg.parents} parents · M ${rg.M}, T ${rg.T}<br>${compositionBar(c)}${compositionText(c)}<br>Stability ${fmt(rg.stability)} over 50 map refits on 80% of parent recordings · re-found (Jaccard ≥ 0.5) on ${pct(rg.recurs_share)} of comparable sweep maps · tighter than random same-size sets (z ${fmt(rg.cohesion_z,1)}, p ${fmtP(rg.p_random)}) · size-matched survival ${fmt(rg.size_survival)} (p ${fmtP(rg.p_matched)}) · ${pct(rg.nn_inside)} of members' 10 feature-space neighbours inside · ${pct(rg.cross_members)} of members linked to another source inside<br>Density groups among members: ${groupsHere}${onRegionMap()?'':'<br>Found on the chosen map; drawn here by membership.'}</p>${rg.note?`<p>${esc(rg.note)}</p>`:''}${signature(rg)}`;
+  const g0=coreOf(rg.id),coreRows=members.filter(r=>r.group===g0&&g0>=0),haloRows=members.filter(r=>!(r.group===g0&&g0>=0)),cc=composition(coreRows),hc=composition(haloRows);
+  box.innerHTML=`<p><b>R${rg.id} · ${esc(rg.title)}</b> · ${rg.candidate?`candidate, priority ${esc(rg.priority)} · `:''}${rg.kind} · ${rg.origin} · ${rg.size} MTS from ${rg.parents} parents · M ${rg.M}, T ${rg.T}<br>${compositionBar(c)}${compositionText(c)}<br>${g0>=0?`<b>Core</b> (also in density group G${g0}, ${coreRows.length} MTS): ${compositionText(cc)}<br><b>Halo</b> (${haloRows.length} MTS): ${haloRows.length?compositionText(hc):'none'}<br>`:'No density core: no member is in a density group.<br>'}Stability ${fmt(rg.stability)} over 50 map refits on 80% of parent recordings · re-found (Jaccard ≥ 0.5) on ${pct(rg.recurs_share)} of comparable sweep maps · tighter than random same-size sets (z ${fmt(rg.cohesion_z,1)}, p ${fmtP(rg.p_random)}) · size-matched survival ${fmt(rg.size_survival)} (p ${fmtP(rg.p_matched)}) · ${pct(rg.nn_inside)} of members' 10 feature-space neighbours inside · ${pct(rg.cross_members)} of members linked to another source inside<br>Density groups among members: ${groupsHere}${onRegionMap()?'':'<br>Found on the chosen map; drawn here by membership.'}</p>${rg.note?`<p>${esc(rg.note)}</p>`:''}${signature(rg)}`;
   medoid(rg.medoid);return}
  if(f.id<0){box.innerHTML=`<p><b>In no density group</b> · ${members.length} MTS. The lower-density continuum; drawn faint on the map.</p>`;return}
  const g=byId[f.id];
@@ -216,7 +221,7 @@ window.addEventListener('pointermove',e=>{if(!drag)return;const rect=$('map').ge
 window.addEventListener('pointerup',()=>{drag=null});window.addEventListener('pointercancel',()=>{drag=null});
 const initial=new URLSearchParams(location.hash.slice(1));
 $('map-select').value=data.maps[initial.get('map')]?initial.get('map'):data.default_map;
-if(['candidates','consensus','pool','all','regions','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
+if(['candidates','cores','consensus','pool','all','regions','none'].includes(initial.get('shading')))$('shading').value=initial.get('shading');
 if(['both','outline','fill'].includes(initial.get('style')))$('style').value=initial.get('style');
 if([...$('tier-filter').options].some(o=>o.value===initial.get('list')))$('tier-filter').value=initial.get('list');
 viewOptions(initial.get('view')||'all:');

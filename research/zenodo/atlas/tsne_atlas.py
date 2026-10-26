@@ -555,8 +555,9 @@ def place_labels(ax, xy, labels, texts, *, avoid=None, muted=(), fontsize=8):
         taken.append(best[2])
 
 
-def atlas_legend(figure, meta, *, size=1.1, filled="tier 1 group", dashed="tier 2: splits on the map", ncol=4):
-    """Legend below the map for `plot_atlas` points (origin, M) and `draw_groups` styles (None omits one)."""
+def atlas_legend(figure, meta, *, size=1.1, filled="tier 1 group", dashed="tier 2: splits on the map", ncol=4, extra=()):
+    """Legend below the map for `plot_atlas` points (origin, M) and `draw_groups` styles (None omits one); `extra`
+    appends further handles."""
     from matplotlib.lines import Line2D
     from matplotlib.patches import Patch
     lo, hi = int(meta["M"].min()), int(meta["M"].max())
@@ -571,6 +572,7 @@ def atlas_legend(figure, meta, *, size=1.1, filled="tier 1 group", dashed="tier 
         handles.append(Patch(fc=(.55, .55, .55, .16), ec="0.2", lw=.6, label=filled))
     if dashed:
         handles.append(Patch(fc="none", ec="0.3", lw=.6, ls=(0, (3, 2)), label=dashed))
+    handles += list(extra)
     figure.legend(handles=handles, loc="outside lower center", ncol=ncol, fontsize=7, handlelength=1.3, columnspacing=1.2)
 
 def heatmap(ax, values, title=None):
