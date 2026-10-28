@@ -7,7 +7,7 @@ recordings per family) through ``timing_triplet.measure``: pyspi r, ``xcorr_max_
 coherence) is the library's nearest coordinate and is reported beside it. Every z is over the upper
 triangle, equal to the ordered-entry z for these symmetric statistics.
 
-    python -m research.cases.timing_triplet.timing_composite_261025 [--live-text] [--recompute]
+    python -m research.cases.r_xcorr_p.timing_composite_261025 [--live-text] [--recompute]
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ from matplotlib.lines import Line2D
 from mtsspi.generators import band_spectrum, generate_band_delayed_mts
 from research.cases.composite_style import (HAIR, INK, MUTED, ROSE, SAGE, SKY, axes_in, bare, panel_title, rugs,
                                             save, seq, shade, style, tint, z_label)
-from research.cases.timing_triplet import timing_triplet as tt
+from research.cases.r_xcorr_p import timing_triplet as tt
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "results/cases/timing-261025"

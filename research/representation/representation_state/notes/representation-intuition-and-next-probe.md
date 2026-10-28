@@ -10,7 +10,7 @@ Venue descriptions are broad guides, not exact acceptance templates. Keep paper 
 
 ## Existing intuition: verified saved outputs
 
-Inspected `research/cases/r_rho_mi/notebooks/r_rho_mi_260622.ipynb` and `research/cases/dtw_euclidean/notebooks/pdist-euclid_dtw.ipynb`, relevant generator source and saved metadata. Did not execute or modify either notebook. Recomputed three-SPI Pearson meta-features from all ordered off-diagonals, preserving both directions.
+Inspected `research/cases/r_rho_mi/notebooks/r_rho_mi_260622.ipynb` and `research/cases/ed_xed_dtw/notebooks/pdist-euclid_dtw.ipynb`, relevant generator source and saved metadata. Did not execute or modify either notebook. Recomputed three-SPI Pearson meta-features from all ordered off-diagonals, preserving both directions.
 
 Reproduce from the repository root:
 

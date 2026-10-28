@@ -12,7 +12,7 @@ from mtsspi.generated_corpus import GeneratedCorpus
 @pytest.mark.parametrize("config", [
     "research/proof/p90/configs/proof-p90-260924.yaml",
     "research/cases/r_rho_mi/configs/260924_beta.yaml",
-    "research/cases/dtw_euclidean/configs/260924_lagged-warping.yaml",
+    "research/cases/ed_xed_dtw/configs/260924_lagged-warping.yaml",
 ])
 def test_saved_input_equals_fresh_and_resumed_input(tmp_path, config):
     corpus = GeneratedCorpus.from_file(

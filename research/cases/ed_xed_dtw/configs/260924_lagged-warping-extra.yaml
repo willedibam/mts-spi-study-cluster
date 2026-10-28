@@ -1,7 +1,7 @@
-# Same generator/settings as April 13; fresh extraction with current distance implementations.
+# Add instances 30-49 to reach the user-selected 50 per condition, without changing queued mappings.
 base_output_dir: /scratch/ql44/we2614/mts-spi-study/cases/dtw-euclidean-260924/data
 timestamp: false
-pyspi_config: research/cases/dtw_euclidean/spis/dtw_euclidean_norm.yaml
+pyspi_config: research/cases/ed_xed_dtw/spis/dtw_euclidean_norm.yaml
 normalise: false
 rng_seed: 42
 save_heatmap: false
@@ -11,7 +11,27 @@ defaults:
   - 20
   T_values:
   - 1000
-  instances: 30
+  instances:
+  - 30
+  - 31
+  - 32
+  - 33
+  - 34
+  - 35
+  - 36
+  - 37
+  - 38
+  - 39
+  - 40
+  - 41
+  - 42
+  - 43
+  - 44
+  - 45
+  - 46
+  - 47
+  - 48
+  - 49
 mts_classes:
 - name: pstep-0.0_maxlag-0
   labels:

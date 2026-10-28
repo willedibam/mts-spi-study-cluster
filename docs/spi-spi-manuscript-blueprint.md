@@ -17,7 +17,7 @@ Out of scope:
 The paper has four sections. Current notebook prose is placeholder: rewrite it for meaning and interpretation, with fewer tables, before the figures are polished externally.
 
 **1. Case studies.** Agreement between statistics with nested assumptions reads a named character axis by construction.
-- *Sources:* [`r_rho_mi_261016`](../research/cases/r_rho_mi/notebooks/r_rho_mi_261016.ipynb) and [`pdist-euclid_dtw_261016`](../research/cases/dtw_euclidean/notebooks/pdist-euclid_dtw_261016.ipynb).
+- *Sources:* [`r_rho_mi_261016`](../research/cases/r_rho_mi/notebooks/r_rho_mi_261016.ipynb) and [`pdist-euclid_dtw_261016`](../research/cases/ed_xed_dtw/notebooks/pdist-euclid_dtw_261016.ipynb).
 - *Candidate third:* the timing triplet (r, maximum cross-correlation, phase-aligned P) on branch `claude/festive-poitras-ecb972`. Admit it only if it isolates an axis the first two miss.
 - *Figure plan:* one panel set per triplet.
 

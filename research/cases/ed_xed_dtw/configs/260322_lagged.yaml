@@ -1,6 +1,6 @@
 base_output_dir: data/dtw_euclidean/260322_random-uniform-lag-noise_rmse_T1000/
 timestamp: false
-pyspi_config: research/cases/dtw_euclidean/spis/dtw_euclidean_norm.yaml
+pyspi_config: research/cases/ed_xed_dtw/spis/dtw_euclidean_norm.yaml
 normalise: false
 rng_seed: 42
 save_heatmap: false
