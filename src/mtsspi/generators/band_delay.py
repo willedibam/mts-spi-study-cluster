@@ -16,6 +16,10 @@ phase does. The three families share every spectral magnitude and differ in phas
                   fixed permutation of the slow    a different slope per band
                   band's
 
+``dispersion`` (kappa in [0, 1]) moves the dispersive family's fast-band delays
+from the slow band's (kappa = 0, identical to ``delayed``) to the permutation
+(kappa = 1, the default): ``round_half_up((1 - kappa) tau + kappa tau[perm])``.
+
 Synthesis is in the frequency domain on a length-T grid, so delays are exact
 circular shifts and the sample has the population spectrum exactly.
 """
@@ -60,6 +64,7 @@ def band_delay_structure(
     loading_high: float = 0.9,
     shared_loadings: bool = False,
     structure_seed: int = 0,
+    dispersion: float = 1.0,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Delays ``(B, M)`` and loadings ``(B, M)`` of one family.
 
@@ -78,6 +83,8 @@ def band_delay_structure(
         raise ValueError(
             f"need 0 <= loading_low <= loading_high <= 1 (got {loading_low}, {loading_high})."
         )
+    if not 0.0 <= dispersion <= 1.0:
+        raise ValueError(f"dispersion must lie in [0, 1] (got {dispersion}).")
     rng = np.random.default_rng(structure_seed)
     draws = rng.uniform(loading_low, loading_high, (n_bands, M))
     loadings = np.repeat(draws[:1], n_bands, axis=0) if shared_loadings else draws
@@ -88,7 +95,8 @@ def band_delay_structure(
     elif family == "delayed":
         delays = np.repeat(positions[None], n_bands, axis=0)
     else:
-        delays = np.stack([positions[p] for p in perms])
+        k = float(dispersion)
+        delays = np.stack([np.floor((1.0 - k) * positions + k * positions[p] + 0.5).astype(int) for p in perms])
     return delays, loadings
 
 
@@ -121,6 +129,7 @@ def generate_band_delayed_mts(
     loading_high: float = 0.9,
     shared_loadings: bool = False,
     structure_seed: int = 0,
+    dispersion: float = 1.0,
     zscore: bool = True,
     rng=None,
     return_internals: bool = False,
@@ -144,6 +153,7 @@ def generate_band_delayed_mts(
     shared_loadings : one loading vector for all bands (coherence magnitude then
                       has the same pair pattern at every frequency)
     structure_seed  : seed of loadings and dispersive permutation
+    dispersion      : kappa in [0, 1] for the dispersive family (module docstring)
     zscore          : z-score output
     rng             : RNG instance or int seed for the processes only
     return_internals : if True, return (data, BandDelayInternals)
@@ -160,7 +170,7 @@ def generate_band_delayed_mts(
     if any(prev[1] > nxt[0] for prev, nxt in zip(edges, edges[1:])):
         raise ValueError(f"bands overlap: {bands}.")
     delays, loadings = band_delay_structure(
-        M, family, lag_range, len(bands), loading_low, loading_high, shared_loadings, structure_seed
+        M, family, lag_range, len(bands), loading_low, loading_high, shared_loadings, structure_seed, dispersion
     )
     internals = BandDelayInternals(delays, loadings, bands, np.asarray(band_var, float), float(noise_var))
 
