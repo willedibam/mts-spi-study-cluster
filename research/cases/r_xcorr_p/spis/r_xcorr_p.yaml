@@ -1,0 +1,25 @@
+# Timing-over-frequency case (2026-10-28): zero-lag Pearson, max cross-correlation, the phase-aligned
+# correlation P (pyspi fork v3, PhaseAlignedCorrelation; Welch segment 256 as in timing_triplet.py),
+# and cohmag as the catalogue proxy for P.
+.statistics.basic:
+  Covariance:
+    labels: [undirected, linear, signed, multivariate, contemporaneous]
+    dependencies:
+    configs:
+    - estimator: EmpiricalCovariance
+  CrossCorrelation:
+    labels: [undirected, linear, signed, bivariate, time-dependent]
+    dependencies:
+    configs:
+    - statistic: max
+.statistics.spectral:
+  PhaseAlignedCorrelation:
+    labels: [undirected, linear, unsigned, bivariate, frequency-dependent]
+    dependencies:
+    configs:
+    - nperseg: 256
+  CoherenceMagnitude:
+    labels: [undirected, linear, unsigned, bivariate, frequency-dependent]
+    dependencies:
+    configs:
+    - fs: 1
