@@ -14,6 +14,8 @@ Multivariate recordings support complementary questions about individual channel
 
 **Aim.** Develop and validate a broadly applicable recording-level representation of cross-statistic dependence organisation, then establish when its changes admit a useful dynamical interpretation. A first/general-purpose priority claim and unique mechanistic identification are not established.
 
+**Positioning clarification, 2026-10-28:** The user stresses general-purpose, unsupervised discovery without choosing the changed property beforehand. This can be a substantive contribution even when specialist character estimators already exist; compare the same reusable workflow across settings, with specialists as informed references rather than requiring superiority over every specialist. Distinguish label-free feature/embedding construction from supervised readouts and independently validated interpretation. Assistant assessment: Nature Computational Science is a credible ambitious target, not an established acceptance-level verdict; the strongest case needs useful, reproducible scientific insight beyond the earlier SPI-comparison construction. Its [2026 editorial](https://www.nature.com/articles/s43588-026-00989-9) emphasizes validation, relevant comparisons, practical usefulness and accurately scoped novelty. This is publication advice, not a venue decision or authorization for new experiments.
+
 ## What SPI–SPI is claimed to do
 
 It asks how notions of dependence themselves covary across the channel pairs of one recording: z_ab = corr(A^(a)_ij, A^(b)_ij). Statistical identities supply common coordinates across recordings; physical interpretation requires calibration. Candidate illustrations are:
