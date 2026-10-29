@@ -22,7 +22,7 @@ The paper has four sections. Current notebook prose is placeholder: rewrite it f
 - *Figure plan:* one panel set per triplet.
 
 **2. Proof of concept.** z embeds systems of different M into one space whose class structure and selected feature axes follow the generative process.
-- *Source:* [`proof_p90_261021`](../research/proof/p90/notebooks/proof_p90_261021.ipynb), ordered entries. The 261015 notebook keeps the symmetrised record.
+- *Source:* [`proof_p90_261021`](../research/proof/p90/notebooks/proof_p90_261021.ipynb), ordered entries. The symmetrised record was `proof_p90_261015` (deleted 2026-10-29; recover from `10e10ec`).
 - *Figure (2026-10-29):* [`proof_figure_261029`](../research/proof/p90/notebooks/proof_figure_261029.ipynb). A nine-class t-SNE (area ∝ M, shape = T) above four family-contrast rainclouds, with carpets of example recordings arranged by hand in [draw.io](artwork/proof_figure/proof_figure_261029.drawio.svg); see the [proof workstream](context/cross-mt-transfer.md#proof-figure-2026-10-29).
 - *Appendix candidate:* [`proof_strength_nuisance_261006`](../research/proof/baselines/notebooks/proof_strength_nuisance_261006.ipynb).
 - *Definition to reproduce (user decision, 2026-10-21):* z uses all M(M−1) ordered off-diagonal entries, which is `unified_ordered_v3`, the library default. The proof and the 6–7 October strength-nuisance baselines were recomputed on 2026-10-21 (`proof_p90_261021`, `proof_strength_nuisance_261021`). The 15–16 October factorial, size-grid and noise baselines still need a Gadi extraction. The order-parameter and corpus studies already use the ordered contract. The cases' upper-triangle extraction is equivalent for their symmetric statistics.

@@ -1,13 +1,11 @@
-"""Audit, reconstruct and render the current-p90 proof rerun of 2026-10-14."""
+"""Audit and reconstruct the feature bank of the current-p90 proof rerun of 2026-10-14.
+
+It also executed the 2026-10-14 notebook, since deleted; the bank is analysed in
+`proof_p90_261021` and `proof_figure_261029`."""
 from collections import Counter
 import json
-import os
-from pathlib import Path
 import subprocess
 import sys
-
-import nbformat
-from nbclient import NotebookClient
 
 from mtsspi.run_corpus import load_corpus, audit_outputs
 from mtsspi.utils import project_root
@@ -36,19 +34,7 @@ def main():
     subprocess.run([sys.executable, "-m", "mtsspi.process_features", "--data-path", str(corpus.base_output_dir),
                     "--output", str(bank), "--feature-contract", "direction_preserving_v2",
                     "--metric", "pearson", "--workers", "16"], check=True, cwd=root)
-    os.environ.update(PROOF_REFRESH_BANK=str(bank), PROOF_REFRESH_OUTPUT=str(output))
-    kernel_root = output / "jupyter" / "kernels" / "proof-refresh"
-    kernel_root.mkdir(parents=True, exist_ok=True)
-    (kernel_root / "kernel.json").write_text(json.dumps({
-        "argv": [sys.executable, "-m", "ipykernel_launcher", "-f", "{connection_file}"],
-        "display_name": "Proof refresh", "language": "python",
-    }))
-    os.environ["JUPYTER_PATH"] = str(output / "jupyter") + os.pathsep + os.environ.get("JUPYTER_PATH", "")
-    notebook = nbformat.read(root / "research/proof/p90/notebooks/proof_p90_261014.ipynb", as_version=4)
-    NotebookClient(notebook, timeout=1200, kernel_name="proof-refresh",
-                   resources={"metadata": {"path": str(root)}}).execute()
-    nbformat.write(notebook, output / "proof_p90_261014.ipynb")
-    print(f"[COMPLETE] {output / 'proof_p90_261014.ipynb'}")
+    print(f"[COMPLETE] {bank}")
 
 
 if __name__ == "__main__":
