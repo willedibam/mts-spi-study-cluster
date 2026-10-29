@@ -54,3 +54,22 @@ def test_drifting_delay_structure_and_registry():
     assert np.corrcoef(sync.T).min() > 0.99
     assert generate_series("drifting_delay_mts", M=4, T=300, seed=0).shape == (300, 4)
     assert generate_series("form_ladder_mts", M=6, T=300, seed=0).shape == (300, 6)
+
+
+def test_delay_blocks_layout_and_shared_draws():
+    from mtsspi.generators import generate_delay_blocks_mts
+    x, it = generate_delay_blocks_mts(15, 1000, noise_order=(1, 4, 2, 0, 3), rng=0, return_internals=True)
+    assert x.shape == (1000, 15) and it.types == ["aligned"] * 5 + ["lagged"] * 5 + ["warped"] * 5
+    assert np.all(it.delay[:, :5] == 0) and np.array_equal(it.lags[5:10], [1, 2, 3, 4, 5])
+    assert np.allclose(it.warps[10:], [1.2, 2.4, 3.6, 4.8, 6.0]) and np.allclose(it.delay[:, 10:].mean(0), 0, atol=1e-9)
+    assert np.allclose(it.noise_stds[:5], it.noise_stds[10:]) and np.argmin(it.noise_stds[:5]) == 3
+    flat = generate_delay_blocks_mts(15, 1000, blocks=("aligned",) * 3, noise_order=(1, 4, 2, 0, 3), rng=0)
+    assert np.allclose(x[:, :5], flat[:, :5])                    # unchanged blocks share every draw
+    for c, lag in ((5, 1), (9, 5)):                              # lagged channels trail by their lag
+        corr = [np.corrcoef(flat[:1000 - h, c - 5], x[h:, c])[0, 1] for h in range(9)]
+        assert np.argmax(corr) == lag
+    assert generate_series("delay_blocks_mts", M=6, T=300, lags=(1, 2), seed=0).shape == (300, 6)
+    with pytest.raises(ValueError):
+        generate_delay_blocks_mts(15, 100, blocks=("aligned", "shifted", "warped"))
+    with pytest.raises(ValueError):
+        generate_delay_blocks_mts(12, 100)                       # 5 lags for blocks of 4

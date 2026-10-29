@@ -8,8 +8,10 @@ from .band_delay import (
     generate_band_delayed_mts,
 )
 from .case_ladders import (
+    DelayBlocksInternals,
     DriftingDelayInternals,
     FormLadderInternals,
+    generate_delay_blocks_mts,
     generate_drifting_delay_mts,
     generate_form_ladder_mts,
 )
@@ -100,6 +102,8 @@ __all__ = [
     "FormLadderInternals",
     "generate_drifting_delay_mts",
     "DriftingDelayInternals",
+    "generate_delay_blocks_mts",
+    "DelayBlocksInternals",
     "band_delay_cross_spectrum",
     "band_delay_structure",
     "band_spectrum",

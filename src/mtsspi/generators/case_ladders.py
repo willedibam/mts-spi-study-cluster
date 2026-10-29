@@ -10,6 +10,11 @@ unchanged and moves only Pearson r.
 its own delay plus a slow sinusoidal drift of that delay, ``x_i(t) = m(t - tau_i
 - D c_i sin(2 pi t / P + theta_i))``. A constant delay (D = 0) is aligned by one
 global shift; a drifting one only by a time-varying alignment.
+
+``generate_delay_blocks_mts``: the same mother read by blocks of channels, each block
+aligned, lagged (graded constant delays) or warped (graded time-varying delays about
+zero). Lag and warp are switched on per block, so each misalignment can be studied
+alone or together.
 """
 from __future__ import annotations
 
@@ -20,6 +25,7 @@ import numpy as np
 from ._common import _maybe_zscore, _resolve_rng
 
 FORMS = ("linear", "monotone", "fold")
+DELAYS = ("aligned", "lagged", "warped")
 
 
 @dataclass
@@ -36,6 +42,28 @@ class DriftingDelayInternals:
     drift_amp: np.ndarray    # (M,) drift amplitude D c_i, in samples
     drift_phase: np.ndarray  # (M,) theta_i
     noise_stds: np.ndarray   # (M,) observation noise
+
+
+@dataclass
+class DelayBlocksInternals:
+    mother: np.ndarray       # fine-grid mother (OU process, `fine` points per sample)
+    types: list              # per channel: its block's delay kind
+    delay: np.ndarray        # (T, M) delay of channel i at time t, in samples
+    lags: np.ndarray         # (M,) constant delay (lagged blocks), in samples
+    warps: np.ndarray        # (M,) warp amplitude (warped blocks), in samples
+    noise_stds: np.ndarray   # (M,) observation noise
+
+
+def _ou_mother(T: int, pad: int, a1: float, fine: int, rng) -> np.ndarray:
+    """Stationary OU process on a grid ``fine`` times finer than the samples, lag-one autocorrelation a1."""
+    n = (T + 2 * pad) * fine
+    a = a1 ** (1.0 / fine)
+    m = np.empty(n)
+    m[0] = rng.standard_normal()
+    shocks = rng.standard_normal(n) * np.sqrt(1.0 - a * a)
+    for k in range(1, n):
+        m[k] = a * m[k - 1] + shocks[k]
+    return m
 
 
 def _ar1(T: int, a: float, rng, burn: int = 200) -> np.ndarray:
@@ -151,4 +179,74 @@ def generate_drifting_delay_mts(
     data = _maybe_zscore(x, zscore=zscore)
     if return_internals:
         return data, DriftingDelayInternals(m, tau, drift * c, theta, noise)
+    return data
+
+
+def generate_delay_blocks_mts(
+    M: int = 15,
+    T: int = 1000,
+    blocks: tuple = ("aligned", "lagged", "warped"),
+    lags: tuple = (1, 2, 3, 4, 5),
+    warp: float = 6.0,
+    warp_period: float = 250.0,
+    noise_low: float = 0.1,
+    noise_high: float = 0.4,
+    noise_order: tuple | None = None,
+    ar1_a: float = 0.9,
+    fine: int = 8,
+    zscore: bool = True,
+    rng=None,
+    return_internals: bool = False,
+) -> np.ndarray | tuple[np.ndarray, DelayBlocksInternals]:
+    """
+    M channels in ``len(blocks)`` equal blocks of h read one smooth mother at ``t - delay_i(t)``.
+
+    blocks     : per block, "aligned" (delay 0), "lagged" (channel k of the block delayed by ``lags[k]``)
+                 or "warped" (``A_k sin(2 pi t / warp_period)``, zero mean, one phase, amplitudes
+                 A_k = warp (k + 1) / h), so pairs differ in lag or in warp by graded amounts
+    lags       : h constant delays in samples; whole samples are absorbed exactly by integer-shift
+                 statistics such as xED, fractional ones are not
+    noise_low, noise_high : observation noise, h log-spaced levels repeated in every block, assigned within
+                 each block in ``noise_order`` (default ascending) so noise need not follow lag or warp
+    ar1_a, fine : the mother is an OU process with lag-one autocorrelation ``ar1_a``, on a grid ``fine``
+                 times finer and read by linear interpolation, so fractional delays do not smooth it
+
+    Every random draw depends only on (M, T, lags, warp, ar1_a, fine) and the rng, never on ``blocks``,
+    so a channel whose block kind is unchanged is identical across block layouts.
+
+    Returns shape (T, M), or ((T, M), DelayBlocksInternals).
+    """
+    blocks = tuple(blocks)
+    if any(b not in DELAYS for b in blocks):
+        raise ValueError(f"blocks must be drawn from {DELAYS} (got {blocks!r}).")
+    if M % len(blocks) or M // len(blocks) < 2:
+        raise ValueError(f"M ({M}) must split into {len(blocks)} equal blocks of at least 2 channels.")
+    h = M // len(blocks)
+    lags = np.asarray(lags, float)
+    order = np.arange(h) if noise_order is None else np.asarray(noise_order)
+    if lags.shape != (h,) or np.any(lags < 0) or warp < 0:
+        raise ValueError(f"need {h} non-negative lags and warp >= 0 (got {lags.tolist()}, {warp}).")
+    if sorted(order.tolist()) != list(range(h)):
+        raise ValueError(f"noise_order must be a permutation of range({h}) (got {order.tolist()}).")
+    if not 0 < ar1_a < 1:
+        raise ValueError(f"ar1_a must lie in (0, 1) (got {ar1_a}).")
+    rng = _resolve_rng(None, rng)
+    pad = int(np.ceil(lags.max() + warp)) + 2
+    m = _ou_mother(T, pad, ar1_a, fine, rng)
+    eps = rng.standard_normal((T, M))
+    t = np.arange(T, dtype=float)
+    lag_i, warp_i = np.zeros(M), np.zeros(M)
+    for k, kind in enumerate(blocks):
+        block = slice(k * h, (k + 1) * h)
+        if kind == "lagged":
+            lag_i[block] = lags
+        elif kind == "warped":
+            warp_i[block] = warp * np.arange(1, h + 1) / h
+    delay = lag_i[None] + warp_i[None] * np.sin(2.0 * np.pi * t[:, None] / warp_period)
+    noise = np.tile(np.geomspace(noise_low, noise_high, h)[order], len(blocks))
+    grid = np.arange(m.size) / fine
+    x = np.stack([np.interp(t + pad - delay[:, i], grid, m) for i in range(M)], axis=1) + noise * eps
+    data = _maybe_zscore(x, zscore=zscore)
+    if return_internals:
+        return data, DelayBlocksInternals(m, [b for b in blocks for _ in range(h)], delay, lag_i, warp_i, noise)
     return data
