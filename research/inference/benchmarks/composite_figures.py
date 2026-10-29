@@ -576,9 +576,12 @@ def _bare(ax, spines=('bottom',)):
 def glyph_wrapped(ax, g, color=GLYPH_COLOR):
     """Wrapped relative phase: a sawtooth while phases slip, a flat band once locked."""
     stride = max(1, g['phase'].shape[1]//2500)
+    t = np.asarray(g['t'][::stride], float)
     for row in g['phase']:
-        ax.scatter(g['t'][::stride], wrap_cycles(row)[::stride], s=.3, lw=0, color=color,
-                   alpha=.55 if len(g['phase']) > 1 else .8, rasterized=True)
+        y = wrap_cycles(row)[::stride].astype(float)
+        cut = np.flatnonzero(np.abs(np.diff(y)) > .5)+1      # break the line at each wrap (a vector polyline, not dots)
+        ax.plot(np.insert(t, cut, np.nan), np.insert(y, cut, np.nan), lw=.55, color=color,
+                alpha=.75 if len(g['phase']) > 1 else .95, solid_capstyle='butt')
     ax.set(xlim=g['window'], ylim=(-.56, .56))
     ax.axhline(0, color='.82', lw=.4, zorder=0)
     _bare(ax, ('bottom', 'left'))
@@ -640,7 +643,7 @@ def glyph_lattice(ax, g, color=None):
     """Whole 256 x 256 lattice (state in [0, 1]); white circles mark the 32 observed sites."""
     field = g['lattice']
     side = field.shape[0]
-    ax.imshow(field, origin='lower', cmap='viridis', vmin=0, vmax=1, interpolation='nearest', rasterized=True,
+    ax.imshow(field, origin='lower', cmap='viridis', vmin=0, vmax=1, interpolation='none',  # one pixel per site, pixelated in SVG
               extent=(-.5, side-.5, -.5, side-.5))
     sensors = np.asarray(g['sensors'])
     ax.scatter(sensors % side, sensors//side, s=1.1, facecolors='none', edgecolors='white', lw=.3)
@@ -697,7 +700,7 @@ def draw_heatmaps(axes, data):
     for ax, x in zip(axes, scaled, strict=True):
         m = x.shape[0]
         ax.imshow(x[:, start:start+count], origin='lower', aspect='auto', cmap=cmap, vmin=-limit, vmax=limit,
-                  extent=(start, start+count, .5, m+.5), interpolation='nearest', rasterized=True)
+                  extent=(start, start+count, .5, m+.5), interpolation='none')  # raw cells: sharp at any zoom in SVG/PDF
         if spec.communities:
             for k in range(1, spec.communities):
                 ax.axhline(k*m/spec.communities+.5, color='white', lw=.4)
@@ -931,7 +934,7 @@ def draw_edge_plane(ax, data, k, i, *, limits=None, axis_labels=True, z_corner=N
     a, b, z = snapshot.edges[k]
     order = np.argsort(snapshot.groups, kind='stable')[::-1]   # first-listed group drawn on top
     colors = np.array([c for _, c in spec.edge_groups])
-    ax.scatter(a[order], b[order], s=1.8, lw=0, c=colors[snapshot.groups[order]], alpha=.6, rasterized=True)
+    ax.scatter(a[order], b[order], s=1.8, lw=0, c=colors[snapshot.groups[order]], alpha=.6)
     if limits is not None:
         ax.set(xlim=limits[0], ylim=limits[1])
     else:
