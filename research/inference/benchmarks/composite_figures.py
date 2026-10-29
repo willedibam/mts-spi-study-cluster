@@ -34,6 +34,11 @@ from scipy.stats import spearmanr
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT/'results/order-parameter-inference/composites-261021'
+FIGURE_OUT = ROOT/'results/order-parameter-inference/figure-261029'  # the section-4 figure in every rendition
+FONTS = {'cm': 'Computer Modern text and math',
+         'helvetica': 'Helvetica text, Computer Modern math',
+         'helvetica-sansmath': 'Helvetica text, sans-serif math (newtxsf)'}
+_font = 'cm'  # rendition used by every later style() call; set with style(font=...)
 Q_COLOR, Z_COLOR = '#222222', '#26828e'
 BASELINES = {'mean-|r|': '#7570b3', 'mean-MPI': '#d95f02'}
 BASELINE_TITLES = {'mean-|r|': r'mean-$|r|$', 'mean-MPI': 'mean-MPI'}
@@ -49,21 +54,33 @@ def check(condition, message):
         raise ValueError(message)
 
 
-def style(tex=None):
-    """Computer Modern typography: LaTeX (`text.usetex`) when latex and dvipng exist, else mathtext.
+def style(tex=None, font=None):
+    """LaTeX typography (`text.usetex`) when latex and dvipng exist, else mathtext.
 
-    Pass tex=False to force the native renderer (no external processes). All figure strings are written
-    to be valid in both modes. With usetex, SVG/PDF text is embedded as glyph outlines.
+    `font` picks a rendition from FONTS and stays in force for later calls (every builder calls style()).
+    Helvetica text comes from LaTeX's `helvet` (URW Nimbus Sans, Helvetica metrics); 'helvetica-sansmath'
+    adds `newtxsf` for sans-serif math letters and Greek. Pass tex=False to force the native renderer (no
+    external processes); all figure strings are valid in both modes. With usetex, SVG/PDF text is embedded
+    as glyph outlines.
     """
     import logging
     import shutil
     from research.inference.benchmarks.three_systems import style as base
+    global _font
+    check(font is None or font in FONTS, f'unknown font {font!r}; choose from {list(FONTS)}')
+    _font = font or _font
     base()
     logging.getLogger('fontTools').setLevel(logging.ERROR)  # Type 42 embedding warns about font timestamps
     tex = bool(shutil.which('latex') and shutil.which('dvipng')) if tex is None else tex
-    plt.rcParams.update({'text.usetex': tex, 'font.family': 'serif',
+    sans = _font != 'cm'
+    preamble = r'\usepackage{amsmath}'+(r'\usepackage{helvet}\renewcommand{\familydefault}{\sfdefault}' if sans else '')
+    preamble += {'helvetica': r'\DeclareMathAlphabet{\mathhv}{OT1}{phv}{m}{n}\renewcommand{\mathdefault}[1]{\mathhv{#1}}',
+                 'helvetica-sansmath': r'\usepackage{newtxsf}'}.get(_font, '')  # Helvetica tick numbers in both
+    plt.rcParams.update({'text.usetex': tex, 'font.family': 'sans-serif' if sans else 'serif',
                          'font.serif': ['Computer Modern Roman'] if tex else ['DejaVu Serif'],
-                         'text.latex.preamble': r'\usepackage{amsmath}',
+                         'font.sans-serif': ['Helvetica', 'Arial', 'DejaVu Sans'],
+                         'mathtext.fontset': 'dejavusans' if _font == 'helvetica-sansmath' else 'cm',
+                         'text.latex.preamble': preamble,
                          'svg.fonttype': 'none', 'pdf.fonttype': 42, 'axes.linewidth': .6,
                          'xtick.major.width': .6, 'ytick.major.width': .6, 'xtick.major.size': 2.5,
                          'ytick.major.size': 2.5, 'legend.fontsize': 7, 'axes.titlesize': 8,
@@ -1248,6 +1265,39 @@ def receipt(datasets, out=OUT):
                         'intervals; hardware has one record per setting.')
     (out/'provenance.json').write_text(json.dumps(record, indent=2, default=float)+'\n')
     return out/'provenance.json'
+
+
+def export_figure(main, stack, out=FIGURE_OUT, fonts=tuple(FONTS)):
+    """The stacked figure and its panels in each font rendition: <font>/figure.{svg,pdf,png} and
+    <font>/panels/<system>/, plus provenance.json and a README mapping panel letters to files."""
+    try:
+        for font in fonts:
+            style(font=font)
+            save(composite_stacked(main, stack), 'figure', out/font)
+            export_panels(main, out/font)
+            for data in stack:
+                export_panels(data, out/font, stacked=True)
+    finally:
+        style(font='cm')
+    receipt([main, *stack], out)
+    glyph, n = main.spec.glyphs[0], len(main.snapshots)
+    rows = [('a', main.spec.name, f'headline-{glyph}', f'curves-band, heatmap-1..{n}, glyph-{glyph}-1..{n}'),
+            ('b', main.spec.name, 'baseline-mean-abs-r, baseline-mean-mpi', ''),
+            ('c', main.spec.name, f'feature-1..{len(main.spec.features)}', ''),
+            ('d', main.spec.name, f'edges-1-1..{n}, edges-legend', 'edges-2-*, edges-3-* are the other features, not shown')]
+    rows += [(letter, d.spec.name, f'panel-{d.spec.glyphs[0]}', f'curves-band, heatmap-*, glyph-{d.spec.glyphs[0]}-*')
+             for letter, d in zip('efgh', stack)]
+    lines = ['# Section-4 order-parameter figure', '',
+             'Regenerate with `cf.export_figure(locking, [hardware, sl, cml])` (run by the last export cell of '
+             '`research/inference/benchmarks/notebooks/order-parameter-composites_261021.ipynb`). Every file is SVG, '
+             'PDF and 600-dpi PNG; PNG is the preview.', '',
+             '| Folder | Typography |', '|---|---|', *[f'| `{f}/` | {FONTS[f]} |' for f in fonts], '',
+             'Each folder holds `figure.*` and `panels/<system>/`. Panel files are drawn at the size they occupy in '
+             'the figure.', '',
+             '| Panel | System folder | Files | Constituents |', '|---|---|---|---|',
+             *[f'| {a} | `{b}` | {c} | {d} |' for a, b, c, d in rows], '']
+    (out/'README.md').write_text('\n'.join(lines))
+    return out
 
 
 # --------------------------------------------------------------------------- registry

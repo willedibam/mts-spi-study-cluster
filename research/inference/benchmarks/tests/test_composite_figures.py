@@ -169,7 +169,7 @@ def no_tex(monkeypatch):
 
     monkeypatch.setattr(TexManager, '_run_checked_subprocess', blocked)
     original = cf.style
-    monkeypatch.setattr(cf, 'style', lambda tex=None: original(tex=False))
+    monkeypatch.setattr(cf, 'style', lambda tex=None, font=None: original(tex=False, font=font))
 
 
 def test_composites_and_panels_export_without_external_tex(monkeypatch, tmp_path):
@@ -232,3 +232,41 @@ def test_stacked_layout_balances_heights_and_honours_zero_curve_height():
     left = cf.column_height(main.spec, rows)
     curves = max(cf.STACK['curves'], (left-fixed)/3)
     assert fixed+3*curves >= left-1e-12
+
+
+def test_font_rendition_persists_until_changed():
+    import matplotlib.pyplot as plt
+    try:
+        cf.style(tex=False, font='helvetica')
+        cf.style(tex=False)
+        assert cf._font == 'helvetica' and plt.rcParams['font.family'] == ['sans-serif']
+        assert r'\usepackage{helvet}' in plt.rcParams['text.latex.preamble']
+        cf.style(tex=False, font='helvetica-sansmath')
+        assert 'newtxsf' in plt.rcParams['text.latex.preamble']
+        with pytest.raises(ValueError):
+            cf.style(font='comic')
+    finally:
+        cf.style(tex=False, font='cm')
+    assert plt.rcParams['font.family'] == ['serif'] and 'helvet' not in plt.rcParams['text.latex.preamble']
+
+
+def test_export_figure_writes_every_rendition_and_resets_font(monkeypatch, tmp_path):
+    no_tex(monkeypatch)
+    main, stack = all_systems()
+    out = cf.export_figure(main, stack[:3], tmp_path)
+    for font in cf.FONTS:
+        assert all((out/font/f'figure.{ext}').stat().st_size > 0 for ext in ('svg', 'pdf', 'png'))
+        assert {p.name for p in (out/font/'panels').iterdir()} == {d.spec.name for d in [main, *stack[:3]]}
+    assert cf._font == 'cm' and (out/'provenance.json').exists() and '| e |' in (out/'README.md').read_text()
+
+
+@pytest.mark.skipif(not (shutil.which('latex') and shutil.which('dvipng')), reason='needs latex and dvipng')
+def test_helvetica_renditions_compile_under_usetex(tmp_path):
+    main, stack = all_systems()
+    try:
+        for font in ('helvetica', 'helvetica-sansmath'):
+            cf.style(font=font)
+            cf.save(cf.composite_stacked(main, stack[:3]), f'tex-{font}', tmp_path, formats=('pdf',))
+            assert (tmp_path/f'tex-{font}.pdf').stat().st_size > 0
+    finally:
+        cf.style(font='cm')
