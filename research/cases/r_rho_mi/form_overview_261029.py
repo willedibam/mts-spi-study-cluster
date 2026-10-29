@@ -5,10 +5,11 @@ a  Dependency filters. A u block feeds each of three couplings (w, sinh 2w, w^2)
    4 linear / 4 monotone / 4 fold recording. A callout from the top u block shows the shared signal. Numbered
    bars mark the channel pairs shown in c.
 b  Feature variation. z(r, rho) against z(rho, MI) on equal square axes, bottom level with a's heatmap, for every recording of the linear,
-   monotone and non-monotonic (fold) conditions, and of the all-three recording type shown in a (diamonds).
+   monotone and non-monotone (fold) conditions, and of the all-three recording type shown in a (diamonds).
 c  One silo per condition: a strong and a weak pair with r, rho, MI bars above their scatters, telescoped to their
-   points in the condition's edge plane. A rail beside each scatter repeats the pair's bar from a. For the
-   monotone silo (``--links``), dotted lines join its top corners to its point in b and bar 3 to rail 3.
+   points in the condition's edge plane (bold z top-left). A rail beside each scatter repeats the pair's bar from
+   a. Dotted lines join the non-monotone silo's top corners to its point in b (``--links``) and pair bars 3 and 4
+   in a to their badges in c.
 
 Every condition shares the latent and noise draws, so a channel with the same map is identical across recordings
 and the marked pairs are the ones in c (asserted). Recording: replicate REP of `form_figure_261028.py`. MI is
@@ -36,7 +37,7 @@ OUT = ROOT / "results/cases/form-ladder-261028"
 W, H = 7.2, 6.40
 # (strong, weak) pairs per condition: block-1 channels with the lowest noise level, then the third
 PAIRS = {"linear": ((0, 1), (2, 3)), "monotone": ((0, 4), (2, 6)), "fold": ((0, 8), (2, 10))}
-NAMES = {"fold": "non-monotonic"}           # display name where it differs from the map's key
+NAMES = {"fold": "non-monotone"}           # display name where it differs from the map's key
 CONDS = (("linear", "linear", ("r", "rho")), ("monotone", "monotone", ("r", "rho")), ("fold", "fold", ("rho", "mi")))
 ZSER = (("z_r_rho", r"$z(r,\rho)$", INK, "o"), ("z_rho_mi", r"$z(\rho,\mathrm{MI})$", "#8A8F9C", "s"),
         ("z_r_mi", r"$z(r,\mathrm{MI})$", "#C5C8CE", "D"))
@@ -155,8 +156,12 @@ def result(fig, left, top, w, h, frame, rep, mode="scatter", show_all=True):
                        marker="D")
             f0 = f[f.rep == rep].iloc[0]
             ax.plot(f0.z_r_rho, f0.z_rho_mi, "D", ms=6, mfc="none", mec=INK, mew=0.9, zorder=5)
-        labels = {"linear": (1.0, 0.91, "right", "top"), "monotone": (0.235, 0.962, "left", "bottom"),
-                  "fold": (1.0, 0.585, "right", "top")}
+        labels = {"linear": (1.0, 0.91, "right", "top"), "monotone": (0.235, 0.962, "left", "bottom")}
+        f = frame[frame.level == "fold"]                 # its label sits below, joined by a faint leader
+        ax.annotate(NAMES["fold"], xy=(f.z_r_rho.mean(), f.z_rho_mi.mean()), xytext=(0.985, 0.47), ha="right",
+                    va="top", fontsize=7, color=ink("fold"), zorder=6,
+                    bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.6),
+                    arrowprops=dict(arrowstyle="-", color=ink("fold"), lw=0.5, alpha=0.6, shrinkA=0, shrinkB=5))
         if show_all:
             labels["all three, as in (a)"] = (0.9, 0.66, "right", "bottom")
         for cond, (tx, ty, ha, va) in labels.items():
@@ -223,18 +228,20 @@ def drop(fig, a, b, colour, side=False):
     if side:
         ctrl = [(a[0], a[1] + 0.6 * (b[1] - a[1])), (a[0] + 0.4 * (b[0] - a[0]), b[1])]
     else:
-        d = (b[1] - a[1]) / 2
-        ctrl = [(a[0], a[1] + d), (b[0], b[1] - d)]
+        d = b[1] - a[1]                               # stay vertical long enough to clear the bars below
+        ctrl = [(a[0], a[1] + 0.85 * d), (b[0], b[1] - 0.4 * d)]
     path = MPath([_fig(*q) for q in [a, *ctrl, b]], [MPath.MOVETO] + [MPath.CURVE4] * 3)
     fig.add_artist(PathPatch(path, transform=fig.transFigure, fill=False, ec=colour, lw=0.6, ls=DOTS, alpha=0.6,
                              zorder=-2))
 
 
-def zbox(ax, value, **pos):
-    """Neutral z label: the value, not a colour, carries the reading (z hues are kept for the SPI matrices)."""
-    return ax.text(pos.pop("x"), pos.pop("y"), rf"$z = {value:.2f}$", transform=ax.transAxes, fontsize=6.5,
-                   color=INK, zorder=6, bbox=dict(boxstyle="round,pad=0.18,rounding_size=0.12", fc="#F3F3F1",
-                                                  ec="0.6", lw=0.5), **pos)
+def zbox(fig, ax, value):
+    """Neutral bold z label in the plane's top-left corner, drawn at figure level so the pair leaders pass beneath.
+    The value, not a colour, carries the reading (z hues are kept for the SPI matrices)."""
+    bold = r"\boldsymbol" if plt.rcParams["text.usetex"] else r"\mathbf"
+    return fig.text(0.04, 0.97, rf"${bold}{{z = {value:.2f}}}$", transform=ax.transAxes, ha="left", va="top",
+                    fontsize=6.5, color=INK, zorder=8,
+                    bbox=dict(boxstyle="round,pad=0.18,rounding_size=0.12", fc="#F3F3F1", ec="0.6", lw=0.5))
 
 
 def rail(fig, x, top, h, i, j, colour):
@@ -282,16 +289,14 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
         ax.text(0.5, 0.45, "Gaussian", transform=ax.transAxes, ha="left", fontsize=6, color=MUTED)
         ax.set(xlim=(-0.08, 1.02), ylim=(-0.06, 1.42), yticks=[0, 0.5, 1])
         ax.set_ylabel(r"MI$_{ij}$ (nats)", labelpad=2, fontsize=7)
-        zpos = dict(x=0.04, y=0.97, ha="left", va="top")
     else:
         ax.plot([-0.15, 1.05], [-0.15, 1.05], color=HAIR, lw=0.6, zorder=0)
         ax.set(xlim=(-0.12, 1.02), ylim=(-0.12, 1.02), yticks=[0, 0.5, 1])
         ax.set_ylabel(r"$\rho_{ij}$", labelpad=3, fontsize=7)
-        zpos = dict(x=0.96, y=0.04, ha="right", va="bottom")
     ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0", ".5", "1"]); ax.set_yticklabels(["0", ".5", "1"])
     ax.tick_params(labelsize=6, length=2, pad=1)
     ax.set_xlabel(r"$r_{ij}$" if a == "r" else r"$\rho_{ij}$", labelpad=0, fontsize=7)
-    zbox(ax, z(m[a], m[b_]), **zpos)
+    zbox(fig, ax, z(m[a], m[b_]))
     for k, ((i, j), num, word) in enumerate(zip(pairs, nums, ("strong", "weak"))):
         gl = pl + k * (ps - gs)
         vals = [m["r"][i, j], m["rho"][i, j], float(linfoot(m["mi"][i, j]))]
@@ -317,15 +322,16 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
 RAIL, BADGE = 0.075, 0.09                 # rail offset left of a pair scatter; its badge above the rail top
 GS, PS = 0.72, 1.60                       # c: pair scatter and plane sizes (inches)
 BAR_H, GY, PY = 0.36, 0.53, 1.40          # c, from the column top: bar height, pair scatter top, plane top
-SILO = (0.36, 0.36, 0.24, 0.32)           # silo padding around a column (equal sides: centred): l, r, t, b
-R, GAP = 7.12, 0.08                       # right edge of c (its first silo starts at 0, with a); silo gap
-PITCH = SILO[0] + PS + SILO[1] + GAP
-PL = R - SILO[1] - PS - 2 * PITCH         # first plane's left edge
+SLOT = 0.36                               # c: room either side of a column's plots (ylabel left; centred)
+SILO = (0.31, 0.31, 0.18, 0.26)           # drawn outline's padding around the plots: left, right, top, bottom
+R, GAP = 7.12, 0.08                       # right edge of c's slots (the first starts at 0, with a); slot gap
+PITCH = 2 * SLOT + PS + GAP
+PL = R - SLOT - PS - 2 * PITCH            # first plane's left edge
 A_TOP, A_HX, A_HW, A_HH = 0.30, 1.32, 1.40, 1.56   # a: top, heatmap left, width, height (inches)
 B_TOP = 0.36
 BS = A_TOP + 0.22 + A_HH - B_TOP          # b: square axes side; its bottom on the heatmap's, right on c's plane
-CTOP = 2.72                               # c: column top
-BX = R - SILO[1] - BS
+CTOP = 2.66                               # c: column top (silo outline top at CTOP - SILO[2])
+BX = R - SLOT - BS
 
 
 # alternative colours: couplings avoid the heatmap's blue and orange; the statistics become one indigo ramp,
@@ -358,7 +364,7 @@ def silo(fig, pl, top, colour, bottom):
     x0, x1 = pl - SILO[0], pl + PS + SILO[1]
     y0, y1 = top - SILO[2], bottom + PY + PS + SILO[3]
     fig.add_artist(FancyBboxPatch(_fig(x0, y1), (x1 - x0) / W, (y1 - y0) / H, transform=fig.transFigure,
-                                  boxstyle="round,pad=0,rounding_size=0.012", fc="none", ec=colour, lw=0.6,
+                                  boxstyle="round,pad=0,rounding_size=0.012", fc="none", ec=colour, lw=0.5,
                                   zorder=-3))
     return (x0, y0), (x1, y0)
 
@@ -372,11 +378,14 @@ def wedge(fig, src, xy, corners, colour):
                                   ls=DOTS, alpha=0.6, zorder=-2))
 
 
-def build(live_text=False, panel_b="scatter", links="monotone", badges="top"):
+DROPS = (3, 4)                            # pairs whose bar in a is joined to its badge in c
+
+
+def build(live_text=False, panel_b="scatter", links="fold", badges="top"):
     global BADGES, H
     BADGES = badges
     dy = TOP_DY if badges == "top" else 0.0
-    H = 6.17 + dy
+    H = 6.05 + dy
     style(live_text)
     fig = plt.figure(figsize=(W, H))
     frame = pd.read_csv(OUT / "z_by_recording.csv")
@@ -409,10 +418,12 @@ def build(live_text=False, panel_b="scatter", links="monotone", badges="top"):
         corners = silo(fig, pl, CTOP, tint(ink(kind), 0.55), CTOP + dy)
         if links == "all" or links == cond:
             wedge(fig, bax, shown[cond], corners, ink(kind))
-            bx_, hi = ends[2 * k + 1]         # its strong pair: bar in a -> its badge in c
-            bx, by = badge_at(pl, CTOP + dy)
-            side = bx - bx_ > 1.0
-            drop(fig, (bx_, hi + 0.05), (bx - 0.07, by) if side else (bx, by - 0.07), ink(kind), side)
+        for j, num in enumerate((2 * k + 1, 2 * k + 2)):
+            if links != "none" and num in DROPS:      # pair bar in a -> its badge in c
+                bx_, hi = ends[num]
+                bx, by = badge_at(pl + j * (PS - GS), CTOP + dy)
+                side = bx - bx_ > 1.0
+                drop(fig, (bx_, hi + 0.05), (bx - 0.07, by) if side else (bx, by - 0.07), ink(kind), side)
     fig.bax = bax
     return fig
 
@@ -440,13 +451,13 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--live-text", action="store_true")
     ap.add_argument("--panel-b", choices=("scatter", "strip"), default="scatter")
-    ap.add_argument("--links", choices=("all", "linear", "monotone", "fold", "none"), default="monotone")
+    ap.add_argument("--links", choices=("all", "linear", "monotone", "fold", "none"), default="fold")
     ap.add_argument("--palette", choices=tuple(PALETTES), default="current")
     ap.add_argument("--badges", choices=("rail", "top"), default="top")
     ap.add_argument("--panels", action="store_true", help="also save a, b and c as separate files")
     args = ap.parse_args(argv)
     use_palette(args.palette)
-    stem = "form_overview" + ("" if (args.panel_b, args.links) == ("scatter", "monotone") else
+    stem = "form_overview" + ("" if (args.panel_b, args.links) == ("scatter", "fold") else
                               f"_{args.panel_b}_{args.links}") + ("" if args.palette == "current" else
                                                                   f"_{args.palette}") + ("" if args.badges == "top" else "_badges-rail") + \
         ("_live-text" if args.live_text else "")
