@@ -1,18 +1,20 @@
 """Drift case figure (2026-10-29): ED, xED and DTW on the no-lag / lag / warping block system.
 
-a  Delay structure. One smooth mother (inset) read by three blocks of five channels; per block, each channel's
-   offset t_warp - t_orig over one warp period (no lag: 0; lag: flat at 1-5 samples; warping: waves of
-   amplitude 1.2-6 samples), with the SPIs that forgive it; then the all-three recording. Numbered bars mark
-   the pairs in c.
+a  Delay structure. One smooth mother s (inset) read by three blocks of five channels,
+   x_k(t) = s(t - d_k(t)) + noise (the model, above the recording); per block, each channel's delay d_k(t) over
+   one warp cycle (no lag: 0; lag: flat at 1-5 samples; warping: waves of amplitude
+   2-10 samples), coloured by size as in c, with the SPIs that forgive it; then the all-three recording
+   (greyscale). Numbered bars mark the pairs in c.
 b  Feature variation. z(ED, xED) against z(xED, DTW) for every recording of the four conditions. Lag lowers only
    the first, warping only the second.
 c  One silo per condition: the pairs with the smaller and larger (bold) delay difference, left to right as their
-   points lie in the plane, each as its ED / xED / DTW bars over the offset of x_j from x_i (true offset in
-   black, DTW's path estimated from the noisy pair as grey steps), telescoped to their points in the
-   condition's edge plane (equal axes, dashed identity, bold z top-left; pairs shaded by lag or warp
-   difference, viridis). The warp is smooth by design (a slow sinusoidal lag); the steps are DTW's discrete
-   path. ``--glyph map`` draws t_warp against t_orig over 16 samples instead; ``--palette clean`` uses muted
-   condition hues and per-condition ramps.
+   points lie in the plane, each as its ED / xED / DTW bars (an olive ramp, light to dark in order of tolerance) over
+   d_j(t) - d_i(t) against time (true offset coloured by size, DTW's path estimated from the noisy pair in grey),
+   telescoped to their points in the condition's edge plane (equal axes, dashed identity, bold z top-left;
+   pairs shaded by lag difference on viridis or warp-amplitude difference on magma, with their distribution
+   inset). Each condition is drawn in a mid hue of its map, here and in b. The warp is smooth by design (a slow
+   sinusoidal lag); DTW's steps are its discrete path. ``--glyph map`` draws t_warp against t_orig over 16
+   samples; ``--palette``, ``--heatmap``, ``--spi-hues`` and ``--no-dtw-path`` give the earlier variants.
 
 Data: `drift_blocks_261029.py` (20 recordings per condition, z_by_recording.csv); the shown recording is
 replicate REP, whose pyspi matrices are cached next to it.
@@ -24,7 +26,7 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, to_hex
 from matplotlib.patches import ConnectionPatch, FancyArrowPatch, FancyBboxPatch
 
 from research.cases.case_run import ROOT, ordered, z
@@ -36,21 +38,32 @@ from research.cases.r_rho_mi.form_figure_261028 import boxed, channel_carpet
 OUT = ROOT / "results/cases/drift-blocks-261029"
 REP, M, B = 0, 15, 5
 W, H = 7.2, 6.18
-SPI = {"ed": ("ED", SAGE), "xed": ("xED", ROSE), "dtw": ("DTW", AMBER)}
+SPI_HUES = {"grey": ("#D2D2D2", "#9A9A9A", "#575757"),   # each a ramp, light to dark in order of tolerance;
+            "form": (SAGE, ROSE, AMBER),                # olive (default) avoids viridis (lag), magma (warping)
+                                                        # and the form figure's amber
+            "warm": ("#E3C79F", "#C27E4E", "#7E3F24"),
+            "ochre": ("#EEDDA8", "#CFA040", "#86621A"),
+            "olive": ("#DADBAE", "#9CA257", "#566024"),
+            "copper": ("#F2C9A2", "#C9824B", "#7A4425"),
+            "slate": ("#D3D8DE", "#8796A8", "#3F4D60")}
+SPI = {k: (name, h) for (k, name), h in zip((("ed", "ED"), ("xed", "xED"), ("dtw", "DTW")), SPI_HUES["olive"])}
+HEATMAP = "grey"                                       # or "icefire"
+DTW_PATH = True                                        # draw DTW's estimated path in the c glyphs
 KIND = {"no lag": "aligned", "lag": "lagged", "warping": "warped"}
 # condition -> (plane axes, (smaller, larger) pairs, all against block-1 channel 0); left to right in the order
 # of their points in the plane, so the leaders do not cross
 CONDS = {"no lag": (("ed", "xed"), ((0, 2), (0, 1))), "lag": (("ed", "xed"), ((0, 5), (0, 9))),
          "warping": (("xed", "dtw"), ((0, 10), (0, 14)))}
 FORGIVE = {"aligned": ("ed", "xed", "dtw"), "lagged": ("xed", "dtw"), "warped": ("dtw",)}
-KIND_NAME = {"aligned": "no lag", "lagged": "lag, 1–5 samples", "warped": "warping, ±1.2–6 samples"}
+KIND_NAME = {"aligned": "no lag", "lagged": "lag, 1–5 samples", "warped": "warping, ±2–10 samples"}
 A_TOP, A_HX, A_HW, A_HH = 0.30, 2.10, 1.45, 1.56     # a: top, heatmap left, width, height (inches)
 GS, PS = 0.72, 1.60                                    # c: pair glyph and plane sizes (inches)
 BAR_H, GY, PY = 0.36, 0.53, 1.40                       # c, from the column top: bar height, glyph top, plane top
 CTOP, DY = 2.66, 0.13                                  # c: heading baseline region; column top = CTOP + DY
 WINDOW = (117.0, 133.0)                                # time maps: 16 samples about a warp zero crossing (t = 125)
-GLYPH = "deviation"                                    # "deviation": t_warp - t_orig vs t_orig; "map": t_warp vs t_orig
-SPAN, DEV = (0.0, 250.0), 8.0                          # deviation glyphs: one warp period; y range +- samples
+GLYPH = "deviation"                                    # "deviation": delay vs t; "map": t_warp vs t_orig
+SPAN, DEV = (0.0, 250.0), 11.0                         # deviation glyphs: one warp cycle; y range +- samples
+DMAX = {"lagged": 5.0, "warped": 10.0}                 # largest lag / warp-amplitude difference
 R, SLOT, GAP = 7.12, 0.36, 0.08
 PITCH = 2 * SLOT + PS + GAP
 PL = R - SLOT - PS - 2 * PITCH
@@ -65,12 +78,20 @@ def _fig(x, y):
     return x / W, 1 - y / H
 
 
-# "vivid": the case script's colours, pairs shaded by viridis; "clean": muted blue for lag and plum for warping,
-# each pair shaded light to dark in its condition's own hue
-PALETTES = {"clean": {"aligned": "#8A8F99", "lagged": "#3E6FA8", "warped": "#7E57A0", "shade": None},
+# "tied": lag sizes on viridis and warp sizes on magma, each condition drawn in a mid hue of its own map, so a
+# silo, its glyphs, its plane and its point in b share a colour family; "vivid": the case script's colours with
+# viridis for both; "clean": muted blue / plum with per-condition ramps; "steel", "mono": alternatives
+_V, _M = plt.get_cmap("viridis"), plt.get_cmap("magma")
+PALETTES = {"tied": {"aligned": "#8A8F99", "lagged": to_hex(_V(0.38)), "warped": to_hex(_M(0.42)),
+                     "shade": {"lagged": ("viridis", 0.05, 0.85), "warped": ("magma", 0.12, 0.82)}},
+            "clean": {"aligned": "#8A8F99", "lagged": "#3E6FA8", "warped": "#7E57A0", "shade": None},
             "vivid": {"aligned": "#7B8190", "lagged": PAIR_INK["lagged"], "warped": PAIR_INK["warped"],
-                      "shade": "viridis"}}
-PALETTE = "vivid"
+                      "shade": "viridis"},
+            # earthier pair, less saturated than Okabe-Ito
+            "steel": {"aligned": "#8A8F99", "lagged": "#3A6A96", "warped": "#A9583A", "shade": "viridis"},
+            # conditions in greys only: colour is left to the SPIs (bars) and to lag / warp size (viridis)
+            "mono": {"aligned": "#A3A7AE", "lagged": "#5F6673", "warped": "#2B303A", "shade": "viridis"}}
+PALETTE = "tied"
 TRUE_INK, PATH_INK = INK, "0.68"                       # c glyphs: true offset (line), DTW path (steps), neutral
 
 
@@ -81,9 +102,17 @@ def ink(kind):
 def shade_map(kind):
     """Colour map for shading pairs by lag or warp-amplitude difference."""
     name = PALETTES[PALETTE]["shade"]
+    if isinstance(name, dict):
+        cmap, lo, hi = name[kind]
+        return LinearSegmentedColormap.from_list(f"{cmap}_{kind}", plt.get_cmap(cmap)(np.linspace(lo, hi, 64)))
     if name:
         return plt.get_cmap(name)
     return LinearSegmentedColormap.from_list(kind, [tint(ink(kind), 0.8), ink(kind), shade(ink(kind), 0.5)])
+
+
+def degree_colour(kind, d):
+    """Colour of a lag or warp-amplitude difference d, as in the planes; grey when there is none."""
+    return ink("aligned") if kind == "aligned" or d == 0 else shade_map(kind)(d / DMAX[kind])
 
 
 def badge(fig, x, y, num, colour, size=5.5):
@@ -143,7 +172,8 @@ def system(fig, top, x, it, numbered):
             dev_axes(ga, ink(kind))
             so = np.linspace(*SPAN, 500)
             for c in range(k * B, (k + 1) * B):
-                ga.plot(so, warped_time(it, c, so) - so, color=ink(kind), lw=0.7, alpha=0.9, zorder=2)
+                d = it.warps[c] if kind == "warped" else it.lags[c]
+                ga.plot(so, warped_time(it, c, so) - so, color=degree_colour(kind, d), lw=0.8, zorder=2)
         ga.text(-0.08, 0.5, KIND_NAME[kind].split(",")[0], transform=ga.transAxes, ha="right", va="center",
                 fontsize=6, color=ink(kind), rotation=90)
         if kind != "aligned":
@@ -153,11 +183,10 @@ def system(fig, top, x, it, numbered):
         for j, s in enumerate(("ed", "xed", "dtw")):
             ok = s in FORGIVE[kind]
             fig.text(tx / W, 1 - (cy - 0.10 + 0.11 * j) / H, SPI[s][0], fontsize=5.5, ha="left", va="center",
-                     transform=fig.transFigure, color=SPI[s][1] if ok else "0.82",
+                     transform=fig.transFigure, color=INK if ok else "0.82",
                      fontweight="bold" if ok and not plt.rcParams["text.usetex"] else "normal")
         fig.add_artist(FancyArrowPatch(_fig(tx + 0.36, cy), _fig(A_HX - 0.05, cy), **arrow))
-    head = (r"$t_\mathrm{warp}$ vs $t_\mathrm{orig}$" if GLYPH == "map"
-            else r"$t_\mathrm{warp}-t_\mathrm{orig}$")
+    head = r"$t_\mathrm{warp}$ vs $t_\mathrm{orig}$" if GLYPH == "map" else r"delay $d_k(t)$"
     fig.text((gx + gs / 2) / W, 1 - (hy - 0.05) / H, head, ha="center",
              va="baseline", fontsize=5.5, color=MUTED, transform=fig.transFigure)
     fig.text((gx + gs + 0.16) / W, 1 - (hy - 0.05) / H, "forgiven by", ha="left", va="baseline", fontsize=5.5,
@@ -165,9 +194,21 @@ def system(fig, top, x, it, numbered):
     ins = axes_in(fig, 0.12, top - 0.07, 0.9, 0.15)          # the shared mother signal
     ins.plot(it.mother[::8][300:420], color=INK, lw=0.55)
     ins.axis("off")
-    ins.text(1.02, 0.5, "mother", transform=ins.transAxes, ha="left", va="center", fontsize=6, color=MUTED)
+    ins.text(1.02, 0.5, "mother $s$", transform=ins.transAxes, ha="left", va="center", fontsize=6, color=MUTED)
+    ex = (A_HX + A_HW / 2) / W                                # the model, over the recording it generates
+    fig.text(ex, 1 - (top + 0.005) / H, r"$x_k(t) = s\big(t - d_k(t)\big) + \varepsilon_k(t)$", ha="center",
+             va="center", fontsize=7, color=INK, transform=fig.transFigure)
+    fig.text(ex, 1 - (top + 0.15) / H, r"$d_k = 0$,  $\tau_k$  or  $A_k \sin(2\pi t/250)$", ha="center",
+             va="center", fontsize=6, color=MUTED, transform=fig.transFigure)
     cp = axes_in(fig, A_HX, hy, A_HW, hh)
-    channel_carpet(cp, x[0:150])
+    if HEATMAP == "grey":
+        y = x[0:150] / np.percentile(np.abs(x[0:150]), 99, axis=0)
+        cp.imshow(y.T, aspect="auto", cmap="Greys_r", vmin=-1, vmax=1, interpolation="nearest", rasterized=True)
+        cp.set_xticks([]); cp.set_yticks([])
+        for s_ in cp.spines.values():
+            s_.set_linewidth(0.5); s_.set_color(INK)
+    else:
+        channel_carpet(cp, x[0:150])
     for b in (B - 0.5, 2 * B - 0.5):
         cp.axhline(b, color="white", lw=0.8)
     cp.text(0.5, -0.03, "time", transform=cp.transAxes, ha="center", va="top", fontsize=6, color=MUTED)
@@ -199,8 +240,8 @@ def result(fig, left, top, side, frame):
                 zorder=5)
     box = dict(fc="white", ec="none", alpha=0.85, pad=0.6)
     for cond, (tx, ty, ha, va) in {"no lag": (1.0, 0.95, "right", "top"), "lag": (0.27, 0.95, "left", "top"),
-                                   "warping": (1.0, 0.57, "right", "bottom"),
-                                   "all three": (0.43, 0.45, "center", "top")}.items():
+                                   "warping": (1.0, 0.49, "right", "bottom"),
+                                   "all three": (0.62, 0.36, "center", "top")}.items():
         ax.text(tx, ty, "all three, as in (a)" if cond == "all three" else cond, ha=ha, va=va, fontsize=7,
                 color=INK if cond == "all three" else colours[cond], zorder=6, bbox=box)
     lim, ticks = (0.15, 1.04), [0.25, 0.5, 0.75, 1]
@@ -242,7 +283,7 @@ def dtw_path(a, b):
     return np.array(dtw.warping_path(np.ascontiguousarray(a, float), np.ascontiguousarray(b, float)))
 
 
-def time_map(fig, left, top, x, it, i, j, kind, tag, bold):
+def time_map(fig, left, top, x, it, i, j, kind, tag, bold, label=False):
     """Time in x_j against time in x_i at which both read the same instant of the mother (line), with DTW's
     path estimated from the noisy pair (steps), over WINDOW."""
     ga = axes_in(fig, left, top, GS, GS)
@@ -259,8 +300,14 @@ def time_map(fig, left, top, x, it, i, j, kind, tag, bold):
         so = np.linspace(*SPAN, 500)
         ti = warped_time(it, i, so)
         keep = (path[:, 0] >= SPAN[0]) & (path[:, 0] <= SPAN[1])
-        ga.plot(path[keep, 0], path[keep, 1] - path[keep, 0], color=PATH_INK, lw=0.5, zorder=2)
-        ga.plot(ti, warped_time(it, j, so) - ti, color=TRUE_INK, lw=1.0, zorder=3, solid_capstyle="round")
+        if DTW_PATH:
+            ga.plot(path[keep, 0], path[keep, 1] - path[keep, 0], color=PATH_INK, lw=0.5, zorder=2)
+        ga.plot(ti, warped_time(it, j, so) - ti, color=degree_colour(kind, degree(it, kind, i, j)), lw=1.2,
+                zorder=3, solid_capstyle="round")
+        if label:
+            ga.set_yticks([-10, 0, 10]); ga.set_yticklabels(["−10", "0", "10"])
+            ga.tick_params(axis="y", labelsize=5, length=1.5, pad=1, colors=MUTED)
+            ga.set_ylabel(r"$d_j - d_i$", fontsize=5.5, labelpad=0, color=MUTED)
     tex = plt.rcParams["text.usetex"]
     ga.text(0.05, 0.95, rf"\textbf{{{tag}}}" if tex and bold else tag, transform=ga.transAxes, ha="left", va="top",
             fontsize=6, color=ink(kind), zorder=5, fontweight="bold" if bold and not tex else "normal",
@@ -280,22 +327,27 @@ def column(fig, pl, cond, nums):
     va, vb = ordered(mats[a]), ordered(mats[b])
     d = ordered(np.abs(it.warps[:, None] - it.warps[None]) if kind == "warped"
                 else np.abs(it.lags[:, None] - it.lags[None]))
-    dmax = 6.0 if kind == "warped" else 5.0
     plain = rel == "aligned"
     ax.scatter(va[plain], vb[plain], s=20, lw=0.4, ec="white", color=PAIR_INK["aligned"], zorder=2)
     if kind != "aligned":
+        dmax = DMAX[kind]
         o = np.argsort(d[~plain])
         ax.scatter(va[~plain][o], vb[~plain][o], s=20, lw=0.4, ec="white", c=d[~plain][o], cmap=shade_map(kind),
                    vmin=0, vmax=dmax, zorder=3)
-        key = ax.inset_axes((0.62, 0.88, 0.32, 0.035))
-        key.imshow(np.linspace(0, 1, 64)[None], aspect="auto", cmap=shade_map(kind))
-        key.set_xticks([]); key.set_yticks([])
-        for s_ in key.spines.values():
-            s_.set_visible(False)
+        # how the delayed pairs are spread over lag or warp-amplitude difference, in the same colours (pairs
+        # with none are the grey points)
+        hist = ax.inset_axes((0.06, 0.62, 0.30, 0.18))
+        vals, counts = np.unique(np.round(d[~plain], 6), return_counts=True)
+        step = np.diff(vals).min()
+        hist.bar(vals, counts, width=0.75 * step, color=[degree_colour(kind, v) for v in vals], lw=0)
+        hist.set_xticks([vals[0], dmax]); hist.set_xticklabels([f"{vals[0]:g}", f"{dmax:g}"]); hist.set_yticks([])
+        hist.tick_params(axis="x", labelsize=5, length=1.5, pad=1, colors=MUTED)
+        for side in ("top", "right", "left"):
+            hist.spines[side].set_visible(False)
+        hist.spines["bottom"].set_linewidth(0.4); hist.spines["bottom"].set_color(MUTED)
+        hist.patch.set_alpha(0)
         sym = r"$|\Delta A|$" if kind == "warped" else r"$|\Delta\tau|$"
-        key.text(-0.04, 0.5, "0", transform=key.transAxes, ha="right", va="center", fontsize=5, color=MUTED)
-        key.text(1.04, 0.5, f"{dmax:g}", transform=key.transAxes, ha="left", va="center", fontsize=5, color=MUTED)
-        key.text(0.5, 1.6, sym, transform=key.transAxes, ha="center", va="bottom", fontsize=5.5, color=MUTED)
+        hist.text(1.08, 0.0, sym, transform=hist.transAxes, ha="left", va="center", fontsize=5.5, color=MUTED)
     lim, ticks = (0.1, 1.25), [0.25, 0.5, 0.75, 1]       # equal axes: the identity runs at 45 degrees
     ax.plot(lim, lim, color="0.6", lw=0.6, ls=(0, (3, 2)), zorder=0)
     ax.set(xlim=lim, ylim=lim, xticks=ticks, yticks=ticks, aspect="equal")
@@ -309,7 +361,7 @@ def column(fig, pl, cond, nums):
         dd = degree(it, kind, i, j)
         tag = (rf"$\pm${dd:g}" if kind == "warped" else rf"$\Delta\tau = {dd:g}$")
         bars(fig, gl, top + GY - 0.09 - BAR_H, [mats[s][i, j] for s in ("ed", "xed", "dtw")])
-        ga = time_map(fig, gl, top + GY, x, it, i, j, kind, tag, bold=(k == 1 and kind != "aligned"))
+        ga = time_map(fig, gl, top + GY, x, it, i, j, kind, tag, bold=(k == 1 and kind != "aligned"), label=(k == 0))
         badge(fig, gl + GS / 2, top - 0.06, num, ink(kind))
         xy = (mats[a][i, j], mats[b][i, j])
         ax.plot(*xy, "o", ms=7.5 if k == 1 else 6.5, mfc="none", mec=ink(kind), mew=0.8, zorder=7)
@@ -351,8 +403,8 @@ def build(live_text=False, link="warping"):
     panel_title(fig, 0, 2.40, "c", "Channel pairs")
     note = (r"glyphs: time in $x_j$ against time in $x_i$ over 16 samples; true map (black), DTW path (grey "
             r"steps), identity" if GLYPH == "map" else
-            r"glyphs: offset of $x_j$ from $x_i$ over one warp period (250 samples); true offset (black), DTW path "
-            r"(grey steps), zero (dashed)")
+            r"glyphs: $d_j(t) - d_i(t)$, how many samples $x_j$ trails $x_i$, over 250 samples (one warp cycle)"
+            + (r"; true (coloured), DTW's path (grey)" if DTW_PATH else ""))
     fig.text(1.45 / W, 1 - 2.40 / H, note,
              fontsize=6, color=MUTED, va="baseline", transform=fig.transFigure)
     for k, cond in enumerate(CONDS):
@@ -375,13 +427,19 @@ def main(argv=None):
     ap.add_argument("--live-text", action="store_true")
     ap.add_argument("--link", choices=(*CONDS, "none"), default="warping")
     ap.add_argument("--glyph", choices=("deviation", "map"), default="deviation")
-    ap.add_argument("--palette", choices=tuple(PALETTES), default="vivid")
+    ap.add_argument("--palette", choices=tuple(PALETTES), default="tied")
+    ap.add_argument("--heatmap", choices=("grey", "icefire"), default="grey")
+    ap.add_argument("--spi-hues", choices=tuple(SPI_HUES), default="olive")
+    ap.add_argument("--no-dtw-path", action="store_true")
+    ap.add_argument("--stem", default=None, help="output name (default: built from the options)")
     args = ap.parse_args(argv)
-    global GLYPH, PALETTE
-    GLYPH, PALETTE = args.glyph, args.palette
-    stem = ("drift_overview" + ("" if GLYPH == "deviation" else "_map") + ("" if PALETTE == "vivid" else f"_{PALETTE}")
+    global GLYPH, PALETTE, HEATMAP, DTW_PATH
+    GLYPH, PALETTE, HEATMAP, DTW_PATH = args.glyph, args.palette, args.heatmap, not args.no_dtw_path
+    for (k, name), h in zip((("ed", "ED"), ("xed", "xED"), ("dtw", "DTW")), SPI_HUES[args.spi_hues]):
+        SPI[k] = (name, h)
+    stem = ("drift_overview" + ("" if GLYPH == "deviation" else "_map") + ("" if PALETTE == "tied" else f"_{PALETTE}")
             + ("_live-text" if args.live_text else ""))
-    print(save(build(args.live_text, args.link), OUT, stem))
+    print(save(build(args.live_text, args.link), OUT, args.stem or stem))
 
 
 if __name__ == "__main__":

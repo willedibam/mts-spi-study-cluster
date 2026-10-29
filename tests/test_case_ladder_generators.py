@@ -61,7 +61,7 @@ def test_delay_blocks_layout_and_shared_draws():
     x, it = generate_delay_blocks_mts(15, 1000, noise_order=(1, 4, 2, 0, 3), rng=0, return_internals=True)
     assert x.shape == (1000, 15) and it.types == ["aligned"] * 5 + ["lagged"] * 5 + ["warped"] * 5
     assert np.all(it.delay[:, :5] == 0) and np.array_equal(it.lags[5:10], [1, 2, 3, 4, 5])
-    assert np.allclose(it.warps[10:], [1.2, 2.4, 3.6, 4.8, 6.0]) and np.allclose(it.delay[:, 10:].mean(0), 0, atol=1e-9)
+    assert np.allclose(it.warps[10:], [2, 4, 6, 8, 10]) and np.allclose(it.delay[:, 10:].mean(0), 0, atol=1e-9)
     assert np.allclose(it.noise_stds[:5], it.noise_stds[10:]) and np.argmin(it.noise_stds[:5]) == 3
     flat = generate_delay_blocks_mts(15, 1000, blocks=("aligned",) * 3, noise_order=(1, 4, 2, 0, 3), rng=0)
     assert np.allclose(x[:, :5], flat[:, :5])                    # unchanged blocks share every draw

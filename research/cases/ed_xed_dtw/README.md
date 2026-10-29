@@ -2,14 +2,15 @@
 
 ## Current case (2026-10-29): `drift_blocks_261029.py`, figure `drift_overview_261029.py`
 
-Lag and warping each in their own block, so each $z$ answers to one mechanism. M = 15 in three blocks of five read one smooth mother (the same OU process as below; generator `delay_blocks_mts`): block 1 aligned; block 2 aligned or lagged by 1–5 samples; block 3 aligned or warped by $A_k\sin(2\pi t/250)$, $A_k=1.2$–6 samples, one phase. Conditions: no lag, lag, warping, and all three (the recording in panel a). Noise 0.1–0.4, five levels per block in the order (1, 4, 2, 0, 3), rank-uncorrelated with lag and warp. Lags are whole samples because xED searches whole-sample shifts; fractional lags (1.25–5) left a residual that xED tracked (pilot, 2026-10-29). 20 recordings per condition; outputs in `results/cases/drift-blocks-261029/`.
+Lag and warping each in their own block, so each $z$ answers to one mechanism. Channel $k$ reads one smooth mother $s$ (the same OU process as below; generator `delay_blocks_mts`) with its own delay, $x_k(t)=s(t-d_k(t))+\varepsilon_k(t)$. M = 15 in three blocks of five: block 1 aligned ($d_k=0$); block 2 aligned or lagged, $d_k=\tau_k=1$–5 samples; block 3 aligned or warped, $d_k=A_k\sin(2\pi t/250)$ with $A_k=2,4,\dots,10$ samples, one phase (smooth: slope at most 0.25, so time stays monotone). Conditions: no lag, lag, warping, and all three (the recording in panel a). Noise 0.1–0.4, five levels per block in the order (1, 4, 2, 0, 3), rank-uncorrelated with lag and warp. Lags are whole samples because xED searches whole-sample shifts; fractional lags (1.25–5) left a residual that xED tracked (pilot, 2026-10-29). SPIs: `spis/ed_xed_dtw_261029.yaml`, with xED searching shifts out to $T/4$ as pyspi's cross-correlation does (values identical to $|h|\le10$ here). 20 recordings per condition; outputs in `results/cases/drift-blocks-261029/`.
 
 | $z$ (ordered entries) | no lag | lag | warping | all three |
 | --- | --- | --- | --- | --- |
-| ED–xED | 1.00 | 0.26 | 1.00 | 0.43 |
-| xED–DTW | 0.99 | 0.99 | 0.51 | 0.51 |
+| ED–xED | 1.00 | 0.26 | 1.00 | 0.62 |
+| xED–DTW | 0.99 | 0.99 | 0.43 | 0.42 |
 
-- In the lag condition ED tracks the pair's $|\Delta\tau|$ and xED does not; under warping xED tracks the warp-amplitude difference $|\Delta A|$ and DTW does not (it ranks pairs by noise).
+- In the lag condition ED tracks the pair's $|\Delta\tau|$ and xED does not; under warping xED tracks the warp-amplitude difference $|\Delta A|$ and DTW does not (it ranks pairs by noise). Spearman over the delayed pairs of replicate 0: ED 0.97, xED −0.03 with $|\Delta\tau|$; xED 0.98, DTW −0.01 with $|\Delta A|$.
+- Warps of 2–10 (up from 1.2–6) lower $z$(xED, DTW) under warping from 0.51 to 0.43 but raise "all three" on $z$(ED, xED) from 0.43 to 0.62, since larger warps inflate ED and xED together. Lag (5) and warp (10) are no longer matched in their cost to ED.
 - Stacking warp on lag in the same channels (the 2026-10-28 design below, or lags 0–5 on all channels plus warp) makes $z$(ED, xED) climb back (0.17 → 0.74 in the pilot), because warped pairs raise ED and xED together. Keeping the mechanisms in separate blocks avoids that; "all three" shows the mixture.
 
 ## Previous case (2026-10-28): `drift_261028.py`

@@ -187,7 +187,7 @@ def generate_delay_blocks_mts(
     T: int = 1000,
     blocks: tuple = ("aligned", "lagged", "warped"),
     lags: tuple = (1, 2, 3, 4, 5),
-    warp: float = 6.0,
+    warp: float = 10.0,
     warp_period: float = 250.0,
     noise_low: float = 0.1,
     noise_high: float = 0.4,

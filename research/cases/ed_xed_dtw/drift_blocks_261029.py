@@ -4,12 +4,12 @@ lag and warping.
 M = 15 in three blocks of five that read one smooth mother (OU, lag-one autocorrelation 0.9), T = 1000
 (`mtsspi.generators.generate_delay_blocks_mts`). Block 1 is always aligned; block 2 is aligned or lagged by
 1, 2, 3, 4 and 5 samples; block 3 is aligned or warped about zero delay, A_k sin(2 pi t / 250) with
-A_k = 1.2, 2.4, 3.6, 4.8 and 6 samples. The "all three" condition is the 5 aligned / 5 lagged / 5 warped
+A_k = 2, 4, 6, 8 and 10 samples. The "all three" condition is the 5 aligned / 5 lagged / 5 warped
 recording. Noise 0.1-0.4, the same five levels in every block, assigned in the order (1, 4, 2, 0, 3), which
 is rank-uncorrelated with lag and warp. Replicate k uses the same mother and noise draws in every condition.
 Lags are whole samples because xED searches whole-sample shifts (fractional lags leave a residual it cannot
-absorb; pilot 2026-10-29). Local pyspi: `pdist_euclidean_rmse`, `xpdist_euclidean_tau-10_min_rmse`,
-`dtw_rmse`.
+absorb; pilot 2026-10-29). Local pyspi (`spis/ed_xed_dtw_261029.yaml`): `pdist_euclidean_rmse`, `xpdist_euclidean_tau-250_min_rmse` (shifts
+out to T/4, as pyspi's cross-correlation), `dtw_rmse`.
 
     python -m research.cases.ed_xed_dtw.drift_blocks_261029
 """
@@ -23,9 +23,9 @@ from mtsspi.generators import generate_delay_blocks_mts
 from research.cases.case_run import ROOT, Case, run, system_figure
 from research.cases.composite_style import AMBER, ROSE, SAGE
 
-SPI_CONFIG = ROOT / "research/cases/ed_xed_dtw/spis/dtw_euclidean_norm.yaml"
-KEYS = {"ed": "pdist_euclidean_rmse", "xed": "xpdist_euclidean_tau-10_min_rmse", "dtw": "dtw_rmse"}
-BASE = dict(M=15, T=1000, lags=(1, 2, 3, 4, 5), warp=6.0, warp_period=250.0, noise_low=0.1, noise_high=0.4,
+SPI_CONFIG = ROOT / "research/cases/ed_xed_dtw/spis/ed_xed_dtw_261029.yaml"
+KEYS = {"ed": "pdist_euclidean_rmse", "xed": "xpdist_euclidean_tau-250_min_rmse", "dtw": "dtw_rmse"}
+BASE = dict(M=15, T=1000, lags=(1, 2, 3, 4, 5), warp=10.0, warp_period=250.0, noise_low=0.1, noise_high=0.4,
             noise_order=(1, 4, 2, 0, 3), ar1_a=0.9)
 LEVELS = {"no lag": {**BASE, "blocks": ("aligned", "aligned", "aligned")},
           "lag": {**BASE, "blocks": ("aligned", "lagged", "aligned")},

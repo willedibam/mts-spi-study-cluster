@@ -1,0 +1,25 @@
+# Timing-over-time case (2026-10-29): ED, xED and DTW, RMS differences normalised by sqrt(T). xED searches
+# shifts out to T/4 (tau = 250 at T = 1000), the lag range pyspi's cross-correlation uses; on the case data
+# it equals tau = 10 exactly, since the boundary stutter makes long shifts costly.
+.statistics.distance:
+  PairwiseDistance:
+    labels: [unsigned, unordered, nonlinear, undirected]
+    dependencies:
+    configs:
+      - metric: "euclidean"
+        normalise: true
+
+  CrossPairwiseDistance:
+    labels: [undirected, nonlinear, unsigned, temporal]
+    dependencies:
+    configs:
+      - metric: "euclidean"
+        tau: 250
+        statistic: "min"
+
+  DynamicTimeWarping:
+    labels: [undirected, nonlinear, unsigned, bivariate, time-dependent]
+    dependencies:
+    configs:
+      - global_constraint: null
+        normalise: true
