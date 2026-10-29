@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import to_rgba
 import numpy as np
 
 
@@ -30,7 +31,9 @@ def save(fig, output: Path, name: str):
     return fig
 
 
-def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_sizes=7, point_markers=None, point_kw=None):
+def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_sizes=7, point_markers=None, point_kw=None,
+              outline=False, line_scale=1.):
+    """``outline`` edges the density in the box colour; ``line_scale`` thins or thickens all box/density lines."""
     values = np.asarray(values); finite = np.isfinite(values)
     point_sizes = np.asarray(point_sizes)
     if point_sizes.ndim:
@@ -49,7 +52,8 @@ def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_si
         for body in parts['bodies']:
             verts = body.get_paths()[0].vertices
             verts[:, 0] = np.maximum(verts[:, 0], cloud_position)
-            body.set_facecolor(color); body.set_edgecolor('none'); body.set_alpha(.25)
+            body.set_facecolor(to_rgba(color, .25))
+            body.set_edgecolor(color if outline else 'none'); body.set_linewidth(.9*line_scale)
     jitter = position-rng.uniform(width*.14 if box else .025, width*.55, len(values))
     point_kw = {'alpha': .5, 'linewidths': 0, **(point_kw or {})}
     if point_markers is None:
@@ -62,10 +66,10 @@ def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_si
     if box:
         ax.boxplot([values], positions=[position], widths=width*.16, whis=1.5,
                    showfliers=False, manage_ticks=False, patch_artist=True,
-                   boxprops={'facecolor':'white','edgecolor':color,'linewidth':.9},
-                   whiskerprops={'color':color,'linewidth':.8},
-                   capprops={'color':color,'linewidth':.8},
-                   medianprops={'color':color,'linewidth':1.3})
+                   boxprops={'facecolor':'white','edgecolor':color,'linewidth':.9*line_scale},
+                   whiskerprops={'color':color,'linewidth':.8*line_scale},
+                   capprops={'color':color,'linewidth':.8*line_scale},
+                   medianprops={'color':color,'linewidth':1.3*line_scale})
     else:
         ax.plot([position-width*.12, position+width*.12], [np.median(values)]*2, color=color, lw=1.6)
 
