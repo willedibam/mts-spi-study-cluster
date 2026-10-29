@@ -5,7 +5,9 @@ a  Dependency filters. A u block feeds each of three couplings (w, sinh 2w, w^2)
    4 linear / 4 monotone / 4 fold recording. A callout from the top u block shows the shared signal. Numbered
    bars mark the channel pairs shown in c.
 b  Feature variation. z(r, rho) against z(rho, MI) on equal square axes, bottom level with a's heatmap, for every recording of the linear,
-   monotone and non-monotone (fold) conditions, and of the all-three recording type shown in a (diamonds).
+   monotone and non-monotone (fold) conditions, and of the all-three recording type shown in a (diamonds). Beside it,
+   the shown recording of each single-coupling condition (the ringed points): heatmap, a filter glyph per 4-channel
+   block, and a leader to its point.
 c  One silo per condition: a strong and a weak pair with r, rho, MI bars above their scatters, telescoped to their
    points in the condition's edge plane (bold z top-left). A rail beside each scatter repeats the pair's bar from
    a. Dotted lines join the non-monotone silo's top corners to its point in b (``--links``) and pair bars 3 and 4
@@ -333,7 +335,10 @@ A_TOP, A_HX, A_HW, A_HH = 0.30, 1.32, 1.40, 1.56   # a: top, heatmap left, width
 B_TOP = 0.36
 BS = A_TOP + 0.22 + A_HH - B_TOP          # b: square axes side; its bottom on the heatmap's, right on c's plane
 CTOP = 2.66                               # c: column top (silo outline top at CTOP - SILO[2])
-BX = R - SLOT - BS
+BX = 3.85                                 # b: left edge, moved left so the examples fit to its right
+EX_X, EX_W, EX_H, EX_G = BX + BS + 0.36, 1.02, 0.40, 0.15   # b's examples: heatmap left, width, height; filter column
+EX = (("monotone", 0.22), ("linear", 0.84), ("fold", 1.46))   # top to bottom: leaders do not cross, and the
+                                                                 # monotone one meets its ring from above its row
 
 
 # alternative colours: couplings avoid the heatmap's blue and orange; the statistics become one indigo ramp,
@@ -359,6 +364,29 @@ TOP_DY = 0.13                             # extra column drop that the "top" bad
 def badge_at(gl, top):
     """Badge centre (inches) for the pair whose scatter's left edge is gl, in a column starting at top."""
     return (gl - RAIL, top + GY - BADGE) if BADGES == "rail" else (gl + GS / 2, top - 0.06)
+
+
+def examples(fig, bax, shown):
+    """One recording per single-coupling condition beside b, as the headline figure's insets: a boxed heatmap with a
+    small filter glyph beside each 4-channel block, its name below, and a leader to its ringed point in b."""
+    t0, n = 300, int(110 * EX_W / 1.5)
+    wgrid = np.linspace(-2.2, 2.2, 100)
+    for cond, top in EX:
+        x, it = make(LEVELS[cond], REP)
+        cp = axes_in(fig, EX_X, top, EX_W, EX_H)
+        channel_carpet(cp, x[t0:t0 + n])
+        for b in (B - 0.5, 2 * B - 0.5):
+            cp.axhline(b, color="white", lw=0.6)
+        bh = EX_H / 3
+        for k in range(3):
+            kind = it.types[k * B]
+            g = axes_in(fig, EX_X - EX_G, top + k * bh + 0.012, EX_G - 0.03, bh - 0.024)
+            g.plot(wgrid, MAPS[kind](wgrid), color=ink(kind), lw=0.7, solid_capstyle="round")
+            g.axis("off")
+        cp.text(0.5, -0.05, NAMES.get(cond, cond), transform=cp.transAxes, ha="center", va="top", fontsize=6,
+                color=ink(cond), bbox=dict(fc="white", ec="none", pad=0.4))   # the dotted link to c passes beneath
+        fig.add_artist(ConnectionPatch(xyA=(0, 1), coordsA=cp.transAxes, xyB=shown[cond], coordsB=bax.transData,
+                                       color="0.55", lw=0.4, zorder=-1, shrinkB=3.6))   # stops at the ring
 
 
 def silo(fig, pl, top, colour, bottom):
@@ -401,6 +429,7 @@ def build(live_text=False, panel_b="scatter", links="fold", badges="top"):
     panel_title(fig, BX - 0.42, 0.18, "b", "Feature variation")
     if panel_b == "scatter":
         bax, shown = result(fig, BX, B_TOP, BS, BS, frame, REP, "scatter")
+        examples(fig, bax, shown)
     else:
         bax, shown = result(fig, 3.9, 0.6, 3.2, 1.55, frame, REP, "strip")
     panel_title(fig, 0, 2.40, "c", "Channel pairs")
