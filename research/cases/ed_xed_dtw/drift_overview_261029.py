@@ -203,7 +203,10 @@ def system(fig, top, x, it, numbered):
     cp = axes_in(fig, A_HX, hy, A_HW, hh)
     if HEATMAP == "grey":
         y = x[0:150] / np.percentile(np.abs(x[0:150]), 99, axis=0)
-        cp.imshow(y.T, aspect="auto", cmap="Greys_r", vmin=-1, vmax=1, interpolation="nearest", rasterized=True)
+        # vector cells (not an embedded image), so the SVG stays sharp at any zoom; same layout as imshow
+        cp.pcolormesh(np.arange(len(y) + 1) - 0.5, np.arange(M + 1) - 0.5, y.T, cmap="Greys_r", vmin=-1, vmax=1,
+                      edgecolors="face", linewidth=0.05, rasterized=False)
+        cp.set(xlim=(-0.5, len(y) - 0.5), ylim=(M - 0.5, -0.5))
         cp.set_xticks([]); cp.set_yticks([])
         for s_ in cp.spines.values():
             s_.set_linewidth(0.5); s_.set_color(INK)
