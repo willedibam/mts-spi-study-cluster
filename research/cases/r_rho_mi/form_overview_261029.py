@@ -111,7 +111,9 @@ def system(fig, top, x, it, numbered):
                                    arrowstyle="-", connectionstyle="angle3,angleA=90,angleB=0", color="0.55",
                                    lw=0.5))
     sk = axes_in(fig, sx, hy, 0.05, hh)
-    sk.imshow((1 / np.sqrt(1 + it.noise_stds ** 2))[:, None], cmap="Greys", vmin=0.3, vmax=1.05, aspect="auto")
+    sk.pcolormesh([-0.5, 0.5], np.arange(M + 1) - 0.5, (1 / np.sqrt(1 + it.noise_stds ** 2))[:, None], cmap="Greys",
+                  vmin=0.3, vmax=1.05, edgecolors="face", linewidth=0.05)                 # vector, as the carpets
+    sk.set(xlim=(-0.5, 0.5), ylim=(M - 0.5, -0.5))
     boxed(sk, INK)
     fig.text((sx + 0.025) / W, 1 - (hy + hh + 0.12) / H, "strength", ha="center", va="baseline", fontsize=6,
              color=MUTED, transform=fig.transFigure)

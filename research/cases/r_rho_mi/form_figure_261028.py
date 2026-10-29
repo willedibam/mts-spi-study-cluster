@@ -82,10 +82,13 @@ def pick(it, m, want):
 
 
 def channel_carpet(ax, x):
-    """Channels x time, each channel scaled by its own 99th percentile of |x|."""
+    """Channels x time, each channel scaled by its own 99th percentile of |x|. Vector cells (not an embedded image),
+    so SVGs stay sharp at any zoom; same layout as imshow (row 0 at the top, cells centred on integers)."""
     y = x / np.percentile(np.abs(x), 99, axis=0)
-    ax.imshow(y.T, aspect="auto", cmap=color_palette("icefire", as_cmap=True), vmin=-1, vmax=1,
-              interpolation="nearest", rasterized=True)
+    T, C = y.shape
+    ax.pcolormesh(np.arange(T + 1) - 0.5, np.arange(C + 1) - 0.5, y.T, cmap=color_palette("icefire", as_cmap=True),
+                  vmin=-1, vmax=1, edgecolors="face", linewidth=0.05, rasterized=False)
+    ax.set(xlim=(-0.5, T - 0.5), ylim=(C - 0.5, -0.5))
     ax.set_xticks([]); ax.set_yticks([])
     for s in ax.spines.values():
         s.set_linewidth(0.5); s.set_color(INK)
