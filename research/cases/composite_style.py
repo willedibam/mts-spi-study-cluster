@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap, Normalize, to_rgb
 
+from mtsspi.figures import SANS, SANS_PREAMBLE
+
 INK, MUTED, HAIR, TRACE = "#2E3440", "#7B8190", "#DEDEDB", "#3b3b3b"
 SAGE, LAVENDER, AMBER, ROSE, SKY = "#74B49B", "#9D8FCB", "#E0B060", "#D98FA5", "#86B3D9"
 DIV = LinearSegmentedColormap.from_list("soft_div", ["#5D83C2", "#B9CBE6", "#F7F7F5", "#EDB9A6", "#CF7458"])
@@ -40,12 +42,11 @@ def seq(hue) -> LinearSegmentedColormap:
 
 
 def style(live_text: bool = False):
-    """LaTeX Computer Modern by default; ``live_text`` keeps SVG text editable (mathtext, no TeX)."""
+    """Helvetica text, Computer Modern math, via LaTeX; ``live_text`` keeps SVG text editable (mathtext, no TeX)."""
     tex = not live_text and bool(shutil.which("latex") and shutil.which("dvipng"))
     mpl.rcParams.update({
-        "text.usetex": tex, "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}",
-        "font.family": "serif", "font.serif": ["Computer Modern Roman", "CMU Serif", "DejaVu Serif"],
-        "mathtext.fontset": "cm", "svg.fonttype": "none", "pdf.fonttype": 42,
+        "text.usetex": tex, "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}" + SANS_PREAMBLE,
+        **SANS, "svg.fonttype": "none", "pdf.fonttype": 42,
         "font.size": 8, "axes.labelsize": 8, "axes.titlesize": 8, "legend.fontsize": 7.5,
         "xtick.labelsize": 7, "ytick.labelsize": 7, "axes.linewidth": 0.6,
         "xtick.major.width": 0.6, "ytick.major.width": 0.6, "xtick.major.size": 2.5, "ytick.major.size": 2.5,

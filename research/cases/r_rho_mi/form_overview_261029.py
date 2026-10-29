@@ -16,7 +16,7 @@ and the marked pairs are the ones in c (asserted). Recording: replicate REP of `
 pyspi's `mi_kraskov_NN-4` (KSG estimator 1, k = 4), plotted in nats against the Gaussian reference MI(rho); bars
 show it on the correlation scale (Linfoot).
 
-    python -m research.cases.r_rho_mi.form_overview_261029 [--live-text] [--font helvetica] [--panels]
+    python -m research.cases.r_rho_mi.form_overview_261029 [--live-text] [--panels]
 """
 from __future__ import annotations
 
@@ -282,7 +282,7 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
     va, vb = ordered(m[a]), ordered(m[b_])
     for k in ("linear", "monotone", "fold"):
         sel = rel == k
-        ax.scatter(va[sel], vb[sel], s=12, lw=0.35, ec="white", color=PAIR_INK[k], zorder=3 if k != "linear" else 2)
+        ax.scatter(va[sel], vb[sel], s=20, lw=0.4, ec="white", color=PAIR_INK[k], zorder=3 if k != "linear" else 2)
     if b_ == "mi":
         g = np.linspace(0, 0.995, 200)
         ax.plot(g, -0.5 * np.log(1 - (2 * np.sin(np.pi * g / 6)) ** 2), color=MUTED, lw=0.6, ls=(0, (2.5, 1.5)))
@@ -315,7 +315,7 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
         ga.text(0.5, -0.03, f"$x_{{{i + 1}}}$, $x_{{{j + 1}}}$", transform=ga.transAxes, ha="center", va="top",
                 fontsize=5.5, color=MUTED)
         xy = (m[a][i, j], m[b_][i, j])
-        ax.plot(*xy, "o", ms=6 if k == 0 else 5, mfc="none", mec=ink(kind), mew=0.8, zorder=7)
+        ax.plot(*xy, "o", ms=7.5 if k == 0 else 6.5, mfc="none", mec=ink(kind), mew=0.8, zorder=7)
         fig.add_artist(ConnectionPatch(xyA=(0.5, -0.12), coordsA=ga.transAxes, xyB=xy, coordsB=ax.transData,
                                        color="0.6", lw=0.4, zorder=6))
     return ax
@@ -340,20 +340,6 @@ BX = R - SLOT - BS
 # light to dark in order of tolerance (r < rho < MI), so the bar colours read as the ladder itself
 PALETTES = {"current": None,
             "alt": dict(monotone="#13867A", fold="#C23B6E", hues=("#C9CDEB", "#8E97D3", "#4C559E"))}
-
-
-FONTS = ("cm", "helvetica")             # all Computer Modern (composite_style default); Helvetica text, CM math
-FONT = "cm"
-
-
-def use_font():
-    """Helvetica for text; math stays Computer Modern (LaTeX, or mathtext with --live-text)."""
-    if FONT != "helvetica":
-        return
-    rc = plt.rcParams
-    rc.update({"font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial"]})
-    if rc["text.usetex"]:
-        rc["text.latex.preamble"] += r"\usepackage{helvet}\renewcommand{\familydefault}{\sfdefault}"
 
 
 def use_palette(name):
@@ -403,7 +389,6 @@ def build(live_text=False, panel_b="scatter", links="fold", badges="top"):
     dy = TOP_DY if badges == "top" else 0.0
     H = 6.05 + dy
     style(live_text)
-    use_font()
     fig = plt.figure(figsize=(W, H))
     frame = pd.read_csv(OUT / "z_by_recording.csv")
     xm, itm = make(LEVELS["both"], REP)
@@ -471,16 +456,13 @@ def main(argv=None):
     ap.add_argument("--links", choices=("all", "linear", "monotone", "fold", "none"), default="fold")
     ap.add_argument("--palette", choices=tuple(PALETTES), default="current")
     ap.add_argument("--badges", choices=("rail", "top"), default="top")
-    ap.add_argument("--font", choices=FONTS, default="cm", help="helvetica: Helvetica text, Computer Modern math")
     ap.add_argument("--panels", action="store_true", help="also save a, b and c as separate files")
     args = ap.parse_args(argv)
-    global FONT
-    FONT = args.font
     use_palette(args.palette)
     stem = "form_overview" + ("" if (args.panel_b, args.links) == ("scatter", "fold") else
                               f"_{args.panel_b}_{args.links}") + ("" if args.palette == "current" else
                                                                   f"_{args.palette}") + ("" if args.badges == "top" else "_badges-rail") + \
-        ("" if args.font == "cm" else f"_{args.font}") + ("_live-text" if args.live_text else "")
+        ("_live-text" if args.live_text else "")
     print(save(build(args.live_text, args.panel_b, args.links, args.badges), OUT, stem))
     if args.panels:
         for path in export_panels(stem=stem, live_text=args.live_text, panel_b=args.panel_b, badges=args.badges):

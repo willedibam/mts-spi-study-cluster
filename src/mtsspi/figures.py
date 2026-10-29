@@ -1,5 +1,5 @@
-"""Figure helpers shared across studies: two serif styles (`style` without LaTeX,
-`figure_style` with it), one way to save a figure, and the raincloud mark."""
+"""Figure helpers shared across studies: two styles (`style` without LaTeX, `figure_style` with it), both
+Helvetica text with Computer Modern math, one way to save a figure, and the raincloud mark."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,9 +9,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# Helvetica text, Computer Modern math. Under LaTeX the text font is `helvet` (URW Nimbus Sans, Helvetica
+# metrics) and matplotlib's default tick labels ($\mathdefault{...}$) stay in it.
+SANS = {'font.family': 'sans-serif', 'font.sans-serif': ['Helvetica', 'Arial', 'DejaVu Sans'], 'mathtext.fontset': 'cm'}
+SANS_PREAMBLE = (r'\usepackage{helvet}\renewcommand{\familydefault}{\sfdefault}'
+                 r'\DeclareMathAlphabet{\mathhv}{OT1}{phv}{m}{n}\renewcommand{\mathdefault}[1]{\mathhv{#1}}')
+
+
 def style():
-    plt.rcParams.update({'text.usetex': False, 'font.family': 'serif', 'font.serif': ['CMU Serif', 'DejaVu Serif'],
-                        'mathtext.fontset': 'cm', 'font.size': 9, 'axes.titlesize': 10,
+    plt.rcParams.update({'text.usetex': False, **SANS, 'font.size': 9, 'axes.titlesize': 10,
                         'axes.spines.top': False, 'axes.spines.right': False, 'legend.frameon': False,
                         'xtick.direction': 'out', 'ytick.direction': 'out', 'figure.dpi': 180,
                         'savefig.bbox': 'tight', 'axes.grid': False})
@@ -67,8 +73,7 @@ def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_si
 def figure_style():
     if not (shutil.which('latex') and shutil.which('dvipng')):
         raise RuntimeError('Requested LaTeX rendering requires latex and dvipng.')
-    plt.rcParams.update({'text.usetex': True, 'font.family': 'serif',
-        'font.serif': ['Computer Modern Roman'], 'mathtext.fontset': 'cm',
+    plt.rcParams.update({'text.usetex': True, 'text.latex.preamble': SANS_PREAMBLE, **SANS,
         'font.size': 9, 'axes.titlesize': 10, 'axes.labelsize': 9,
         'axes.spines.top': False, 'axes.spines.right': False,
         'xtick.direction': 'out', 'ytick.direction': 'out', 'legend.frameon': False,
