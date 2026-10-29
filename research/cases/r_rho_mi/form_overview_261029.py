@@ -16,7 +16,7 @@ and the marked pairs are the ones in c (asserted). Recording: replicate REP of `
 pyspi's `mi_kraskov_NN-4` (KSG estimator 1, k = 4), plotted in nats against the Gaussian reference MI(rho); bars
 show it on the correlation scale (Linfoot).
 
-    python -m research.cases.r_rho_mi.form_overview_261029 [--live-text]
+    python -m research.cases.r_rho_mi.form_overview_261029 [--live-text] [--font helvetica] [--panels]
 """
 from __future__ import annotations
 
@@ -146,19 +146,19 @@ def result(fig, left, top, w, h, frame, rep, mode="scatter", show_all=True):
     if mode == "scatter":
         for cond, kind, key in CONDS:
             f = frame[frame.level == cond]
-            ax.scatter(f.z_r_rho, f.z_rho_mi, s=13, lw=0.35, ec="white", color=ink(kind), alpha=0.85, zorder=2)
+            ax.scatter(f.z_r_rho, f.z_rho_mi, s=17, lw=0.4, ec="white", color=ink(kind), alpha=0.85, zorder=2)
             f0 = f[f.rep == rep].iloc[0]
             shown[cond] = (float(f0.z_r_rho), float(f0.z_rho_mi))
-            ax.plot(*shown[cond], "o", ms=6.5, mfc="none", mec=ink(kind), mew=1.0, zorder=5)
+            ax.plot(*shown[cond], "o", ms=7, mfc="none", mec=ink(kind), mew=1.0, zorder=5)
         if show_all:                                 # the recording of a: every coupling at once
             f = frame[frame.level == "both"]
-            ax.scatter(f.z_r_rho, f.z_rho_mi, s=11, lw=0.35, ec="white", color="0.55", alpha=0.85, zorder=2,
+            ax.scatter(f.z_r_rho, f.z_rho_mi, s=14, lw=0.4, ec="white", color="0.55", alpha=0.85, zorder=2,
                        marker="D")
             f0 = f[f.rep == rep].iloc[0]
             ax.plot(f0.z_r_rho, f0.z_rho_mi, "D", ms=6, mfc="none", mec=INK, mew=0.9, zorder=5)
         labels = {"linear": (1.0, 0.91, "right", "top"), "monotone": (0.235, 0.962, "left", "bottom")}
         f = frame[frame.level == "fold"]                 # its label sits below, joined by a faint leader
-        ax.annotate(NAMES["fold"], xy=(f.z_r_rho.mean(), f.z_rho_mi.mean()), xytext=(0.985, 0.47), ha="right",
+        ax.annotate(NAMES["fold"], xy=(f.z_r_rho.mean(), f.z_rho_mi.mean()), xytext=(1.02, 0.47), ha="right",
                     va="top", fontsize=7, color=ink("fold"), zorder=6,
                     bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.6),
                     arrowprops=dict(arrowstyle="-", color=ink("fold"), lw=0.5, alpha=0.6, shrinkA=0, shrinkB=5))
@@ -266,7 +266,7 @@ def bars(fig, left, top, w, vals):
         bx.text(q, max(v, 0) + 0.04, "0" if abs(v) < 0.06 else f"{v:.2f}".replace("0.", "."), ha="center",
                 va="bottom", fontsize=5)
     bx.set(ylim=(0, 1.06), xlim=(-0.55, 2.55), yticks=[])
-    bx.set_xticks(range(3), ["$r$", r"$\rho$", "MI"])
+    bx.set_xticks(range(3), ["$r$", r"$\rho$", r"$\mathrm{MI}$"])
     bx.tick_params(axis="x", length=0, pad=1, labelsize=5.5)
     for s_ in ("top", "right", "left"):
         bx.spines[s_].set_visible(False)
@@ -282,13 +282,13 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
     va, vb = ordered(m[a]), ordered(m[b_])
     for k in ("linear", "monotone", "fold"):
         sel = rel == k
-        ax.scatter(va[sel], vb[sel], s=7, lw=0, color=PAIR_INK[k], zorder=3 if k != "linear" else 2)
+        ax.scatter(va[sel], vb[sel], s=12, lw=0.35, ec="white", color=PAIR_INK[k], zorder=3 if k != "linear" else 2)
     if b_ == "mi":
         g = np.linspace(0, 0.995, 200)
         ax.plot(g, -0.5 * np.log(1 - (2 * np.sin(np.pi * g / 6)) ** 2), color=MUTED, lw=0.6, ls=(0, (2.5, 1.5)))
         ax.text(0.5, 0.45, "Gaussian", transform=ax.transAxes, ha="left", fontsize=6, color=MUTED)
         ax.set(xlim=(-0.08, 1.02), ylim=(-0.06, 1.42), yticks=[0, 0.5, 1])
-        ax.set_ylabel(r"MI$_{ij}$ (nats)", labelpad=2, fontsize=7)
+        ax.set_ylabel(r"$\mathrm{MI}_{ij}$ (nats)", labelpad=2, fontsize=7)
     else:
         ax.plot([-0.15, 1.05], [-0.15, 1.05], color=HAIR, lw=0.6, zorder=0)
         ax.set(xlim=(-0.12, 1.02), ylim=(-0.12, 1.02), yticks=[0, 0.5, 1])
@@ -304,7 +304,9 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
         ga = axes_in(fig, gl, top + GY, gs, gs)
         rail(fig, gl - RAIL, top + GY, gs, i, j, ink(kind))
         badge(fig, *badge_at(gl, top), num, ink(kind))
-        ga.text(0.05, 0.95, word, transform=ga.transAxes, ha="left", va="top", fontsize=6, color=ink(kind), zorder=5,
+        tex, strong = plt.rcParams["text.usetex"], word == "strong"
+        ga.text(0.05, 0.95, rf"\textbf{{{word}}}" if tex and strong else word, transform=ga.transAxes, ha="left",
+                va="top", fontsize=6, color=ink(kind), zorder=5, fontweight="bold" if strong and not tex else "normal",
                 bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.8))
         ga.scatter(x[:, i], x[:, j], s=0.2, lw=0, color=shade(ink(kind), 0.85) if kind != "linear" else ink(kind),
                    alpha=0.5, rasterized=True)
@@ -313,7 +315,7 @@ def condition_column(fig, pl, top, x, m, it, kind, key, pairs, nums):
         ga.text(0.5, -0.03, f"$x_{{{i + 1}}}$, $x_{{{j + 1}}}$", transform=ga.transAxes, ha="center", va="top",
                 fontsize=5.5, color=MUTED)
         xy = (m[a][i, j], m[b_][i, j])
-        ax.plot(*xy, "o", ms=5 if k == 0 else 4, mfc="none", mec=ink(kind), mew=0.8, zorder=7)
+        ax.plot(*xy, "o", ms=6 if k == 0 else 5, mfc="none", mec=ink(kind), mew=0.8, zorder=7)
         fig.add_artist(ConnectionPatch(xyA=(0.5, -0.12), coordsA=ga.transAxes, xyB=xy, coordsB=ax.transData,
                                        color="0.6", lw=0.4, zorder=6))
     return ax
@@ -338,6 +340,20 @@ BX = R - SLOT - BS
 # light to dark in order of tolerance (r < rho < MI), so the bar colours read as the ladder itself
 PALETTES = {"current": None,
             "alt": dict(monotone="#13867A", fold="#C23B6E", hues=("#C9CDEB", "#8E97D3", "#4C559E"))}
+
+
+FONTS = ("cm", "helvetica")             # all Computer Modern (composite_style default); Helvetica text, CM math
+FONT = "cm"
+
+
+def use_font():
+    """Helvetica for text; math stays Computer Modern (LaTeX, or mathtext with --live-text)."""
+    if FONT != "helvetica":
+        return
+    rc = plt.rcParams
+    rc.update({"font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial"]})
+    if rc["text.usetex"]:
+        rc["text.latex.preamble"] += r"\usepackage{helvet}\renewcommand{\familydefault}{\sfdefault}"
 
 
 def use_palette(name):
@@ -387,6 +403,7 @@ def build(live_text=False, panel_b="scatter", links="fold", badges="top"):
     dy = TOP_DY if badges == "top" else 0.0
     H = 6.05 + dy
     style(live_text)
+    use_font()
     fig = plt.figure(figsize=(W, H))
     frame = pd.read_csv(OUT / "z_by_recording.csv")
     xm, itm = make(LEVELS["both"], REP)
@@ -454,13 +471,16 @@ def main(argv=None):
     ap.add_argument("--links", choices=("all", "linear", "monotone", "fold", "none"), default="fold")
     ap.add_argument("--palette", choices=tuple(PALETTES), default="current")
     ap.add_argument("--badges", choices=("rail", "top"), default="top")
+    ap.add_argument("--font", choices=FONTS, default="cm", help="helvetica: Helvetica text, Computer Modern math")
     ap.add_argument("--panels", action="store_true", help="also save a, b and c as separate files")
     args = ap.parse_args(argv)
+    global FONT
+    FONT = args.font
     use_palette(args.palette)
     stem = "form_overview" + ("" if (args.panel_b, args.links) == ("scatter", "fold") else
                               f"_{args.panel_b}_{args.links}") + ("" if args.palette == "current" else
                                                                   f"_{args.palette}") + ("" if args.badges == "top" else "_badges-rail") + \
-        ("_live-text" if args.live_text else "")
+        ("" if args.font == "cm" else f"_{args.font}") + ("_live-text" if args.live_text else "")
     print(save(build(args.live_text, args.panel_b, args.links, args.badges), OUT, stem))
     if args.panels:
         for path in export_panels(stem=stem, live_text=args.live_text, panel_b=args.panel_b, badges=args.badges):
