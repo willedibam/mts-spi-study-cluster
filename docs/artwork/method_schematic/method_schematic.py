@@ -39,6 +39,8 @@ from mtsspi.spi_spi_contract import UNIFIED_CONTRACT_VERSION, build_unified_feat
 HERE = Path(__file__).resolve().parent
 PANEL_DIR = HERE / "panels"
 STAMP = "261022"
+EXPORT_DIR = HERE.parents[2] / "results/method-schematic/figure-261029"  # both renditions, full and per panel
+FONTS = ("cm", "helvetica")  # text face; math stays LaTeX Computer Modern in both
 DPI = 600
 SPIS = {
     "lag1": "lag-1 cross-correlation corr(x_i(t), x_j(t+1)) (directed)",
@@ -83,12 +85,15 @@ def seq(hue: str) -> LinearSegmentedColormap:
     return LinearSegmentedColormap.from_list(hue, [tint(hue, 0.22), hue, shade(hue, 0.72)])
 
 
-def style():
-    """docs/figure-style.md, typeset by LaTeX (Computer Modern)."""
+def style(font: str = "cm"):
+    """docs/figure-style.md, typeset by LaTeX. font="helvetica" sets text in Helvetica; math stays Computer Modern."""
+    sans = font == "helvetica"
     mpl.rcParams.update({
         "text.usetex": bool(shutil.which("latex") and shutil.which("dvipng")),
-        "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}",
-        "font.family": "serif", "font.serif": ["Computer Modern Roman"], "mathtext.fontset": "cm",
+        "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}"
+                               + (r"\usepackage{helvet}\renewcommand{\familydefault}{\sfdefault}" if sans else ""),
+        "font.family": "sans-serif" if sans else "serif", "font.serif": ["Computer Modern Roman"],
+        "font.sans-serif": ["Helvetica", "Arial"], "mathtext.fontset": "cm",
         "font.size": 8, "figure.facecolor": "white",
         "pdf.fonttype": 42, "figure.dpi": 180, "savefig.dpi": DPI,
     })
@@ -337,6 +342,7 @@ PANEL_BOXES = {"a": (0.0, 2.42, 3.2, 4.92), "b": (3.16, 2.42, 7.2, 4.92), "e": (
 SHOW_ALL_EXTRACTION = False  # True adds a faint line from every off-diagonal entry of A^(a) and A^(b)
 TRACE_LINKS = "beam"  # panel a: "beam" (boxed traces, faint projections like panel d's) or "curve" (dotted lines)
 SHOW_SLIDING_WINDOW = True  # a fourth, prospective use in panel e: z over sliding windows (not shown in the paper)
+USE_TITLES = {"embed": "clustering", "track": "inference", "coord": "classification", "slide": "change detection"}
 
 
 def figure(x, coupling, mats, c):
@@ -565,6 +571,8 @@ def uses(ax, sz=0.86, sliding=None):
     sage, lav, amber, rose, sky = PASTELS
     spots = ({"embed": (0.14, 1.2), "track": (1.32, 1.2), "coord": (0.14, 0.1), "slide": (1.32, 0.1)} if sliding
              else {"embed": (0.1, 1.16), "track": (1.3, 0.62), "coord": (0.24, 0.08)})  # 2 x 2 grid with four
+    for key, (x0, y0) in spots.items():  # a small typewriter title centred over each icon
+        text(ax, x0 + sz / 2, y0 + sz + 0.03, rf"\texttt{{{USE_TITLES[key]}}}", 6.5, ha="center", va="bottom")
     # Embedding: four clusters, each mixing recordings of three sizes M.
     x0, y0 = spots["embed"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
@@ -648,9 +656,9 @@ def uses(ax, sz=0.86, sliding=None):
 
 # --- build and export ------------------------------------------------------------------------------
 
-def build():
+def build(font: str = "cm"):
     """Compute the toy, its statistics and z, and draw the full figure. Returns (fig, parts, summary)."""
-    style()
+    style(font)
     x, coupling = toy_recording()
     mats = statistics(x)
     c = construction(mats)
@@ -665,28 +673,43 @@ def build():
     return fig, parts, summary
 
 
-def save_full(fig, stem: str = f"method_schematic_{STAMP}") -> Path:
-    """Write the full figure as SVG, PDF and PNG (all at DPI) beside this script; returns the SVG path."""
-    out = HERE / stem
+def save_full(fig, stem: str = f"method_schematic_{STAMP}", out_dir: Path = HERE) -> Path:
+    """Write the full figure as SVG, PDF and PNG (all at DPI) to out_dir; returns the SVG path."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / stem
     for ext in ("svg", "pdf", "png"):
         fig.savefig(out.with_suffix(f".{ext}"), dpi=DPI, bbox_inches="tight")
     return out.with_suffix(".svg")
 
 
-def save_panel(fig, parts, panel: str, fmt: str = "svg") -> Path:
-    """Write one panel alone (other panels and cross-panel links hidden) to panels/panel_<x>.<fmt>."""
+def save_panel(fig, parts, panel: str, fmt: str = "svg", out_dir: Path = PANEL_DIR, stem: str = "") -> Path:
+    """Write one panel alone (other panels and cross-panel links hidden) to out_dir/<stem or panel_<x>>.<fmt>."""
     keep = set(parts[panel])
     shown = {ax: ax.get_visible() for ax in fig.axes}
     for ax in fig.axes:
         ax.set_visible(ax in keep)
-    PANEL_DIR.mkdir(exist_ok=True)
-    path = PANEL_DIR / f"panel_{panel}.{fmt}"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / f"{stem or f'panel_{panel}'}.{fmt}"
     try:
         fig.savefig(path, dpi=DPI, bbox_inches=Bbox.from_extents(*PANEL_BOXES[panel]))
     finally:
         for ax, vis in shown.items():
             ax.set_visible(vis)
     return path
+
+
+def export(fonts=FONTS) -> Path:
+    """Write every rendition to EXPORT_DIR: method-schematic[-<font>].{svg,pdf,png} and the same per panel in
+    panels/panel-<x>[-<font>].*, where the Computer Modern rendition carries no suffix."""
+    for font in fonts:
+        fig, parts, _ = build(font)
+        tag = "" if font == "cm" else f"-{font}"
+        save_full(fig, f"method-schematic{tag}", EXPORT_DIR)
+        for panel in PANELS:
+            for fmt in ("svg", "pdf", "png"):
+                save_panel(fig, parts, panel, fmt, EXPORT_DIR / "panels", f"panel-{panel}{tag}")
+        plt.close(fig)
+    return EXPORT_DIR
 
 
 def main():
@@ -696,6 +719,8 @@ def main():
         save_panel(fig, parts, panel)
     (HERE / f"method_schematic_{STAMP}.json").write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k not in ("statistics", "z")}, indent=1))
+    plt.close(fig)
+    print(export())
 
 
 if __name__ == "__main__":

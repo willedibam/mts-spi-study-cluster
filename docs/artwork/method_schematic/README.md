@@ -4,6 +4,7 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 
 - `method_schematic.py` computes every drawn value and writes `method_schematic_261022.{svg,pdf,png,json}` beside itself, plus one SVG per panel in `panels/`. It is typeset by LaTeX, renders everything at 600 dpi, and runs no pyspi.
   - `method_schematic.ipynb` builds the figure once, then gives one cell per output: the full figure, or a single panel saved to `panels/panel_<x>.svg` and displayed. Run only the cells you need.
+  - `export()` (run by the script, and by the notebook's last cell) writes both renditions to `results/method-schematic/figure-261029/` (gitignored, regenerable), as SVG, PDF and PNG, full (`method-schematic[-helvetica].*`) and per panel (`panels/panel-<x>[-helvetica].*`). The Helvetica rendition sets text in Helvetica through LaTeX's `helvet` package and keeps all math, and the `\texttt` titles, in Computer Modern.
   - Each panel is drawn in figure inches on its own three layers (behind, panel, front). Cross-panel lines sit on separate link layers, so a panel export hides the other panels and all links, then crops to `PANEL_BOXES`.
 - **Recording:** a directed VAR(1) with heterogeneous lagged coupling and correlated innovations, M = 6, T = 1,000, seed 0.
   - Channels are relabelled (`CHANNEL_ORDER`) so that the illustrated, strongly asymmetric pair is (i, j) = (2, 6). z is unchanged by the relabelling, and so are the drawn values.
@@ -27,14 +28,14 @@ How z is constructed, with its geometric reading: one recording, viewed through 
   - A⁽ᵃ⁾'s two glyphs sit in the gaps the offset leaves, right of A⁽ᵃ⁾ and below it, 0.07 in clear of the matrices and flush with the outer edges of the stack's rectangle. The leaders are short.
   - The glyphs (`b_top`) and panel c's z_ab label (`c_top`) sit on a layer above the cross-panel lines.
 - **Row 2:** panels e, d and c each take one third of the width, with titles only. Hand-off arrows between them are left to add by hand.
-- **Panel e (statistical learning):** three schematic icons fed by z, in the order the paper uses them:
+- **Panel e (statistical learning):** each icon has a small centred typewriter title (`USE_TITLES`, 6.5 pt): clustering, inference, classification, change detection. Three schematic icons are fed by z, in the order the paper uses them:
   - comparing recordings of different M in one embedding (proof, atlas);
   - tracking a transition with PC1 of z against an order parameter (order-parameter section);
   - reading one named coordinate z_ab that separates two conditions (cases, proof features).
 
   They are drawn from seeded noise, not data; replace them with thumbnails once those results are frozen. Classification is left out, because supervised use is outside the first paper's scope.
 
-  A fourth, prospective icon (`SHOW_SLIDING_WINDOW`, on) completes a 2 × 2 grid. It shows overlapping windows along one recording, drawn as a small pastel cell heatmap (not icefire), with older windows fainter and the window length w marked; one z per window; and, in a small square 2-D inset, the trajectory those z trace out.
+  A fourth, prospective icon (`SHOW_SLIDING_WINDOW`, on) completes a 2 × 2 grid. It is titled "change detection", the use that sliding windows serve in the hardware application, and that the jump in the inset trajectory depicts. It shows overlapping windows along one recording, drawn as a small pastel cell heatmap (not icefire), with older windows fainter and the window length w marked; one z per window; and, in a small square 2-D inset, the trajectory those z trace out.
   - The paper does not demonstrate this use, so the caption should mark it as prospective.
   - Its requirements are a fixed window length, surrogate nulls for window-to-window noise, and a reduced statistic set for cost.
   - Setting the switch to False restores the three-icon layout.
