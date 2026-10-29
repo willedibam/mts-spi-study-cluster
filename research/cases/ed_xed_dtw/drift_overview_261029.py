@@ -307,7 +307,8 @@ def time_map(fig, left, top, x, it, i, j, kind, tag, bold, label=False):
         if label:
             ga.set_yticks([-10, 0, 10]); ga.set_yticklabels(["−10", "0", "10"])
             ga.tick_params(axis="y", labelsize=5, length=1.5, pad=1, colors=MUTED)
-            ga.set_ylabel(r"$d_j - d_i$", fontsize=5.5, labelpad=0, color=MUTED)
+            ga.set_ylabel(r"$d_j - d_i$", fontsize=5.5, color=MUTED)
+            ga.yaxis.set_label_coords(-0.15, 0.5)            # tucked beside the narrow "0" tick, not past "−10"
     tex = plt.rcParams["text.usetex"]
     ga.text(0.05, 0.95, rf"\textbf{{{tag}}}" if tex and bold else tag, transform=ga.transAxes, ha="left", va="top",
             fontsize=6, color=ink(kind), zorder=5, fontweight="bold" if bold and not tex else "normal",
@@ -401,12 +402,6 @@ def build(live_text=False, link="warping"):
     panel_title(fig, BX - 0.42, 0.18, "b", "Feature variation")
     bax, shown = result(fig, BX, B_TOP, BS, frame)
     panel_title(fig, 0, 2.40, "c", "Channel pairs")
-    note = (r"glyphs: time in $x_j$ against time in $x_i$ over 16 samples; true map (black), DTW path (grey "
-            r"steps), identity" if GLYPH == "map" else
-            r"glyphs: $d_j(t) - d_i(t)$, how many samples $x_j$ trails $x_i$, over 250 samples (one warp cycle)"
-            + (r"; true (coloured), DTW's path (grey)" if DTW_PATH else ""))
-    fig.text(1.45 / W, 1 - 2.40 / H, note,
-             fontsize=6, color=MUTED, va="baseline", transform=fig.transFigure)
     for k, cond in enumerate(CONDS):
         x, _, _ = recording(cond)
         assert np.allclose(x[:, 0], xm[:, 0]), "block-1 channels must be identical across recordings"
