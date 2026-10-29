@@ -1082,6 +1082,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "nbformat" },
     { name = "numpy" },
+    { name = "opentsne" },
     { name = "pandas" },
     { name = "plotly" },
     { name = "psutil" },
@@ -1136,6 +1137,7 @@ requires-dist = [
     { name = "moabb", marker = "extra == 'prep'", specifier = ">=1.0.0" },
     { name = "nbformat", specifier = ">=5.10.4" },
     { name = "numpy", specifier = ">=1.26" },
+    { name = "opentsne", specifier = ">=1.0.4" },
     { name = "pandas", specifier = ">=2.1" },
     { name = "plotly", specifier = ">=6.7.0" },
     { name = "psutil", specifier = ">=5.9" },
@@ -1503,6 +1505,22 @@ source = { registry = "https://pypi.org/simple" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c2/f3/d86c845465a2723ad7e1e5c36dcd75ddb82898b3f53be47ebd429fb2fa5d/nvidia_nvtx-13.0.85-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:4936d1d6780fbe68db454f5e72a42ff64d1fd6397df9f363ae786930fd5c1cd4", size = 148047, upload-time = "2025-09-04T08:29:01.761Z" },
     { url = "https://files.pythonhosted.org/packages/a8/64/3708a90d1ebe202ffdeb7185f878a3c84d15c2b2c31858da2ce0583e2def/nvidia_nvtx-13.0.85-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:cb7780edb6b14107373c835bf8b72e7a178bac7367e23da7acb108f973f157a6", size = 148878, upload-time = "2025-09-04T08:28:53.627Z" },
+]
+
+[[package]]
+name = "opentsne"
+version = "1.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9d/16/4c73977c4702c6a9452248d4562ba61579a215bc09e4c50b795de65fbbca/opentsne-1.0.4.tar.gz", hash = "sha256:e90bf612be94fcbe06e3cab9531a58e4824661f38dd7c2e934569820d15c82ab", size = 252491, upload-time = "2025-10-27T13:55:25.441Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0a/b1/f64c27fea1cb6a70f9517e599dcf992223be6fbad7392daeb870db2d504b/opentsne-1.0.4-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:3787feeb58818569a5a8a09e12a63ba4dfc33bee89b221b530a11495c72d203c", size = 982251, upload-time = "2025-10-27T13:55:09.472Z" },
+    { url = "https://files.pythonhosted.org/packages/70/b8/0f757c94ea08ce907beaa223be700bdf2ea0378563326489aa7b2c2f7dc9/opentsne-1.0.4-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:610626be6ff6062b96e1b122ff219fbeb34957578a0f0f420aa3cc3505ab3547", size = 3454579, upload-time = "2025-10-27T13:55:11.744Z" },
+    { url = "https://files.pythonhosted.org/packages/35/72/7806a5ef1cb922cac2a5aef75dc3aa947009880fe81ece15c02670e49db5/opentsne-1.0.4-cp312-cp312-win_amd64.whl", hash = "sha256:3a28e474804bf3b56ec6f2574eacaa3ffa5efc2dd30b642aa9907b31a982dcc1", size = 438264, upload-time = "2025-10-27T13:55:13.056Z" },
 ]
 
 [[package]]

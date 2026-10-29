@@ -1,0 +1,63 @@
+study: proof-figure-261029
+status: presentation_only
+# Display figure for the proof section. Same bank, contract and preprocessing as
+# proof-refresh-261014 + unified_ordered_v3 (notebook proof_p90_261021); one t-SNE
+# fitted on the displayed classes only, above four class-contrast rainclouds.
+base_protocol: research/proof/p90/configs/analysis/proof-refresh-261014.yaml
+feature_contract: unified_ordered_v3
+# Display order. Variants within a family take neighbouring hues at mid lightness.
+classes:
+- {name: gaussian-noise, family: Noise, label: Gaussian, color: '#4FA3C7'}
+- {name: cauchy-noise, family: Noise, label: Cauchy, color: '#2B5BA8'}
+- {name: var-self-0.7_total-0.2, family: VAR, label: self-memory, color: '#C86FB0'}
+- {name: var-self-0.2_total-0.7, family: VAR, label: neighbour coupling, color: '#7A4AA0'}
+- {name: kuramoto_omega-fast, family: Kuramoto, label: fast freq., color: '#D9662B'}
+- {name: kuramoto_omega-slow, family: Kuramoto, label: slow freq., color: '#E8A33A'}
+- {name: sti-i, family: CML, label: intermittency, color: '#8DB03F'}
+- {name: fdstc, family: CML, label: developed turbulence, color: '#2E8B57'}
+- {name: wave-1d, family: Wave equation, label: 1-D, color: '#5A5A5A'}
+class_rationale: >-
+  Dropped var-self-0.2_total-0.2: the kept VAR pair has matched spectral radius (0.9) and
+  total weight (0.9), differing only in self versus neighbour placement. Dropped
+  defect-turbulence and frozen-chaos: intermittency (alpha 1.7522, eps 0.00115, laminar
+  period-3 phases) and fully developed turbulence (alpha 2, eps 0.3, period-2 alternation)
+  are the most distinct CML dynamics. All twelve classes are separable (5NN with each M/T
+  cell held out: 0.998), so the choice is presentational, not outcome-driven.
+# Markers: white outlines separate overlaps and keep T shapes legible.
+markers: {alpha: 0.85, edgecolor: white, linewidth: 0.3}
+# Class islands: tinted 95% highest-density region of a Gaussian KDE (Scott bandwidth)
+# with a thin contour; anchors for the example-MTS insets to be added around panel a.
+islands: {mass: 0.95, fill_alpha: 0.12, line_width: 0.35}
+tsne:
+  library: openTSNE==1.0.4
+  perplexity: 30
+  # dof > 1 lightens the kernel tails: islands spread relative to their gaps
+  # (Kobak et al. 2020, ECML PKDD). Display choice; gaps and areas stay uninterpretable.
+  # dof 2-5 roughly doubles island radius relative to gaps; 5 kept islands distinct.
+  dof: 5
+  initialization: pca
+  learning_rate: auto
+  early_exaggeration: 12
+  early_exaggeration_iter: 250
+  n_iter: 1250
+  metric: euclidean
+  random_state: 260924
+# Fixed coordinates, chosen for mechanistic readability among coordinates with training
+# AUC >= .995 in every M/T cell (instances 0-5); rainclouds show instances 6-9.
+contrasts:
+- classes: [gaussian-noise, cauchy-noise]
+  spis: [spearmanr, cov_EmpiricalCovariance]
+  label: Spearman $\times$ covariance
+  reading: Rank and moment estimates co-vary across pairs under Gaussian tails; Cauchy outliers decouple them.
+- classes: [var-self-0.7_total-0.2, var-self-0.2_total-0.7]
+  spis: [te_kraskov_NN-4_k-1_kt-1_l-1_lt-1, tlmi_kraskov_NN-4]
+  label: transfer entropy $\times$ lagged MI
+  reading: TE is lagged MI conditioned on the target's past; strong self-memory makes them rank pairs differently.
+- classes: [kuramoto_omega-fast, kuramoto_omega-slow]
+  spis: [corr_pearson_tau-1, xcorr_max_sig-True]
+  label: lag-1 corr. $\times$ max cross-corr.
+  reading: Oscillation within the record makes fixed-lag and best-lag dependence disagree.
+- classes: [sti-i, fdstc]
+  spis: [corr_pearson_tau-1, corr_pearson_tau-2]
+  label: lag-1 $\times$ lag-2 corr.
+  reading: Period-3 laminar phases give matching lag-1/lag-2 profiles; period-2 alternation flips their sign.

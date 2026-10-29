@@ -24,13 +24,18 @@ def save(fig, output: Path, name: str):
     return fig
 
 
-def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_sizes=7):
+def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_sizes=7, point_markers=None, point_kw=None):
     values = np.asarray(values); finite = np.isfinite(values)
     point_sizes = np.asarray(point_sizes)
     if point_sizes.ndim:
         if point_sizes.shape != values.shape:
             raise ValueError('Point sizes must align with the unfiltered values.')
         point_sizes = point_sizes[finite]
+    if point_markers is not None:
+        point_markers = np.asarray(point_markers)
+        if point_markers.shape != values.shape:
+            raise ValueError('Point markers must align with the unfiltered values.')
+        point_markers = point_markers[finite]
     values = values[finite]
     cloud_position = position + width*.14 if box else position
     if len(values) > 2 and np.std(values) > 1e-9:
@@ -39,7 +44,15 @@ def raincloud(ax, values, position, color, rng, width=.2, *, box=False, point_si
             verts = body.get_paths()[0].vertices
             verts[:, 0] = np.maximum(verts[:, 0], cloud_position)
             body.set_facecolor(color); body.set_edgecolor('none'); body.set_alpha(.25)
-    ax.scatter(position-rng.uniform(width*.14 if box else .025, width*.55, len(values)), values, color=color, s=point_sizes, alpha=.5, linewidths=0)
+    jitter = position-rng.uniform(width*.14 if box else .025, width*.55, len(values))
+    point_kw = {'alpha': .5, 'linewidths': 0, **(point_kw or {})}
+    if point_markers is None:
+        ax.scatter(jitter, values, color=color, s=point_sizes, **point_kw)
+    else:
+        sizes = np.broadcast_to(point_sizes, values.shape)
+        for marker in dict.fromkeys(point_markers):
+            use = point_markers == marker
+            ax.scatter(jitter[use], values[use], color=color, s=sizes[use], marker=marker, **point_kw)
     if box:
         ax.boxplot([values], positions=[position], widths=width*.16, whis=1.5,
                    showfliers=False, manage_ticks=False, patch_artist=True,

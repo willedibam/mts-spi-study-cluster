@@ -19,6 +19,22 @@ User decision: z uses all M(M−1) ordered off-diagonal entries (`unified_ordere
 
 **Pending.** The `strength-factorial-261015`, `strength-grid-261015` and `noise-experiments-261016` MPIs exist only on Gadi, so their ordered features need a cluster extraction.
 
+## Proof figure, 2026-10-29
+
+User decisions: drop the within-CML embedding and use one t-SNE of the multi-class panel; encode M by area and T by marker shape; thin the class set. Implemented in `research/proof/p90/proof_figure.py` with frozen settings in `configs/analysis/proof-figure-261029.yaml`, run from the composite section of `proof_p90_261021`, writing `results/proof/viewer-261021/proof-figure.*`. `proof_composite.py` is left unchanged because `proof_p90_261015` imports it.
+- **Classes.** Nine classes. Dropped VAR (0.2, 0.2); the kept pair (0.7, 0.2) and (0.2, 0.7) has matched radius and total weight. The CML regimes kept are intermittency and fully developed turbulence; defect turbulence and frozen chaos are dropped. All twelve classes are separable (5NN on PCA50 with each M/T cell held out: .998 over twelve classes, .998 over nine), so the selection is presentational. Defect turbulence is the harder CML partner if one is wanted.
+- **t-SNE.** openTSNE 1.0.4 (now a dependency), Student-t dof 5, otherwise as in the 261014 protocol. Perplexity 30→100 barely changed island radius relative to the gap (.09–.13), while dof 2–4 doubled it (.22–.27) with unchanged 5NN purity (.996) ([Kobak et al. 2020](https://arxiv.org/abs/1902.05804)). For crowding, white marker outlines (alpha .85) beat lower opacity, which washed islands out. Within-island layout is partly T-driven: under the old fit, within-class η² was median .28 for T and .19 for M.
+- **Rainclouds.** One per family pair, each with a fixed coordinate chosen for mechanistic readability among coordinates with training AUC ≥ .995 in all nine cells. All four have display AUC 1.
+  - Noise: Spearman × covariance (.955 versus .015).
+  - VAR: KSG transfer entropy × lagged MI (.27 versus .84).
+  - Kuramoto: lag-1 Pearson × xcorr max (−.06 versus .99).
+  - CML: lag-1 × lag-2 Pearson (+.99 versus −.97).
+- **Mechanisms, checked by simulation.** Intermittency has period-3 laminar phases (autocorrelation r(3)=+.66), and fully developed turbulence alternates with period 2 (−.66/+.47 at lags 1 and 2). Fast Kuramoto completes 1.6–5.7 cycles per record and slow Kuramoto fewer than 1.
+- **Style (user, 29 Oct).** Case-figure TeX typography (`research/cases/composite_style.py`), panel letters a/b, flat class legend below as "Family (variant)", M/T key inset in the embedding.
+- **Palette (user, 29 Oct).** Variants of a family take neighbouring hues at mid lightness (e.g. blue/teal). This was preferred over light/dark pairs of one hue, whose light member faded and lost marker shapes. Raincloud ticks repeat the legend labels. Islands carry a tinted 95% KDE highest-density region with a 0.35 pt contour. The user added these as anchors for the example-MTS insets; the caption must say that contour shape carries no meaning.
+- **Size (user, 29 Oct).** Nature full-page width, 183 mm (7.2 in). Font sizes follow the case composites at final size: 7–8 pt, ticks 6.5–7 pt, panel letters 9 pt. Output is 600 dpi for PNG and for the rasterised layers of the PDF/SVG.
+- **Open.** Example MTS heatmaps around the t-SNE are planned, and the side margins are left free for them. Neither direct island labels nor a PCA companion panel has been decided.
+
 ## Physical coupling × sensor noise follow-up, 2026-10-15
 
 Completed `noise-experiments-261016`, five executed cells appended to the same notebook, preserving all 38 existing cells/outputs. Fresh M16/T1000, 32 parents/class, seven classes including CML intermittency/frozen chaos; fixed physical coupling. Paired eta0/.5/1/2/4/8 with equal versus RMS-normalized exponential channel SDs and pure Gaussian-noise endpoint (2,688 records), plus matched-quantile previous/stronger random attenuation U[.25,.95]/U[.05,.50] (448). Same latent/noise per parent; expected prestandardization noise power matched, not average edge attenuation. Training instances 0–15 at clean/equal1/exponential1 only; held 16–31; disjoint clean retrieval gallery. Frozen transforms, PCA/UMAP, readouts and all severe outcomes retained; raw means primary. Source/protocol under `research/proof/baselines/*noise_experiments*`, compact evidence `results/proof/noise-experiments-261016/`.
