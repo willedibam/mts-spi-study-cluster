@@ -22,7 +22,7 @@ from .compute import ComputeResult, run_pyspi
 from .corpus import ArchiveCorpus, CorpusEntry
 from .generated_corpus import GeneratedCorpus
 from .provenance import (
-    atomic_json, atomic_savez, file_sha256, peak_memory_mib, pyspi_version,
+    atomic_json, atomic_savez, file_sha256, peak_memory_mib, pyspi_commit, pyspi_version,
     repository_provenance, worker_resources,
 )
 from .utils import load_yaml, resolve_path, timestamp, to_relative
@@ -126,6 +126,8 @@ def _metadata(
             "config": to_relative(corpus.pyspi_config),
             "config_sha256": identity["pyspi_config_sha256"],
             "version": identity["pyspi_version"],
+            # Outside the execution identity, so earlier recordings still audit.
+            "commit": pyspi_commit(),
             "n_spis": len(result.metadata),
             "errors": result.errors or {},
             "timings": {

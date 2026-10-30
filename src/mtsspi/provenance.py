@@ -58,6 +58,39 @@ def repository_provenance() -> dict[str, Any]:
     return {"git_commit": commit, "git_dirty": dirty}
 
 
+def pyspi_commit() -> str:
+    """The pyspi commit that was imported: a checkout's HEAD, else the locked git pin."""
+    import pyspi
+
+    source = Path(pyspi.__file__).resolve().parent.parent
+    try:
+        # An install inside this repo's .venv would otherwise report this repo.
+        if not (source / ".git").exists():
+            raise OSError("not a pyspi checkout")
+        commit = subprocess.check_output(
+            ["git", "-C", str(source), "rev-parse", "HEAD"],
+            text=True, stderr=subprocess.DEVNULL,
+        ).strip()
+        dirty = subprocess.check_output(
+            ["git", "-C", str(source), "status", "--porcelain", "--", "pyspi"],
+            text=True, stderr=subprocess.DEVNULL,
+        ).strip()
+        return commit + ("-dirty" if dirty else "")
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    try:
+        from importlib.metadata import distribution
+
+        dist = distribution("pyspi")
+        if Path(dist.locate_file("pyspi")).resolve() == source / "pyspi":
+            info = json.loads(dist.read_text("direct_url.json") or "{}")
+            return info.get("vcs_info", {}).get("commit_id", "unknown")
+    except (PackageNotFoundError, OSError, ValueError):
+        pass
+    # A snapshot directory under operations/sources/ is named by its commit.
+    return "unknown"
+
+
 def pyspi_version() -> dict[str, str]:
     try:
         dist = version("pyspi")

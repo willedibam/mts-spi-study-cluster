@@ -8,9 +8,6 @@ dependencies = [
     "scipy>=1.11",
     "pandas>=2.1",
     "pyyaml>=6.0",
-    # pyspi itself is NOT listed here; it ships as a sister repo at ../pyspi-fork
-    # and MUST be installed editable after creating the venv:
-    #   uv pip install -e ../pyspi-fork
     # The old `setuptools<80` cap existed because pyEDM/LoadData.py imported
     # pkg_resources, which setuptools 80 removed from the default install.
     # pyspi 3.0 requires pyEDM>=2.5, which dropped that import, so the cap is
@@ -20,7 +17,7 @@ dependencies = [
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "scikit-learn>=1.8",
-    # The sibling checkout, editable: see [tool.uv.sources].
+    # Pinned to an exact upstream commit: see [tool.uv.sources] and HPC.md.
     "pyspi",
     "umap-learn>=0.5.5",
     "tqdm>=4.66",
@@ -70,7 +67,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.uv.sources]
-pyspi = { path = "../pyspi-fork", editable = true }
+# One exact commit, recorded in uv.lock. Bump `rev` freely (HPC.md, "pyspi");
+# a fork branch is pinned the same way, by its commit on willedibam/pyspi.
+pyspi = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi", rev = "676a49d1d65ee46953708265d0399cf0e326764c" }
 
 # Installed by `uv sync` unless --no-dev: tests and notebook execution.
 [dependency-groups]

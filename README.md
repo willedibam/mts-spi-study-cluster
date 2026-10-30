@@ -14,7 +14,7 @@ Local datasets and feature banks live together under `data/`; see the [data layo
 ## Running pyspi over a corpus
 
 ```bash
-uv sync --locked --inexact                      # the environment; pyspi is the sibling checkout ../pyspi-fork
+uv sync --locked --inexact                      # the environment; pyspi is pinned by commit (HPC.md)
 python -m mtsspi.run_corpus --config configs/generate/test.yaml --list
 python -m mtsspi.run_corpus --config configs/generate/test.yaml --job-index 1 --n-jobs 4
 ```
