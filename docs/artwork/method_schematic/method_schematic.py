@@ -8,6 +8,8 @@ computation for i -> j and j -> i attached to the front matrix. Row 2, right to 
 the off-diagonal entries of A^(a) and A^(b) drawn out into one scatter, whose Pearson
 correlation is z_ab; (d) z_ab's place in the K x K agreement matrix, one strict triangle of
 which is drawn out into z; (e) schematic icons for what one z per recording supports.
+A full-width, unlettered motivation band sits above the pipeline: two recordings of different
+systems and sizes, the first fed by its channels, joined by a double arrow under a question mark.
 
 Every value drawn is computed here from a small synthetic recording (directed VAR(1),
 M = 6, T = 1000) with K = 5 numpy statistics; nothing is case-study data and no pyspi
@@ -34,6 +36,7 @@ from matplotlib.transforms import Bbox
 from seaborn import color_palette
 
 from mtsspi.corpus_visualization import scale_timeseries
+from mtsspi.generators.registry import generate_series
 from mtsspi.spi_spi_contract import UNIFIED_CONTRACT_VERSION, build_unified_feature_values
 
 HERE = Path(__file__).resolve().parent
@@ -335,23 +338,32 @@ def box_scatter(x0, y0, w, h, xs, ys, pad=0.08):
 
 # --- figure ------------------------------------------------------------------------------------
 
-PANELS = "abcde"
+PANELS = ("motivation", *"abcde")
+PIPE_H, TOP_H = 4.9, 1.45  # heights of the pipeline (rows 1 and 2) and of the motivation band above it
 # Panel extents in figure inches (x0, y0, x1, y1), used to crop single-panel exports.
 PANEL_BOXES = {"a": (0.0, 2.42, 3.2, 4.92), "b": (3.16, 2.42, 7.2, 4.92), "e": (0.0, 0.0, 2.36, 2.42),
-               "d": (2.36, 0.0, 4.72, 2.42), "c": (4.72, 0.0, 7.2, 2.42)}
+               "d": (2.36, 0.0, 4.72, 2.42), "c": (4.72, 0.0, 7.2, 2.42),
+               "motivation": (0.0, PIPE_H, 7.09, PIPE_H + TOP_H)}
+# Motivation band: two recordings of different systems and sizes. Both heatmaps are free: each box is its
+# lower-left corner and size in figure inches, so they can be moved independently. The left recording's
+# channels sit to its left as traces, one beside each row.
+MOTIVE = {"left": dict(gen="var", seed=1, M=6, T=200, target_rho=0.9, topology="ring-unidirectional"),
+          "right": dict(gen="wave_1d", seed=1, M=16, T=300)}
+MOTIVE_BOX = {"left": (1.85, PIPE_H + 0.22, 1.5, 0.9), "right": (4.35, PIPE_H + 0.42, 1.6, 0.92)}
+MOTIVE_TRACES = dict(w=0.62, gap=0.1)  # trace width and gap to the heatmap
 SHOW_ALL_EXTRACTION = False  # True adds a faint line from every off-diagonal entry of A^(a) and A^(b)
 TRACE_LINKS = "beam"  # panel a: "beam" (boxed traces, faint projections like panel d's) or "curve" (dotted lines)
 SHOW_SLIDING_WINDOW = True  # a fourth, prospective use in panel e: z over sliding windows (not shown in the paper)
 USE_TITLES = {"embed": "clustering", "track": "inference", "coord": "classification", "slide": "change detection"}
 
 
-def figure(x, coupling, mats, c):
+def figure(x, coupling, mats, c, views):
     """Draw the full schematic. Returns the figure and, per panel, the axes that belong to it."""
     M, edges, P, R, z = c["M"], c["edges"], c["P"], c["R"], c["z"]
     K, A, B = len(P), A_IDX, B_IDX
     i, j = PAIR
     names = list(mats)
-    fig = plt.figure(figsize=(7.09, 4.9))
+    fig = plt.figure(figsize=(7.09, PIPE_H + TOP_H))
     L = {p: {d: layer(fig, f"{p}_{d}", zo) for d, zo in (("back", 0), ("base", 1), ("front", 2))} for p in PANELS}
     links = {d: layer(fig, f"links_{d}", zo) for d, zo in (("back", 0.5), ("front", 2.5))}
     for p in "bc":  # glyphs and labels that must sit above the cross-panel lines
@@ -558,10 +570,73 @@ def figure(x, coupling, mats, c):
     for p0, p1 in [(beam[0], beam[1]), (beam[3], beam[2])]:
         links["back"].plot(*zip(p0, p1), color=feat_ink, lw=0.6, alpha=0.55, zorder=1.1)
 
+    motivation(L["motivation"], views)
+
     # (e) What one z per recording supports: schematic icons, not data. --------------------------
     title(L["e"]["base"], 0.02, 2.25, "e", "Statistical learning")
     uses(L["e"]["base"])
     return fig, parts
+
+
+def carpet(ax, scaled, limit, x0, y0, w, h, z=1):
+    """A channel x time heatmap, rows unbroken, with rounded corners on a hairline card."""
+    rounded(ax, x0 - 0.03, y0 - 0.03, w + 0.06, h + 0.06, "white", r=0.04, z=z - 0.5, ec=HAIR, lw=0.5)
+    clip = FancyBboxPatch((x0, y0), w, h, boxstyle="round,pad=0,rounding_size=0.025", transform=ax.transData,
+                          fc="none", ec="none")
+    ax.add_patch(clip)
+    im = ax.imshow(scaled, cmap=MTS, vmin=-limit, vmax=limit, aspect="auto", interpolation="nearest",
+                   extent=(x0, x0 + w, y0, y0 + h), zorder=z)
+    im.set_clip_path(clip)
+
+
+def double_arrow(ax, p0, p1, sep=0.024, head=0.075, lw=0.7, color=INK, z=3):
+    """A double-lined double arrow (like \\Longleftrightarrow) from p0 to p1, drawn at any angle."""
+    p0, p1 = np.asarray(p0, float), np.asarray(p1, float)
+    d = (p1 - p0) / np.linalg.norm(p1 - p0)
+    n = np.array([-d[1], d[0]])
+    spread = 0.8  # arm half-width per unit of head length
+    inset = sep / 2 / spread  # where each shaft line meets the arms
+    kw = dict(color=color, lw=lw, solid_capstyle="round", solid_joinstyle="round", zorder=z)
+    for side in (1, -1):
+        ax.plot(*np.array([p0 + d * inset, p1 - d * inset]).T + (side * n * sep / 2)[:, None], **kw)
+    for tip, out in ((p0, d), (p1, -d)):
+        ax.plot(*np.array([tip + head * (out + spread * n), tip, tip + head * (out - spread * n)]).T, **kw)
+
+
+def motivation_views() -> dict:
+    """The motivation band's two recordings, robust-scaled per channel: {side: (channels x time, limit)}."""
+    views = {}
+    for side, spec in MOTIVE.items():
+        spec = dict(spec)
+        views[side] = robust_scaled(generate_series(spec.pop("gen"), seed=spec.pop("seed"), **spec))
+    return views
+
+
+def motivation(L, views):
+    """Two recordings to compare: the left with its channel traces, the right raised; a double arrow and a ?."""
+    ax = L["base"]
+    for side in ("left", "right"):
+        carpet(ax, *views[side], *MOTIVE_BOX[side])
+    s, _ = views["left"]
+    lx, ly, lw, lh = MOTIVE_BOX["left"]
+    M = len(s)
+    pitch = lh / M
+    tw = MOTIVE_TRACES["w"]
+    tx = lx - 0.03 - MOTIVE_TRACES["gap"] - tw  # clear of the card
+    labels = {0: "$x_1$", 1: "$x_2$", M - 1: "$x_M$"}
+    for m in range(M):
+        cy = ly + (M - 0.5 - m) * pitch  # level with its row
+        trace(ax, tx, cy - 0.36 * pitch, tw, 0.72 * pitch, s[m], lw=0.5)
+        if m in labels:
+            text(ax, tx - 0.05, cy, labels[m], 8, ha="right", va="center")
+    text(ax, tx - 0.07, ly + lh / 2 - 0.5 * pitch, r"$\vdots$", 8, ha="right", va="center")
+    # Compare: a double arrow from the left heatmap to the right one, with a bold question mark above it.
+    rx, ry, rw, rh = MOTIVE_BOX["right"]
+    p0, p1 = np.array([lx + lw + 0.16, ly + lh / 2]), np.array([rx - 0.16, ry + rh / 2])
+    double_arrow(ax, p0, p1)
+    d = (p1 - p0) / np.linalg.norm(p1 - p0)
+    q = (p0 + p1) / 2 + 0.2 * np.array([-d[1], d[0]])
+    text(ax, *q, r"\textbf{?}", 20, ha="center", va="center")
 
 
 def uses(ax, sz=0.86, sliding=None):
@@ -662,7 +737,7 @@ def build(font: str = "cm"):
     x, coupling = toy_recording()
     mats = statistics(x)
     c = construction(mats)
-    fig, parts = figure(x, coupling, mats, c)
+    fig, parts = figure(x, coupling, mats, c, motivation_views())
     names = list(mats)
     summary = {
         "contract": UNIFIED_CONTRACT_VERSION, "M": c["M"], "T": len(x), "K": len(c["P"]),

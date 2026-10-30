@@ -9,6 +9,12 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Recording:** a directed VAR(1) with heterogeneous lagged coupling and correlated innovations, M = 6, T = 1,000, seed 0.
   - Channels are relabelled (`CHANNEL_ORDER`) so that the illustrated, strongly asymmetric pair is (i, j) = (2, 6). z is unchanged by the relabelling, and so are the drawn values.
   - The carpet and traces show samples 200–300, with the order-parameter composite's heatmap glyph: robust scaling per channel, icefire, limit at the 99th percentile of |x|.
+- **Motivation band (unlettered, full width, above the pipeline):** the question the method answers, how to compare two recordings.
+  - Left: a 6-channel VAR (`MOTIVE`: unidirectional ring, spectral radius 0.9, seed 1, T = 200), as one unbroken heatmap. Its channels are drawn as traces x₁, x₂, ⋮, x_M, each level with its row, with no connectors.
+  - Right: a 16-channel 1-D wave recording, raised a little and drawn without traces. It comes from a different system with a different M, which is the comparison z makes possible.
+  - Between them, an angled double-lined double arrow (`double_arrow`, drawn like ⟺ at any angle) with a bold question mark above it.
+  - Both heatmaps are free diagrams: each `MOTIVE_BOX` entry is a lower-left corner and size in figure inches, and the traces follow the left one (`MOTIVE_TRACES`). The band's heatmaps are unbroken; panel a's carpet keeps one strip per channel. The band adds `TOP_H` = 1.45 in on top of the 4.9 in pipeline, so nothing below it moves.
+  - The band has no letter yet. Lettering it a would shift the pipeline to b–f.
 - **Panel a:** carpet → shared traces → graph.
   - The carpet sits on one hairline card with a vertical "channel" label and no row numbers.
   - x_i (channel 2) and x_j (channel 6) are each drawn once, as a bare trace centred over the gap between the carpet and the graph: x_i above, x_j below, both on a common time axis. A ⟺ joins carpet and graph between them.
