@@ -65,6 +65,7 @@
 - `origin` is the single source of truth. Commit and push finished work in the session that produced it; before ending a session, run `git status -sb` and report anything left uncommitted or unpushed and why.
 - Clusters only receive: `git pull --ff-only` there, no edits to tracked files. The runner on a cluster must be the pushed local runner; the farm submitters refuse a dirty, unpushed or stale checkout.
 - Never extend a corpus with a different pyspi computation version; re-run it into a new output directory.
+- Results are cheap to regenerate (pyspi is fast; figures are scripted), and will be regenerated repeatedly. Recompute cost is never a reason to freeze pyspi or other dependencies: upgrade when a better version exists, re-run, regenerate figures. Reproducibility comes from pinning exact versions per run, not from avoiding change.
 
 ## Cluster operations
 
