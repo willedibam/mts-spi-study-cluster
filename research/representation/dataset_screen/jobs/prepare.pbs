@@ -9,4 +9,6 @@
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
-python -u -m research.representation.dataset_screen.prepare "${DATASET:?}" --root "${RUN_ROOT:?}"
+extra=()
+[[ "${RELEASE_LANL:-0}" == 1 ]] && extra+=(--release-lanl)
+python -u -m research.representation.dataset_screen.prepare "${DATASET:?}" --root "${RUN_ROOT:?}" "${extra[@]}"

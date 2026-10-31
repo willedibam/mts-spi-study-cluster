@@ -57,12 +57,18 @@ datasets:
     source_report: https://doi.org/10.2172/961604
     mirror: https://github.com/ebpfly/shmtools/blob/747392d82d17e5ef8d1bbe31bbd696894151b0e5/examples/data/data_files/data3SS.mat
     git_blob_sha1: daa5bc2b90679b1394c347ddb4f21efdea57c8de
-    status: audit before extraction; third-party teaching subset, not yet authoritative full-data provenance
+    status: report metadata verified; third-party teaching subset, original repetition mapping unavailable
+    report_sha256: d07ce62b6917d58b7fc84ee60d14aa73a794a853e8b6a1ded5a5924846ebbfdd
     target: nonlinear bumper contact versus linear mass/stiffness changes
     M: 4
     T: 4096
     sample_rate_hz: 320
     group: physical condition state; repetitions cannot cross groups
+    source_conditions: 9
+    screen_conditions: 4
+    reserved_conditions: 4
+    repetitions_per_condition: 10
+    confirmation_scope: same apparatus, not cross-structure generalization
     hypothesis: Local nonlinear contact may alter cross-statistic agreement beyond linear structural response.
 comparisons:
   statistical: [univariate, univariate_rbf, pearson, aligned, single_spi, m, m_rbf, z, m_plus_z, baseline_plus_z, validity]

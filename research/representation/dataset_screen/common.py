@@ -1,10 +1,19 @@
 """Grouped multiclass scoring shared by all discovery comparators."""
 import numpy as np
-from sklearn.model_selection import StratifiedGroupKFold
+from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold
 
 
 def folds(y, groups):
-    result = list(StratifiedGroupKFold(3, shuffle=True, random_state=261031).split(y, y, groups))
+    unique = np.unique(groups)
+    labels = [np.unique(y[groups == g]) for g in unique]
+    if all(len(v) == 1 for v in labels):
+        # Configuration labels are constant within each structural test state.
+        # Stratify whole states, never repetitions of a state.
+        cv = StratifiedKFold(3, shuffle=True, random_state=261031)
+        result = [(np.flatnonzero(np.isin(groups, unique[a])), np.flatnonzero(np.isin(groups, unique[b])))
+                  for a,b in cv.split(unique, np.array(labels).reshape(-1))]
+    else:
+        result = list(StratifiedGroupKFold(3, shuffle=True, random_state=261031).split(y, y, groups))
     classes = set(y)
     for train, valid in result:
         if set(groups[train]) & set(groups[valid]) or set(y[train]) != classes or set(y[valid]) != classes:

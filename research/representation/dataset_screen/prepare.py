@@ -355,12 +355,65 @@ def lanl_audit(root, spec):
     print(json.dumps(report), flush=True)
 
 
+def structural_split(seed=SEED):
+    rng = np.random.default_rng(seed)
+    linear = rng.permutation(np.arange(1, 10)).tolist()
+    contact = rng.permutation(np.arange(10, 18)).tolist()
+    return dict(source=linear[:5] + contact[:4], screen=linear[5:7] + contact[4:6],
+                confirmation_reserved=linear[7:] + contact[6:], seed=seed)
+
+
+def lanl_prepare(root, spec):
+    """Small mirror subset, with condition semantics verified against LA-14393."""
+    path = root / 'data3SS.mat'
+    original_audit = json.loads((root / 'input-audit.json').read_text())
+    if file_sha256(path) != original_audit['sha256']:
+        raise ValueError('audited structural input changed')
+    report_url = 'https://digital.library.unt.edu/ark:/67531/metadc930290/m2/1/high_res_d/961604.pdf'
+    report = root / 'LA-14393.pdf'
+    if not report.exists(): report.write_bytes(fetch(report_url))
+    if file_sha256(report) != spec['report_sha256']:
+        raise ValueError('reviewed technical report changed')
+    source = loadmat(path)
+    data, labels = source['dataset'], source['states'].reshape(-1)
+    if data.shape != (8192, 5, 170) or not np.array_equal(np.unique(labels), np.arange(1,18)):
+        raise ValueError('unexpected structural teaching subset')
+    if not np.all(np.unique(labels, return_counts=True)[1] == 10):
+        raise ValueError('unexpected structural repetition count')
+    split = structural_split()
+    atomic_json(root / 'split.json', split)
+    rows, physical, force = [], {}, {}
+    for role in ['source', 'screen']:
+        for condition in split[role]:
+            for repeat, index in enumerate(np.flatnonzero(labels == condition)):
+                key = f'state{condition:02d}-repeat{repeat:02d}'
+                # No decimation: the original excitation reaches 150 Hz.
+                physical[key] = data[2048:6144, 1:, index].astype(np.float64)
+                force[key] = data[2048:6144, 0, index]
+                rows.append(dict(row_id=key, group=f'state{condition:02d}', role=role,
+                    target=int(condition >= 10), condition=condition, repeat=repeat,
+                    native_index=int(index), native_sha256=file_sha256(path)))
+    atomic_json(root / 'mirror-audit.json', original_audit)
+    atomic_savez(root / 'excitation-control.npz', force)
+    finalize(root, 'lanl3ss', rows, physical, dict(dataset=original_audit['source'],
+        data_sha256=file_sha256(path), report=report_url, report_sha256=file_sha256(report),
+        report_evidence='LA-14393 printed pp. 7-9, Tables 1-2: channel 1 load cell, channels 2-5 accelerometers, 320 Hz, states 1-9 linear and 10-17 contact',
+        sample_rate_hz=320, crop_samples=[2048,6144], channels=[2,3,4,5], split=split,
+        independent_unit='physical configuration of one apparatus; ten repetitions are not independent structures',
+        confirmation_scope='reserved configurations of the same apparatus, not cross-structure validation',
+        excitation_control_sha256=file_sha256(root / 'excitation-control.npz'),
+        limitation='Pinned third-party copy with ten repetitions/condition, matching the report count; original file/trial identities and stored calibrated units are not independently certified.'), [])
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('dataset', choices=['chbmit', 'hmc', 'grabmyo', 'lanl3ss'])
     parser.add_argument('--root', type=Path, required=True)
+    parser.add_argument('--release-lanl', action='store_true', help='Prepare the audited structural subset after report verification')
     args = parser.parse_args()
     args.root.mkdir(parents=True, exist_ok=True)
     if (args.root / 'manifest.json').exists(): raise FileExistsError('prepared corpus already exists')
     spec = yaml.safe_load(PROTOCOL.read_text())['datasets'][args.dataset]
-    dict(chbmit=chbmit, hmc=hmc, grabmyo=grabmyo, lanl3ss=lanl_audit)[args.dataset](args.root, spec)
+    if args.release_lanl and args.dataset != 'lanl3ss': raise ValueError('LANL release flag for wrong dataset')
+    dict(chbmit=chbmit, hmc=hmc, grabmyo=grabmyo,
+         lanl3ss=lanl_prepare if args.release_lanl else lanl_audit)[args.dataset](args.root, spec)

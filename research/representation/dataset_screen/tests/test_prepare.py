@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from research.representation.dataset_screen.prepare import (
-    split_groups, parse_sleep, parse_seizures, control_windows, bipolar_emg, univariate, epoch)
+    split_groups, parse_sleep, parse_seizures, control_windows, bipolar_emg, univariate, epoch, structural_split)
 
 
 def test_subject_partitions_reserve_confirmation_and_ignore_input_order():
@@ -12,6 +12,20 @@ def test_subject_partitions_reserve_confirmation_and_ignore_input_order():
     assert [len(a[k]) for k in ['source', 'screen', 'confirmation_reserved']] == [24, 8, 11]
     assert not set(a['source']) & set(a['screen'])
     assert not (set(a['source']) | set(a['screen'])) & set(a['confirmation_reserved'])
+
+
+def test_structural_configurations_stay_separate_with_both_mechanisms():
+    from research.representation.dataset_screen.common import folds
+    split = structural_split()
+    assert [len(split[r]) for r in ['source','screen','confirmation_reserved']] == [9,4,4]
+    assert sorted(sum([split[r] for r in ['source','screen','confirmation_reserved']], [])) == list(range(1,18))
+    for role in ['source','screen','confirmation_reserved']:
+        assert {int(s >= 10) for s in split[role]} == {0,1}
+    groups = np.repeat(split['source'],10)
+    y = (groups >= 10).astype(int)
+    for train, valid in folds(y, groups):
+        assert set(groups[train]).isdisjoint(groups[valid])
+        assert set(y[train]) == set(y[valid]) == {0,1}
 
 
 def test_sleep_annotations_use_elapsed_time_not_midnight_clock():
