@@ -13,6 +13,29 @@ from mtsspi.provenance import atomic_json, file_sha256
 from research.representation.empirical_transfer.splits import source_folds, group_brier, group_weights
 
 
+def resume_candidates(path, identity, previous_snapshot):
+    """Reuse source-CV work only with identical data, settings and fit code."""
+    if previous_snapshot is None or not path.exists():
+        return {}
+    saved = json.loads(path.read_text())
+    old = saved['identity']
+    runner = Path('research/representation/empirical_transfer/fit_raw.py')
+    if old['runner_sha256'] != file_sha256(previous_snapshot / runner):
+        raise ValueError('progress is not from the declared previous runner')
+    implementations = [
+        'research/representation/empirical_transfer/splits.py',
+        'research/representation/shared/neurotycho_learning.py',
+        'research/representation/shared/representation_state_neural.py',
+        'research/representation/learned_baselines/inceptiontime_baseline.py',
+    ]
+    if any(file_sha256(Path(p)) != file_sha256(previous_snapshot / p) for p in implementations):
+        raise ValueError('training implementation changed; cannot reuse CV fits')
+    if {k: v for k, v in old.items() if k != 'runner_sha256'} != {k: v for k, v in identity.items() if k != 'runner_sha256'}:
+        raise ValueError('source inputs, settings or runtime changed')
+    candidates = [*saved['completed_candidates'], saved['current']]
+    return {(c['lr'], c['decay'], f['fold']): f for c in candidates for f in c['folds']}
+
+
 def inputs(root):
     manifest = json.loads((root / 'manifest.json').read_text())
     path = root / 'views.npz'
@@ -44,11 +67,19 @@ def neural(args, x, y, groups, output, identity):
         fit = fit_binary
     identity.update(config_sha256=file_sha256(config_path), spec=spec, training=training,
                     seeds=seeds, torch=version('torch'), numpy=version('numpy'), device=args.device)
+    retained = resume_candidates(output / f'{args.method}-progress.json', identity, args.resume_from)
     tensor = torch.as_tensor(x, device=args.device)
     candidates = []
     for lr, decay in itertools.product(training['learning_rates'], training['weight_decays']):
         folds = []
         for fold, (train, valid) in enumerate(source_folds(groups)):
+            if (lr, decay, fold) in retained:
+                report = retained[lr, decay, fold]
+                if report['training_rows'] != train.tolist() or report['validation_rows'] != valid.tolist():
+                    raise ValueError('source fold assignment changed')
+                folds.append(report)
+                print('Reused completed source fold', lr, decay, fold, flush=True)
+                continue
             model, report = fit(tensor[train], y[train], groups[train], spec, training, lr, decay, 11,
                                 validation=(tensor[valid], y[valid]))
             p = predict_binary(model, tensor[valid], training['batch_size'])
@@ -71,7 +102,8 @@ def neural(args, x, y, groups, output, identity):
         members.append(dict(seed=seed, report=report, path=path.name, sha256=file_sha256(path)))
         print('Saved', args.method, seed, 'epochs', epochs, flush=True)
     return dict(identity=identity, candidates=candidates, selected=selected,
-                source_selected_epochs=epochs, members=members, prediction_rule='arithmetic mean of member probabilities')
+                source_selected_epochs=epochs, members=members, resumed_source_fits=len(retained),
+                prediction_rule='arithmetic mean of member probabilities')
 
 
 def minirocket(args, x, y, groups, output, identity):
@@ -111,7 +143,16 @@ def main(args):
     output = args.root / 'source-models'
     output.mkdir(exist_ok=True)
     if (output / f'{args.method}.json').exists():
-        raise FileExistsError('completed raw fit already exists')
+        if args.resume_from is None:
+            raise FileExistsError('completed raw fit already exists')
+        completed = json.loads((output / f'{args.method}.json').read_text())
+        if completed['identity']['manifest_sha256'] != file_sha256(args.root / 'manifest.json'):
+            raise ValueError('completed fit has a different input manifest')
+        for member in completed['members']:
+            if file_sha256(output / member['path']) != member['sha256']:
+                raise ValueError('completed model checksum mismatch')
+        print('Original job completed; verified models, no refit needed', flush=True)
+        return
     x, y, groups, rows = inputs(args.root)
     identity = dict(method=args.method, manifest_sha256=file_sha256(args.root / 'manifest.json'),
                     runner_sha256=file_sha256(Path(__file__)), source_rows=[r['row_id'] for r in rows],
@@ -127,4 +168,5 @@ if __name__ == '__main__':
     parser.add_argument('--method', choices=['aligned-neural', 'inceptiontime', 'minirocket'], required=True)
     parser.add_argument('--threads', type=int, default=4)
     parser.add_argument('--device', default='cpu')
+    parser.add_argument('--resume-from', type=Path, help='previous immutable source snapshot for source-CV recovery')
     main(parser.parse_args())

@@ -72,3 +72,32 @@ def test_existing_neural_architectures_accept_seventeen_networks():
         with torch.no_grad():
             result = model(torch.randn(2, 128, 17))
         assert result.shape == (2,) and torch.isfinite(result).all()
+
+
+def test_resume_requires_matching_inputs_and_training_code(tmp_path):
+    import shutil
+    import pytest
+    from research.representation.empirical_transfer.fit_raw import resume_candidates
+    from mtsspi.provenance import file_sha256
+    old_root = tmp_path / 'snapshot'
+    runner = old_root / 'research/representation/empirical_transfer/fit_raw.py'
+    runner.parent.mkdir(parents=True)
+    runner.write_text('previous orchestration revision')
+    paths = ['research/representation/empirical_transfer/splits.py',
+             'research/representation/shared/neurotycho_learning.py',
+             'research/representation/shared/representation_state_neural.py',
+             'research/representation/learned_baselines/inceptiontime_baseline.py']
+    for name in paths:
+        (old_root / name).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(name, old_root / name)
+    old = dict(runner_sha256=file_sha256(runner), manifest_sha256='original-inputs')
+    current = dict(old, runner_sha256='new-orchestration')
+    progress = tmp_path / 'progress.json'
+    progress.write_text(json.dumps(dict(identity=old, completed_candidates=[],
+        current=dict(lr=.001, decay=0., folds=[dict(fold=0, best_epoch=20)]))))
+    assert resume_candidates(progress, current, old_root)[(.001, 0., 0)]['best_epoch'] == 20
+    with pytest.raises(ValueError, match='source inputs'):
+        resume_candidates(progress, {**current, 'manifest_sha256': 'different'}, old_root)
+    (old_root / paths[0]).write_text('different training implementation')
+    with pytest.raises(ValueError, match='training implementation'):
+        resume_candidates(progress, current, old_root)

@@ -9,6 +9,8 @@
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
+resume_args=()
+[[ -z "${RESUME_FROM:-}" ]] || resume_args=(--resume-from "$RESUME_FROM")
 if [[ "${METHOD:?}" == minirocket ]]; then
     # aeon needs a different NumPy. Its environment lives in jobfs so it
     # consumes no persistent project inodes and cannot modify the SPI runtime.
@@ -21,5 +23,5 @@ if [[ "${METHOD:?}" == minirocket ]]; then
         --root "${RUN_ROOT:?}" --method minirocket --threads "$PBS_NCPUS"
 else
     python -u -m research.representation.empirical_transfer.fit_raw \
-        --root "${RUN_ROOT:?}" --method "$METHOD" --threads "$PBS_NCPUS" --device cpu
+        --root "${RUN_ROOT:?}" --method "$METHOD" --threads "$PBS_NCPUS" --device cpu "${resume_args[@]}"
 fi
