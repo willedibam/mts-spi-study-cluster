@@ -15,8 +15,10 @@ from research.representation.empirical_transfer.splits import source_folds, grou
 
 def resume_candidates(path, identity, previous_snapshot):
     """Reuse source-CV work only with identical data, settings and fit code."""
-    if previous_snapshot is None or not path.exists():
+    if previous_snapshot is None:
         return {}
+    if not path.exists():
+        raise ValueError('no completed source folds to resume; inspect the original failure')
     saved = json.loads(path.read_text())
     old = saved['identity']
     runner = Path('research/representation/empirical_transfer/fit_raw.py')

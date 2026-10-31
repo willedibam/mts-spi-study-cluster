@@ -93,6 +93,8 @@ def test_resume_requires_matching_inputs_and_training_code(tmp_path):
     old = dict(runner_sha256=file_sha256(runner), manifest_sha256='original-inputs')
     current = dict(old, runner_sha256='new-orchestration')
     progress = tmp_path / 'progress.json'
+    with pytest.raises(ValueError, match='no completed source folds'):
+        resume_candidates(progress, current, old_root)
     progress.write_text(json.dumps(dict(identity=old, completed_candidates=[],
         current=dict(lr=.001, decay=0., folds=[dict(fold=0, best_epoch=20)]))))
     assert resume_candidates(progress, current, old_root)[(.001, 0., 0)]['best_epoch'] == 20
