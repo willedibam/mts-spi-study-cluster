@@ -43,7 +43,8 @@
       "mz-pca-George": "182721069",
       "z-pls-George": "182721070",
       "validity-pca-George": "182721071"
-    }
+    },
+    "inceptiontime_continuation": "182725016"
   },
   "inputs": {
     "neurotycho": {
@@ -154,14 +155,14 @@
       }
     ],
     "observed_after_launch": {
-      "timestamp": "2026-10-31T15:16:37+11:00",
-      "scratch_inodes": 199591,
+      "timestamp": "2026-10-31T15:44:58+11:00",
+      "scratch_inodes": 200461,
       "gdata_inodes": 66399,
-      "scratch_GiB": 379.55,
+      "scratch_GiB": 379.71,
       "gdata_GiB": 69.2
     }
   },
-  "status": "All 204 fMRI SPIs, verified feature bank, nine statistical source fits and MiniRocket source fits complete. NeuroTycho farm and two neural source jobs remain running; NeuroTycho bank/ten statistical fits are dependent jobs. No confirmation outcomes evaluated; named-feature selection, conventional-baseline-plus-z and waveform controls still require source analysis.",
+  "status": "fMRI extraction, verified bank, nine statistical source fits, MiniRocket and aligned-neural source fits complete. NeuroTycho extraction and InceptionTime source fitting remain running; NeuroTycho bank/fits and bounded InceptionTime recovery are queued by dependencies. No confirmation outcomes evaluated; named-feature selection, b+z and waveform controls await source analysis.",
   "measurements": {
     "neurotycho": {
       "compute_seconds": 557.5131511753425,
@@ -198,7 +199,7 @@
   },
   "raw_baselines": {
     "minirocket": "Source fitting complete, exit 0; isolated aeon environment in temporary jobfs, no confirmation evaluation",
-    "aligned_neural": "Source fitting running",
+    "aligned_neural": "Source fits complete, exit 0, 35m38s; no confirmation evaluation",
     "inceptiontime": "Source fitting running",
     "MiniRocket_environment": "Wheelhouse on Scratch; environment constructed in PBS_JOBFS to avoid persistent inode consumption"
   },
@@ -236,6 +237,30 @@
     },
     "fmri_statistical": {
       "all_nine_exit_statuses": 0
+    },
+    "aligned_neural": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 2138
     }
+  },
+  "continuation": {
+    "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-continuation-4176c7e",
+    "runtime_files": 14,
+    "dependency": "afterany:182720283.gadi-pbs",
+    "maximum_walltime": "04:00:00",
+    "original_walltime": "08:00:00",
+    "reason": "NCI rejected extending the running job. Verify and exit if complete; otherwise reuse matching completed source CV fits, checking input/config/runtime and training-module hashes. Fail rather than restart if no checkpoint exists."
+  },
+  "runtime_note": {
+    "torch": "2.13.0+cu130",
+    "compiled_cuda_architectures": [
+      "sm_75",
+      "sm_80",
+      "sm_86",
+      "sm_90",
+      "sm_100",
+      "sm_120"
+    ],
+    "gpuvolta_limitation": "Current build lacks V100 sm_70. A100 and Hopper queues exist, but their access/driver compatibility has not been tested in this run."
   }
 }
