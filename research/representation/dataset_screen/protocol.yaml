@@ -1,0 +1,76 @@
+study_id: empirical-discovery-261031
+seed: 261031
+purpose: Find reproducible incremental utility of cross-statistic agreement, with independent confirmation reserved.
+catalogue: benchmarked_p90
+pyspi_computation: 3.0.0.r10
+maximum_prepared_records: 1500
+datasets:
+  chbmit:
+    version: 1.0.0
+    source: https://physionet.org/content/chbmit/1.0.0/
+    target: annotated ictal versus seizure-free epochs, not seizure prediction
+    M: 16
+    T: 2000
+    sample_rate_hz: 100
+    seconds: 20
+    filter_hz: [0.5, 40]
+    maximum_files_per_person: 2
+    maximum_seizures_per_file: 2
+    control_margin_seconds: 300
+    source_fraction: 0.7
+    exclude_duplicate_case: chb21
+    external_confirmation: Siena Scalp EEG; untouched in discovery
+    hypothesis: Seizure-related reorganization may change agreement among dependence measures across links.
+  hmc:
+    version: '1.1'
+    source: https://physionet.org/content/hmc-sleep-staging/1.1/
+    target: N2 versus REM, not full sleep staging or consciousness inference
+    M: 8
+    T: 3840
+    sample_rate_hz: 128
+    source_groups: 28
+    screen_groups: 12
+    epochs_per_state: 6
+    seconds: 30
+    filter_hz: [0.3, 55]
+    emg_highpass_hz: 10
+    confirmation: all remaining night IDs, not extracted
+    hypothesis: Cross-channel brain-eye-muscle-cardiac coordination may complement local sleep features.
+  grabmyo:
+    version: 1.1.0
+    source: https://physionet.org/content/grabmyo/1.1.0/
+    target: all 17 published gesture classes, including rest
+    M: 14
+    T: 2048
+    sample_rate_hz: 2048
+    seconds: 1
+    crop: central second of each five-second contraction
+    source_groups: 24
+    screen_groups: 8
+    source_session: 1
+    screen_session: 2
+    trial: 1
+    channels: eight forearm and six wrist bipolar differences, using named F/W electrodes; exclude U channels
+    confirmation: 11 reserved people in session 3, not extracted
+    hypothesis: Patterns of muscle coordination may complement activation magnitude across people and days.
+  lanl3ss:
+    source_report: https://doi.org/10.2172/961604
+    mirror: https://github.com/ebpfly/shmtools/blob/747392d82d17e5ef8d1bbe31bbd696894151b0e5/examples/data/data_files/data3SS.mat
+    git_blob_sha1: daa5bc2b90679b1394c347ddb4f21efdea57c8de
+    status: audit before extraction; third-party teaching subset, not yet authoritative full-data provenance
+    target: nonlinear bumper contact versus linear mass/stiffness changes
+    M: 4
+    T: 4096
+    sample_rate_hz: 320
+    group: physical condition state; repetitions cannot cross groups
+    hypothesis: Local nonlinear contact may alter cross-statistic agreement beyond linear structural response.
+comparisons:
+  statistical: [univariate, pearson, single_spi, m, m_rbf, z, m_plus_z, baseline_plus_z, validity]
+  raw: [minirocket, inceptiontime, aligned_encoder]
+  projections: separate source-fitted PCA per block; retain baseline directions
+  pca_caps: [8, 32, 50]
+  ridge_alphas: [0.01, 0.1, 1, 10, 100]
+  group_folds: 3
+  metrics: [group_class_balanced_brier, balanced_accuracy, calibration]
+interpretation: Named features require stable group effects and waveform controls; decoder weights alone are insufficient.
+decision: All screens, including failures, are retained. Dataset selection is discovery; claims require a frozen independent confirmation. No guaranteed win, universal superiority, or raw-inaccessible information is assumed.

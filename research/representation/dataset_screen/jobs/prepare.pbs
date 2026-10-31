@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N discovery-prep
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=12GB,walltime=04:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -u -m research.representation.dataset_screen.prepare "${DATASET:?}" --root "${RUN_ROOT:?}"
