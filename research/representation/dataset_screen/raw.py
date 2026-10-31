@@ -46,8 +46,10 @@ def rocket(root, x, y, groups, identity, output):
     for train, valid in folds(y, groups):
         mean, scale = normalization(x[train])
         transform = MiniRocket(n_kernels=10000, max_dilations_per_kernel=32, n_jobs=4, random_state=11)
-        features = transform.fit_transform(((x[train] - mean) / scale).transpose(0, 2, 1))
-        held = transform.transform(((x[valid] - mean) / scale).transpose(0, 2, 1))
+        # Small ridge penalties on 10,000 float32 features can make the dual
+        # solve numerically singular even though regularization is positive.
+        features = transform.fit_transform(((x[train] - mean) / scale).transpose(0, 2, 1)).astype(np.float64)
+        held = transform.transform(((x[valid] - mean) / scale).transpose(0, 2, 1)).astype(np.float64)
         scaler = StandardScaler().fit(features)
         features, held = scaler.transform(features), scaler.transform(held)
         for report in reports:
@@ -61,7 +63,7 @@ def rocket(root, x, y, groups, identity, output):
     members = []
     for seed in [11, 23, 47]:
         transform = MiniRocket(n_kernels=10000, max_dilations_per_kernel=32, n_jobs=4, random_state=seed)
-        features = transform.fit_transform(((x - mean) / scale).transpose(0, 2, 1))
+        features = transform.fit_transform(((x - mean) / scale).transpose(0, 2, 1)).astype(np.float64)
         scaler = StandardScaler().fit(features)
         model = Ridge(alpha=selected['alpha']).fit(scaler.transform(features), target, sample_weight=weights(y, groups))
         path = output / f'minirocket-{seed}.joblib'
@@ -69,6 +71,7 @@ def rocket(root, x, y, groups, identity, output):
         members.append(dict(path=path.name, sha256=file_sha256(path), seed=seed))
     identity['versions'] = {p:version(p) for p in ['aeon', 'numpy', 'scikit-learn', 'numba']}
     return dict(identity=identity, candidates=reports, selected_alpha=selected['alpha'], members=members,
+                readout_precision='float64 after MiniRocket transform',
                 source_validation_brier=selected['mean_brier'], head='standardized MiniRocket features plus ridge one-hot regression; clipped/normalized class scores')
 
 
@@ -198,7 +201,7 @@ def screen(root, method, report, manifest, output):
         if method == 'minirocket':
             fitted = joblib.load(path)
             raw = ((x-fitted['mean'])/fitted['scale']).transpose(0,2,1)
-            features = fitted['scaler'].transform(fitted['rocket'].transform(raw))
+            features = fitted['scaler'].transform(fitted['rocket'].transform(raw).astype(np.float64))
             p.append(probabilities(fitted['model'].predict(features)))
         else:
             import torch
