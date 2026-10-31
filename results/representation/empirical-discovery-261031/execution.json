@@ -1,0 +1,1839 @@
+{
+  "study_id": "empirical-discovery-261031",
+  "captured_at": "2026-10-31T19:17:49.018337+11:00",
+  "purpose": "Bounded discovery of useful standalone or incremental cross-statistic agreement under grouped empirical transfer; not independent confirmation.",
+  "stage": "Extraction and raw-model fits running; no SPI predictive comparison has been reviewed.",
+  "pyspi": {
+    "commit": "676a49d1d65ee46953708265d0399cf0e326764c",
+    "computation": "3.0.0.r10",
+    "catalogue": "benchmarked_p90",
+    "K": 283,
+    "z_dimensions": 39903
+  },
+  "datasets": {
+    "hmc": {
+      "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/hmc",
+      "shape_MT": [
+        8,
+        3840
+      ],
+      "counts": {
+        "source": 324,
+        "screen": 144
+      },
+      "group_counts": {
+        "source": 27,
+        "screen": 12
+      },
+      "issues": [
+        {
+          "group": "SN112",
+          "reason": "insufficient annotated N2 or REM epochs"
+        }
+      ],
+      "manifest_sha256": "373225ced196953faab426876e2161508fd842ec40b86add039e4888e61853c2",
+      "input_audit_sha256": "c29cbf21925c48280eabe2de369300030f0824716700290d3b627aabf3db0add",
+      "archive_sha256": "133706bc0a3ffd56bf598692523ab1bad7dcda304592720391e1a1bc41ab7f80",
+      "provenance": {
+        "dataset": "https://physionet.org/files/hmc-sleep-staging/1.1/",
+        "split": {
+          "source": [
+            "SN056",
+            "SN145",
+            "SN121",
+            "SN032",
+            "SN072",
+            "SN047",
+            "SN112",
+            "SN076",
+            "SN042",
+            "SN004",
+            "SN049",
+            "SN039",
+            "SN033",
+            "SN065",
+            "SN063",
+            "SN030",
+            "SN006",
+            "SN023",
+            "SN007",
+            "SN060",
+            "SN055",
+            "SN094",
+            "SN123",
+            "SN005",
+            "SN089",
+            "SN081",
+            "SN038",
+            "SN119"
+          ],
+          "screen": [
+            "SN018",
+            "SN024",
+            "SN120",
+            "SN093",
+            "SN015",
+            "SN009",
+            "SN083",
+            "SN067",
+            "SN104",
+            "SN095",
+            "SN059",
+            "SN103"
+          ],
+          "confirmation_reserved": [
+            "SN113",
+            "SN054",
+            "SN117",
+            "SN058",
+            "SN026",
+            "SN084",
+            "SN003",
+            "SN021",
+            "SN034",
+            "SN125",
+            "SN134",
+            "SN140",
+            "SN001",
+            "SN050",
+            "SN115",
+            "SN022",
+            "SN052",
+            "SN090",
+            "SN153",
+            "SN144",
+            "SN122",
+            "SN071",
+            "SN099",
+            "SN080",
+            "SN051",
+            "SN133",
+            "SN011",
+            "SN069",
+            "SN107",
+            "SN061",
+            "SN126",
+            "SN044",
+            "SN105",
+            "SN043",
+            "SN040",
+            "SN079",
+            "SN066",
+            "SN102",
+            "SN036",
+            "SN020",
+            "SN074",
+            "SN087",
+            "SN077",
+            "SN132",
+            "SN029",
+            "SN152",
+            "SN048",
+            "SN148",
+            "SN151",
+            "SN078",
+            "SN027",
+            "SN130",
+            "SN128",
+            "SN091",
+            "SN025",
+            "SN097",
+            "SN008",
+            "SN035",
+            "SN088",
+            "SN147",
+            "SN070",
+            "SN057",
+            "SN075",
+            "SN129",
+            "SN143",
+            "SN101",
+            "SN085",
+            "SN045",
+            "SN106",
+            "SN037",
+            "SN116",
+            "SN010",
+            "SN096",
+            "SN053",
+            "SN108",
+            "SN019",
+            "SN013",
+            "SN002",
+            "SN141",
+            "SN150",
+            "SN139",
+            "SN142",
+            "SN068",
+            "SN136",
+            "SN092",
+            "SN118",
+            "SN109",
+            "SN127",
+            "SN046",
+            "SN100",
+            "SN031",
+            "SN114",
+            "SN086",
+            "SN012",
+            "SN041",
+            "SN016",
+            "SN154",
+            "SN131",
+            "SN062",
+            "SN110",
+            "SN138",
+            "SN146",
+            "SN124",
+            "SN017",
+            "SN073",
+            "SN028",
+            "SN082",
+            "SN137",
+            "SN111",
+            "SN098",
+            "SN149"
+          ],
+          "seed": 261031
+        },
+        "channels": [
+          "EEG F4-M1",
+          "EEG C4-M1",
+          "EEG O2-M1",
+          "EEG C3-M2",
+          "EMG chin",
+          "EOG E1-M2",
+          "EOG E2-M2",
+          "ECG"
+        ],
+        "sample_rate_hz": 128,
+        "independent_unit": "night ID; repeated-patient identity is not independently available",
+        "protocol_sha256": "ff97366564d7a3373799117479206675047e8f76fae0b2ef7576de1d89870f7a",
+        "preparation_sha256": "eca3ce8112139d49d31948a186bcb98f660e1ccd708d0e0ea1f6fb4d4bdaaf3d",
+        "scope": "Discovery only. No reserved confirmation waveform is included.",
+        "normalization": "Per-record channel z-score for SPI computation. Physical-unit waveforms and amplitude/spectral summaries retained for competitors."
+      },
+      "chains": {
+        "farm-chain.json": {
+          "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/hmc",
+          "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+          "stage": "farm",
+          "records": 468,
+          "jobs": {
+            "farm": "182733175.gadi-pbs",
+            "bank": "182733176.gadi-pbs",
+            "statistical": "182733177.gadi-pbs"
+          },
+          "measurement_job": "182732840.gadi-pbs",
+          "measurement_resources": {
+            "cpupercent": 99,
+            "cput": "00:14:07",
+            "jobfs": "8425688b",
+            "mem": "2358208kb",
+            "ncpus": 1,
+            "vmem": "2358208kb",
+            "walltime": "00:14:50"
+          },
+          "farm_request": {
+            "cpus": 192,
+            "memory_GB": 576,
+            "walltime_seconds": 5640
+          }
+        }
+      },
+      "completed_spi_records": 1
+    },
+    "grabmyo": {
+      "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/grabmyo",
+      "shape_MT": [
+        14,
+        2048
+      ],
+      "counts": {
+        "source": 408,
+        "screen": 136
+      },
+      "group_counts": {
+        "source": 24,
+        "screen": 8
+      },
+      "issues": [],
+      "manifest_sha256": "3a5f9c75590d1370455a085268554795aa74982e6325c516d3c7e8c7bc045dff",
+      "input_audit_sha256": "8bd841a9d669358c2a87e885111da0c9559878ad9bc5f88a86276a2cfe25d1c8",
+      "archive_sha256": "d6557d3d521ee930df11f38f020128dcc4ae8a8ca00ff4dbccefb115b81fd1a6",
+      "provenance": {
+        "dataset": "https://physionet.org/files/grabmyo/1.1.0/",
+        "split": {
+          "source": [
+            "p03",
+            "p34",
+            "p35",
+            "p25",
+            "p05",
+            "p09",
+            "p17",
+            "p40",
+            "p14",
+            "p41",
+            "p24",
+            "p19",
+            "p23",
+            "p22",
+            "p10",
+            "p21",
+            "p11",
+            "p13",
+            "p43",
+            "p02",
+            "p04",
+            "p31",
+            "p20",
+            "p33"
+          ],
+          "screen": [
+            "p28",
+            "p29",
+            "p26",
+            "p08",
+            "p15",
+            "p12",
+            "p36",
+            "p38"
+          ],
+          "confirmation_reserved": [
+            "p30",
+            "p01",
+            "p37",
+            "p39",
+            "p07",
+            "p27",
+            "p16",
+            "p06",
+            "p42",
+            "p32",
+            "p18"
+          ],
+          "seed": 261031
+        },
+        "sample_rate_hz": 2048,
+        "independent_unit": "participant",
+        "shift": "source day 1 to unseen participants on day 2",
+        "channels": "14 anatomical bipolar pairs; named mapping excludes U1-U4",
+        "crop_seconds": [
+          2,
+          3
+        ],
+        "protocol_sha256": "ff97366564d7a3373799117479206675047e8f76fae0b2ef7576de1d89870f7a",
+        "preparation_sha256": "eca3ce8112139d49d31948a186bcb98f660e1ccd708d0e0ea1f6fb4d4bdaaf3d",
+        "scope": "Discovery only. No reserved confirmation waveform is included.",
+        "normalization": "Per-record channel z-score for SPI computation. Physical-unit waveforms and amplitude/spectral summaries retained for competitors."
+      },
+      "chains": {
+        "farm-chain.json": {
+          "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/grabmyo",
+          "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+          "stage": "farm",
+          "records": 544,
+          "jobs": {
+            "farm": "182733179.gadi-pbs",
+            "bank": "182733180.gadi-pbs",
+            "statistical": "182733181.gadi-pbs"
+          },
+          "measurement_job": "182732842.gadi-pbs",
+          "measurement_resources": {
+            "cpupercent": 99,
+            "cput": "00:14:18",
+            "jobfs": "8425692b",
+            "mem": "1873208kb",
+            "ncpus": 1,
+            "vmem": "1873208kb",
+            "walltime": "00:14:56"
+          },
+          "farm_request": {
+            "cpus": 192,
+            "memory_GB": 576,
+            "walltime_seconds": 5700
+          }
+        }
+      },
+      "completed_spi_records": 1
+    },
+    "chbmit": {
+      "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/chbmit",
+      "shape_MT": [
+        16,
+        2000
+      ],
+      "counts": {
+        "source": 78,
+        "screen": 26
+      },
+      "group_counts": {
+        "source": 16,
+        "screen": 6
+      },
+      "issues": [],
+      "manifest_sha256": "16029e2ed95653a0f53ed255b21a4b2a9595f10a4219e9bd0c698534e468b78e",
+      "input_audit_sha256": "c0d23d33ede8f5ba2fbc19fe286d31fe73abe1ed02b01ca3b1e7a926fceacc1c",
+      "archive_sha256": "fc6938d76167107651a276b0073bb8df1f3c0bf2f41f6cedfacea5bd5039a82c",
+      "provenance": {
+        "dataset": "https://physionet.org/files/chbmit/1.0.0/",
+        "split": {
+          "source": [
+            "chb03",
+            "chb14",
+            "chb05",
+            "chb02",
+            "chb17",
+            "chb22",
+            "chb09",
+            "chb04",
+            "chb15",
+            "chb24",
+            "chb08",
+            "chb11",
+            "chb01",
+            "chb23",
+            "chb12",
+            "chb10"
+          ],
+          "screen": [
+            "chb19",
+            "chb20",
+            "chb07",
+            "chb16",
+            "chb06",
+            "chb13",
+            "chb18"
+          ],
+          "confirmation_reserved": [],
+          "seed": 261031,
+          "external_confirmation_reserved": "Siena Scalp EEG, not accessed by this preparation"
+        },
+        "sample_rate_hz": 100,
+        "independent_unit": "person; duplicate case chb21 excluded",
+        "channels": [
+          "FP1-F7",
+          "F7-T7",
+          "T7-P7",
+          "P7-O1",
+          "FP1-F3",
+          "F3-C3",
+          "C3-P3",
+          "P3-O1",
+          "FP2-F4",
+          "F4-C4",
+          "C4-P4",
+          "P4-O2",
+          "FP2-F8",
+          "F8-T8",
+          "T8-P8",
+          "P8-O2"
+        ],
+        "target": "Annotated ictal epochs, not preictal prediction; seizure-free controls at least 300 seconds from any annotated event",
+        "protocol_sha256": "16c3b6a92bcce531a41870ae4832ce597dd6d788ef47a6f210d3b92b930de0dc",
+        "preparation_sha256": "178d1f959ad8a720b65eb67ae08a9976b8c2e613505093cc929d333a138933bd",
+        "scope": "Discovery only. No reserved confirmation waveform is included.",
+        "normalization": "Per-record channel z-score for SPI computation. Physical-unit waveforms and amplitude/spectral summaries retained for competitors."
+      },
+      "chains": {
+        "pilot-chain.json": {
+          "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/chbmit",
+          "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+          "stage": "pilot",
+          "records": 104,
+          "jobs": {
+            "measurement": "182733341.gadi-pbs",
+            "release_farm": "182733342.gadi-pbs"
+          }
+        }
+      },
+      "completed_spi_records": 0
+    },
+    "lanl3ss": {
+      "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/lanl3ss",
+      "shape_MT": [
+        4,
+        4096
+      ],
+      "counts": {
+        "source": 90,
+        "screen": 40
+      },
+      "group_counts": {
+        "source": 9,
+        "screen": 4
+      },
+      "issues": [],
+      "manifest_sha256": "5a63fbed193d9b7bab2de661bf674dabf128e96f60e69bc16e88789bfb56d68c",
+      "input_audit_sha256": "b9d53a1abceb4cfb8c38e682a4160d5950d4a68e077df6638f8702fb18e80477",
+      "archive_sha256": "70c7bd98bfb1f05ac1fa59c8397889193e78e9e6e566cc43f450552dc7f48c3a",
+      "provenance": {
+        "dataset": "https://raw.githubusercontent.com/ebpfly/shmtools/747392d82d17e5ef8d1bbe31bbd696894151b0e5/examples/data/data_files/data3SS.mat",
+        "data_sha256": "d738160e7d0a2c422a1189e3fe6c47c6e978be068247f55dc5a94ca381773e0f",
+        "report": "https://digital.library.unt.edu/ark:/67531/metadc930290/m2/1/high_res_d/961604.pdf",
+        "report_sha256": "d07ce62b6917d58b7fc84ee60d14aa73a794a853e8b6a1ded5a5924846ebbfdd",
+        "report_evidence": "LA-14393 printed pp. 7-9, Tables 1-2: channel 1 load cell, channels 2-5 accelerometers, 320 Hz, states 1-9 linear and 10-17 contact",
+        "sample_rate_hz": 320,
+        "crop_samples": [
+          2048,
+          6144
+        ],
+        "channels": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "split": {
+          "source": [
+            1,
+            4,
+            9,
+            7,
+            3,
+            12,
+            15,
+            14,
+            10
+          ],
+          "screen": [
+            6,
+            5,
+            13,
+            17
+          ],
+          "confirmation_reserved": [
+            8,
+            2,
+            16,
+            11
+          ],
+          "seed": 261031
+        },
+        "independent_unit": "physical configuration of one apparatus; ten repetitions are not independent structures",
+        "confirmation_scope": "reserved configurations of the same apparatus, not cross-structure validation",
+        "excitation_control_sha256": "c613149868afd8568bf3a2173a73df53e4a5b089571af5bc6e2625b7b89c728f",
+        "limitation": "Pinned third-party copy with ten repetitions/condition, matching the report count; original file/trial identities and stored calibrated units are not independently certified.",
+        "protocol_sha256": "16c3b6a92bcce531a41870ae4832ce597dd6d788ef47a6f210d3b92b930de0dc",
+        "preparation_sha256": "7898372a3121488ee887ac382885f68cafdff2e57bd67cd562e32d81cb7b317b",
+        "scope": "Discovery only. No reserved confirmation waveform is included.",
+        "normalization": "Per-record channel z-score for SPI computation. Physical-unit waveforms and amplitude/spectral summaries retained for competitors."
+      },
+      "chains": {
+        "pilot-chain.json": {
+          "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/lanl3ss",
+          "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+          "stage": "pilot",
+          "records": 130,
+          "jobs": {
+            "measurement": "182733053.gadi-pbs",
+            "release_farm": "182733054.gadi-pbs"
+          }
+        },
+        "farm-chain.json": {
+          "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/lanl3ss",
+          "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+          "stage": "farm",
+          "records": 130,
+          "jobs": {
+            "farm": "182733343.gadi-pbs",
+            "bank": "182733344.gadi-pbs",
+            "statistical": "182733345.gadi-pbs"
+          },
+          "measurement_job": "182733053.gadi-pbs",
+          "measurement_resources": {
+            "cpupercent": 98,
+            "cput": "00:03:51",
+            "jobfs": "177b",
+            "mem": "2214072kb",
+            "ncpus": 1,
+            "vmem": "2214072kb",
+            "walltime": "00:04:13"
+          },
+          "farm_request": {
+            "cpus": 96,
+            "memory_GB": 288,
+            "walltime_seconds": 1320
+          }
+        }
+      },
+      "completed_spi_records": 1
+    }
+  },
+  "job_ledgers": {
+    "preparation-jobs.json": {
+      "source_snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-inputs-4595bf4",
+      "code_commit": "4595bf4b80fad88540c9711ad2a55595d41fdb64",
+      "root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031",
+      "jobs": {
+        "chbmit": "182732467.gadi-pbs",
+        "hmc": "182732468.gadi-pbs",
+        "grabmyo": "182732469.gadi-pbs",
+        "lanl3ss": "182732471.gadi-pbs"
+      }
+    },
+    "workflow-jobs.json": [
+      {
+        "dataset": "hmc",
+        "stage": "farm",
+        "dependency": "182732840",
+        "job": "182732994.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c"
+      },
+      {
+        "dataset": "grabmyo",
+        "stage": "farm",
+        "dependency": "182732842",
+        "job": "182732995.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c"
+      },
+      {
+        "dataset": "chbmit",
+        "stage": "pilot",
+        "dependency": "182732850",
+        "job": "182732996.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "superseded_reason": "Preparation rejected a second published filename variant; dependency failed before launch."
+      },
+      {
+        "dataset": "lanl3ss",
+        "stage": "pilot",
+        "dependency": "182732921",
+        "job": "182732997.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c"
+      },
+      {
+        "dataset": "chbmit",
+        "stage": "pilot",
+        "dependency": "182733206",
+        "job": "182733272.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c"
+      }
+    ],
+    "raw-jobs.json": [
+      {
+        "dataset": "hmc",
+        "method": "minirocket",
+        "job": "182732872.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00",
+        "superseded_reason": "Ridge readout changed to float64 after solver-conditioning warnings; outcomes not inspected."
+      },
+      {
+        "dataset": "hmc",
+        "method": "inceptiontime",
+        "job": "182732873.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "hmc",
+        "method": "aligned_encoder",
+        "job": "182732874.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "grabmyo",
+        "method": "minirocket",
+        "job": "182732875.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00",
+        "superseded_reason": "Ridge readout changed to float64 after solver-conditioning warnings; outcomes not inspected."
+      },
+      {
+        "dataset": "grabmyo",
+        "method": "inceptiontime",
+        "job": "182732876.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "grabmyo",
+        "method": "aligned_encoder",
+        "job": "182732877.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "chbmit",
+        "method": "minirocket",
+        "job": "182732878.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00",
+        "superseded_reason": "Ridge readout changed to float64 after solver-conditioning warnings; outcomes not inspected."
+      },
+      {
+        "dataset": "chbmit",
+        "method": "inceptiontime",
+        "job": "182732879.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00",
+        "superseded_reason": "Preparation failed; afterok dependency never released this fit."
+      },
+      {
+        "dataset": "chbmit",
+        "method": "aligned_encoder",
+        "job": "182732880.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-models-efc6c61",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00",
+        "superseded_reason": "Preparation failed; afterok dependency never released this fit."
+      },
+      {
+        "dataset": "hmc",
+        "method": "minirocket",
+        "job": "182732998.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "grabmyo",
+        "method": "minirocket",
+        "job": "182732999.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "chbmit",
+        "method": "minirocket",
+        "job": "182733000.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00",
+        "superseded_reason": "Preparation failed; afterok dependency never released this fit."
+      },
+      {
+        "dataset": "lanl3ss",
+        "method": "minirocket",
+        "job": "182733001.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "lanl3ss",
+        "method": "inceptiontime",
+        "job": "182733002.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "lanl3ss",
+        "method": "aligned_encoder",
+        "job": "182733003.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "chbmit",
+        "method": "minirocket",
+        "job": "182733274.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "chbmit",
+        "method": "inceptiontime",
+        "job": "182733275.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      },
+      {
+        "dataset": "chbmit",
+        "method": "aligned_encoder",
+        "job": "182733276.gadi-pbs",
+        "snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-workflow-f178d1c",
+        "cpus": 4,
+        "memory_GB": 16,
+        "walltime": "12:00:00"
+      }
+    ],
+    "preparation-repairs.json": {
+      "chbmit": [
+        {
+          "job": "182732467",
+          "outcome": "failed: chb02_16+.edf rejected"
+        },
+        {
+          "job": "182732850",
+          "outcome": "failed: chb17a_03.edf rejected"
+        },
+        {
+          "job": "182733206",
+          "source": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-discovery-chb-repair-5c93257",
+          "metadata_audit": "All 23 nonduplicate-case summaries parsed; every described EDF matched published SHA256 inventory before resubmission."
+        }
+      ],
+      "lanl3ss": {
+        "audit": "182732471",
+        "preparation": "182732921"
+      }
+    }
+  },
+  "statuses": {
+    "182732467.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 1,
+      "comment": "Job run at Sat Oct 31 at 18:37 on (gadi-dm-04:ncpus=1:mem=12582912kb:jobfs=102400kb) and failed",
+      "resources_used": {
+        "cpupercent": 21,
+        "cput": "00:00:14",
+        "jobfs": "0b",
+        "mem": "1755672kb",
+        "ncpus": 1,
+        "vmem": "1755672kb",
+        "walltime": "00:00:57"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "12884901888b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=12884901888:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "04:00:00",
+        "wd": 1
+      }
+    },
+    "182732468.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:37 on (gadi-dm-04:ncpus=1:mem=12582912kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 50,
+        "cput": "00:01:09",
+        "jobfs": "0b",
+        "mem": "3413300kb",
+        "ncpus": 1,
+        "vmem": "3413300kb",
+        "walltime": "00:02:30"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "12884901888b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=12884901888:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "04:00:00",
+        "wd": 1
+      }
+    },
+    "182732469.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:37 on (gadi-dm-04:ncpus=1:mem=12582912kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 32,
+        "cput": "00:01:03",
+        "jobfs": "0b",
+        "mem": "985800kb",
+        "ncpus": 1,
+        "vmem": "985800kb",
+        "walltime": "00:09:59"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "12884901888b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=12884901888:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "04:00:00",
+        "wd": 1
+      }
+    },
+    "182732471.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:41 on (gadi-dm-02:ncpus=1:mem=12582912kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 39,
+        "cput": "00:00:03",
+        "jobfs": "0b",
+        "mem": "347436kb",
+        "ncpus": 1,
+        "vmem": "347436kb",
+        "walltime": "00:00:08"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "12884901888b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=12884901888:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "04:00:00",
+        "wd": 1
+      }
+    },
+    "182732840.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:52 on (gadi-cpu-clx-1691:ncpus=1:mem=4194304kb:jobfs=10485760kb) and finished",
+      "resources_used": {
+        "cpupercent": 99,
+        "cput": "00:14:07",
+        "jobfs": "8425688b",
+        "mem": "2358208kb",
+        "ncpus": 1,
+        "vmem": "2358208kb",
+        "walltime": "00:14:50"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "4294967296b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=4294967296:job_tags=normal:jobfs=10737418240",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:40:00",
+        "wd": 1
+      }
+    },
+    "182732842.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:52 on (gadi-cpu-clx-1691:ncpus=1:mem=4194304kb:jobfs=10485760kb) and finished",
+      "resources_used": {
+        "cpupercent": 99,
+        "cput": "00:14:18",
+        "jobfs": "8425692b",
+        "mem": "1873208kb",
+        "ncpus": 1,
+        "vmem": "1873208kb",
+        "walltime": "00:14:56"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "4294967296b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=4294967296:job_tags=normal:jobfs=10737418240",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:40:00",
+        "wd": 1
+      }
+    },
+    "182732850.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 1,
+      "comment": "Job run at Sat Oct 31 at 19:04 on (gadi-dm-04:ncpus=1:mem=12582912kb:jobfs=102400kb) and failed",
+      "resources_used": {
+        "cpupercent": 37,
+        "cput": "00:00:14",
+        "jobfs": "0b",
+        "mem": "2452272kb",
+        "ncpus": 1,
+        "vmem": "2452272kb",
+        "walltime": "00:00:40"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "12884901888b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=12884901888:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:30:00",
+        "wd": 1
+      }
+    },
+    "182732872.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:54 on (gadi-cpu-clx-0698:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 204,
+        "cput": "00:02:39",
+        "jobfs": "578390919b",
+        "mem": "1427892kb",
+        "ncpus": 4,
+        "vmem": "1427892kb",
+        "walltime": "00:01:28"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732873.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 18:54 on (gadi-cpu-clx-2166:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 400,
+        "cput": "01:18:52",
+        "jobfs": "0b",
+        "mem": "4147368kb",
+        "ncpus": 4,
+        "vmem": "4147368kb",
+        "walltime": "00:21:05"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732874.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 18:54 on (gadi-cpu-clx-2187:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 315,
+        "cput": "00:58:53",
+        "jobfs": "0b",
+        "mem": "2404532kb",
+        "ncpus": 4,
+        "vmem": "2404532kb",
+        "walltime": "00:21:06"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732875.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 18:55 on (gadi-cpu-clx-2187:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 235,
+        "cput": "00:02:21",
+        "jobfs": "578390991b",
+        "mem": "1393544kb",
+        "ncpus": 4,
+        "vmem": "1393544kb",
+        "walltime": "00:01:28"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732876.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 18:55 on (gadi-cpu-clx-2187:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 199,
+        "cput": "00:37:30",
+        "jobfs": "0b",
+        "mem": "2390864kb",
+        "ncpus": 4,
+        "vmem": "2390864kb",
+        "walltime": "00:21:05"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732877.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 18:54 on (gadi-cpu-clx-0978:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 318,
+        "cput": "01:08:53",
+        "mem": "2882168kb",
+        "ncpus": 4,
+        "vmem": "2882168kb",
+        "walltime": "00:22:29"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732878.gadi-pbs": {
+      "job_state": "F",
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732879.gadi-pbs": {
+      "job_state": "F",
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732880.gadi-pbs": {
+      "job_state": "F",
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732921.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:04 on (gadi-dm-04:ncpus=1:mem=12582912kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 56,
+        "cput": "00:00:12",
+        "jobfs": "0b",
+        "mem": "431752kb",
+        "ncpus": 1,
+        "vmem": "431752kb",
+        "walltime": "00:00:21"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "12884901888b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=12884901888:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:30:00",
+        "wd": 1
+      }
+    },
+    "182732994.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:09 on (gadi-dm-02:ncpus=1:mem=2097152kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 56,
+        "cput": "00:00:06",
+        "jobfs": "0b",
+        "mem": "262620kb",
+        "ncpus": 1,
+        "vmem": "262620kb",
+        "walltime": "00:00:10"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182732995.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:09 on (gadi-dm-03:ncpus=1:mem=2097152kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 49,
+        "cput": "00:00:09",
+        "jobfs": "0b",
+        "mem": "275032kb",
+        "ncpus": 1,
+        "vmem": "275032kb",
+        "walltime": "00:00:19"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182732996.gadi-pbs": {
+      "job_state": "F",
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182732997.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:06 on (gadi-dm-02:ncpus=1:mem=2097152kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 62,
+        "cput": "00:00:05",
+        "jobfs": "0b",
+        "mem": "265336kb",
+        "ncpus": 1,
+        "vmem": "265336kb",
+        "walltime": "00:00:08"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182732998.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:05 on (gadi-cpu-clx-2916:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 229,
+        "cput": "00:02:57",
+        "mem": "1428076kb",
+        "ncpus": 4,
+        "vmem": "1428076kb",
+        "walltime": "00:01:45"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182732999.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:05 on (gadi-cpu-clx-2916:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 260,
+        "cput": "00:02:10",
+        "jobfs": "578390927b",
+        "mem": "1309888kb",
+        "ncpus": 4,
+        "vmem": "1309888kb",
+        "walltime": "00:01:20"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733000.gadi-pbs": {
+      "job_state": "F",
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733001.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:06 on (gadi-cpu-clx-2916:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 117,
+        "cput": "00:01:15",
+        "jobfs": "578390979b",
+        "mem": "1013416kb",
+        "ncpus": 4,
+        "vmem": "1013416kb",
+        "walltime": "00:01:02"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733002.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:06 on (gadi-cpu-clx-0268:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 400,
+        "cput": "00:34:23",
+        "mem": "3864332kb",
+        "ncpus": 4,
+        "vmem": "3864332kb",
+        "walltime": "00:10:20"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733003.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:06 on (gadi-cpu-clx-0978:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 334,
+        "cput": "00:17:37",
+        "jobfs": "0b",
+        "mem": "1416352kb",
+        "ncpus": 4,
+        "vmem": "1416352kb",
+        "walltime": "00:05:31"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733053.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:08 on (gadi-cpu-clx-2914:ncpus=1:mem=4194304kb:jobfs=10485760kb) and finished",
+      "resources_used": {
+        "cpupercent": 98,
+        "cput": "00:03:51",
+        "jobfs": "177b",
+        "mem": "2214072kb",
+        "ncpus": 1,
+        "vmem": "2214072kb",
+        "walltime": "00:04:13"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "4294967296b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=4294967296:job_tags=normal:jobfs=10737418240",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:40:00",
+        "wd": 1
+      }
+    },
+    "182733054.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:14 on (gadi-dm-03:ncpus=1:mem=2097152kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 47,
+        "cput": "00:00:09",
+        "jobfs": "0b",
+        "mem": "228284kb",
+        "ncpus": 1,
+        "vmem": "228284kb",
+        "walltime": "00:00:19"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182733175.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:10 on (gadi-cpu-clx-0148:ncpus=48:mem=150994944kb:jobfs=2621440kb)+(gadi-cpu-clx-0157:ncpus=48:mem=150994944kb:jobfs=2621440kb)+(gadi-cpu-clx-0158:ncpus=48:mem=150994944kb:jobfs=2621440kb)+(gadi-cpu-clx-0167:ncpus=48:mem=150...",
+      "resources_used": {
+        "cpupercent": 19189,
+        "cput": "13:26:51",
+        "jobfs": "33521kb",
+        "mem": "238862816kb",
+        "ncpus": 192,
+        "vmem": "238862816kb",
+        "walltime": "00:06:16"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "618475290624b",
+        "mpiprocs": 192,
+        "ncpus": 192,
+        "nodect": 4,
+        "place": "free",
+        "select": "4:ncpus=48:mpiprocs=48:mem=154618822656:job_tags=normal:jobfs=2684354560",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "01:34:00",
+        "wd": 1
+      }
+    },
+    "182733176.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "1073741824b",
+        "mem": "12884901888b",
+        "mpiprocs": 2,
+        "ncpus": 2,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=2:mpiprocs=2:mem=12884901888:job_tags=normal:jobfs=1073741824",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "01:00:00",
+        "wd": 1
+      }
+    },
+    "182733177.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "1073741824b",
+        "mem": "17179869184b",
+        "mpiprocs": 2,
+        "ncpus": 2,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=2:mpiprocs=2:mem=17179869184:job_tags=normal:jobfs=1073741824",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "03:00:00",
+        "wd": 1
+      }
+    },
+    "182733179.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:10 on (gadi-cpu-clx-0327:ncpus=48:mem=150994944kb:jobfs=2621440kb)+(gadi-cpu-clx-0328:ncpus=48:mem=150994944kb:jobfs=2621440kb)+(gadi-cpu-clx-0346:ncpus=48:mem=150994944kb:jobfs=2621440kb)+(gadi-cpu-clx-0358:ncpus=48:mem=150...",
+      "resources_used": {
+        "cpupercent": 19227,
+        "cput": "13:34:11",
+        "jobfs": "33536kb",
+        "mem": "168054660kb",
+        "ncpus": 192,
+        "vmem": "168054916kb",
+        "walltime": "00:06:13"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "618475290624b",
+        "mpiprocs": 192,
+        "ncpus": 192,
+        "nodect": 4,
+        "place": "free",
+        "select": "4:ncpus=48:mpiprocs=48:mem=154618822656:job_tags=normal:jobfs=2684354560",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "01:35:00",
+        "wd": 1
+      }
+    },
+    "182733180.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "1073741824b",
+        "mem": "12884901888b",
+        "mpiprocs": 2,
+        "ncpus": 2,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=2:mpiprocs=2:mem=12884901888:job_tags=normal:jobfs=1073741824",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "01:00:00",
+        "wd": 1
+      }
+    },
+    "182733181.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "1073741824b",
+        "mem": "17179869184b",
+        "mpiprocs": 2,
+        "ncpus": 2,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=2:mpiprocs=2:mem=17179869184:job_tags=normal:jobfs=1073741824",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "03:00:00",
+        "wd": 1
+      }
+    },
+    "182733206.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:11 on (gadi-dm-04:ncpus=1:mem=4194304kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 47,
+        "cput": "00:00:23",
+        "jobfs": "0b",
+        "mem": "2145892kb",
+        "ncpus": 1,
+        "vmem": "2145892kb",
+        "walltime": "00:00:49"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "4294967296b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=4294967296:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:30:00",
+        "wd": 1
+      }
+    },
+    "182733272.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:14 on (gadi-dm-04:ncpus=1:mem=2097152kb:jobfs=102400kb) and finished",
+      "resources_used": {
+        "cpupercent": 61,
+        "cput": "00:00:05",
+        "jobfs": "0b",
+        "mem": "269296kb",
+        "ncpus": 1,
+        "vmem": "269296kb",
+        "walltime": "00:00:08"
+      },
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182733274.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 0,
+      "comment": "Job run at Sat Oct 31 at 19:14 on (gadi-cpu-clx-0719:ncpus=4:mem=16777216kb:jobfs=4194304kb) and finished",
+      "resources_used": {
+        "cpupercent": 114,
+        "cput": "00:01:07",
+        "jobfs": "578390987b",
+        "mem": "1233608kb",
+        "ncpus": 4,
+        "vmem": "1233608kb",
+        "walltime": "00:00:58"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733275.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:14 on (gadi-cpu-clx-0262:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 312,
+        "cput": "00:04:03",
+        "jobfs": "0b",
+        "mem": "2362128kb",
+        "ncpus": 4,
+        "vmem": "2362128kb",
+        "walltime": "00:03:15"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733276.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:14 on (gadi-cpu-clx-0262:ncpus=4:mem=16777216kb:jobfs=4194304kb)",
+      "resources_used": {
+        "cpupercent": 256,
+        "cput": "00:03:13",
+        "jobfs": "0b",
+        "mem": "2045856kb",
+        "ncpus": 4,
+        "vmem": "2045856kb",
+        "walltime": "00:03:14"
+      },
+      "Resource_List": {
+        "jobfs": "4294967296b",
+        "mem": "17179869184b",
+        "mpiprocs": 4,
+        "ncpus": 4,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=4:mpiprocs=4:mem=17179869184:job_tags=normal:jobfs=4294967296",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "12:00:00",
+        "wd": 1
+      }
+    },
+    "182733341.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:15 on (gadi-cpu-clx-2914:ncpus=1:mem=4194304kb:jobfs=10485760kb)",
+      "resources_used": {
+        "cpupercent": 89,
+        "cput": "00:01:42",
+        "mem": "1929668kb",
+        "ncpus": 1,
+        "vmem": "1929668kb",
+        "walltime": "00:01:50"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "4294967296b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=4294967296:job_tags=normal:jobfs=10737418240",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:40:00",
+        "wd": 1
+      }
+    },
+    "182733342.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "104857600b",
+        "mem": "2147483648b",
+        "mpiprocs": 1,
+        "ncpus": 1,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=1:mpiprocs=1:mem=2147483648:job_tags=copyq:jobfs=104857600",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:10:00",
+        "wd": 1
+      }
+    },
+    "182733343.gadi-pbs": {
+      "job_state": "R",
+      "comment": "Job run at Sat Oct 31 at 19:15 on (gadi-cpu-clx-0008:ncpus=48:mem=150994944kb:jobfs=5242880kb)+(gadi-cpu-clx-0009:ncpus=48:mem=150994944kb:jobfs=5242880kb)",
+      "resources_used": {
+        "cpupercent": 5586,
+        "cput": "00:51:50",
+        "jobfs": "8583818b",
+        "mem": "105535568kb",
+        "ncpus": 96,
+        "vmem": "105539664kb",
+        "walltime": "00:01:54"
+      },
+      "Resource_List": {
+        "jobfs": "10737418240b",
+        "mem": "309237645312b",
+        "mpiprocs": 96,
+        "ncpus": 96,
+        "nodect": 2,
+        "place": "free",
+        "select": "2:ncpus=48:mpiprocs=48:mem=154618822656:job_tags=normal:jobfs=5368709120",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "00:22:00",
+        "wd": 1
+      }
+    },
+    "182733344.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "1073741824b",
+        "mem": "12884901888b",
+        "mpiprocs": 2,
+        "ncpus": 2,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=2:mpiprocs=2:mem=12884901888:job_tags=normal:jobfs=1073741824",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "01:00:00",
+        "wd": 1
+      }
+    },
+    "182733345.gadi-pbs": {
+      "job_state": "H",
+      "Resource_List": {
+        "jobfs": "1073741824b",
+        "mem": "17179869184b",
+        "mpiprocs": 2,
+        "ncpus": 2,
+        "nodect": 1,
+        "place": "free",
+        "select": "1:ncpus=2:mpiprocs=2:mem=17179869184:job_tags=normal:jobfs=1073741824",
+        "storage": "gdata/ql44+scratch/ql44",
+        "walltime": "03:00:00",
+        "wd": 1
+      }
+    }
+  },
+  "quota": "--------------------------------------------------------------------------\n           fs       Usage      Quota      Limit   iUsage   iQuota   iLimit\n--------------------------------------------------------------------------\n  ql44 scratch 385.58 GiB   1.00 TiB   1.05 TiB   197411   202000   212100\n  ql44   gdata  69.10 GiB 100.00 GiB 105.00 GiB    56304    70000    73500\n--------------------------------------------------------------------------\n",
+  "limitations": [
+    "Separate supervised tasks with a common descriptor/comparison protocol, not zero-shot cross-modality transfer.",
+    "Dataset selection is exploratory; all screens are retained and independent confirmation remains necessary.",
+    "HMC unit is night ID; repeated-person metadata are unresolved. LANL uses one apparatus and a third-party copy.",
+    "MiniRocket float32 readout diagnostics archived; float64 reruns correct numerical conditioning without selecting on outcomes.",
+    "No scheduled reminder or recurring monitor was created; finite PBS dependencies advance the jobs."
+  ]
+}

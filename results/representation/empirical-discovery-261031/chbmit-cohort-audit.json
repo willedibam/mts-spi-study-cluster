@@ -1,0 +1,20 @@
+{
+  "excluded_group": "chb16",
+  "original_role": "screen",
+  "reason": "No annotated seizure lasts the required 20 seconds.",
+  "durations_seconds": [
+    9.0,
+    9.0,
+    14.0,
+    6.0,
+    9.0,
+    6.0,
+    8.0,
+    8.0,
+    8.0,
+    7.0
+  ],
+  "maximum_seconds": 14.0,
+  "annotation_sha256": "8dc08a551104f380bcf3aa9a7421f89035e397596426f1c15dc36adf3e54af0a",
+  "limitation": "The original input audit did not list this empty eligibility selection; this supplemental audit supplies its reason. Prepared waveforms and original audit are unchanged."
+}
