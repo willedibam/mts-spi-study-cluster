@@ -155,14 +155,14 @@
       }
     ],
     "observed_after_launch": {
-      "timestamp": "2026-10-31T15:44:58+11:00",
-      "scratch_inodes": 200461,
+      "timestamp": "2026-10-31T15:57:19+11:00",
+      "scratch_inodes": 200780,
       "gdata_inodes": 66399,
-      "scratch_GiB": 379.71,
+      "scratch_GiB": 380.05,
       "gdata_GiB": 69.2
     }
   },
-  "status": "All 684 primary SPI recordings audited complete. fMRI verified bank, nine statistical source fits, MiniRocket and aligned-neural source fits complete. NeuroTycho bank/source fits proceed by dependency; InceptionTime and its conditional recovery remain in flight. No confirmation outcomes evaluated; named-feature selection, b+z and waveform controls await source analysis.",
+  "status": "All 684 primary SPI recordings audited complete; both banks completed successfully. All nine fMRI statistical source fits, MiniRocket and aligned-neural source fits complete. Ten NeuroTycho source fits queued; InceptionTime running with conditional recovery held by dependency. No confirmation outcomes evaluated; named-feature selection, b+z and waveform controls await source analysis.",
   "measurements": {
     "neurotycho": {
       "compute_seconds": 557.5131511753425,
@@ -247,6 +247,10 @@
       "PBS_wall_seconds": 3346,
       "audited_new": 479,
       "reused_smoke": 1
+    },
+    "neurotycho_bank": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 173
     }
   },
   "continuation": {
