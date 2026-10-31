@@ -143,7 +143,7 @@ def test_source_panel_loader_excludes_confirmation_and_target_animal(tmp_path):
     assert bank['row_id'].tolist() == ['a'] and bank['z'].tolist() == [[1.]]
 
 
-def test_single_spi_selection_uses_only_source_and_preserves_column_identity(tmp_path):
+def test_single_spi_selection_uses_only_source_and_preserves_column_identity(tmp_path, monkeypatch):
     from research.representation.empirical_transfer.fit_single_spi import main, source_inputs
     from research.representation.empirical_transfer.fit_source import fmri_view
     from mtsspi.provenance import file_sha256
@@ -169,3 +169,38 @@ def test_single_spi_selection_uses_only_source_and_preserves_column_identity(tmp
         mapped, _ = fmri_view(bank, fitted['original_view'])
         prediction = fitted['model'].predict(fitted['transform'].transform(mapped, np.arange(18)))
         assert np.isfinite(prediction).all() and fitted['spi_name'] == 'useful'
+    from research.representation.empirical_transfer import evaluate_fmri
+    monkeypatch.setattr(evaluate_fmri, 'STATISTICAL', ['single-spi', 'single-spi-z'])
+    first = evaluate_fmri.predict_statistical(tmp_path, bank)
+    relabelled = evaluate_fmri.predict_statistical(tmp_path, {**bank, 'y': 1 - bank['y']})
+    for method in first:
+        np.testing.assert_array_equal(first[method], relabelled[method])
+
+
+def test_confirmation_metrics_are_person_balanced_and_fixed_threshold():
+    from research.representation.empirical_transfer.evaluate_fmri import group_metrics
+    y, p = np.array([0, 1, 0, 1]), np.array([.1, .9, .6, .6])
+    groups = np.array(['a', 'a', 'b', 'b'])
+    values = group_metrics(y, p, groups)
+    repeated = np.r_[np.tile([0, 1], 50), [2, 3]]
+    assert values == group_metrics(y[repeated], p[repeated], groups[repeated])
+    assert values['a']['balanced_accuracy'] == 1 and values['b']['balanced_accuracy'] == .5
+
+
+def test_evaluation_lock_rejects_changed_source_report(tmp_path, monkeypatch):
+    from research.representation.empirical_transfer import evaluate_fmri
+    from mtsspi.provenance import file_sha256
+    import pytest
+    monkeypatch.setattr(evaluate_fmri, 'STATISTICAL', ['m-pca'])
+    monkeypatch.setattr(evaluate_fmri, 'RAW', [])
+    for name in ['manifest.json', 'bank.json', 'source-review.json', 'single-spi-selection.json']:
+        (tmp_path / name).write_text('{}')
+    (tmp_path / 'source-models').mkdir()
+    weight = tmp_path / 'source-models/m-pca.joblib'
+    weight.write_bytes(b'frozen weights')
+    report = tmp_path / 'source-models/m-pca.json'
+    report.write_text(json.dumps(dict(target_data_used=False, model_sha256=file_sha256(weight), selected={})))
+    evaluate_fmri.freeze(tmp_path)
+    report.write_text('{}')
+    with pytest.raises(ValueError, match='frozen input changed'):
+        evaluate_fmri.checked_bank(tmp_path)

@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -N empirical-eval
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=12GB,walltime=00:30:00,jobfs=4GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+for mode in freeze statistical neural; do
+    python -u -m research.representation.empirical_transfer.evaluate_fmri --root "${RUN_ROOT:?}" --mode "$mode"
+done
+module purge
+module load python3/3.12.1
+deactivate
+python3 -m venv "$PBS_JOBFS/aeon"
+"$PBS_JOBFS/aeon/bin/python" -m pip install --no-index --find-links "${WHEELHOUSE:?}" aeon==1.5.0 pyyaml
+"$PBS_JOBFS/aeon/bin/python" -u -m research.representation.empirical_transfer.evaluate_fmri \
+    --root "$RUN_ROOT" --mode minirocket
+source jobs/gadi/env.sh
+python -u -m research.representation.empirical_transfer.evaluate_fmri --root "$RUN_ROOT" --mode summarize
