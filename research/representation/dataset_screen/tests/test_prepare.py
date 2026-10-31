@@ -42,6 +42,9 @@ def test_seizure_parser_checks_counts_and_supports_numbered_events():
             'Seizure 2 Start Time: 600 seconds\nSeizure 2 End Time: 650 seconds\n')
     assert parse_seizures(text)[0]['events'] == [(100., 140.), (600., 650.)]
     assert parse_seizures(text.replace('chb01_03.edf', 'chb02_16+.edf'))[0]['name'] == 'chb02_16+.edf'
+    assert parse_seizures(text.replace('chb01_03.edf', 'chb17a_03.edf'))[0]['name'] == 'chb17a_03.edf'
+    with pytest.raises(ValueError, match='unexpected EEG filename'):
+        parse_seizures(text.replace('chb01_03.edf', '../chb01_03.edf'))
     with pytest.raises(ValueError, match='inconsistent seizure'):
         parse_seizures(text.replace('File: 2', 'File: 3'))
 

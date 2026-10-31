@@ -260,7 +260,9 @@ def parse_seizures(text):
     result = []
     for block in re.split(r'File Name:\s*', text)[1:]:
         name = block.splitlines()[0].strip()
-        if not re.fullmatch(r'chb\d{2}_[A-Za-z0-9_+]+\.edf', name):
+        # The release includes both chb02_16+.edf and chb17a_03.edf.
+        # Require a safe basename; published checksums establish file identity.
+        if not re.fullmatch(r'chb[A-Za-z0-9_+]+\.edf', name):
             raise ValueError(f'unexpected EEG filename: {name}')
         starts = [float(v) for v in re.findall(r'Seizure(?:\s+\d+)? Start Time:\s*(\d+) seconds', block)]
         ends = [float(v) for v in re.findall(r'Seizure(?:\s+\d+)? End Time:\s*(\d+) seconds', block)]
