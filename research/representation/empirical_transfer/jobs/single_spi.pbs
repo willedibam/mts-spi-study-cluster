@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N empirical-single
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2,mem=8GB,walltime=02:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -u -m research.representation.empirical_transfer.fit_single_spi --root "${RUN_ROOT:?}"

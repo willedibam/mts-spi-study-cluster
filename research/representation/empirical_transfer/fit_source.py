@@ -20,7 +20,8 @@ METHODS = {'m-pca': ('m', 'pca'), 'z-pca': ('z', 'pca'), 'mz-pca': ('m+z', 'pca'
            'm-rbf': ('m', 'rbf'), 'pearson': ('pearson', 'pca'),
            'spectral': ('spectral', 'pca'), 'spectral-pooled': ('spectral_pooled', 'pca'),
            'aligned': ('aligned', 'pca'), 'validity': ('validity', 'pca'),
-           'pearson-z': ('pearson+z', 'pca')}
+           'pearson-z': ('pearson+z', 'pca'),
+           'single-spi': ('u', 'pca'), 'single-spi-z': ('u+z', 'pca')}
 
 
 def fmri_view(bank, view):

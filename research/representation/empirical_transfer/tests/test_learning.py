@@ -141,3 +141,31 @@ def test_source_panel_loader_excludes_confirmation_and_target_animal(tmp_path):
     (tmp_path / 'manifest.json').write_text(json.dumps(dict(rows=[dict(row_id='a')])))
     bank, _ = source_bank(tmp_path, excluded='excluded')
     assert bank['row_id'].tolist() == ['a'] and bank['z'].tolist() == [[1.]]
+
+
+def test_single_spi_selection_uses_only_source_and_preserves_column_identity(tmp_path):
+    from research.representation.empirical_transfer.fit_single_spi import main, source_inputs
+    from research.representation.empirical_transfer.fit_source import fmri_view
+    from mtsspi.provenance import file_sha256
+    import joblib
+    rng = np.random.default_rng(9)
+    y = np.tile([0, 1], 9)
+    groups = np.repeat([f'p{i}' for i in range(9)], 2)
+    aligned = np.c_[y[:, None] * 3 + rng.normal(0, .1, (18, 6)), rng.normal(size=(18, 6))]
+    np.savez(tmp_path / 'bank.npz', role=['source'] * 18 + ['confirmation_primary'],
+             y=np.r_[y, 1], group=np.concatenate([groups, ['unseen']]), row_id=[f'r{i}' for i in range(19)],
+             M=np.full(19, 3), spi_order=['useful', 'noise'], aligned=np.vstack([aligned, np.full(12, np.nan)]),
+             z=np.vstack([rng.normal(size=(18, 5)), np.full(5, np.nan)]))
+    (tmp_path / 'bank.json').write_text(json.dumps(dict(sha256=file_sha256(tmp_path / 'bank.npz'))))
+    (tmp_path / 'source-models').mkdir()
+    main(tmp_path)
+    report = json.loads((tmp_path / 'single-spi-selection.json').read_text())
+    assert report['selected_spi'] == 'useful' and report['target_data_used'] is False
+    bank, _, edges, _ = source_inputs(tmp_path)
+    for method in ['single-spi', 'single-spi-z']:
+        fitted = joblib.load(tmp_path / 'source-models' / f'{method}.joblib')
+        start = fitted['spi_index'] * edges
+        bank['u'] = bank['aligned'][:, start:start + edges]
+        mapped, _ = fmri_view(bank, fitted['original_view'])
+        prediction = fitted['model'].predict(fitted['transform'].transform(mapped, np.arange(18)))
+        assert np.isfinite(prediction).all() and fitted['spi_name'] == 'useful'
