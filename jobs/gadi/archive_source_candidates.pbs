@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N source-retirement
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1,mem=4GB,walltime=01:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module load python3/3.12.1
+python3 -u scripts/archive_gadi_source_candidates.py --apply
