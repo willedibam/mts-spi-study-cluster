@@ -46,8 +46,8 @@ def feature_bank(bank, name, spi_index=None, spi_count=None):
     if name == 'single_spi':
         edges = bank['aligned'].shape[1] // spi_count
         return {**bank, 'u': bank['aligned'][:, spi_index * edges:(spi_index + 1) * edges]}, 'u'
-    if name == 'pearson':
-        return {**bank, 'u': bank['pearson']}, 'u'
+    if name in ['pearson', 'aligned']:
+        return {**bank, 'u': bank[name]}, 'u'
     if name in ['m', 'm_rbf']:
         return bank, 'm'
     if name in ['univariate', 'univariate_rbf']:
@@ -121,7 +121,7 @@ def main(root):
     if any((output / f'{name}.joblib').exists() for name in ['m', 'z', 'baseline_plus_z']):
         raise FileExistsError('statistical discovery models already exist')
     fits, reports = {}, {}
-    for method in ['univariate', 'univariate_rbf', 'pearson', 'm', 'm_rbf', 'z', 'validity']:
+    for method in ['univariate', 'univariate_rbf', 'pearson', 'aligned', 'm', 'm_rbf', 'z', 'validity']:
         fits[method], reports[method] = implementation.fit_one(source, method, settings)
         print('Source selection', method, reports[method]['source_validation_brier'], flush=True)
     best, catalogue = None, []
@@ -132,7 +132,7 @@ def main(root):
             best = fitted, report
         if (index + 1) % 32 == 0: print('Individual SPI screen', index + 1, flush=True)
     fits['single_spi'], reports['single_spi'] = best
-    baseline = min(['univariate', 'univariate_rbf', 'pearson', 'm', 'm_rbf', 'single_spi'],
+    baseline = min(['univariate', 'univariate_rbf', 'pearson', 'aligned', 'm', 'm_rbf', 'single_spi'],
                    key=lambda name: reports[name]['source_validation_brier'])
     fits['m_plus_z'], reports['m_plus_z'] = implementation.fit_one(source, 'm', settings, add_z=True)
     f = fits[baseline]

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from research.representation.dataset_screen.common import folds, weights, probabilities, metrics
-from research.representation.dataset_screen.statistical import fit_one, fit_projection, predict
+from research.representation.dataset_screen.statistical import fit_one, fit_projection, predict, feature_bank
 from research.representation.dataset_screen.raw import normalization, load_role, neural_spec, make_network, fit_network
 from research.representation.shared.interaction_share_learning import ridge_readout
 
@@ -58,6 +58,16 @@ def test_projection_is_not_affected_by_heldout_extremes():
     second, y = fit_projection(altered, 'm', train, 3, True)
     np.testing.assert_allclose(x, y)
     np.testing.assert_allclose(first.transform(bank, train), second.transform(altered, train))
+
+
+def test_aligned_catalogue_control_keeps_spi_and_channel_identity():
+    bank = small_bank()
+    bank['aligned'] = np.random.default_rng(3).normal(size=(27, 48))
+    all_spis, view = feature_bank(bank, 'aligned')
+    assert view == 'u'
+    np.testing.assert_array_equal(all_spis['u'], bank['aligned'])
+    one, _ = feature_bank(bank, 'single_spi', 2, 4)
+    np.testing.assert_array_equal(one['u'], bank['aligned'][:, 24:36])
 
 
 def test_raw_source_loader_and_scaler_do_not_read_heldout_data(tmp_path):

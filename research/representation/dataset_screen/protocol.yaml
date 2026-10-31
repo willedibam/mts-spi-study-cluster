@@ -65,7 +65,7 @@ datasets:
     group: physical condition state; repetitions cannot cross groups
     hypothesis: Local nonlinear contact may alter cross-statistic agreement beyond linear structural response.
 comparisons:
-  statistical: [univariate, univariate_rbf, pearson, single_spi, m, m_rbf, z, m_plus_z, baseline_plus_z, validity]
+  statistical: [univariate, univariate_rbf, pearson, aligned, single_spi, m, m_rbf, z, m_plus_z, baseline_plus_z, validity]
   raw: [minirocket, inceptiontime, aligned_encoder]
   projections: separate source-fitted PCA per block; retain baseline directions
   pca_caps: [8, 32, 50]
