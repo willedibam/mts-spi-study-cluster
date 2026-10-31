@@ -1,0 +1,241 @@
+{
+  "purpose": "Current-version NeuroTycho interpretation and prospective rest/movie participant transfer",
+  "code_commit": "4da3370",
+  "preparation_commit": "0543f4d",
+  "pyspi_commit": "676a49d1d65ee46953708265d0399cf0e326764c",
+  "pyspi_computation": "3.0.0.r10",
+  "catalogue": "bundled benchmarked_p90",
+  "K": 283,
+  "run_root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/character-transfer-261031",
+  "source_snapshot": "/scratch/ql44/we2614/mts-spi-study/operations/sources/empirical-transfer-4da3370",
+  "jobs": {
+    "prepare_neurotycho": "182718670",
+    "prepare_fmri": "182718671",
+    "measure_neurotycho": "182719402",
+    "measure_fmri": "182719416",
+    "fmri_farm": "182720281",
+    "aligned_neural": "182720282",
+    "inceptiontime": "182720283",
+    "rocket_wheels": "182720284",
+    "neurotycho_farm": "182720644",
+    "fmri_bank": "182720586",
+    "neurotycho_bank": "182720908",
+    "minirocket": "182720587",
+    "fmri_statistical": {
+      "m-pca": "182720804",
+      "z-pca": "182720806",
+      "mz-pca": "182720808",
+      "m-rbf": "182720810",
+      "pearson": "182720812",
+      "spectral": "182720814",
+      "spectral-pooled": "182720815",
+      "aligned": "182720816",
+      "validity": "182720818"
+    },
+    "neurotycho_statistical": {
+      "m-pca-Chibi": "182721062",
+      "z-pca-Chibi": "182721063",
+      "mz-pca-Chibi": "182721064",
+      "z-pls-Chibi": "182721065",
+      "validity-pca-Chibi": "182721066",
+      "m-pca-George": "182721067",
+      "z-pca-George": "182721068",
+      "mz-pca-George": "182721069",
+      "z-pls-George": "182721070",
+      "validity-pca-George": "182721071"
+    }
+  },
+  "inputs": {
+    "neurotycho": {
+      "source": 352,
+      "target": 128,
+      "M": 16,
+      "T": 2000,
+      "input_identity": "Historical waveform hashes verified; no re-normalization"
+    },
+    "fmri": {
+      "scan_slots": 232,
+      "all_missing": 10,
+      "usable_before_person_QC": 222,
+      "cohort_recordings": 204,
+      "participants": 26,
+      "source_people": 17,
+      "confirmation_people": 9,
+      "source_recordings": 67,
+      "development_shift": 65,
+      "confirmation_subject_only": 36,
+      "confirmation_primary": 36,
+      "M": 17,
+      "T": 947,
+      "split_seed": 261031,
+      "excluded_people": [
+        "sub03",
+        "sub10",
+        "sub11"
+      ]
+    }
+  },
+  "storage_audit": {
+    "date": "2026-10-31",
+    "project": "ql44",
+    "initial": {
+      "scratch": {
+        "used_GiB": 378.68,
+        "quota_GiB": 1024,
+        "inodes": 198185,
+        "inode_quota": 202000,
+        "inode_hard_limit": 212100
+      },
+      "gdata": {
+        "used_GiB": 69.2,
+        "quota_GiB": 100,
+        "inodes": 66399,
+        "inode_quota": 70000,
+        "inode_hard_limit": 73500
+      }
+    },
+    "user_tree_entries": {
+      "scratch": 162203,
+      "gdata": 66397
+    },
+    "candidate_groups": [
+      {
+        "path": "/scratch/ql44/we2614/.cache/pip",
+        "entries": 1151,
+        "size": "1.7 GiB",
+        "action": "purge disposable downloads after approval"
+      },
+      {
+        "path": "/scratch/ql44/we2614/.cache/uv",
+        "entries": 1957,
+        "size": "44 MiB",
+        "action": "prune cache; hardlinks may reduce actual freed inodes"
+      },
+      {
+        "path": "/scratch/ql44/we2614/mts-spi-study/operations/sources",
+        "entries": 38868,
+        "size": "7.3 GiB",
+        "action": "archive inactive non-Git snapshots, verify then remove loose copies; exclude 7162 entries in registered-worktrees, current snapshot, pyspi snapshots unless separately checked"
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources",
+        "entries": 24819,
+        "size": "4.1 GiB",
+        "action": "archive completed source snapshots with logs; verify before removing loose copies"
+      }
+    ],
+    "retained": "Active environment, scientific banks, verified historical archives, registered worktrees and other users untouched",
+    "deleted": false,
+    "concrete_snapshot_candidates": [
+      {
+        "glob": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-*",
+        "directories": [
+          "proof-refresh-aaad401",
+          "proof-refresh-d094b6b",
+          "proof-refresh-b9a92f6"
+        ],
+        "entries": 3965,
+        "action": "verified archive then remove loose copies, after approval"
+      },
+      {
+        "glob": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-*",
+        "directories": [
+          "hardware-pilot-19c73d8",
+          "hardware-pilot-18a2231",
+          "hardware-pilot-24f3436",
+          "hardware-pilot-177a82d",
+          "hardware-pilot-5259c45",
+          "hardware-pilot-49ecccd",
+          "hardware-pilot-04f37c2",
+          "hardware-pilot-48e0e7f"
+        ],
+        "entries": 10103,
+        "action": "verified archive then remove loose copies, after approval"
+      }
+    ],
+    "observed_after_launch": {
+      "timestamp": "2026-10-31T15:16:37+11:00",
+      "scratch_inodes": 199591,
+      "gdata_inodes": 66399,
+      "scratch_GiB": 379.55,
+      "gdata_GiB": 69.2
+    }
+  },
+  "status": "All 204 fMRI SPIs, verified feature bank, nine statistical source fits and MiniRocket source fits complete. NeuroTycho farm and two neural source jobs remain running; NeuroTycho bank/ten statistical fits are dependent jobs. No confirmation outcomes evaluated; named-feature selection, conventional-baseline-plus-z and waveform controls still require source analysis.",
+  "measurements": {
+    "neurotycho": {
+      "compute_seconds": 557.5131511753425,
+      "PBS_wall_seconds": 576,
+      "peak_MiB": 3356.1,
+      "workers": 2,
+      "exit_status": 0
+    },
+    "fmri": {
+      "compute_seconds": 145.43664057552814,
+      "PBS_wall_seconds": 174,
+      "peak_MiB": 2869.7,
+      "workers": 2,
+      "exit_status": 0
+    }
+  },
+  "production": {
+    "neurotycho": {
+      "records": 480,
+      "reused_smoke_records": 1,
+      "cores": 192,
+      "concurrent_recordings": 96,
+      "mem_GB": 480,
+      "walltime": "01:40:00"
+    },
+    "fmri": {
+      "records": 204,
+      "reused_smoke_records": 1,
+      "cores": 96,
+      "concurrent_recordings": 48,
+      "mem_GB": 192,
+      "walltime": "00:40:00"
+    }
+  },
+  "raw_baselines": {
+    "minirocket": "Source fitting complete, exit 0; isolated aeon environment in temporary jobfs, no confirmation evaluation",
+    "aligned_neural": "Source fitting running",
+    "inceptiontime": "Source fitting running",
+    "MiniRocket_environment": "Wheelhouse on Scratch; environment constructed in PBS_JOBFS to avoid persistent inode consumption"
+  },
+  "input_archives_sha256": {
+    "neurotycho": "dd3d0e491b0d97f44221d2d4ef4ae07f713ebf418ba6db609061ad5c012b71ac",
+    "fmri": "e619567e8498b3cae146722a9fdf770fd54b6a29220fd91d391253bdff40b81d"
+  },
+  "completed": {
+    "prepare_neurotycho": {
+      "exit_status": 0
+    },
+    "prepare_fmri": {
+      "exit_status": 0
+    },
+    "measure_neurotycho": {
+      "exit_status": 0
+    },
+    "measure_fmri": {
+      "exit_status": 0
+    },
+    "fmri_farm": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 880,
+      "audited_new": 203,
+      "reused_smoke": 1
+    },
+    "fmri_bank": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 70,
+      "sha256": "87bb82eb57e4f815294a5c51b430d8597f36f45bf6abd229bc3eb83fe5e31e63"
+    },
+    "minirocket": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 53
+    },
+    "fmri_statistical": {
+      "all_nine_exit_statuses": 0
+    }
+  }
+}

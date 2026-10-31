@@ -1,0 +1,2301 @@
+{
+  "files": [
+    {
+      "file": "sub01.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub01.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub01.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub01.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub01.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub01.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub01.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub01.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub02.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub02.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub02.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub02.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub02.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub02.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub02.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub02.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub03.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub03.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub03.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub03.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub03.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub03.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub03.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub03.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub04.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub04.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub04.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub04.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub04.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub04.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub04.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub04.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub05.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub05.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub05.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub05.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub05.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub05.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub05.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub05.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub06.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub06.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub06.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub06.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub06.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub06.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub06.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub06.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub07.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub07.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub07.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub07.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub07.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub07.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub07.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub07.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub08.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub08.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub08.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub08.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub08.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub08.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub08.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub08.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub09.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub09.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub09.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub09.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub09.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub09.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub09.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub09.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub10.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub10.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub10.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub10.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub10.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub10.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub10.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub10.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub11.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub11.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub11.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub11.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub11.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub11.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub11.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub11.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub12.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub12.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub12.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub12.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub12.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub12.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub12.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub12.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub13.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub13.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub13.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub13.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub13.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub13.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub13.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub13.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub14.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub14.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub14.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub14.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub14.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub14.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub14.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub14.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub15.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub15.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub15.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub15.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub15.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub15.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub15.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub15.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub16.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub16.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub16.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub16.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub16.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub16.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub16.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub16.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub17.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub17.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub17.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub17.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub17.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub17.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub17.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub17.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub18.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub18.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub18.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub18.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub18.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub18.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub18.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub18.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub19.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub19.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub19.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub19.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub19.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub19.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub19.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub19.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub20.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub20.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub20.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub20.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub20.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub20.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub20.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub20.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub21.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub21.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub21.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub21.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub21.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub21.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub21.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub21.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub22.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub22.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub22.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub22.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub22.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub22.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub22.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub22.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub23.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub23.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub23.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub23.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub23.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub23.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub23.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub23.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub24.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub24.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub24.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub24.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub24.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub24.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub24.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub24.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub25.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub25.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub25.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub25.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub25.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub25.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub25.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub25.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub26.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub26.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub26.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub26.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub26.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub26.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub26.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub26.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub27.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub27.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub27.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub27.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub27.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub27.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub27.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub27.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub28.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub28.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub28.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub28.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 972
+    },
+    {
+      "file": "sub28.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub28.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub28.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub28.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub29.movie.1.txt",
+      "shape": [
+        995,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 995
+    },
+    {
+      "file": "sub29.movie.2.txt",
+      "shape": [
+        947,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 947
+    },
+    {
+      "file": "sub29.movie.3.txt",
+      "shape": [
+        1021,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1021
+    },
+    {
+      "file": "sub29.movie.4.txt",
+      "shape": [
+        972,
+        114
+      ],
+      "excluded": "all_missing",
+      "finite_rows": 0
+    },
+    {
+      "file": "sub29.rest.1.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub29.rest.2.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub29.rest.3.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    },
+    {
+      "file": "sub29.rest.4.txt",
+      "shape": [
+        1195,
+        114
+      ],
+      "excluded": null,
+      "finite_rows": 1195
+    }
+  ],
+  "split": {
+    "seed": 261031,
+    "development": [
+      "sub01",
+      "sub02",
+      "sub04",
+      "sub05",
+      "sub06",
+      "sub09",
+      "sub12",
+      "sub14",
+      "sub17",
+      "sub18",
+      "sub20",
+      "sub22",
+      "sub23",
+      "sub24",
+      "sub27",
+      "sub28",
+      "sub29"
+    ],
+    "confirmation": [
+      "sub07",
+      "sub08",
+      "sub13",
+      "sub15",
+      "sub16",
+      "sub19",
+      "sub21",
+      "sub25",
+      "sub26"
+    ],
+    "excluded_incomplete_people": [
+      "sub03",
+      "sub10",
+      "sub11"
+    ]
+  },
+  "usable_scans_before_person_qc": 222,
+  "prepared_scans": 204,
+  "network_order": [
+    "ContA",
+    "ContB",
+    "ContC",
+    "DefaultA",
+    "DefaultB",
+    "DefaultC",
+    "DefaultD",
+    "DorsAttnA",
+    "DorsAttnB",
+    "LimbicA",
+    "LimbicB",
+    "SalVentAttnA",
+    "SalVentAttnB",
+    "SomMotA",
+    "SomMotB",
+    "VisCent",
+    "VisPeri"
+  ],
+  "native_indices": [
+    [
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      89,
+      90,
+      91,
+      92,
+      93,
+      95
+    ],
+    [
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      94,
+      96,
+      97,
+      98,
+      99,
+      100
+    ],
+    [
+      42,
+      43,
+      102,
+      104
+    ],
+    [
+      44,
+      45,
+      46,
+      47,
+      101,
+      103,
+      105,
+      107
+    ],
+    [
+      48,
+      49,
+      50,
+      51,
+      52,
+      106,
+      108,
+      109,
+      110,
+      112
+    ],
+    [
+      53,
+      54,
+      55,
+      68,
+      111,
+      113
+    ],
+    [
+      56,
+      69
+    ],
+    [
+      10,
+      11,
+      12,
+      67,
+      71,
+      72
+    ],
+    [
+      13,
+      14,
+      15,
+      16,
+      70,
+      73,
+      87,
+      88
+    ],
+    [
+      28,
+      79
+    ],
+    [
+      29,
+      77
+    ],
+    [
+      17,
+      18,
+      19,
+      20,
+      21,
+      74,
+      75,
+      76,
+      78,
+      86
+    ],
+    [
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85
+    ],
+    [
+      5,
+      62
+    ],
+    [
+      6,
+      7,
+      8,
+      9,
+      63,
+      64,
+      65,
+      66
+    ],
+    [
+      0,
+      1,
+      57,
+      58
+    ],
+    [
+      2,
+      3,
+      4,
+      59,
+      60,
+      61
+    ]
+  ]
+}
