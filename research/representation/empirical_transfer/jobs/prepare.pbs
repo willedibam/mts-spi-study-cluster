@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N empirical-prep
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=8GB,walltime=01:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+: "${DATASET:?}" "${RUN_ROOT:?}"
+archive_args=()
+if [[ "$DATASET" == neurotycho ]]; then
+    archive_args=(--archive "$MTS_GDATA/archives/representation/261006/gdata-empirical.tar.zst")
+fi
+python -u -m research.representation.empirical_transfer.prepare "$DATASET" \
+    --root "$RUN_ROOT" "${archive_args[@]}"
