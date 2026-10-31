@@ -44,7 +44,14 @@
       "z-pls-George": "182721070",
       "validity-pca-George": "182721071"
     },
-    "inceptiontime_continuation": "182725016"
+    "inceptiontime_continuation": "182725016",
+    "source_retirement": "182729083",
+    "pearson_z": "182729221",
+    "fmri_source_review": "182729222",
+    "neurotycho_source_review": "182729223",
+    "fmri_single_spi": "182729652",
+    "fmri_confirmation": "182729807",
+    "fmri_separate_z50": "182730045"
   },
   "inputs": {
     "neurotycho": {
@@ -125,8 +132,8 @@
         "action": "archive completed source snapshots with logs; verify before removing loose copies"
       }
     ],
-    "retained": "Active environment, scientific banks, verified historical archives, registered worktrees and other users untouched",
-    "deleted": false,
+    "retained": "Scientific banks, original data, active environment, pyspi sources and all other worktrees preserved. Eleven approved source copies archived and verified before retirement; eight hardware copies retired through Git.",
+    "deleted": true,
     "concrete_snapshot_candidates": [
       {
         "glob": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-*",
@@ -160,9 +167,26 @@
       "gdata_inodes": 66399,
       "scratch_GiB": 380.05,
       "gdata_GiB": 69.2
+    },
+    "retirement_evidence": "storage-retirement.json",
+    "after_retirement": {
+      "timestamp": "2026-10-31T17:22:09+11:00",
+      "scratch_inodes": 195121,
+      "gdata_inodes": 56304,
+      "scratch_GiB": 377.84,
+      "gdata_GiB": 69.1
+    },
+    "latest": {
+      "timestamp": "2026-10-31T17:44:24+11:00",
+      "scratch_inodes": 195570,
+      "gdata_inodes": 56304,
+      "scratch_GiB": 377.87,
+      "gdata_GiB": 69.1,
+      "scratch_inode_headroom": 6430,
+      "gdata_inode_headroom": 13696
     }
   },
-  "status": "All 684 primary SPI recordings audited complete; both banks completed successfully. All nine fMRI statistical source fits, MiniRocket and aligned-neural source fits complete. Ten NeuroTycho source fits queued; InceptionTime running with conditional recovery held by dependency. No confirmation outcomes evaluated; named-feature selection, b+z and waveform controls await source analysis.",
+  "status": "Completed: all 684 primary SPI extractions/banks, all requested source fits, fMRI confirmation and the separate PCA(z,cap50) sensitivity. No Gadi jobs remain running or queued. No primary-transfer gain over the strongest individual SPI; m+z improves Brier versus linear m with an interval crossing zero and is essentially matched by nonlinear m. NeuroTycho current-version physical interpretation remains open; no surrogate controls were run. Stop fMRI expansion; preserve this as a bounded mixed/negative result.",
   "measurements": {
     "neurotycho": {
       "compute_seconds": 557.5131511753425,
@@ -200,7 +224,7 @@
   "raw_baselines": {
     "minirocket": "Source fitting complete, exit 0; isolated aeon environment in temporary jobfs, no confirmation evaluation",
     "aligned_neural": "Source fits complete, exit 0, 35m38s; no confirmation evaluation",
-    "inceptiontime": "Source fitting running",
+    "inceptiontime": "All source fits and five final members complete; exit 0",
     "MiniRocket_environment": "Wheelhouse on Scratch; environment constructed in PBS_JOBFS to avoid persistent inode consumption"
   },
   "input_archives_sha256": {
@@ -251,6 +275,46 @@
     "neurotycho_bank": {
       "exit_status": 0,
       "PBS_wall_seconds": 173
+    },
+    "inceptiontime": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 7640
+    },
+    "inceptiontime_continuation": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 12,
+      "action": "verified original completion; no refit"
+    },
+    "neurotycho_statistical": {
+      "all_ten_exit_statuses": 0
+    },
+    "source_retirement": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 446
+    },
+    "pearson_z": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 56
+    },
+    "fmri_source_review": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 9
+    },
+    "neurotycho_source_review": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 64
+    },
+    "fmri_single_spi": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 71
+    },
+    "fmri_confirmation": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 76
+    },
+    "fmri_separate_z50": {
+      "exit_status": 0,
+      "PBS_wall_seconds": 27
     }
   },
   "continuation": {
@@ -272,5 +336,52 @@
       "sm_120"
     ],
     "gpuvolta_limitation": "Current build lacks V100 sm_70. A100 and Hopper queues exist, but their access/driver compatibility has not been tested in this run."
+  },
+  "followup_commits": {
+    "source_review": "55dd437",
+    "individual_spi": "ad4045e",
+    "confirmation": "522c64c",
+    "separate_z50": "6e2de77"
+  },
+  "source_findings": {
+    "fmri_selection_brier": {
+      "m": 0.15856542775554006,
+      "z": 0.17508246437375588,
+      "m_plus_z": 0.13403477652487658,
+      "pearson": 0.04228276447213797,
+      "pearson_plus_z": 0.04692195853200807,
+      "selected_spi": 0.03560859645689047,
+      "selected_spi_plus_z": 0.04143549392216909,
+      "inceptiontime": 0.00021059581500063965
+    },
+    "selected_spi": "cov_GraphicalLassoCV",
+    "caution": "Source selection scores are optimistic; the individual-SPI comparator searches all 283 identities. No confirmation outcomes informed these decisions.",
+    "reports": [
+      "fmri-source-review.json",
+      "neurotycho-source-review.json"
+    ]
+  },
+  "fmri_confirmation": {
+    "primary_participants": 9,
+    "primary_recordings": 36,
+    "primary_contrast": "m+z versus m",
+    "summary": "evaluation-summary.json",
+    "source_lock": "evaluation-lock.json",
+    "independent_prediction_audit": "prediction-audit.json",
+    "separate_projection_sensitivity": "separate-fusion-summary.json",
+    "source_grid_pca_caps": [
+      2,
+      8,
+      32
+    ],
+    "separate_z_cap": 50,
+    "separate_inner_z_dimensions": [
+      42,
+      42,
+      47
+    ],
+    "separate_final_z_dimension": 50,
+    "separate_baseline_projection": "32 PCs, verified unchanged",
+    "scope": "Separate-projection sensitivity specified before inspecting any primary confirmation scores; not a replacement primary model."
   }
 }

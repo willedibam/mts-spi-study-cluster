@@ -1,0 +1,118 @@
+{
+  "caches": [
+    {
+      "path": "/scratch/ql44/we2614/.cache/pip",
+      "entries_before": 1151,
+      "entries_after": 755
+    },
+    {
+      "path": "/scratch/ql44/we2614/.cache/uv",
+      "entries_before": 1960,
+      "entries_after": 0
+    }
+  ],
+  "hardware-pilot": {
+    "archive": "/g/data/ql44/we2614/mts-spi-study/operations/maintenance/source-retirement-261031/hardware-pilot.tar.gz",
+    "sha256": "b6f0eb25d15cd8a0440edd254d5b5a09443a28748f1ea3e3f5e9971accc1b750",
+    "bytes": 1197488014,
+    "verification": "GNU tar --compare, exit 0",
+    "sources": [
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-19c73d8",
+        "entries": 1273,
+        "worktree": true,
+        "commit": "19c73d8611a328ea28df0039065b1c98d0b3eca5",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-18a2231",
+        "entries": 1271,
+        "worktree": true,
+        "commit": "18a2231f67b790ab6173808951b94685e01261b9",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-24f3436",
+        "entries": 1267,
+        "worktree": true,
+        "commit": "24f3436d932510c74f186d568273e5b98beddd19",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-177a82d",
+        "entries": 1266,
+        "worktree": true,
+        "commit": "177a82d0caa883bae60fd5c2a3d5c1f411cb7812",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-5259c45",
+        "entries": 1260,
+        "worktree": true,
+        "commit": "5259c45c9c0b02683c4f6a8c67b97d2625e1e32b",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-49ecccd",
+        "entries": 1257,
+        "worktree": true,
+        "commit": "49ecccdc063a9a531e790ac0ec7d55342c29c2f9",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-04f37c2",
+        "entries": 1257,
+        "worktree": true,
+        "commit": "04f37c20c20c828f2998a350befa98f54fe8532d",
+        "git_status": ""
+      },
+      {
+        "path": "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-48e0e7f",
+        "entries": 1252,
+        "worktree": true,
+        "commit": "48e0e7f3e471f2ec2a18c092a9f85a19732d000c",
+        "git_status": ""
+      }
+    ],
+    "removed": [
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-19c73d8",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-18a2231",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-24f3436",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-177a82d",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-5259c45",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-49ecccd",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-04f37c2",
+      "/g/data/ql44/we2614/mts-spi-study/operations/sources/hardware-pilot-48e0e7f"
+    ]
+  },
+  "proof-refresh": {
+    "archive": "/g/data/ql44/we2614/mts-spi-study/operations/maintenance/source-retirement-261031/proof-refresh.tar.gz",
+    "sha256": "7f8036480545ce03228ab4d18e6df457c9f441098663556864f79982ca6ccd56",
+    "bytes": 475521110,
+    "verification": "GNU tar --compare, exit 0",
+    "sources": [
+      {
+        "path": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-aaad401",
+        "entries": 1337,
+        "worktree": false
+      },
+      {
+        "path": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-d094b6b",
+        "entries": 1322,
+        "worktree": false
+      },
+      {
+        "path": "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-b9a92f6",
+        "entries": 1306,
+        "worktree": false
+      }
+    ],
+    "removed": [
+      "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-aaad401",
+      "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-d094b6b",
+      "/scratch/ql44/we2614/mts-spi-study/operations/sources/proof-refresh-b9a92f6"
+    ]
+  },
+  "quota_after": "--------------------------------------------------------------------------\n           fs       Usage      Quota      Limit   iUsage   iQuota   iLimit\n--------------------------------------------------------------------------\n  ql44 scratch 377.84 GiB   1.00 TiB   1.05 TiB   195121   202000   212100\n  ql44   gdata  69.10 GiB 100.00 GiB 105.00 GiB    56304    70000    73500\n--------------------------------------------------------------------------\n",
+  "timestamp": "2026-10-31T17:22:09+11:00"
+}

@@ -1,0 +1,188 @@
+{
+  "files": {
+    "manifest.json": "dbd43e828ea96fdba4ffd1fcdea070bf70d4f90e1138aef0b8e4de68d58dc4fb",
+    "bank.json": "142bb2a325303b9b7b52b78c38d465637ebe90ca55d42b4dccfdf68c9b42ef0d",
+    "source-review.json": "f243b500ab38620dd05aff19a8fd452f10113718428d9acd66f6d545d2b06a94",
+    "single-spi-selection.json": "97cffb1b4e2bd3aa3b02fb426678d2a27ec68e1c462a4df82328ae88db73f7a7",
+    "source-models/m-pca.json": "588ddaf1aa9b87ae67dc64f4c6d70b97f633be8ba17614d05ba32bfec58983bb",
+    "source-models/m-pca.joblib": "cb7ed26ed624b177539fe78ebdd44c8cae655c5fc1dc72529d4ec831e82367bc",
+    "source-models/z-pca.json": "66e42b129ae0e05ea9c74952a9c0ddd03895957acbf562baabbaa07858a68f67",
+    "source-models/z-pca.joblib": "d63249b19b903e0851af4d1cab5f7a56c7c302ae268e590429169a95338aaa93",
+    "source-models/mz-pca.json": "cf2807befe11cb23cc1f2176e497afc3e4fe19e8afa1b4e65958e07981c73755",
+    "source-models/mz-pca.joblib": "ac72fd9970ccbaff03e69ca16a8678b3f4b13326878e8fd2a0810f5d09f76edc",
+    "source-models/m-rbf.json": "b0c11f8915e0a18f7b7ec5bccb925cb120caae38c5b1b2894534e76cf63b5b47",
+    "source-models/m-rbf.joblib": "88952b0310aadfc1de65fbe8fab7c9c14c6da9ee1d9e4ef9ecee72848e746905",
+    "source-models/pearson.json": "863d14c1ba60fe75667e18fd92c4e6279e072b14319f4dc44826a46ff244f8b4",
+    "source-models/pearson.joblib": "46098d1c8f42c9b223c2bc743b8eb485476acf59565b7c3a76d57af81b1d4319",
+    "source-models/pearson-z.json": "3f44df86e4f0642293a9db8a3c71ce26930a18817c9253c6f6cedc0470f845bf",
+    "source-models/pearson-z.joblib": "716eb0886e281676514256ac87c7c2cd20a52f72990de1651c80116314fefff4",
+    "source-models/spectral.json": "e808dc99b6359faab84864fd027914db8f2191a83b094d7e7be2764da898135e",
+    "source-models/spectral.joblib": "79322605edfc55cf3e26b76707d8dade165b14de1fb985145625721d93385e4d",
+    "source-models/spectral-pooled.json": "0ce9f458127149e194669e6d1edb7907c671fa627a88d2b6525b2a9ddefd4f4b",
+    "source-models/spectral-pooled.joblib": "9ce67bb432fc755206f368050a4acbc33f15fba9b27fc481e2d488f3dd17cfa1",
+    "source-models/aligned.json": "fc9d23492f38e5fa04f3019f37b0dd323856bb271c78100419b43fcbafee8a4d",
+    "source-models/aligned.joblib": "a8845910671a811ab8f94abee300b17d3067b550de05f63399d3e62266f463ac",
+    "source-models/validity.json": "5933a1fe579ab2d85d7e2dc75dfd01337d2496ae1241c528b0c067c9b07acc0b",
+    "source-models/validity.joblib": "febe2d15420080249844b18af3f20f88378149479f6a562551bfdd2a3b4df13d",
+    "source-models/single-spi.json": "6e93c9633dcd43af4d1a92541c08efcb6a9d181e5f715d8c1b27a30acca48218",
+    "source-models/single-spi.joblib": "ac52341e374e266217f3dcf23b57c995e401c66e42af0a63d0763f644e3cef40",
+    "source-models/single-spi-z.json": "e2465c1eb06bcc2c08fc33d14b31c69759599b9a44c0c5cd32585c55469c6c01",
+    "source-models/single-spi-z.joblib": "37a33959742124b95ba473def90822dbf8dfc58aa50d930ce94d3f868c4a001f",
+    "source-models/aligned-neural.json": "7412d7ada06e22fbedc7625eef06237c86feae1f4cc157a8eb1bba56ec3d7e49",
+    "source-models/aligned-neural-11.pt": "8b9493d1f795f418e9140a2d1e614ae7ed57cd39902519529620a62123409e03",
+    "source-models/aligned-neural-23.pt": "46d22640d07f05341ab72e3f40c798621bccc9bb65871c3a4b60d8847a90746e",
+    "source-models/aligned-neural-47.pt": "1fea57d16fead6fc5e77becd50d831e88465def69c33fa49fb8497df30ba169d",
+    "source-models/inceptiontime.json": "31a8d2adc230f1aa59fd0e2caffaf6f0f108dfeb548df0da5f20f1c2d66bb203",
+    "source-models/inceptiontime-11.pt": "9f168f87648561032726784f6a85d19789e1708bc510e9c97b8ffaaf52e920a3",
+    "source-models/inceptiontime-23.pt": "a310e59ea31700528c149f2d6fa6ce0b03a6f67eb98625cc4392a6df7d3a0a21",
+    "source-models/inceptiontime-47.pt": "2400f548c1774fd83e662c91636749fe0c69e6daf07305dc354a14db1c81af9b",
+    "source-models/inceptiontime-71.pt": "60786ed4ff23be066322c50d1ace9cc27a7d44f3e2f0b43500bb5780f73f7e40",
+    "source-models/inceptiontime-101.pt": "0aaa9ff59e1bdb6241bd0ff692bd3b2471176685172d654df2865e747702513b",
+    "source-models/minirocket.json": "5733f961817601c934bcf562456e7eefd0f07785a8b507fb9bcaa4b93fee7b08",
+    "source-models/minirocket-11.joblib": "11eced4cd3cb7ab69f363747d1481df0e01973170f923570da7d77af6f7b6f6b",
+    "source-models/minirocket-23.joblib": "ab43b595db455c95470790037aa067b0f90b07a6e6d40af29464b5f1d8adc97f",
+    "source-models/minirocket-47.joblib": "321f56c390fb4f81bd7ad8270775e184651226232de28f934a39271f1ac98508"
+  },
+  "methods": [
+    "m-pca",
+    "z-pca",
+    "mz-pca",
+    "m-rbf",
+    "pearson",
+    "pearson-z",
+    "spectral",
+    "spectral-pooled",
+    "aligned",
+    "validity",
+    "single-spi",
+    "single-spi-z",
+    "aligned-neural",
+    "inceptiontime",
+    "minirocket"
+  ],
+  "decisions": {
+    "m-pca": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.1
+      },
+      "spi_name": null
+    },
+    "z-pca": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": null
+    },
+    "mz-pca": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": null
+    },
+    "m-rbf": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.1
+      },
+      "spi_name": null
+    },
+    "pearson": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": null
+    },
+    "pearson-z": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": null
+    },
+    "spectral": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": null
+    },
+    "spectral-pooled": {
+      "selected": {
+        "components": 2,
+        "alpha": 1.0
+      },
+      "spi_name": null
+    },
+    "aligned": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": null
+    },
+    "validity": {
+      "selected": {
+        "components": 2,
+        "alpha": 10.0
+      },
+      "spi_name": null
+    },
+    "single-spi": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": "cov_GraphicalLassoCV"
+    },
+    "single-spi-z": {
+      "selected": {
+        "components": 32,
+        "alpha": 0.01
+      },
+      "spi_name": "cov_GraphicalLassoCV"
+    },
+    "aligned-neural": {
+      "selected": {
+        "lr": 0.001,
+        "decay": 0.01,
+        "mean_brier": 0.16851468880971274
+      },
+      "spi_name": null
+    },
+    "inceptiontime": {
+      "selected": {
+        "lr": 0.001,
+        "decay": 0.0001,
+        "mean_brier": 0.00021059581500063965
+      },
+      "spi_name": null
+    },
+    "minirocket": {
+      "selected": 0.1,
+      "spi_name": null
+    }
+  },
+  "primary_role": "confirmation_primary",
+  "primary_contrast": [
+    "mz-pca",
+    "m-pca"
+  ],
+  "secondary_contrasts": [
+    [
+      "pearson-z",
+      "pearson"
+    ],
+    [
+      "single-spi-z",
+      "single-spi"
+    ]
+  ],
+  "threshold": 0.5,
+  "uncertainty": "Paired whole-participant bootstrap, conditional on these fitted models; nine confirmation people.",
+  "interpretation": "Source-nominated panels are exploratory descriptions; waveform and estimator checks remain required. No biological mechanism follows from a predictive gain.",
+  "evaluation_runner_sha256": "53dbd43faf4c3cfe59ce2d504f64bddaabcea30b5e4777e2b6403729a36c15d3"
+}

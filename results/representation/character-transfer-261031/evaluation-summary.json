@@ -1,0 +1,4077 @@
+{
+  "roles": {
+    "development_shift": {
+      "recordings": 65,
+      "participants": 17,
+      "methods": {
+        "m-pca": {
+          "groups": {
+            "sub01": {
+              "brier": 0.07966831188396767,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.2861852540148867,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub04": {
+              "brier": 0.12502541464222383,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.16852180034754766,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.3182411975072717,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub09": {
+              "brier": 0.12129073386167345,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.0868289243961122,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.058732888792430764,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.07460148498055244,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.1378152392527694,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.02204940078043875,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.08298635531921969,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.11662293970823961,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.17054125517676197,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.13851724914012267,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.08716134255840502,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.028499353748551202,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.12372289094771617,
+              "conditional_95_interval": [
+                0.09028893886508761,
+                0.16360979020936753
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8088235294117647,
+              "conditional_95_interval": [
+                0.7058823529411765,
+                0.8970588235294118
+              ]
+            },
+            "auroc": {
+              "mean": 0.9705882352941176,
+              "conditional_95_interval": [
+                0.9264705882352942,
+                1.0
+              ]
+            }
+          }
+        },
+        "z-pca": {
+          "groups": {
+            "sub01": {
+              "brier": 0.3633417340112177,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.25
+            },
+            "sub02": {
+              "brier": 0.1820312616337057,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.22590120068182654,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub05": {
+              "brier": 0.49870070681451106,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.0
+            },
+            "sub06": {
+              "brier": 0.20571291251268373,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub09": {
+              "brier": 0.11257733653956503,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.040333628309276254,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.059530444630493236,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.10792547213995012,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.14928456252237257,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.13280315771518844,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.2804415986366458,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub23": {
+              "brier": 0.15098714078037315,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.0892481618727789,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.1514376823334726,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.22197482747369207,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub29": {
+              "brier": 0.18213003189686217,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.18555069767674204,
+              "conditional_95_interval": [
+                0.1369155908260033,
+                0.2407109563559387
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.7058823529411765,
+              "conditional_95_interval": [
+                0.6029411764705882,
+                0.8088235294117647
+              ]
+            },
+            "auroc": {
+              "mean": 0.8088235294117647,
+              "conditional_95_interval": [
+                0.6617647058823529,
+                0.9411764705882353
+              ]
+            }
+          }
+        },
+        "mz-pca": {
+          "groups": {
+            "sub01": {
+              "brier": 0.16839083527163598,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.1809445645282008,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.1674583277327084,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.27421864935868334,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub06": {
+              "brier": 0.2503901020121338,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.5
+            },
+            "sub09": {
+              "brier": 0.08689419759116195,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.06982834024929126,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.03729277978205286,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.0796141046518362,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.1425927817133486,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.060182179265285775,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.09908480920095197,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.11236819502253087,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.24863326806852992,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.18044206275110183,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.10345015026144405,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.029722149817692816,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.13479455866344653,
+              "conditional_95_interval": [
+                0.10210151904865286,
+                0.16998563269887218
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.7941176470588235,
+              "conditional_95_interval": [
+                0.6764705882352942,
+                0.9117647058823529
+              ]
+            },
+            "auroc": {
+              "mean": 0.9411764705882353,
+              "conditional_95_interval": [
+                0.8529411764705882,
+                1.0
+              ]
+            }
+          }
+        },
+        "m-rbf": {
+          "groups": {
+            "sub01": {
+              "brier": 0.15151228329106387,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.20455486308646992,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.09982079318764794,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.22334028266610584,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.3273585613402332,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub09": {
+              "brier": 0.10923749348751707,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.13640611121333301,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.10406175161671685,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.0509130242107672,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.16149493097842,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.032375444553379935,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.06761826521329325,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.042568818300395966,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.18858850867791294,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.23079346645434387,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.09608188393172681,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.019578133940942093,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.1321355656558982,
+              "conditional_95_interval": [
+                0.0961424936883011,
+                0.1718164317154821
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8088235294117647,
+              "conditional_95_interval": [
+                0.7205882352941176,
+                0.8970588235294118
+              ]
+            },
+            "auroc": {
+              "mean": 0.9852941176470589,
+              "conditional_95_interval": [
+                0.9558823529411765,
+                1.0
+              ]
+            }
+          }
+        },
+        "pearson": {
+          "groups": {
+            "sub01": {
+              "brier": 0.09477789938413148,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.16127384686357282,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.0011461915677363347,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.04512278601568345,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.029508413316252143,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.03179112242583275,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.028061349248852334,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.09314238492724021,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.020377215080564223,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.030009061671148973,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.002852957094021435,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.11291069351068278,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.06745014552285421,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.057197691924986555,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.1680200872311629,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.06641995385687112,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.1922690151847555,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.07072534204860878,
+              "conditional_95_interval": [
+                0.04493221340095742,
+                0.09969641411361348
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9117647058823529,
+              "conditional_95_interval": [
+                0.8382352941176471,
+                0.9705882352941176
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "pearson-z": {
+          "groups": {
+            "sub01": {
+              "brier": 0.13313465059144108,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.18143054866134845,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.03862131597334248,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.12552517671071475,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.0763716209460907,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.03771622323417066,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.033698541187111186,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.07263280549376015,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.05520169724966036,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.022439025248855264,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.0274722653590218,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.06658043043179798,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.06502323336826726,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.020857037786925874,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.15681707033451422,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.09352200086709324,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.13728319542531173,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.07907804934526041,
+              "conditional_95_interval": [
+                0.05675580544077681,
+                0.10340881750950136
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9264705882352942,
+              "conditional_95_interval": [
+                0.8529411764705882,
+                0.9852941176470589
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "spectral": {
+          "groups": {
+            "sub01": {
+              "brier": 0.07086191512526255,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.16566757465344337,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.10117576347761773,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.2707278594844612,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.015891540131853715,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.19102168464062705,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub12": {
+              "brier": 0.12732517551275194,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.11074829310177284,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.0897297956152456,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.07242913298754569,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.09507686172032645,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.01804043896860415,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.11761304615306659,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.062123253949309204,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.2879817854397493,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.23866189506618252,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub29": {
+              "brier": 0.05251908254039924,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.12279971168048345,
+              "conditional_95_interval": [
+                0.0867861379556268,
+                0.1627012474343271
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8382352941176471,
+              "conditional_95_interval": [
+                0.75,
+                0.9264705882352942
+              ]
+            },
+            "auroc": {
+              "mean": 0.9705882352941176,
+              "conditional_95_interval": [
+                0.9264705882352942,
+                1.0
+              ]
+            }
+          }
+        },
+        "spectral-pooled": {
+          "groups": {
+            "sub01": {
+              "brier": 0.17095975923714996,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.21518414526105736,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.20522336690426085,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.26837136258664673,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.0
+            },
+            "sub06": {
+              "brier": 0.2127503241390602,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub09": {
+              "brier": 0.2739239633193672,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.5
+            },
+            "sub12": {
+              "brier": 0.19787564001247152,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.2119074883217105,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.1758371394283425,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.20787361113864117,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.19933168625403574,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.22290494073098555,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.268357877862953,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.25
+            },
+            "sub24": {
+              "brier": 0.21426274842209997,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.25316774088322935,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub28": {
+              "brier": 0.25719315078341376,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.14971621368924257,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.21793183288086282,
+              "conditional_95_interval": [
+                0.2014942948151181,
+                0.23481075279408367
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.6323529411764706,
+              "conditional_95_interval": [
+                0.5441176470588235,
+                0.7205882352941176
+              ]
+            },
+            "auroc": {
+              "mean": 0.8235294117647058,
+              "conditional_95_interval": [
+                0.6617647058823529,
+                0.9558823529411765
+              ]
+            }
+          }
+        },
+        "aligned": {
+          "groups": {
+            "sub01": {
+              "brier": 0.06315413778886192,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.14520641408115356,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.02967822904789915,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.10523427393199691,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.04916158240426494,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.045581345558018835,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.0341944284326513,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.07481550250679182,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.03683689358139726,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.014378260054644485,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.0268884001172058,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.052357174404503125,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.06437755949649232,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.05526966290915443,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.13417591498679154,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.10745250646485627,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.11153940215462886,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.06766480517184191,
+              "conditional_95_interval": [
+                0.05051156191472592,
+                0.08618588929034374
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9705882352941176,
+              "conditional_95_interval": [
+                0.9264705882352942,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "validity": {
+          "groups": {
+            "sub01": {
+              "brier": 0.2808306381987173,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.25
+            },
+            "sub02": {
+              "brier": 0.23779689689308342,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub04": {
+              "brier": 0.23696536906974344,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub05": {
+              "brier": 0.22401832348254175,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub06": {
+              "brier": 0.23403035483141987,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.625
+            },
+            "sub09": {
+              "brier": 0.209871899049488,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.24132389965661571,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.5
+            },
+            "sub14": {
+              "brier": 0.1993638891797861,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.875
+            },
+            "sub17": {
+              "brier": 0.2968142294426649,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.0
+            },
+            "sub18": {
+              "brier": 0.21373078666839646,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub20": {
+              "brier": 0.209871899049488,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.2541483391595431,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub23": {
+              "brier": 0.2694020651579145,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.0
+            },
+            "sub24": {
+              "brier": 0.2529060524082385,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.625
+            },
+            "sub27": {
+              "brier": 0.21167893649269387,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub28": {
+              "brier": 0.2510918651842054,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub29": {
+              "brier": 0.22746604012036892,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.23831244023793582,
+              "conditional_95_interval": [
+                0.2267020490579889,
+                0.2512096360043346
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.6470588235294118,
+              "conditional_95_interval": [
+                0.5441176470588235,
+                0.75
+              ]
+            },
+            "auroc": {
+              "mean": 0.6102941176470589,
+              "conditional_95_interval": [
+                0.47058823529411764,
+                0.7352941176470589
+              ]
+            }
+          }
+        },
+        "single-spi": {
+          "groups": {
+            "sub01": {
+              "brier": 0.1087189927592323,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.13467164086749253,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.003042360531294263,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.03412219202446338,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.0697481152447195,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.0435643279961629,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.06171957126755583,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.0815551302942973,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.023558073788486386,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.024462199234169847,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.0012043843588766395,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.09182616325208523,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.04790616126645596,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.048163678026840004,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.1469226687213766,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.051181537580949905,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.17941196214534696,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.06775171525645916,
+              "conditional_95_interval": [
+                0.045846359190806645,
+                0.0924101469250073
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9117647058823529,
+              "conditional_95_interval": [
+                0.8382352941176471,
+                0.9705882352941176
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "single-spi-z": {
+          "groups": {
+            "sub01": {
+              "brier": 0.14527304654024145,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.18566486273390678,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.023635424166678458,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.14719262483206574,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.07508481753698575,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.05419981201681562,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.05790683484737104,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.10757698190659132,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.07112725463550643,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.027375635625887622,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.017468377376827444,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.06863274608456432,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.05047121628642132,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.024120989292906993,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.20678521403885633,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub28": {
+              "brier": 0.08341076923457325,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.1606481506179461,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.08862204457494977,
+              "conditional_95_interval": [
+                0.062136665173829826,
+                0.11717826177934071
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8970588235294118,
+              "conditional_95_interval": [
+                0.8235294117647058,
+                0.9705882352941176
+              ]
+            },
+            "auroc": {
+              "mean": 0.9852941176470589,
+              "conditional_95_interval": [
+                0.9558823529411765,
+                1.0
+              ]
+            }
+          }
+        },
+        "aligned-neural": {
+          "groups": {
+            "sub01": {
+              "brier": 0.18972532416766713,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.22946312301147437,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 0.23412494606472567,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub05": {
+              "brier": 0.3216389106788824,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.0
+            },
+            "sub06": {
+              "brier": 0.2504569664256864,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub09": {
+              "brier": 0.30308945191406655,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.0
+            },
+            "sub12": {
+              "brier": 0.26943617254538216,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.30705904139823414,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub17": {
+              "brier": 0.2879380910033533,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub18": {
+              "brier": 0.2388119507426658,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.2141530020545026,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.23619504351988924,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.3185227873357097,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.5
+            },
+            "sub24": {
+              "brier": 0.32020349210924587,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.25
+            },
+            "sub27": {
+              "brier": 0.35992561192722744,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.0
+            },
+            "sub28": {
+              "brier": 0.22175383776811303,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub29": {
+              "brier": 0.1232825944324889,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.26034002041760673,
+              "conditional_95_interval": [
+                0.23292582367362688,
+                0.28701811857055387
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.5294117647058824,
+              "conditional_95_interval": [
+                0.45588235294117646,
+                0.6176470588235294
+              ]
+            },
+            "auroc": {
+              "mean": 0.6323529411764706,
+              "conditional_95_interval": [
+                0.4411764705882353,
+                0.8088235294117647
+              ]
+            }
+          }
+        },
+        "inceptiontime": {
+          "groups": {
+            "sub01": {
+              "brier": 0.2819394877272777,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.27935640430472,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub04": {
+              "brier": 0.024580336736142273,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.12241484346935314,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.04167322270380249,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.10690054971068519,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.15361270820069012,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.237550138745755,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.06291176122442474,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.011866824568850062,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.012687721381874954,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.22512488914039389,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.2882371139975208,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.03743842073912337,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.34952172252454383,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.2712793979672758,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.3836088368838644,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.170041434119194,
+              "conditional_95_interval": [
+                0.11224220452056188,
+                0.22878593884926654
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.7794117647058824,
+              "conditional_95_interval": [
+                0.6911764705882353,
+                0.8676470588235294
+              ]
+            },
+            "auroc": {
+              "mean": 0.9852941176470589,
+              "conditional_95_interval": [
+                0.9558823529411765,
+                1.0
+              ]
+            }
+          }
+        },
+        "minirocket": {
+          "groups": {
+            "sub01": {
+              "brier": 0.20820366263062615,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub02": {
+              "brier": 0.060757576296008725,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub04": {
+              "brier": 7.049756267955967e-05,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub05": {
+              "brier": 0.03516868872916425,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub06": {
+              "brier": 0.019227663175594937,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub09": {
+              "brier": 0.013299472716899605,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub12": {
+              "brier": 0.06144905627785244,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub14": {
+              "brier": 0.0535239688230128,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub17": {
+              "brier": 0.006909070191891079,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub18": {
+              "brier": 0.00016806697686831668,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub20": {
+              "brier": 0.00015697086089532612,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub22": {
+              "brier": 0.0011996811986950513,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub23": {
+              "brier": 0.0229709415491203,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub24": {
+              "brier": 0.0012937569789782143,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub27": {
+              "brier": 0.11431380277006176,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub28": {
+              "brier": 0.1841346997761753,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub29": {
+              "brier": 0.026883420942575165,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.047631235144535225,
+              "conditional_95_interval": [
+                0.020973074960456493,
+                0.07979014184872685
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9558823529411765,
+              "conditional_95_interval": [
+                0.9117647058823529,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
+      "contrasts": {
+        "mz-pca versus m-pca": {
+          "brier": {
+            "improvement": -0.011071667715730335,
+            "conditional_95_interval": [
+              -0.03521804973521258,
+              0.013468950285791521
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": -0.014705882352941176,
+            "conditional_95_interval": [
+              -0.07352941176470588,
+              0.04411764705882353
+            ]
+          },
+          "auroc": {
+            "improvement": -0.029411764705882353,
+            "conditional_95_interval": [
+              -0.10294117647058823,
+              0.029411764705882353
+            ]
+          }
+        },
+        "pearson-z versus pearson": {
+          "brier": {
+            "improvement": -0.008352707296651647,
+            "conditional_95_interval": [
+              -0.024797442197285555,
+              0.008820682203303528
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": 0.014705882352941176,
+            "conditional_95_interval": [
+              -0.029411764705882353,
+              0.058823529411764705
+            ]
+          },
+          "auroc": {
+            "improvement": 0.0,
+            "conditional_95_interval": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "single-spi-z versus single-spi": {
+          "brier": {
+            "improvement": -0.020870329318490616,
+            "conditional_95_interval": [
+              -0.037174073927845455,
+              -0.0061032143712087
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": -0.014705882352941176,
+            "conditional_95_interval": [
+              -0.058823529411764705,
+              0.029411764705882353
+            ]
+          },
+          "auroc": {
+            "improvement": -0.014705882352941176,
+            "conditional_95_interval": [
+              -0.04411764705882353,
+              0.0
+            ]
+          }
+        }
+      }
+    },
+    "confirmation_subject_only": {
+      "recordings": 36,
+      "participants": 9,
+      "methods": {
+        "m-pca": {
+          "groups": {
+            "sub07": {
+              "brier": 0.1591896975479515,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.12548322773200227,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.17700168888303938,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.07118715828165116,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.07096217772310501,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.08319874044220929,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.06467252181705715,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.09289219353156464,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.26561891843350993,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.12335625826578782,
+              "conditional_95_interval": [
+                0.08547527547338944,
+                0.16972961911020154
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8055555555555556,
+              "conditional_95_interval": [
+                0.6666666666666666,
+                0.9166666666666666
+              ]
+            },
+            "auroc": {
+              "mean": 0.9444444444444444,
+              "conditional_95_interval": [
+                0.8333333333333334,
+                1.0
+              ]
+            }
+          }
+        },
+        "z-pca": {
+          "groups": {
+            "sub07": {
+              "brier": 0.17279235660046563,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.08495421225243477,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.09325316189695881,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.09649200525633062,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.09514335690931039,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.08450242660837824,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.1273452664850874,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.1424539770939725,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.06341728918717082,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.10670600581001213,
+              "conditional_95_interval": [
+                0.08729163844938002,
+                0.12964737235987636
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9166666666666666,
+              "conditional_95_interval": [
+                0.8333333333333334,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "mz-pca": {
+          "groups": {
+            "sub07": {
+              "brier": 0.22831898114343704,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.13165748029223578,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.07489626007081286,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.04366523537159994,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.05357532175473525,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.09113086682272485,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.024481988039172887,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.07011826649015075,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.15516811704084152,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.09700139078063455,
+              "conditional_95_interval": [
+                0.060725135886379,
+                0.13854010108477974
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8611111111111112,
+              "conditional_95_interval": [
+                0.7222222222222222,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "m-rbf": {
+          "groups": {
+            "sub07": {
+              "brier": 0.21047943279048845,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.1457098904883381,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.2267552990759401,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.02428438895958418,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.03701959507470036,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.06376442191014957,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.027207012794267554,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.05380843909893358,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.32400986564328527,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.12367092731507635,
+              "conditional_95_interval": [
+                0.060532434453915276,
+                0.19611575258272082
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8611111111111112,
+              "conditional_95_interval": [
+                0.7222222222222222,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 0.8888888888888888,
+              "conditional_95_interval": [
+                0.6666666666666666,
+                1.0
+              ]
+            }
+          }
+        },
+        "pearson": {
+          "groups": {
+            "sub07": {
+              "brier": 0.04189388544427119,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.09629984106863869,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.07305491974814626,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 4.31050654389544e-05,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.0712266374034245,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.001774626242848867,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.00951020092569669,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.006692927052565599,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.0675072077975234,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.040889261194283794,
+              "conditional_95_interval": [
+                0.018240092642518316,
+                0.0640351727636999
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "pearson-z": {
+          "groups": {
+            "sub07": {
+              "brier": 0.11781427128367328,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.07233386061086808,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.04176647201127526,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.0041865173792674844,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.08706212420258941,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.0232721737808235,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.008630414323624568,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.002962108319757928,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.034718799102673274,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.043638526779394754,
+              "conditional_95_interval": [
+                0.020499008019271372,
+                0.07028799033562737
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "spectral": {
+          "groups": {
+            "sub07": {
+              "brier": 0.1863806072689278,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub08": {
+              "brier": 0.08196263000524984,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.11034330827556235,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.03734332534062105,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.11610936129681619,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.03518395188569074,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.019743279222834118,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.0179828883605887,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.0666044285732278,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.07462819780327984,
+              "conditional_95_interval": [
+                0.04362761854858484,
+                0.11160632856255595
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8888888888888888,
+              "conditional_95_interval": [
+                0.8055555555555556,
+                0.9722222222222222
+              ]
+            },
+            "auroc": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            }
+          }
+        },
+        "spectral-pooled": {
+          "groups": {
+            "sub07": {
+              "brier": 0.2026366017641466,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.26804687651261494,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub13": {
+              "brier": 0.20431502698853118,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub15": {
+              "brier": 0.20642735412578891,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.1604464463383195,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.16612723796824153,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.16661514767575436,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.19605156482502478,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.22529423650752875,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.1995511658562167,
+              "conditional_95_interval": [
+                0.18039573347510227,
+                0.22155613842358057
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.75,
+              "conditional_95_interval": [
+                0.6111111111111112,
+                0.8888888888888888
+              ]
+            },
+            "auroc": {
+              "mean": 0.8888888888888888,
+              "conditional_95_interval": [
+                0.7777777777777778,
+                1.0
+              ]
+            }
+          }
+        },
+        "aligned": {
+          "groups": {
+            "sub07": {
+              "brier": 0.091928062611587,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.06451652545916453,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.06558292631692507,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.001163222083696262,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.042709021236808094,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.019716781319209096,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.021151353852727386,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.0118568768532211,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.06985112973986043,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.04316398883035544,
+              "conditional_95_interval": [
+                0.023978244037147458,
+                0.0626201591936592
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "validity": {
+          "groups": {
+            "sub07": {
+              "brier": 0.28427835483654446,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.25
+            },
+            "sub08": {
+              "brier": 0.2983141337605514,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.25
+            },
+            "sub13": {
+              "brier": 0.2747909864623973,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.5
+            },
+            "sub15": {
+              "brier": 0.2113791773114322,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.875
+            },
+            "sub16": {
+              "brier": 0.28398978993973745,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.25
+            },
+            "sub19": {
+              "brier": 0.22323011561777095,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.24053569179184486,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub25": {
+              "brier": 0.2578412679659188,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub26": {
+              "brier": 0.25070062252171593,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.25834001557865705,
+              "conditional_95_interval": [
+                0.23987185781609707,
+                0.2765264846914385
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.4444444444444444,
+              "conditional_95_interval": [
+                0.3333333333333333,
+                0.5555555555555556
+              ]
+            },
+            "auroc": {
+              "mean": 0.5416666666666666,
+              "conditional_95_interval": [
+                0.375,
+                0.7222222222222222
+              ]
+            }
+          }
+        },
+        "single-spi": {
+          "groups": {
+            "sub07": {
+              "brier": 0.06557792942268263,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.09069698922070851,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.08653831033398536,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.0011936268597004895,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.04367872900189476,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.006173514309672848,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.007398584625475926,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.003230263327064788,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.11906343820247907,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.04706126503374049,
+              "conditional_95_interval": [
+                0.020213631674449242,
+                0.07601380637944195
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "single-spi-z": {
+          "groups": {
+            "sub07": {
+              "brier": 0.1168601275657946,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.05403683122914246,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.03469459576140733,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.0037183126421197472,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.06923544798887045,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.022834581913021953,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.01150226600951247,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.0038129731727360367,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.057741001183256924,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.04160401527398466,
+              "conditional_95_interval": [
+                0.020497403440632323,
+                0.06626102159702245
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "aligned-neural": {
+          "groups": {
+            "sub07": {
+              "brier": 0.05832440671717848,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.14815954883401106,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.10152558498241526,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.09281541850797526,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.056114877395147866,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.09916562350902436,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.07035714306109153,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.08616413764412756,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.08122358734857338,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.08820559199994943,
+              "conditional_95_interval": [
+                0.07221492969128686,
+                0.10683213413078017
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9444444444444444,
+              "conditional_95_interval": [
+                0.8611111111111112,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "inceptiontime": {
+          "groups": {
+            "sub07": {
+              "brier": 0.1747054649805626,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.16776084593866714,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.010790207502987263,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 5.056718186707494e-06,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.13466895156885858,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.02270681342781347,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.01532122637960765,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.000107970574088856,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 1.600216252459243e-05,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.05845361547258855,
+              "conditional_95_interval": [
+                0.013054230545199889,
+                0.10859997906361636
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8888888888888888,
+              "conditional_95_interval": [
+                0.7777777777777778,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "minirocket": {
+          "groups": {
+            "sub07": {
+              "brier": 0.00236450046966133,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.02842250721925458,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.0021402606234089397,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 2.095511247623908e-06,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.0023957969115712824,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 4.371775618346482e-05,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.00037512595909613327,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.00012642890205233337,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.00496103947992291,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.004536830314710954,
+              "conditional_95_interval": [
+                0.0008106425678042361,
+                0.010848784167128409
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
+      "contrasts": {
+        "mz-pca versus m-pca": {
+          "brier": {
+            "improvement": 0.026354867485153272,
+            "conditional_95_interval": [
+              -0.006947601209893924,
+              0.060471725104935245
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": 0.05555555555555555,
+            "conditional_95_interval": [
+              -0.05555555555555555,
+              0.19444444444444445
+            ]
+          },
+          "auroc": {
+            "improvement": 0.05555555555555555,
+            "conditional_95_interval": [
+              0.0,
+              0.16666666666666666
+            ]
+          }
+        },
+        "pearson-z versus pearson": {
+          "brier": {
+            "improvement": -0.0027492655851109583,
+            "conditional_95_interval": [
+              -0.024817437223784083,
+              0.016342451638712705
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": -0.027777777777777776,
+            "conditional_95_interval": [
+              -0.08333333333333333,
+              0.0
+            ]
+          },
+          "auroc": {
+            "improvement": 0.0,
+            "conditional_95_interval": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "single-spi-z versus single-spi": {
+          "brier": {
+            "improvement": 0.005457249759755823,
+            "conditional_95_interval": [
+              -0.016796414117581624,
+              0.028783253427530797
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": 0.0,
+            "conditional_95_interval": [
+              -0.08333333333333333,
+              0.08333333333333333
+            ]
+          },
+          "auroc": {
+            "improvement": 0.0,
+            "conditional_95_interval": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    },
+    "confirmation_primary": {
+      "recordings": 36,
+      "participants": 9,
+      "methods": {
+        "m-pca": {
+          "groups": {
+            "sub07": {
+              "brier": 0.10871227141525833,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.08274594582958097,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.10285517352142043,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.20224086344196762,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub16": {
+              "brier": 0.09349814446973478,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.17368682423927584,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.041810724955736026,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.33235292969619645,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.13959092979428533,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.1419437563737173,
+              "conditional_95_interval": [
+                0.09544402826755477,
+                0.2013122164450424
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8333333333333334,
+              "conditional_95_interval": [
+                0.6944444444444444,
+                0.9444444444444444
+              ]
+            },
+            "auroc": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            }
+          }
+        },
+        "z-pca": {
+          "groups": {
+            "sub07": {
+              "brier": 0.3072710060457817,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.03182016079536623,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.23577117587750257,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.13323877408051363,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.08456604010899521,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.06624989463075082,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.15271019247659987,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.19690116641126043,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.015184942865161071,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.1359681503657702,
+              "conditional_95_interval": [
+                0.07811392785662903,
+                0.1978027411323265
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.7777777777777778,
+              "conditional_95_interval": [
+                0.6388888888888888,
+                0.9166666666666666
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "mz-pca": {
+          "groups": {
+            "sub07": {
+              "brier": 0.16581538342804558,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.056624790497577085,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.1592199908224958,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.1331064751379331,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.04333726563530439,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.06922154076323808,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.07852370189439013,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.2448669549116692,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.038118614125795515,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.10987052413516099,
+              "conditional_95_interval": [
+                0.07037620775293289,
+                0.15561076458776132
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8055555555555556,
+              "conditional_95_interval": [
+                0.6666666666666666,
+                0.9166666666666666
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "m-rbf": {
+          "groups": {
+            "sub07": {
+              "brier": 0.07846134061379192,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.08987168567898282,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.14420665325947332,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub15": {
+              "brier": 0.10044429744275268,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.09524916595751357,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.08576852017629033,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.015067865443115754,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.2325833580117161,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.15714415304006604,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.11097744884707807,
+              "conditional_95_interval": [
+                0.0756389400785812,
+                0.1499492843048681
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8888888888888888,
+              "conditional_95_interval": [
+                0.7777777777777778,
+                0.9722222222222222
+              ]
+            },
+            "auroc": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            }
+          }
+        },
+        "pearson": {
+          "groups": {
+            "sub07": {
+              "brier": 0.062066339264363266,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.13453253293162898,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.08732008950325706,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.030848282809530225,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.09129147552942556,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.04400646482852031,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.07671035647139851,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.028780429765301235,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.029366560057897145,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.06499139235125805,
+              "conditional_95_interval": [
+                0.04437289007941932,
+                0.08886799924750559
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "pearson-z": {
+          "groups": {
+            "sub07": {
+              "brier": 0.13511222340670148,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.14278867979363008,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.07788118622936463,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.06773064733438737,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.1409253409945454,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.06241537110732329,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.09735632453470443,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.04571802633770142,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.011150648246610884,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.0867864942205521,
+              "conditional_95_interval": [
+                0.058611700171043835,
+                0.11502151901374179
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8611111111111112,
+              "conditional_95_interval": [
+                0.75,
+                0.9722222222222222
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "spectral": {
+          "groups": {
+            "sub07": {
+              "brier": 0.14760689974788588,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub08": {
+              "brier": 0.05771293844195942,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.047543811794765446,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.08290492232011411,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.09175277100120555,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.10205321369978411,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.029141845838235605,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.08895150697590211,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.15730524007538638,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.08944146109947095,
+              "conditional_95_interval": [
+                0.0638691222435088,
+                0.11626565778444081
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9166666666666666,
+              "conditional_95_interval": [
+                0.8055555555555556,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            }
+          }
+        },
+        "spectral-pooled": {
+          "groups": {
+            "sub07": {
+              "brier": 0.23522498307308035,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub08": {
+              "brier": 0.23063425972987212,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub13": {
+              "brier": 0.21109343861937835,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.19935762211656738,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.1913588983861031,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.17264262684584702,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.15254225648987602,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.18050431199407935,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.19228874511702837,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.19618301581909242,
+              "conditional_95_interval": [
+                0.17976923062322053,
+                0.21252135444890824
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.8055555555555556,
+              "conditional_95_interval": [
+                0.6944444444444444,
+                0.9166666666666666
+              ]
+            },
+            "auroc": {
+              "mean": 0.9444444444444444,
+              "conditional_95_interval": [
+                0.8611111111111112,
+                1.0
+              ]
+            }
+          }
+        },
+        "aligned": {
+          "groups": {
+            "sub07": {
+              "brier": 0.09110354065991269,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.07143549879711412,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.04771367959071102,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.031249396079509884,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.07951720136192496,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.06960909951542535,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.039159632000086146,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.032786447091611215,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.042408169325557354,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.05610918493576141,
+              "conditional_95_interval": [
+                0.04349060673588726,
+                0.0695058584067008
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "validity": {
+          "groups": {
+            "sub07": {
+              "brier": 0.28222650466084187,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.125
+            },
+            "sub08": {
+              "brier": 0.2417222920999324,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub13": {
+              "brier": 0.23655419808866218,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub15": {
+              "brier": 0.29374171761878304,
+              "balanced_accuracy": 0.0,
+              "auroc": 0.0
+            },
+            "sub16": {
+              "brier": 0.2617515078293491,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.375
+            },
+            "sub19": {
+              "brier": 0.25114233492360183,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.5
+            },
+            "sub21": {
+              "brier": 0.33160330117857284,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.0
+            },
+            "sub25": {
+              "brier": 0.22323011561777095,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.25223844220446473,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.5
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.2638011571357754,
+              "conditional_95_interval": [
+                0.24499029932492317,
+                0.28587473247405426
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.3888888888888889,
+              "conditional_95_interval": [
+                0.2222222222222222,
+                0.5555555555555556
+              ]
+            },
+            "auroc": {
+              "mean": 0.4444444444444444,
+              "conditional_95_interval": [
+                0.2361111111111111,
+                0.6527777777777778
+              ]
+            }
+          }
+        },
+        "single-spi": {
+          "groups": {
+            "sub07": {
+              "brier": 0.07870875603449559,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.13174207794777776,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.08540173271264538,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.03262891729279264,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.061183844664235404,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.039807102305644916,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.05087682385650847,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.03992126559689252,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.024771716105182317,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.060560248501797226,
+              "conditional_95_interval": [
+                0.04210179381590314,
+                0.08326225680687098
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9722222222222222,
+              "conditional_95_interval": [
+                0.9166666666666666,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "single-spi-z": {
+          "groups": {
+            "sub07": {
+              "brier": 0.10139577393209742,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.11615172994906083,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.0857471933343875,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.06334462074742266,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.1296599972394317,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.05931822586372475,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.11394030588522375,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.032436378511316304,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.01065452598913749,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.07918319460575582,
+              "conditional_95_interval": [
+                0.05324286217149228,
+                0.1031673456894396
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.9166666666666666,
+              "conditional_95_interval": [
+                0.8333333333333334,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "aligned-neural": {
+          "groups": {
+            "sub07": {
+              "brier": 0.18541947610235865,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.2870977570232571,
+              "balanced_accuracy": 0.25,
+              "auroc": 0.25
+            },
+            "sub13": {
+              "brier": 0.27409411878445655,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.5
+            },
+            "sub15": {
+              "brier": 0.25339861121903917,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.5
+            },
+            "sub16": {
+              "brier": 0.2245388262543555,
+              "balanced_accuracy": 0.5,
+              "auroc": 0.75
+            },
+            "sub19": {
+              "brier": 0.22937570730226642,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.17113843427111114,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub25": {
+              "brier": 0.2079678795414157,
+              "balanced_accuracy": 0.75,
+              "auroc": 0.75
+            },
+            "sub26": {
+              "brier": 0.17528452312486875,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.22314614818034764,
+              "conditional_95_interval": [
+                0.19771150012413413,
+                0.25036151242270066
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.6111111111111112,
+              "conditional_95_interval": [
+                0.5,
+                0.7222222222222222
+              ]
+            },
+            "auroc": {
+              "mean": 0.7222222222222222,
+              "conditional_95_interval": [
+                0.5555555555555556,
+                0.8618055555555455
+              ]
+            }
+          }
+        },
+        "inceptiontime": {
+          "groups": {
+            "sub07": {
+              "brier": 0.291423113598355,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.3227391445760011,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.10099552231234527,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.07272343683292966,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.39263984015126285,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.15889265682271345,
+              "balanced_accuracy": 0.75,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.16443051305143452,
+              "balanced_accuracy": 0.5,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.06445996718315232,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.013001433074283376,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.17570062528916416,
+              "conditional_95_interval": [
+                0.10096289464080727,
+                0.2581570498374023
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 0.7222222222222222,
+              "conditional_95_interval": [
+                0.5833333333333334,
+                0.8611111111111112
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "minirocket": {
+          "groups": {
+            "sub07": {
+              "brier": 0.015346275361334524,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub08": {
+              "brier": 0.0056621686624209015,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub13": {
+              "brier": 0.0008963998579641313,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub15": {
+              "brier": 0.0031505295770115353,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub16": {
+              "brier": 0.05385562577582244,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub19": {
+              "brier": 0.029087170750371764,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub21": {
+              "brier": 0.00810510626937423,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub25": {
+              "brier": 0.00016358068453848373,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            },
+            "sub26": {
+              "brier": 0.00020758049727244088,
+              "balanced_accuracy": 1.0,
+              "auroc": 1.0
+            }
+          },
+          "metrics": {
+            "brier": {
+              "mean": 0.012941604159567828,
+              "conditional_95_interval": [
+                0.003701149139574031,
+                0.025143426007043952
+              ]
+            },
+            "balanced_accuracy": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            },
+            "auroc": {
+              "mean": 1.0,
+              "conditional_95_interval": [
+                1.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
+      "contrasts": {
+        "mz-pca versus m-pca": {
+          "brier": {
+            "improvement": 0.03207323223855632,
+            "conditional_95_interval": [
+              -0.009395961668345394,
+              0.0722967154963033
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": -0.027777777777777776,
+            "conditional_95_interval": [
+              -0.1111111111111111,
+              0.05555555555555555
+            ]
+          },
+          "auroc": {
+            "improvement": 0.027777777777777776,
+            "conditional_95_interval": [
+              0.0,
+              0.08333333333333333
+            ]
+          }
+        },
+        "pearson-z versus pearson": {
+          "brier": {
+            "improvement": -0.02179510186929408,
+            "conditional_95_interval": [
+              -0.03985086435660997,
+              -0.005040761613266321
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": -0.1111111111111111,
+            "conditional_95_interval": [
+              -0.2222222222222222,
+              0.0
+            ]
+          },
+          "auroc": {
+            "improvement": 0.0,
+            "conditional_95_interval": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "single-spi-z versus single-spi": {
+          "brier": {
+            "improvement": -0.018622946103958603,
+            "conditional_95_interval": [
+              -0.038654653737942336,
+              -0.0003694207431605968
+            ]
+          },
+          "balanced_accuracy": {
+            "improvement": -0.05555555555555555,
+            "conditional_95_interval": [
+              -0.1388888888888889,
+              0.0
+            ]
+          },
+          "auroc": {
+            "improvement": 0.0,
+            "conditional_95_interval": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    }
+  },
+  "lock_sha256": "3f12ea156992c6837ba091d59f60345bec0fa642aeec9c311b65f4d629005610",
+  "scope": "Fixed-source models, threshold 0.5, equally weighted participant/state metrics. Bootstrap covers target participants conditional on models, not source-training or model-selection uncertainty."
+}

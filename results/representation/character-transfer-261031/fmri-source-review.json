@@ -1,0 +1,1370 @@
+{
+  "reports": {
+    "aligned-neural": {
+      "selection_brier": 0.16851468880971274,
+      "group_mean_brier": 0.16701284722062826,
+      "group_mean_balanced_accuracy": 0.75,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.25826238819157954,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub02",
+          "brier": 0.1628664219308451,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub04",
+          "brier": 0.10660985218783137,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.12244454214877543,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub06",
+          "brier": 0.1787274270297381,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub09",
+          "brier": 0.15616216276614736,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub12",
+          "brier": 0.10010388941876258,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub14",
+          "brier": 0.1799288595350792,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub17",
+          "brier": 0.08625680624265386,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub18",
+          "brier": 0.17858650187876912,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub20",
+          "brier": 0.39994155184364755,
+          "balanced_accuracy": 0.25
+        },
+        {
+          "group": "sub22",
+          "brier": 0.18831020372950769,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub23",
+          "brier": 0.12571203893050797,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub24",
+          "brier": 0.1548746169319668,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub27",
+          "brier": 0.12670617349779478,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.10924180317975002,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.20448316330732408,
+          "balanced_accuracy": 0.75
+        }
+      ],
+      "report_sha256": "7412d7ada06e22fbedc7625eef06237c86feae1f4cc157a8eb1bba56ec3d7e49",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "aligned": {
+      "selection_brier": 0.0507577078194931,
+      "group_mean_brier": 0.05088838119483524,
+      "group_mean_balanced_accuracy": 0.9705882352941176,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.07777974075672595,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub02",
+          "brier": 0.10715590603326587,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub04",
+          "brier": 0.003184762731610645,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.015247923469388948,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub06",
+          "brier": 0.06770406386281143,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.07576254495675845,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub12",
+          "brier": 0.01745152191653617,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.04796598628360714,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 0.05027798478431567,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub18",
+          "brier": 0.010256129981455253,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.035253581858132606,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.06537161929583929,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub23",
+          "brier": 0.04884203416611632,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 0.09231783293464618,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub27",
+          "brier": 0.041588013755443506,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.04078559309087183,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.06815724043467383,
+          "balanced_accuracy": 1.0
+        }
+      ],
+      "report_sha256": "fc9d23492f38e5fa04f3019f37b0dd323856bb271c78100419b43fcbafee8a4d",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "inceptiontime": {
+      "selection_brier": 0.00021059581500063965,
+      "group_mean_brier": 0.00018762252214158298,
+      "group_mean_balanced_accuracy": 1.0,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 3.7107618914260156e-05,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub02",
+          "brier": 2.008174385467148e-08,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub04",
+          "brier": 5.564736434621829e-12,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 1.8614019320755335e-21,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub06",
+          "brier": 9.265257621136941e-07,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.0013511526330594848,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.001105063946453183,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 2.548200625970981e-06,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 1.9122272384821275e-11,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub18",
+          "brier": 6.605400996694001e-08,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 1.0629985748825869e-07,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.0005366498890419681,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub23",
+          "brier": 1.273641529173716e-05,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 2.421155974918947e-05,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub27",
+          "brier": 8.037098439523233e-13,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 1.1532719544996907e-06,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.00011784035445247533,
+          "balanced_accuracy": 1.0
+        }
+      ],
+      "report_sha256": "31a8d2adc230f1aa59fd0e2caffaf6f0f108dfeb548df0da5f20f1c2d66bb203",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "m-pca": {
+      "selection_brier": 0.15856542775554006,
+      "group_mean_brier": 0.16182593648370242,
+      "group_mean_balanced_accuracy": 0.7794117647058824,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.3377002543757017,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub02",
+          "brier": 0.1888646007176095,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub04",
+          "brier": 0.18443535948563042,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub05",
+          "brier": 0.24172580923031906,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub06",
+          "brier": 0.08253987690650953,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.0654901902049046,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.02083329525626829,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.1656535780280911,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 0.22730431093422762,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub18",
+          "brier": 0.05193346357423924,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.09978075124498606,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.13098655013729218,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub23",
+          "brier": 0.19859311004044838,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub24",
+          "brier": 0.24686866854393932,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub27",
+          "brier": 0.048144743394546,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.10664282203332426,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub29",
+          "brier": 0.35354353611490363,
+          "balanced_accuracy": 0.5
+        }
+      ],
+      "report_sha256": "588ddaf1aa9b87ae67dc64f4c6d70b97f633be8ba17614d05ba32bfec58983bb",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "m-rbf": {
+      "selection_brier": 0.1683248482078493,
+      "group_mean_brier": 0.17120473138920164,
+      "group_mean_balanced_accuracy": 0.7647058823529411,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.3026301600374891,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub02",
+          "brier": 0.2863910646821813,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub04",
+          "brier": 0.09993149606502479,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.2540133927437672,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub06",
+          "brier": 0.08564742455403829,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.05848084871295955,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.005082842574300128,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.140239112886387,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub17",
+          "brier": 0.2699084847660021,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub18",
+          "brier": 0.0893018474176353,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.12439396830939473,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub22",
+          "brier": 0.09403325817741356,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub23",
+          "brier": 0.3148432528502281,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub24",
+          "brier": 0.1963086598519862,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub27",
+          "brier": 0.047282482350699415,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.18971154132920479,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub29",
+          "brier": 0.35228059630771663,
+          "balanced_accuracy": 0.5
+        }
+      ],
+      "report_sha256": "b0c11f8915e0a18f7b7ec5bccb925cb120caae38c5b1b2894534e76cf63b5b47",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "minirocket": {
+      "selection_brier": 0.025743087232416324,
+      "group_mean_brier": 0.026163206224982638,
+      "group_mean_balanced_accuracy": 0.9705882352941176,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.007799300763780302,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub02",
+          "brier": 0.1850679316462207,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub04",
+          "brier": 9.006300732796745e-05,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 3.3167705382980565e-05,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub06",
+          "brier": 0.01698411861446511,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.05107661265940399,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.0017875623692053299,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.0007459409987463676,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 0.012885293941364081,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub18",
+          "brier": 9.18094455081079e-05,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.005127999741820892,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.02402187359615841,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub23",
+          "brier": 0.010991273427356184,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 0.049714490059208694,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub27",
+          "brier": 0.013745906756196146,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.0018476190272840622,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.06276354206527553,
+          "balanced_accuracy": 1.0
+        }
+      ],
+      "report_sha256": "5733f961817601c934bcf562456e7eefd0f07785a8b507fb9bcaa4b93fee7b08",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "mz-pca": {
+      "selection_brier": 0.13403477652487658,
+      "group_mean_brier": 0.13615551290575684,
+      "group_mean_balanced_accuracy": 0.8088235294117647,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.25615639466731455,
+          "balanced_accuracy": 0.25
+        },
+        {
+          "group": "sub02",
+          "brier": 0.11151379631242708,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub04",
+          "brier": 0.06927715354006768,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.19007455695704048,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub06",
+          "brier": 0.13247598221380105,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub09",
+          "brier": 0.045185259323600444,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.04726599106088823,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.17918926678219171,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub17",
+          "brier": 0.2123581733694185,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub18",
+          "brier": 0.053957070163529755,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.11828431973728576,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub22",
+          "brier": 0.16078978622266737,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub23",
+          "brier": 0.1183859339051179,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 0.21729415052364343,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub27",
+          "brier": 0.036683581583468905,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.10171158599103983,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.2640407170443638,
+          "balanced_accuracy": 0.5
+        }
+      ],
+      "report_sha256": "cf2807befe11cb23cc1f2176e497afc3e4fe19e8afa1b4e65958e07981c73755",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "pearson-z": {
+      "selection_brier": 0.04692195853200807,
+      "group_mean_brier": 0.04663776530115051,
+      "group_mean_balanced_accuracy": 0.9705882352941176,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.03353533827789475,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub02",
+          "brier": 0.050099588577899236,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub04",
+          "brier": 0.00023847059510648762,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.037572007727500606,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub06",
+          "brier": 0.0592527491327257,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.04042775140032778,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.039306097362121,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.019635666726744522,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 0.03637815681148048,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub18",
+          "brier": 0.0003775185272510225,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.04816015696836014,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.10151551880494472,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub23",
+          "brier": 0.02935669274717914,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 0.17215656815680602,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub27",
+          "brier": 0.049303766612784586,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.012824306844496293,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.06270165484593629,
+          "balanced_accuracy": 1.0
+        }
+      ],
+      "report_sha256": "3f44df86e4f0642293a9db8a3c71ce26930a18817c9253c6f6cedc0470f845bf",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "pearson": {
+      "selection_brier": 0.04228276447213797,
+      "group_mean_brier": 0.04197945887200625,
+      "group_mean_balanced_accuracy": 0.9705882352941176,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.025443905499963698,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub02",
+          "brier": 0.06886925568562807,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub04",
+          "brier": 0.004894708458826711,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.022240751068769098,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub06",
+          "brier": 0.02977118705644446,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.08314641455756658,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub12",
+          "brier": 0.0680615997578213,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.013082597713358997,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 0.034491460468714416,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub18",
+          "brier": 0.0011776457315925274,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub20",
+          "brier": 0.007753553302085799,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.06475120533458034,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub23",
+          "brier": 0.01348202541983161,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 0.18768939819745661,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub27",
+          "brier": 0.03445486083444079,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.004244921658794257,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.05009531007823087,
+          "balanced_accuracy": 1.0
+        }
+      ],
+      "report_sha256": "863d14c1ba60fe75667e18fd92c4e6279e072b14319f4dc44826a46ff244f8b4",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "spectral-pooled": {
+      "selection_brier": 0.23258760480708898,
+      "group_mean_brier": 0.23145945984659158,
+      "group_mean_balanced_accuracy": 0.5882352941176471,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.20911842375144274,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub02",
+          "brier": 0.2684236766271262,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub04",
+          "brier": 0.2384584538575253,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub05",
+          "brier": 0.18674881372457025,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub06",
+          "brier": 0.2131019462075426,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub09",
+          "brier": 0.21127482149838592,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub12",
+          "brier": 0.20923166459761483,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub14",
+          "brier": 0.22956431627568052,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub17",
+          "brier": 0.1963484242321418,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub18",
+          "brier": 0.20800754441529914,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub20",
+          "brier": 0.25992367280172535,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub22",
+          "brier": 0.34147289546957216,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub23",
+          "brier": 0.23692729131042867,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub24",
+          "brier": 0.25286780783720936,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub27",
+          "brier": 0.20539275919674005,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub28",
+          "brier": 0.2540182181350125,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub29",
+          "brier": 0.2139300874540393,
+          "balanced_accuracy": 0.5
+        }
+      ],
+      "report_sha256": "0ce9f458127149e194669e6d1edb7907c671fa627a88d2b6525b2a9ddefd4f4b",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "spectral": {
+      "selection_brier": 0.15258372367177211,
+      "group_mean_brier": 0.1523023047544316,
+      "group_mean_balanced_accuracy": 0.8235294117647058,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.145348116629986,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub02",
+          "brier": 0.23259710990802948,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub04",
+          "brier": 0.10340619674376886,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.11901819539864884,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub06",
+          "brier": 0.11689393415055015,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub09",
+          "brier": 0.2349276174401008,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub12",
+          "brier": 0.0609618885388368,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.10062579440730694,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub17",
+          "brier": 0.13462766835183682,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub18",
+          "brier": 0.1524280974074477,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub20",
+          "brier": 0.15053982930934467,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub22",
+          "brier": 0.30043240706606084,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub23",
+          "brier": 0.03997748397846207,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub24",
+          "brier": 0.10446469937980454,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub27",
+          "brier": 0.11326939058530588,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub28",
+          "brier": 0.13226501424404735,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub29",
+          "brier": 0.34735573728579916,
+          "balanced_accuracy": 0.5
+        }
+      ],
+      "report_sha256": "e808dc99b6359faab84864fd027914db8f2191a83b094d7e7be2764da898135e",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "validity": {
+      "selection_brier": 0.24767781732108665,
+      "group_mean_brier": 0.24783709832418482,
+      "group_mean_balanced_accuracy": 0.5,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.3177053032725283,
+          "balanced_accuracy": 0.0
+        },
+        {
+          "group": "sub02",
+          "brier": 0.2634228949175844,
+          "balanced_accuracy": 0.0
+        },
+        {
+          "group": "sub04",
+          "brier": 0.22289802796442543,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub05",
+          "brier": 0.24652917997032553,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub06",
+          "brier": 0.23376411932870816,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub09",
+          "brier": 0.1841052944863353,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.276657181927265,
+          "balanced_accuracy": 0.25
+        },
+        {
+          "group": "sub14",
+          "brier": 0.24317893532986254,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub17",
+          "brier": 0.244507214336506,
+          "balanced_accuracy": 0.25
+        },
+        {
+          "group": "sub18",
+          "brier": 0.18776207502566,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub20",
+          "brier": 0.2524959389660539,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub22",
+          "brier": 0.28539098630064874,
+          "balanced_accuracy": 0.0
+        },
+        {
+          "group": "sub23",
+          "brier": 0.22620079966178336,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub24",
+          "brier": 0.26779532248715293,
+          "balanced_accuracy": 0.25
+        },
+        {
+          "group": "sub27",
+          "brier": 0.24391484997644342,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub28",
+          "brier": 0.22402395432767752,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub29",
+          "brier": 0.29287859323218185,
+          "balanced_accuracy": 0.25
+        }
+      ],
+      "report_sha256": "5933a1fe579ab2d85d7e2dc75dfd01337d2496ae1241c528b0c067c9b07acc0b",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    },
+    "z-pca": {
+      "selection_brier": 0.17508246437375588,
+      "group_mean_brier": 0.17693300732274353,
+      "group_mean_balanced_accuracy": 0.7352941176470589,
+      "groups": [
+        {
+          "group": "sub01",
+          "brier": 0.17224122440953027,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub02",
+          "brier": 0.06695188305970921,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub04",
+          "brier": 0.052192492773788,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub05",
+          "brier": 0.37432724870864253,
+          "balanced_accuracy": 0.25
+        },
+        {
+          "group": "sub06",
+          "brier": 0.20278549056699866,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub09",
+          "brier": 0.021242316688111034,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub12",
+          "brier": 0.12846004180415604,
+          "balanced_accuracy": 1.0
+        },
+        {
+          "group": "sub14",
+          "brier": 0.3500729462527804,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub17",
+          "brier": 0.25710060119686723,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub18",
+          "brier": 0.1575554388555877,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub20",
+          "brier": 0.1797723930711977,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub22",
+          "brier": 0.23215462710537826,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub23",
+          "brier": 0.1564867925359848,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub24",
+          "brier": 0.21359380405455752,
+          "balanced_accuracy": 0.5
+        },
+        {
+          "group": "sub27",
+          "brier": 0.10055942388889362,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub28",
+          "brier": 0.2036016246413448,
+          "balanced_accuracy": 0.75
+        },
+        {
+          "group": "sub29",
+          "brier": 0.1387627748731126,
+          "balanced_accuracy": 0.75
+        }
+      ],
+      "report_sha256": "66e42b129ae0e05ea9c74952a9c0ddd03895957acbf562baabbaa07858a68f67",
+      "scope": "Selected source-CV predictions, optimistic after hyperparameter selection; not confirmation"
+    }
+  },
+  "panels": {
+    "None": {
+      "source_groups": [
+        "sub01",
+        "sub02",
+        "sub04",
+        "sub05",
+        "sub06",
+        "sub09",
+        "sub12",
+        "sub14",
+        "sub17",
+        "sub18",
+        "sub20",
+        "sub22",
+        "sub23",
+        "sub24",
+        "sub27",
+        "sub28",
+        "sub29"
+      ],
+      "source_rows": [
+        "sub01-movie-1-m17-t947",
+        "sub01-movie-2-m17-t947",
+        "sub01-rest-1-m17-t947",
+        "sub01-rest-2-m17-t947",
+        "sub02-movie-1-m17-t947",
+        "sub02-movie-2-m17-t947",
+        "sub02-rest-1-m17-t947",
+        "sub02-rest-2-m17-t947",
+        "sub04-movie-1-m17-t947",
+        "sub04-movie-2-m17-t947",
+        "sub04-rest-1-m17-t947",
+        "sub04-rest-2-m17-t947",
+        "sub05-movie-1-m17-t947",
+        "sub05-movie-2-m17-t947",
+        "sub05-rest-1-m17-t947",
+        "sub05-rest-2-m17-t947",
+        "sub06-movie-1-m17-t947",
+        "sub06-movie-2-m17-t947",
+        "sub06-rest-1-m17-t947",
+        "sub06-rest-2-m17-t947",
+        "sub09-movie-1-m17-t947",
+        "sub09-movie-2-m17-t947",
+        "sub09-rest-1-m17-t947",
+        "sub09-rest-2-m17-t947",
+        "sub12-movie-1-m17-t947",
+        "sub12-movie-2-m17-t947",
+        "sub12-rest-2-m17-t947",
+        "sub14-movie-1-m17-t947",
+        "sub14-movie-2-m17-t947",
+        "sub14-rest-1-m17-t947",
+        "sub14-rest-2-m17-t947",
+        "sub17-movie-1-m17-t947",
+        "sub17-movie-2-m17-t947",
+        "sub17-rest-1-m17-t947",
+        "sub17-rest-2-m17-t947",
+        "sub18-movie-1-m17-t947",
+        "sub18-movie-2-m17-t947",
+        "sub18-rest-1-m17-t947",
+        "sub18-rest-2-m17-t947",
+        "sub20-movie-1-m17-t947",
+        "sub20-movie-2-m17-t947",
+        "sub20-rest-1-m17-t947",
+        "sub20-rest-2-m17-t947",
+        "sub22-movie-1-m17-t947",
+        "sub22-movie-2-m17-t947",
+        "sub22-rest-1-m17-t947",
+        "sub22-rest-2-m17-t947",
+        "sub23-movie-1-m17-t947",
+        "sub23-movie-2-m17-t947",
+        "sub23-rest-1-m17-t947",
+        "sub23-rest-2-m17-t947",
+        "sub24-movie-1-m17-t947",
+        "sub24-movie-2-m17-t947",
+        "sub24-rest-1-m17-t947",
+        "sub24-rest-2-m17-t947",
+        "sub27-movie-1-m17-t947",
+        "sub27-movie-2-m17-t947",
+        "sub27-rest-1-m17-t947",
+        "sub27-rest-2-m17-t947",
+        "sub28-movie-1-m17-t947",
+        "sub28-movie-2-m17-t947",
+        "sub28-rest-1-m17-t947",
+        "sub28-rest-2-m17-t947",
+        "sub29-movie-1-m17-t947",
+        "sub29-movie-2-m17-t947",
+        "sub29-rest-1-m17-t947",
+        "sub29-rest-2-m17-t947"
+      ],
+      "excluded": null,
+      "bank_sha256": "87bb82eb57e4f815294a5c51b430d8597f36f45bf6abd229bc3eb83fe5e31e63",
+      "model_sha256": "d63249b19b903e0851af4d1cab5f7a56c7c302ae268e590429169a95338aaa93",
+      "panel": [
+        {
+          "index": 22120,
+          "feature": {
+            "block": "unified",
+            "relation": "ordered",
+            "spi_a": "dtw_constraint-itakura",
+            "spi_b": "coint_johansen_trace_stat_order-0_ardiff-10"
+          },
+          "coefficient_sign_consistency": 1.0,
+          "group_effect_sign_consistency": 0.7647058823529411,
+          "mean_state_difference": 0.13866084400454864,
+          "contribution_to_mean_model_contrast": 0.0007128820453297385
+        },
+        {
+          "index": 21931,
+          "feature": {
+            "block": "unified",
+            "relation": "ordered",
+            "spi_a": "dtw",
+            "spi_b": "coint_johansen_trace_stat_order-0_ardiff-10"
+          },
+          "coefficient_sign_consistency": 1.0,
+          "group_effect_sign_consistency": 0.7647058823529411,
+          "mean_state_difference": 0.1419345970977755,
+          "contribution_to_mean_model_contrast": 0.0007039720811253949
+        },
+        {
+          "index": 11703,
+          "feature": {
+            "block": "unified",
+            "relation": "ordered",
+            "spi_a": "corr_pearson_tau-5-sq",
+            "spi_b": "corr_pearson_tau-20-sq"
+          },
+          "coefficient_sign_consistency": 1.0,
+          "group_effect_sign_consistency": 0.8235294117647058,
+          "mean_state_difference": -0.16606125193100205,
+          "contribution_to_mean_model_contrast": 0.0006853865413186979
+        }
+      ],
+      "mean_model_state_contrast": 0.7329760180421401,
+      "panel_additive_contrast": 0.0021022406677738315,
+      "descriptive_source_score_R2": 0.2829687986182732,
+      "target_data_used": false,
+      "rule": "Up to three positive additive contributors; coefficient sign agrees across three source refits; state-effect sign agrees in at least 75% of source groups; absolute source correlation below .95 between chosen coordinates.",
+      "limitation": "Exploratory source nomination with fixed selected hyperparameters; R2 is descriptive training fidelity, not validation accuracy. Small contributions do not establish a compact explanation. Physical interpretation awaits estimator and waveform checks."
+    }
+  },
+  "runner_sha256": "f1a0b3d34a1f21181cc3be2b31a91a8313ae19c363c39f9cfe7bc8cccf1d5b40",
+  "target_outcomes_evaluated": false
+}
