@@ -1,5 +1,6 @@
 """Fit source-only statistical models; confirmation labels are never scored here."""
 import argparse
+from dataclasses import dataclass
 import itertools
 import json
 from pathlib import Path
@@ -22,6 +23,16 @@ METHODS = {'m-pca': ('m', 'pca'), 'z-pca': ('z', 'pca'), 'mz-pca': ('m+z', 'pca'
            'aligned': ('aligned', 'pca'), 'validity': ('validity', 'pca'),
            'pearson-z': ('pearson+z', 'pca'),
            'single-spi': ('u', 'pca'), 'single-spi-z': ('u+z', 'pca')}
+
+
+@dataclass
+class SeparateProjection:
+    """Keep baseline directions intact when appending a separate z projection."""
+    baseline: object
+    z: object
+
+    def transform(self, bank, indices):
+        return np.concatenate([self.baseline.transform(bank, indices), self.z.transform(bank, indices)], axis=1)
 
 
 def fmri_view(bank, view):

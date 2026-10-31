@@ -204,3 +204,26 @@ def test_evaluation_lock_rejects_changed_source_report(tmp_path, monkeypatch):
     report.write_text('{}')
     with pytest.raises(ValueError, match='frozen input changed'):
         evaluate_fmri.checked_bank(tmp_path)
+
+
+def test_separate_fusion_preserves_baseline_and_reports_fold_rank(tmp_path):
+    from research.representation.empirical_transfer.separate_fusion import fit_source
+    from mtsspi.representation_screen import fit_view
+    import joblib
+    rng = np.random.default_rng(9)
+    y = np.tile([0, 1], 9)
+    bank = dict(u=rng.normal(size=(18, 6)), z=rng.normal(size=(18, 60)), y=y,
+                group=np.repeat([f'p{i}' for i in range(9)], 2), row_id=np.array([f'r{i}' for i in range(18)]))
+    config = dict(ridge_alpha_grid=[.1, 1], preprocessing=dict(minimum_valid_fraction=.95,
+        variance_threshold=1e-8, z_scaling='center', clip_standard_deviations=5,
+        pca_solver='randomized', pca_random_state=1729))
+    fitted, report = fit_source(bank, config, base_components=2, z_cap=50)
+    baseline, _ = fit_view(bank, 'u', np.arange(18), {**config['preprocessing'], 'pca_dimensions': 2})
+    np.testing.assert_allclose(fitted['transform'].baseline.transform(bank, np.arange(18)), baseline.transform(bank, np.arange(18)))
+    assert report['final_z_dimensions'] == 17
+    assert {f['z_dimensions'] for f in report['candidates'][0]['folds']} == {11}
+    path = tmp_path / 'separate.joblib'
+    joblib.dump(fitted, path)
+    loaded = joblib.load(path)
+    assert loaded['transform'].__class__.__module__ != '__main__'
+    np.testing.assert_allclose(loaded['transform'].transform(bank, np.arange(18)), fitted['transform'].transform(bank, np.arange(18)))
