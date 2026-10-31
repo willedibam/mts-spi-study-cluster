@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N rocket-wheels
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=4GB,walltime=00:30:00,jobfs=4GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+module purge
+module load python3/3.12.1
+python3 -m venv "$PBS_JOBFS/downloader"
+mkdir -p "${WHEELHOUSE:?}"
+PIP_CACHE_DIR="$PBS_JOBFS/pip-cache" "$PBS_JOBFS/downloader/bin/python" -m pip download \
+    --only-binary=:all: --dest "$WHEELHOUSE" aeon==1.5.0 pyyaml
+"$PBS_JOBFS/downloader/bin/python" - "$WHEELHOUSE" <<'PY'
+import hashlib,json,pathlib,sys
+root=pathlib.Path(sys.argv[1])
+records={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(root.glob('*.whl'))}
+(root/'SHA256.json').write_text(json.dumps(records,indent=2)+'\n')
+print(len(records),'verified wheels')
+PY
