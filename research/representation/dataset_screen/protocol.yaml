@@ -65,12 +65,19 @@ datasets:
     group: physical condition state; repetitions cannot cross groups
     hypothesis: Local nonlinear contact may alter cross-statistic agreement beyond linear structural response.
 comparisons:
-  statistical: [univariate, pearson, single_spi, m, m_rbf, z, m_plus_z, baseline_plus_z, validity]
+  statistical: [univariate, univariate_rbf, pearson, single_spi, m, m_rbf, z, m_plus_z, baseline_plus_z, validity]
   raw: [minirocket, inceptiontime, aligned_encoder]
   projections: separate source-fitted PCA per block; retain baseline directions
   pca_caps: [8, 32, 50]
   ridge_alphas: [0.01, 0.1, 1, 10, 100]
   group_folds: 3
-  metrics: [group_class_balanced_brier, balanced_accuracy, calibration]
+  metrics: [group_class_balanced_brier, balanced_accuracy, log_loss]
+  fusion_z_factors: [0, 0.25, 1]
+  statistical_head: one-hot ridge regression; clip scores to [0,1] and normalize across classes
+  rbf_bandwidth: inverse total training-score variance; no bandwidth search
+  minirocket: aeon 1.5, 10000 kernels, three final seeds, standardized features and ridge one-hot regression
+  neural: source-only normalization, three grouped folds, learning rates [0.001, 0.0001], AdamW weight decay 0.0001
+  neural_ensembles: five InceptionTime seeds and three aligned-encoder seeds; no pretraining or augmentation
+  neural_stopping: InceptionTime maximum/minimum/patience 1500/100/100; aligned 400/30/30; final epochs selected from source folds
 interpretation: Named features require stable group effects and waveform controls; decoder weights alone are insufficient.
 decision: All screens, including failures, are retained. Dataset selection is discovery; claims require a frozen independent confirmation. No guaranteed win, universal superiority, or raw-inaccessible information is assumed.

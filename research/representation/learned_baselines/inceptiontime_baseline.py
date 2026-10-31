@@ -43,7 +43,7 @@ class InceptionModule(nn.Module):
 
 
 class InceptionNetwork(nn.Module):
-    """B,T,M input; returns logit(class1)-logit(class0)."""
+    """B,T,M input; historical binary difference, or explicit categorical logits."""
     def __init__(self, spec):
         super().__init__()
         self.channels = spec['input_channels']
@@ -55,8 +55,9 @@ class InceptionNetwork(nn.Module):
             nn.Sequential(nn.Conv1d(self.channels if d == 0 else width, width, 1, bias=False),
                           normalization(width, spec)) for d in range(spec['depth'] // self.every)])
         self.output = nn.Linear(width, spec['output_classes'])
-        if spec['output_classes'] != 2 or spec['depth'] % self.every:
-            raise ValueError('this benchmark requires binary output and complete residual blocks')
+        self.binary_difference = spec.get('return_binary_difference', True)
+        if (self.binary_difference and spec['output_classes'] != 2) or spec['output_classes'] < 2 or spec['depth'] % self.every:
+            raise ValueError('invalid class output or incomplete residual blocks')
         for module in self.modules():
             if isinstance(module, (nn.Conv1d, nn.Linear)):
                 nn.init.xavier_uniform_(module.weight)
@@ -73,7 +74,7 @@ class InceptionNetwork(nn.Module):
                 x = F.relu(x + self.shortcuts[d // self.every](residual))
                 residual = x
         logits = self.output(x.mean(-1))
-        return logits[:, 1] - logits[:, 0]
+        return logits[:, 1] - logits[:, 0] if self.binary_difference else logits
 
 
 def fit_network(x, y, archives, spec, training, lr, decay, seed, validation=None, epochs=None):

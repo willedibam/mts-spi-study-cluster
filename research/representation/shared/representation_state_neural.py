@@ -37,7 +37,7 @@ class AlignedChannelEncoder(nn.Module):
         self.post = nn.Conv1d(width, post["width"], post["kernel"],
                               stride=post["stride"], padding=post["padding"])
         self.head = nn.Sequential(nn.Linear(2 * post["width"], spec["readout"][0]),
-                                  nn.GELU(), nn.Linear(spec["readout"][0], 1))
+                                  nn.GELU(), nn.Linear(spec["readout"][0], spec.get('output_classes', 1)))
 
     def tokens(self, x: torch.Tensor) -> torch.Tensor:
         b, t, m = x.shape
