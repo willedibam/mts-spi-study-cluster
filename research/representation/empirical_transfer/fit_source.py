@@ -19,14 +19,25 @@ SPEC = Path('research/representation/neurotycho/configs/analysis/neurotycho-tran
 METHODS = {'m-pca': ('m', 'pca'), 'z-pca': ('z', 'pca'), 'mz-pca': ('m+z', 'pca'),
            'm-rbf': ('m', 'rbf'), 'pearson': ('pearson', 'pca'),
            'spectral': ('spectral', 'pca'), 'spectral-pooled': ('spectral_pooled', 'pca'),
-           'aligned': ('aligned', 'pca'), 'validity': ('validity', 'pca')}
+           'aligned': ('aligned', 'pca'), 'validity': ('validity', 'pca'),
+           'pearson-z': ('pearson+z', 'pca')}
+
+
+def fmri_view(bank, view):
+    """Give an ordinary-feature block the established standardized 'u' treatment."""
+    names = view.split('+')
+    ordinary = [name for name in names if name not in ('m', 'z', 'validity')]
+    if len(ordinary) > 1:
+        raise ValueError('only one ordinary feature block is supported per view')
+    if ordinary:
+        bank = {**bank, 'u': bank[ordinary[0]]}
+        names = ['u' if name == ordinary[0] else name for name in names]
+    return bank, '+'.join(names)
 
 
 def fit_fmri(bank, method, config):
     view, head = METHODS[method]
-    if view not in ('m', 'z', 'm+z', 'validity'):
-        bank = {**bank, 'u': bank[view]}
-        view = 'u'  # Existing transform explicitly standardizes ordinary features.
+    bank, view = fmri_view(bank, view)
     choices = [dict(components=k, alpha=a) for k, a in itertools.product(
         config['pca_caps'], sorted(config['ridge_alpha_grid'], reverse=True))]
     reports = [dict(choice=choice, folds=[]) for choice in choices]

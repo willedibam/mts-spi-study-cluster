@@ -37,6 +37,12 @@ def test_small_source_only_pca_and_kernel_fits():
         model, report = fit_fmri(bank, method, config)
         assert np.isfinite(report['selected_source_validation_brier'])
         assert len(report['candidates'][0]['folds']) == 3
+    bank.update(pearson=bank['m'][:, :2], z=bank['m'][:, 2:])
+    fitted, report = fit_fmri(bank, 'pearson-z', config)
+    from research.representation.empirical_transfer.fit_source import fmri_view
+    mapped, view = fmri_view(bank, fitted['original_view'])
+    assert view == 'u+z' and fitted['original_view'] == 'pearson+z'
+    assert np.isfinite(fitted['model'].predict(fitted['transform'].transform(mapped, np.arange(18)))).all()
 
 
 def test_raw_connectivity_retains_aligned_edges():
@@ -103,3 +109,35 @@ def test_resume_requires_matching_inputs_and_training_code(tmp_path):
     (old_root / paths[0]).write_text('different training implementation')
     with pytest.raises(ValueError, match='training implementation'):
         resume_candidates(progress, current, old_root)
+
+
+def test_additive_panel_contributions_recover_model_state_contrast():
+    from research.representation.empirical_transfer.review_source import coordinate_effects, coefficient_map
+    from mtsspi.representation_screen import fit_view
+    from sklearn.linear_model import Ridge
+    rng = np.random.default_rng(31)
+    y = np.tile([0, 1], 12)
+    bank = dict(y=y, z=rng.normal(size=(24, 8)) + y[:, None],
+                group=np.repeat(['a', 'b', 'c'], 8), date=np.repeat(np.arange(6), 4))
+    config = dict(minimum_valid_fraction=.95, variance_threshold=1e-8, z_scaling='center',
+                  clip_standard_deviations=5, pca_solver='randomized', pca_random_state=1729, pca_dimensions=3)
+    transform, x = fit_view(bank, 'z', np.arange(len(y)), config)
+    model = Ridge(alpha=.1).fit(x, y)
+    values = transform.blocks[0].transform(bank['z'])
+    beta, full_beta = coefficient_map(transform, model, 8)
+    contrast = (coordinate_effects(values, bank).mean(0) * beta).sum()
+    actual = coordinate_effects(model.predict(x)[:, None], bank).mean()
+    np.testing.assert_allclose(contrast, actual, atol=1e-12)
+    assert full_beta.shape == (8,)
+
+
+def test_source_panel_loader_excludes_confirmation_and_target_animal(tmp_path):
+    from research.representation.empirical_transfer.review_source import source_bank
+    from mtsspi.provenance import file_sha256
+    np.savez(tmp_path / 'bank.npz', role=['source', 'source', 'confirmation_primary'],
+             group=['kept', 'excluded', 'confirmation'], y=[0, 1, 1],
+             row_id=['a', 'b', 'c'], z=np.array([[1.], [2.], [np.nan]]))
+    (tmp_path / 'bank.json').write_text(json.dumps(dict(sha256=file_sha256(tmp_path / 'bank.npz'))))
+    (tmp_path / 'manifest.json').write_text(json.dumps(dict(rows=[dict(row_id='a')])))
+    bank, _ = source_bank(tmp_path, excluded='excluded')
+    assert bank['row_id'].tolist() == ['a'] and bank['z'].tolist() == [[1.]]
