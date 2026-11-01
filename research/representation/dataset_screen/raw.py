@@ -38,9 +38,9 @@ def normalization(x):
     return mean, scale
 
 
-def rocket(root, x, y, groups, identity, output):
+def rocket(root, x, y, groups, identity, output, alpha_grid=None):
     from aeon.transformations.collection.convolution_based import MiniRocket
-    alpha_grid = [1e-3, 1e-2, 1e-1, 1., 10., 100., 1000.]
+    alpha_grid = alpha_grid or [1e-3, 1e-2, 1e-1, 1., 10., 100., 1000.]
     target = np.eye(int(y.max()) + 1)[y]
     reports = [dict(alpha=a, folds=[]) for a in alpha_grid]
     for train, valid in folds(y, groups):
@@ -191,7 +191,7 @@ def neural(root, method, x, y, groups, identity, output):
                 source_validation_brier=selected['mean_brier'], final_epochs=epochs)
 
 
-def screen(root, method, report, manifest, output):
+def screen(root, method, report, manifest, output, destination=None):
     # Called only after all source decisions and model hashes have been written.
     x, y, groups, rows = load_role(root, manifest, 'screen')
     p = []
@@ -210,7 +210,7 @@ def screen(root, method, report, manifest, output):
             tensor = (torch.as_tensor(x)-saved['mean'])/saved['scale']
             p.append(network_prediction(model,tensor))
     probability = np.mean(p,axis=0)
-    atomic_json(root/f'{method}-screen.json',dict(**metrics(y,probability,groups), probability=probability.tolist(),
+    atomic_json(destination or root/f'{method}-screen.json',dict(**metrics(y,probability,groups), probability=probability.tolist(),
         y=y.tolist(),group=groups.tolist(),row_id=[r['row_id'] for r in rows],
         source_report_sha256=file_sha256(output/f'{method}.json'), stage='Exploratory discovery, not confirmation'))
 
