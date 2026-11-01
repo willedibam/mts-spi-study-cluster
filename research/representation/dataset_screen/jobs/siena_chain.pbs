@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N siena-chain
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=2GB,walltime=00:10:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -u -m research.representation.dataset_screen.confirm_siena --root "${RUN_ROOT:?}" --mode submit
