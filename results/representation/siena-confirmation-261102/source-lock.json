@@ -1,0 +1,204 @@
+{
+  "source_root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/chbmit",
+  "files": {
+    "manifest.json": "16029e2ed95653a0f53ed255b21a4b2a9595f10a4219e9bd0c698534e468b78e",
+    "bank.json": "cfb35a8cc59e27dc439c597d96cf3dc38df8d8993d1106f6ff9693e1f733a407",
+    "statistical-source-lock.json": "5e9c8634b1cd18715ae94208c7664e9ed8e270cb8e2515a6b6367ce4400927bd",
+    "screen-models/univariate.json": "d30290d1a078c4e3e23d966e3857117f311dde213668fab6ea80c5bc44ec64c9",
+    "screen-models/univariate.joblib": "f8fa1747856527ac65a05e0d35069c60c329c753dbd98d17cde0839ccad4f6a9",
+    "screen-models/univariate_rbf.json": "07b06a73e2c2b78d67a69a7474467b13448c62a9a64a8e91f7eb5a7bf58b5b40",
+    "screen-models/univariate_rbf.joblib": "40f6ac25492dd8091f33fec36b6f2747ed70415bb4502836fd4bec9cbaaa7869",
+    "screen-models/pearson.json": "1b3c3f51b8eebd2d56ddfa74c690fa1e6a12d45516a5dc41c6694196852e508c",
+    "screen-models/pearson.joblib": "dafeddc5bbae15c7bc7f6a4666916ee98456d4d78047bd18cfb5c8c388d16855",
+    "screen-models/aligned.json": "1fa4b9d254b7b0ea34e04b40e38e00dfb415fc9f93cb4da3af4c4a3312dc8f5b",
+    "screen-models/aligned.joblib": "2268c417c5ddc5c5278fa024950005a08bc206f2c2d1dcab7ca26e011213fc15",
+    "screen-models/m.json": "78a785a4afb9e08478a4e0ff7e265701244b634163f720b4fe34a08b574ed23c",
+    "screen-models/m.joblib": "8edf2f3388a527e6ca113c0ca72bcbfb4a3dd70c785ce05fd34a0716f09dc8d7",
+    "screen-models/m_rbf.json": "191de7c53ee3793fc62d6d958b1fc3e3a86d158b422e9a52fc4ef38d1f96c42a",
+    "screen-models/m_rbf.joblib": "520702307d4aa2b3eeda9ff8a5cef5c2731f7b9e73b2728cf94729fcf89b45ca",
+    "screen-models/z.json": "d6e07c2413fc51e8435710d02e68f7d0d0906c275c5c0b13fe47b8090f9d58ef",
+    "screen-models/z.joblib": "bb1dce64235b8f4f0943c5598de04f743b63ade573bbca57d42a78e1baae0a2c",
+    "screen-models/validity.json": "446ba3812545932aee66de05a536d43de576008be915c10850d09a91b157850b",
+    "screen-models/validity.joblib": "dbeea8e8b1f30b40ecc3599c014e9946c7622db09c2bd03efa9a24829a2c6570",
+    "screen-models/single_spi.json": "45ba7f2b518502641ded6a136acf6d34157be30acf32ea8efa6e43a8a04715ae",
+    "screen-models/single_spi.joblib": "cb735c6d199ff76d1e23331db6e09a69b66e153b0f8f26ef2872e10eafce5145",
+    "screen-models/m_plus_z.json": "393bcf6ef2f21fb801c6c19d4174f84a008c0840a5d24e5aa186a6560ebd48a8",
+    "screen-models/m_plus_z.joblib": "66bf1a5240a240410ba926054dcbaf97569d8b7d92a7142dd89fe9d2e783c9a0",
+    "screen-models/baseline_plus_z.json": "764c56886d66fc079b0977890fdd24d98f34c090006b942845d1e7b3ed248509",
+    "screen-models/baseline_plus_z.joblib": "db8a5e2ce646ec2d762917d83fde4ef1535b1d875b6bcb40195d09f79fc107a8",
+    "screen-models/minirocket.json": "3819bbea84e27df1339e19bdb9e78c652d629c128d794f8608ffffbdf3616ddb",
+    "screen-models/minirocket-11.joblib": "038297502d8faa26b61b3ccd8a3066f957d9287877cfc6d26a3e5b4ddcc3f052",
+    "screen-models/minirocket-23.joblib": "b074bafa27c0a7ef2ecde2a002d22a49fdba2777cb9a23518cc5dbd040797d61",
+    "screen-models/minirocket-47.joblib": "a618ab109e0429f20c3ba26e6dd0364b844f486b4272ac64ab237c483af07158",
+    "rocket-extended/minirocket.json": "4861e1658a3e3bb82b085cd4e90abcf391c711cee581294528ed9315a53c00db",
+    "rocket-extended/minirocket-11.joblib": "038297502d8faa26b61b3ccd8a3066f957d9287877cfc6d26a3e5b4ddcc3f052",
+    "rocket-extended/minirocket-23.joblib": "b074bafa27c0a7ef2ecde2a002d22a49fdba2777cb9a23518cc5dbd040797d61",
+    "rocket-extended/minirocket-47.joblib": "a618ab109e0429f20c3ba26e6dd0364b844f486b4272ac64ab237c483af07158",
+    "screen-models/inceptiontime.json": "23bd343667f5799d2b62ea3ba12a992cc7f162ff68aa4943a3cf0db81649e8e9",
+    "screen-models/inceptiontime-11.pt": "d815a4db440122c850b2941aef25b56105c69edcab23a2c5f229c98f9fcb425b",
+    "screen-models/inceptiontime-23.pt": "c0db9f177c228c697aaa6444fe7712a70e1ddcdc794bafae89fd77d1aae4293b",
+    "screen-models/inceptiontime-47.pt": "a90bee902ea6ccafd4f723aabb723ee2a53e48491eac9d672429a4a21216be4f",
+    "screen-models/inceptiontime-71.pt": "48a0e50e4a4a9aceaf91fbf10972a3caa115802c6192488a8340d4669d976593",
+    "screen-models/inceptiontime-101.pt": "177fbf72873cfa07ba48609af8a1371e6442d95a7200402f839fe4965b54a311",
+    "screen-models/aligned_encoder.json": "970486498951f2d776e9dcfaf99956417c9a518837b430dadb7de7536ca20075",
+    "screen-models/aligned_encoder-11.pt": "b03603a7e893e0741c9f8a5f36b3ffed0719045a64a975a1e0c7247a1ea69d63",
+    "screen-models/aligned_encoder-23.pt": "4e600e0c4861210a961aced95e66c39a245fd269be54af34343446caa776daf5",
+    "screen-models/aligned_encoder-47.pt": "61ec7650a7797bedf403af2fff2298e9be3f8e59be082a94e5df71abb530bd29"
+  },
+  "models": {
+    "univariate": {
+      "kind": "statistical",
+      "report": "screen-models/univariate.json",
+      "weights": [
+        "screen-models/univariate.joblib"
+      ]
+    },
+    "univariate_rbf": {
+      "kind": "statistical",
+      "report": "screen-models/univariate_rbf.json",
+      "weights": [
+        "screen-models/univariate_rbf.joblib"
+      ]
+    },
+    "pearson": {
+      "kind": "statistical",
+      "report": "screen-models/pearson.json",
+      "weights": [
+        "screen-models/pearson.joblib"
+      ]
+    },
+    "aligned": {
+      "kind": "statistical",
+      "report": "screen-models/aligned.json",
+      "weights": [
+        "screen-models/aligned.joblib"
+      ]
+    },
+    "m": {
+      "kind": "statistical",
+      "report": "screen-models/m.json",
+      "weights": [
+        "screen-models/m.joblib"
+      ]
+    },
+    "m_rbf": {
+      "kind": "statistical",
+      "report": "screen-models/m_rbf.json",
+      "weights": [
+        "screen-models/m_rbf.joblib"
+      ]
+    },
+    "z": {
+      "kind": "statistical",
+      "report": "screen-models/z.json",
+      "weights": [
+        "screen-models/z.joblib"
+      ]
+    },
+    "validity": {
+      "kind": "statistical",
+      "report": "screen-models/validity.json",
+      "weights": [
+        "screen-models/validity.joblib"
+      ]
+    },
+    "single_spi": {
+      "kind": "statistical",
+      "report": "screen-models/single_spi.json",
+      "weights": [
+        "screen-models/single_spi.joblib"
+      ]
+    },
+    "m_plus_z": {
+      "kind": "statistical",
+      "report": "screen-models/m_plus_z.json",
+      "weights": [
+        "screen-models/m_plus_z.joblib"
+      ]
+    },
+    "baseline_plus_z": {
+      "kind": "statistical",
+      "report": "screen-models/baseline_plus_z.json",
+      "weights": [
+        "screen-models/baseline_plus_z.joblib"
+      ]
+    },
+    "minirocket": {
+      "kind": "minirocket",
+      "report": "screen-models/minirocket.json",
+      "weights": [
+        "screen-models/minirocket-11.joblib",
+        "screen-models/minirocket-23.joblib",
+        "screen-models/minirocket-47.joblib"
+      ]
+    },
+    "minirocket_extended": {
+      "kind": "minirocket",
+      "report": "rocket-extended/minirocket.json",
+      "weights": [
+        "rocket-extended/minirocket-11.joblib",
+        "rocket-extended/minirocket-23.joblib",
+        "rocket-extended/minirocket-47.joblib"
+      ]
+    },
+    "inceptiontime": {
+      "kind": "neural",
+      "report": "screen-models/inceptiontime.json",
+      "weights": [
+        "screen-models/inceptiontime-11.pt",
+        "screen-models/inceptiontime-23.pt",
+        "screen-models/inceptiontime-47.pt",
+        "screen-models/inceptiontime-71.pt",
+        "screen-models/inceptiontime-101.pt"
+      ]
+    },
+    "aligned_encoder": {
+      "kind": "neural",
+      "report": "screen-models/aligned_encoder.json",
+      "weights": [
+        "screen-models/aligned_encoder-11.pt",
+        "screen-models/aligned_encoder-23.pt",
+        "screen-models/aligned_encoder-47.pt"
+      ]
+    }
+  },
+  "protocol": {
+    "dataset": "https://physionet.org/files/siena-scalp-eeg/1.0.0/",
+    "target": "annotated ictal versus seizure-free, not seizure prediction",
+    "M": 16,
+    "T": 2000,
+    "rate_hz": 100,
+    "filter_hz": [
+      0.5,
+      40
+    ],
+    "seconds": 20,
+    "filter_context_seconds": 10,
+    "bipolar_channels": [
+      "FP1-F7",
+      "F7-T7",
+      "T7-P7",
+      "P7-O1",
+      "FP1-F3",
+      "F3-C3",
+      "C3-P3",
+      "P3-O1",
+      "FP2-F4",
+      "F4-C4",
+      "C4-P4",
+      "P4-O2",
+      "FP2-F8",
+      "F8-T8",
+      "T8-P8",
+      "P8-O2"
+    ],
+    "maximum_files_per_person": 2,
+    "maximum_events_per_file": 2,
+    "control_margin_seconds": 300,
+    "selection": "first two eligible files in annotation order; central 20 seconds; ambiguous clocks excluded as positive events and conservatively excluded from controls",
+    "comparison": "All existing source-frozen statistical/raw models, plus source-only MiniRocket ridge extension. No Siena fitting, threshold calibration, or target-driven model selection.",
+    "primary": "m_plus_z versus m Brier; report z versus m and raw comparators alongside, with BA secondary",
+    "uncertainty": "Paired whole-patient bootstrap conditional on fitted models; finite cohort and exploratory discovery history remain limitations."
+  },
+  "preparation_sha256": "910294e038661dda85254456ff38207508a656dea865b195e6211b1eaeb1a491"
+}

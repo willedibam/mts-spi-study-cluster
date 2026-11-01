@@ -1,0 +1,7 @@
+{
+  "job": "182844124.gadi-pbs",
+  "snapshot": "/g/data/ql44/we2614/mts-spi-study/operations/sources/siena-prepare-8424ce2",
+  "source_commit": "8424ce21bf1564645679d64534cd15cdb319c191",
+  "source_root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/chbmit",
+  "purpose": "Frozen CHB-MIT to Siena cohort confirmation; direct Gadi download, no target fitting"
+}

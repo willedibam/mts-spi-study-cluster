@@ -1,0 +1,7 @@
+{
+  "snapshot": "/g/data/ql44/we2614/mts-spi-study/operations/sources/siena-confirmation-bd7d948",
+  "preparation": "182844388.gadi-pbs",
+  "previous_failed_preparation": "182844124.gadi-pbs",
+  "reason": "Published shared-file annotation format and filename aliases now verified; source models/protocol unchanged",
+  "chain": "182844389.gadi-pbs"
+}

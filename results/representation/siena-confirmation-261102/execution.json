@@ -1,0 +1,49 @@
+{
+  "study_id": "siena-confirmation-261102",
+  "captured_at": "2026-11-02T09:09:58.568582+11:00",
+  "root": "/g/data/ql44/we2614/mts-spi-study/representation/empirical/siena-confirmation-261102",
+  "source": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/chbmit",
+  "statuses": {
+    "182844124.gadi-pbs": {
+      "job_state": "F",
+      "Exit_status": 1,
+      "resources_used": {
+        "cpupercent": 23,
+        "cput": "00:00:46",
+        "jobfs": "0b",
+        "mem": "538052kb",
+        "ncpus": 1,
+        "vmem": "547212kb",
+        "walltime": "00:04:02"
+      },
+      "comment": "Job run at Mon Nov 02 at 08:56 on (gadi-dm-02:ncpus=1:mem=12582912kb:jobfs=102400kb) and failed"
+    },
+    "182844388.gadi-pbs": {
+      "job_state": "Q"
+    },
+    "182844389.gadi-pbs": {
+      "job_state": "H"
+    }
+  },
+  "quota": "--------------------------------------------------------------------------\n           fs       Usage      Quota      Limit   iUsage   iQuota   iLimit\n--------------------------------------------------------------------------\n  ql44 scratch 386.93 GiB   1.00 TiB   1.05 TiB   201362   202000   212100\n  ql44   gdata  72.95 GiB 100.00 GiB 105.00 GiB    56820    70000    73500\n--------------------------------------------------------------------------\n",
+  "models": 15,
+  "primary": "Frozen m+z versus m Brier on an external patient cohort; all source decisions unchanged. No target fitting or calibration.",
+  "initial_failure": "Parser did not support shared-file headers and published filename typos; all 14 metadata files/47 annotations subsequently checked before retry.",
+  "snapshots": [
+    {
+      "job": "182844124.gadi-pbs",
+      "snapshot": "/g/data/ql44/we2614/mts-spi-study/operations/sources/siena-prepare-8424ce2",
+      "source_commit": "8424ce21bf1564645679d64534cd15cdb319c191",
+      "source_root": "/scratch/ql44/we2614/mts-spi-study/representation/empirical/discovery-261031/chbmit",
+      "purpose": "Frozen CHB-MIT to Siena cohort confirmation; direct Gadi download, no target fitting"
+    },
+    {
+      "snapshot": "/g/data/ql44/we2614/mts-spi-study/operations/sources/siena-confirmation-bd7d948",
+      "preparation": "182844388.gadi-pbs",
+      "previous_failed_preparation": "182844124.gadi-pbs",
+      "reason": "Published shared-file annotation format and filename aliases now verified; source models/protocol unchanged",
+      "chain": "182844389.gadi-pbs"
+    }
+  ],
+  "code_tests": "40 targeted tests passed; grouped scoring, null fusion, annotation/montage handling and existing neural compatibility."
+}
