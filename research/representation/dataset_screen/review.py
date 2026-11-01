@@ -4,7 +4,6 @@ The new no-z fits are diagnostics at the already selected fusion settings.
 They do not replace the original comparators or select a new model on targets.
 """
 import argparse
-from copy import deepcopy
 import json
 from pathlib import Path
 
@@ -182,7 +181,11 @@ def review(root):
                  for key in ['brier','balanced_accuracy','log_loss']}
         original=saved['methods'].get(name,raw_reports.get(name))
         if original:
-            for metric,value in overall.items(): assert_close(value,original[metric],'saved metric mismatch')
+            for metric,value in overall.items():
+                # Neural producer probabilities/logarithms were float32;
+                # this independent JSON-based calculation uses float64.
+                tolerance=1e-6 if name in raw_reports and metric=='log_loss' else 1e-10
+                assert_close(value,original[metric],'saved metric mismatch',tolerance)
         methods[name]=dict(**overall,groups=per_group)
     baseline=locked['selected_baseline']
     comparisons=[('baseline_plus_z',baseline),('m_plus_z','m'),
