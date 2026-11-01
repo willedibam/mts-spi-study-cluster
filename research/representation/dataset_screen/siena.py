@@ -21,6 +21,10 @@ from research.representation.empirical_transfer.prepare import write_corpus
 BASE='https://physionet.org/files/siena-scalp-eeg/1.0.0/'
 NODES=sorted({n for pair in CHB_CHANNELS for n in pair.split('-')})
 ALIASES={'T3':'T7','T4':'T8','T5':'P7','T6':'P8'}
+# Published annotation spelling differs from the checksum inventory. PN01 and
+# PN11 each have one EDF; the registration clock is also checked against it.
+FILE_ALIASES={'PN01.edf':'PN01-1.edf','PN11-.edf':'PN11-1.edf',
+              **{f'PNO6-{i}.edf':f'PN06-{i}.edf' for i in [1,2,4]}}
 
 
 def clocks(value):
@@ -37,19 +41,32 @@ def clocks(value):
 
 def annotations(text):
     files=OrderedDict()
-    for block in re.split(r'(?im)^\s*Seizure\s+n\s*[^\r\n]*[\r\n]+',text)[1:]:
-        fields={k.lower():v.strip() for k,v in re.findall(
-            r'(?im)^\s*(File name|Registration start time|Seizure start time|Seizure end time)\s*:\s*([^\r\n]+)',block)}
-        name=fields.get('file name','')
+    def fields(block):
+        return {k.lower():v.strip() for k,v in re.findall(
+            r'(?im)^\s*(File name|Registration start time|(?:Seizure )?start time|(?:Seizure )?end time)\s*:\s*([^\r\n]+)',block)}
+    blocks=re.split(r'(?im)^\s*Seizure\s+n\s*[^\r\n]*[\r\n]+',text)
+    header=fields(blocks[0]);previous=header.get('file name','')
+    for block in blocks[1:]:
+        values=fields(block)
+        original=values.get('file name',previous);previous=original
+        name=FILE_ALIASES.get(original,original)
         if not re.fullmatch(r'PN\d{2}-[\d.]+\.edf',name): raise ValueError(f'unsafe/unknown Siena filename: {name}')
-        item=files.setdefault(name,dict(name=name,events=[],issues=[]))
+        item=files.setdefault(name,dict(name=name,events=[],issues=[],annotation_filenames=[]))
+        if original not in item['annotation_filenames']:item['annotation_filenames'].append(original)
         try:
-            registration=clocks(fields['registration start time'])
+            registration_text=values.get('registration start time',item.get('registration_text'))
+            if registration_text is None and original==header.get('file name'):
+                registration_text=header.get('registration start time')
+            if registration_text is None:raise ValueError('registration start absent for this file')
+            registration=clocks(registration_text)
             if len(registration)!=1: raise ValueError('ambiguous registration start')
-            starts,ends=clocks(fields['seizure start time']),clocks(fields['seizure end time'])
+            item['registration_text']=registration_text
+            start=values.get('seizure start time',values.get('start time',''))
+            end=values.get('seizure end time',values.get('end time',''))
+            starts,ends=clocks(start),clocks(end)
             item['events'].append(dict(registration=registration[0],starts=starts,ends=ends,
                 unambiguous=len(starts)==len(ends)==1,
-                original_start=fields['seizure start time'],original_end=fields['seizure end time']))
+                original_start=start,original_end=end))
         except (ValueError,KeyError) as error:
             item['issues'].append(str(error))
     if not files: raise ValueError('no Siena seizure annotations parsed')
@@ -153,10 +170,15 @@ def prepare(root,source):
     if len(summaries)!=14: raise ValueError('unexpected Siena patient inventory')
     for name in ['subject_info.csv','RECORDS','LICENSE.txt']:
         if name in hashes:download(BASE,name,hashes,raw_root)
+    parsed={}
+    for name in summaries:
+        person=Path(name).parent.name
+        parsed[name]=annotations(download(BASE,name,hashes,raw_root).read_text())
+        for item in parsed[name]:
+            if person+'/'+item['name'] not in hashes:raise ValueError('annotated EDF absent from published inventory')
     def person_task(name):
         person=Path(name).parent.name
-        text=download(BASE,name,hashes,raw_root).read_text()
-        files=annotations(text);rows,arrays,issues=[],{},[];accepted=0
+        files=parsed[name];rows,arrays,issues=[],{},[];accepted=0
         for item in files:
             if accepted==2:break
             relative=person+'/'+item['name']
@@ -204,6 +226,7 @@ def prepare(root,source):
         preparation_sha256=file_sha256(Path(__file__)),protocol=lock['protocol'],
         normalization='Same as CHB-MIT: within-record standardization for SPIs, volts retained for waveform models and univariate features.',
         montage='Named EEG monopoles differenced into the fixed CHB-MIT bipolar order; T3/T4/T5/T6 aliases T7/T8/P7/P8. No guessing O1 from the annotation typo: actual EDF EEG O1 label is required.',
+        annotation_filename_aliases=FILE_ALIASES,
         limitation='Curated events at least 20 seconds, matched seizure-free controls; no continuous-stream/clinical-prevalence claim. Bipolar montage has linear constraints; rank recorded per observation.')
     write_corpus(root,'siena-confirmation-r10-261102',rows,normalized,provenance)
     atomic_savez(root/'raw-views.npz',{key:x.astype(np.float32) for key,x in physical.items()})
