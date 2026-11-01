@@ -25,7 +25,9 @@ def inputs(root):
     lock,source=checked_lock(root)
     metadata=json.loads((root/'bank.json').read_text())
     if metadata['sha256']!=file_sha256(root/'bank.npz'):raise ValueError('confirmation bank changed')
+    if metadata['manifest_sha256']!=file_sha256(root/'manifest.json'):raise ValueError('confirmation manifest changed')
     source_meta=json.loads((source/'bank.json').read_text())
+    if source_meta['sha256']!=file_sha256(source/'bank.npz'):raise ValueError('source bank changed')
     for field in ['pyspi_config_sha256','pyspi_version']:
         if metadata['identity'][field]!=source_meta['identity'][field]:raise ValueError('source/confirmation computation mismatch')
     keys=['m','z','validity','pearson','aligned','y','group','row_id','role','spi_order']
@@ -34,6 +36,8 @@ def inputs(root):
         if not np.array_equal(bank['spi_order'],archive['spi_order']):raise ValueError('SPI order differs')
     if set(bank['role'])!={'confirmation'}:raise ValueError('unexpected target roles')
     audit=json.loads((root/'input-audit.json').read_text())
+    if audit['provenance']['source_lock_sha256']!=file_sha256(root/'source-lock.json'):
+        raise ValueError('preparation used a different source lock')
     if file_sha256(root/'univariate.npz')!=audit['univariate_sha256']:raise ValueError('target summary changed')
     with np.load(root/'univariate.npz',allow_pickle=False) as archive:
         if archive['row_id'].tolist()!=bank['row_id'].tolist():raise ValueError('target summary order differs')
