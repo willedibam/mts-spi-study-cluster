@@ -41,16 +41,42 @@ Multivariate IAAFT, one surrogate per window, marginal-final, 200 iterations. Ef
 
 Record: [validation/README.md](validation/README.md) (Results) and `validation/tables/`; pre-registered criteria, Gadi job 182947411 at 8d239c6, 4,716 windows, no pyspi errors, analysed by the review session.
 
-- **Core by construction** (selectivity ratio SR ≥ 2, sign-stable): band (ppc L|H organisation SR 2.06, high-share level 3.74), mediation (cov² versus prec², SR 3.25/2.88) and direction (spectral GC A versus Aᵀ, SR 3.12); mediation and direction were each tested in one generator only. Lag is a sub-axis: its sign holds across three estimator families, but SR is 0.66–1.60, band level moves coherency lag pairs more than lag dispersion does, and it is insensitive in the Kuramoto family.
+- **Core by construction** (selectivity ratio SR ≥ 2, sign-stable): band (ppc L|H organisation SR 2.06, high-share level 3.74) and mediation (cov² versus prec², SR 3.25/2.88). Lag is a sub-axis: its sign holds across three estimator families, but SR is 0.66–1.60, band level moves coherency lag pairs more than lag dispersion does, and it is insensitive in the Kuramoto family.
+- **Stage 2 (second families, 3 November; README "Stage 2 results"):**
+  - Direction (spectral GC A versus Aᵀ, SR 3.12 in VAR) is dropped: it reverses in directed Kuramoto, and band dispersion moves it as much as direction does in family A.
+  - Mediation stays core only for strong instantaneous mediation. With lagged, partial mediation, lag level, noise and mixing swamp it.
+  - Band spread (SD of each edge's high-frequency coherence share over the strongest quarter of edges) passes as core (SR 5.3) and is level-aware: band level moves it under 0.1 times as much as band dispersion. One generator.
+  - Lag spread is not level-aware.
 - **Form and warp organisation fail at cohort-like coupling.** The only non-Gaussian reader is the form level median(te − gc) (surrogates keep 0.14 of its response, SR 0.78). Post hoc, at strong coupling, form pairs respond and are non-Gaussian, so the cohort form nulls reflect an insensitive instrument, not an absence of non-Gaussian change.
 - **Organisation is not level-free**, contrary to the protocol: lag level moves lag organisation about twice as much as lag dispersion, in the opposite direction, and band level moves band organisation 0.8 times as much. The NeuroTycho rise in lag organisation therefore fits higher lag level as well as more uniform lags. Levels are cleaner (band share 0.03; lag level −0.64).
 - **No reliability or strength correction is usable** for any passing pair: noise lowers population SPI values rather than adding sampling error. Noise, strength spread and mixing move lag and band organisation about as much as their own knob and stay unbounded.
 - **Cohort bound.** Sign claims surviving both reliability floors: NeuroTycho anaesthesia lag organisation (coh|icoh 0–0.25, d 1.61 → 1.57, 0.85 at the stricter floor); NeuroTycho mediation (−2.1 → −0.7, two-thirds of the raw effect a reliability drop); HMC N2 → REM lag organisation (0.83 → 0.67, weak: SR 0.66 and spectra change). Nothing stands in CHB-MIT, AD/FTD, LEMON or propofol.
 - **Consequence:** z-axes support existence and sign claims under a nuisance bound, not magnitude; lag claims also need band and lag level excluded; non-Gaussian claims rest on one level measure.
 
+## Core sufficiency (3 November, Gadi)
+
+The [protocol's](protocol.md) two checks, run for the stage-1 core (77408cd) and the revised core (b56d908). Records are at `/g/data/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/sufficiency/{,core-v2/}<cohort>.json`. Both cores give the same verdicts; the numbers below are for the revised core, as AUROC with paired bootstrap intervals.
+
+- **z's increment over Pearson+strength:**
+  - NeuroTycho: z adds +0.35 (.60 → .95), and the core accounts for it: P+core reaches .97, and z adds +0.03 [0.00, 0.03] on top (six units).
+  - Propofol, moderate versus baseline: z adds +0.18 [+0.09, +0.30], and the core does not account for it: the core adds +0.03, and z adds +0.16 [+0.07, +0.25] on top.
+  - LEMON: z's +0.06 [−0.00, +0.12] is not eligible, and the core adds nothing.
+  - AD/FTD: z adds nothing.
+- **Extended readouts.** No contrast is fully absorbed. The recurring survivors are:
+  - fixed-lag timing: LEMON, FTD, mild propofol;
+  - linear–rank agreement (form_monotone): AD, propofol;
+  - phase-lag organisation: propofol;
+  - spectral peak: NeuroTycho, and the propofol level.
+
+  NeuroTycho's tail and best-shift level grow after adjustment.
+- **Reading (inferred):**
+  - The core is sufficient where a state reorganises coherence across bands (deep anaesthesia), not where the shift lies within a band. The band construct splits at fs/4 (25 Hz in the EEG cohorts), so alpha slowing sits entirely inside the low band and reaches z only through fixed-lag and peak readouts, which measure frequency in sample units.
+  - Propofol's lower linear–rank agreement is also its residual that survived both surrogate variants (−.83/−.82), so it is the one candidate non-Gaussian effect left.
+  - Spectral location within a band and linear–rank agreement each need a construction test before joining the core.
+
 ## Open
 
-- Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. By construction the core is band, mediation and direction, with lag as a sub-axis, form only through the te − gc level, and warp dropped. Open: a second generator for mediation and direction, a noise- and strength-robust correction, and the two pre-specified sufficiency checks (extended effects absorbed by core plus strength; z's increment over Pearson absorbed by the core).
+- Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. After stage 2 the core is band (organisation, high share and spread) and mediation (one generator), with lag as a sub-axis, form only through the te − gc level, and direction and warp dropped. The core is not yet sufficient (above). Open: construction tests for spectral location within a band and for linear–rank agreement, and a noise- and strength-robust correction.
 - Level readouts that are a median over edges can be degenerate: the best-shift level is 0 in most AD windows because cross-correlation peaks at lag 0.
 - InceptionTime is not yet in the cohort comparison; MiniRocket is.
 - Corpora moved to scratch after use: `/scratch/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/{ad-ftd,lemon,propofol,surr-*}`; every real and surrogate run now lives there (checksum-verified moves, gdata quota). Scratch is purged after 100 days without access; the banks are cheap to regenerate.
