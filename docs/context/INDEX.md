@@ -5,4 +5,4 @@
 - [SPI–SPI representation evaluation](spi-spi-representation-evaluation.md) — Representation/transfer evidence, completed fMRI/four-dataset discovery, negative frozen CHB–Siena confirmation and open NeuroTycho interpretation; unresolved HCP comparison and pair-sampling limits.
 - [P90 proof and cross-M,T validation](cross-mt-transfer.md) — Proof/case reruns, cross-size validation, and strength/marginal baseline evidence indexed in `research/proof/baselines/`.
 - [Zenodo MTS corpus map](zenodo-mts-corpus.md) — Run pyspi over the 1,053-series archive and build a unified SPI-pair corpus representation, embeddings and stable clusters.
-- [Premise and character–strength direction](premise-and-character-axes.md) — Character-first framing, calibrated measured-oscillator axes and the CCEP cohort’s replicated lag/spectral character and matched-response feasibility.
+- [Premise and character–strength direction](premise-and-character-axes.md) — Character-first framing, named minimal-pair character axes with surrogate controls on NeuroTycho/LANL/CHB–Siena and running AD/FTD, LEMON and propofol cohorts, plus the measured-oscillator and CCEP character evidence.
