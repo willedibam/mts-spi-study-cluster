@@ -31,3 +31,4 @@ warp: median dtwSC/eucl,warp,level,warp_level,B1,-0.001292,-0.001539,1.191
 "form: median(te - gc) [top quartile, post hoc]",form,level,form_level,B1,0.002011,0.0008933,0.4443
 "warp: median dtwSC/eucl [top quartile, post hoc]",warp,level,warp_level,B0,-0.03034,-0.03008,0.9916
 "warp: median dtwSC/eucl [top quartile, post hoc]",warp,level,warp_level,B1,-0.02535,-0.02487,0.9812
+lag: spread icoh/sqrt(coh) [level-aware],lag,spread,lag_disp,B0,0.02079,0.02083,1.002

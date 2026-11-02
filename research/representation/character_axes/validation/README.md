@@ -277,7 +277,49 @@ Both are predicted to rise with their construct's dispersion knob. They are scor
 
 These are per-edge dispersion estimators, not z organisation.
 
+### Pilot
+
+Run after the pre-registration commit (42bd982) and before scoring, on generator output only, with no pyspi:
+- **Stage 1 unchanged:** stage-1 generator calls are bit-identical to f1bc779 for 8 conditions across families A, B, C and K.
+- **Matched mean |r|:** mediation holds the source mean |r| at its λ = 0 value (0.079 at B0, 0.086 at B1).
+- **Mediation exists, partly:** at λ = 1, same-hub spoke pairs have marginal |r| 0.135 (B0) and partial |r| 0.076. Conditioning on the hub removes only about 45% of the mediated dependence.
+- **Direction exists:** in family A, the lag-2 cross-correlation asymmetry between leader and follower is 0.145 at α = 1 and 0.009 at α = 0.
+- **Kuramoto stays coupled:** directed family K keeps tree-edge |r| at 0.59–0.74.
+
 ### Running it
 
 - **Farm:** `qsub -l ncpus=48,mem=190GB,walltime=00:45:00 -v STAGE=2,VALIDATION_OUT=<dir2>/raw research/representation/character_axes/validation/jobs/farm.pbs`, with `<dir2>` = `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-stage2-<commit>`.
 - **Analysis:** `jobs/analyse.pbs` with `STAGE2_OUT=<dir2>/raw` scores both corpora and writes `tables/second_family.csv`.
+
+### Stage 2 results (3 November 2026)
+
+Corpus: Gadi farm job 182978008 at 42bd982, 520 windows, 0 pyspi errors, 21.7 SU. Analysis job 182978377 at 2e82bad scored both corpora together. Stage-1 verdicts and SRs are unchanged. Second-family rows are in `tables/second_family.csv`.
+
+| Measure | Family A, B0 / B1: Δ (d) | SR in A | Family K, B0 / B1: Δ (d) | Verdict |
+|---|---|---|---|---|
+| mediation LW | −0.021 (−1.2) / +0.012, insensitive | 0.28 (lag level) | — | core, one generator |
+| mediation empirical | −0.018, insensitive / +0.021, insensitive | 0.22 | — | core, one generator |
+| direction sgc A\|Aᵀ | −0.258 (−3.2) / −0.250 (−2.8) | 0.96 (band dispersion) | **+0.578 (4.7) / +0.506 (2.5), reversed** | drop (sign reversal in K) |
+| direction gc A\|Aᵀ | **+0.141 / +0.088, reversed** | 0.22 | **+0.603 / +0.443, reversed** | drop |
+| direction median gc asymmetry | insensitive; reversed at noise 0 and strength CV 0.1 | 0.11 | insensitive | drop |
+| direction gc asymmetry, top quartile (post hoc) | +0.091 (0.7), insensitive / +0.050 (2.0) | 0.20 | +0.254 (2.3) / insensitive | sub-axis, one generator |
+
+- **Direction is not a validated axis.** The sgc readout keeps its sign in family A, the linear-delay family where direction and phase lag go together. But it reverses in directed Kuramoto, so pre-registered criterion 1 drops it. Even without family K it would not be core: band dispersion moves it as much as direction does (SR_A 0.96), and noise moves it 1.2 times as much. Gaussian GC reverses in both families.
+  - How the readout fails in Kuramoto has not been examined; inferred, it reads the locked phase relation rather than the coupling asymmetry.
+  - This is consistent with work showing that coupling direction between synchronised oscillators needs phase-dynamics methods (Rosenblum and Pikovsky 2001), and that Granger direction can invert with unequal noise (Vinck et al. 2015).
+- **Mediation keeps its stage-1 core label only from family C,** strong and instantaneous Gaussian-graphical mediation at mean |r| 0.30. In family A the mediation is lagged and partial (conditioning on the hub removes about 45%), at mean |r| 0.08.
+  - There the readout is sensitive only at B0 (d −1.2), and lag level moves it 3.5 times as much.
+  - Its nuisance ratios are 3.8 for noise, −7.7 for mixing 0.5 and 1.6 for strength CV, so it does not read mediation selectively.
+  - Stage 1's SR of 3.25 compared C's response with family A knobs. In a single family, the readout is not selective.
+- **Stage-2 knobs and stage-1 measures.** The family A direction knob moves the lag measures, because α changes phase lag. Including it, the SR of lag coh\|icoh 0–0.25 falls from 1.60 to 0.89 and the lag level's from 1.59 to 1.27. The core band measures are unchanged (ppc L\|H 2.06, high share 3.74).
+
+Level-aware spreads:
+- **Band spread** (SD of the per-edge high share over the strongest quartile of entries) passes as **core** with SR 5.28 (5.23 with the stage-2 knobs) and own d 5.9. It is **level-aware**: band level moves it −0.09 (B0) and +0.02 (B1) times as much as band dispersion. Its sign holds at every grid cell; it is insensitive only at β = 2. Family K has no band-dispersion knob, so this is one generator.
+- **Lag spread** is a sub-axis (SR 0.98; band level moves it as much). It is **not level-aware**: lag level moves it −1.1 (B0) and −1.2 (B1) times as much as lag dispersion. It is insensitive in family K, at β = 2 and at mixing 0.5. FT surrogates keep 1.00 of its response: linear-spectral, as expected.
+
+What holds after stage 2:
+- **Band** is the one construct with level-aware readouts that pass as core: the high-share level (two generators) and band spread (one generator, level-aware). ppc L\|H organisation passes too, but band level moves it 0.8 times as much.
+- **Mediation** is core only for strong instantaneous mediation, in one generator.
+- **Direction** is dropped.
+- **Lag** stays a sub-axis with no level-aware readout.
+- **Form** has only the te − gc level, a sub-axis.

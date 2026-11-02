@@ -1,0 +1,13 @@
+measure,kind,family,knob,stage1,own_B0,d_B0,own_B1,d_B1,main_ok,reversed_at,insensitive_at,SR,worst_other,nuis/own noise,nuis/own mix,nuis/own cv_s,verdict
+mediation: LW,org,A,med,core,-0.02068,-1.22,0.01174,0.1194,False,,main B1; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,0.2829,lag_level,3.753,-7.666,1.557,"core, one generator (insensitive in A)"
+mediation: empirical,org,A,med,core,-0.01834,-0.9819,0.02109,0.1792,False,,main B0; main B1; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,0.2217,lag_level,4.789,-8.419,2.182,"core, one generator (insensitive in A)"
+direction: gc A|At,org,A,dir_level,sub-axis,0.1412,2.46,0.08794,2.906,False,main B0; main B1; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,grid cv_s:hi:1.5,0.2249,band_disp,0.878,-1.233,0.6309,drop (sign reversal in a second family)
+direction: gc A|At,org,K,dir_level,sub-axis,0.603,6.588,0.4433,2.503,False,main B0; main B1,,,,,,,drop (sign reversal in a second family)
+direction: te A|At,org,A,dir_level,drop (insensitive),0.1051,1.197,0.1812,1.753,False,main B0; main B1; grid cv_s:hi:1.5,grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0,0.4969,lag_level,-0.2042,0.6167,0.1006,drop (insensitive)
+direction: te A|At,org,K,dir_level,drop (insensitive),0.3807,4.619,0.2775,1.812,False,main B0; main B1,,,,,,,drop (insensitive)
+direction: sgc A|At,org,A,dir_level,core,-0.2578,-3.161,-0.2505,-2.812,True,,grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid noise:hi:1.0,0.9587,band_disp,-1.23,-0.01564,0.514,drop (sign reversal in a second family)
+direction: sgc A|At,org,K,dir_level,core,0.5781,4.662,0.5063,2.507,False,main B0; main B1,,,,,,,drop (sign reversal in a second family)
+direction: median gc asymmetry,level,A,dir_level,sub-axis,0.02613,0.3555,0.003208,0.05468,False,grid cv_s:lo:0.1; grid noise:lo:0,main B0; main B1; grid cv_s:hi:1.5; grid mix:hi:0.5; grid noise:hi:1.0,0.1055,band_disp,6.275,4.8,-1.984,drop (sign reversal in a second family)
+direction: median gc asymmetry,level,K,dir_level,sub-axis,-0.1092,-1.038,-0.08135,-0.7528,False,,main B0; main B1,,,,,,drop (sign reversal in a second family)
+"direction: median gc asymmetry [top quartile, post hoc]",level,A,dir_level,sub-axis,0.09129,0.6825,0.0498,2.046,False,,main B0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,0.2034,band_disp,1.391,1.311,-0.352,"sub-axis, one generator (insensitive in A)"
+"direction: median gc asymmetry [top quartile, post hoc]",level,K,dir_level,sub-axis,0.2538,2.293,0.2261,0.8711,False,,main B1,,,,,,"sub-axis, one generator (insensitive in A)"
