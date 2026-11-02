@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -N axes-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=16GB,walltime=02:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Scores the farm output, applies the pre-registered criteria, and writes the tables, the selectivity
+# figure and the cohort bound to <dir>/analysis (scores cache: <dir>/scores.pkl). Nothing is written
+# into the checkout or to scratch. One process; the cores pay for the memory.
+# qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/analyse.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+export VALIDATION_OUT="${VALIDATION_OUT:?}"
+out="${ANALYSIS_OUT:-$(dirname "$VALIDATION_OUT")/analysis}"
+
+# bound.py reads <banks>/<cohort>/bank.npz; the banks sit in three empirical runs.
+emp=$MTS_SCRATCH/representation/empirical
+declare -A bank=(
+    [neurotycho]=$emp/character-transfer-261031/neurotycho-primary
+    [chbmit]=$emp/discovery-261031/chbmit
+    [hmc]=$emp/discovery-261031/hmc
+    [ad-ftd]=$emp/character-axes-261102/ad-ftd
+    [lemon]=$emp/character-axes-261102/lemon
+    [propofol]=$emp/character-axes-261102/propofol
+)
+banks="$PBS_JOBFS/banks"
+for c in "${!bank[@]}"; do
+    test -f "${bank[$c]}/bank.npz"
+    mkdir -p "$banks/$c" && ln -s "${bank[$c]}/bank.npz" "$banks/$c/bank.npz"
+done
+
+echo "[INFO] $(git rev-parse --short HEAD), $(ls "$VALIDATION_OUT" | wc -l) windows in $VALIDATION_OUT"
+python -u -m research.representation.character_axes.validation.analyse --refresh --banks "$banks" --out "$out"

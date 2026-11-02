@@ -85,12 +85,15 @@ Replicates: 6 recordings × 2 windows per main-sweep condition, 4 × 2 per grid 
 
 - `build_subset.py`: writes `spis.yaml`.
 - `generators.py`: families A, B, C and K, plus the FT surrogate.
-- `run.py`: builds the condition table and runs pyspi in parallel, resumable, into `results/representation/character-axes-validation/` (git-ignored).
-- `analyse.py`: scores, criteria, tables and figure.
+- `run.py`: builds the condition table and runs pyspi in parallel, resumable, into `results/representation/character-axes-validation/raw` (git-ignored) or `$VALIDATION_OUT`.
+- `analyse.py`: scores, criteria 1–6, `tables/` and `figures/selectivity.*`; reads the same `$VALIDATION_OUT`.
+- `bound.py`: criterion 7, the cohort bound (`tables/bound.csv`).
+- `figure.py`: the selectivity figure.
+- `jobs/farm.pbs`, `jobs/analyse.pbs`: the Gadi farm and the analysis job.
 
 ## Status (2 November 2026, 18:30)
 
-The run moved to Gadi (user decision, 2 November): `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/farm.pbs` re-runs every main and post hoc window there into a fresh directory, so the corpus comes from one platform. The stopped local run (3,758 windows on an Apple M5) is not used. The runner is resumable: finished windows are skipped. dcorr is computed only where the r²|dcorr pair is evaluated (main sweeps, form-knob grid cells, form surrogates), via `spis_nodcorr.yaml`. When the run finishes: `python -m research.representation.character_axes.validation.analyse --refresh` writes `tables/` and `figures/selectivity.*` and runs the cohort bound (`bound.py`, banks from `--banks`).
+The run moved to Gadi (user decision, 2 November): `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/farm.pbs` re-runs every main and post hoc window there into a fresh directory, so the corpus comes from one platform. The stopped local run (3,758 windows on an Apple M5) is not used. The runner is resumable: finished windows are skipped. dcorr is computed only where the r²|dcorr pair is evaluated (main sweeps, form-knob grid cells, form surrogates), via `spis_nodcorr.yaml`. When the run finishes: `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/analyse.pbs` writes `<dir>/analysis/{tables,figures}` and runs the cohort bound against the six cohort banks on scratch. The tables are copied back into `tables/` here and committed; the figure is regenerated, not tracked.
 
 Post hoc addition: the pre-registered levels are medians over all ordered entries. Family A has 24 coupled edges of 120, so those medians mostly read uncoupled edges, as they would in sparse ECoG. Each level is therefore also reported over the strongest quartile of edges, labelled post hoc.
 
