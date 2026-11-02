@@ -81,6 +81,8 @@ SECOND = {('lag', 'org'): ('K', 'lag_disp', -1), ('lag', 'level'): ('K', 'lag_le
           ('band', 'level'): ('K', 'band_level', 1)}
 CONSTRUCT_KNOBS = {'lag': ('lag_level', 'lag_disp'), 'band': ('band_level', 'band_disp'),
                    'form': ('form_level', 'form_disp'), 'warp': ('warp_level', 'warp_disp')}
+# Both knobs of each construct, for the response to the construct's other knob (reported; not in SR)
+OWN_KNOBS = {**{c: ('A', k) for c, k in CONSTRUCT_KNOBS.items()}, 'direction': ('B', ('dir_level', 'dir_disp'))}
 NUISANCES = ('nuis_cv_s', 'nuis_noise', 'nuis_T', 'nuis_r', 'nuis_beta', 'nuis_mix', 'nuis_M')
 DIAGNOSTIC = {'direction: tlmi_g|gc'}       # no pre-registered sign; reported only
 
@@ -268,6 +270,13 @@ def evaluate(df):
             resp.append(dict(measure=mid, knob=sec[1], family=sec[0], baseline='B0', grid='', **r))
             status[f'second {sec[0]}'] = _status(r, sec[2]) if sign else 'diagnostic'
         own_r = main['B0']
+        sibling = np.nan
+        fam2, knobs2 = OWN_KNOBS.get(construct, (None, ()))
+        for k2 in knobs2:
+            if k2 != oknob:
+                r = response(df, fam2, k2, col)
+                resp.append(dict(measure=mid, knob=k2, family=fam2, baseline='B0', grid='', **r))
+                sibling = r['mean'] / abs(own_r['mean']) if own_r['mean'] else np.nan
         others = []
         for c2, knobs in CONSTRUCT_KNOBS.items():
             if c2 == construct:
@@ -297,7 +306,7 @@ def evaluate(df):
         else:
             verdict = 'core' if sr >= 2 else 'sub-axis'
         rows.append(dict(rec, own_knob=f'{ofam}:{oknob}', own_mean=own_r['mean'], own_d=own_r['d'],
-                         SR=sr, worst_other=worst_other[0], reversed_at='; '.join(reversed_at),
+                         SR=sr, worst_other=worst_other[0], **{'other own knob/own': sibling}, reversed_at='; '.join(reversed_at),
                          insensitive_at='; '.join(insensitive_at), verdict=verdict,
                          **{f'nuis/own {k[5:]}': v for k, v in nuis.items()}))
     return pd.DataFrame(rows), pd.DataFrame(resp)
