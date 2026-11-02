@@ -1,24 +1,24 @@
 """Stage 3 of the construction validation (README, "Stage 3"): spectral location within the low band and
 joint-burst coupling, scored on the stage-3 corpus (its own pyspi subset, spis_stage3.yaml).
 
-    python -m research.representation.character_axes.validation.stage3 --raw DIR [--out DIR] [--refresh]
+    python -m research.representation.character_axes.validation.stage3 --raw DIR [--replace DIR] [--out DIR] [--refresh]
 
 Writes OUT/tables/stage3_{verdicts,responses,core}.csv; per-recording scores are cached in DIR/../scores3.pkl.
+--replace swaps in same-named windows (the dispersion-sign correction) and caches beside that directory instead.
 On Gadi, jobs/analyse3.pbs runs it. The extended readouts are scored with the cohort functions
 (mtsspi.character_axes.axis_scores, level_scores and core_scores) on the same ordered off-diagonal entries.
 """
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-from mtsspi.character_axes import AXES, BAND_RANK, LEVELS, axis_scores, core_scores, level_scores
-from research.representation.character_axes.validation.analyse import _corr, _status, response
+from mtsspi.character_axes import AXES, BAND_RANK, LEVELS, ar2_frequency, axis_scores, core_scores, level_scores
+from research.representation.character_axes.validation.analyse import _corr, _status, response, window_files
 
 HERE = Path(__file__).resolve().parent
 AX = {a.name: a for a in AXES}
@@ -49,7 +49,7 @@ MEASURES = {
 # Core readouts (b56d908), reported for cross-talk: stage-1 own knob in family A and its predicted sign
 CORE_OWN = {'band': ('band_disp', -1), 'band_high_share': ('band_level', 1), 'band_spread': ('band_disp', 1),
             'mediation_ledoit_wolf': ('med', -1), 'mediation_empirical': ('med', -1), 'lag': ('lag_disp', -1),
-            'lag_sin_phi': ('lag_level', 1), 'form_te_minus_gc': ('form_level', 1)}
+            'lag_sin_phi': ('lag_level', 1), 'form_te_minus_gc': ('form_level', 1), 'location_frequency': ('loc_level', 1)}
 KNOBS = {'lag': ('lag_level', 'lag_disp'), 'band': ('band_level', 'band_disp'), 'form': ('form_level', 'form_disp'),
          'warp': ('warp_level', 'warp_disp'), 'location': ('loc_level', 'loc_disp'),
          'burst': ('burst_level', 'burst_disp'), 'direction': ('dir_level',), 'mediation': ('med',)}
@@ -68,17 +68,6 @@ def _contrast(x, y, kind):
         c = {'difference': lambda: x - y, 'abs_difference': lambda: np.abs(x) - np.abs(y),
              'ratio': lambda: np.abs(x) / np.abs(y), 'share': lambda: np.abs(x) / (np.abs(x) + np.abs(y))}[kind]()
     return np.where(np.isfinite(c), c, np.nan)
-
-
-def ar2_frequency(s0, s1, s2, s3):
-    """Per entry, the frequency (cycles per sample) of the recursion s_k = a1 s_(k-1) + a2 s_(k-2) fitted at
-    k = 2, 3 to the lag-0 to lag-3 correlations; NaN where the fit has no complex pole pair."""
-    with np.errstate(invalid='ignore', divide='ignore'):
-        det = s1 * s1 - s0 * s2
-        a1, a2 = (s1 * s2 - s0 * s3) / det, (s1 * s3 - s2 * s2) / det
-        c = a1 / (2 * np.sqrt(-a2))
-        f = np.arccos(c) / (2 * np.pi)
-    return np.where((a2 < 0) & (np.abs(c) <= 1) & np.isfinite(f), f, np.nan)
 
 
 def window_scores(S, names):
@@ -113,9 +102,9 @@ def window_scores(S, names):
     return out
 
 
-def load(raw, refresh=False):
-    cache = Path(raw).parent / 'scores3.pkl'
-    files = sorted(glob.glob(str(Path(raw) / '*.npz')))
+def load(raw, refresh=False, replace=None):
+    cache = Path(replace or raw).parent / 'scores3.pkl'
+    files = window_files([raw], [replace] if replace else [])
     if cache.exists() and not refresh:
         df = pd.read_pickle(cache)
         if len(df) * 2 >= len(files) - 1:
@@ -281,9 +270,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--raw', type=Path, required=True, help='stage-3 window directory')
     ap.add_argument('--out', type=Path, default=HERE, help='writes OUT/tables/stage3_*.csv')
+    ap.add_argument('--replace', type=Path, help='corrected windows that replace their namesakes')
     ap.add_argument('--refresh', action='store_true')
     a = ap.parse_args()
-    df = with_residuals(load(a.raw, a.refresh))
+    df = with_residuals(load(a.raw, a.refresh, a.replace))
     print(df.groupby(['family', 'surrogate', df.grid != '']).size())
     R = Responses(df)
     verdicts, core = evaluate(df, R), core_table(R)

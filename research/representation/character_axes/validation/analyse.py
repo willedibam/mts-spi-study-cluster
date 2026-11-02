@@ -1,11 +1,12 @@
 """Score the validation runs, apply the pre-registered criteria, bound the cohort effects.
 
     python -m research.representation.character_axes.validation.analyse [--refresh] [--out DIR] [--raw DIR ...]
-        (--banks DIR | --no-bound)
+        [--replace DIR ...] (--banks DIR | --no-bound)
 
 Reads the windows from --raw (stage 1, then stage 2), by default $VALIDATION_OUT (run.py's override) or
 results/representation/character-axes-validation/raw, and caches per-recording scores in scores.pkl
-beside the last directory.
+beside the last directory. --replace swaps in same-named windows (the dispersion-sign correction) and moves the
+cache beside the replacement directory.
 Writes DIR/tables/*.csv and DIR/figures/selectivity.{svg,pdf,png}; DIR defaults to this folder.
 On Gadi, jobs/analyse.pbs runs it.
 """
@@ -186,9 +187,24 @@ def recording_scores(win):
     return out
 
 
-def load_scores(refresh=False, raws=(RAW,)):
-    cache = Path(raws[-1]).parent / 'scores.pkl'
-    files = sorted(f for raw in raws for f in glob.glob(str(Path(raw) / '*.npz')))
+def window_files(raws, replace=()):
+    """Window paths from raws; a same-named window in a replace directory takes the original's place."""
+    files = {Path(f).name: f for raw in raws for f in glob.glob(str(Path(raw) / '*.npz'))}
+    swapped = ignored = 0
+    for d in replace:
+        for f in glob.glob(str(Path(d) / '*.npz')):
+            if Path(f).name in files:
+                files[Path(f).name] = f; swapped += 1
+            else:
+                ignored += 1
+    if replace:
+        print(f'{swapped} windows replaced, {ignored} replacement windows without an original (ignored)')
+    return sorted(files.values())
+
+
+def load_scores(refresh=False, raws=(RAW,), replace=()):
+    cache = Path((list(replace) or list(raws))[-1]).parent / 'scores.pkl'
+    files = window_files(raws, replace)
     if cache.exists() and not refresh:
         df = pd.read_pickle(cache)
         if len(df) * 2 >= len(files) - 1:
@@ -494,11 +510,13 @@ def main():
     ap.add_argument('--no-bound', action='store_true')
     ap.add_argument('--raw', type=Path, nargs='+', default=[RAW],
                     help='window directories (stage 1, then stage 2); scores.pkl is cached beside the last')
+    ap.add_argument('--replace', type=Path, nargs='*', default=[],
+                    help='corrected windows that replace their namesakes (scores.pkl is then cached beside these)')
     a = ap.parse_args()
     if a.banks is None and not a.no_bound:
         ap.error('the cohort bound needs --banks DIR (or pass --no-bound)')
     tables = a.out / 'tables'
-    df = load_scores(a.refresh, a.raw)
+    df = load_scores(a.refresh, a.raw, a.replace)
     print(df.groupby(['family', 'surrogate', df.grid != '']).size())
     tables.mkdir(parents=True, exist_ok=True)
     verdicts, resp = evaluate(df)

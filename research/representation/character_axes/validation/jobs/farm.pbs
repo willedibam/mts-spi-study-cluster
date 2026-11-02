@@ -13,6 +13,8 @@
 # qsub -l ncpus=48,mem=190GB,walltime=00:45:00 -v STAGE=2,VALIDATION_OUT=<dir2>/raw .../farm.pbs
 # Stage 3 (spectral location and joint bursts, 2,972 windows, spis_stage3.yaml): STAGE=3 on four nodes,
 # qsub -l ncpus=192,mem=760GB,walltime=01:30:00 -v STAGE=3,VALIDATION_OUT=<dir3>/raw .../farm.pbs
+# Dispersion-sign correction (1,596 windows into <dirc>/raw1 and <dirc>/raw3):
+# qsub -l ncpus=144,mem=570GB,walltime=01:30:00 -v STAGE=corr,VALIDATION_OUT=<dirc>/raw1 .../farm.pbs
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
@@ -21,7 +23,12 @@ mkdir -p "$VALIDATION_OUT"
 log="$(dirname "$VALIDATION_OUT")"
 mod=research.representation.character_axes.validation.run
 per_task="${WINDOWS_PER_TASK:-4}"
-case "${STAGE:-1}" in 2) flags=(--stage2) ;; 3) flags=(--stage3) ;; *) flags=('' --posthoc) ;; esac
+case "${STAGE:-1}" in
+    2) flags=(--stage2) ;;
+    3) flags=(--stage3) ;;
+    corr) flags=("--correction 1 --out $log/raw1" "--correction 3 --out $log/raw3") ;;
+    *) flags=('' --posthoc) ;;
+esac
 
 mpirun -np $(( (PBS_NCPUS + 47) / 48 )) --map-by ppr:1:node python -c 'import mtsspi, pyspi; print(mtsspi.__file__, pyspi.__file__)'
 # Smoke: one window in this process before the farm; stop unless it succeeded.

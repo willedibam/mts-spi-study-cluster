@@ -90,7 +90,8 @@ Replicates: 6 recordings × 2 windows per main-sweep condition, 4 × 2 per grid 
 - `bound.py`: criterion 7, the cohort bound (`tables/bound.csv`).
 - `figure.py`: the selectivity figure.
 - `stage3.py`: stage 3 scoring and rules (`tables/stage3_*.csv`).
-- `jobs/farm.pbs`, `jobs/analyse.pbs`, `jobs/analyse3.pbs`: the Gadi farm and the analysis jobs.
+- `correction.py`: old against corrected tables for the dispersion-sign correction.
+- `jobs/farm.pbs`, `jobs/analyse.pbs`, `jobs/analyse3.pbs`, `jobs/analyse_correction.pbs`: the Gadi farm and the analysis jobs.
 
 ## Status (2 November 2026, complete)
 
@@ -492,3 +493,44 @@ Proposed for CORE, as a decision for the core's owner:
 1. **Demote `band` (ppc L\|H organisation) to sub.** Location level moves it 0.77 times its own response (SR 1.30 with the stage-3 knobs). The high share and band spread stay core.
 2. **Add `location_frequency` as sub.** It is the top-quartile median (ranked by `BAND_RANK`) of the AR(2) pole frequency fitted at k = 2, 3 to cov_EmpiricalCovariance and corr_pearson_tau-1 to 3. Its caveat: under weak coupling, channel spectra pull it 0.36 to 0.53 times as much as coupling frequency does, so it is reported beside the shift in channel peak frequency. It is the only readout here that reads within-band location calibrated and selectively.
 3. **Read no raw linear–rank readout as non-Gaussian dependence.** If one is added, it is the real − IAAFT residual of zero-lag r\|ρ_S organisation, as a sub-axis that reads burstiness. It needs an IAAFT surrogate per cohort window.
+
+## Correction: dispersion signs
+
+Pre-registered on 3 November 2026, before any corrected window was generated.
+
+**The flaw** (verified in `run.build` at 8d239c6). Family A's band, form and warp dispersion knobs set the property to centre ± Δ/2 with the same balanced sign vector as the baseline phase dispersion π/8 ± π/16. At every level above zero, the edges with the higher frequency (θ, warp) were therefore the edges with the higher phase: a correlation of +1 across edges.
+
+Not affected:
+- lag dispersion, which replaces the phase;
+- every level knob and nuisance sweep;
+- families B, C and K;
+- the stage-2 knobs, and the stage-3 knobs, which draw their own signs.
+
+Affected through the three knobs:
+- every readout whose own knob is band, form or warp dispersion, band spread included;
+- every SR, since all denominators include these knobs;
+- the band, form and warp levels' "other own knob" ratios;
+- the surrogate and post hoc rows of form and warp dispersion;
+- criterion 6 and the cohort bound, through the verdicts;
+- the stage-2 second-family SRs, and stage 3's SR3 and core table.
+
+**Correction.** Each property gets its own sign vector, from its own seed, balanced within each phase-sign group (`signs='orthogonal'` in `run.py`). Property and phase dispersion are then exactly uncorrelated in every network. Every window of the three knobs is re-run into a fresh gdata directory, with the same seeds and statistics as the corpus it replaces:
+- **stages 1–2 corpus** (stage-1 statistics, dcorr where stage 1 had it): main sweeps at B0 and B1, sign-grid cells, FT surrogates of form and warp dispersion, and the post hoc PHS rows; 1,416 windows;
+- **stage-3 corpus** (stage-3 statistics): the three knobs at B0; 180 windows.
+
+At level 0 (Δ = 0) the inputs are unchanged. Level 0 is re-run anyway as a computation check, and must reproduce the original statistics. The old corpora were computed in the same environment (`mts-spi-v3-631de27`, pyspi computation version 3.0.0.r10, lock unchanged since 31 October), so the corrected windows replace their namesakes without mixing computation versions.
+
+**Analysis.** `analyse.py` (criteria 1–7 and the stage-2 tables) and `stage3.py` run unchanged, except that the corrected windows replace their namesakes (`--replace`). The criteria are the same. `correction.py` compares the old and new tables:
+- for each readout: SR, own Δ and d, reversals and insensitivity (the sign criteria), and verdict;
+- surrogate kept fractions, correction usability, the post hoc rows and the cohort bound.
+
+The corrected tables go to `tables/corrected/` and supersede `tables/` where they differ.
+
+**Expectations, from first principles.** Coherence magnitude, PPC and their band shares do not depend on phase. So band organisation (coh and ppc L\|H), the high share and band spread should change little. Readouts that use phase can change through their responses to the three knobs: lag pairs (imaginary coherence, PLI), spectral Granger, delay-based warp and DTW readouts, and the fixed-lag and best-shift readouts. So can any SR whose worst other knob is one of the three. The questions that matter most:
+- Do band spread and the band high share keep core?
+- Does any lag verdict change?
+
+### Running it
+
+- **Farm:** `qsub -l ncpus=144,mem=570GB,walltime=01:30:00 -v STAGE=corr,VALIDATION_OUT=<dirc>/raw1 research/representation/character_axes/validation/jobs/farm.pbs`, with `<dirc>` = `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-correction-<commit>`. It writes `<dirc>/raw1` and `<dirc>/raw3`.
+- **Analysis:** `qsub -v CORRECTION_OUT=<dirc> .../jobs/analyse_correction.pbs` writes `<dirc>/analysis/tables`, including `correction_comparison.csv`.

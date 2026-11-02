@@ -1,6 +1,7 @@
 """Run the validation conditions through the pyspi subset (resumable, parallel).
 
-    python -m research.representation.character_axes.validation.run [--workers 9] [--only PREFIX] [--dry] [--posthoc | --stage2 | --stage3]
+    python -m research.representation.character_axes.validation.run [--workers 9] [--only PREFIX] [--dry]
+        [--posthoc | --stage2 | --stage3 | --correction {1,3}] [--out DIR]
 
 Each job is one window; outputs go to results/representation/character-axes-validation/raw/<job>.npz,
 or to $VALIDATION_OUT. On Gadi, jobs/farm.pbs runs --shard k --shards N tasks under nci-parallel.
@@ -70,6 +71,10 @@ NUIS3 = ('cv_s', 'noise', 'r', 'beta', 'mix')
 GRID3 = ('r', 'noise', 'mix', 'cv_s', 'beta')
 SURR3 = {('burst_level', 'B0'), ('burst_level', 'B1'), ('burst_disp', 'B0'), ('burst_disp', 'B1'),
          ('form_level', 'B0'), ('nuis_beta', 'B0')}
+# Correction (README, "Correction: dispersion signs"): these family A dispersion knobs reused the baseline phase
+# dispersion's sign vector, so the property and the phase were perfectly correlated across edges. Their re-runs
+# (signs='orthogonal') give each property its own signs, balanced within each phase-sign group.
+CORRECTED = ('band_disp', 'form_disp', 'warp_disp')
 
 
 def h(*parts) -> int:
@@ -123,8 +128,16 @@ def stage3_conditions():
             + [dict(x, surrogate=False) for x in grid]]
 
 
-def conditions(posthoc=False, stage2=False, stage3=False):
+def correction_conditions(which):
+    """Every window of the corrected knobs: stages 1-2 corpus (which=1) or stage-3 corpus (which=3)."""
+    base = stage3_conditions() if which == 3 else conditions() + conditions(posthoc=True)
+    return [dict(c, signs='orthogonal') for c in base if c['family'] == 'A' and c['knob'] in CORRECTED]
+
+
+def conditions(posthoc=False, stage2=False, stage3=False, correction=None):
     """Yield condition dicts: family, knob, level, value, baseline, grid, reps, surrogate (False, True/'ft', 'iaaft')."""
+    if correction:
+        return correction_conditions(correction)
     if stage3:
         return stage3_conditions()
     if stage2:
@@ -176,6 +189,16 @@ def _signs(seed, n):
     return rng.permutation(np.where(np.arange(n) % 2 == 0, 1.0, -1.0))
 
 
+def _orthogonal_signs(seed, sg):
+    """Balanced +/-1 signs within each sign group of sg, so they are uncorrelated with sg in every network."""
+    rng = np.random.default_rng(seed)
+    out = np.empty_like(sg)
+    for g in (-1.0, 1.0):
+        idx = np.flatnonzero(sg == g)
+        out[idx] = rng.permutation(np.where(np.arange(len(idx)) % 2 == 0, 1.0, -1.0))
+    return out
+
+
 def build(cond, rep, win):
     """Generate one window; return x (T, M), truth dict."""
     from research.representation.character_axes.validation import generators as G
@@ -195,7 +218,8 @@ def build(cond, rep, win):
         if cond['knob'] in KNOBS_A:
             prop, centre, vals = KNOBS_A[cond['knob']]
             v = vals[cond['level']]
-            per[prop] = np.full(E, float(v)) if centre is None else centre + sg * v / 2
+            sgp = _orthogonal_signs(h(net_seed, 'signs', prop), sg) if cond.get('signs') == 'orthogonal' else sg
+            per[prop] = np.full(E, float(v)) if centre is None else centre + sgp * v / 2
         if cond['knob'] in KNOBS_A3:        # stage 3: dispersion signs independent of the phase dispersion
             prop, centre, vals = KNOBS_A3[cond['knob']]
             v, sg3 = vals[cond['level']], _signs(h(net_seed, 'signs3'), E)
@@ -277,7 +301,7 @@ def _work(args):
         ac1 = float(np.mean([np.corrcoef(x[:-1, j], x[1:, j])[0, 1] for j in range(x.shape[1])]))
         tmp = path.with_suffix('.tmp.npz')
         extra = {}
-        if stage3:                          # record the computation that made this corpus
+        if stage3 or cond.get('signs'):     # record the computation that made this corpus
             import pyspi
             extra['pyspi'] = json.dumps(dict(version=getattr(pyspi, '__version__', ''),
                                              computation=str(getattr(pyspi, 'COMPUTATION_VERSION', ''))))
@@ -300,11 +324,18 @@ def main():
     ap.add_argument('--posthoc', action='store_true')
     ap.add_argument('--stage2', action='store_true', help='second-family mediation and direction (README, Stage 2)')
     ap.add_argument('--stage3', action='store_true', help='spectral location and joint-burst coupling (README, Stage 3)')
+    ap.add_argument('--correction', type=int, choices=(1, 3), help='dispersion-sign correction of the stage 1-2 or stage-3 corpus')
+    ap.add_argument('--out', type=Path, help='window directory (overrides $VALIDATION_OUT)')
     ap.add_argument('--shard', type=int, default=-1, help='run jobs[shard::shards] serially in this process (one farm task)')
     ap.add_argument('--shards', type=int, default=1)
     a = ap.parse_args()
+    global OUT
+    if a.out:                               # workers re-import this module, so pass it through the environment too
+        OUT = a.out
+        os.environ['VALIDATION_OUT'] = str(a.out)
     OUT.mkdir(parents=True, exist_ok=True)
-    jobs = [(c, r, w) for c in conditions(a.posthoc, a.stage2, a.stage3) for r in range(c['reps']) for w in range(WINDOWS)]
+    jobs = [(c, r, w) for c in conditions(a.posthoc, a.stage2, a.stage3, a.correction)
+            for r in range(c['reps']) for w in range(WINDOWS)]
     jobs = [j for j in jobs if job_id(*j).startswith(a.only)]
     if a.shard >= 0:  # slice the fixed job list, not the shrinking to-do list, so concurrent shards never overlap
         jobs = jobs[a.shard::a.shards]

@@ -1,0 +1,43 @@
+#!/bin/bash
+#PBS -N axes-correction
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8,mem=32GB,walltime=02:00:00,jobfs=2GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Dispersion-sign correction (README, "Correction: dispersion signs"): re-scores stages 1-2 (with the cohort bound)
+# and stage 3 with the corrected windows replacing their namesakes, then compares the old and new tables.
+# Writes <dirc>/analysis/{tables,figures} and the score caches in <dirc>; nothing is written into the checkout.
+# qsub -v CORRECTION_OUT=<dirc> research/representation/character_axes/validation/jobs/analyse_correction.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+dir="${CORRECTION_OUT:?}"
+val=$MTS_GDATA/representation/validation
+s1=${STAGE1_RAW:-$val/character-axes-8d239c6/raw}
+s2=${STAGE2_RAW:-$val/character-axes-stage2-42bd982/raw}
+s3=${STAGE3_TAR:-$val/character-axes-stage3-59502aa/raw.tar}
+mod=research.representation.character_axes.validation
+
+emp=$MTS_SCRATCH/representation/empirical       # the cohort banks, as in analyse.pbs
+declare -A bank=(
+    [neurotycho]=$emp/character-transfer-261031/neurotycho-primary
+    [chbmit]=$emp/discovery-261031/chbmit
+    [hmc]=$emp/discovery-261031/hmc
+    [ad-ftd]=$emp/character-axes-261102/ad-ftd
+    [lemon]=$emp/character-axes-261102/lemon
+    [propofol]=$emp/character-axes-261102/propofol
+)
+banks="$PBS_JOBFS/banks"
+for c in "${!bank[@]}"; do
+    test -f "${bank[$c]}/bank.npz"
+    mkdir -p "$banks/$c" && ln -s "${bank[$c]}/bank.npz" "$banks/$c/bank.npz"
+done
+tar xf "$s3" -C "$PBS_JOBFS"
+
+echo "[INFO] $(git rev-parse --short HEAD); corrected windows: $(ls "$dir/raw1" | wc -l) + $(ls "$dir/raw3" | wc -l)"
+python -u -m $mod.analyse --refresh --raw "$s1" "$s2" --replace "$dir/raw1" --banks "$banks" --out "$dir/analysis"
+python -u -m $mod.stage3 --refresh --raw "$PBS_JOBFS/raw" --replace "$dir/raw3" --out "$dir/analysis"
+python -u -m $mod.correction --old research/representation/character_axes/validation/tables --new "$dir/analysis/tables" \
+    --check "$s1" "$dir/raw1" "$PBS_JOBFS/raw" "$dir/raw3"
