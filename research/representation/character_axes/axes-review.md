@@ -184,6 +184,11 @@ Core organisation, mean / SD / ICC:
     - Direction is dropped: sgc A\|Aᵀ reverses in directed Kuramoto, and in family A band dispersion moves it as much as direction does (SR 0.96).
     - Mediation stays core only for strong instantaneous mediation (family C). Lagged, partial mediation in family A barely moves it (SR 0.28).
     - A level-aware band spread (SD of the per-edge high share over the strongest edges) passes as core (SR 5.3). The lag spread is not level-aware.
+  - **Stage 3 (location within a band and joint bursts, 3 November):** nothing new passes as core.
+    - An AR(2) frequency fitted to the lag 0–3 correlations reads coupling frequency, calibrated (Δ 0.10 for a true 0.10) and selective (SR 5.9). Under weak coupling, channel spectra pull it 0.36–0.53 times as much (sub-axis).
+    - The core high share and band spread do not read within-band location, but ppc L\|H organisation does (0.77 of its own response; SR 2.06 → 1.30).
+    - The fixed-lag axis reads location level, not location dispersion (post hoc). Spectral-peak readouts read nuisances, and best-shift reads delay in samples.
+    - Raw linear–rank readouts read marginal shape (β moves them 1.2–6.6 times as much as bursts). Only real − IAAFT of zero-lag Pearson-against-rank organisation reads joint bursts.
   - **Lag:** sign-stable across three estimator families, but only a sub-axis (SR 0.66–1.60; band level is the main cross-talk), and insensitive in the Kuramoto family. Lag level moves lag organisation about twice as much as lag dispersion, so organisation is not level-free.
   - **Form and warp organisation:** fail at cohort-like coupling. Form organisation's only passing pair reads spectra on surrogates; the form level median(te − gc) is the one non-Gaussian reader.
   - **Corrections:** no strength or reliability correction is usable for a passing pair.

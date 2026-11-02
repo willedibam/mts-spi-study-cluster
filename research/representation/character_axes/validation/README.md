@@ -396,7 +396,99 @@ From first principles, not from data:
 
 A location or burst readout whose verdict is core will be proposed for CORE with its exact constituents. For bursts, the residual is the version comparable with the cohort's real − IAAFT residual.
 
+### Pilot
+
+Run after the pre-registration commit (59502aa) and before scoring, on generator output only, with no pyspi:
+- **Stages 1 and 2 unchanged:** generator calls are bit-identical to 8ee8728 for 9 conditions across families A, B, C and K, and σ = 0 reproduces family A exactly.
+- **Bursts exist:** the top 10% of samples carry 0.10, 0.29, 0.53, 0.73 and 0.85 of an edge's coupled energy at σ = 0 to 1.5. At B0, channel excess kurtosis is −0.04 at σ = 0 and 10.9 at σ = 1.5, against 129 at β = 2.
+- **Family D separates the spectra:** the median channel-spectrum peak (Welch) follows f_p, 0.041 → 0.131 at B0 and 0.057 → 0.156 at B1. f_c moves it less, 0.082 → 0.104 at B0 and not at all at B1, so at B0 the coupled third of the power still shifts channel spectra a little.
+- **IAAFT:** exact marginals, Fourier amplitude error 6.6% and largest correlation error 0.018 on a σ = 1.5 window, in 0.6 s.
+- **Kuramoto stays coupled** across the location sweep: tree-edge |r| 0.74 (B0) and 0.70 (B1) at both ends.
+
 ### Running it
 
 - **Farm:** `qsub -l ncpus=192,mem=760GB,walltime=01:30:00 -v STAGE=3,VALIDATION_OUT=<dir3>/raw research/representation/character_axes/validation/jobs/farm.pbs`, with `<dir3>` = `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-stage3-<commit>`.
 - **Analysis:** `qsub -v VALIDATION_OUT=<dir3>/raw .../jobs/analyse3.pbs` writes `<dir3>/analysis/tables/stage3_{verdicts,responses,core}.csv`, which are copied to `tables/`.
+- **Output:** `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-stage3-59502aa`. The raw windows are packed in `raw.tar` to save inodes; extract it to `raw/` to re-score.
+
+### Stage 3 results (3 November 2026)
+
+Corpus: Gadi farm job 182981241 at 59502aa, pyspi computation version 3.0.0.r10, 2,972 windows, 0 pyspi errors, 101.7 SU. Analysis job 182981939. Tables are `tables/stage3_verdicts.csv` (verdicts, SR3, family D, surrogates, residuals, nuisance ratios), `stage3_core.csv` (core cross-talk) and `stage3_responses.csv`.
+
+**No location or burst readout passes as core.**
+
+Location, own knob in family A; D's ratio is \|Δ f_p\|/\|Δ f_c\| (pass ≤ 0.5):
+
+| Measure | B0 / B1: Δ (d) | SR3 (worst other) | D ratio, B0 / B1 | Verdict |
+|---|---|---|---|---|
+| AR(2) frequency | +0.103 (30) / +0.102 (55) | 5.9 (warp dispersion) | 0.36 / 0.53 | sub-axis: fails "reads coupling frequency" at B1 |
+| AR(2) frequency spread | +0.034 (4.9) / +0.029 (7.6) | 1.45 (warp level) | — | sub-axis: fails SR3; level-aware |
+| lag-1 ratio | −0.32 (−24) / −0.37 (−74) | 1.06 (lag level) | 0.36 / 0.61 | sub-axis |
+| best-shift level, top quartile | −0.009 (−4.1) / −0.008 (−2.1) | 0.17 (lag level) | 1.6 / 1.1 | sub-axis |
+| spectral-peak axis (learned +) | +0.109 (3.0) / +0.103 (3.5) | 0.94 (burst level) | — | sub-axis: fails SR3 |
+| spectral-peak level, top quartile | reverses at β = 2 | 0.68 | 0.58 / 0.50 | drop |
+| fixed-lag axis (learned +) | +0.093 (3.2) / −0.043 (−1.1) | — | — | drop: reverses at B1 and at r 0.95 |
+| spectral-peak level (all entries), best-shift axis | insensitive | — | — | drop |
+
+- **AR(2) frequency is the one readout of coupling frequency, and it is calibrated.**
+  - Its response is 0.103 and 0.102 in family A and 0.0995 in family K, for a true shift of 0.10 cycles per sample. Its sign holds at every grid cell, in K and in D.
+  - The largest other response is warp dispersion's 0.017. Lag level gives 0.011 (interval includes zero), r 0.003 and β 0.030.
+  - Its \|d\| is 30 to 55, against at most 5.8 for any core band readout on the same knob.
+  - **It fails one rule.** In family D, where private power is twice the coupled power, channel-spectrum frequency moves it 0.36 (B0) and 0.53 (B1) times as much as coupling frequency, against the 0.5 limit. Coupling frequency itself moves it only 0.065 and 0.058 there, about 60% of the true shift.
+  - Mechanism (inferred): the sample cross-correlation of autocorrelated channels oscillates at the channels' own frequency (Bartlett), and when coupling is weak the coherence-ranked top quartile also takes in weakly coupled and uncoupled entries.
+  - So a cohort shift in f̂ is read as a shift in coupling frequency only next to the shift in channel peak frequency.
+- **The core does not read within-band location.**
+  - The band high share and band spread move at most 0.07 times their own response with location level or dispersion (\|d\| ≤ 0.5), in families A, K and D. The predicted leakage across fs/4 did not appear.
+  - Band organisation (ppc L\|H) does respond: location level moves it 0.77 times and location dispersion 0.39 times its own response. Its SR falls from 2.06 to 1.30 once the stage-3 knobs are included (`stage3_core.csv`).
+- **The cohort's fixed-lag survivor reads location level (post hoc).** As an organisation readout of location dispersion it reverses. But location level moves it −0.45 (d −49) at B0 and −0.32 (d −23) at B1. In family D, coupling frequency moves it −0.30 and −0.21, and channel frequency 0.28 and 0.54 times as much. Apart from the band knobs (the same variable), its largest responses are r (+0.14), noise (−0.09) and form level (−0.09), about a third of the location response. It was not pre-registered as a level readout.
+- **Spectral-peak readouts read nuisances.** For the top-quartile level the ratios are noise 2.7, β −2.8 and mixing −3.8. Burst level moves the axis as much as location dispersion does.
+- **Best-shift level reads delay in samples.** Lag level moves it 5.7 times as much as location does (SR3 0.17), as predicted.
+
+Bursts, own knob in family A; "kept" is surrogate Δ / real Δ:
+
+| Measure | B0 / B1: Δ (d) | SR3 (worst other) | IAAFT kept, B0 / B1 | Residual (real − IAAFT), B0 / B1 (d) | Verdict |
+|---|---|---|---|---|---|
+| r\|ρ_S | −0.065 (−3.1) / −0.070 (−2.5) | 0.28 (β) | 0.15 / 0.35 | −3.2 / −2.5 | sub-axis: fails SR3, level-aware |
+| r\|τ_K | −0.067 (−3.3) / −0.071 (−2.5) | 0.28 (β) | 0.15 / 0.34 | −3.4 / −2.5 | sub-axis: fails SR3, level-aware |
+| linear–rank axis | −0.099 (−2.1) / −0.107 (−1.7) | 0.17 (β) | 0.28 / 0.64 | −1.6 / insensitive | sub-axis: fails SR3, level-aware, IAAFT |
+| linear–rank level, top quartile | −0.026 (−6.1) / −0.023 (−1.9) | 0.86 (β) | 0.52 / 0.80 | −2.6 / insensitive | drop: reverses at mixing 0.5 |
+| linear–rank level, all entries | −0.003 (−1.5) / insensitive | 0.15 (β) | 0.20 / 0.63 | — | drop: reverses at β = 2 and mixing 0.5 |
+| tail axis (learned −) | −0.101 (−3.7) / −0.121 (−2.4) | 0.21 (β) | 0.74 / 0.84 | −1.3 / insensitive | sub-axis |
+| tail level (learned +) | +0.087 (6.9) / +0.083 (9.0) | 0.24 (β) | 1.00 / 1.00 | insensitive | sub-axis |
+
+- **Raw linear–rank and tail readouts read marginal shape.**
+  - β moves every one of them 1.2 to 6.6 times as much as bursts do.
+  - IAAFT keeps 0.94 to 1.01 of the β response (FT keeps 0.00 to 0.25), so IAAFT reproduces the marginal map, as intended.
+  - The linear–rank level moves with β opposite to bursts, as predicted. But IAAFT also keeps 0.52 to 0.80 of its burst response: the heavy-tailed marginals that bursts create carry much of it.
+  - IAAFT keeps all of the tail level's response.
+- **Real − IAAFT of zero-lag Pearson-against-rank organisation reads joint bursts.**
+  - For r\|ρ_S and r\|τ_K, the residual keeps the predicted sign at B0 and B1. β and form θ move it at most 0.24 and 0.06 times as much.
+  - Burst level moves the raw pairs 1.3 to 1.6 times as much as burst dispersion, so they read burstiness rather than its spread over edges.
+  - The cohort's axis version (it adds lagged pairs) is weaker: its residual is insensitive at B1.
+  - The residual's selectivity against lag, band and location is untested (no IAAFT for those knobs). IAAFT keeps linear structure, so it is expected to be small (inferred).
+- **Cohort reading (inferred).** Propofol's lower linear–rank agreement in real − IAAFT has the sign the construction gives for more joint-burst coupling. The raw readout cannot support that claim.
+
+Core cross-talk (`stage3_core.csv`):
+- High share and band spread keep their SR (3.7, 5.2).
+- Location level moves lag organisation −0.63 and form te − gc 0.88 times their own responses. In family K, te − gc moves 9.8 times its own response over the location sweep.
+- Burst level moves Ledoit–Wolf mediation 0.78 (B0) and 1.89 (B1) times its family-A response.
+
+Predictions stated in advance:
+- **Right:**
+  - the lag-1 ratio's SR3 is near 1 (1.06);
+  - f̂ does not depend on r (0.03);
+  - lag level is the best-shift level's worst other knob (SR3 0.17);
+  - the fixed-lag axis has no stable sign (it flips between baselines);
+  - β moves the linear–rank level opposite to bursts, and IAAFT keeps β's response (0.95).
+- **Wrong:**
+  - r barely moves the lag-1 ratio (−0.06 of its own response). The damped-cosine arithmetic ignored the AR(2) autocorrelation's phase term.
+  - Lag level does not destabilise f̂.
+  - Ratios of lagged correlations do respond to f_p (0.36 to 0.61).
+  - IAAFT keeps 0.52 to 0.80 of the linear–rank level's burst response.
+  - Form θ moves r\|ρ_S organisation (−0.31 of its own response; predicted near zero).
+  - The core high share does not leak within-band location.
+
+Proposed for CORE, as a decision for the core's owner:
+1. **Demote `band` (ppc L\|H organisation) to sub.** Location level moves it 0.77 times its own response (SR 1.30 with the stage-3 knobs). The high share and band spread stay core.
+2. **Add `location_frequency` as sub.** It is the top-quartile median (ranked by `BAND_RANK`) of the AR(2) pole frequency fitted at k = 2, 3 to cov_EmpiricalCovariance and corr_pearson_tau-1 to 3. Its caveat: under weak coupling, channel spectra pull it 0.36 to 0.53 times as much as coupling frequency does, so it is reported beside the shift in channel peak frequency. It is the only readout here that reads within-band location calibrated and selectively.
+3. **Read no raw linear–rank readout as non-Gaussian dependence.** If one is added, it is the real − IAAFT residual of zero-lag r\|ρ_S organisation, as a sub-axis that reads burstiness. It needs an IAAFT surrogate per cohort window.
