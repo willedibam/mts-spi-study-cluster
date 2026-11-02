@@ -209,3 +209,75 @@ Reading:
 - **Form organisation** fails at cohort-like coupling. Its one passing pair reads spectra. The form level median(te − gc) is the only non-Gaussian reader (sub-axis).
 - **Warp** fails as an organisation axis. Its post hoc level reads linear timing.
 - No strength correction works, so z-axes support existence and sign claims under a nuisance bound. Magnitude stays out of scope.
+
+## Stage 2: second generator family and level-aware readouts
+
+Pre-registered on 3 November 2026, before any stage-2 window was generated. Two questions:
+- **Second family.** Mediation and direction passed as core in one generator each (families C and B). Criterion 1 asks for a second family where the construct exists. Their SR also divided an own response in C or B by responses to family A knobs. Putting both constructs in family A makes the SR within one family.
+- **Level-aware readout.** Can a readout of lag or band dispersion avoid the level confound found in stage 1?
+
+### Generators (`generators.py`)
+
+- **Direction in family A** (`edge_drivers(alpha=…)`):
+  - Each coupled edge also carries an independent driver read the other way. α splits the edge's variance (1 + α)/2 forward and (1 − α)/2 backward.
+  - α = 1 is the stage-1 family A, and α = 0 is symmetric.
+  - Graph, weights and phases come from the same network seeds as stage 1.
+  - As in family B, α also moves phase lag, because the two directions' imaginary coherency cancels at α = 0. In linear systems, direction and lag are coupled. That is why SR against family A's lag knobs is the test.
+- **Mediation in family A** (`hub_drivers(lam=…)`):
+  - λ = 0 is family A's direct edges: the stage-1 graph, weights and phases, at f = 0.1.
+  - At λ = 1, two observed hubs, drawn from the network seed, each broadcast one driver to their 7 spokes. Each spoke reads its hub's driver at phase π/8 ± π/16.
+  - Intermediate λ mixes the two sources with weights √(1 − λ) and √(λ·gain).
+  - The gain is found by bisection so the mean |r| of the source signal stays at its λ = 0 value, as family C holds mean |r|.
+  - Unlike C, hubs carry private noise and spokes read them with a delay, so conditioning at lag 0 removes mediated dependence only partly.
+- **Direction in family K** (`kuramoto_tree(asym=…)`):
+  - The leader pulls the follower with K_e(1 + α) and is pulled back with K_e(1 − α).
+  - α = 0 is the stage-1 family K.
+  - K's B1 has strength CV 1.0 and phase noise 0.01 (longer coherence), mirroring A's B1, which changes strength spread and autocorrelation.
+
+### Design and criteria
+
+- **Knobs:** α ∈ {0, 0.25, 0.5, 0.75, 1} in families A and K; λ ∈ {0, 0.25, 0.5, 0.75, 1} in family A.
+- **Baselines:** B0 and B1 as in stage 1, with 6 recordings × 2 windows per condition.
+- **Sign grid:** each family A knob at its zero and maximum, crossed with noise {0, 1}, mixing 0.5 and strength CV {0.1, 1.5}, with 4 × 2 windows per cell.
+- **Size:** 520 windows; dcorr is not computed for any of them.
+- **Predicted signs:**
+  - direction organisation corr(A, Aᵀ) falls with α;
+  - direction level (median gc asymmetry) rises with α;
+  - mediation organisation falls with λ.
+
+Rules for every mediation and direction measure, with Δ from a knob's zero level to its maximum as before:
+1. **Sign stability (hard, criterion 1).** A measure fails if its own-knob Δ has a 95% interval entirely on the wrong side at either baseline in family A or K, or in any family A grid cell.
+2. **Replication.** The predicted sign, with the interval excluding zero, at both baselines in family A.
+3. **Selectivity in A.** SR_A is |Δ own (A, B0)| divided by the largest |Δ| among family A's lag, band, form and warp knobs (stage 1) and the other stage-2 family A knob.
+4. **Verdict:**
+   - **core, two generators:** stage-1 core, replicated in A, and SR_A ≥ 2;
+   - **sub-axis, two generators:** replicated in A, but stage-1 sub-axis or SR_A < 2;
+   - **⟨stage-1 verdict⟩, one generator:** not reversed, but insensitive in A at either baseline;
+   - **drop (sign reversal in a second family):** fails rule 1.
+
+   Family K counts for rule 1 only; its sensitivity is reported. Risk stated in advance: in strongly locked oscillators the follower is close to a delayed copy of the leader, so spectral Granger asymmetry may be weak or distorted. A reversal in K would still drop the measure, as criterion 1 says.
+5. **Nuisance sensitivity in the new networks (reported).** The change in the measure at knob level 0 between each nuisance's grid extremes, divided by |own Δ at B0|. Mixing is grid 0.5 minus B0. Grid cells have their own networks, so these are unpaired.
+
+For all stage-1 measures, responses to the stage-2 knobs are reported, together with an SR that includes them. Stage-1 verdicts are not changed.
+
+### Level-aware readouts
+
+**Organisation conditioned on level is not pre-specified, because stage 1 already shows that a linear adjustment fails.** The lag level itself responds to lag dispersion: −0.64 of its own response for the median version, −0.33 for the top-quartile version. Take the stage-1 B0 endpoint ratio of Δ lag organisation to Δ lag level on the lag-level sweep as the slope, and subtract slope × level from lag organisation (coh\|icoh 0–0.25):
+- with the median level, the lag-dispersion response becomes −0.47 + 0.64 = +0.17, a reversal;
+- with the top-quartile level, it becomes −0.47 + 0.33 = −0.14, about 30% of the own response, below the 75% that criterion 6 asks a correction to keep.
+
+A z between two profiles mixes level and dispersion through the toy's reliability and CV terms, so the level has to be removed per edge, before aggregation.
+
+**Pre-specified alternative: spread.** The spread is the SD of a per-edge contrast over the strongest quartile of entries (by broadband cohmag):
+- lag: icoh/√cohmag (0–0.5);
+- band: cohmag_H/(cohmag_L + cohmag_H).
+
+Both are predicted to rise with their construct's dispersion knob. They are scored on the stage-1 corpus with criteria 1–4 (family K lag dispersion is lag's second family), plus one more rule:
+- **Level-aware:** |Δ level knob| ≤ 0.5·|Δ dispersion knob| at both B0 and B1.
+
+These are per-edge dispersion estimators, not z organisation.
+
+### Running it
+
+- **Farm:** `qsub -l ncpus=48,mem=190GB,walltime=00:45:00 -v STAGE=2,VALIDATION_OUT=<dir2>/raw research/representation/character_axes/validation/jobs/farm.pbs`, with `<dir2>` = `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-stage2-<commit>`.
+- **Analysis:** `jobs/analyse.pbs` with `STAGE2_OUT=<dir2>/raw` scores both corpora and writes `tables/second_family.csv`.

@@ -1,6 +1,6 @@
 """Run the validation conditions through the pyspi subset (resumable, parallel).
 
-    python -m research.representation.character_axes.validation.run [--workers 9] [--only PREFIX] [--dry]
+    python -m research.representation.character_axes.validation.run [--workers 9] [--only PREFIX] [--dry] [--posthoc | --stage2]
 
 Each job is one window; outputs go to results/representation/character-axes-validation/raw/<job>.npz,
 or to $VALIDATION_OUT. On Gadi, jobs/farm.pbs runs --shard k --shards N tasks under nci-parallel.
@@ -51,14 +51,45 @@ KNOBS_K = {'lag_level': ('alpha', None, [0, PI / 16, PI / 8, 3 * PI / 16, PI / 4
            'band_level': ('f0', None, [0.06, 0.15, 0.25, 0.35, 0.44])}
 SURR_KNOBS = {'form_level', 'form_disp', 'warp_level', 'warp_disp'}
 REPS_MAIN, REPS_GRID, WINDOWS = 6, 4, 2
+# Stage 2 (3 November 2026): mediation and direction in a second family (README, "Stage 2")
+KNOBS_A2 = {'dir_level': [0, 0.25, 0.5, 0.75, 1.0], 'med': [0, 0.25, 0.5, 0.75, 1.0]}
+KNOBS_K2 = {'dir_level': [0, 0.25, 0.5, 0.75, 1.0]}
+BASE_K = {'B0': {}, 'B1': dict(cv_s=1.0, phase_noise=0.01)}
+GRID2 = ('noise', 'mix', 'cv_s')
 
 
 def h(*parts) -> int:
     return zlib.crc32('|'.join(map(str, parts)).encode()) & 0x7FFFFFFF
 
 
-def conditions(posthoc=False):
+def _grid(knobs, nuisances):
+    """Each knob at its zero and maximum level crossed with each nuisance's extremes (B0 elsewhere)."""
+    grid = []
+    for knob, vals in knobs.items():
+        for i in (0, len(vals) - 1):
+            for nuis in nuisances:
+                nv, base_val = NUIS_A[nuis], {**COMMON_A, **BASE['B0']}[nuis]
+                for tag, ext in (('lo', nv[0]), ('hi', nv[-1])):
+                    if ext != base_val:
+                        grid.append(dict(family='A', knob=knob, level=i, value=float(vals[i]), baseline='B0',
+                                         grid=f'{nuis}:{tag}:{ext}', reps=REPS_GRID))
+    return grid
+
+
+def stage2_conditions():
+    c = []
+    for bl in ('B0', 'B1'):
+        for fam, knobs in (('A', KNOBS_A2), ('K', KNOBS_K2)):
+            for knob, vals in knobs.items():
+                for i, v in enumerate(vals):
+                    c.append(dict(family=fam, knob=knob, level=i, value=float(v), baseline=bl, grid='', reps=REPS_MAIN))
+    return [dict(x, surrogate=False) for x in c + _grid(KNOBS_A2, GRID2)]
+
+
+def conditions(posthoc=False, stage2=False):
     """Yield condition dicts: family, knob, level, value, baseline, grid, reps, surrogate."""
+    if stage2:
+        return stage2_conditions()
     if posthoc:
         ph = [dict(family='A', knob=k, level=i, value=float(v), baseline='PHS', grid='', reps=REPS_MAIN)
               for k in POSTHOC_KNOBS for i, v in enumerate(KNOBS_A[k][2])]
@@ -126,7 +157,12 @@ def build(cond, rep, win):
             prop, centre, vals = KNOBS_A[cond['knob']]
             v = vals[cond['level']]
             per[prop] = np.full(E, float(v)) if centre is None else centre + sg * v / 2
-        x, truth = G.edge_drivers(net_seed=net_seed, noise_seed=noise_seed, **kw, **per)
+        if cond['knob'] == 'med':
+            x, truth = G.hub_drivers(net_seed=net_seed, noise_seed=noise_seed, lam=cond['value'], phi=per['phi'], **kw)
+        else:
+            if cond['knob'] == 'dir_level':
+                per['alpha'] = np.full(E, cond['value'])
+            x, truth = G.edge_drivers(net_seed=net_seed, noise_seed=noise_seed, **kw, **per)
     elif fam == 'B':
         E = COMMON_B['M'] * COMMON_B['degree'] // 2
         sg = _signs(h(net_seed, 'signs'), E)
@@ -139,13 +175,16 @@ def build(cond, rep, win):
     else:
         E = COMMON_K['M'] - 1
         sg = _signs(h(net_seed, 'signs'), E)
-        prop, centre, vals = KNOBS_K[cond['knob']]
-        v = vals[cond['level']]
-        kw = dict(COMMON_K, alpha=PI / 8)
-        if prop == 'alpha':
-            kw['alpha'] = np.full(E, float(v)) if centre is None else centre + sg * v / 2
+        kw = dict(COMMON_K, alpha=PI / 8, **BASE_K[bl])
+        if cond['knob'] == 'dir_level':
+            kw['asym'] = np.full(E, cond['value'])
         else:
-            kw['f0'] = float(v)
+            prop, centre, vals = KNOBS_K[cond['knob']]
+            v = vals[cond['level']]
+            if prop == 'alpha':
+                kw['alpha'] = np.full(E, float(v)) if centre is None else centre + sg * v / 2
+            else:
+                kw['f0'] = float(v)
         x, truth = G.kuramoto_tree(net_seed=net_seed, noise_seed=noise_seed, **kw)
     if cond['surrogate']:
         x = G.ft_surrogate(x, np.random.default_rng(h(net_seed, noise_seed, 'surr')))
@@ -155,7 +194,7 @@ def build(cond, rep, win):
 
 def needs_dcorr(cond):
     """dcorr (~45% of a job) is computed only where the r2|dcorr pair is evaluated."""
-    if cond['family'] != 'A':
+    if cond['family'] != 'A' or cond['knob'] in KNOBS_A2:
         return False
     form = cond['knob'].startswith('form')
     return form if (cond['grid'] or cond['surrogate']) else True
@@ -196,11 +235,12 @@ def main():
     ap.add_argument('--limit', type=int, default=0)
     ap.add_argument('--dry', action='store_true')
     ap.add_argument('--posthoc', action='store_true')
+    ap.add_argument('--stage2', action='store_true', help='second-family mediation and direction (README, Stage 2)')
     ap.add_argument('--shard', type=int, default=-1, help='run jobs[shard::shards] serially in this process (one farm task)')
     ap.add_argument('--shards', type=int, default=1)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    jobs = [(c, r, w) for c in conditions(a.posthoc) for r in range(c['reps']) for w in range(WINDOWS)]
+    jobs = [(c, r, w) for c in conditions(a.posthoc, a.stage2) for r in range(c['reps']) for w in range(WINDOWS)]
     jobs = [j for j in jobs if job_id(*j).startswith(a.only)]
     if a.shard >= 0:  # slice the fixed job list, not the shrinking to-do list, so concurrent shards never overlap
         jobs = jobs[a.shard::a.shards]

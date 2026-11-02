@@ -1,9 +1,11 @@
 """Score the validation runs, apply the pre-registered criteria, bound the cohort effects.
 
-    python -m research.representation.character_axes.validation.analyse [--refresh] [--out DIR] (--banks DIR | --no-bound)
+    python -m research.representation.character_axes.validation.analyse [--refresh] [--out DIR] [--raw DIR ...]
+        (--banks DIR | --no-bound)
 
-Reads the windows from $VALIDATION_OUT (run.py's override), else results/representation/
-character-axes-validation/raw, and caches per-recording scores in scores.pkl beside that directory.
+Reads the windows from --raw (stage 1, then stage 2), by default $VALIDATION_OUT (run.py's override) or
+results/representation/character-axes-validation/raw, and caches per-recording scores in scores.pkl
+beside the last directory.
 Writes DIR/tables/*.csv and DIR/figures/selectivity.{svg,pdf,png}; DIR defaults to this folder.
 On Gadi, jobs/analyse.pbs runs it.
 """
@@ -85,6 +87,21 @@ CONSTRUCT_KNOBS = {'lag': ('lag_level', 'lag_disp'), 'band': ('band_level', 'ban
 OWN_KNOBS = {**{c: ('A', k) for c, k in CONSTRUCT_KNOBS.items()}, 'direction': ('B', ('dir_level', 'dir_disp'))}
 NUISANCES = ('nuis_cv_s', 'nuis_noise', 'nuis_T', 'nuis_r', 'nuis_beta', 'nuis_mix', 'nuis_M')
 DIAGNOSTIC = {'direction: tlmi_g|gc'}       # no pre-registered sign; reported only
+# Stage 2 (pre-registered 3 November 2026, README "Stage 2"): second families for mediation and direction,
+# and level-aware spread readouts (SD of a per-edge contrast over the strongest quartile of entries).
+SPREAD = {'lag: spread icoh/sqrt(coh) [level-aware]': ('lag', mt('icoh', B_), mt('cohmag', B_), 'sinphi'),
+          'band: spread high share [level-aware]': ('band', mt('cohmag', H_), mt('cohmag', L_), 'share')}
+SPREAD_TOP = mt('cohmag', B_)
+OWN_SPREAD = {'lag': ('A', 'lag_disp', 1), 'band': ('A', 'band_disp', 1)}
+SECOND[('lag', 'spread')] = ('K', 'lag_disp', 1)
+STAGE2_OWN = {'mediation': [('A', 'med')], 'direction': [('A', 'dir_level'), ('K', 'dir_level')]}
+STAGE2_KNOBS = {('A', 'med'): 'mediation', ('A', 'dir_level'): 'direction', ('K', 'dir_level'): 'direction'}
+GRID2_NUIS = ('noise', 'mix', 'cv_s')
+
+
+def own_of(construct, kind):
+    """(family, knob, predicted sign) of a measure's own knob, or None."""
+    return {'org': OWN_ORG, 'level': OWN_LEVEL, 'spread': OWN_SPREAD}[kind].get(construct)
 
 
 def _prof(S, names, n):
@@ -105,7 +122,7 @@ def _corr(x, y):
     return float(np.corrcoef(x[ok], y[ok])[0, 1])
 
 
-def _contrast(a, b, kind, mask=None):
+def _contrast_vec(a, b, kind):
     with np.errstate(divide='ignore', invalid='ignore'):
         if kind == 'diff':
             c = a - b
@@ -115,7 +132,11 @@ def _contrast(a, b, kind, mask=None):
             c = a / (a + b)
         elif kind == 'ratio':
             c = a / b
-    c = np.where(np.isfinite(c), c, np.nan)
+    return np.where(np.isfinite(c), c, np.nan)
+
+
+def _contrast(a, b, kind, mask=None):
+    c = _contrast_vec(a, b, kind)
     return float(np.nanmedian(c if mask is None else c[mask]))
 
 
@@ -156,12 +177,18 @@ def recording_scores(win):
                 mask = _top(_prof(S, names, top[0]), top[1]) if top else None
                 vals.append(_contrast(_prof(S, names, a), _prof(S, names, b), kind, mask))
         out[f'level|{key}'] = np.nanmean(vals)
+    for key, (_, a, b, kind) in SPREAD.items():
+        vals = []
+        for S, names in win:
+            c = _contrast_vec(_prof(S, names, a), _prof(S, names, b), kind)
+            vals.append(float(np.nanstd(c[_top(_prof(S, names, SPREAD_TOP), 1)])))
+        out[f'spread|{key}'] = np.nanmean(vals)
     return out
 
 
-def load_scores(refresh=False):
-    cache = RAW.parent / 'scores.pkl'
-    files = sorted(glob.glob(str(RAW / '*.npz')))
+def load_scores(refresh=False, raws=(RAW,)):
+    cache = Path(raws[-1]).parent / 'scores.pkl'
+    files = sorted(f for raw in raws for f in glob.glob(str(Path(raw) / '*.npz')))
     if cache.exists() and not refresh:
         df = pd.read_pickle(cache)
         if len(df) * 2 >= len(files) - 1:
@@ -241,6 +268,8 @@ def measures():
         m.append((k, c, fam, 'org', f'org|{k}'))
     for k, (c, _, _, _) in LEVELS.items():
         m.append((k, c, 'level', 'level', f'level|{k}'))
+    for k, (c, _, _, _) in SPREAD.items():
+        m.append((k, c, 'spread', 'spread', f'spread|{k}'))
     return m
 
 
@@ -248,7 +277,7 @@ def evaluate(df):
     grid_tags = sorted(g for g in df.grid.unique() if g)
     rows, resp = [], []
     for mid, construct, fam, kind, col in measures():
-        own = (OWN_ORG if kind == 'org' else OWN_LEVEL).get(construct)
+        own = own_of(construct, kind)
         rec = dict(measure=mid, construct=construct, method=fam, kind=kind)
         if construct == 'control' or own is None:
             rows.append(dict(rec, verdict='control' if construct == 'control' else 'no own knob')); continue
@@ -270,13 +299,22 @@ def evaluate(df):
             resp.append(dict(measure=mid, knob=sec[1], family=sec[0], baseline='B0', grid='', **r))
             status[f'second {sec[0]}'] = _status(r, sec[2]) if sign else 'diagnostic'
         own_r = main['B0']
-        sibling = np.nan
+        sibling = {bl: np.nan for bl in main}
         fam2, knobs2 = OWN_KNOBS.get(construct, (None, ()))
         for k2 in knobs2:
             if k2 != oknob:
-                r = response(df, fam2, k2, col)
-                resp.append(dict(measure=mid, knob=k2, family=fam2, baseline='B0', grid='', **r))
-                sibling = r['mean'] / abs(own_r['mean']) if own_r['mean'] else np.nan
+                for bl in main:
+                    r = response(df, fam2, k2, col, bl)
+                    if r['n'] or bl == 'B0':
+                        resp.append(dict(measure=mid, knob=k2, family=fam2, baseline=bl, grid='', **r))
+                    sibling[bl] = r['mean'] / abs(main[bl]['mean']) if main[bl]['mean'] else np.nan
+        stage2 = {}                         # stage-2 knobs: reported for every measure
+        for (f3, k3), c3 in STAGE2_KNOBS.items():
+            r = response(df, f3, k3, col)
+            if r['n']:
+                resp.append(dict(measure=mid, knob=k3, family=f3, baseline='B0', grid='', **r))
+                if f3 == 'A' and c3 != construct and np.isfinite(r['mean']):
+                    stage2[k3] = abs(r['mean'])
         others = []
         for c2, knobs in CONSTRUCT_KNOBS.items():
             if c2 == construct:
@@ -305,8 +343,15 @@ def evaluate(df):
             verdict = 'drop (insensitive)'
         else:
             verdict = 'core' if sr >= 2 else 'sub-axis'
+        extra = {'other own knob/own': sibling['B0']}
+        if 'B1' in sibling:
+            extra['other own knob/own B1'] = sibling['B1']
+        if kind == 'spread':                # pre-registered level-awareness: |level knob| <= 0.5 |own| at B0 and B1
+            extra['level_aware'] = bool(all(np.isfinite(v) and abs(v) <= 0.5 for v in sibling.values()))
+        if stage2:
+            extra['SR incl. stage-2 knobs'] = abs(own_r['mean']) / max(worst_other[1], *stage2.values())
         rows.append(dict(rec, own_knob=f'{ofam}:{oknob}', own_mean=own_r['mean'], own_d=own_r['d'],
-                         SR=sr, worst_other=worst_other[0], **{'other own knob/own': sibling}, reversed_at='; '.join(reversed_at),
+                         SR=sr, worst_other=worst_other[0], **extra, reversed_at='; '.join(reversed_at),
                          insensitive_at='; '.join(insensitive_at), verdict=verdict,
                          **{f'nuis/own {k[5:]}': v for k, v in nuis.items()}))
     return pd.DataFrame(rows), pd.DataFrame(resp)
@@ -317,7 +362,7 @@ def surrogate_table(df):
     for mid, construct, fam, kind, col in measures():
         if construct not in ('form', 'warp', 'lag'):
             continue
-        own = (OWN_ORG if kind == 'org' else OWN_LEVEL).get(construct)
+        own = own_of(construct, kind)
         if not own:
             continue
         for bl in ('B0', 'B1'):
@@ -337,7 +382,7 @@ def posthoc_table(df):
     for mid, construct, fam, kind, col in measures():
         if construct not in ('form', 'warp'):
             continue
-        own = (OWN_ORG if kind == 'org' else OWN_LEVEL).get(construct)
+        own = own_of(construct, kind)
         if not own:
             continue
         for k2 in CONSTRUCT_KNOBS[construct]:
@@ -382,17 +427,78 @@ def correction_table(df):
     return t.merge(pd.DataFrame(use), on=['pair', 'correction'], how='left')
 
 
+def _cell_mean(df, fam, knob, col, level, grid=''):
+    s = df[(df.family == fam) & (df.knob == knob) & (df.baseline == 'B0') & (df.grid == grid) & ~df.surrogate
+           & (df.level == level)]
+    return s[col].mean() if len(s) else np.nan
+
+
+def second_family_table(df, verdicts):
+    """Stage 2: mediation and direction measures in their second families, with the pre-registered verdict."""
+    ver = verdicts.set_index('measure')
+    rows = []
+    for mid, construct, _, kind, col in measures():
+        own = own_of(construct, kind) if construct in STAGE2_OWN else None
+        if own is None or mid in DIAGNOSTIC:
+            continue
+        sign = own[2]
+        for fam2, knob2 in STAGE2_OWN[construct]:
+            main = {bl: response(df, fam2, knob2, col, bl) for bl in ('B0', 'B1')}
+            if not main['B0']['n']:
+                continue
+            status = {f'main {bl}': _status(r, sign) for bl, r in main.items()}
+            grids = sorted(g for g in df.loc[(df.family == fam2) & (df.knob == knob2), 'grid'].unique() if g)
+            for g in grids:
+                status[f'grid {g}'] = _status(response(df, fam2, knob2, col, 'B0', g), sign)
+            rec = dict(measure=mid, kind=kind, family=fam2, knob=knob2, stage1=ver.loc[mid, 'verdict'],
+                       own_B0=main['B0']['mean'], d_B0=main['B0']['d'], own_B1=main['B1']['mean'], d_B1=main['B1']['d'],
+                       main_ok=all(status[f'main {bl}'] == 'ok' for bl in main),
+                       reversed_at='; '.join(k for k, v in status.items() if v == 'reversed'),
+                       insensitive_at='; '.join(k for k, v in status.items() if v == 'insensitive'))
+            if fam2 == 'A':                 # SR against every other construct knob of family A
+                ks = [k for c2, kk in CONSTRUCT_KNOBS.items() for k in kk]
+                ks += [k for (f3, k), c3 in STAGE2_KNOBS.items() if f3 == 'A' and c3 != construct]
+                others = {k: abs(response(df, 'A', k, col)['mean']) for k in ks}
+                others = {k: v for k, v in others.items() if np.isfinite(v)}
+                worst = max(others, key=others.get) if others else ''
+                rec.update(SR=abs(main['B0']['mean']) / others[worst] if worst else np.nan, worst_other=worst)
+                for nuis in GRID2_NUIS:     # unpaired: knob level 0 at the nuisance's two extremes
+                    ends = {t: next((g for g in grids if g.startswith(f'{nuis}:{t}:')), '') for t in ('lo', 'hi')}
+                    v = _cell_mean(df, 'A', knob2, col, 0, ends['hi']) - _cell_mean(df, 'A', knob2, col, 0, ends['lo'])
+                    rec[f'nuis/own {nuis}'] = v / abs(main['B0']['mean']) if main['B0']['mean'] else np.nan
+            rows.append(rec)
+    t = pd.DataFrame(rows)
+    if t.empty:
+        return t
+    verdict = {}
+    for mid, s in t.groupby('measure', sort=False):
+        stage1, a = s.stage1.iloc[0], s[s.family == 'A']
+        if stage1.startswith('drop'):
+            verdict[mid] = stage1
+        elif (s.reversed_at != '').any():
+            verdict[mid] = 'drop (sign reversal in a second family)'
+        elif a.empty:
+            verdict[mid] = f'{stage1} (second family not run)'
+        elif a.main_ok.iloc[0]:
+            verdict[mid] = 'core, two generators' if stage1 == 'core' and a.SR.iloc[0] >= 2 else 'sub-axis, two generators'
+        else:
+            verdict[mid] = f'{stage1}, one generator (insensitive in A)'
+    return t.assign(verdict=t.measure.map(verdict))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--refresh', action='store_true')
     ap.add_argument('--out', type=Path, default=HERE, help='writes OUT/tables and OUT/figures')
     ap.add_argument('--banks', type=Path, help='DIR/<cohort>/bank.npz for the cohort bound')
     ap.add_argument('--no-bound', action='store_true')
+    ap.add_argument('--raw', type=Path, nargs='+', default=[RAW],
+                    help='window directories (stage 1, then stage 2); scores.pkl is cached beside the last')
     a = ap.parse_args()
     if a.banks is None and not a.no_bound:
         ap.error('the cohort bound needs --banks DIR (or pass --no-bound)')
     tables = a.out / 'tables'
-    df = load_scores(a.refresh)
+    df = load_scores(a.refresh, a.raw)
     print(df.groupby(['family', 'surrogate', df.grid != '']).size())
     tables.mkdir(parents=True, exist_ok=True)
     verdicts, resp = evaluate(df)
@@ -402,7 +508,12 @@ def main():
     correction_table(df).to_csv(tables / 'corrections.csv', index=False, float_format='%.4g')
     if (df.baseline == 'PHS').any():
         posthoc_table(df).to_csv(tables / 'posthoc_strong_coupling.csv', index=False, float_format='%.4g')
+    second = second_family_table(df, verdicts)
     pd.set_option('display.width', 250, 'display.max_columns', 30, 'display.max_colwidth', 60)
+    if not second.empty:
+        second.to_csv(tables / 'second_family.csv', index=False, float_format='%.4g')
+        print(second[['measure', 'family', 'own_B0', 'own_B1', 'reversed_at', 'insensitive_at', 'verdict']
+                     + [c for c in ('SR', 'worst_other') if c in second]].to_string(index=False))
     print(verdicts[['measure', 'kind', 'own_knob', 'own_mean', 'own_d', 'SR', 'worst_other', 'verdict',
                     'reversed_at']].to_string(index=False))
     from research.representation.character_axes.validation.figure import make

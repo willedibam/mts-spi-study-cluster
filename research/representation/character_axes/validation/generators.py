@@ -83,10 +83,29 @@ def _finish(x, rng_mix, mix, beta):
     return x
 
 
+def _edge_signal(rng, T, f, r, phi, warp, warp_scale, theta):
+    """One edge's driver as its leader reads it and as its follower reads it (delayed, warped, through g)."""
+    n = T + 2 * PAD
+    fine_t = np.arange(n * OVERSAMPLE) / OVERSAMPLE
+    D = _ar2(rng, n * OVERSAMPLE, f / OVERSAMPLE, r ** (1 / OVERSAMPLE))
+    t = np.arange(PAD, PAD + T, dtype=float)
+    lead_sig = np.interp(t, fine_t, D)
+    delay = phi / (2 * np.pi * f)
+    shift = delay + (warp * _smooth(rng, T, warp_scale) if warp > 0 else 0.0)
+    u = np.interp(t - shift, fine_t, D)
+    u = (u - u.mean()) / u.std()
+    return lead_sig, np.cos(theta) * u + np.sin(theta) * (u ** 2 - 1) / np.sqrt(2)
+
+
 def edge_drivers(*, net_seed, noise_seed, M=16, T=2000, degree=3, cv_s=0.5,
                  phi=None, f=None, theta=None, warp=None, warp_scale=100,
-                 r=0.9, private=0.5, noise=0.25, mix=0.0, beta=0.0):
-    """Family A. Per-edge arrays (length E = M*degree/2) or scalars for phi, f, theta, warp."""
+                 r=0.9, private=0.5, noise=0.25, mix=0.0, beta=0.0, alpha=None):
+    """Family A. Per-edge arrays (length E = M*degree/2) or scalars for phi, f, theta, warp.
+
+    alpha (stage 2, direction): each edge also gets an independent driver read the other way, and
+    alpha_e splits the edge's variance (1 +/- alpha_e)/2 between the two directions (1: one-way, as
+    with alpha=None; 0: symmetric). None leaves the generator exactly as in stage 1.
+    """
     net = np.random.default_rng(net_seed)
     g = nx.random_regular_graph(degree, M, seed=int(net.integers(2 ** 31)))
     edges = np.array(sorted(tuple(sorted(e)) for e in g.edges()))
@@ -97,27 +116,89 @@ def edge_drivers(*, net_seed, noise_seed, M=16, T=2000, degree=3, cv_s=0.5,
     lead = net.integers(0, 2, E)            # which end of the edge leads
     mix_seed = int(net.integers(2 ** 31))
     rng = np.random.default_rng(noise_seed)
-    n = T + 2 * PAD
-    fine_t = np.arange(n * OVERSAMPLE) / OVERSAMPLE
     x = np.zeros((T, M))
     for e, (a, b) in enumerate(edges):
-        D = _ar2(rng, n * OVERSAMPLE, f[e] / OVERSAMPLE, r ** (1 / OVERSAMPLE))
-        t = np.arange(PAD, PAD + T, dtype=float)
-        lead_sig = np.interp(t, fine_t, D)
-        delay = phi[e] / (2 * np.pi * f[e])
-        shift = delay + (warp[e] * _smooth(rng, T, warp_scale) if warp[e] > 0 else 0.0)
-        u = np.interp(t - shift, fine_t, D)
-        u = (u - u.mean()) / u.std()
-        foll = np.cos(theta[e]) * u + np.sin(theta[e]) * (u ** 2 - 1) / np.sqrt(2)
+        lead_sig, foll = _edge_signal(rng, T, f[e], r, phi[e], warp[e], warp_scale, theta[e])
         j, k = (a, b) if lead[e] == 0 else (b, a)
-        x[:, j] += np.sqrt(w[e]) * lead_sig
-        x[:, k] += np.sqrt(w[e]) * foll
+        if alpha is None:
+            x[:, j] += np.sqrt(w[e]) * lead_sig
+            x[:, k] += np.sqrt(w[e]) * foll
+        else:
+            back_lead, back_foll = _edge_signal(rng, T, f[e], r, phi[e], warp[e], warp_scale, theta[e])
+            p = (1 + alpha[e]) / 2
+            x[:, j] += np.sqrt(w[e] * p) * lead_sig + np.sqrt(w[e] * (1 - p)) * back_foll
+            x[:, k] += np.sqrt(w[e] * p) * foll + np.sqrt(w[e] * (1 - p)) * back_lead
     for j in range(M):
         x[:, j] += np.sqrt(private) * _ar2(rng, T, 0.1, r)
     x = _z(x) + np.sqrt(noise) * rng.standard_normal((T, M))
     x = _finish(x, np.random.default_rng(mix_seed), mix, beta)
     truth = dict(edges=edges, w=w, phi=phi, f=f, theta=theta, warp=warp, lead=lead)
+    if alpha is not None:
+        truth['alpha'] = np.asarray(alpha, float)
     return x, truth
+
+
+def _mean_abs_r(y):
+    c = np.corrcoef(y.T)
+    return float(np.abs(c[~np.eye(len(c), dtype=bool)]).mean())
+
+
+def hub_drivers(*, net_seed, noise_seed, lam=0.0, hubs=2, M=16, T=2000, degree=3, cv_s=0.5, phi=None,
+                r=0.9, private=0.5, noise=0.25, mix=0.0, beta=0.0):
+    """Family A, stage 2 (mediation). lam mixes family A's direct edges (lam=0: the edge_drivers graph,
+    weights and phases at f=0.1) with observed hubs (lam=1) that each broadcast one driver to their spokes,
+    so spoke-spoke dependence is mediated by an observed channel. A gain on the hub structure, found by
+    bisection, holds the mean |r| of the source signal (before measurement noise, mixing and the marginal
+    map) at its lam=0 value, as family C holds mean |r| fixed.
+    """
+    net = np.random.default_rng(net_seed)
+    g = nx.random_regular_graph(degree, M, seed=int(net.integers(2 ** 31)))
+    edges = np.array(sorted(tuple(sorted(e)) for e in g.edges()))
+    E = len(edges)
+    phi = np.full(E, np.pi / 8 if phi is None else phi, float) if np.ndim(phi) == 0 else np.asarray(phi, float)
+    w = _lognormal(net, E, cv_s)
+    lead = net.integers(0, 2, E)
+    mix_seed = int(net.integers(2 ** 31))
+    order = net.permutation(M)
+    hub_ids, spokes = order[:hubs], order[hubs:]
+    S = len(spokes)
+    w_hub = _lognormal(net, S, cv_s)
+    phi_hub = np.pi / 8 + _balanced_signs(net, S) * np.pi / 16
+    rng = np.random.default_rng(noise_seed)
+    direct, hub = np.zeros((T, M)), np.zeros((T, M))
+    for e, (a, b) in enumerate(edges):
+        lead_sig, foll = _edge_signal(rng, T, 0.1, r, phi[e], 0.0, 100, 0.0)
+        j, k = (a, b) if lead[e] == 0 else (b, a)
+        direct[:, j] += np.sqrt(w[e]) * lead_sig
+        direct[:, k] += np.sqrt(w[e]) * foll
+    n = T + 2 * PAD
+    fine_t = np.arange(n * OVERSAMPLE) / OVERSAMPLE
+    t = np.arange(PAD, PAD + T, dtype=float)
+    for q, h_id in enumerate(hub_ids):
+        D = _ar2(rng, n * OVERSAMPLE, 0.1 / OVERSAMPLE, r ** (1 / OVERSAMPLE))
+        mine = [k for k in range(S) if k % hubs == q]
+        hub[:, h_id] += np.sqrt(w_hub[mine].mean()) * np.interp(t, fine_t, D)
+        for k in mine:
+            u = np.interp(t - phi_hub[k] / (2 * np.pi * 0.1), fine_t, D)
+            hub[:, spokes[k]] += np.sqrt(w_hub[k]) * (u - u.mean()) / u.std()
+    priv = np.stack([np.sqrt(private) * _ar2(rng, T, 0.1, r) for _ in range(M)], 1)
+    meas = rng.standard_normal((T, M))
+    source = lambda gain: np.sqrt(1 - lam) * direct + np.sqrt(lam * gain) * hub + priv
+    target = _mean_abs_r(direct + priv)
+    gain = 1.0
+    if lam > 0:
+        lo, hi = 0.0, 1.0
+        while _mean_abs_r(source(hi)) < target and hi < 1e4:
+            hi *= 2
+        for _ in range(40):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if _mean_abs_r(source(mid)) < target else (lo, mid)
+        gain = (lo + hi) / 2
+    src = source(gain)
+    x = _z(src) + np.sqrt(noise) * meas
+    x = _finish(x, np.random.default_rng(mix_seed), mix, beta)
+    return x, dict(edges=edges, w=w, phi=phi, lead=lead, hubs=hub_ids, spokes=spokes, w_hub=w_hub,
+                   phi_hub=phi_hub, lam=lam, gain=gain, target=target, achieved=_mean_abs_r(src))
 
 
 def var_network(*, net_seed, noise_seed, M=16, T=2000, degree=3, b=0.3, alpha=0.0, a=0.6, tau=2,
@@ -196,8 +277,12 @@ def ggm_network(*, net_seed, noise_seed, M=16, T=2000, lam=0.0, a=0.6, noise=0.2
 
 
 def kuramoto_tree(*, net_seed, noise_seed, M=16, T=2000, f0=0.1, alpha=np.pi / 8, K=0.08, cv_s=0.3,
-                  sigma_w=0.01, phase_noise=0.02, noise=0.25, substeps=10):
-    """Family K. alpha (scalar or per-edge) is the antisymmetric Sakaguchi lag on each tree edge."""
+                  sigma_w=0.01, phase_noise=0.02, noise=0.25, substeps=10, asym=None):
+    """Family K. alpha (scalar or per-edge) is the antisymmetric Sakaguchi lag on each tree edge.
+
+    asym (stage 2, direction; per-edge in [0, 1]): the leader pulls the follower with K_e(1 + asym_e)
+    and is pulled back with K_e(1 - asym_e). None (or 0) is the symmetric stage-1 family.
+    """
     net = np.random.default_rng(net_seed)
     tree = nx.random_labeled_tree(M, seed=int(net.integers(2 ** 31)))
     edges = np.array(sorted(tuple(sorted(e)) for e in tree.edges()))
@@ -210,6 +295,9 @@ def kuramoto_tree(*, net_seed, noise_seed, M=16, T=2000, f0=0.1, alpha=np.pi / 8
     for e, (i, j) in enumerate(edges):
         s, t = (i, j) if lead[e] == 0 else (j, i)
         Kmat[s, t] = Kmat[t, s] = Kw[e]
+        if asym is not None:                # row = the pulled oscillator, so [t, s] is s pulling t
+            a_e = float(np.broadcast_to(asym, (E,))[e])
+            Kmat[t, s], Kmat[s, t] = Kw[e] * (1 + a_e), Kw[e] * (1 - a_e)
         Amat[t, s] = alpha[e]               # target t locks to theta_s - theta_t near -alpha? see below
         Amat[s, t] = -alpha[e]
     rng = np.random.default_rng(noise_seed)

@@ -15,6 +15,7 @@ from mtsspi.figures import save, style
 KNOB_COLS = [('A', 'lag_level'), ('A', 'lag_disp'), ('A', 'band_level'), ('A', 'band_disp'), ('A', 'form_level'),
              ('A', 'form_disp'), ('A', 'warp_level'), ('A', 'warp_disp'), ('B', 'dir_level'), ('B', 'dir_disp'),
              ('C', 'med'), ('K', 'lag_level'), ('K', 'lag_disp'), ('K', 'band_level'),
+             ('A', 'med'), ('A', 'dir_level'), ('K', 'dir_level'),
              ('A', 'nuis_cv_s'), ('A', 'nuis_noise'), ('A', 'nuis_T'), ('A', 'nuis_r'), ('A', 'nuis_beta'),
              ('A', 'nuis_mix'), ('A', 'nuis_M')]
 LABEL = {'lag_level': 'lag level', 'lag_disp': 'lag disp.', 'band_level': 'band level', 'band_disp': 'band disp.',
@@ -36,14 +37,14 @@ def curve(df, fam, knob, col, baseline='B0', surrogate=False):
 
 
 def make(df, verdicts, resp, out: Path):
-    from research.representation.character_axes.validation.analyse import OWN_LEVEL, OWN_ORG, SECOND, measures
+    from research.representation.character_axes.validation.analyse import SECOND, measures, own_of
     style()
     ms = [m for m in measures() if m[1] != 'control']
     ver = verdicts.set_index('measure')
     R = np.full((len(ms), len(KNOB_COLS)), np.nan)
     own_col = {}
     for i, (mid, construct, _, kind, col) in enumerate(ms):
-        own = (OWN_ORG if kind == 'org' else OWN_LEVEL).get(construct)
+        own = own_of(construct, kind)
         sel = resp[(resp.measure == mid) & (resp.grid.fillna('') == '') & (resp.baseline == 'B0')]
         own_mean = ver.loc[mid, 'own_mean'] if mid in ver.index else np.nan
         for j, (fam, knob) in enumerate(KNOB_COLS):
@@ -63,7 +64,7 @@ def make(df, verdicts, resp, out: Path):
         v = ver.loc[mid, 'verdict'] if mid in ver.index else ''
         names.append(f'{mid}  [{v}]')
     ax.set_yticks(range(len(ms)), names, fontsize=6.5)
-    ax.axvline(13.5, color='k', lw=.6)
+    ax.axvline(KNOB_COLS.index(('A', 'nuis_cv_s')) - .5, color='k', lw=.6)
     ax.set_title('a  response to each knob / |own response| (B0); own knob outlined', fontsize=9, loc='left')
     cb = fig.colorbar(im, ax=ax, fraction=.03, pad=.01)
     cb.set_label('relative response (clipped at ±3)', fontsize=7)

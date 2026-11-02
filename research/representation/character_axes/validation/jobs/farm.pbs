@@ -9,6 +9,8 @@
 # Construction-validation farm: every window of the main and post hoc designs, a few windows per
 # nci-parallel task. Resumable: finished windows are skipped, so a second pass retries failures.
 # qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/farm.pbs
+# Stage 2 (second-family mediation and direction, 520 windows): add STAGE=2 to -v and book one node,
+# qsub -l ncpus=48,mem=190GB,walltime=00:45:00 -v STAGE=2,VALIDATION_OUT=<dir2>/raw .../farm.pbs
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
@@ -17,14 +19,15 @@ mkdir -p "$VALIDATION_OUT"
 log="$(dirname "$VALIDATION_OUT")"
 mod=research.representation.character_axes.validation.run
 per_task="${WINDOWS_PER_TASK:-4}"
+if [[ "${STAGE:-1}" == 2 ]]; then flags=(--stage2); else flags=('' --posthoc); fi
 
 mpirun -np $(( (PBS_NCPUS + 47) / 48 )) --map-by ppr:1:node python -c 'import mtsspi, pyspi; print(mtsspi.__file__, pyspi.__file__)'
 # Smoke: one window in this process before the farm; stop unless it succeeded.
-smoke=$(python -u -m "$mod" --shard 0 --shards 1 --limit 1); echo "$smoke"; grep -q '^ok ' <<<"$smoke"
+smoke=$(python -u -m "$mod" ${flags[0]} --shard 0 --shards 1 --limit 1); echo "$smoke"; grep -q '^ok ' <<<"$smoke"
 
 commands="$PBS_JOBFS/commands.txt"
 : > "$commands"
-for flag in "" --posthoc; do
+for flag in "${flags[@]}"; do
     n=$(python -m "$mod" $flag --dry | awk 'NR==1{print $1}')
     shards=$(( (n + per_task - 1) / per_task ))
     for (( k = 0; k < shards; k++ )); do echo "python -u -m $mod $flag --shard $k --shards $shards" >> "$commands"; done
@@ -38,5 +41,4 @@ for pass in 1 2; do
     echo "[INFO] pass $pass exit $?"
     set -e
 done
-python -m "$mod" --dry
-python -m "$mod" --posthoc --dry
+for flag in "${flags[@]}"; do python -m "$mod" $flag --dry; done
