@@ -40,9 +40,12 @@ def blocks(bank):
 def adjust(values, covariates, y):
     """Residualise each column on covariates with slopes pooled within class (ANCOVA-style), keeping class means."""
     out = np.full_like(values, np.nan, dtype=np.float64)
-    ok_z = np.all(np.isfinite(covariates), 1)
+    # A covariate missing in a window (an AR(2) fit with no complex pole) takes its median, so windows are not
+    # dropped; columns missing everywhere are left out.
+    covariates = covariates[:, np.isfinite(covariates).any(0)]
+    covariates = np.where(np.isfinite(covariates), covariates, np.nanmedian(covariates, 0))
     for k in range(values.shape[1]):
-        ok = ok_z & np.isfinite(values[:, k])
+        ok = np.isfinite(values[:, k])
         if ok.sum() < covariates.shape[1] + 5:
             continue
         Z, x, c = covariates[ok], values[ok, k], y[ok]
@@ -63,7 +66,9 @@ def verdict(raw, adjusted):
         return 'not eligible'
     if a is not None and np.sign(a) == np.sign(d) and abs(a) >= .5 and adjusted['p'] is not None and adjusted['p'] < .05:
         return 'survives'
-    return 'absorbed' if a is None or abs(a) <= .5 * abs(d) else 'partial'
+    if a is None:
+        return 'not estimable'
+    return 'absorbed' if abs(a) <= .5 * abs(d) else 'partial'
 
 
 def predict(cohort, Xc, y, groups, names, bank, ix):
@@ -86,7 +91,9 @@ def main(cohort, root, output):
     if cohort == 'neurotycho':
         groups_all = np.array([f'{g}-{r}' for g, r in zip(groups_all, bank['role'].astype(str))])
     covariates = np.hstack([X['core'], X['strength']])
-    report = dict(cohort=cohort, core=core_names, core_roles={n: CORE[n][0] for n in core_names}, contrasts={})
+    report = dict(cohort=cohort, core=core_names, core_roles={n: CORE[n][0] for n in core_names},
+                  core_missing={n: float(np.mean(~np.isfinite(X['core'][:, k]))) for k, n in enumerate(core_names)},
+                  contrasts={})
     for label, positive, negative in CONTRASTS[cohort]:
         ix = np.isin(y_all, [positive, negative])
         y, groups = (y_all[ix] == positive).astype(int), groups_all[ix]
