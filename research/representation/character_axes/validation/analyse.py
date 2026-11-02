@@ -125,7 +125,8 @@ def _top(s, sign):
 def recording_scores(win):
     """win: list of (S, names) for the windows of one recording -> dict of scores."""
     out = {}
-    profs = [{n: _prof(S, names, n) for n in names} for S, names in win]
+    need = {s for _, _, a, b in PAIRS.values() for s in (a, b)}
+    profs = [{n: _prof(S, names, n) for n in need.union(names)} for S, names in win]  # NaN where absent
     for key, (_, _, a, b) in PAIRS.items():
         z = [_corr(p[a], p[b]) for p in profs]
         out[f'org|{key}'] = np.nanmean(z)
