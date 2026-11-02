@@ -10,9 +10,10 @@ and falls when that property varies between pairs independently of strength.
 Each axis lists such minimal pairs from the benchmarked p90 catalogue. Its
 organisation score is the mean profile correlation over its pairs, with the
 same ordered off-diagonal entries and validity rule as the unified z contract.
-Organisation is a statement about heterogeneity across pairs, not the level of
-the property: equal slowing of every connection barely moves it. Where both
+Organisation is meant as a statement about heterogeneity across pairs, but the
+construction validation shows level moves it too (lag, band). Where both
 statistics share units, a level score reads the typical magnitude instead.
+CORE is the construction-validated subset; AXES and LEVELS are the extended set.
 
 Antisymmetric statistics (A_ji = -A_ij) correlate with any symmetric profile at
 exactly zero over ordered entries, so they enter axes as magnitudes |A|.
@@ -206,4 +207,58 @@ def level_scores(profiles, spi_order: Sequence[str], levels=LEVELS):
         c = np.where(np.isfinite(c), c, np.nan)
         ok = np.isfinite(c).all(1)
         values.append(np.where(ok, np.nanmedian(c, axis=1), np.nan)); names.append(axis)
+    return np.array(values).T, names
+
+
+# Construction-validated core, 2 November 2026 (research/representation/character_axes/validation/README.md),
+# with that study's exact constituents. role 'core' passed (SR >= 2); 'sub' is sign-stable but less selective.
+# kind: 'org' = profile correlation of a and b; 'transpose' = corr(A, A^T) over ordered entries (direction);
+# otherwise the median over entries of a level contrast.
+GC, TE_DCE = 'gc_gaussian_k-1_kt-1_l-1_lt-1', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'
+CORE = {
+    'band': ('core', 'org', mt('ppc', 'mean', 'low'), mt('ppc', 'mean', 'high')),
+    'band_high_share': ('core', 'share', mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low')),
+    'mediation_ledoit_wolf': ('core', 'org', 'cov-sq_LedoitWolf', 'prec-sq_LedoitWolf'),
+    'mediation_empirical': ('core', 'org', 'cov-sq_EmpiricalCovariance', 'prec-sq_EmpiricalCovariance'),
+    'direction': ('core', 'transpose', sgc('mean', 'broad'), None),
+    'lag': ('sub', 'org', mt('cohmag', 'mean', 'low'), mt('icoh', 'mean', 'low')),
+    'lag_sin_phi': ('sub', 'sinphi', mt('icoh', 'mean', 'broad'), mt('cohmag', 'mean', 'broad')),
+    'form_te_minus_gc': ('sub', 'diff', TE_DCE, GC),
+}
+
+
+def masked_correlation(x, y, minimum=5):
+    """Row-wise Pearson correlation over entries finite in both; NaN below ``minimum`` entries or if constant."""
+    out = np.full(len(x), np.nan)
+    for k, (a, b) in enumerate(zip(x, y)):
+        ok = np.isfinite(a) & np.isfinite(b)
+        if ok.sum() >= minimum and np.std(a[ok]) > 1e-12 and np.std(b[ok]) > 1e-12:
+            out[k] = np.corrcoef(a[ok], b[ok])[0, 1]
+    return out
+
+
+def core_scores(profiles, spi_order: Sequence[str], M: int, core=CORE):
+    """(n, K, M(M-1)) profiles in row-major ordered off-diagonal order -> (n, C) core readouts and names."""
+    index = {name: k for k, name in enumerate(spi_order)}
+    off = [(i, j) for i in range(M) for j in range(M) if i != j]
+    position = {e: k for k, e in enumerate(off)}
+    transpose = np.array([position[(j, i)] for i, j in off])
+    names, values = [], []
+    for name, (_, kind, a, b) in core.items():
+        if a not in index or (b is not None and b not in index):
+            continue
+        x = profiles[:, index[a]].astype(np.float64)
+        if kind == 'org':
+            v = masked_correlation(x, profiles[:, index[b]].astype(np.float64))
+        elif kind == 'transpose':
+            v = masked_correlation(x, x[:, transpose])
+        else:
+            y = profiles[:, index[b]].astype(np.float64)
+            with np.errstate(invalid='ignore', divide='ignore'):
+                c = {'share': lambda: x / (x + y), 'sinphi': lambda: x / np.sqrt(y), 'diff': lambda: x - y}[kind]()
+            c = np.where(np.isfinite(c), c, np.nan)
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', RuntimeWarning)
+                v = np.nanmedian(c, axis=1)
+        names.append(name); values.append(v)
     return np.array(values).T, names
