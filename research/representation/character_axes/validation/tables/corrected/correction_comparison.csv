@@ -1,0 +1,1348 @@
+table,key,field,old,new,changed
+verdicts,band: coh L|H,verdict,sub-axis,core,True
+verdicts,band: coh L|H,SR,1.955,2.033,True
+verdicts,band: coh L|H,worst_other,form_level,form_level,False
+verdicts,band: coh L|H,own_mean,-0.644,-0.6699,True
+verdicts,band: coh L|H,own_d,-7.573,-9.037,True
+verdicts,band: coh L|H,reversed_at,,,False
+verdicts,band: coh L|H,insensitive_at,,,False
+verdicts,band: coh L|H,other own knob/own,0.8257,0.7938,True
+verdicts,band: coh L|H,other own knob/own B1,0.6258,0.6074,True
+verdicts,band: coh L|H,SR incl. stage-2 knobs,1.955,2.033,True
+verdicts,band: coh L|H,level_aware,,,False
+verdicts,band: median high share,verdict,core,core,False
+verdicts,band: median high share,SR,3.735,3.735,False
+verdicts,band: median high share,worst_other,form_level,form_level,False
+verdicts,band: median high share,own_mean,0.01126,0.01126,False
+verdicts,band: median high share,own_d,3.549,3.549,False
+verdicts,band: median high share,reversed_at,,,False
+verdicts,band: median high share,insensitive_at,,,False
+verdicts,band: median high share,other own knob/own,0.02849,0.1564,True
+verdicts,band: median high share,other own knob/own B1,0.3323,0.1858,True
+verdicts,band: median high share,SR incl. stage-2 knobs,3.735,3.735,False
+verdicts,band: median high share,level_aware,,,False
+verdicts,"band: median high share [top quartile, post hoc]",verdict,sub-axis,sub-axis,False
+verdicts,"band: median high share [top quartile, post hoc]",SR,1.992,1.992,False
+verdicts,"band: median high share [top quartile, post hoc]",worst_other,form_level,form_level,False
+verdicts,"band: median high share [top quartile, post hoc]",own_mean,0.06077,0.06077,False
+verdicts,"band: median high share [top quartile, post hoc]",own_d,10.06,10.06,False
+verdicts,"band: median high share [top quartile, post hoc]",reversed_at,,,False
+verdicts,"band: median high share [top quartile, post hoc]",insensitive_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,"band: median high share [top quartile, post hoc]",other own knob/own,0.1033,0.0371,True
+verdicts,"band: median high share [top quartile, post hoc]",other own knob/own B1,0.2336,0.09068,True
+verdicts,"band: median high share [top quartile, post hoc]",SR incl. stage-2 knobs,1.992,1.992,False
+verdicts,"band: median high share [top quartile, post hoc]",level_aware,,,False
+verdicts,band: ppc L|H,verdict,core,core,False
+verdicts,band: ppc L|H,SR,2.06,2.116,True
+verdicts,band: ppc L|H,worst_other,warp_level,warp_level,False
+verdicts,band: ppc L|H,own_mean,-0.6122,-0.6291,True
+verdicts,band: ppc L|H,own_d,-7.676,-9.495,True
+verdicts,band: ppc L|H,reversed_at,,,False
+verdicts,band: ppc L|H,insensitive_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,band: ppc L|H,other own knob/own,0.7784,0.7575,True
+verdicts,band: ppc L|H,other own knob/own B1,0.6058,0.582,True
+verdicts,band: ppc L|H,SR incl. stage-2 knobs,2.06,2.116,True
+verdicts,band: ppc L|H,level_aware,,,False
+verdicts,band: sgc L|H,verdict,drop (sign reversal),drop (sign reversal),False
+verdicts,band: sgc L|H,SR,1.081,0.8054,True
+verdicts,band: sgc L|H,worst_other,form_level,form_level,False
+verdicts,band: sgc L|H,own_mean,0.4384,0.3265,True
+verdicts,band: sgc L|H,own_d,3.619,10.79,True
+verdicts,band: sgc L|H,reversed_at,main B0; main B1; grid M:hi:24; grid T:hi:4000; grid T:lo:500; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,True
+verdicts,band: sgc L|H,insensitive_at,grid M:lo:8; grid beta:hi:2.0; grid noise:hi:1.0,grid beta:hi:2.0; grid noise:hi:1.0,True
+verdicts,band: sgc L|H,other own knob/own,-0.3282,-0.4407,True
+verdicts,band: sgc L|H,other own knob/own B1,-0.1526,-0.199,True
+verdicts,band: sgc L|H,SR incl. stage-2 knobs,1.07,0.7971,True
+verdicts,band: sgc L|H,level_aware,,,False
+verdicts,band: spread high share [level-aware],verdict,core,core,False
+verdicts,band: spread high share [level-aware],SR,5.277,5.405,True
+verdicts,band: spread high share [level-aware],worst_other,warp_level,warp_level,False
+verdicts,band: spread high share [level-aware],own_mean,0.0839,0.08593,True
+verdicts,band: spread high share [level-aware],own_d,5.877,5.123,True
+verdicts,band: spread high share [level-aware],reversed_at,,,False
+verdicts,band: spread high share [level-aware],insensitive_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,band: spread high share [level-aware],other own knob/own,-0.08552,-0.08349,True
+verdicts,band: spread high share [level-aware],other own knob/own B1,0.02242,0.02092,True
+verdicts,band: spread high share [level-aware],SR incl. stage-2 knobs,5.228,5.355,True
+verdicts,band: spread high share [level-aware],level_aware,True,True,False
+verdicts,control: ksg|ksgDCE,verdict,control,control,False
+verdicts,control: ksg|ksgDCE,SR,,,False
+verdicts,control: ksg|ksgDCE,worst_other,,,False
+verdicts,control: ksg|ksgDCE,own_mean,,,False
+verdicts,control: ksg|ksgDCE,own_d,,,False
+verdicts,control: ksg|ksgDCE,reversed_at,,,False
+verdicts,control: ksg|ksgDCE,insensitive_at,,,False
+verdicts,control: ksg|ksgDCE,other own knob/own,,,False
+verdicts,control: ksg|ksgDCE,other own knob/own B1,,,False
+verdicts,control: ksg|ksgDCE,SR incl. stage-2 knobs,,,False
+verdicts,control: ksg|ksgDCE,level_aware,,,False
+verdicts,control: r2|mi_g,verdict,control,control,False
+verdicts,control: r2|mi_g,SR,,,False
+verdicts,control: r2|mi_g,worst_other,,,False
+verdicts,control: r2|mi_g,own_mean,,,False
+verdicts,control: r2|mi_g,own_d,,,False
+verdicts,control: r2|mi_g,reversed_at,,,False
+verdicts,control: r2|mi_g,insensitive_at,,,False
+verdicts,control: r2|mi_g,other own knob/own,,,False
+verdicts,control: r2|mi_g,other own knob/own B1,,,False
+verdicts,control: r2|mi_g,SR incl. stage-2 knobs,,,False
+verdicts,control: r2|mi_g,level_aware,,,False
+verdicts,control: r|rho,verdict,control,control,False
+verdicts,control: r|rho,SR,,,False
+verdicts,control: r|rho,worst_other,,,False
+verdicts,control: r|rho,own_mean,,,False
+verdicts,control: r|rho,own_d,,,False
+verdicts,control: r|rho,reversed_at,,,False
+verdicts,control: r|rho,insensitive_at,,,False
+verdicts,control: r|rho,other own knob/own,,,False
+verdicts,control: r|rho,other own knob/own B1,,,False
+verdicts,control: r|rho,SR incl. stage-2 knobs,,,False
+verdicts,control: r|rho,level_aware,,,False
+verdicts,direction: gc A|At,verdict,sub-axis,sub-axis,False
+verdicts,direction: gc A|At,SR,1.429,1.326,True
+verdicts,direction: gc A|At,worst_other,band_disp,band_disp,False
+verdicts,direction: gc A|At,own_mean,-0.8968,-0.8968,False
+verdicts,direction: gc A|At,own_d,-15.53,-15.53,False
+verdicts,direction: gc A|At,reversed_at,,,False
+verdicts,direction: gc A|At,insensitive_at,,,False
+verdicts,direction: gc A|At,other own knob/own,-0.2862,-0.2862,False
+verdicts,direction: gc A|At,other own knob/own B1,,,False
+verdicts,direction: gc A|At,SR incl. stage-2 knobs,1.429,1.326,True
+verdicts,direction: gc A|At,level_aware,,,False
+verdicts,direction: median gc asymmetry,verdict,sub-axis,sub-axis,False
+verdicts,direction: median gc asymmetry,SR,1.419,1.32,True
+verdicts,direction: median gc asymmetry,worst_other,band_disp,band_disp,False
+verdicts,direction: median gc asymmetry,own_mean,0.3514,0.3514,False
+verdicts,direction: median gc asymmetry,own_d,7.899,7.899,False
+verdicts,direction: median gc asymmetry,reversed_at,,,False
+verdicts,direction: median gc asymmetry,insensitive_at,,,False
+verdicts,direction: median gc asymmetry,other own knob/own,0.1647,0.1647,False
+verdicts,direction: median gc asymmetry,other own knob/own B1,,,False
+verdicts,direction: median gc asymmetry,SR incl. stage-2 knobs,1.419,1.32,True
+verdicts,direction: median gc asymmetry,level_aware,,,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",verdict,sub-axis,sub-axis,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",SR,1.657,1.477,True
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",worst_other,band_disp,band_disp,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",own_mean,0.7436,0.7436,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",own_d,22.39,22.39,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",reversed_at,,,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",insensitive_at,,,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",other own knob/own,0.09936,0.09936,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",other own knob/own B1,,,False
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",SR incl. stage-2 knobs,1.657,1.477,True
+verdicts,"direction: median gc asymmetry [top quartile, post hoc]",level_aware,,,False
+verdicts,direction: sgc A|At,verdict,core,core,False
+verdicts,direction: sgc A|At,SR,3.124,7.438,True
+verdicts,direction: sgc A|At,worst_other,band_disp,lag_level,True
+verdicts,direction: sgc A|At,own_mean,-0.8403,-0.8403,False
+verdicts,direction: sgc A|At,own_d,-15.83,-15.83,False
+verdicts,direction: sgc A|At,reversed_at,,,False
+verdicts,direction: sgc A|At,insensitive_at,,,False
+verdicts,direction: sgc A|At,other own knob/own,-0.1684,-0.1684,False
+verdicts,direction: sgc A|At,other own knob/own B1,,,False
+verdicts,direction: sgc A|At,SR incl. stage-2 knobs,3.124,7.438,True
+verdicts,direction: sgc A|At,level_aware,,,False
+verdicts,direction: te A|At,verdict,drop (insensitive),drop (insensitive),False
+verdicts,direction: te A|At,SR,0.3659,0.3659,False
+verdicts,direction: te A|At,worst_other,lag_level,lag_level,False
+verdicts,direction: te A|At,own_mean,-0.07737,-0.07737,False
+verdicts,direction: te A|At,own_d,-0.872,-0.872,False
+verdicts,direction: te A|At,reversed_at,,,False
+verdicts,direction: te A|At,insensitive_at,main B0,main B0,False
+verdicts,direction: te A|At,other own knob/own,0.5325,0.5325,False
+verdicts,direction: te A|At,other own knob/own B1,,,False
+verdicts,direction: te A|At,SR incl. stage-2 knobs,0.3659,0.3659,False
+verdicts,direction: te A|At,level_aware,,,False
+verdicts,direction: tlmi_g|gc,verdict,diagnostic,diagnostic,False
+verdicts,direction: tlmi_g|gc,SR,0.1142,0.1142,False
+verdicts,direction: tlmi_g|gc,worst_other,lag_level,lag_level,False
+verdicts,direction: tlmi_g|gc,own_mean,-0.07381,-0.07381,False
+verdicts,direction: tlmi_g|gc,own_d,-1.011,-1.011,False
+verdicts,direction: tlmi_g|gc,reversed_at,,,False
+verdicts,direction: tlmi_g|gc,insensitive_at,,,False
+verdicts,direction: tlmi_g|gc,other own knob/own,-0.3113,-0.3113,False
+verdicts,direction: tlmi_g|gc,other own knob/own B1,,,False
+verdicts,direction: tlmi_g|gc,SR incl. stage-2 knobs,0.1142,0.1142,False
+verdicts,direction: tlmi_g|gc,level_aware,,,False
+verdicts,form: gc|te_ksgDCE,verdict,sub-axis,drop (insensitive),True
+verdicts,form: gc|te_ksgDCE,SR,0.1771,0.02243,True
+verdicts,form: gc|te_ksgDCE,worst_other,lag_level,lag_level,False
+verdicts,form: gc|te_ksgDCE,own_mean,-0.08939,-0.01132,True
+verdicts,form: gc|te_ksgDCE,own_d,-1.268,-0.2302,True
+verdicts,form: gc|te_ksgDCE,reversed_at,,,False
+verdicts,form: gc|te_ksgDCE,insensitive_at,grid M:lo:8; grid T:lo:500; grid beta:hi:2.0; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,True
+verdicts,form: gc|te_ksgDCE,other own knob/own,-1.415,-11.17,True
+verdicts,form: gc|te_ksgDCE,other own knob/own B1,-1.973,-6.201,True
+verdicts,form: gc|te_ksgDCE,SR incl. stage-2 knobs,0.1771,0.02243,True
+verdicts,form: gc|te_ksgDCE,level_aware,,,False
+verdicts,form: median(ksgDCE - mi_g),verdict,drop (insensitive),drop (insensitive),False
+verdicts,form: median(ksgDCE - mi_g),SR,0.3933,0.3933,False
+verdicts,form: median(ksgDCE - mi_g),worst_other,band_level,band_level,False
+verdicts,form: median(ksgDCE - mi_g),own_mean,0.0009132,0.0009132,False
+verdicts,form: median(ksgDCE - mi_g),own_d,0.6369,0.6369,False
+verdicts,form: median(ksgDCE - mi_g),reversed_at,,,False
+verdicts,form: median(ksgDCE - mi_g),insensitive_at,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95,False
+verdicts,form: median(ksgDCE - mi_g),other own knob/own,-0.4328,0.2675,True
+verdicts,form: median(ksgDCE - mi_g),other own knob/own B1,14.95,15.92,True
+verdicts,form: median(ksgDCE - mi_g),SR incl. stage-2 knobs,0.3933,0.3933,False
+verdicts,form: median(ksgDCE - mi_g),level_aware,,,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",verdict,drop (insensitive),drop (insensitive),False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",SR,1.531,1.531,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",worst_other,lag_level,lag_level,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",own_mean,0.004436,0.004436,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",own_d,1.226,1.226,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",reversed_at,,,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",insensitive_at,main B1; grid T:lo:500; grid beta:hi:2.0; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95,main B1; grid T:lo:500; grid beta:hi:2.0; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",other own knob/own,0.1325,0.2619,True
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",other own knob/own B1,0.4791,0.5986,True
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",SR incl. stage-2 knobs,1.531,1.531,False
+verdicts,"form: median(ksgDCE - mi_g) [top quartile, post hoc]",level_aware,,,False
+verdicts,form: median(te - gc),verdict,sub-axis,sub-axis,False
+verdicts,form: median(te - gc),SR,0.7844,0.7844,False
+verdicts,form: median(te - gc),worst_other,band_level,band_level,False
+verdicts,form: median(te - gc),own_mean,0.001715,0.001715,False
+verdicts,form: median(te - gc),own_d,3.053,3.053,False
+verdicts,form: median(te - gc),reversed_at,,,False
+verdicts,form: median(te - gc),insensitive_at,grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid noise:hi:1.0; grid noise:lo:0; grid r:lo:0.6,grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid noise:hi:1.0; grid noise:lo:0; grid r:lo:0.6,False
+verdicts,form: median(te - gc),other own knob/own,0.1229,0.3397,True
+verdicts,form: median(te - gc),other own knob/own B1,0.5724,0.1101,True
+verdicts,form: median(te - gc),SR incl. stage-2 knobs,0.7844,0.7844,False
+verdicts,form: median(te - gc),level_aware,,,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",verdict,drop (sign reversal),drop (sign reversal),False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",SR,2.175,2.175,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",worst_other,band_level,band_level,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",own_mean,0.003268,0.003268,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",own_d,1.944,1.944,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",reversed_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",insensitive_at,grid M:lo:8; grid T:lo:500; grid mix:hi:0.5; grid noise:hi:1.0; grid r:hi:0.95; grid r:lo:0.6,grid M:lo:8; grid T:lo:500; grid mix:hi:0.5; grid noise:hi:1.0; grid r:hi:0.95; grid r:lo:0.6,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",other own knob/own,0.1042,-0.1776,True
+verdicts,"form: median(te - gc) [top quartile, post hoc]",other own knob/own B1,0.6438,0.4838,True
+verdicts,"form: median(te - gc) [top quartile, post hoc]",SR incl. stage-2 knobs,2.175,2.175,False
+verdicts,"form: median(te - gc) [top quartile, post hoc]",level_aware,,,False
+verdicts,form: mi_g|mi_kernel,verdict,drop (insensitive),sub-axis,True
+verdicts,form: mi_g|mi_kernel,SR,0.01052,0.0621,True
+verdicts,form: mi_g|mi_kernel,worst_other,lag_level,lag_level,False
+verdicts,form: mi_g|mi_kernel,own_mean,-0.006938,-0.04097,True
+verdicts,form: mi_g|mi_kernel,own_d,-0.4314,-1.283,True
+verdicts,form: mi_g|mi_kernel,reversed_at,,,False
+verdicts,form: mi_g|mi_kernel,insensitive_at,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,grid M:lo:8; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,True
+verdicts,form: mi_g|mi_kernel,other own knob/own,-20.16,-3.414,True
+verdicts,form: mi_g|mi_kernel,other own knob/own B1,-9.955,-1.414,True
+verdicts,form: mi_g|mi_kernel,SR incl. stage-2 knobs,0.01052,0.0621,True
+verdicts,form: mi_g|mi_kernel,level_aware,,,False
+verdicts,form: mi_g|mi_ksgDCE,verdict,drop (sign reversal),drop (sign reversal),False
+verdicts,form: mi_g|mi_ksgDCE,SR,0.06268,0.005467,True
+verdicts,form: mi_g|mi_ksgDCE,worst_other,lag_level,lag_level,False
+verdicts,form: mi_g|mi_ksgDCE,own_mean,0.04854,-0.004234,True
+verdicts,form: mi_g|mi_ksgDCE,own_d,1.439,-0.1071,True
+verdicts,form: mi_g|mi_ksgDCE,reversed_at,main B0; grid r:hi:0.95,grid T:hi:4000,True
+verdicts,form: mi_g|mi_ksgDCE,insensitive_at,main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:lo:0.6,main B0; main B1; grid M:lo:8; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,True
+verdicts,form: mi_g|mi_ksgDCE,other own knob/own,-5.444,-62.41,True
+verdicts,form: mi_g|mi_ksgDCE,other own knob/own B1,-13.11,-3.899,True
+verdicts,form: mi_g|mi_ksgDCE,SR incl. stage-2 knobs,0.06268,0.005467,True
+verdicts,form: mi_g|mi_ksgDCE,level_aware,,,False
+verdicts,form: r2|dcorr,verdict,drop (insensitive),drop (insensitive),False
+verdicts,form: r2|dcorr,SR,0.01215,0.06739,True
+verdicts,form: r2|dcorr,worst_other,lag_level,lag_level,False
+verdicts,form: r2|dcorr,own_mean,-0.0005171,-0.002869,True
+verdicts,form: r2|dcorr,own_d,-0.5604,-0.7776,True
+verdicts,form: r2|dcorr,reversed_at,,,False
+verdicts,form: r2|dcorr,insensitive_at,main B0; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid r:hi:0.95; grid r:lo:0.6,main B0; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,True
+verdicts,form: r2|dcorr,other own knob/own,-37.98,-6.846,True
+verdicts,form: r2|dcorr,other own knob/own B1,-9.026,-2.142,True
+verdicts,form: r2|dcorr,SR incl. stage-2 knobs,,,False
+verdicts,form: r2|dcorr,level_aware,,,False
+verdicts,form: tlmi_g|tlmi_ksgDCE,verdict,drop (insensitive),drop (sign reversal),True
+verdicts,form: tlmi_g|tlmi_ksgDCE,SR,0.07978,0.04658,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,worst_other,warp_level,warp_level,False
+verdicts,form: tlmi_g|tlmi_ksgDCE,own_mean,-0.04324,-0.02525,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,own_d,-1.001,-0.8062,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,reversed_at,,grid T:hi:4000,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,insensitive_at,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,other own knob/own,-7.066,-12.1,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,other own knob/own B1,-15.19,-3.693,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,SR incl. stage-2 knobs,0.07978,0.04658,True
+verdicts,form: tlmi_g|tlmi_ksgDCE,level_aware,,,False
+verdicts,lag: coh|icoh 0-0.25,verdict,sub-axis,sub-axis,False
+verdicts,lag: coh|icoh 0-0.25,SR,1.598,1.598,False
+verdicts,lag: coh|icoh 0-0.25,worst_other,band_level,band_level,False
+verdicts,lag: coh|icoh 0-0.25,own_mean,-0.4707,-0.4707,False
+verdicts,lag: coh|icoh 0-0.25,own_d,-3.113,-3.113,False
+verdicts,lag: coh|icoh 0-0.25,reversed_at,,,False
+verdicts,lag: coh|icoh 0-0.25,insensitive_at,grid beta:hi:2.0; second K,grid beta:hi:2.0; second K,False
+verdicts,lag: coh|icoh 0-0.25,other own knob/own,2.14,2.14,False
+verdicts,lag: coh|icoh 0-0.25,other own knob/own B1,2.181,2.181,False
+verdicts,lag: coh|icoh 0-0.25,SR incl. stage-2 knobs,0.8939,0.8939,False
+verdicts,lag: coh|icoh 0-0.25,level_aware,,,False
+verdicts,lag: coh|icoh 0-0.5,verdict,sub-axis,sub-axis,False
+verdicts,lag: coh|icoh 0-0.5,SR,0.6564,0.6564,False
+verdicts,lag: coh|icoh 0-0.5,worst_other,band_level,band_level,False
+verdicts,lag: coh|icoh 0-0.5,own_mean,-0.4161,-0.4161,False
+verdicts,lag: coh|icoh 0-0.5,own_d,-2.934,-2.934,False
+verdicts,lag: coh|icoh 0-0.5,reversed_at,,,False
+verdicts,lag: coh|icoh 0-0.5,insensitive_at,grid beta:hi:2.0; second K,grid beta:hi:2.0; second K,False
+verdicts,lag: coh|icoh 0-0.5,other own knob/own,2.096,2.096,False
+verdicts,lag: coh|icoh 0-0.5,other own knob/own B1,2.082,2.082,False
+verdicts,lag: coh|icoh 0-0.5,SR incl. stage-2 knobs,0.6564,0.6564,False
+verdicts,lag: coh|icoh 0-0.5,level_aware,,,False
+verdicts,lag: coh|icoh 0.25-0.5,verdict,drop (insensitive),drop (insensitive),False
+verdicts,lag: coh|icoh 0.25-0.5,SR,0.1102,0.1102,False
+verdicts,lag: coh|icoh 0.25-0.5,worst_other,band_level,band_level,False
+verdicts,lag: coh|icoh 0.25-0.5,own_mean,-0.06314,-0.06314,False
+verdicts,lag: coh|icoh 0.25-0.5,own_d,-2.124,-2.124,False
+verdicts,lag: coh|icoh 0.25-0.5,reversed_at,,,False
+verdicts,lag: coh|icoh 0.25-0.5,insensitive_at,main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:lo:0.1; grid noise:hi:1.0; grid r:hi:0.95; second K,main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:lo:0.1; grid noise:hi:1.0; grid r:hi:0.95; second K,False
+verdicts,lag: coh|icoh 0.25-0.5,other own knob/own,1.941,1.941,False
+verdicts,lag: coh|icoh 0.25-0.5,other own knob/own B1,4.035,4.035,False
+verdicts,lag: coh|icoh 0.25-0.5,SR incl. stage-2 knobs,0.1102,0.1102,False
+verdicts,lag: coh|icoh 0.25-0.5,level_aware,,,False
+verdicts,lag: median icoh/sqrt(coh),verdict,sub-axis,sub-axis,False
+verdicts,lag: median icoh/sqrt(coh),SR,1.593,1.593,False
+verdicts,lag: median icoh/sqrt(coh),worst_other,band_level,band_level,False
+verdicts,lag: median icoh/sqrt(coh),own_mean,0.005287,0.005287,False
+verdicts,lag: median icoh/sqrt(coh),own_d,1.869,1.869,False
+verdicts,lag: median icoh/sqrt(coh),reversed_at,,,False
+verdicts,lag: median icoh/sqrt(coh),insensitive_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,lag: median icoh/sqrt(coh),other own knob/own,-0.6401,-0.6401,False
+verdicts,lag: median icoh/sqrt(coh),other own knob/own B1,-0.6682,-0.6682,False
+verdicts,lag: median icoh/sqrt(coh),SR incl. stage-2 knobs,1.273,1.273,False
+verdicts,lag: median icoh/sqrt(coh),level_aware,,,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",verdict,sub-axis,sub-axis,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",SR,1.309,1.309,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",worst_other,band_level,band_level,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",own_mean,0.04597,0.04597,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",own_d,7.529,7.529,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",reversed_at,,,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",insensitive_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",other own knob/own,-0.3333,-0.3333,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",other own knob/own B1,-0.3737,-0.3737,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",SR incl. stage-2 knobs,1.309,1.309,False
+verdicts,"lag: median icoh/sqrt(coh) [top quartile, post hoc]",level_aware,,,False
+verdicts,lag: pec|pec_orth,verdict,sub-axis,sub-axis,False
+verdicts,lag: pec|pec_orth,SR,1.29,1.29,False
+verdicts,lag: pec|pec_orth,worst_other,warp_level,warp_level,False
+verdicts,lag: pec|pec_orth,own_mean,-0.1889,-0.1889,False
+verdicts,lag: pec|pec_orth,own_d,-3.755,-3.755,False
+verdicts,lag: pec|pec_orth,reversed_at,,,False
+verdicts,lag: pec|pec_orth,insensitive_at,grid noise:hi:1.0; second K,grid noise:hi:1.0; second K,False
+verdicts,lag: pec|pec_orth,other own knob/own,1.595,1.595,False
+verdicts,lag: pec|pec_orth,other own knob/own B1,1.746,1.746,False
+verdicts,lag: pec|pec_orth,SR incl. stage-2 knobs,1.29,1.29,False
+verdicts,lag: pec|pec_orth,level_aware,,,False
+verdicts,lag: plv|wpli,verdict,sub-axis,sub-axis,False
+verdicts,lag: plv|wpli,SR,0.8847,0.8847,False
+verdicts,lag: plv|wpli,worst_other,warp_level,warp_level,False
+verdicts,lag: plv|wpli,own_mean,-0.5302,-0.5302,False
+verdicts,lag: plv|wpli,own_d,-8.182,-8.182,False
+verdicts,lag: plv|wpli,reversed_at,,,False
+verdicts,lag: plv|wpli,insensitive_at,grid beta:hi:2.0; grid noise:hi:1.0; second K,grid beta:hi:2.0; grid noise:hi:1.0; second K,False
+verdicts,lag: plv|wpli,other own knob/own,0.7137,0.7137,False
+verdicts,lag: plv|wpli,other own knob/own B1,1.315,1.315,False
+verdicts,lag: plv|wpli,SR incl. stage-2 knobs,0.8022,0.8022,False
+verdicts,lag: plv|wpli,level_aware,,,False
+verdicts,lag: ppc|dswpli,verdict,sub-axis,sub-axis,False
+verdicts,lag: ppc|dswpli,SR,0.8004,0.8004,False
+verdicts,lag: ppc|dswpli,worst_other,band_level,band_level,False
+verdicts,lag: ppc|dswpli,own_mean,-0.2501,-0.2501,False
+verdicts,lag: ppc|dswpli,own_d,-2.4,-2.4,False
+verdicts,lag: ppc|dswpli,reversed_at,,,False
+verdicts,lag: ppc|dswpli,insensitive_at,grid beta:hi:2.0; grid noise:hi:1.0; second K,grid beta:hi:2.0; grid noise:hi:1.0; second K,False
+verdicts,lag: ppc|dswpli,other own knob/own,2.13,2.13,False
+verdicts,lag: ppc|dswpli,other own knob/own B1,2.005,2.005,False
+verdicts,lag: ppc|dswpli,SR incl. stage-2 knobs,0.8004,0.8004,False
+verdicts,lag: ppc|dswpli,level_aware,,,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],verdict,sub-axis,sub-axis,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],SR,0.976,0.976,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],worst_other,band_level,band_level,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],own_mean,0.02079,0.02079,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],own_d,4.319,4.319,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],reversed_at,,,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],insensitive_at,grid beta:hi:2.0; grid mix:hi:0.5; second K,grid beta:hi:2.0; grid mix:hi:0.5; second K,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],other own knob/own,-1.127,-1.127,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],other own knob/own B1,-1.225,-1.225,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],SR incl. stage-2 knobs,0.976,0.976,False
+verdicts,lag: spread icoh/sqrt(coh) [level-aware],level_aware,False,False,False
+verdicts,mediation: LW,verdict,core,core,False
+verdicts,mediation: LW,SR,3.247,3.247,False
+verdicts,mediation: LW,worst_other,lag_level,lag_level,False
+verdicts,mediation: LW,own_mean,-0.2373,-0.2373,False
+verdicts,mediation: LW,own_d,-8.221,-8.221,False
+verdicts,mediation: LW,reversed_at,,,False
+verdicts,mediation: LW,insensitive_at,,,False
+verdicts,mediation: LW,other own knob/own,,,False
+verdicts,mediation: LW,other own knob/own B1,,,False
+verdicts,mediation: LW,SR incl. stage-2 knobs,3.247,3.247,False
+verdicts,mediation: LW,level_aware,,,False
+verdicts,mediation: empirical,verdict,core,core,False
+verdicts,mediation: empirical,SR,2.878,2.878,False
+verdicts,mediation: empirical,worst_other,lag_level,lag_level,False
+verdicts,mediation: empirical,own_mean,-0.2381,-0.2381,False
+verdicts,mediation: empirical,own_d,-8.209,-8.209,False
+verdicts,mediation: empirical,reversed_at,,,False
+verdicts,mediation: empirical,insensitive_at,,,False
+verdicts,mediation: empirical,other own knob/own,,,False
+verdicts,mediation: empirical,other own knob/own B1,,,False
+verdicts,mediation: empirical,SR incl. stage-2 knobs,2.878,2.878,False
+verdicts,mediation: empirical,level_aware,,,False
+verdicts,warp: dtwSC|dtw,verdict,drop (insensitive),drop (insensitive),False
+verdicts,warp: dtwSC|dtw,SR,0.1782,0.3191,True
+verdicts,warp: dtwSC|dtw,worst_other,band_disp,band_disp,False
+verdicts,warp: dtwSC|dtw,own_mean,-0.01492,-0.02677,True
+verdicts,warp: dtwSC|dtw,own_d,-0.4525,-0.5219,True
+verdicts,warp: dtwSC|dtw,reversed_at,,,False
+verdicts,warp: dtwSC|dtw,insensitive_at,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95; grid r:lo:0.6,False
+verdicts,warp: dtwSC|dtw,other own knob/own,0.3155,0.1759,True
+verdicts,warp: dtwSC|dtw,other own knob/own B1,0.7931,0.7132,True
+verdicts,warp: dtwSC|dtw,SR incl. stage-2 knobs,0.1782,0.3191,True
+verdicts,warp: dtwSC|dtw,level_aware,,,False
+verdicts,warp: eucl|dtwSC,verdict,drop (sign reversal),drop (insensitive),True
+verdicts,warp: eucl|dtwSC,SR,0.08846,0.1277,True
+verdicts,warp: eucl|dtwSC,worst_other,form_level,form_level,False
+verdicts,warp: eucl|dtwSC,own_mean,-0.03519,-0.05081,True
+verdicts,warp: eucl|dtwSC,own_d,-0.4517,-0.5129,True
+verdicts,warp: eucl|dtwSC,reversed_at,grid noise:lo:0,,True
+verdicts,warp: eucl|dtwSC,insensitive_at,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid r:hi:0.95; grid r:lo:0.6,main B0; main B1; grid M:hi:24; grid M:lo:8; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:hi:1.0; grid noise:lo:0; grid r:hi:0.95,True
+verdicts,warp: eucl|dtwSC,other own knob/own,-1.861,-1.289,True
+verdicts,warp: eucl|dtwSC,other own knob/own B1,-3.506,-2.238,True
+verdicts,warp: eucl|dtwSC,SR incl. stage-2 knobs,0.08846,0.1277,True
+verdicts,warp: eucl|dtwSC,level_aware,,,False
+verdicts,warp: median dtwSC/eucl,verdict,drop (insensitive),drop (insensitive),False
+verdicts,warp: median dtwSC/eucl,SR,0.001102,0.001102,False
+verdicts,warp: median dtwSC/eucl,worst_other,band_level,band_level,False
+verdicts,warp: median dtwSC/eucl,own_mean,0.0001441,0.0001441,False
+verdicts,warp: median dtwSC/eucl,own_d,0.08423,0.08423,False
+verdicts,warp: median dtwSC/eucl,reversed_at,,,False
+verdicts,warp: median dtwSC/eucl,insensitive_at,main B0; main B1; grid M:hi:24; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid noise:hi:1.0; grid noise:lo:0; grid r:lo:0.6,main B0; main B1; grid M:hi:24; grid T:hi:4000; grid T:lo:500; grid beta:hi:2.0; grid cv_s:hi:1.5; grid cv_s:lo:0.1; grid noise:hi:1.0; grid noise:lo:0; grid r:lo:0.6,False
+verdicts,warp: median dtwSC/eucl,other own knob/own,-10.59,-13.69,True
+verdicts,warp: median dtwSC/eucl,other own knob/own B1,-2.832,-2.801,True
+verdicts,warp: median dtwSC/eucl,SR incl. stage-2 knobs,0.001102,0.001102,False
+verdicts,warp: median dtwSC/eucl,level_aware,,,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",verdict,sub-axis,sub-axis,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",SR,0.1923,0.1923,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",worst_other,band_level,band_level,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",own_mean,-0.03034,-0.03034,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",own_d,-7.644,-7.644,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",reversed_at,,,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",insensitive_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",other own knob/own,-0.3003,-0.2913,True
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",other own knob/own B1,-0.2349,-0.2384,True
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",SR incl. stage-2 knobs,0.1923,0.1923,False
+verdicts,"warp: median dtwSC/eucl [top quartile, post hoc]",level_aware,,,False
+second_family,direction: gc A|At | A,verdict,drop (sign reversal in a second family),drop (sign reversal in a second family),False
+second_family,direction: gc A|At | A,SR,0.2249,0.2087,True
+second_family,direction: gc A|At | A,worst_other,band_disp,band_disp,False
+second_family,direction: gc A|At | A,own_B0,0.1412,0.1412,False
+second_family,direction: gc A|At | A,reversed_at,main B0; main B1; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,main B0; main B1; grid cv_s:lo:0.1; grid mix:hi:0.5; grid noise:lo:0,False
+second_family,direction: gc A|At | K,verdict,drop (sign reversal in a second family),drop (sign reversal in a second family),False
+second_family,direction: gc A|At | K,SR,,,False
+second_family,direction: gc A|At | K,worst_other,,,False
+second_family,direction: gc A|At | K,own_B0,0.603,0.603,False
+second_family,direction: gc A|At | K,reversed_at,main B0; main B1,main B0; main B1,False
+second_family,direction: median gc asymmetry | A,verdict,drop (sign reversal in a second family),drop (sign reversal in a second family),False
+second_family,direction: median gc asymmetry | A,SR,0.1055,0.09814,True
+second_family,direction: median gc asymmetry | A,worst_other,band_disp,band_disp,False
+second_family,direction: median gc asymmetry | A,own_B0,0.02613,0.02613,False
+second_family,direction: median gc asymmetry | A,reversed_at,grid cv_s:lo:0.1; grid noise:lo:0,grid cv_s:lo:0.1; grid noise:lo:0,False
+second_family,direction: median gc asymmetry | K,verdict,drop (sign reversal in a second family),drop (sign reversal in a second family),False
+second_family,direction: median gc asymmetry | K,SR,,,False
+second_family,direction: median gc asymmetry | K,worst_other,,,False
+second_family,direction: median gc asymmetry | K,own_B0,-0.1092,-0.1092,False
+second_family,direction: median gc asymmetry | K,reversed_at,,,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | A",verdict,"sub-axis, one generator (insensitive in A)","sub-axis, one generator (insensitive in A)",False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | A",SR,0.2034,0.1813,True
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | A",worst_other,band_disp,band_disp,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | A",own_B0,0.09129,0.09129,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | A",reversed_at,,,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | K",verdict,"sub-axis, one generator (insensitive in A)","sub-axis, one generator (insensitive in A)",False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | K",SR,,,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | K",worst_other,,,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | K",own_B0,0.2538,0.2538,False
+second_family,"direction: median gc asymmetry [top quartile, post hoc] | K",reversed_at,,,False
+second_family,direction: sgc A|At | A,verdict,drop (sign reversal in a second family),drop (sign reversal in a second family),False
+second_family,direction: sgc A|At | A,SR,0.9587,2.282,True
+second_family,direction: sgc A|At | A,worst_other,band_disp,lag_level,True
+second_family,direction: sgc A|At | A,own_B0,-0.2578,-0.2578,False
+second_family,direction: sgc A|At | A,reversed_at,,,False
+second_family,direction: sgc A|At | K,verdict,drop (sign reversal in a second family),drop (sign reversal in a second family),False
+second_family,direction: sgc A|At | K,SR,,,False
+second_family,direction: sgc A|At | K,worst_other,,,False
+second_family,direction: sgc A|At | K,own_B0,0.5781,0.5781,False
+second_family,direction: sgc A|At | K,reversed_at,main B0; main B1,main B0; main B1,False
+second_family,direction: te A|At | A,verdict,drop (insensitive),drop (insensitive),False
+second_family,direction: te A|At | A,SR,0.4969,0.4969,False
+second_family,direction: te A|At | A,worst_other,lag_level,lag_level,False
+second_family,direction: te A|At | A,own_B0,0.1051,0.1051,False
+second_family,direction: te A|At | A,reversed_at,main B0; main B1; grid cv_s:hi:1.5,main B0; main B1; grid cv_s:hi:1.5,False
+second_family,direction: te A|At | K,verdict,drop (insensitive),drop (insensitive),False
+second_family,direction: te A|At | K,SR,,,False
+second_family,direction: te A|At | K,worst_other,,,False
+second_family,direction: te A|At | K,own_B0,0.3807,0.3807,False
+second_family,direction: te A|At | K,reversed_at,main B0; main B1,main B0; main B1,False
+second_family,mediation: LW | A,verdict,"core, one generator (insensitive in A)","core, one generator (insensitive in A)",False
+second_family,mediation: LW | A,SR,0.2829,0.2829,False
+second_family,mediation: LW | A,worst_other,lag_level,lag_level,False
+second_family,mediation: LW | A,own_B0,-0.02068,-0.02068,False
+second_family,mediation: LW | A,reversed_at,,,False
+second_family,mediation: empirical | A,verdict,"core, one generator (insensitive in A)","core, one generator (insensitive in A)",False
+second_family,mediation: empirical | A,SR,0.2217,0.2217,False
+second_family,mediation: empirical | A,worst_other,lag_level,lag_level,False
+second_family,mediation: empirical | A,own_B0,-0.01834,-0.01834,False
+second_family,mediation: empirical | A,reversed_at,,,False
+surrogates,form: gc|te_ksgDCE | form_disp | B0,real,-0.08939,-0.01132,True
+surrogates,form: gc|te_ksgDCE | form_disp | B0,surrogate,-0.1773,-0.02205,True
+surrogates,form: gc|te_ksgDCE | form_disp | B0,kept,1.983,1.948,True
+surrogates,form: gc|te_ksgDCE | form_disp | B1,real,-0.09061,-0.02883,True
+surrogates,form: gc|te_ksgDCE | form_disp | B1,surrogate,-0.1601,-0.04159,True
+surrogates,form: gc|te_ksgDCE | form_disp | B1,kept,1.767,1.443,True
+surrogates,form: median(ksgDCE - mi_g) | form_level | B0,real,0.0009132,0.0009132,False
+surrogates,form: median(ksgDCE - mi_g) | form_level | B0,surrogate,0.002258,0.002258,False
+surrogates,form: median(ksgDCE - mi_g) | form_level | B0,kept,2.472,2.472,False
+surrogates,form: median(ksgDCE - mi_g) | form_level | B1,real,5.499e-05,5.499e-05,False
+surrogates,form: median(ksgDCE - mi_g) | form_level | B1,surrogate,0.0002928,0.0002928,False
+surrogates,form: median(ksgDCE - mi_g) | form_level | B1,kept,5.325,5.325,False
+surrogates,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level | B0",real,0.004436,0.004436,False
+surrogates,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level | B0",surrogate,-0.0005911,-0.0005911,False
+surrogates,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level | B0",kept,-0.1332,-0.1332,False
+surrogates,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level | B1",real,0.004697,0.004697,False
+surrogates,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level | B1",surrogate,7.319e-05,7.319e-05,False
+surrogates,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level | B1",kept,0.01558,0.01558,False
+surrogates,form: median(te - gc) | form_level | B0,real,0.001715,0.001715,False
+surrogates,form: median(te - gc) | form_level | B0,surrogate,0.0002485,0.0002485,False
+surrogates,form: median(te - gc) | form_level | B0,kept,0.1449,0.1449,False
+surrogates,form: median(te - gc) | form_level | B1,real,0.001551,0.001551,False
+surrogates,form: median(te - gc) | form_level | B1,surrogate,0.0002204,0.0002204,False
+surrogates,form: median(te - gc) | form_level | B1,kept,0.1421,0.1421,False
+surrogates,"form: median(te - gc) [top quartile, post hoc] | form_level | B0",real,0.003268,0.003268,False
+surrogates,"form: median(te - gc) [top quartile, post hoc] | form_level | B0",surrogate,0.0006551,0.0006551,False
+surrogates,"form: median(te - gc) [top quartile, post hoc] | form_level | B0",kept,0.2005,0.2005,False
+surrogates,"form: median(te - gc) [top quartile, post hoc] | form_level | B1",real,0.002011,0.002011,False
+surrogates,"form: median(te - gc) [top quartile, post hoc] | form_level | B1",surrogate,0.0008933,0.0008933,False
+surrogates,"form: median(te - gc) [top quartile, post hoc] | form_level | B1",kept,0.4443,0.4443,False
+surrogates,form: mi_g|mi_kernel | form_disp | B0,real,-0.006938,-0.04097,True
+surrogates,form: mi_g|mi_kernel | form_disp | B0,surrogate,0.00855,-0.009084,True
+surrogates,form: mi_g|mi_kernel | form_disp | B0,kept,-1.232,0.2217,True
+surrogates,form: mi_g|mi_kernel | form_disp | B1,real,-0.01003,-0.07062,True
+surrogates,form: mi_g|mi_kernel | form_disp | B1,surrogate,0.003993,-0.03642,True
+surrogates,form: mi_g|mi_kernel | form_disp | B1,kept,-0.3981,0.5157,True
+surrogates,form: mi_g|mi_ksgDCE | form_disp | B0,real,0.04854,-0.004234,True
+surrogates,form: mi_g|mi_ksgDCE | form_disp | B0,surrogate,0.03626,-0.02857,True
+surrogates,form: mi_g|mi_ksgDCE | form_disp | B0,kept,0.747,6.748,True
+surrogates,form: mi_g|mi_ksgDCE | form_disp | B1,real,0.01854,-0.06232,True
+surrogates,form: mi_g|mi_ksgDCE | form_disp | B1,surrogate,0.03443,-0.1214,True
+surrogates,form: mi_g|mi_ksgDCE | form_disp | B1,kept,1.857,1.948,True
+surrogates,form: r2|dcorr | form_disp | B0,real,-0.0005171,-0.002869,True
+surrogates,form: r2|dcorr | form_disp | B0,surrogate,0.0004715,-2.796e-06,True
+surrogates,form: r2|dcorr | form_disp | B0,kept,-0.9117,0.0009746,True
+surrogates,form: r2|dcorr | form_disp | B1,real,-0.001956,-0.008242,True
+surrogates,form: r2|dcorr | form_disp | B1,surrogate,0.00033,-0.0005067,True
+surrogates,form: r2|dcorr | form_disp | B1,kept,-0.1687,0.06148,True
+surrogates,form: tlmi_g|tlmi_ksgDCE | form_disp | B0,real,-0.04324,-0.02525,True
+surrogates,form: tlmi_g|tlmi_ksgDCE | form_disp | B0,surrogate,-0.01406,0.01021,True
+surrogates,form: tlmi_g|tlmi_ksgDCE | form_disp | B0,kept,0.3252,-0.4044,True
+surrogates,form: tlmi_g|tlmi_ksgDCE | form_disp | B1,real,-0.01736,-0.0714,True
+surrogates,form: tlmi_g|tlmi_ksgDCE | form_disp | B1,surrogate,-0.0138,-0.09507,True
+surrogates,form: tlmi_g|tlmi_ksgDCE | form_disp | B1,kept,0.7952,1.331,True
+surrogates,lag: coh|icoh 0-0.25 | lag_disp | B0,real,-0.4707,-0.4707,False
+surrogates,lag: coh|icoh 0-0.25 | lag_disp | B0,surrogate,-0.455,-0.455,False
+surrogates,lag: coh|icoh 0-0.25 | lag_disp | B0,kept,0.9667,0.9667,False
+surrogates,lag: coh|icoh 0-0.5 | lag_disp | B0,real,-0.4161,-0.4161,False
+surrogates,lag: coh|icoh 0-0.5 | lag_disp | B0,surrogate,-0.4036,-0.4036,False
+surrogates,lag: coh|icoh 0-0.5 | lag_disp | B0,kept,0.97,0.97,False
+surrogates,lag: coh|icoh 0.25-0.5 | lag_disp | B0,real,-0.06314,-0.06314,False
+surrogates,lag: coh|icoh 0.25-0.5 | lag_disp | B0,surrogate,-0.05944,-0.05944,False
+surrogates,lag: coh|icoh 0.25-0.5 | lag_disp | B0,kept,0.9414,0.9414,False
+surrogates,lag: pec|pec_orth | lag_disp | B0,real,-0.1889,-0.1889,False
+surrogates,lag: pec|pec_orth | lag_disp | B0,surrogate,-0.2008,-0.2008,False
+surrogates,lag: pec|pec_orth | lag_disp | B0,kept,1.063,1.063,False
+surrogates,lag: plv|wpli | lag_disp | B0,real,-0.5302,-0.5302,False
+surrogates,lag: plv|wpli | lag_disp | B0,surrogate,-0.5337,-0.5337,False
+surrogates,lag: plv|wpli | lag_disp | B0,kept,1.007,1.007,False
+surrogates,lag: ppc|dswpli | lag_disp | B0,real,-0.2501,-0.2501,False
+surrogates,lag: ppc|dswpli | lag_disp | B0,surrogate,-0.279,-0.279,False
+surrogates,lag: ppc|dswpli | lag_disp | B0,kept,1.116,1.116,False
+surrogates,lag: spread icoh/sqrt(coh) [level-aware] | lag_disp | B0,real,0.02079,0.02079,False
+surrogates,lag: spread icoh/sqrt(coh) [level-aware] | lag_disp | B0,surrogate,0.02083,0.02083,False
+surrogates,lag: spread icoh/sqrt(coh) [level-aware] | lag_disp | B0,kept,1.002,1.002,False
+surrogates,warp: dtwSC|dtw | warp_disp | B0,real,-0.01492,-0.02677,True
+surrogates,warp: dtwSC|dtw | warp_disp | B0,surrogate,0.01871,0.004619,True
+surrogates,warp: dtwSC|dtw | warp_disp | B0,kept,-1.253,-0.1726,True
+surrogates,warp: dtwSC|dtw | warp_disp | B1,real,-0.00783,-0.008707,True
+surrogates,warp: dtwSC|dtw | warp_disp | B1,surrogate,0.02535,0.02027,True
+surrogates,warp: dtwSC|dtw | warp_disp | B1,kept,-3.238,-2.328,True
+surrogates,warp: eucl|dtwSC | warp_disp | B0,real,-0.03519,-0.05081,True
+surrogates,warp: eucl|dtwSC | warp_disp | B0,surrogate,0.01525,0.0428,True
+surrogates,warp: eucl|dtwSC | warp_disp | B0,kept,-0.4332,-0.8424,True
+surrogates,warp: eucl|dtwSC | warp_disp | B1,real,-0.05571,-0.08727,True
+surrogates,warp: eucl|dtwSC | warp_disp | B1,surrogate,0.07733,0.06421,True
+surrogates,warp: eucl|dtwSC | warp_disp | B1,kept,-1.388,-0.7358,True
+surrogates,warp: median dtwSC/eucl | warp_level | B0,real,0.0001441,0.0001441,False
+surrogates,warp: median dtwSC/eucl | warp_level | B0,surrogate,-0.0003104,-0.0003104,False
+surrogates,warp: median dtwSC/eucl | warp_level | B0,kept,-2.153,-2.153,False
+surrogates,warp: median dtwSC/eucl | warp_level | B1,real,-0.001292,-0.001292,False
+surrogates,warp: median dtwSC/eucl | warp_level | B1,surrogate,-0.001539,-0.001539,False
+surrogates,warp: median dtwSC/eucl | warp_level | B1,kept,1.191,1.191,False
+surrogates,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level | B0",real,-0.03034,-0.03034,False
+surrogates,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level | B0",surrogate,-0.03008,-0.03008,False
+surrogates,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level | B0",kept,0.9916,0.9916,False
+surrogates,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level | B1",real,-0.02535,-0.02535,False
+surrogates,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level | B1",surrogate,-0.02487,-0.02487,False
+surrogates,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level | B1",kept,0.9812,0.9812,False
+corrections,band: coh L|H | add,own_d,0.7251,1.4,True
+corrections,band: coh L|H | add,cv_s/own,0.002723,0.003175,True
+corrections,band: coh L|H | add,noise/own,0.0805,0.09386,True
+corrections,band: coh L|H | add,usable,False,False,False
+corrections,band: coh L|H | mult,own_d,0.7323,1.424,True
+corrections,band: coh L|H | mult,cv_s/own,0.001915,0.002241,True
+corrections,band: coh L|H | mult,noise/own,0.08697,0.1018,True
+corrections,band: coh L|H | mult,usable,False,False,False
+corrections,band: coh L|H | raw,own_d,7.573,9.037,True
+corrections,band: coh L|H | raw,cv_s/own,0.3431,0.3298,True
+corrections,band: coh L|H | raw,noise/own,1.26,1.212,True
+corrections,band: coh L|H | raw,usable,,,False
+corrections,band: coh L|H | rel,own_d,13.56,34.61,True
+corrections,band: coh L|H | rel,cv_s/own,0.03093,0.03009,True
+corrections,band: coh L|H | rel,noise/own,1.1,1.07,True
+corrections,band: coh L|H | rel,usable,False,False,False
+corrections,band: ppc L|H | add,own_d,0.8582,1.453,True
+corrections,band: ppc L|H | add,cv_s/own,0.00666,0.007032,True
+corrections,band: ppc L|H | add,noise/own,0.09902,0.1046,True
+corrections,band: ppc L|H | add,usable,False,False,False
+corrections,band: ppc L|H | mult,own_d,1.053,1.859,True
+corrections,band: ppc L|H | mult,cv_s/own,0.005157,0.005743,True
+corrections,band: ppc L|H | mult,noise/own,0.3996,0.445,True
+corrections,band: ppc L|H | mult,usable,False,False,False
+corrections,band: ppc L|H | raw,own_d,7.676,9.495,True
+corrections,band: ppc L|H | raw,cv_s/own,0.3679,0.3581,True
+corrections,band: ppc L|H | raw,noise/own,1.269,1.235,True
+corrections,band: ppc L|H | raw,usable,,,False
+corrections,band: ppc L|H | rel,own_d,11.94,19.9,True
+corrections,band: ppc L|H | rel,cv_s/own,0.02555,0.02512,True
+corrections,band: ppc L|H | rel,noise/own,1.184,1.163,True
+corrections,band: ppc L|H | rel,usable,False,False,False
+corrections,band: sgc L|H | add,own_d,2.284,4.062,True
+corrections,band: sgc L|H | add,cv_s/own,0.05192,0.02575,True
+corrections,band: sgc L|H | add,noise/own,0.6122,0.3036,True
+corrections,band: sgc L|H | add,usable,True,True,False
+corrections,band: sgc L|H | mult,own_d,2.202,4.35,True
+corrections,band: sgc L|H | mult,cv_s/own,0.04191,0.02142,True
+corrections,band: sgc L|H | mult,noise/own,0.6518,0.3332,True
+corrections,band: sgc L|H | mult,usable,True,True,False
+corrections,band: sgc L|H | raw,own_d,-3.619,-10.79,True
+corrections,band: sgc L|H | raw,cv_s/own,0.7227,0.9704,True
+corrections,band: sgc L|H | raw,noise/own,1.638,2.199,True
+corrections,band: sgc L|H | raw,usable,,,False
+corrections,band: sgc L|H | rel,own_d,1.455,2.15,True
+corrections,band: sgc L|H | rel,cv_s/own,0.05804,0.04042,True
+corrections,band: sgc L|H | rel,noise/own,1.747,1.217,True
+corrections,band: sgc L|H | rel,usable,False,False,False
+corrections,form: gc|te_ksgDCE | add,own_d,-1.09,-0.6869,True
+corrections,form: gc|te_ksgDCE | add,cv_s/own,0.3148,0.582,True
+corrections,form: gc|te_ksgDCE | add,noise/own,0.04296,0.07943,True
+corrections,form: gc|te_ksgDCE | add,usable,False,False,False
+corrections,form: gc|te_ksgDCE | mult,own_d,-0.8559,-0.4895,True
+corrections,form: gc|te_ksgDCE | mult,cv_s/own,1.127,2.837,True
+corrections,form: gc|te_ksgDCE | mult,noise/own,1.57,3.954,True
+corrections,form: gc|te_ksgDCE | mult,usable,False,False,False
+corrections,form: gc|te_ksgDCE | raw,own_d,1.268,0.2302,True
+corrections,form: gc|te_ksgDCE | raw,cv_s/own,3.065,24.2,True
+corrections,form: gc|te_ksgDCE | raw,noise/own,2.72,21.48,True
+corrections,form: gc|te_ksgDCE | raw,usable,,,False
+corrections,form: gc|te_ksgDCE | rel,own_d,-0.8753,-0.4301,True
+corrections,form: gc|te_ksgDCE | rel,cv_s/own,0.472,0.8438,True
+corrections,form: gc|te_ksgDCE | rel,noise/own,1.414,2.527,True
+corrections,form: gc|te_ksgDCE | rel,usable,False,False,False
+corrections,form: mi_g|mi_kernel | add,own_d,1.289,2.769,True
+corrections,form: mi_g|mi_kernel | add,cv_s/own,0.6407,0.2798,True
+corrections,form: mi_g|mi_kernel | add,noise/own,0.4394,0.1918,True
+corrections,form: mi_g|mi_kernel | add,usable,True,True,False
+corrections,form: mi_g|mi_kernel | mult,own_d,1.109,2.872,True
+corrections,form: mi_g|mi_kernel | mult,cv_s/own,0.02403,0.008057,True
+corrections,form: mi_g|mi_kernel | mult,noise/own,0.998,0.3347,True
+corrections,form: mi_g|mi_kernel | mult,usable,True,True,False
+corrections,form: mi_g|mi_kernel | raw,own_d,0.4314,1.283,True
+corrections,form: mi_g|mi_kernel | raw,cv_s/own,5.788,0.9801,True
+corrections,form: mi_g|mi_kernel | raw,noise/own,35.37,5.989,True
+corrections,form: mi_g|mi_kernel | raw,usable,,,False
+corrections,form: mi_g|mi_kernel | rel,own_d,1.225,2.007,True
+corrections,form: mi_g|mi_kernel | rel,cv_s/own,0.2431,0.05853,True
+corrections,form: mi_g|mi_kernel | rel,noise/own,0.3663,0.0882,True
+corrections,form: mi_g|mi_kernel | rel,usable,True,True,False
+corrections,form: mi_g|mi_ksgDCE | add,own_d,-0.09986,-0.2409,True
+corrections,form: mi_g|mi_ksgDCE | add,cv_s/own,3.761,1.47,True
+corrections,form: mi_g|mi_ksgDCE | add,noise/own,0.223,0.08719,True
+corrections,form: mi_g|mi_ksgDCE | add,usable,False,False,False
+corrections,form: mi_g|mi_ksgDCE | mult,own_d,-0.2498,-0.1828,True
+corrections,form: mi_g|mi_ksgDCE | mult,cv_s/own,0.1093,0.1287,True
+corrections,form: mi_g|mi_ksgDCE | mult,noise/own,7.781,9.16,True
+corrections,form: mi_g|mi_ksgDCE | mult,usable,False,False,False
+corrections,form: mi_g|mi_ksgDCE | raw,own_d,-1.439,0.1071,True
+corrections,form: mi_g|mi_ksgDCE | raw,cv_s/own,3.724,42.69,True
+corrections,form: mi_g|mi_ksgDCE | raw,noise/own,10.31,118.2,True
+corrections,form: mi_g|mi_ksgDCE | raw,usable,,,False
+corrections,form: mi_g|mi_ksgDCE | rel,own_d,-0.3227,-0.2126,True
+corrections,form: mi_g|mi_ksgDCE | rel,cv_s/own,0.9023,1.535,True
+corrections,form: mi_g|mi_ksgDCE | rel,noise/own,3.63,6.175,True
+corrections,form: mi_g|mi_ksgDCE | rel,usable,False,False,False
+corrections,form: r2|dcorr | add,own_d,1.817,0.9684,True
+corrections,form: r2|dcorr | add,cv_s/own,4.08,2.277,True
+corrections,form: r2|dcorr | add,noise/own,4.194,2.341,True
+corrections,form: r2|dcorr | add,usable,False,False,False
+corrections,form: r2|dcorr | mult,own_d,1.071,1.0,True
+corrections,form: r2|dcorr | mult,cv_s/own,0.4107,0.1218,True
+corrections,form: r2|dcorr | mult,noise/own,0.07879,0.02336,True
+corrections,form: r2|dcorr | mult,usable,True,True,False
+corrections,form: r2|dcorr | raw,own_d,0.5604,0.7776,True
+corrections,form: r2|dcorr | raw,cv_s/own,3.256,0.5868,True
+corrections,form: r2|dcorr | raw,noise/own,7.338,1.323,True
+corrections,form: r2|dcorr | raw,usable,,,False
+corrections,form: r2|dcorr | rel,own_d,0.6403,1.176,True
+corrections,form: r2|dcorr | rel,cv_s/own,0.8861,0.2486,True
+corrections,form: r2|dcorr | rel,noise/own,0.1338,0.03755,True
+corrections,form: r2|dcorr | rel,usable,True,True,False
+corrections,form: tlmi_g|tlmi_ksgDCE | add,own_d,0.1666,0.4141,True
+corrections,form: tlmi_g|tlmi_ksgDCE | add,cv_s/own,2.858,1.766,True
+corrections,form: tlmi_g|tlmi_ksgDCE | add,noise/own,3.046,1.882,True
+corrections,form: tlmi_g|tlmi_ksgDCE | add,usable,False,False,False
+corrections,form: tlmi_g|tlmi_ksgDCE | mult,own_d,0.2586,0.3714,True
+corrections,form: tlmi_g|tlmi_ksgDCE | mult,cv_s/own,0.1138,0.1244,True
+corrections,form: tlmi_g|tlmi_ksgDCE | mult,noise/own,8.452,9.238,True
+corrections,form: tlmi_g|tlmi_ksgDCE | mult,usable,False,False,False
+corrections,form: tlmi_g|tlmi_ksgDCE | raw,own_d,1.001,0.8062,True
+corrections,form: tlmi_g|tlmi_ksgDCE | raw,cv_s/own,4.415,7.561,True
+corrections,form: tlmi_g|tlmi_ksgDCE | raw,noise/own,11.67,19.99,True
+corrections,form: tlmi_g|tlmi_ksgDCE | raw,usable,,,False
+corrections,form: tlmi_g|tlmi_ksgDCE | rel,own_d,0.1914,0.1177,True
+corrections,form: tlmi_g|tlmi_ksgDCE | rel,cv_s/own,0.02033,0.04549,True
+corrections,form: tlmi_g|tlmi_ksgDCE | rel,noise/own,10.53,23.56,True
+corrections,form: tlmi_g|tlmi_ksgDCE | rel,usable,False,False,False
+corrections,lag: coh|icoh 0-0.25 | add,own_d,0.4706,0.4706,False
+corrections,lag: coh|icoh 0-0.25 | add,cv_s/own,0.4536,0.4536,False
+corrections,lag: coh|icoh 0-0.25 | add,noise/own,0.04993,0.04993,False
+corrections,lag: coh|icoh 0-0.25 | add,usable,False,False,False
+corrections,lag: coh|icoh 0-0.25 | mult,own_d,0.4706,0.4706,False
+corrections,lag: coh|icoh 0-0.25 | mult,cv_s/own,0.4367,0.4367,False
+corrections,lag: coh|icoh 0-0.25 | mult,noise/own,0.0459,0.0459,False
+corrections,lag: coh|icoh 0-0.25 | mult,usable,False,False,False
+corrections,lag: coh|icoh 0-0.25 | raw,own_d,3.113,3.113,False
+corrections,lag: coh|icoh 0-0.25 | raw,cv_s/own,0.006994,0.006994,False
+corrections,lag: coh|icoh 0-0.25 | raw,noise/own,0.1678,0.1678,False
+corrections,lag: coh|icoh 0-0.25 | raw,usable,,,False
+corrections,lag: coh|icoh 0-0.25 | rel,own_d,2.912,2.912,False
+corrections,lag: coh|icoh 0-0.25 | rel,cv_s/own,0.06909,0.06909,False
+corrections,lag: coh|icoh 0-0.25 | rel,noise/own,0.8376,0.8376,False
+corrections,lag: coh|icoh 0-0.25 | rel,usable,False,False,False
+corrections,lag: coh|icoh 0-0.5 | add,own_d,0.6048,0.6048,False
+corrections,lag: coh|icoh 0-0.5 | add,cv_s/own,0.3047,0.3047,False
+corrections,lag: coh|icoh 0-0.5 | add,noise/own,0.1512,0.1512,False
+corrections,lag: coh|icoh 0-0.5 | add,usable,False,False,False
+corrections,lag: coh|icoh 0-0.5 | mult,own_d,0.6039,0.6039,False
+corrections,lag: coh|icoh 0-0.5 | mult,cv_s/own,0.2973,0.2973,False
+corrections,lag: coh|icoh 0-0.5 | mult,noise/own,0.1427,0.1427,False
+corrections,lag: coh|icoh 0-0.5 | mult,usable,False,False,False
+corrections,lag: coh|icoh 0-0.5 | raw,own_d,2.934,2.934,False
+corrections,lag: coh|icoh 0-0.5 | raw,cv_s/own,0.02135,0.02135,False
+corrections,lag: coh|icoh 0-0.5 | raw,noise/own,0.4782,0.4782,False
+corrections,lag: coh|icoh 0-0.5 | raw,usable,,,False
+corrections,lag: coh|icoh 0-0.5 | rel,own_d,2.802,2.802,False
+corrections,lag: coh|icoh 0-0.5 | rel,cv_s/own,0.02758,0.02758,False
+corrections,lag: coh|icoh 0-0.5 | rel,noise/own,1.466,1.466,False
+corrections,lag: coh|icoh 0-0.5 | rel,usable,False,False,False
+corrections,lag: coh|icoh 0.25-0.5 | add,own_d,0.9698,0.9698,False
+corrections,lag: coh|icoh 0.25-0.5 | add,cv_s/own,0.03452,0.03452,False
+corrections,lag: coh|icoh 0.25-0.5 | add,noise/own,,,False
+corrections,lag: coh|icoh 0.25-0.5 | add,usable,False,False,False
+corrections,lag: coh|icoh 0.25-0.5 | mult,own_d,0.9696,0.9696,False
+corrections,lag: coh|icoh 0.25-0.5 | mult,cv_s/own,0.03481,0.03481,False
+corrections,lag: coh|icoh 0.25-0.5 | mult,noise/own,,,False
+corrections,lag: coh|icoh 0.25-0.5 | mult,usable,False,False,False
+corrections,lag: coh|icoh 0.25-0.5 | raw,own_d,2.124,2.124,False
+corrections,lag: coh|icoh 0.25-0.5 | raw,cv_s/own,0.5481,0.5481,False
+corrections,lag: coh|icoh 0.25-0.5 | raw,noise/own,3.009,3.009,False
+corrections,lag: coh|icoh 0.25-0.5 | raw,usable,,,False
+corrections,lag: coh|icoh 0.25-0.5 | rel,own_d,0.3234,0.3234,False
+corrections,lag: coh|icoh 0.25-0.5 | rel,cv_s/own,2.134,2.134,False
+corrections,lag: coh|icoh 0.25-0.5 | rel,noise/own,3.545,3.545,False
+corrections,lag: coh|icoh 0.25-0.5 | rel,usable,False,False,False
+corrections,lag: pec|pec_orth | add,own_d,3.037,3.037,False
+corrections,lag: pec|pec_orth | add,cv_s/own,0.3901,0.3901,False
+corrections,lag: pec|pec_orth | add,noise/own,0.5393,0.5393,False
+corrections,lag: pec|pec_orth | add,usable,False,False,False
+corrections,lag: pec|pec_orth | mult,own_d,4.027,4.027,False
+corrections,lag: pec|pec_orth | mult,cv_s/own,0.8425,0.8425,False
+corrections,lag: pec|pec_orth | mult,noise/own,0.6365,0.6365,False
+corrections,lag: pec|pec_orth | mult,usable,False,False,False
+corrections,lag: pec|pec_orth | raw,own_d,3.755,3.755,False
+corrections,lag: pec|pec_orth | raw,cv_s/own,0.1249,0.1249,False
+corrections,lag: pec|pec_orth | raw,noise/own,0.3236,0.3236,False
+corrections,lag: pec|pec_orth | raw,usable,,,False
+corrections,lag: pec|pec_orth | rel,own_d,4.8,4.8,False
+corrections,lag: pec|pec_orth | rel,cv_s/own,0.8333,0.8333,False
+corrections,lag: pec|pec_orth | rel,noise/own,0.8321,0.8321,False
+corrections,lag: pec|pec_orth | rel,usable,False,False,False
+corrections,lag: plv|wpli | add,own_d,0.9715,0.9715,False
+corrections,lag: plv|wpli | add,cv_s/own,0.2826,0.2826,False
+corrections,lag: plv|wpli | add,noise/own,0.2539,0.2539,False
+corrections,lag: plv|wpli | add,usable,False,False,False
+corrections,lag: plv|wpli | mult,own_d,0.9694,0.9694,False
+corrections,lag: plv|wpli | mult,cv_s/own,0.2805,0.2805,False
+corrections,lag: plv|wpli | mult,noise/own,0.246,0.246,False
+corrections,lag: plv|wpli | mult,usable,False,False,False
+corrections,lag: plv|wpli | raw,own_d,8.182,8.182,False
+corrections,lag: plv|wpli | raw,cv_s/own,0.2754,0.2754,False
+corrections,lag: plv|wpli | raw,noise/own,1.131,1.131,False
+corrections,lag: plv|wpli | raw,usable,,,False
+corrections,lag: plv|wpli | rel,own_d,1.327,1.327,False
+corrections,lag: plv|wpli | rel,cv_s/own,1.243e-07,1.243e-07,False
+corrections,lag: plv|wpli | rel,noise/own,0.5901,0.5901,False
+corrections,lag: plv|wpli | rel,usable,False,False,False
+corrections,lag: ppc|dswpli | add,own_d,2.494,2.494,False
+corrections,lag: ppc|dswpli | add,cv_s/own,0.4138,0.4138,False
+corrections,lag: ppc|dswpli | add,noise/own,0.3133,0.3133,False
+corrections,lag: ppc|dswpli | add,usable,False,False,False
+corrections,lag: ppc|dswpli | mult,own_d,2.649,2.649,False
+corrections,lag: ppc|dswpli | mult,cv_s/own,0.1362,0.1362,False
+corrections,lag: ppc|dswpli | mult,noise/own,3.672,3.672,False
+corrections,lag: ppc|dswpli | mult,usable,False,False,False
+corrections,lag: ppc|dswpli | raw,own_d,2.4,2.4,False
+corrections,lag: ppc|dswpli | raw,cv_s/own,0.3633,0.3633,False
+corrections,lag: ppc|dswpli | raw,noise/own,0.9794,0.9794,False
+corrections,lag: ppc|dswpli | raw,usable,,,False
+corrections,lag: ppc|dswpli | rel,own_d,2.86,2.86,False
+corrections,lag: ppc|dswpli | rel,cv_s/own,0.207,0.207,False
+corrections,lag: ppc|dswpli | rel,noise/own,1.765,1.765,False
+corrections,lag: ppc|dswpli | rel,usable,False,False,False
+corrections,warp: dtwSC|dtw | add,own_d,-0.1548,0.471,True
+corrections,warp: dtwSC|dtw | add,cv_s/own,4.548,0.2744,True
+corrections,warp: dtwSC|dtw | add,noise/own,0.01087,0.0006561,True
+corrections,warp: dtwSC|dtw | add,usable,False,True,True
+corrections,warp: dtwSC|dtw | mult,own_d,-0.1567,0.4715,True
+corrections,warp: dtwSC|dtw | mult,cv_s/own,4.471,0.2709,True
+corrections,warp: dtwSC|dtw | mult,noise/own,0.3896,0.02361,True
+corrections,warp: dtwSC|dtw | mult,usable,False,True,True
+corrections,warp: dtwSC|dtw | raw,own_d,0.4525,0.5219,True
+corrections,warp: dtwSC|dtw | raw,cv_s/own,2.69,1.5,True
+corrections,warp: dtwSC|dtw | raw,noise/own,1.051,0.5858,True
+corrections,warp: dtwSC|dtw | raw,usable,,,False
+corrections,warp: dtwSC|dtw | rel,own_d,0.429,0.07801,True
+corrections,warp: dtwSC|dtw | rel,cv_s/own,0.6759,1.294,True
+corrections,warp: dtwSC|dtw | rel,noise/own,6.021,11.53,True
+corrections,warp: dtwSC|dtw | rel,usable,False,False,False
+corrections,warp: eucl|dtwSC | add,own_d,0.1425,0.0906,True
+corrections,warp: eucl|dtwSC | add,cv_s/own,1.237,1.136,True
+corrections,warp: eucl|dtwSC | add,noise/own,3.732,3.425,True
+corrections,warp: eucl|dtwSC | add,usable,False,False,False
+corrections,warp: eucl|dtwSC | mult,own_d,0.1427,0.09041,True
+corrections,warp: eucl|dtwSC | mult,cv_s/own,1.228,1.132,True
+corrections,warp: eucl|dtwSC | mult,noise/own,3.601,3.32,True
+corrections,warp: eucl|dtwSC | mult,usable,False,False,False
+corrections,warp: eucl|dtwSC | raw,own_d,0.4517,0.5129,True
+corrections,warp: eucl|dtwSC | raw,cv_s/own,6.964,4.823,True
+corrections,warp: eucl|dtwSC | raw,noise/own,5.528,3.829,True
+corrections,warp: eucl|dtwSC | raw,usable,,,False
+corrections,warp: eucl|dtwSC | rel,own_d,0.4337,0.1001,True
+corrections,warp: eucl|dtwSC | rel,cv_s/own,1.139,1.765,True
+corrections,warp: eucl|dtwSC | rel,noise/own,3.467,5.371,True
+corrections,warp: eucl|dtwSC | rel,usable,False,False,False
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_disp,real,-0.1628,-0.01905,True
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_disp,d,-3.362,-0.1908,True
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_disp,status,ok,insensitive,True
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_disp,kept,2.099,-2.972,True
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_level,real,-0.05582,-0.05582,False
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_level,d,-0.8605,-0.8605,False
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_level,status,,,False
+posthoc_strong_coupling,form: gc|te_ksgDCE | form_level,kept,9.407,9.407,False
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_disp,real,0.0002091,0.0004669,True
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_disp,d,0.1042,0.2594,True
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_disp,status,,,False
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_disp,kept,-1.355,-1.917,True
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_level,real,0.003244,0.003244,False
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_level,d,1.902,1.902,False
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_level,status,ok,ok,False
+posthoc_strong_coupling,form: median(ksgDCE - mi_g) | form_level,kept,0.2853,0.2853,False
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_disp",real,-5.593e-05,-0.00143,True
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_disp",d,-0.0244,-1.067,True
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_disp",status,,,False
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_disp",kept,22.05,1.215,True
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level",real,0.01213,0.01213,False
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level",d,3.228,3.228,False
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level",status,ok,ok,False
+posthoc_strong_coupling,"form: median(ksgDCE - mi_g) [top quartile, post hoc] | form_level",kept,-0.1109,-0.1109,False
+posthoc_strong_coupling,form: median(te - gc) | form_disp,real,-0.0001447,-7.596e-05,True
+posthoc_strong_coupling,form: median(te - gc) | form_disp,d,-0.1596,-0.09812,True
+posthoc_strong_coupling,form: median(te - gc) | form_disp,status,,,False
+posthoc_strong_coupling,form: median(te - gc) | form_disp,kept,1.157,-1.673,True
+posthoc_strong_coupling,form: median(te - gc) | form_level,real,0.002528,0.002528,False
+posthoc_strong_coupling,form: median(te - gc) | form_level,d,6.237,6.237,False
+posthoc_strong_coupling,form: median(te - gc) | form_level,status,ok,ok,False
+posthoc_strong_coupling,form: median(te - gc) | form_level,kept,0.2876,0.2876,False
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_disp",real,-0.001408,-0.002222,True
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_disp",d,-0.5623,-1.236,True
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_disp",status,,,False
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_disp",kept,0.6346,0.3022,True
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_level",real,0.005341,0.005341,False
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_level",d,2.653,2.653,False
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_level",status,ok,ok,False
+posthoc_strong_coupling,"form: median(te - gc) [top quartile, post hoc] | form_level",kept,0.05992,0.05992,False
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_disp,real,-0.01626,-0.04199,True
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_disp,d,-1.549,-1.422,True
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_disp,status,ok,ok,False
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_disp,kept,-0.2678,-0.0551,True
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_level,real,-0.07022,-0.07022,False
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_level,d,-12.89,-12.89,False
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_level,status,,,False
+posthoc_strong_coupling,form: mi_g|mi_kernel | form_level,kept,1.683,1.683,False
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_disp,real,-0.003847,-0.02685,True
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_disp,d,-0.4555,-0.9963,True
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_disp,status,insensitive,insensitive,False
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_disp,kept,-5.347,-0.5311,True
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_level,real,-0.1147,-0.1147,False
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_level,d,-6.651,-6.651,False
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_level,status,,,False
+posthoc_strong_coupling,form: mi_g|mi_ksgDCE | form_level,kept,3.344,3.344,False
+posthoc_strong_coupling,form: r2|dcorr | form_disp,real,-0.003522,-0.005621,True
+posthoc_strong_coupling,form: r2|dcorr | form_disp,d,-1.296,-1.627,True
+posthoc_strong_coupling,form: r2|dcorr | form_disp,status,ok,ok,False
+posthoc_strong_coupling,form: r2|dcorr | form_disp,kept,0.02118,-0.01981,True
+posthoc_strong_coupling,form: r2|dcorr | form_level,real,-0.01837,-0.01837,False
+posthoc_strong_coupling,form: r2|dcorr | form_level,d,-10.03,-10.03,False
+posthoc_strong_coupling,form: r2|dcorr | form_level,status,,,False
+posthoc_strong_coupling,form: r2|dcorr | form_level,kept,0.1282,0.1282,False
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_disp,real,-0.04613,-0.008791,True
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_disp,d,-2.143,-0.5173,True
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_disp,status,ok,insensitive,True
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_disp,kept,0.1118,-1.778,True
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_level,real,-0.1235,-0.1235,False
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_level,d,-9.422,-9.422,False
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_level,status,,,False
+posthoc_strong_coupling,form: tlmi_g|tlmi_ksgDCE | form_level,kept,3.263,3.263,False
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_disp,real,-0.005281,0.0004542,True
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_disp,d,-0.3179,0.02713,True
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_disp,status,insensitive,insensitive,False
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_disp,kept,-1.43,61.5,True
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_level,real,0.002582,0.002582,False
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_level,d,0.204,0.204,False
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_level,status,,,False
+posthoc_strong_coupling,warp: dtwSC|dtw | warp_level,kept,-20.89,-20.89,False
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_disp,real,-0.06412,-0.03871,True
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_disp,d,-1.978,-0.9465,True
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_disp,status,ok,insensitive,True
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_disp,kept,-1.772,-4.094,True
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_level,real,-0.1085,-0.1085,False
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_level,d,-2.709,-2.709,False
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_level,status,,,False
+posthoc_strong_coupling,warp: eucl|dtwSC | warp_level,kept,3.802,3.802,False
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_disp,real,-0.0006823,-0.000829,True
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_disp,d,-0.3186,-0.4337,True
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_disp,status,,,False
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_disp,kept,1.376,1.485,True
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_level,real,-0.0009141,-0.0009141,False
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_level,d,-0.3173,-0.3173,False
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_level,status,insensitive,insensitive,False
+posthoc_strong_coupling,warp: median dtwSC/eucl | warp_level,kept,-0.06577,-0.06577,False
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_disp",real,-0.01299,-0.01039,True
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_disp",d,-4.199,-10.39,True
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_disp",status,,,False
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_disp",kept,0.7254,1.153,True
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level",real,-0.03598,-0.03598,False
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level",d,-3.492,-3.492,False
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level",status,ok,ok,False
+posthoc_strong_coupling,"warp: median dtwSC/eucl [top quartile, post hoc] | warp_level",kept,0.8532,0.8532,False
+bound,ad-ftd | band: coh L|H,d_raw,0.1981,0.1981,False
+bound,ad-ftd | band: coh L|H,d_rel_corrected,0.1981,0.1981,False
+bound,ad-ftd | band: coh L|H,d_rel_corrected_floor_0001,0.1981,0.1981,False
+bound,ad-ftd | band: coh L|H,claim_stands,False,False,False
+bound,ad-ftd | band: ppc L|H,d_raw,0.29,0.29,False
+bound,ad-ftd | band: ppc L|H,d_rel_corrected,0.2701,0.2701,False
+bound,ad-ftd | band: ppc L|H,d_rel_corrected_floor_0001,0.2701,0.2701,False
+bound,ad-ftd | band: ppc L|H,claim_stands,False,False,False
+bound,ad-ftd | form: gc|te_ksgDCE,d_raw,-0.646,,True
+bound,ad-ftd | form: gc|te_ksgDCE,d_rel_corrected,-0.1242,,True
+bound,ad-ftd | form: gc|te_ksgDCE,d_rel_corrected_floor_0001,0.3292,,True
+bound,ad-ftd | form: gc|te_ksgDCE,claim_stands,False,,True
+bound,ad-ftd | form: mi_g|mi_kernel,d_raw,,-0.3642,True
+bound,ad-ftd | form: mi_g|mi_kernel,d_rel_corrected,,0.006536,True
+bound,ad-ftd | form: mi_g|mi_kernel,d_rel_corrected_floor_0001,,0.006536,True
+bound,ad-ftd | form: mi_g|mi_kernel,claim_stands,,False,True
+bound,ad-ftd | lag: coh|icoh 0-0.25,d_raw,-0.4298,-0.4298,False
+bound,ad-ftd | lag: coh|icoh 0-0.25,d_rel_corrected,-0.1888,-0.1888,False
+bound,ad-ftd | lag: coh|icoh 0-0.25,d_rel_corrected_floor_0001,-0.1888,-0.1888,False
+bound,ad-ftd | lag: coh|icoh 0-0.25,claim_stands,False,False,False
+bound,ad-ftd | lag: coh|icoh 0-0.5,d_raw,-0.06996,-0.06996,False
+bound,ad-ftd | lag: coh|icoh 0-0.5,d_rel_corrected,0.07635,0.07635,False
+bound,ad-ftd | lag: coh|icoh 0-0.5,d_rel_corrected_floor_0001,0.07635,0.07635,False
+bound,ad-ftd | lag: coh|icoh 0-0.5,claim_stands,False,False,False
+bound,ad-ftd | lag: pec|pec_orth,d_raw,0.04181,0.04181,False
+bound,ad-ftd | lag: pec|pec_orth,d_rel_corrected,-0.1361,-0.1361,False
+bound,ad-ftd | lag: pec|pec_orth,d_rel_corrected_floor_0001,0.08398,0.08398,False
+bound,ad-ftd | lag: pec|pec_orth,claim_stands,False,False,False
+bound,ad-ftd | lag: plv|wpli,d_raw,-0.1439,-0.1439,False
+bound,ad-ftd | lag: plv|wpli,d_rel_corrected,-0.1403,-0.1403,False
+bound,ad-ftd | lag: plv|wpli,d_rel_corrected_floor_0001,-0.2206,-0.2206,False
+bound,ad-ftd | lag: plv|wpli,claim_stands,False,False,False
+bound,ad-ftd | lag: ppc|dswpli,d_raw,0.1544,0.1544,False
+bound,ad-ftd | lag: ppc|dswpli,d_rel_corrected,-0.004253,-0.004253,False
+bound,ad-ftd | lag: ppc|dswpli,d_rel_corrected_floor_0001,0.02848,0.02848,False
+bound,ad-ftd | lag: ppc|dswpli,claim_stands,False,False,False
+bound,ad-ftd | mediation: LW,d_raw,-0.05579,-0.05579,False
+bound,ad-ftd | mediation: LW,d_rel_corrected,-0.0261,-0.0261,False
+bound,ad-ftd | mediation: LW,d_rel_corrected_floor_0001,-0.0261,-0.0261,False
+bound,ad-ftd | mediation: LW,claim_stands,False,False,False
+bound,ad-ftd | mediation: empirical,d_raw,0.3137,0.3137,False
+bound,ad-ftd | mediation: empirical,d_rel_corrected,0.3771,0.3771,False
+bound,ad-ftd | mediation: empirical,d_rel_corrected_floor_0001,0.3771,0.3771,False
+bound,ad-ftd | mediation: empirical,claim_stands,False,False,False
+bound,chbmit | band: coh L|H,d_raw,-0.4555,-0.4555,False
+bound,chbmit | band: coh L|H,d_rel_corrected,-0.4232,-0.4232,False
+bound,chbmit | band: coh L|H,d_rel_corrected_floor_0001,-0.4232,-0.4232,False
+bound,chbmit | band: coh L|H,claim_stands,False,False,False
+bound,chbmit | band: ppc L|H,d_raw,-0.5248,-0.5248,False
+bound,chbmit | band: ppc L|H,d_rel_corrected,-0.3544,-0.3544,False
+bound,chbmit | band: ppc L|H,d_rel_corrected_floor_0001,-0.3544,-0.3544,False
+bound,chbmit | band: ppc L|H,claim_stands,False,False,False
+bound,chbmit | form: gc|te_ksgDCE,d_raw,0.3864,,True
+bound,chbmit | form: gc|te_ksgDCE,d_rel_corrected,0.1601,,True
+bound,chbmit | form: gc|te_ksgDCE,d_rel_corrected_floor_0001,-0.04702,,True
+bound,chbmit | form: gc|te_ksgDCE,claim_stands,False,,True
+bound,chbmit | form: mi_g|mi_kernel,d_raw,,-0.1247,True
+bound,chbmit | form: mi_g|mi_kernel,d_rel_corrected,,0.3027,True
+bound,chbmit | form: mi_g|mi_kernel,d_rel_corrected_floor_0001,,0.308,True
+bound,chbmit | form: mi_g|mi_kernel,claim_stands,,False,True
+bound,chbmit | lag: coh|icoh 0-0.25,d_raw,0.6512,0.6512,False
+bound,chbmit | lag: coh|icoh 0-0.25,d_rel_corrected,0.4207,0.4207,False
+bound,chbmit | lag: coh|icoh 0-0.25,d_rel_corrected_floor_0001,-0.09601,-0.09601,False
+bound,chbmit | lag: coh|icoh 0-0.25,claim_stands,False,False,False
+bound,chbmit | lag: coh|icoh 0-0.5,d_raw,0.4279,0.4279,False
+bound,chbmit | lag: coh|icoh 0-0.5,d_rel_corrected,0.09572,0.09572,False
+bound,chbmit | lag: coh|icoh 0-0.5,d_rel_corrected_floor_0001,-0.2297,-0.2297,False
+bound,chbmit | lag: coh|icoh 0-0.5,claim_stands,False,False,False
+bound,chbmit | lag: pec|pec_orth,d_raw,0.2662,0.2662,False
+bound,chbmit | lag: pec|pec_orth,d_rel_corrected,-0.1166,-0.1166,False
+bound,chbmit | lag: pec|pec_orth,d_rel_corrected_floor_0001,0.2,0.2,False
+bound,chbmit | lag: pec|pec_orth,claim_stands,False,False,False
+bound,chbmit | lag: plv|wpli,d_raw,0.5697,0.5697,False
+bound,chbmit | lag: plv|wpli,d_rel_corrected,0.1729,0.1729,False
+bound,chbmit | lag: plv|wpli,d_rel_corrected_floor_0001,-0.02984,-0.02984,False
+bound,chbmit | lag: plv|wpli,claim_stands,False,False,False
+bound,chbmit | lag: ppc|dswpli,d_raw,0.2854,0.2854,False
+bound,chbmit | lag: ppc|dswpli,d_rel_corrected,0.2717,0.2717,False
+bound,chbmit | lag: ppc|dswpli,d_rel_corrected_floor_0001,0.1651,0.1651,False
+bound,chbmit | lag: ppc|dswpli,claim_stands,False,False,False
+bound,chbmit | mediation: LW,d_raw,0.1123,0.1123,False
+bound,chbmit | mediation: LW,d_rel_corrected,0.2396,0.2396,False
+bound,chbmit | mediation: LW,d_rel_corrected_floor_0001,-0.2125,-0.2125,False
+bound,chbmit | mediation: LW,claim_stands,False,False,False
+bound,chbmit | mediation: empirical,d_raw,0.06075,0.06075,False
+bound,chbmit | mediation: empirical,d_rel_corrected,0.1901,0.1901,False
+bound,chbmit | mediation: empirical,d_rel_corrected_floor_0001,-0.222,-0.222,False
+bound,chbmit | mediation: empirical,claim_stands,False,False,False
+bound,hmc | band: coh L|H,d_raw,-0.1504,-0.1504,False
+bound,hmc | band: coh L|H,d_rel_corrected,-0.1529,-0.1529,False
+bound,hmc | band: coh L|H,d_rel_corrected_floor_0001,-0.1529,-0.1529,False
+bound,hmc | band: coh L|H,claim_stands,False,False,False
+bound,hmc | band: ppc L|H,d_raw,-0.07181,-0.07181,False
+bound,hmc | band: ppc L|H,d_rel_corrected,-0.09352,-0.09352,False
+bound,hmc | band: ppc L|H,d_rel_corrected_floor_0001,-0.09352,-0.09352,False
+bound,hmc | band: ppc L|H,claim_stands,False,False,False
+bound,hmc | form: gc|te_ksgDCE,d_raw,0.1891,,True
+bound,hmc | form: gc|te_ksgDCE,d_rel_corrected,0.2796,,True
+bound,hmc | form: gc|te_ksgDCE,d_rel_corrected_floor_0001,0.2796,,True
+bound,hmc | form: gc|te_ksgDCE,claim_stands,False,,True
+bound,hmc | form: mi_g|mi_kernel,d_raw,,-0.3552,True
+bound,hmc | form: mi_g|mi_kernel,d_rel_corrected,,-0.5741,True
+bound,hmc | form: mi_g|mi_kernel,d_rel_corrected_floor_0001,,-0.5741,True
+bound,hmc | form: mi_g|mi_kernel,claim_stands,,False,True
+bound,hmc | lag: coh|icoh 0-0.25,d_raw,0.5452,0.5452,False
+bound,hmc | lag: coh|icoh 0-0.25,d_rel_corrected,0.4265,0.4265,False
+bound,hmc | lag: coh|icoh 0-0.25,d_rel_corrected_floor_0001,0.4265,0.4265,False
+bound,hmc | lag: coh|icoh 0-0.25,claim_stands,False,False,False
+bound,hmc | lag: coh|icoh 0-0.5,d_raw,0.834,0.834,False
+bound,hmc | lag: coh|icoh 0-0.5,d_rel_corrected,0.6701,0.6701,False
+bound,hmc | lag: coh|icoh 0-0.5,d_rel_corrected_floor_0001,0.6701,0.6701,False
+bound,hmc | lag: coh|icoh 0-0.5,claim_stands,True,True,False
+bound,hmc | lag: pec|pec_orth,d_raw,-0.1725,-0.1725,False
+bound,hmc | lag: pec|pec_orth,d_rel_corrected,-0.2467,-0.2467,False
+bound,hmc | lag: pec|pec_orth,d_rel_corrected_floor_0001,-0.2467,-0.2467,False
+bound,hmc | lag: pec|pec_orth,claim_stands,False,False,False
+bound,hmc | lag: plv|wpli,d_raw,0.3067,0.3067,False
+bound,hmc | lag: plv|wpli,d_rel_corrected,0.3239,0.3239,False
+bound,hmc | lag: plv|wpli,d_rel_corrected_floor_0001,0.3239,0.3239,False
+bound,hmc | lag: plv|wpli,claim_stands,False,False,False
+bound,hmc | lag: ppc|dswpli,d_raw,0.1047,0.1047,False
+bound,hmc | lag: ppc|dswpli,d_rel_corrected,0.02559,0.02559,False
+bound,hmc | lag: ppc|dswpli,d_rel_corrected_floor_0001,0.1218,0.1218,False
+bound,hmc | lag: ppc|dswpli,claim_stands,False,False,False
+bound,hmc | mediation: LW,d_raw,0.153,0.153,False
+bound,hmc | mediation: LW,d_rel_corrected,0.2793,0.2793,False
+bound,hmc | mediation: LW,d_rel_corrected_floor_0001,0.2793,0.2793,False
+bound,hmc | mediation: LW,claim_stands,False,False,False
+bound,hmc | mediation: empirical,d_raw,0.1261,0.1261,False
+bound,hmc | mediation: empirical,d_rel_corrected,0.2647,0.2647,False
+bound,hmc | mediation: empirical,d_rel_corrected_floor_0001,0.2647,0.2647,False
+bound,hmc | mediation: empirical,claim_stands,False,False,False
+bound,lemon | band: coh L|H,d_raw,-0.4973,-0.4973,False
+bound,lemon | band: coh L|H,d_rel_corrected,-0.5033,-0.5033,False
+bound,lemon | band: coh L|H,d_rel_corrected_floor_0001,-0.5033,-0.5033,False
+bound,lemon | band: coh L|H,claim_stands,False,False,False
+bound,lemon | band: ppc L|H,d_raw,-0.4968,-0.4968,False
+bound,lemon | band: ppc L|H,d_rel_corrected,-0.4813,-0.4813,False
+bound,lemon | band: ppc L|H,d_rel_corrected_floor_0001,-0.4813,-0.4813,False
+bound,lemon | band: ppc L|H,claim_stands,False,False,False
+bound,lemon | form: gc|te_ksgDCE,d_raw,-0.1235,,True
+bound,lemon | form: gc|te_ksgDCE,d_rel_corrected,-0.02963,,True
+bound,lemon | form: gc|te_ksgDCE,d_rel_corrected_floor_0001,0.05378,,True
+bound,lemon | form: gc|te_ksgDCE,claim_stands,False,,True
+bound,lemon | form: mi_g|mi_kernel,d_raw,,-0.08835,True
+bound,lemon | form: mi_g|mi_kernel,d_rel_corrected,,-0.08871,True
+bound,lemon | form: mi_g|mi_kernel,d_rel_corrected_floor_0001,,-0.08871,True
+bound,lemon | form: mi_g|mi_kernel,claim_stands,,False,True
+bound,lemon | lag: coh|icoh 0-0.25,d_raw,0.4528,0.4528,False
+bound,lemon | lag: coh|icoh 0-0.25,d_rel_corrected,0.4718,0.4718,False
+bound,lemon | lag: coh|icoh 0-0.25,d_rel_corrected_floor_0001,0.4718,0.4718,False
+bound,lemon | lag: coh|icoh 0-0.25,claim_stands,False,False,False
+bound,lemon | lag: coh|icoh 0-0.5,d_raw,0.6205,0.6205,False
+bound,lemon | lag: coh|icoh 0-0.5,d_rel_corrected,0.4028,0.4028,False
+bound,lemon | lag: coh|icoh 0-0.5,d_rel_corrected_floor_0001,0.4028,0.4028,False
+bound,lemon | lag: coh|icoh 0-0.5,claim_stands,False,False,False
+bound,lemon | lag: pec|pec_orth,d_raw,-0.06528,-0.06528,False
+bound,lemon | lag: pec|pec_orth,d_rel_corrected,0.02795,0.02795,False
+bound,lemon | lag: pec|pec_orth,d_rel_corrected_floor_0001,0.09426,0.09426,False
+bound,lemon | lag: pec|pec_orth,claim_stands,False,False,False
+bound,lemon | lag: plv|wpli,d_raw,-0.324,-0.324,False
+bound,lemon | lag: plv|wpli,d_rel_corrected,-0.2584,-0.2584,False
+bound,lemon | lag: plv|wpli,d_rel_corrected_floor_0001,-0.03919,-0.03919,False
+bound,lemon | lag: plv|wpli,claim_stands,False,False,False
+bound,lemon | lag: ppc|dswpli,d_raw,-0.2804,-0.2804,False
+bound,lemon | lag: ppc|dswpli,d_rel_corrected,-0.2602,-0.2602,False
+bound,lemon | lag: ppc|dswpli,d_rel_corrected_floor_0001,-0.2875,-0.2875,False
+bound,lemon | lag: ppc|dswpli,claim_stands,False,False,False
+bound,lemon | mediation: LW,d_raw,0.06994,0.06994,False
+bound,lemon | mediation: LW,d_rel_corrected,0.07002,0.07002,False
+bound,lemon | mediation: LW,d_rel_corrected_floor_0001,0.07002,0.07002,False
+bound,lemon | mediation: LW,claim_stands,False,False,False
+bound,lemon | mediation: empirical,d_raw,-0.05339,-0.05339,False
+bound,lemon | mediation: empirical,d_rel_corrected,-0.02691,-0.02691,False
+bound,lemon | mediation: empirical,d_rel_corrected_floor_0001,-0.02691,-0.02691,False
+bound,lemon | mediation: empirical,claim_stands,False,False,False
+bound,neurotycho | band: coh L|H,d_raw,2.673,2.673,False
+bound,neurotycho | band: coh L|H,d_rel_corrected,1.521,1.521,False
+bound,neurotycho | band: coh L|H,d_rel_corrected_floor_0001,0.6659,0.6659,False
+bound,neurotycho | band: coh L|H,claim_stands,False,False,False
+bound,neurotycho | band: ppc L|H,d_raw,3.141,3.141,False
+bound,neurotycho | band: ppc L|H,d_rel_corrected,3.044,3.044,False
+bound,neurotycho | band: ppc L|H,d_rel_corrected_floor_0001,0.3369,0.3369,False
+bound,neurotycho | band: ppc L|H,claim_stands,True,True,False
+bound,neurotycho | form: gc|te_ksgDCE,d_raw,-0.2875,,True
+bound,neurotycho | form: gc|te_ksgDCE,d_rel_corrected,-0.3537,,True
+bound,neurotycho | form: gc|te_ksgDCE,d_rel_corrected_floor_0001,-0.3672,,True
+bound,neurotycho | form: gc|te_ksgDCE,claim_stands,False,,True
+bound,neurotycho | form: mi_g|mi_kernel,d_raw,,-0.1447,True
+bound,neurotycho | form: mi_g|mi_kernel,d_rel_corrected,,-0.05132,True
+bound,neurotycho | form: mi_g|mi_kernel,d_rel_corrected_floor_0001,,-0.05132,True
+bound,neurotycho | form: mi_g|mi_kernel,claim_stands,,False,True
+bound,neurotycho | lag: coh|icoh 0-0.25,d_raw,1.611,1.611,False
+bound,neurotycho | lag: coh|icoh 0-0.25,d_rel_corrected,1.57,1.57,False
+bound,neurotycho | lag: coh|icoh 0-0.25,d_rel_corrected_floor_0001,0.8527,0.8527,False
+bound,neurotycho | lag: coh|icoh 0-0.25,claim_stands,True,True,False
+bound,neurotycho | lag: coh|icoh 0-0.5,d_raw,-0.04591,-0.04591,False
+bound,neurotycho | lag: coh|icoh 0-0.5,d_rel_corrected,0.6999,0.6999,False
+bound,neurotycho | lag: coh|icoh 0-0.5,d_rel_corrected_floor_0001,0.2694,0.2694,False
+bound,neurotycho | lag: coh|icoh 0-0.5,claim_stands,False,False,False
+bound,neurotycho | lag: pec|pec_orth,d_raw,0.2214,0.2214,False
+bound,neurotycho | lag: pec|pec_orth,d_rel_corrected,0.1597,0.1597,False
+bound,neurotycho | lag: pec|pec_orth,d_rel_corrected_floor_0001,0.1597,0.1597,False
+bound,neurotycho | lag: pec|pec_orth,claim_stands,False,False,False
+bound,neurotycho | lag: plv|wpli,d_raw,0.4511,0.4511,False
+bound,neurotycho | lag: plv|wpli,d_rel_corrected,0.8378,0.8378,False
+bound,neurotycho | lag: plv|wpli,d_rel_corrected_floor_0001,0.06524,0.06524,False
+bound,neurotycho | lag: plv|wpli,claim_stands,False,False,False
+bound,neurotycho | lag: ppc|dswpli,d_raw,2.308,2.308,False
+bound,neurotycho | lag: ppc|dswpli,d_rel_corrected,1.23,1.23,False
+bound,neurotycho | lag: ppc|dswpli,d_rel_corrected_floor_0001,0.4593,0.4593,False
+bound,neurotycho | lag: ppc|dswpli,claim_stands,True,True,False
+bound,neurotycho | mediation: LW,d_raw,-2.096,-2.096,False
+bound,neurotycho | mediation: LW,d_rel_corrected,-0.69,-0.69,False
+bound,neurotycho | mediation: LW,d_rel_corrected_floor_0001,-0.69,-0.69,False
+bound,neurotycho | mediation: LW,claim_stands,True,True,False
+bound,neurotycho | mediation: empirical,d_raw,-2.149,-2.149,False
+bound,neurotycho | mediation: empirical,d_rel_corrected,-0.6714,-0.6714,False
+bound,neurotycho | mediation: empirical,d_rel_corrected_floor_0001,-0.6714,-0.6714,False
+bound,neurotycho | mediation: empirical,claim_stands,True,True,False
+bound,propofol | band: coh L|H,d_raw,-0.14,-0.14,False
+bound,propofol | band: coh L|H,d_rel_corrected,0.05818,0.05818,False
+bound,propofol | band: coh L|H,d_rel_corrected_floor_0001,0.05818,0.05818,False
+bound,propofol | band: coh L|H,claim_stands,False,False,False
+bound,propofol | band: ppc L|H,d_raw,-0.06852,-0.06852,False
+bound,propofol | band: ppc L|H,d_rel_corrected,0.08347,0.08347,False
+bound,propofol | band: ppc L|H,d_rel_corrected_floor_0001,0.08347,0.08347,False
+bound,propofol | band: ppc L|H,claim_stands,False,False,False
+bound,propofol | form: gc|te_ksgDCE,d_raw,-0.3706,,True
+bound,propofol | form: gc|te_ksgDCE,d_rel_corrected,-0.9867,,True
+bound,propofol | form: gc|te_ksgDCE,d_rel_corrected_floor_0001,-0.2534,,True
+bound,propofol | form: gc|te_ksgDCE,claim_stands,False,,True
+bound,propofol | form: mi_g|mi_kernel,d_raw,,-0.3648,True
+bound,propofol | form: mi_g|mi_kernel,d_rel_corrected,,-0.1587,True
+bound,propofol | form: mi_g|mi_kernel,d_rel_corrected_floor_0001,,-0.1587,True
+bound,propofol | form: mi_g|mi_kernel,claim_stands,,False,True
+bound,propofol | lag: coh|icoh 0-0.25,d_raw,0.1979,0.1979,False
+bound,propofol | lag: coh|icoh 0-0.25,d_rel_corrected,-0.1461,-0.1461,False
+bound,propofol | lag: coh|icoh 0-0.25,d_rel_corrected_floor_0001,-0.1461,-0.1461,False
+bound,propofol | lag: coh|icoh 0-0.25,claim_stands,False,False,False
+bound,propofol | lag: coh|icoh 0-0.5,d_raw,0.261,0.261,False
+bound,propofol | lag: coh|icoh 0-0.5,d_rel_corrected,0.2837,0.2837,False
+bound,propofol | lag: coh|icoh 0-0.5,d_rel_corrected_floor_0001,0.2837,0.2837,False
+bound,propofol | lag: coh|icoh 0-0.5,claim_stands,False,False,False
+bound,propofol | lag: pec|pec_orth,d_raw,0.3286,0.3286,False
+bound,propofol | lag: pec|pec_orth,d_rel_corrected,0.3675,0.3675,False
+bound,propofol | lag: pec|pec_orth,d_rel_corrected_floor_0001,0.3343,0.3343,False
+bound,propofol | lag: pec|pec_orth,claim_stands,False,False,False
+bound,propofol | lag: plv|wpli,d_raw,0.8838,0.8838,False
+bound,propofol | lag: plv|wpli,d_rel_corrected,0.5469,0.5469,False
+bound,propofol | lag: plv|wpli,d_rel_corrected_floor_0001,0.1634,0.1634,False
+bound,propofol | lag: plv|wpli,claim_stands,False,False,False
+bound,propofol | lag: ppc|dswpli,d_raw,0.5758,0.5758,False
+bound,propofol | lag: ppc|dswpli,d_rel_corrected,0.5715,0.5715,False
+bound,propofol | lag: ppc|dswpli,d_rel_corrected_floor_0001,0.4306,0.4306,False
+bound,propofol | lag: ppc|dswpli,claim_stands,False,False,False
+bound,propofol | mediation: LW,d_raw,-0.2654,-0.2654,False
+bound,propofol | mediation: LW,d_rel_corrected,-0.2539,-0.2539,False
+bound,propofol | mediation: LW,d_rel_corrected_floor_0001,-0.2539,-0.2539,False
+bound,propofol | mediation: LW,claim_stands,False,False,False
+bound,propofol | mediation: empirical,d_raw,-0.3075,-0.3075,False
+bound,propofol | mediation: empirical,d_rel_corrected,-0.2954,-0.2954,False
+bound,propofol | mediation: empirical,d_rel_corrected_floor_0001,-0.2954,-0.2954,False
+bound,propofol | mediation: empirical,claim_stands,False,False,False
+stage3_verdicts,burst: linear-rank axis,verdict,"sub-axis (fails level-aware, SR3 >= 2, IAAFT kept <= 0.5)","sub-axis (fails level-aware, SR3 >= 2, IAAFT kept <= 0.5)",False
+stage3_verdicts,burst: linear-rank axis,SR3,0.17,0.17,False
+stage3_verdicts,burst: linear-rank axis,worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: linear-rank axis,own_B0,-0.09896,-0.09896,False
+stage3_verdicts,burst: linear-rank axis,reversed_at,,,False
+stage3_verdicts,burst: linear-rank level [all entries],verdict,drop (sign reversal),drop (sign reversal),False
+stage3_verdicts,burst: linear-rank level [all entries],SR3,0.1515,0.1515,False
+stage3_verdicts,burst: linear-rank level [all entries],worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: linear-rank level [all entries],own_B0,-0.003133,-0.003133,False
+stage3_verdicts,burst: linear-rank level [all entries],reversed_at,grid beta:hi:2.0; grid mix:hi:0.5,grid beta:hi:2.0; grid mix:hi:0.5,False
+stage3_verdicts,burst: linear-rank level [top quartile],verdict,drop (sign reversal),drop (sign reversal),False
+stage3_verdicts,burst: linear-rank level [top quartile],SR3,0.8574,0.8574,False
+stage3_verdicts,burst: linear-rank level [top quartile],worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: linear-rank level [top quartile],own_B0,-0.0263,-0.0263,False
+stage3_verdicts,burst: linear-rank level [top quartile],reversed_at,grid mix:hi:0.5,grid mix:hi:0.5,False
+stage3_verdicts,burst: r|kendall,verdict,"sub-axis (fails level-aware, SR3 >= 2)","sub-axis (fails level-aware, SR3 >= 2)",False
+stage3_verdicts,burst: r|kendall,SR3,0.2842,0.2842,False
+stage3_verdicts,burst: r|kendall,worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: r|kendall,own_B0,-0.06705,-0.06705,False
+stage3_verdicts,burst: r|kendall,reversed_at,,,False
+stage3_verdicts,burst: r|spearman,verdict,"sub-axis (fails level-aware, SR3 >= 2)","sub-axis (fails level-aware, SR3 >= 2)",False
+stage3_verdicts,burst: r|spearman,SR3,0.2761,0.2761,False
+stage3_verdicts,burst: r|spearman,worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: r|spearman,own_B0,-0.0653,-0.0653,False
+stage3_verdicts,burst: r|spearman,reversed_at,,,False
+stage3_verdicts,burst: tail axis,verdict,"sub-axis (fails level-aware, SR3 >= 2, IAAFT kept <= 0.5)","sub-axis (fails level-aware, SR3 >= 2, IAAFT kept <= 0.5)",False
+stage3_verdicts,burst: tail axis,SR3,0.2128,0.2128,False
+stage3_verdicts,burst: tail axis,worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: tail axis,own_B0,-0.1011,-0.1011,False
+stage3_verdicts,burst: tail axis,reversed_at,,,False
+stage3_verdicts,burst: tail level [all entries],verdict,"sub-axis (fails SR3 >= 2, IAAFT kept <= 0.5)","sub-axis (fails SR3 >= 2, IAAFT kept <= 0.5)",False
+stage3_verdicts,burst: tail level [all entries],SR3,0.2246,0.2246,False
+stage3_verdicts,burst: tail level [all entries],worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: tail level [all entries],own_B0,0.08061,0.08061,False
+stage3_verdicts,burst: tail level [all entries],reversed_at,,,False
+stage3_verdicts,burst: tail level [top quartile],verdict,"sub-axis (fails SR3 >= 2, IAAFT kept <= 0.5)","sub-axis (fails SR3 >= 2, IAAFT kept <= 0.5)",False
+stage3_verdicts,burst: tail level [top quartile],SR3,0.2369,0.2369,False
+stage3_verdicts,burst: tail level [top quartile],worst_other,nuis_beta,nuis_beta,False
+stage3_verdicts,burst: tail level [top quartile],own_B0,0.08748,0.08748,False
+stage3_verdicts,burst: tail level [top quartile],reversed_at,,,False
+stage3_verdicts,location: AR(2) frequency [top quartile],verdict,sub-axis (fails reads coupling frequency),sub-axis (fails reads coupling frequency),False
+stage3_verdicts,location: AR(2) frequency [top quartile],SR3,5.888,6.835,True
+stage3_verdicts,location: AR(2) frequency [top quartile],worst_other,warp_disp,lag_disp,True
+stage3_verdicts,location: AR(2) frequency [top quartile],own_B0,0.1027,0.1027,False
+stage3_verdicts,location: AR(2) frequency [top quartile],reversed_at,,,False
+stage3_verdicts,location: AR(2) frequency spread [level-aware],verdict,sub-axis (fails SR3 >= 2),sub-axis (fails SR3 >= 2),False
+stage3_verdicts,location: AR(2) frequency spread [level-aware],SR3,1.455,1.455,False
+stage3_verdicts,location: AR(2) frequency spread [level-aware],worst_other,warp_level,warp_level,False
+stage3_verdicts,location: AR(2) frequency spread [level-aware],own_B0,0.03391,0.03391,False
+stage3_verdicts,location: AR(2) frequency spread [level-aware],reversed_at,,,False
+stage3_verdicts,location: best-shift axis,verdict,drop (insensitive),drop (insensitive),False
+stage3_verdicts,location: best-shift axis,SR3,0.011,0.011,False
+stage3_verdicts,location: best-shift axis,worst_other,lag_level,lag_level,False
+stage3_verdicts,location: best-shift axis,own_B0,0.003182,0.003182,False
+stage3_verdicts,location: best-shift axis,reversed_at,,,False
+stage3_verdicts,location: best-shift level [all entries],verdict,"sub-axis (fails reads coupling frequency, incremental over core, SR3 >= 2)","sub-axis (fails reads coupling frequency, incremental over core, SR3 >= 2)",False
+stage3_verdicts,location: best-shift level [all entries],SR3,0.32,0.32,False
+stage3_verdicts,location: best-shift level [all entries],worst_other,nuis_r,nuis_r,False
+stage3_verdicts,location: best-shift level [all entries],own_B0,-0.005702,-0.005702,False
+stage3_verdicts,location: best-shift level [all entries],reversed_at,,,False
+stage3_verdicts,location: best-shift level [top quartile],verdict,"sub-axis (fails reads coupling frequency, incremental over core, SR3 >= 2)","sub-axis (fails reads coupling frequency, incremental over core, SR3 >= 2)",False
+stage3_verdicts,location: best-shift level [top quartile],SR3,0.1744,0.1744,False
+stage3_verdicts,location: best-shift level [top quartile],worst_other,lag_level,lag_level,False
+stage3_verdicts,location: best-shift level [top quartile],own_B0,-0.009362,-0.009362,False
+stage3_verdicts,location: best-shift level [top quartile],reversed_at,,,False
+stage3_verdicts,location: fixed-lag axis,verdict,drop (sign reversal),drop (sign reversal),False
+stage3_verdicts,location: fixed-lag axis,SR3,0.6581,0.6581,False
+stage3_verdicts,location: fixed-lag axis,worst_other,nuis_r,nuis_r,False
+stage3_verdicts,location: fixed-lag axis,own_B0,0.09285,0.09285,False
+stage3_verdicts,location: fixed-lag axis,reversed_at,main B1; grid r:hi:0.95,main B1; grid r:hi:0.95,False
+stage3_verdicts,location: lag-1 ratio [top quartile],verdict,"sub-axis (fails reads coupling frequency, SR3 >= 2)","sub-axis (fails reads coupling frequency, SR3 >= 2)",False
+stage3_verdicts,location: lag-1 ratio [top quartile],SR3,1.063,1.063,False
+stage3_verdicts,location: lag-1 ratio [top quartile],worst_other,lag_level,lag_level,False
+stage3_verdicts,location: lag-1 ratio [top quartile],own_B0,-0.3246,-0.3246,False
+stage3_verdicts,location: lag-1 ratio [top quartile],reversed_at,,,False
+stage3_verdicts,location: spectral-peak axis,verdict,sub-axis (fails SR3 >= 2),sub-axis (fails SR3 >= 2),False
+stage3_verdicts,location: spectral-peak axis,SR3,0.9432,0.9432,False
+stage3_verdicts,location: spectral-peak axis,worst_other,burst_level,burst_level,False
+stage3_verdicts,location: spectral-peak axis,own_B0,0.109,0.109,False
+stage3_verdicts,location: spectral-peak axis,reversed_at,,,False
+stage3_verdicts,location: spectral-peak level [all entries],verdict,drop (insensitive),drop (insensitive),False
+stage3_verdicts,location: spectral-peak level [all entries],SR3,0.1443,0.1443,False
+stage3_verdicts,location: spectral-peak level [all entries],worst_other,warp_level,warp_level,False
+stage3_verdicts,location: spectral-peak level [all entries],own_B0,-0.004802,-0.004802,False
+stage3_verdicts,location: spectral-peak level [all entries],reversed_at,,,False
+stage3_verdicts,location: spectral-peak level [top quartile],verdict,drop (sign reversal),drop (sign reversal),False
+stage3_verdicts,location: spectral-peak level [top quartile],SR3,0.6786,0.6786,False
+stage3_verdicts,location: spectral-peak level [top quartile],worst_other,warp_level,warp_level,False
+stage3_verdicts,location: spectral-peak level [top quartile],own_B0,-0.1366,-0.1366,False
+stage3_verdicts,location: spectral-peak level [top quartile],reversed_at,grid beta:hi:2.0,grid beta:hi:2.0,False
+stage3_core,band,SR_stage12_knobs,2.06,2.116,True
+stage3_core,band,SR_with_stage3_knobs,1.298,1.333,True
+stage3_core,band,worst_other,loc_level,loc_level,False
+stage3_core,band,own_B0,-0.6122,-0.6291,True
+stage3_core,band,status,ok,ok,False
+stage3_core,band_high_share,SR_stage12_knobs,3.735,3.735,False
+stage3_core,band_high_share,SR_with_stage3_knobs,3.735,3.735,False
+stage3_core,band_high_share,worst_other,form_level,form_level,False
+stage3_core,band_high_share,own_B0,0.01126,0.01126,False
+stage3_core,band_high_share,status,ok,ok,False
+stage3_core,band_spread,SR_stage12_knobs,5.228,5.355,True
+stage3_core,band_spread,SR_with_stage3_knobs,5.228,5.355,True
+stage3_core,band_spread,worst_other,med,med,False
+stage3_core,band_spread,own_B0,0.0839,0.08593,True
+stage3_core,band_spread,status,ok,ok,False
+stage3_core,form_te_minus_gc,SR_stage12_knobs,0.7844,0.7844,False
+stage3_core,form_te_minus_gc,SR_with_stage3_knobs,0.7844,0.7844,False
+stage3_core,form_te_minus_gc,worst_other,band_level,band_level,False
+stage3_core,form_te_minus_gc,own_B0,0.001715,0.001715,False
+stage3_core,form_te_minus_gc,status,ok,ok,False
+stage3_core,lag,SR_stage12_knobs,0.8939,0.8939,False
+stage3_core,lag,SR_with_stage3_knobs,0.8939,0.8939,False
+stage3_core,lag,worst_other,dir_level,dir_level,False
+stage3_core,lag,own_B0,-0.4707,-0.4707,False
+stage3_core,lag,status,ok,ok,False
+stage3_core,lag_sin_phi,SR_stage12_knobs,1.273,1.273,False
+stage3_core,lag_sin_phi,SR_with_stage3_knobs,1.273,1.273,False
+stage3_core,lag_sin_phi,worst_other,dir_level,dir_level,False
+stage3_core,lag_sin_phi,own_B0,0.005287,0.005287,False
+stage3_core,lag_sin_phi,status,ok,ok,False
+stage3_core,location_frequency,SR_stage12_knobs,,0.2772,True
+stage3_core,location_frequency,SR_with_stage3_knobs,,0.2772,True
+stage3_core,location_frequency,worst_other,,band_level,True
+stage3_core,location_frequency,own_B0,,0.1027,True
+stage3_core,location_frequency,status,,ok,True
+stage3_core,mediation_empirical,SR_stage12_knobs,0.2217,0.2217,False
+stage3_core,mediation_empirical,SR_with_stage3_knobs,0.2217,0.2217,False
+stage3_core,mediation_empirical,worst_other,lag_level,lag_level,False
+stage3_core,mediation_empirical,own_B0,-0.01834,-0.01834,False
+stage3_core,mediation_empirical,status,insensitive,insensitive,False
+stage3_core,mediation_ledoit_wolf,SR_stage12_knobs,0.2829,0.2829,False
+stage3_core,mediation_ledoit_wolf,SR_with_stage3_knobs,0.2829,0.2829,False
+stage3_core,mediation_ledoit_wolf,worst_other,lag_level,lag_level,False
+stage3_core,mediation_ledoit_wolf,own_B0,-0.02068,-0.02068,False
+stage3_core,mediation_ledoit_wolf,status,ok,ok,False

@@ -105,7 +105,7 @@ Pilot facts:
 
 ## Results (2 November 2026)
 
-Corpus: Gadi farm job 182947411 at commit 8d239c6, pyspi 3.0.0. All 4,236 main and 480 post hoc windows completed. No window has a pyspi error or an all-NaN statistic, and dcorr is present exactly where it is routed. Raw windows are in `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-8d239c6/raw`. Tables in `tables/` come from analysis job 182952105 at f1bc779. Δ is the response from a knob's zero level to its maximum. SR is the selectivity ratio of criterion 4.
+Corpus: Gadi farm job 182947411 at commit 8d239c6, pyspi 3.0.0. Rows that the dispersion-sign correction changed are listed in "Correction results"; `tables/corrected/` supersedes `tables/`. All 4,236 main and 480 post hoc windows completed. No window has a pyspi error or an all-NaN statistic, and dcorr is present exactly where it is routed. Raw windows are in `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-8d239c6/raw`. Tables in `tables/` come from analysis job 182952105 at f1bc779. Δ is the response from a knob's zero level to its maximum. SR is the selectivity ratio of criterion 4.
 
 ### Verdicts (criteria 1–4)
 
@@ -295,7 +295,7 @@ Run after the pre-registration commit (42bd982) and before scoring, on generator
 
 ### Stage 2 results (3 November 2026)
 
-Corpus: Gadi farm job 182978008 at 42bd982, 520 windows, 0 pyspi errors, 21.7 SU. Analysis job 182978377 at 2e82bad scored both corpora together. Stage-1 verdicts and SRs are unchanged. Second-family rows are in `tables/second_family.csv`.
+Corpus: Gadi farm job 182978008 at 42bd982, 520 windows, 0 pyspi errors, 21.7 SU. Rows that the dispersion-sign correction changed are listed in "Correction results"; `tables/corrected/` supersedes `tables/`. Analysis job 182978377 at 2e82bad scored both corpora together. Stage-1 verdicts and SRs are unchanged. Second-family rows are in `tables/second_family.csv`.
 
 | Measure | Family A, B0 / B1: Δ (d) | SR in A | Family K, B0 / B1: Δ (d) | Verdict |
 |---|---|---|---|---|
@@ -414,7 +414,7 @@ Run after the pre-registration commit (59502aa) and before scoring, on generator
 
 ### Stage 3 results (3 November 2026)
 
-Corpus: Gadi farm job 182981241 at 59502aa, pyspi computation version 3.0.0.r10, 2,972 windows, 0 pyspi errors, 101.7 SU. Analysis job 182981939. Tables are `tables/stage3_verdicts.csv` (verdicts, SR3, family D, surrogates, residuals, nuisance ratios), `stage3_core.csv` (core cross-talk) and `stage3_responses.csv`.
+Corpus: Gadi farm job 182981241 at 59502aa, pyspi computation version 3.0.0.r10, 2,972 windows, 0 pyspi errors, 101.7 SU. Rows that the dispersion-sign correction changed are listed in "Correction results"; `tables/corrected/` supersedes `tables/`. Analysis job 182981939. Tables are `tables/stage3_verdicts.csv` (verdicts, SR3, family D, surrogates, residuals, nuisance ratios), `stage3_core.csv` (core cross-talk) and `stage3_responses.csv`.
 
 **No location or burst readout passes as core.**
 
@@ -534,3 +534,38 @@ The corrected tables go to `tables/corrected/` and supersede `tables/` where the
 
 - **Farm:** `qsub -l ncpus=144,mem=570GB,walltime=01:30:00 -v STAGE=corr,VALIDATION_OUT=<dirc>/raw1 research/representation/character_axes/validation/jobs/farm.pbs`, with `<dirc>` = `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-correction-<commit>`. It writes `<dirc>/raw1` and `<dirc>/raw3`.
 - **Analysis:** `qsub -v CORRECTION_OUT=<dirc> .../jobs/analyse_correction.pbs` writes `<dirc>/analysis/tables`, including `correction_comparison.csv`.
+- **Output:** `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-correction-b374d08`. The corrected windows are packed in `raw.tar` (`raw1/`, `raw3/`).
+
+### Correction results (3 November 2026)
+
+Farm job 182983339 at b374d08: 1,596 windows, 0 pyspi errors, 63.6 SU. Analysis job 182984319. All 1,416 + 180 corrected windows replaced their namesakes. All 492 level-0 windows reproduce the original statistics exactly. Corrected tables are in `tables/corrected/`. `tables/corrected/correction_comparison.csv` lists old and new values for every compared field.
+
+**Answers to the questions that matter most:**
+- **Band spread and the band high share keep core.**
+  - Band spread: SR 5.28 → 5.41, own d 5.9 → 5.1, still level-aware (band level moves it −0.08 and +0.02 times as much). With the stage-3 knobs its SR is 5.36.
+  - High share: own knob is band level, which the correction does not touch, so SR stays 3.74. Band dispersion moves it 0.16 (B0) and 0.19 (B1) times its own response, against 0.03 and 0.33 before.
+- **No lag verdict, SR or sign status changes.** Every lag readout's worst other knob is a level knob (band or warp level), and the lag knobs were not affected. The same holds for the lag spread and lag level.
+
+Every other change:
+
+| Readout | Before → after | Verdict before → after |
+|---|---|---|
+| band: ppc L\|H | SR 2.06 → 2.12, d −7.7 → −9.5 | core → core; with the stage-3 knobs SR 1.30 → 1.33, so it stays sub in CORE |
+| band: coh L\|H | SR 1.96 → 2.03, d −7.6 → −9.0 | sub-axis → core, at the boundary. Not in CORE; location level was not scored for it, but it moves ppc L\|H to SR 1.33 |
+| band: sgc L\|H | reverses (now also at M = 8) | drop → drop |
+| direction: sgc A\|Aᵀ | stage-1 SR 3.12 → 7.44; family-A SR 0.96 → 2.28, worst other now lag level | drop (reverses in family K) → unchanged |
+| form: gc\|te_ksgDCE | Δ −0.089 (d −1.3) → −0.011 (d −0.2) | sub-axis → drop (insensitive) |
+| form: mi_g\|mi_kernel | Δ −0.007 → −0.041 (d −1.3), SR 0.06 | drop → sub-axis |
+| form: tlmi_g\|tlmi_ksgDCE | insensitive → reverses at T = 4000 | drop → drop |
+| warp: eucl\|dtwSC | reversal at noise 0 → insensitive | drop → drop |
+
+- **Stage-2 text.** "Band dispersion moves it as much as direction does (SR_A 0.96)" was an artefact of the alignment. With independent signs, direction's family-A SR is 2.28 (lag level). Direction is still dropped, because sgc A\|Aᵀ reverses in directed Kuramoto. Noise still moves it 1.2 times as much in family A.
+- **Post hoc strong coupling.** Two of the three form pairs still respond to form dispersion with surrogates keeping little:
+  - r²\|dcorr: d −1.6, kept −0.02;
+  - mi_g\|mi_kernel: d −1.4, kept −0.06.
+
+  tlmi_g\|tlmi_ksgDCE becomes insensitive (d −2.1 → −0.5). So does eucl\|dtwSC on warp dispersion (d −2.0 → −0.9), so the post hoc reading of it as non-Gaussian timing does not stand.
+- **Form organisation still fails at cohort-like coupling.** The best SR is 0.07.
+- **Cohort bound.** The form row moves from gc\|te_ksgDCE to mi_g\|mi_kernel. No form claim stands either way, and no other bound row changes.
+- **Stage 3.** No verdict changes. The AR(2) frequency's SR3 goes 5.9 → 6.8; warp dispersion is no longer its worst other knob.
+- **CORE.** The correction leaves CORE (474e443) as it is.

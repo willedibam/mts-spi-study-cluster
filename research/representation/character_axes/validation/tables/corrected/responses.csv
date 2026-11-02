@@ -1,0 +1,1315 @@
+measure,knob,family,baseline,grid,mean,lo,hi,d,n
+form: mi_g|mi_ksgDCE,form_disp,A,B0,,-0.004234,-0.04571,0.03724,-0.1071,6
+form: mi_g|mi_ksgDCE,form_disp,A,B1,,-0.06232,-0.1345,0.009871,-0.9059,6
+form: mi_g|mi_ksgDCE,form_disp,A,B0,M:hi:24,-0.06772,-0.1061,-0.02939,-2.811,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,M:lo:8,-0.02455,-0.06783,0.01872,-0.9027,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,T:hi:4000,0.0359,0.01077,0.06104,2.273,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,T:lo:500,0.02866,-0.09411,0.1514,0.3714,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,beta:hi:2.0,0.1008,-0.01625,0.2179,1.37,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,cv_s:hi:1.5,0.01011,-0.06504,0.08526,0.2141,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,cv_s:lo:0.1,-0.009159,-0.06109,0.04277,-0.2807,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,mix:hi:0.5,-0.001073,-0.0148,0.01265,-0.1245,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,noise:hi:1.0,0.0003745,-0.1271,0.1279,0.004675,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,noise:lo:0,0.009561,-0.02308,0.0422,0.4661,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,r:hi:0.95,-0.01813,-0.1071,0.07087,-0.3241,4
+form: mi_g|mi_ksgDCE,form_disp,A,B0,r:lo:0.6,-0.02417,-0.1353,0.08696,-0.3461,4
+form: mi_g|mi_ksgDCE,form_level,A,B0,,-0.2642,-0.3031,-0.2254,-7.141,6
+form: mi_g|mi_ksgDCE,form_level,A,B1,,-0.243,-0.3312,-0.1548,-2.892,6
+form: mi_g|mi_ksgDCE,med,A,B0,,-0.4017,-0.5065,-0.2968,-4.021,6
+form: mi_g|mi_ksgDCE,dir_level,A,B0,,4.103e-05,-0.02035,0.02044,0.002111,6
+form: mi_g|mi_ksgDCE,dir_level,K,B0,,-0.05231,-0.07274,-0.03189,-2.688,6
+form: mi_g|mi_ksgDCE,lag_level,A,B0,,-0.7744,-0.8286,-0.7202,-14.99,6
+form: mi_g|mi_ksgDCE,lag_disp,A,B0,,0.1057,0.06198,0.1494,2.538,6
+form: mi_g|mi_ksgDCE,band_level,A,B0,,-0.003943,-0.0268,0.01891,-0.1811,6
+form: mi_g|mi_ksgDCE,band_disp,A,B0,,0.00784,-0.02121,0.03689,0.2832,6
+form: mi_g|mi_ksgDCE,warp_level,A,B0,,-0.5703,-0.6533,-0.4873,-7.209,6
+form: mi_g|mi_ksgDCE,warp_disp,A,B0,,0.1413,0.06316,0.2194,1.898,6
+form: mi_g|mi_ksgDCE,nuis_cv_s,A,B0,,0.1808,0.1198,0.2417,3.112,6
+form: mi_g|mi_ksgDCE,nuis_cv_s,A,B1,,0.1375,0.08617,0.1888,2.812,6
+form: mi_g|mi_ksgDCE,nuis_noise,A,B0,,-0.5004,-0.5657,-0.4351,-8.044,6
+form: mi_g|mi_ksgDCE,nuis_noise,A,B1,,-0.4288,-0.4967,-0.361,-6.634,6
+form: mi_g|mi_ksgDCE,nuis_T,A,B0,,0.2409,0.1976,0.2841,5.842,6
+form: mi_g|mi_ksgDCE,nuis_T,A,B1,,0.1797,0.1306,0.2288,3.842,6
+form: mi_g|mi_ksgDCE,nuis_r,A,B0,,0.02239,0.003737,0.04105,1.26,6
+form: mi_g|mi_ksgDCE,nuis_r,A,B1,,0.007652,-0.01207,0.02737,0.4072,6
+form: mi_g|mi_ksgDCE,nuis_beta,A,B0,,-0.3888,-0.4983,-0.2794,-3.728,6
+form: mi_g|mi_ksgDCE,nuis_beta,A,B1,,-0.2915,-0.4013,-0.1816,-2.784,6
+form: mi_g|mi_ksgDCE,nuis_mix,A,B0,,0.1139,0.09061,0.1372,5.127,6
+form: mi_g|mi_ksgDCE,nuis_mix,A,B1,,0.06726,0.0352,0.09933,2.201,6
+form: mi_g|mi_ksgDCE,nuis_M,A,B0,,-0.1212,-0.1514,-0.09103,-4.212,6
+form: mi_g|mi_ksgDCE,nuis_M,A,B1,,-0.06773,-0.1032,-0.0323,-2.006,6
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,,-0.02525,-0.05812,0.00762,-0.8062,6
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B1,,-0.0714,-0.1429,6.107e-05,-1.049,6
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,M:hi:24,-0.05874,-0.1457,0.02823,-1.075,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,M:lo:8,-0.003046,-0.2166,0.2105,-0.0227,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,T:hi:4000,0.02436,0.009038,0.03968,2.53,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,T:lo:500,0.06355,-0.09377,0.2209,0.6428,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,beta:hi:2.0,0.03115,-0.3177,0.38,0.1421,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,cv_s:hi:1.5,0.03332,-0.0004856,0.06713,1.568,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,cv_s:lo:0.1,0.02247,-0.01411,0.05904,0.9775,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,mix:hi:0.5,0.0004902,-0.02257,0.02355,0.03382,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,noise:hi:1.0,-0.0494,-0.1447,0.04591,-0.8247,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,noise:lo:0,-0.00396,-0.07546,0.06754,-0.08814,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,r:hi:0.95,-0.03314,-0.1462,0.07989,-0.4665,4
+form: tlmi_g|tlmi_ksgDCE,form_disp,A,B0,r:lo:0.6,0.003942,-0.1117,0.1196,0.05424,4
+form: tlmi_g|tlmi_ksgDCE,form_level,A,B0,,-0.3056,-0.3298,-0.2814,-13.25,6
+form: tlmi_g|tlmi_ksgDCE,form_level,A,B1,,-0.2637,-0.2964,-0.2309,-8.458,6
+form: tlmi_g|tlmi_ksgDCE,med,A,B0,,-0.465,-0.545,-0.385,-6.103,6
+form: tlmi_g|tlmi_ksgDCE,dir_level,A,B0,,0.06541,0.03574,0.09509,2.313,6
+form: tlmi_g|tlmi_ksgDCE,dir_level,K,B0,,-0.1009,-0.1119,-0.08994,-9.643,6
+form: tlmi_g|tlmi_ksgDCE,lag_level,A,B0,,-0.3107,-0.3363,-0.2851,-12.72,6
+form: tlmi_g|tlmi_ksgDCE,lag_disp,A,B0,,-0.1079,-0.1447,-0.07113,-3.079,6
+form: tlmi_g|tlmi_ksgDCE,band_level,A,B0,,-0.2565,-0.3018,-0.2112,-5.944,6
+form: tlmi_g|tlmi_ksgDCE,band_disp,A,B0,,0.4385,0.3521,0.5249,5.325,6
+form: tlmi_g|tlmi_ksgDCE,warp_level,A,B0,,-0.542,-0.5974,-0.4866,-10.26,6
+form: tlmi_g|tlmi_ksgDCE,warp_disp,A,B0,,0.1489,0.1001,0.1977,3.201,6
+form: tlmi_g|tlmi_ksgDCE,nuis_cv_s,A,B0,,0.1909,0.1318,0.25,3.391,6
+form: tlmi_g|tlmi_ksgDCE,nuis_cv_s,A,B1,,0.1742,0.1096,0.2387,2.833,6
+form: tlmi_g|tlmi_ksgDCE,nuis_noise,A,B0,,-0.5048,-0.5381,-0.4716,-15.95,6
+form: tlmi_g|tlmi_ksgDCE,nuis_noise,A,B1,,-0.4615,-0.5001,-0.423,-12.55,6
+form: tlmi_g|tlmi_ksgDCE,nuis_T,A,B0,,0.2665,0.2473,0.2857,14.58,6
+form: tlmi_g|tlmi_ksgDCE,nuis_T,A,B1,,0.2341,0.1638,0.3045,3.492,6
+form: tlmi_g|tlmi_ksgDCE,nuis_r,A,B0,,0.04191,0.02623,0.0576,2.804,6
+form: tlmi_g|tlmi_ksgDCE,nuis_r,A,B1,,0.0159,-0.00287,0.03467,0.889,6
+form: tlmi_g|tlmi_ksgDCE,nuis_beta,A,B0,,-0.3832,-0.428,-0.3383,-8.964,6
+form: tlmi_g|tlmi_ksgDCE,nuis_beta,A,B1,,-0.322,-0.4185,-0.2255,-3.502,6
+form: tlmi_g|tlmi_ksgDCE,nuis_mix,A,B0,,0.1126,0.07355,0.1517,3.023,6
+form: tlmi_g|tlmi_ksgDCE,nuis_mix,A,B1,,0.06113,0.01481,0.1074,1.385,6
+form: tlmi_g|tlmi_ksgDCE,nuis_M,A,B0,,-0.1215,-0.1534,-0.08969,-4.004,6
+form: tlmi_g|tlmi_ksgDCE,nuis_M,A,B1,,-0.07443,-0.1146,-0.03425,-1.944,6
+form: gc|te_ksgDCE,form_disp,A,B0,,-0.01132,-0.06294,0.04029,-0.2302,6
+form: gc|te_ksgDCE,form_disp,A,B1,,-0.02883,-0.1296,0.07191,-0.3003,6
+form: gc|te_ksgDCE,form_disp,A,B0,M:hi:24,-0.0435,-0.1026,0.01557,-1.172,4
+form: gc|te_ksgDCE,form_disp,A,B0,M:lo:8,0.01373,-0.1756,0.203,0.1154,4
+form: gc|te_ksgDCE,form_disp,A,B0,T:hi:4000,-0.001699,-0.1554,0.152,-0.01758,4
+form: gc|te_ksgDCE,form_disp,A,B0,T:lo:500,-0.002543,-0.1549,0.1498,-0.02656,4
+form: gc|te_ksgDCE,form_disp,A,B0,beta:hi:2.0,0.01472,-0.1731,0.2026,0.1247,4
+form: gc|te_ksgDCE,form_disp,A,B0,cv_s:hi:1.5,-0.03505,-0.2313,0.1612,-0.2842,4
+form: gc|te_ksgDCE,form_disp,A,B0,cv_s:lo:0.1,0.01184,-0.0539,0.07757,0.2865,4
+form: gc|te_ksgDCE,form_disp,A,B0,mix:hi:0.5,0.03867,-0.06932,0.1467,0.5698,4
+form: gc|te_ksgDCE,form_disp,A,B0,noise:hi:1.0,-0.0725,-0.09202,-0.05298,-5.91,4
+form: gc|te_ksgDCE,form_disp,A,B0,noise:lo:0,-0.002266,-0.1433,0.1387,-0.02557,4
+form: gc|te_ksgDCE,form_disp,A,B0,r:hi:0.95,-0.008157,-0.1048,0.08852,-0.1343,4
+form: gc|te_ksgDCE,form_disp,A,B0,r:lo:0.6,-0.02461,-0.1596,0.1103,-0.2902,4
+form: gc|te_ksgDCE,form_level,A,B0,,-0.1265,-0.1762,-0.07675,-2.669,6
+form: gc|te_ksgDCE,form_level,A,B1,,-0.1787,-0.2162,-0.1413,-5.004,6
+form: gc|te_ksgDCE,med,A,B0,,-0.2455,-0.3398,-0.1511,-2.73,6
+form: gc|te_ksgDCE,dir_level,A,B0,,0.2522,0.1502,0.3542,2.595,6
+form: gc|te_ksgDCE,dir_level,K,B0,,-0.02273,-0.0455,3.639e-05,-1.048,6
+form: gc|te_ksgDCE,lag_level,A,B0,,0.5048,0.4146,0.595,5.871,6
+form: gc|te_ksgDCE,lag_disp,A,B0,,-0.1257,-0.1947,-0.05677,-1.913,6
+form: gc|te_ksgDCE,band_level,A,B0,,-0.2309,-0.2996,-0.1623,-3.529,6
+form: gc|te_ksgDCE,band_disp,A,B0,,0.3576,0.2886,0.4266,5.442,6
+form: gc|te_ksgDCE,warp_level,A,B0,,-0.2543,-0.347,-0.1616,-2.878,6
+form: gc|te_ksgDCE,warp_disp,A,B0,,0.1863,0.08941,0.2832,2.018,6
+form: gc|te_ksgDCE,nuis_cv_s,A,B0,,0.2739,0.07894,0.4689,1.474,6
+form: gc|te_ksgDCE,nuis_cv_s,A,B1,,0.2398,0.07715,0.4024,1.547,6
+form: gc|te_ksgDCE,nuis_noise,A,B0,,-0.2431,-0.3144,-0.1719,-3.581,6
+form: gc|te_ksgDCE,nuis_noise,A,B1,,-0.2918,-0.3961,-0.1874,-2.934,6
+form: gc|te_ksgDCE,nuis_T,A,B0,,0.2249,0.1634,0.2863,3.841,6
+form: gc|te_ksgDCE,nuis_T,A,B1,,0.1899,0.1283,0.2514,3.238,6
+form: gc|te_ksgDCE,nuis_r,A,B0,,0.03648,-0.03419,0.1072,0.5417,6
+form: gc|te_ksgDCE,nuis_r,A,B1,,0.01901,-0.03357,0.07159,0.3794,6
+form: gc|te_ksgDCE,nuis_beta,A,B0,,-0.1571,-0.2605,-0.0536,-1.593,6
+form: gc|te_ksgDCE,nuis_beta,A,B1,,-0.2373,-0.295,-0.1795,-4.31,6
+form: gc|te_ksgDCE,nuis_mix,A,B0,,-0.0254,-0.1002,0.04945,-0.3561,6
+form: gc|te_ksgDCE,nuis_mix,A,B1,,-0.04605,-0.06984,-0.02226,-2.031,6
+form: gc|te_ksgDCE,nuis_M,A,B0,,-0.2146,-0.2941,-0.1352,-2.834,6
+form: gc|te_ksgDCE,nuis_M,A,B1,,0.000565,-0.2686,0.2698,0.002202,6
+form: r2|dcorr,form_disp,A,B0,,-0.002869,-0.006741,0.001003,-0.7776,6
+form: r2|dcorr,form_disp,A,B1,,-0.008242,-0.01642,-6.393e-05,-1.058,6
+form: r2|dcorr,form_disp,A,B0,M:hi:24,-0.004094,-0.006777,-0.001411,-2.428,4
+form: r2|dcorr,form_disp,A,B0,M:lo:8,0.0006816,-0.002145,0.003509,0.3836,4
+form: r2|dcorr,form_disp,A,B0,T:hi:4000,-0.000414,-0.001869,0.001041,-0.4528,4
+form: r2|dcorr,form_disp,A,B0,T:lo:500,-0.000832,-0.01382,0.01216,-0.1019,4
+form: r2|dcorr,form_disp,A,B0,beta:hi:2.0,0.07744,-0.06701,0.2219,0.8531,4
+form: r2|dcorr,form_disp,A,B0,cv_s:hi:1.5,-0.002333,-0.008108,0.003441,-0.643,4
+form: r2|dcorr,form_disp,A,B0,cv_s:lo:0.1,-0.001609,-0.005683,0.002465,-0.6285,4
+form: r2|dcorr,form_disp,A,B0,mix:hi:0.5,-0.0007542,-0.00148,-2.856e-05,-1.654,4
+form: r2|dcorr,form_disp,A,B0,noise:hi:1.0,-0.000416,-0.006347,0.005515,-0.1116,4
+form: r2|dcorr,form_disp,A,B0,noise:lo:0,-0.001481,-0.003129,0.0001669,-1.43,4
+form: r2|dcorr,form_disp,A,B0,r:hi:0.95,-0.006481,-0.02093,0.007971,-0.7136,4
+form: r2|dcorr,form_disp,A,B0,r:lo:0.6,-0.001573,-0.004195,0.001048,-0.9548,4
+form: r2|dcorr,form_level,A,B0,,-0.01964,-0.0248,-0.01449,-3.998,6
+form: r2|dcorr,form_level,A,B1,,-0.01765,-0.02591,-0.00939,-2.242,6
+form: r2|dcorr,lag_level,A,B0,,-0.04258,-0.05519,-0.02997,-3.543,6
+form: r2|dcorr,lag_disp,A,B0,,0.001367,0.000841,0.001893,2.728,6
+form: r2|dcorr,band_level,A,B0,,0.001595,0.00122,0.00197,4.46,6
+form: r2|dcorr,band_disp,A,B0,,5.104e-05,-0.0003413,0.0004434,0.1365,6
+form: r2|dcorr,warp_level,A,B0,,-0.01841,-0.02606,-0.01075,-2.524,6
+form: r2|dcorr,warp_disp,A,B0,,0.00217,0.0008215,0.003519,1.689,6
+form: r2|dcorr,nuis_cv_s,A,B0,,0.001684,0.001009,0.002359,2.617,6
+form: r2|dcorr,nuis_cv_s,A,B1,,0.00267,0.001611,0.003728,2.646,6
+form: r2|dcorr,nuis_noise,A,B0,,-0.003795,-0.00554,-0.00205,-2.282,6
+form: r2|dcorr,nuis_noise,A,B1,,-0.001941,-0.002949,-0.0009329,-2.021,6
+form: r2|dcorr,nuis_T,A,B0,,0.008492,0.004756,0.01223,2.385,6
+form: r2|dcorr,nuis_T,A,B1,,0.006104,0.003311,0.008896,2.294,6
+form: r2|dcorr,nuis_r,A,B0,,-0.001356,-0.002307,-0.0004045,-1.496,6
+form: r2|dcorr,nuis_r,A,B1,,-0.001334,-0.002222,-0.0004457,-1.576,6
+form: r2|dcorr,nuis_beta,A,B0,,-0.3567,-0.4734,-0.2399,-3.206,6
+form: r2|dcorr,nuis_beta,A,B1,,-0.2308,-0.2937,-0.1678,-3.847,6
+form: r2|dcorr,nuis_mix,A,B0,,-0.0005283,-0.001093,3.603e-05,-0.9824,6
+form: r2|dcorr,nuis_mix,A,B1,,-0.0007559,-0.001139,-0.0003732,-2.073,6
+form: r2|dcorr,nuis_M,A,B0,,0.0008689,1.986e-05,0.001718,1.074,6
+form: r2|dcorr,nuis_M,A,B1,,-0.000154,-0.001132,0.0008243,-0.1652,6
+form: mi_g|mi_kernel,form_disp,A,B0,,-0.04097,-0.07449,-0.007448,-1.283,6
+form: mi_g|mi_kernel,form_disp,A,B1,,-0.07062,-0.113,-0.02822,-1.748,6
+form: mi_g|mi_kernel,form_disp,A,B0,M:hi:24,-0.05332,-0.07454,-0.03209,-3.997,4
+form: mi_g|mi_kernel,form_disp,A,B0,M:lo:8,-0.02247,-0.06764,0.02271,-0.7913,4
+form: mi_g|mi_kernel,form_disp,A,B0,T:hi:4000,-0.01662,-0.02852,-0.00472,-2.222,4
+form: mi_g|mi_kernel,form_disp,A,B0,T:lo:500,0.03546,-0.06498,0.1359,0.5618,4
+form: mi_g|mi_kernel,form_disp,A,B0,beta:hi:2.0,0.06673,-0.2735,0.4069,0.3121,4
+form: mi_g|mi_kernel,form_disp,A,B0,cv_s:hi:1.5,-0.01563,-0.05596,0.02469,-0.6169,4
+form: mi_g|mi_kernel,form_disp,A,B0,cv_s:lo:0.1,-0.03744,-0.04318,-0.0317,-10.38,4
+form: mi_g|mi_kernel,form_disp,A,B0,mix:hi:0.5,-0.007869,-0.01754,0.001802,-1.295,4
+form: mi_g|mi_kernel,form_disp,A,B0,noise:hi:1.0,-0.04795,-0.1042,0.008329,-1.356,4
+form: mi_g|mi_kernel,form_disp,A,B0,noise:lo:0,-0.02026,-0.04799,0.00748,-1.162,4
+form: mi_g|mi_kernel,form_disp,A,B0,r:hi:0.95,-0.0647,-0.1354,0.005995,-1.456,4
+form: mi_g|mi_kernel,form_disp,A,B0,r:lo:0.6,-0.01811,-0.06166,0.02544,-0.6617,4
+form: mi_g|mi_kernel,form_level,A,B0,,-0.1399,-0.1695,-0.1102,-4.953,6
+form: mi_g|mi_kernel,form_level,A,B1,,-0.09985,-0.1418,-0.05788,-2.497,6
+form: mi_g|mi_kernel,med,A,B0,,-0.2074,-0.2542,-0.1606,-4.653,6
+form: mi_g|mi_kernel,dir_level,A,B0,,0.002192,0.0002552,0.00413,1.188,6
+form: mi_g|mi_kernel,dir_level,K,B0,,-0.0004166,-0.001441,0.0006077,-0.4268,6
+form: mi_g|mi_kernel,lag_level,A,B0,,-0.6597,-0.735,-0.5845,-9.202,6
+form: mi_g|mi_kernel,lag_disp,A,B0,,0.04476,0.02563,0.06388,2.456,6
+form: mi_g|mi_kernel,band_level,A,B0,,0.01171,0.00709,0.01632,2.661,6
+form: mi_g|mi_kernel,band_disp,A,B0,,-0.001338,-0.00797,0.005293,-0.2118,6
+form: mi_g|mi_kernel,warp_level,A,B0,,-0.3914,-0.4598,-0.323,-6.008,6
+form: mi_g|mi_kernel,warp_disp,A,B0,,0.05435,0.02875,0.07994,2.228,6
+form: mi_g|mi_kernel,nuis_cv_s,A,B0,,0.04015,0.03068,0.04963,4.45,6
+form: mi_g|mi_kernel,nuis_cv_s,A,B1,,0.04242,0.02597,0.05888,2.705,6
+form: mi_g|mi_kernel,nuis_noise,A,B0,,-0.2454,-0.2868,-0.2039,-6.207,6
+form: mi_g|mi_kernel,nuis_noise,A,B1,,-0.1846,-0.2114,-0.1578,-7.224,6
+form: mi_g|mi_kernel,nuis_T,A,B0,,0.2344,0.1894,0.2793,5.468,6
+form: mi_g|mi_kernel,nuis_T,A,B1,,0.182,0.1196,0.2445,3.058,6
+form: mi_g|mi_kernel,nuis_r,A,B0,,0.001741,-0.007796,0.01128,0.1916,6
+form: mi_g|mi_kernel,nuis_r,A,B1,,0.0004569,-0.009696,0.01061,0.04723,6
+form: mi_g|mi_kernel,nuis_beta,A,B0,,-0.4121,-0.534,-0.2902,-3.548,6
+form: mi_g|mi_kernel,nuis_beta,A,B1,,-0.2869,-0.3982,-0.1755,-2.704,6
+form: mi_g|mi_kernel,nuis_mix,A,B0,,0.02245,0.01418,0.03072,2.849,6
+form: mi_g|mi_kernel,nuis_mix,A,B1,,0.01546,0.004849,0.02607,1.529,6
+form: mi_g|mi_kernel,nuis_M,A,B0,,-0.02606,-0.03115,-0.02096,-5.368,6
+form: mi_g|mi_kernel,nuis_M,A,B1,,-0.01601,-0.02716,-0.004866,-1.508,6
+lag: coh|icoh 0-0.5,lag_disp,A,B0,,-0.4161,-0.5649,-0.2673,-2.934,6
+lag: coh|icoh 0-0.5,lag_disp,A,B1,,-0.4272,-0.6452,-0.2092,-2.057,6
+lag: coh|icoh 0-0.5,lag_disp,A,B0,M:hi:24,-0.3776,-0.5363,-0.2189,-3.787,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,M:lo:8,-0.5683,-0.9225,-0.214,-2.552,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,T:hi:4000,-0.3454,-0.5619,-0.129,-2.539,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,T:lo:500,-0.18,-0.2584,-0.1016,-3.653,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,beta:hi:2.0,-0.005811,-0.02395,0.01233,-0.5097,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,cv_s:hi:1.5,-0.504,-0.7449,-0.2631,-3.329,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,cv_s:lo:0.1,-0.3287,-0.4134,-0.2441,-6.178,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,mix:hi:0.5,-0.6063,-0.8855,-0.327,-3.455,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,noise:hi:1.0,-0.1093,-0.1979,-0.02064,-1.962,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,noise:lo:0,-0.6949,-1.163,-0.2272,-2.364,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,r:hi:0.95,-0.3434,-0.41,-0.2768,-8.205,4
+lag: coh|icoh 0-0.5,lag_disp,A,B0,r:lo:0.6,-0.4097,-0.6873,-0.1322,-2.349,4
+lag: coh|icoh 0-0.5,lag_disp,K,B0,,-0.007816,-0.03278,0.01715,-0.3286,6
+lag: coh|icoh 0-0.5,lag_level,A,B0,,0.8721,0.7653,0.9789,8.572,6
+lag: coh|icoh 0-0.5,lag_level,A,B1,,0.8893,0.7748,1.004,8.152,6
+lag: coh|icoh 0-0.5,med,A,B0,,-0.03465,-0.1974,0.1281,-0.2233,6
+lag: coh|icoh 0-0.5,dir_level,A,B0,,0.4237,0.285,0.5624,3.205,6
+lag: coh|icoh 0-0.5,dir_level,K,B0,,0.02859,-0.01533,0.07251,0.6831,6
+lag: coh|icoh 0-0.5,band_level,A,B0,,-0.6339,-0.7084,-0.5593,-8.918,6
+lag: coh|icoh 0-0.5,band_disp,A,B0,,-0.1387,-0.2465,-0.03094,-1.351,6
+lag: coh|icoh 0-0.5,form_level,A,B0,,0.01985,-0.1067,0.1464,0.1646,6
+lag: coh|icoh 0-0.5,form_disp,A,B0,,0.02127,-0.02853,0.07107,0.4482,6
+lag: coh|icoh 0-0.5,warp_level,A,B0,,-0.02743,-0.1413,0.08646,-0.2528,6
+lag: coh|icoh 0-0.5,warp_disp,A,B0,,0.08956,-0.04509,0.2242,0.698,6
+lag: coh|icoh 0-0.5,nuis_cv_s,A,B0,,0.008884,-0.1687,0.1865,0.05249,6
+lag: coh|icoh 0-0.5,nuis_cv_s,A,B1,,-0.05202,-0.2012,0.09715,-0.3659,6
+lag: coh|icoh 0-0.5,nuis_noise,A,B0,,-0.199,-0.3173,-0.08065,-1.765,6
+lag: coh|icoh 0-0.5,nuis_noise,A,B1,,-0.2188,-0.2602,-0.1773,-5.541,6
+lag: coh|icoh 0-0.5,nuis_T,A,B0,,-0.01347,-0.1011,0.07415,-0.1613,6
+lag: coh|icoh 0-0.5,nuis_T,A,B1,,-0.04115,-0.139,0.05674,-0.4411,6
+lag: coh|icoh 0-0.5,nuis_r,A,B0,,-0.1606,-0.2496,-0.07169,-1.895,6
+lag: coh|icoh 0-0.5,nuis_r,A,B1,,-0.1815,-0.2252,-0.1378,-4.361,6
+lag: coh|icoh 0-0.5,nuis_beta,A,B0,,0.3752,0.2639,0.4864,3.539,6
+lag: coh|icoh 0-0.5,nuis_beta,A,B1,,0.491,0.3669,0.6151,4.152,6
+lag: coh|icoh 0-0.5,nuis_mix,A,B0,,-0.5706,-0.7171,-0.4242,-4.09,6
+lag: coh|icoh 0-0.5,nuis_mix,A,B1,,-0.5244,-0.6502,-0.3986,-4.375,6
+lag: coh|icoh 0-0.5,nuis_M,A,B0,,0.02757,-0.1107,0.1659,0.2092,6
+lag: coh|icoh 0-0.5,nuis_M,A,B1,,0.2209,-0.2108,0.6525,0.537,6
+lag: coh|icoh 0-0.25,lag_disp,A,B0,,-0.4707,-0.6294,-0.312,-3.113,6
+lag: coh|icoh 0-0.25,lag_disp,A,B1,,-0.4963,-0.7465,-0.2461,-2.081,6
+lag: coh|icoh 0-0.25,lag_disp,A,B0,M:hi:24,-0.4413,-0.647,-0.2356,-3.414,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,M:lo:8,-0.5563,-0.8451,-0.2674,-3.064,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,T:hi:4000,-0.3619,-0.5604,-0.1634,-2.902,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,T:lo:500,-0.2327,-0.3723,-0.09305,-2.652,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,beta:hi:2.0,-0.01759,-0.04531,0.01013,-1.01,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,cv_s:hi:1.5,-0.5148,-0.7401,-0.2894,-3.635,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,cv_s:lo:0.1,-0.3937,-0.5095,-0.2779,-5.41,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,mix:hi:0.5,-0.692,-1.066,-0.3181,-2.945,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,noise:hi:1.0,-0.1731,-0.319,-0.02716,-1.887,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,noise:lo:0,-0.5684,-0.9367,-0.2002,-2.456,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,r:hi:0.95,-0.4644,-0.5415,-0.3873,-9.585,4
+lag: coh|icoh 0-0.25,lag_disp,A,B0,r:lo:0.6,-0.4265,-0.7264,-0.1265,-2.262,4
+lag: coh|icoh 0-0.25,lag_disp,K,B0,,-0.0134,-0.04489,0.01809,-0.4464,6
+lag: coh|icoh 0-0.25,lag_level,A,B0,,1.007,0.8917,1.123,9.141,6
+lag: coh|icoh 0-0.25,lag_level,A,B1,,1.083,0.9451,1.22,8.262,6
+lag: coh|icoh 0-0.25,med,A,B0,,0.02204,-0.14,0.1841,0.1428,6
+lag: coh|icoh 0-0.25,dir_level,A,B0,,0.5266,0.3848,0.6683,3.898,6
+lag: coh|icoh 0-0.25,dir_level,K,B0,,0.04464,-0.001429,0.09071,1.017,6
+lag: coh|icoh 0-0.25,band_level,A,B0,,-0.2946,-0.4129,-0.1764,-2.615,6
+lag: coh|icoh 0-0.25,band_disp,A,B0,,0.2681,0.1116,0.4247,1.798,6
+lag: coh|icoh 0-0.25,form_level,A,B0,,0.06485,-0.06492,0.1946,0.5244,6
+lag: coh|icoh 0-0.25,form_disp,A,B0,,0.04967,-0.04847,0.1478,0.5311,6
+lag: coh|icoh 0-0.25,warp_level,A,B0,,0.04166,-0.09033,0.1737,0.3312,6
+lag: coh|icoh 0-0.25,warp_disp,A,B0,,0.07854,-0.1026,0.2597,0.4551,6
+lag: coh|icoh 0-0.25,nuis_cv_s,A,B0,,0.003292,-0.224,0.2305,0.0152,6
+lag: coh|icoh 0-0.25,nuis_cv_s,A,B1,,-0.04657,-0.2446,0.1515,-0.2467,6
+lag: coh|icoh 0-0.25,nuis_noise,A,B0,,-0.07896,-0.1783,0.02039,-0.8341,6
+lag: coh|icoh 0-0.25,nuis_noise,A,B1,,-0.07672,-0.1709,0.0174,-0.8554,6
+lag: coh|icoh 0-0.25,nuis_T,A,B0,,-0.0264,-0.1399,0.0871,-0.2441,6
+lag: coh|icoh 0-0.25,nuis_T,A,B1,,-0.02955,-0.1532,0.09411,-0.2508,6
+lag: coh|icoh 0-0.25,nuis_r,A,B0,,-0.105,-0.161,-0.04906,-1.969,6
+lag: coh|icoh 0-0.25,nuis_r,A,B1,,-0.0887,-0.1331,-0.04431,-2.097,6
+lag: coh|icoh 0-0.25,nuis_beta,A,B0,,0.4199,0.3074,0.5325,3.917,6
+lag: coh|icoh 0-0.25,nuis_beta,A,B1,,0.4953,0.3215,0.6691,2.991,6
+lag: coh|icoh 0-0.25,nuis_mix,A,B0,,-0.4589,-0.5743,-0.3436,-4.175,6
+lag: coh|icoh 0-0.25,nuis_mix,A,B1,,-0.4481,-0.5653,-0.3309,-4.013,6
+lag: coh|icoh 0-0.25,nuis_M,A,B0,,0.005498,-0.1652,0.1762,0.03381,6
+lag: coh|icoh 0-0.25,nuis_M,A,B1,,0.2255,-0.2819,0.7329,0.4663,6
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,,-0.06314,-0.09433,-0.03194,-2.124,6
+lag: coh|icoh 0.25-0.5,lag_disp,A,B1,,0.01339,-0.04931,0.0761,0.2241,6
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,M:hi:24,-0.02302,-0.07759,0.03156,-0.6711,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,M:lo:8,-0.08186,-0.3353,0.1716,-0.5139,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,T:hi:4000,-0.1199,-0.2413,0.001494,-1.572,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,T:lo:500,-0.04583,-0.1658,0.0741,-0.6081,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,beta:hi:2.0,0.003717,-0.04225,0.04969,0.1287,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,cv_s:hi:1.5,-0.1332,-0.2228,-0.04361,-2.366,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,cv_s:lo:0.1,-0.02829,-0.156,0.0994,-0.3525,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,mix:hi:0.5,-0.2257,-0.3042,-0.1471,-4.572,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,noise:hi:1.0,0.004981,-0.02673,0.03669,0.25,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,noise:lo:0,-0.5073,-0.962,-0.05257,-1.775,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,r:hi:0.95,0.01559,-0.08225,0.1134,0.2536,4
+lag: coh|icoh 0.25-0.5,lag_disp,A,B0,r:lo:0.6,-0.09738,-0.1528,-0.04197,-2.797,4
+lag: coh|icoh 0.25-0.5,lag_disp,K,B0,,0.0002743,-0.002873,0.003422,0.09146,6
+lag: coh|icoh 0.25-0.5,lag_level,A,B0,,0.1226,0.06529,0.1798,2.246,6
+lag: coh|icoh 0.25-0.5,lag_level,A,B1,,0.05405,-0.0065,0.1146,0.9368,6
+lag: coh|icoh 0.25-0.5,med,A,B0,,-0.05062,-0.1017,0.0004917,-1.039,6
+lag: coh|icoh 0.25-0.5,dir_level,A,B0,,0.04143,0.002016,0.08084,1.103,6
+lag: coh|icoh 0.25-0.5,dir_level,K,B0,,0.001287,-0.004948,0.007523,0.2167,6
+lag: coh|icoh 0.25-0.5,band_level,A,B0,,-0.5732,-0.6821,-0.4643,-5.524,6
+lag: coh|icoh 0.25-0.5,band_disp,A,B0,,-0.4454,-0.6214,-0.2694,-2.656,6
+lag: coh|icoh 0.25-0.5,form_level,A,B0,,-0.03015,-0.09456,0.03426,-0.4912,6
+lag: coh|icoh 0.25-0.5,form_disp,A,B0,,0.001928,-0.03692,0.04078,0.05207,6
+lag: coh|icoh 0.25-0.5,warp_level,A,B0,,-0.04141,-0.1282,0.04533,-0.501,6
+lag: coh|icoh 0.25-0.5,warp_disp,A,B0,,0.01165,-0.02633,0.04964,0.322,6
+lag: coh|icoh 0.25-0.5,nuis_cv_s,A,B0,,0.03461,-0.0004827,0.0697,1.035,6
+lag: coh|icoh 0.25-0.5,nuis_cv_s,A,B1,,0.001299,-0.01154,0.01414,0.1062,6
+lag: coh|icoh 0.25-0.5,nuis_noise,A,B0,,-0.1899,-0.2543,-0.1256,-3.098,6
+lag: coh|icoh 0.25-0.5,nuis_noise,A,B1,,-0.2121,-0.304,-0.1202,-2.423,6
+lag: coh|icoh 0.25-0.5,nuis_T,A,B0,,0.01027,-0.05977,0.08032,0.1539,6
+lag: coh|icoh 0.25-0.5,nuis_T,A,B1,,0.008709,-0.06461,0.08203,0.1247,6
+lag: coh|icoh 0.25-0.5,nuis_r,A,B0,,-0.08724,-0.1208,-0.05363,-2.724,6
+lag: coh|icoh 0.25-0.5,nuis_r,A,B1,,-0.1093,-0.1997,-0.01881,-1.268,6
+lag: coh|icoh 0.25-0.5,nuis_beta,A,B0,,0.2952,0.2327,0.3578,4.954,6
+lag: coh|icoh 0.25-0.5,nuis_beta,A,B1,,0.3439,0.2789,0.409,5.551,6
+lag: coh|icoh 0.25-0.5,nuis_mix,A,B0,,-0.5308,-0.6678,-0.3939,-4.068,6
+lag: coh|icoh 0.25-0.5,nuis_mix,A,B1,,-0.4836,-0.5642,-0.4029,-6.293,6
+lag: coh|icoh 0.25-0.5,nuis_M,A,B0,,0.06647,-0.05955,0.1925,0.5535,6
+lag: coh|icoh 0.25-0.5,nuis_M,A,B1,,-0.04917,-0.1035,0.00517,-0.9496,6
+lag: plv|wpli,lag_disp,A,B0,,-0.5302,-0.5983,-0.4622,-8.182,6
+lag: plv|wpli,lag_disp,A,B1,,-0.4153,-0.5085,-0.3221,-4.676,6
+lag: plv|wpli,lag_disp,A,B0,M:hi:24,-0.5003,-0.6095,-0.3911,-7.291,4
+lag: plv|wpli,lag_disp,A,B0,M:lo:8,-0.5441,-0.7457,-0.3426,-4.297,4
+lag: plv|wpli,lag_disp,A,B0,T:hi:4000,-0.3957,-0.5891,-0.2022,-3.255,4
+lag: plv|wpli,lag_disp,A,B0,T:lo:500,-0.3611,-0.5309,-0.1913,-3.384,4
+lag: plv|wpli,lag_disp,A,B0,beta:hi:2.0,-0.04296,-0.1386,0.05266,-0.7149,4
+lag: plv|wpli,lag_disp,A,B0,cv_s:hi:1.5,-0.5309,-0.5952,-0.4666,-13.13,4
+lag: plv|wpli,lag_disp,A,B0,cv_s:lo:0.1,-0.4959,-0.5473,-0.4445,-15.35,4
+lag: plv|wpli,lag_disp,A,B0,mix:hi:0.5,-0.4869,-0.6797,-0.2941,-4.018,4
+lag: plv|wpli,lag_disp,A,B0,noise:hi:1.0,-0.1865,-0.3887,0.01578,-1.467,4
+lag: plv|wpli,lag_disp,A,B0,noise:lo:0,-0.7737,-0.8711,-0.6763,-12.64,4
+lag: plv|wpli,lag_disp,A,B0,r:hi:0.95,-0.3999,-0.5096,-0.2901,-5.798,4
+lag: plv|wpli,lag_disp,A,B0,r:lo:0.6,-0.6161,-0.7154,-0.5167,-9.868,4
+lag: plv|wpli,lag_disp,K,B0,,-0.02702,-0.08122,0.02718,-0.5232,6
+lag: plv|wpli,lag_level,A,B0,,0.3785,0.3134,0.4435,6.104,6
+lag: plv|wpli,lag_level,A,B1,,0.5463,0.4106,0.682,4.224,6
+lag: plv|wpli,med,A,B0,,-0.4945,-0.565,-0.4241,-7.371,6
+lag: plv|wpli,dir_level,A,B0,,0.661,0.5296,0.7924,5.279,6
+lag: plv|wpli,dir_level,K,B0,,0.08639,0.03444,0.1383,1.745,6
+lag: plv|wpli,band_level,A,B0,,-0.1586,-0.2335,-0.08374,-2.223,6
+lag: plv|wpli,band_disp,A,B0,,-0.003517,-0.03619,0.02916,-0.113,6
+lag: plv|wpli,form_level,A,B0,,-0.5375,-0.6062,-0.4688,-8.209,6
+lag: plv|wpli,form_disp,A,B0,,0.00394,-0.07634,0.08422,0.05151,6
+lag: plv|wpli,warp_level,A,B0,,-0.5993,-0.698,-0.5007,-6.377,6
+lag: plv|wpli,warp_disp,A,B0,,0.4354,0.3322,0.5386,4.429,6
+lag: plv|wpli,nuis_cv_s,A,B0,,0.146,0.07399,0.2181,2.127,6
+lag: plv|wpli,nuis_cv_s,A,B1,,0.1694,0.1112,0.2277,3.052,6
+lag: plv|wpli,nuis_noise,A,B0,,-0.5998,-0.6672,-0.5324,-9.343,6
+lag: plv|wpli,nuis_noise,A,B1,,-0.6202,-0.6691,-0.5714,-13.32,6
+lag: plv|wpli,nuis_T,A,B0,,0.3402,0.2705,0.41,5.119,6
+lag: plv|wpli,nuis_T,A,B1,,0.3781,0.3427,0.4134,11.21,6
+lag: plv|wpli,nuis_r,A,B0,,-0.2407,-0.274,-0.2074,-7.584,6
+lag: plv|wpli,nuis_r,A,B1,,-0.2085,-0.2408,-0.1762,-6.771,6
+lag: plv|wpli,nuis_beta,A,B0,,-0.5769,-0.6934,-0.4604,-5.197,6
+lag: plv|wpli,nuis_beta,A,B1,,-0.5501,-0.6041,-0.4961,-10.69,6
+lag: plv|wpli,nuis_mix,A,B0,,-0.214,-0.3161,-0.1119,-2.199,6
+lag: plv|wpli,nuis_mix,A,B1,,-0.203,-0.2988,-0.1072,-2.224,6
+lag: plv|wpli,nuis_M,A,B0,,-0.09219,-0.179,-0.00536,-1.114,6
+lag: plv|wpli,nuis_M,A,B1,,-0.09794,-0.2009,0.005047,-0.998,6
+lag: ppc|dswpli,lag_disp,A,B0,,-0.2501,-0.3595,-0.1407,-2.4,6
+lag: ppc|dswpli,lag_disp,A,B1,,-0.2776,-0.417,-0.1381,-2.089,6
+lag: ppc|dswpli,lag_disp,A,B0,M:hi:24,-0.2538,-0.3831,-0.1245,-3.124,4
+lag: ppc|dswpli,lag_disp,A,B0,M:lo:8,-0.4156,-0.6713,-0.1599,-2.587,4
+lag: ppc|dswpli,lag_disp,A,B0,T:hi:4000,-0.2178,-0.3568,-0.07879,-2.493,4
+lag: ppc|dswpli,lag_disp,A,B0,T:lo:500,-0.1032,-0.1621,-0.04432,-2.789,4
+lag: ppc|dswpli,lag_disp,A,B0,beta:hi:2.0,0.001109,-0.01361,0.01583,0.1199,4
+lag: ppc|dswpli,lag_disp,A,B0,cv_s:hi:1.5,-0.3172,-0.4911,-0.1433,-2.902,4
+lag: ppc|dswpli,lag_disp,A,B0,cv_s:lo:0.1,-0.2119,-0.2882,-0.1357,-4.423,4
+lag: ppc|dswpli,lag_disp,A,B0,mix:hi:0.5,-0.3408,-0.5252,-0.1565,-2.942,4
+lag: ppc|dswpli,lag_disp,A,B0,noise:hi:1.0,-0.05923,-0.1706,0.0522,-0.8458,4
+lag: ppc|dswpli,lag_disp,A,B0,noise:lo:0,-0.4198,-0.6852,-0.1545,-2.517,4
+lag: ppc|dswpli,lag_disp,A,B0,r:hi:0.95,-0.2421,-0.29,-0.1942,-8.047,4
+lag: ppc|dswpli,lag_disp,A,B0,r:lo:0.6,-0.2628,-0.4235,-0.1021,-2.602,4
+lag: ppc|dswpli,lag_disp,K,B0,,-0.002602,-0.01942,0.01422,-0.1624,6
+lag: ppc|dswpli,lag_level,A,B0,,0.5326,0.4662,0.5991,8.412,6
+lag: ppc|dswpli,lag_level,A,B1,,0.5565,0.4992,0.6137,10.2,6
+lag: ppc|dswpli,med,A,B0,,-0.1131,-0.2111,-0.01513,-1.211,6
+lag: ppc|dswpli,dir_level,A,B0,,0.2918,0.2207,0.3629,4.307,6
+lag: ppc|dswpli,dir_level,K,B0,,0.02901,-0.03941,0.09743,0.445,6
+lag: ppc|dswpli,band_level,A,B0,,-0.3124,-0.4056,-0.2193,-3.519,6
+lag: ppc|dswpli,band_disp,A,B0,,0.008587,-0.04017,0.05735,0.1848,6
+lag: ppc|dswpli,form_level,A,B0,,-0.08291,-0.1651,-0.0006889,-1.058,6
+lag: ppc|dswpli,form_disp,A,B0,,0.01159,-0.016,0.03918,0.4409,6
+lag: ppc|dswpli,warp_level,A,B0,,-0.1241,-0.2093,-0.03883,-1.528,6
+lag: ppc|dswpli,warp_disp,A,B0,,0.1249,0.05037,0.1994,1.759,6
+lag: ppc|dswpli,nuis_cv_s,A,B0,,0.09085,0.001078,0.1806,1.062,6
+lag: ppc|dswpli,nuis_cv_s,A,B1,,0.06539,-0.004753,0.1355,0.9783,6
+lag: ppc|dswpli,nuis_noise,A,B0,,-0.2449,-0.3486,-0.1413,-2.48,6
+lag: ppc|dswpli,nuis_noise,A,B1,,-0.271,-0.3326,-0.2094,-4.618,6
+lag: ppc|dswpli,nuis_T,A,B0,,0.07024,0.0005194,0.14,1.057,6
+lag: ppc|dswpli,nuis_T,A,B1,,0.08598,0.04365,0.1283,2.132,6
+lag: ppc|dswpli,nuis_r,A,B0,,-0.1392,-0.1793,-0.09913,-3.643,6
+lag: ppc|dswpli,nuis_r,A,B1,,-0.1448,-0.1989,-0.09063,-2.806,6
+lag: ppc|dswpli,nuis_beta,A,B0,,0.2348,0.1474,0.3222,2.819,6
+lag: ppc|dswpli,nuis_beta,A,B1,,0.2964,0.2298,0.3631,4.669,6
+lag: ppc|dswpli,nuis_mix,A,B0,,-0.2817,-0.3736,-0.1898,-3.217,6
+lag: ppc|dswpli,nuis_mix,A,B1,,-0.2329,-0.2904,-0.1754,-4.251,6
+lag: ppc|dswpli,nuis_M,A,B0,,-0.03139,-0.1217,0.05888,-0.365,6
+lag: ppc|dswpli,nuis_M,A,B1,,0.0987,-0.1105,0.3079,0.4952,6
+lag: pec|pec_orth,lag_disp,A,B0,,-0.1889,-0.2417,-0.1361,-3.755,6
+lag: pec|pec_orth,lag_disp,A,B1,,-0.1851,-0.28,-0.09029,-2.048,6
+lag: pec|pec_orth,lag_disp,A,B0,M:hi:24,-0.1345,-0.182,-0.08702,-4.508,4
+lag: pec|pec_orth,lag_disp,A,B0,M:lo:8,-0.3113,-0.422,-0.2007,-4.477,4
+lag: pec|pec_orth,lag_disp,A,B0,T:hi:4000,-0.2082,-0.2947,-0.1216,-3.826,4
+lag: pec|pec_orth,lag_disp,A,B0,T:lo:500,-0.04698,-0.06189,-0.03207,-5.013,4
+lag: pec|pec_orth,lag_disp,A,B0,beta:hi:2.0,-0.02108,-0.03976,-0.002397,-1.795,4
+lag: pec|pec_orth,lag_disp,A,B0,cv_s:hi:1.5,-0.2601,-0.3705,-0.1498,-3.751,4
+lag: pec|pec_orth,lag_disp,A,B0,cv_s:lo:0.1,-0.1147,-0.156,-0.07338,-4.417,4
+lag: pec|pec_orth,lag_disp,A,B0,mix:hi:0.5,-0.2869,-0.4767,-0.09717,-2.406,4
+lag: pec|pec_orth,lag_disp,A,B0,noise:hi:1.0,-0.02875,-0.05804,0.0005497,-1.561,4
+lag: pec|pec_orth,lag_disp,A,B0,noise:lo:0,-0.2165,-0.3658,-0.06716,-2.307,4
+lag: pec|pec_orth,lag_disp,A,B0,r:hi:0.95,-0.142,-0.2134,-0.07063,-3.166,4
+lag: pec|pec_orth,lag_disp,A,B0,r:lo:0.6,-0.2416,-0.3633,-0.1199,-3.16,4
+lag: pec|pec_orth,lag_disp,K,B0,,-0.007506,-0.1085,0.0935,-0.07799,6
+lag: pec|pec_orth,lag_level,A,B0,,0.3013,0.2156,0.387,3.688,6
+lag: pec|pec_orth,lag_level,A,B1,,0.3232,0.2355,0.4109,3.867,6
+lag: pec|pec_orth,med,A,B0,,0.09307,0.02379,0.1624,1.41,6
+lag: pec|pec_orth,dir_level,A,B0,,0.09828,0.06996,0.1266,3.642,6
+lag: pec|pec_orth,dir_level,K,B0,,0.2621,0.1468,0.3774,2.386,6
+lag: pec|pec_orth,band_level,A,B0,,-0.1163,-0.1807,-0.05193,-1.896,6
+lag: pec|pec_orth,band_disp,A,B0,,0.001672,-0.08023,0.08357,0.02142,6
+lag: pec|pec_orth,form_level,A,B0,,0.1036,0.05154,0.1557,2.088,6
+lag: pec|pec_orth,form_disp,A,B0,,0.02405,-0.01396,0.06206,0.6641,6
+lag: pec|pec_orth,warp_level,A,B0,,0.1464,0.09871,0.1941,3.221,6
+lag: pec|pec_orth,warp_disp,A,B0,,-0.1092,-0.1977,-0.02067,-1.295,6
+lag: pec|pec_orth,nuis_cv_s,A,B0,,-0.0236,-0.09282,0.04562,-0.3578,6
+lag: pec|pec_orth,nuis_cv_s,A,B1,,-0.03655,-0.1082,0.03508,-0.5355,6
+lag: pec|pec_orth,nuis_noise,A,B0,,0.06114,0.01368,0.1086,1.352,6
+lag: pec|pec_orth,nuis_noise,A,B1,,0.05147,-0.02081,0.1238,0.7473,6
+lag: pec|pec_orth,nuis_T,A,B0,,-0.103,-0.1368,-0.06909,-3.19,6
+lag: pec|pec_orth,nuis_T,A,B1,,-0.1117,-0.1662,-0.05725,-2.153,6
+lag: pec|pec_orth,nuis_r,A,B0,,0.07628,0.0415,0.1111,2.302,6
+lag: pec|pec_orth,nuis_r,A,B1,,0.06825,0.03927,0.09722,2.472,6
+lag: pec|pec_orth,nuis_beta,A,B0,,0.2514,0.1759,0.327,3.493,6
+lag: pec|pec_orth,nuis_beta,A,B1,,0.2266,0.1496,0.3037,3.087,6
+lag: pec|pec_orth,nuis_mix,A,B0,,-0.1796,-0.248,-0.1112,-2.755,6
+lag: pec|pec_orth,nuis_mix,A,B1,,-0.1369,-0.2017,-0.07206,-2.216,6
+lag: pec|pec_orth,nuis_M,A,B0,,0.02401,-0.04973,0.09775,0.3417,6
+lag: pec|pec_orth,nuis_M,A,B1,,0.1103,-0.06643,0.287,0.6549,6
+band: coh L|H,band_disp,A,B0,,-0.6699,-0.7477,-0.5921,-9.037,6
+band: coh L|H,band_disp,A,B1,,-0.7286,-0.7716,-0.6857,-17.8,6
+band: coh L|H,band_disp,A,B0,M:hi:24,-0.5709,-0.6305,-0.5113,-15.24,4
+band: coh L|H,band_disp,A,B0,M:lo:8,-0.8619,-1.05,-0.6736,-7.285,4
+band: coh L|H,band_disp,A,B0,T:hi:4000,-0.7398,-0.7646,-0.715,-47.48,4
+band: coh L|H,band_disp,A,B0,T:lo:500,-0.3685,-0.5088,-0.2282,-4.18,4
+band: coh L|H,band_disp,A,B0,beta:hi:2.0,-0.06778,-0.1327,-0.00284,-1.661,4
+band: coh L|H,band_disp,A,B0,cv_s:hi:1.5,-0.65,-0.7895,-0.5105,-7.414,4
+band: coh L|H,band_disp,A,B0,cv_s:lo:0.1,-0.5694,-0.6097,-0.529,-22.45,4
+band: coh L|H,band_disp,A,B0,mix:hi:0.5,-0.5622,-0.724,-0.4004,-5.529,4
+band: coh L|H,band_disp,A,B0,noise:hi:1.0,-0.2205,-0.4034,-0.03765,-1.919,4
+band: coh L|H,band_disp,A,B0,noise:lo:0,-0.5985,-0.6797,-0.5173,-11.73,4
+band: coh L|H,band_disp,A,B0,r:hi:0.95,-0.5756,-0.6704,-0.4809,-9.667,4
+band: coh L|H,band_disp,A,B0,r:lo:0.6,-0.6261,-0.6815,-0.5707,-17.97,4
+band: coh L|H,band_level,A,B0,,0.5318,0.4372,0.6264,5.899,6
+band: coh L|H,band_level,A,B1,,0.4426,0.3189,0.5663,3.755,6
+band: coh L|H,med,A,B0,,-0.3206,-0.4035,-0.2378,-4.062,6
+band: coh L|H,dir_level,A,B0,,0.1322,0.02721,0.2372,1.321,6
+band: coh L|H,dir_level,K,B0,,0.001375,-0.05989,0.06264,0.02356,6
+band: coh L|H,lag_level,A,B0,,-0.1067,-0.1726,-0.04081,-1.699,6
+band: coh L|H,lag_disp,A,B0,,0.03999,-0.02972,0.1097,0.602,6
+band: coh L|H,form_level,A,B0,,-0.3294,-0.4121,-0.2468,-4.184,6
+band: coh L|H,form_disp,A,B0,,0.007918,-0.07,0.08583,0.1066,6
+band: coh L|H,warp_level,A,B0,,-0.3202,-0.4614,-0.1789,-2.378,6
+band: coh L|H,warp_disp,A,B0,,0.2249,0.1128,0.3369,2.106,6
+band: coh L|H,nuis_cv_s,A,B0,,0.2209,0.08527,0.3566,1.709,6
+band: coh L|H,nuis_cv_s,A,B1,,0.09218,0.04876,0.1356,2.228,6
+band: coh L|H,nuis_noise,A,B0,,-0.8116,-0.9085,-0.7146,-8.784,6
+band: coh L|H,nuis_noise,A,B1,,-0.8545,-0.9234,-0.7855,-13.01,6
+band: coh L|H,nuis_T,A,B0,,0.302,0.1901,0.4138,2.834,6
+band: coh L|H,nuis_T,A,B1,,0.1548,0.06825,0.2414,1.877,6
+band: coh L|H,nuis_r,A,B0,,-0.5025,-0.5914,-0.4136,-5.929,6
+band: coh L|H,nuis_r,A,B1,,-0.5556,-0.6326,-0.4785,-7.568,6
+band: coh L|H,nuis_beta,A,B0,,0.475,0.3494,0.6005,3.97,6
+band: coh L|H,nuis_beta,A,B1,,0.6823,0.6263,0.7383,12.79,6
+band: coh L|H,nuis_mix,A,B0,,0.2098,0.0243,0.3953,1.187,6
+band: coh L|H,nuis_mix,A,B1,,0.3128,0.2209,0.4046,3.572,6
+band: coh L|H,nuis_M,A,B0,,-0.1868,-0.3789,0.005267,-1.021,6
+band: coh L|H,nuis_M,A,B1,,-0.05249,-0.2237,0.1187,-0.3218,6
+band: ppc L|H,band_disp,A,B0,,-0.6291,-0.6986,-0.5596,-9.495,6
+band: ppc L|H,band_disp,A,B1,,-0.6981,-0.7547,-0.6416,-12.96,6
+band: ppc L|H,band_disp,A,B0,M:hi:24,-0.527,-0.5593,-0.4946,-25.91,4
+band: ppc L|H,band_disp,A,B0,M:lo:8,-0.8155,-1.021,-0.6104,-6.325,4
+band: ppc L|H,band_disp,A,B0,T:hi:4000,-0.7023,-0.7308,-0.6738,-39.2,4
+band: ppc L|H,band_disp,A,B0,T:lo:500,-0.3061,-0.4233,-0.1889,-4.157,4
+band: ppc L|H,band_disp,A,B0,beta:hi:2.0,-0.0595,-0.1474,0.02841,-1.077,4
+band: ppc L|H,band_disp,A,B0,cv_s:hi:1.5,-0.6328,-0.785,-0.4806,-6.615,4
+band: ppc L|H,band_disp,A,B0,cv_s:lo:0.1,-0.4897,-0.5351,-0.4442,-17.14,4
+band: ppc L|H,band_disp,A,B0,mix:hi:0.5,-0.5744,-0.7369,-0.4119,-5.625,4
+band: ppc L|H,band_disp,A,B0,noise:hi:1.0,-0.1883,-0.3196,-0.05702,-2.282,4
+band: ppc L|H,band_disp,A,B0,noise:lo:0,-0.5653,-0.6367,-0.4939,-12.6,4
+band: ppc L|H,band_disp,A,B0,r:hi:0.95,-0.4944,-0.6142,-0.3746,-6.568,4
+band: ppc L|H,band_disp,A,B0,r:lo:0.6,-0.5616,-0.6272,-0.4959,-13.61,4
+band: ppc L|H,band_level,A,B0,,0.4765,0.3367,0.6163,3.577,6
+band: ppc L|H,band_level,A,B1,,0.4063,0.2873,0.5253,3.582,6
+band: ppc L|H,med,A,B0,,-0.2474,-0.3384,-0.1564,-2.852,6
+band: ppc L|H,dir_level,A,B0,,0.09747,-0.004097,0.199,1.007,6
+band: ppc L|H,dir_level,K,B0,,3.771e-06,-0.04922,0.04923,8.04e-05,6
+band: ppc L|H,lag_level,A,B0,,-0.0974,-0.155,-0.03976,-1.773,6
+band: ppc L|H,lag_disp,A,B0,,0.05272,-0.001869,0.1073,1.014,6
+band: ppc L|H,form_level,A,B0,,-0.2412,-0.3218,-0.1606,-3.142,6
+band: ppc L|H,form_disp,A,B0,,-0.007948,-0.06289,0.04699,-0.1518,6
+band: ppc L|H,warp_level,A,B0,,-0.2973,-0.4103,-0.1842,-2.759,6
+band: ppc L|H,warp_disp,A,B0,,0.219,0.06001,0.378,1.446,6
+band: ppc L|H,nuis_cv_s,A,B0,,0.2253,0.09977,0.3507,1.884,6
+band: ppc L|H,nuis_cv_s,A,B1,,0.07061,0.02416,0.1171,1.595,6
+band: ppc L|H,nuis_noise,A,B0,,-0.7769,-0.8651,-0.6888,-9.25,6
+band: ppc L|H,nuis_noise,A,B1,,-0.7914,-0.8438,-0.739,-15.85,6
+band: ppc L|H,nuis_T,A,B0,,0.2761,0.1905,0.3618,3.383,6
+band: ppc L|H,nuis_T,A,B1,,0.1371,0.05182,0.2224,1.687,6
+band: ppc L|H,nuis_r,A,B0,,-0.4655,-0.5556,-0.3753,-5.419,6
+band: ppc L|H,nuis_r,A,B1,,-0.5173,-0.5976,-0.4369,-6.758,6
+band: ppc L|H,nuis_beta,A,B0,,0.5169,0.383,0.6508,4.05,6
+band: ppc L|H,nuis_beta,A,B1,,0.6809,0.5958,0.766,8.396,6
+band: ppc L|H,nuis_mix,A,B0,,0.2265,0.05067,0.4024,1.352,6
+band: ppc L|H,nuis_mix,A,B1,,0.3011,0.2313,0.3709,4.527,6
+band: ppc L|H,nuis_M,A,B0,,-0.1445,-0.3145,0.0255,-0.892,6
+band: ppc L|H,nuis_M,A,B1,,-0.01689,-0.2546,0.2208,-0.07456,6
+band: sgc L|H,band_disp,A,B0,,0.3265,0.2947,0.3582,10.79,6
+band: sgc L|H,band_disp,A,B1,,0.262,0.1878,0.3363,3.705,6
+band: sgc L|H,band_disp,A,B0,M:hi:24,0.3602,0.2766,0.4437,6.859,4
+band: sgc L|H,band_disp,A,B0,M:lo:8,0.287,0.07724,0.4967,2.177,4
+band: sgc L|H,band_disp,A,B0,T:hi:4000,0.2516,0.06248,0.4408,2.117,4
+band: sgc L|H,band_disp,A,B0,T:lo:500,0.1914,0.00748,0.3754,1.656,4
+band: sgc L|H,band_disp,A,B0,beta:hi:2.0,-0.05551,-0.1185,0.007506,-1.402,4
+band: sgc L|H,band_disp,A,B0,cv_s:hi:1.5,0.3384,0.2218,0.4549,4.618,4
+band: sgc L|H,band_disp,A,B0,cv_s:lo:0.1,0.3414,0.2766,0.4062,8.382,4
+band: sgc L|H,band_disp,A,B0,mix:hi:0.5,0.292,0.1735,0.4105,3.921,4
+band: sgc L|H,band_disp,A,B0,noise:hi:1.0,0.05255,-0.01127,0.1164,1.31,4
+band: sgc L|H,band_disp,A,B0,noise:lo:0,0.4325,0.1465,0.7184,2.407,4
+band: sgc L|H,band_disp,A,B0,r:hi:0.95,0.3107,0.1759,0.4455,3.668,4
+band: sgc L|H,band_disp,A,B0,r:lo:0.6,0.3253,0.1945,0.4561,3.958,4
+band: sgc L|H,band_level,A,B0,,-0.1439,-0.2304,-0.05739,-1.746,6
+band: sgc L|H,band_level,A,B1,,-0.05215,-0.1155,0.01125,-0.8633,6
+band: sgc L|H,med,A,B0,,-0.4096,-0.5329,-0.2863,-3.486,6
+band: sgc L|H,dir_level,A,B0,,0.3144,0.2149,0.4139,3.316,6
+band: sgc L|H,dir_level,K,B0,,-0.2508,-0.618,0.1164,-0.7167,6
+band: sgc L|H,lag_level,A,B0,,0.2511,0.204,0.2981,5.601,6
+band: sgc L|H,lag_disp,A,B0,,-0.2787,-0.3547,-0.2027,-3.85,6
+band: sgc L|H,form_level,A,B0,,-0.4054,-0.5242,-0.2865,-3.58,6
+band: sgc L|H,form_disp,A,B0,,0.01935,-0.03108,0.06978,0.4027,6
+band: sgc L|H,warp_level,A,B0,,-0.3837,-0.5428,-0.2245,-2.53,6
+band: sgc L|H,warp_disp,A,B0,,0.2631,0.1545,0.3717,2.543,6
+band: sgc L|H,nuis_cv_s,A,B0,,0.3168,0.1435,0.4901,1.919,6
+band: sgc L|H,nuis_cv_s,A,B1,,0.2612,0.1391,0.3833,2.245,6
+band: sgc L|H,nuis_noise,A,B0,,-0.7179,-0.8073,-0.6285,-8.428,6
+band: sgc L|H,nuis_noise,A,B1,,-0.7818,-0.8319,-0.7316,-16.35,6
+band: sgc L|H,nuis_T,A,B0,,0.3705,0.2815,0.4596,4.367,6
+band: sgc L|H,nuis_T,A,B1,,0.367,0.31,0.4239,6.757,6
+band: sgc L|H,nuis_r,A,B0,,-0.3797,-0.4426,-0.3167,-6.33,6
+band: sgc L|H,nuis_r,A,B1,,-0.3804,-0.4179,-0.343,-10.66,6
+band: sgc L|H,nuis_beta,A,B0,,0.3919,0.2693,0.5145,3.355,6
+band: sgc L|H,nuis_beta,A,B1,,0.4699,0.3613,0.5784,4.543,6
+band: sgc L|H,nuis_mix,A,B0,,0.009592,-0.005674,0.02486,0.6594,6
+band: sgc L|H,nuis_mix,A,B1,,-0.006097,-0.04785,0.03565,-0.1533,6
+band: sgc L|H,nuis_M,A,B0,,-0.2483,-0.3901,-0.1066,-1.839,6
+band: sgc L|H,nuis_M,A,B1,,-0.1721,-0.3123,-0.03196,-1.289,6
+mediation: LW,med,C,B0,,-0.2373,-0.2676,-0.207,-8.221,6
+mediation: LW,med,A,B0,,-0.02068,-0.03847,-0.002893,-1.22,6
+mediation: LW,dir_level,A,B0,,0.004647,-0.002591,0.01189,0.6738,6
+mediation: LW,dir_level,K,B0,,0.3187,0.1471,0.4902,1.949,6
+mediation: LW,lag_level,A,B0,,0.0731,0.04584,0.1004,2.814,6
+mediation: LW,lag_disp,A,B0,,-0.00571,-0.02425,0.01283,-0.3233,6
+mediation: LW,band_level,A,B0,,0.009798,-0.003798,0.02339,0.7563,6
+mediation: LW,band_disp,A,B0,,0.001173,-0.006304,0.008651,0.1647,6
+mediation: LW,form_level,A,B0,,0.04269,0.02837,0.05701,3.128,6
+mediation: LW,form_disp,A,B0,,-0.002835,-0.0232,0.01754,-0.146,6
+mediation: LW,warp_level,A,B0,,0.04161,0.02499,0.05823,2.628,6
+mediation: LW,warp_disp,A,B0,,-0.008285,-0.01685,0.0002819,-1.015,6
+mediation: LW,nuis_cv_s,A,B0,,-0.002122,-0.0248,0.02056,-0.09818,6
+mediation: LW,nuis_cv_s,A,B1,,0.0276,-0.02642,0.08162,0.5361,6
+mediation: LW,nuis_noise,A,B0,,0.0592,0.04132,0.07707,3.476,6
+mediation: LW,nuis_noise,A,B1,,0.133,-0.0006589,0.2666,1.044,6
+mediation: LW,nuis_T,A,B0,,0.01176,0.006556,0.01696,2.372,6
+mediation: LW,nuis_T,A,B1,,-0.005208,-0.08322,0.07281,-0.07005,6
+mediation: LW,nuis_r,A,B0,,-0.02387,-0.04798,0.000231,-1.039,6
+mediation: LW,nuis_r,A,B1,,-0.02425,-0.04046,-0.008038,-1.57,6
+mediation: LW,nuis_beta,A,B0,,,,,,0
+mediation: LW,nuis_beta,A,B1,,,,,,0
+mediation: LW,nuis_mix,A,B0,,-0.1471,-0.1894,-0.1048,-3.65,6
+mediation: LW,nuis_mix,A,B1,,-0.1089,-0.1857,-0.03215,-1.489,6
+mediation: LW,nuis_M,A,B0,,0.0363,-0.01706,0.08965,0.714,6
+mediation: LW,nuis_M,A,B1,,-0.005391,-0.02364,0.01286,-0.3101,6
+mediation: empirical,med,C,B0,,-0.2381,-0.2685,-0.2076,-8.209,6
+mediation: empirical,med,A,B0,,-0.01834,-0.03794,0.001261,-0.9819,6
+mediation: empirical,dir_level,A,B0,,0.005441,-0.002518,0.0134,0.7174,6
+mediation: empirical,dir_level,K,B0,,0.3183,0.1469,0.4897,1.949,6
+mediation: empirical,lag_level,A,B0,,0.08272,0.05255,0.1129,2.877,6
+mediation: empirical,lag_disp,A,B0,,-0.008348,-0.03267,0.01598,-0.3602,6
+mediation: empirical,band_level,A,B0,,0.01061,-0.005794,0.02701,0.6788,6
+mediation: empirical,band_disp,A,B0,,0.001207,-0.007769,0.01018,0.1411,6
+mediation: empirical,form_level,A,B0,,0.0498,0.03226,0.06735,2.979,6
+mediation: empirical,form_disp,A,B0,,-0.006007,-0.03325,0.02124,-0.2314,6
+mediation: empirical,warp_level,A,B0,,0.04754,0.02733,0.06774,2.469,6
+mediation: empirical,warp_disp,A,B0,,-0.01106,-0.02211,-6.519e-06,-1.05,6
+mediation: empirical,nuis_cv_s,A,B0,,-0.002705,-0.02918,0.02378,-0.1072,6
+mediation: empirical,nuis_cv_s,A,B1,,0.02851,-0.03279,0.08982,0.4881,6
+mediation: empirical,nuis_noise,A,B0,,0.07003,0.04845,0.0916,3.406,6
+mediation: empirical,nuis_noise,A,B1,,0.1533,0.0009171,0.3057,1.056,6
+mediation: empirical,nuis_T,A,B0,,0.0486,0.03848,0.05871,5.042,6
+mediation: empirical,nuis_T,A,B1,,0.03824,-0.01841,0.09489,0.7084,6
+mediation: empirical,nuis_r,A,B0,,-0.02543,-0.0523,0.001436,-0.9933,6
+mediation: empirical,nuis_r,A,B1,,-0.02439,-0.03895,-0.009825,-1.757,6
+mediation: empirical,nuis_beta,A,B0,,0.0562,0.03771,0.07469,3.19,6
+mediation: empirical,nuis_beta,A,B1,,0.1172,0.0004458,0.2339,1.053,6
+mediation: empirical,nuis_mix,A,B0,,-0.1427,-0.1862,-0.09927,-3.447,6
+mediation: empirical,nuis_mix,A,B1,,-0.09829,-0.1824,-0.01416,-1.226,6
+mediation: empirical,nuis_M,A,B0,,0.02676,-0.03763,0.09114,0.4361,6
+mediation: empirical,nuis_M,A,B1,,-0.014,-0.03523,0.007236,-0.6918,6
+direction: tlmi_g|gc,dir_level,B,B0,,-0.07381,-0.1504,0.00281,-1.011,6
+direction: tlmi_g|gc,dir_disp,B,B0,,-0.02298,-0.04564,-0.0003091,-1.064,6
+direction: tlmi_g|gc,med,A,B0,,-0.2293,-0.359,-0.0995,-1.854,6
+direction: tlmi_g|gc,dir_level,A,B0,,0.3355,0.2771,0.3938,6.036,6
+direction: tlmi_g|gc,dir_level,K,B0,,0.1836,0.1039,0.2634,2.416,6
+direction: tlmi_g|gc,lag_level,A,B0,,0.6465,0.5671,0.7259,8.542,6
+direction: tlmi_g|gc,lag_disp,A,B0,,-0.6145,-0.7103,-0.5186,-6.727,6
+direction: tlmi_g|gc,band_level,A,B0,,0.0466,0.01443,0.07878,1.52,6
+direction: tlmi_g|gc,band_disp,A,B0,,-0.09506,-0.139,-0.05108,-2.268,6
+direction: tlmi_g|gc,form_level,A,B0,,-0.0455,-0.07578,-0.01522,-1.577,6
+direction: tlmi_g|gc,form_disp,A,B0,,0.0247,-0.04158,0.09097,0.3911,6
+direction: tlmi_g|gc,warp_level,A,B0,,-0.1669,-0.2912,-0.04261,-1.409,6
+direction: tlmi_g|gc,warp_disp,A,B0,,0.06206,-0.008606,0.1327,0.9216,6
+direction: tlmi_g|gc,nuis_cv_s,A,B0,,0.08362,0.03619,0.1311,1.85,6
+direction: tlmi_g|gc,nuis_cv_s,A,B1,,0.1094,0.03343,0.1853,1.512,6
+direction: tlmi_g|gc,nuis_noise,A,B0,,0.2154,0.1575,0.2732,3.907,6
+direction: tlmi_g|gc,nuis_noise,A,B1,,0.2997,0.2384,0.361,5.129,6
+direction: tlmi_g|gc,nuis_T,A,B0,,0.1043,0.07897,0.1297,4.317,6
+direction: tlmi_g|gc,nuis_T,A,B1,,0.1888,0.1106,0.267,2.534,6
+direction: tlmi_g|gc,nuis_r,A,B0,,-0.1871,-0.2523,-0.1219,-3.012,6
+direction: tlmi_g|gc,nuis_r,A,B1,,-0.1714,-0.2,-0.1428,-6.297,6
+direction: tlmi_g|gc,nuis_beta,A,B0,,0.1164,0.04675,0.1861,1.753,6
+direction: tlmi_g|gc,nuis_beta,A,B1,,0.1323,0.07314,0.1914,2.348,6
+direction: tlmi_g|gc,nuis_mix,A,B0,,-0.1148,-0.19,-0.0395,-1.6,6
+direction: tlmi_g|gc,nuis_mix,A,B1,,-0.105,-0.1933,-0.01666,-1.247,6
+direction: tlmi_g|gc,nuis_M,A,B0,,0.01943,-0.08018,0.119,0.2047,6
+direction: tlmi_g|gc,nuis_M,A,B1,,0.05733,-0.08338,0.198,0.4276,6
+warp: eucl|dtwSC,warp_disp,A,B0,,-0.05081,-0.1548,0.05314,-0.5129,6
+warp: eucl|dtwSC,warp_disp,A,B1,,-0.08727,-0.1785,0.004008,-1.003,6
+warp: eucl|dtwSC,warp_disp,A,B0,M:hi:24,0.008224,-0.06365,0.08009,0.1821,4
+warp: eucl|dtwSC,warp_disp,A,B0,M:lo:8,-0.04754,-0.522,0.4269,-0.1595,4
+warp: eucl|dtwSC,warp_disp,A,B0,T:hi:4000,-0.06744,-0.1604,0.02552,-1.154,4
+warp: eucl|dtwSC,warp_disp,A,B0,T:lo:500,-0.03472,-0.1163,0.04682,-0.6775,4
+warp: eucl|dtwSC,warp_disp,A,B0,beta:hi:2.0,-0.009098,-0.1111,0.09293,-0.1419,4
+warp: eucl|dtwSC,warp_disp,A,B0,cv_s:hi:1.5,-0.02154,-0.2346,0.1915,-0.1608,4
+warp: eucl|dtwSC,warp_disp,A,B0,cv_s:lo:0.1,-0.004379,-0.04448,0.03572,-0.1738,4
+warp: eucl|dtwSC,warp_disp,A,B0,mix:hi:0.5,0.02899,-0.07691,0.1349,0.4356,4
+warp: eucl|dtwSC,warp_disp,A,B0,noise:hi:1.0,-0.01407,-0.158,0.1299,-0.1555,4
+warp: eucl|dtwSC,warp_disp,A,B0,noise:lo:0,0.05328,-0.02212,0.1287,1.124,4
+warp: eucl|dtwSC,warp_disp,A,B0,r:hi:0.95,-0.05819,-0.2243,0.1079,-0.5575,4
+warp: eucl|dtwSC,warp_disp,A,B0,r:lo:0.6,-0.1106,-0.17,-0.05118,-2.962,4
+warp: eucl|dtwSC,warp_level,A,B0,,-0.06548,-0.1407,0.009692,-0.9141,6
+warp: eucl|dtwSC,warp_level,A,B1,,-0.1953,-0.2836,-0.107,-2.32,6
+warp: eucl|dtwSC,med,A,B0,,-0.2286,-0.3426,-0.1146,-2.105,6
+warp: eucl|dtwSC,dir_level,A,B0,,0.03091,-0.01361,0.07543,0.7287,6
+warp: eucl|dtwSC,dir_level,K,B0,,0.1381,-0.07172,0.348,0.6908,6
+warp: eucl|dtwSC,lag_level,A,B0,,-0.1279,-0.1816,-0.07414,-2.497,6
+warp: eucl|dtwSC,lag_disp,A,B0,,-0.09498,-0.1656,-0.02438,-1.412,6
+warp: eucl|dtwSC,band_level,A,B0,,-0.2437,-0.3558,-0.1316,-2.281,6
+warp: eucl|dtwSC,band_disp,A,B0,,-0.2012,-0.3031,-0.09937,-2.073,6
+warp: eucl|dtwSC,form_level,A,B0,,-0.3978,-0.4458,-0.3499,-8.71,6
+warp: eucl|dtwSC,form_disp,A,B0,,-0.03567,-0.09616,0.02483,-0.6187,6
+warp: eucl|dtwSC,nuis_cv_s,A,B0,,0.2451,0.116,0.3742,1.992,6
+warp: eucl|dtwSC,nuis_cv_s,A,B1,,0.2325,0.1041,0.361,1.9,6
+warp: eucl|dtwSC,nuis_noise,A,B0,,-0.1945,-0.2232,-0.1659,-7.123,6
+warp: eucl|dtwSC,nuis_noise,A,B1,,-0.2271,-0.2903,-0.1639,-3.773,6
+warp: eucl|dtwSC,nuis_T,A,B0,,0.1916,0.1367,0.2464,3.668,6
+warp: eucl|dtwSC,nuis_T,A,B1,,0.201,0.1453,0.2567,3.787,6
+warp: eucl|dtwSC,nuis_r,A,B0,,-0.2566,-0.3071,-0.2062,-5.34,6
+warp: eucl|dtwSC,nuis_r,A,B1,,-0.2441,-0.3235,-0.1647,-3.228,6
+warp: eucl|dtwSC,nuis_beta,A,B0,,-0.2362,-0.3286,-0.1437,-2.682,6
+warp: eucl|dtwSC,nuis_beta,A,B1,,-0.2167,-0.3563,-0.07705,-1.629,6
+warp: eucl|dtwSC,nuis_mix,A,B0,,0.187,0.1108,0.2632,2.575,6
+warp: eucl|dtwSC,nuis_mix,A,B1,,0.1773,0.11,0.2447,2.763,6
+warp: eucl|dtwSC,nuis_M,A,B0,,-0.1388,-0.2539,-0.02367,-1.265,6
+warp: eucl|dtwSC,nuis_M,A,B1,,-0.1806,-0.2788,-0.08243,-1.931,6
+warp: dtwSC|dtw,warp_disp,A,B0,,-0.02677,-0.08059,0.02705,-0.5219,6
+warp: dtwSC|dtw,warp_disp,A,B1,,-0.008707,-0.0368,0.01939,-0.3252,6
+warp: dtwSC|dtw,warp_disp,A,B0,M:hi:24,-0.006765,-0.01929,0.005763,-0.8592,4
+warp: dtwSC|dtw,warp_disp,A,B0,M:lo:8,0.0167,-0.085,0.1184,0.2613,4
+warp: dtwSC|dtw,warp_disp,A,B0,T:hi:4000,0.01554,-0.05048,0.08156,0.3746,4
+warp: dtwSC|dtw,warp_disp,A,B0,T:lo:500,-0.002059,-0.04657,0.04245,-0.07359,4
+warp: dtwSC|dtw,warp_disp,A,B0,beta:hi:2.0,-0.007443,-0.207,0.1921,-0.05936,4
+warp: dtwSC|dtw,warp_disp,A,B0,cv_s:hi:1.5,0.01554,-0.03624,0.06731,0.4775,4
+warp: dtwSC|dtw,warp_disp,A,B0,cv_s:lo:0.1,-0.01221,-0.04828,0.02387,-0.5384,4
+warp: dtwSC|dtw,warp_disp,A,B0,mix:hi:0.5,0.008042,-0.0177,0.03378,0.4971,4
+warp: dtwSC|dtw,warp_disp,A,B0,noise:hi:1.0,-0.01682,-0.0568,0.02317,-0.6691,4
+warp: dtwSC|dtw,warp_disp,A,B0,noise:lo:0,-0.008618,-0.04327,0.02603,-0.3957,4
+warp: dtwSC|dtw,warp_disp,A,B0,r:hi:0.95,0.01976,-0.01278,0.0523,0.9664,4
+warp: dtwSC|dtw,warp_disp,A,B0,r:lo:0.6,-0.007224,-0.02576,0.01131,-0.6203,4
+warp: dtwSC|dtw,warp_level,A,B0,,0.004709,-0.02809,0.03751,0.1507,6
+warp: dtwSC|dtw,warp_level,A,B1,,0.00621,-0.03641,0.04882,0.1529,6
+warp: dtwSC|dtw,med,A,B0,,-0.01618,-0.04842,0.01607,-0.5264,6
+warp: dtwSC|dtw,dir_level,A,B0,,0.01367,-0.01795,0.04528,0.4537,6
+warp: dtwSC|dtw,dir_level,K,B0,,-1.85e-17,-6.607e-17,2.906e-17,-0.4082,6
+warp: dtwSC|dtw,lag_level,A,B0,,-0.003815,-0.01747,0.00984,-0.2932,6
+warp: dtwSC|dtw,lag_disp,A,B0,,-0.01126,-0.0201,-0.002422,-1.337,6
+warp: dtwSC|dtw,band_level,A,B0,,0.04685,0.001777,0.09192,1.091,6
+warp: dtwSC|dtw,band_disp,A,B0,,0.08389,0.06118,0.1066,3.876,6
+warp: dtwSC|dtw,form_level,A,B0,,0.02581,-0.004198,0.05582,0.9026,6
+warp: dtwSC|dtw,form_disp,A,B0,,0.0703,0.05438,0.08622,4.634,6
+warp: dtwSC|dtw,nuis_cv_s,A,B0,,0.04014,0.005888,0.07439,1.23,6
+warp: dtwSC|dtw,nuis_cv_s,A,B1,,0.03428,0.00564,0.06293,1.256,6
+warp: dtwSC|dtw,nuis_noise,A,B0,,0.01568,-0.005253,0.03661,0.7861,6
+warp: dtwSC|dtw,nuis_noise,A,B1,,0.02886,-0.008117,0.06583,0.8191,6
+warp: dtwSC|dtw,nuis_T,A,B0,,0.00282,-0.02983,0.03547,0.09064,6
+warp: dtwSC|dtw,nuis_T,A,B1,,-0.003029,-0.03795,0.03189,-0.09104,6
+warp: dtwSC|dtw,nuis_r,A,B0,,-0.03335,-0.05102,-0.01568,-1.981,6
+warp: dtwSC|dtw,nuis_r,A,B1,,-0.05537,-0.08636,-0.02439,-1.875,6
+warp: dtwSC|dtw,nuis_beta,A,B0,,-0.4883,-0.5361,-0.4406,-10.73,6
+warp: dtwSC|dtw,nuis_beta,A,B1,,-0.5772,-0.6504,-0.5041,-8.28,6
+warp: dtwSC|dtw,nuis_mix,A,B0,,0.04373,0.02664,0.06081,2.686,6
+warp: dtwSC|dtw,nuis_mix,A,B1,,0.02681,0.008553,0.04507,1.541,6
+warp: dtwSC|dtw,nuis_M,A,B0,,-0.03175,-0.04279,-0.0207,-3.016,6
+warp: dtwSC|dtw,nuis_M,A,B1,,-0.03357,-0.07363,0.006476,-0.8797,6
+direction: gc A|At,dir_level,B,B0,,-0.8968,-0.9574,-0.8361,-15.53,6
+direction: gc A|At,dir_disp,B,B0,,-0.2567,-0.4328,-0.0805,-1.529,6
+direction: gc A|At,med,A,B0,,-0.05688,-0.1403,0.02659,-0.7152,6
+direction: gc A|At,dir_level,A,B0,,0.1412,0.08093,0.2014,2.46,6
+direction: gc A|At,dir_level,K,B0,,0.603,0.5069,0.699,6.588,6
+direction: gc A|At,lag_level,A,B0,,0.1166,0.00975,0.2235,1.145,6
+direction: gc A|At,lag_disp,A,B0,,0.04199,-0.008236,0.09222,0.8774,6
+direction: gc A|At,band_level,A,B0,,-0.1153,-0.2038,-0.02687,-1.368,6
+direction: gc A|At,band_disp,A,B0,,-0.6763,-0.8592,-0.4933,-3.878,6
+direction: gc A|At,form_level,A,B0,,-0.1238,-0.2009,-0.04679,-1.687,6
+direction: gc A|At,form_disp,A,B0,,-0.05729,-0.1383,0.02374,-0.742,6
+direction: gc A|At,warp_level,A,B0,,-0.2447,-0.3641,-0.1252,-2.15,6
+direction: gc A|At,warp_disp,A,B0,,0.3347,0.2564,0.4129,4.489,6
+direction: gc A|At,nuis_cv_s,A,B0,,-0.004258,-0.044,0.03548,-0.1125,6
+direction: gc A|At,nuis_cv_s,A,B1,,-0.0401,-0.09787,0.01766,-0.7286,6
+direction: gc A|At,nuis_noise,A,B0,,-0.6268,-0.6629,-0.5907,-18.24,6
+direction: gc A|At,nuis_noise,A,B1,,-0.8441,-0.9111,-0.7772,-13.24,6
+direction: gc A|At,nuis_T,A,B0,,-0.07771,-0.1193,-0.03617,-1.963,6
+direction: gc A|At,nuis_T,A,B1,,-0.09248,-0.1349,-0.05008,-2.289,6
+direction: gc A|At,nuis_r,A,B0,,0.5792,0.5498,0.6086,20.67,6
+direction: gc A|At,nuis_r,A,B1,,0.5897,0.5715,0.6079,34.02,6
+direction: gc A|At,nuis_beta,A,B0,,-0.4201,-0.5196,-0.3205,-4.427,6
+direction: gc A|At,nuis_beta,A,B1,,-0.7112,-0.7693,-0.6532,-12.86,6
+direction: gc A|At,nuis_mix,A,B0,,-0.05401,-0.09991,-0.008119,-1.235,6
+direction: gc A|At,nuis_mix,A,B1,,0.001985,-0.01514,0.01911,0.1216,6
+direction: gc A|At,nuis_M,A,B0,,0.05372,0.02602,0.08142,2.035,6
+direction: gc A|At,nuis_M,A,B1,,0.08143,-0.04694,0.2098,0.6657,6
+direction: te A|At,dir_level,B,B0,,-0.07737,-0.1705,0.01574,-0.872,6
+direction: te A|At,dir_disp,B,B0,,0.0412,-0.08062,0.163,0.3549,6
+direction: te A|At,med,A,B0,,-0.08808,-0.1645,-0.01162,-1.209,6
+direction: te A|At,dir_level,A,B0,,0.1051,0.01294,0.1972,1.197,6
+direction: te A|At,dir_level,K,B0,,0.3807,0.2942,0.4672,4.619,6
+direction: te A|At,lag_level,A,B0,,0.2115,0.106,0.3169,2.105,6
+direction: te A|At,lag_disp,A,B0,,-0.0466,-0.1536,0.06043,-0.4569,6
+direction: te A|At,band_level,A,B0,,-0.05705,-0.15,0.03593,-0.6439,6
+direction: te A|At,band_disp,A,B0,,0.08468,-0.01719,0.1865,0.8723,6
+direction: te A|At,form_level,A,B0,,-0.008485,-0.1007,0.08373,-0.09656,6
+direction: te A|At,form_disp,A,B0,,-0.02915,-0.1101,0.05177,-0.378,6
+direction: te A|At,warp_level,A,B0,,-0.01749,-0.08411,0.04913,-0.2755,6
+direction: te A|At,warp_disp,A,B0,,0.06321,-0.04072,0.1671,0.6382,6
+direction: te A|At,nuis_cv_s,A,B0,,0.1081,-0.02867,0.245,0.8295,6
+direction: te A|At,nuis_cv_s,A,B1,,0.1523,-0.01156,0.3162,0.9754,6
+direction: te A|At,nuis_noise,A,B0,,-0.1907,-0.2889,-0.09249,-2.038,6
+direction: te A|At,nuis_noise,A,B1,,-0.3551,-0.5216,-0.1886,-2.238,6
+direction: te A|At,nuis_T,A,B0,,0.1058,0.04805,0.1636,1.923,6
+direction: te A|At,nuis_T,A,B1,,0.1158,0.03332,0.1982,1.473,6
+direction: te A|At,nuis_r,A,B0,,0.1678,0.01332,0.3222,1.14,6
+direction: te A|At,nuis_r,A,B1,,0.1836,0.02998,0.3372,1.254,6
+direction: te A|At,nuis_beta,A,B0,,0.03883,-0.04411,0.1218,0.4914,6
+direction: te A|At,nuis_beta,A,B1,,-0.07469,-0.1509,0.001527,-1.028,6
+direction: te A|At,nuis_mix,A,B0,,0.03775,-0.01459,0.09009,0.7568,6
+direction: te A|At,nuis_mix,A,B1,,-0.07248,-0.1914,0.04646,-0.6395,6
+direction: te A|At,nuis_M,A,B0,,-0.07739,-0.229,0.07426,-0.5355,6
+direction: te A|At,nuis_M,A,B1,,-0.03805,-0.2528,0.1767,-0.1859,6
+direction: sgc A|At,dir_level,B,B0,,-0.8403,-0.896,-0.7846,-15.83,6
+direction: sgc A|At,dir_disp,B,B0,,-0.1415,-0.2143,-0.06878,-2.042,6
+direction: sgc A|At,med,A,B0,,0.004465,-0.04621,0.05514,0.09245,6
+direction: sgc A|At,dir_level,A,B0,,-0.2578,-0.3434,-0.1722,-3.161,6
+direction: sgc A|At,dir_level,K,B0,,0.5781,0.448,0.7083,4.662,6
+direction: sgc A|At,lag_level,A,B0,,-0.113,-0.1962,-0.02978,-1.425,6
+direction: sgc A|At,lag_disp,A,B0,,0.04147,0.004665,0.07828,1.182,6
+direction: sgc A|At,band_level,A,B0,,0.04162,-0.03458,0.1178,0.5732,6
+direction: sgc A|At,band_disp,A,B0,,0.07983,-0.02951,0.1892,0.7662,6
+direction: sgc A|At,form_level,A,B0,,0.06063,-0.008183,0.1294,0.9246,6
+direction: sgc A|At,form_disp,A,B0,,0.01108,-0.0334,0.05556,0.2615,6
+direction: sgc A|At,warp_level,A,B0,,0.07987,-0.0286,0.1883,0.7727,6
+direction: sgc A|At,warp_disp,A,B0,,-0.08175,-0.1682,0.004719,-0.9922,6
+direction: sgc A|At,nuis_cv_s,A,B0,,0.01379,-0.01447,0.04204,0.512,6
+direction: sgc A|At,nuis_cv_s,A,B1,,0.07611,0.02001,0.1322,1.424,6
+direction: sgc A|At,nuis_noise,A,B0,,0.05253,-0.04404,0.1491,0.5708,6
+direction: sgc A|At,nuis_noise,A,B1,,0.08383,0.02074,0.1469,1.394,6
+direction: sgc A|At,nuis_T,A,B0,,0.0513,-0.0189,0.1215,0.7669,6
+direction: sgc A|At,nuis_T,A,B1,,0.01118,-0.05108,0.07343,0.1884,6
+direction: sgc A|At,nuis_r,A,B0,,0.07836,0.02513,0.1316,1.545,6
+direction: sgc A|At,nuis_r,A,B1,,0.1148,0.03051,0.1991,1.429,6
+direction: sgc A|At,nuis_beta,A,B0,,-0.01507,-0.08716,0.05702,-0.2194,6
+direction: sgc A|At,nuis_beta,A,B1,,-0.1486,-0.2622,-0.03498,-1.373,6
+direction: sgc A|At,nuis_mix,A,B0,,-0.01229,-0.04013,0.01555,-0.4633,6
+direction: sgc A|At,nuis_mix,A,B1,,-0.04796,-0.08079,-0.01514,-1.534,6
+direction: sgc A|At,nuis_M,A,B0,,0.04704,-0.002793,0.09686,0.9906,6
+direction: sgc A|At,nuis_M,A,B1,,0.07929,-0.005291,0.1639,0.9838,6
+form: median(ksgDCE - mi_g),form_level,A,B0,,0.0009132,-0.0005915,0.002418,0.6369,6
+form: median(ksgDCE - mi_g),form_level,A,B1,,5.499e-05,-0.001417,0.001527,0.03919,6
+form: median(ksgDCE - mi_g),form_level,A,B0,M:hi:24,0.0006811,-0.001035,0.002397,0.6315,4
+form: median(ksgDCE - mi_g),form_level,A,B0,M:lo:8,0.006185,-0.0009452,0.01331,1.38,4
+form: median(ksgDCE - mi_g),form_level,A,B0,T:hi:4000,0.001134,-0.0003959,0.002665,1.18,4
+form: median(ksgDCE - mi_g),form_level,A,B0,T:lo:500,-0.003275,-0.007293,0.0007438,-1.297,4
+form: median(ksgDCE - mi_g),form_level,A,B0,beta:hi:2.0,-0.0009035,-0.002063,0.0002564,-1.239,4
+form: median(ksgDCE - mi_g),form_level,A,B0,cv_s:hi:1.5,0.0002565,-0.001433,0.001946,0.2416,4
+form: median(ksgDCE - mi_g),form_level,A,B0,cv_s:lo:0.1,0.00116,-0.001097,0.003417,0.8177,4
+form: median(ksgDCE - mi_g),form_level,A,B0,mix:hi:0.5,0.001721,-0.0002506,0.003694,1.389,4
+form: median(ksgDCE - mi_g),form_level,A,B0,noise:hi:1.0,0.001201,-0.00262,0.005022,0.5001,4
+form: median(ksgDCE - mi_g),form_level,A,B0,noise:lo:0,0.0002515,-0.004328,0.004831,0.08738,4
+form: median(ksgDCE - mi_g),form_level,A,B0,r:hi:0.95,-0.001822,-0.003727,8.36e-05,-1.521,4
+form: median(ksgDCE - mi_g),form_level,A,B0,r:lo:0.6,0.002992,0.000209,0.005775,1.711,4
+form: median(ksgDCE - mi_g),form_disp,A,B0,,0.0002443,-0.001474,0.001963,0.1492,6
+form: median(ksgDCE - mi_g),form_disp,A,B1,,0.0008754,-0.001819,0.003569,0.341,6
+form: median(ksgDCE - mi_g),med,A,B0,,-0.0005936,-0.002493,0.001306,-0.328,6
+form: median(ksgDCE - mi_g),dir_level,A,B0,,-0.0009869,-0.002287,0.0003135,-0.7965,6
+form: median(ksgDCE - mi_g),dir_level,K,B0,,-0.4131,-0.4774,-0.3489,-6.747,6
+form: median(ksgDCE - mi_g),lag_level,A,B0,,-0.0003416,-0.001337,0.000654,-0.36,6
+form: median(ksgDCE - mi_g),lag_disp,A,B0,,-0.0004442,-0.002013,0.001125,-0.2971,6
+form: median(ksgDCE - mi_g),band_level,A,B0,,0.002322,0.0005418,0.004102,1.369,6
+form: median(ksgDCE - mi_g),band_disp,A,B0,,-0.0003322,-0.001659,0.0009942,-0.2629,6
+form: median(ksgDCE - mi_g),warp_level,A,B0,,-0.0007264,-0.001907,0.0004541,-0.6458,6
+form: median(ksgDCE - mi_g),warp_disp,A,B0,,-0.00156,-0.003287,0.0001674,-0.9477,6
+form: median(ksgDCE - mi_g),nuis_cv_s,A,B0,,0.0005822,-0.0008279,0.001992,0.4333,6
+form: median(ksgDCE - mi_g),nuis_cv_s,A,B1,,0.0007561,0.0001721,0.00134,1.359,6
+form: median(ksgDCE - mi_g),nuis_noise,A,B0,,0.0004703,-0.0005989,0.00154,0.4616,6
+form: median(ksgDCE - mi_g),nuis_noise,A,B1,,-0.002114,-0.002654,-0.001574,-4.108,6
+form: median(ksgDCE - mi_g),nuis_T,A,B0,,-0.006234,-0.007812,-0.004656,-4.147,6
+form: median(ksgDCE - mi_g),nuis_T,A,B1,,-0.01268,-0.01421,-0.01114,-8.654,6
+form: median(ksgDCE - mi_g),nuis_r,A,B0,,0.004972,0.003126,0.006818,2.827,6
+form: median(ksgDCE - mi_g),nuis_r,A,B1,,0.006779,0.005834,0.007725,7.523,6
+form: median(ksgDCE - mi_g),nuis_beta,A,B0,,0.003106,0.002122,0.00409,3.313,6
+form: median(ksgDCE - mi_g),nuis_beta,A,B1,,0.0005598,-0.001132,0.002252,0.3472,6
+form: median(ksgDCE - mi_g),nuis_mix,A,B0,,0.0002588,-0.00153,0.002047,0.1518,6
+form: median(ksgDCE - mi_g),nuis_mix,A,B1,,0.0006656,-0.0005497,0.001881,0.5748,6
+form: median(ksgDCE - mi_g),nuis_M,A,B0,,-0.000442,-0.004327,0.003443,-0.1194,6
+form: median(ksgDCE - mi_g),nuis_M,A,B1,,0.0003996,-0.001153,0.001952,0.2701,6
+form: median(te - gc),form_level,A,B0,,0.001715,0.001125,0.002304,3.053,6
+form: median(te - gc),form_level,A,B1,,0.001551,0.0008214,0.002281,2.231,6
+form: median(te - gc),form_level,A,B0,M:hi:24,0.0007813,0.0001638,0.001399,2.013,4
+form: median(te - gc),form_level,A,B0,M:lo:8,0.002934,0.0007678,0.0051,2.155,4
+form: median(te - gc),form_level,A,B0,T:hi:4000,0.0007316,-0.001091,0.002555,0.6385,4
+form: median(te - gc),form_level,A,B0,T:lo:500,0.001294,-0.001834,0.004423,0.6582,4
+form: median(te - gc),form_level,A,B0,beta:hi:2.0,-0.0001963,-0.001172,0.0007797,-0.32,4
+form: median(te - gc),form_level,A,B0,cv_s:hi:1.5,0.0008678,-0.0009991,0.002735,0.7397,4
+form: median(te - gc),form_level,A,B0,cv_s:lo:0.1,0.000654,-0.0001862,0.001494,1.239,4
+form: median(te - gc),form_level,A,B0,mix:hi:0.5,0.001198,0.000327,0.002069,2.189,4
+form: median(te - gc),form_level,A,B0,noise:hi:1.0,-0.0004149,-0.002051,0.001221,-0.4036,4
+form: median(te - gc),form_level,A,B0,noise:lo:0,0.001297,-0.000736,0.00333,1.015,4
+form: median(te - gc),form_level,A,B0,r:hi:0.95,0.002317,0.0001108,0.004524,1.671,4
+form: median(te - gc),form_level,A,B0,r:lo:0.6,0.0008272,-0.0006069,0.002261,0.9178,4
+form: median(te - gc),form_disp,A,B0,,0.0005825,-0.0005139,0.001679,0.5576,6
+form: median(te - gc),form_disp,A,B1,,0.0001708,-0.000769,0.001111,0.1907,6
+form: median(te - gc),med,A,B0,,0.0001823,-0.001272,0.001637,0.1316,6
+form: median(te - gc),dir_level,A,B0,,0.0001294,-0.0005778,0.0008365,0.192,6
+form: median(te - gc),dir_level,K,B0,,-0.02381,-0.03191,-0.0157,-3.084,6
+form: median(te - gc),lag_level,A,B0,,0.0003877,-0.0005193,0.001295,0.4486,6
+form: median(te - gc),lag_disp,A,B0,,0.0002534,-0.0007402,0.001247,0.2676,6
+form: median(te - gc),band_level,A,B0,,0.002186,0.001636,0.002736,4.169,6
+form: median(te - gc),band_disp,A,B0,,-0.0003786,-0.001244,0.0004871,-0.459,6
+form: median(te - gc),warp_level,A,B0,,0.0006911,-0.0001806,0.001563,0.832,6
+form: median(te - gc),warp_disp,A,B0,,0.0001563,-0.0007089,0.001022,0.1896,6
+form: median(te - gc),nuis_cv_s,A,B0,,8.607e-05,-0.0007604,0.0009326,0.1067,6
+form: median(te - gc),nuis_cv_s,A,B1,,0.0003915,-0.0007006,0.001483,0.3762,6
+form: median(te - gc),nuis_noise,A,B0,,0.002234,0.001164,0.003304,2.191,6
+form: median(te - gc),nuis_noise,A,B1,,0.002256,0.00108,0.003432,2.013,6
+form: median(te - gc),nuis_T,A,B0,,0.004177,0.002879,0.005475,3.378,6
+form: median(te - gc),nuis_T,A,B1,,0.005431,0.004156,0.006706,4.469,6
+form: median(te - gc),nuis_r,A,B0,,-0.0008188,-0.002096,0.0004586,-0.6727,6
+form: median(te - gc),nuis_r,A,B1,,-0.0005642,-0.001424,0.0002953,-0.6888,6
+form: median(te - gc),nuis_beta,A,B0,,0.001612,0.0009354,0.002289,2.499,6
+form: median(te - gc),nuis_beta,A,B1,,0.002002,0.001337,0.002667,3.159,6
+form: median(te - gc),nuis_mix,A,B0,,0.000458,-0.0002863,0.001202,0.6458,6
+form: median(te - gc),nuis_mix,A,B1,,0.0003949,8.507e-05,0.0007048,1.338,6
+form: median(te - gc),nuis_M,A,B0,,-0.0004573,-0.002508,0.001593,-0.234,6
+form: median(te - gc),nuis_M,A,B1,,0.0004116,-0.000789,0.001612,0.3598,6
+lag: median icoh/sqrt(coh),lag_level,A,B0,,0.005287,0.002318,0.008257,1.869,6
+lag: median icoh/sqrt(coh),lag_level,A,B1,,0.004626,0.002352,0.0069,2.135,6
+lag: median icoh/sqrt(coh),lag_level,A,B0,M:hi:24,0.004285,0.003128,0.005442,5.894,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,M:lo:8,0.01577,0.006824,0.02472,2.805,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,T:hi:4000,0.00384,0.002636,0.005044,5.076,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,T:lo:500,0.008397,0.001859,0.01493,2.044,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,beta:hi:2.0,0.003342,-0.0002783,0.006962,1.469,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,cv_s:hi:1.5,0.005608,0.003879,0.007338,5.16,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,cv_s:lo:0.1,0.005714,0.002644,0.008785,2.961,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,mix:hi:0.5,0.02252,0.01478,0.03026,4.631,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,noise:hi:1.0,0.004193,0.001661,0.006725,2.635,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,noise:lo:0,0.005885,0.001052,0.01072,1.938,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,r:hi:0.95,0.005115,0.003162,0.007068,4.167,4
+lag: median icoh/sqrt(coh),lag_level,A,B0,r:lo:0.6,0.007229,0.003814,0.01064,3.368,4
+lag: median icoh/sqrt(coh),lag_level,K,B0,,0.01221,0.00969,0.01474,5.078,6
+lag: median icoh/sqrt(coh),lag_disp,A,B0,,-0.003384,-0.00534,-0.001429,-1.816,6
+lag: median icoh/sqrt(coh),lag_disp,A,B1,,-0.003091,-0.004215,-0.001967,-2.886,6
+lag: median icoh/sqrt(coh),med,A,B0,,-0.001148,-0.004126,0.00183,-0.4045,6
+lag: median icoh/sqrt(coh),dir_level,A,B0,,0.004154,0.001993,0.006314,2.017,6
+lag: median icoh/sqrt(coh),dir_level,K,B0,,0.004053,0.001262,0.006843,1.524,6
+lag: median icoh/sqrt(coh),band_level,A,B0,,-0.003319,-0.004919,-0.001718,-2.176,6
+lag: median icoh/sqrt(coh),band_disp,A,B0,,-0.0003781,-0.002835,0.002078,-0.1615,6
+lag: median icoh/sqrt(coh),form_level,A,B0,,0.0009086,-0.0002429,0.00206,0.828,6
+lag: median icoh/sqrt(coh),form_disp,A,B0,,0.0004735,-0.0007057,0.001653,0.4214,6
+lag: median icoh/sqrt(coh),warp_level,A,B0,,-0.0003069,-0.002503,0.001889,-0.1466,6
+lag: median icoh/sqrt(coh),warp_disp,A,B0,,0.001687,-1.031e-05,0.003385,1.043,6
+lag: median icoh/sqrt(coh),nuis_cv_s,A,B0,,0.0004634,-0.0006338,0.001561,0.4432,6
+lag: median icoh/sqrt(coh),nuis_cv_s,A,B1,,0.0001503,-0.0008158,0.001116,0.1633,6
+lag: median icoh/sqrt(coh),nuis_noise,A,B0,,-0.002056,-0.003485,-0.0006275,-1.51,6
+lag: median icoh/sqrt(coh),nuis_noise,A,B1,,-0.001513,-0.00357,0.0005448,-0.7716,6
+lag: median icoh/sqrt(coh),nuis_T,A,B0,,0.00809,0.00563,0.01055,3.452,6
+lag: median icoh/sqrt(coh),nuis_T,A,B1,,0.006233,0.003901,0.008565,2.805,6
+lag: median icoh/sqrt(coh),nuis_r,A,B0,,-0.002115,-0.003494,-0.0007361,-1.61,6
+lag: median icoh/sqrt(coh),nuis_r,A,B1,,-0.0001423,-0.002132,0.001848,-0.07505,6
+lag: median icoh/sqrt(coh),nuis_beta,A,B0,,0.00157,-0.000616,0.003756,0.7537,6
+lag: median icoh/sqrt(coh),nuis_beta,A,B1,,0.002695,0.001225,0.004164,1.925,6
+lag: median icoh/sqrt(coh),nuis_mix,A,B0,,-0.03288,-0.04119,-0.02458,-4.155,6
+lag: median icoh/sqrt(coh),nuis_mix,A,B1,,-0.03114,-0.03595,-0.02633,-6.796,6
+lag: median icoh/sqrt(coh),nuis_M,A,B0,,0.002839,0.00063,0.005048,1.349,6
+lag: median icoh/sqrt(coh),nuis_M,A,B1,,0.004137,0.002097,0.006177,2.128,6
+band: median high share,band_level,A,B0,,0.01126,0.007931,0.01459,3.549,6
+band: median high share,band_level,A,B1,,0.008662,0.007349,0.009976,6.921,6
+band: median high share,band_level,A,B0,M:hi:24,0.00556,0.004171,0.006948,6.372,4
+band: median high share,band_level,A,B0,M:lo:8,0.02159,0.01695,0.02623,7.404,4
+band: median high share,band_level,A,B0,T:hi:4000,0.01027,0.009176,0.01137,14.92,4
+band: median high share,band_level,A,B0,T:lo:500,0.01641,0.006649,0.02617,2.675,4
+band: median high share,band_level,A,B0,beta:hi:2.0,0.009202,0.00509,0.01331,3.561,4
+band: median high share,band_level,A,B0,cv_s:hi:1.5,0.01015,0.007144,0.01315,5.378,4
+band: median high share,band_level,A,B0,cv_s:lo:0.1,0.01258,0.00907,0.01609,5.701,4
+band: median high share,band_level,A,B0,mix:hi:0.5,0.02895,0.02317,0.03473,7.969,4
+band: median high share,band_level,A,B0,noise:hi:1.0,0.007868,0.003388,0.01235,2.795,4
+band: median high share,band_level,A,B0,noise:lo:0,0.01209,0.008747,0.01544,5.751,4
+band: median high share,band_level,A,B0,r:hi:0.95,0.01161,0.006269,0.01696,3.458,4
+band: median high share,band_level,A,B0,r:lo:0.6,0.01123,0.006731,0.01574,3.971,4
+band: median high share,band_level,K,B0,,0.03889,0.0372,0.04057,24.23,6
+band: median high share,band_disp,A,B0,,0.001761,-0.002572,0.006094,0.4265,6
+band: median high share,band_disp,A,B1,,0.00161,-0.003058,0.006277,0.362,6
+band: median high share,med,A,B0,,0.0001558,-0.002147,0.002458,0.07103,6
+band: median high share,dir_level,A,B0,,5.121e-06,-0.001431,0.001441,0.003742,6
+band: median high share,dir_level,K,B0,,0.01247,0.009713,0.01523,4.743,6
+band: median high share,lag_level,A,B0,,-0.001262,-0.003435,0.0009116,-0.6093,6
+band: median high share,lag_disp,A,B0,,-0.00157,-0.005354,0.002214,-0.4354,6
+band: median high share,form_level,A,B0,,0.003015,0.001614,0.004416,2.258,6
+band: median high share,form_disp,A,B0,,0.002404,-0.000303,0.005111,0.932,6
+band: median high share,warp_level,A,B0,,0.002989,0.0006282,0.005349,1.329,6
+band: median high share,warp_disp,A,B0,,-0.0001864,-0.002449,0.002076,-0.08646,6
+band: median high share,nuis_cv_s,A,B0,,0.002251,0.001666,0.002836,4.039,6
+band: median high share,nuis_cv_s,A,B1,,0.002573,-0.0006906,0.005837,0.8274,6
+band: median high share,nuis_noise,A,B0,,-0.002076,-0.004811,0.000659,-0.7966,6
+band: median high share,nuis_noise,A,B1,,-0.001752,-0.003917,0.0004136,-0.849,6
+band: median high share,nuis_T,A,B0,,0.005911,0.001629,0.01019,1.449,6
+band: median high share,nuis_T,A,B1,,0.005199,-0.0001088,0.01051,1.028,6
+band: median high share,nuis_r,A,B0,,-7.297e-05,-0.0028,0.002654,-0.02808,6
+band: median high share,nuis_r,A,B1,,0.000244,-0.001085,0.001573,0.1927,6
+band: median high share,nuis_beta,A,B0,,-0.002862,-0.00534,-0.0003842,-1.212,6
+band: median high share,nuis_beta,A,B1,,-0.0007275,-0.006361,0.004906,-0.1355,6
+band: median high share,nuis_mix,A,B0,,-0.01633,-0.02069,-0.01198,-3.939,6
+band: median high share,nuis_mix,A,B1,,-0.01472,-0.01734,-0.01209,-5.877,6
+band: median high share,nuis_M,A,B0,,0.01226,0.009893,0.01463,5.428,6
+band: median high share,nuis_M,A,B1,,0.0095,0.003225,0.01578,1.589,6
+warp: median dtwSC/eucl,warp_level,A,B0,,0.0001441,-0.001652,0.00194,0.08423,6
+warp: median dtwSC/eucl,warp_level,A,B1,,-0.001292,-0.005158,0.002574,-0.3507,6
+warp: median dtwSC/eucl,warp_level,A,B0,M:hi:24,-0.0004201,-0.002314,0.001474,-0.353,4
+warp: median dtwSC/eucl,warp_level,A,B0,M:lo:8,-0.006088,-0.01122,-0.0009565,-1.888,4
+warp: median dtwSC/eucl,warp_level,A,B0,T:hi:4000,-0.001122,-0.003679,0.001436,-0.6978,4
+warp: median dtwSC/eucl,warp_level,A,B0,T:lo:500,-2.948e-05,-0.004584,0.004525,-0.0103,4
+warp: median dtwSC/eucl,warp_level,A,B0,beta:hi:2.0,-8.516e-05,-0.05373,0.05356,-0.002526,4
+warp: median dtwSC/eucl,warp_level,A,B0,cv_s:hi:1.5,0.0003441,-0.002733,0.003422,0.1779,4
+warp: median dtwSC/eucl,warp_level,A,B0,cv_s:lo:0.1,-0.0009102,-0.002905,0.001085,-0.7259,4
+warp: median dtwSC/eucl,warp_level,A,B0,mix:hi:0.5,-0.009735,-0.01195,-0.007522,-7,4
+warp: median dtwSC/eucl,warp_level,A,B0,noise:hi:1.0,-0.001129,-0.003095,0.0008364,-0.9142,4
+warp: median dtwSC/eucl,warp_level,A,B0,noise:lo:0,-0.001971,-0.008209,0.004267,-0.5028,4
+warp: median dtwSC/eucl,warp_level,A,B0,r:hi:0.95,-0.006064,-0.008949,-0.00318,-3.345,4
+warp: median dtwSC/eucl,warp_level,A,B0,r:lo:0.6,-0.0006738,-0.004193,0.002846,-0.3046,4
+warp: median dtwSC/eucl,warp_disp,A,B0,,-0.001973,-0.002964,-0.0009816,-2.088,6
+warp: median dtwSC/eucl,warp_disp,A,B1,,-0.003619,-0.006413,-0.0008255,-1.36,6
+warp: median dtwSC/eucl,med,A,B0,,0.01307,0.01024,0.0159,4.848,6
+warp: median dtwSC/eucl,dir_level,A,B0,,-0.0002953,-0.00205,0.001459,-0.1766,6
+warp: median dtwSC/eucl,dir_level,K,B0,,-0.2171,-0.2657,-0.1685,-4.69,6
+warp: median dtwSC/eucl,lag_level,A,B0,,-0.001584,-0.003133,-3.429e-05,-1.073,6
+warp: median dtwSC/eucl,lag_disp,A,B0,,-0.001285,-0.002228,-0.0003428,-1.431,6
+warp: median dtwSC/eucl,band_level,A,B0,,0.1307,0.1287,0.1328,67.99,6
+warp: median dtwSC/eucl,band_disp,A,B0,,0.02897,0.0203,0.03763,3.509,6
+warp: median dtwSC/eucl,form_level,A,B0,,0.03375,0.03148,0.03602,15.59,6
+warp: median dtwSC/eucl,form_disp,A,B0,,0.009146,0.005446,0.01285,2.594,6
+warp: median dtwSC/eucl,nuis_cv_s,A,B0,,-0.0001404,-0.00183,0.001549,-0.08723,6
+warp: median dtwSC/eucl,nuis_cv_s,A,B1,,-0.000482,-0.002451,0.001487,-0.2569,6
+warp: median dtwSC/eucl,nuis_noise,A,B0,,0.07393,0.0722,0.07566,44.78,6
+warp: median dtwSC/eucl,nuis_noise,A,B1,,0.08048,0.07769,0.08327,30.28,6
+warp: median dtwSC/eucl,nuis_T,A,B0,,-0.02551,-0.02754,-0.02348,-13.22,6
+warp: median dtwSC/eucl,nuis_T,A,B1,,-0.02623,-0.02949,-0.02298,-8.463,6
+warp: median dtwSC/eucl,nuis_r,A,B0,,-0.02983,-0.03386,-0.0258,-7.759,6
+warp: median dtwSC/eucl,nuis_r,A,B1,,-0.02851,-0.03126,-0.02576,-10.88,6
+warp: median dtwSC/eucl,nuis_beta,A,B0,,0.3677,0.3452,0.3902,17.15,6
+warp: median dtwSC/eucl,nuis_beta,A,B1,,0.3947,0.3756,0.4139,21.6,6
+warp: median dtwSC/eucl,nuis_mix,A,B0,,0.03776,0.03216,0.04336,7.076,6
+warp: median dtwSC/eucl,nuis_mix,A,B1,,0.03851,0.03455,0.04247,10.21,6
+warp: median dtwSC/eucl,nuis_M,A,B0,,-0.005546,-0.006772,-0.004319,-4.745,6
+warp: median dtwSC/eucl,nuis_M,A,B1,,-0.01057,-0.01358,-0.007562,-3.685,6
+direction: median gc asymmetry,dir_level,B,B0,,0.3514,0.3047,0.3981,7.899,6
+direction: median gc asymmetry,dir_disp,B,B0,,0.05787,-0.0712,0.1869,0.4705,6
+direction: median gc asymmetry,med,A,B0,,0.08552,0.03486,0.1362,1.772,6
+direction: median gc asymmetry,dir_level,A,B0,,0.02613,-0.05102,0.1033,0.3555,6
+direction: median gc asymmetry,dir_level,K,B0,,-0.1092,-0.2197,0.00125,-1.038,6
+direction: median gc asymmetry,lag_level,A,B0,,-0.008913,-0.04004,0.02222,-0.3005,6
+direction: median gc asymmetry,lag_disp,A,B0,,0.00607,-0.01817,0.03031,0.2628,6
+direction: median gc asymmetry,band_level,A,B0,,0.08907,0.02195,0.1562,1.393,6
+direction: median gc asymmetry,band_disp,A,B0,,0.2663,0.1886,0.344,3.599,6
+direction: median gc asymmetry,form_level,A,B0,,0.07674,0.04355,0.1099,2.427,6
+direction: median gc asymmetry,form_disp,A,B0,,0.01465,-0.01785,0.04714,0.473,6
+direction: median gc asymmetry,warp_level,A,B0,,0.01855,-0.02156,0.05865,0.4853,6
+direction: median gc asymmetry,warp_disp,A,B0,,-0.03138,-0.1011,0.0383,-0.4726,6
+direction: median gc asymmetry,nuis_cv_s,A,B0,,0.01293,-0.007854,0.03372,0.6529,6
+direction: median gc asymmetry,nuis_cv_s,A,B1,,-0.01327,-0.02859,0.002043,-0.9095,6
+direction: median gc asymmetry,nuis_noise,A,B0,,0.3247,0.2625,0.3869,5.478,6
+direction: median gc asymmetry,nuis_noise,A,B1,,0.5311,0.5143,0.5479,33.17,6
+direction: median gc asymmetry,nuis_T,A,B0,,0.05227,-0.005503,0.11,0.9495,6
+direction: median gc asymmetry,nuis_T,A,B1,,0.04627,0.02599,0.06655,2.394,6
+direction: median gc asymmetry,nuis_r,A,B0,,-0.4263,-0.4526,-0.4,-17.02,6
+direction: median gc asymmetry,nuis_r,A,B1,,-0.4304,-0.4817,-0.3791,-8.805,6
+direction: median gc asymmetry,nuis_beta,A,B0,,0.2391,0.199,0.2792,6.258,6
+direction: median gc asymmetry,nuis_beta,A,B1,,0.4559,0.4283,0.4835,17.33,6
+direction: median gc asymmetry,nuis_mix,A,B0,,0.05999,-0.01575,0.1357,0.8312,6
+direction: median gc asymmetry,nuis_mix,A,B1,,0.07461,0.03823,0.111,2.152,6
+direction: median gc asymmetry,nuis_M,A,B0,,-0.06158,-0.1132,-0.009954,-1.252,6
+direction: median gc asymmetry,nuis_M,A,B1,,-0.09414,-0.1366,-0.05166,-2.326,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,,0.004436,0.0006389,0.008234,1.226,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B1,,0.004697,-0.0003235,0.009718,0.9818,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,M:hi:24,0.003543,0.0005112,0.006574,1.86,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,M:lo:8,0.01282,0.004785,0.02085,2.539,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,T:hi:4000,0.003873,0.000616,0.00713,1.892,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,T:lo:500,-0.0004221,-0.0131,0.01226,-0.05297,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,beta:hi:2.0,-0.0105,-0.02129,0.0002919,-1.548,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,cv_s:hi:1.5,0.004791,0.002158,0.007425,2.895,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,cv_s:lo:0.1,0.004278,0.000775,0.007781,1.943,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,mix:hi:0.5,0.003917,-0.001436,0.00927,1.164,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,noise:hi:1.0,0.00183,-0.004683,0.008344,0.4472,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,noise:lo:0,0.003988,-0.004683,0.01266,0.7318,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,r:hi:0.95,0.00173,-0.002637,0.006098,0.6304,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_level,A,B0,r:lo:0.6,0.004937,0.004169,0.005705,10.23,4
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_disp,A,B0,,0.001162,-0.002039,0.004362,0.3809,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",form_disp,A,B1,,0.002812,-0.002163,0.007787,0.5931,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",med,A,B0,,-0.0009782,-0.004799,0.002843,-0.2687,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",dir_level,A,B0,,0.001065,-0.001162,0.003292,0.5021,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",dir_level,K,B0,,-0.1699,-0.2721,-0.06778,-1.746,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",lag_level,A,B0,,-0.002897,-0.005326,-0.0004688,-1.252,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",lag_disp,A,B0,,-0.001799,-0.006515,0.002917,-0.4004,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",band_level,A,B0,,0.00101,-0.001443,0.003463,0.4322,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",band_disp,A,B0,,3.356e-05,-0.003019,0.003086,0.01154,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",warp_level,A,B0,,-0.001757,-0.006012,0.002497,-0.4335,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",warp_disp,A,B0,,-0.0008034,-0.003924,0.002317,-0.2702,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_cv_s,A,B0,,0.000462,-0.00245,0.003374,0.1665,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_cv_s,A,B1,,-0.0004223,-0.002494,0.00165,-0.2139,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_noise,A,B0,,-0.001591,-0.00508,0.001898,-0.4785,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_noise,A,B1,,-0.003424,-0.005554,-0.001294,-1.687,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_T,A,B0,,-0.01094,-0.01724,-0.004634,-1.821,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_T,A,B1,,-0.01312,-0.01654,-0.009705,-4.027,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_r,A,B0,,0.004051,0.0005149,0.007587,1.202,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_r,A,B1,,0.006745,0.004897,0.008594,3.829,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_beta,A,B0,,0.01637,0.0102,0.02254,2.784,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_beta,A,B1,,0.009511,0.00378,0.01524,1.742,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_mix,A,B0,,0.001916,-0.002424,0.006256,0.4633,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_mix,A,B1,,0.001345,0.0005387,0.002152,1.75,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_M,A,B0,,-0.003073,-0.006123,-2.228e-05,-1.057,6
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",nuis_M,A,B1,,0.002217,-0.000186,0.004619,0.9682,6
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,,0.003268,0.001504,0.005032,1.944,6
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B1,,0.002011,1.719e-05,0.004004,1.058,6
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,M:hi:24,0.001188,0.0002039,0.002173,1.921,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,M:lo:8,0.004248,-0.002383,0.01088,1.019,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,T:hi:4000,0.001962,0.001128,0.002796,3.745,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,T:lo:500,0.002505,-0.003221,0.008231,0.696,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,beta:hi:2.0,-0.002619,-0.003663,-0.001574,-3.988,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,cv_s:hi:1.5,0.002455,0.000133,0.004777,1.682,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,cv_s:lo:0.1,0.002051,0.0004637,0.003638,2.056,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,mix:hi:0.5,0.0007768,-0.0039,0.005453,0.2643,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,noise:hi:1.0,-0.0007154,-0.004513,0.003082,-0.2997,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,noise:lo:0,0.003898,0.0005587,0.007238,1.857,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,r:hi:0.95,0.001902,-0.0004061,0.004209,1.311,4
+"form: median(te - gc) [top quartile, post hoc]",form_level,A,B0,r:lo:0.6,0.00126,-0.001626,0.004146,0.6948,4
+"form: median(te - gc) [top quartile, post hoc]",form_disp,A,B0,,-0.0005805,-0.001941,0.0007798,-0.4478,6
+"form: median(te - gc) [top quartile, post hoc]",form_disp,A,B1,,0.0009728,-0.0005686,0.002514,0.6623,6
+"form: median(te - gc) [top quartile, post hoc]",med,A,B0,,-0.0004334,-0.001624,0.000757,-0.3821,6
+"form: median(te - gc) [top quartile, post hoc]",dir_level,A,B0,,-0.00066,-0.001629,0.0003088,-0.715,6
+"form: median(te - gc) [top quartile, post hoc]",dir_level,K,B0,,-0.008565,-0.01413,-0.003003,-1.616,6
+"form: median(te - gc) [top quartile, post hoc]",lag_level,A,B0,,-0.000296,-0.002224,0.001632,-0.1611,6
+"form: median(te - gc) [top quartile, post hoc]",lag_disp,A,B0,,0.0005433,-0.0008744,0.001961,0.4021,6
+"form: median(te - gc) [top quartile, post hoc]",band_level,A,B0,,0.001503,-0.0001953,0.0032,0.9287,6
+"form: median(te - gc) [top quartile, post hoc]",band_disp,A,B0,,0.0001312,-0.001043,0.001305,0.1173,6
+"form: median(te - gc) [top quartile, post hoc]",warp_level,A,B0,,0.0008507,-0.000816,0.002517,0.5356,6
+"form: median(te - gc) [top quartile, post hoc]",warp_disp,A,B0,,0.0002747,-0.001761,0.002311,0.1416,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_cv_s,A,B0,,0.001098,-0.0003789,0.002576,0.7803,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_cv_s,A,B1,,0.002075,-0.0007258,0.004875,0.7774,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_noise,A,B0,,0.00187,-0.0002374,0.003978,0.9312,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_noise,A,B1,,0.002087,0.0006259,0.003549,1.499,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_T,A,B0,,0.005101,8.282e-05,0.01012,1.067,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_T,A,B1,,0.006097,0.003606,0.008588,2.568,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_r,A,B0,,-0.0006926,-0.002159,0.0007739,-0.4956,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_r,A,B1,,-0.0008553,-0.004005,0.002294,-0.285,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_beta,A,B0,,0.002844,0.001188,0.004501,1.802,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_beta,A,B1,,0.003032,0.001402,0.004661,1.952,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_mix,A,B0,,0.001281,-0.001243,0.003804,0.5326,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_mix,A,B1,,-0.0009957,-0.003447,0.001456,-0.4262,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_M,A,B0,,-0.00111,-0.00476,0.00254,-0.319,6
+"form: median(te - gc) [top quartile, post hoc]",nuis_M,A,B1,,0.0003195,-0.001964,0.002603,0.1469,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,,0.04597,0.03956,0.05237,7.529,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B1,,0.02713,0.01627,0.03799,2.622,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,M:hi:24,0.0197,0.01282,0.02658,4.556,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,M:lo:8,0.07905,0.06763,0.09047,11.01,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,T:hi:4000,0.04727,0.03499,0.05955,6.126,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,T:lo:500,0.04004,0.02971,0.05037,6.166,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,beta:hi:2.0,0.001821,-0.006115,0.009757,0.3651,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,cv_s:hi:1.5,0.02895,0.02343,0.03448,8.337,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,cv_s:lo:0.1,0.05291,0.04842,0.0574,18.76,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,mix:hi:0.5,0.06847,0.04507,0.09188,4.656,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,noise:hi:1.0,0.01332,0.006288,0.02035,3.014,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,noise:lo:0,0.07719,0.06218,0.09219,8.186,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,r:hi:0.95,0.0273,0.02135,0.03325,7.3,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,A,B0,r:lo:0.6,0.05663,0.05012,0.06314,13.85,4
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_level,K,B0,,0.009857,0.007117,0.0126,3.776,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_disp,A,B0,,-0.01532,-0.01916,-0.01148,-4.186,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",lag_disp,A,B1,,-0.01014,-0.01468,-0.005593,-2.34,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",med,A,B0,,0.003603,-0.001792,0.008998,0.7008,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",dir_level,A,B0,,0.01488,0.009084,0.02067,2.694,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",dir_level,K,B0,,0.002551,-0.0006152,0.005716,0.8455,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",band_level,A,B0,,-0.03512,-0.04481,-0.02543,-3.804,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",band_disp,A,B0,,-0.01197,-0.0217,-0.002234,-1.29,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",form_level,A,B0,,0.006346,0.002915,0.009777,1.941,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",form_disp,A,B0,,0.0006099,-0.002714,0.003934,0.1926,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",warp_level,A,B0,,0.003582,-0.001666,0.008829,0.7163,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",warp_disp,A,B0,,0.002403,0.0007378,0.004068,1.514,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_cv_s,A,B0,,0.006687,0.0006328,0.01274,1.159,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_cv_s,A,B1,,0.006345,0.003227,0.009463,2.135,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_noise,A,B0,,-0.0005694,-0.007286,0.006147,-0.08898,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_noise,A,B1,,-0.000783,-0.004672,0.003106,-0.2113,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_T,A,B0,,0.004038,-0.002887,0.01096,0.612,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_T,A,B1,,0.003197,-0.002149,0.008544,0.6276,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_r,A,B0,,-0.007293,-0.01166,-0.00293,-1.754,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_r,A,B1,,-0.00527,-0.01097,0.0004257,-0.971,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_beta,A,B0,,0.01921,0.01341,0.02501,3.477,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_beta,A,B1,,0.02587,0.02051,0.03122,5.071,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_mix,A,B0,,-0.08098,-0.0964,-0.06556,-5.512,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_mix,A,B1,,-0.07891,-0.0909,-0.06691,-6.904,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_M,A,B0,,0.0256,0.01143,0.03978,1.896,6
+"lag: median icoh/sqrt(coh) [top quartile, post hoc]",nuis_M,A,B1,,0.02357,0.001575,0.04557,1.125,6
+"band: median high share [top quartile, post hoc]",band_level,A,B0,,0.06077,0.05444,0.06711,10.06,6
+"band: median high share [top quartile, post hoc]",band_level,A,B1,,0.04684,0.0381,0.05557,5.625,6
+"band: median high share [top quartile, post hoc]",band_level,A,B0,M:hi:24,0.03246,0.03066,0.03427,28.59,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,M:lo:8,0.1022,0.09087,0.1135,14.39,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,T:hi:4000,0.06109,0.05794,0.06424,30.84,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,T:lo:500,0.04778,0.022,0.07357,2.949,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,beta:hi:2.0,-0.01579,-0.03164,5.281e-05,-1.586,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,cv_s:hi:1.5,0.04992,0.03606,0.06378,5.73,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,cv_s:lo:0.1,0.0644,0.05427,0.07453,10.12,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,mix:hi:0.5,0.08581,0.06705,0.1046,7.278,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,noise:hi:1.0,0.02762,0.01578,0.03945,3.713,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,noise:lo:0,0.05545,0.04667,0.06423,10.05,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,r:hi:0.95,0.04874,0.03436,0.06311,5.396,4
+"band: median high share [top quartile, post hoc]",band_level,A,B0,r:lo:0.6,0.05851,0.04866,0.06836,9.454,4
+"band: median high share [top quartile, post hoc]",band_level,K,B0,,0.03499,0.03103,0.03894,9.286,6
+"band: median high share [top quartile, post hoc]",band_disp,A,B0,,0.002255,-0.003352,0.007862,0.4221,6
+"band: median high share [top quartile, post hoc]",band_disp,A,B1,,0.004247,-0.001953,0.01045,0.7189,6
+"band: median high share [top quartile, post hoc]",med,A,B0,,0.02473,0.01693,0.03253,3.327,6
+"band: median high share [top quartile, post hoc]",dir_level,A,B0,,-0.01025,-0.01664,-0.003865,-1.684,6
+"band: median high share [top quartile, post hoc]",dir_level,K,B0,,0.003857,-0.004351,0.01206,0.4931,6
+"band: median high share [top quartile, post hoc]",lag_level,A,B0,,0.001026,-0.003969,0.00602,0.2155,6
+"band: median high share [top quartile, post hoc]",lag_disp,A,B0,,0.001193,-0.004012,0.006399,0.2406,6
+"band: median high share [top quartile, post hoc]",form_level,A,B0,,0.03051,0.02157,0.03944,3.584,6
+"band: median high share [top quartile, post hoc]",form_disp,A,B0,,0.005288,0.0003493,0.01023,1.124,6
+"band: median high share [top quartile, post hoc]",warp_level,A,B0,,0.02879,0.01903,0.03854,3.095,6
+"band: median high share [top quartile, post hoc]",warp_disp,A,B0,,-0.007898,-0.01408,-0.00172,-1.342,6
+"band: median high share [top quartile, post hoc]",nuis_cv_s,A,B0,,0.01903,0.0103,0.02777,2.286,6
+"band: median high share [top quartile, post hoc]",nuis_cv_s,A,B1,,0.01801,0.008429,0.02759,1.973,6
+"band: median high share [top quartile, post hoc]",nuis_noise,A,B0,,0.002179,-0.002483,0.006841,0.4906,6
+"band: median high share [top quartile, post hoc]",nuis_noise,A,B1,,-0.0007204,-0.005835,0.004394,-0.1478,6
+"band: median high share [top quartile, post hoc]",nuis_T,A,B0,,-0.003156,-0.007992,0.001679,-0.6851,6
+"band: median high share [top quartile, post hoc]",nuis_T,A,B1,,0.002651,-0.01266,0.01796,0.1817,6
+"band: median high share [top quartile, post hoc]",nuis_r,A,B0,,0.00543,-9.314e-05,0.01095,1.032,6
+"band: median high share [top quartile, post hoc]",nuis_r,A,B1,,-0.002744,-0.01057,0.005078,-0.3682,6
+"band: median high share [top quartile, post hoc]",nuis_beta,A,B0,,0.05298,0.04448,0.06148,6.538,6
+"band: median high share [top quartile, post hoc]",nuis_beta,A,B1,,0.03604,0.01411,0.05796,1.725,6
+"band: median high share [top quartile, post hoc]",nuis_mix,A,B0,,-0.02127,-0.03378,-0.008759,-1.784,6
+"band: median high share [top quartile, post hoc]",nuis_mix,A,B1,,-0.0201,-0.02738,-0.01283,-2.9,6
+"band: median high share [top quartile, post hoc]",nuis_M,A,B0,,0.05361,0.04295,0.06426,5.279,6
+"band: median high share [top quartile, post hoc]",nuis_M,A,B1,,0.06449,0.0397,0.08927,2.731,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,,-0.03034,-0.0345,-0.02617,-7.644,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B1,,-0.02535,-0.03401,-0.01669,-3.073,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,M:hi:24,-0.0121,-0.01768,-0.006523,-3.451,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,M:lo:8,-0.05166,-0.0627,-0.04063,-7.449,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,T:hi:4000,-0.03363,-0.03594,-0.03133,-23.24,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,T:lo:500,-0.02241,-0.02624,-0.01859,-9.328,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,beta:hi:2.0,-0.01578,-0.04394,0.01238,-0.8918,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,cv_s:hi:1.5,-0.01887,-0.02673,-0.01101,-3.82,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,cv_s:lo:0.1,-0.03627,-0.03884,-0.0337,-22.44,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,mix:hi:0.5,-0.02617,-0.03282,-0.01952,-6.261,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,noise:hi:1.0,-0.01574,-0.0206,-0.01089,-5.159,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,noise:lo:0,-0.03532,-0.04221,-0.02843,-8.159,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,r:hi:0.95,-0.03119,-0.04055,-0.02183,-5.304,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_level,A,B0,r:lo:0.6,-0.03259,-0.04041,-0.02478,-6.638,4
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_disp,A,B0,,-0.008836,-0.0128,-0.004871,-2.339,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",warp_disp,A,B1,,-0.006043,-0.009891,-0.002195,-1.648,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",med,A,B0,,-0.009113,-0.01238,-0.005843,-2.925,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",dir_level,A,B0,,0.001607,-0.002065,0.005279,0.4593,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",dir_level,K,B0,,-0.1805,-0.2386,-0.1223,-3.258,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",lag_level,A,B0,,-0.04277,-0.04843,-0.03711,-7.928,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",lag_disp,A,B0,,-0.01545,-0.01884,-0.01206,-4.788,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",band_level,A,B0,,0.1578,0.1521,0.1634,29.34,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",band_disp,A,B0,,0.02086,0.009827,0.03189,1.984,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",form_level,A,B0,,0.01357,0.0069,0.02025,2.135,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",form_disp,A,B0,,0.0002819,-0.004133,0.004696,0.06701,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_cv_s,A,B0,,-0.02045,-0.02805,-0.01285,-2.823,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_cv_s,A,B1,,-0.01507,-0.01827,-0.01187,-4.942,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_noise,A,B0,,0.0556,0.05338,0.05781,26.34,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_noise,A,B1,,0.06553,0.06026,0.07081,13.04,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_T,A,B0,,-0.01915,-0.02283,-0.01547,-5.459,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_T,A,B1,,-0.02846,-0.03536,-0.02156,-4.326,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_r,A,B0,,-0.03102,-0.0365,-0.02554,-5.938,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_r,A,B1,,-0.02626,-0.03277,-0.01975,-4.232,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_beta,A,B0,,0.3246,0.2926,0.3566,10.64,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_beta,A,B1,,0.3581,0.3367,0.3796,17.52,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_mix,A,B0,,0.04204,0.03611,0.04797,7.438,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_mix,A,B1,,0.04737,0.04273,0.05202,10.7,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_M,A,B0,,-0.04594,-0.05547,-0.03642,-5.062,6
+"warp: median dtwSC/eucl [top quartile, post hoc]",nuis_M,A,B1,,-0.04718,-0.05501,-0.03936,-6.328,6
+"direction: median gc asymmetry [top quartile, post hoc]",dir_level,B,B0,,0.7436,0.7087,0.7784,22.39,6
+"direction: median gc asymmetry [top quartile, post hoc]",dir_disp,B,B0,,0.07388,-0.0457,0.1935,0.6484,6
+"direction: median gc asymmetry [top quartile, post hoc]",med,A,B0,,-0.00886,-0.07683,0.05911,-0.1368,6
+"direction: median gc asymmetry [top quartile, post hoc]",dir_level,A,B0,,0.09129,-0.04908,0.2317,0.6825,6
+"direction: median gc asymmetry [top quartile, post hoc]",dir_level,K,B0,,0.2538,0.1377,0.37,2.293,6
+"direction: median gc asymmetry [top quartile, post hoc]",lag_level,A,B0,,0.1703,0.1159,0.2247,3.284,6
+"direction: median gc asymmetry [top quartile, post hoc]",lag_disp,A,B0,,-0.07257,-0.0988,-0.04634,-2.903,6
+"direction: median gc asymmetry [top quartile, post hoc]",band_level,A,B0,,0.0691,0.021,0.1172,1.508,6
+"direction: median gc asymmetry [top quartile, post hoc]",band_disp,A,B0,,0.5036,0.369,0.6381,3.928,6
+"direction: median gc asymmetry [top quartile, post hoc]",form_level,A,B0,,0.009629,-0.06625,0.08551,0.1332,6
+"direction: median gc asymmetry [top quartile, post hoc]",form_disp,A,B0,,0.007888,-0.01719,0.03296,0.3301,6
+"direction: median gc asymmetry [top quartile, post hoc]",warp_level,A,B0,,-0.008133,-0.06152,0.04526,-0.1599,6
+"direction: median gc asymmetry [top quartile, post hoc]",warp_disp,A,B0,,-0.1148,-0.1763,-0.05329,-1.959,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_cv_s,A,B0,,-0.03808,-0.09678,0.02063,-0.6806,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_cv_s,A,B1,,-0.06537,-0.1199,-0.01082,-1.258,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_noise,A,B0,,0.494,0.4593,0.5287,14.94,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_noise,A,B1,,0.6292,0.5859,0.6726,15.25,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_T,A,B0,,0.1959,0.1246,0.2673,2.88,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_T,A,B1,,0.1411,0.1195,0.1628,6.851,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_r,A,B0,,-0.5157,-0.5488,-0.4825,-16.34,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_r,A,B1,,-0.4976,-0.5338,-0.4614,-14.43,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_beta,A,B0,,0.3933,0.3462,0.4404,8.759,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_beta,A,B1,,0.6421,0.594,0.6903,13.99,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_mix,A,B0,,0.05473,0.0249,0.08457,1.925,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_mix,A,B1,,0.04375,0.01654,0.07096,1.687,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_M,A,B0,,-0.1209,-0.1495,-0.0924,-4.447,6
+"direction: median gc asymmetry [top quartile, post hoc]",nuis_M,A,B1,,-0.181,-0.2426,-0.1194,-3.083,6
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,,0.02079,0.01574,0.02584,4.319,6
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B1,,0.02454,0.01769,0.03139,3.759,6
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,M:hi:24,0.01962,0.01484,0.02439,6.537,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,M:lo:8,0.03176,0.01059,0.05292,2.387,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,T:hi:4000,0.01824,0.01248,0.02399,5.041,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,T:lo:500,0.0144,0.005347,0.02345,2.531,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,beta:hi:2.0,0.001897,-0.01162,0.01541,0.2233,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,cv_s:hi:1.5,0.02839,0.02251,0.03427,7.683,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,cv_s:lo:0.1,0.01602,0.01151,0.02052,5.661,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,mix:hi:0.5,0.01353,-0.0008712,0.02793,1.495,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,noise:hi:1.0,0.006687,0.0009261,0.01245,1.847,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,noise:lo:0,0.04431,0.02709,0.06153,4.095,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,r:hi:0.95,0.01527,0.01144,0.0191,6.351,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,A,B0,r:lo:0.6,0.02558,0.01523,0.03593,3.933,4
+lag: spread icoh/sqrt(coh) [level-aware],lag_disp,K,B0,,0.0009386,-4.741e-06,0.001882,1.044,6
+lag: spread icoh/sqrt(coh) [level-aware],lag_level,A,B0,,-0.02343,-0.02808,-0.01879,-5.296,6
+lag: spread icoh/sqrt(coh) [level-aware],lag_level,A,B1,,-0.03007,-0.03727,-0.02287,-4.382,6
+lag: spread icoh/sqrt(coh) [level-aware],med,A,B0,,-0.01264,-0.01598,-0.009291,-3.963,6
+lag: spread icoh/sqrt(coh) [level-aware],dir_level,A,B0,,-0.003934,-0.005296,-0.002573,-3.032,6
+lag: spread icoh/sqrt(coh) [level-aware],dir_level,K,B0,,0.0008316,-0.00107,0.002733,0.459,6
+lag: spread icoh/sqrt(coh) [level-aware],band_level,A,B0,,0.0213,0.01785,0.02475,6.477,6
+lag: spread icoh/sqrt(coh) [level-aware],band_disp,A,B0,,0.01564,0.007684,0.0236,2.063,6
+lag: spread icoh/sqrt(coh) [level-aware],form_level,A,B0,,-0.01344,-0.01736,-0.009522,-3.598,6
+lag: spread icoh/sqrt(coh) [level-aware],form_disp,A,B0,,-0.0008359,-0.005697,0.004025,-0.1805,6
+lag: spread icoh/sqrt(coh) [level-aware],warp_level,A,B0,,-0.01274,-0.01451,-0.01097,-7.552,6
+lag: spread icoh/sqrt(coh) [level-aware],warp_disp,A,B0,,0.00515,0.0007148,0.009585,1.219,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_cv_s,A,B0,,0.01269,0.004754,0.02062,1.678,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_cv_s,A,B1,,0.01463,0.007732,0.02154,2.225,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_noise,A,B0,,-0.01796,-0.02089,-0.01503,-6.431,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_noise,A,B1,,-0.02069,-0.02491,-0.01647,-5.148,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_T,A,B0,,-0.01542,-0.0193,-0.01154,-4.171,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_T,A,B1,,-0.01133,-0.01683,-0.005825,-2.16,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_r,A,B0,,-0.008402,-0.01117,-0.005637,-3.19,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_r,A,B1,,-0.006395,-0.009177,-0.003613,-2.412,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_beta,A,B0,,-0.01058,-0.01692,-0.004238,-1.751,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_beta,A,B1,,-0.0114,-0.01936,-0.00345,-1.505,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_mix,A,B0,,0.008893,0.002992,0.01479,1.582,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_mix,A,B1,,0.003768,-0.003347,0.01088,0.5558,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_M,A,B0,,-0.00595,-0.01395,0.00205,-0.7805,6
+lag: spread icoh/sqrt(coh) [level-aware],nuis_M,A,B1,,-0.01291,-0.02695,0.001121,-0.9656,6
+band: spread high share [level-aware],band_disp,A,B0,,0.08593,0.06833,0.1035,5.123,6
+band: spread high share [level-aware],band_disp,A,B1,,0.08914,0.0864,0.09189,34.05,6
+band: spread high share [level-aware],band_disp,A,B0,M:hi:24,0.06467,0.05631,0.07303,12.31,4
+band: spread high share [level-aware],band_disp,A,B0,M:lo:8,0.1305,0.08946,0.1716,5.057,4
+band: spread high share [level-aware],band_disp,A,B0,T:hi:4000,0.08721,0.06835,0.1061,7.358,4
+band: spread high share [level-aware],band_disp,A,B0,T:lo:500,0.07449,0.06034,0.08864,8.377,4
+band: spread high share [level-aware],band_disp,A,B0,beta:hi:2.0,0.01163,-0.000522,0.02379,1.523,4
+band: spread high share [level-aware],band_disp,A,B0,cv_s:hi:1.5,0.0878,0.0788,0.0968,15.53,4
+band: spread high share [level-aware],band_disp,A,B0,cv_s:lo:0.1,0.08079,0.06376,0.09782,7.547,4
+band: spread high share [level-aware],band_disp,A,B0,mix:hi:0.5,0.07988,0.05903,0.1007,6.097,4
+band: spread high share [level-aware],band_disp,A,B0,noise:hi:1.0,0.02656,0.01682,0.03631,4.337,4
+band: spread high share [level-aware],band_disp,A,B0,noise:lo:0,0.0914,0.07759,0.1052,10.53,4
+band: spread high share [level-aware],band_disp,A,B0,r:hi:0.95,0.0805,0.05965,0.1014,6.143,4
+band: spread high share [level-aware],band_disp,A,B0,r:lo:0.6,0.08101,0.06815,0.09387,10.02,4
+band: spread high share [level-aware],band_level,A,B0,,-0.007174,-0.0132,-0.001154,-1.251,6
+band: spread high share [level-aware],band_level,A,B1,,0.001865,-0.002789,0.006519,0.4205,6
+band: spread high share [level-aware],med,A,B0,,-0.01605,-0.01821,-0.01389,-7.806,6
+band: spread high share [level-aware],dir_level,A,B0,,0.001012,-0.001032,0.003056,0.5196,6
+band: spread high share [level-aware],dir_level,K,B0,,0.006104,0.002944,0.009264,2.027,6
+band: spread high share [level-aware],lag_level,A,B0,,0.002237,-0.000999,0.005474,0.7255,6
+band: spread high share [level-aware],lag_disp,A,B0,,-0.001574,-0.006677,0.003528,-0.3238,6
+band: spread high share [level-aware],form_level,A,B0,,-0.01567,-0.01786,-0.01349,-7.534,6
+band: spread high share [level-aware],form_disp,A,B0,,0.002216,-0.00141,0.005843,0.6414,6
+band: spread high share [level-aware],warp_level,A,B0,,-0.0159,-0.01779,-0.01401,-8.833,6
+band: spread high share [level-aware],warp_disp,A,B0,,0.007814,0.004739,0.01089,2.666,6
+band: spread high share [level-aware],nuis_cv_s,A,B0,,0.02635,0.01756,0.03513,3.147,6
+band: spread high share [level-aware],nuis_cv_s,A,B1,,0.02605,0.01862,0.03348,3.679,6
+band: spread high share [level-aware],nuis_noise,A,B0,,0.003635,0.0003542,0.006915,1.163,6
+band: spread high share [level-aware],nuis_noise,A,B1,,0.006467,0.00389,0.009043,2.634,6
+band: spread high share [level-aware],nuis_T,A,B0,,-0.01801,-0.02246,-0.01357,-4.257,6
+band: spread high share [level-aware],nuis_T,A,B1,,-0.01567,-0.02152,-0.009817,-2.811,6
+band: spread high share [level-aware],nuis_r,A,B0,,0.004747,0.001622,0.007872,1.594,6
+band: spread high share [level-aware],nuis_r,A,B1,,0.006481,0.00271,0.01025,1.804,6
+band: spread high share [level-aware],nuis_beta,A,B0,,0.007639,-0.009045,0.02432,0.4805,6
+band: spread high share [level-aware],nuis_beta,A,B1,,-0.0002364,-0.00859,0.008117,-0.02969,6
+band: spread high share [level-aware],nuis_mix,A,B0,,0.003731,0.0007184,0.006743,1.3,6
+band: spread high share [level-aware],nuis_mix,A,B1,,0.0006709,-0.003056,0.004398,0.1889,6
+band: spread high share [level-aware],nuis_M,A,B0,,0.01558,0.01026,0.02091,3.071,6
+band: spread high share [level-aware],nuis_M,A,B1,,0.00149,-0.01663,0.01961,0.08628,6

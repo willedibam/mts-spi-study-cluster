@@ -181,7 +181,7 @@ Core organisation, mean / SD / ICC:
 - Construction validation (pre-registered; [results](validation/README.md#results-2-november-2026)):
   - **Passes as core:** band (ppc L\|H organisation, and the high-share level), mediation (cov²\|prec²) and direction (sgc A\|Aᵀ). Mediation and direction each come from one generator.
   - **Stage 2 (second families, 3 November):**
-    - Direction is dropped: sgc A\|Aᵀ reverses in directed Kuramoto, and in family A band dispersion moves it as much as direction does (SR 0.96).
+    - Direction is dropped: sgc A\|Aᵀ reverses in directed Kuramoto. (Its family-A SR is 2.28 after the dispersion-sign correction; the 0.96 reported first was an artefact.)
     - Mediation stays core only for strong instantaneous mediation (family C). Lagged, partial mediation in family A barely moves it (SR 0.28).
     - A level-aware band spread (SD of the per-edge high share over the strongest edges) passes as core (SR 5.3). The lag spread is not level-aware.
   - **Stage 3 (location within a band and joint bursts, 3 November):** nothing new passes as core.
@@ -189,6 +189,12 @@ Core organisation, mean / SD / ICC:
     - The core high share and band spread do not read within-band location, but ppc L\|H organisation does (0.77 of its own response; SR 2.06 → 1.30).
     - The fixed-lag axis reads location level, not location dispersion (post hoc). Spectral-peak readouts read nuisances, and best-shift reads delay in samples.
     - Raw linear–rank readouts read marginal shape (β moves them 1.2–6.6 times as much as bursts). Only real − IAAFT of zero-lag Pearson-against-rank organisation reads joint bursts.
+  - **Dispersion-sign correction (3 November):** stage 1's band, form and warp dispersion knobs had reused the phase-dispersion signs. Re-run with independent signs:
+    - band spread (SR 5.4) and the high share (3.7) keep core;
+    - no lag result changes;
+    - coh L\|H reaches the core boundary (SR 2.03);
+    - form gc\|te_ksgDCE becomes insensitive and mi_g\|mi_kernel a weak sub-axis;
+    - the post hoc strong-coupling form and warp readings are weaker.
   - **Lag:** sign-stable across three estimator families, but only a sub-axis (SR 0.66–1.60; band level is the main cross-talk), and insensitive in the Kuramoto family. Lag level moves lag organisation about twice as much as lag dispersion, so organisation is not level-free.
   - **Form and warp organisation:** fail at cohort-like coupling. Form organisation's only passing pair reads spectra on surrogates; the form level median(te − gc) is the one non-Gaussian reader.
   - **Corrections:** no strength or reliability correction is usable for a passing pair.
