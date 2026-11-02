@@ -83,3 +83,13 @@ def test_core_levels_and_band_spread():
     assert np.isclose(scores[0, 0], np.median(share))
     assert np.isclose(scores[0, 1], np.std(share[broad >= np.quantile(broad, .75)]))
     assert 'direction' not in CORE and all(role in ('core', 'sub') for role, *_ in CORE.values())
+
+
+def test_location_frequency_recovers_ar2_pole():
+    from mtsspi.character_axes import BAND_RANK, LOCATION, ar2_frequency, core_scores
+    f, r, entries = 0.1, 0.8, 12
+    lags = [r ** k * np.cos(2 * np.pi * f * k) for k in range(4)]
+    assert np.isclose(ar2_frequency(*lags), f)
+    profiles = np.stack([np.full(entries, s) for s in lags] + [np.linspace(0, 1, entries)])[None]
+    scores, used = core_scores(profiles, list(LOCATION) + [BAND_RANK])
+    assert used == ['location_frequency'] and np.isclose(scores[0, 0], f)

@@ -216,10 +216,15 @@ def level_scores(profiles, spi_order: Sequence[str], levels=LEVELS):
 # stage 2 (it reverses in directed Kuramoto); the stage-1 core is commit 77408cd.
 # kind: 'org' = profile correlation of a and b; 'spread' = SD (ddof 0) of the a/(a+b) share over the top
 # quartile of entries ranked by BAND_RANK; otherwise the median over entries of a level contrast.
+# Stage 3 demoted band organisation to sub (within-band location moves it 0.77 times its own response) and
+# added location_frequency: the median over the same top quartile of each entry's AR(2) pole frequency, fitted
+# to its lag-0 to lag-3 correlations. Channel spectra move it 0.36-0.53 times as much as coupling frequency
+# does, so it is reported beside the channel peak-frequency shift. No raw linear-rank readout is non-Gaussian.
 GC, TE_DCE = 'gc_gaussian_k-1_kt-1_l-1_lt-1', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'
 BAND_RANK = mt('cohmag', 'mean', 'broad')
+LOCATION = ('cov_EmpiricalCovariance', 'corr_pearson_tau-1', 'corr_pearson_tau-2', 'corr_pearson_tau-3')
 CORE = {
-    'band': ('core', 'org', mt('ppc', 'mean', 'low'), mt('ppc', 'mean', 'high')),
+    'band': ('sub', 'org', mt('ppc', 'mean', 'low'), mt('ppc', 'mean', 'high')),
     'band_high_share': ('core', 'share', mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low')),
     'band_spread': ('core', 'spread', mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low')),
     'mediation_ledoit_wolf': ('core', 'org', 'cov-sq_LedoitWolf', 'prec-sq_LedoitWolf'),
@@ -227,7 +232,19 @@ CORE = {
     'lag': ('sub', 'org', mt('cohmag', 'mean', 'low'), mt('icoh', 'mean', 'low')),
     'lag_sin_phi': ('sub', 'sinphi', mt('icoh', 'mean', 'broad'), mt('cohmag', 'mean', 'broad')),
     'form_te_minus_gc': ('sub', 'diff', TE_DCE, GC),
+    'location_frequency': ('sub', 'ar2', LOCATION[0], LOCATION[1]),
 }
+
+
+def ar2_frequency(s0, s1, s2, s3):
+    """Per entry, the frequency (cycles per sample) of s_k = a1 s_(k-1) + a2 s_(k-2) fitted at k = 2, 3 to the
+    lag-0 to lag-3 correlations; NaN where the fit has no complex pole pair."""
+    with np.errstate(invalid='ignore', divide='ignore'):
+        det = s1 * s1 - s0 * s2
+        a1, a2 = (s1 * s2 - s0 * s3) / det, (s1 * s3 - s2 * s2) / det
+        c = a1 / (2 * np.sqrt(-a2))
+        f = np.arccos(c) / (2 * np.pi)
+    return np.where((a2 < 0) & (np.abs(c) <= 1) & np.isfinite(f), f, np.nan)
 
 
 def masked_correlation(x, y, minimum=5):
@@ -245,11 +262,20 @@ def core_scores(profiles, spi_order: Sequence[str], core=CORE):
     index = {name: k for k, name in enumerate(spi_order)}
     names, values = [], []
     for name, (_, kind, a, b) in core.items():
-        if a not in index or b not in index or (kind == 'spread' and BAND_RANK not in index):
+        needs = [a, b] + ([BAND_RANK] if kind in ('spread', 'ar2') else []) + (list(LOCATION) if kind == 'ar2' else [])
+        if any(n not in index for n in needs):
             continue
         x, y = profiles[:, index[a]].astype(np.float64), profiles[:, index[b]].astype(np.float64)
         if kind == 'org':
             names.append(name); values.append(masked_correlation(x, y)); continue
+        if kind == 'ar2':
+            rank = profiles[:, index[BAND_RANK]].astype(np.float64)
+            top = rank >= np.nanquantile(rank, .75, axis=1, keepdims=True)
+            f = np.where(top, ar2_frequency(*(profiles[:, index[n]].astype(np.float64) for n in LOCATION)), np.nan)
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', RuntimeWarning)
+                v = np.where(np.isfinite(f).sum(1) >= 3, np.nanmedian(f, axis=1), np.nan)
+            names.append(name); values.append(v); continue
         with np.errstate(invalid='ignore', divide='ignore'):
             c = {'share': lambda: x / (x + y), 'spread': lambda: x / (x + y), 'sinphi': lambda: x / np.sqrt(y),
                  'diff': lambda: x - y}[kind]()

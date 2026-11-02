@@ -61,3 +61,5 @@ The core (`CORE` in `character_axes.py`, from the [construction validation](vali
 2. **z's increment.** Cross-validated AUROC for Pearson+strength (P), P+z, P+core and P+core+z, with the design above. Where P+z − P has a bootstrap interval above zero, the core accounts for it if P+core+z − (P+core) has an interval including zero and is at most half of P+z − P.
 
 Core revision (3 November): validation stage 2, run independently of these cohorts, dropped direction (it reverses in directed Kuramoto), limited mediation to one generator and added band spread as a level-aware core readout. Both checks are reported for the stage-1 core (commit 77408cd; LEMON and NeuroTycho results were already in when the revision was made) and the revised core; the criteria are unchanged.
+
+Second revision (3 November): stage 3 demoted band organisation to a sub-axis and added location frequency (AR(2) pole frequency) as a sub-axis. Both checks are re-run with this core; the earlier results were already in when it was made, and the criteria are unchanged.
