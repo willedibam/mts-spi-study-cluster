@@ -99,12 +99,20 @@ def _edge_signal(rng, T, f, r, phi, warp, warp_scale, theta):
 
 def edge_drivers(*, net_seed, noise_seed, M=16, T=2000, degree=3, cv_s=0.5,
                  phi=None, f=None, theta=None, warp=None, warp_scale=100,
-                 r=0.9, private=0.5, noise=0.25, mix=0.0, beta=0.0, alpha=None):
+                 r=0.9, private=0.5, noise=0.25, mix=0.0, beta=0.0, alpha=None,
+                 f_private=0.1, burst=None, burst_scale=25):
     """Family A. Per-edge arrays (length E = M*degree/2) or scalars for phi, f, theta, warp.
 
     alpha (stage 2, direction): each edge also gets an independent driver read the other way, and
     alpha_e splits the edge's variance (1 +/- alpha_e)/2 between the two directions (1: one-way, as
     with alpha=None; 0: symmetric). None leaves the generator exactly as in stage 1.
+
+    Stage 3. f_private: frequency of each channel's private AR(2) component (0.1 before stage 3).
+    burst (per-edge log-SD sigma_e, or None): both ends of edge e read it through one shared envelope
+    a_e(t) proportional to exp(sigma_e v_e(t)), v_e a unit-SD smooth Gaussian path (correlation time
+    ~burst_scale samples), scaled so mean(a_e^2) = 1 in the window. Coupling then concentrates in joint
+    high-amplitude episodes at unchanged edge variance. Envelopes use their own random stream, so every
+    other draw matches the run without bursts, and sigma_e = 0 reproduces it exactly.
     """
     net = np.random.default_rng(net_seed)
     g = nx.random_regular_graph(degree, M, seed=int(net.integers(2 ** 31)))
@@ -116,9 +124,15 @@ def edge_drivers(*, net_seed, noise_seed, M=16, T=2000, degree=3, cv_s=0.5,
     lead = net.integers(0, 2, E)            # which end of the edge leads
     mix_seed = int(net.integers(2 ** 31))
     rng = np.random.default_rng(noise_seed)
+    if burst is not None:
+        burst, brng = vec(burst, 0.0), np.random.default_rng([noise_seed, 3])
     x = np.zeros((T, M))
     for e, (a, b) in enumerate(edges):
         lead_sig, foll = _edge_signal(rng, T, f[e], r, phi[e], warp[e], warp_scale, theta[e])
+        if burst is not None:
+            env = np.exp(burst[e] * _smooth(brng, T, burst_scale))
+            env /= np.sqrt(np.mean(env ** 2))
+            lead_sig, foll = env * lead_sig, env * foll
         j, k = (a, b) if lead[e] == 0 else (b, a)
         if alpha is None:
             x[:, j] += np.sqrt(w[e]) * lead_sig
@@ -129,12 +143,16 @@ def edge_drivers(*, net_seed, noise_seed, M=16, T=2000, degree=3, cv_s=0.5,
             x[:, j] += np.sqrt(w[e] * p) * lead_sig + np.sqrt(w[e] * (1 - p)) * back_foll
             x[:, k] += np.sqrt(w[e] * p) * foll + np.sqrt(w[e] * (1 - p)) * back_lead
     for j in range(M):
-        x[:, j] += np.sqrt(private) * _ar2(rng, T, 0.1, r)
+        x[:, j] += np.sqrt(private) * _ar2(rng, T, f_private, r)
     x = _z(x) + np.sqrt(noise) * rng.standard_normal((T, M))
     x = _finish(x, np.random.default_rng(mix_seed), mix, beta)
     truth = dict(edges=edges, w=w, phi=phi, f=f, theta=theta, warp=warp, lead=lead)
     if alpha is not None:
         truth['alpha'] = np.asarray(alpha, float)
+    if burst is not None:
+        truth['burst'] = burst
+    if f_private != 0.1:
+        truth['f_private'] = float(f_private)
     return x, truth
 
 

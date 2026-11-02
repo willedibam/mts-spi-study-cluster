@@ -1,6 +1,6 @@
 """Run the validation conditions through the pyspi subset (resumable, parallel).
 
-    python -m research.representation.character_axes.validation.run [--workers 9] [--only PREFIX] [--dry] [--posthoc | --stage2]
+    python -m research.representation.character_axes.validation.run [--workers 9] [--only PREFIX] [--dry] [--posthoc | --stage2 | --stage3]
 
 Each job is one window; outputs go to results/representation/character-axes-validation/raw/<job>.npz,
 or to $VALIDATION_OUT. On Gadi, jobs/farm.pbs runs --shard k --shards N tasks under nci-parallel.
@@ -56,6 +56,20 @@ KNOBS_A2 = {'dir_level': [0, 0.25, 0.5, 0.75, 1.0], 'med': [0, 0.25, 0.5, 0.75, 
 KNOBS_K2 = {'dir_level': [0, 0.25, 0.5, 0.75, 1.0]}
 BASE_K = {'B0': {}, 'B1': dict(cv_s=1.0, phase_noise=0.01)}
 GRID2 = ('noise', 'mix', 'cv_s')
+# Stage 3 (3 November 2026): spectral location within the low band and joint-burst coupling (README, "Stage 3").
+# Its own corpus and pyspi subset (spis_stage3.yaml); stage-1 and stage-2 knobs are re-run at B0 for selectivity.
+KNOBS_A3 = {'loc_level': ('f', None, [0.06, 0.085, 0.11, 0.135, 0.16]),
+            'loc_disp': ('f', 0.11, [0, 0.025, 0.05, 0.075, 0.10]),
+            'burst_level': ('burst', None, [0, 0.375, 0.75, 1.125, 1.5]),
+            'burst_disp': ('burst', 0.75, [0, 0.375, 0.75, 1.125, 1.5])}
+KNOBS_K3 = {'loc_level': [0.06, 0.085, 0.11, 0.135, 0.16]}
+# Family D: family A with strong private power at f_p (6 against ~3 from a channel's edges), coupling at f_c
+KNOBS_D3 = {'fc_level': [0.06, 0.085, 0.11, 0.135, 0.16], 'fp_level': [0.06, 0.085, 0.11, 0.135, 0.16]}
+COMMON_D, F_D = dict(private=6.0), 0.11
+NUIS3 = ('cv_s', 'noise', 'r', 'beta', 'mix')
+GRID3 = ('r', 'noise', 'mix', 'cv_s', 'beta')
+SURR3 = {('burst_level', 'B0'), ('burst_level', 'B1'), ('burst_disp', 'B0'), ('burst_disp', 'B1'),
+         ('form_level', 'B0'), ('nuis_beta', 'B0')}
 
 
 def h(*parts) -> int:
@@ -86,8 +100,33 @@ def stage2_conditions():
     return [dict(x, surrogate=False) for x in c + _grid(KNOBS_A2, GRID2)]
 
 
-def conditions(posthoc=False, stage2=False):
-    """Yield condition dicts: family, knob, level, value, baseline, grid, reps, surrogate."""
+def stage3_conditions():
+    c = []
+    one = lambda fam, knob, vals, bl: [dict(family=fam, knob=knob, level=i, value=float(v), baseline=bl, grid='',
+                                            reps=REPS_MAIN) for i, v in enumerate(vals)]
+    for knob, (_, _, vals) in KNOBS_A.items():
+        c += one('A', knob, vals, 'B0')
+    for knob, vals in KNOBS_A2.items():
+        c += one('A', knob, vals, 'B0')
+    for nuis in NUIS3:
+        c += one('A', 'nuis_' + nuis, NUIS_A[nuis], 'B0')
+    for bl in ('B0', 'B1'):
+        for knob, (_, _, vals) in KNOBS_A3.items():
+            c += one('A', knob, vals, bl)
+        for fam, knobs in (('K', KNOBS_K3), ('D', KNOBS_D3)):
+            for knob, vals in knobs.items():
+                c += one(fam, knob, vals, bl)
+    surr = [dict(x, surrogate=s) for s in ('ft', 'iaaft') for x in c
+            if x['family'] == 'A' and (x['knob'], x['baseline']) in SURR3]
+    grid = _grid({k: v[2] for k, v in KNOBS_A3.items()}, GRID3)
+    return [dict(x, stage=3) for x in [dict(x, surrogate=False) for x in c] + surr
+            + [dict(x, surrogate=False) for x in grid]]
+
+
+def conditions(posthoc=False, stage2=False, stage3=False):
+    """Yield condition dicts: family, knob, level, value, baseline, grid, reps, surrogate (False, True/'ft', 'iaaft')."""
+    if stage3:
+        return stage3_conditions()
     if stage2:
         return stage2_conditions()
     if posthoc:
@@ -128,7 +167,7 @@ def conditions(posthoc=False, stage2=False):
 
 def job_id(cond, rep, win):
     g = cond['grid'].replace(':', '_').replace('.', 'p') if cond['grid'] else 'main'
-    s = '-surr' if cond['surrogate'] else ''
+    s = '-iaaft' if cond['surrogate'] == 'iaaft' else '-surr' if cond['surrogate'] else ''
     return f"{cond['family']}-{cond['knob']}-L{cond['level']}-{cond['baseline']}-{g}-r{rep}-w{win}{s}"
 
 
@@ -157,6 +196,10 @@ def build(cond, rep, win):
             prop, centre, vals = KNOBS_A[cond['knob']]
             v = vals[cond['level']]
             per[prop] = np.full(E, float(v)) if centre is None else centre + sg * v / 2
+        if cond['knob'] in KNOBS_A3:        # stage 3: dispersion signs independent of the phase dispersion
+            prop, centre, vals = KNOBS_A3[cond['knob']]
+            v, sg3 = vals[cond['level']], _signs(h(net_seed, 'signs3'), E)
+            per[prop] = np.full(E, float(v)) if centre is None else centre + sg3 * v / 2
         if cond['knob'] == 'med':
             x, truth = G.hub_drivers(net_seed=net_seed, noise_seed=noise_seed, lam=cond['value'], phi=per['phi'], **kw)
         else:
@@ -172,12 +215,21 @@ def build(cond, rep, win):
         x, truth = G.var_network(net_seed=net_seed, noise_seed=noise_seed, alpha=alpha, **COMMON_B)
     elif fam == 'C':
         x, truth = G.ggm_network(net_seed=net_seed, noise_seed=noise_seed, lam=cond['value'], **COMMON_C)
+    elif fam == 'D':
+        kw = {**COMMON_A, **BASE[bl], **COMMON_D}
+        E = kw['M'] * kw['degree'] // 2
+        sg = _signs(h(net_seed, 'signs'), E)
+        f_c, f_p = (cond['value'], F_D) if cond['knob'] == 'fc_level' else (F_D, cond['value'])
+        x, truth = G.edge_drivers(net_seed=net_seed, noise_seed=noise_seed, phi=PI / 8 + sg * PI / 16,
+                                  f=np.full(E, f_c), f_private=f_p, **kw)
     else:
         E = COMMON_K['M'] - 1
         sg = _signs(h(net_seed, 'signs'), E)
         kw = dict(COMMON_K, alpha=PI / 8, **BASE_K[bl])
         if cond['knob'] == 'dir_level':
             kw['asym'] = np.full(E, cond['value'])
+        elif cond['knob'] == 'loc_level':
+            kw['f0'] = float(cond['value'])
         else:
             prop, centre, vals = KNOBS_K[cond['knob']]
             v = vals[cond['level']]
@@ -187,14 +239,19 @@ def build(cond, rep, win):
                 kw['f0'] = float(v)
         x, truth = G.kuramoto_tree(net_seed=net_seed, noise_seed=noise_seed, **kw)
     if cond['surrogate']:
-        x = G.ft_surrogate(x, np.random.default_rng(h(net_seed, noise_seed, 'surr')))
+        srng = np.random.default_rng(h(net_seed, noise_seed, 'surr'))
+        if cond['surrogate'] == 'iaaft':    # stage 3: exact marginals, approximate cross-spectra
+            from mtsspi.surrogates import multivariate_iaaft
+            x, _ = multivariate_iaaft(x, srng)
+        else:
+            x = G.ft_surrogate(x, srng)
         x = (x - x.mean(0)) / x.std(0)
     return x, truth
 
 
 def needs_dcorr(cond):
     """dcorr (~45% of a job) is computed only where the r2|dcorr pair is evaluated."""
-    if cond['family'] != 'A' or cond['knob'] in KNOBS_A2:
+    if cond['family'] != 'A' or cond['knob'] in KNOBS_A2 or cond.get('stage') == 3:
         return False
     form = cond['knob'].startswith('form')
     return form if (cond['grid'] or cond['surrogate']) else True
@@ -208,17 +265,23 @@ def _work(args):
     import warnings
     warnings.filterwarnings('ignore')
     from mtsspi.compute import run_pyspi
-    from research.representation.character_axes.validation.build_subset import WANTED
-    full = needs_dcorr(cond)
-    names = sorted(WANTED) if full else sorted(WANTED - {'dcorr'})
+    from research.representation.character_axes.validation.build_subset import WANTED, WANTED3
+    full, stage3 = needs_dcorr(cond), cond.get('stage') == 3
+    names = sorted(WANTED3) if stage3 else sorted(WANTED) if full else sorted(WANTED - {'dcorr'})
+    config = HERE / 'spis_stage3.yaml' if stage3 else CONFIG if full else HERE / 'spis_nodcorr.yaml'
     t0 = time.time()
     try:
         x, truth = build(cond, rep, win)
-        r = run_pyspi(x, config_path=CONFIG if full else HERE / 'spis_nodcorr.yaml', normalise=True, n_jobs=1)
+        r = run_pyspi(x, config_path=config, normalise=True, n_jobs=1)
         S = np.stack([r.matrices[n] for n in names]).astype(np.float32)
         ac1 = float(np.mean([np.corrcoef(x[:-1, j], x[1:, j])[0, 1] for j in range(x.shape[1])]))
         tmp = path.with_suffix('.tmp.npz')
-        np.savez_compressed(tmp, S=S, spi=np.array(names), ac1=ac1,
+        extra = {}
+        if stage3:                          # record the computation that made this corpus
+            import pyspi
+            extra['pyspi'] = json.dumps(dict(version=getattr(pyspi, '__version__', ''),
+                                             computation=str(getattr(pyspi, 'COMPUTATION_VERSION', ''))))
+        np.savez_compressed(tmp, S=S, spi=np.array(names), ac1=ac1, **extra,
                             meta=json.dumps(dict(cond, rep=rep, win=win)),
                             errors=json.dumps(r.errors or {}),
                             **{f't_{k}': np.asarray(v) for k, v in truth.items()})
@@ -236,11 +299,12 @@ def main():
     ap.add_argument('--dry', action='store_true')
     ap.add_argument('--posthoc', action='store_true')
     ap.add_argument('--stage2', action='store_true', help='second-family mediation and direction (README, Stage 2)')
+    ap.add_argument('--stage3', action='store_true', help='spectral location and joint-burst coupling (README, Stage 3)')
     ap.add_argument('--shard', type=int, default=-1, help='run jobs[shard::shards] serially in this process (one farm task)')
     ap.add_argument('--shards', type=int, default=1)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    jobs = [(c, r, w) for c in conditions(a.posthoc, a.stage2) for r in range(c['reps']) for w in range(WINDOWS)]
+    jobs = [(c, r, w) for c in conditions(a.posthoc, a.stage2, a.stage3) for r in range(c['reps']) for w in range(WINDOWS)]
     jobs = [j for j in jobs if job_id(*j).startswith(a.only)]
     if a.shard >= 0:  # slice the fixed job list, not the shrinking to-do list, so concurrent shards never overlap
         jobs = jobs[a.shard::a.shards]

@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N axes-stage3
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1,mem=8GB,walltime=00:40:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Stage 3 analysis: scores the stage-3 corpus and writes <dir3>/analysis/tables/stage3_*.csv (cache <dir3>/scores3.pkl).
+# Nothing is written into the checkout.
+# qsub -v VALIDATION_OUT=<dir3>/raw research/representation/character_axes/validation/jobs/analyse3.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+raw="${VALIDATION_OUT:?}"
+echo "[INFO] $(git rev-parse --short HEAD), $(ls "$raw" | wc -l) windows in $raw"
+python -u -m research.representation.character_axes.validation.stage3 --refresh --raw "$raw" --out "$(dirname "$raw")/analysis"

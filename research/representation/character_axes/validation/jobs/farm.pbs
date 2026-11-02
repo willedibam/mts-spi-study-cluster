@@ -11,6 +11,8 @@
 # qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/farm.pbs
 # Stage 2 (second-family mediation and direction, 520 windows): add STAGE=2 to -v and book one node,
 # qsub -l ncpus=48,mem=190GB,walltime=00:45:00 -v STAGE=2,VALIDATION_OUT=<dir2>/raw .../farm.pbs
+# Stage 3 (spectral location and joint bursts, 2,972 windows, spis_stage3.yaml): STAGE=3 on four nodes,
+# qsub -l ncpus=192,mem=760GB,walltime=01:30:00 -v STAGE=3,VALIDATION_OUT=<dir3>/raw .../farm.pbs
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
@@ -19,7 +21,7 @@ mkdir -p "$VALIDATION_OUT"
 log="$(dirname "$VALIDATION_OUT")"
 mod=research.representation.character_axes.validation.run
 per_task="${WINDOWS_PER_TASK:-4}"
-if [[ "${STAGE:-1}" == 2 ]]; then flags=(--stage2); else flags=('' --posthoc); fi
+case "${STAGE:-1}" in 2) flags=(--stage2) ;; 3) flags=(--stage3) ;; *) flags=('' --posthoc) ;; esac
 
 mpirun -np $(( (PBS_NCPUS + 47) / 48 )) --map-by ppr:1:node python -c 'import mtsspi, pyspi; print(mtsspi.__file__, pyspi.__file__)'
 # Smoke: one window in this process before the farm; stop unless it succeeded.

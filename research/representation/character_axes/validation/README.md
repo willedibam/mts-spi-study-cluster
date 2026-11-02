@@ -83,13 +83,14 @@ Replicates: 6 recordings × 2 windows per main-sweep condition, 4 × 2 per grid 
 
 ## Files
 
-- `build_subset.py`: writes `spis.yaml`.
-- `generators.py`: families A, B, C and K, plus the FT surrogate.
+- `build_subset.py`: writes `spis.yaml` (stages 1–2) and, with `--stage3`, `spis_stage3.yaml`.
+- `generators.py`: families A, B, C and K, plus the FT surrogate; family D and joint bursts are options of `edge_drivers`.
 - `run.py`: builds the condition table and runs pyspi in parallel, resumable, into `results/representation/character-axes-validation/raw` (git-ignored) or `$VALIDATION_OUT`.
 - `analyse.py`: scores, criteria 1–6, `tables/` and `figures/selectivity.*`; reads the same `$VALIDATION_OUT`.
 - `bound.py`: criterion 7, the cohort bound (`tables/bound.csv`).
 - `figure.py`: the selectivity figure.
-- `jobs/farm.pbs`, `jobs/analyse.pbs`: the Gadi farm and the analysis job.
+- `stage3.py`: stage 3 scoring and rules (`tables/stage3_*.csv`).
+- `jobs/farm.pbs`, `jobs/analyse.pbs`, `jobs/analyse3.pbs`: the Gadi farm and the analysis jobs.
 
 ## Status (2 November 2026, complete)
 
@@ -323,3 +324,79 @@ What holds after stage 2:
 - **Direction** is dropped.
 - **Lag** stays a sub-axis with no level-aware readout.
 - **Form** has only the te − gc level, a sub-axis.
+
+## Stage 3: spectral location within a band and joint-burst coupling
+
+Pre-registered on 3 November 2026, before any stage-3 window was generated. The core sufficiency checks ([findings](../findings.md), "Core sufficiency") leave recurring survivors after adjusting for the core and strength: readouts that measure frequency in sample units (fixed-lag timing, spectral peak, best shift) and linear–rank agreement (form_monotone, whose propofol residual survives IAAFT). Under the protocol a survivor joins the core only after passing construction. Two questions:
+- **Location.** Does any p90 readout read the frequency at which channels couple, inside the low band, selectively against lag, phase and driver bandwidth r, and from the coupling rather than from channel spectra? The band construct splits at fs/4, so alpha slowing stays inside the low band.
+- **Bursts.** Does linear–rank agreement read a non-Gaussian form of coupling, and do IAAFT surrogates separate it from heavy-tailed marginals (β)?
+
+### Generators
+
+- **Location, family A:** the stage-3 knobs set each coupled edge's driver frequency f inside the low band. Level: f ∈ {0.06, 0.085, 0.11, 0.135, 0.16} on every edge. Dispersion: f = 0.11 ± Δ/2, Δ ∈ {0, 0.025, 0.05, 0.075, 0.10}. Private components stay at 0.1.
+- **Location, family K:** f₀ over the same five values, as the second family for the level (a Kuramoto edge couples at its oscillators' frequency).
+- **Family D, coupling against channel spectra:** family A with private power 6 per channel, against about 3 from its edges, so a private AR(2) at f_p dominates the channel spectra while coupling sits at f_c. Knobs: f_c over the five values with f_p = 0.11, and f_p over them with f_c = 0.11. B0 and B1 as in family A.
+- **Joint bursts, family A** (`edge_drivers(burst=…)`): both ends of an edge read its driver through one shared envelope a_e(t) ∝ exp(σ_e v_e(t)), where v_e is a smooth Gaussian path with a correlation time of about 25 samples. a_e is scaled to mean a² = 1 in each window, so edge variance and Pearson coupling are unchanged in expectation while coupling concentrates in joint high-amplitude episodes. Level: σ ∈ {0, 0.375, 0.75, 1.125, 1.5}. Dispersion: σ = 0.75 ± Δ/2, Δ up to 1.5. Envelopes use their own random stream, so σ = 0 reproduces family A exactly. There is no second family.
+- **Form θ** is the stage-1 knob.
+- The stage-3 dispersion knobs draw their ± signs independently of the baseline phase dispersion. Stage 1's band, form and warp dispersion knobs reused the phase-dispersion sign vector, so in stage 1 those dispersions were perfectly correlated with phase across edges. That is noted here and not changed.
+
+### Corpus
+
+A separate corpus with its own pyspi subset, `spis_stage3.yaml` (93 statistics, `build_subset.py --stage3`): every constituent of the timing_fixed_lag, timing_best_shift, spectral_peak, form_monotone and tail axes and of their levels, as `character_axes.py` defines them, plus the core's constituents and the top-quartile ranking. The statistics differ from stages 1–2, so every knob used for selectivity is re-run here with the same seeds, and therefore the same time series:
+- family A at B0: the eight stage-1 construct knobs, direction α and mediation λ (stage 2), and the nuisances strength CV, noise, r, β and mixing (T and M are not repeated);
+- family A at B0 and B1: the four stage-3 knobs; families K and D at B0 and B1;
+- FT and IAAFT surrogates (`mtsspi.surrogates.multivariate_iaaft`, exact marginals): burst level and dispersion at B0 and B1, form level and β at B0;
+- sign grid: each stage-3 knob at its zero and maximum, crossed with r {0.6, 0.95}, noise {0, 1}, mixing 0.5, strength CV {0.1, 1.5} and β 2.
+
+Replicates are 6 recordings × 2 windows per main condition and 4 × 2 per grid cell: 2,972 windows. Each window records its pyspi version.
+
+### Readouts
+
+"Top quartile" is the median over the entries ranked in the top quartile by broadband cohmag, as `band_spread` ranks them. "All entries" is the cohort definition (`level_scores`). Axis organisation is `axis_scores` over each axis's full pair list, as in the cohorts. Learned sign means the sign of the family A response at B0 when its interval excludes zero; B1, the grid and the second families must then agree, so these measures have one fewer independent check.
+
+| Measure | Definition | Own knob | Sign |
+|---|---|---|---|
+| lag-1 ratio | top-quartile median of corr_pearson_tau-1 / cov; ≈ ρ(1)·cos 2πf for narrowband coupling, whatever its phase | location level | − |
+| AR(2) frequency f̂ | per entry, fit s_k = a₁s_(k−1) + a₂s_(k−2) at k = 2, 3 to the lag-0 to lag-3 correlations (cov, corr_pearson_tau-1 to 3); f̂ = arccos(a₁/2√−a₂)/2π, NaN without a complex pole pair; top-quartile median | location level | + |
+| AR(2) frequency spread | SD (ddof 0) of f̂ over the top quartile | location dispersion | + |
+| spectral-peak level | cohmag max/mean, broadband; top quartile and all entries | location level | learned |
+| best-shift level | xcorr² max − cov²; top quartile and all entries | location level | − (a fixed phase is a delay of φ/2πf samples, which shrinks as f rises) |
+| fixed-lag, spectral-peak and best-shift axes | organisation | location dispersion | learned |
+| linear–rank level | \|ρ_S\| − \|r\|; top quartile and all entries | burst level | − (Pearson weights covariance by amplitude², ranks do not) |
+| linear–rank axis; r\|ρ_S; r\|τ_K | organisation (form_monotone axis; Pearson against Spearman and Kendall) | burst dispersion | − |
+| tail level; tail axis | Chebyshev/Euclidean distance; organisation (robust against empirical covariance, Chebyshev and cityblock against Euclidean) | burst level; burst dispersion | learned |
+
+The tail readouts were not requested; they are included because the tail axis was built for rare-event coupling. For every burst measure the residual (real minus IAAFT, per recording) is also scored, as the cohort residual is computed. The core readouts (CORE at b56d908) are scored for cross-talk with the new knobs.
+
+### Rules
+
+Δ, intervals and d are as before.
+1. **Sign stability (hard).** No interval may lie entirely on the wrong side in family A at B0 or B1, at any grid cell or, for location levels, in family K and in family D's f_c sweep at B0 and B1.
+2. **Sensitivity.** The sign, with the interval excluding zero, in family A at B0 and B1.
+3. **Selectivity.** SR3 = \|Δ own (A, B0)\| / max \|Δ\| over every other construct knob of family A in this corpus (lag, form θ, warp, direction α, mediation λ, the other stage-3 construct, and band for bursts) and the construct's named nuisance: r for location, β for bursts. Location leaves out the band knobs, which move the same variable over a wider range; their responses are reported.
+4. **Location also needs:**
+   - **reads coupling frequency** (levels): in family D, the f_c response has the sign with its interval excluding zero at B0 and B1, and \|Δ f_p\| ≤ 0.5·\|Δ f_c\| at both;
+   - **incremental over the core:** \|d own\| exceeds every core band readout's \|d\| (high share, band spread, ppc L\|H) on the same knob, at B0 and B1.
+5. **Bursts also need non-Gaussianity:** IAAFT keeps ≤ 0.5 of the own response at B0 and B1. Reported: FT kept; for β, IAAFT kept (method check) and FT kept. The residual is reported as selective if its own response is ok at B0 and B1 and β and θ each move it at most half as much.
+6. **Dispersion readouts** (organisation and spread) need level-awareness for core, as stage 2 required of spreads: \|Δ level knob\| ≤ 0.5·\|Δ dispersion knob\| at B0 and B1.
+
+Verdict: drop if rule 1 or 2 fails; core if SR3 ≥ 2 and every applicable requirement of rules 4–6 passes; sub-axis otherwise, listing what failed. Nuisance ratios for strength CV, noise, r, β and mixing are reported. Mediation λ is family A's, where stage 2 found the mediation readout weak.
+
+### Predictions stated in advance
+
+From first principles, not from data:
+- **lag-1 ratio:** r moves it about as much as location. Over r 0.6 → 0.95 at f = 0.1, r·cos 2πf goes 0.49 → 0.77; over f 0.06 → 0.16 at r = 0.75 it goes 0.70 → 0.40. So SR3 is near 1.
+- **f̂** is built not to depend on r. pyspi's lagged correlation is symmetrised, ½(c(τ) + c(−τ)), which for narrowband coupling at phase φ is proportional to cos φ·cos 2πfτ. It vanishes for quadrature coupling, so lag level (φ → π/2) is expected to destabilise both lag-correlation readouts.
+- **Ratios of lagged correlations** cancel the channel normalisation, so they should follow f_c and not f_p in family D. Coherence-based readouts (spectral peak, band) are normalised per frequency by the channel spectra and should respond to f_p as well.
+- **spectral-peak level** reads bandwidth (r) more than location.
+- **best-shift level** reads delay in samples, so lag level should move it more than location (SR3 < 1).
+- **fixed-lag axis:** it averages signed pairs whose profile correlation starts positive at τ = 1, 2 and negative at τ = 3–5, because cos 2πfτ changes sign at f = 0.11. Dispersion moves those pairs in opposite directions, so no sign is derivable.
+- **linear–rank level:** β moves it opposite to bursts, because Pearson falls under heavy-tailed marginals and ranks are invariant. IAAFT should reproduce β's effect (keep ≥ 0.8) but not the bursts'. To first order, θ moves it only through strength, because rank and Pearson correlation both scale with cos θ.
+- **core band high share:** it may respond to within-band location through AR(2) spectral leakage across fs/4, so it is not assumed that the core misses within-band location.
+
+A location or burst readout whose verdict is core will be proposed for CORE with its exact constituents. For bursts, the residual is the version comparable with the cohort's real − IAAFT residual.
+
+### Running it
+
+- **Farm:** `qsub -l ncpus=192,mem=760GB,walltime=01:30:00 -v STAGE=3,VALIDATION_OUT=<dir3>/raw research/representation/character_axes/validation/jobs/farm.pbs`, with `<dir3>` = `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-stage3-<commit>`.
+- **Analysis:** `qsub -v VALIDATION_OUT=<dir3>/raw .../jobs/analyse3.pbs` writes `<dir3>/analysis/tables/stage3_{verdicts,responses,core}.csv`, which are copied to `tables/`.
