@@ -27,8 +27,13 @@ Multivariate IAAFT, one surrogate per window, marginal-final, 200 iterations. Ef
 
 [axes-review.md](axes-review.md), a separate session's audit against pyspi source and eight banks. Main points: (a) organisation z is attenuated by edge-profile unreliability, which itself changes with state (NeuroTycho reliability rises under anaesthesia), so raw organisation effects shrink sharply once disattenuated (predictive d 3.36→0.75, history 2.79→0.53, phase locking 2.15→0.13; fixed lag and warping survive at 1.3); (b) 9 of 13 axes violate the one-assumption rule once direction, exponent, sign, frequency resolution and estimator bias are required to match, and some pairs are exact duplicates (`dtf` ≡ `pdcoh` bivariately, MCD ≡ EllipticEnvelope); (c) the identity control's nonlinear pairs move with strength range (d −1.2), so it is a strength-range yardstick, not a floor; (d) axes explain 16–40% of z variance, less than random pair groupings, as expected for targeted contrasts. Proposed core: form (Gaussian vs DCE-Kraskov MI/TLMI/TE), lag (|coherency| vs imaginary coherence), band (low vs high coherence), warp (Euclidean vs constrained DTW), plus conditional mediation (Ledoit–Wolf r² vs partial r²), with reliability and saturation gates and names fixed to one constituent set. Its selection used label-free reliability and saturation on these cohorts; its AUROC table looked at outcomes and must not drive choices. Its verdict: the defensible character is currently linear-spectral (lag, band, warp, mediation); no estimator-robust non-Gaussian demonstration exists yet.
 
+## Cohorts
+
+- AD/FTD (88 people, 704 windows; five-fold participant CV × 5): AD versus control AUROC power+Pearson .888, spectra .874, Pearson .835, z .837, MiniRocket .813, 13 axes .641. Pearson+axes+levels over Pearson +.045 [−.010, +.103]; power+axes over power ≈ 0 in all contrasts. AD versus FTD is near chance for every method (MiniRocket .43, spectra .47, axes+levels .60 with an interval spanning zero). Fixed predictions: spectral slowing confirmed (theta/alpha d 1.13); lower non-Gaussian level failed in the opposite direction (d +.71, uncorrected Kraskov, so now suspect for the same autocorrelation reason); phase-lag level null.
+- LEMON (132 of 203 people; 70 excluded for a missing canonical channel, 34% young versus 37% old) and propofol (20 people × 4 levels, 800 windows): evaluations and both surrogate variants running.
+
 ## Open
 
-- AD/FTD (88 people, 704 windows, no exclusions), LEMON (132 of 203 people; 70 excluded for a missing canonical channel, 34% young versus 37% old) and propofol (20 people × 4 levels, 800 windows) farms are running.
-- Cohort surrogates need the cohort banks; both IAAFT variants should be used.
+- Whether to adopt the review's core (and DCE, reliability gating, strength-range control) as the reported axes; the 13 stay as the extended set if so.
 - InceptionTime is not yet in the cohort comparison; MiniRocket is.
+- Corpora moved to scratch after use: `/scratch/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/{ad-ftd,surr-chbmit,surr-lanl,surr-neurotycho,surr-siena}` (checksum-verified moves, gdata quota).
