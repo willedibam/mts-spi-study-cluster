@@ -11,12 +11,14 @@ Use `/scratch/ql44/we2614/mts-spi-study` for working storage and `/g/data/ql44/w
 | `zenodo/7118947/` | Zenodo inputs, authoritative seed1729 MPI bank and features |
 | `representation/` | Synthetic and empirical representation studies, cross-M/T, model comparisons |
 | `pyspi-optimisation/large-m-260917/` | Large-M estimator/runtime and pair-baseline work |
-| `archives/<workstream>/` | Verified inactive scientific archives, physically on gdata |
+| `archives/<workstream>/` | Verified inactive scientific archives, physically on gdata; since 2 November 2026 Scratch units are packed into Scratch `archives/` (gdata lacked the bytes), where Scratch expiry still applies |
 | `operations/{sources,logs,maintenance}/` | Frozen source worktrees, execution records and storage-maintenance evidence |
 | `environments/` | One shared uv-created MTS environment, physically on Scratch; checkout `.venv` links reference it |
 | `dev/<experiment>/` | Disposable named experiments on Scratch; each needs a purpose and retirement condition |
 | `legacy-non-p90/` | Existing nonconforming outputs flagged for review, not a destination for new runs |
 | `documentation/` | Storage index, historical path map and audit evidence |
+
+A missing run or source directory may be packed: its original parent's `ARCHIVED.md` (or `ARCHIVED-*.txt`) names the archive, and `archives/<workstream>/<YYMMDD>/README.md` gives each archive's contents, checksum and restore command.
 
 EEML, Baseten and TUSZ are sibling projects. Each owns its own archives and environment if needed. Shared machine caches live in `.cache/`; active editor/runtime temporary files may remain in `tmp/`. Neither is a scientific workstream.
 
