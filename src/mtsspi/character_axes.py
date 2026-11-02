@@ -210,17 +210,20 @@ def level_scores(profiles, spi_order: Sequence[str], levels=LEVELS):
     return np.array(values).T, names
 
 
-# Construction-validated core, 2 November 2026 (research/representation/character_axes/validation/README.md),
-# with that study's exact constituents. role 'core' passed (SR >= 2); 'sub' is sign-stable but less selective.
-# kind: 'org' = profile correlation of a and b; 'transpose' = corr(A, A^T) over ordered entries (direction);
-# otherwise the median over entries of a level contrast.
+# Construction-validated core (research/representation/character_axes/validation/README.md, stages 1 and 2),
+# with that study's exact constituents. role 'core' passed (SR >= 2; mediation in one generator only); 'sub'
+# is sign-stable but less selective. Direction (spectral GC A versus A^T) was core after stage 1 and dropped in
+# stage 2 (it reverses in directed Kuramoto); the stage-1 core is commit 77408cd.
+# kind: 'org' = profile correlation of a and b; 'spread' = SD (ddof 0) of the a/(a+b) share over the top
+# quartile of entries ranked by BAND_RANK; otherwise the median over entries of a level contrast.
 GC, TE_DCE = 'gc_gaussian_k-1_kt-1_l-1_lt-1', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'
+BAND_RANK = mt('cohmag', 'mean', 'broad')
 CORE = {
     'band': ('core', 'org', mt('ppc', 'mean', 'low'), mt('ppc', 'mean', 'high')),
     'band_high_share': ('core', 'share', mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low')),
+    'band_spread': ('core', 'spread', mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low')),
     'mediation_ledoit_wolf': ('core', 'org', 'cov-sq_LedoitWolf', 'prec-sq_LedoitWolf'),
     'mediation_empirical': ('core', 'org', 'cov-sq_EmpiricalCovariance', 'prec-sq_EmpiricalCovariance'),
-    'direction': ('core', 'transpose', sgc('mean', 'broad'), None),
     'lag': ('sub', 'org', mt('cohmag', 'mean', 'low'), mt('icoh', 'mean', 'low')),
     'lag_sin_phi': ('sub', 'sinphi', mt('icoh', 'mean', 'broad'), mt('cohmag', 'mean', 'broad')),
     'form_te_minus_gc': ('sub', 'diff', TE_DCE, GC),
@@ -237,28 +240,27 @@ def masked_correlation(x, y, minimum=5):
     return out
 
 
-def core_scores(profiles, spi_order: Sequence[str], M: int, core=CORE):
-    """(n, K, M(M-1)) profiles in row-major ordered off-diagonal order -> (n, C) core readouts and names."""
+def core_scores(profiles, spi_order: Sequence[str], core=CORE):
+    """(n, K, entries) edge profiles -> (n, C) core readouts and their names."""
     index = {name: k for k, name in enumerate(spi_order)}
-    off = [(i, j) for i in range(M) for j in range(M) if i != j]
-    position = {e: k for k, e in enumerate(off)}
-    transpose = np.array([position[(j, i)] for i, j in off])
     names, values = [], []
     for name, (_, kind, a, b) in core.items():
-        if a not in index or (b is not None and b not in index):
+        if a not in index or b not in index or (kind == 'spread' and BAND_RANK not in index):
             continue
-        x = profiles[:, index[a]].astype(np.float64)
+        x, y = profiles[:, index[a]].astype(np.float64), profiles[:, index[b]].astype(np.float64)
         if kind == 'org':
-            v = masked_correlation(x, profiles[:, index[b]].astype(np.float64))
-        elif kind == 'transpose':
-            v = masked_correlation(x, x[:, transpose])
-        else:
-            y = profiles[:, index[b]].astype(np.float64)
-            with np.errstate(invalid='ignore', divide='ignore'):
-                c = {'share': lambda: x / (x + y), 'sinphi': lambda: x / np.sqrt(y), 'diff': lambda: x - y}[kind]()
-            c = np.where(np.isfinite(c), c, np.nan)
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore', RuntimeWarning)
+            names.append(name); values.append(masked_correlation(x, y)); continue
+        with np.errstate(invalid='ignore', divide='ignore'):
+            c = {'share': lambda: x / (x + y), 'spread': lambda: x / (x + y), 'sinphi': lambda: x / np.sqrt(y),
+                 'diff': lambda: x - y}[kind]()
+        c = np.where(np.isfinite(c), c, np.nan)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', RuntimeWarning)
+            if kind == 'spread':
+                rank = profiles[:, index[BAND_RANK]].astype(np.float64)
+                top = rank >= np.nanquantile(rank, .75, axis=1, keepdims=True)
+                v = np.nanstd(np.where(top, c, np.nan), axis=1)
+            else:
                 v = np.nanmedian(c, axis=1)
         names.append(name); values.append(v)
     return np.array(values).T, names

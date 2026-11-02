@@ -71,21 +71,15 @@ def test_iaaft_spectrum_final_matches_spectra_exactly():
     assert np.allclose(cross(fx), cross(fs), atol=1e-8 * np.abs(cross(fx)).max())
 
 
-def test_core_transpose_and_levels():
-    from mtsspi.character_axes import CORE, core_scores, mt, sgc
+def test_core_levels_and_band_spread():
+    from mtsspi.character_axes import BAND_RANK, CORE, core_scores, mt
     rng = np.random.default_rng(4)
-    M = 5
-    mask = ~np.eye(M, dtype=bool)
-    sym = rng.random((M, M)); sym = sym + sym.T
-    directed = rng.random((M, M))
-    hi, lo = rng.random((M, M)) + .1, rng.random((M, M)) + .1
-    names = [sgc('mean', 'broad'), mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low')]
-    profiles = np.stack([sym[mask], hi[mask], lo[mask]])[None]
-    scores, used = core_scores(profiles, names, M)
-    assert used == ['band_high_share', 'direction']
-    assert np.isclose(scores[0, used.index('direction')], 1.0)            # symmetric matrix: A equals A^T
-    assert np.isclose(scores[0, used.index('band_high_share')], np.median((hi / (hi + lo))[mask]))
-    profiles = np.stack([directed[mask], hi[mask], lo[mask]])[None]
-    expected = np.corrcoef(directed[mask], directed.T[mask])[0, 1]
-    assert np.isclose(core_scores(profiles, names, M)[0][0, 1], expected)
-    assert all(role in ('core', 'sub') for role, *_ in CORE.values())
+    entries = 20
+    hi, lo, broad = rng.random(entries) + .1, rng.random(entries) + .1, rng.random(entries)
+    names = [mt('cohmag', 'mean', 'high'), mt('cohmag', 'mean', 'low'), BAND_RANK]
+    scores, used = core_scores(np.stack([hi, lo, broad])[None], names)
+    assert used == ['band_high_share', 'band_spread']
+    share = hi / (hi + lo)
+    assert np.isclose(scores[0, 0], np.median(share))
+    assert np.isclose(scores[0, 1], np.std(share[broad >= np.quantile(broad, .75)]))
+    assert 'direction' not in CORE and all(role in ('core', 'sub') for role, *_ in CORE.values())

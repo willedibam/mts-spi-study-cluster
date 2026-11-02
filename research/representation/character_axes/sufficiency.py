@@ -25,7 +25,7 @@ def blocks(bank):
     spi = [str(s) for s in bank['spi_order']]
     M = int(bank['M'][0])
     profiles = edge_profiles(bank['aligned'], M, len(spi))
-    core, core_names = core_scores(profiles, spi, M)
+    core, core_names = core_scores(profiles, spi)
     r = readout(bank)
     extended = np.hstack([r['axes'], r['levels']])
     extended_names = PREDICTIVE + [f'level_{n}' for n in r['level_names']]
