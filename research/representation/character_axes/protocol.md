@@ -49,4 +49,6 @@ Common window contract: the 19 standard 10–20 channels, native reference, 0.5�
 
 ## Evaluation
 
+The two parts of the claim are judged differently (user decision, 2 November). Named axes are for interpretation: they are judged by effect size, replication across independent units or cohorts, survival against both surrogate variants and calibration in constructed cases; their classification accuracy only checks that they carry state information. z is judged by incremental value over strength baselines. Where z adds over strength, the axes should account for that increment; a small (3–5) well-reasoned axis core is preferred to the full 13 for reporting.
+
 Five-fold participant-grouped, class-stratified cross-validation repeated five times; participant-level predictions average window probabilities. Feature blocks (absolute band power, relative spectra, Pearson, z, axes, axes+levels) are imputed, scaled and PCA-capped at 32 inside each training fold and fused by concatenation into L2 logistic regression with C selected by inner grouped CV. Primary contrasts: axes(+levels) versus Pearson; Pearson+axes versus Pearson; power+axes versus power. Uncertainty: participant bootstrap of the paired out-of-fold predictions. Interpretation uses participant-level axis means with the surrogate decomposition, not model weights.
