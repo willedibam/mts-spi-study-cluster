@@ -22,6 +22,14 @@ Organisation reads heterogeneity of a property across pairs, not its level: equa
 | phase_amplitude | phase | envelope | PLV/PPC vs envelope correlation | waveform shape |
 | tail | bulk | outlier-robust | empirical vs minimum-covariance-determinant covariance; Euclidean vs Chebyshev/cityblock | |
 
+Considered and not built, by the criterion that one statistic alone cannot read the property:
+
+- Symmetric ↔ directed: one directed statistic already reads asymmetry from A against Aᵀ, so this is a single-statistic property; contemporaneous ↔ predictive is the paired version that one statistic cannot read.
+- Positive ↔ mixed-sign coupling: a single signed statistic reads sign.
+- Amplitude ↔ shape similarity (Euclidean distance versus correlation): an identity on standardized inputs; it needs unstandardized inputs to exist.
+- Stationary ↔ intermittent: p90 statistics are whole-window, so the tail axis is only a proxy; a real axis needs time-resolved statistics.
+- Within- ↔ cross-frequency and pairwise ↔ higher-order: no minimal pair exists in p90 (no phase–amplitude or synergy estimator with a matched counterpart).
+
 Controls: an identity set (statistics that are fixed functions of each other on standardized inputs; |score| ≈ 1 sets the numerical floor) and an estimator set (shrinkage, DCE, barycentre optimiser variants), which flags estimator artefacts rather than character.
 
 Catalogue facts found while building the axes: 16 statistics (frequency-averaged PLI and wPLI, phase, PSI, group delay) are signed and antisymmetric, so their stored z with any of the 181 symmetric statistics is exactly zero; axes use |A| for them. Barycentre means are structurally ~0 on standardized inputs and are excluded.
