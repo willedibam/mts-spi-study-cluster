@@ -42,4 +42,4 @@ Multivariate IAAFT, one surrogate per window, marginal-final, 200 iterations. Ef
 - Whether to adopt the review's core (and DCE, reliability gating, strength-range control) as the reported axes; the 13 stay as the extended set if so. The review's later revision proposes direction rather than warp as the fifth axis and a one-knob construction simulation before any core axis is reported.
 - Level readouts that are a median over edges can be degenerate: the best-shift level is 0 in most AD windows because cross-correlation peaks at lag 0.
 - InceptionTime is not yet in the cohort comparison; MiniRocket is.
-- Corpora moved to scratch after use: `/scratch/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/{ad-ftd,surr-chbmit,surr-lanl,surr-neurotycho,surr-siena}` (checksum-verified moves, gdata quota).
+- Corpora moved to scratch after use: `/scratch/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/{ad-ftd,lemon,propofol,surr-*}`; every real and surrogate run now lives there (checksum-verified moves, gdata quota). Scratch is purged after 100 days without access; the banks are cheap to regenerate.
