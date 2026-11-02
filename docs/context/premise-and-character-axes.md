@@ -38,7 +38,14 @@ Pearson aggregation is a selective compression: it removes profile levels and po
 
 ## Named character axes built inside z (2 November)
 
-The future-direction axes below now have a first implementation that stays within the existing catalogue: thirteen axes of minimal statistic pairs (one assumption apart) read as organisation (heterogeneity across pairs) and, where units match, level. [Protocol and fixed cohort predictions](../../research/representation/character_axes/protocol.md); [findings](../../research/representation/character_axes/findings.md). Current state: on NeuroTycho, 13 named axes nearly match spectra across drug and animal while Pearson fails; IAAFT surrogates show its timing/spectral axes are linear-spectral and its non-Gaussian dependence increase partly survives, with a class-dependent surrogate mismatch now being bracketed. AD/FTD, LEMON and propofol cohorts are running. Seven per cent of every stored z vector is identically zero (antisymmetric × symmetric statistics).
+The future-direction axes below now have a first implementation that stays within the existing catalogue: thirteen axes of minimal statistic pairs (one assumption apart) read as organisation (heterogeneity across pairs) and, where units match, level. [Protocol and fixed cohort predictions](../../research/representation/character_axes/protocol.md); [findings](../../research/representation/character_axes/findings.md). Current state (2 November, all cohorts and controls complete):
+- **Prediction:** axes and z add over correlation (LEMON, propofol) but not over channel power or spectra, and most fixed cohort predictions failed.
+- **Surrogates (two IAAFT variants):** every replicated state effect in NeuroTycho, propofol, AD/FTD and LEMON is linear-spectral. The apparent non-Gaussian increases come from the autocorrelation-biased Kraskov estimator and vanish with its Theiler-window version.
+- **Construction validation** ([README](../../research/representation/character_axes/validation/README.md)): band, mediation and direction pass as core axes, lag is a sub-axis, form and warp fail at cohort-like coupling. Organisation also moves with level, so a lag-organisation rise does not by itself mean more uniform lags. Noise, strength spread and mixing stay unbounded.
+- **Cohort bound:** surviving sign claims are NeuroTycho anaesthesia lag organisation and mediation, plus a weak HMC sleep lag claim.
+- **Decision (user):** report a validated core, keep the 13 as an extended set.
+
+Seven per cent of every stored z vector is identically zero (antisymmetric × symmetric statistics).
 
 ## Future direction: dedicated character estimators (axes inside z now exist, above)
 
