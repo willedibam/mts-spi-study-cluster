@@ -1,0 +1,1391 @@
+{
+  "methods": {
+    "univariate": {
+      "groups": {
+        "PN00": {
+          "brier": 0.2919275566722759,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7275632684813726
+        },
+        "PN01": {
+          "brier": 0.2318784314248979,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5723514117186705
+        },
+        "PN03": {
+          "brier": 0.0003503384378279249,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.012064571921624738
+        },
+        "PN05": {
+          "brier": 0.3560622177527077,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.9685426379843673
+        },
+        "PN06": {
+          "brier": 0.39658565702285903,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.1093041216167592
+        },
+        "PN07": {
+          "brier": 0.11084770920081237,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.3846072728460768
+        },
+        "PN09": {
+          "brier": 0.23446757034601312,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.605653956710376
+        },
+        "PN10": {
+          "brier": 0.22194159336293545,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.7198680721176246
+        },
+        "PN11": {
+          "brier": 0.21716848801551505,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5709843121173834
+        },
+        "PN12": {
+          "brier": 0.22013274716946812,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5775864089087808
+        },
+        "PN13": {
+          "brier": 0.2847309415940458,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7396914134084374
+        },
+        "PN14": {
+          "brier": 0.12407530738463565,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.30476018998922516
+        },
+        "PN16": {
+          "brier": 0.05521012819636708,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2647792287287461
+        },
+        "PN17": {
+          "brier": 0.229909792245045,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5961280150273924
+        }
+      },
+      "brier": 0.21252060563038613,
+      "balanced_accuracy": 0.6428571428571429,
+      "log_loss": 0.5824203486840599
+    },
+    "univariate_rbf": {
+      "groups": {
+        "PN00": {
+          "brier": 0.3998071763800213,
+          "balanced_accuracy": 0.5,
+          "log_loss": 9.035808424025058
+        },
+        "PN01": {
+          "brier": 0.4164812839295179,
+          "balanced_accuracy": 0.5,
+          "log_loss": 9.057956542046329
+        },
+        "PN03": {
+          "brier": 0.035166811827545115,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.16096133549287744
+        },
+        "PN05": {
+          "brier": 0.5,
+          "balanced_accuracy": 0.5,
+          "log_loss": 17.269388197455342
+        },
+        "PN06": {
+          "brier": 0.3513175185169968,
+          "balanced_accuracy": 0.5,
+          "log_loss": 8.887762560568566
+        },
+        "PN07": {
+          "brier": 0.07622877820075247,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.3223784932492689
+        },
+        "PN09": {
+          "brier": 0.1570156053878387,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.4535328072997835
+        },
+        "PN10": {
+          "brier": 0.23881395727062654,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6017570192513376
+        },
+        "PN11": {
+          "brier": 0.5137792278160067,
+          "balanced_accuracy": 0.5,
+          "log_loss": 17.36015357002962
+        },
+        "PN12": {
+          "brier": 0.3427465227037762,
+          "balanced_accuracy": 0.5,
+          "log_loss": 6.245298338617724
+        },
+        "PN13": {
+          "brier": 0.36516276486821503,
+          "balanced_accuracy": 0.5,
+          "log_loss": 8.918549058578765
+        },
+        "PN14": {
+          "brier": 0.20706702720715642,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5607382608880389
+        },
+        "PN16": {
+          "brier": 0.3776290163558909,
+          "balanced_accuracy": 0.0,
+          "log_loss": 0.9585433940395467
+        },
+        "PN17": {
+          "brier": 0.5732805749790133,
+          "balanced_accuracy": 0.5,
+          "log_loss": 9.852705515480034
+        }
+      },
+      "brier": 0.32532116181738274,
+      "balanced_accuracy": 0.5357142857142857,
+      "log_loss": 6.406109536930165
+    },
+    "pearson": {
+      "groups": {
+        "PN00": {
+          "brier": 0.14992460796133172,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.48339751529720537
+        },
+        "PN01": {
+          "brier": 0.09321704153081384,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.2959391323901299
+        },
+        "PN03": {
+          "brier": 0.055224479720435656,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.25318916184367996
+        },
+        "PN05": {
+          "brier": 0.2617743299355757,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7242090429972572
+        },
+        "PN06": {
+          "brier": 0.23477578140896233,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6711220462341692
+        },
+        "PN07": {
+          "brier": 0.10197748163503811,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.38437409427019625
+        },
+        "PN09": {
+          "brier": 0.16019530644118124,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.48178040567048636
+        },
+        "PN10": {
+          "brier": 0.23346517296419442,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6619212612180865
+        },
+        "PN11": {
+          "brier": 0.1186605230039317,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.41942033946794544
+        },
+        "PN12": {
+          "brier": 0.09461291592203776,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.3313720233560288
+        },
+        "PN13": {
+          "brier": 0.14699669250923283,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.4737818560808169
+        },
+        "PN14": {
+          "brier": 0.11297920049793854,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.3488939459157682
+        },
+        "PN16": {
+          "brier": 0.16289510426253,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.4249985054488893
+        },
+        "PN17": {
+          "brier": 0.3160087156254754,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8470722554923944
+        }
+      },
+      "brier": 0.16019338238704853,
+      "balanced_accuracy": 0.7857142857142857,
+      "log_loss": 0.485819398977361
+    },
+    "aligned": {
+      "groups": {
+        "PN00": {
+          "brier": 0.024820668189942705,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.12191524732274392
+        },
+        "PN01": {
+          "brier": 0.10201122483181368,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.29861987105674026
+        },
+        "PN03": {
+          "brier": 0.0767482409534673,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.27207098157689247
+        },
+        "PN05": {
+          "brier": 0.2608785912696294,
+          "balanced_accuracy": 0.25,
+          "log_loss": 0.7052722916521794
+        },
+        "PN06": {
+          "brier": 0.19610020380569915,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.541885404792681
+        },
+        "PN07": {
+          "brier": 0.298243415350482,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.781645462871999
+        },
+        "PN09": {
+          "brier": 0.07696156108992025,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.324331381743948
+        },
+        "PN10": {
+          "brier": 0.22445158628621126,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6133772073768441
+        },
+        "PN11": {
+          "brier": 0.08059051936431386,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.33036464427318357
+        },
+        "PN12": {
+          "brier": 0.0835504560056534,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 0.28004913399343145
+        },
+        "PN13": {
+          "brier": 0.08235226866386476,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.29601021988501175
+        },
+        "PN14": {
+          "brier": 0.025456709814542147,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.1513095148386003
+        },
+        "PN16": {
+          "brier": 0.014375827182106029,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.10289787126876426
+        },
+        "PN17": {
+          "brier": 0.07501212033048474,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2914325115945097
+        }
+      },
+      "brier": 0.11582524236700933,
+      "balanced_accuracy": 0.8452380952380951,
+      "log_loss": 0.36508441030339495
+    },
+    "m": {
+      "groups": {
+        "PN00": {
+          "brier": 0.052443750725172066,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2129698686320643
+        },
+        "PN01": {
+          "brier": 0.06649308238625319,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2898339815348244
+        },
+        "PN03": {
+          "brier": 0.049872794790504896,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.21975458603454032
+        },
+        "PN05": {
+          "brier": 0.24718358023262793,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6616122462195498
+        },
+        "PN06": {
+          "brier": 0.31279238176496194,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8395673866010576
+        },
+        "PN07": {
+          "brier": 0.5796444251546499,
+          "balanced_accuracy": 0.5,
+          "log_loss": 2.946775578556728
+        },
+        "PN09": {
+          "brier": 0.09832150048624069,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.36629332643057927
+        },
+        "PN10": {
+          "brier": 0.20957343652903546,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.5900096108250198
+        },
+        "PN11": {
+          "brier": 0.18985851775857632,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5655414638744498
+        },
+        "PN12": {
+          "brier": 0.10971377816229974,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 0.3697395567224288
+        },
+        "PN13": {
+          "brier": 0.14045666882486008,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.4080513354173279
+        },
+        "PN14": {
+          "brier": 0.042481168490864266,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2038243605586612
+        },
+        "PN16": {
+          "brier": 0.03319221207195169,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.1661084045613709
+        },
+        "PN17": {
+          "brier": 0.09947041224331162,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.3276976257690135
+        }
+      },
+      "brier": 0.15939269354437927,
+      "balanced_accuracy": 0.8095238095238094,
+      "log_loss": 0.5834128094098298
+    },
+    "m_rbf": {
+      "groups": {
+        "PN00": {
+          "brier": 0.09913717880920353,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.2759486039220886
+        },
+        "PN01": {
+          "brier": 0.03057523665848607,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.154827444654559
+        },
+        "PN03": {
+          "brier": 0.47511817916469934,
+          "balanced_accuracy": 0.25,
+          "log_loss": 1.2261049254839005
+        },
+        "PN05": {
+          "brier": 0.2887769034713195,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7441162026572318
+        },
+        "PN06": {
+          "brier": 0.18442518173520597,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.497576667882873
+        },
+        "PN07": {
+          "brier": 0.505058573978741,
+          "balanced_accuracy": 0.5,
+          "log_loss": 17.322393024110305
+        },
+        "PN09": {
+          "brier": 0.12147253882388767,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.3905896637650965
+        },
+        "PN10": {
+          "brier": 0.2924369190174137,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7816382406567861
+        },
+        "PN11": {
+          "brier": 0.35083612263858377,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.9174090793829368
+        },
+        "PN12": {
+          "brier": 0.18758567726839384,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 0.8269667063337414
+        },
+        "PN13": {
+          "brier": 0.06842571141655321,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.26699786854455987
+        },
+        "PN14": {
+          "brier": 0.066129839017465,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2865868975401321
+        },
+        "PN16": {
+          "brier": 0.26821233466670624,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7225887892760887
+        },
+        "PN17": {
+          "brier": 0.12899390607305014,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.3545918896450915
+        }
+      },
+      "brier": 0.2190845930528363,
+      "balanced_accuracy": 0.6666666666666666,
+      "log_loss": 1.7691668574182422
+    },
+    "z": {
+      "groups": {
+        "PN00": {
+          "brier": 0.021252248093548042,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.1153928361525312
+        },
+        "PN01": {
+          "brier": 0.09862403756613561,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.344449906136442
+        },
+        "PN03": {
+          "brier": 0.3135608618130519,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8112550772534737
+        },
+        "PN05": {
+          "brier": 0.40586941079931516,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.2504056526250225
+        },
+        "PN06": {
+          "brier": 0.2607627667868031,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6899025509799712
+        },
+        "PN07": {
+          "brier": 0.4830360058487125,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.8578700654704268
+        },
+        "PN09": {
+          "brier": 0.2576371660825203,
+          "balanced_accuracy": 0.75,
+          "log_loss": 8.68272094790975
+        },
+        "PN10": {
+          "brier": 0.20313580491922054,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5124634740487662
+        },
+        "PN11": {
+          "brier": 0.3243820176891784,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8671966254066803
+        },
+        "PN12": {
+          "brier": 0.11738282006002639,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 0.3371865236540098
+        },
+        "PN13": {
+          "brier": 0.31757231678509834,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8227860704933072
+        },
+        "PN14": {
+          "brier": 0.27764670604017516,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.8069196964077088
+        },
+        "PN16": {
+          "brier": 0.09122849603346554,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.26101346544733656
+        },
+        "PN17": {
+          "brier": 0.04041184861817102,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.12856369481869462
+        }
+      },
+      "brier": 0.22946446479538726,
+      "balanced_accuracy": 0.6845238095238094,
+      "log_loss": 1.2491518990574373
+    },
+    "validity": {
+      "groups": {
+        "PN00": {
+          "brier": 0.2292401960582065,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6512742063197239
+        },
+        "PN01": {
+          "brier": 0.2467887183982176,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6867230789585053
+        },
+        "PN03": {
+          "brier": 0.2496003878740158,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6923795394563982
+        },
+        "PN05": {
+          "brier": 0.27554981953601143,
+          "balanced_accuracy": 0.25,
+          "log_loss": 0.7447032293546667
+        },
+        "PN06": {
+          "brier": 0.2740828028768175,
+          "balanced_accuracy": 0.25,
+          "log_loss": 0.7417684473842967
+        },
+        "PN07": {
+          "brier": 0.2472951888133691,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.6877374093233526
+        },
+        "PN09": {
+          "brier": 0.2570841858718501,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7075201697921125
+        },
+        "PN10": {
+          "brier": 0.2107904654730453,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6136088205704675
+        },
+        "PN11": {
+          "brier": 0.30123799220822167,
+          "balanced_accuracy": 0.0,
+          "log_loss": 0.7967330918859106
+        },
+        "PN12": {
+          "brier": 0.253752534975499,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7007881637904181
+        },
+        "PN13": {
+          "brier": 0.25536273950868893,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7039757865618048
+        },
+        "PN14": {
+          "brier": 0.23048187105952467,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6537892560790847
+        },
+        "PN16": {
+          "brier": 0.2008198668628024,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.5934979463814968
+        },
+        "PN17": {
+          "brier": 0.24347033427113685,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6809290931939389
+        }
+      },
+      "brier": 0.24825407884195763,
+      "balanced_accuracy": 0.5892857142857143,
+      "log_loss": 0.689673445646584
+    },
+    "single_spi": {
+      "groups": {
+        "PN00": {
+          "brier": 0.3541868377836016,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.9445212127284851
+        },
+        "PN01": {
+          "brier": 0.23538191036896566,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.584972525108102
+        },
+        "PN03": {
+          "brier": 0.16692578471098984,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.4728120194323217
+        },
+        "PN05": {
+          "brier": 0.2659567946685312,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.7750456853599301
+        },
+        "PN06": {
+          "brier": 0.11695438229896674,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.35331631364836524
+        },
+        "PN07": {
+          "brier": 0.05681542858778814,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.26600198932240826
+        },
+        "PN09": {
+          "brier": 0.29538285981441176,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.8570156430806547
+        },
+        "PN10": {
+          "brier": 0.11882385726250694,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.31370668540823016
+        },
+        "PN11": {
+          "brier": 0.006926442824543303,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.08132212084315897
+        },
+        "PN12": {
+          "brier": 0.20501577257858766,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 5.93936942924833
+        },
+        "PN13": {
+          "brier": 0.1287572255033875,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.3541016148775068
+        },
+        "PN14": {
+          "brier": 0.31832583787284446,
+          "balanced_accuracy": 0.75,
+          "log_loss": 8.859737150011929
+        },
+        "PN16": {
+          "brier": 0.1475761165292113,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.3676885958897962
+        },
+        "PN17": {
+          "brier": 0.4100979713329667,
+          "balanced_accuracy": 0.5,
+          "log_loss": 9.057951768341143
+        }
+      },
+      "brier": 0.20193765872409306,
+      "balanced_accuracy": 0.738095238095238,
+      "log_loss": 2.0876830538071687
+    },
+    "m_plus_z": {
+      "groups": {
+        "PN00": {
+          "brier": 0.024432499391671865,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.1243567886059504
+        },
+        "PN01": {
+          "brier": 0.10499696332061845,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.36354934796582733
+        },
+        "PN03": {
+          "brier": 0.134811447364252,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.41293717966630605
+        },
+        "PN05": {
+          "brier": 0.31563874034483597,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8350921392625481
+        },
+        "PN06": {
+          "brier": 0.2564807916089924,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7076279131865659
+        },
+        "PN07": {
+          "brier": 0.3790184130135197,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.0303912279020726
+        },
+        "PN09": {
+          "brier": 0.13598090182770545,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.3799746161373015
+        },
+        "PN10": {
+          "brier": 0.18967632865681278,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.49646428351322125
+        },
+        "PN11": {
+          "brier": 0.23876987454037008,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6705367123138838
+        },
+        "PN12": {
+          "brier": 0.10638685135122398,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 0.32585829751590834
+        },
+        "PN13": {
+          "brier": 0.24979203270266193,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6525407877930467
+        },
+        "PN14": {
+          "brier": 0.11315387693616222,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.40512231710947927
+        },
+        "PN16": {
+          "brier": 0.05930198746089682,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.21213384804442129
+        },
+        "PN17": {
+          "brier": 0.04862926840267376,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.19845384137205546
+        }
+      },
+      "brier": 0.16836214120874268,
+      "balanced_accuracy": 0.7559523809523808,
+      "log_loss": 0.48678852145632767
+    },
+    "baseline_plus_z": {
+      "groups": {
+        "PN00": {
+          "brier": 0.1363046857470534,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.41519065009286216
+        },
+        "PN01": {
+          "brier": 0.14191615530609336,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.38221539049350095
+        },
+        "PN03": {
+          "brier": 0.1413274386118768,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.4264181561666165
+        },
+        "PN05": {
+          "brier": 0.21724862282535182,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.6064090004891523
+        },
+        "PN06": {
+          "brier": 0.12714210275975693,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.38178619410116077
+        },
+        "PN07": {
+          "brier": 0.20523256654740946,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5679155461923021
+        },
+        "PN09": {
+          "brier": 0.29092402584956195,
+          "balanced_accuracy": 0.75,
+          "log_loss": 8.792289470188035
+        },
+        "PN10": {
+          "brier": 0.04472905890204573,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.17689742991919735
+        },
+        "PN11": {
+          "brier": 0.02743993815383452,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.16138207088835388
+        },
+        "PN12": {
+          "brier": 0.18609042524073005,
+          "balanced_accuracy": 0.8333333333333333,
+          "log_loss": 5.882059475417629
+        },
+        "PN13": {
+          "brier": 0.035999353470323056,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.1580397167804833
+        },
+        "PN14": {
+          "brier": 0.3324441381912069,
+          "balanced_accuracy": 0.75,
+          "log_loss": 8.920361497595948
+        },
+        "PN16": {
+          "brier": 0.15972197532218294,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.4014917807727354
+        },
+        "PN17": {
+          "brier": 0.19215160134302195,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.483760227009145
+        }
+      },
+      "brier": 0.15990514916217496,
+      "balanced_accuracy": 0.8095238095238095,
+      "log_loss": 1.9825869004362229
+    },
+    "inceptiontime": {
+      "groups": {
+        "PN00": {
+          "brier": 0.49830068721928544,
+          "balanced_accuracy": 0.5,
+          "log_loss": 4.567451304108579
+        },
+        "PN01": {
+          "brier": 0.24967182561909276,
+          "balanced_accuracy": 0.75,
+          "log_loss": 1.0395016818126623
+        },
+        "PN03": {
+          "brier": 0.00020374091277344553,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.007272532096794753
+        },
+        "PN05": {
+          "brier": 0.09790967647116473,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.3290300570260515
+        },
+        "PN06": {
+          "brier": 0.4999240677075306,
+          "balanced_accuracy": 0.5,
+          "log_loss": 5.608849016922468
+        },
+        "PN07": {
+          "brier": 0.4517019150297239,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.5026451715113935
+        },
+        "PN09": {
+          "brier": 0.48969584709952724,
+          "balanced_accuracy": 0.5,
+          "log_loss": 2.717619919527314
+        },
+        "PN10": {
+          "brier": 0.29325374557530415,
+          "balanced_accuracy": 0.75,
+          "log_loss": 2.893654247211085
+        },
+        "PN11": {
+          "brier": 0.08762386991701406,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.2716674937614017
+        },
+        "PN12": {
+          "brier": 0.47085269202683727,
+          "balanced_accuracy": 0.5,
+          "log_loss": 2.5820949099521493
+        },
+        "PN13": {
+          "brier": 0.38656018253562396,
+          "balanced_accuracy": 0.5,
+          "log_loss": 2.0407391579530745
+        },
+        "PN14": {
+          "brier": 0.21471803118180469,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.654983179990789
+        },
+        "PN16": {
+          "brier": 0.004910247441698745,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.049239717155171205
+        },
+        "PN17": {
+          "brier": 0.4975687073873533,
+          "balanced_accuracy": 0.5,
+          "log_loss": 3.2781017139306092
+        }
+      },
+      "brier": 0.30306394543748105,
+      "balanced_accuracy": 0.6964285714285714,
+      "log_loss": 1.9673464359256818
+    },
+    "aligned_encoder": {
+      "groups": {
+        "PN00": {
+          "brier": 0.3182976739325161,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.8364729090486958
+        },
+        "PN01": {
+          "brier": 0.21254779486512984,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5613446001770139
+        },
+        "PN03": {
+          "brier": 0.0028058292269902935,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.04500747952491248
+        },
+        "PN05": {
+          "brier": 0.4621738544840831,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.69044967664435
+        },
+        "PN06": {
+          "brier": 0.47302794350828375,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.8097306193676777
+        },
+        "PN07": {
+          "brier": 0.3819566932693974,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.0597083579771545
+        },
+        "PN09": {
+          "brier": 0.42968903290846366,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.3484294470194336
+        },
+        "PN10": {
+          "brier": 0.23782941922187978,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.8807054556788638
+        },
+        "PN11": {
+          "brier": 0.4162161322056752,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.2397385823973912
+        },
+        "PN12": {
+          "brier": 0.35654921139311113,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.1163487546284572
+        },
+        "PN13": {
+          "brier": 0.45625280932733253,
+          "balanced_accuracy": 0.5,
+          "log_loss": 1.566155459682487
+        },
+        "PN14": {
+          "brier": 0.20064153585068864,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.5904275951501868
+        },
+        "PN16": {
+          "brier": 0.1697659578838701,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.47399114217138427
+        },
+        "PN17": {
+          "brier": 0.36506049507033606,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.9871459076120584
+        }
+      },
+      "brier": 0.320201027367697,
+      "balanced_accuracy": 0.5714285714285714,
+      "log_loss": 1.0146897133628618
+    },
+    "minirocket": {
+      "groups": {
+        "PN00": {
+          "brier": 0.30204615364548193,
+          "balanced_accuracy": 0.25,
+          "log_loss": 0.7749503255133686
+        },
+        "PN01": {
+          "brier": 0.29411269653054806,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7875874567234329
+        },
+        "PN03": {
+          "brier": 0.14009748043123926,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.39426678366571355
+        },
+        "PN05": {
+          "brier": 0.2086624984168174,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5787389850249377
+        },
+        "PN06": {
+          "brier": 0.5017156265903845,
+          "balanced_accuracy": 0.25,
+          "log_loss": 1.3258297273178714
+        },
+        "PN07": {
+          "brier": 0.11626517891737938,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.36060768275312327
+        },
+        "PN09": {
+          "brier": 0.5086172382062804,
+          "balanced_accuracy": 0.25,
+          "log_loss": 1.5493004936807344
+        },
+        "PN10": {
+          "brier": 0.3523586762446945,
+          "balanced_accuracy": 0.5,
+          "log_loss": 8.921458346349173
+        },
+        "PN11": {
+          "brier": 0.6675060035826302,
+          "balanced_accuracy": 0.0,
+          "log_loss": 17.701714579370343
+        },
+        "PN12": {
+          "brier": 0.24387794918351274,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6769468831589515
+        },
+        "PN13": {
+          "brier": 0.3376013854444715,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.9828533204658807
+        },
+        "PN14": {
+          "brier": 0.10757029453394153,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.33173458445722426
+        },
+        "PN16": {
+          "brier": 0.028848728456603318,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.15467471990291867
+        },
+        "PN17": {
+          "brier": 0.27252299550291886,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7262255440167411
+        }
+      },
+      "brier": 0.2915573504062074,
+      "balanced_accuracy": 0.5357142857142857,
+      "log_loss": 2.5190635308857443
+    },
+    "minirocket_extended": {
+      "groups": {
+        "PN00": {
+          "brier": 0.30204615364548193,
+          "balanced_accuracy": 0.25,
+          "log_loss": 0.7749503255133686
+        },
+        "PN01": {
+          "brier": 0.29411269653054806,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7875874567234329
+        },
+        "PN03": {
+          "brier": 0.14009748043123926,
+          "balanced_accuracy": 0.75,
+          "log_loss": 0.39426678366571355
+        },
+        "PN05": {
+          "brier": 0.2086624984168174,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.5787389850249377
+        },
+        "PN06": {
+          "brier": 0.5017156265903845,
+          "balanced_accuracy": 0.25,
+          "log_loss": 1.3258297273178714
+        },
+        "PN07": {
+          "brier": 0.11626517891737938,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.36060768275312327
+        },
+        "PN09": {
+          "brier": 0.5086172382062804,
+          "balanced_accuracy": 0.25,
+          "log_loss": 1.5493004936807344
+        },
+        "PN10": {
+          "brier": 0.3523586762446945,
+          "balanced_accuracy": 0.5,
+          "log_loss": 8.921458346349173
+        },
+        "PN11": {
+          "brier": 0.6675060035826302,
+          "balanced_accuracy": 0.0,
+          "log_loss": 17.701714579370343
+        },
+        "PN12": {
+          "brier": 0.24387794918351274,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.6769468831589515
+        },
+        "PN13": {
+          "brier": 0.3376013854444715,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.9828533204658807
+        },
+        "PN14": {
+          "brier": 0.10757029453394153,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.33173458445722426
+        },
+        "PN16": {
+          "brier": 0.028848728456603318,
+          "balanced_accuracy": 1.0,
+          "log_loss": 0.15467471990291867
+        },
+        "PN17": {
+          "brier": 0.27252299550291886,
+          "balanced_accuracy": 0.5,
+          "log_loss": 0.7262255440167411
+        }
+      },
+      "brier": 0.2915573504062074,
+      "balanced_accuracy": 0.5357142857142857,
+      "log_loss": 2.5190635308857443
+    }
+  },
+  "patients": 14,
+  "records": 54,
+  "contrasts": {
+    "m_plus_z versus m": {
+      "brier": {
+        "improvement": -0.008969447664363401,
+        "conditional_95_interval": [
+          -0.04492337114841631,
+          0.034437582057480945
+        ],
+        "groups_better": 6,
+        "groups_worse": 8
+      },
+      "balanced_accuracy": {
+        "improvement": -0.05357142857142857,
+        "conditional_95_interval": [
+          -0.10714285714285714,
+          0.0
+        ],
+        "groups_better": 0,
+        "groups_worse": 3
+      }
+    },
+    "baseline_plus_z versus single_spi": {
+      "brier": {
+        "improvement": 0.04203250956191814,
+        "conditional_95_interval": [
+          -0.005020587036081424,
+          0.09225617912784329
+        ],
+        "groups_better": 9,
+        "groups_worse": 5
+      },
+      "balanced_accuracy": {
+        "improvement": 0.07142857142857142,
+        "conditional_95_interval": [
+          -0.05357142857142857,
+          0.17857142857142858
+        ],
+        "groups_better": 5,
+        "groups_worse": 1
+      }
+    },
+    "z versus m": {
+      "brier": {
+        "improvement": -0.07007177125100802,
+        "conditional_95_interval": [
+          -0.12833119480708388,
+          -0.01132343489944481
+        ],
+        "groups_better": 5,
+        "groups_worse": 9
+      },
+      "balanced_accuracy": {
+        "improvement": -0.125,
+        "conditional_95_interval": [
+          -0.21428571428571427,
+          -0.05357142857142857
+        ],
+        "groups_better": 0,
+        "groups_worse": 6
+      }
+    },
+    "z versus aligned": {
+      "brier": {
+        "improvement": -0.11363922242837797,
+        "conditional_95_interval": [
+          -0.16812290921633966,
+          -0.058503046385558186
+        ],
+        "groups_better": 4,
+        "groups_worse": 10
+      },
+      "balanced_accuracy": {
+        "improvement": -0.16071428571428573,
+        "conditional_95_interval": [
+          -0.2857142857142857,
+          -0.03571428571428571
+        ],
+        "groups_better": 2,
+        "groups_worse": 8
+      }
+    },
+    "z versus univariate": {
+      "brier": {
+        "improvement": -0.01694385916500113,
+        "conditional_95_interval": [
+          -0.11012621885985421,
+          0.07172057258588976
+        ],
+        "groups_better": 6,
+        "groups_worse": 8
+      },
+      "balanced_accuracy": {
+        "improvement": 0.041666666666666664,
+        "conditional_95_interval": [
+          -0.13095238095238096,
+          0.21428571428571427
+        ],
+        "groups_better": 5,
+        "groups_worse": 4
+      }
+    },
+    "z versus univariate_rbf": {
+      "brier": {
+        "improvement": 0.0958566970219954,
+        "conditional_95_interval": [
+          -0.03394234193919467,
+          0.22193655901815185
+        ],
+        "groups_better": 10,
+        "groups_worse": 4
+      },
+      "balanced_accuracy": {
+        "improvement": 0.14880952380952378,
+        "conditional_95_interval": [
+          -0.04761904761904762,
+          0.3273809523809524
+        ],
+        "groups_better": 7,
+        "groups_worse": 2
+      }
+    },
+    "z versus inceptiontime": {
+      "brier": {
+        "improvement": 0.07359948064209372,
+        "conditional_95_interval": [
+          -0.054910001411367156,
+          0.20555372000916686
+        ],
+        "groups_better": 8,
+        "groups_worse": 6
+      },
+      "balanced_accuracy": {
+        "improvement": -0.01190476190476191,
+        "conditional_95_interval": [
+          -0.1904761904761905,
+          0.16666666666666666
+        ],
+        "groups_better": 5,
+        "groups_worse": 5
+      }
+    },
+    "z versus aligned_encoder": {
+      "brier": {
+        "improvement": 0.09073656257230969,
+        "conditional_95_interval": [
+          0.0009838322509181019,
+          0.17161281081702465
+        ],
+        "groups_better": 11,
+        "groups_worse": 3
+      },
+      "balanced_accuracy": {
+        "improvement": 0.1130952380952381,
+        "conditional_95_interval": [
+          -0.03571428571428571,
+          0.25595238095238093
+        ],
+        "groups_better": 6,
+        "groups_worse": 2
+      }
+    },
+    "z versus minirocket": {
+      "brier": {
+        "improvement": 0.06209288561082011,
+        "conditional_95_interval": [
+          -0.050494909614975755,
+          0.17014924533716966
+        ],
+        "groups_better": 9,
+        "groups_worse": 5
+      },
+      "balanced_accuracy": {
+        "improvement": 0.14880952380952378,
+        "conditional_95_interval": [
+          -0.03571428571428571,
+          0.3392857142857143
+        ],
+        "groups_better": 7,
+        "groups_worse": 4
+      }
+    },
+    "z versus minirocket_extended": {
+      "brier": {
+        "improvement": 0.06209288561082011,
+        "conditional_95_interval": [
+          -0.050494909614975755,
+          0.17014924533716966
+        ],
+        "groups_better": 9,
+        "groups_worse": 5
+      },
+      "balanced_accuracy": {
+        "improvement": 0.14880952380952378,
+        "conditional_95_interval": [
+          -0.03571428571428571,
+          0.3392857142857143
+        ],
+        "groups_better": 7,
+        "groups_worse": 4
+      }
+    }
+  },
+  "source_selected_baseline": "single_spi",
+  "prediction_sha256": {
+    "statistical": "fa57e3788f554dd55f80314aaf1625e21a7d9073fafc9b633a4a49287a1a0a31",
+    "neural": "3e02907e97af17a9fa5fc547ad98bfb800b6b41e9463dc0746a8c55831443389",
+    "minirocket": "37dd174d874bfa141b58f60280d5a09ab962fd6e506aa305d7dfcb13e9fb2ef8"
+  },
+  "retained_z_coverage": {
+    "retained_columns": 31357,
+    "missing_fraction": 0.006617342220237905,
+    "by_patient": {
+      "PN00": 0.0,
+      "PN01": 0.0,
+      "PN03": 0.0,
+      "PN05": 0.0,
+      "PN06": 0.0,
+      "PN07": 0.0,
+      "PN09": 0.0,
+      "PN10": 0.007797302037822496,
+      "PN11": 0.0,
+      "PN12": 0.0,
+      "PN13": 0.012269987562585707,
+      "PN14": 0.0,
+      "PN16": 0.06926683037280353,
+      "PN17": 0.0
+    }
+  },
+  "source_lock_sha256": "9c624a82ef50bca1ec05e11d7f8f67bb969a8a2bf3fa07a65ad063b214eccb89",
+  "scope": "Independent Siena cohort after exploratory CHB-MIT discovery. Frozen source models; no target calibration. Pointwise paired whole-patient bootstrap conditional on fitted models; no source-training uncertainty or multiplicity adjustment."
+}
