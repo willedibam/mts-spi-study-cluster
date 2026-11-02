@@ -64,8 +64,37 @@ def receipt(url, data):
     return dict(url=url, bytes=len(data), sha256=hashlib.sha256(data).hexdigest())
 
 
+def h5_tree(set_bytes):
+    import h5py
+    names = []
+    with h5py.File(io.BytesIO(set_bytes), 'r') as f:
+        f.visititems(lambda n, o: names.append(f'{n} {getattr(o, "shape", "")} {getattr(o, "dtype", "")}') if len(names) < 200 else None)
+    return names
+
+
+def eeglab_h5(set_bytes, fdt_bytes=None):
+    """MATLAB v7.3 EEGLAB file: HDF5 with reversed dimensions and uint16 strings."""
+    import h5py
+    with h5py.File(io.BytesIO(set_bytes), 'r') as f:
+        root = f['EEG'] if 'EEG' in f else f
+        scalar = lambda k: float(np.array(root[k]).squeeze())
+        nb, pnts, trials, fs = int(scalar('nbchan')), int(scalar('pnts')), int(scalar('trials')), scalar('srate')
+        text = lambda ref: ''.join(map(chr, np.array(f[ref]).ravel()))
+        labels = [text(r) for r in np.array(root['chanlocs']['labels']).ravel()]
+        data = root['data']
+        if data.dtype == np.uint16:   # file name of a separate .fdt
+            if fdt_bytes is None:
+                raise ValueError('EEGLAB data stored in a separate .fdt file')
+            x = np.frombuffer(fdt_bytes, '<f4').reshape((nb, pnts * trials), order='F').astype(np.float64)
+        else:
+            x = np.array(data, dtype=np.float64).T.reshape((nb, pnts * trials), order='F')
+    return x.reshape((nb, pnts, trials), order='F'), labels, fs, []
+
+
 def eeglab(set_bytes, fdt_bytes=None):
     """Return (data[channel, sample, trial], labels, srate, events) from EEGLAB bytes."""
+    if set_bytes[:10] == b'MATLAB 7.3' or b'HDF' in set_bytes[512:520]:
+        return eeglab_h5(set_bytes, fdt_bytes)
     m = loadmat(io.BytesIO(set_bytes), squeeze_me=True, struct_as_record=False)
     E = m['EEG'] if 'EEG' in m else None
     get = (lambda k: getattr(E, k)) if E is not None else (lambda k: m[k])
@@ -211,9 +240,17 @@ def propofol(root, count=10, inspect=False):
         fdts = {Path(n).stem: n for n in members if n.endswith('.fdt')}
         if inspect:
             first = table[0]['name']
-            x, labels, fs, events = eeglab(z.read(sets[first]), z.read(fdts[first]) if first in fdts else None)
-            atomic_json(root / 'inspection.json', dict(members=members[:400], datainfo=table, srate=fs, shape=list(x.shape),
-                        labels=labels, egi_missing=select(labels, EGI)[1], canonical_missing=select(labels)[1]))
+            raw = z.read(sets[first])
+            report = dict(members=members[:400], datainfo=table, header=raw[:128].decode('latin-1'))
+            try:
+                report['h5_tree'] = h5_tree(raw)
+            except Exception as error:
+                report['h5_tree'] = repr(error)
+            atomic_json(root / 'inspection.json', report)
+            x, labels, fs, events = eeglab(raw, z.read(fdts[first]) if first in fdts else None)
+            report.update(srate=fs, shape=list(x.shape), labels=labels, egi_missing=select(labels, EGI)[1],
+                          canonical_missing=select(labels)[1], first_values=x[:3, :5, 0].tolist())
+            atomic_json(root / 'inspection.json', report)
             return
         rows, arrays, power, issues = [], {}, {}, []
         for entry in table:

@@ -9,6 +9,11 @@
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
+if [[ "${CORPUS:?}" == propofol ]]; then
+    # The propofol archive stores MATLAB v7.3 (HDF5) files; h5py stays out of the shared environment.
+    /apps/python3/3.12.1/bin/python3 -m pip install -q --target "$PBS_JOBFS/extra" h5py==3.16.0 --no-deps
+    export PYTHONPATH="$PBS_JOBFS/extra:$PYTHONPATH"
+fi
 extra=()
 [[ -n "${BANK:-}" ]] && extra+=(--bank "$BANK" --name "${NAME:?}")
 [[ "${INSPECT:-0}" == 1 ]] && extra+=(--inspect)
