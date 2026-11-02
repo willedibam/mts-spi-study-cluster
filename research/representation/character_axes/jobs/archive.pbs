@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N axes-archive
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=4GB,walltime=02:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Pack verified per-window outputs into one tar and remove the loose files.
+set -euo pipefail
+root="${RUN_ROOT:?}"
+test -f "$root/bank.json"
+tar -cf "$root/features.tar" -C "$root" features
+tar -df "$root/features.tar" -C "$root" features
+files=$(find "$root/features" -type f | wc -l)
+listed=$(tar -tf "$root/features.tar" | grep -v '/$' | wc -l)
+[[ "$files" == "$listed" ]]
+sha256sum "$root/features.tar" > "$root/features.tar.sha256"
+rm -rf "$root/features"
+echo "archived $files files"

@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N axes-prep
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=24GB,walltime=10:00:00,jobfs=20GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+extra=()
+[[ -n "${BANK:-}" ]] && extra+=(--bank "$BANK" --name "${NAME:?}")
+[[ "${INSPECT:-0}" == 1 ]] && extra+=(--inspect)
+python -u -m research.representation.character_axes.prepare "${CORPUS:?}" --root "${RUN_ROOT:?}" "${extra[@]}"
+if [[ "${INSPECT:-0}" != 1 && -n "${CHAIN:-}" ]]; then
+    python -u -m research.representation.character_axes.launch --root "$RUN_ROOT" --stage pilot
+fi
