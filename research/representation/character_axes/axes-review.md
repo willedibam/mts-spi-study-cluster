@@ -173,6 +173,18 @@ Core organisation, mean / SD / ICC:
 - Three have analytic linear-Gaussian nulls (Nolte et al. 2020). Form is the single non-Gaussian test, so the paper can state which kind of character each finding is.
 - Strongest alternatives, rejected: fixed-lag is the dominant EEG z component and is calibrated, but it measures spectrum in sample units, so it is not comparable across sampling rates and duplicates band. Predictive/history covers direction, but the TE profiles are unreliable outside NeuroTycho and are linear-spectral and attenuation-driven on it. Keep both in the extended set.
 
+**Revision after discussion (2 November 2026).**
+
+- Fifth candidate: direction, not warp. For stationary Gaussian processes every pairwise and conditional statistic is a function of the cross-spectral matrix S(f); beyond magnitude, S(f) leaves band, phase, conditioning and directional asymmetry, and form covers everything outside S(f). Warp is a mechanism that loads on lag, band and form (inferred), so keep it only if it separates from a same-S(f) Gaussian control in simulation.
+- Items per axis: use every pair that passes construction tests, from at least two estimator families where p90 has them. Lag's three bands are one method at overlapping bands, and lag and band share cohmag, so their errors are correlated.
+- What a pair's z reads (toy, checked numerically): for a = s and b = s·c, with per-edge strength s and character c independent, z = √(rel_a·rel_b)·[1 + CV_c²(1 + CV_s⁻²)]^(−1/2). With character fixed, strength CV 0.3 → 0.6 moves z 0.59 → 0.79. Scaling c leaves z unchanged; shifting it does not. So a named organisation claim needs a stable sign of response plus an effect larger than the measured changes in strength CV and reliability could produce; z-axes cannot support magnitude or cross-dataset comparisons.
+- Construction validation (pre-registered; [results](validation/README.md#results-2-november-2026)):
+  - **Passes as core:** band (ppc L\|H organisation, and the high-share level), mediation (cov²\|prec²) and direction (sgc A\|Aᵀ). Mediation and direction each come from one generator.
+  - **Lag:** sign-stable across three estimator families, but only a sub-axis (SR 0.66–1.60; band level is the main cross-talk), and insensitive in the Kuramoto family. Lag level moves lag organisation about twice as much as lag dispersion, so organisation is not level-free.
+  - **Form and warp organisation:** fail at cohort-like coupling. Form organisation's only passing pair reads spectra on surrogates; the form level median(te − gc) is the one non-Gaussian reader.
+  - **Corrections:** no strength or reliability correction is usable for a passing pair.
+  - **Cohort bound:** four sign claims survive both reliability floors, NeuroTycho lag (coh\|icoh 0–0.25) and mediation (both estimators) and HMC lag (0–0.5). Noise, strength spread, mixing and cross-construct effects stay unbounded.
+
 **Should shared axes keep the same constituents?** Yes. An axis name should map to exactly one set of pairs, with the core a strict subset of the extended set.
 
 - Otherwise "phase_lag" in a 4-axis report and a 13-axis report are different estimands, pre-registered predictions lose their referent, and cross-report comparisons are confounded by constituent changes.

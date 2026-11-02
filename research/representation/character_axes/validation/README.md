@@ -91,9 +91,9 @@ Replicates: 6 recordings × 2 windows per main-sweep condition, 4 × 2 per grid 
 - `figure.py`: the selectivity figure.
 - `jobs/farm.pbs`, `jobs/analyse.pbs`: the Gadi farm and the analysis job.
 
-## Status (2 November 2026, 18:30)
+## Status (2 November 2026, complete)
 
-The run moved to Gadi (user decision, 2 November): `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/farm.pbs` re-runs every main and post hoc window there into a fresh directory, so the corpus comes from one platform. The stopped local run (3,758 windows on an Apple M5) is not used. The runner is resumable: finished windows are skipped. dcorr is computed only where the r²|dcorr pair is evaluated (main sweeps, form-knob grid cells, form surrogates), via `spis_nodcorr.yaml`. When the run finishes: `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/analyse.pbs` writes `<dir>/analysis/{tables,figures}` and runs the cohort bound against the six cohort banks on scratch. The tables are copied back into `tables/` here and committed; the figure is regenerated, not tracked.
+Run on Gadi (user decision, 2 November), so the corpus comes from one platform; the stopped local run (3,758 windows on an Apple M5) is not used. Farm: `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/farm.pbs` (resumable; dcorr is computed only where the r²|dcorr pair is evaluated, via `spis_nodcorr.yaml`). Analysis: `qsub -v VALIDATION_OUT=<dir>/raw research/representation/character_axes/validation/jobs/analyse.pbs` writes `<dir>/analysis/{tables,figures}` and runs the cohort bound against the six cohort banks on scratch. The tables are copied into `tables/` here and committed; the figure is regenerated, not tracked.
 
 Post hoc addition: the pre-registered levels are medians over all ordered entries. Family A has 24 coupled edges of 120, so those medians mostly read uncoupled edges, as they would in sparse ECoG. Each level is therefore also reported over the strongest quartile of edges, labelled post hoc.
 
@@ -101,6 +101,111 @@ Pilot facts:
 - Mediation with one observed hub is non-monotone: uniform mediation is invisible to organisation. With two hubs, the population corr(r², pcor²) falls 0.91 → 0.67 at matched mean |r|.
 - Kuramoto edges lock at the target lag (0.79 vs 0.79 rad).
 
-## Results
+## Results (2 November 2026)
 
-Pending.
+Corpus: Gadi farm job 182947411 at commit 8d239c6, pyspi 3.0.0. All 4,236 main and 480 post hoc windows completed. No window has a pyspi error or an all-NaN statistic, and dcorr is present exactly where it is routed. Raw windows are in `/g/data/ql44/we2614/mts-spi-study/representation/validation/character-axes-8d239c6/raw`. Tables in `tables/` come from analysis job 182952105 at f1bc779. Δ is the response from a knob's zero level to its maximum. SR is the selectivity ratio of criterion 4.
+
+### Verdicts (criteria 1–4)
+
+Organisation pairs, scored on their dispersion knob (direction on its level knob):
+
+| Construct | Passing pairs (verdict, SR) | Dropped | Notes |
+|---|---|---|---|
+| form | gc\|te_ksgDCE (sub-axis, 0.18) | mi_g\|mi_ksgDCE reverses (main B0, r 0.95); tlmi_g\|tlmi_ksgDCE, r²\|dcorr and mi_g\|mi_kernel are insensitive at B0 or B1 | The one passing pair moves 5.6 times more with lag level than with form dispersion, and its surrogates keep 1.8–2.0 times the response (below), so it reads linear-spectral structure, not form. |
+| lag | coh\|icoh 0–0.25 (sub-axis, 1.60); pec\|pec_orth (1.29); plv\|wpli (0.88); ppc\|dswpli (0.80); coh\|icoh 0–0.5 (0.66) | coh\|icoh 0.25–0.5 is insensitive at B1 | Three estimator families agree in sign, so lag is multi-method. The worst other knob is band level (coherency, ppc) or warp level (plv, pec). In family K every lag pair is insensitive (interval includes zero, no reversal). Most are also insensitive at β = 2 or noise 1. |
+| band | ppc L\|H (core, 2.06); coh L\|H (sub-axis, 1.96) | sgc L\|H reverses at both baselines and in 9 of 12 grid cells | ppc and coh sit on the SR = 2 boundary and are not distinguishable. sgc's reversal is consistent: its organisation rises with band dispersion. |
+| mediation | Ledoit–Wolf (core, 3.25); empirical (core, 2.88) | — | One generator (family C) and one estimator family. SR divides family C's own response by family A knob responses. |
+| direction | sgc A\|Aᵀ (core, 3.12); gc A\|Aᵀ (sub-axis, 1.43) | te A\|Aᵀ is insensitive at B0 | One generator (family B). Every nuisance ratio for sgc is at most 0.09 in magnitude. |
+| warp | — | eucl\|dtwSC reverses at noise 0; dtwSC\|dtw is insensitive | — |
+
+Levels, scored on their level knob:
+- **form:** median(te − gc) is a sub-axis (SR 0.78; band level moves it more). Its surrogates keep only 0.14 of the response, so it is the one pre-registered measure that reads non-Gaussian form. median(ksgDCE − mi_g) is insensitive.
+- **lag:** icoh/√cohmag is a sub-axis (1.59).
+- **band:** high share is core (3.74).
+- **direction:** median gc asymmetry is a sub-axis (1.42).
+- **warp:** dtwSC/eucl is insensitive.
+- **Post hoc top-quartile versions:**
+  - lag (1.31), band (1.99), direction (1.66) and warp (0.19) are sub-axes. The warp version's surrogates keep 0.99 of its response, so it reads linear timing.
+  - form ksgDCE − mi_g is insensitive, and te − gc reverses at β = 2.
+
+Response to the construct's other knob, divided by |own Δ| (`other own knob/own` in `verdicts.csv`; not part of SR):
+- **Lag organisation responds to lag level about twice as much as to lag dispersion, in the opposite direction.** The ratio is +1.6 to +2.1 for the coherency, ppc\|dswpli and pec pairs, and +0.7 for plv\|wpli. Raising every edge's phase lag raises lag organisation, and spreading the lags lowers it. A rise in lag organisation is therefore not evidence of more uniform lags unless the lag level is checked. The lag level icoh/√cohmag is less confounded: its ratio to lag dispersion is −0.64.
+- **Band organisation** moves 0.8 times as much with band level as with band dispersion, also in the opposite direction. The band high-share level is unaffected by band dispersion (0.03).
+- **Form organisation** falls 1.4 to 38 times more with form level than with form dispersion, so these pairs read form level, if anything. At B0 the tables do not separate how much of that is spectral.
+- **Direction organisation** (sgc A\|Aᵀ) barely moves with direction dispersion (−0.17).
+
+Nuisance sensitivity is Δ over the sweep divided by |own Δ| at B0. Some nuisances move the lag and band organisation pairs about as much as their own knob:
+- **lag pairs:** mixing (−0.4 to −1.4) and the marginal map β (0.9 to 1.3 in magnitude). Measurement noise also does (−0.2 to −1.1) for every lag pair except pec.
+- **band pairs:** noise (−1.3), driver pole radius r (−0.8) and β (0.7 to 0.8).
+
+Mediation's largest ratio is mixing (−0.6).
+
+### Surrogates (criterion 5)
+
+- **Lag pairs:** they keep 0.94–1.12 of their B0 response on FT surrogates. The method check passes, because lag is linear-spectral.
+- **Form organisation:** gc\|te_ksgDCE keeps 1.98 (B0) and 1.77 (B1), so its response is spectral. The other form pairs fail criteria 1–2, so the test does not apply to them. The form level median(te − gc) keeps 0.14 at both baselines.
+- **Warp:** both organisation pairs are dropped at B0 and B1, so criterion 5 is moot there. Post hoc results at strong coupling are below.
+
+### Corrections (criterion 6)
+
+No correction is usable for any passing pair.
+- **Reliability correction does not remove noise.** For coh\|icoh 0–0.5 the noise ratio rises 0.48 → 1.47, and for ppc\|dswpli 0.98 → 1.77. In these generators, measurement noise lowers the population SPI values rather than adding sampling error, so it is not a reliability effect.
+- **Strength corrections fail one way or the other.** Most lose the own response: coh\|icoh 0–0.5 goes from d 2.9 to 0.6, plv\|wpli from 8.2 to 1.0, and the band pairs from 7.6 to 0.7–1.1. The rest keep the response but do not halve the noise and strength ratios (ppc\|dswpli, pec\|pec_orth).
+
+Corrections pass only for dropped pairs (r²\|dcorr, mi_g\|mi_kernel, sgc L\|H). Strength spread and noise therefore stay unbounded in criterion 7, and mixing cannot be measured.
+
+### Post hoc: strong coupling
+
+Baseline PHS: degree 2, private 0.05, no measurement noise; one baseline, not pre-registered.
+- **Form dispersion:** three form organisation pairs respond with the predicted sign, and their surrogates keep at most 0.27 of the response:
+  - tlmi_g\|tlmi_ksgDCE: Δ −0.046, d −2.1, kept 0.11;
+  - r²\|dcorr: Δ −0.0035, d −1.3, kept 0.02;
+  - mi_g\|mi_kernel: Δ −0.016, d −1.5, kept −0.27.
+- **Form level:** both form levels respond (d 1.9 to 6.2 over the pre-registered and top-quartile versions), with surrogates keeping at most 0.29.
+- **Form organisation against form level:** three pairs respond strongly (mi_g\|mi_ksgDCE, tlmi_g\|tlmi_ksgDCE and mi_g\|mi_kernel; d −6.7 to −12.9), but their surrogates respond 1.7 to 3.3 times as much. The u² term moves power to twice the driver frequency, and those pairs read that spectral change. r²\|dcorr also responds (d −10.0), but its surrogate keeps 0.13, so it reads the non-Gaussian part.
+- **Warp:** eucl\|dtwSC responds to warp dispersion (Δ −0.064, d −2.0) while its surrogate moves the other way (kept −1.77). By criterion 5, that is non-Gaussian timing, a sub-axis of form.
+
+So form and warp organisation are measurable when coupling is strong, but not at the cohort-like coupling of B0 and B1.
+
+### Cohort bound (criterion 7)
+
+Contrasts:
+- NeuroTycho, awake → anaesthesia: 15 sessions, paired.
+- CHB-MIT, seizure-free → ictal: 22 people, paired.
+- HMC, N2 → REM: 39 people, paired.
+- AD/FTD, control → AD: 29 and 36 people, between groups.
+- LEMON, young → old: 91 and 41 people.
+- Propofol, baseline → moderate: 20 people, paired.
+
+The table lists every claim with raw |d| ≥ 0.5. "Floor" is the lower clip on the reliabilities in the disattenuation: 0.05 as coded, with 0.001 for sensitivity.
+
+| Cohort | Pair | d raw | d corrected (floor 0.05 / 0.001) | Indicative AC Δ / observed Δ | Stands |
+|---|---|---|---|---|---|
+| NeuroTycho | lag coh\|icoh 0–0.25 | 1.61 | 1.57 / 0.85 | −0.05 / 0.14 | yes, both floors |
+| NeuroTycho | mediation LW | −2.10 | −0.69 / −0.69 | −0.01 / −0.16 | yes, both floors |
+| NeuroTycho | mediation empirical | −2.15 | −0.67 / −0.67 | −0.01 / −0.16 | yes, both floors |
+| HMC | lag coh\|icoh 0–0.5 | 0.83 | 0.67 / 0.67 | −0.02 / 0.11 | yes, both floors |
+| NeuroTycho | lag ppc\|dswpli | 2.31 | 1.23 / 0.46 | −0.07 / 0.17 | only at 0.05 |
+| NeuroTycho | band ppc L\|H | 3.14 | 3.04 / 0.34 | −0.29 / 0.39 | only at 0.05 |
+| NeuroTycho | band coh L\|H | 2.67 | 1.52 / 0.67 | −0.31 / 0.30 | no (AC magnitude rule) |
+| CHB-MIT | lag coh\|icoh 0–0.25, plv\|wpli; band ppc L\|H | 0.65, 0.57, −0.52 | 0.42, 0.17, −0.35 | — | no |
+| HMC | lag coh\|icoh 0–0.25 | 0.55 | 0.43 | — | no |
+| AD/FTD | form gc\|te_ksgDCE | −0.65 | −0.12 | — | no |
+| LEMON | lag coh\|icoh 0–0.5 | 0.62 | 0.40 | 0.23 / 0.01 | no |
+| Propofol | lag plv\|wpli, ppc\|dswpli | 0.88, 0.58 | 0.55, 0.57 | 0.13 / 0.05, 0.08 / 0.04 | no (AC magnitude rule) |
+
+Reading:
+- **Reliability.** Two-thirds of NeuroTycho's raw mediation effect is reliability: both members' reliabilities fall (d −1.05 and −0.99).
+- **Opposite-sign AC predictions.** The NeuroTycho band coh L\|H claim fails only because the pre-registered rule compares magnitudes. The indicative autocorrelation change has the opposite sign, so autocorrelation works against the observed rise. The same holds for the other NeuroTycho lag and band rows. For mediation the prediction has the same sign as the observed change but is a tenth of its size.
+- **What "stands" covers.** The bound covers reliability and autocorrelation only. Noise, strength spread and mixing are unbounded (criterion 6), and so are changes in other constructs. Every lag pair has SR < 2; the HMC pair has 0.66, and N2 → REM changes spectra. A standing claim means the sign survives the measured nuisances, not that the named construct moved. The NeuroTycho and HMC rises in lag organisation fit higher lag level as well as more uniform lags.
+
+### Implications for the axes
+
+- **Supported by construction:**
+  - band: ppc L\|H and coh L\|H organisation, and the high-share level;
+  - mediation: cov²\|prec², from one generator;
+  - direction: sgc A\|Aᵀ, from one generator and insensitive to every nuisance.
+- **Lag** is multi-method and sign-stable in family A, but not selective (SR 0.66–1.60) and insensitive in family K. Lag level moves lag organisation about twice as much as lag dispersion. A lag organisation claim needs band level and lag level ruled out; the lag level is the cleaner lag reading.
+- **Form organisation** fails at cohort-like coupling. Its one passing pair reads spectra. The form level median(te − gc) is the only non-Gaussian reader (sub-axis).
+- **Warp** fails as an organisation axis. Its post hoc level reads linear timing.
+- No strength correction works, so z-axes support existence and sign claims under a nuisance bound. Magnitude stays out of scope.

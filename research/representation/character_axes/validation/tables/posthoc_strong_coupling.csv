@@ -1,0 +1,27 @@
+measure,kind,knob,own,real,lo,hi,d,status,surrogate,kept
+form: mi_g|mi_ksgDCE,org,form_level,False,-0.1147,-0.1328,-0.0966,-6.651,,-0.3835,3.344
+form: mi_g|mi_ksgDCE,org,form_disp,True,-0.003847,-0.01271,0.005017,-0.4555,insensitive,0.02057,-5.347
+form: tlmi_g|tlmi_ksgDCE,org,form_level,False,-0.1235,-0.1372,-0.1097,-9.422,,-0.4028,3.263
+form: tlmi_g|tlmi_ksgDCE,org,form_disp,True,-0.04613,-0.06872,-0.02354,-2.143,ok,-0.005156,0.1118
+form: gc|te_ksgDCE,org,form_level,False,-0.05582,-0.1239,0.01226,-0.8605,,-0.5252,9.407
+form: gc|te_ksgDCE,org,form_disp,True,-0.1628,-0.2136,-0.112,-3.362,ok,-0.3417,2.099
+form: r2|dcorr,org,form_level,False,-0.01837,-0.02029,-0.01645,-10.03,,-0.002354,0.1282
+form: r2|dcorr,org,form_disp,True,-0.003522,-0.006373,-0.0006706,-1.296,ok,-7.46e-05,0.02118
+form: mi_g|mi_kernel,org,form_level,False,-0.07022,-0.07594,-0.06451,-12.89,,-0.1182,1.683
+form: mi_g|mi_kernel,org,form_disp,True,-0.01626,-0.02728,-0.005243,-1.549,ok,0.004355,-0.2678
+warp: eucl|dtwSC,org,warp_level,False,-0.1085,-0.1505,-0.06644,-2.709,,-0.4123,3.802
+warp: eucl|dtwSC,org,warp_disp,True,-0.06412,-0.09813,-0.0301,-1.978,ok,0.1136,-1.772
+warp: dtwSC|dtw,org,warp_level,False,0.002582,-0.0107,0.01586,0.204,,-0.05394,-20.89
+warp: dtwSC|dtw,org,warp_disp,True,-0.005281,-0.02272,0.01215,-0.3179,insensitive,0.007551,-1.43
+form: median(ksgDCE - mi_g),level,form_level,True,0.003244,0.001454,0.005034,1.902,ok,0.0009256,0.2853
+form: median(ksgDCE - mi_g),level,form_disp,False,0.0002091,-0.001897,0.002315,0.1042,,-0.0002834,-1.355
+form: median(te - gc),level,form_level,True,0.002528,0.002103,0.002954,6.237,ok,0.0007272,0.2876
+form: median(te - gc),level,form_disp,False,-0.0001447,-0.001096,0.0008067,-0.1596,,-0.0001674,1.157
+warp: median dtwSC/eucl,level,warp_level,True,-0.0009141,-0.003937,0.002109,-0.3173,insensitive,6.012e-05,-0.06577
+warp: median dtwSC/eucl,level,warp_disp,False,-0.0006823,-0.00293,0.001565,-0.3186,,-0.0009389,1.376
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",level,form_level,True,0.01213,0.008187,0.01607,3.228,ok,-0.001345,-0.1109
+"form: median(ksgDCE - mi_g) [top quartile, post hoc]",level,form_disp,False,-5.593e-05,-0.002462,0.00235,-0.0244,,-0.001233,22.05
+"form: median(te - gc) [top quartile, post hoc]",level,form_level,True,0.005341,0.003228,0.007455,2.653,ok,0.00032,0.05992
+"form: median(te - gc) [top quartile, post hoc]",level,form_disp,False,-0.001408,-0.004035,0.00122,-0.5623,,-0.0008933,0.6346
+"warp: median dtwSC/eucl [top quartile, post hoc]",level,warp_level,True,-0.03598,-0.0468,-0.02517,-3.492,ok,-0.0307,0.8532
+"warp: median dtwSC/eucl [top quartile, post hoc]",level,warp_disp,False,-0.01299,-0.01624,-0.009744,-4.199,,-0.009423,0.7254
