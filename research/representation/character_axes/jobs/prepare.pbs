@@ -2,7 +2,7 @@
 #PBS -N axes-prep
 #PBS -P ql44
 #PBS -q copyq
-#PBS -l ncpus=1,mem=24GB,walltime=10:00:00,jobfs=20GB
+#PBS -l ncpus=1,mem=8GB,walltime=10:00:00,jobfs=20GB
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -l wd
 #PBS -j oe
