@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -N axes-eval
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=32GB,walltime=08:00:00,jobfs=4GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Statistical cohort evaluation, then MiniRocket on the same folds.
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+extra=()
+[[ -n "${SURROGATE_ROOT:-}" ]] && extra+=(--surrogate-root "$SURROGATE_ROOT")
+python -u -m research.representation.character_axes.evaluate_cohorts "${COHORT:?}" --root "${RUN_ROOT:?}" --output "$RUN_ROOT/evaluation.json" "${extra[@]}"
+if [[ "${ROCKET:-1}" == 1 ]]; then
+    module purge
+    module load python3/3.12.1
+    deactivate
+    python3 -m venv "$PBS_JOBFS/aeon"
+    "$PBS_JOBFS/aeon/bin/python" -m pip install -q --no-index --find-links "${WHEELHOUSE:?}" aeon==1.5.0 pyyaml
+    "$PBS_JOBFS/aeon/bin/python" -u -m research.representation.character_axes.minirocket_cv "$COHORT" --root "$RUN_ROOT" --output "$RUN_ROOT/minirocket.json"
+fi
