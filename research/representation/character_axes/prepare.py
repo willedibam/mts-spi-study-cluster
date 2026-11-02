@@ -272,18 +272,18 @@ def propofol(root, count=10, inspect=False):
              target='sedation level - 1 (0 baseline, 1 mild, 2 moderate, 3 recovery); independent unit = participant'), issues)
 
 
-def surrogates(root, bank_path, name):
+def surrogates(root, bank_path, name, final='marginal', iterations=200):
     bank = np.load(bank_path)
     rows, arrays, diagnostics = [], {}, []
     for k, (row, x) in enumerate(zip(bank['row_id'].astype(str), bank['x'])):
-        s, info = multivariate_iaaft(np.asarray(x, dtype=np.float64), np.random.default_rng([SEED, k]))
+        s, info = multivariate_iaaft(np.asarray(x, dtype=np.float64), np.random.default_rng([SEED, k]), iterations=iterations, final=final)
         s = (s - s.mean(0)) / s.std(0)
         key = f's-{row}'
         arrays[key] = s
         rows.append(dict(row_id=key, source_row=row, group=str(bank['group'][k]), target=int(bank['y'][k]), role=str(bank['role'][k])))
         diagnostics.append(dict(row_id=key, **info))
     write_corpus(root, f'surrogate-{name}-r10-261102', rows, arrays,
-                 dict(source_bank=str(bank_path), generator='multivariate IAAFT, one surrogate per record, seed [261102, index]',
+                 dict(source_bank=str(bank_path), generator=f'multivariate IAAFT ending on {final}, {iterations} iterations, one surrogate per record, seed [261102, index]',
                       maximum_amplitude_relative_error=max(d['amplitude_relative_error'] for d in diagnostics),
                       maximum_correlation_error=max(d['correlation_max_abs_error'] for d in diagnostics)))
     atomic_json(root / 'surrogate-diagnostics.json', diagnostics)
@@ -296,12 +296,14 @@ if __name__ == '__main__':
     parser.add_argument('--bank', type=Path)
     parser.add_argument('--name')
     parser.add_argument('--inspect', action='store_true')
+    parser.add_argument('--final', choices=['marginal', 'spectrum'], default='marginal')
+    parser.add_argument('--iterations', type=int, default=200)
     args = parser.parse_args()
     args.root.mkdir(parents=True, exist_ok=True)
     if (args.root / 'manifest.json').exists():
         raise FileExistsError('prepared corpus already exists')
     if args.corpus == 'surrogate':
-        surrogates(args.root, args.bank, args.name)
+        surrogates(args.root, args.bank, args.name, args.final, args.iterations)
     elif args.corpus == 'propofol':
         propofol(args.root, inspect=args.inspect)
     else:

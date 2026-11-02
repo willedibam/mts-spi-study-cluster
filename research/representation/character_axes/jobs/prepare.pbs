@@ -15,7 +15,7 @@ if [[ "${CORPUS:?}" == propofol ]]; then
     export PYTHONPATH="$PBS_JOBFS/extra:$PYTHONPATH"
 fi
 extra=()
-[[ -n "${BANK:-}" ]] && extra+=(--bank "$BANK" --name "${NAME:?}")
+[[ -n "${BANK:-}" ]] && extra+=(--bank "$BANK" --name "${NAME:?}" --final "${FINAL:-marginal}" --iterations "${ITERATIONS:-200}")
 [[ "${INSPECT:-0}" == 1 ]] && extra+=(--inspect)
 python -u -m research.representation.character_axes.prepare "${CORPUS:?}" --root "${RUN_ROOT:?}" "${extra[@]}"
 if [[ "${INSPECT:-0}" != 1 && -n "${CHAIN:-}" ]]; then

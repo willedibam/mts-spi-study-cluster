@@ -26,11 +26,15 @@ def phase_randomized(x, rng):
     return np.fft.irfft(f * phase[:, None], n=len(x), axis=0)
 
 
-def multivariate_iaaft(x, rng, iterations=200, tolerance=1e-10):
+def multivariate_iaaft(x, rng, iterations=200, tolerance=1e-10, final='marginal'):
     """Amplitude-adjusted multivariate surrogate of a (T, M) array.
 
-    Returns the surrogate and a diagnostic dict. The final step restores the
-    exact marginals; relative phases between channels follow the original.
+    Returns the surrogate and a diagnostic dict. ``final='marginal'`` ends on
+    the rank step (exact marginals, approximate spectra); ``final='spectrum'``
+    ends on the Fourier step (exact auto- and cross-spectra, approximate
+    marginals). Strongly non-Gaussian signals leave a mismatch either way, so
+    the two variants bracket the linear null. Relative phases between channels
+    follow the original.
     """
     x = np.asarray(x, dtype=np.float64)
     T = len(x)
@@ -51,9 +55,16 @@ def multivariate_iaaft(x, rng, iterations=200, tolerance=1e-10):
         if previous is not None and np.array_equal(ranks, previous):
             break
         previous = ranks
+    if final == 'spectrum':
+        current = np.angle(np.fft.rfft(s, axis=0))
+        alpha = np.angle(np.exp(1j * (current - phase0)).sum(1))
+        s = np.fft.irfft(amplitude * np.exp(1j * (phase0 + alpha[:, None])), n=T, axis=0)
+    elif final != 'marginal':
+        raise ValueError(final)
     achieved = np.abs(np.fft.rfft(s, axis=0))
     spectrum_error = float(np.linalg.norm(achieved - amplitude) / np.linalg.norm(amplitude))
     cov_x, cov_s = np.corrcoef(x.T), np.corrcoef(s.T)
     off = ~np.eye(x.shape[1], dtype=bool)
-    return s, dict(iterations=iteration + 1, amplitude_relative_error=spectrum_error,
+    marginal_error = float(np.max(np.abs(np.sort(s, axis=0) - ordered)) / np.max(np.abs(ordered)))
+    return s, dict(iterations=iteration + 1, final=final, amplitude_relative_error=spectrum_error, marginal_max_relative_error=marginal_error,
                    correlation_max_abs_error=float(np.max(np.abs(cov_x - cov_s)[off])) if x.shape[1] > 1 else 0.0)

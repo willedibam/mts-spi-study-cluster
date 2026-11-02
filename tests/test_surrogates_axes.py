@@ -58,3 +58,14 @@ def test_axes_reference_distinct_pairs():
     for axis in AXES:
         assert len(set(axis.pairs)) == len(axis.pairs), axis.name
         assert all(a != b for a, b in axis.pairs), axis.name
+
+
+def test_iaaft_spectrum_final_matches_spectra_exactly():
+    rng = np.random.default_rng(3)
+    x = coupled(rng)
+    x[:, 0] = np.sign(x[:, 0]) * x[:, 0] ** 2
+    s, info = multivariate_iaaft(x, rng, final='spectrum')
+    assert info['amplitude_relative_error'] < 1e-10
+    fx, fs = np.fft.rfft(x, axis=0), np.fft.rfft(s, axis=0)
+    cross = lambda f: f[:, 0] * f[:, 1].conj()
+    assert np.allclose(cross(fx), cross(fs), atol=1e-8 * np.abs(cross(fx)).max())
