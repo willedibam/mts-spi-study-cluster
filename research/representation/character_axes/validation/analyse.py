@@ -517,7 +517,7 @@ def main():
     print(verdicts[['measure', 'kind', 'own_knob', 'own_mean', 'own_d', 'SR', 'worst_other', 'verdict',
                     'reversed_at']].to_string(index=False))
     from research.representation.character_axes.validation.figure import make
-    make(df, verdicts, resp, a.out / 'figures')
+    make(df, verdicts, resp, a.out / 'figures', second)
     if not a.no_bound:
         from research.representation.character_axes.validation.bound import run_bound
         run_bound(df, verdicts, a.banks, tables / 'bound.csv')

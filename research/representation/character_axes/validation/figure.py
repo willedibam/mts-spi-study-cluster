@@ -36,8 +36,10 @@ def curve(df, fam, knob, col, baseline='B0', surrogate=False):
     return m.index.to_numpy(), m.to_numpy(), ci.to_numpy()
 
 
-def make(df, verdicts, resp, out: Path):
-    from research.representation.character_axes.validation.analyse import SECOND, measures, own_of
+def make(df, verdicts, resp, out: Path, second=None):
+    from research.representation.character_axes.validation.analyse import SECOND, STAGE2_OWN, measures, own_of
+    second = pd.DataFrame() if second is None else second
+    final = dict(second[['measure', 'verdict']].drop_duplicates().values) if len(second) else {}  # stage 2 decides
     style()
     ms = [m for m in measures() if m[1] != 'control']
     ver = verdicts.set_index('measure')
@@ -61,7 +63,7 @@ def make(df, verdicts, resp, out: Path):
     ax.set_xticks(range(len(KNOB_COLS)), [f'{f}: {LABEL.get(k, k)}' for f, k in KNOB_COLS], rotation=90, fontsize=7)
     names = []
     for mid, *_ in ms:
-        v = ver.loc[mid, 'verdict'] if mid in ver.index else ''
+        v = final.get(mid, ver.loc[mid, 'verdict'] if mid in ver.index else '')
         names.append(f'{mid}  [{v}]')
     ax.set_yticks(range(len(ms)), names, fontsize=6.5)
     ax.axvline(KNOB_COLS.index(('A', 'nuis_cv_s')) - .5, color='k', lw=.6)
@@ -82,18 +84,22 @@ def make(df, verdicts, resp, out: Path):
             if c is not None:
                 a2.errorbar(c[0], c[1], yerr=c[2], ls=ls, lw=1.2, color=colour, capsize=1.5)
         sec = SECOND.get((r.construct, r.kind))
-        c = curve(df, sec[0], sec[1], col) if sec else None
-        if c is not None:
-            a2.errorbar(c[0], c[1], yerr=c[2], color='tab:orange', lw=1.2, capsize=1.5)
-        a2.set_title(f'{r.measure} ({r.verdict}, SR {r.SR:.2f})', fontsize=7, loc='left', pad=2)
+        fams = [sec[:2]] if sec else [f for f in STAGE2_OWN.get(r.construct, [])]
+        for f2, k2 in fams:
+            c = curve(df, f2, k2, col)
+            if c is not None:
+                a2.errorbar(c[0], c[1], yerr=c[2], color='tab:orange' if f2 == 'K' else 'tab:blue', lw=1.2, capsize=1.5)
+        sr_a = second[(second.measure == r.measure) & (second.family == 'A')]['SR'] if len(second) else []
+        sr = f'SR {r.SR:.2f}' + (f', in A {sr_a.iloc[0]:.2f}' if len(sr_a) else '')
+        a2.set_title(f'{r.measure} ({final.get(r.measure, r.verdict)}; {sr})', fontsize=7, loc='left', pad=2)
         a2.set_xticks(range(5), [str(i) for i in range(5)], fontsize=6)
         a2.set_xlabel(f'{fam}: {LABEL.get(knob, knob)}, design level', fontsize=6.5, labelpad=1)
         a2.set_ylabel('organisation z', fontsize=6.5)
         a2.tick_params(labelsize=6)
     proxies = [plt.Line2D([], [], color=c, ls=ls, lw=1.2) for _, ls, _, c in styles]
-    proxies.append(plt.Line2D([], [], color='tab:orange', lw=1.2))
-    fig.legend(proxies, ['baseline B0', 'baseline B1', 'B0, FT surrogate', 'second family (K)'], fontsize=6.5,
-               ncol=2, loc='upper left', bbox_to_anchor=(0.745, 0.935), frameon=False)
+    proxies += [plt.Line2D([], [], color=c, lw=1.2) for c in ('tab:orange', 'tab:blue')]
+    fig.legend(proxies, ['baseline B0', 'baseline B1', 'B0, FT surrogate', 'second family K (B0)', 'second family A (B0)'],
+               fontsize=6.5, ncol=2, loc='upper left', bbox_to_anchor=(0.745, 0.935), frameon=False)
     fig.text(0.75, 0.97, 'b  own-knob response, mean ± 95% CI over replicates\n'
              '    most selective passing pre-registered organisation pair per construct', fontsize=8.5, va='top')
     out.mkdir(parents=True, exist_ok=True)
