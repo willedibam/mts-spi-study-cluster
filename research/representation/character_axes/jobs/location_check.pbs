@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N axes-location
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=16GB,walltime=01:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Coupling location frequency versus channel spectra, for the four cohorts. qsub -v OUT=<dir> ...location_check.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+E=$MTS_SCRATCH/representation/empirical
+for spec in ad_ftd:$E/character-axes-261102/ad-ftd lemon:$E/character-axes-261102/lemon \
+            propofol:$E/character-axes-261102/propofol neurotycho:$E/character-transfer-261031/neurotycho-primary; do
+    python -u -m research.representation.character_axes.location_check "${spec%%:*}" --root "${spec#*:}" --output "${OUT:?}/${spec%%:*}.json"
+done
