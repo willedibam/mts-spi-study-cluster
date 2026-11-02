@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -N axes-compress
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=8GB,walltime=01:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Compress verified feature archives; remove a tar only after its decompressed SHA-256 matches.
+set -euo pipefail
+for tarfile in "${RUN_PARENT:?}"/*/features.tar; do
+    root=$(dirname "$tarfile")
+    expected=$(awk '{print $1}' "$root/features.tar.sha256")
+    zstd -q -T4 -10 -f "$tarfile" -o "$tarfile.zst"
+    actual=$(zstd -dc "$tarfile.zst" | sha256sum | awk '{print $1}')
+    [[ "$expected" == "$actual" ]]
+    rm "$tarfile"
+    echo "compressed $tarfile $(stat -c %s "$tarfile.zst")"
+done

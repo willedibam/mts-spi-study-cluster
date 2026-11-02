@@ -17,4 +17,8 @@ listed=$(tar -tf "$root/features.tar" | grep -v '/$' | wc -l)
 [[ "$files" == "$listed" ]]
 sha256sum "$root/features.tar" > "$root/features.tar.sha256"
 rm -rf "$root/features"
+expected=$(awk '{print $1}' "$root/features.tar.sha256")
+zstd -q -T1 -10 -f "$root/features.tar" -o "$root/features.tar.zst"
+[[ "$(zstd -dc "$root/features.tar.zst" | sha256sum | awk '{print $1}')" == "$expected" ]]
+rm "$root/features.tar"
 echo "archived $files files"
