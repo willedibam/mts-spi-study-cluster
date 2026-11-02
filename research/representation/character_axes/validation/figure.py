@@ -1,5 +1,5 @@
 """Working figure: (a) selectivity matrix, each measure's response to every knob relative to its own knob;
-(b) own-knob response curves for the best measure per construct."""
+(b) own-knob response curves for the most selective passing pre-registered organisation pair per construct."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -67,32 +67,34 @@ def make(df, verdicts, resp, out: Path):
     ax.set_title('a  response to each knob / |own response| (B0); own knob outlined', fontsize=9, loc='left')
     cb = fig.colorbar(im, ax=ax, fraction=.03, pad=.01)
     cb.set_label('relative response (clipped at ±3)', fontsize=7)
-    # (b) curves: best measure per construct by own paired d
-    best = (verdicts[verdicts.verdict.isin(['core', 'sub-axis'])]
-            .assign(ad=lambda t: t.own_d.abs()).sort_values('ad', ascending=False).drop_duplicates('construct'))
-    cons = list(best.itertuples())[:6]
-    for k, r in enumerate(cons):
-        a2 = fig.add_axes([0.75, 0.83 - k * 0.15, 0.22, 0.11])
-        mid = r.measure
-        col = ('org|' if r.kind == 'org' else 'level|') + mid
+    # (b) curves: the most selective passing pre-registered organisation pair per construct
+    best = (verdicts[verdicts.verdict.isin(['core', 'sub-axis']) & (verdicts.kind == 'org')
+                     & ~verdicts.measure.str.contains('post hoc')]
+            .sort_values('SR', ascending=False).drop_duplicates('construct'))
+    styles = (('B0', '-', False, 'k'), ('B1', '--', False, 'k'), ('B0', ':', True, '0.5'))
+    for k, r in enumerate(list(best.itertuples())[:5]):
+        a2 = fig.add_axes([0.75, 0.75 - k * 0.165, 0.22, 0.105])
+        col = 'org|' + r.measure
         fam, knob = r.own_knob.split(':')
-        for bl, ls, surr, lab in (('B0', '-', False, 'B0'), ('B1', '--', False, 'B1'), ('B0', ':', True, 'surrogate')):
+        for bl, ls, surr, colour in styles:
             c = curve(df, fam, knob, col, bl, surr)
             if c is not None:
-                a2.errorbar(c[0], c[1], yerr=c[2], ls=ls, lw=1.2, color='k' if not surr else '0.5', capsize=1.5,
-                            label=lab)
+                a2.errorbar(c[0], c[1], yerr=c[2], ls=ls, lw=1.2, color=colour, capsize=1.5)
         sec = SECOND.get((r.construct, r.kind))
-        if sec:
-            c = curve(df, sec[0], sec[1], col)
-            if c is not None:
-                a2.errorbar(c[0], c[1], yerr=c[2], color='tab:orange', lw=1.2, capsize=1.5, label=f'family {sec[0]}')
-        a2.set_title(f'{mid} ({r.verdict})', fontsize=7, loc='left')
+        c = curve(df, sec[0], sec[1], col) if sec else None
+        if c is not None:
+            a2.errorbar(c[0], c[1], yerr=c[2], color='tab:orange', lw=1.2, capsize=1.5)
+        a2.set_title(f'{r.measure} ({r.verdict}, SR {r.SR:.2f})', fontsize=7, loc='left', pad=2)
         a2.set_xticks(range(5), [str(i) for i in range(5)], fontsize=6)
-        a2.set_xlabel(f'{fam}: {LABEL.get(knob, knob)} level', fontsize=6.5, labelpad=1)
+        a2.set_xlabel(f'{fam}: {LABEL.get(knob, knob)}, design level', fontsize=6.5, labelpad=1)
+        a2.set_ylabel('organisation z', fontsize=6.5)
         a2.tick_params(labelsize=6)
-        if k == 0:
-            a2.legend(fontsize=6, ncol=2, loc='best')
-    fig.text(0.75, 0.97, 'b  own-knob response, mean ± 95% CI over replicates', fontsize=9)
+    proxies = [plt.Line2D([], [], color=c, ls=ls, lw=1.2) for _, ls, _, c in styles]
+    proxies.append(plt.Line2D([], [], color='tab:orange', lw=1.2))
+    fig.legend(proxies, ['baseline B0', 'baseline B1', 'B0, FT surrogate', 'second family (K)'], fontsize=6.5,
+               ncol=2, loc='upper left', bbox_to_anchor=(0.745, 0.935), frameon=False)
+    fig.text(0.75, 0.97, 'b  own-knob response, mean ± 95% CI over replicates\n'
+             '    most selective passing pre-registered organisation pair per construct', fontsize=8.5, va='top')
     out.mkdir(parents=True, exist_ok=True)
     save(fig, out, 'selectivity')
     fig.savefig(out / 'selectivity.pdf')

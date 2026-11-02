@@ -2,7 +2,7 @@
 #PBS -N axes-analysis
 #PBS -P ql44
 #PBS -q normal
-#PBS -l ncpus=4,mem=16GB,walltime=02:00:00,jobfs=1GB
+#PBS -l ncpus=8,mem=32GB,walltime=02:00:00,jobfs=1GB
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -l wd
 #PBS -j oe
