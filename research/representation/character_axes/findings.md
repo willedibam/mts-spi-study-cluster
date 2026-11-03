@@ -96,6 +96,9 @@ The [protocol's](protocol.md) two checks, run for the stage-1 core (77408cd) and
   - Over S, the core adds ≈0 everywhere (−0.03 to +0.002) and z adds −0.001 to −0.025 (all intervals include or lie below 0). S alone: NeuroTycho 1.0 (ceiling), propofol moderate .99, LEMON .946, AD .865.
   - Over Q, z adds: NeuroTycho +0.26 [+0.03, +0.46], propofol moderate +0.17 [+0.07, +0.29], LEMON +0.06 [−0.002, +0.13]; AD/FTD ≈0 with wide intervals.
   - So propofol's z increment over Pearson is not channel marginal shape; it is redundant with channel spectra. Redundancy in AUROC does not show z reads channel spectra rather than a co-occurring coupling change; that needs a conditional test, not a classifier.
+- **The spectra-adjusted test is not identifiable in NeuroTycho** (`spectra-adjusted/neurotycho.json`, `spectra_adjusted.py`, 3 November). Awake and anaesthesia windows barely overlap in spectral space (4% of windows inside the other state's range on the channel-mean/SD summary, 0.2% on PCA-20), so ANCOVA extrapolates within-state slopes.
+  - The top z pairs (prec-sq robust | ids or rank-sq, raw d −11 to −15, 0/6 units) go to ≈0 after the summary adjustment and flip to +1.7 to +7 after PCA-20. Core readouts change sign or inflate (band spread +1.8 → +12.4, mediation −2.1 → +1.2).
+  - So it is undecided whether the "widespread but not direct" reading is beyond spectra. The summary adjustment fully absorbing the top pairs is consistent with a spectral consequence, but extrapolation makes neither direction trustworthy. An observational adjustment cannot settle it here; it needs an intervention on the data (for example real − multivariate IAAFT, which keeps auto- and cross-spectra, or removing the common or slow component before the SPIs).
 
 ## Open
 
