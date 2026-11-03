@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -N axes-beyond
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=32GB,walltime=08:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# z and core over per-channel baselines for one cohort.
+# qsub -v COHORT=lemon,ROOT_DIR=<run>,OUT=<json> research/representation/character_axes/jobs/sufficiency.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -m pytest -q tests/test_surrogates_axes.py
+python -u -m research.representation.character_axes.beyond_channels "${COHORT:?}" --root "${ROOT_DIR:?}" --output "${OUT:?}"
