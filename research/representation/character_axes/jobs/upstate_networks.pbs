@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N axes-upstate
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=48GB,walltime=02:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Direct networks in high-amplitude slow-wave epochs versus the rest (generator calibration and NeuroTycho).
+# qsub research/representation/character_axes/jobs/upstate_networks.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/g/data/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102
+python -u -m research.representation.character_axes.upstate_networks --root "$MTS_SCRATCH/representation/empirical" --output "$R/upstate-networks/neurotycho.json" --seeds "${SEEDS:-20}"
