@@ -49,7 +49,7 @@ def main(root, output):
             p = root / srel.format(v) / 'bank.npz'
             if p.exists():
                 sb = np.load(p)
-                assert list(sb['row_id'].astype(str)) == list(bank['row_id'].astype(str)), p
+                assert [r.removeprefix('s-') for r in sb['row_id'].astype(str)] == list(bank['row_id'].astype(str)), p
                 sur[v] = readouts(sb)
         rep = dict(contrasts={}, surrogates=list(sur))
         for label, pos, neg in CONTRASTS[cohort]:
