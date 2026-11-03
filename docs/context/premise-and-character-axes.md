@@ -44,7 +44,7 @@ The future-direction axes below now have a first implementation that stays withi
 - **Construction validation** ([README](../../research/representation/character_axes/validation/README.md)): band (organisation, high share, spread) and mediation (one generator) pass as core, lag is a sub-axis, and direction, form and warp fail at cohort-like coupling. Organisation also moves with level, so a lag-organisation rise does not by itself mean more uniform lags. Noise, strength spread and mixing stay unbounded.
 - **Cohort bound:** surviving sign claims are NeuroTycho anaesthesia lag organisation and mediation, plus a weak HMC sleep lag claim.
 - **Decision (user):** report a validated core, keep the 13 as an extended set.
-- **Sufficiency (3 November):** the core accounts for z's increment over Pearson in NeuroTycho (+0.35 AUROC) but not in propofol sedation (+0.18, of which the core recovers +0.03). Recurring extended survivors point to spectral location within a band and to linear–rank agreement as the missing constructs; both need construction tests.
+- **Sufficiency (3 November):** the core accounts for z's increment over Pearson in NeuroTycho (+0.35 AUROC) but not in propofol sedation (z still adds +0.13 on top of the core). In LEMON, the location-frequency sub-axis absorbs most of z's gain, but it mirrors channel spectra (its age effect vanishes after adjusting for the channels' spectral centroid). In the EEG cohorts, then, what z adds over Pearson is channel-spectral or unexplained.
 
 Seven per cent of every stored z vector is identically zero (antisymmetric × symmetric statistics).
 

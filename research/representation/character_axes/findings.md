@@ -82,10 +82,20 @@ The [protocol's](protocol.md) two checks, run for the stage-1 core (77408cd) and
   - The core is sufficient where a state reorganises coherence across bands (deep anaesthesia), not where the shift lies within a band. The band construct splits at fs/4 (25 Hz in the EEG cohorts), so alpha slowing sits entirely inside the low band and reaches z only through fixed-lag and peak readouts, which measure frequency in sample units.
   - Propofol's lower linear–rank agreement is also its residual that survived both surrogate variants (−.83/−.82), so it is the one candidate non-Gaussian effect left.
   - Spectral location within a band and linear–rank agreement each need a construction test before joining the core.
+- **Stage-3 core** (474e443; adjustment fixed in e345720 so that a window missing a readout is imputed rather than dropped, and an unestimable adjustment is not counted as absorbed; records in `sufficiency/core-v3b/`):
+  - LEMON: the core now adds +0.043 [+0.012, +0.079] over Pearson+strength, and z adds +0.016 [−0.03, +0.06] on top of it. Fixed-lag timing is absorbed.
+  - NeuroTycho: unchanged.
+  - Propofol, moderate versus baseline: still unaccounted for (z adds +0.13 [+0.06, +0.21] on top of the core). Linear–rank agreement and phase-lag organisation survive.
+  - AD/FTD: location frequency is missing in 97% of windows (no complex AR(2) pole on the strongest edges), so it cannot be read there.
+- **Location frequency mirrors channel spectra in the EEG cohorts** (`location-check/`, `location_check.py`):
+  - Across windows it correlates 0.75–0.84 with the channels' 4–20 Hz spectral centroid.
+  - After adjusting for centroid and peak, its state effects vanish: LEMON +0.87 → +0.39 (p .06); propofol moderate +0.60 → −0.17, mild +0.70 → −0.08.
+  - So LEMON's core gain is channel-spectral information, not coupling character.
+  - NeuroTycho falls relative to its channels (−1.86, six units), but its 0.04–0.2 cycle-per-sample window is not 4–20 Hz at its sampling rate, so this is not interpreted.
 
 ## Open
 
-- Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. After stage 3 the core is band high share, band spread and mediation (one generator). Sub-axes are band organisation, lag (organisation and level), form (te − gc level) and location frequency; direction and warp are dropped. The core is not yet sufficient (above). Open: sufficiency with the stage-3 core (running), and a noise- and strength-robust correction.
+- Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. After stage 3 the core is band high share, band spread and mediation (one generator). Sub-axes are band organisation, lag (organisation and level), form (te − gc level) and location frequency; direction and warp are dropped. The core is not yet sufficient (above). Open: what carries propofol sedation's z increment (channel marginal shape, joint-burst coupling via real − IAAFT, or phase-lag organisation), and a noise- and strength-robust correction.
 - Level readouts that are a median over edges can be degenerate: the best-shift level is 0 in most AD windows because cross-correlation peaks at lag 0.
 - InceptionTime is not yet in the cohort comparison; MiniRocket is.
 - Corpora moved to scratch after use: `/scratch/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/{ad-ftd,lemon,propofol,surr-*}`; every real and surrogate run now lives there (checksum-verified moves, gdata quota). Scratch is purged after 100 days without access; the banks are cheap to regenerate.
