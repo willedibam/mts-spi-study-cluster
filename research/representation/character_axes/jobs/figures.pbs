@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N axes-figures
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=2,mem=24GB,walltime=01:00:00,jobfs=2GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Figure data then the figures notebook; outputs to $R/figure-data, $R/figures and $R/figures/figures.ipynb.
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+R=$MTS_GDATA/representation/empirical/character-axes-261102
+[[ "${SKIP_DATA:-0}" == 1 ]] || python -u -m research.representation.character_axes.figure_data \
+    --root "$MTS_SCRATCH/representation/empirical" --schema "$MTS_SCRATCH/representation/empirical/character-axes-261102/propofol/feature-schema.json" --out "$R/figure-data"
+mkdir -p "$R/figures"
+AXES_RESULTS=$R AXES_FIGURES=$R/figures jupyter nbconvert --to notebook --execute research/representation/character_axes/notebooks/figures.ipynb --output-dir "$R/figures" --ExecutePreprocessor.timeout=1200
