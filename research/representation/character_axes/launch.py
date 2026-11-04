@@ -31,7 +31,12 @@ def main(root, stage, measurement_job=None, measurement_seconds=3600):
     if status['job_state'] != 'F' or status['Exit_status'] != 0:
         raise ValueError('measurement did not complete successfully')
     used = status['resources_used']
-    peak_gib = int(used['mem'][:-2]) / 1024 ** 2
+    # The PBS peak also counts the farm's whole-archive validation and the archive's page cache, which dominate
+    # for a large corpus; size from the measured recording's own peak (parent + one worker) when recorded.
+    meta = next((root / 'features').rglob('meta.json'), None)
+    task = json.loads(meta.read_text())['job'].get('peak_memory_mib') if meta else None
+    pbs_gib = int(used['mem'][:-2]) / 1024 ** 2
+    peak_gib = (task['parent'] + task['largest_worker']) / 1024 if task else pbs_gib
     h, m, s = map(int, used['walltime'].split(':'))
     tasks = count - 1
     cpus = tasks if tasks < 48 else min(384, (tasks // 48) * 48)
@@ -42,7 +47,7 @@ def main(root, stage, measurement_job=None, measurement_seconds=3600):
     walltime = math.ceil((2 * (h * 3600 + m * 60 + s) * math.ceil(tasks / cpus) + 300) / 60) * 60
     if walltime > 12 * 3600:
         raise ValueError('measurement requires a different farm plan')
-    record.update(measurement_job=measurement_job, measurement_resources=used,
+    record.update(measurement_job=measurement_job, measurement_resources=used, recording_peak_memory_mib=task,
                   farm_request=dict(cpus=cpus, memory_GB=memory, walltime_seconds=walltime))
     atomic_json(receipt, record)
     job = save('farm', farm(root, count, cpus, memory, walltime, start=2))
