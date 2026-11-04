@@ -63,11 +63,16 @@ Associations are partial Spearman correlations with FSIQ, on subject means over 
     - otherwise the estimator-family pair.
   - Test each group's count against the same permutations (enrichment).
   - Groups summarise; they do not veto. A coherent set of strong features is reported on its own merit, whether or not an axis agrees.
+  - Only a named axis pair or a single-parameter within-family difference isolates one assumption. Other pairs are grouped by estimator-family pair and marked compound.
+  - Pairs whose two SPIs are both functions of the cross-spectral matrix are flagged linear-spectral: they cannot read non-Gaussian form.
+  - Each group carries its known construction nuisance (fixed lag: frequency; linear–rank: marginal shape; band organisation: within-band location).
+  - E1 adds coupling strength (mean and SD of |Pearson|) to the covariates.
+  - Each top feature is also re-tested with the first five principal components of channel band power added. Channel spectra absorbed z's predictive gain in every earlier cohort.
 - **E2 (fine-level interrogation of the top features).**
   - Edge-profile scatter (SPI a against SPI b over channel pairs) for the low and high FSIQ tertiles.
   - Leave-one-channel-out stability of the association.
   - Correlation with alpha frequency and aperiodic slope.
-  - Any E1/H1 positive is then re-run on IAAFT surrogates. It is called non-spectral only if the surrogate association is absent.
+  - Any E1/H1 positive is then re-run on IAAFT surrogates. It is called non-spectral only if the surrogate association is absent. IAAFT preserves covariance, precision and rank statistics but not coherence, phase or TE SPIs, so the real − surrogate residual is read only for the time-domain family. The uncorrected Kraskov estimators are autocorrelation-biased; read the DCE variants.
 - **H3 (secondary, expected null).** Ridge prediction of FSIQ (5 × 10-fold CV): covariates; + band power; + Pearson; + z (PCA ≤ 50 within folds).
 
 **Weighting.** A positive that survives E2 (sign-stable on leave-one-channel-out, not explained by spectra, surviving surrogates) is weighted heavily even if modest in size. Small negatives in secondary analyses are not over-read.

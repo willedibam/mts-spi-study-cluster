@@ -37,22 +37,39 @@ POSTERIOR = ['P7', 'P3', 'Pz', 'P4', 'P8', 'O1', 'O2']
 ICOH, COH = mt('icoh', 'mean', 'broad'), mt('cohmag', 'mean', 'broad')
 TOP, PERMS = 100, 10000
 AXIS_OF = {frozenset(p): ax.name for ax in AXES for p in ax.pairs}
+# SPIs that are functions of the auto- and cross-spectral matrix: a pair of two of them is linear-spectral by
+# construction and cannot read non-Gaussian form (axes-review reply, 5 November).
+SECOND_ORDER = ('cov', 'cov-sq', 'prec', 'prec-sq', 'xcorr', 'xcorr-sq', 'cohmag', 'icoh', 'phase', 'gd', 'psi', 'sgc',
+                'dtf', 'ddtf', 'dcoh', 'pdcoh', 'gpdcoh', 'mi_gaussian', 'tlmi_gaussian', 'je_gaussian', 'gc_gaussian',
+                'pdist_euclidean', 'xpdist_euclidean', 'corr_pearson')
+# Dominant nuisance measured in the construction validation, where known.
+NUISANCE = {'linear and rank correlation: lag': 'coupling frequency', 'axis: timing_fixed_lag': 'coupling frequency',
+            'axis: form_monotone': 'marginal shape', 'axis: tail': 'marginal shape', 'axis: band': 'within-band location',
+            'axis: timing_warping': 'insensitive at cohort coupling', 'axis: form_information': 'insensitive at cohort coupling'}
+
+
+def second_order(name):
+    return name.startswith(SECOND_ORDER)
 
 
 def contrast(a, b):
-    """What separates two SPIs: a named minimal-pair axis, a within-family parameter, or the family pair."""
+    """What separates two SPIs, and whether that is a single assumption.
+
+    A named minimal-pair axis or a within-family difference in one parameter kind isolates one assumption. Pairs
+    from different estimator families are grouped by family pair and marked compound, as are within-family pairs
+    that differ in several parameter kinds."""
     if frozenset((a, b)) in AXIS_OF:
-        return f'axis: {AXIS_OF[frozenset((a, b))]}'
+        return f'axis: {AXIS_OF[frozenset((a, b))]}', True
     fa, fb = family(a), family(b)
     if fa != fb:
-        return ' × '.join(sorted((fa, fb)))
-    ta, tb = set(a.split('_')), set(b.split('_'))
-    diff = ' '.join(sorted(ta ^ tb))
-    for key, label in (('tau-', 'lag'), ('fmin', 'band'), ('fmax', 'band'), ('k-', 'history'), ('-sq', 'squared'),
-                       ('mean', 'spectral aggregation'), ('max', 'spectral aggregation')):
-        if key in diff:
-            return f'{fa}: {label}'
-    return f'{fa}: estimator'
+        return ' × '.join(sorted((fa, fb))), False
+    diff = ' '.join(sorted(set(a.split('_')) ^ set(b.split('_'))))
+    kinds = {label for key, label in (('tau-', 'lag'), ('fmin', 'band'), ('fmax', 'band'), ('k-', 'history'),
+                                      ('-sq', 'squared'), ('mean', 'spectral aggregation'), ('max', 'spectral aggregation'))
+             if key in diff}
+    if len(kinds) == 1:
+        return f'{fa}: {kinds.pop()}', True
+    return (f'{fa}: compound', False) if kinds else (f'{fa}: estimator', True)
 
 
 def load(root, scope):
@@ -157,6 +174,10 @@ def main(root, scope, wais, frozen, out):
     df, Z, C, S, Pe = df[keep].reset_index(drop=True), Z[keep], C[keep], S[keep], Pe[keep]
     R = {k: v[keep] for k, v in R.items()}; Rn = {k: v[keep] for k, v in Rn.items()}
     X = design(df[['age', 'sex', 'montage', 'iaf', 'slope']]); Xe = design(df[['age', 'sex', 'montage', 'iaf', 'slope', 'education']])
+    strength = np.column_stack([stats.rankdata(np.abs(Pe).mean(1)), stats.rankdata(np.abs(Pe).std(1))])
+    Xs = np.column_stack([X, strength])
+    sp = np.linalg.svd((S - S.mean(0)) / S.std(0), full_matrices=False)[0][:, :5]
+    Xsp = np.column_stack([Xs, sp])
     y = df.fsiq.values
     res = dict(frozen_commit=frozen, n=int(len(df)), fsiq=dict(mean=float(y.mean()), sd=float(y.std()), min=float(y.min()), max=float(y.max())))
 
@@ -176,9 +197,11 @@ def main(root, scope, wais, frozen, out):
 
     # E1
     ok = np.isfinite(Z).all(0) & (np.nanstd(Z, 0) > 1e-9)
-    rho, p, fwer, null = partial_spearman(X, Z[:, ok], y)
+    rho, p, fwer, null = partial_spearman(Xs, Z[:, ok], y)
     feat = [names[k] for k in np.flatnonzero(ok)]
-    labels = np.array([contrast(a, b) for a, b in feat])
+    lab = [contrast(a, b) for a, b in feat]
+    labels = np.array([g for g, _ in lab]); isolates = np.array([i for _, i in lab])
+    linear_spectral = np.array([second_order(a) and second_order(b) for a, b in feat])
     top = np.argsort(-np.abs(rho))[:TOP]
     obs = Counter(labels[top]); base = Counter(labels)
     groups = [g for g, _ in obs.most_common(15)]
@@ -189,14 +212,19 @@ def main(root, scope, wais, frozen, out):
     perm_counts = np.array(perm_counts)
     res['E1'] = dict(features=int(ok.sum()), fwer_significant=int((fwer < .05).sum()), min_fwer=float(fwer.min()),
                      max_abs_rho=float(np.abs(rho).max()), null_max_abs_rho_95=float(np.quantile(np.abs(null).max(0), .95)),
-                     top=[dict(spi_a=feat[k][0], spi_b=feat[k][1], group=labels[k], rho=float(rho[k]), p=float(p[k]), fwer=float(fwer[k]))
-                          for k in top[:25]],
-                     groups=[dict(group=g, top_count=int(obs[g]), expected=float(TOP * base[g] / len(labels)),
+                     covariates='age, sex, montage, IAF, aperiodic slope, mean and SD of |Pearson|',
+                     top_isolating_share=float(isolates[top].mean()), top_linear_spectral_share=float(linear_spectral[top].mean()),
+                     catalogue_linear_spectral_share=float(linear_spectral.mean()),
+                     top=[dict(spi_a=feat[k][0], spi_b=feat[k][1], group=labels[k], isolates=bool(isolates[k]),
+                               linear_spectral=bool(linear_spectral[k]), known_nuisance=NUISANCE.get(labels[k]),
+                               rho=float(rho[k]), p=float(p[k]), fwer=float(fwer[k])) for k in top[:25]],
+                     groups=[dict(group=g, known_nuisance=NUISANCE.get(g), top_count=int(obs[g]), expected=float(TOP * base[g] / len(labels)),
                                   p_enrichment=float((1 + (perm_counts[:, i] >= obs[g]).sum()) / (1 + len(perm_counts))))
                              for i, g in enumerate(groups)])
-    rho_e = partial_spearman(Xe, Z[:, ok][:, top[:25]], y, perms=2000)[0]
-    for t, r in zip(res['E1']['top'], rho_e):
-        t['rho_with_education'] = float(r)
+    rho_e = partial_spearman(np.column_stack([Xe, strength]), Z[:, ok][:, top[:25]], y, perms=2000)[0]
+    rho_s, p_s, _, _ = partial_spearman(Xsp, Z[:, ok][:, top[:25]], y, perms=2000)
+    for t, r, r2, q2 in zip(res['E1']['top'], rho_e, rho_s, p_s):
+        t.update(rho_with_education=float(r), rho_with_spectra=float(r2), p_with_spectra=float(q2))
 
     # E2: leave-one-channel-out for the top 5 and correlation with the spectral covariates
     sub_rows = {s: np.flatnonzero(group == s) for s in df.subject}
@@ -208,7 +236,7 @@ def main(root, scope, wais, frozen, out):
         for c in range(M):
             e = (i != c) & (j != c)
             zc = np.array([np.nanmean([np.corrcoef(prof[r, ia, e], prof[r, ib, e])[0, 1] for r in sub_rows[s]]) for s in df.subject])
-            loo.append(float(partial_spearman(X, zc[:, None], y, perms=1)[0][0]))
+            loo.append(float(partial_spearman(Xs, zc[:, None], y, perms=1)[0][0]))
         zf = Z[:, ok][:, k]
         e2.append(dict(spi_a=a, spi_b=b, rho=float(rho[k]), loo_min=min(loo, key=abs), loo_sign_stable=bool(np.all(np.sign(loo) == np.sign(rho[k]))),
                        loo_by_channel=dict(zip(CANON if M == 19 else range(M), loo)),
