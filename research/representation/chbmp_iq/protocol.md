@@ -1,6 +1,6 @@
-# CHBMP IQ: pre-registered analysis plan (draft, 5 November 2026)
+# CHBMP IQ: pre-registered analysis plan (frozen, 5 November 2026)
 
-Status: **draft, not frozen**. It freezes once the window length is fixed from the sweep (§2). The commit hash of this file and of [analysis.py](analysis.py) is recorded in the run root, and only then is WAIS joined (`--unblind --frozen-commit`). Candidate-screen rationale: [candidates.md](../dataset_candidates/candidates.md#a1-chbmp--iq-in-adults-with-full-scale-wais-iii).
+Status: **frozen** on 5 November 2026, after the window length was fixed from the sweep (§2) and the cohort bank was built, before WAIS was joined. The commit hash of this file and of [analysis.py](analysis.py) is recorded in the run root, and only then is WAIS joined (`--unblind --frozen-commit`). Candidate-screen rationale: [candidates.md](../dataset_candidates/candidates.md#a1-chbmp--iq-in-adults-with-full-scale-wais-iii).
 
 ## 1. Question
 
@@ -35,7 +35,7 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
   - 50 Hz would discard 25–45 Hz.
   - pyspi's bands are fixed fractions of fs, so at 100 Hz low = 0–25 Hz and high = 25–50 Hz (mostly beta2 and muscle in eyes-closed EEG). One lag step is 10 ms, and lags 1–20 cover 10–200 ms.
   - 100 Hz also matches the LEMON arm (§7).
-- **Channels:** the 19 canonical 10–20 channels. The 60-channel T = 2000 arm is a reported sensitivity (same-window agreement of z with 19 channels), not a gate.
+- **Channels:** the 19 canonical 10–20 channels. The 60-channel T = 2000 arm was planned as a reported sensitivity, not a gate. It was not farmed: one 60-channel recording peaks at about 3.9 GB, above a normal-node core share, so it needs multi-core tasks. It is deferred.
   - The case for 19: comparability with LEMON, a 10.6× lower pyspi cost, and dense common-reference scalp channels being highly redundant (volume conduction).
   - The 27 recordings on 58–60-channel caps carry only 58 of the 60-channel set, so 60 channels cohort-wide would exclude them.
 - **Artefacts:** 1 s blocks with peak-to-peak > 150 µV on any selected channel are rejected, and windows lie inside clean runs.
@@ -49,7 +49,7 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
     - T = 2000 is better in 28% of features, and by more than 0.05 in 13.5%. Every estimator family favours T = 1000 in its median; envelope correlation least reliably, at 0.78 against 0.61.
     - On the same nested window, z at T = 1000 and at T = 2000 correlate at a median of 0.97, so the shorter window reads the same SPI–SPI structure.
     - Cost per second of data is 55 core-s at T = 1000 and 96 core-s at T = 2000.
-    - For T = 4000 to win at 120 s, its single-window ICC would have to exceed about 0.82; the observed rate of increase makes that implausible. The decision was made before the T = 4000 and 6000 arms finished; they are reported as a convergence check, not used to choose T.
+    - For T = 4000 to win at 120 s, its single-window ICC would have to exceed about 0.82; the observed rate of increase makes that implausible. The decision was made before the T = 4000 and 6000 arms finished; they are reported as a convergence check, not used to choose T. T = 6000 exceeded the 4 h pilot walltime on one recording and was dropped; T = 4000 is the only convergence arm.
     - Short windows fail more often on spectral VAR measures: DTF/PDC/dcoh are valid in 89% of windows against 95%, and nonparametric spectral GC in 73% against 86%. Failures are scattered across subjects. Subject means use the finite windows, so with 12–24 windows these SPIs survive; the extra cost of shorter windows is in them.
     - Not tested: T < 1000. At 5 s the 0.5 Hz lower edge spans under 3 cycles, and the validity losses above grow.
   - Count: compute at T = 1000 is cheap (about 1.6 KSU for the cohort), so up to 24 windows (240 s of ~600 s clean) are used rather than the 120 s first planned. A recording needs at least 12, so that the budget removes only 2 recordings rather than 10.
