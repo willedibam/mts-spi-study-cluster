@@ -60,13 +60,13 @@ def compare(A, high, rng):
     H = splits(k, rng) if exact(k) else np.vstack([high[None], splits(k, rng)])  # the observed split counts once
     mx, rms = [], []
     for chunk in np.array_split(H, max(1, len(H) // 250)):
-        D = cohen_d(A, chunk)
-        mx.append(np.abs(D).max(1)); rms.append(np.sqrt((D ** 2).mean(1)))
+        D = cohen_d(A, chunk)  # a split can leave a group without variance in a tied feature
+        mx.append(np.nanmax(np.abs(D), 1)); rms.append(np.sqrt(np.nanmean(D ** 2, 1)))
     mx, rms = np.concatenate(mx), np.concatenate(rms)
     fwer = (np.sum(mx[None, :] >= np.abs(d)[:, None] - 1e-12, 1)) / len(mx)  # the observed split is among the splits
-    obs_rms = np.sqrt((d ** 2).mean())
+    obs_rms = np.sqrt(np.nanmean(d ** 2))
     return d, fwer, dict(splits=len(H), exact=exact(k),
-                         max_abs_d=float(np.abs(d).max()), null_max_abs_d_95=float(np.quantile(mx, .95)),
+                         max_abs_d=float(np.nanmax(np.abs(d))), null_max_abs_d_95=float(np.quantile(mx, .95)),
                          fwer_significant=int((fwer < .05).sum()), rms_d=float(obs_rms),
                          null_rms_d_median=float(np.median(rms)), p_rms=float(np.mean(rms >= obs_rms - 1e-12))), mx, rms
 
@@ -111,12 +111,15 @@ def main(root, scope, wais, out):
             bal[c] = [sub[c][~high].value_counts().to_dict(), sub[c][high].value_counts().to_dict()]
         r = dict(balance=bal)
         for name, A in blocks.items():
-            d, fwer, summ, mx, rms = compare(A[sel], high, rng)
+            var = A[sel].std(0) > 0  # features tied across the whole extreme set carry no contrast
+            d, fwer, summ, mx, rms = compare(A[sel][:, var], high, rng)
+            summ['features'] = int(var.sum())
             r[name] = summ; nulls[(q, name)] = (summ, mx, rms)
             if name.startswith('z'):
-                top = np.argsort(-np.abs(d))[:10]
-                r[name]['top'] = [dict(spi_a=feat[k][0], spi_b=feat[k][1], group=contrast(*feat[k])[0], d=float(d[k]),
-                                       fwer=float(fwer[k])) for k in top]
+                fk = np.flatnonzero(var)
+                top = np.argsort(-np.nan_to_num(np.abs(d)))[:10]
+                r[name]['top'] = [dict(spi_a=feat[fk[k]][0], spi_b=feat[fk[k]][1], group=contrast(*feat[fk[k]])[0],
+                                       d=float(d[k]), fwer=float(fwer[k])) for k in top]
         res[f'{int(q * 100)}%'] = r
     (out / 'extremes.json').write_text(json.dumps(res, indent=1, default=str))
     figure(out, nulls, list(blocks))
