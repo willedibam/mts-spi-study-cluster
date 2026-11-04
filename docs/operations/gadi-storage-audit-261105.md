@@ -35,3 +35,14 @@ Scratch files unread for 100 days are quarantined, then deleted after 14 days ([
 Clearing the two public raw inputs from gdata (≈ 29.5 GiB) would free enough room to move those ≈ 28.4 GiB of archives onto gdata.
 
 Also flagged by `nci-file-expiry`, outside this project: the sibling EEML scratch checkout (`/scratch/ql44/we2614/eeml-2026-application`) began expiring on 4–6 November. Its code is on `origin`, and its `archives/` entries are links to gdata, so no unique data is known to be at risk.
+
+## Actions, 5 November 2026 (user decision)
+
+- **Packed:** Scratch `operations/sources/registered-worktrees`, ten clean Git worktrees whose commits are all on `origin`, became one archive: `archives/operations/261105/registered-worktrees.tar.zst` on gdata (1,167,446,819 bytes, SHA-256 `252488e34284d2f1685d7093e6f571c077625640f41dbf968b72d58c342fd2da`).
+  - Verification: all 7,162 members match the source in type, size and link target, and all 6,688 regular files are SHA-256 identical.
+  - `README.md` there gives one restore command per worktree; Scratch `operations/sources/ARCHIVED.md` points to it.
+- **Removal notes:** each raw input approved for removal now has `REMOVED-raw-261105.md` and `raw-filelist-261105.tsv` beside it, naming the source and the integrity record:
+  - Siena (16.99 GB, gdata);
+  - CCEP pilot (13.95 GB, gdata);
+  - HCP working memory (81.73 GB, Scratch).
+- **Deletion:** the user runs the deletions and `git worktree prune`; this audit performed none. Once gdata has room, the ≈ 28.4 GiB of `packed-261102/` Scratch archives can move to gdata, which needs a separate decision.
