@@ -16,15 +16,16 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
 - Age, sex and education come from `Demographic_data.csv`; `participants.tsv` holds sex only.
 - Age is 18–68, but 206 of 282 are 20–40 and 13 are over 50, so CHBMP is not an age cohort.
 
-**Recording facts** (blind scoping, [scope.py](scope.py); verified on the first recordings, cohort figures in the run root):
+**Recording facts** (blind cohort scope of all 253 recordings, [scope.py](scope.py); records and figures in `<run root>/scope/`):
 - 200 Hz, common reference, hardware 0.5–50 Hz with a 60 Hz notch.
 - 253 of 279 participants have an EEG recording (26 have none on Synapse; listed in the download receipt).
-- Two cap families, with varying EEG channel counts: 58–62 channels (176 recordings) or 115–123 (77), the latter with EOG and ECG. All 253 carry the 19 canonical channels. The montage covariate is the cap family, not the channel count.
+- Two cap families, with varying EEG channel counts: 58–62 channels (174 recordings) or 115–123 (79), the latter with EOG and ECG. All 253 carry the 19 canonical channels. The montage covariate is the cap family, not the channel count.
 - Protocol: about 10 min eyes closed, then alternating eyes open/closed, hyperventilation, recovery and photic stimulation.
 - **No artefact annotations.** Events mark states only; some recordings carry `discontinuity` markers.
 - **Labelling errors:**
   - The EDF types ECG/EOG as EEG; channels.tsv is correct.
-  - In the 62-channel montage, "AF7"/"AF8" are not scalp EEG: on sub-CBM00002 they have ~110 µV SD, correlate 0.90 with each other and 0.02 with every scalp neighbour. The common set is therefore 60 channels.
+  - "AF7"/"AF8" are bad in 73 of 174 recordings on the 62-channel cap. On sub-CBM00002 they have ~110 µV SD, correlate 0.90 with each other and 0.02 with every scalp neighbour, which suggests a non-scalp input in those slots. They are dropped, so the common set is 60 channels.
+  - "DC1" is typed EEG in channels.tsv but is a DC input; it is never selected.
   - sub-CBM00203's EDF labels channels '-A12' (linked ears) while every other recording says '-REF' and its sidecar says 'common'. Its reference cannot be verified, so it is excluded.
 
 **Window contract** ([prepare.py](prepare.py)):
@@ -45,7 +46,15 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
   - Criterion: the median reliability of the subject-mean z at a fixed clean-data budget, then cost. T is the shortest length within 0.05 of the best. T > 5000 is used only if it wins on that criterion.
   - The count follows: as many windows as about 120 s of clean data allows, capped by the 10th-percentile recording's clean runs.
 
-**Exclusions**, decided before WAIS is joined: no eyes-closed block, a bad selected channel, or fewer than the required clean windows. Then only finite FSIQ.
+**Cohort scope results** (all 253 recordings, canonical channels):
+- Every recording has a first eyes-closed block (median 604 s; 10th percentile 363 s, because a group of 62-channel-cap recordings have about 6 min).
+- Clean seconds at 150 µV: median 600, 10th percentile 359.
+- 30 recordings (12%) have a bad canonical channel: Fp1 14, Fp2 8, C3 6, O1 5, T7 4, others ≤ 2. With sub-CBM00203, 222 recordings remain.
+- Of those, 218 hold six disjoint clean 20 s windows, 209 six 40 s windows, and 177 six 60 s windows.
+- IAF median 10.0 Hz (5–95%: 8.75–12 Hz). The occipital alpha/theta ratio shows no systematic drift over the block, so windows spread over the whole block do not mix vigilance states by position.
+- Power at 45–60 Hz is 3–6 orders below 10 Hz.
+
+**Exclusions**, decided before WAIS is joined: no eyes-closed block, a bad selected channel, a non-cohort reference label, or fewer than the required clean windows. Then only finite FSIQ.
 
 **Power:** N = 150 detects |ρ| ≥ 0.23 at 80% (two-sided α = .05). A null is reported as such.
 
