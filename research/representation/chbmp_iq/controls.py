@@ -26,11 +26,13 @@ def split_half(z, group, subs):
         x = z[group == s]
         halves[0].append(np.nanmean(x[0::2], 0)); halves[1].append(np.nanmean(x[1::2], 0))
     a, b = (np.array(h) for h in halves)
+    fin = np.isfinite(a).all(0) & np.isfinite(b).all(0)  # a half can have no finite window for a feature
+    a, b = a[:, fin], b[:, fin]
     a, b = (a - a.mean(0)) / a.std(0), (b - b.mean(0)) / b.std(0)
     r = (a * b).mean(0)
     rows = lambda x: (x - x.mean(1, keepdims=True)) / x.std(1, keepdims=True)
     hit = np.argmax(rows(a) @ rows(b).T, 1) == np.arange(len(a))
-    return np.median(2 * r / (1 + r)), float(np.mean(r > .5)), float(hit.mean())
+    return np.median(2 * r / (1 + r)), float(np.mean(r > .5)), float(hit.mean()), int(fin.sum())
 
 
 def main(root, scope, wais, out):
@@ -64,23 +66,33 @@ def main(root, scope, wais, out):
                                      complete_case_rho=float(rho[0]), complete_case_p=float(p[0]))
 
     ok = np.isfinite(Z).all(0) & (np.nanstd(Z, 0) > 1e-9)
-    sb, share, ident = split_half(z[:, ok], group, subs)
-    res['reliability'] = dict(subjects=len(subs), features=int(ok.sum()), split_half_spearman_brown_median=float(sb),
+    sb, share, ident, used = split_half(z[:, ok], group, subs)
+    res['reliability'] = dict(subjects=len(subs), features=used, split_half_spearman_brown_median=float(sb),
                               share_half_r_over_half=share, identification_odd_to_even=ident)
 
     feat = [names[k] for k in np.flatnonzero(ok)]
     labels = np.array([contrast(a, b)[0] for a, b in feat])
+    _, S = subject_mean(power, group)
+    sp = np.linalg.svd((S - S.mean(0)) / S.std(0), full_matrices=False)[0][:, :5]
     for name, cols in (('age_sex_montage', ['sex', 'montage']),
-                       ('age_full', ['sex', 'montage', 'iaf', 'slope'])):
+                       ('age_full', ['sex', 'montage', 'iaf', 'slope']),
+                       ('age_full_spectra', ['sex', 'montage', 'iaf', 'slope'])):
         keep = cov[cols].notna().all(1).values
-        Xa = design(cov[keep][cols]); Xa = np.column_stack([Xa, strength[keep]]) if name == 'age_full' else Xa
+        Xa = design(cov[keep][cols])
+        extra = {'age_full': [strength], 'age_full_spectra': [strength, sp]}.get(name, [])
+        Xa = np.column_stack([Xa] + [e[keep] for e in extra])
         rho, p, fwer, null = partial_spearman(Xa, Z[keep][:, ok], cov.age.values[keep], perms=2000)
         top = np.argsort(-np.abs(rho))[:TOP]
         obs, base = Counter(labels[top]), Counter(labels)
-        res[name] = dict(n=int(keep.sum()), covariates=cols + (['strength'] if name == 'age_full' else []),
+        groups = [g for g, _ in obs.most_common(8)]
+        counts = np.array([[np.sum(labels[np.argpartition(-np.abs(null[:, k]), TOP)[:TOP]] == g) for g in groups]
+                           for k in range(0, null.shape[1], 4)])
+        res[name] = dict(n=int(keep.sum()), covariates=cols + {'age_full': ['strength'], 'age_full_spectra': ['strength', '5 spectral PCs']}.get(name, []),
                          fwer_significant=int((fwer < .05).sum()), max_abs_rho=float(np.abs(rho).max()),
                          null_max_abs_rho_95=float(np.quantile(np.abs(null).max(0), .95)),
-                         groups=[dict(group=g, top_count=n, expected=TOP * base[g] / len(labels)) for g, n in obs.most_common(8)],
+                         groups=[dict(group=g, top_count=obs[g], expected=TOP * base[g] / len(labels),
+                                      p_enrichment=float((1 + (counts[:, i] >= obs[g]).sum()) / (len(counts) + 1)))
+                                 for i, g in enumerate(groups)],
                          top=[dict(spi_a=feat[k][0], spi_b=feat[k][1], group=labels[k], rho=float(rho[k]), fwer=float(fwer[k]))
                               for k in top[:15]])
     (out / 'controls.json').write_text(json.dumps(res, indent=1))
