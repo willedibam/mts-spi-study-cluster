@@ -1,6 +1,6 @@
 # CHBMP IQ: pre-registered analysis plan (frozen, 5 November 2026)
 
-Status: **frozen** on 5 November 2026, after the window length was fixed from the sweep (§2) and the cohort bank was built, before WAIS was joined. The commit hash of this file and of [analysis.py](analysis.py) is recorded in the run root, and only then is WAIS joined (`--unblind --frozen-commit`). Candidate-screen rationale: [candidates.md](../dataset_candidates/candidates.md#a1-chbmp--iq-in-adults-with-full-scale-wais-iii).
+Status: **frozen** on 5 November 2026, after the window length was fixed from the sweep (§2) and the cohort bank was built, before WAIS was joined. It was re-frozen once, the same day, because the first unblinded run stopped while parsing `WAIS_III.csv` (38 blank trailing rows) before any association was computed; the fix only drops rows without a Code. The commit hash of this file and of [analysis.py](analysis.py) is recorded in the run root, and only then is WAIS joined (`--unblind --frozen-commit`). Candidate-screen rationale: [candidates.md](../dataset_candidates/candidates.md#a1-chbmp--iq-in-adults-with-full-scale-wais-iii).
 
 ## 1. Question
 

@@ -165,6 +165,9 @@ def main(root, scope, wais, frozen, out):
     first = meta.groupby('group').first().loc[subs]
     w = pd.read_csv(wais, skiprows=1, encoding='utf-8-sig')
     w.columns = [c.strip() for c in w.columns]
+    w = w.dropna(subset=['Code'])  # the export ends in blank rows
+    if w.Code.astype(str).str.strip().duplicated().any():
+        raise ValueError('duplicate WAIS codes')
     fsiq = w.assign(subject='sub-' + w.Code.astype(str).str.strip()).set_index('subject')['FSIQ']
     df = pd.DataFrame(dict(subject=subs, fsiq=pd.to_numeric(fsiq.reindex(subs), errors='coerce').values,
                            age=first.age.values, sex=first.sex.values, montage=first.montage.astype(str).values,
