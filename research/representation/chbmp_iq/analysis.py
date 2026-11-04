@@ -187,7 +187,7 @@ def main(root, scope, wais, frozen, out):
         Xh = np.column_stack([Xd, stats.rankdata(Rr['frontal_mag']), stats.rankdata(Rr['posterior_mag'])])
         rho, p, _, _ = partial_spearman(Xh, D[:, None], y)
         parts = {k: float(partial_spearman(Xh, Rr[k][:, None], y, perms=2000)[0][0]) for k in ('frontal', 'posterior')}
-        return dict(rho=float(rho[0]), p=float(p[0]), parts=parts), D
+        return dict(rho=float(rho[0]), p=float(p[0]), parts=parts), (residual(Xh, D)[:, 0], residual(Xh, y)[:, 0])
     res['H1'], D = h1(R, X)
     res['H1_education'] = h1(R, Xe)[0]; res['H1_without_Fp'] = h1(Rn, X)[0]
 
@@ -203,6 +203,14 @@ def main(root, scope, wais, frozen, out):
     labels = np.array([g for g, _ in lab]); isolates = np.array([i for _, i in lab])
     linear_spectral = np.array([second_order(a) and second_order(b) for a, b in feat])
     top = np.argsort(-np.abs(rho))[:TOP]
+    # Distinct leading features: walk down the ranking, skipping any whose subject-level z correlates |r| > 0.9
+    # with one already kept, so near-duplicates (one finding under several estimators) are shown once.
+    Zr = residual(Xs, Z[:, ok][:, top]); Zr = (Zr - Zr.mean(0)) / Zr.std(0)
+    distinct = []
+    for n in range(TOP):
+        if all(abs(Zr[:, n] @ Zr[:, m]) / len(Zr) <= .9 for m in distinct):
+            distinct.append(n)
+    distinct = top[distinct]
     obs = Counter(labels[top]); base = Counter(labels)
     groups = [g for g, _ in obs.most_common(15)]
     perm_counts = []
@@ -215,6 +223,7 @@ def main(root, scope, wais, frozen, out):
                      covariates='age, sex, montage, IAF, aperiodic slope, mean and SD of |Pearson|',
                      top_isolating_share=float(isolates[top].mean()), top_linear_spectral_share=float(linear_spectral[top].mean()),
                      catalogue_linear_spectral_share=float(linear_spectral.mean()),
+                     distinct_top=[dict(spi_a=feat[k][0], spi_b=feat[k][1], group=labels[k], rho=float(rho[k]), fwer=float(fwer[k])) for k in distinct[:12]],
                      top=[dict(spi_a=feat[k][0], spi_b=feat[k][1], group=labels[k], isolates=bool(isolates[k]),
                                linear_spectral=bool(linear_spectral[k]), known_nuisance=NUISANCE.get(labels[k]),
                                rho=float(rho[k]), p=float(p[k]), fwer=float(fwer[k])) for k in top[:25]],
@@ -226,11 +235,11 @@ def main(root, scope, wais, frozen, out):
     for t, r, r2, q2 in zip(res['E1']['top'], rho_e, rho_s, p_s):
         t.update(rho_with_education=float(r), rho_with_spectra=float(r2), p_with_spectra=float(q2))
 
-    # E2: leave-one-channel-out for the top 5 and correlation with the spectral covariates
+    # E2: leave-one-channel-out for the 5 leading distinct features and correlation with the spectral covariates
     sub_rows = {s: np.flatnonzero(group == s) for s in df.subject}
     i, j = edge_index(M)
     e2 = []
-    for k in top[:5]:
+    for k in distinct[:5]:
         a, b = feat[k]; ia, ib = order.index(a), order.index(b)
         loo = []
         for c in range(M):
@@ -246,7 +255,9 @@ def main(root, scope, wais, frozen, out):
     # H3
     res['H3'] = ridge(dict(spectra=S, pearson=Pe, z=Z[:, ok]), y, df)
     (out / 'results.json').write_text(json.dumps(res, indent=1))
-    figures(out, df, rho, p, fwer, labels, top, feat, prof, order, group, D, res, Z[:, ok], i, j)
+    shown = distinct[:4]
+    adjusted = (residual(Xs, Z[:, ok][:, shown]), residual(Xs, y)[:, 0])
+    figures(out, df, rho, p, fwer, labels, shown, feat, prof, order, group, D, res, Z[:, ok], adjusted)
     print(json.dumps({k: res[k] for k in ('n', 'H1', 'H1_education', 'H1_without_Fp')}, indent=1))
     print(json.dumps(res['E1']['groups'][:10], indent=1))
 
@@ -278,7 +289,8 @@ def ridge(blocks, y, df, repeats=5, folds=10):
     return out
 
 
-def figures(out, df, rho, p, fwer, labels, top, feat, prof, order, group, D, res, Zok, i, j):
+def figures(out, df, rho, p, fwer, labels, shown, feat, prof, order, group, D, res, Zok, adjusted):
+    """Scatters show covariate-adjusted ranks, the quantities whose correlation is the reported partial rho."""
     style()
     groups = [g['group'] for g in res['E1']['groups'][:8]]
     colours = dict(zip(groups, plt.cm.tab10(np.arange(len(groups)))))
@@ -293,7 +305,7 @@ def figures(out, df, rho, p, fwer, labels, top, feat, prof, order, group, D, res
     for s in (-1, 1):
         a.axvline(s * thr, color='k', ls=':', lw=1)
     a.set(xlabel=r'partial Spearman $\rho$ (z feature, FSIQ)', ylabel=r'$-\log_{10}$ permutation p', title='Every SPI–SPI feature against FSIQ (dotted: FWER 5%)')
-    a.legend(fontsize=6, markerscale=3, loc='upper left')
+    a.legend(fontsize=6, markerscale=3, loc='upper center', bbox_to_anchor=(.5, -.16), ncol=2, frameon=False)
     a = ax[1]
     g = res['E1']['groups'][:12]
     y = np.arange(len(g))[::-1]
@@ -308,9 +320,9 @@ def figures(out, df, rho, p, fwer, labels, top, feat, prof, order, group, D, res
     save(fig, out, 'iq-features'); plt.close(fig)
 
     lo, hi = df.fsiq <= df.fsiq.quantile(1 / 3), df.fsiq >= df.fsiq.quantile(2 / 3)
-    k4 = top[:4]
     fig, ax = plt.subplots(2, 4, figsize=(12, 6), constrained_layout=True)
-    for c, k in enumerate(k4):
+    fig.suptitle('Leading distinct features (|r| ≤ 0.9 between them). Top: subject-mean edge profiles; bottom: adjusted ranks', fontsize=9)
+    for c, k in enumerate(shown):
         a_, b_ = feat[k]; ia, ib = order.index(a_), order.index(b_)
         a = ax[0, c]
         for mask, col, lab in ((lo, '#4C72B0', 'low-IQ tertile'), (hi, '#C44E52', 'high-IQ tertile')):
@@ -322,13 +334,13 @@ def figures(out, df, rho, p, fwer, labels, top, feat, prof, order, group, D, res
         if c == 0:
             a.legend(fontsize=6)
         a = ax[1, c]
-        a.scatter(df.fsiq, Zok[:, k], s=6, color='k')
-        a.set(xlabel='FSIQ', ylabel='z (subject mean)', title=fr'$\rho_p$ = {rho[k]:.2f}, FWER p = {fwer[k]:.3f}')
+        a.scatter(adjusted[1], adjusted[0][:, c], s=6, color='k')
+        a.set(xlabel='FSIQ rank, adjusted', ylabel='z rank, adjusted', title=fr'$\rho_p$ = {rho[k]:.2f}, FWER p = {fwer[k]:.3f}')
     save(fig, out, 'iq-top-features'); plt.close(fig)
 
     fig, ax = plt.subplots(1, 2, figsize=(7.5, 3.4), constrained_layout=True)
-    ax[0].scatter(df.fsiq, D, s=8, color='k')
-    ax[0].set(xlabel='FSIQ', ylabel='posterior − frontal lagged share', title=f"H1: ρ_p = {res['H1']['rho']:.2f}, p = {res['H1']['p']:.3f}")
+    ax[0].scatter(D[1], D[0], s=8, color='k')
+    ax[0].set(xlabel='FSIQ rank, adjusted', ylabel='posterior − frontal lagged share, rank adjusted', title=f"H1: ρ_p = {res['H1']['rho']:.2f}, p = {res['H1']['p']:.3f}")
     from sklearn.decomposition import PCA
     pc = PCA(2).fit((Zok - Zok.mean(0)) / Zok.std(0))
     e = pc.transform((Zok - Zok.mean(0)) / Zok.std(0))
