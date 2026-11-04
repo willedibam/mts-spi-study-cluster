@@ -50,6 +50,20 @@ SPI–SPI coupling character in resting eyes-closed EEG shows no detectable asso
   - It is not established as coupling character beyond the spectrum. Adjusting for spectral PCs may over-adjust, because channel spectra partly reflect coupling, but the conservative reading is that the effect is borderline once spectra are held fixed.
 - **Next test:** a replication in LEMON's young-against-old contrast (protocol §7 arm), with spectral PCs adjusted, before this is claimed.
 
+## LEMON age replication: pre-specified (5 November, before any LEMON feature-level age statistic was computed)
+
+- **Data:** the existing `lemon-age-r10-261102` bank (132 people, 41 aged 55–80 and 91 aged 20–35; 6 windows of 20 s at 100 Hz, 19 channels; same pyspi computation and feature schema). It is not re-prepared at T = 1000, because z correlates 0.95–0.97 between T = 1000 and longer windows on CHBMP.
+  - LEMON is ICA-cleaned and average-referenced, while CHBMP uses each cap's own reference. That is a real difference for coupling measures, so a failure could be reference-specific.
+  - LEMON age was used before (axes, prediction, spectral sufficiency), but not at this feature level.
+- **Targets:** fixed by CHBMP alone in [lemon_age.py](lemon_age.py). The LEMON design is sex, IAF, aperiodic slope and strength, then + 5 spectral PCs of band power.
+  - **T1:** the CHBMP `age_full` FWER features (235). Sign concordance in LEMON, one-sided against LEMON label permutations. For the spectra design, the targets are the CHBMP spectra-design top 100.
+  - **T2:** the correlation between the two cohorts' age ρ over all common features.
+  - **T3:** the directed × undirected spectral composite (dcoh/gpdcoh against cohmag/PLV/PPC), predicted ρ > 0.
+- **Decision:**
+  - Replicates if T1 (base design) p < .05.
+  - Replicates beyond spectra only if T1 and T3 both have p < .05 (one-sided) in the spectra design.
+  - Anything else is reported as not replicated.
+
 ## Reproduce
 
 ```bash
