@@ -1,0 +1,20 @@
+#!/bin/bash
+# Inspect (INSPECT=<json path>) or window (ROOT=<corpus root>, EC_LABELS, ARTIFACT_LABELS) the downloaded CHBMP EEG.
+# qsub -v RAW_ROOT=...,INSPECT=.../inspect.json research/representation/chbmp_iq/jobs/prepare.pbs
+#PBS -N chbmp-prepare
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1,mem=16GB,walltime=02:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+if [[ -n "${INSPECT:-}" ]]; then
+    python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --inspect "$INSPECT"
+else
+    read -ra ec <<< "${EC_LABELS:?}"; read -ra art <<< "${ARTIFACT_LABELS:-}"
+    python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --root "${ROOT:?}" \
+        --eyes-closed "${ec[@]}" --artifact "${art[@]}" --event-column "${EVENT_COLUMN:-trial_type}"
+fi

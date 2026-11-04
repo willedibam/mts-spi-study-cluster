@@ -11,6 +11,8 @@ What the SPI–SPI representation captures, and how it compares with learned rep
 | `neurotycho/` | Transfer to Neurotycho ECoG |
 | `cross_mt/` | Cross-M,T transfer: whether a representation fitted at one size carries to another |
 | `learned_baselines/` | InceptionTime, MiniRocket and MPI representation baselines |
+| `dataset_candidates/` | Literature and metadata screen of IQ, age and non-neural datasets |
+| `chbmp_iq/` | CHBMP EEG download, loader and pre-registered IQ analysis plan |
 | `shared/` | Modules two or more of these studies use |
 
 Context: [`docs/context/spi-spi-representation-evaluation.md`](../../docs/context/spi-spi-representation-evaluation.md).

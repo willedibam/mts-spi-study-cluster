@@ -1,0 +1,16 @@
+#!/bin/bash
+# CHBMP EEG + cognitive tables from Synapse. copyq has the network; the token is read from ~/.synapseConfig.
+# qsub -v RAW_ROOT=/scratch/ql44/we2614/mts-spi-study/representation/empirical/chbmp-iq-261105/raw[,LIMIT=2] research/representation/chbmp_iq/jobs/download.pbs
+#PBS -N chbmp-download
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=4GB,walltime=10:00:00,jobfs=4GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+[[ -f "$HOME/.synapseConfig" || -n "${SYNAPSE_AUTH_TOKEN:-}" ]] || { echo 'no Synapse token configured' >&2; exit 2; }
+/apps/python3/3.12.1/bin/python3 -m venv "$PBS_JOBFS/syn"
+"$PBS_JOBFS/syn/bin/pip" install -q synapseclient==4.14.0
+"$PBS_JOBFS/syn/bin/python" -u research/representation/chbmp_iq/download.py --root "${RAW_ROOT:?}" ${LIMIT:+--limit "$LIMIT"}
