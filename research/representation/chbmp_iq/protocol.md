@@ -35,16 +35,24 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
   - 50 Hz would discard 25–45 Hz.
   - pyspi's bands are fixed fractions of fs, so at 100 Hz low = 0–25 Hz and high = 25–50 Hz (mostly beta2 and muscle in eyes-closed EEG). One lag step is 10 ms, and lags 1–20 cover 10–200 ms.
   - 100 Hz also matches the LEMON arm (§7).
-- **Channels:** the 19 canonical 10–20 channels, unless the sweep shows the 60-channel set changes z.
+- **Channels:** the 19 canonical 10–20 channels. The 60-channel T = 2000 arm is a reported sensitivity (same-window agreement of z with 19 channels), not a gate.
   - The case for 19: comparability with LEMON, a 10.6× lower pyspi cost, and dense common-reference scalp channels being highly redundant (volume conduction).
   - The 27 recordings on 58–60-channel caps carry only 58 of the 60-channel set, so 60 channels cohort-wide would exclude them.
 - **Artefacts:** 1 s blocks with peak-to-peak > 150 µV on any selected channel are rejected, and windows lie inside clean runs.
 - **Bad channels:** a recording is excluded if a selected channel is bad (median 1 s SD over 3× or under 1/5 of the recording's median channel, flat, or isolated). There is no interpolation.
 - **Ocular contamination:** slow frontal eye movements below 150 µV remain. They are handled as a sensitivity analysis (H1 without Fp1/Fp2), not by ICA.
-- **Window length T (pending the sweep).**
-  - Design: nested windows at T = 1000, 2000, 4000 and 6000 on 12 subjects (6 per montage), 4 windows each, plus 60 channels at T = 2000 ([sweep.py](sweep.py)).
+- **Window length T = 1000 (10 s), up to 24 windows (240 s), at least 12.**
+  - Design: nested windows at T = 1000, 2000, 4000 and 6000 on 11 subjects (one of the 12 had a bad Fp1), 4 windows each, plus 60 channels at T = 2000 ([sweep.py](sweep.py)).
   - Criterion: the median reliability of the subject-mean z at a fixed clean-data budget, then cost. T is the shortest length within 0.05 of the best. T > 5000 is used only if it wins on that criterion.
-  - The count follows: as many windows as about 120 s of clean data allows, capped by the 10th-percentile recording's clean runs.
+  - Result (T = 1000 and 2000; 24,058 features finite in ≥ 90% of windows in both arms):
+    - Single-window ICC(1) rises only from 0.50 to 0.57 when T doubles, so at a fixed budget shorter windows win: subject-mean reliability is 0.93 against 0.89 at 120 s, and 0.97 against 0.95 at 240 s.
+    - T = 2000 is better in 28% of features, and by more than 0.05 in 13.5%. Every estimator family favours T = 1000 in its median; envelope correlation least reliably, at 0.78 against 0.61.
+    - On the same nested window, z at T = 1000 and at T = 2000 correlate at a median of 0.97, so the shorter window reads the same SPI–SPI structure.
+    - Cost per second of data is 55 core-s at T = 1000 and 96 core-s at T = 2000.
+    - For T = 4000 to win at 120 s, its single-window ICC would have to exceed about 0.82; the observed rate of increase makes that implausible. The decision was made before the T = 4000 and 6000 arms finished; they are reported as a convergence check, not used to choose T.
+    - Short windows fail more often on spectral VAR measures: DTF/PDC/dcoh are valid in 89% of windows against 95%, and nonparametric spectral GC in 73% against 86%. Failures are scattered across subjects. Subject means use the finite windows, so with 12–24 windows these SPIs survive; the extra cost of shorter windows is in them.
+    - Not tested: T < 1000. At 5 s the 0.5 Hz lower edge spans under 3 cycles, and the validity losses above grow.
+  - Count: compute at T = 1000 is cheap (about 1.6 KSU for the cohort), so up to 24 windows (240 s of ~600 s clean) are used rather than the 120 s first planned. A recording needs at least 12, so that the budget removes only 2 recordings rather than 10.
 
 **Cohort scope results** (all 253 recordings, canonical channels):
 - Every recording has a first eyes-closed block (median 604 s; 10th percentile 363 s, because a group of 62-channel-cap recordings have about 6 min).
@@ -56,7 +64,7 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
 
 **Exclusions**, decided before WAIS is joined: no eyes-closed block, a bad selected channel, a non-cohort reference label, or fewer than the required clean windows. Then only finite FSIQ.
 
-**Power:** N = 150 detects |ρ| ≥ 0.23 at 80% (two-sided α = .05). A null is reported as such.
+**Power:** 220 recordings pass the blind exclusions; with complete FSIQ for most, N ≈ 200 detects |ρ| ≥ 0.20 at 80% (two-sided α = .05). A null is reported as such.
 
 ## 3. Analyses
 
