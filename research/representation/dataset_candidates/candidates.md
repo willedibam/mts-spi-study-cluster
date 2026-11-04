@@ -29,14 +29,14 @@ The table ranks by overall fit.
 
 | Rank | Dataset | Access | Modality | N | Age | Cognition | M | T / fs | Rest/task | Fit |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | CHBMP (Cuban Human Brain Mapping) | Synapse login | EEG | 282 | 18–68 | WAIS-III | 64 or 120 | ≥30 min, 200 Hz | rest EC/EO/HV | Medium-high (IQ) |
+| 1 | CHBMP (Cuban Human Brain Mapping) | Synapse login | EEG | 250 with EEG (170 at 64 ch, 80 at 120 ch); 167 with WAIS; EEG ∩ WAIS ≤ 167 | 18–68 | WAIS-III full scale | 64 or 120 | ≥30 min continuous, 200 Hz | rest EC/EO/HV | Medium-high (IQ) |
 | 2 | Cam-CAN | written proposal | MEG (+fMRI) | 647 rest MEG; Cattell 660 | 18–88 | Cattell fluid | 306 sensors; source parcels | 8:40 rest, 1 kHz | rest, task, passive | Medium-high (age × IQ) |
-| 3 | LEMON, IQ re-analysis | open, already on Gadi | EEG | 227 (≈203 usable EEG) | 20–35 / 59–77 | LPS-2 subtest 3 (fluid), WST (vocabulary) | 62 | 16 × 60 s, 2500 Hz | rest EC/EO | Medium (cheapest test, underpowered) |
-| 4 | Dortmund Vital Study (ds005385) | open, CC0 | EEG | 608; 208 at 5-yr follow-up | 20–70 | none released | 64 | 3 min EC + 3 min EO, pre/post tasks, 1 kHz | rest | Medium (age, longitudinal) |
-| 5 | Healthy Brain Network EEG | EEG open; phenotype needs DUA | EEG | >3,000 | 5–21 | WISC-V (subset) [U for FSIQ field] | 128 | 500 Hz (some 250) | rest + tasks | Medium |
+| 3 | LEMON, IQ re-analysis | open, already on Gadi | EEG | young with EEG + LPS + WST: 137; 91 under the repo's 19-channel rule | 20–35 young | LPS-2 subtest 3 (fluid), WST (vocabulary IQ) | 62 raw; 19 in repo | 16 × 60 s at 2500 Hz raw; repo uses 6 × 20 s at 100 Hz (T = 2000) | rest EC | Low-medium (weak IQ proxies, underpowered) |
+| 4 | Dortmund Vital Study (ds005385) | open, CC0 | EEG | 608; 208 at 5-yr follow-up | 20–70 | none released | 64 (FCz ref) | ≈184 s EC + EO, pre/post tasks, 1 kHz | rest | Medium (age, longitudinal) |
+| 5 | Healthy Brain Network EEG (ds005505–ds005516) | EEG open, CC-BY-SA 4.0; phenotype needs DUA | EEG | 3,155 total; 2,684 with usable rest; 1,520 of those with full phenotype | 5–22 | WISC-V (subset) [U for FSIQ field] | 129 (Cz ref) | ≈400 s rest, 500 Hz | rest + tasks | Medium |
 | 6 | HCP Young Adult | registration; restricted tier for family structure | fMRI; MEG subset | ~1,200 fMRI; 95 MEG | 22–35 | PMAT24 | parcels; 248 MEG [U] | fMRI 4 × 1200 vols at TR 0.72 s [U]; MEG 3 × 6 min | rest + tasks | Medium (fMRI lag); low (MEG N) |
-| 7 | AOMIC PIOP1/PIOP2/ID1000 | OpenNeuro, open | fMRI | 216 / 226 / 928 | 19–26 (ID1000) | Raven APM (PIOP); IST (ID1000) | parcels | PIOP1 480 vols at TR 0.75 s; PIOP2 240 at 2 s; ID1000 movie only | rest (PIOP), movie (ID1000) | Low-medium |
-| 8 | TDBRAIN | ORCID login + DUA | EEG | 1,274 patients | 5–89 | none documented [U] | 26 | 2 min EO + 2 min EC, 500 Hz | rest | Low-medium |
+| 7 | AOMIC PIOP1/PIOP2/ID1000 | OpenNeuro, open | fMRI | PIOP1 rest 210; PIOP2 rest 214; ID1000 movie 881 | 19–26 (ID1000) | Raven APM (PIOP); IST (ID1000) | parcels | PIOP1 480 vols at TR 0.75 s; PIOP2 240 at 2 s; ID1000 movie 10:38 at TR 2.2 s (≈290 vols [I]) | rest (PIOP), movie (ID1000) | Low-medium |
+| 8 | TDBRAIN | ORCID login + DUA | EEG | 1,274 patients | 5–89 | none (education only) | 26 EEG + EOG/ECG/EMG | 2 min EO + 2 min EC, 500 Hz | rest | Low-medium (age only) |
 | 9 | NKI-Rockland enhanced | DUA | fMRI | large lifespan [U] | 6–85 [U] | WASI-II [U] | parcels | 10 min at TR 0.645 s | rest | Low-medium |
 | 10 | MIPDB (CMI) | open [U] | EEG | 126 | 6–44 | abbreviated battery; IQ test [U] | 128 | [U] | rest + tasks | Low |
 | — | HarMNqEEG | shared derived tensors only | EEG cross-spectra | 1,564 | lifespan | — | — | no raw series | — | Excluded |
@@ -46,7 +46,11 @@ The table ranks by overall fit.
 
 Facts [V] ([Valdes-Sosa et al. 2021, Sci Data 8:45](https://doi.org/10.1038/s41597-021-00829-7)):
 - Cohort: 282 adults aged 18–68 (mean ≈ 32), 195 male and 87 female, sampled from the population. WAIS-III, MMSE and go/no-go were collected; participants with WAIS < 70 were excluded.
-- EEG: MEDICID-5, 64- or 120-channel montages, 200 Hz, 0.5–50 Hz amplifier band. At least 30 min per person, covering eyes closed, eyes open, hyperventilation and recovery.
+- Modality counts (descriptor Table 6): EEG 250 (170 on the 64-channel montage, 80 on the 120-channel montage); WAIS 167; EEG + MRI + WAIS 142. EEG ∩ WAIS is therefore 142–167, not 282.
+- WAIS: subtests, verbal and performance subscales and full-scale IQ, re-standardised on the Cuban sample, in `WAIS_III.csv`.
+- EEG: MEDICID-5, 200 Hz, 0.5–50 Hz amplifier band, 60 Hz mains. Raw continuous recordings were converted from `.plg` to BIDS, with artefacts annotated online by the technician.
+  - Protocol: at least 30 min per person, covering eyes closed, eyes open, 3 min of hyperventilation and 2 min of recovery.
+  - Clean data: at least 50 (64 ch) or 80 (120 ch) clean 2.56-s epochs per person are guaranteed. The length of clean *contiguous* stretches is unknown [U] and decides whether 20-s windows fit.
 - Access: hosted on Synapse (doi 10.7303/syn22324937; login required) and LORIS; the descriptor is CC-BY 4.0.
 
 Question: at matched individual alpha frequency and channel spectra, do higher-IQ adults show a different cross-pair lag organisation? A specific, testable direction exists. [Thatcher, North & Biver 2005](https://doi.org/10.1016/j.clinph.2005.04.026) report that phase delay is the EEG measure most strongly related to IQ, with shorter frontal and longer posterior delays in high IQ ([V] abstract). That pattern is heterogeneity across pairs, which is what z can read.
@@ -58,8 +62,11 @@ Question: at matched individual alpha frequency and channel spectra, do higher-I
   - Sensor-space volume conduction and reference, which Thatcher's sensor measures are also exposed to [I].
   - Range restriction (WAIS ≥ 70), the male-heavy sample, and two montages: use the common 10–20 subset or interpolate.
   - Age (18–68) correlates with WAIS subtests.
-- **Feasibility:** M ≥ 19 common channels, T up to 12,000 per 60 s, N = 282, one site. Gamma band is unavailable (50 Hz bandwidth).
-- **Rating:** medium-high. This is the only open adult EEG cohort found with full-scale IQ and N > 250, and it has a published, pair-specific lag prior.
+- **Feasibility:**
+  - M = 19 canonical channels, if both montages include them [U]. T = 2000 at 100 Hz per 20-s window, if clean stretches are long enough.
+  - N ≈ 142–167 at one site. N = 150 detects |r| ≥ 0.23 at 80% power [I].
+  - Gamma band is unavailable (50 Hz bandwidth).
+- **Rating:** medium-high. N is comparable to LEMON's, but the IQ measure is full-scale and the population sample gives a wider range. It also has a published, pair-specific lag prior.
 
 ### A2. Cam-CAN — age and fluid intelligence, MEG
 
@@ -84,21 +91,37 @@ Question (age track): does ageing reorganise lag or band structure across source
 Facts [V] ([Babayan et al. 2019](https://pmc.ncbi.nlm.nih.gov/articles/PMC6371893)):
 - Cohort: 227 participants, 153 young (20–35) and 74 old (59–77).
 - EEG: 62 channels at 2500 Hz, sixteen 60-s blocks (8 eyes closed, 8 eyes open). The descriptor's preprocessing retained 203.
-- Cognition: LPS-2 subtest 3 measures fluid reasoning and the WST measures crystallised vocabulary, both available for all 227.
+- Cognition: two public tables cover all 227, `Cognitive_Test_Battery_LEMON/LPS/LPS.csv` and `WST/WST.csv`.
+  - LPS-2 subtest 3 is fluid reasoning: correct rows out of 40 in 3 min (`LPS_1`).
+  - WST is vocabulary; `WST_3` is on the IQ scale.
 - License terms not re-checked [U].
 
-Question: the IQ analogue of A1, within the young group (N ≈ 150) to remove the age confound.
+Metadata checked on 5 Nov from the public tables and the FTP listing, joined to the 203 preprocessed eyes-closed EEG files:
+- **Young with EEG and both scores:** 137 people.
+- **LPS:** range 11–32, SD 3.4. No ceiling.
+- **WST IQ:** range 86–129, SD 8.2, about half the population SD of 15, so the range is restricted.
+- **The two scores barely correlate:** r(LPS, WST) = −0.09 in the young group.
+- **Education:** 129 of 137 have Gymnasium education.
+- **Repo contract:** the existing r10 age corpus applies a 19-channel, no-interpolation rule, which kept only 91 young participants.
 
-- **New reason to revisit:** LEMON was used only for age, and its data are already prepared on Gadi.
-- **Confounds:** IAF. A single subtest has lower reliability than full-scale IQ [I]. Restricted range in a student-heavy sample [I].
-- **Feasibility:** good on M and T. N is small for brain–IQ effects, which are expected to be small [I].
-- **Rating:** medium. It is the cheapest first test of the IQ premise: a negative here is weak evidence, a positive needs CHBMP or Cam-CAN to replicate.
+Question: the IQ analogue of A1, within the young group to remove the age confound.
+
+- **New reason to revisit:** LEMON was used only for age. If the stored r10 young-participant z vectors are kept, IQ needs only new labels joined to them, with no new pyspi [I].
+- **Confounds:**
+  - IAF.
+  - Two single-test proxies that do not agree with each other, so neither is a reliable *g* estimate [I].
+  - Restricted range.
+- **Feasibility:** good on M and T.
+  - N = 91 detects only |r| ≥ 0.29 at 80% power; N = 137 detects |r| ≥ 0.24 [I].
+  - A smaller channel set could recover more people, but it must be fixed before the IQ labels are seen.
+- **Rating:** low-medium. A null here is close to uninformative. A positive would need CHBMP to replicate.
 
 ### A4. Dortmund Vital Study — within-person ageing
 
 Facts [V] ([Getzmann et al. 2024, Sci Data 11:988](https://doi.org/10.1038/s41597-024-03797-w); [OpenNeuro ds005385](https://github.com/OpenNeuroDatasets/ds005385) `participants.json` and `dataset_description.json`):
 - Cohort: 608 adults aged 20–70; 208 re-recorded about 5 years later.
-- EEG: 64 channels at 1 kHz; 3 min eyes closed and 3 min eyes open, before and after a 2-hour cognitive battery.
+- EEG: 64 channels at 1 kHz, FCz reference, EDF files; 3 min eyes closed and 3 min eyes open, before and after a 2-hour cognitive battery. The sub-001 pre eyes-closed file is 184 s long (T = 184,000).
+- `participants.tsv`: 608 in session 1, 208 in session 2. 91 session-1 participants have late-trigger flags, which the dataset authors say mean "probably not continuous" data; check these before cutting windows.
 - License CC0. The released participant table holds only age, sex and handedness, with no cognitive scores.
 
 Question: within the same person over 5 years, do lag or band organisations change beyond what that person's own spectral change predicts? The within-person design removes between-person anatomy and montage variation. That is the new reason to use it after LEMON.
@@ -110,8 +133,9 @@ Question: within the same person over 5 years, do lag or band organisations chan
 ### A5–A10 in brief
 
 - **HBN** ([release notes](https://fcon_1000.projects.nitrc.org/indi/cmi_healthy_brain_network/release/release_notes11_0.html), [V]):
-  - EEG on OpenNeuro/NEMAR, 128 channels.
-  - WISC-V requires a LORIS DUA, and not every EEG participant has phenotypes yet.
+  - EEG on OpenNeuro ds005505–ds005516 (releases 1–11), CC-BY-SA 4.0, 129 channels at 500 Hz. The sampled resting file is 403 s.
+  - The merged `participants.tsv` files list 3,155 participants aged 5–22. 2,684 have resting EEG marked available and 197 marked "caution"; 1,520 of the available ones carry the full-phenotype flag.
+  - WISC-V itself requires a LORIS DUA.
   - FSIQ is age-normed, but EEG spectra change strongly with development. Psychopathology is enriched.
   - Strong on N, weak on interpretability. Medium.
 - **HCP-YA:**
@@ -182,7 +206,7 @@ Question: does coupling between cardiac, respiratory and vascular rhythms become
 
 ### B3. Collective motion — leadership delays
 
-[Nagy et al. 2010](https://pubmed.ncbi.nlm.nih.gov/20376149/) derive a pecking order from pairwise directional-correlation delays in flocks of up to 10 pigeons. [Trajectories](https://hal.elte.hu/pigeonflocks/index.html) are free to use with citation: 11 free flights and 4 homing flights at 0.2 s ([V] readme summary).
+[Nagy et al. 2010](https://pubmed.ncbi.nlm.nih.gov/20376149/) derive a pecking order from pairwise directional-correlation delays in flocks of up to 10 pigeons. [Trajectories](https://hal.elte.hu/pigeonflocks/index.html) are free to use with citation: 11 free flights and 4 homing flights at 0.2 s, birds labelled A–M ([V] readme). Interpolated points are flagged, and analysis used only points with birds within 100 m of each other. Flight durations were not checked [U].
 
 - **Question:** does the pairwise delay hierarchy differ between free and homing flight? This is exactly a heterogeneous directed-lag structure.
 - **Feasibility:** M ≤ 10 and N = 15 recordings make any group contrast underpowered.
@@ -234,7 +258,7 @@ Data: Binance publishes 1-min spot klines as monthly and daily zip files ([binan
 
 ## Recommended order (assistant's assessment, not a decision)
 
-1. **IQ track:** LEMON IQ within the young group as a zero-access pilot. Then CHBMP, testing the Thatcher-type frontal/posterior lag organisation at matched IAF and channel spectra.
+1. **IQ track:** CHBMP is the main test: the Thatcher-type frontal/posterior lag organisation at matched IAF and channel spectra. LEMON IQ is worth running only as an analysis-only relabel of existing r10 outputs, reported as underpowered.
 2. **Age track:** Dortmund within-person 5-year change, which is open and the one design LEMON could not provide. Then Cam-CAN in source space if a proposal is worthwhile.
 3. **Non-neural:** traffic direction reversal as a ground-truth validation, presented honestly as validation, not discovery.
 
