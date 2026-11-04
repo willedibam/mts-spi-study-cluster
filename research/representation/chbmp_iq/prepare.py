@@ -5,10 +5,10 @@ Contract (reasons in protocol.md §2):
 - **Channels:** the 19 canonical 10-20 channels or the 60-channel common set (62-channel montage less its mislabelled AF7/AF8), in fixed order, on the recording's own common reference. Channel types come from channels.tsv; the EDF itself types ECG/EOG as EEG.
 - **Filtering:** 0.5-45 Hz zero-phase band-pass, then resampling to 100 Hz, each contiguous segment separately so that no filter runs across a discontinuity.
 - **Artefacts:** a 1 s block is clean when every selected channel's peak-to-peak range, at native rate after band-pass, is at most 150 uV. Windows lie inside runs of clean blocks.
-- **Exclusions:** a recording is excluded when a selected channel is bad by the scope rule (median 1 s block SD over 3x or under 1/5 of the recording's median channel, a flat fraction over 0.2, or a highest |r| with any other channel under 0.3). Excluded recordings are listed in issues; there is no interpolation.
+- **Exclusions:** a recording is excluded when a selected channel is bad by the scope rule (median 1 s block SD over 3x or under 1/5 of the recording's median channel, a flat fraction over 0.2, or a highest |r| with any other channel under 0.3), or when its EDF labels name a reference other than the cohort's '-REF' (sub-CBM00203: '-A12', linked ears, against a sidecar saying 'common'). Excluded recordings are listed in issues; there is no interpolation.
 - **Windows:** windows of length T are spread evenly over the clean runs, then standardised per channel. With --anchor, starts are placed for the anchor length and each window is that anchor window's first T samples, so a T-sweep compares nested windows from the same data.
 
-IQ is not joined. Every row has target 0 and carries age, sex, education and montage from the demographic table; WAIS stays unread until the analysis is frozen.
+IQ is not joined. Every row has target 0 and carries age, sex and education from the demographic table and the cap family (62 or 120; EEG counts 58-62 and 115-123) as montage; WAIS stays unread until the analysis is frozen.
 """
 from __future__ import annotations
 
@@ -55,6 +55,16 @@ def recordings(bids):
         edf = sorted(eeg.glob('*_eeg.edf'))
         if edf:
             yield eeg.parent.name, edf[0], eeg
+
+
+def reference(ch_names):
+    """EDF reference suffixes ('Fp1-REF' -> 'REF'); EOG/ECG labels carry none. The cohort is {'REF'}."""
+    return {c.split('-', 1)[1] for c in ch_names if '-' in c}
+
+
+def family(n_eeg):
+    """Cap family from the EEG channel count: 58-62 channels -> 62, 115-123 -> 120."""
+    return 62 if n_eeg <= 62 else 120
 
 
 def sidecar(edf, suffix):
@@ -136,6 +146,8 @@ def prepare(raw_root, root, channels, length, count, anchor=None, subjects=None)
             continue
         types = {r['name']: r['type'].upper() for r in tsv(sidecar(edf, '_channels.tsv'))}
         raw = read_edf(edf, preload=True)
+        if reference(raw.ch_names) != {'REF'}:
+            issues.append(dict(subject=sid, reason=f'reference label {sorted(reference(raw.ch_names))}')); continue
         labels = [c.replace('-REF', '') for c in raw.ch_names]
         if channels == 'canonical':
             have = {canonical(l): k for k, l in enumerate(labels) if types.get(l) == 'EEG' and canonical(l)}
@@ -164,7 +176,7 @@ def prepare(raw_root, root, channels, length, count, anchor=None, subjects=None)
         starts = windows(runs, anchor or length, count)
         d = demo.get(sid, {})
         r, a, w = cut(y, starts, length, sid, sid, 0, 'cohort',
-                      dict(age=d.get('age'), sex=d.get('sex'), education=d.get('education'), montage=sum(v == 'EEG' for v in types.values())))
+                      dict(age=d.get('age'), sex=d.get('sex'), education=d.get('education'), montage=family(sum(v == 'EEG' for v in types.values()))))
         rows += r; arrays.update(a); power.update(w)
         sources.append(dict(path=str(edf.relative_to(raw_root)), sha256=hashlib.sha256(edf.read_bytes()).hexdigest()))
         if len(r) < count:

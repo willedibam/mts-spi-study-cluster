@@ -27,8 +27,8 @@ import numpy as np
 from scipy import signal
 
 from research.representation.character_axes.prepare import CANON
-from research.representation.chbmp_iq.prepare import (bad_channels, canonical, demographics, first_eyes_closed,
-                                                      read_edf, recordings, sidecar, tsv)
+from research.representation.chbmp_iq.prepare import (bad_channels, canonical, demographics, family, first_eyes_closed,
+                                                      read_edf, recordings, reference, sidecar, tsv)
 
 THRESHOLDS = (100, 150, 200)
 RUNS = (10, 20, 30, 40, 60, 120)
@@ -57,12 +57,13 @@ def scope_one(args):
     raw = read_edf(edf, preload=True)
     fs = raw.info['sfreq']
     names, status = eeg_names(edf)
-    labels = [c.replace('-REF', '') for c in raw.ch_names]
+    labels = [c.split('-', 1)[0] for c in raw.ch_names]
     pick = [labels.index(n) for n in names if n in labels]
     eeg = [labels[k] for k in pick]
     events = tsv(sidecar(edf, '_events.tsv'))
     segs = first_eyes_closed(events, fs, raw.n_times)
-    rec = dict(subject=sid, sfreq=fs, montage=len(names), seconds=raw.n_times / fs,
+    rec = dict(subject=sid, sfreq=fs, montage=family(len(names)), eeg_channels=len(names),
+               reference=' '.join(sorted(reference(raw.ch_names))), seconds=raw.n_times / fs,
                ec_seconds=sum(b - a for a, b in segs) / fs, ec_segments=len(segs),
                status_bad=sum(1 for v in status.values() if v.lower() == 'bad'))
     if not segs:

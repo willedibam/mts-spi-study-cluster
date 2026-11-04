@@ -93,7 +93,7 @@ def example(d, raw_root, figs):
     for a, sid in zip(ax[:, 0], picks):
         edf = next((raw_root / 'bids' / sid / 'eeg').glob('*_eeg.edf'))
         raw = read_edf(edf, preload=True); fs = raw.info['sfreq']
-        labels = [c.replace('-REF', '') for c in raw.ch_names]
+        labels = [c.split('-', 1)[0] for c in raw.ch_names]
         idx = {canonical(l): k for k, l in enumerate(labels) if canonical(l)}
         x = raw.get_data(picks=[idx[c] for c in CANON]) * 1e6
         segs = first_eyes_closed(tsv(edf.with_name(edf.name.replace('_eeg.edf', '_events.tsv'))), fs, raw.n_times)
