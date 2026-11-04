@@ -18,6 +18,7 @@ import csv
 import json
 from pathlib import Path
 import re
+import textwrap
 
 import matplotlib
 matplotlib.use('Agg')
@@ -139,12 +140,15 @@ def partial_spearman(X, A, y, perms=PERMS, rng=None):
     P = np.stack([rng.permutation(sy) for _ in range(perms)], 1)
     null = sa.T @ P / len(sy)
     per = (1 + (np.abs(null) >= np.abs(rho)[:, None]).sum(1)) / (perms + 1)
-    fwer = (1 + (np.abs(null).max(0)[None, :] >= np.abs(rho)[:, None]).sum(1)) / (perms + 1)
+    fwer = (1 + (np.nanmax(np.abs(null), 0)[None, :] >= np.abs(rho)[:, None]).sum(1)) / (perms + 1)
+    per[~np.isfinite(rho)] = fwer[~np.isfinite(rho)] = np.nan  # an undefined rho must not read as p = 1/(perms + 1)
     return rho, per, fwer, null
 
 
 def holm(p):
-    order = np.argsort(p); out = np.empty_like(p); m = len(p); run = 0
+    """Holm-adjusted p over the finite entries; undefined entries stay NaN."""
+    out = np.full_like(p, np.nan); fin = np.flatnonzero(np.isfinite(p))
+    order = fin[np.argsort(p[fin])]; m = len(fin); run = 0
     for r, k in enumerate(order):
         run = max(run, (m - r) * p[k]); out[k] = min(1, run)
     return out
@@ -319,7 +323,7 @@ def figures(out, df, rho, p, fwer, labels, shown, feat, prof, order, group, D, r
             a.text(x['top_count'] + .3, yy, '*', va='center')
     a.set_yticks(y, [x['group'] for x in g], fontsize=7)
     a.set(xlabel=f'features among the top {TOP}', title='What the top features contrast (* enriched, p < .05)')
-    a.legend()
+    a.legend(loc='lower right')
     save(fig, out, 'iq-features'); plt.close(fig)
 
     lo, hi = df.fsiq <= df.fsiq.quantile(1 / 3), df.fsiq >= df.fsiq.quantile(2 / 3)
@@ -332,7 +336,7 @@ def figures(out, df, rho, p, fwer, labels, shown, feat, prof, order, group, D, r
             rows = np.isin(group, df.subject[mask])
             xa, xb = np.nanmean(prof[rows, ia], 0), np.nanmean(prof[rows, ib], 0)
             a.scatter(xa, xb, s=4, color=col, alpha=.7, label=lab)
-        a.set(xlabel=short(a_), ylabel=short(b_), title=f'{labels[k]}', )
+        a.set(xlabel=short(a_), ylabel=short(b_), title=textwrap.fill(labels[k], 34))
         a.title.set_fontsize(7)
         if c == 0:
             a.legend(fontsize=6)
