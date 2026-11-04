@@ -13,5 +13,5 @@ cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 read -ra subjects <<< "${SUBJECTS//:/ }"
 python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --root "${ROOT:?}" \
-    --channels "${CHANNELS:-canonical}" --length "${LENGTH:?}" --count "${COUNT:?}" \
+    --channels "${CHANNELS:-canonical}" --length "${LENGTH:?}" --count "${COUNT:?}" --minimum "${MINIMUM:-1}" \
     ${ANCHOR:+--anchor "$ANCHOR"} ${subjects:+--subjects "${subjects[@]}"}

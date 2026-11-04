@@ -6,7 +6,7 @@ Contract (reasons in protocol.md §2):
 - **Filtering:** 0.5-45 Hz zero-phase band-pass, then resampling to 100 Hz, each contiguous segment separately so that no filter runs across a discontinuity.
 - **Artefacts:** a 1 s block is clean when every selected channel's peak-to-peak range, at native rate after band-pass, is at most 150 uV. Windows lie inside runs of clean blocks.
 - **Exclusions:** a recording is excluded when a selected channel is bad by the scope rule (median 1 s block SD over 3x or under 1/5 of the recording's median channel, a flat fraction over 0.2, or a highest |r| with any other channel under 0.3), or when its EDF labels name a reference other than the cohort's '-REF' (sub-CBM00203: '-A12', linked ears, against a sidecar saying 'common'). Excluded recordings are listed in issues; there is no interpolation.
-- **Windows:** windows of length T are spread evenly over the clean runs, then standardised per channel. With --anchor, starts are placed for the anchor length and each window is that anchor window's first T samples, so a T-sweep compares nested windows from the same data.
+- **Windows:** up to --count windows of length T are spread evenly over the clean runs (a recording with fewer than --minimum is excluded), then standardised per channel. With --anchor, starts are placed for the anchor length and each window is that anchor window's first T samples, so a T-sweep compares nested windows from the same data.
 
 IQ is not joined. Every row has target 0 and carries age, sex and education from the demographic table and the cap family (62 or 120; EEG counts 58-62 and 115-123) as montage; WAIS stays unread until the analysis is frozen.
 """
@@ -138,7 +138,7 @@ def segment(x, fs, a, b):
     return y, z.T
 
 
-def prepare(raw_root, root, channels, length, count, anchor=None, subjects=None):
+def prepare(raw_root, root, channels, length, count, anchor=None, subjects=None, minimum=1):
     bids, demo = raw_root / 'bids', demographics(raw_root)
     rows, arrays, power, issues, sources = [], {}, {}, [], []
     for sid, edf, eeg in recordings(bids):
@@ -177,14 +177,16 @@ def prepare(raw_root, root, channels, length, count, anchor=None, subjects=None)
         d = demo.get(sid, {})
         r, a, w = cut(y, starts, length, sid, sid, 0, 'cohort',
                       dict(age=d.get('age'), sex=d.get('sex'), education=d.get('education'), montage=family(sum(v == 'EEG' for v in types.values()))))
+        if len(r) < count:
+            issues.append(dict(subject=sid, windows=len(r), clean_seconds=sum(b - a for a, b in runs) / FS, excluded=len(r) < minimum))
+        if len(r) < minimum:
+            continue
         rows += r; arrays.update(a); power.update(w)
         sources.append(dict(path=str(edf.relative_to(raw_root)), sha256=hashlib.sha256(edf.read_bytes()).hexdigest()))
-        if len(r) < count:
-            issues.append(dict(subject=sid, windows=len(r), clean_seconds=sum(b - a for a, b in runs) / FS))
     finalize(root, f'chbmp-ec-{channels}-T{length}', rows, arrays, power,
              dict(dataset='CHBMP Synapse syn28129311 (ds_bids_cbm_loris_24_11_21), first eyes-closed block',
                   receipt_sha256=hashlib.sha256((raw_root / 'receipt.json').read_bytes()).hexdigest(),
-                  channel_set=channels, channel_names=names, length=length, anchor_length=anchor, count=count,
+                  channel_set=channels, channel_names=names, length=length, anchor_length=anchor, count=count, minimum_count=minimum,
                   artefact_rule=f'1 s blocks, peak-to-peak <= {THRESHOLD_UV} uV on every selected channel',
                   sources=sources, target='0 for every row: IQ is joined only after the protocol is frozen'),
              issues)
@@ -196,10 +198,11 @@ if __name__ == '__main__':
     parser.add_argument('--root', type=Path, required=True, help='output corpus root')
     parser.add_argument('--channels', choices=['canonical', 'common60'], default='canonical')
     parser.add_argument('--length', type=int, required=True, help='window length T in samples at 100 Hz')
-    parser.add_argument('--count', type=int, required=True, help='windows per recording')
+    parser.add_argument('--count', type=int, required=True, help='windows per recording (at most)')
+    parser.add_argument('--minimum', type=int, default=1, help='exclude a recording with fewer clean windows than this')
     parser.add_argument('--anchor', type=int, help='place starts for this length and keep each window\'s first T samples')
     parser.add_argument('--subjects', nargs='*', help='restrict to these participant ids')
     args = parser.parse_args()
     if (args.root / 'manifest.json').exists():
         raise FileExistsError('prepared corpus already exists')
-    prepare(args.raw, args.root, args.channels, args.length, args.count, args.anchor, set(args.subjects or []))
+    prepare(args.raw, args.root, args.channels, args.length, args.count, args.anchor, set(args.subjects or []), args.minimum)
