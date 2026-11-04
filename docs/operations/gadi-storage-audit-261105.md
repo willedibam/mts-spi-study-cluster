@@ -49,6 +49,6 @@ Also flagged by `nci-file-expiry`, outside this project: the sibling EEML scratc
 - **Scratch archives to gdata (approved):** the three `packed-261102/` sets (≈ 28.4 GiB) are copied to `archives/{order-parameter-inference,proof,operations}/261102-scratch/`. They are not merged into the existing gdata `261102/` folders, because some file names collide with different contents.
   - Script, PBS job and log: `operations/maintenance/archive-move-261105/` on gdata. The first attempt, a `nohup` process on `gadi-dm`, died when SSH disconnected, before anything was copied. It was rerun as `copyq` job 183135473.
   - Each set is verified against its own `SHA256SUMS` and a size listing.
-  - Remaining after `ALL VERIFIED`:
-    - repoint the destination `README.md` files and the three Scratch `ARCHIVED.md` files to the gdata paths;
-    - then remove the Scratch `packed-261102/` directories.
+  - All three sets verified (`ALL VERIFIED`, 01:22).
+  - The destination `README.md` files and the three Scratch `ARCHIVED.md` files now point to the gdata paths (16, 8 and 26 references) and carry a move note.
+  - The Scratch `packed-261102/` directories were then removed. gdata now holds 83.09 GiB.

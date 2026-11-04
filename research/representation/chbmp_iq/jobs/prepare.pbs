@@ -1,6 +1,6 @@
 #!/bin/bash
-# Inspect (INSPECT=<json path>) or window (ROOT=<corpus root>, EC_LABELS, ARTIFACT_LABELS) the downloaded CHBMP EEG.
-# qsub -v RAW_ROOT=...,INSPECT=.../inspect.json research/representation/chbmp_iq/jobs/prepare.pbs
+# One prepared corpus. LENGTH and COUNT are required; CHANNELS (canonical|common62), ANCHOR and SUBJECTS (colon-separated ids) are optional.
+# qsub -v RAW_ROOT=...,ROOT=...,LENGTH=2000,COUNT=6 research/representation/chbmp_iq/jobs/prepare.pbs
 #PBS -N chbmp-prepare
 #PBS -P ql44
 #PBS -q normal
@@ -11,10 +11,7 @@
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
-if [[ -n "${INSPECT:-}" ]]; then
-    python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --inspect "$INSPECT"
-else
-    read -ra ec <<< "${EC_LABELS:?}"; read -ra art <<< "${ARTIFACT_LABELS:-}"
-    python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --root "${ROOT:?}" \
-        --eyes-closed "${ec[@]}" --artifact "${art[@]}" --event-column "${EVENT_COLUMN:-trial_type}"
-fi
+read -ra subjects <<< "${SUBJECTS//:/ }"
+python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --root "${ROOT:?}" \
+    --channels "${CHANNELS:-canonical}" --length "${LENGTH:?}" --count "${COUNT:?}" \
+    ${ANCHOR:+--anchor "$ANCHOR"} ${subjects:+--subjects "${subjects[@]}"}

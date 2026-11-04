@@ -1,0 +1,15 @@
+#!/bin/bash
+# Blind cohort scoping (never reads WAIS).
+# qsub -v RAW_ROOT=.../chbmp-iq-261105/raw,OUT=.../chbmp-iq-261105/scope research/representation/chbmp_iq/jobs/scope.pbs
+#PBS -N chbmp-scope
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=16,mem=64GB,walltime=01:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -u -m research.representation.chbmp_iq.scope --raw "${RAW_ROOT:?}" --out "${OUT:?}" --workers 16
+python -u -m research.representation.chbmp_iq.figures scope --scope "${OUT:?}" --raw "${RAW_ROOT:?}"
