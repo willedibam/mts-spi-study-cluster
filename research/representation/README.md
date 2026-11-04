@@ -11,6 +11,7 @@ What the SPI–SPI representation captures, and how it compares with learned rep
 | `neurotycho/` | Transfer to Neurotycho ECoG |
 | `cross_mt/` | Cross-M,T transfer: whether a representation fitted at one size carries to another |
 | `learned_baselines/` | InceptionTime, MiniRocket and MPI representation baselines |
+| `mts_benchmark/` | Pre-registered MTS benchmark panel (UEA/Multiverse/external): screen, predictions, protocol; design only |
 | `shared/` | Modules two or more of these studies use |
 
 Context: [`docs/context/spi-spi-representation-evaluation.md`](../../docs/context/spi-spi-representation-evaluation.md).

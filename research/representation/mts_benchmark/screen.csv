@@ -1,0 +1,90 @@
+source,dataset,M,T,n_train,n_test,classes,channels,classes_are,best_published_BA,best_method,chance,verdict,reason
+Multiverse,AutomotiveRoadTrials,8,300,153,77,2,8 on-board diagnostic signals of one vehicle,fault vs no fault (300 s segment),0.835,MUSE,0.500,PANEL,coupled mechanical system; a fault plausibly breaks inter-signal relations; best a-priori z-favoured case
+Multiverse,EmoPain,30,200,968,355,3,26 joint angles + 4 sEMG,no / low / high pain,0.746,1NN-DTW,0.333,PANEL,body coordination under pain (guarding); shape methods unstable; T=200 is below the 250 guide
+Multiverse-EEG,ImaginedFeetHands,64,640,2835,1935,2,EEG 64 (inferred: EEGMMIDB),imagined both fists vs both feet,0.709,HC2,0.500,PANEL,paired with ImaginedOpenCloseFist (same montage/subjects); hands vs feet is not a relabelling
+Multiverse-EEG,ImaginedOpenCloseFist,64,640,2835,1890,2,EEG 64 (inferred: EEGMMIDB),imagined left vs right fist,0.771,HC2,0.500,PANEL,"designed invariance control: left/right is ~ a hemispheric channel relabelling, so z is predicted at chance"
+Multiverse-EEG,ShortIntervalTask,63,2750,1360,1420,2,"EEG 63 (interval timing, Singh et al. 2023)",Parkinson's vs control (3 s interval),0.659,MRHydra,0.500,PANEL,"disease vs control, cross-subject, all shape methods weak (<=.66); subject IDs must be recovered"
+UEA30,HandMovementDirection,10,400,160,74,4,MEG sensors (BCI IV-3),4 wrist-movement directions,0.549,QUANT,0.250,PANEL,predicted topography/waveform-coded loss; cheap; small test set (74)
+UEA30,SelfRegulationSCP1,6,896,268,293,2,"EEG electrodes, one person (BCI II-Ia)",cortical positivity vs negativity (slow cortical potential self-regulation),0.946,MRHydra,0.500,PANEL,"positioning against Cliff et al. 2023; predicted univariate-dominated loss (M=6, low-edge)"
+external,ABIDE-PCP (nilearn),39,78-316 TRs,~871 QC (leave-site-out),,2,fMRI parcels (MSDL atlas),autism vs control,"~.67-.70 acc (Abraham 2017; Dadi 2019, tangent)",tangent-space connectome,.5,PANEL,canonical dependence-native benchmark; the SOTA is itself a dependence representation
+external,TUAB v3.0.1,19,one 20 s window at 100 Hz,2717,276,2,"scalp EEG 10-20, average reference",normal vs abnormal clinical EEG,~.85-.86 acc (Gemein 2020),handcrafted / deep,.5,PANEL,"large cross-patient clinical benchmark, official split; TUH access exists"
+in-repo banks,NeuroTycho -> Chennu propofol,16 / 19,2000@250 Hz / 1000@100 Hz,480 windows,20 people,2,macaque bipolar ECoG -> human scalp EEG,,,,.5,EXTENSION,"montage-free transfer; existing r10 banks, harmonised re-cut costs ~100 SU"
+UEA30,BasicMotions,6,100,40,40,4,phone accelerometer+gyroscope axes,4 activities,1.000,TDE,0.250,POSITIONING,Cliff et al. 2023 example; saturated (all ~1.0) and T=100; reported outside the test family
+Multiverse,LenDB,3,540,983483,261459,2,3-component seismometer,,,,0.500,OPTIONAL,"3-component seismogram (polarisation is inter-component dependence), M=3 low-edge; N must be subsampled"
+Multiverse,UCDHE-Rowing-MC,16,161,1992,440,5,2D pose joint coordinates from video,correct rowing vs error subtypes,0.807,MRHydra,0.200,OPTIONAL,"coordination errors may be inter-joint lag changes; T=161, 2D coordinates"
+Multiverse-EEG,CrowdSourced,14,256,9456,2833,2,EEG 14 (Emotiv-class headsets),eyes open vs closed,0.773,LITETime-MV,0.500,OPTIONAL,eyes open/closed: alpha-power positive control for univariate; montage-free transfer candidate
+Multiverse-EEG,FeetHands,64,640,2835,1890,2,"EEG 64 (inferred: PhysioNet EEGMMIDB, Schalk et al.)",executed both fists vs both feet,0.681,HC2,0.500,OPTIONAL,executed replication of the imagined hands/feet contrast
+Multiverse-EEG,LongIntervalTask,63,4750,1660,1120,2,"EEG 63 (interval timing, Singh et al. 2023)",Parkinson's vs control (7 s interval),0.667,LITETime-MV,0.500,OPTIONAL,same cohort as ShortIntervalTask; use only as replication
+Multiverse-EEG,LowCost,15,375,600,600,2,EEG 15 (low-cost headset),idle vs imagined dominant-hand movement,0.720,DrCIF-500,0.500,OPTIONAL,imagery vs idle; expected ERD (channel-spectral) case
+Multiverse-EEG,OpenCloseFist,64,640,2835,1890,2,EEG 64 (inferred: EEGMMIDB),executed left vs right fist,0.765,HC2,0.500,OPTIONAL,executed replication of the imagined left/right control
+Multiverse-EEG,STEW,14,256,21384,7128,2,EEG 14 (Emotiv),high vs low workload,0.845,HC2,0.500,OPTIONAL,workload; T=256; expected theta/alpha spectral (univariate) case
+UEA30,SelfRegulationSCP2,7,1152,200,180,2,"EEG electrodes, one ALS patient (BCI II-Ib)",SCP positivity vs negativity,0.556,HC2,0.500,OPTIONAL,"floor (all ~.55); M=7; cheap, report outside family if run"
+external,MOABB BNCI2014_001 (BCI IV-2a),22,"1000 (4 s, 250 Hz)",9 people x 288,session 2,4,EEG,"left/right hand, feet, tongue",,Riemannian tangent space,.25,OPTIONAL,duplicates the EEGMMIDB invariance contrast with a session split; add only if EEGMMIDB subject IDs cannot be recovered
+Multiverse,AppliancesEnergy_disc,24,144,95,42,2,,,0.860,QUANT,0.500,EXCLUDE,N=137
+Multiverse,AsphaltRegularityCoordinates,3,66-4201,751,751,2,accelerometer + GPS,,0.995,LITETime-MV,0.500,EXCLUDE,variable length (66-4201); accelerometer mixed with GPS/velocity
+Multiverse,AustraliaRainfall_disc,3,24,112186,48081,4,,,0.427,LITETime-MV,0.250,EXCLUDE,T=24 too short for the catalogue
+Multiverse,BIDMC32HR_disc,2,4000,5550,2399,3,,,0.905,HC2,0.333,EXCLUDE,M<3: z undefined or degenerate
+Multiverse,BeijingPM25Quality_disc,9,24,11918,5048,2,,,0.867,H-InceptionTime,0.500,EXCLUDE,T=24 too short for the catalogue
+Multiverse,BoneIntensitiesAgeGroup,8,270,600,445,3,image-derived phalanx profiles,,0.845,DrCIF-500,0.333,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+Multiverse,CounterMovementJump,3,2001-7069,419,179,3,accelerometer axes,,0.921,HC2,0.333,EXCLUDE,no class-coupling rationale beyond waveform/level
+Multiverse,FordChallenge,30,40,29003,7254,2,engine sensors (categories only),,0.926,QUANT,0.500,EXCLUDE,T=40 too short for the catalogue
+Multiverse,HouseholdPowerConsumption1_disc,5,1440,745,686,3,,,0.940,Catch22,0.333,EXCLUDE,no class-coupling rationale beyond waveform/level
+Multiverse,IEEEPPG_disc,5,1000,1768,1328,3,,,0.681,ConvTran,0.333,EXCLUDE,no class-coupling rationale beyond waveform/level
+Multiverse,IRDS-SFL,75,111,253,116,2,skeleton joint coordinates,,0.909,MUSE,0.500,EXCLUDE,joint coordinates with small test sets
+Multiverse,KERAAL-RTK,77,264,256,14,2,skeleton joint coordinates,,0.938,ROCKET,0.500,EXCLUDE,joint coordinates with small test sets
+Multiverse,KIMORE-PR-C,54,847,64,7,2,skeleton joint coordinates,,0.833,MUSE,0.500,EXCLUDE,N=71
+Multiverse,KINECAL-QSEO,75,593,68,17,2,skeleton joint coordinates,,0.500,TDE,0.500,EXCLUDE,N=85
+Multiverse,Locust2022,13,96,6597,3299,2,13 environmental variables (daily),,0.682,MRHydra,0.500,EXCLUDE,"T=96; environmental covariates, not one coupled system"
+Multiverse,MotionSenseHAR,12,1000,966,265,6,phone attitude/gravity/acc/rotation (derived),,1.000,TDE,0.167,EXCLUDE,saturated; derived channels
+Multiverse,Opportunity,113,100,12184,5202,5,mixed wearable sensors,,0.867,QUANT,0.200,EXCLUDE,T=100; HAR is waveform-dominated; mixed sensors
+Multiverse,PAMAP2,52,100,28961,9895,12,mixed IMU + heart rate,,0.874,DrCIF-500,0.083,EXCLUDE,T=100; mixed sensors
+Multiverse,S2Agri-17,10,24,47328752,11940071,17,satellite spectral bands (derived),,,,0.059,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+Multiverse,Skoda,60,100,11290,2827,11,wearable accelerometers,,0.964,H-InceptionTime,0.091,EXCLUDE,T=100; waveform-dominated gestures
+Multiverse,TactileTextureRecognition,6,2000,1586,681,21,force/torque components of one sensor,21 surface textures,1.000,MUSE,0.048,EXCLUDE,saturated (>=.997)
+Multiverse,Tiselac,10,23,79907,19780,9,satellite spectral bands (derived),,0.648,ConvTran,0.111,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+Multiverse,UCIActivity,9,128,7898,2401,6,"phone IMU (body/total acc, gyro)",,0.998,LITETime-MV,0.167,EXCLUDE,T=128; waveform-dominated
+Multiverse,UIPRMD-DS-C,66,81,144,36,2,skeleton joint coordinates,,1.000,HC2,0.500,EXCLUDE,T=81 too short for the catalogue
+Multiverse,USCActivity,6,100,43060,13168,12,IMU,,0.769,HC2,0.083,EXCLUDE,T=100
+Multiverse,WISDM,3,100,11989,5177,6,accelerometer axes,,0.692,MRHydra,0.167,EXCLUDE,no class-coupling rationale beyond waveform/level
+Multiverse,WISDM2,3,100,98094,50940,6,accelerometer axes,,0.582,QUANT,0.167,EXCLUDE,no class-coupling rationale beyond waveform/level
+Multiverse-EEG,Alzheimers,19,15000,45,43,3,EEG 10-20 (OpenNeuro ds004504; same source as the in-repo AD/FTD cohort),AD vs FTD vs control (rest),0.551,MRHydra,0.333,EXCLUDE,N=88 and same source (ds004504) as the in-repo AD/FTD cohort
+Multiverse-EEG,Blink,4,510,500,450,2,EEG (frontal),,1.000,TDE,0.500,EXCLUDE,saturated (catch22 .998); blink amplitude
+Multiverse-EEG,ButtonPress,32,1000,120,120,2,"EEG, one participant",,1.000,MRHydra,0.500,EXCLUDE,"saturated and N=240, one participant"
+Multiverse-EEG,DREAMERA,14,256,140638,29608,2,EEG 14 (Emotiv),arousal high/low,,,0.500,EXCLUDE,self-report affect labels; near-chance cross-subject in the literature (unverified)
+Multiverse-EEG,DREAMERV,14,256,140638,29608,2,EEG 14 (Emotiv),valence high/low,,,0.500,EXCLUDE,as DREAMERA
+Multiverse-EEG,EyesOpenShut,14,128,56,42,2,"EEG, one participant",,0.571,QUANT,0.500,EXCLUDE,"N=98, one participant"
+Multiverse-EEG,FeedbackButton,61,450,1700,1150,2,EEG,,0.556,MRHydra,0.500,EXCLUDE,floor: all methods <= .56
+Multiverse-EEG,InnerSpeech,128,3584,250,200,4,EEG 128,,0.326,HC2,0.250,EXCLUDE,"M=128 x T=3584, N=450, best .33 vs chance .25"
+Multiverse-EEG,MatchingPennies,10,10000,700,700,2,EEG 10,left vs right hand raised,0.614,ROCKET,0.500,EXCLUDE,left/right again (redundant with the EEGMMIDB control); T=10000 needs decimation
+Multiverse-EEG,MindReading,204,200,727,653,5,MEG 204,5 movie categories,0.719,LITETime-MV,0.200,EXCLUDE,M=204 and T=200; channel subsetting has no invariance guarantee
+Multiverse-EEG,PhotoStimulation,19,9000,37,36,3,"EEG 10-20, AD/FTD/control",AD vs FTD vs control (photic),0.549,ROCKET,0.333,EXCLUDE,N=73
+Multiverse-EEG,PronouncedSpeech,128,3584,250,200,4,EEG 128,,0.364,DrCIF-500,0.250,EXCLUDE,as InnerSpeech
+Multiverse-EEG,SitStand,17,1250,3200,3200,4,EEG 17,,0.439,MRHydra,0.250,EXCLUDE,labels undocumented in the archive paper
+Multiverse-EEG,SongFamiliarity,32,3000,700,750,2,EEG 32,,0.538,QUANT,0.500,EXCLUDE,floor: all methods <= .54
+Multiverse-EEG,VisualSpeech,128,3584,250,200,4,EEG 128,,0.306,TDE,0.250,EXCLUDE,as InnerSpeech
+UEA30,ArticularyWordRecognition,9,144,275,300,25,"EMA sensor coordinates (tongue/lips), 3 sensors x 3 axes",,0.993,TDE,0.040,EXCLUDE,saturated
+UEA30,AtrialFibrillation,2,640,15,15,3,ECG leads,,0.333,HC2,0.333,EXCLUDE,M<3: z undefined or degenerate
+UEA30,CharacterTrajectories,3,60-182,1422,1436,20,pen xy+force,,0.996,LITETime-MV,0.050,EXCLUDE,T=60-182 too short for the catalogue
+UEA30,Cricket,6,1197,108,72,12,two wrist accelerometers x 3 axes,,1.000,ROCKET,0.083,EXCLUDE,saturated and N=180
+UEA30,DuckDuckGeese,1345,270,50,50,5,audio spectrogram bins,,0.640,H-InceptionTime,0.200,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,ERing,4,65,30,270,6,finger ring capacitive sensors,,0.996,MRHydra,0.167,EXCLUDE,T=65 too short for the catalogue
+UEA30,EigenWorms,6,17984,128,131,5,eigenworm shape coefficients (derived),,0.965,MRHydra,0.200,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,Epilepsy,3,206,137,138,4,accelerometer axes,,1.000,TDE,0.250,EXCLUDE,saturated
+UEA30,EthanolConcentration,3,1751,261,263,4,spectrometer readings (derived),,0.704,QUANT,0.250,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,FaceDetection,144,62,5890,3524,2,MEG sensors,face vs scrambled,0.685,H-InceptionTime,0.500,EXCLUDE,T=62
+UEA30,FingerMovements,28,50,316,100,2,EEG electrodes,,0.640,LITETime-MV,0.500,EXCLUDE,T=50
+UEA30,Handwriting,3,152,150,850,26,accelerometer axes,,0.648,H-InceptionTime,0.038,EXCLUDE,no class-coupling rationale beyond waveform/level
+UEA30,Heartbeat,61,405,204,205,2,spectrogram frequency bins (derived),normal vs abnormal heart sound,0.706,LITETime-MV,0.500,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,InsectWingbeat,200,2-22,25000,25000,10,wingbeat spectra (derived),,,,0.100,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,JapaneseVowels,12,7-29,270,370,9,LPC cepstral coefficients (derived),,0.996,LITETime-MV,0.111,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,LSST,6,36,2459,2466,14,photometric passbands (derived),,0.447,MRHydra,0.071,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,Libras,2,45,180,180,15,hand xy coordinates,,0.933,MRHydra,0.067,EXCLUDE,M<3: z undefined or degenerate
+UEA30,MotorImagery,64,3000,278,100,2,"ECoG 8x8 grid, one patient (BCI III-I)",imagined left pinky vs tongue; train/test = different sessions,0.590,HC2,0.500,EXCLUDE,"floor: all published methods <= .59 BA across the session shift, so no ranking is readable; M64 x T3000 costs ~7.4k SU"
+UEA30,NATOPS,24,51,180,180,6,hand/elbow/wrist/thumb coordinates,,0.967,LITETime-MV,0.167,EXCLUDE,T=51 too short for the catalogue
+UEA30,PEMS-SF,963,144,267,173,7,freeway occupancy sensors,day of week,1.000,TDE,0.143,EXCLUDE,saturated (HC2 1.0); M=963 full table is far beyond the sizing table
+UEA30,PenDigits,2,8,7494,3498,10,pen xy coordinates,,0.991,H-InceptionTime,0.100,EXCLUDE,M<3: z undefined or degenerate
+UEA30,PhonemeSpectra,11,217,3315,3353,39,spectrogram bins (derived),,0.375,H-InceptionTime,0.026,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,RacketSports,6,30,151,152,4,wrist accelerometer+gyroscope,,0.915,ROCKET,0.250,EXCLUDE,T=30 too short for the catalogue
+UEA30,SpokenArabicDigits,13,4-93,6599,2199,10,MFCC (derived),,0.994,H-InceptionTime,0.100,EXCLUDE,"channels are derived features, not sensors of one coupled system"
+UEA30,StandWalkJump,4,2500,12,15,3,ECG leads,,0.600,MRHydra,0.333,EXCLUDE,N=27
+UEA30,UWaveGestureLibrary,3,315,120,320,8,accelerometer axes,,0.941,ROCKET,0.125,EXCLUDE,no class-coupling rationale beyond waveform/level
