@@ -11,7 +11,7 @@ from research.representation.dataset_screen.launch import batch, farm
 JOBS = 'research/representation/character_axes/jobs'
 
 
-def main(root, stage, measurement_job=None):
+def main(root, stage, measurement_job=None, measurement_seconds=3600):
     receipt = root / f'{stage}-chain.json'
     if receipt.exists():
         raise FileExistsError(receipt)
@@ -23,7 +23,7 @@ def main(root, stage, measurement_job=None):
         record['jobs'][name] = job; atomic_json(receipt, record); return job
 
     if stage == 'pilot':
-        pilot = save('measurement', farm(root, 1, 1, 6, 3600))
+        pilot = save('measurement', farm(root, 1, 1, 6, measurement_seconds))
         save('release_farm', batch(root, f'{JOBS}/chain.pbs', pilot, MEASUREMENT_JOB=pilot))
         return
     status = json.loads(subprocess.check_output(['qstat', '-xf', '-F', 'json', measurement_job], text=True))['Jobs']
@@ -55,5 +55,6 @@ if __name__ == '__main__':
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--stage', choices=['pilot', 'farm'], required=True)
     parser.add_argument('--measurement-job')
+    parser.add_argument('--measurement-seconds', type=int, default=3600, help='walltime of the one-recording pilot')
     args = parser.parse_args()
-    main(args.root, args.stage, args.measurement_job)
+    main(args.root, args.stage, args.measurement_job, args.measurement_seconds)

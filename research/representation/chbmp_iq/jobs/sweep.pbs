@@ -1,0 +1,26 @@
+#!/bin/bash
+# Window-length and channel-count sweep on a subject subset: nested windows (anchor 6000) at T = 1000, 2000, 4000, 6000
+# on the 19 canonical channels and T = 2000 on the 62-channel montage, 4 windows each; then one pyspi chain per arm.
+# qsub -v RAW_ROOT=...,SWEEP_ROOT=...,SUBJECTS=sub-A:sub-B:... research/representation/chbmp_iq/jobs/sweep.pbs
+#PBS -N chbmp-sweep
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=5,mem=40GB,walltime=01:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+read -ra subjects <<< "${SUBJECTS//:/ }"
+arms=("canonical 1000" "canonical 2000" "canonical 4000" "canonical 6000" "common62 2000")
+for arm in "${arms[@]}"; do
+    set -- $arm
+    python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --root "${SWEEP_ROOT:?}/$1-T$2" \
+        --channels "$1" --length "$2" --count 4 --anchor 6000 --subjects "${subjects[@]}" &
+done
+wait
+for arm in "${arms[@]}"; do
+    set -- $arm
+    python -u -m research.representation.character_axes.launch --root "$SWEEP_ROOT/$1-T$2" --stage pilot --measurement-seconds 14400
+done
