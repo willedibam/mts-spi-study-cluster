@@ -45,4 +45,10 @@ Also flagged by `nci-file-expiry`, outside this project: the sibling EEML scratc
   - Siena (16.99 GB, gdata);
   - CCEP pilot (13.95 GB, gdata);
   - HCP working memory (81.73 GB, Scratch).
-- **Deletion:** the user runs the deletions and `git worktree prune`; this audit performed none. Once gdata has room, the ≈ 28.4 GiB of `packed-261102/` Scratch archives can move to gdata, which needs a separate decision.
+- **Deletion:** the user ran the deletions and `git worktree prune`. Afterwards: gdata 55.44 GiB and 16,531 inodes; Scratch 320.07 GiB and 129,429 inodes.
+- **Scratch archives to gdata (approved):** the three `packed-261102/` sets (≈ 28.4 GiB) are copied to `archives/{order-parameter-inference,proof,operations}/261102-scratch/`. They are not merged into the existing gdata `261102/` folders, because some file names collide with different contents.
+  - Script, PBS job and log: `operations/maintenance/archive-move-261105/` on gdata. The first attempt, a `nohup` process on `gadi-dm`, died when SSH disconnected, before anything was copied. It was rerun as `copyq` job 183135473.
+  - Each set is verified against its own `SHA256SUMS` and a size listing.
+  - Remaining after `ALL VERIFIED`:
+    - repoint the destination `README.md` files and the three Scratch `ARCHIVED.md` files to the gdata paths;
+    - then remove the Scratch `packed-261102/` directories.

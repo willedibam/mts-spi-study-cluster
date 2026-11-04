@@ -11,7 +11,7 @@ Use `/scratch/ql44/we2614/mts-spi-study` for working storage and `/g/data/ql44/w
 | `zenodo/7118947/` | Zenodo inputs, authoritative seed1729 MPI bank and features |
 | `representation/` | Synthetic and empirical representation studies, cross-M/T, model comparisons |
 | `pyspi-optimisation/large-m-260917/` | Large-M estimator/runtime and pair-baseline work |
-| `archives/<workstream>/` | Verified inactive scientific archives, physically on gdata (Scratch `archives` is a link to it). Scratch units packed on 2 November 2026 sit in `<parent>/packed-261102/` on Scratch instead (gdata lacked the bytes), where Scratch expiry still applies |
+| `archives/<workstream>/` | Verified inactive scientific archives, physically on gdata (Scratch `archives` is a link to it). Units packed on Scratch on 2 November 2026 in `<parent>/packed-261102/` are copied to `archives/<workstream>/261102-scratch/` (5 November 2026); the Scratch copy is removed once the copy verifies |
 | `operations/{sources,logs,maintenance}/` | Frozen source worktrees, execution records and storage-maintenance evidence |
 | `environments/` | One shared uv-created MTS environment, physically on Scratch; checkout `.venv` links reference it |
 | `dev/<experiment>/` | Disposable named experiments on Scratch; each needs a purpose and retirement condition |
