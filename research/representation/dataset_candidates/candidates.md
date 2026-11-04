@@ -51,7 +51,11 @@ Facts [V] ([Valdes-Sosa et al. 2021, Sci Data 8:45](https://doi.org/10.1038/s415
 - EEG: MEDICID-5, 200 Hz, 0.5–50 Hz amplifier band, 60 Hz mains. Raw continuous recordings were converted from `.plg` to BIDS, with artefacts annotated online by the technician.
   - Protocol: at least 30 min per person, covering eyes closed, eyes open, 3 min of hyperventilation and 2 min of recovery.
   - Clean data: at least 50 (64 ch) or 80 (120 ch) clean 2.56-s epochs per person are guaranteed. The length of clean *contiguous* stretches is unknown [U] and decides whether 20-s windows fit.
-- Access: hosted on Synapse (doi 10.7303/syn22324937; login required) and LORIS; the descriptor is CC-BY 4.0.
+- Access: hosted on Synapse (doi 10.7303/syn22324937) and LORIS; the descriptor is CC-BY 4.0. Synapse API checked 5 Nov:
+  - Restriction level OPEN, with no access requirements.
+  - The folder ACL grants DOWNLOAD to `AUTHENTICATED_USERS` and READ only to `PUBLIC`. Any logged-in account can download, and anonymous clients can only list.
+  - Two BIDS versions: `ds_bids_chbmp` (syn22324960, 2020) and `ds_bids_cbm_loris_24_11_21` (syn28129311, Nov 2021). Prefer the newer after reading its `CHANGES` file.
+  - IQ table: `CHBMP_Cognitive_Scales/WAIS_III.csv` (syn22334581).
 
 Question: at matched individual alpha frequency and channel spectra, do higher-IQ adults show a different cross-pair lag organisation? A specific, testable direction exists. [Thatcher, North & Biver 2005](https://doi.org/10.1016/j.clinph.2005.04.026) report that phase delay is the EEG measure most strongly related to IQ, with shorter frontal and longer posterior delays in high IQ ([V] abstract). That pattern is heterogeneity across pairs, which is what z can read.
 
@@ -243,7 +247,7 @@ Data: Binance publishes 1-min spot klines as monthly and daily zip files ([binan
 
 ## Access steps the user would need to take
 
-- **CHBMP:** create a Synapse account and accept the dataset terms for syn22324937; LORIS mirror at chbmp-open.loris.ca.
+- **CHBMP:** any logged-in Synapse account can download; no group approval is needed for syn22324937. Use a personal access token stored by the user on Gadi. The LORIS mirror is at chbmp-open.loris.ca.
 - **Cam-CAN:** submit a project proposal through the [Cam-CAN data portal](https://opendata.mrc-cbu.cam.ac.uk/projects/camcan/), with the supervisor applying.
 - **LEMON:** none; already in use. Confirm the LPS/WST files are in the copy on Gadi.
 - **Dortmund:** none (CC0, OpenNeuro ds005385).
