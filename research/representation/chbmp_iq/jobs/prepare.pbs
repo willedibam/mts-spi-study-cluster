@@ -1,5 +1,5 @@
 #!/bin/bash
-# One prepared corpus. LENGTH and COUNT are required; CHANNELS (canonical|common62), ANCHOR and SUBJECTS (colon-separated ids) are optional.
+# One prepared corpus. LENGTH and COUNT are required; CHANNELS (canonical|common60), ANCHOR and SUBJECTS (colon-separated ids) are optional.
 # qsub -v RAW_ROOT=...,ROOT=...,LENGTH=2000,COUNT=6 research/representation/chbmp_iq/jobs/prepare.pbs
 #PBS -N chbmp-prepare
 #PBS -P ql44

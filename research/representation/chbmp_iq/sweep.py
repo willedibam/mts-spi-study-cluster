@@ -81,11 +81,11 @@ def main(sweep):
             y = reference['z'][:, ok]
             rec['convergence_to_T6000'] = float(np.median([np.corrcoef(np.nan_to_num(x[i]), np.nan_to_num(y[j]))[0, 1] for i, j in pairs]))
         out[name] = rec; rec['_icc'] = icc
-    if 'common62-T2000' in arms and 'canonical-T2000' in arms:
-        a, b = arms['canonical-T2000'], arms['common62-T2000']
+    if 'common60-T2000' in arms and 'canonical-T2000' in arms:
+        a, b = arms['canonical-T2000'], arms['common60-T2000']
         pos = {r: k for k, r in enumerate(b['row'])}
         pairs = [(k, pos[r]) for k, r in enumerate(a['row']) if r in pos]
-        out['m19_vs_m62_same_window_r'] = float(np.median([np.corrcoef(np.nan_to_num(a['z'][i, ok]), np.nan_to_num(b['z'][j, ok]))[0, 1] for i, j in pairs]))
+        out['m19_vs_m60_same_window_r'] = float(np.median([np.corrcoef(np.nan_to_num(a['z'][i, ok]), np.nan_to_num(b['z'][j, ok]))[0, 1] for i, j in pairs]))
     figure(out, sweep / 'analysis')
     for v in out.values():
         if isinstance(v, dict):

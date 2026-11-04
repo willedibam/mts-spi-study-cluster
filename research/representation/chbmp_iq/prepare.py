@@ -2,7 +2,7 @@
 
 Contract (reasons in protocol.md §2):
 - **State:** the first eyes-closed block, from the first eyes_closed event to the next eyes_open (about 10 min), split at discontinuity markers.
-- **Channels:** the 19 canonical 10-20 channels or the 62-channel common montage, in fixed order, on the recording's own common reference. Channel types come from channels.tsv; the EDF itself types ECG/EOG as EEG.
+- **Channels:** the 19 canonical 10-20 channels or the 60-channel common set (62-channel montage less its mislabelled AF7/AF8), in fixed order, on the recording's own common reference. Channel types come from channels.tsv; the EDF itself types ECG/EOG as EEG.
 - **Filtering:** 0.5-45 Hz zero-phase band-pass, then resampling to 100 Hz, each contiguous segment separately so that no filter runs across a discontinuity.
 - **Artefacts:** a 1 s block is clean when every selected channel's peak-to-peak range, at native rate after band-pass, is at most 150 uV. Windows lie inside runs of clean blocks.
 - **Exclusions:** a recording is excluded when a selected channel is bad by the scope rule (median 1 s block SD over 3x or under 1/5 of the recording's median channel, a flat fraction over 0.2, or a highest |r| with any other channel under 0.3). Excluded recordings are listed in issues; there is no interpolation.
@@ -30,6 +30,10 @@ COMMON62 = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2', 'F7', 
             'Cz', 'Pz', 'F1', 'F2', 'P1', 'P2', 'AF3', 'AF4', 'P5', 'P6', 'FC5', 'FC6', 'C5', 'C6', 'FT7', 'TP7',
             'TP8', 'PO5', 'PO6', 'AF7', 'AF8', 'FpZ', 'FCZ', 'CPZ', 'POZ', 'OZ', 'PO3', 'PO4', 'CP1', 'CP2', 'CP3',
             'CP4', 'C1', 'C2', 'F5', 'F6', 'FT8', 'FC3', 'FC4', 'FC1', 'FC2', 'CP5', 'CP6', 'PO7', 'PO8']
+# In the 62-channel montage the channels labelled AF7 and AF8 are not scalp EEG: on sub-CBM00002 they have
+# ~110 uV SD, correlate 0.90 with each other and 0.02 with every scalp neighbour (Fp1, AF3, F7), whereas the
+# 120-channel AF7 correlates 0.83-0.87 with Fp1 and AF3. The common set therefore leaves them out.
+COMMON60 = [c for c in COMMON62 if c not in ('AF7', 'AF8')]
 
 
 def canonical(label):
@@ -138,7 +142,7 @@ def prepare(raw_root, root, channels, length, count, anchor=None, subjects=None)
             names = CANON
         else:
             have = {l: k for k, l in enumerate(labels) if types.get(l) == 'EEG'}
-            names = COMMON62
+            names = COMMON60
         missing = [c for c in names if c not in have]
         if missing:
             issues.append(dict(subject=sid, missing=missing)); continue
@@ -178,7 +182,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--raw', type=Path, required=True, help='download root holding bids/, cognitive/ and receipt.json')
     parser.add_argument('--root', type=Path, required=True, help='output corpus root')
-    parser.add_argument('--channels', choices=['canonical', 'common62'], default='canonical')
+    parser.add_argument('--channels', choices=['canonical', 'common60'], default='canonical')
     parser.add_argument('--length', type=int, required=True, help='window length T in samples at 100 Hz')
     parser.add_argument('--count', type=int, required=True, help='windows per recording')
     parser.add_argument('--anchor', type=int, help='place starts for this length and keep each window\'s first T samples')

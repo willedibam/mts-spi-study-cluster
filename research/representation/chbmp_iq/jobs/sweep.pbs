@@ -1,6 +1,6 @@
 #!/bin/bash
 # Window-length and channel-count sweep on a subject subset: nested windows (anchor 6000) at T = 1000, 2000, 4000, 6000
-# on the 19 canonical channels and T = 2000 on the 62-channel montage, 4 windows each; then one pyspi chain per arm.
+# on the 19 canonical channels and T = 2000 on the 60-channel common set, 4 windows each; then one pyspi chain per arm.
 # qsub -v RAW_ROOT=...,SWEEP_ROOT=...,SUBJECTS=sub-A:sub-B:... research/representation/chbmp_iq/jobs/sweep.pbs
 #PBS -N chbmp-sweep
 #PBS -P ql44
@@ -13,7 +13,9 @@ set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 read -ra subjects <<< "${SUBJECTS//:/ }"
-arms=("canonical 1000" "canonical 2000" "canonical 4000" "canonical 6000" "common62 2000")
+# ARMS (optional) selects arms as colon-separated channels-T pairs, e.g. ARMS=common60-2000.
+IFS=: read -ra picked <<< "${ARMS:-canonical-1000:canonical-2000:canonical-4000:canonical-6000:common60-2000}"
+arms=(); for a in "${picked[@]}"; do arms+=("${a%-*} ${a##*-}"); done
 for arm in "${arms[@]}"; do
     set -- $arm
     python -u -m research.representation.chbmp_iq.prepare --raw "${RAW_ROOT:?}" --root "${SWEEP_ROOT:?}/$1-T$2" \
