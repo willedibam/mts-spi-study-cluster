@@ -213,5 +213,5 @@ rows += EXT
 order = dict(PANEL=0, EXTENSION=1, POSITIONING=2, OPTIONAL=3, EXCLUDE=4)
 rows.sort(key=lambda r: (order[r['verdict']], r['source'], r['dataset']))
 with open(OUT, 'w', newline='') as f:
-    w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+    w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator='\n'); w.writeheader(); w.writerows(rows)
 from collections import Counter; print(Counter(r['verdict'] for r in rows), len(rows))
