@@ -18,12 +18,14 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
 
 **Recording facts** (blind scoping, [scope.py](scope.py); verified on the first recordings, cohort figures in the run root):
 - 200 Hz, common reference, hardware 0.5–50 Hz with a 60 Hz notch.
-- Two montages: 62 EEG channels, or 120 EEG plus 2 EOG and ECG.
+- 253 of 279 participants have an EEG recording (26 have none on Synapse; listed in the download receipt).
+- Two cap families, with varying EEG channel counts: 58–62 channels (176 recordings) or 115–123 (77), the latter with EOG and ECG. All 253 carry the 19 canonical channels. The montage covariate is the cap family, not the channel count.
 - Protocol: about 10 min eyes closed, then alternating eyes open/closed, hyperventilation, recovery and photic stimulation.
 - **No artefact annotations.** Events mark states only; some recordings carry `discontinuity` markers.
 - **Labelling errors:**
   - The EDF types ECG/EOG as EEG; channels.tsv is correct.
   - In the 62-channel montage, "AF7"/"AF8" are not scalp EEG: on sub-CBM00002 they have ~110 µV SD, correlate 0.90 with each other and 0.02 with every scalp neighbour. The common set is therefore 60 channels.
+  - sub-CBM00203's EDF labels channels '-A12' (linked ears) while every other recording says '-REF' and its sidecar says 'common'. Its reference cannot be verified, so it is excluded.
 
 **Window contract** ([prepare.py](prepare.py)):
 - **State:** the first eyes-closed block only, split at discontinuities. The later short eyes-closed epochs follow eye opening and differ in alpha reactivity.
@@ -34,6 +36,7 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
   - 100 Hz also matches the LEMON arm (§7).
 - **Channels:** the 19 canonical 10–20 channels, unless the sweep shows the 60-channel set changes z.
   - The case for 19: comparability with LEMON, a 10.6× lower pyspi cost, and dense common-reference scalp channels being highly redundant (volume conduction).
+  - The 27 recordings on 58–60-channel caps carry only 58 of the 60-channel set, so 60 channels cohort-wide would exclude them.
 - **Artefacts:** 1 s blocks with peak-to-peak > 150 µV on any selected channel are rejected, and windows lie inside clean runs.
 - **Bad channels:** a recording is excluded if a selected channel is bad (median 1 s SD over 3× or under 1/5 of the recording's median channel, flat, or isolated). There is no interpolation.
 - **Ocular contamination:** slow frontal eye movements below 150 µV remain. They are handled as a sensitivity analysis (H1 without Fp1/Fp2), not by ICA.
