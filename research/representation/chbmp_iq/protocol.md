@@ -64,7 +64,7 @@ Does the character of coupling differ with IQ in resting adults, at matched chan
 
 **Exclusions**, decided before WAIS is joined: no eyes-closed block, a bad selected channel, a non-cohort reference label, or fewer than the required clean windows. Then only finite FSIQ.
 
-**Power:** 220 recordings pass the blind exclusions; with complete FSIQ for most, N ≈ 200 detects |ρ| ≥ 0.20 at 80% (two-sided α = .05). A null is reported as such.
+**Power:** 215 recordings pass the blind exclusions, but FSIQ is blank for 80 of them in `WAIS_III.csv` (115 of its 282 coded rows have no WAIS scores at all). The analysable N = 135 detects |ρ| ≥ 0.25 at 80% (two-sided α = .05, 5 covariates); the planning figure of N ≈ 200 assumed complete FSIQ. Checked blind: missingness is unrelated to age (median 31 against 31.5), cap family (missing in 39% on the 62-channel cap against 34% on the 120-channel cap) and education, and somewhat more common in women (43% against 35% in men). A null is reported as such.
 
 ## 3. Analyses
 
