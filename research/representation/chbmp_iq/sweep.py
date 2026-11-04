@@ -69,7 +69,9 @@ def main(sweep):
     ok = np.ones(arms[names[0]]['z'].shape[1], bool)
     for a in arms.values():
         ok &= np.isfinite(a['z']).mean(0) >= .9
-    out, reference = {}, arms.get('canonical-T6000')
+    # Convergence reference: the longest canonical arm that finished (T = 6000 was planned; it timed out).
+    longest = max((a['T'], k) for k, a in arms.items() if a['M'] == 19)[1]
+    out, reference = dict(convergence_reference=longest), arms[longest]
     for name, a in arms.items():
         x = a['z'][:, ok]
         icc = icc1(x, a['subject'])
@@ -84,7 +86,7 @@ def main(sweep):
             pos = {r: k for k, r in enumerate(reference['row'])}
             pairs = [(k, pos[r]) for k, r in enumerate(a['row']) if r in pos]
             y = reference['z'][:, ok]
-            rec['convergence_to_T6000'] = float(np.median([np.corrcoef(np.nan_to_num(x[i]), np.nan_to_num(y[j]))[0, 1] for i, j in pairs]))
+            rec['convergence_to_longest'] = float(np.median([np.corrcoef(np.nan_to_num(x[i]), np.nan_to_num(y[j]))[0, 1] for i, j in pairs]))
         out[name] = rec; rec['_icc'] = icc
     if 'common60-T2000' in arms and 'canonical-T2000' in arms:
         a, b = arms['canonical-T2000'], arms['common60-T2000']
@@ -121,8 +123,8 @@ def figure(out, path):
     a.legend()
     a = ax[2]
     a.plot(T, [arms[k]['fingerprint'] for _, k in can], 'o-', color='k', label='window-to-subject identification')
-    if all('convergence_to_T6000' in arms[k] for _, k in can):
-        a.plot(T, [arms[k]['convergence_to_T6000'] for _, k in can], 's-', color='#C44E52', label='r(z_T, z_6000), same window')
+    if all('convergence_to_longest' in arms[k] for _, k in can):
+        a.plot(T, [arms[k]['convergence_to_longest'] for _, k in can], 's-', color='#C44E52', label=f'r(z_T, z_{max(T)}), same window')
     a.set(xlabel='window length T', ylim=(0, 1.02), title='Identification and convergence')
     a.legend(loc='lower right')
     save(fig, path, 'sweep'); plt.close(fig)
