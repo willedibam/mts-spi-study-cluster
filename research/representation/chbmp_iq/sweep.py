@@ -47,14 +47,19 @@ def fingerprint(x, subject):
 
 
 def cost(root):
-    """Median pyspi wall seconds per window from meta.json, when the runner recorded it."""
-    vals = []
-    for meta in (root / 'features').rglob('meta.json'):
-        m = json.loads(meta.read_text())
-        for key in ('elapsed_seconds', 'compute_seconds', 'wall_seconds'):
-            v = m.get(key) or m.get('pyspi', {}).get(key) or m.get('timing', {}).get(key)
-            if v:
-                vals.append(float(v)); break
+    """Median pyspi compute seconds per window (meta.json job.compute_seconds), from features/ or its archive."""
+    import subprocess
+    import tarfile
+    docs = [json.loads(m.read_text()) for m in (root / 'features').rglob('meta.json')] if (root / 'features').exists() else []
+    if not docs and (root / 'features.tar.zst').exists():
+        z = subprocess.Popen(['zstd', '-dc', str(root / 'features.tar.zst')], stdout=subprocess.PIPE)
+        with tarfile.open(fileobj=z.stdout, mode='r|') as tar:
+            for member in tar:
+                if member.name.endswith('/meta.json'):
+                    docs.append(json.load(tar.extractfile(member)))
+        z.wait()
+    vals = [d.get('job', {}).get('compute_seconds') for d in docs]
+    vals = [v for v in vals if v]
     return float(np.median(vals)) if vals else None
 
 
