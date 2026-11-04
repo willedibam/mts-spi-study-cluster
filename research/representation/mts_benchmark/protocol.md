@@ -48,6 +48,22 @@ Sources:
 | NeuroTycho → Chennu propofol | 16 / 19 × 1000 | 480 windows / 20 people | macaque ECoG → human EEG | awake vs anaesthesia/sedation | — | montage-free extension |
 | BasicMotions | 6 × 100 | 40/40 | phone IMU | 4 activities | 1.0 | positioning only, outside the test family |
 
+Instances and independent units: power and the scope of a claim depend on the independent units, not the record count. Record counts are verified from the archive tables. Unit counts marked "?" are unverified and are recovered in step 0.
+
+| Dataset | Records (full tier) | Independent units | Scope of a win |
+| --- | ---: | --- | --- |
+| ImaginedOpenCloseFist | 4,725 trials | 109 people if EEGMMIDB? Split may be by trial | Within- or cross-person decoding, depending on the split |
+| ImaginedFeetHands | 4,770 trials | same people as above? | as above |
+| ShortIntervalTask | 2,780 trials | Parkinson's and control participants, count ? | Diagnosis, only if the split is subject-disjoint |
+| AutomotiveRoadTrials | 230 segments (77 test) | vehicles/trips ? | One fleet or vehicle; underpowered for Δ below about .1 |
+| EmoPain | 1,323 windows | participants ? (tens) | Cross-person if the split is grouped |
+| SelfRegulationSCP1 | 561 trials | 1 person | One person's sessions |
+| HandMovementDirection | 234 trials (74 test) | 1–2 people? | One or two people; underpowered |
+| ABIDE-PCP | ~871 scans | ~871 people across ~17–20 sites (inferred) | Cross-site population inference |
+| TUAB | 2,993 recordings, one window each | patients ? (fewer than recordings) | Cross-patient clinical |
+| NeuroTycho → propofol | 480 source windows → 400 target windows | 4 macaques/11 dates → 20 people | Cross-species, cross-montage |
+| BasicMotions | 80 | few people ? | Positioning only |
+
 Notable exclusions (reasons in `screen.csv`):
 - MotorImagery: floor. All 12 methods are ≤.59 across the session shift, so no ranking is readable, and the native 1 kHz run would cost ~7.4k SU.
 - PEMS-SF: saturated at 1.0, and the full M=963 table is outside the sizing table.
@@ -85,6 +101,7 @@ Pattern prediction:
 - z competes with univariate features only in the two coupled-system cases (AutomotiveRoadTrials, EmoPain).
 - z is forced to chance on left/right.
 - Expected wins of z over per-channel univariate: 1–2 of 9.
+- Complementarity: weak (H2) wins are expected on TUAB and AutomotiveRoadTrials, and possibly on ImaginedFeetHands and EmoPain. Strong (H3) wins are expected only on AutomotiveRoadTrials, and possibly on EmoPain.
 
 If the pattern holds, it is a calibrated statement of where cross-statistic correspondence carries label information. If it fails in z's favour on a dataset, that is where the gates are spent.
 
@@ -145,8 +162,10 @@ Readout and fitting:
 - Paired bootstrap with 10,000 resamples at the independent unit (subject, site, patient or person). Where only records are available, the bootstrap is flagged anti-conservative.
 - Primary contrasts:
   - H1, z versus mean-SPI (character beyond identity-free strength);
-  - H2, P+z versus P (increment over the field default).
-- Holm correction is applied across the nine datasets within each of H1 and H2. Everything else is secondary, with unadjusted intervals and labelled as such. Each W/T/L prediction is scored, and the predicted-versus-observed table is reported.
+  - H2, P+z versus P. This is the weak complementarity win: z adds to the field default even when z alone is at or below Pearson.
+  - H3, univariate+P+z versus univariate+P, plus the control P+z versus P+mean-SPI. This is the strong complementarity win: the increment is neither channel-spectral nor multi-statistic strength. Prior evidence predicts H2 can pass while H3 fails, because z's gain over Pearson was channel-spectral in every cohort tested. A result is reported as weak or strong accordingly.
+- Holm correction is applied across the nine datasets within each of H1, H2 and H3.
+- For datasets with at most 1,500 records (AutomotiveRoadTrials, EmoPain, SCP1, HandMovementDirection, BasicMotions), the readout is also evaluated on 30 stratified train/test resamples at the official sizes. Resamples are grouped where unit IDs exist, resample 0 is the official split, and differences are paired across methods. Pyspi is computed once per record, so resampling only refits readouts. HC2 published resamples are used where available. Everything else is secondary, with unadjusted intervals and labelled as such. Each W/T/L prediction is scored, and the predicted-versus-observed table is reported.
 - No grid expansion, architecture change or channel/T change to rescue a loss. Deviations are recorded with their reason before test scores are seen.
 
 ### Interpretation gates for any z-feature claim
