@@ -1,0 +1,16 @@
+#!/bin/bash
+# Unblinded CHBMP IQ analysis. Run once, from a checkout whose protocol.md and analysis.py equal the frozen commit.
+# qsub -v RUN=.../chbmp-iq-261105,CORPUS=cohort-canonical-T1000,FROZEN=<commit> research/representation/chbmp_iq/jobs/analysis.pbs
+#PBS -N chbmp-analysis
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=4,mem=48GB,walltime=04:00:00
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+git diff --quiet "${FROZEN:?}" -- research/representation/chbmp_iq/protocol.md research/representation/chbmp_iq/analysis.py
+python -u -m research.representation.chbmp_iq.analysis --root "${RUN:?}/${CORPUS:?}" --scope "$RUN/scope" \
+    --wais "$RUN/raw/cognitive/WAIS_III.csv" --out "$RUN/${CORPUS}/analysis" --unblind --frozen-commit "$FROZEN"
