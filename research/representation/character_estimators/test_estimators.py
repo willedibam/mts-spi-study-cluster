@@ -26,6 +26,15 @@ def test_variability_reads_on_off_and_phase_drift_and_not_fixed_phase():
         assert abs(estimate(x, y, floor=False)['variability'] - want) < .05
 
 
+def test_whitened_channel_has_no_mean_when_end_points_differ():
+    """circular() leaves a mean when the end points differ; whitening must not amplify it (it swamped the
+    cross-correlation that finds the fixed delay, giving a wrong delay and a spurious variability)."""
+    from research.representation.character_estimators.estimators import circular, whiten
+    x, _ = make('lag', 0., 4000, np.random.default_rng(5))
+    x[-1] += 3.
+    assert abs(whiten(circular(x)).mean()) < 1e-9
+
+
 def test_independent_pair_is_undefined():
     x, y = make('independent', 0., 2000, np.random.default_rng(3))
     e = estimate(x, y, np.random.default_rng(4))

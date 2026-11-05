@@ -63,10 +63,14 @@ def circular(v):
 
 def whiten(v, nper=256):
     """Zero-phase spectral whitening. A real positive filter on each channel leaves coherency unchanged, and a
-    flat spectrum makes the orthogonal-taper estimates independent, which the unbiased products need."""
+    flat spectrum makes the orthogonal-taper estimates independent, which the unbiased products need. The mean
+    is removed: Welch's estimate at frequency 0 is near 0 (it detrends), so dividing the mean by it would add a
+    constant that swamps the cross-correlation used to find the fixed delay."""
     f, p = signal.welch(v, nperseg=min(nper, len(v) // 4))
     amp = np.sqrt(np.interp(np.fft.rfftfreq(len(v)), f, p))
-    return np.fft.irfft(np.fft.rfft(v) / amp, n=len(v))
+    F = np.fft.rfft(v) / amp
+    F[0] = 0
+    return np.fft.irfft(F, n=len(v))
 
 
 # ---- spectral axes -------------------------------------------------------------------------------------
