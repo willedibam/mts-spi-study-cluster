@@ -56,7 +56,8 @@ def response(summ, out):
                 a.set_ylabel(LABEL[axis])
             if i == len(ROWS):
                 a.set_xlabel(r'knob $\theta$')
-    fig.suptitle('Estimates (mean $\\pm$ SD over 40 recordings, T = 2000; dotted: defined in < 80%) '
+    n = int(base.n.min())
+    fig.suptitle(f'Estimates (mean $\\pm$ SD over {n} recordings, T = 2000; dotted: defined in < 80%) '
                  'against truth (black dashed); boxed: the system\'s own axis', fontsize=9)
     save(fig, out, 'response'); plt.close(fig)
 
