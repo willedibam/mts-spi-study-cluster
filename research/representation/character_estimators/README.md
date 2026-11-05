@@ -250,3 +250,44 @@ v3's S, for comparison: SD up to 151 and a long run of 0.17 on steady coupling. 
   - So the remedies are longer recordings or a shorter W, not a different estimator.
 - **The warp long-run gap (+0.08 at θ = 0.6) is in the analytic truth.** That truth uses the carrier phase and ignores spectral smoothing over the quarter's ±0.1 cycles/sample bandwidth. It is not a C2 bias at T = 2,000 (−0.03). The truth is left as stated rather than re-fitted.
 - **Unchanged axes moved with the seeds, near thresholds.** N and raw N failed C3 here on intermittency θ = 0.6 (mean −0.15, SD 0.32), where v3 and the first v4 seeds gave −0.08 and −0.09. That is a consistent small negative bias at the edge of tolerance, not new. N on transfer independent pairs was defined in 11% (C5 limit 10%; v3: 7%). ℓ in warp at θ = 0.6: 0.095 (v3: 0.05; the first v4 seeds: 0.12 at θ = 0.8). Warping leaves a nonzero mean delay in a 2,000-sample recording, which ℓ correctly reads as phase.
+
+## Factorial test (`factorial.py`; pre-registered before its run, 6 November 2026)
+
+Each test system moves one knob with the others at 0. That shows each axis ignores the other characters when they are absent, but not that the axes stay separable when several are present. The v4 figures already show one interaction: ℓ keeps its mean under phase drift, but its SD grows to ±0.45.
+
+**Design.** `systems.make_factorial` crosses four knobs at two levels each, giving 16 cells of 40 recordings at T = 2,000, with fresh seeds. Long runs use T = 2^17, 3 seeds.
+
+| Knob | Levels | Meaning |
+|---|---|---|
+| n | 0, 0.5 | nonlinear (He2) share |
+| l | 0, 0.5 | quadrature share |
+| d | 0, 0.6 | phase drift between W-segments |
+| o | 0, 0.5 | off-fraction of on/off coupling |
+
+- **Generator:** y = a_k [√(1−n)(cos φ_k x + sin φ_k H[x]) + √n He2(x)] + noise.
+- **Coupling strength:** r = 0.5, as for intermittency.
+- **Lag and drift rotate only the linear part.** He2(x) is uncorrelated with x at every lag, so it has no cross-spectrum to rotate.
+
+**Predictions (long run), from the definitions:**
+- **ℓ = l in every cell.** He2 adds no cross-spectrum. Drift and on/off shrink the mean coupling but leave its phase unchanged.
+- **V = 1 − (1 − o)(1 − d).** Coupling is present in a fraction 1 − o of segments, and |E e^{iφ}|² = 1 − d. Nonlinearity is predicted to leave V unchanged: the He2 part adds non-coherent power to y, but V is power-normalised.
+- **Raw N, for cells with l = 0: N = 1 − (1 − n)(1 − d) / ((1 − n)(1 − d) + n).**
+  - N is a share of the dependence a *time-invariant* regression can predict. A fixed linear fit keeps only 1 − d of a drifting linear coupling, while the quadratic part does not drift.
+  - So drift inflates N by definition: 0.71 rather than 0.5 at n = 0.5, d = 0.6. This is a definitional interaction, not an estimation error.
+  - On/off scales both parts equally, so it leaves raw N unchanged.
+- **No prediction** for:
+  - raw N with l = 0.5: the ±3-lag Volterra window captures H[x] only partly, so N should rise by an amount not predicted here;
+  - main N: normal scores bend on/off coupling;
+  - D: auxiliary.
+
+**Criteria:**
+- **F1, separability of the definitions:** |long run − prediction| ≤ 0.03, the C1 tolerance, where a prediction exists.
+- **F2, estimation in crossed cells:** in every cell where the axis is defined in ≥ 80% of recordings, |mean − long run| ≤ 0.10 and SD ≤ 0.15, the C2 tolerances. Truth here is the long run, so F2 isolates estimation from definition.
+- **Prior expectations:**
+  - F2 fails for ℓ in drift cells, on precision: ℓ is a share of the mean coupling, which drift shrinks.
+  - F2 may fail for V where o = 0.5 and d = 0.6 (V = 0.8, few coupled segments).
+
+Run with:
+
+    python -m research.representation.character_estimators.factorial run --out results/representation/character-estimators/factorial-<commit>
+    python -m research.representation.character_estimators.factorial analyse --out results/representation/character-estimators/factorial-<commit>

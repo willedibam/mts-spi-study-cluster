@@ -96,6 +96,35 @@ def make(system, theta, T, rng, strength=None, spec='ar1', beta=0., mix=0., xnoi
     return x, y
 
 
+FACTORIAL = dict(n=(0., .5), l=(0., .5), d=(0., .6), o=(0., .5))  # README, factorial test
+
+
+def make_factorial(T, rng, n=0., l=0., d=0., o=0., r=.5, w=W):
+    """Four knobs crossed in one generator: y = a_k [sqrt(1 - n) (cos phi_k x + sin phi_k H[x]) + sqrt(n) He2(x)]
+    + noise, with phi_k = arcsin(sqrt l) + s delta_k per W-segment (1 - exp(-s^2) = d), and the coupling on in a
+    fraction 1 - o of segments (a = r / q on, 0 off; noise variance 1 - r^2 / q). Lag and drift rotate only the
+    linear part: He2(x) is uncorrelated with x at every lag, so it carries no cross-spectrum to rotate."""
+    x, eta = ar(T, 'ar1', rng), ar(T, 'ar1', rng)
+    k, q = T // w, 1 - o
+    phi = (np.arcsin(np.sqrt(l)) + np.sqrt(-np.log1p(-d)) * rng.standard_normal(k))[segments(T, w)]
+    u = np.sqrt(1 - n) * (np.cos(phi) * x + np.sin(phi) * signal.hilbert(x).imag) + np.sqrt(n) * (x ** 2 - 1) / np.sqrt(2)
+    on = np.zeros(k, bool); on[rng.choice(k, max(1, int(round(q * k))), replace=False)] = True
+    q = on.mean()
+    return x, np.where(on, r / q, 0.)[segments(T, w)] * u + np.sqrt(1 - r ** 2 / q) * eta
+
+
+def factorial_prediction(axis, n, l, d, o):
+    """Pre-registered long-run value of each core axis in a factorial cell (README); None: no prediction."""
+    if axis == 'lag':
+        return l
+    if axis == 'variability':
+        return 1 - (1 - o) * (1 - d)
+    if axis == 'nonlinearity_raw' and l == 0:  # a fixed linear fit keeps |E exp(i phi)|^2 = 1 - d of the linear part
+        lin = (1 - n) * (1 - d)
+        return 1 - lin / (lin + n)
+    return None
+
+
 def _var(theta, T, rng, c, a=.5):
     cxy, cyx = c * (1 + theta) / 2, c * (1 - theta) / 2
     n = T + BURN
