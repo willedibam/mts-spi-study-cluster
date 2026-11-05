@@ -1,0 +1,7 @@
+axis,role,C3_selectivity,C3_worst_bias,C3_worst_where,C5_null_defined_max,C5_undefined_truth_defined_max,C5_null
+nonlinearity,core,True,0.09427649862656787,telegraph theta=0.6,0.06,,True
+lag,core,True,0.06146140250680354,warp theta=0.8,0.01,,True
+lag_variability,core,False,0.8567782256032067,telegraph theta=0.4,0.05,,True
+intermittency,core,False,0.4000942793323162,direction_nl theta=0.5,0.05,,True
+direction,auxiliary,False,0.18686669240831222,warp theta=0.8,0.09,1.0,False
+nonlinearity_raw,core,False,0.13689881816704993,telegraph theta=0.6,0.09,,True

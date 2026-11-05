@@ -182,3 +182,26 @@ For independent pairs, every axis is defined in at most 8% of recordings, for al
 - **D is biased by measurement noise on the driver and by weak coupling.** This is a known weakness of Granger-type precedence, and the time-reversal correction does not remove it here.
 
 The validation systems share one generator family with the definitions. Passing them shows construction validity; it does not show transfer. A second family, such as coupled nonlinear oscillators, is the open test.
+
+## Status: v3 and transfer scored (5 November 2026)
+
+v3 (`9d4ea7d`, post-scoring) was rescored on fresh seeds: 4,980 recordings, with long-run truths reused from `7a3ace0` except N, which was recomputed. The transfer family was run on its pre-registered protocol: 1,500 recordings. Both ran locally in about 30 minutes. Tables are in `tables/` and `tables/transfer/`; rows and figures are in `results/representation/character-estimators/{9d4ea7d,transfer-9d4ea7d}/` (untracked).
+
+| Axis | First family, v3 | Transfer family |
+|---|---|---|
+| N (main) | **passes all** (off-axis cells with median bias > 0.1: 41 → 2 of 148) | **passes all**: rectifier within 0.005 of its long run |
+| N raw | **passes all** (38 → 4 of 138) | own axis passes; reads 0.02–0.035 below θ even in the long run, so the basis misses part of \|x\| (C1 fails by that margin); selectivity fails on telegraph (mean −0.14, SD 0.55) |
+| ℓ | **passes all** | **passes all**: conventional delay within 0.02 of the analytic integral |
+| V | fails narrowly: SD 0.156 against 0.15 at θ = 0.6, and selectivity in the linearity system from outliers (median about 0, SD up to 3.8 when the coherent part is small) | **fails**: under-reads smooth warping even in the long run (0.45 against 0.66), and is unstable at T = 2,000 (SD up to 0.85; up to 1.7 in other systems) |
+| S | **passes all** | **fails**: long run 0.17 at θ = 0, unstable at T = 2,000 (SD up to 151), defined in 65–80% of recordings |
+| D (aux.) | fails selectivity (19 systematic cells) | own axis tracks; spurious 0.1–0.27 under warping |
+
+**What the transfer family showed.**
+
+- **N and ℓ transfer** to generators outside their construction: a non-polynomial cross-frequency nonlinearity, and a conventional delay on an oscillation.
+- **V and S do not.** Two causes:
+  1. **Instability.** Both are ratios of unbiased fourth moments estimated from 25-sample quarters. For narrowband signals these are near 0 and can be negative, so the ratio has heavy tails: the same disease N had, with no comparably simple cure.
+  2. **A definitional confound in S.** Local coherency is normalised by each quarter's power. With narrowband x and white private noise, x's envelope fluctuates while the noise does not, so local SNR, and with it local coherence, varies over time while the coupling gain is constant. S then reads that as intermittency (long run 0.17 on steady coupling).
+
+  The first family hid both: x and the noise shared a spectrum, and the switches were aligned to the quarters.
+- **Candidate redesign, not done:** define V and S on the local gain (the transfer function S_xy/S_xx) instead of local coherency. The gain is constant under steady coupling whatever the envelope or noise level, keeps the phase that V needs, and is unchanged by common amplitude modulation. Like N it is directional. Its noise grows where x's local power is small, so the instability needs its own check.
