@@ -105,6 +105,8 @@ python -m research.estimators.validate analyse --out results/estimators/<tag>
 
 `analyse` writes `summary.csv`, `verdicts_own.csv` and `verdicts_axis.csv` to `tables/` (tracked), and the figures to `<out>/figures` (regenerated, not tracked).
 
+`python -m research.estimators.composite` draws the overview figure, one row per axis, to `results/estimators/composite/`. The columns are the test system, what the estimator computes (fresh recordings at T = 2^14; the variability panel uses stronger coupling so each segment's point is visible), calibration at T = 2,000 in both families, and the worst off-axis error, including the factorial cells. It reads the scored tables, so it runs in seconds.
+
 ## v2: changes after the adversarial pass (5 November 2026)
 
 v1 (`f8dcc82`) was not scored: its run was stopped once the adversarial report showed that it could not pass. v2 is scored on fresh seeds (`--offset 1`) against the same criteria, with the new cells above. Breaks were triaged by one rule: fix a break if it is population-level, occurs in a regime real data plausibly has, and changes how a reading is interpreted; otherwise state it as a limitation. There is one adversarial round only.
