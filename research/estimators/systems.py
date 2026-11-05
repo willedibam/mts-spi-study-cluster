@@ -25,7 +25,7 @@ from __future__ import annotations
 import numpy as np
 from scipy import signal
 
-from research.representation.character_estimators.estimators import W
+from research.estimators.estimators import W
 
 SPECS = dict(ar1=('ar1', .8), broad=('ar1', .5), slow=('ar1', .95), narrow=('ar2', (.95, .1)),
              vslow=('ar2', (.99, .02)))
@@ -235,7 +235,7 @@ def _coherence_narrow(sigma, n=20000):
 def _quarter_pairs(kernel):
     """Mean of kernel(|t - t'|) over sample pairs in distinct quarters of a W-sample segment: the resolution at
     which variability measures local coupling power (estimators._local)."""
-    from research.representation.character_estimators.estimators import QUARTERS
+    from research.estimators.estimators import QUARTERS
     t, q = np.arange(W // 4), W // 4
     return float(np.mean([kernel(np.abs((b * q + t)[None] - (a * q + t)[:, None])).mean() for a, b in QUARTERS]))
 

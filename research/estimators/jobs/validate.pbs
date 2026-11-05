@@ -1,6 +1,6 @@
 #!/bin/bash
 # Construction validation of the character estimators on one Gadi node (no pyspi).
-#   qsub -v OUT=<dir>,OFFSET=1 research/representation/character_estimators/jobs/validate.pbs   (from the checkout root)
+#   qsub -v OUT=<dir>,OFFSET=1 research/estimators/jobs/validate.pbs   (from the checkout root)
 # Writes rows.csv and truth.csv to OUT; run `validate analyse` locally on a copy, so the checkout stays clean.
 #PBS -P ql44
 #PBS -q normal
@@ -11,4 +11,4 @@
 set -euo pipefail
 source jobs/gadi/env.sh
 git rev-parse HEAD > "$OUT/commit.txt" 2>/dev/null || { mkdir -p "$OUT"; git rev-parse HEAD > "$OUT/commit.txt"; }
-python -u -m research.representation.character_estimators.validate run --out "$OUT" --offset "${OFFSET:-1}" --workers 47
+python -u -m research.estimators.validate run --out "$OUT" --offset "${OFFSET:-1}" --workers 47

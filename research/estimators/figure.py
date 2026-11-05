@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from mtsspi.figures import save, style
-from research.representation.character_estimators.systems import OWN, SYSTEMS
+from research.estimators.systems import OWN, SYSTEMS
 
 ROWS = ('nonlinearity', 'lag', 'variability', 'direction')
 LABEL = dict(nonlinearity='nonlinearity $N$', nonlinearity_raw='$N$ (raw scale)', lag='lag share $\\ell$',

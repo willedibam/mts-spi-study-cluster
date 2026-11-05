@@ -8,6 +8,7 @@ One folder per research stream, one folder per study inside it. A study holds wh
 | [`inference/`](inference/README.md) | Order-parameter and phase-transition inference |
 | [`proof/`](proof/README.md) | The p90 proof-of-concept embeddings, validation and control baselines |
 | [`representation/`](representation/README.md) | The SPI–SPI representation and what it captures, including the Neurotycho transfer work and the learned baselines |
+| [`estimators/`](estimators/README.md) | Per-edge character estimators (nonlinearity, lag share, variability, direction) built without SPIs, and their validation on knob-titrated test systems |
 | [`empirical/`](empirical/README.md) | Measured data |
 | [`zenodo/`](zenodo/README.md) | The Zenodo MTS corpus map |
 | [`methods/`](methods/README.md) | Computing SPIs at scale |

@@ -1,7 +1,7 @@
 """Construction validation of the five character estimators (protocol in README.md).
 
-    python -m research.representation.character_estimators.validate run --out <dir> [--offset 0] [--workers 9]
-    python -m research.representation.character_estimators.validate analyse --out <dir>
+    python -m research.estimators.validate run --out <dir> [--offset 0] [--workers 9]
+    python -m research.estimators.validate analyse --out <dir>
 
 ``run`` writes rows.csv (one row per recording) and truth.csv (one row per condition); ``analyse`` writes
 summary.csv and verdicts.csv to <dir> and to tables/ here, and the figures to <dir>/figures.
@@ -20,8 +20,8 @@ for _v in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'VECLIB
 import numpy as np
 import pandas as pd
 
-from research.representation.character_estimators.estimators import AXES, estimate
-from research.representation.character_estimators.systems import OWN, SYSTEMS, make
+from research.estimators.estimators import AXES, estimate
+from research.estimators.systems import OWN, SYSTEMS, make
 
 HERE = Path(__file__).parent
 T0 = 2000
@@ -219,7 +219,7 @@ def analyse(out):
         summ.to_csv(d / 'summary.csv', index=False)
         v.to_csv(d / 'verdicts_own.csv', index=False)
         sel.to_csv(d / 'verdicts_axis.csv', index=False)
-    from research.representation.character_estimators.figure import figures
+    from research.estimators.figure import figures
     figures(summ, out / 'figures')
     with pd.option_context('display.width', 200, 'display.max_columns', 20):
         print(v.to_string(index=False)); print(sel.to_string(index=False))

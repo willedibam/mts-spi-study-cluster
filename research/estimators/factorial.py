@@ -1,7 +1,7 @@
 """Factorial test: nonlinearity, lag, phase drift and on/off coupling crossed at two levels (README.md).
 
-    python -m research.representation.character_estimators.factorial run --out <dir> [--offset 0] [--workers 9]
-    python -m research.representation.character_estimators.factorial analyse --out <dir>
+    python -m research.estimators.factorial run --out <dir> [--offset 0] [--workers 9]
+    python -m research.estimators.factorial analyse --out <dir>
 
 One-knob systems show that each axis ignores the other characters when those are absent; they cannot show that
 the axes stay separable when several are present. Two questions per cell and axis: F1, is the long-run value
@@ -22,9 +22,9 @@ for _v in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'VECLIB
 import numpy as np
 import pandas as pd
 
-from research.representation.character_estimators import validate as V
-from research.representation.character_estimators.estimators import AXES, estimate
-from research.representation.character_estimators.systems import FACTORIAL, factorial_prediction, make_factorial
+from research.estimators import validate as V
+from research.estimators.estimators import AXES, estimate
+from research.estimators.systems import FACTORIAL, factorial_prediction, make_factorial
 
 HERE = Path(__file__).parent
 REPS = 40
@@ -101,7 +101,7 @@ def figure(s, out):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from mtsspi.figures import save, style
-    from research.representation.character_estimators.figure import COLOUR, ENOUGH, LABEL
+    from research.estimators.figure import COLOUR, ENOUGH, LABEL
     style()
     rows = ('nonlinearity', 'nonlinearity_raw', 'lag', 'variability', 'direction')
     labels = [label(c) for c in cells()]

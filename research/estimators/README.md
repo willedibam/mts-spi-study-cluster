@@ -2,7 +2,7 @@
 
 Question: can the character of a pairwise dependence, as opposed to its strength, be measured directly, edge by edge, on interpretable axes on [0, 1], and does each estimator respond to its named property and to nothing else in systems where the truth is known by construction?
 
-These estimators use no SPI–SPI features and no pyspi statistic as a building block. They are derived from one principle and use numpy/scipy only. They are a separate line from the [character axes inside z](../character_axes/protocol.md), whose construction failures ([validation](../character_axes/validation/README.md)) motivate several design choices below. Context: [`docs/context/premise-and-character-axes.md`](../../../docs/context/premise-and-character-axes.md).
+These estimators use no SPI–SPI features and no pyspi statistic as a building block. They are derived from one principle and use numpy/scipy only. They are a separate line from the [character axes inside z](../representation/character_axes/protocol.md), whose construction failures ([validation](../representation/character_axes/validation/README.md)) motivate several design choices below. Context: [`docs/context/premise-and-character-axes.md`](../../docs/context/premise-and-character-axes.md).
 
 ## Principle
 
@@ -99,8 +99,8 @@ The smoke tests are not part of the scored run.
 No pyspi. A few minutes locally with reduced replicates; the full scored run took 52 CPU-hours, so it runs on Gadi (`jobs/validate.pbs`) and is analysed locally.
 
 ```bash
-OMP_NUM_THREADS=1 python -m research.representation.character_estimators.validate run --out results/representation/character-estimators/<tag> --workers 9
-python -m research.representation.character_estimators.validate analyse --out results/representation/character-estimators/<tag>
+OMP_NUM_THREADS=1 python -m research.estimators.validate run --out results/estimators/<tag> --workers 9
+python -m research.estimators.validate analyse --out results/estimators/<tag>
 ```
 
 `analyse` writes `summary.csv`, `verdicts_own.csv` and `verdicts_axis.csv` to `tables/` (tracked), and the figures to `<out>/figures` (regenerated, not tracked).
@@ -158,7 +158,7 @@ The criteria are C1–C5 unchanged. Base levels have 40 recordings, strength cel
 
 ## Status: v2 scored (5 November 2026)
 
-v2 (`7a3ace0`) scored on fresh seeds: 204 conditions, 4,980 recordings, on Gadi (job 183193511: 77 min on 48 cores, 52 CPU-hours, 123 SU; `jobs/validate.pbs`). Tables are in `tables/`. `rows.csv` and `truth.csv` are kept untracked in `results/representation/character-estimators/7a3ace0/` and on Gadi scratch; `validate analyse` regenerates everything else from them.
+v2 (`7a3ace0`) scored on fresh seeds: 204 conditions, 4,980 recordings, on Gadi (job 183193511: 77 min on 48 cores, 52 CPU-hours, 123 SU; `jobs/validate.pbs`). Tables are in `tables/`. `rows.csv` and `truth.csv` are kept untracked in `results/estimators/7a3ace0/` and on Gadi scratch; `validate analyse` regenerates everything else from them.
 
 Against the pre-registered criteria, only the lag share passes everything. "Systematic" below means the median over recordings is also off by more than 0.10, so the bias is not driven by a few outliers.
 
@@ -184,7 +184,7 @@ The validation systems share one generator family with the definitions. Passing 
 
 ## Status: v3 and transfer scored (5 November 2026)
 
-v3 (`9d4ea7d`, post-scoring) was rescored on fresh seeds: 4,980 recordings, with long-run truths reused from `7a3ace0` except N, which was recomputed. The transfer family was run on its pre-registered protocol: 1,500 recordings. Both ran locally in about 30 minutes. Tables are in `tables/` and `tables/transfer/`; rows and figures are in `results/representation/character-estimators/{9d4ea7d,transfer-9d4ea7d}/` (untracked).
+v3 (`9d4ea7d`, post-scoring) was rescored on fresh seeds: 4,980 recordings, with long-run truths reused from `7a3ace0` except N, which was recomputed. The transfer family was run on its pre-registered protocol: 1,500 recordings. Both ran locally in about 30 minutes. Tables are in `tables/` and `tables/transfer/`; rows and figures are in `results/estimators/{9d4ea7d,transfer-9d4ea7d}/` (untracked).
 
 | Axis | First family, v3 | Transfer family |
 |---|---|---|
@@ -234,7 +234,7 @@ At θ = 0.4 and 0.8 these give 0.29 and 0.76 for telegraph and 0.30 and 0.54 for
 - **First family:** 4,980 recordings. Long-run truths were reused from `9d4ea7d`, with V recomputed. 22 minutes on 9 local cores.
 - **Transfer family:** 1,500 recordings, 7 minutes.
 
-Tables are in `tables/` and `tables/transfer/`; rows and figures are in `results/representation/character-estimators/{ae7ae2f,transfer-ae7ae2f}/` (untracked).
+Tables are in `tables/` and `tables/transfer/`; rows and figures are in `results/estimators/{ae7ae2f,transfer-ae7ae2f}/` (untracked).
 
 | V | C1 long run | C2 own axis | C3 selectivity | C4 strength | C5 null |
 |---|---|---|---|---|---|
@@ -289,5 +289,5 @@ Each test system moves one knob with the others at 0. That shows each axis ignor
 
 Run with:
 
-    python -m research.representation.character_estimators.factorial run --out results/representation/character-estimators/factorial-<commit>
-    python -m research.representation.character_estimators.factorial analyse --out results/representation/character-estimators/factorial-<commit>
+    python -m research.estimators.factorial run --out results/estimators/factorial-<commit>
+    python -m research.estimators.factorial analyse --out results/estimators/factorial-<commit>

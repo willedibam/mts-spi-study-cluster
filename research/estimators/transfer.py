@@ -1,7 +1,7 @@
 """Transfer validation: the same estimators and criteria on a second family of test systems (README.md).
 
-    python -m research.representation.character_estimators.transfer run --out <dir> [--offset 0] [--workers 8]
-    python -m research.representation.character_estimators.transfer analyse --out <dir>
+    python -m research.estimators.transfer run --out <dir> [--offset 0] [--workers 8]
+    python -m research.estimators.transfer analyse --out <dir>
 
 The family (systems.make_transfer) avoids the first family's construction: narrowband signals with white private
 noise, a nonlinearity outside the Volterra basis, conventional delays, a smooth time-varying delay, switching
@@ -22,9 +22,9 @@ for _v in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'VECLIB
 import numpy as np
 import pandas as pd
 
-from research.representation.character_estimators import validate as V
-from research.representation.character_estimators.estimators import estimate
-from research.representation.character_estimators.systems import OWN_TRANSFER, TRANSFER, make_transfer, transfer_truth
+from research.estimators import validate as V
+from research.estimators.estimators import estimate
+from research.estimators.systems import OWN_TRANSFER, TRANSFER, make_transfer, transfer_truth
 
 HERE = Path(__file__).parent
 LEVELS = {s: (0, .25, .5, .75, 1.) if s == 'direction_nl' else (0, .2, .4, .6, .8) for s in TRANSFER}
@@ -94,7 +94,7 @@ def analyse(out):
         summ.to_csv(d / 'summary.csv', index=False)
         v.to_csv(d / 'verdicts_own.csv', index=False)
         sel.to_csv(d / 'verdicts_axis.csv', index=False)
-    from research.representation.character_estimators import figure as F
+    from research.estimators import figure as F
     F.style()
     F.response(summ, out / 'figures', TRANSFER, OWN_TRANSFER, TITLE, name='transfer_response')
     with pd.option_context('display.width', 200, 'display.max_columns', 20):

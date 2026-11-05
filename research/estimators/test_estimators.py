@@ -1,8 +1,8 @@
 """Fast checks of the estimators' defining properties (the full construction validation is validate.py)."""
 import numpy as np
 
-from research.representation.character_estimators.estimators import estimate
-from research.representation.character_estimators.systems import make
+from research.estimators.estimators import estimate
+from research.estimators.systems import make
 
 MAIN = ('nonlinearity', 'lag', 'variability', 'direction')
 
@@ -29,7 +29,7 @@ def test_variability_reads_on_off_and_phase_drift_and_not_fixed_phase():
 def test_whitened_channel_has_no_mean_when_end_points_differ():
     """circular() leaves a mean when the end points differ; whitening must not amplify it (it swamped the
     cross-correlation that finds the fixed delay, giving a wrong delay and a spurious variability)."""
-    from research.representation.character_estimators.estimators import circular, whiten
+    from research.estimators.estimators import circular, whiten
     x, _ = make('lag', 0., 4000, np.random.default_rng(5))
     x[-1] += 3.
     assert abs(whiten(circular(x)).mean()) < 1e-9
