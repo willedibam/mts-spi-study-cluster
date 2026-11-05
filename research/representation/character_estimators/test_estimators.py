@@ -4,7 +4,7 @@ import numpy as np
 from research.representation.character_estimators.estimators import estimate
 from research.representation.character_estimators.systems import make
 
-MAIN = ('nonlinearity', 'lag', 'lag_variability', 'intermittency', 'direction')
+MAIN = ('nonlinearity', 'lag', 'variability', 'direction')
 
 
 def test_monotone_distortion_leaves_main_axes_unchanged():
@@ -20,10 +20,10 @@ def test_lag_share_is_sin_squared_phase():
         assert abs(estimate(x, y, floor=False)['lag'] - theta) < .03
 
 
-def test_on_off_coupling_gives_intermittency_one_minus_fraction():
-    x, y = make('intermittency', .6, 2 ** 15, np.random.default_rng(2))
-    e = estimate(x, y, floor=False)
-    assert abs(e['intermittency'] - .6) < .05 and e['lag_variability'] < .05
+def test_variability_reads_on_off_and_phase_drift_and_not_fixed_phase():
+    for system, theta, want in (('intermittency', .6, .6), ('lag_variability', .6, .6), ('lag', .6, 0.)):
+        x, y = make(system, theta, 2 ** 15, np.random.default_rng(2), strength=.4 if system == 'intermittency' else None)
+        assert abs(estimate(x, y, floor=False)['variability'] - want) < .05
 
 
 def test_independent_pair_is_undefined():

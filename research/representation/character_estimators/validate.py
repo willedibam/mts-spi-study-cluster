@@ -34,12 +34,12 @@ REPS_MAIN, REPS_NUISANCE, REPS_NULL = 40, 20, 100
 LONG_T, LONG_SEEDS, LONG_SHIFTS = 2 ** 17, 3, 19
 # Construction values of every axis at base and strength/T/spec conditions (NaN: no dependence of that kind).
 CONSTRUCTION = dict(
-    linearity=dict(nonlinearity_raw='theta', lag=0., lag_variability=0., intermittency=0., direction=np.nan),
-    lag=dict(nonlinearity=0., nonlinearity_raw=0., lag='theta', lag_variability=0., intermittency=0.),
-    lag_variability=dict(nonlinearity=0., nonlinearity_raw=0., lag=.5, lag_variability='theta', intermittency=0.),
+    linearity=dict(nonlinearity_raw='theta', lag=0., variability=0., direction=np.nan),
+    lag=dict(nonlinearity=0., nonlinearity_raw=0., lag='theta', variability=0.),
+    lag_variability=dict(nonlinearity=0., nonlinearity_raw=0., lag=.5, variability='theta'),
     # forward N is 0 on the raw scale (E[y | x] = q a x); normal scores bend it slightly, so main N uses the long run
-    intermittency=dict(nonlinearity_raw=0., lag=0., lag_variability=0., intermittency='theta', direction=np.nan),
-    direction=dict(nonlinearity=0., nonlinearity_raw=0., lag_variability=0., intermittency=0.))
+    intermittency=dict(nonlinearity_raw=0., lag=0., variability='theta', direction=np.nan),
+    direction=dict(nonlinearity=0., nonlinearity_raw=0., variability=0.))
 KEEPS_CONSTRUCTION = ('base', 'strength', 'T', 'spec', 'delay', 'ampmod')
 # a fixed delay adds phase (lag share) and precedence (direction); amplitude modulation can change Granger fits
 NOT_KEPT = dict(delay=('lag', 'direction'), ampmod=('direction',))
@@ -115,7 +115,7 @@ def run(out, offset, workers, reps=None, long=(LONG_T, LONG_SEEDS, LONG_SHIFTS),
             if refresh:
                 new = pd.DataFrame(pool.map(_truth, [tk[:5] + ((long[0], long[1], 0),) for tk in truth_tasks], chunksize=1))
                 key = ['system', 'theta', 'condition']
-                t = t.drop(columns=[f'{a}_long' for a in refresh]).merge(
+                t = t.drop(columns=[f'{a}_long' for a in refresh], errors='ignore').merge(
                     new[key + [f'{a}_long' for a in refresh]], on=key, how='left')
         else:
             t = pd.DataFrame(pool.map(_truth, truth_tasks, chunksize=1))

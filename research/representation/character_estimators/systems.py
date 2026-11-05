@@ -9,9 +9,9 @@ independent copy; sigma scales the private noise in y.
 - lag:             y = cos(phi) x + sin(phi) H[x] + sigma eta, sin^2 phi = theta (H: Hilbert transform).
                    Coherence magnitude is fixed; lag share = theta.
 - lag_variability: as lag, with phi = pi/4 + s delta_k constant within each W-sample segment, delta_k ~ N(0, 1),
-                   1 - exp(-s^2) = theta. Local coupling is unchanged; lag variability = theta.
+                   1 - exp(-s^2) = theta. Local coupling is unchanged; variability = theta.
 - intermittency:   y = a_k x + sigma eta, coupling on in a fraction q = 1 - theta of segments, with a and sigma
-                   set so Pearson r and var(y) are fixed. Intermittency = theta.
+                   set so Pearson r and var(y) are fixed. Variability = theta.
 - direction:       bivariate VAR, own AR(1) 0.5, lag-2 cross coupling c split (1 +- theta)/2 between directions.
 - independent:     x and eta, independent.
 
@@ -30,7 +30,7 @@ from research.representation.character_estimators.estimators import W
 SPECS = dict(ar1=('ar1', .8), broad=('ar1', .5), slow=('ar1', .95), narrow=('ar2', (.95, .1)),
              vslow=('ar2', (.99, .02)))
 SYSTEMS = ('linearity', 'lag', 'lag_variability', 'intermittency', 'direction')
-OWN = dict(linearity='nonlinearity_raw', lag='lag', lag_variability='lag_variability', intermittency='intermittency',
+OWN = dict(linearity='nonlinearity_raw', lag='lag', lag_variability='variability', intermittency='variability',
            direction='direction')
 BURN = 1000
 
@@ -120,7 +120,7 @@ def analytic(system, theta):
 # integrals over the known spectrum (``transfer_truth``), not from the estimators.
 
 TRANSFER = ('rectifier', 'delay', 'warp', 'telegraph', 'direction_nl')
-OWN_TRANSFER = dict(rectifier='nonlinearity_raw', delay='lag', warp='lag_variability', telegraph='intermittency',
+OWN_TRANSFER = dict(rectifier='nonlinearity_raw', delay='lag', warp='variability', telegraph='variability',
                     direction_nl='direction')
 F0 = .1          # carrier of the 'narrow' spec, cycles per sample
 WARP_TAU = 2 * W  # correlation time of the time-varying delay, samples
@@ -203,14 +203,31 @@ def _coherence_narrow(sigma, n=20000):
     return f, S / (S + sigma ** 2)
 
 
+def _quarter_pairs(kernel):
+    """Mean of kernel(|t - t'|) over sample pairs in distinct quarters of a W-sample segment: the resolution at
+    which variability measures local coupling power (estimators._local)."""
+    from research.representation.character_estimators.estimators import QUARTERS
+    t, q = np.arange(W // 4), W // 4
+    return float(np.mean([kernel(np.abs((b * q + t)[None] - (a * q + t)[:, None])).mean() for a, b in QUARTERS]))
+
+
 def transfer_truth(system, theta, sigma=1.):
-    """Population value of the system's own axis, from integrals over the coherence spectrum. None where
-    there is no closed form (direction_nl)."""
+    """Population value of the system's own axis, from the generator and the axis definition (integrals over
+    the coherence spectrum, and for variability the coupling's autocorrelation at the quarter resolution). None
+    where there is no closed form (direction_nl)."""
     f, coh = _coherence_narrow(sigma)
-    if system in ('rectifier', 'telegraph'):
+    if system == 'rectifier':
         return theta
     if system == 'delay':
         return float((coh * np.sin(2 * np.pi * f * delay_for(theta)) ** 2).sum() / coh.sum())
-    if system == 'warp':  # segments far enough apart that their delays are independent
-        return float(1 - (coh * np.exp(-(2 * np.pi * f * jitter_for(theta)) ** 2)).sum() / coh.sum())
+    if system == 'telegraph':  # E a(t) a(t + d) = g^2 (q^2 + q (1 - q) exp(-d / tau)), tau = ON_DWELL theta
+        if theta == 0:
+            return 0.
+        q = 1 - theta
+        return 1 - q ** 2 / (q ** 2 + q * (1 - q) * _quarter_pairs(lambda d: np.exp(-d / (ON_DWELL * theta))))
+    if system == 'warp':  # E exp(i 2 pi f (tau(t) - tau(t + d))) = exp(-v (1 - rho(d))), v = (2 pi f s)^2
+        v = (2 * np.pi * f[::50] * jitter_for(theta)) ** 2
+        c = coh[::50]
+        local = np.array([_quarter_pairs(lambda d: np.exp(-u * (1 - np.exp(-d / WARP_TAU)))) for u in v])
+        return float(1 - (c * np.exp(-v)).sum() / (c * local).sum())
     return None

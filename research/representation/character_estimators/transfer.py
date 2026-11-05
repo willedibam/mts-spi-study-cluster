@@ -44,11 +44,11 @@ def _analytic(system):
 
 NAN = np.nan
 CONSTRUCTION = dict(
-    rectifier=dict(nonlinearity_raw='theta', lag=0., lag_variability=0., intermittency=0., direction=NAN),
-    delay=dict(nonlinearity=0., nonlinearity_raw=0., lag=_analytic('delay'), lag_variability=0., intermittency=0.),
-    warp=dict(nonlinearity=0., nonlinearity_raw=0., lag=0., lag_variability=_analytic('warp'), intermittency=0.),
-    telegraph=dict(nonlinearity_raw=0., lag=0., lag_variability=0., intermittency='theta', direction=NAN),
-    direction_nl=dict(lag_variability=0., intermittency=0.))
+    rectifier=dict(nonlinearity_raw='theta', lag=0., variability=0., direction=NAN),
+    delay=dict(nonlinearity=0., nonlinearity_raw=0., lag=_analytic('delay'), variability=0.),
+    warp=dict(nonlinearity=0., nonlinearity_raw=0., lag=0., variability=_analytic('warp')),
+    telegraph=dict(nonlinearity_raw=0., lag=0., variability=_analytic('telegraph'), direction=NAN),
+    direction_nl=dict(variability=0.))
 OWN = dict(OWN_TRANSFER, rectifier=('nonlinearity', 'nonlinearity_raw'))
 
 

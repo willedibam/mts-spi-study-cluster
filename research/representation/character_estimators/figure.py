@@ -9,14 +9,14 @@ import numpy as np
 from mtsspi.figures import save, style
 from research.representation.character_estimators.systems import OWN, SYSTEMS
 
-ROWS = ('nonlinearity', 'lag', 'lag_variability', 'intermittency', 'direction')
+ROWS = ('nonlinearity', 'lag', 'variability', 'direction')
 LABEL = dict(nonlinearity='nonlinearity $N$', nonlinearity_raw='$N$ (raw scale)', lag='lag share $\\ell$',
-             lag_variability='lag variability $V$', intermittency='intermittency $S$', direction='directionality $D$ (aux.)')
+             variability='variability $V$', direction='directionality $D$ (aux.)')
 TITLE = dict(linearity='knob: nonlinear share', lag='knob: quadrature share', lag_variability='knob: phase drift',
              intermittency='knob: off-fraction', direction='knob: one-way share')
 # Okabe-Ito
-COLOUR = dict(nonlinearity='#0072B2', nonlinearity_raw='#56B4E9', lag='#E69F00', lag_variability='#009E73',
-              intermittency='#CC79A7', direction='#D55E00')
+COLOUR = dict(nonlinearity='#0072B2', nonlinearity_raw='#56B4E9', lag='#E69F00', variability='#009E73',
+              direction='#D55E00')
 ENOUGH = .8
 
 
@@ -33,7 +33,7 @@ def _band(ax, m, axis, ls='-'):
 def response(summ, out, systems=SYSTEMS, own=None, titles=TITLE, name='response', raw_with='nonlinearity'):
     own = own or dict(OWN, linearity='nonlinearity')
     base = summ[summ.condition == 'base']
-    fig, ax = plt.subplots(len(ROWS) + 1, len(systems), figsize=(11, 12.5), sharex='col', squeeze=False, constrained_layout=True)
+    fig, ax = plt.subplots(len(ROWS) + 1, len(systems), figsize=(11, 10.5), sharex='col', squeeze=False, constrained_layout=True)
     for j, s in enumerate(systems):
         b = base[base.system == s]
         a = ax[0, j]

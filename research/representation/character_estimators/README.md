@@ -1,4 +1,4 @@
-# Character estimators: five per-edge axes of dependence character
+# Character estimators: per-edge axes of dependence character
 
 Question: can the character of a pairwise dependence, as opposed to its strength, be measured directly, edge by edge, on interpretable axes on [0, 1], and does each estimator respond to its named property and to nothing else in systems where the truth is known by construction?
 
@@ -22,14 +22,13 @@ Both channels are first mapped to normal scores, so every main axis is invariant
 |---|---|---|
 | nonlinearity N (linear ↔ nonlinear), directional | 1 − Var(best linear predictor of y from x) / Var(best predictor of y from x). The reverse, y from x swapped, is reported as `nonlinearity_yx` (v3) | Cross-validated R² (5 contiguous folds) of a linear window (±3 lags around the strongest first- or second-order lag within ±10) against a second-order Volterra model with cubic diagonal. Each R² is corrected for its model's out-of-sample cost, measured on the circular shifts (v3) |
 | lag share ℓ (instantaneous ↔ quadrature) | Σ_f Im(C)² / Σ_f \|C\|², C the coherency: the share of linear coupling that zero-lag mixing cannot produce. Equals sin²φ for a constant phase φ. | Multitaper cross-spectra of W-sample segments, with squares estimated from distinct segments only |
-| lag variability V (fixed ↔ variable lag) | 1 − (Σ_f \|E c\|² / Σ_f E\|c\|²) / ((E P)² / E P²), where c is a segment's cross-spectrum, after removing the fixed delay and dividing each quarter by its own power, and P = Σ_f \|c\|² its coupling power. Equals 1 − E cos(phase drift between segments) when the gain is constant or on/off. A continuously varying gain makes it read low. Warpedness is a variable lag, so it is included here. | Per-segment quarters and distinct segments, so every product multiplies time-disjoint estimates |
-| intermittency S (steady ↔ intermittent) | 1 − (E P)² / E P². Equals 1 − q for coupling present in a fraction q of segments. Common amplitude modulation of both channels changes power, not coupling, and does not count. | As for V |
+| variability V (steady ↔ time-varying), v4 | 1 − Σ_f \|E c\|² / Σ_f E\|c\|²: the share of the local coupling power that the recording's average coupling does not reproduce. c is a segment's cross-spectrum, after removing the fixed delay and dividing each quarter by its own power. Change in strength and change in timing both count: V = 1 − q for coupling present in a fraction q of segments, and V = 1 − \|E e^{iφ}\|² for phase drift. Warping is a time-varying lag, so it counts. Common amplitude modulation of both channels changes power, not coupling, and does not count. | E\|c\|² from products of distinct quarters of a segment, \|E c\|² from products of distinct segments, so every product multiplies time-disjoint estimates |
 | directionality D (symmetric ↔ one-way), *auxiliary* | \|(G_xy − G_yx) − (G̃_xy − G̃_yx)\| / (G_xy + G_yx + G̃_xy + G̃_yx). G is linear Granger causality (order 4) minus its null mean, and ~ marks the time-reversed pair. Asymmetry that time reversal does not flip does not count. That includes unequal noise and instantaneous coupling, for which D is undefined. | OLS |
 
 - **Estimates are not clipped.** Population values lie in [0, 1], but a per-edge estimate can fall slightly outside it by noise; clipping would bias every average upward. `delay` (samples, the peak of the cross-correlation within ±20) is reported as an auxiliary coordinate.
 - **Directionality is auxiliary.** It is a normalised form of time-reversed Granger causality, which already exists, so it opens no new question. It is computed and scored, but it is outside the core set.
-- **Segment length W = 100 samples.** This is the timescale V and S refer to: lag drift or coupling change slower than W and faster than the recording. Lag jitter faster than W is equivalent to a low-pass filter and reads as weaker coupling. That is a property of the data, not an estimator failure.
-- **Spectral axes run on whitened channels.** ℓ, V and S are computed on channels whitened by a zero-phase filter, which leaves coherency unchanged.
+- **Segment length W = 100 samples.** This is the timescale V refers to: coupling change slower than W and faster than the recording. E\|c\|² pairs quarters 25 to 75 samples apart, so it is the local coupling power at that resolution. Change faster than that reads partly as weaker coupling, not as variability. That is a property of the definition, and the transfer truths include it.
+- **Spectral axes run on whitened channels.** ℓ and V are computed on channels whitened by a zero-phase filter, which leaves coherency unchanged.
 - **Prior art for parts of these definitions (cited, not claimed as new):**
   - Gaussian-surrogate MI shares for nonlinearity ([Hlinka et al. 2011](https://pmc.ncbi.nlm.nih.gov/articles/PMC4139498));
   - Pearson's correlation ratio, for the predictor-variance form;
@@ -205,3 +204,24 @@ v3 (`9d4ea7d`, post-scoring) was rescored on fresh seeds: 4,980 recordings, with
 
   The first family hid both: x and the noise shared a spectrum, and the switches were aligned to the quarters.
 - **Candidate redesign, not done:** define V and S on the local gain (the transfer function S_xy/S_xx) instead of local coherency. The gain is constant under steady coupling whatever the envelope or noise level, keeps the phase that V needs, and is unchanged by common amplitude modulation. Like N it is directional. Its noise grows where x's local power is small, so the instability needs its own check.
+
+## v4: lag variability and intermittency merged into variability (6 November 2026)
+
+This follows the v3 and transfer scoring, so it is post-scoring. It is rescored on fresh seeds (`--offset 3` for the first family, `--offset 2` for the transfer family).
+
+**Why V and S are merged, not repaired.**
+- **The instability is in the split, not in the coupling estimates.** In v3, 1 − (1 − V)(1 − S) = 1 − G/L2 exactly: the fourth moment L4 cancels. In a prototype on fresh seeds (40 recordings per cell, T = 2,000), that combination had SD ≤ 0.2 in every system tried, against up to 151 for S. In long runs (T = 2¹⁶, 3 seeds) it was within 0.03 of the truths of the base systems of both families, including the resolution-aware truths below. One exception: on/off coupling behind a 10-sample delay read 0.50 ± 0.16 against 0.40.
+- **Separating "how much" from "at what phase" needs a fourth moment.** For a local gain c = a·e^{iφ}, the second-order quantities (E\|c\|², E c, and the pseudo-moment E c²) separate magnitude from phase only to first order in the dispersion, or under a distributional assumption (wrapped-normal phase). An exact split needs E\|c\|⁴, or a nonlinear function such as E\|c\| that has no unbiased estimator. This is inferred from the moment structure, not a cited result.
+- **A 25-sample quarter cannot support a fourth moment at T = 2,000.** With weak coupling, each local estimate has noise comparable to its signal, and the fourth moment of a 25-sample estimate is mostly noise. Longer quarters would trade away time resolution. The target is not small in real data; its estimate is.
+- **Tried and rejected:**
+  - *Local gain on the fixed prediction* (one complex coefficient per quarter, by regression on the cross-validated linear prediction and its Hilbert transform). It removes the local-SNR confound but projects onto the mean coupling, which vanishes when the phase varies a lot: the long run reads 0.51 against 0.80 for phase drift.
+  - *Unwhitened channels.* These avoid the time smear of whitening narrowband signals, but give heavy tails in the first family.
+  - *Gain normalisation* (dividing by local x power). This is heavy-tailed when the local power fades.
+
+**Transfer truths now include the resolution** (`systems.transfer_truth`). The pre-registered truths ignored the fact that E\|c\|² is estimated from quarters 25 to 75 samples apart. They were the long-dwell limit for telegraph and the independent-delay limit for warp, which no estimator at this resolution can reach. The new truths come from the generators and the definition, not from the estimators:
+- *telegraph:* 1 − q² / (q² + q(1 − q)·m), with m the mean of e^{−\|t − t′\|/τ} over sample pairs in distinct quarters, and τ = 2W·θ the chain's relaxation time;
+- *warp:* 1 − ∫ \|C\|² e^{−v} df / ∫ \|C\|² m(f) df, with v = (2πf·s)² and m(f) the same pair mean of e^{−v(1 − ρ)}, where ρ(d) = e^{−d/2W}.
+
+At θ = 0.4 and 0.8 these give 0.29 and 0.76 for telegraph and 0.30 and 0.54 for warp. The first family is unchanged: segment-constant coupling gives V = θ exactly.
+
+**What is lost.** V does not say whether the coupling varies in strength or in timing. A long-recording auxiliary split (the v3 participation ratio) is possible, but it is not scored here.
