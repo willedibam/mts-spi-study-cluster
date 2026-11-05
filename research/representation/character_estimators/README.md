@@ -97,7 +97,7 @@ The smoke tests are not part of the scored run.
 
 ## Running it
 
-Local; no pyspi.
+No pyspi. A few minutes locally with reduced replicates; the full scored run took 52 CPU-hours, so it runs on Gadi (`jobs/validate.pbs`) and is analysed locally.
 
 ```bash
 OMP_NUM_THREADS=1 python -m research.representation.character_estimators.validate run --out results/representation/character-estimators/<tag> --workers 9
@@ -125,6 +125,28 @@ v1 (`f8dcc82`) was not scored: its run was stopped once the adversarial report s
 
 **Envelope coupling (value ↔ envelope) is deferred.** Its simple Gaussian-reference form, 1 − Σ|C|² / Σ ρ_power, reads a bursting source mixed linearly into both channels as envelope coupling. That is exactly the volume-conduction case it was meant to be robust to, and robust versions (leakage-corrected envelope correlation) are a research problem of their own.
 
-## Status
+## Status: v2 scored (5 November 2026)
 
-v2 pre-registered; scoring on Gadi.
+v2 (`7a3ace0`) scored on fresh seeds: 204 conditions, 4,980 recordings, on Gadi (job 183193511: 77 min on 48 cores, 52 CPU-hours, 123 SU; `jobs/validate.pbs`). Tables are in `tables/`. `rows.csv` and `truth.csv` are kept untracked in `results/representation/character-estimators/7a3ace0/` and on Gadi scratch; `validate analyse` regenerates everything else from them.
+
+Against the pre-registered criteria, only the lag share passes everything. "Systematic" below means the median over recordings is also off by more than 0.10, so the bias is not driven by a few outliers.
+
+| Axis | C1 long run | C2 own-axis accuracy | C3 selectivity | C4 strength | C5 null |
+|---|---|---|---|---|---|
+| ℓ | pass | pass (bias ≤ 0.015, SD ≤ 0.03) | pass (worst 0.05) | pass | pass |
+| N | — | pass (bias ≤ 0.03) | **fail**: 40 of 152 off-axis cells systematic | fail: −0.19 at r ≈ 0.3, θ = 0.2 | pass |
+| N raw | pass | pass | **fail**: 38 of 142 systematic | fail: −0.19, same cell | pass |
+| V | pass | fail: one recording at −3.2 (θ = 0.8) gives SD 0.66; median 0.80 | fail: 8 of 134 systematic | pass | pass |
+| S | pass | fail: defined in 78% at θ = 0.8 (needs 80%); bias ≤ 0.04 | fail: 2 of 139 systematic | pass on bias; defined in 45% at r = 0.2 | pass |
+| D (aux.) | — | pass | fail: 17 of 90 systematic, up to +0.33 | pass | defined in 23% where its truth is undefined |
+
+For independent pairs, every axis is defined in at most 8% of recordings, for all five spectra (nominal 5%).
+
+**Diagnosis.**
+
+- **N is unstable whenever the windowed models explain little of y.** N = 1 − R²_lin / R²_full divides two small cross-validated R²s. The full model has 35 more terms than the linear one, so out of sample it loses roughly 35 / 1,600 ≈ 0.02 of R², and more with heavy-tailed product regressors. When R²_full is about 0.05 — weak coupling, or lag and phase-drift coupling that a ±3-sample window cannot represent — the ratio goes strongly negative: median −0.3 to −0.5, with a tail to −50. The arithmetic matches the sign and size, but this cause has not been isolated by an experiment. The candidate fix is the one D already uses: subtract the expected out-of-sample cost of the extra terms, and gate definedness on that corrected gain.
+- **Main N reads on/off linear coupling as nonlinear (+0.50 at an 80% off-fraction); raw N does not (median about 0).** The inferred mechanism is that the normal-score transform of a heavy-tailed scale mixture is itself a nonlinear map. So the main/raw disagreement is informative, not noise.
+- **V and S are accurate on their own axes; they fail at the extremes.** The failures are one outlier, definedness at an 80% off-fraction, and slow (AR 0.95) signals with mostly nonlinear coupling, where the coherent part is tiny: S reads +0.62 and V reads −0.67 there.
+- **D is biased by measurement noise on the driver and by weak coupling.** This is a known weakness of Granger-type precedence, and the time-reversal correction does not remove it here.
+
+The validation systems share one generator family with the definitions. Passing them shows construction validity; it does not show transfer. A second family, such as coupled nonlinear oscillators, is the open test.

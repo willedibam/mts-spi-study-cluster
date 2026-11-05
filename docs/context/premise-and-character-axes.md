@@ -48,18 +48,14 @@ The future-direction axes below now have a first implementation that stays withi
 
 Seven per cent of every stored z vector is identically zero (antisymmetric × symmetric statistics).
 
-## Future direction: dedicated character estimators (axes inside z now exist, above)
+## Dedicated character estimators (built and scored, 5 November 2026)
 
-A joint character–strength representation is a proposed design, not an established decomposition of existing methods. Character and strength need operational definitions; neither is generally a single axis or independent of the other.
+[`research/representation/character_estimators/`](../../research/representation/character_estimators/README.md) holds direct per-edge estimators on [0, 1]. They are defined on the process and use no SPI–SPI features (a user constraint). Each axis is the share of a pair's dependence that needs one named property, is strength-free by construction, and is undefined without dependence (circular-shift floor). The axes are nonlinearity N (plus a raw-scale variant), lag share ℓ, lag variability V and intermittency S, with directionality D as an auxiliary.
 
-The proposal is to build named axes on [0, 1] that are directly interpretable — linear to nonlinear, fixed to variable lag, frequency variability — by fitting, per channel pair, a restricted model and a flexible one and scoring their agreement (for linearity: a Gaussian model against a flexible or learned one), then aggregating over pairs. Each axis would replace the correlation aggregator in z_ab with a model-comparison score chosen to expose one quality.
-
-Open design questions (assistant's assessment, 2026-10-06):
-
-- A model-agreement score must be calibrated against estimator variance, or short or noisy recordings read as "linear" by default. Established precedents exist per axis and should anchor it: surrogate-data tests and Gaussian-versus-nonparametric MI gaps for nonlinearity, lagged-versus-instantaneous decompositions for lag.
-- Strength and character are not orthogonal: at weak coupling every character score is undefined in practice. The representation needs an explicit rule for pairs below a strength floor.
-- Candidate further axes: instantaneous to lagged; symmetric to directed; within-frequency to cross-frequency (the locking benchmark is a ready test bed); amplitude- to phase-mediated; stationary to intermittent; pairwise to higher-order.
-- Validation should reuse generators with a known character parameter before any real-data claim.
+- **Scored result (v2, `7a3ace0`, pre-registered C1–C5, 4,980 recordings):** every axis tracks its own knob, with bias ≤ 0.04 in the base cells. Only ℓ passes every criterion. N fails selectivity badly (about a quarter of off-axis cells systematic, mostly negative). V and S fail only at their extremes and for slow, mostly nonlinear coupling. D is biased by noise on the driver. Diagnosis and the per-criterion table are in the README Status section.
+- **Main open problem:** N = 1 − R²_lin / R²_full is unstable when R²_full is small, because of the full model's out-of-sample cost (inferred from arithmetic, not isolated). Main N also reads on/off linear coupling as nonlinear, through the normal-score transform; raw N does not.
+- **Decided:** one adversarial round with a triage rule (fix only population-level, plausible, interpretation-changing breaks). Envelope coupling is deferred, because its simple form reads volume conduction as envelope coupling. ℓ is a phase share, not a delay.
+- **Open:** a fix for N (needs fresh-seed rescoring, and is post-scoring, so label it as such); a second generator family (all test systems share the definitions' model class); application to data. Cost: 0.9 s per pair with the floor at T = 2,000, roughly linear in T.
 
 ## Paper framing and application assessment, 2026-10-12
 

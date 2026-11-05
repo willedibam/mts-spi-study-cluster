@@ -1,0 +1,7 @@
+system,axis,role,C1_long_run_matches_construction,C2_accuracy,C2_worst_bias,C2_worst_sd,C2_min_defined,C4_strength,C4_worst_bias,C4_min_defined
+linearity,nonlinearity,core,,True,0.025705616519664964,0.10172893395023425,1.0,False,0.1914140048913746,1.0
+linearity,nonlinearity_raw,core,True,True,0.035238475845729034,0.09919798918099675,1.0,False,0.19086035599437712,1.0
+lag,lag,core,True,True,0.014826311489369137,0.02666153281593338,1.0,True,0.02155337202160068,1.0
+lag_variability,lag_variability,core,True,False,0.09737903036794227,0.6554301980396362,0.95,True,0.0654943008794785,1.0
+intermittency,intermittency,core,True,False,0.04323622724267151,0.1278048457739777,0.775,True,0.04531697450366626,0.45
+direction,direction,auxiliary,,True,0.07502351433540813,0.079073638356762,1.0,True,0.07184935256919461,1.0
