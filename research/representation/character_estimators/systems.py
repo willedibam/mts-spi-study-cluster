@@ -111,3 +111,106 @@ def _var(theta, T, rng, c, a=.5):
 def analytic(system, theta):
     """Closed-form value of the system's own axis at base settings, where one exists."""
     return None if system == 'direction' else theta
+
+
+# ---- transfer family ------------------------------------------------------------------------------------
+# Built so the generators do not share the estimators' construction: oscillatory (narrowband) signals with
+# broadband private noise, a nonlinearity outside the Volterra basis, conventional (time-domain) delays, a
+# smooth time-varying delay, and switching times independent of the W-sample grid. Truths come from
+# integrals over the known spectrum (``transfer_truth``), not from the estimators.
+
+TRANSFER = ('rectifier', 'delay', 'warp', 'telegraph', 'direction_nl')
+OWN_TRANSFER = dict(rectifier='nonlinearity_raw', delay='lag', warp='lag_variability', telegraph='intermittency',
+                    direction_nl='direction')
+F0 = .1          # carrier of the 'narrow' spec, cycles per sample
+WARP_TAU = 2 * W  # correlation time of the time-varying delay, samples
+ON_DWELL = 2 * W  # mean dwell of the coupled state, samples
+
+
+def _shift(v, d):
+    """Delay by d samples (fractional allowed): exact for a band-limited signal."""
+    f = np.fft.rfftfreq(len(v))
+    return np.fft.irfft(np.fft.rfft(v) * np.exp(-2j * np.pi * f * d), n=len(v))
+
+
+def delay_for(theta):
+    """Delay whose phase at the carrier gives a quadrature share theta: sin^2(2 pi F0 d) = theta."""
+    return np.arcsin(np.sqrt(theta)) / (2 * np.pi * F0)
+
+
+def jitter_for(theta):
+    """SD of the time-varying delay with 1 - exp(-(2 pi F0 s)^2) = theta at the carrier."""
+    return np.sqrt(-np.log1p(-theta)) / (2 * np.pi * F0)
+
+
+def make_transfer(system, theta, T, rng, strength=None):
+    """(x, y): x a narrowband oscillation (spec 'narrow'), eta white; ``strength`` is sigma, except Pearson r
+    for telegraph and c for direction_nl."""
+    from scipy.interpolate import CubicSpline
+    if system == 'direction_nl':
+        return _var_nl(theta, T, rng, .6 if strength is None else strength)
+    x, eta = ar(T, 'narrow', rng), rng.standard_normal(T)
+    sigma = 1. if strength is None else strength
+    if system == 'independent':
+        return x, eta
+    if system == 'rectifier':
+        # |x| is even, so uncorrelated with x at every lag; standardised, raw nonlinearity = theta exactly. For
+        # an oscillation it carries the envelope and the second harmonic: cross-frequency coupling.
+        h = (np.abs(x) - np.sqrt(2 / np.pi)) / np.sqrt(1 - 2 / np.pi)
+        return x, np.sqrt(1 - theta) * x + np.sqrt(theta) * h + sigma * eta
+    if system == 'delay':
+        return x, _shift(x, delay_for(theta)) + sigma * eta
+    if system == 'warp':
+        z = signal.lfilter([np.sqrt(1 - np.exp(-2 / WARP_TAU))], [1, -np.exp(-1 / WARP_TAU)], rng.standard_normal(T + BURN))[BURN:]
+        t = np.arange(T)
+        return x, CubicSpline(t, x)(np.clip(t - jitter_for(theta) * z, 0, T - 1)) + sigma * eta
+    if system == 'telegraph':
+        r, q = (.4 if strength is None else strength), 1 - theta
+        on = np.ones(T, bool)
+        if theta > 0:  # two-state Markov chain, off-fraction theta, switching independent of the W grid
+            p_off, state = 1 / ON_DWELL, rng.random() < q
+            p_on = p_off * q / theta
+            u = rng.random(T)
+            for i in range(T):
+                on[i] = state
+                state = (u[i] >= p_off) if state else (u[i] < p_on)
+        a = np.where(on, r / q, 0.)
+        return x, a * x + np.sqrt(1 - r ** 2 / q) * eta
+    raise ValueError(system)
+
+
+def _var_nl(theta, T, rng, c, a=.5):
+    """As _var, with the cross terms through tanh: nonlinear directed coupling."""
+    cxy, cyx = c * (1 + theta) / 2, c * (1 - theta) / 2
+    n = T + BURN
+    e = rng.standard_normal((n, 2))
+    z = np.zeros((n, 2))
+    for t in range(2, n):
+        z[t, 0] = a * z[t - 1, 0] + cyx * np.tanh(2 * z[t - 2, 1]) + e[t, 0]
+        z[t, 1] = a * z[t - 1, 1] + cxy * np.tanh(2 * z[t - 2, 0]) + e[t, 1]
+    z = z[BURN:]
+    return z[:, 0], z[:, 1]
+
+
+def _coherence_narrow(sigma, n=20000):
+    """Frequencies in (0, 1/2) and the squared coherence S_x / (S_x + sigma^2) of x with x + sigma eta."""
+    kind, (r, f0) = SPECS['narrow']
+    a = [1, -2 * r * np.cos(2 * np.pi * f0), r ** 2]
+    h = signal.lfilter([1], a, np.r_[1, np.zeros(4999)])
+    f = (np.arange(n) + .5) / (2 * n)
+    _, H = signal.freqz([1], a, worN=2 * np.pi * f)
+    S = np.abs(H) ** 2 / (h ** 2).sum()
+    return f, S / (S + sigma ** 2)
+
+
+def transfer_truth(system, theta, sigma=1.):
+    """Population value of the system's own axis, from integrals over the coherence spectrum. None where
+    there is no closed form (direction_nl)."""
+    f, coh = _coherence_narrow(sigma)
+    if system in ('rectifier', 'telegraph'):
+        return theta
+    if system == 'delay':
+        return float((coh * np.sin(2 * np.pi * f * delay_for(theta)) ** 2).sum() / coh.sum())
+    if system == 'warp':  # segments far enough apart that their delays are independent
+        return float(1 - (coh * np.exp(-(2 * np.pi * f * jitter_for(theta)) ** 2)).sum() / coh.sum())
+    return None

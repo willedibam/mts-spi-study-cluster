@@ -37,7 +37,8 @@ CONSTRUCTION = dict(
     linearity=dict(nonlinearity_raw='theta', lag=0., lag_variability=0., intermittency=0., direction=np.nan),
     lag=dict(nonlinearity=0., nonlinearity_raw=0., lag='theta', lag_variability=0., intermittency=0.),
     lag_variability=dict(nonlinearity=0., nonlinearity_raw=0., lag=.5, lag_variability='theta', intermittency=0.),
-    intermittency=dict(nonlinearity=0., nonlinearity_raw=0., lag=0., lag_variability=0., intermittency='theta', direction=np.nan),
+    # forward N is 0 on the raw scale (E[y | x] = q a x); normal scores bend it slightly, so main N uses the long run
+    intermittency=dict(nonlinearity_raw=0., lag=0., lag_variability=0., intermittency='theta', direction=np.nan),
     direction=dict(nonlinearity=0., nonlinearity_raw=0., lag_variability=0., intermittency=0.))
 KEEPS_CONSTRUCTION = ('base', 'strength', 'T', 'spec', 'delay', 'ampmod')
 # a fixed delay adds phase (lag share) and precedence (direction); amplitude modulation can change Granger fits
@@ -82,12 +83,13 @@ def _one(task):
 
 
 def _truth(task):
-    s, th, label, kw, offset, (long_t, seeds, shifts) = task
+    s, th, label, kw, offset, (long_t, seeds, shifts) = task[:6]
+    gen = task[6] if len(task) > 6 else make
     vals = {a: [] for a in AXES}
     for seed in range(seeds):
         rng = np.random.default_rng([_seed('long', s, th, label, seed), offset])
-        x, y = make(s, th, long_t, rng, **kw)
-        e = estimate(x, y, rng, shifts=shifts)
+        x, y = gen(s, th, long_t, rng, **kw)
+        e = estimate(x, y, rng, floor=shifts > 0, shifts=shifts)
         for a in AXES:
             vals[a].append(e[a])
     row = dict(system=s, theta=th, condition=label)
@@ -97,33 +99,48 @@ def _truth(task):
     return row
 
 
-def run(out, offset, workers, reps=None, long=(LONG_T, LONG_SEEDS, LONG_SHIFTS)):
-    """``reps`` caps the recordings per condition (for a dry run)."""
+def run(out, offset, workers, reps=None, long=(LONG_T, LONG_SEEDS, LONG_SHIFTS), truth=None, refresh=()):
+    """``reps`` caps the recordings per condition (for a dry run); ``truth`` reuses a truth.csv from an earlier
+    run instead of the long-run stage (about 90% of the cost), valid for the axes the change does not touch;
+    ``refresh`` lists axes whose long-run values are recomputed (without the shift floor, which a long run does
+    not need for a dependence that exists)."""
     out.mkdir(parents=True, exist_ok=True)
     conds = conditions()
     tasks = [(s, th, lab, kw, T, r, offset) for s, th, lab, kw, T, n in conds for r in range(min(n, reps or n))]
     # truth does not depend on T: T conditions reuse the base truth at that theta
     truth_tasks = [(s, th, lab, kw, offset, long) for s, th, lab, kw, T, _ in conds if not lab.startswith('T=') and s != 'independent']
     with Pool(workers) as pool:
-        truth = pd.DataFrame(pool.map(_truth, truth_tasks, chunksize=1))
-        truth.to_csv(out / 'truth.csv', index=False)
+        if truth:
+            t = pd.read_csv(truth)
+            if refresh:
+                new = pd.DataFrame(pool.map(_truth, [tk[:5] + ((long[0], long[1], 0),) for tk in truth_tasks], chunksize=1))
+                key = ['system', 'theta', 'condition']
+                t = t.drop(columns=[f'{a}_long' for a in refresh]).merge(
+                    new[key + [f'{a}_long' for a in refresh]], on=key, how='left')
+        else:
+            t = pd.DataFrame(pool.map(_truth, truth_tasks, chunksize=1))
+        t.to_csv(out / 'truth.csv', index=False)
         rows = pd.DataFrame(pool.map(_one, tasks, chunksize=4))
     rows.to_csv(out / 'rows.csv', index=False)
-    (out / 'run.json').write_text(json.dumps(dict(offset=offset, recordings=len(rows), conditions=len(conds)), indent=1))
+    (out / 'run.json').write_text(json.dumps(dict(offset=offset, recordings=len(rows), conditions=len(conds),
+                                                  truth=str(truth) if truth else 'computed', refreshed=list(refresh)), indent=1))
 
 
-def truth_table(truth):
-    """Long-run and construction values per (system, theta, condition, axis); construction overrides where it holds."""
+def truth_table(truth, construction=CONSTRUCTION):
+    """Long-run and construction values per (system, theta, condition, axis); construction overrides where it
+    holds. A construction value is a number, 'theta', or a function of (theta, condition)."""
     recs = []
     for _, r in truth.iterrows():
         for a in AXES:
-            c = CONSTRUCTION.get(r.system, {}).get(a, None)
+            c = construction.get(r.system, {}).get(a, None)
             kind = r.condition.split('=')[0]
             if kind == 'beta' and a != 'nonlinearity_raw':
                 kind = 'base'  # main axes see normal scores, so a monotone distortion of y changes nothing
             if a in NOT_KEPT.get(kind, ()):
                 kind = 'changed'
-            cv = (r.theta if c == 'theta' else c) if (c is not None and kind in KEEPS_CONSTRUCTION) else None
+            if callable(c):
+                c = c(r.theta, r.condition)
+            cv = (r.theta if isinstance(c, str) else c) if (c is not None and kind in KEEPS_CONSTRUCTION) else None
             recs.append(dict(system=r.system, theta=r.theta, condition=r.condition, axis=a, long=r[f'{a}_long'],
                              construction=np.nan if cv is None else cv,
                              truth=r[f'{a}_long'] if cv is None else cv, source='long run' if cv is None else 'construction'))
@@ -137,7 +154,7 @@ def truth_table(truth):
     return pd.concat([t] + tt, ignore_index=True)
 
 
-def summarise(rows, truth):
+def summarise(rows, truth, construction=CONSTRUCTION):
     recs = []
     for (s, th, lab), g in rows.groupby(['system', 'theta', 'condition']):
         for a in AXES:
@@ -146,18 +163,18 @@ def summarise(rows, truth):
                              mean=float(v.mean()), sd=float(v.std()), pearson=float(g.pearson.mean()),
                              coherence=float(g.coherence.mean())))
     summ = pd.DataFrame(recs)
-    tt = truth_table(truth)
+    tt = truth_table(truth, construction)
     summ = summ.merge(tt, on=['system', 'theta', 'condition', 'axis'], how='left')
     summ['bias'] = summ['mean'] - summ['truth']
     return summ
 
 
-def verdicts(summ):
+def verdicts(summ, systems=SYSTEMS, own=None):
     """Pre-registered criteria C1-C5 (README.md)."""
     tol, sd_tol, enough = .10, .15, .8
-    own = dict(OWN, linearity=('nonlinearity', 'nonlinearity_raw'))
+    own = own or dict(OWN, linearity=('nonlinearity', 'nonlinearity_raw'))
     rows = []
-    for s in SYSTEMS:
+    for s in systems:
         for a in np.atleast_1d(own[s]):
             m = summ[(summ.system == s) & (summ.axis == a) & (summ.condition == 'base')].sort_values('theta')
             c1 = m.dropna(subset=['construction'])
@@ -177,7 +194,7 @@ def verdicts(summ):
     v = pd.DataFrame(rows)
     sel = []
     for a in AXES:
-        owners = [s for s in SYSTEMS if a in np.atleast_1d(own[s])]
+        owners = [s for s in systems if a in np.atleast_1d(own[s])]
         m = summ[(summ.axis == a) & (summ.condition == 'base') & ~summ.system.isin(owners + ['independent'])]
         d = m[(m.defined >= enough) & m.truth.notna()]
         undefined = m[m.truth.isna()]
@@ -214,5 +231,8 @@ if __name__ == '__main__':
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--offset', type=int, default=0)
     ap.add_argument('--workers', type=int, default=9)
+    ap.add_argument('--reps', type=int, help='cap recordings per condition (dev runs)')
+    ap.add_argument('--truth', type=Path, help='reuse this truth.csv instead of the long-run stage')
+    ap.add_argument('--refresh', nargs='*', default=(), help='axes whose long-run truth is recomputed')
     a = ap.parse_args()
-    run(a.out, a.offset, a.workers) if a.step == 'run' else analyse(a.out)
+    run(a.out, a.offset, a.workers, a.reps, truth=a.truth, refresh=a.refresh) if a.step == 'run' else analyse(a.out)

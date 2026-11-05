@@ -6,9 +6,11 @@ population level), is computed only where the dependence it is a share of exceed
 is invariant to a static monotone distortion of either channel, because both channels are first mapped to
 normal scores (``gaussianise``). README.md gives the definitions and their test systems.
 
-- nonlinearity N: 1 - (variance of one channel predictable linearly from a window of the other) / (variance
-  predictable by a second-order Volterra model with cubic diagonal), cross-validated, in the better-predicted
-  direction.
+- nonlinearity N (directional, x -> y; y -> x reported as ``nonlinearity_yx``): 1 - (variance of y predictable
+  linearly from a window of x) / (variance predictable by a second-order Volterra model with cubic diagonal),
+  cross-validated and corrected for each model's out-of-sample cost (measured on the circular shifts). Linearity
+  of a regression is not symmetric outside the Gaussian case (on/off linear coupling makes E[x | y] nonlinear),
+  so each direction has its own value; edges are ordered anyway.
 - lag share L: share of the cross-spectral coupling power in quadrature, sum_f Im(C)^2 / sum_f |C|^2.
 - lag variability V: 1 - (sum_f |E c|^2 / sum_f E|c|^2) / ((E P)^2 / E P^2), with c a W-sample segment's
   power-normalised cross-spectrum after removing the fixed delay, and P = sum_f |c|^2 its coupling power;
@@ -186,23 +188,34 @@ def _cv_r2(A, b):
     return 1 - sse / sst
 
 
-def _volterra(src, dst, full_only=False):
+def _volterra(src, dst):
+    """Cross-validated R^2 of the linear window and of the full model, predicting dst from src."""
     c = _centre(src, dst)
     t, lin = _window(src, list(range(c - P_WIN, c + P_WIN + 1)))
     quad = np.column_stack([lin[:, i] * lin[:, j] for i, j in combinations(range(lin.shape[1]), 2)] + [lin ** 2, lin ** 3])
-    full = _cv_r2(np.column_stack([lin, quad]), dst[t])
-    return full if full_only else (_cv_r2(lin, dst[t]), full)
+    return _cv_r2(lin, dst[t]), _cv_r2(np.column_stack([lin, quad]), dst[t])
 
 
-def _nonlinearity(x, y):
-    """Nonlinear share in the better-predicted direction (larger cross-validated full R^2)."""
-    (la, fa), (lb, fb) = _volterra(x, y), _volterra(y, x)
-    lin, full = (la, fa) if fa >= fb else (lb, fb)
-    return (1 - max(lin, 0) / full if full > 0 else np.nan), max(fa, fb)
+def _fits(x, y):
+    """(lin x->y, full x->y, lin y->x, full y->x)."""
+    return np.array(_volterra(x, y) + _volterra(y, x))
 
 
-def _nonlinearity_floor(x, y):
-    return max(_volterra(x, y, True), _volterra(y, x, True))
+def _nonlinearity(fits, null_mean):
+    """Nonlinear share of predicting y from x and of predicting x from y, from out-of-sample R^2 corrected for each model's
+    out-of-sample cost. Under independence a model's cross-validated R^2 is -k, its cost (about 0.004 for the
+    linear and 0.03-0.05 for the full model at T = 2000), and in general R^2_cv = 1 - (1 - R^2)(1 + k); so
+    R^2 = 1 - (1 - R^2_cv) / (1 - R^2_null). Without the correction, weak dependence makes the full model's R^2
+    fall below the linear one's and the share goes strongly negative. ``null_mean`` is the mean of ``fits`` over
+    the circular shifts, which carries the pair's own autocorrelation and marginals."""
+    r = 1 - (1 - fits) / (1 - null_mean)
+    return tuple(1 - max(lin, 0) / full if full > 0 else np.nan for lin, full in ((r[0], r[1]), (r[2], r[3])))
+
+
+def _analytic_null(n):
+    """Expected null cross-validated R^2 of each model for white regressors (used without the shift null)."""
+    ntr, kl, kf = n * (FOLDS - 1) / FOLDS, 2 * P_WIN + 1, 2 * P_WIN + 1 + (2 * P_WIN + 1) * (2 * P_WIN + 4) // 2
+    return -np.array([kl / (ntr - kl - 1), kf / (ntr - kf - 1)] * 2)
 
 
 # ---- directionality ------------------------------------------------------------------------------------
@@ -241,25 +254,33 @@ def estimate(x, y, rng=None, floor=True, w=W, shifts=SHIFTS):
     xg, yg = gaussianise(x), gaussianise(y)
     xw, ycw = whiten(circular(xg)), circular(yg)  # circular only on the spectral path (FFT whitening, shifts)
     lag, coh, stab, stead, local, delay = _spectral(xw, whiten(ycw), w)
-    nl, pred = _nonlinearity(xg, yg)
-    nlr, predr = _nonlinearity(xr, yr)
+    fg, fr = _fits(xg, yg), _fits(xr, yr)
     d, gsum = _direction(xg, yg)
-    out = dict(nonlinearity=nl, lag=lag, lag_variability=stab, intermittency=stead, direction=d, nonlinearity_raw=nlr)
-    out = {k: _value(v) for k, v in out.items()}
+    out = dict(lag=lag, lag_variability=stab, intermittency=stead, direction=d)
     out.update(delay=delay, pearson=float(np.corrcoef(xr, yr)[0, 1]), coherence=float(coh / (w // 2 - 1)),
                local_coupling=float(local / ((w // 4 + 1) // 2 - 1)))
+    null_g = null_r = _analytic_null(len(x))
     if floor:
-        obs = dict(nonlinearity=pred, nonlinearity_raw=predr, lag=coh, lag_variability=local, intermittency=local, direction=gsum)
+        obs = dict(nonlinearity=fg[1], nonlinearity_raw=fr[1], nonlinearity_yx=fg[3], nonlinearity_raw_yx=fr[3],
+                   lag=coh, lag_variability=local, intermittency=local, direction=gsum)
         null = {k: [] for k in obs}
+        fits_g, fits_r = [], []
         rng = rng or np.random.default_rng(0)
         n = len(x)
         for s in rng.integers(w, n - w, shifts):
             ys = np.roll(yg, s)
             _, cs, _, _, loc, _ = _spectral(xw, whiten(np.roll(ycw, s)), w)
             null['lag'].append(cs); null['lag_variability'].append(loc); null['intermittency'].append(loc)
-            null['nonlinearity'].append(_nonlinearity_floor(xg, ys))
-            null['nonlinearity_raw'].append(_nonlinearity_floor(xr, np.roll(yr, s)))
+            fits_g.append(_fits(xg, ys)); fits_r.append(_fits(xr, np.roll(yr, s)))
+            for k, f in (('', fits_g[-1]), ('_raw', fits_r[-1])):
+                null[f'nonlinearity{k}'].append(f[1]); null[f'nonlinearity{k}_yx'].append(f[3])
             null['direction'].append(_direction_floor(xg, ys))
+        null_g, null_r = np.mean(fits_g, 0), np.mean(fits_r, 0)
+    out['nonlinearity'], out['nonlinearity_yx'] = _nonlinearity(fg, null_g)
+    out['nonlinearity_raw'], out['nonlinearity_raw_yx'] = _nonlinearity(fr, null_r)
+    for k in AXES + ('nonlinearity_yx', 'nonlinearity_raw_yx'):
+        out[k] = _value(out[k])
+    if floor:
         for k in obs:
             p = (1 + np.sum(np.array(null[k]) >= obs[k])) / (1 + shifts)
             out[f'{k}_defined'] = bool(p <= ALPHA)

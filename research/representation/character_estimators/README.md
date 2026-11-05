@@ -20,7 +20,7 @@ Both channels are first mapped to normal scores, so every main axis is invariant
 
 | Axis (0 ↔ 1) | Population definition | Estimator |
 |---|---|---|
-| nonlinearity N (linear ↔ nonlinear) | 1 − Var(best linear predictor) / Var(best predictor), predicting one channel from a window of the other, in the better-predicted direction | Cross-validated R² (5 contiguous folds) of a linear window (±3 lags around the strongest first- or second-order lag within ±10) against a second-order Volterra model with cubic diagonal. |
+| nonlinearity N (linear ↔ nonlinear), directional | 1 − Var(best linear predictor of y from x) / Var(best predictor of y from x). The reverse, y from x swapped, is reported as `nonlinearity_yx` (v3) | Cross-validated R² (5 contiguous folds) of a linear window (±3 lags around the strongest first- or second-order lag within ±10) against a second-order Volterra model with cubic diagonal. Each R² is corrected for its model's out-of-sample cost, measured on the circular shifts (v3) |
 | lag share ℓ (instantaneous ↔ quadrature) | Σ_f Im(C)² / Σ_f \|C\|², C the coherency: the share of linear coupling that zero-lag mixing cannot produce. Equals sin²φ for a constant phase φ. | Multitaper cross-spectra of W-sample segments, with squares estimated from distinct segments only |
 | lag variability V (fixed ↔ variable lag) | 1 − (Σ_f \|E c\|² / Σ_f E\|c\|²) / ((E P)² / E P²), where c is a segment's cross-spectrum, after removing the fixed delay and dividing each quarter by its own power, and P = Σ_f \|c\|² its coupling power. Equals 1 − E cos(phase drift between segments) when the gain is constant or on/off. A continuously varying gain makes it read low. Warpedness is a variable lag, so it is included here. | Per-segment quarters and distinct segments, so every product multiplies time-disjoint estimates |
 | intermittency S (steady ↔ intermittent) | 1 − (E P)² / E P². Equals 1 − q for coupling present in a fraction q of segments. Common amplitude modulation of both channels changes power, not coupling, and does not count. | As for V |
@@ -124,6 +124,38 @@ v1 (`f8dcc82`) was not scored: its run was stopped once the adversarial report s
 | D reads a common driver with unequal delays as one-way | **Limitation:** D is temporal precedence, not causation (auxiliary anyway). |
 
 **Envelope coupling (value ↔ envelope) is deferred.** Its simple Gaussian-reference form, 1 − Σ|C|² / Σ ρ_power, reads a bursting source mixed linearly into both channels as envelope coupling. That is exactly the volume-conduction case it was meant to be robust to, and robust versions (leakage-corrected envelope correlation) are a research problem of their own.
+
+## v3: changes after scoring (5 November 2026)
+
+These follow the v2 scoring (Status below), so v3 is post-scoring and is labelled that way. It is rescored on fresh seeds (`--offset 2`).
+
+- **N is corrected for out-of-sample cost.** Under independence, cross-validated R² is −k, where k is the model's cost: measured as 0.004 for the linear model and 0.03–0.05 for the full model at T = 2,000, about twice the textbook k/(n − k − 1) for slow or narrowband signals. In general, R²_cv ≈ 1 − (1 − R²)(1 + k), so R² = 1 − (1 − R²_cv) / (1 − R²_null). R²_null is the mean over the 39 circular shifts the floor already computes, so it carries the pair's own autocorrelation and marginals. On the same v2 recordings, the failing cells move from −0.4 to −3.1 to within about 0.1 of 0. Own-axis values are unchanged; at weak coupling they are better (0.01 → 0.23 against 0.20).
+- **N is directional.** "The better-predicted direction" chooses whichever channel is easier to predict: with narrowband x and white private noise in y, x is predicted from y better than y from x, whatever the coupling. Linearity of a regression is not symmetric outside the Gaussian case. On/off linear coupling makes E[x | y] nonlinear, because large |y| implies the coupling was on; this was the v2 intermittency "leak". So N is x → y, and y → x is reported beside it. Edges are ordered anyway. The direction choice also biased N upward at weak coupling, because it took the larger of two noisy fits.
+- **Intermittency truth for N:** forward raw N is 0 (E[y | x] = q·a·x); main N uses the long run, because normal scores bend a scale mixture slightly. The long-run N truths are recomputed under the new definition. All other long-run truths are reused from `7a3ace0`, where nothing they depend on changed (`validate run --truth … --refresh nonlinearity nonlinearity_raw`).
+
+## Transfer family (`transfer.py`; pre-registered before its run, 5 November 2026)
+
+The first family shares its construction with the estimators:
+- its nonlinearity (He₂) lies inside the Volterra basis;
+- its lag is the Hilbert transform that defines ℓ;
+- its phase jumps and on/off switches are aligned to the estimators' W-sample segments;
+- x and the private noise have the same spectrum.
+
+Passing it shows that the estimators compute what they claim, not that they transfer. The transfer family removes each of these. All its systems use x = narrowband AR(2) (carrier 0.1 cycles per sample, the `narrow` spec) and white private noise η, except `direction_nl`.
+
+| System | Construction | Truth of its own axis |
+|---|---|---|
+| rectifier | y = √(1−θ)·x + √θ·h(x) + σ·η, with h = standardised \|x\|. \|x\| is even, so it is uncorrelated with x at every lag. It lies outside the Volterra basis (88% of its variance is quadratic), and for an oscillation it carries the envelope and the second harmonic: cross-frequency coupling | raw N = θ exactly |
+| delay | y = x(t − d) + σ·η, a conventional delay (fractional, exact for band-limited x), with sin²(2π·0.1·d) = θ | ℓ = ∫ \|C\|² sin²(2πfd) df / ∫ \|C\|² df, with \|C(f)\|² = S_x/(S_x + σ²) from the known spectrum |
+| warp | y(t) = x(t − s·z(t)) + σ·η: a smooth time-varying delay (warping), with z an AR(1) of correlation time 2W, interpolated by cubic spline, and 1 − e^{−(2π·0.1·s)²} = θ | V = 1 − ∫ \|C\|² e^{−(2πfs)²} df / ∫ \|C\|² df: the limit of independent delays between segments, which a finite correlation time and drift within quarters move. The long run measures that gap (C1) |
+| telegraph | y = a(t)·x + √(1 − r²/q)·η, with a(t) a two-state Markov chain (mean coupled dwell 2W, off-fraction θ) whose switches ignore the W grid, and r = 0.4 | S = θ in the long-dwell limit |
+| direction_nl | as `direction`, with the cross terms through tanh(2·): nonlinear directed dynamics | long run |
+
+Off-axis values are 0 by construction where the table in `transfer.py` says so: linear systems have N = 0; ℓ = 0 without a delay; V = S = 0 without time variation; D is undefined for instantaneous coupling. Otherwise they come from the long run (T = 2¹⁷, 3 seeds). D co-moves with ℓ in the delay system, which is correct: a delay is precedence.
+
+The criteria are C1–C5 unchanged. Base levels have 40 recordings, strength cells (σ ∈ {0.5, 2}; r ∈ {0.3, 0.5}; c ∈ {0.3, 0.9}) have 20, and independent narrowband/white pairs have 100.
+
+**Expected failure, stated before the run:** in a smoke run at T = 2¹⁵, V read 0.40 against 0.52 on warp, and V went negative (−0.2) on telegraph, because a switch inside a quarter makes the gain vary continuously, which reads V low (see the V definition).
 
 ## Status: v2 scored (5 November 2026)
 

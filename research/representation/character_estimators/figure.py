@@ -30,16 +30,17 @@ def _band(ax, m, axis, ls='-'):
     ax.plot(m.theta, t, color='k', ls='--', lw=.9, marker='o', ms=2.2)
 
 
-def response(summ, out):
+def response(summ, out, systems=SYSTEMS, own=None, titles=TITLE, name='response', raw_with='nonlinearity'):
+    own = own or dict(OWN, linearity='nonlinearity')
     base = summ[summ.condition == 'base']
-    fig, ax = plt.subplots(len(ROWS) + 1, len(SYSTEMS), figsize=(11, 12.5), sharex='col', squeeze=False, constrained_layout=True)
-    for j, s in enumerate(SYSTEMS):
+    fig, ax = plt.subplots(len(ROWS) + 1, len(systems), figsize=(11, 12.5), sharex='col', squeeze=False, constrained_layout=True)
+    for j, s in enumerate(systems):
         b = base[base.system == s]
         a = ax[0, j]
         g = b[b.axis == 'lag'].sort_values('theta')
         a.plot(g.theta, g.pearson.abs(), color='.35', lw=1.5, label='|Pearson r|')
         a.plot(g.theta, g.coherence, color='.65', lw=1.5, ls='--', label='mean coherence$^2$')
-        a.set(ylim=(0, 1), title=f'{s.replace("_", " ")}\n{TITLE[s]}')
+        a.set(ylim=(0, 1), title=f'{s.replace("_", " ")}\n{titles[s]}')
         if j == 0:
             a.set_ylabel('strength lenses'); a.legend(loc='upper right', fontsize=6.5)
         for i, axis in enumerate(ROWS, 1):
@@ -48,8 +49,7 @@ def response(summ, out):
             if axis == 'nonlinearity':
                 _band(a, b[b.axis == 'nonlinearity_raw'], 'nonlinearity_raw', ls='-.')
             a.set(ylim=(-.15, 1.15)); a.axhline(0, color='.85', lw=.6, zorder=0); a.axhline(1, color='.85', lw=.6, zorder=0)
-            own = OWN[s] if s != 'linearity' else 'nonlinearity'
-            if axis == own:
+            if axis == (raw_with if own[s] == 'nonlinearity_raw' else own[s]):
                 for sp in a.spines.values():
                     sp.set_visible(True); sp.set_linewidth(1.2)
             if j == 0:
@@ -59,7 +59,7 @@ def response(summ, out):
     n = int(base.n.min())
     fig.suptitle(f'Estimates (mean $\\pm$ SD over {n} recordings, T = 2000; dotted: defined in < 80%) '
                  'against truth (black dashed); boxed: the system\'s own axis', fontsize=9)
-    save(fig, out, 'response'); plt.close(fig)
+    save(fig, out, name); plt.close(fig)
 
 
 def nuisance(summ, out):
