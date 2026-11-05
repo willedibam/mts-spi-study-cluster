@@ -39,7 +39,10 @@ CONSTRUCTION = dict(
     lag_variability=dict(nonlinearity=0., nonlinearity_raw=0., lag=.5, lag_variability='theta', intermittency=0.),
     intermittency=dict(nonlinearity=0., nonlinearity_raw=0., lag=0., lag_variability=0., intermittency='theta', direction=np.nan),
     direction=dict(nonlinearity=0., nonlinearity_raw=0., lag_variability=0., intermittency=0.))
-KEEPS_CONSTRUCTION = ('base', 'strength', 'T', 'spec')
+KEEPS_CONSTRUCTION = ('base', 'strength', 'T', 'spec', 'delay', 'ampmod')
+# a fixed delay adds phase (lag share) and precedence (direction); amplitude modulation can change Granger fits
+NOT_KEPT = dict(delay=('lag', 'direction'), ampmod=('direction',))
+AUXILIARY = ('direction',)
 
 
 def conditions():
@@ -57,10 +60,11 @@ def conditions():
             if s != 'direction':
                 for spec in ('broad', 'slow', 'narrow'):
                     out.append((s, th, f'spec={spec}', {**base, 'spec': spec}, T0, REPS_NUISANCE))
-            for key, vals in (('beta', (1., 3.)), ('mix', (.2, .5)), ('xnoise', (.5, 1.))):
+            for key, vals in (('beta', (1., 3.)), ('mix', (.2, .5)), ('xnoise', (.5, 1.)), ('delay', (5, 10)),
+                              ('ampmod', (.3,))):
                 for v in vals:
                     out.append((s, th, f'{key}={v:g}', {**base, key: v}, T0, REPS_NUISANCE))
-    for spec in ('ar1', 'broad', 'slow', 'narrow'):
+    for spec in ('ar1', 'broad', 'slow', 'narrow', 'vslow'):
         out.append(('independent', 0., f'spec={spec}', dict(spec=spec), T0, REPS_NULL))
     return out
 
@@ -117,6 +121,8 @@ def truth_table(truth):
             kind = r.condition.split('=')[0]
             if kind == 'beta' and a != 'nonlinearity_raw':
                 kind = 'base'  # main axes see normal scores, so a monotone distortion of y changes nothing
+            if a in NOT_KEPT.get(kind, ()):
+                kind = 'changed'
             cv = (r.theta if c == 'theta' else c) if (c is not None and kind in KEEPS_CONSTRUCTION) else None
             recs.append(dict(system=r.system, theta=r.theta, condition=r.condition, axis=a, long=r[f'{a}_long'],
                              construction=np.nan if cv is None else cv,
@@ -162,7 +168,8 @@ def verdicts(summ):
             st = summ[(summ.system == s) & (summ.axis == a) & summ.condition.str.startswith('strength')]
             sto = st[st.defined >= enough]
             c4_ok = bool((sto.bias.abs() <= tol).all())
-            rows.append(dict(system=s, axis=a, C1_long_run_matches_construction=c1_ok,
+            rows.append(dict(system=s, axis=a, role='auxiliary' if a in AUXILIARY else 'core',
+                             C1_long_run_matches_construction=c1_ok,
                              C2_accuracy=c2_ok, C2_worst_bias=float(m.bias.abs().max()), C2_worst_sd=float(m.sd.max()),
                              C2_min_defined=float(m.defined.min()), C4_strength=c4_ok,
                              C4_worst_bias=float(sto.bias.abs().max()) if len(sto) else np.nan,
@@ -174,7 +181,7 @@ def verdicts(summ):
         m = summ[(summ.axis == a) & (summ.condition == 'base') & ~summ.system.isin(owners + ['independent'])]
         d = m[(m.defined >= enough) & m.truth.notna()]
         undefined = m[m.truth.isna()]
-        sel.append(dict(axis=a, C3_selectivity=bool((d.bias.abs() <= tol).all()),
+        sel.append(dict(axis=a, role='auxiliary' if a in AUXILIARY else 'core', C3_selectivity=bool((d.bias.abs() <= tol).all()),
                         C3_worst_bias=float(d.bias.abs().max()) if len(d) else np.nan,
                         C3_worst_where=(f'{d.loc[d.bias.abs().idxmax(), "system"]} theta={d.loc[d.bias.abs().idxmax(), "theta"]:g}'
                                         if len(d) else ''),

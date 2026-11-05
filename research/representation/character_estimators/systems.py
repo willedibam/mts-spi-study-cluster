@@ -15,8 +15,10 @@ independent copy; sigma scales the private noise in y.
 - direction:       bivariate VAR, own AR(1) 0.5, lag-2 cross coupling c split (1 +- theta)/2 between directions.
 - independent:     x and eta, independent.
 
-Nuisances, applied in this order: instantaneous mixing (x, y) -> (x + mix y, y + mix x); white measurement
-noise of SD xnoise on x only; static distortion y -> sinh(beta y)/beta.
+Nuisances, applied in this order: a fixed delay of y behind x by ``delay`` samples; common amplitude
+modulation of both channels by exp(ampmod z_k), z_k ~ N(0, 1) per W-sample segment; instantaneous mixing
+(x, y) -> (x + mix y, y + mix x); white measurement noise of SD xnoise on x only; static distortion
+y -> sinh(beta y)/beta.
 """
 from __future__ import annotations
 
@@ -25,7 +27,8 @@ from scipy import signal
 
 from research.representation.character_estimators.estimators import W
 
-SPECS = dict(ar1=('ar1', .8), broad=('ar1', .5), slow=('ar1', .95), narrow=('ar2', (.95, .1)))
+SPECS = dict(ar1=('ar1', .8), broad=('ar1', .5), slow=('ar1', .95), narrow=('ar2', (.95, .1)),
+             vslow=('ar2', (.99, .02)))
 SYSTEMS = ('linearity', 'lag', 'lag_variability', 'intermittency', 'direction')
 OWN = dict(linearity='nonlinearity_raw', lag='lag', lag_variability='lag_variability', intermittency='intermittency',
            direction='direction')
@@ -48,9 +51,12 @@ def segments(T, w=W):
     return np.minimum(np.arange(T) // w, T // w - 1)
 
 
-def make(system, theta, T, rng, strength=None, spec='ar1', beta=0., mix=0., xnoise=0., w=W):
+def make(system, theta, T, rng, strength=None, spec='ar1', beta=0., mix=0., xnoise=0., delay=0, ampmod=0., w=W):
     """(x, y) for one recording. ``strength`` is sigma, except Pearson r for intermittency and c for direction."""
-    if system == 'direction':
+    if delay:
+        x, y = make(system, theta, T + delay, rng, strength, spec, w=w)
+        x, y = x[delay:], y[:T]  # y(t) now depends on x(t - delay)
+    elif system == 'direction':
         x, y = _var(theta, T, rng, .6 if strength is None else strength)
     else:
         x, eta = ar(T, spec, rng), ar(T, spec, rng)
@@ -78,6 +84,9 @@ def make(system, theta, T, rng, strength=None, spec='ar1', beta=0., mix=0., xnoi
             y = a * x + np.sqrt(1 - r ** 2 / q) * eta
         else:
             raise ValueError(system)
+    if ampmod:
+        e = np.exp(ampmod * rng.standard_normal(T // w + 1))[np.arange(T) // w]
+        x, y = e * x, e * y
     if mix:
         x, y = x + mix * y, y + mix * x
     if xnoise:

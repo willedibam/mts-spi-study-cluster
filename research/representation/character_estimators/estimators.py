@@ -8,15 +8,17 @@ normal scores (``gaussianise``). README.md gives the definitions and their test 
 
 - nonlinearity N: 1 - (variance of one channel predictable linearly from a window of the other) / (variance
   predictable by a second-order Volterra model with cubic diagonal), cross-validated, in the better-predicted
-  direction, after unit-variance scaling within each segment (slow amplitude modulation belongs to S).
+  direction.
 - lag share L: share of the cross-spectral coupling power in quadrature, sum_f Im(C)^2 / sum_f |C|^2.
 - lag variability V: 1 - (sum_f |E c|^2 / sum_f E|c|^2) / ((E P)^2 / E P^2), with c a W-sample segment's
-  cross-spectrum and P = sum_f |c|^2 its coupling power; V = 1 - E cos(phase drift between segments) when the
-  gain is constant or on/off.
-- intermittency S: 1 - (E P)^2 / E P^2; S = 1 - q for coupling present in a fraction q of segments.
-- directionality D: |(G_xy - G_yx) - (G~_xy - G~_yx)| / (sum of the four), G linear Granger, ~ time reversed,
+  power-normalised cross-spectrum after removing the fixed delay, and P = sum_f |c|^2 its coupling power;
+  V = 1 - E cos(phase drift between segments) when the gain is constant or on/off.
+- intermittency S: 1 - (E P)^2 / E P^2; S = 1 - q for coupling present in a fraction q of segments. Common
+  amplitude modulation of both channels does not count: it changes power, not coupling.
+- directionality D (auxiliary: a normalised form of time-reversed Granger causality, which already exists): |(G_xy - G_yx) - (G~_xy - G~_yx)| / (sum of the four), G linear Granger, ~ time reversed,
   so asymmetry that time reversal does not flip (unequal noise, instantaneous mixing) does not count.
 
+Estimates are not clipped to [0, 1]; ``delay`` (samples) is reported as an auxiliary coordinate.
 The spectral axes (L, V, S) are computed on zero-phase whitened channels. Squared quantities are estimated
 without noise bias from products of estimates on time-disjoint data (distinct segments, or distinct quarters of
 a segment); products over the same samples would carry fourth-order cumulants for non-Gaussian signals.
@@ -32,6 +34,7 @@ W = 100          # segment length in samples: the timescale of lag variability a
 NW, TAPERS = 2.5, 4
 P_WIN = 3        # Volterra window half-width in lags
 TAU_MAX = 10     # search range for the Volterra window centre
+ALIGN_MAX = 20   # search range for the fixed delay removed before the local (quarter) analysis
 AR_ORDER = 4     # Granger order
 FOLDS = 5
 SHIFTS = 39      # circular-shift independence null; p = (1 + #null >= obs) / (1 + SHIFTS)
@@ -46,6 +49,13 @@ def gaussianise(v):
 
 def standardise(v):
     return (v - v.mean()) / v.std()
+
+
+def circular(v):
+    """Remove the line joining the end points, so circular shifts and FFT whitening add no jump. Used only on
+    the spectral path: the ramp would distort the polynomial terms of the nonlinearity regression."""
+    v = np.asarray(v, float)
+    return v - (v[-1] - v[0]) * np.arange(len(v)) / (len(v) - 1)
 
 
 def whiten(v, nper=256):
@@ -70,10 +80,17 @@ def _tapered(x, y, w, pieces=1):
     return X, Y
 
 
-def _coherency(X, Y):
-    """Taper-averaged cross-spectrum in global coherency units: (segments, pieces, frequencies)."""
-    Sxx, Syy = (np.abs(X) ** 2).mean((0, 1, 2)), (np.abs(Y) ** 2).mean((0, 1, 2))
-    return (X * Y.conj()).mean(2) / np.sqrt(Sxx * Syy)
+def _coherency(X, Y, local=False):
+    """Taper-averaged cross-spectrum in global coherency units: (segments, pieces, frequencies). With ``local``,
+    each piece is also divided by its own broadband power in each channel, so common amplitude modulation of
+    the channels cancels and only the coupling's own change remains; each piece's value depends only on its own
+    samples, so products of disjoint pieces stay unbiased."""
+    ax, ay = np.abs(X) ** 2, np.abs(Y) ** 2
+    Sxx, Syy = ax.mean((0, 1, 2)), ay.mean((0, 1, 2))
+    c = (X * Y.conj()).mean(2) / np.sqrt(Sxx * Syy)
+    if local:
+        c = c / np.sqrt((ax / Sxx).mean((2, 3)) * (ay / Syy).mean((2, 3)))[..., None]
+    return c
 
 
 def _distinct(c):
@@ -95,7 +112,8 @@ MATCHINGS = (((0, 1), (2, 3)), ((0, 2), (1, 3)), ((0, 3), (1, 2)))
 
 
 def _local(c):
-    """Lag variability, intermittency and mean local coupling power (c: segments x 4 quarters x frequencies).
+    """Lag variability, intermittency and mean local coupling power (c: segments x 4 quarters x frequencies,
+    each quarter normalised by its own power).
 
     Products are taken only between time-disjoint quarters or segments, so they stay unbiased for
     non-Gaussian signals (products over the same samples carry fourth-order cumulants). With P_k(q, r) =
@@ -117,10 +135,21 @@ def _local(c):
     return 1 - (G / L2) / (L22 / L4), 1 - L22 / L4, L2
 
 
+def _delay(xw, yw):
+    """Fixed delay of y behind x (samples): the peak of |cross-correlation| within ALIGN_MAX."""
+    r = np.fft.irfft(np.fft.rfft(xw).conj() * np.fft.rfft(yw), n=len(xw))
+    lags = np.r_[0:ALIGN_MAX + 1, -ALIGN_MAX:0]
+    return int(lags[np.argmax(np.abs(r[lags]))])
+
+
 def _spectral(xw, yw, w):
+    """Lag share on the channels as recorded; lag variability and intermittency after removing the fixed delay,
+    since a 25-sample quarter cannot resolve coupling at a delay of more than a few samples and a fixed delay is
+    not a change over time."""
     lag, coh = _lag(_coherency(*_tapered(xw, yw, w))[:, 0])
-    stab, stead, local = _local(_coherency(*_tapered(xw, yw, w, 4)))
-    return lag, coh, stab, stead, local
+    d = _delay(xw, yw)
+    stab, stead, local = _local(_coherency(*_tapered(xw, np.roll(yw, -d), w, 4), local=True))
+    return lag, coh, stab, stead, local, d
 
 
 # ---- nonlinearity --------------------------------------------------------------------------------------
@@ -165,14 +194,6 @@ def _volterra(src, dst, full_only=False):
     return full if full_only else (_cv_r2(lin, dst[t]), full)
 
 
-def local_standardise(v, w=W):
-    """Unit variance within each W-sample segment: slow amplitude modulation is intermittency, not nonlinearity."""
-    k = len(v) // w
-    s = v[:k * w].reshape(k, w)
-    s = (s - s.mean(1, keepdims=True)) / s.std(1, keepdims=True)
-    return s.ravel()
-
-
 def _nonlinearity(x, y):
     """Nonlinear share in the better-predicted direction (larger cross-validated full R^2)."""
     (la, fa), (lb, fb) = _volterra(x, y), _volterra(y, x)
@@ -208,24 +229,24 @@ def _direction_floor(x, y):
 
 # ---- all axes ------------------------------------------------------------------------------------------
 
-def _clip(v):
-    return float(np.clip(v, 0, 1)) if np.isfinite(v) else np.nan
+def _value(v):
+    """Per-edge estimates are not clipped: the population values lie in [0, 1], and clipping noisy estimates
+    would bias every average of them upward."""
+    return float(v) if np.isfinite(v) else np.nan
 
 
 def estimate(x, y, rng=None, floor=True, w=W, shifts=SHIFTS):
     """All axes for one pair. ``floor`` tests each axis's dependence against ``shifts`` circular shifts of y."""
     xr, yr = standardise(x), standardise(y)
     xg, yg = gaussianise(x), gaussianise(y)
-    xl, yl = local_standardise(xg, w), local_standardise(yg, w)
-    xlr, ylr = local_standardise(xr, w), local_standardise(yr, w)
-    xw = whiten(xg)
-    lag, coh, stab, stead, local = _spectral(xw, whiten(yg), w)
-    nl, pred = _nonlinearity(xl, yl)
-    nlr, predr = _nonlinearity(xlr, ylr)
+    xw, ycw = whiten(circular(xg)), circular(yg)  # circular only on the spectral path (FFT whitening, shifts)
+    lag, coh, stab, stead, local, delay = _spectral(xw, whiten(ycw), w)
+    nl, pred = _nonlinearity(xg, yg)
+    nlr, predr = _nonlinearity(xr, yr)
     d, gsum = _direction(xg, yg)
     out = dict(nonlinearity=nl, lag=lag, lag_variability=stab, intermittency=stead, direction=d, nonlinearity_raw=nlr)
-    out = {k: _clip(v) for k, v in out.items()}
-    out.update(pearson=float(np.corrcoef(xr, yr)[0, 1]), coherence=float(coh / (w // 2 - 1)),
+    out = {k: _value(v) for k, v in out.items()}
+    out.update(delay=delay, pearson=float(np.corrcoef(xr, yr)[0, 1]), coherence=float(coh / (w // 2 - 1)),
                local_coupling=float(local / ((w // 4 + 1) // 2 - 1)))
     if floor:
         obs = dict(nonlinearity=pred, nonlinearity_raw=predr, lag=coh, lag_variability=local, intermittency=local, direction=gsum)
@@ -234,10 +255,10 @@ def estimate(x, y, rng=None, floor=True, w=W, shifts=SHIFTS):
         n = len(x)
         for s in rng.integers(w, n - w, shifts):
             ys = np.roll(yg, s)
-            _, cs, _, _, loc = _spectral(xw, whiten(ys), w)
+            _, cs, _, _, loc, _ = _spectral(xw, whiten(np.roll(ycw, s)), w)
             null['lag'].append(cs); null['lag_variability'].append(loc); null['intermittency'].append(loc)
-            null['nonlinearity'].append(_nonlinearity_floor(xl, np.roll(yl, s)))
-            null['nonlinearity_raw'].append(_nonlinearity_floor(xlr, np.roll(ylr, s)))
+            null['nonlinearity'].append(_nonlinearity_floor(xg, ys))
+            null['nonlinearity_raw'].append(_nonlinearity_floor(xr, np.roll(yr, s)))
             null['direction'].append(_direction_floor(xg, ys))
         for k in obs:
             p = (1 + np.sum(np.array(null[k]) >= obs[k])) / (1 + shifts)

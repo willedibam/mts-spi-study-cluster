@@ -11,7 +11,7 @@ from research.representation.character_estimators.systems import OWN, SYSTEMS
 
 ROWS = ('nonlinearity', 'lag', 'lag_variability', 'intermittency', 'direction')
 LABEL = dict(nonlinearity='nonlinearity $N$', nonlinearity_raw='$N$ (raw scale)', lag='lag share $\\ell$',
-             lag_variability='lag variability $V$', intermittency='intermittency $S$', direction='directionality $D$')
+             lag_variability='lag variability $V$', intermittency='intermittency $S$', direction='directionality $D$ (aux.)')
 TITLE = dict(linearity='knob: nonlinear share', lag='knob: quadrature share', lag_variability='knob: phase drift',
              intermittency='knob: off-fraction', direction='knob: one-way share')
 # Okabe-Ito
@@ -47,7 +47,7 @@ def response(summ, out):
             _band(a, b[b.axis == axis], axis)
             if axis == 'nonlinearity':
                 _band(a, b[b.axis == 'nonlinearity_raw'], 'nonlinearity_raw', ls='-.')
-            a.set(ylim=(-.02, 1.02))
+            a.set(ylim=(-.15, 1.15)); a.axhline(0, color='.85', lw=.6, zorder=0); a.axhline(1, color='.85', lw=.6, zorder=0)
             own = OWN[s] if s != 'linearity' else 'nonlinearity'
             if axis == own:
                 for sp in a.spines.values():
