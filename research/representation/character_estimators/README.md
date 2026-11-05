@@ -225,3 +225,28 @@ This follows the v3 and transfer scoring, so it is post-scoring. It is rescored 
 At θ = 0.4 and 0.8 these give 0.29 and 0.76 for telegraph and 0.30 and 0.54 for warp. The first family is unchanged: segment-constant coupling gives V = θ exactly.
 
 **What is lost.** V does not say whether the coupling varies in strength or in timing. A long-recording auxiliary split (the v3 participation ratio) is possible, but it is not scored here.
+
+**A bug found by the first v4 run (`2d844b4`, superseded).** `circular()` subtracts the line joining the end points, which leaves a mean. Welch's estimate at frequency 0 is near 0 because it detrends, so whitening amplified that mean into a constant that swamped the cross-correlation used to find the fixed delay. One of three long-run seeds for steady coupling took a delay of −11 samples and read V = 0.48. Whitening now removes the mean (`ae7ae2f`). ℓ and V themselves were unaffected, because every segment is demeaned; only the delay alignment V uses was. Rescored on fresh seeds (`--offset 4` and `--offset 3`).
+
+## Status: v4 scored (6 November 2026)
+
+`ae7ae2f` (post-scoring), on fresh seeds:
+- **First family:** 4,980 recordings. Long-run truths were reused from `9d4ea7d`, with V recomputed. 22 minutes on 9 local cores.
+- **Transfer family:** 1,500 recordings, 7 minutes.
+
+Tables are in `tables/` and `tables/transfer/`; rows and figures are in `results/representation/character-estimators/{ae7ae2f,transfer-ae7ae2f}/` (untracked).
+
+| V | C1 long run | C2 own axis | C3 selectivity | C4 strength | C5 null |
+|---|---|---|---|---|---|
+| First family | pass (both systems) | on/off: pass (bias ≤ 0.044, SD ≤ 0.063); phase drift: fails narrowly, SD 0.159 against 0.15 at θ = 0.8 (bias ≤ 0.02) | pass (worst 0.036) | pass | pass (≤ 8%) |
+| Transfer | telegraph: pass; warp: fails, long run 0.52 and 0.58 against 0.42 and 0.54 at θ = 0.6 and 0.8 | bias ≤ 0.074 at every level, but **fails on precision**: SD up to 0.29, defined in 65–85% | pass (worst 0.056) | pass | pass (≤ 3%) |
+
+v3's S, for comparison: SD up to 151 and a long run of 0.17 on steady coupling. In the first family's nuisance maps, 2 of 171 defined V cells are off by more than 0.10. Both are linearity θ = 0.6 at weak coherent coupling: slow AR(0.95) spectrum +0.38, and σ = 3 −0.19 (SD 0.41).
+
+**Reading.**
+- **V is accurate wherever it is defined, in both families.** Its transfer failure is precision, and that is close to a sampling limit, not an estimator defect.
+  - V is a variance ratio over the 20 W-segments of a T = 2,000 recording. A variance estimated from 20 values has a relative standard error of about √(2/20) ≈ 0.3.
+  - The narrowband/white systems add little coherence per segment (mean coherence² 0.04–0.19).
+  - So the remedies are longer recordings or a shorter W, not a different estimator.
+- **The warp long-run gap (+0.08 at θ = 0.6) is in the analytic truth.** That truth uses the carrier phase and ignores spectral smoothing over the quarter's ±0.1 cycles/sample bandwidth. It is not a C2 bias at T = 2,000 (−0.03). The truth is left as stated rather than re-fitted.
+- **Unchanged axes moved with the seeds, near thresholds.** N and raw N failed C3 here on intermittency θ = 0.6 (mean −0.15, SD 0.32), where v3 and the first v4 seeds gave −0.08 and −0.09. That is a consistent small negative bias at the edge of tolerance, not new. N on transfer independent pairs was defined in 11% (C5 limit 10%; v3: 7%). ℓ in warp at θ = 0.6: 0.095 (v3: 0.05; the first v4 seeds: 0.12 at θ = 0.8). Warping leaves a nonzero mean delay in a 2,000-sample recording, which ℓ correctly reads as phase.

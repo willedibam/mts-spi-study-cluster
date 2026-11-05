@@ -24,8 +24,8 @@ def _band(ax, m, axis, ls='-'):
     m = m.sort_values('theta')
     ok = m.defined >= ENOUGH
     ax.fill_between(m.theta, m['mean'] - m.sd, m['mean'] + m.sd, where=ok, color=COLOUR[axis], alpha=.18, lw=0)
-    ax.plot(m.theta, np.where(ok, m['mean'], np.nan), color=COLOUR[axis], ls=ls, lw=1.7)
-    ax.plot(m.theta, np.where(ok, np.nan, m['mean']), color=COLOUR[axis], ls=':', lw=1)
+    ax.plot(m.theta, np.where(ok, m['mean'], np.nan), color=COLOUR[axis], ls=ls, lw=1.7, marker='o', ms=2.5)
+    ax.plot(m.theta, m['mean'], color=COLOUR[axis], ls=':', lw=1)  # dotted through cells defined in < 80%
     t = m.truth.values
     ax.plot(m.theta, t, color='k', ls='--', lw=.9, marker='o', ms=2.2)
 

@@ -48,15 +48,25 @@ The future-direction axes below now have a first implementation that stays withi
 
 Seven per cent of every stored z vector is identically zero (antisymmetric × symmetric statistics).
 
-## Dedicated character estimators (built and scored, 5 November 2026)
+## Dedicated character estimators (built and scored, 5–6 November 2026)
 
-[`research/representation/character_estimators/`](../../research/representation/character_estimators/README.md) holds direct per-edge estimators on [0, 1]. They are defined on the process and use no SPI–SPI features (a user constraint). Each axis is the share of a pair's dependence that needs one named property, is strength-free by construction, and is undefined without dependence (circular-shift floor). The axes are nonlinearity N (plus a raw-scale variant), lag share ℓ, lag variability V and intermittency S, with directionality D as an auxiliary.
+[`research/representation/character_estimators/`](../../research/representation/character_estimators/README.md) holds direct per-edge estimators on [0, 1]. They are defined on the process and use no SPI–SPI features (a user constraint). Each axis is the share of a pair's dependence that needs one named property, is strength-free by construction, and is undefined without dependence (circular-shift floor). The axes are nonlinearity N (directional, plus a raw-scale variant), lag share ℓ and variability V, with directionality D as an auxiliary. Each relaxes one assumption of zero-lag Pearson correlation: linear, instantaneous, stationary, and (D) symmetric.
 
-- **Scored (v2 `7a3ace0`, pre-registered):** only ℓ passed every criterion. N failed selectivity badly.
-- **v3 (`9d4ea7d`, post-scoring, fresh seeds):** N is cost-corrected and directional. Choosing "the better-predicted direction" picked the channel that is easier to predict, and on/off coupling makes E[x | y] nonlinear. N, raw N, ℓ and S then pass every criterion on the first family; V fails narrowly through outliers.
-- **Transfer family (pre-registered; README):** removes the first family's shared construction. That family had He₂ inside the Volterra basis, the Hilbert lag that defines ℓ, switches aligned to the segments, and a shared spectrum for x and the noise. N and ℓ transfer (rectifier within 0.005 of its long run; conventional delay within 0.02 of the analytic value). V and S do not. They are unstable at T = 2,000 for narrowband signals, as ratios of fourth moments from 25-sample quarters. S also reads source-envelope (local SNR) fluctuation as intermittency: 0.17 on steady coupling. Candidate redesign: local gain S_xy/S_xx instead of local coherency.
-- **Decided:** one adversarial round with a triage rule (fix only population-level, plausible, interpretation-changing breaks). Envelope coupling is deferred, because its simple form reads volume conduction as envelope coupling. ℓ is a phase share, not a delay.
-- **Open:** a V/S redesign on local gain; envelope coupling as a core axis in place of D (orthogonalised envelope correlation is pairwise and established, so deferring it was overstated); per-edge uncertainty for downstream use; application to data. Cost: about 1–2 s per pair at T = 2,000 with the floor; development runs reuse long-run truths (`--truth`), which were about 90% of the first Gadi run.
+- **History:** v2 `7a3ace0` (pre-registered): only ℓ passed. v3 `9d4ea7d`: N made cost-corrected and directional, and then passed. The transfer family (README) removes the first family's shared construction; N and ℓ transfer.
+- **v4 `ae7ae2f` (post-scoring, fresh seeds):** lag variability and intermittency are merged into V = 1 − Σ|E c|²/Σ E|c|².
+  - *Why merged, not repaired:* the old 1 − (1 − V)(1 − S) equals this exactly (the fourth moment cancels) and was stable, while the split needs a fourth moment of 25-sample estimates (SD up to 151).
+  - *V's results:* accurate in both families (bias ≤ 0.074 everywhere). It fails only on precision in the transfer family (SD up to 0.29, defined in 65–85%), which is near the sampling floor of a variance over 20 segments (≈ √(2/20)).
+  - *Tried and rejected:* local gain on the fixed prediction (projects onto the mean coupling, which vanishes under large phase drift); unwhitened channels; division by local power. Strength vs timing is no longer separated.
+- **Transfer truths include the resolution:** E|c|² comes from quarters 25 to 75 samples apart, so telegraph and warp truths are computed from the generators at that resolution (for θ = 0.4, telegraph 0.29 rather than θ). The warp truth's carrier approximation overstates the long-run gap (+0.08 at θ = 0.6).
+- **Bug fixed:** whitening amplified the mean that `circular()` leaves, giving wrong fixed delays (V = 0.48 on one steady long run). ℓ was unaffected.
+- **Decided:** one adversarial round with a triage rule. Envelope coupling was deferred, because its simple form reads volume conduction as envelope coupling. ℓ is a phase share, not a delay.
+- **Open:**
+  - envelope coupling as a core axis in place of D (orthogonalised envelope correlation is established);
+  - an adversarial pass on V;
+  - N's small negative bias under on/off coupling (−0.08 to −0.15 at θ = 0.6, at the C3 edge);
+  - per-edge uncertainty for downstream use;
+  - application to data.
+- **Cost:** v4 runs locally, 30 minutes on 9 cores with truth reuse (`--truth`/`--refresh`).
 
 ## Paper framing and application assessment, 2026-10-12
 

@@ -1,7 +1,6 @@
 axis,role,C3_selectivity,C3_worst_bias,C3_worst_where,C5_null_defined_max,C5_undefined_truth_defined_max,C5_null
-nonlinearity,core,True,0.0798156869881553,intermittency theta=0.6,0.1,,True
-lag,core,True,0.036624590264173806,lag_variability theta=0.8,0.08,,True
-lag_variability,core,False,0.3917684140053418,linearity theta=0.2,0.04,,True
-intermittency,core,True,0.0491824314440372,linearity theta=0.2,0.04,,True
-direction,auxiliary,False,0.16044507098970034,lag_variability theta=0.8,0.09,0.175,False
-nonlinearity_raw,core,True,0.08837010393982374,intermittency theta=0.6,0.1,,True
+nonlinearity,core,False,0.1456548881565814,intermittency theta=0.6,0.07,,True
+lag,core,True,0.0520741630938949,lag_variability theta=0.4,0.06,,True
+variability,core,True,0.03609773749404556,linearity theta=0.8,0.08,,True
+direction,auxiliary,False,0.15567499827761277,lag_variability theta=0.8,0.1,0.2,False
+nonlinearity_raw,core,False,0.1582976828041441,intermittency theta=0.6,0.08,,True
