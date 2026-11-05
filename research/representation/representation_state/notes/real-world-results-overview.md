@@ -37,34 +37,41 @@ Group-balanced BA and Brier on held-out targets, source-only model selection, no
 
 Sources (all V unless marked): **NT** = `research/representation/neurotycho/notes/neurotycho-transfer-findings.md`, `neurotycho-library-followup-findings.md`, `research/representation/learned_baselines/notes/inceptiontime-followup.md` (Vn; outputs under `results/neurotycho_*_2609*/` are not in the repository); **fMRI** = `results/representation/character-transfer-261031/evaluation-summary.json` (role `confirmation_primary`) and `separate-fusion-summary.json`; **CHB, HMC, GRAB, LANL** = `results/representation/empirical-discovery-261031/discovery-review.json` and `minirocket-extension.json`; **Siena** = `results/representation/siena-confirmation-261102/confirmation-summary.json`.
 
-| Representation | NT anaesthesia (K289; 2 target animals, 128 windows) | fMRI rest/film (r10; 9 people, 36 scans) | CHB-MIT screen (6 people, 26 records) | Siena confirm (14 patients, 54 windows) | HMC N2/REM (12 nights, 144) | GRABMyo 17-class (8 people, 136) | LANL (4 configs, 40) |
-|---|---|---|---|---|---|---|---|
-| z (PCA) | .930 / .062 | .778 / .136 | .958 / .082 | .685 / .229 | .736 / .180 | .243 / .425 | 1.0 / .004 |
-| z (PLS) | .945 / .060 | not run | not run | not run | not run | not run | not run |
-| Pearson (r) | not run | .972 / .065 | .806 / .185 | .786 / .160 | .757 / .175 | .353 / .409 | .650 / .245 |
-| Pearson + z | not run | .861 / .087 | not run | not run | not run | not run | not run |
-| m (23 descriptors/SPI) | .836 / .074 | .833 / .142 | .917 / .088 | .810 / .159 | .701 / .196 | .250 / .430 | 1.0 / .012 |
-| m, nonlinear (RBF) | not run | .889 / .111 | .792 / .119 | .667 / .219 | .694 / .192 | .213 / .432 | 1.0 / .009 |
-| m + graph summaries | .852 / .075 | not run | not run | not run | not run | not run | not run |
-| m + z | .953 / .047 | .806 / .110 | 1.0 / .083 | .756 / .168 | .757 / .177 | .279 / .426 | 1.0 / .006 |
-| full aligned MPIs | not run | 1.0 / .056 | .847 / .092 | .845 / .116 | .778 / .160 | .456 / .374 | 1.0 / .011 |
-| best single SPI (source-selected) | not run | .972 / .061 | .639 / .261 | .738 / .202 | .778 / .181 | .404 / .390 | 1.0 / .017 |
-| source-selected baseline + z | not run | .917 / .079 (single SPI + z) | .611 / .217 (single SPI) | .810 / .160 (single SPI) | .826 / .124 (univariate) | .493 / .350 (univariate RBF) | 1.0 / .012 (single SPI) |
-| validity mask | .625 / .228 | .389 / .264 | .528 / .250 | .589 / .248 | .521 / .254 | .140 / .457 | .875 / .167 |
-| per-channel univariate | not run | not run | .833 / .141 | .643 / .213 | .792 / .148 | .449 / .375 | 1.0 / .081 |
-| nonlinear univariate (RBF) | not run | not run | .792 / .147 | .536 / .325 | .889 / .111 | .485 / .350 | 1.0 / .118 |
-| conventional spectra | .867 / .094 (Welch, absolute power) | .917 / .089 (per channel); .806 / .196 (pooled) | in univariate | in univariate | in univariate | in univariate | in univariate |
-| learned SPI pooling | .831 / .134 | not run | not run | not run | not run | not run | not run |
-| InceptionTime (5-seed ensemble) | .953 / .057 | .722 / .176 | .833 / .194 | .696 / .303 | .729 / .164 | .522 / .303 | .750 / .171 |
-| MiniRocket, original alpha grid | .898 / .061 (logistic head) | 1.0 / .013 | .792 / .135 | .536 / .292 | .840 / .119 | .515 / .352 | .750 / .148 |
-| MiniRocket, extended alpha grid | not run | not run | .792 / .135 (α 1e3) | .536 / .292 | .826 / .128 (α 1e4) | .515 / .352 (α 1e3) | .750 / .167 (α 1e5) |
-| ROCKET / MultiRocket | not run | not run | not run | not run | not run | not run | not run |
-| tsfresh (Efficient) + logistic | .844 / .084 | not run | not run | not run | not run | not run | not run |
-| catch22 + logistic | .836 / .139 | not run | not run | not run | not run | not run | not run |
-| aligned raw encoder | .831 / .167 (matched, channel-exchangeable) | .611 / .223 | .819 / .122 | .571 / .320 | .847 / .092 | .176 / .433 | .750 / .237 |
-| enriched raw encoder | .964 / .028 | not run | not run | not run | not run | not run | not run |
+| Representation | NT anaesthesia (K289; 2 target animals, 128 windows) | NT anaesthesia (r10, 283 SPIs; 2 target animals; BA pooled over windows) | fMRI rest/film (r10; 9 people, 36 scans) | CHB-MIT screen (6 people, 26 records) | Siena confirm (14 patients, 54 windows) | HMC N2/REM (12 nights, 144) | GRABMyo 17-class (8 people, 136) | LANL (4 configs, 40) |
+|---|---| --- |---|---|---|---|---|---|
+| z (PCA) | .930 / .062 | .836ᵃ (BA only) | .778 / .136 | .958 / .082 | .685 / .229 | .736 / .180 | .243 / .425 | 1.0 / .004 |
+| z (PLS) | .945 / .060 | not run | not run | not run | not run | not run | not run | not run |
+| Pearson (r) | not run | .57ᵃ (BA only) | .972 / .065 | .806 / .185 | .786 / .160 | .757 / .175 | .353 / .409 | .650 / .245 |
+| Pearson + z | not run | not run | .861 / .087 | not run | not run | not run | not run | not run |
+| P (Pearson + strength) | not run | .664 / .249 | not run | not run | not run | not run | not run | not run |
+| P + z | not run | .812 / .171 | not run | not run | not run | not run | not run | not run |
+| P + core | not run | .852 / .104 | not run | not run | not run | not run | not run | not run |
+| P + core + z | not run | .836 / .103 | not run | not run | not run | not run | not run | not run |
+| m (23 descriptors/SPI) | .836 / .074 | not run | .833 / .142 | .917 / .088 | .810 / .159 | .701 / .196 | .250 / .430 | 1.0 / .012 |
+| m, nonlinear (RBF) | not run | not run | .889 / .111 | .792 / .119 | .667 / .219 | .694 / .192 | .213 / .432 | 1.0 / .009 |
+| m + graph summaries | .852 / .075 | not run | not run | not run | not run | not run | not run | not run |
+| m + z | .953 / .047 | not run | .806 / .110 | 1.0 / .083 | .756 / .168 | .757 / .177 | .279 / .426 | 1.0 / .006 |
+| m + z, matched no-z diagnostic | not run | not run | not run | .917 / .106 | not run | .701 / .196 | .250 / .430 | 1.0 / .011 |
+| full aligned MPIs | not run | not run | 1.0 / .056 | .847 / .092 | .845 / .116 | .778 / .160 | .456 / .374 | 1.0 / .011 |
+| best single SPI (source-selected) | not run | not run | .972 / .061 | .639 / .261 | .738 / .202 | .778 / .181 | .404 / .390 | 1.0 / .017 |
+| source-selected baseline + z | not run | not run | .917 / .079 (single SPI + z) | .611 / .217 (single SPI) | .810 / .160 (single SPI) | .826 / .124 (univariate) | .493 / .350 (univariate RBF) | 1.0 / .012 (single SPI) |
+| source-selected baseline, matched no-z diagnostic | not run | not run | not run | .639 / .261 | not run | .806 / .143 | .493 / .350 | 1.0 / .017 |
+| validity mask | .625 / .228 | not run | .389 / .264 | .528 / .250 | .589 / .248 | .521 / .254 | .140 / .457 | .875 / .167 |
+| per-channel univariate | not run | not run | not run | .833 / .141 | .643 / .213 | .792 / .148 | .449 / .375 | 1.0 / .081 |
+| nonlinear univariate (RBF) | not run | not run | not run | .792 / .147 | .536 / .325 | .889 / .111 | .485 / .350 | 1.0 / .118 |
+| conventional spectra | .867 / .094 (Welch, absolute power) | .984ᵃ (BA only) | .917 / .089 (per channel); .806 / .196 (pooled) | in univariate | in univariate | in univariate | in univariate | in univariate |
+| learned SPI pooling | .831 / .134 | not run | not run | not run | not run | not run | not run | not run |
+| InceptionTime (5-seed ensemble) | .953 / .057 | not run | .722 / .176 | .833 / .194 | .696 / .303 | .729 / .164 | .522 / .303 | .750 / .171 |
+| MiniRocket, original alpha grid | .898 / .061 (logistic head) | not run | 1.0 / .013 | .792 / .135 | .536 / .292 | .840 / .119 | .515 / .352 | .750 / .148 |
+| MiniRocket, extended alpha grid | not run | not run | not run | .792 / .135 (α 1e3) | .536 / .292 | .826 / .128 (α 1e4) | .515 / .352 (α 1e3) | .750 / .167 (α 1e5) |
+| ROCKET / MultiRocket | not run | not run | not run | not run | not run | not run | not run | not run |
+| tsfresh (Efficient) + logistic | .844 / .084 | not run | not run | not run | not run | not run | not run | not run |
+| catch22 + logistic | .836 / .139 | not run | not run | not run | not run | not run | not run | not run |
+| aligned raw encoder | .831 / .167 (matched, channel-exchangeable) | not run | .611 / .223 | .819 / .122 | .571 / .320 | .847 / .092 | .176 / .433 | .750 / .237 |
+| enriched raw encoder | .964 / .028 | not run | not run | not run | not run | not run | not run | not run |
+| 13 character axes / axes + levels | not run | .914ᵃ / .938ᵃ (BA only) | .81ᵃ (axes, BA only) | not run | .60ᵃ (axis pairs, BA only) | not run | not run | not run |
 
-Notes on Matrix 1: NT neural and MiniRocket rows average three seeds' metrics, except InceptionTime, which is the five-member probability ensemble (member mean BA .844). The NT reduced view (M8/T1000) is: z-PCA .906, z-PLS .914, m .664, m+z .820, spectra .953, matched raw .872, enriched raw .974, pooling .781 (BA; Vn). fMRI separate fusion (single SPI 32 PCs + z-PCA ≤ 50) is .889 / .082 (V). Siena's source-selected baseline is the frozen CHB single-SPI model; its extended MiniRocket equals the original.
+Notes on Matrix 1: The r10 NeuroTycho column comes from `results/representation/character-axes-261102/sufficiency-core-v3b/neurotycho.json` (P rows, V) and, for ᵃ cells, from the character-axes evaluation of the existing banks reported in `research/representation/character_axes/findings.md` (Vn; that script also gives fMRI Pearson BA 1.0, its output file was not located). Its BA is pooled over the 128 target windows, unlike the pilot's date-then-animal average, and its full transfer panel (`neurotycho-source-review.json`) was never evaluated on targets. Matched no-z diagnostics keep the fusion projection, penalty and bandwidth but drop z (`discovery-review.json`). NT neural and MiniRocket rows average three seeds' metrics, except InceptionTime, which is the five-member probability ensemble (member mean BA .844). The NT reduced view (M8/T1000) is: z-PCA .906, z-PLS .914, m .664, m+z .820, spectra .953, matched raw .872, enriched raw .974, pooling .781 (BA; Vn). fMRI separate fusion (single SPI 32 PCs + z-PCA ≤ 50) is .889 / .082 (V). Siena's source-selected baseline is the frozen CHB single-SPI model; its extended MiniRocket equals the original.
 
 ## Matrix 2: AUROC in the transfer group (threshold-free)
 
