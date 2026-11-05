@@ -291,3 +291,29 @@ Run with:
 
     python -m research.estimators.factorial run --out results/estimators/factorial-<commit>
     python -m research.estimators.factorial analyse --out results/estimators/factorial-<commit>
+
+## Status: factorial scored (6 November 2026)
+
+`522ed59`, 640 recordings plus 16 long runs, 14 minutes on 9 local cores. Tables are in `tables/factorial/`; rows and the figure are in `results/estimators/factorial-522ed59/` (untracked).
+
+| Axis | F1: long run vs prediction | F2: T = 2,000 vs long run |
+|---|---|---|
+| V | **pass**, worst 0.023 (16 cells). The product rule holds, and nonlinearity leaves V unchanged. | bias ≤ 0.05 everywhere; fails on precision in 2 cells (n = 0.5, d = 0.6, o = 0: SD 0.18) |
+| raw N | **pass**, worst 0.012 (8 cells, l = 0), including the predicted inflation under drift (0.72 against 0.71 predicted) | fails in 7 cells on precision and definedness: SD up to 0.48, defined down to 57%; bias ≤ 0.12 where defined |
+| ℓ | fails, worst 0.073 (see below) | fails in the 6 drift cells on precision, as predicted: SD up to 0.58; bias ≤ 0.11 |
+| main N | no prediction | fails in the same cells as raw N |
+| D (aux.) | no prediction | in lagged cells, 0.06–0.26 above its long run (an absolute value, so biased upward at short T) |
+
+**Reading.**
+- **The definitions compose as predicted, with one exception.**
+  - V combines on/off and drift by the product rule.
+  - ℓ ignores nonlinearity, drift and on/off.
+  - N's inflation under drift is exact. N is a share of the dependence a time-invariant regression can predict, and drift removes a fraction d of the linear part of that.
+- **The exception is ℓ's F1 miss, which has two parts.**
+  - *Long-run noise:* the 0.45 cell (n = 0, l = 0.5, d = 0.6, o = 0.5) reads 0.498 over 9 seeds (seed SD 0.057 at T = 2^17), so its 3-seed long run was noise.
+  - *A real interaction:* n = 0.5, l = 0.5, o = 0.5 reads 0.580 (9-seed SD 0.011), against 0.508 without on/off and 0.487 on standardised rather than normal-scored channels.
+  - The cause is that normal scores of a gated nonlinear mixture fold part of the quadratic term back into phase. This is a cost of the invariance to monotone distortion, not a bug.
+- **Every estimation failure is a precision failure in a cell with mean coherence² ≤ 0.10.** Drift and nonlinearity both reduce the time-averaged linear coherence that ℓ and N's linear part rest on. The absolute levels depend on the coupling strength chosen here (r = 0.5).
+- **Implications:**
+  - Per-edge uncertainty is needed before group comparisons.
+  - Whether N should stay a share of time-invariant predictable dependence (so that V inflates it), or become local, is a definitional choice still open.
