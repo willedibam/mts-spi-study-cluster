@@ -1,0 +1,291 @@
+{
+ "cohort": "lemon",
+ "windows": 792,
+ "participants": 132,
+ "identity_floor": 0.9237934782084485,
+ "contrasts": {
+  "old_vs_young": {
+   "windows": 792,
+   "scores": {
+    "power": {
+     "auroc": 0.931653712141517,
+     "brier": 0.09060840441671389,
+     "balanced_accuracy": 0.8450817475207719
+    },
+    "spectral": {
+     "auroc": 0.9104797641383008,
+     "brier": 0.09812061913607517,
+     "balanced_accuracy": 0.8505762530152774
+    },
+    "pearson": {
+     "auroc": 0.8587510050924686,
+     "brier": 0.12979990806685807,
+     "balanced_accuracy": 0.7518091664433129
+    },
+    "z": {
+     "auroc": 0.8740284106137765,
+     "brier": 0.13039704449454675,
+     "balanced_accuracy": 0.7231305280085768
+    },
+    "axes": {
+     "auroc": 0.7376038595550791,
+     "brier": 0.19218623459000417,
+     "balanced_accuracy": 0.5322969713213616
+    },
+    "axes_levels": {
+     "auroc": 0.8504422406861432,
+     "brier": 0.14504954950096963,
+     "balanced_accuracy": 0.7231305280085768
+    },
+    "pearson_axes": {
+     "auroc": 0.8820691503618333,
+     "brier": 0.12049937464875796,
+     "balanced_accuracy": 0.7518091664433129
+    },
+    "pearson_axes_levels": {
+     "auroc": 0.9016349504154382,
+     "brier": 0.1097097743439587,
+     "balanced_accuracy": 0.7640042883945324
+    },
+    "power_axes": {
+     "auroc": 0.9276333422674885,
+     "brier": 0.09521312552772271,
+     "balanced_accuracy": 0.8505762530152774
+    },
+    "power_pearson": {
+     "auroc": 0.9455909943714822,
+     "brier": 0.0756455519818016,
+     "balanced_accuracy": 0.8804610024122219
+    },
+    "power_pearson_axes": {
+     "auroc": 0.9445188957384079,
+     "brier": 0.07698439719280377,
+     "balanced_accuracy": 0.8859555079067274
+    }
+   },
+   "primary": {
+    "axes_levels - pearson": {
+     "auroc_difference": -0.008308764406325442,
+     "interval": [
+      -0.11537637362637351,
+      0.09181497960697067
+     ]
+    },
+    "pearson_axes_levels - pearson": {
+     "auroc_difference": 0.042883945322969574,
+     "interval": [
+      0.01143635231870522,
+      0.07672215171235293
+     ]
+    },
+    "power_axes - power": {
+     "auroc_difference": -0.00402036987402854,
+     "interval": [
+      -0.012500399106002615,
+      0.004136778576666672
+     ]
+    },
+    "power_pearson_axes - power_pearson": {
+     "auroc_difference": -0.0010720986330743365,
+     "interval": [
+      -0.009407945694719292,
+      0.006696695915271171
+     ]
+    }
+   },
+   "effects": {
+    "real": {
+     "form_monotone": {
+      "difference": 0.00040811706903898237,
+      "standardized": 0.03406491669350732,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.9372860284638904
+     },
+     "form_information": {
+      "difference": -0.007531347658027654,
+      "standardized": -0.1566084208935237,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.27066178915559036
+     },
+     "timing_fixed_lag": {
+      "difference": -0.0373661328707085,
+      "standardized": -0.5173084524714643,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.0021156881662468593
+     },
+     "timing_best_shift": {
+      "difference": -0.0024537073593746683,
+      "standardized": -0.16336047451644709,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.18753253955221338
+     },
+     "timing_warping": {
+      "difference": -0.006758437270804496,
+      "standardized": -0.21715380024591804,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.17159722813362188
+     },
+     "phase_lag": {
+      "difference": -0.009310310443707226,
+      "standardized": -0.21096760671041745,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.4256547221704561
+     },
+     "predictive": {
+      "difference": -0.0042984977819281525,
+      "standardized": -0.06525121753701059,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.9843063405176217
+     },
+     "history": {
+      "difference": 0.04762505134306083,
+      "standardized": 0.40940651032809405,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.012142694239976978
+     },
+     "mediation": {
+      "difference": 0.003310932931171684,
+      "standardized": 0.06352813039502227,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.6368636284401256
+     },
+     "band": {
+      "difference": -0.023527011669464915,
+      "standardized": -0.6839689462599375,
+      "units": [
+       41,
+       91
+      ],
+      "p": 1.1261978189793812e-05
+     },
+     "spectral_peak": {
+      "difference": -0.011950655565317603,
+      "standardized": -0.5864383999162479,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.003172055596014553
+     },
+     "phase_amplitude": {
+      "difference": -0.0034888145518195968,
+      "standardized": -0.17135612972299913,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.4313906699864143
+     },
+     "tail": {
+      "difference": 0.0026896008773860114,
+      "standardized": 0.23122768231761376,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.3017473237745427
+     },
+     "level_form_information": {
+      "difference": -0.002433867140159177,
+      "standardized": -0.7168167953193532,
+      "units": [
+       41,
+       91
+      ],
+      "p": 2.0120520309801677e-05
+     },
+     "level_form_monotone": {
+      "difference": 5.8638728714253616e-05,
+      "standardized": 0.01718435048342032,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.8363701272451349
+     },
+     "level_timing_best_shift": {
+      "difference": 0.0002809442487313231,
+      "standardized": 0.09364857049146214,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.10200477968155912
+     },
+     "level_phase_lag": {
+      "difference": 0.06885303887853711,
+      "standardized": 0.7151449531410214,
+      "units": [
+       41,
+       91
+      ],
+      "p": 8.879989653564957e-05
+     },
+     "level_band": {
+      "difference": -0.0064025464998638815,
+      "standardized": -0.27580109509364387,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.03531500506145953
+     },
+     "level_spectral_peak": {
+      "difference": 0.20724316305033774,
+      "standardized": 0.7368896951623384,
+      "units": [
+       41,
+       91
+      ],
+      "p": 6.658656729413473e-05
+     },
+     "level_timing_warping": {
+      "difference": 0.010355452113654295,
+      "standardized": 0.28824220713790616,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.23402422557206726
+     },
+     "level_tail": {
+      "difference": 0.0001854826070534915,
+      "standardized": 0.03257077303724253,
+      "units": [
+       41,
+       91
+      ],
+      "p": 0.8210388184436159
+     }
+    }
+   }
+  }
+ }
+}
