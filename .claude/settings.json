@@ -4,5 +4,18 @@
       "Bash(.venv/bin/python -:*)",
       "Bash(python -c \"import pyspi; import os; print\\(os.path.dirname\\(pyspi.__file__\\)\\)\")"
     ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && { py=.venv/bin/python; [ -x \"$py\" ] || py=\"$(git rev-parse --path-format=absolute --git-common-dir)/../.venv/bin/python\"; \"$py\" scripts/check_pyspi_pin.py; } 2>/dev/null || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
   }
 }
