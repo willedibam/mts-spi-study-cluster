@@ -72,7 +72,8 @@ Seven per cent of every stored z vector is identically zero (antisymmetric × sy
   - *Scored:* 7 of 12 pre-registered predictions pass. Calibrated on linearity, rectifier and telegraph (bias ≤ 0.03), 0 on linear-Gaussian systems under every nuisance, null rate 2–6%. Every failure is at I ≤ 0.05 nats, or is a prediction that N_MI reads phase drift or warping, which it barely does (long run ≤ 0.17).
   - *Limits:* SD per edge is 0.03–0.06 above 0.2 nats, 0.12 at 0.1–0.2 and 0.2–0.4 below 0.1 nats (|r| ≈ 0.43 for a Gaussian pair); a chance pass of the null reads ≈ 1; a monotone sensor distortion counts (sinh(3y)/3 of a linear coupling reads 0.9); marginal shape counts (lognormal source, linear coupling: −0.51 unclipped; t₃ noise +0.34; 1% gross outliers 0.82, exploratory).
   - *Tried and set aside (exploratory, T = 2,000):* normal scores; nested fits r² ≤ R²_mono ≤ η² (the user finds this too literal a reading of nonlinearity); Spearman-based forms (fail with noise); a data-built linear reference 1 − I(x, ŷ + shuffled residuals)/I(x, y), which removes the marginal artefacts but shrinks exp + noise to 0.10.
-  - *Not done:* it is not in `estimate()`; a floor on I; lag selection by I itself; a separate monotonicity axis (suggested by the user); real data.
+  - *Floor on I rejected (post hoc on the scored rows):* a per-recording floor (0.1 or 0.05 nats) selects recordings whose I, and hence N_MI, is high by chance: survivors near the floor read 0.07 higher on average (up to 0.45) and mean |bias| there rises (0.044 to 0.066). Its apparent benefit at cell level came only from dropping cells.
+  - *Not done:* it is not in `estimate()`; per-edge uncertainty; lag selection by I itself; a separate monotonicity axis (suggested by the user); real data.
 - **Open:**
   - envelope coupling: only a model-based local form or a long-T-only auxiliary remain;
   - whether N stays a share of time-invariant predictable dependence (V inflates it) or becomes local;

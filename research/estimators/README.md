@@ -387,11 +387,13 @@ The lag is the one the module already uses (`_centre`: strongest first- or secon
   | 0.03–0.06 | 22 | 87% | 0.07 | 0.25 |
   | ≤ 0.03 | 13 | 43% | 0.31 | 0.26 |
 
-  Both P4 and P5 failures have I ≤ 0.05 nats. For a Gaussian pair, 0.1 nats is |r| ≈ 0.43. A floor on I of about 0.1 nats at T = 2,000, stricter than the null, would remove every strength-related failure; it is not applied here.
+  Both P4 and P5 failures have I ≤ 0.05 nats. For a Gaussian pair, 0.1 nats is |r| ≈ 0.43.
 - **A pair that passes the null by chance reads ≈ 1** (independent pairs that passed: mean 0.35–1.00). The null controls how often that happens (2–6%), not what such a pair reads.
 - **It transfers.** `rectifier` (|x|, outside any polynomial basis, narrowband source) is as accurate as `linearity`, with half the SD.
 - **It is not a variability axis.** On/off coupling reads 0.01, 0.07, 0.23, 0.60 at off-fractions 0.2–0.8 (the integral), and phase drift and warping read ≤ 0.17. Only rarely-on coupling counts as nonlinear, so N_MI and V overlap little.
 - **A monotone sensor distortion counts as nonlinearity**, as intended by dropping normal scores, and strongly: 0.9 at β = 3. On such data the estimate is also 0.04–0.18 below the long run (heavy tails at T = 2,000).
 - **Spectrum, T, delay, mixing and measurement noise leave a linear-Gaussian pair at 0** (worst 0.08, apart from the weak-coupling cell above). The Theiler window holds on the slow spectrum (0.02 ± 0.07 and −0.01 ± 0.12 on `lag`).
 
-**Open.** A floor on I; lag selection by the information itself instead of the moment score (40 times the cost); real data.
+**A per-recording floor on I is not adopted.** Tested on these rows (post hoc): a floor of 0.1 nats keeps 44% of recordings in cells with mean I of 0.06–0.13, and the survivors read 0.07 higher on average (up to 0.45), because a recording whose I is high by chance also has N_MI high by chance (N_MI = 1 − I_Gauss/I). Mean |bias| in those cells rises from 0.044 to 0.066; cells with I > 0.13 are unchanged. A floor of 0.05 does the same lower down (0.094 to 0.121). The fall in failures seen at cell level came from dropping cells, which a per-edge rule cannot do. The circular-shift null is the same kind of gate, which is why a chance pass reads ≈ 1, but it rarely passes by chance.
+
+**Open.** Per-edge uncertainty instead of a threshold; lag selection by the information itself instead of the moment score (40 times the cost); real data.
