@@ -10,6 +10,14 @@ The first paper is the Paper A capability set described below, framed character-
 
 Follow-up work can strengthen individual points and add genuine applications.
 
+**Skeleton update (user, 2026-11-10).** This supersedes the section order and the atlas's status below where they differ.
+- Results order: case studies, proof of concept, order-parameter inference, then a real-world section.
+- The real-world section is unsettled. Its minimum is selected atlas regions; a compelling real-data result would replace it.
+- The paper is judged on insight into the character of dependence, reached in a general-purpose, unsupervised way, and on showing that the problem matters. Quantitative performance is a bonus, not the claim.
+- Negative results are omitted. Baselines may be mentioned in the proof of concept.
+- Before the write-up, one pyspi version is pinned and every section is re-run on it.
+- Discussion: limitations (aggregation over a redundant catalogue, lossy Pearson aggregation, strength and character not orthogonal in z), then direct per-edge character estimators ([`research/estimators/`](../research/estimators/README.md)) as future work.
+
 Out of scope:
 - supervised co-organisation, NeuroTycho and the rest of `research/representation/` (candidate Paper B);
 - `research/empirical/`, except the hardware recordings used for order-parameter inference, which enters only if strong results emerge.
