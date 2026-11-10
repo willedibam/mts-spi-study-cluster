@@ -175,7 +175,7 @@ Deprioritised:
 
 ## Decisions for the user
 
-1. Approve application 1 in stages, starting with the fly data, and decide which requests to send (above).
+1. Approve application 1 in stages, starting with the fly data. Requests 1–3 above were approved on 11 November and are to be sent by the user. The human datasets (Bajwa, Michigan) may need a data use agreement and local ethics approval for secondary analysis.
 2. Sampling rate for tier A. Recommended: one common rate (100 Hz) with a 200 Hz sensitivity check and an unchanged catalogue (see "Sampling rate, channels and the SPI catalogue"). The alternative, a rate chosen per species, is more physical, but band edges and lags then differ between datasets.
 3. Approve application 2 and its subsampled design.
 4. Pin for new extraction. The pin is r13 at `5d61d9c`; upstream main has since added partial-correlation SPIs (`pcorr_<estimator>`), which serve the direct-versus-pairwise reading directly. Whether they enter `benchmarked_p90` is unchecked [U]. New work goes to new output directories either way.
