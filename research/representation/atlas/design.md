@@ -1,112 +1,166 @@
 # Consciousness atlas: run design and pre-registration draft (11 November 2026)
 
-Status: **draft for review, not frozen; nothing extracted.** The question, prior art and dataset search are in the [scoping note](../representation_state/notes/real-world-application-scoping.md) (application 1); this file is the run architecture and the analysis to freeze before any atlas pyspi output is seen. Labels: **[V]** checked this session against the file, API or paper; **[R]** recorded in the repository; **[I]** inferred; **[U]** unverified; **[S]** speculation.
+Status: **draft, revised after two reviews (Fable 5.2 critique of the first draft; an external review of the framing); not frozen; nothing extracted.** The dataset search and prior art are in the [scoping note](../representation_state/notes/real-world-application-scoping.md) (application 1). This file is the run architecture and the analysis to freeze before any atlas pyspi output is seen. Labels: **[V]** checked against the file, API or paper this session; **[E]** established result; **[R]** recorded in the repository; **[I]** inferred; **[U]** unverified; **[S]** speculation.
 
-## Question and predictions
+## Question and success contract
 
-Is there a direction of change in dependence organisation from wake to unconsciousness that recurs across agents, sleep, species and recording types, which identity-free controls do not already carry, and does it follow reported experience rather than responsiveness?
+**Question.** Which aspects of dependence organisation are conserved across changes in arousal, responsiveness and reported experience, and which depend on the intervention, species or recording scale? A single wake-to-unconscious axis is one hypothesis among several, not the organising assumption.
 
-- **P1.** The direct-against-pairwise decoupling found in NeuroTycho (robust partial r² against rank or ids profiles) recurs in the shared direction under propofol, isoflurane and NREM, beyond multivariate IAAFT surrogates, and is weaker under ketamine and in REM. NeuroTycho is the discovery set, so P1 is tested on the other datasets.
-- **P2.** Leave-one-dataset-out, the shared z direction aligns with held-out datasets better than the same procedure applied to each identity-free control (mean-SPI, Pearson edge quantiles, channel-pooled log spectra, channel-pooled catch22). Falsified if any control's paired alignment interval includes or exceeds z's.
-- **P3.** Within sleep, z in the windows before an awakening separates reports of experience from no experience beyond pooled spectra. Falsified if pooled spectra match it. Testable on DREAM (below), and on Bajwa if the report labels arrive.
-- **Residual test (the finding that would matter most).** After removing the part of Δz predicted from the pooled-spectral displacement (ridge, fitted without the held-out dataset), a shared direction remains and generalises leave-one-species-out.
+**What counts as a result.** Not "z beats the controls on a shared axis". The target is two or three named organisational relationships: for example, "pairs that agree under the precision family stop agreeing under the rank family". For each, the result states where it transfers, where it breaks, and its signal-level explanation, spectral or beyond. The non-redundancy bar stays: a relationship that pooled or per-channel spectra also give is reported as spectral, and that is still a finding.
 
-## Datasets, sizes and what each contributes
+| Outcome | Value |
+|---|---|
+| A replicated organisational change across drugs and species, with a validated signal-level explanation | a transferable description of a recurring dynamical change |
+| Shared change under propofol, isoflurane and NREM, with a reproducible divergence under ketamine or REM | separates forms of reduced responsiveness |
+| Organisation associated with experience reports within a fixed sleep stage | most directly about consciousness, within the limits of report and recall |
+| Distinct, reproducible trajectories per state class | evidence against one common trajectory; a taxonomy |
+| Structure that mostly reflects dataset or recording type | the null outcome: descriptive only |
 
-Raw is what must be downloaded or streamed; "bank" is the preprocessed window archive pyspi reads (float32, all arms). Windows are per arm under the budget caps below.
+**Supervision.** z is unsupervised. Every contrast direction below is estimated from state labels, and the text will say so.
 
-| Dataset | Species, signal | States (units) | Native M, reference | Source fs, structure | Raw | Arms | Windows / arm | Role |
+**Precedent the result must go beyond.** Bola et al. 2018 found gamma-envelope hyper-correlation across macaque anaesthesia and human NREM [V, abstract]. Leung et al. 2025 found univariate autocorrelation features that generalise across flies [V]. Engemann et al. 2018 classified disorders of consciousness across electrode configurations [V, abstract]. Identity-free comparators exist (pooled spectra, edge distributions, graph summaries); z's specific offer is its description of how dependence measures correspond across pairs, without channel alignment.
+
+## Hypotheses (to freeze)
+
+- **H-within.** Wake and deep GABAergic or N3 states differ in z within every dataset. This is the only outcome treated as near certain.
+- **H1, decoupling (formerly P1).** The precision-family edge profile decouples from the rank and ids family profile under propofol, isoflurane and NREM, and less under ketamine and REM. This is a statement about statistics: partial correlation is conditional association given the observed channels [E], so it changes with montage and is not "direct connectivity".
+  - It is defined on shrinkage-precision SPIs only.
+  - It requires a reliability floor: within-state split-half reliability of the SPIs involved, because about two-thirds of NeuroTycho's raw mediation effect was a reliability drop [R, `character_axes/findings.md`].
+  - NeuroTycho, and Chennu (analysed with z before at 19 channels [R]), are discovery sets. H1 is tested on the others.
+- **H2, conservation and specificity.** State classes share part of their Δz and differ on another part. The specificity matrix (below) estimates both, with no single shared direction assumed.
+- **H3, non-redundancy.** On the conserved part, z adds to the joint identity-free control block (below). A paired interval that includes zero means no demonstrated advantage, not falsification. A tie is claimed only within a pre-registered equivalence margin.
+- **H4, experience.** Within a sleep stage, pre-awakening z separates experience from no-experience reports beyond pooled and posterior spectra. Tested on suitable DREAM constituent studies. Bajwa is exploratory only: 24 experience, 5 no-experience and 23 no-information awakenings [R], and repeated awakenings are not independent units.
+- **Surrogates, both readings stated in advance.** An effect reproduced by multivariate IAAFT is a linear-spectral finding: explained, not void. A "beyond-spectral" claim needs the cross-spectrum-preserving null. Independent-channel surrogates answer a different question (whether any dependence exists).
+
+## Datasets: sizes, structure and role
+
+Raw is what must be downloaded or streamed. Windows are per arm, under the caps below. "Link" is the comparison a dataset connects, since species, modality, laboratory and intervention must not be confounded.
+
+| Dataset | Species, signal | States (units) | Native M, reference | Source fs, structure | Raw | Arms | Windows / arm | Role, link |
 |---|---|---|---|---|---|---|---|---|
-| Fly (Leung 2025, figshare + OSF) | fly, LFP | wake vs isoflurane (13 discovery flies; 56 more series in `validate1`, labels [U]) | 15 bipolar [V] | 1 kHz, 8 × 2.25-s epochs per fly-condition (18 s) [V] | 52 + 177 MB [V] | 2-s at 100 and 200 Hz | 656 | displacement (2-s arm only) |
-| DOC (figshare 23552964) | human, scalp EEG | patient vs control (59 + 32 stated; 98 headers, 96 data files [V]); UWS/MCS labels not in deposit | 62 [V] | 250 Hz, 60 × 2-s segments, not contiguous [V] | 714 MB [V] | 2-s at 100 Hz | ≤ 2,880 | projection only |
-| NeuroTycho anaesthesia | macaque, ECoG | wake, ketamine–medetomidine, propofol (4 animals, about 8 sessions [U]) | 128 | 1 kHz continuous | 128-ch raw must be re-staged from the public zips (only 16-ch views are on Gadi [V]); size [U] | 10-s at 100 Hz, 5-s at 200 Hz, 2-s | 240 | exploratory (discovery) |
-| Chennu 2016 (Apollo) | human, scalp EEG | baseline, mild, moderate, recovery (20) | 91 | 250 Hz, about 7 min per level [R] | [U], few GB | 10-s, 2-s | 1,200 | displacement, graded |
-| Bajwa 2025 (ds005620) | human, scalp EEG | awake vs propofol sedation (20); 52 pre-awakening minutes | 65 incl. non-EEG | 5 kHz [R] | [U] | 10-s, 2-s | 912 | displacement; P3 if labels come |
-| ANPHY-Sleep (OSF) | human, scalp EEG | W, N2, N3, REM (29) | 83 | [U] | overnight PSG, [I] about 10 GB per person, so download-extract-delete per subject | 10-s, 2-s | 1,740 | displacement, sleep |
-| MNI open iEEG atlas | human, sEEG/ECoG | W, N2, N3, REM (about 106 patients [U]) | about 17 per patient [U] | 200 Hz, 60-s segments [U] | about 1 GB [U] | 10-s, 5-s at 200 Hz, 2-s | 2,544 | displacement, intracranial sleep |
-| Watson 2016 (DANDI 000041) | rat, frontal probe LFP | wake, NREM, REM (10 rats, 22 sessions [V]) | probe LFP, 64 assumed [U] | [U] | 149 GB [V]; stream LFP only | 10-s, 5-s at 200 Hz, 2-s | 450 | displacement, rodent sleep |
-| Claar 2023 (DANDI 000458) | mouse, skull EEG | awake vs isoflurane (23 [V]) | about 30 [U] | [U] | 361 GB [V]; stream EEG only | 10-s, 5-s at 200 Hz, 2-s | 1,380 | displacement, rodent anaesthesia |
-| Kauvar 2025 (DANDI 001347) | human, sEEG | baseline, ketamine, post (ketamine subset of 173 subjects [V], dose [U]) | about 100 [U] | [U] | 16 GB [V] | 10-s, 5-s at 200 Hz, 2-s | 450 | displacement, ketamine |
-| DREAM (Monash, doi 10.26180/22133105) | human sleep EEG/MEG, 20 studies | experience, experience without recall, no experience; 2,643 awakenings, 505 people [V] | 2 to high density per study [V: inclusion needs ≥ 2] | ≥ 100 Hz, ≥ 20 s before each awakening, EDF [V] | [U]; open subset only | 10-s, 2-s | [U] | P3 (new; studies with M ≥ 8 only) |
-| Purdon (DANDI 001285) | human, scalp EEG | graded propofol | 64 [V] | 250 Hz, 154 min [V] | 1.2 GB [V] | — | 0 | **excluded**: third-party repackaging with unnamed channels and no drug-level or LOC/ROC annotations [V] |
+| Fly (Leung 2025) | fly, LFP | wake vs isoflurane (13 flies; 56 `validate1` series, labels [U]) | 15 bipolar [V] | 1 kHz, 8 × 2.25 s per fly-condition [V] | 52 + 177 MB [V] | 2-s | 656 | isoflurane, invertebrate; continuous and sleep sets requested in-group |
+| NeuroTycho | macaque, ECoG | wake, ketamine–medetomidine, propofol (4 animals); natural sleep in the same arrays to check [U] | 128 | 1 kHz continuous | 128-ch raw to re-stage (only 16-ch views on Gadi [V]) | 10-s, 2-s, 200 Hz | 240 | discovery; two drugs in one montage, plus sleep if available |
+| Chennu 2016 | human, scalp EEG | baseline, mild, moderate, recovery (20) | 91 | 250 Hz, about 7 min per level [R] | few GB [U] | 10-s, 2-s | 1,200 | propofol, graded, with recovery; discovery-adjacent |
+| Bajwa 2025 (ds005620) | human, scalp EEG | awake vs propofol sedation (20) | 65 incl. non-EEG | 5 kHz [R] | [U] | 10-s, 2-s | about 900 | propofol, second human set; H4 exploratory |
+| ANPHY-Sleep (OSF r26fh) | human, scalp EEG | W, N2, N3, REM (29) | 83 | 1 kHz, about 7 h, EDF [V] | about 4.7 GB per person [I] | 10-s, 2-s | 1,740 | NREM and REM in human scalp: links sleep to propofol within one modality |
+| MNI iEEG sleep atlas | human, sEEG/ECoG | resting W, N2, N3, REM (about 106 patients [U]) | about 17 per patient [U] | 200 Hz, 0.5–80 Hz, 60-s epochs per stage [V] | about 1 GB [U] | 10-s, 2-s, 200 Hz | 2,544 | human intracranial sleep: links scalp to intracranial |
+| Watson 2016 (DANDI 000041) | rat, frontal probe LFP | wake, NREM, REM (10 rats, 22 sessions [V]) | silicon probe; thinning pending (decision 2) | [U] | 149 GB [V]; stream LFP only | 10-s, 2-s, 200 Hz | 900 | rodent sleep |
+| Claar 2023 (DANDI 000458) | mouse, skull EEG | awake vs isoflurane, some recovery (23 [V]) | 30 EEG [V] | [U] | 361 GB [V]; stream EEG only | 10-s, 2-s, 200 Hz | 1,380 | isoflurane across species (fly, mouse). Cortical stimulation is delivered in both states [V], so windows come only from gaps between stimuli, or the dataset is excluded |
+| Kauvar 2025 (DANDI 001347) | human, sEEG | baseline, ketamine, post | about 100 [U] | [U] | 16 GB [V] | 10-s, 2-s, 200 Hz | 450 | **deferred until the dose is known**: DANDI does not state it [V], and a subanaesthetic dose makes "ketamine nearer wake" trivial |
+| DREAM (doi 10.26180/22133105) | human sleep EEG/MEG, 20 studies | experience, experience without recall, no experience; 2,643 awakenings, 505 people [V] | per study; inclusion needs only ≥ 2 [V] | ≥ 100 Hz, ≥ 20 s before awakening, EDF [V] | open constituent packages only; others by request [V] | 10-s, 2-s | counted per study before budgeting | H4; studies with M ≥ 8 only (two channels give one edge, so z is undefined) |
+| DOC (figshare 23552964) | human, scalp EEG | patient vs control (98 headers, 96 data files [V]); UWS/MCS labels not in deposit | 62 [V] | 250 Hz, 60 non-contiguous 2-s segments [V] | 714 MB [V] | 2-s | ≤ 2,880 | projection only: no own-wake baseline |
+| Purdon (DANDI 001285) | human, scalp EEG | graded propofol | 64 [V] | 250 Hz, 154 min [V] | 1.2 GB [V] | — | 0 | **excluded**: third-party repackaging with unnamed channels and no drug-level or LOC/ROC annotations [V]; original data worth requesting |
 
-Bank sizes are small (ANPHY at 10 s: 1,740 × 1,000 × 83 × 4 bytes ≈ 0.6 GB); the large volumes are raw downloads and pyspi outputs.
+Requests still worth sending, ranked by the links they add:
+1. Michigan anaesthetic-dose ketamine EEG: ketamine against propofol in one modality.
+2. Raw LFP from Bastos/Miller and Redinbaugh/Saalmann: thalamic stimulation with the drug held constant.
+3. Fly continuous and sleep recordings (in-group).
+4. Purdon original data with annotations.
+5. Bajwa report labels (exploratory only).
 
 ## Preprocessing (`atlas/prepare.py`, to write)
 
-1. **Channels.** Drop non-neural channels (EOG, EMG, ECG). Fix one channel set per unit, kept identical across that unit's states, so Δz compares the same montage. Bad channels are removed by fixed rules on the whole unit (flat: SD below 1% of the median channel SD; noisy: SD above 5 times the median). Native M otherwise, with no reduction.
-2. **Reference.** Scalp EEG: average reference. ECoG grids: common average. sEEG depth: adjacent-contact bipolar within each shaft. Fly: bipolar as released. Rodent probes, skull EEG and the MNI atlas: as released, recorded per dataset.
-3. **Filters.** High-pass 0.5 Hz, zero-phase. Notch at mains and harmonics below the low-pass. Zero-phase FIR low-pass at 40 Hz (100 Hz arm) or 80 Hz (200 Hz arm), then polyphase resampling. Epoched sources (fly, DOC) are filtered per epoch with reflection padding; the central 2 s are kept.
-4. **Windows.** Non-overlapping, evenly spaced through each stable state period, deterministic. Excluded: drug transitions (first 5 min after an infusion change [I]), sleep epochs whose neighbours are in another stage, and windows that fail artefact rules (any channel with more than 5% of samples beyond 6 robust SD of that channel's unit-level distribution, a flat run of 1 s or more, or non-finite values).
-5. **Normalisation.** pyspi's per-channel z-score along time in each window (`normalise=True`). The controls are computed from the identical arrays.
-6. **Output.** One bank per dataset and arm, `windows.npz` plus `manifest.json` (id, unit, state, M, source times, preprocessing record), which is what [`extract.py`](extract.py) reads.
+1. **Channels.** Drop non-neural channels. Fix one channel set per unit, identical across that unit's states. Remove bad channels by fixed whole-unit rules (flat: SD below 1% of the median channel SD; noisy: above 5 times). Otherwise native M, with no PCA, ICA or source reduction.
+2. **Reference, without rank loss.**
+   - Average or common-average referencing makes the covariance rank M−1 exactly [E], so precision SPIs become pseudo-inverse artefacts. After such a reference, drop one fixed channel (the last in the montage order, recorded).
+   - sEEG: adjacent-contact bipolar within each shaft.
+   - Fly: bipolar as released. MNI: as released.
+   - Every window logs covariance rank and condition number.
+3. **10-s and 200 Hz arms.**
+   - High-pass at 0.5 Hz (zero-phase); notch at mains and harmonics.
+   - Zero-phase FIR low-pass at 40 Hz (100 Hz arm) or 80 Hz (200 Hz arm), then polyphase resampling.
+   - Windows are non-overlapping, evenly spaced through each stable period and deterministic.
+   - Excluded: drug transitions (first 5 min after an infusion change [I]); sleep epochs whose neighbours are in another stage; artefacts (a channel with more than 5% of samples beyond 6 robust SD of its unit-level distribution, a flat run of 1 s or more, or non-finite values).
+4. **2-s arm, identical for every dataset.**
+   - Every source is first cut into 2-s epochs (the central 2 s of the fly's 2.25-s epochs).
+   - Each epoch gets the same treatment: linear detrend, 1 Hz zero-phase high-pass with reflection padding, 40 Hz low-pass and resampling to 100 Hz (T = 200).
+   - This arm cannot see the slow oscillation below 1 Hz, and says so.
+   - At M/T above a frozen ratio (proposed 0.25), the precision family is excluded from this arm's coordinate set.
+5. **Normalisation.** pyspi per-channel z-score per window (`normalise=True`). Controls are computed from the identical arrays.
+6. **Output.** One bank per dataset and arm (`windows.npz` plus `manifest.json`), as [`extract.py`](extract.py) expects.
 
-## Rates, window lengths and why
+## Rates and windows
 
-- **Why one rate, and why it doesn't penalise any dataset.** pyspi runs at fs = 1: band-indexed SPIs split at fs/4, and lags, histories and model orders are counted in samples ([V], about 115 band-indexed and 45 lag SPIs). At native rates, one SPI name measures different physics in different datasets (the upper band is 62–125 Hz at 250 Hz and 250–500 Hz at 1 kHz), and the atlas compares datasets. A common rate is therefore required for comparability, not chosen for convenience. Unlike reducing M, it removes no dependence structure inside the band both arms keep.
-- **100 Hz, cross-tier (primary).** Scalp EEG above about 40 Hz is mostly muscle, and 50 Hz mains falls at Nyquist, removed by the 40 Hz low-pass. The split falls at 25 Hz (delta to beta against beta to low gamma), and one lag is 10 ms.
-- **200 Hz, intracranial tier (co-primary).** It keeps gamma up to 80 Hz, which is signal in LFP, ECoG and sEEG and is where ketamine and REM are expected to differ. **Proposed change: T = 1000 (5-s windows) in this arm instead of 10 s.** Run time scales with T (about 3.3 times from T = 1000 to 2000 by HPC.md), so this cuts the arm's cost 3.3-fold. T stays matched within each arm, and z is never compared across arms (only effects are), so matching T rather than duration within an arm keeps estimator bias equal across datasets.
-- **10 s at 100 Hz.** It holds about 5 cycles at 0.5 Hz and gives the history and order-20 SPIs enough samples. It is shorter than the 30-s sleep epoch, so windows stay inside a scored stage.
-- **2-s arm (T = 200; T = 400 for the fly at 200 Hz).** This is the only arm the epoched fly and DOC releases allow. It runs everywhere, because it is cheap and lets fly and DOC sit in the same space as the rest. The nearest-neighbour information SPIs, order-20 Granger and cointegration are weak at T = 200.
-- **No overlap.** Overlapping windows would add correlated rows without adding units. Power comes from units; windows only set each unit's precision.
+- **Common rate, not native rates with physical-unit bands.** pyspi's spectral SPIs accept `fs`, `fmin` and `fmax` [V, installed `pyspi/statistics/spectral.py`]. But about 45 lag, history and model-order SPIs count samples, so native-rate runs would still mix physics across datasets outside the spectral family. A bespoke config would also break the single configuration shared with the paper's other sections. A common resample fixes both, and removes no dependence structure inside the band it keeps. Comparison in units of an intrinsic timescale (cycles of each species' dominant rhythm) is a separate, later analysis, mainly for the fly. The policy is fixed across states, so the state-dependent slowing under study is not normalised away.
+- **Primary arm: 10 s at 100 Hz (T = 1000).** The ceiling sits near 40 Hz, set by scalp EMG and mains. The band split falls at 25 Hz and one lag is 10 ms. Ten seconds holds 5 cycles at 0.5 Hz and fits inside a 30-s sleep epoch.
+- **2-s arm (T = 200), all datasets.** The only arm that admits the fly and DOC. Cheap. z at 2 s is never compared with z at 10 s.
+- **200 Hz arm (T = 1000, 5 s), intracranial, secondary.** It keeps gamma to 80 Hz. T is matched within the arm, which keeps estimator bias equal across datasets. No state class has three confirmatory datasets in this tier, so it is supporting evidence, run after the primary.
+- **No overlap; units carry power.** Caps per unit-state: 30 windows for M ≤ 32, 15 for M ≤ 96, 10 above. z from thousands of pairs is precise per window, so further windows only sample state fluctuation. Pre-registered adaptive rule: if the split-half reliability of a dataset's unit Δz is below 0.8 at its cap, the cap doubles for that dataset. This is decided from wake-only split halves, before any state contrast is looked at.
 
-## Extraction
+## Extraction and compute
 
-- **pyspi.** Upstream main `0c798b4` (r13, unchanged since the snapshot; the head is checked again at launch), loaded through `PYSPI_SOURCE` from the immutable snapshot. Config `benchmarked_p90` from that commit. Its SPI order differs from the stored K = 283/289 (pcorr and te_symbolic_k-3 added, bary-sq removed), so the K count is read from the smoke run and the z contract is extended to accept it.
-- **Full channel space.** Every ordered pair of the native montage is computed; no dyad sampling (user, 11 November).
-- **Runner.** [`extract.py`](extract.py) calls the same `run_pyspi` as `run_corpus`, with a fixed seed per window and z-scoring. It writes one archive per shard of 25 windows, with provenance, resume and audit; tests pass.
-- **Concurrency.** pyspi's own SPI-level concurrency (`n_jobs`) is used for every window whose memory already pays for extra cores. Workers per window come from HPC.md's table: 1 for M ≤ 32, 2 for M ≤ 64, 4 for M of about 83–128 at T = 1000, and 2 for M = 128 at T = 200. Each node holds the smaller of 48 over workers and 190 GiB over memory per window. Concurrency shortens wall time at roughly equal SU; it doesn't reduce cost.
-- **Farms.** [`farm.pbs`](jobs/farm.pbs), one job per dataset and arm, each spanning 4–16 nodes (192–768 cores) as the window count warrants, all submitted together. At about 11,000 core-hours, 16 nodes finish in about 15 hours of wall time.
-- **Order.** (1) Smoke on two windows per bank. (2) One profiling job: one window of each (M, T) class, measuring time, memory and K. (3) Size and release every farm at once.
+- **pyspi.** Upstream main `0c798b4` (r13, unchanged since the snapshot; the head is re-checked at launch), loaded through `PYSPI_SOURCE`. Config `benchmarked_p90` from that commit; its SPI order differs from K = 283/289, so K and the SPI family lists ("precision", "rank and ids", "directed", "spectral") are frozen from the profiling run before analysis. Full channel space: no dyad sampling (user).
+- **Runner.** [`extract.py`](extract.py) calls `run_pyspi` with the same arguments as `run_corpus`, a fixed seed per window and z-scoring. It writes one archive per shard, with provenance, resume and audit; tests pass.
+  - **Shard size scales with M**, so that a shard takes about 1–2 h: 25 windows for M ≤ 32, 5 for M ≤ 96, 2 for M > 96. A 25-window shard at M = 128 would take about 17 h and miss the walltime.
+- **Concurrency.** pyspi's `n_jobs` (parallel over SPIs) is used wherever memory already pays for the cores: 1 worker for M ≤ 32, 2 for M ≤ 64, 4 for M of about 83–128 at T = 1000. It shortens wall time at roughly equal SU.
+- **Farms.** [`farm.pbs`](jobs/farm.pbs), one job per dataset and arm, all submitted together. Nodes are sized so that nodes × 48 ≤ shards × workers per window (the request is billed whether used or not). The largest jobs span 8–16 nodes.
+- **Order.**
+  1. Smoke: two windows per bank.
+  2. Profiling: one window per (M, T) class, measuring time, memory and K on upstream r13. The HPC.md timings are from the fork, so every figure here is re-priced.
+  3. The 2-s arm everywhere.
+  4. The 10-s/100 Hz arm.
+  5. Surrogates and the 200 Hz arm.
+  6. DREAM, once its usable studies are counted.
 - **Storage.**
-  - MPIs are K × M × M per window: 38 MB at M = 128, 16 MB at M = 83, about 0.5 MB at M = 15, in float64.
-  - Under the caps, the outputs total about 230 GB in float64, about 115 GB in float32.
-  - **Proposed: store MPIs as float32** (z is a correlation, so relative precision of 1e-7 is ample). That is a one-line change to `extract.py` before launch.
-  - Scratch is at 223 GiB of 1 TiB; inodes run to about 1,100 shards plus logs.
-  - Raw: ANPHY, Watson and Claar go through download-or-stream, extract windows and delete raw, one subject at a time on copyq, so raw never accumulates.
+  - Outputs: about 230 GB in float64.
+  - float32 storage of MPIs is adopted only if profiling shows a maximum |Δz| between float64 and float32 below 1e-4. That needs a one-line change to `extract.py`.
+  - Raw for ANPHY, Watson and Claar: download or stream, extract windows, delete, one subject at a time on copyq.
+  - Scratch is at 223 GiB of 1 TiB.
 
 ## Analysis (to freeze)
 
-1. **z per window** under the existing ordered-pair contract (all M(M−1) off-diagonal entries), extended to the new SPI order. Then Fisher-transformed unit-state means and Δz = state − the unit's wake baseline, a vector of about K(K−1)/2 ≈ 41,000.
-2. **Alignment.**
-   - For each held-out dataset (and species), cosine between its precision-weighted mean Δz and the mean from all other datasets for the matching state class (GABAergic or isoflurane, NREM, REM, ketamine).
-   - Null: state labels permuted within units, 1,000 times.
-   - Precision weight per unit: the inverse of the split-half variance of its Δz.
-   - M enters as a covariate: alignment is re-estimated after regressing log M out of the unit Δz, and also shown separately for high- and low-M datasets.
-3. **Controls through the identical pipeline.** mean-SPI (K), Pearson edge quantiles, pooled log spectra (1–40 Hz, or 1–80 Hz in the 200 Hz arm), pooled catch22. Each gives Δ vectors and the same alignment test. P2 compares paired alignment over held-out datasets.
-4. **Residual direction.** Ridge from Δ(pooled spectra) to Δz, fitted leave-one-dataset-out; the residual goes through the alignment test.
-5. **Character reading.** The SPI-family blocks that carry the shared and residual directions (direct against pairwise, directed against undirected, linear against rank or nonlinear). Each named effect is checked against multivariate IAAFT surrogates for time-domain families only.
-6. **Projection.** DOC (patients against controls) and Chennu, Purdon or Bajwa graded levels are projected onto the learned direction; they don't enter its estimation.
-7. **P3 on DREAM.** People with both experience and no-experience awakenings in a study with M ≥ 8: within-person paired contrast of pre-awakening z, against pooled spectra, by stage (NREM and REM separately).
-8. **NeuroTycho montage diagnostic.** The Δz direction at native M compared with random 16- and 32-channel subsets of the same windows. It is reported only as a check that direction does not track M, never as the analysis.
-9. **Losses are kept.** Every arm and control is reported whatever the outcome.
+1. **Coordinates.**
+   - z per window under the ordered-pair contract, extended to the new K. Fisher-transformed with |r| clipped at 0.995.
+   - Each coordinate is standardised by its within-state window SD in the training data.
+   - Unit-state means, then Δz = state − the unit's own wake baseline.
+   - A family-block version (block means over the frozen SPI families) is co-primary with the full coordinates.
+2. **Primary statistic: standardised held-out projection.** The held-out dataset's unit Δz are projected onto the direction from all other datasets, giving a unit-level paired effect size. Disattenuated cosine (split-half corrected) is secondary. Raw cosine is not used across representations of different dimension.
+3. **Weights and inference.** Datasets are weighted equally, with precision weights only within a dataset. Sign flips are done at unit level, never on windows. Inference runs over datasets, leave-one-dataset-out and leave-one-species-out.
+4. **Specificity matrix.** State classes (GABAergic or isoflurane, NREM, REM, ketamine) cross state classes. Shared and specific components are estimated, against a null contrast (early against late wake in the same units) that measures generic change and drift.
+5. **Recovery reversal.** Recovery returning towards wake (Chennu, Claar, NeuroTycho) is the time and drift control, because anaesthesia always follows wake.
+6. **Controls through the identical pipeline.**
+   - Mean-SPI, Pearson edge quantiles, pooled log spectra (1–40 Hz, or 1–80 Hz in the 200 Hz arm), across-channel quantiles of band power, pooled catch22.
+   - Each control gets its own null and uncertainty.
+   - Within fixed-montage datasets, the per-channel spectral control (mandatory per the project context) and an identity-aware edge-level ceiling are added.
+7. **Residual.** Δz is residualised on the joint identity-free block (ridge, fitted leave-one-dataset-out), with a kernel-ridge sensitivity. The decisive version is Δz(data) − Δz(multivariate IAAFT) on the surrogate subset (about 5 windows per unit-state, plus independent-channel surrogates).
+8. **Montage robustness, at zero SU.** z recomputed from stored MPIs restricted to random 15-channel subsets in every dataset. This is exact for bivariate SPIs; conditional SPIs are excluded from the check. MNI's between-patient variation in M adds a natural test. Reference choice is varied on one dataset per modality. The old log-M regression is dropped: M is constant within a dataset and collinear with species across datasets.
+9. **H4 on DREAM.** Per constituent study with M ≥ 8: within-person paired experience against no-experience contrast, by stage. Covariates are time of night and stage. Pooled and posterior spectra are the controls.
+10. **Projection.** DOC (patients against controls) onto the learned components, without estimating them.
+11. **Losses are kept.** Every arm, control and failed transfer is reported.
 
 ## Budget
 
-`ql44` has **27.6 kSU** left this quarter [V, `nci_account`], shared with other sessions. Costs follow HPC.md's rule (about 1.2 core-seconds per channel pair at T = 1000, 4 at 2000 and 0.2 at 256; ±1.5 times) [I]:
+`ql44` Q4 allocation rises from 75 to 105 kSU (pending at NCI, 11 November). With 46.8 kSU used [V], about 58 kSU is free, shared with other sessions. Estimates follow HPC.md's rule [I]. They are ±1.5 times, and the timings come from the fork, so they will be re-priced from the profiling run.
 
-| Design | 10 s / 100 Hz | 200 Hz | 2-s | Total |
-|---|---:|---:|---:|---:|
-| Full: 30 windows per unit-state, 200 Hz at 10 s | 34 kSU | 41 kSU | 5 kSU | **80 kSU** |
-| Capped: 30 / 15 / 10 windows for M ≤ 32 / ≤ 96 / > 96, 200 Hz at 5 s | 15 kSU | 5 kSU | 3 kSU | **22 kSU** |
+| Block | kSU |
+|---|---:|
+| 2-s arm, all datasets | 2.4 |
+| 10-s / 100 Hz arm | 13.5 (Kauvar 1.8 of it, deferred) |
+| 200 Hz arm at T = 1000 | 4.1 |
+| Surrogates (multivariate IAAFT and independent-channel, about 5 windows per unit-state, 10-s arm) | 10.4 |
+| DREAM (usable studies uncounted) | about 3 [S] |
+| Profiling, smoke and reruns (20%) | about 7 |
+| **Total** | **about 40 (range about 27–60)** |
 
-The expensive cells are the high-M scalp sets in the 10-s arm (ANPHY 4.7, Chennu 3.9) and the intracranial high-M sets (Kauvar 3.6, NeuroTycho 3.4 across arms). Fewer windows for high M are justified because z from thousands of pairs is precise per window: what windows add is coverage of state fluctuation, and units carry the power.
+Doubling caps under the adaptive rule would add up to about 15 kSU, at most.
 
-## Our predictions (before any atlas output)
+## Predictions before any atlas output (all [S])
 
-- Within every dataset, wake against deep GABAergic or N3: separable (near certain).
-- Raw Δz alignment across mammalian GABAergic, isoflurane and N3 sets, above the permutation null: likely (about 75%) [S].
-- The pooled-spectra control aligns as well or better, so P2 fails or ties: more likely than not (about 65%) [S].
-- A residual direction that survives leave-one-dataset-out in most held-out mammalian sets: about 35% [S]. Fly to mammal: about 25% [S].
-- P1 recurs outside NeuroTycho beyond surrogates: about 40% [S].
-- Ketamine and REM displacements closer to wake than GABAergic ones on the residual: about 40% [S]. The ketamine dose in Kauvar is unknown.
-- P3 on DREAM beyond pooled spectra: about 15% [S]. Posterior low-frequency power already predicts reports (Siclari et al. 2017 [U, from memory]).
+| Outcome | Ours | Fable 5.2 |
+|---|---|---|
+| Wake against deep state separable within each dataset | near certain | about 97% |
+| Held-out projection above the unit-level null for GABAergic/isoflurane/NREM | about 75% | about 90% against the old weak null |
+| Spectral or joint identity-free control equals or beats z on the conserved part | about 65% | about 85% |
+| A residual component survives leave-one-dataset-out | about 35% | about 20% genuine; about 45% chance the original test gives a spurious positive |
+| Fly to mammal | about 25% | about 7% |
+| H1 decoupling recurs outside the discovery sets beyond IAAFT | about 40% | about 15–20% |
+| Ketamine and REM nearer wake on the residual | about 40% | about 15% |
+| H4 on DREAM beyond spectra | about 15% | about 7% |
+
+The likeliest single outcome is a shared, largely spectral change across GABAergic, isoflurane and NREM states, with z non-redundant only in places. Under this contract, that is still worth reporting if the places are named and explained.
 
 ## Decisions open before freeze
 
-1. Budget: how much of the 27.6 kSU goes to the atlas this quarter, and what moves to 2027 Q1.
-2. 200 Hz arm at T = 1000 (5 s) rather than T = 2000 (10 s).
-3. Window caps by M.
-4. float32 storage of MPIs.
-5. Adding DREAM (open subset) for P3.
-6. References per recording type (average, common average or bipolar), with no Laplacian.
+1. Budget: about 40 kSU this quarter, released in the order above.
+2. Watson's silicon probes: thin to sites at least 100 µm apart, or keep every site. Closely spaced sites are near-duplicates and make the precision SPIs singular. Fable's view is that hardware pitch is not a montage.
+3. Whether NeuroTycho natural-sleep sessions exist in the same animals [U]. If they do, they become the cleanest test of whether a cross-state direction exists at all, with montage held fixed.
