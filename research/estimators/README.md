@@ -319,3 +319,43 @@ Run with:
 - **Implications:**
   - Per-edge uncertainty is needed before group comparisons.
   - Whether N should stay a share of time-invariant predictable dependence (so that V inflates it), or become local, is a definitional choice still open.
+
+## N_MI: nonlinearity as an information share (`nmi.py`; pre-registered before its run, 10 November 2026)
+
+**Definition.** N_MI = 1 − I_Gauss / I, with I the mutual information of the pair and I_Gauss = −½ ln(1 − r²) the mutual information of a Gaussian pair with the same Pearson r. It is the share of the dependence between two channels that a correlation does not account for: 0 for a jointly Gaussian pair, 1 for dependence with r = 0. `estimators.nonlinearity_mi` estimates I with the Kraskov–Stögbauer–Grassberger estimator 1 (k = 4, max norm; Kraskov et al. 2004, Phys. Rev. E 69, 066138, from memory, not re-read).
+
+**Why a second nonlinearity axis.** N above is a share of *predictable variance*: it asks whether the mean of y given x is a straight line. N_MI is a share of *information*, so it also reads dependence that sits outside the conditional mean: coupling of variance only (y = x·noise), clusters, on/off coupling, a sign flip. It needs no model of the bend. The cost is the two departures below.
+
+**Two deliberate departures from the principle.**
+- **Standardised channels, not normal scores.** With normal scores a noise-free y = exp(x) reads 0 and a linear coupling from a skewed source reads 0.38 (T = 2,000, exploratory). On the raw scale I − I_Gauss also contains the departure of each marginal from Gaussian, so a skewed source or heavy-tailed noise moves N_MI without any bend. That is a property of the definition.
+- **Not strength-free (principle 2).** For a fixed bend, N_MI changes with the noise level; `nmi.population` gives the value. Report it beside `mi`.
+
+**Numerical guards.** Each addresses one failure of the plain ratio.
+
+| Failure | Guard |
+|---|---|
+| No or weak dependence: 0/0, and the KSG estimate can be negative | Undefined (NaN) unless I exceeds the circular-shift null (39 shifts, p ≤ .05), as for every axis |
+| The two estimators have different small-sample biases | Each has its mean over the shifts subtracted |
+| Autocorrelated samples bias KSG upward ([context](../../docs/context/premise-and-character-axes.md), surrogates) | Theiler window: neighbours closer in time than the last lag (≤ 50) with \|autocorrelation\| ≥ 1/e in either channel are excluded |
+| \|r\| → 1: I_Gauss diverges | \|r\| ≥ 0.999 reads 0 |
+| Ties in discretised data (KSG assumes none) | Jitter of 10⁻¹⁰ SD |
+
+The lag is the one the module already uses (`_centre`: strongest first- or second-order moment within ±10 samples), chosen again inside every shift so the null stays valid. The value is not clipped, as for every axis. It is not part of `estimate()`, so the scored runs above are unchanged.
+
+**Design.** Every condition of `validate.py` and `transfer.py` (250 conditions, 6,480 recordings, T = 2,000 at base), with fresh seeds. Truth:
+- 0 by construction where the pair is jointly Gaussian: `lag`, `direction`, `delay`, and θ = 0 of the other systems;
+- a numerical integral (`nmi.population`) where y given x is a Gaussian mixture with a known mean: `linearity`, `rectifier`, `intermittency`, `telegraph`;
+- the long run (T = 2¹⁶, 3 seeds, no shifts) otherwise.
+
+**Predictions.** Tolerance 0.10 on the mean; a cell counts where N_MI is defined in ≥ 80% of recordings.
+- **P1.** Linear-Gaussian base cells read 0.
+- **P2.** Calibration: on `linearity`, `rectifier`, `intermittency` and `telegraph`, |mean − integral| ≤ 0.10 at every base level, with Spearman ≥ 0.9 across levels.
+- **P3.** Independent pairs are defined in ≤ 10% of recordings.
+- **P4.** Across coupling strengths, N_MI follows the population value, which itself moves.
+- **P5.** Linear-Gaussian systems stay at 0 under strength, T, spectrum, delay, mixing and measurement noise.
+- **P6.** What N_MI reads by definition: the `beta` and `ampmod` nuisances raise it on linear-Gaussian systems, and it rises with θ on `lag_variability` and `warp` (a time-varying phase makes the pooled pair a non-Gaussian mixture).
+
+**Stated before the run.** An exploratory check (8 seeds, base cells of `linearity`, `lag`, `direction`) read 0.43 ± 0.08 against 0.41 and 0.83 ± 0.06 against 0.82 on `linearity`, and 0.00 ± 0.03 at θ = 0. Expected weak points: P3 on slow spectra (one of 8 slow independent pairs passed the null, and a pair that passes by chance reads ≈ 1); weak-coupling cells will mostly fall below the 80% defined bar; `lag` at θ near 1 depends on the ±10-sample lag search recovering a quarter cycle.
+
+    OMP_NUM_THREADS=1 python -m research.estimators.nmi run --out results/estimators/nmi-<commit> --workers 8
+    python -m research.estimators.nmi analyse --out results/estimators/nmi-<commit>

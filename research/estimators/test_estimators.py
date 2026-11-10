@@ -39,3 +39,26 @@ def test_independent_pair_is_undefined():
     x, y = make('independent', 0., 2000, np.random.default_rng(3))
     e = estimate(x, y, np.random.default_rng(4))
     assert not any(e[f'{k}_defined'] for k in MAIN)
+
+
+def test_ksg_matches_the_gaussian_closed_form():
+    from research.estimators.estimators import _ksg
+    rng = np.random.default_rng(6)
+    x = rng.standard_normal(4000)
+    y = .8 * x + .6 * rng.standard_normal(4000)
+    assert abs(_ksg(x, y) - -.5 * np.log(1 - .8 ** 2)) < .05
+
+
+def test_nonlinearity_mi_endpoints():
+    from research.estimators.estimators import nonlinearity_mi
+    for theta, want in ((0., 0.), (1., 1.)):
+        x, y = make('linearity', theta, 2000, np.random.default_rng(7))
+        assert abs(nonlinearity_mi(x, y, np.random.default_rng(8))['nonlinearity_mi'] - want) < .1
+
+
+def test_nonlinearity_mi_is_zero_for_identical_and_undefined_for_independent_channels():
+    from research.estimators.estimators import nonlinearity_mi
+    x, y = make('independent', 0., 2000, np.random.default_rng(3))
+    assert nonlinearity_mi(x, x)['nonlinearity_mi'] == 0
+    e = nonlinearity_mi(x, y, np.random.default_rng(4))
+    assert not e['nonlinearity_mi_defined'] and np.isnan(e['nonlinearity_mi'])

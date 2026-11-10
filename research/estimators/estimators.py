@@ -21,6 +21,15 @@ normal scores (``gaussianise``). README.md gives the definitions and their test 
 - directionality D (auxiliary: a normalised form of time-reversed Granger causality, which already exists): |(G_xy - G_yx) - (G~_xy - G~_yx)| / (sum of the four), G linear Granger, ~ time reversed,
   so asymmetry that time reversal does not flip (unequal noise, instantaneous mixing) does not count.
 
+- nonlinearity as an information share, N_MI (``nonlinearity_mi``; symmetric; not part of ``estimate``):
+  1 - I_Gauss / I_KSG at the pair's strongest lag, with I_Gauss = -log(1 - r^2) / 2 the mutual information a
+  Gaussian pair with the same correlation has, and I_KSG the Kraskov estimate of the pair's own. It is the share
+  of the dependence that a correlation does not account for, so it counts every departure from a linear-Gaussian
+  relation: a bent mean, but also coupling through the variance, multi-valued relations and mixed regimes. It
+  departs from the two rules above on purpose: it runs on standardised channels, not normal scores (so y = exp(x)
+  reads as nonlinear), and it is not strength-free (information is logarithmic, so the same curve reads lower
+  at higher noise). Report it beside ``mi``.
+
 Estimates are not clipped to [0, 1]; ``delay`` (samples) is reported as an auxiliary coordinate.
 The spectral axes (L, V) are computed on zero-phase whitened channels. Squared quantities are estimated
 without noise bias from products of estimates on time-disjoint data (distinct segments, or distinct quarters of
@@ -31,7 +40,8 @@ from __future__ import annotations
 from itertools import combinations
 
 import numpy as np
-from scipy import signal, stats
+from scipy import signal, special, stats
+from scipy.spatial import cKDTree
 
 W = 100          # segment length in samples: the timescale of variability
 NW, TAPERS = 2.5, 4
@@ -42,6 +52,10 @@ AR_ORDER = 4     # Granger order
 FOLDS = 5
 SHIFTS = 39      # circular-shift independence null; p = (1 + #null >= obs) / (1 + SHIFTS)
 ALPHA = .05
+KNN = 4            # neighbours of the Kraskov estimator
+THEILER_MAX = 50   # cap on the Theiler window, samples
+R_MAX = .999       # |r| at or above this is a deterministic linear relation: N_MI = 0 (I_Gauss diverges)
+TIE = 1e-10        # jitter that breaks ties in discretised data, in SD units (the Kraskov estimator assumes none)
 AXES = ('nonlinearity', 'lag', 'variability', 'direction', 'nonlinearity_raw')
 
 
@@ -211,6 +225,80 @@ def _analytic_null(n):
     """Expected null cross-validated R^2 of each model for white regressors (used without the shift null)."""
     ntr, kl, kf = n * (FOLDS - 1) / FOLDS, 2 * P_WIN + 1, 2 * P_WIN + 1 + (2 * P_WIN + 1) * (2 * P_WIN + 4) // 2
     return -np.array([kl / (ntr - kl - 1), kf / (ntr - kf - 1)] * 2)
+
+
+# ---- nonlinearity as an information share ---------------------------------------------------------------
+
+def _theiler(x, y):
+    """Theiler window (samples): the longest lag up to THEILER_MAX at which either channel's autocorrelation
+    still reaches 1/e. Samples closer than this in time are neighbours through autocorrelation, not through the
+    dependence between the channels, and bias the Kraskov estimator."""
+    w = 0
+    for v in (x, y):
+        v = v - v.mean()
+        acf = np.array([v[:-l] @ v[l:] for l in range(1, THEILER_MAX + 1)]) / (v @ v)
+        above = np.flatnonzero(np.abs(acf) >= np.exp(-1))
+        w = max(w, above[-1] + 1 if len(above) else 0)
+    return int(w)
+
+
+def _ksg(x, y, k=KNN, theiler=0):
+    """Kraskov-Stoegbauer-Grassberger estimator 1 of I(x; y) in nats (max norm, k nearest neighbours). Samples
+    within ``theiler`` steps in time of a sample are excluded from its neighbours and from its counts."""
+    n = len(x)
+    i = np.arange(n)
+    pts = np.column_stack([x, y])
+    d, j = cKDTree(pts).query(pts, k=min(n, k + 2 * theiler + 1), p=np.inf)
+    far = np.abs(j - i[:, None]) > theiler                # also drops the sample itself
+    eps = d[i, np.argmax(np.cumsum(far, 1) >= k, 1)]      # distance to the k-th admissible neighbour
+    psi = 0.
+    for v in (x, y):
+        s = np.sort(v)
+        c = np.searchsorted(s, v + eps, 'left') - np.searchsorted(s, v - eps, 'right')  # strictly within eps
+        for lag in range(-theiler, theiler + 1):
+            t = i[max(0, -lag):n - max(0, lag)]
+            c[t] -= np.abs(v[t] - v[t + lag]) < eps[t]
+        psi += special.digamma(np.maximum(c, 0) + 1).mean()
+    admissible = n - 1 - np.minimum(i, theiler) - np.minimum(n - 1 - i, theiler)
+    return special.digamma(k) + special.digamma(admissible + 1).mean() - psi
+
+
+def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS):
+    """N_MI = 1 - I_Gauss / I_KSG for one pair: the share of the dependence that a correlation does not account for.
+
+    Both informations are taken at one lag, the strongest first- or second-order lag within TAU_MAX (``_centre``,
+    as for N), on standardised channels. Guards, each for one numerical failure of the ratio:
+    - no dependence (I_KSG near 0, the ratio is 0/0): undefined (NaN) unless I_KSG exceeds its circular-shift null;
+    - estimator bias (the two estimators differ in bias, and the lag is selected): each one's mean over the
+      shifts, where the lag is selected again, is subtracted;
+    - deterministic linear relation (I_Gauss diverges, the Kraskov estimate cannot): |r| >= R_MAX reads 0;
+    - ties and autocorrelation: jitter of TIE SD, and a Theiler window.
+    The value is not clipped. A value below 0 is noise for a Gaussian source, but a real property of the ratio
+    for a strongly non-Gaussian one: a Gaussian source carries the most information at a given correlation.
+    ``shifts=0`` skips the null and the bias correction (long recordings).
+
+    Returns nonlinearity_mi, nonlinearity_mi_defined, mi and mi_gaussian (nats, bias-corrected) and mi_lag."""
+    rng = rng or np.random.default_rng(0)
+    x, y = (standardise(np.asarray(v, float)) for v in (x, y))
+    x, y = (v + TIE * rng.standard_normal(len(v)) for v in (x, y))
+    w = _theiler(x, y)
+
+    def informations(ys):
+        tau = _centre(x, ys)
+        t, a = _window(x, [tau])
+        r2 = min(np.corrcoef(a[:, 0], ys[t])[0, 1] ** 2, 1 - 1e-12)
+        return -.5 * np.log1p(-r2), _ksg(a[:, 0], ys[t], theiler=w), tau, r2
+
+    ig, ik, tau, r2 = informations(y)
+    defined = True
+    if shifts:
+        null = np.array([informations(np.roll(y, s))[:2] for s in rng.integers(W, len(x) - W, shifts)])
+        defined = (1 + np.sum(null[:, 1] >= ik)) / (1 + shifts) <= ALPHA
+        ig, ik = ig - null[:, 0].mean(), ik - null[:, 1].mean()
+    linear = r2 >= R_MAX ** 2
+    value = 0. if linear else 1 - ig / ik if defined else np.nan
+    return dict(nonlinearity_mi=float(value), nonlinearity_mi_defined=bool(defined or linear), mi=float(ik),
+                mi_gaussian=float(ig), mi_lag=int(tau))
 
 
 # ---- directionality ------------------------------------------------------------------------------------
