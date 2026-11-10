@@ -1,0 +1,43 @@
+#!/bin/bash
+#PBS -N atlas-farm
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# pyspi over one atlas window bank, one nci-parallel task per shard, across as many nodes as requested.
+# Run from a source snapshot with the atlas pyspi:
+#   PYSPI_SOURCE=$MTS_SCRATCH/operations/sources/pyspi-upstream-0c798b4
+#   qsub -l ncpus=192,mem=760GB,walltime=10:00:00,jobfs=10GB \
+#        -v BANK=<bank>,OUT=<out>,SHARD_SIZE=25,CONFIG=<pyspi yaml>,PYSPI_SOURCE=<snapshot>[,CORES_PER_WINDOW=4] \
+#        research/representation/atlas/jobs/farm.pbs
+set -euo pipefail
+: "${BANK:?}" "${OUT:?}" "${SHARD_SIZE:?}" "${CONFIG:?}" "${PYSPI_SOURCE:?}"
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+
+ranks=$(( (PBS_NCPUS + 47) / 48 ))
+mpirun -np "$ranks" --map-by ppr:1:node python -c 'import mtsspi, pyspi, os
+assert os.path.realpath(pyspi.__file__).startswith(os.path.realpath(os.environ["PYSPI_SOURCE"])), pyspi.__file__
+print(mtsspi.__file__, pyspi.__file__)'
+
+cores="${CORES_PER_WINDOW:-1}"
+shards=$(python -m research.representation.atlas.extract "$BANK" --out "$OUT" --shard-size "$SHARD_SIZE" --count)
+commands="$PBS_JOBFS/commands.txt"
+for (( k = 0; k < shards; k++ )); do
+    printf 'python -m research.representation.atlas.extract %s --out %s --shard %d --shard-size %d --config %s --n-jobs %d\n' \
+        "$BANK" "$OUT" "$k" "$SHARD_SIZE" "$CONFIG" "$cores" >> "$commands"
+done
+workers=$(( PBS_NCPUS / cores ))
+(( workers > shards )) && workers=$shards
+
+mkdir -p "$OUT/logs"
+stem="${PBS_JOBNAME}_${PBS_JOBID%%.*}"
+exec >"$OUT/logs/$stem.log" 2>&1
+echo "[INFO] bank=$BANK shards=$shards workers=$workers cores_per_window=$cores pyspi=$PYSPI_SOURCE"
+set +e
+mpirun -np "$workers" --map-by "node:PE=$cores" nci-parallel --verbose --input-file "$commands" --status "$OUT/logs/$stem.status"
+rc=$?
+set -e
+python -m research.representation.atlas.extract "$BANK" --out "$OUT" --shard-size "$SHARD_SIZE" --config "$CONFIG" --audit
+exit "$rc"
