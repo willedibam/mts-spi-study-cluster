@@ -2,6 +2,8 @@
 
 Compiled 6 November 2026 from existing outputs only (no pyspi, no fitting, no Gadi jobs). Every number below was read from the source named for its table or line. Status labels: **V** = read from the output file in this compilation; **Vn** = taken from a findings note that records its own independent verification, but whose output file is not in the repository and was not re-read; **I** = inferred here; **not run** = no such comparison exists. Protocols are never pooled: each table keeps its own split, metric and threshold rule, and rows are not ranked across tables.
 
+Re-verified 10 November 2026 against the source JSONs in the repository (an independent session): every method's BA and Brier in the fMRI primary role (15 methods), the four discovery datasets (16 methods each) and Siena (15 methods), the discovery contrasts that Matrix 4 quotes, and the P / P+z / P+core / P+core+z scores, increments and intervals for propofol, LEMON and NeuroTycho r10, plus propofol's S/Q rows and cohort scores. No discrepancy was found. Cells marked Vn remain unverified here: Gadi was offline for maintenance, so the K289 NeuroTycho outputs, CHBMP JSONs and the Siena prediction files were not re-read. The [dataset inventory](#dataset-inventory-and-pyspi-versions-10-november) and the [comparator gap matrix](#comparator-gap-matrix-10-november) below were added in that pass.
+
 ## Summary
 
 What holds:
@@ -165,6 +167,30 @@ fMRI separate fusion (single SPI 32 PCs + z-PCA ≤ 50) over single SPI: Brier *
 - **Electronic Rössler hardware oscillators (ER and small-world wiring), CCEP ECoG (ds004080, 24 participants) and the Zenodo 1,053-series corpus** have z computed for unsupervised order-coordinate, calibration or atlas work, not for a representation comparison against baselines; see `docs/context/premise-and-character-axes.md` and `docs/context/zenodo-mts-corpus.md`. They are out of scope for these matrices.
 - **UEA/Multiverse benchmark panel**: designed, not run. Protocol on branch `claude/mts-benchmark-screen-4cbb57` (`research/representation/mts_benchmark/protocol.md`, commit `e20a490`): 89-dataset screen, ten candidate tasks plus BasicMotions for positioning, awaiting user approval.
 
+## Dataset inventory and pyspi versions (10 November)
+
+Every real-world dataset on which z has been computed, with the pyspi computation that produced its bank. Banks of different versions are never extended or pooled. The pin moved to r13 (`5d61d9c`) on 6 November; **no real-world bank exists at r13**, and the 10 November blueprint requires one pinned version for the write-up, so every statistical cell here is provisional until that re-run. Raw-waveform comparators (InceptionTime, the Rocket family, tsfresh, catch22, encoders, tangent-space covariance, channel spectra) do not depend on the pyspi version.
+
+| Dataset | Question | Units | M / T / fs | pyspi bank | Evaluation | Status |
+|---|---|---|---|---|---|---|
+| NeuroTycho anaesthesia | awake vs anaesthesia after animal/drug shift | 4 source + 2 target macaques | 16 / 2000 / 250 Hz | K289 `65317c9` (pilot); K283 r10 (`character-transfer-261031/neurotycho-primary`) | transfer; r10 also core sufficiency and three IAAFT variants | positive, core-explained; r10 transfer panel never scored on targets |
+| NeuroTycho induction | unsupervised state coordinate | 4 macaques, 15 dates | 16 / 2000 | not checked | unsupervised only | z-PC1 separates animals, not states |
+| fMRI rest/film | rest vs film | 17 + 9 people | 17 / 947 | r10 | transfer, frozen | mixed/negative |
+| CHB-MIT → Siena | ictal vs seizure-free | 16 + 6 → 14 people | 16 / 2000 / 100 Hz | r10 | transfer; frozen confirmation | screen gain not replicated |
+| HMC sleep | N2 vs REM | 27 + 12 nights | 8 / 3840 / 128 Hz | r10 | transfer | matched by per-channel features |
+| GRABMyo | 17 gestures, day 1 → 2 | 24 + 8 people | 14 / 2048 / 2048 Hz | r10 | transfer | adverse |
+| LANL three-storey | contact vs linear change | 9 + 4 configurations, one rig | 4 / 4096 / 320 Hz | r10 | transfer | saturated |
+| AD/FTD (ds004504) | AD, FTD, control | 88 people | 19 / 2000 / 100 Hz | r10 | grouped CV; two IAAFT variants | z ≈ Pearson; linear-spectral |
+| LEMON | old vs young | 132 people | 19 / 2000 / 100 Hz | r10 | grouped CV; two IAAFT variants | gain over Pearson is channel-spectral |
+| Propofol sedation (Chennu 2016) | sedation level | 20 people × 4 levels | 19 / 1000 / 100 Hz | r10 | within-person CV; two IAAFT variants | z adds over P + core (+.133), not over spectra |
+| CHBMP | full-scale IQ; age post hoc | 215 people (135 with FSIQ) | 19 / 1000 / 100 Hz | r10 (per protocol; not re-read) | pre-registered association | null; age signal spectral, not replicated in LEMON |
+| HCP MEG working memory | 0-back vs 2-back | 24 people | 32 / 4000 / 250 Hz | K289, archived | none | extraction only; blocked on family grouping |
+| CCEP ECoG (ds004080) | lag-profile character vs evoked latency | 24 people, 102 tables | 48–107 / 4096 / 128 Hz | r9 (`fd0de71`) | fixed-axis description | spectral/lag-profile continuum; N1 association gate failed |
+| Electronic Rössler hardware (ER, small-world) | locking transition | 45 settings, two wirings | 28 / 5000 / 500 Hz | r7 and r9 | unsupervised, calibrated | lag-profile/spectral organisation calibrated to 58/116/174 Hz profiles |
+| Zenodo corpus (1,053 series, synthetic and measured) | atlas neighbourhoods | 1,053 series | varied | see `docs/context/zenodo-mts-corpus.md` | unsupervised | atlas only |
+
+Scouted, with no z computed: TUH seizure EEG (exploration notebook, `research/empirical/tuh_eeg/`), the EWSHM 2026 bridge benchmark (access request drafted, not sent; `research/empirical/bridge/`), and the UEA/Multiverse benchmark panel (protocol only). The repository has no `log/` directory; the research log that the memory note describes is not present, so `git log`, the context files and the per-study notes are the record.
+
 ## Surrogate (real − multivariate IAAFT) results by dataset
 
 All from `research/representation/character_axes/findings.md` (Vn; surrogate banks on Gadi scratch `character-axes-261102/surr-*`). IAAFT reproduces covariance/precision almost exactly, Spearman closely (.97), ids and MI at .82, TE at .25, coherence/spectral GC at ≈ .5, and PSI/PLV/PPC not at all, so residuals are interpretable only for the time-domain covariance, precision, rank and ids family.
@@ -190,17 +216,55 @@ All from `research/representation/character_axes/findings.md` (Vn; surrogate ban
 - **LANL three-storey structure.** Nonlinear bumper contact versus linear mass/stiffness changes, M4/T4096, 320 Hz; nine source and four screen configurations of one apparatus (not independent structures; mirror identity and calibrated units uncertified). Saturated: many methods reach BA 1.0; z has the lowest Brier. The raw learners' entire deficit is state17 (contact gap .10 mm plus 1.2 kg first-floor mass). Validity alone reaches BA .875.
 - **HCP MEG working memory**, **CHBMP IQ**, **NeuroTycho induction**: see the section on other real-world data above.
 
-## Gaps that would be cheap to fill (not run)
+## Comparator gap matrix (10 November)
 
-Ordered by information per unit cost (an assessment, not a plan). None needs new pyspi; all banks already exist.
+Target: every dataset scored, under its own frozen protocol, on the full ladder. ✓ = exists (source in the matrices above); ○ = missing, fillable on the existing bank or raw windows with CPU only; ● = missing, needs GPU; — = not applicable; ✗ = blocked. Nothing in this table needs new pyspi extraction. NeuroTycho is completed in its r10 column only: the K289 pilot stays frozen history, and its raw-learner predictions (same 480 windows) are re-scored under the r10 aggregation rather than refitted.
 
-1. **Pearson + z** on CHB-MIT, HMC, GRABMyo, LANL (and source-frozen → Siena). Both blocks are in every discovery bank. This is the direct r+z test the claim needs, and only fMRI has it (where it was adverse). A Siena application would be post hoc and must be labelled so.
-2. **Pooled AUROC for the discovery screen** (CHB, HMC, GRAB, LANL) from the existing prediction files. No fitting; it separates ranking from threshold failure, as was done for Siena and fMRI.
-3. **NeuroTycho r10 target evaluation** of the already-fitted source models (`neurotycho-source-review.json`, `target_outcomes_evaluated: false`). This makes the current-version NeuroTycho panel comparable with the K289 pilot, including Pearson, aligned MPIs and the best single SPI, none of which the pilot ran.
-4. **m, m+z, full aligned MPIs and best single SPI on the character-axes cohorts** (AD/FTD, LEMON, propofol). The banks hold `m` (6,509) and `aligned` (96,786); only Pearson/z/axes/spectra/power and MiniRocket were run.
-5. **tsfresh and catch22** on fMRI, the discovery datasets and the EEG cohorts. These are CPU-cheap and have only been run on NeuroTycho K289.
-6. **Spectrum-final IAAFT** for CHB-MIT, Siena and LANL, whose residual claims rest on the marginal-final variant only (surrogate banks need recomputation, so this one does require pyspi on surrogates; cheap at these sizes, but not free).
-7. **Supervised K-vector mean-SPI** (edge means only) on any real task. It is the matched-invariance strength control the benchmark protocol names, and it is absent from every supervised real-data panel. The 23-descriptor m is a superset.
-8. **InceptionTime on the character-axes cohorts**, which findings.md lists as missing. It needs GPU fits, so it is cheap only relative to the rest.
+| Comparator | NT r10 | fMRI | CHB-MIT | Siena (frozen CHB fits) | HMC | GRABMyo | LANL | AD/FTD | LEMON | Propofol |
+|---|---|---|---|---|---|---|---|---|---|---|
+| z | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| r (Pearson edges) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| r + z | ○ (P+z ✓) | ✓ | ○ | ○ | ○ | ○ | ○ | ○ (P+z ✓) | ○ (P+z ✓) | ○ (P+z ✓) |
+| mean-SPI (K edge means) | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| m (23 descriptors per SPI) | ○ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ○ | ○ | ○ |
+| m + z | ○ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ○ | ○ | ○ |
+| full aligned MPIs | ○ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ○ | ○ | ○ |
+| best single SPI (source-selected) | ○ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ○ | ○ | ○ |
+| tangent-space covariance | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| per-channel log-PSD | ✓ | ✓ | ✓ (with amplitude) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| per-channel catch22 | ✓ (K289 run) | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| core: P, P+z, P+core, P+core+z | ✓ | ○ | ○ | ○ | ○ | ○ | ○ | ✓ | ✓ | ✓ |
+| InceptionTime | ✓ (K289 run) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ● | ● | ● |
+| ROCKET | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| MiniRocket | ✓ (K289 run) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| MultiRocket and MultiRocket-Hydra | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| QUANT | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| tsfresh (Efficient) | ✓ (K289 run) | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| aligned raw encoder | ✓ (K289 run, channel-exchangeable) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — (none exists) | — | — |
+| pooled AUROC beside BA/Brier | ✓ | ✓ | ○ (no fit) | ✓ | ○ | ○ (one-vs-rest) | ○ | ✓ | ✓ | ✓ |
 
-Not cheap: HCP classifier evaluation (blocked on family grouping and driver recovery), ROCKET/MultiRocket and learned pooling beyond NeuroTycho (new comparators), and the benchmark panel (awaiting approval).
+Rules for the fills. Each keeps the column's protocol: transfer columns fit and select on source rows only (three grouped folds, the column's PCA caps and ridge grid, Brier selection) and score held-out units once at threshold 0.5; cohort columns use the same participant-grouped five-fold CV × 5, inner-fold selection, PCA cap 32 and unit-mean probabilities. The best single SPI is chosen inside each training fold. Siena fills apply CHB-source fits unchanged and are post hoc, because Siena outcomes are known. No fill may change an existing fit, and nothing is selected on held-out data.
+
+Caveats that bound what the fills can show:
+
+- Tangent-space covariance on standardized windows (fMRI and the cohort banks) is tangent-space correlation: the diagonal carries no channel power. On the discovery banks' physical-unit windows it does carry power. Both are reported as what they are.
+- The core's band readouts split at fs/4, so their physical meaning differs by dataset (25 Hz for 100 Hz EEG, 512 Hz for GRABMyo, 80 Hz for LANL). On new datasets the core ladder is a fixed readout, not a validated one.
+- GRABMyo is 17-class, so its ladder is scored by Brier and BA, with one-vs-rest AUROC as a supplement.
+- Two target animals (NeuroTycho), four configurations (LANL) and six people (CHB-MIT) cannot rank the added comparators; intervals stay as wide as the existing ones.
+
+Cost estimates (inferred from this repository's recorded timings; none measured yet, so one job per class is measured before the rest are released):
+
+| Fill | Work | Estimate |
+|---|---|---|
+| Statistical blocks on transfer banks (r+z, mean-SPI, tangent, catch22, core ladder; NT r10 also m, m+z, aligned, single SPI) | ridge/logistic on ≤ 1,246 rows | 7 jobs, 8 cores × ≤ 1 h; ≤ 120 SU |
+| Statistical blocks on cohort banks (r+z, mean-SPI, m, m+z, aligned, nested single-SPI search, tangent, catch22) | 25 outer folds × 7 contrasts; the single-SPI search is about 85,000 small logistic fits per contrast | 3 jobs, 24 cores × ≤ 3 h; ≤ 450 SU |
+| ROCKET, MultiRocket, MultiRocket-Hydra, QUANT (aeon 1.5, separate environment with CPU torch) | transfer: three seeds per dataset; cohorts: refit per outer fold | ≈ 100 core-hours; ≤ 300 SU |
+| tsfresh Efficient and catch22 | ≈ 60,000 channel series, extracted once, label-free | ≈ 40 core-hours; ≤ 100 SU |
+| InceptionTime on the three cohorts | five-member ensembles on one five-fold split per contrast (175 fits), not the full 5 × 5 repeats | ≈ 30 GPU-hours on `gpuvolta`; ≈ 1,100 SU; least certain figure |
+| Pooled AUROC for the discovery screen; NT r10 target scoring; NT raw-learner re-scoring | no fitting | negligible |
+
+Total ≈ 2,000 SU, dominated by InceptionTime. Scratch inode use is small (tens of JSON and feature files per dataset); `lquota` and `nci_account` are checked before submission.
+
+Waits for the user (needs new pyspi extraction or an outside input): spectrum-final IAAFT banks for CHB-MIT, Siena and LANL; any surrogate bank for fMRI, HMC or GRABMyo; the reserved confirmation sets (HMC unused nights, GRABMyo day 3, LANL reserved configurations); HCP evaluation (family grouping, archived K289 bank); the r13 re-extraction of every bank that the blueprint's single-pin rule implies; and the UEA/Multiverse panel.
+
+Run status: not started. Gadi was offline for scheduled maintenance on 10 November.
