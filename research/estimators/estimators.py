@@ -271,8 +271,10 @@ def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS, blocks=JACKKNIFE):
     (The moment score ``_centre`` that N uses missed dependence invisible to its three moments, such as y = sin 5x, a
     circle or variance-only coupling, and then read I ~ 0 at an arbitrary lag; README, 'N_MI noise sweep'.) Guards, each for one numerical failure of the ratio:
     - no dependence (I_KSG near 0, the ratio is 0/0): undefined (NaN) unless I_KSG exceeds its circular-shift null;
-    - estimator bias (the two estimators differ in bias, and the lag is selected to maximise I_KSG): each one's
-      mean over the shifts, where the lag is selected again, is subtracted;
+    - estimator bias (the two estimators differ in bias): each one's mean over the shifts at the chosen lag is
+      subtracted. The gate re-selects the lag in every shift, but the bias correction must not: the maximum over
+      lags of a shift is inflated by the selection, while a coupled pair's I_KSG at its true lag is not, and
+      subtracting that inflation drove weak linear pairs to N_MI = -0.3 to -0.6 (README, 'N_MI v2');
     - deterministic linear relation (I_Gauss diverges, the Kraskov estimate cannot): |r| >= R_MAX reads 0;
     - ties and autocorrelation: jitter of TIE SD, and a Theiler window.
     The value is not clipped. A value below 0 is noise for a Gaussian source, but a real property of the ratio
@@ -296,22 +298,28 @@ def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS, blocks=JACKKNIFE):
         r2 = min(np.corrcoef(a, b)[0, 1] ** 2, 1 - 1e-12)
         return -.5 * np.log1p(-r2), _ksg(a, b, theiler=w), r2
 
-    def informations(ys):
-        best = -np.inf, 0
+    def strongest(ys):
+        """Largest I_KSG within TAU_MAX, and its lag (ties: the shorter)."""
+        best = -np.inf, 0, 0
         for tau in range(-TAU_MAX, TAU_MAX + 1):
             t, a = _window(x, [tau])
-            best = max(best, (_ksg(a[:, 0], ys[t], theiler=w), -abs(tau), tau))   # ties: the shorter lag
-        t, a = _window(x, [best[-1]])
-        a, b = a[:, 0], ys[t]
-        r2 = min(np.corrcoef(a, b)[0, 1] ** 2, 1 - 1e-12)
-        return -.5 * np.log1p(-r2), best[0], r2, best[-1], a, b
+            best = max(best, (_ksg(a[:, 0], ys[t], theiler=w), -abs(tau), tau))
+        return best[0], best[-1]
 
-    ig, ik, r2, tau, a, b = informations(y)
+    def at(tau, ys):
+        t, a = _window(x, [tau])
+        return a[:, 0], ys[t]
+
+    ik, tau = strongest(y)
+    a, b = at(tau, y)
+    ig, _, r2 = pair(a, b)
     bias, defined = np.zeros(2), True
     if shifts:
-        null = np.array([informations(np.roll(y, s))[:2] for s in rng.integers(W, len(x) - W, shifts)])
-        defined = (1 + np.sum(null[:, 1] >= ik)) / (1 + shifts) <= ALPHA
-        bias = null.mean(0)
+        rolls = rng.integers(W, len(x) - W, shifts)
+        # the gate compares like with like: the maximum over lags, against the maximum over lags of each shift
+        defined = (1 + sum(strongest(np.roll(y, s))[0] >= ik for s in rolls)) / (1 + shifts) <= ALPHA
+        # the bias of each estimator at the chosen lag; the selection inflation of a shift's maximum is not part of it
+        bias = np.mean([pair(*at(tau, np.roll(y, s)))[:2] for s in rolls], 0)
         ig, ik = ig - bias[0], ik - bias[1]
     linear = r2 >= R_MAX ** 2
     value = 0. if linear else 1 - ig / ik if defined else np.nan

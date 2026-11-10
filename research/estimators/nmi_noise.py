@@ -269,7 +269,7 @@ def figure(summ, out):
         ax.scatter(xs[ok], c['mean'][ok], s=11, color=col, zorder=4)
         ax.scatter(xs[~ok], c['mean'][~ok], s=11, facecolor='white', edgecolor=col, zorder=4)
         for xx, (_, r) in zip(xs, c.iterrows()):
-            ax.text(xx, -.42, f'{r.mi:.2f}', ha='center', va='bottom', fontsize=5.5, color='0.45')
+            ax.text(xx, -.78, f'{r.mi:.2f}', ha='center', va='bottom', fontsize=5.5, color='0.45')
         ax.set_title(name, fontsize=7.5, color=col, pad=3)
     for ax in axes.flat[len(names):]:
         ax.axis('off')
@@ -278,7 +278,7 @@ def figure(summ, out):
     for ax in axes[-1]:
         ax.set_xlabel('noise SD $\\sigma$', fontsize=8)
     ax0 = axes.flat[0]
-    ax0.set_ylim(-.45, 1.2); ax0.set_yticks([0, .5, 1]); ax0.set_xticks(xs, ['1/4', '1/2', '1', '2'])
+    ax0.set_ylim(-.8, 1.2); ax0.set_yticks([-.5, 0, .5, 1]); ax0.set_xticks(xs, ['1/4', '1/2', '1', '2'])
     for ax in axes.flat:
         ax.tick_params(labelsize=6.5, length=2)
     fig.suptitle('$N_{\\mathrm{MI}}$ under added measurement noise (T = 2,000; 20 recordings per point). Line and dots: mean '
