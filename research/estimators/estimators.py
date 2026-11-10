@@ -22,7 +22,7 @@ normal scores (``gaussianise``). README.md gives the definitions and their test 
   so asymmetry that time reversal does not flip (unequal noise, instantaneous mixing) does not count.
 
 - nonlinearity as an information share, N_MI (``nonlinearity_mi``; symmetric; not part of ``estimate``):
-  1 - I_Gauss / I_KSG at the pair's strongest lag, with I_Gauss = -log(1 - r^2) / 2 the mutual information a
+  1 - I_Gauss / I_KSG at the lag with the largest I_KSG (within TAU_MAX), with I_Gauss = -log(1 - r^2) / 2 the mutual information a
   Gaussian pair with the same correlation has, and I_KSG the Kraskov estimate of the pair's own. It is the share
   of the dependence that a correlation does not account for, so it counts every departure from a linear-Gaussian
   relation: a bent mean, but also coupling through the variance, multi-valued relations and mixed regimes. It
@@ -267,11 +267,12 @@ def _ksg(x, y, k=KNN, theiler=0):
 def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS, blocks=JACKKNIFE):
     """N_MI = 1 - I_Gauss / I_KSG for one pair: the share of the dependence that a correlation does not account for.
 
-    Both informations are taken at one lag, the strongest first- or second-order lag within TAU_MAX (``_centre``,
-    as for N), on standardised channels. Guards, each for one numerical failure of the ratio:
+    Both informations are taken at one lag, the one with the largest I_KSG within TAU_MAX, on standardised channels.
+    (The moment score ``_centre`` that N uses missed dependence invisible to its three moments, such as y = sin 5x, a
+    circle or variance-only coupling, and then read I ~ 0 at an arbitrary lag; README, 'N_MI noise sweep'.) Guards, each for one numerical failure of the ratio:
     - no dependence (I_KSG near 0, the ratio is 0/0): undefined (NaN) unless I_KSG exceeds its circular-shift null;
-    - estimator bias (the two estimators differ in bias, and the lag is selected): each one's mean over the
-      shifts, where the lag is selected again, is subtracted;
+    - estimator bias (the two estimators differ in bias, and the lag is selected to maximise I_KSG): each one's
+      mean over the shifts, where the lag is selected again, is subtracted;
     - deterministic linear relation (I_Gauss diverges, the Kraskov estimate cannot): |r| >= R_MAX reads 0;
     - ties and autocorrelation: jitter of TIE SD, and a Theiler window.
     The value is not clipped. A value below 0 is noise for a Gaussian source, but a real property of the ratio
@@ -296,9 +297,14 @@ def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS, blocks=JACKKNIFE):
         return -.5 * np.log1p(-r2), _ksg(a, b, theiler=w), r2
 
     def informations(ys):
-        tau = _centre(x, ys)
-        t, a = _window(x, [tau])
-        return pair(a[:, 0], ys[t]) + (tau, a[:, 0], ys[t])
+        best = -np.inf, 0
+        for tau in range(-TAU_MAX, TAU_MAX + 1):
+            t, a = _window(x, [tau])
+            best = max(best, (_ksg(a[:, 0], ys[t], theiler=w), -abs(tau), tau))   # ties: the shorter lag
+        t, a = _window(x, [best[-1]])
+        a, b = a[:, 0], ys[t]
+        r2 = min(np.corrcoef(a, b)[0, 1] ** 2, 1 - 1e-12)
+        return -.5 * np.log1p(-r2), best[0], r2, best[-1], a, b
 
     ig, ik, r2, tau, a, b = informations(y)
     bias, defined = np.zeros(2), True

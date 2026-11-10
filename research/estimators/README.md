@@ -340,7 +340,7 @@ Run with:
 | \|r\| → 1: I_Gauss diverges | \|r\| ≥ 0.999 reads 0 |
 | Ties in discretised data (KSG assumes none) | Jitter of 10⁻¹⁰ SD |
 
-The lag is the one the module already uses (`_centre`: strongest first- or second-order moment within ±10 samples), chosen again inside every shift so the null stays valid. The value is not clipped, as for every axis. It is not part of `estimate()`, so the scored runs above are unchanged.
+The lag was the one the module already uses (`_centre`: strongest first- or second-order moment within ±10 samples), chosen again inside every shift so the null stays valid; from v2 (below) it is the lag of largest I_KSG. The value is not clipped, as for every axis. It is not part of `estimate()`, so the scored runs above are unchanged.
 
 **Design.** Every condition of `validate.py` and `transfer.py` (250 conditions, 6,480 recordings, T = 2,000 at base), with fresh seeds. Truth:
 - 0 by construction where the pair is jointly Gaussian: `lag`, `direction`, `delay`, and θ = 0 of the other systems;
@@ -429,3 +429,11 @@ Every N_MI now comes with a standard error, `nonlinearity_mi_se`, in place of a 
 By mean I, the median SE / SD is 1.88 (≤ 0.06 nats), 1.69 (0.06–0.1), 1.59 (0.1–0.2), 1.37 (0.2–0.4) and 1.30 (> 0.4). **Reading:** the SE is conservative by about 1.4×, and its intervals still cover at the nominal rate, because the bias it does not include (up to 0.13 near the null) is about the size of what it overstates. It is fit for weighting and for flagging imprecise edges, not for exact tests. Scaling it by 1/1.4 would be fitted to these systems; not done.
 
 **P1–P6 on the fresh seeds.** The same picture, with the marginal verdicts flipping: P5 now passes (worst 0.05), P1 fails narrowly (`intermittency` θ = 0 reads 0.103, SD 0.18), and P6 `ampmod` fails (rise −0.00 to 0.11), which confirms it was a pass in name only.
+
+## N_MI v2: lag chosen by the information (10 November 2026; stated before its re-run)
+
+**Why.** A noise sweep over 33 systems (`nmi_noise.py`, below) showed that `_centre` cannot see dependence that is invisible to its three moments (corr(x, y), corr(He₂x, y), corr(x, He₂y)): y = sin 5x, a circle, an X shape, variance-only coupling, a sign flip halfway, a lagged volatility drive. It then picks an arbitrary lag in ±10, where I ≈ 0, so N_MI is undefined or noise. At σ = 1/4, sin 5x has I = 1.21 at lag 0 and 0.00 at the lags `_centre` chose (95% of recordings). No system of the scored study is of this kind, so its verdicts did not show it.
+
+**Change.** The lag is the one with the largest I_KSG within ±10 samples (ties: the shorter), chosen again inside every shift, so the null and the bias correction include the selection. Cost: 21 Kraskov estimates per selection, about 1.5 s per pair at T = 2,000 (from 0.2 s).
+
+**Re-run.** The scored study on fresh seeds (`--offset 2`), with P1–P6 and U1–U3 unchanged, and the noise sweep. Expected: unchanged where `_centre` already found the lag; a possible upward bias for weak linear pairs, because the lag that maximises a noisy I_KSG need not maximise r, so I_Gauss there is lower.
