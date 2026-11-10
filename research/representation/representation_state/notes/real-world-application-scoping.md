@@ -49,9 +49,9 @@ The novelty claim is therefore not "a cross-species consciousness signature" (Lu
 | Dataset | Species and recording | States | Units, M, fs | Access | Checked |
 |---|---|---|---|---|---|
 | Leung et al. 2025 flies (figshare 12309950; OSF 8wvsq) | fly, 16-contact linear probe LFP | wake vs isoflurane; held-out sets with sleep | 13 discovery + 49 evaluation flies; 15 bipolar; 1 kHz preprocessed | Open (CC BY 4.0) for the 13; OSF link for the rest; in-group via Fulcher | yes |
-| Claar et al. 2023 (DANDI 000458) | mouse, skull EEG plus Neuropixels | awake vs isoflurane, with cortical stimulation | Allen Institute mice; about 30 EEG contacts [U] | Open (CC BY 4.0), 362 GB | yes |
+| Claar et al. 2023 (DANDI 000458) | mouse, skull EEG plus Neuropixels | awake vs isoflurane, with cortical stimulation | 23 mice (DANDI summary); about 30 EEG contacts [U] | Open (CC BY 4.0), 362 GB | yes |
 | Kauvar et al. 2025 (DANDI 001326, 001347) | mouse Neuropixels; human sEEG | baseline, ketamine (and PCP in mice), post-infusion | 10 mice; human iEEG patients within 173 subjects | Open (CC BY 4.0) | yes; ketamine dose (dissociative or anaesthetic) unverified |
-| Watson et al. 2016 (DANDI 000041) | rat, frontal silicon-probe LFP | wake, NREM, REM | 11 rats, 27 sessions | Open (CC BY 4.0) | yes |
+| Watson et al. 2016 (DANDI 000041) | rat, frontal silicon-probe LFP | wake, NREM, REM | 10 subjects and 22 files on DANDI (paper: 11 rats); 150 GB | Open (CC BY 4.0) | yes |
 | NeuroTycho anaesthesia | macaque, 128-contact ECoG | wake, ketamine–medetomidine, propofol | 4 macaques; already on Gadi | Open | yes; sleep sessions not found |
 | Bastos et al. 2021, eLife 10:e60824 (Miller lab) | macaque, Utah arrays in prefrontal and parietal cortex plus thalamic probes | wake, propofol, loss and recovery of consciousness, and central thalamic stimulation that reverses unconsciousness under continued infusion (22 sessions) | 4 macaques | The public deposit (github.com/ABastos/Propofol-unconscious-NHP, about 40 MB) holds only derived spike rates and coherence spectra, not LFP time series; raw data by request | yes |
 | Redinbaugh et al. 2020, Neuron 106:66 (Saalmann lab) | macaque, laminar probes in frontoparietal cortex and central lateral thalamus | wake, sleep, several anaesthetics, thalamic stimulation | macaques [U count] | Request; no deposit found | abstract only |
@@ -175,7 +175,7 @@ Deprioritised:
 
 ## Decisions for the user
 
-1. Approve application 1 in stages, starting with the fly data. Requests 1–3 above were approved on 11 November and are to be sent by the user. The human datasets (Bajwa, Michigan) may need a data use agreement and local ethics approval for secondary analysis.
+1. Approve application 1 in stages, starting with the fly data, and decide which requests to send (above).
 2. Sampling rate for tier A. Recommended: one common rate (100 Hz) with a 200 Hz sensitivity check and an unchanged catalogue (see "Sampling rate, channels and the SPI catalogue"). The alternative, a rate chosen per species, is more physical, but band edges and lags then differ between datasets.
 3. Approve application 2 and its subsampled design.
 4. Pin for new extraction. The pin is r13 at `5d61d9c`; upstream main has since added partial-correlation SPIs (`pcorr_<estimator>`), which serve the direct-versus-pairwise reading directly. Whether they enter `benchmarked_p90` is unchecked [U]. New work goes to new output directories either way.
