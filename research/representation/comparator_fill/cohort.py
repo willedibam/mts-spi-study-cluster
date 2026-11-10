@@ -81,11 +81,22 @@ def fit_predict(X, y, groups, names, train, test):
     return model.predict_proba(blocks.transform({n: X[n][test] for n in names}))[:, 1], best
 
 
+def inner_loss(block, y, groups):
+    """Inner loss of one SPI's block; an SPI whose block cannot be fitted (non-finite or degenerate values) is not eligible."""
+    try:
+        return fit_predict(dict(u=block), y, groups, ['u'], np.arange(len(y)), None)[1][0]
+    except (np.linalg.LinAlgError, ValueError):
+        return np.inf
+
+
 def single_spi(profiles, y, groups, train, test, jobs):
     """Best single SPI by inner loss on the training rows, then that SPI's fit scored on the test rows."""
-    losses = Parallel(n_jobs=jobs)(delayed(fit_predict)(dict(u=profiles[train, k]), y[train], groups[train], ['u'],
-                                                        np.arange(len(train)), None) for k in range(profiles.shape[1]))
-    k = int(np.argmin([loss for _, (loss, _) in losses]))
+    losses = Parallel(n_jobs=jobs)(delayed(inner_loss)(profiles[train, k], y[train], groups[train])
+                                   for k in range(profiles.shape[1]))
+    if not np.isfinite(losses).any():
+        raise ValueError('no SPI block could be fitted')
+    print('single SPI: ineligible in this fold', int(np.sum(~np.isfinite(losses))), flush=True)
+    k = int(np.argmin(losses))
     return fit_predict(dict(u=profiles[:, k]), y, groups, ['u'], train, test)[0], k
 
 
