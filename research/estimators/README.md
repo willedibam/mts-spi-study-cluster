@@ -415,3 +415,17 @@ Every N_MI now comes with a standard error, `nonlinearity_mi_se`, in place of a 
 
     OMP_NUM_THREADS=1 python -m research.estimators.nmi run --out results/estimators/nmi-<commit>-o1 --offset 1 --workers 8
     python -m research.estimators.nmi analyse --out results/estimators/nmi-<commit>-o1
+
+## Status: N_MI uncertainty scored (10 November 2026)
+
+`744e924`, fresh seeds (`--offset 1`), 225 counted cells. Tables in `tables/nmi/` (they replace those of `32b7a40`).
+
+| Prediction | Result |
+|---|---|
+| U1 SE / SD in [0.8, 1.25] where I > 0.2 nats | **fail**: median 1.37 (95 cells). Calibrated on `linearity` (median 1.03), 1.3–1.65 elsewhere, highest where N_MI ≈ 0 (`delay`, `lag`, `direction`) |
+| U2 SE ≥ 0.8 SD in ≥ 90% of cells | **pass**: 100% |
+| U3 coverage of ± 1.96 SE ≥ 90% | **pass**: 0.95 on average; 0.94–0.97 in every band of I |
+
+By mean I, the median SE / SD is 1.88 (≤ 0.06 nats), 1.69 (0.06–0.1), 1.59 (0.1–0.2), 1.37 (0.2–0.4) and 1.30 (> 0.4). **Reading:** the SE is conservative by about 1.4×, and its intervals still cover at the nominal rate, because the bias it does not include (up to 0.13 near the null) is about the size of what it overstates. It is fit for weighting and for flagging imprecise edges, not for exact tests. Scaling it by 1/1.4 would be fitted to these systems; not done.
+
+**P1–P6 on the fresh seeds.** The same picture, with the marginal verdicts flipping: P5 now passes (worst 0.05), P1 fails narrowly (`intermittency` θ = 0 reads 0.103, SD 0.18), and P6 `ampmod` fails (rise −0.00 to 0.11), which confirms it was a pass in name only.
