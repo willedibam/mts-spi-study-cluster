@@ -56,6 +56,7 @@ KNN = 4            # neighbours of the Kraskov estimator
 THEILER_MAX = 50   # cap on the Theiler window, samples
 R_MAX = .999       # |r| at or above this is a deterministic linear relation: N_MI = 0 (I_Gauss diverges)
 TIE = 1e-10        # jitter that breaks ties in discretised data, in SD units (the Kraskov estimator assumes none)
+JACKKNIFE = 10     # contiguous blocks for the delete-a-block jackknife standard error of N_MI
 AXES = ('nonlinearity', 'lag', 'variability', 'direction', 'nonlinearity_raw')
 
 
@@ -263,7 +264,7 @@ def _ksg(x, y, k=KNN, theiler=0):
     return special.digamma(k) + special.digamma(admissible + 1).mean() - psi
 
 
-def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS):
+def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS, blocks=JACKKNIFE):
     """N_MI = 1 - I_Gauss / I_KSG for one pair: the share of the dependence that a correlation does not account for.
 
     Both informations are taken at one lag, the strongest first- or second-order lag within TAU_MAX (``_centre``,
@@ -276,29 +277,50 @@ def nonlinearity_mi(x, y, rng=None, shifts=SHIFTS):
     The value is not clipped. A value below 0 is noise for a Gaussian source, but a real property of the ratio
     for a strongly non-Gaussian one: a Gaussian source carries the most information at a given correlation.
     ``shifts=0`` skips the null and the bias correction (long recordings).
+    Uncertainty: the delete-a-block jackknife over ``blocks`` contiguous blocks of the aligned pair (no resampled
+    duplicates, which bias the Kraskov estimator; serial dependence within blocks is kept) of the two informations,
+    with the lag and the null means held fixed, carried to N_MI by the delta method (the jackknife of the ratio
+    itself is unstable where I_KSG is small). It is NaN where the value is undefined, 0 where |r| >= R_MAX, and not computed for
+    ``blocks=0``. Report it rather than thresholding on mi: a floor on mi keeps recordings whose mi, and hence
+    N_MI, is high by chance (README, 'N_MI').
 
-    Returns nonlinearity_mi, nonlinearity_mi_defined, mi and mi_gaussian (nats, bias-corrected) and mi_lag."""
+    Returns nonlinearity_mi, nonlinearity_mi_se, nonlinearity_mi_defined, mi and mi_gaussian (nats, bias-corrected)
+    and mi_lag."""
     rng = rng or np.random.default_rng(0)
     x, y = (standardise(np.asarray(v, float)) for v in (x, y))
     x, y = (v + TIE * rng.standard_normal(len(v)) for v in (x, y))
     w = _theiler(x, y)
 
+    def pair(a, b):
+        r2 = min(np.corrcoef(a, b)[0, 1] ** 2, 1 - 1e-12)
+        return -.5 * np.log1p(-r2), _ksg(a, b, theiler=w), r2
+
     def informations(ys):
         tau = _centre(x, ys)
         t, a = _window(x, [tau])
-        r2 = min(np.corrcoef(a[:, 0], ys[t])[0, 1] ** 2, 1 - 1e-12)
-        return -.5 * np.log1p(-r2), _ksg(a[:, 0], ys[t], theiler=w), tau, r2
+        return pair(a[:, 0], ys[t]) + (tau, a[:, 0], ys[t])
 
-    ig, ik, tau, r2 = informations(y)
-    defined = True
+    ig, ik, r2, tau, a, b = informations(y)
+    bias, defined = np.zeros(2), True
     if shifts:
         null = np.array([informations(np.roll(y, s))[:2] for s in rng.integers(W, len(x) - W, shifts)])
         defined = (1 + np.sum(null[:, 1] >= ik)) / (1 + shifts) <= ALPHA
-        ig, ik = ig - null[:, 0].mean(), ik - null[:, 1].mean()
+        bias = null.mean(0)
+        ig, ik = ig - bias[0], ik - bias[1]
     linear = r2 >= R_MAX ** 2
     value = 0. if linear else 1 - ig / ik if defined else np.nan
-    return dict(nonlinearity_mi=float(value), nonlinearity_mi_defined=bool(defined or linear), mi=float(ik),
-                mi_gaussian=float(ig), mi_lag=int(tau))
+    se = 0. if linear else np.nan
+    if blocks and defined and not linear:
+        reps = []
+        for drop in np.array_split(np.arange(len(a)), blocks):
+            keep = np.ones(len(a), bool)
+            keep[drop] = False
+            reps.append(pair(a[keep], b[keep])[:2])
+        d = np.array(reps) - np.mean(reps, 0)
+        grad = np.array([-1 / ik, ig / ik ** 2])                      # of 1 - ig / ik
+        se = np.sqrt((blocks - 1) / blocks * np.sum((d @ grad) ** 2))
+    return dict(nonlinearity_mi=float(value), nonlinearity_mi_se=float(se), nonlinearity_mi_defined=bool(defined or linear),
+                mi=float(ik), mi_gaussian=float(ig), mi_lag=int(tau))
 
 
 # ---- directionality ------------------------------------------------------------------------------------

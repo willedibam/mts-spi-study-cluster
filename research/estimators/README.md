@@ -396,4 +396,22 @@ The lag is the one the module already uses (`_centre`: strongest first- or secon
 
 **A per-recording floor on I is not adopted.** Tested on these rows (post hoc): a floor of 0.1 nats keeps 44% of recordings in cells with mean I of 0.06–0.13, and the survivors read 0.07 higher on average (up to 0.45), because a recording whose I is high by chance also has N_MI high by chance (N_MI = 1 − I_Gauss/I). Mean |bias| in those cells rises from 0.044 to 0.066; cells with I > 0.13 are unchanged. A floor of 0.05 does the same lower down (0.094 to 0.121). The fall in failures seen at cell level came from dropping cells, which a per-edge rule cannot do. The circular-shift null is the same kind of gate, which is why a chance pass reads ≈ 1, but it rarely passes by chance.
 
-**Open.** Per-edge uncertainty instead of a threshold; lag selection by the information itself instead of the moment score (40 times the cost); real data.
+**Open.** Lag selection by the information itself instead of the moment score (40 times the cost); real data.
+
+## N_MI uncertainty (pre-registered before its run, 10 November 2026)
+
+Every N_MI now comes with a standard error, `nonlinearity_mi_se`, in place of a floor on I (see above).
+
+**Method.** Delete-a-block jackknife over 10 contiguous blocks of the aligned pair, applied to I_Gauss and I_KSG, with the lag and the null means held fixed, and carried to N_MI by the delta method. Blocks keep serial dependence; leaving blocks out, rather than resampling with replacement, avoids duplicate points, which bias the Kraskov estimator. The jackknife of the ratio itself was unstable where I is small (RMS SE 58 against an SD of 1.5 on `linearity` θ = 0.6, β = 3), so it is not used. It costs 10 more Kraskov estimates per pair (+25%).
+
+**Check before the run** (8 cells, 40 recordings each, fresh seeds, exploratory). RMS SE / replicate SD: 1.09 and 1.13 on `linearity` θ = 0.4 and `rectifier` θ = 0.4 (I ≈ 0.31 nats); 1.3–1.8 in the six cells with I of 0.01–0.15 nats. The SE is conservative where I is small, as the jackknife variance is in general (it is biased upward; Efron and Stein 1981, from memory, not re-read). On `intermittency` part of the excess is the generator's: its off segments are a fixed share of each recording, while the jackknife treats blocks as exchangeable.
+
+**Design.** As the N_MI run, with fresh seeds (`--offset 1`), so P1–P6 are also scored a second time.
+
+**Predictions** (cells defined in ≥ 80% of recordings; independent pairs excluded):
+- **U1.** Where mean I > 0.2 nats, the median over cells of RMS SE / replicate SD is in [0.8, 1.25]. The replicate SD of 20–40 recordings has a relative error of 11–16%.
+- **U2.** The ratio is ≥ 0.8 in ≥ 90% of cells: the SE may be conservative, not optimistic.
+- **U3.** Intervals N_MI ± 1.96 SE contain the truth in ≥ 90% of defined recordings, averaged over cells. Expected to be below 95% where the bias is not small next to the SE (the strong `beta` cells, bias up to 0.18).
+
+    OMP_NUM_THREADS=1 python -m research.estimators.nmi run --out results/estimators/nmi-<commit>-o1 --offset 1 --workers 8
+    python -m research.estimators.nmi analyse --out results/estimators/nmi-<commit>-o1

@@ -125,16 +125,22 @@ def run(out, offset, workers, reps=None):
 
 def summarise(rows, truth):
     key = ['family', 'system', 'theta', 'condition']
+    rows = rows.merge(truth[key + ['truth']], on=key, how='left')
+    ok = rows.nonlinearity_mi_defined & rows.truth.notna()
+    rows['covered'] = np.where(ok, (rows.nonlinearity_mi - rows.truth).abs() <= 1.96 * rows.nonlinearity_mi_se, np.nan)
+    rows['se2'] = rows.nonlinearity_mi_se ** 2
     g = rows.groupby(key)
     summ = pd.DataFrame(dict(n=g.size(), defined=g.nonlinearity_mi_defined.mean(), mean=g.nonlinearity_mi.mean(),
-                             sd=g.nonlinearity_mi.std(), mi=g.mi.mean(), pearson=g.pearson.mean())).reset_index()
+                             sd=g.nonlinearity_mi.std(), se=np.sqrt(g.se2.mean()), covered=g.covered.mean(),
+                             mi=g.mi.mean(), pearson=g.pearson.mean())).reset_index()
+    summ['se_ratio'] = summ.se / summ.sd
     summ = summ.merge(truth, on=key, how='left')
     summ['bias'] = summ['mean'] - summ['truth']
     return summ
 
 
 def verdicts(summ):
-    """Pre-registered predictions P1-P6 (README.md). A cell counts where N_MI is defined in at least 80% of recordings."""
+    """Pre-registered predictions P1-P6 and U1-U3 (README.md). A cell counts where N_MI is defined in at least 80% of recordings."""
     ok, base = summ[summ.defined >= ENOUGH], summ.condition == 'base'
     kind = summ.condition.str.split('=').str[0]
     linear = pd.Series([(f, s) in LINEAR for f, s in zip(summ.family, summ.system)], index=summ.index)
@@ -173,6 +179,14 @@ def verdicts(summ):
         c = summ[base & (summ.system == s)].sort_values('theta')
         rho = stats.spearmanr(c['mean'], c.theta)[0]
         add(f'P6 {s} rises with theta', c, rho >= .9 and c['mean'].iloc[-1] > TOL, c['mean'], f'Spearman {rho:.2f}')
+    k = ok[ok.system != 'independent']
+    c = k[k.mi > .2]
+    med = c.se_ratio.median()
+    add('U1 SE matches the replicate SD where I > 0.2 nats', c, .8 <= med <= 1.25, c.se_ratio - 1, f'median SE/SD {med:.2f}')
+    share = (k.se_ratio >= .8).mean()
+    add('U2 SE is not below 0.8 of the replicate SD', k, share >= .9, k.se_ratio, f'{share:.0%} of cells; worst = largest ratio')
+    cov = k.covered.mean()
+    add('U3 95% intervals cover the truth', k, cov >= .9, 1 - k.covered, f'mean coverage {cov:.2f}; worst = 1 - lowest')
     return pd.DataFrame(out)
 
 

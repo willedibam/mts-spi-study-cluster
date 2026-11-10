@@ -59,6 +59,14 @@ def test_nonlinearity_mi_endpoints():
 def test_nonlinearity_mi_is_zero_for_identical_and_undefined_for_independent_channels():
     from research.estimators.estimators import nonlinearity_mi
     x, y = make('independent', 0., 2000, np.random.default_rng(3))
-    assert nonlinearity_mi(x, x)['nonlinearity_mi'] == 0
+    assert nonlinearity_mi(x, x)['nonlinearity_mi'] == nonlinearity_mi(x, x)['nonlinearity_mi_se'] == 0
     e = nonlinearity_mi(x, y, np.random.default_rng(4))
-    assert not e['nonlinearity_mi_defined'] and np.isnan(e['nonlinearity_mi'])
+    assert not e['nonlinearity_mi_defined'] and np.isnan(e['nonlinearity_mi']) and np.isnan(e['nonlinearity_mi_se'])
+
+
+def test_nonlinearity_mi_se_is_near_the_replicate_sd_for_strong_coupling():
+    from research.estimators.estimators import nonlinearity_mi
+    e = [nonlinearity_mi(*make('linearity', .4, 2000, np.random.default_rng(10 + i)), np.random.default_rng(i), shifts=19)
+         for i in range(12)]
+    sd, se = np.std([v['nonlinearity_mi'] for v in e], ddof=1), np.sqrt(np.mean([v['nonlinearity_mi_se'] ** 2 for v in e]))
+    assert .6 < se / sd < 1.6
