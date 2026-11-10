@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N fill-stat
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=16,mem=64GB,walltime=06:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Statistical comparator fill for one bank.
+# qsub -v MODE=cohort,COHORT=lemon,ROOT_DIR=<run>,OUT=<json> .../stat.pbs
+# qsub -v MODE=transfer,ROOT_DIR=<run>,OUT=<json>[,SIENA=<run>] .../stat.pbs
+# qsub -v MODE=fmri,ROOT_DIR=<run>,OUT=<json> .../stat.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+case "${MODE:?}" in
+    cohort) python -u -m research.representation.comparator_fill.cohort "${COHORT:?}" --root "${ROOT_DIR:?}" --output "${OUT:?}" --jobs 16 ;;
+    transfer) python -u -m research.representation.comparator_fill.transfer --root "${ROOT_DIR:?}" --output "${OUT:?}" ${SIENA:+--siena "$SIENA"} ;;
+    fmri) python -u -m research.representation.comparator_fill.fmri --root "${ROOT_DIR:?}" --output "${OUT:?}" ;;
+esac
