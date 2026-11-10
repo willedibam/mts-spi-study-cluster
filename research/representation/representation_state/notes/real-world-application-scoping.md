@@ -8,7 +8,7 @@ The evidence so far does not support a Nature Computational Science-level empiri
 
 Three kinds of result could change that, and the shortlist is built on them.
 
-1. **A task that only an identity-free representation can attempt.** z is unchanged by a common relabelling of channels, so it compares recordings with different channel sets, species or implants. Pearson edges, tangent-space covariance, aligned MPIs and every raw learner need one shared channel set. Against the other identity-free blocks (mean-SPI, quantiles of the Pearson edge distribution, channel-pooled spectra) the comparison is fair and has not been run on real data.
+1. **A task that only an identity-free representation can attempt.** z is unchanged by a common relabelling of channels, so it compares recordings with different channel sets (montages), species or implants. Pearson edges, tangent-space covariance, aligned MPIs and every raw learner need one shared channel set. Against the other identity-free blocks (mean-SPI, quantiles of the Pearson edge distribution, channel-pooled spectra) the comparison is fair and has not been run on real data.
 2. **A contrast at matched strength and matched channel spectra, by design.** A controlled physical system gives this directly; in biology it needs within-unit designs and surrogates.
 3. **A feature-level statement about character that replicates in an independent dataset.** The direct-versus-pairwise decoupling is the only candidate that has passed surrogates in more than one unit; it has one species and one weak human echo (moderate sedation, d −0.46 beyond spectra) [R].
 
@@ -23,19 +23,75 @@ Three kinds of result could change that, and the shortlist is built on them.
 
 ## Shortlist, ranked
 
-### 1. Unconsciousness across drugs, sleep, species and montages
+### 1. A consciousness atlas across species, agents and recording types
 
-- **Question.** When responsiveness is lost, do the patterns of direct and of pairwise dependence decouple, and is that one signature across propofol, ketamine–medetomidine and NREM sleep, in macaque ECoG and human scalp EEG? Does it spare REM and ketamine, the states with dream-like experience?
-- **Why other representations cannot answer it.** Strength rises in all of these states: slow-wave synchrony raises mean correlation, so strength cannot separate "more coupling" from "differently organised coupling". Topology and learned latents are tied to one channel set, so none transfers from a 128-contact macaque array to a 19- or 83-channel human cap. Only identity-free blocks can be trained in one species and scored in the other.
-- **Literature.** Propofol unconsciousness fragments cortical networks at slow-oscillation onset (Lewis et al. 2012, PNAS) [U, not re-read]. Loss of consciousness under propofol comes with rising low-frequency power and frontal alpha in 64-channel volunteer EEG (Purdon et al. 2013, PNAS) [V, search summary], and propofol slow waves resemble NREM slow waves in 256-channel EEG (Murphy et al. 2011, Sleep) [V, search summary]. The closest precedent uses these same macaques: gamma-envelope correlations are "hyper-correlated" in propofol anaesthesia and NREM sleep, much less in ketamine and REM (Bola et al. 2018, NeuroImage 167:130–142; four NeuroTycho macaques and sEEG from ten patients) [V, abstract]. That result is a strength measure within fixed montages. The gap is a montage-free statement about how dependence is organised, tested across species by transfer.
-- **Data and access.** NeuroTycho anaesthesia: four macaques, 128-contact ECoG, ketamine–medetomidine in all four and propofol in two [V, review table], already staged on Gadi for 16 bipolar channels [R]; its sleep sessions and single-agent ketamine or medetomidine sessions are not confirmed here [U]. Human sedation: Chennu et al. 2016, 20 people × four propofol levels, bank on Gadi [R]; this is responsive sedation, not unresponsiveness. Human sleep: ANPHY-Sleep, 29 healthy adults, overnight 83-channel EEG with staging, CC0 on OSF (Wei et al. 2024, Sci Data 11:896) [V]. An open human EEG dataset with propofol-induced unresponsiveness was searched for and not found [U]; without one the human anaesthesia arm rests on sedation.
-- **Size and units.** Units: 4 macaques (6 animal–drug units), 20 people (sedation), 29 people (sleep). M: 16 bipolar and a 32–64 contact subset per macaque; 19 canonical channels and a 64-channel subset for ANPHY. All at 100 Hz after a 0.5–45 Hz band-pass, T = 1000 (10 s), which is the existing propofol contract and the length CHBMP's sweep favoured (subject-mean reliability .93 at T = 1000 against .89 at T = 2000 for the same data budget) [R]. NeuroTycho must be re-extracted at 100 Hz; its r10 bank is at 250 Hz.
-- **Predictions.** P1 (feature level, signs fixed in advance): alignment between robust partial r² and rank or ids edge profiles falls from wake to propofol and to N2/N3 in both species, and falls less in REM and under ketamine–medetomidine; the fall exceeds its IAAFT surrogate value. P2 (transfer): a readout of z fitted on macaque ECoG separates human wake from N3, and baseline from moderate sedation, better than the same readout of mean-SPI, Pearson edge quantiles and channel-pooled relative spectra.
-- **Falsifiers.** P1 fails if the human fall is absent or fully reproduced by surrogates. P2 fails if any identity-free strength or spectral block transfers as well as z (paired interval over people includes zero or favours the block).
-- **Confounds.** Slow-wave power is shared by every one of these states and is the most likely winner: pooled delta power may transfer across species as well as z does [I]. Others: ECoG against scalp volume conduction and reference; fs and filter differences; drug and calendar period confounded in NeuroTycho [R]; sleep-stage scoring windows; robust-estimator sensitivity to artefact transients (the decoupling's source is still unexplained [R]).
-- **Ladder.** Identity-free: z, mean-SPI, Pearson edge quantiles, pooled spectra, pooled catch22, and each of these + z. Within each dataset, where channels are shared: Pearson, per-channel spectra, tangent-space covariance, aligned MPIs, MiniRocket, MultiRocket-Hydra, QUANT, InceptionTime. Surrogates: both IAAFT variants for every bank.
-- **Cost [I].** About 1,000 macaque windows at M = 32 (0.2 core-hours each) and M = 64 (0.6), 800 existing human sedation windows re-used, and about 1,400 sleep windows at M = 19–64: roughly 1,200–1,800 core-hours for real data and twice that again for two surrogate variants, so 7,000–11,000 SU. A 16-channel-only version is about a fifth of that.
-- **Chance of an NCS-level outcome [S].** P1 replicating in humans beyond surrogates: perhaps one in two. z beating pooled spectra in cross-species transfer: perhaps one in three. This is still the best-supported option: it extends the only robust positive, uses the one capability no comparator has, and its negative outcome is informative.
+Revised 10 November after a data search; the dataset table below supersedes the earlier version of this section.
+
+**Terms.** A *montage* is a recording's sensor set: which sensors, where they sit, and how they are referenced (19 scalp electrodes with an average reference, 16 bipolar ECoG derivations, a 16-contact linear probe in a fly brain). Different montages share no channels, so any method that needs channel identity (Pearson edges, tangent-space covariance, aligned MPIs, every raw-waveform learner) cannot be trained on one and applied to another. z can: its dimension is fixed by the SPI catalogue, not by the channels.
+
+**Question.** Is there a common direction of change in dependence organisation from wakefulness to unconsciousness that recurs across agents (propofol, isoflurane, sevoflurane, ketamine), natural sleep, pathology (coma, disorders of consciousness), species (fly, mouse, rat, macaque, human) and recording types (LFP, ECoG, sEEG, scalp EEG)? Which statistics carry it, and does it follow reported experience rather than responsiveness or slow waves?
+
+**Design: displacements, not positions.** z can be computed for every recording, but its absolute position depends on sampling rate, spatial scale (25 µm probe spacing in a fly against centimetres on the scalp), reference and volume conduction. Each dataset therefore enters as within-unit displacements, Δz = z(state) − z(same unit's wake baseline), never as raw positions. The primary test is alignment of displacement directions across datasets: cosine similarity of each held-out dataset's mean Δz with the direction learned from all other datasets, against a null that permutes state labels within units. Leave-one-dataset-out and leave-one-species-out are the generalisation tests. Within datasets that have graded states (sedation levels, induction and emergence, N1 to N3), the trajectory is the object: whether it follows the shared direction, and whether loss and recovery follow different paths, as fMRI suggests (Huang et al. 2021, NeuroImage 236:118042) [U, cited from the dataset README only].
+
+**Why other representations cannot answer it.** Channel-identity methods are undefined across montages. Strength rises in most of these states (slow-wave synchrony), so strength alone cannot separate more coupling from differently organised coupling. The fair competitors are the identity-free blocks in z's invariance class: mean-SPI, Pearson edge quantiles, channel-pooled log spectra, and channel-pooled catch22. These go through the identical displacement-alignment test. The pooled catch22 block includes the autocorrelation features that already generalise across flies (Leung et al. 2025, below), so it is a strong control, not a strawman.
+
+**Prior art that sets the bar.**
+- Luppi et al. 2025, Nat Hum Behav: under propofol and sevoflurane, human fMRI functional connectivity loses individual uniqueness and moves towards the macaque pattern in a low-dimensional space [V, abstract and data statement]. This is the closest cross-species precedent; it is fMRI, strength-based, and its human anaesthesia data are available only from the original authors [V].
+- Bola et al. 2018, NeuroImage 167:130–142: gamma-envelope correlations are hyper-correlated under propofol and in NREM sleep, much less under ketamine and in REM, in four NeuroTycho macaques and ten human sEEG patients [V, abstract]. The same macaques this repository uses; a strength measure within fixed montages.
+- Toker et al. 2022, PNAS 119:e2024455119: one criticality measure across macaque ECoG, human ECoG under propofol or sevoflurane, seizures, LSD MEG and disorders of consciousness [V, full text]. Only summary statistics are shared; the human recordings came from collaborators [V].
+- Engemann et al. 2018, Brain 141:3179: EEG markers (spectral, complexity, wSMI) classify disorders of consciousness across sites and electrode configurations, AUC about .77–.78 [V, abstract].
+- Leung et al. 2025, PLoS Biol (with Fulcher and Tsuchiya): of more than 7,000 hctsa univariate features, 47 separated wakefulness from isoflurane or sleep in all four held-out fly datasets, mostly autocorrelation features; spectral power and complexity features did not generalise [V, abstract and full text]. The paper itself says that measures of interaction between channels (coherence, Granger causality, transfer entropy, integrated information) are the next step [V]. This sets up the narrative: univariate (hctsa) to pairwise (pyspi) to the organisation of pairwise dependence (z), on data the group can reach.
+
+The novelty claim is therefore not "a cross-species consciousness signature" (Luppi, Bola and Toker each claim one), but which aspects of dependence change, read without choosing them in advance, across montages that no identity-aware method can bridge.
+
+**Datasets.** Open = downloadable now; Request = needs an agreement or the authors. Units are independent animals or people. "Checked" means the catalogue entry or paper was read this session.
+
+| Dataset | Species and recording | States | Units, M, fs | Access | Checked |
+|---|---|---|---|---|---|
+| Leung et al. 2025 flies (figshare 12309950; OSF 8wvsq) | fly, 16-contact linear probe LFP | wake vs isoflurane; held-out sets with sleep | 13 discovery + 49 evaluation flies; 15 bipolar; 1 kHz preprocessed | Open (CC BY 4.0) for the 13; OSF link for the rest; in-group via Fulcher | yes |
+| Claar et al. 2023 (DANDI 000458) | mouse, skull EEG plus Neuropixels | awake vs isoflurane, with cortical stimulation | Allen Institute mice; about 30 EEG contacts [U] | Open (CC BY 4.0), 362 GB | yes |
+| Kauvar et al. 2025 (DANDI 001326, 001347) | mouse Neuropixels; human sEEG | baseline, ketamine (and PCP in mice), post-infusion | 10 mice; human iEEG patients within 173 subjects | Open (CC BY 4.0) | yes; ketamine dose (dissociative or anaesthetic) unverified |
+| Watson et al. 2016 (DANDI 000041) | rat, frontal silicon-probe LFP | wake, NREM, REM | 11 rats, 27 sessions | Open (CC BY 4.0) | yes |
+| NeuroTycho anaesthesia | macaque, 128-contact ECoG | wake, ketamine–medetomidine, propofol | 4 macaques; already on Gadi | Open | yes; sleep sessions not found |
+| Bastos et al. 2021 (Miller lab) | macaque, Utah arrays in several areas | wake vs propofol | 4 macaques | Request; no DANDI deposit found | partly |
+| Jarraya multi-anaesthesia and DBS fMRI; PRIME-DE NeuroSpin | macaque fMRI | awake, ketamine, propofol, sevoflurane (two depths); thalamic DBS | 5–10 macaques | Request ("academic collaboration"); PRIME-DE subset after NITRC registration (CC BY-NC-SA) | yes |
+| MNI Open iEEG Atlas | human sEEG and ECoG, normal-appearing channels | wake, N2, N3, REM | 100+ patients, short segments [U for exact length] | Open | partly |
+| Bola et al. 2018 sEEG | human sEEG | wake, NREM, REM | 10 patients | Request | abstract only |
+| Purdon et al. 2013 (DANDI 001285) | human 64-channel EEG | baseline, graded propofol, behaviourally timed loss and recovery of consciousness | 10 volunteers; **only 1 subject is deposited** | Open for 1; request the other 9 | yes |
+| Chennu et al. 2016 (Cambridge Apollo) | human 91-channel EEG | baseline, mild, moderate propofol, recovery | 20 volunteers, about 7 min per level | Open (CC BY 2.0 UK); on Gadi at 19 channels | yes |
+| Bajwa et al. 2025 (OpenNeuro ds005620) | human 65-channel EEG, 5 kHz | awake vs propofol sedation, 1-min EEG before each of 52 awakenings, 24 with reported experience and 5 without; TMS-EEG | 20 volunteers | Open (CC0); per-awakening report labels are not in the BIDS files [U where they are] | yes |
+| DREAM database (Wong et al. 2025, Nat Commun 16:7495) | human sleep EEG/MEG, many labs | NREM and REM awakenings labelled experience or no experience | 505 people, 2,643 awakenings, 20 datasets | Open on figshare | abstract only |
+| ANPHY-Sleep (Wei et al. 2024, Sci Data 11:896) | human 83-channel overnight EEG | wake, N1–N3, REM | 29 adults | Open (CC0, OSF) | yes |
+| Gu et al. sleep EEG–fMRI (OpenNeuro ds003768) | human 32-channel EEG with simultaneous fMRI | wake and staged sleep | 33 adults | Open (CC0) | yes |
+| PsiConnect (OpenNeuro ds006110) | human EEG and fMRI | before and after psilocybin 19 mg | 62 people | Open (CC0) | yes; EEG files not inspected |
+| I-CARE (PhysioNet) | human 18-bipolar-channel EEG, 100 Hz | coma after cardiac arrest, hourly clips to 72 h; 3–6 month outcome | 607 public patients | Open | yes |
+| Prolonged disorders of consciousness (figshare 23552964) | human 62-channel EEG, 250 Hz | patients vs controls; UWS/MCS split not stated | 59 patients, 32 controls; 60 × 2-s epochs each | Open (CC BY 4.0) | yes |
+| Bath DOC (doi 10.15125/BATH-01632) | human EEG, motor-imagery BCI | UWS, MCS, locked-in | 42 patients | bona fide researchers only | abstract only |
+| Michigan ketamine and propofol 128-channel EEG (Vlisides 2017; ReCCognition) | human EEG | ketamine sub-anaesthetic and anaesthetic; propofol or isoflurane to LOC | 10–30 volunteers | Request | papers only |
+| Imperial LSD, psilocybin MEG; DMT EEG | human MEG/EEG | psychedelic vs placebo | 15–20 people | Request (LSD fMRI is open: ds003059) | partly |
+| fMRI tier: Michigan propofol (ds006623), Naci propofol (ds003171), rat four anaesthetics (ds005687), mouse propofol (ds007783), rat medetomidine (ds001981) | fMRI | graded sedation; anaesthetic regimes | 26, 17, 38, 10, 24 | Open (CC0) | yes |
+
+No open human EEG dataset with ketamine or with unresponsiveness under sevoflurane was found.
+
+**Recording types do not have to match, but the claim has two tiers.** z is defined for any multivariate series, so mixing recording types is allowed and is the method's point. Two constraints decide how far mixing can go. First, pyspi's frequency bands are fixed fractions of fs and its lags are in samples, so the same SPI reads different physics at a 2 s fMRI repetition time and at 100 Hz electrophysiology. Second, spatial scale differs by orders of magnitude. Tier A is electrophysiology (LFP, ECoG, sEEG, EEG), resampled per dataset to a rate chosen against its dominant rhythms; it is the primary claim. Tier B is fMRI, where Luppi et al. already work; it is a replication in a slow modality, not pooled with tier A.
+
+**Predictions (to freeze before extraction).**
+- P1. The direct-versus-pairwise decoupling seen in NeuroTycho (robust partial r² against rank or ids profiles) recurs as part of the shared direction under propofol, isoflurane and NREM sleep, beyond IAAFT surrogates, and is weaker under ketamine and in REM.
+- P2. In leave-one-dataset-out tests, the shared z direction aligns with held-out datasets better than the same procedure applied to mean-SPI, Pearson quantiles, pooled spectra and pooled catch22.
+- P3 (the decisive dissociation). Within sedation and sleep, z displacement tracks reported experience (Bajwa awakenings, DREAM database) beyond its slow-wave covariates.
+
+**Falsifiers.** P2 fails if any identity-free control aligns as well (paired interval over held-out datasets includes zero or favours the control). P3 fails if experience prediction from z is matched by pooled spectra; note that a posterior low-frequency power drop already predicts dreaming (Siclari et al. 2017, Nat Neurosci) [U, from memory], so this control is likely to be strong.
+
+**Confounds.**
+- Slow-wave power is shared by nearly every unconscious state and is the most likely common direction.
+- Agent pharmacology differs: ketamine and REM are unresponsive but often experienced, so responsiveness is not a consciousness label.
+- Volume conduction in scalp EEG against local LFP.
+- In clinical cohorts: sedatives given to patients (Toker et al. note this), epileptic tissue, and electrode coverage chosen by the clinical hypothesis.
+- Within-dataset drug and calendar confounds (NeuroTycho).
+
+**Cost [I].** M ≤ 64 and T of 1000–2000 put a window at 0.2–0.6 core-hours. Fifteen datasets of about 1,000 windows each is about 4,500 core-hours, roughly 9,000 SU, and twice that with two surrogate variants. Raw data volume is large for DANDI 000458 (362 GB); only the EEG channels and a subset of sessions are needed.
+
+**Chance of an NCS-level outcome [S].** P2 is the realistic target, and its prior is mixed: Leung et al. show spectral features failing to generalise across flies while autocorrelation succeeds, so the per-channel control may itself be the winner. A positive P3 would be the strongest result in the paper and is the least likely. In the weak case (no z advantage over identity-free controls), putting every dataset in one space is still useful descriptively, but it does not carry a Nature Computational Science paper by itself; it needs at least one named, surrogate-surviving statement about which aspect of dependence changes.
 
 ### 2. Electronic Rössler networks: character at matched synchrony across held-out wirings
 
@@ -72,10 +128,11 @@ Three kinds of result could change that, and the shortlist is built on them.
 
 ## Recommendation
 
-Launch application 1 at 16–32 channels first, with P1 and P2 frozen, and application 2 in its 520-recording form in parallel: one biological test with a real chance of a distinctive result, and one controlled system with a high chance of a clean one. Hold 3 and 4. If P1 does not replicate in humans and z does not beat pooled spectra in transfer, the real-world section should be the atlas regions plus the measured oscillator networks, and the paper should not claim a biological application.
+Build application 1 in stages: the fly data first (open, in-group, 62 animals, wake, isoflurane and sleep), then NeuroTycho, Chennu, Bajwa, ANPHY-Sleep, the MNI iEEG atlas, the rat and mouse DANDI sets and I-CARE, with the displacement test and predictions frozen before extraction. Requests worth sending now, because they set the timeline: the nine remaining Purdon subjects, Michigan (ketamine and propofol EEG), Jarraya (macaque multi-anaesthesia fMRI), Bola (sEEG sleep) and Imperial (psychedelic MEG). Run application 2 in its 520-recording form in parallel. Hold 3 and 4. If P2 fails against the identity-free controls, the real-world section should be the atlas regions plus the measured oscillator networks.
 
 ## Decisions for the user
 
-1. Approve application 1, and say whether to search further (or ask collaborators) for a human dataset with anaesthetic unresponsiveness.
-2. Approve application 2 and its subsampled design.
-3. Pin for new extraction. The pin is r13 at `5d61d9c`; upstream main has since added partial-correlation SPIs (`pcorr_<estimator>`), which serve the direct-versus-pairwise reading directly. Whether they enter `benchmarked_p90` is unchecked [U]. New work goes to new output directories either way.
+1. Approve application 1 in stages, starting with the fly data, and decide which requests to send (above).
+2. Sampling rate per tier A dataset: one common fs for all electrophysiology (simplest, same band edges everywhere) or an fs chosen per species against its dominant rhythms (more physical, but band edges then differ between datasets).
+3. Approve application 2 and its subsampled design.
+4. Pin for new extraction. The pin is r13 at `5d61d9c`; upstream main has since added partial-correlation SPIs (`pcorr_<estimator>`), which serve the direct-versus-pairwise reading directly. Whether they enter `benchmarked_p90` is unchecked [U]. New work goes to new output directories either way.
