@@ -163,4 +163,4 @@ The likeliest single outcome is a shared, largely spectral change across GABAerg
 
 1. Budget: about 40 kSU this quarter, released in the order above.
 2. Watson's silicon probes: thin to sites at least 100 µm apart, or keep every site. Closely spaced sites are near-duplicates and make the precision SPIs singular. Fable's view is that hardware pitch is not a montage.
-3. Whether NeuroTycho natural-sleep sessions exist in the same animals [U]. If they do, they become the cleanest test of whether a cross-state direction exists at all, with montage held fixed.
+3. Whether NeuroTycho natural-sleep sessions exist in the same animals [U]. The anaesthesia sessions belong to collections titled "anesthesia and sleep" (for example `20110622ktmdanesthesiaandsleepchibi`) [V, bank names on Gadi], but the earlier catalogue audit found no sleep sessions [R]; re-check the catalogue. If they do, they become the cleanest test of whether a cross-state direction exists at all, with montage held fixed.
