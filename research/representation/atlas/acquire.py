@@ -2,10 +2,11 @@
 
 Each dataset is resolved from its repository's API into a file list (path, URL, bytes, digest), the files are
 fetched with curl into <root>/<dataset>/raw, and every file is checked against the published digest (SHA-256
-where the repository gives one, else MD5). <root>/<dataset>/acquisition.json records the resolved list and
+where the repository gives one, else MD5). NeuroTycho publishes no digest, so its ZIP archives are checked by
+size and a full CRC test of every member, and their SHA-256 is recorded. <root>/<dataset>/acquisition.json records the resolved list and
 the outcome. Run on Gadi's copyq (compute nodes have no internet).
 
-    python -m research.representation.atlas.acquire fly13 doc purdon fly49 --root $MTS_SCRATCH/data/atlas
+    python -m research.representation.atlas.acquire fly13 doc purdon fly49 neurotycho --root $MTS_SCRATCH/data/atlas
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor
@@ -13,14 +14,18 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
+import zipfile
 
 FIGSHARE = 'https://api.figshare.com/v2/articles/{}'
 OSF = 'https://api.osf.io/v2/nodes/{}/files/osfstorage/'
 DANDI = 'https://api.dandiarchive.org/api/dandisets/{}/versions/{}/assets/?page_size=200&metadata=1'
 # name -> (repository, identifier, subfolder or version); see the scoping note for what each dataset is.
 DATASETS = dict(fly13=('figshare', '12309950', None), doc=('figshare', '23552964', None),
-                fly49=('osf', '8wvsq', 'preprocessed'), purdon=('dandi', '001285', 'draft'))
+                fly49=('osf', '8wvsq', 'preprocessed'), purdon=('dandi', '001285', 'draft'),
+                neurotycho=('neurotycho', 'Anesthesia and Sleep', None))
+NEUROTYCHO = 'https://neurotycho.org/data/detail.json'
 
 
 def get(url):
@@ -60,6 +65,19 @@ def dandi(dandiset, version):
     return items
 
 
+def neurotycho(task, _):
+    items = []
+    for row in get(NEUROTYCHO)['expdata']:
+        if row['Task'] != task:
+            continue
+        url = next(f['filename'] for f in row['Download'] if f['format'] == 'mat')
+        head = subprocess.run(['curl', '--fail', '--silent', '--show-error', '--location', '--head', url],
+                              check=True, capture_output=True, text=True).stdout
+        items.append(dict(path=row['Name'] + '.zip', url=url, bytes=int(re.findall(r'(?im)^content-length:\s*(\d+)', head)[-1]),
+                          animal=row['Monkey'], agent=row['Session'], date=row['Date']))
+    return items
+
+
 def digest(path, kind):
     h = hashlib.new(kind)
     with Path(path).open('rb') as stream:
@@ -68,26 +86,39 @@ def digest(path, kind):
     return h.hexdigest()
 
 
+def zip_intact(path):
+    with zipfile.ZipFile(path) as archive:
+        return archive.testzip() is None
+
+
+def verified(path, item):
+    if path.stat().st_size != item['bytes']:
+        return False
+    if 'sha256' in item or 'md5' in item:
+        kind = 'sha256' if 'sha256' in item else 'md5'
+        return digest(path, kind) == item[kind]
+    return zip_intact(path)
+
+
 def fetch(item, raw):
-    kind = 'sha256' if 'sha256' in item else 'md5'
     path = raw / item['path']
     if Path(item['path']).is_absolute() or '..' in Path(item['path']).parts:
         raise ValueError(item['path'])
-    if path.is_file() and path.stat().st_size == item['bytes'] and digest(path, kind) == item[kind]:
-        return dict(path=item['path'], status='verified-existing')
+    if path.is_file() and verified(path, item):
+        return dict(path=item['path'], status='verified-existing', sha256=digest(path, 'sha256'))
     path.parent.mkdir(parents=True, exist_ok=True)
     partial = path.with_name(path.name + '.part')
     subprocess.run(['curl', '--fail', '--silent', '--show-error', '--location', '--continue-at', '-', '--retry', '3',
                     '--retry-delay', '10', '--connect-timeout', '30', '--output', str(partial), item['url']], check=True)
-    if partial.stat().st_size != item['bytes'] or digest(partial, kind) != item[kind]:
-        raise ValueError(f"size or {kind} mismatch for {item['path']}; kept {partial}")
+    if not verified(partial, item):
+        raise ValueError(f"size, digest or ZIP check failed for {item['path']}; kept {partial}")
     partial.replace(path)
-    return dict(path=item['path'], status='downloaded-verified')
+    return dict(path=item['path'], status='downloaded-verified', sha256=digest(path, 'sha256'))
 
 
 def acquire(name, root):
     repository, identifier, extra = DATASETS[name]
-    items = dict(figshare=figshare, osf=osf, dandi=dandi)[repository](identifier, extra)
+    items = dict(figshare=figshare, osf=osf, dandi=dandi, neurotycho=neurotycho)[repository](identifier, extra)
     out = root / name
     with ThreadPoolExecutor(max_workers=4) as pool:
         receipts = list(pool.map(lambda item: fetch(item, out / 'raw'), items))
