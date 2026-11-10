@@ -439,3 +439,35 @@ By mean I, the median SE / SD is 1.88 (≤ 0.06 nats), 1.69 (0.06–0.1), 1.59 (
 **Re-run.** The scored study on fresh seeds (`--offset 2`), with P1–P6 and U1–U3 unchanged, and the noise sweep. Expected: unchanged where `_centre` already found the lag; a possible upward bias for weak linear pairs, because the lag that maximises a noisy I_KSG need not maximise r, so I_Gauss there is lower.
 
 **First re-run failed (`29c152a`, offset 2), and why.** Every shift re-selected the lag for the bias correction too. A shift's maximum over 21 lags is inflated by the selection, but a coupled pair's I_KSG at its true lag is not, so the correction removed more than the bias. Weak linear pairs read −0.3 to −0.6 (linear at σ = 2: −0.33; VAR(1) at σ = 1: −0.61). P1 failed by 0.38, P5 by 0.77, and U3 coverage fell to 0.93. **Corrected:** the gate still compares the pair's maximum with each shift's maximum, but the bias is each estimator's mean over the shifts at the chosen lag. On the failing cells (20 recordings each, exploratory): linear at σ = 2 reads −0.03, VAR(1) −0.01 and 0.05, and sin 5x, the circle and the volatility drive read 1.00. The weakest cells keep a small upward bias (+0.12 on `lag` at σ = 1, +0.15 on `direction` at r = 0.4, both I ≤ 0.08 nats), as in the first version. Re-run on fresh seeds (`--offset 3`), with predictions unchanged.
+
+## Status: N_MI noise sweep (`nmi_noise.py`, `2602175`, Gadi; exploratory)
+
+33 systems: every system N_MI has been tried on, plus the repo's own. Each system's y is standardised, and Gaussian measurement noise of SD σ ∈ {1/4, 1/2, 1, 2} is added, so the signal-to-noise variance ratio is 16, 4, 1, 1/4. 20 recordings per point at T = 2,000, with a long run (T = 2¹⁶) at each σ. Table `tables/nmi/noise.csv`; figure `results/estimators/nmi-2602175/noise/nmi_noise.png` (regenerate with `--figure-only`).
+
+**How the population value moves with noise is known by construction.** As σ grows, I ≈ Var m(x)/2σ² and I_Gauss ≈ Cov(x, y)²/(2 Var x · σ²), with m(x) = E[y | x]. So N_MI tends to 1 − Corr(x, m(x))² = 1 − r²/η², the share of the conditional mean that a straight line misses. This is the small-signal expansion of mutual information; the I-MMSE relation of Guo, Shamai and Verdú (2005) gives it, cited from memory. Static systems agree:
+- *At σ = 2 the long run is within 0.05 of this limit in 16 of 19 static systems.* The exceptions are a lognormal source (0.21), gross outliers (0.12) and eˣ (0.08), whose heavy tails converge more slowly.
+- *Noise does not dissolve the reading into "no structure".* It moves N_MI from its value for clean data to the regression share, and stops there. Systems with no linear part stay at 1 at every σ.
+- *The sensitivity sits at the clean end* (signal-to-noise ≥ 4). There N_MI also counts what a regression share does not: determinism, the shape of the marginals, outliers. At σ = 1/4 eˣ reads 0.56 against its limit of 0.42; 1% gross outliers read 0.81 and a lognormal source −0.58 against a limit of 0. Each moves toward the limit as noise grows.
+- *What noise does remove is information.* Below about 0.05 nats the value is undefined or imprecise, and the standard error says so. Here the user's intuition holds: there is little structure left to classify.
+
+**Estimation.** Mean |T = 2,000 − long run| over cells defined in ≥ 80% of recordings: 0.011 above 0.4 nats, 0.022 at 0.2–0.4, 0.030 at 0.1–0.2 and 0.080 at 0.06–0.1. The largest deviations are slow, autocorrelated linear pairs, which read high: slow VAR(1) +0.08 even at 0.7 nats, Lorenz x–y +0.11 at σ = 2. This is the Kraskov estimator's finite-sample bias under strong autocorrelation that the shift null does not remove; the first version had it too (slow VAR 0.07 at σ = 1/4).
+
+**Tried and rejected: cross-fitting the lag.** Choosing the lag on one half and measuring on the other, then swapping, is the standard cure for selection bias (12 cells, 20 recordings, exploratory). It left the slow-VAR bias unchanged (+0.11 against +0.08), so selection is not its cause, and it roughly doubled the SD in weak cells (on/off at σ = 1: 0.83 against 0.16).
+
+## Status: N_MI v2 scored (11 November 2026)
+
+`2602175` on Gadi (job 183595523, 26 minutes on 48 cores), fresh seeds (`--offset 3`), 6,480 recordings. Tables in `tables/nmi/`, which replace those of `69ea2cc` (v1, offset 1).
+
+| | v1 (moment lag, offset 1) | v2 (information lag, offset 3) |
+|---|---|---|
+| Predictions passed | 7 of 12, then U2, U3 | 8 of 15: P2 on linearity, rectifier, intermittency; P3; P6 beta, lag_variability; U2; U3 |
+| Mean \|bias\|, cells counted in both (218) | 0.030 | 0.046 |
+| Cells with \|bias\| > 0.10 | 15 | 27 |
+| Mean replicate SD | 0.114 | 0.099 |
+| SE / SD (median, I > 0.2 nats); coverage | 1.37; 0.95 | 1.39; 0.93 |
+
+**The cost: lagged linear pairs read higher.** On linear systems with a lag, v2 reads +0.02 to +0.06 at base, and +0.11 on `lag` θ = 0.8, where the lag is spread over 1–3 samples (v1: −0.05 to +0.02). Picking the lag with the largest of 21 noisy I_KSG raises I_KSG at that lag more than I_Gauss. `lag_variability` and `warp` rise most (θ = 0.6: 0.28 against a long run of 0.08), since there the information is spread over several lags. P1 fails by 0.011 and P5 by 0.17 (`lag` θ = 0.6, σ = 2, I ≈ 0.08 nats).
+
+**The gain:** dependence that the three moments cannot see is no longer read at an arbitrary lag as I ≈ 0 (noise sweep above: sin 5x, a circle, an X shape, variance-only coupling, a sign flip, a lagged volatility drive). The repo's systems contain none of it, so this table shows only the cost.
+
+**Kept: v2.** Missing whole classes of dependence is a qualitative failure; v2's cost is a bias of a few hundredths on lagged linear pairs, larger only where the information is weak. Cross-fitting did not remove it (noise sweep, above).

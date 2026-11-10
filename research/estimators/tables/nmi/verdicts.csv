@@ -1,16 +1,16 @@
 prediction,passed,cells,counted,worst,where,note
-P1 linear-Gaussian reads 0,False,19,19,0.10317392953599443,intermittency theta=0 base,
-P2 calibration: linearity,True,5,5,0.014213859139813434,linearity theta=0.4 base,Spearman 1.00
-P2 calibration: rectifier,True,5,5,0.025735198598226754,rectifier theta=0 base,Spearman 1.00
-P2 calibration: intermittency,False,5,5,0.1260566434273374,intermittency theta=0.4 base,Spearman 0.90
-P2 calibration: telegraph,True,5,5,0.051406342361609667,telegraph theta=0.4 base,Spearman 1.00
-P3 null,True,6,0,0.07,independent theta=0 spec=slow,worst = largest defined fraction
-P4 follows the population value across strengths,False,20,17,0.12906767111578837,linearity theta=0.2 strength=3,population value spans 0.00 to 0.72
-P5 linear-Gaussian stays 0 under nuisances,True,58,53,0.054272376304024206,direction theta=0.25 strength=0.4,
-P6 beta raises N_MI on linear-Gaussian systems,True,8,8,0.9152761089970811,lag theta=0.2 beta=3,smallest rise 0.36
-P6 ampmod raises N_MI on linear-Gaussian systems,False,4,4,0.11005846024856658,direction theta=0.25 ampmod=0.3,smallest rise -0.00
-P6 lag_variability rises with theta,False,5,4,0.2440254341219073,lag_variability theta=0.8 base,Spearman 0.70
-P6 warp rises with theta,False,5,5,0.09189071638898992,warp theta=0.8 base,Spearman 0.90
-U1 SE matches the replicate SD where I > 0.2 nats,False,95,95,3.8620813767537943,linearity theta=0.6 beta=1,median SE/SD 1.37
-U2 SE is not below 0.8 of the replicate SD,True,225,225,4.862081376753794,linearity theta=0.6 beta=1,100% of cells; worst = largest ratio
-U3 95% intervals cover the truth,True,225,225,0.55,linearity theta=0.6 beta=1,mean coverage 0.95; worst = 1 - lowest
+P1 linear-Gaussian reads 0,False,19,19,0.1110082865879461,lag theta=0.8 base,
+P2 calibration: linearity,True,5,5,0.03529481073942564,linearity theta=0.6 base,Spearman 1.00
+P2 calibration: rectifier,True,5,5,0.01832103509528646,rectifier theta=0 base,Spearman 1.00
+P2 calibration: intermittency,True,5,5,0.06224293331226535,intermittency theta=0.2 base,Spearman 1.00
+P2 calibration: telegraph,False,5,5,0.16472546437021227,telegraph theta=0.2 base,Spearman 1.00
+P3 null,True,6,0,0.09,independent theta=0 spec=broad,worst = largest defined fraction
+P4 follows the population value across strengths,False,20,13,0.29695494233689573,telegraph theta=0.2 strength=0.3,population value spans 0.00 to 0.72
+P5 linear-Gaussian stays 0 under nuisances,False,58,53,0.2652887767656485,lag theta=0.6 strength=2,
+P6 beta raises N_MI on linear-Gaussian systems,True,8,8,0.9093348682887784,direction theta=0.25 beta=3,smallest rise 0.33
+P6 ampmod raises N_MI on linear-Gaussian systems,False,4,4,0.02429329392442396,lag theta=0.2 ampmod=0.3,smallest rise -0.02
+P6 lag_variability rises with theta,True,5,4,0.46361766550728184,lag_variability theta=0.8 base,Spearman 1.00
+P6 warp rises with theta,False,5,5,0.19895358523432255,warp theta=0.8 base,Spearman 0.90
+U1 SE matches the replicate SD where I > 0.2 nats,False,97,97,1.5459277206287818,direction theta=0.75 mix=0.2,median SE/SD 1.39
+U2 SE is not below 0.8 of the replicate SD,True,220,220,2.78440176892276,lag theta=0.2 xnoise=1,100% of cells; worst = largest ratio
+U3 95% intervals cover the truth,True,220,220,0.65,direction theta=0.75 beta=3,mean coverage 0.93; worst = 1 - lowest
