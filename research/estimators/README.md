@@ -359,3 +359,39 @@ The lag is the one the module already uses (`_centre`: strongest first- or secon
 
     OMP_NUM_THREADS=1 python -m research.estimators.nmi run --out results/estimators/nmi-<commit> --workers 8
     python -m research.estimators.nmi analyse --out results/estimators/nmi-<commit>
+
+## Status: N_MI scored (10 November 2026)
+
+`0feba7b`, 6,480 recordings plus 99 long runs, minutes on 8 local cores. Tables are in `tables/nmi/`; rows are in `results/estimators/nmi-0feba7b/` (untracked). 7 of 12 predictions pass.
+
+| Prediction | Result |
+|---|---|
+| P1 linear-Gaussian reads 0 | **pass**, worst 0.03 (19 cells) |
+| P2 calibration | **pass** on `linearity` (worst bias 0.02), `rectifier` (0.02) and `telegraph` (0.03). **Fail** on `intermittency`: worst bias 0.075, but Spearman 0.90 falls at the threshold, because the truths at θ = 0, 0.2, 0.4 are 0.00, 0.01, 0.07 and the estimates there are out of order |
+| P3 null | **pass**: defined in 2–6% of independent pairs |
+| P4 follows the population value across strengths | **fail** in 1 of 17 counted cells: `linearity` θ = 0.6, σ = 3 reads 0.48 against 0.61 (I = 0.05 nats) |
+| P5 linear-Gaussian stays 0 under nuisances | **fail** in 1 of 54 counted cells: `lag` θ = 0.2, σ = 3 reads 0.16 (I = 0.045 nats) |
+| P6 `beta` raises it | **pass**: a linear-Gaussian coupling seen through sinh(βy)/β reads 0.37–0.49 at β = 1 and 0.90–0.94 at β = 3 |
+| P6 `ampmod` raises it | pass in name only: rise 0.01–0.07 (long run 0.02–0.04) |
+| P6 rises with θ on `lag_variability`, `warp` | **fail**: the long-run values are only 0.17 and 0.16 at θ = 0.8 and ≤ 0.09 below it, inside the noise at T = 2,000 |
+
+**Reading.**
+- **N_MI is calibrated where there is enough information to take a share of.** By mean I of the cell:
+
+  | I (nats) | cells | defined | mean \|bias\| | mean SD |
+  |---|---|---|---|---|
+  | > 0.4 | 21 | 100% | 0.01 | 0.03 |
+  | 0.2–0.4 | 69 | 100% | 0.02 | 0.06 |
+  | 0.1–0.2 | 75 | 99% | 0.02 | 0.12 |
+  | 0.06–0.1 | 44 | 96% | 0.05 | 0.19 |
+  | 0.03–0.06 | 22 | 87% | 0.07 | 0.25 |
+  | ≤ 0.03 | 13 | 43% | 0.31 | 0.26 |
+
+  Both P4 and P5 failures have I ≤ 0.05 nats. For a Gaussian pair, 0.1 nats is |r| ≈ 0.43. A floor on I of about 0.1 nats at T = 2,000, stricter than the null, would remove every strength-related failure; it is not applied here.
+- **A pair that passes the null by chance reads ≈ 1** (independent pairs that passed: mean 0.35–1.00). The null controls how often that happens (2–6%), not what such a pair reads.
+- **It transfers.** `rectifier` (|x|, outside any polynomial basis, narrowband source) is as accurate as `linearity`, with half the SD.
+- **It is not a variability axis.** On/off coupling reads 0.01, 0.07, 0.23, 0.60 at off-fractions 0.2–0.8 (the integral), and phase drift and warping read ≤ 0.17. Only rarely-on coupling counts as nonlinear, so N_MI and V overlap little.
+- **A monotone sensor distortion counts as nonlinearity**, as intended by dropping normal scores, and strongly: 0.9 at β = 3. On such data the estimate is also 0.04–0.18 below the long run (heavy tails at T = 2,000).
+- **Spectrum, T, delay, mixing and measurement noise leave a linear-Gaussian pair at 0** (worst 0.08, apart from the weak-coupling cell above). The Theiler window holds on the slow spectrum (0.02 ± 0.07 and −0.01 ± 0.12 on `lag`).
+
+**Open.** A floor on I; lag selection by the information itself instead of the moment score (40 times the cost); real data.

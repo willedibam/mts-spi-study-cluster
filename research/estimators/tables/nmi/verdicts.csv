@@ -1,0 +1,13 @@
+prediction,passed,cells,counted,worst,where,note
+P1 linear-Gaussian reads 0,True,19,19,0.03207320221058458,direction theta=0 base,
+P2 calibration: linearity,True,5,5,0.02410293177541467,linearity theta=0.8 base,Spearman 1.00
+P2 calibration: rectifier,True,5,5,0.01651785543862694,rectifier theta=0.6 base,Spearman 1.00
+P2 calibration: intermittency,False,5,5,0.07510410242414413,intermittency theta=0.2 base,Spearman 0.90
+P2 calibration: telegraph,True,5,5,0.031772081941563925,telegraph theta=0 base,Spearman 1.00
+P3 null,True,6,0,0.06,independent theta=0 spec=slow,worst = largest defined fraction
+P4 follows the population value across strengths,False,20,17,0.1321910777096621,linearity theta=0.6 strength=3,population value spans 0.00 to 0.72
+P5 linear-Gaussian stays 0 under nuisances,False,58,54,0.16012106982907354,lag theta=0.2 strength=3,
+P6 beta raises N_MI on linear-Gaussian systems,True,8,8,0.928025493017611,direction theta=0.75 beta=3,smallest rise 0.39
+P6 ampmod raises N_MI on linear-Gaussian systems,True,4,4,0.06706629861404073,direction theta=0.25 ampmod=0.3,smallest rise 0.00
+P6 lag_variability rises with theta,False,5,4,0.22409419788196802,lag_variability theta=0.8 base,Spearman 0.50
+P6 warp rises with theta,False,5,5,0.12047490067516453,warp theta=0.8 base,Spearman 0.70
