@@ -267,4 +267,6 @@ Total ≈ 2,000 SU, dominated by InceptionTime. Scratch inode use is small (tens
 
 Waits for the user (needs new pyspi extraction or an outside input): spectrum-final IAAFT banks for CHB-MIT, Siena and LANL; any surrogate bank for fMRI, HMC or GRABMyo; the reserved confirmation sets (HMC unused nights, GRABMyo day 3, LANL reserved configurations); HCP evaluation (family grouping, archived K289 bank); the r13 re-extraction of every bank that the blueprint's single-pin rule implies; and the UEA/Multiverse panel.
 
-Run status: not started. Gadi was offline for scheduled maintenance on 10 November.
+Ladder agreed with the user on 10 November, which supersedes the row list above where they differ: r, per-channel spectra, z (source-selected PCA, plus first PC only and full rank), r + z, spectra + z, r + spectra (+ z), mean-SPI (+ z), the SPI marginals m (+ z), full aligned MPIs, best single SPI, tangent-space covariance, per-channel catch22, and the libraries ROCKET, MiniRocket, MultiRocket-Hydra, QUANT and InceptionTime. tsfresh and the core ladder on new datasets were dropped as low-value. pyspi versions are not unified for this scoping pass; each column keeps its version label. Drivers: [`comparator_fill/`](../../comparator_fill/) (`cohort.py`, `transfer.py`, `fmri.py`, `library.py`, `cohort_inception.py`); tests assert that they reproduce the original protocol code on synthetic banks.
+
+Run status: drivers written and tested locally; no job submitted. Gadi was offline for scheduled maintenance until 20:00 AEDT on 10 November.
