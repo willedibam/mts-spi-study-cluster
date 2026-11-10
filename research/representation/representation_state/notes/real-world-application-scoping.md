@@ -87,6 +87,30 @@ No open human EEG dataset with ketamine or with unresponsiveness under sevoflura
 - *Why not bespoke SPI configs.* Canonical-band SPIs (delta, theta, alpha) would choose the answer in advance. They would also break comparability with the paper's other sections and add analyst choices. Band power is already carried by the pooled-spectra control. The one catalogue addition worth making is unrelated to timescale: upstream's partial-correlation SPIs, at a new pin (decision 4).
 - *Channels (decided 11 November): native channel counts, no subsampling.* z has a fixed length whatever the montage, and using every channel is the method's advantage; cutting to a common count would discard the dependence structure large montages carry. The costs are handled in analysis rather than by discarding data. First, precision: z from 15 bipolar fly derivations rests on 210 ordered pairs, and from 128-contact ECoG on 16,256, so units are weighted by the precision of their displacement (split-half variance), not counted equally. Second, composition: the pair-distance distribution (volume conduction) differs by montage. The within-unit displacement removes each montage's offset, and M enters as a covariate, so that alignment can be shown not to track channel count. Recordings get a local reference (bipolar or Laplacian) where the montage allows. pyspi cost grows with M², so montages above about 128 channels (Neuropixels LFP) need their channel set defined (for example, one contact per region or depth) before extraction.
 
+**Extraction design, proposed 11 November (not yet frozen).**
+- *Rate and windows.* Everything is resampled to 100 Hz with an anti-alias low-pass near 40 Hz.
+  - Primary windows are 10 s (T = 1000), not overlapping. There are at most 30 per unit and state, spread evenly over the state's stable period. Windows during drug transitions, outside stably scored sleep (the 30-s epoch and both neighbours in one stage) or failing fixed artefact rules are excluded.
+  - A short arm at 2 s (T = 200) runs on every dataset. The fly and DOC releases exist only as roughly 2-s epochs, and the short arm brings them in under matched T; claims that need them use it.
+  - A 200 Hz sensitivity arm runs on a subset.
+- *Channels.* Native channel counts. Montages are not reduced by PCA, ICA or source projection. Components are mixtures of sites, and PCA components are uncorrelated by construction, so the covariance-family SPIs would be read on an artificial structure. A local reference (bipolar or Laplacian) is a spatial filter, not a reduction, and is used where the montage allows.
+- *Compute.* The upstream-main pyspi parallelises over SPIs, not over channel pairs (`pyspi/_parallel.py` [V]). Pair sharing exists only in the r9 fork snapshot and cannot be mixed in. One worker per window gives the most throughput (HPC.md), so a farm runs many windows per node. Several workers per window are used only where memory or a window's wall time requires it (M = 128: about 6 GiB per window by HPC.md's rule).
+
+| Dataset | Native M (reference) | Source rate | Windows (10 s arm) | Status |
+|---|---|---|---|---|
+| Fly 13 + 49 | 15 bipolar | 1 kHz, 2.25-s epochs | 2-s arm only unless continuous data come from the group | downloading |
+| DOC (figshare) | 62 | 250 Hz, 60 × 2-s epochs | 2-s arm; 10 s only if the epochs prove contiguous | downloading |
+| Purdon, 1 subject | 64 [U] | [U] | ≤ 30 per propofol level | downloading |
+| NeuroTycho | 128 ECoG | 1 kHz | ≤ 30 per state per session | raw on Gadi; rebuild at the new pin |
+| Chennu | 91 (current bank uses 19) | 250 Hz | ≤ 30 per sedation level | 91-channel raw to re-acquire |
+| Bajwa ds005620 | 65 | 5 kHz | awake ≤ 30; 6 per 60-s pre-awakening segment | next |
+| ANPHY-Sleep | 83 | [U] | ≤ 30 per stage | next |
+| MNI iEEG atlas | varies by patient | [U] | 6 per 60-s stage segment | next |
+| Watson rat (DANDI 000041) | probe LFP [U] | [U] | ≤ 30 per state | next, streaming LFP only |
+| Claar mouse (DANDI 000458) | ~30 skull EEG [U] | [U] | ≤ 30 per state | next, streaming EEG only |
+| Kauvar human iEEG (DANDI 001347) | varies | [U] | ≤ 30 per state | next; ketamine subset to confirm |
+| Kauvar mouse, Neuropixels | 384 | — | — | deferred (user) |
+| I-CARE, Gu ds003768, PsiConnect, fMRI tier | — | — | — | needs approval |
+
 **Hypothesis and what each outcome would mean.**
 - *Underpinnings.*
   - GABAergic agents and NREM sleep raise slow-wave synchrony, and gamma-envelope correlations rise under propofol and NREM but much less under ketamine and REM (Bola et al. 2018) [V, abstract]. Ketamine raises frontal theta and gamma instead (Vlisides et al. 2017) [V, abstract].
