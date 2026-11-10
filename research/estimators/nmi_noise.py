@@ -1,6 +1,8 @@
 """N_MI under four levels of measurement noise, on every system it has been tried on (exploratory, not pre-registered).
 
     python -m research.estimators.nmi_noise [--out results/estimators/nmi-noise] [--reps 20] [--workers 8]
+    python -m research.estimators.nmi_noise --out <dir> --run-only     # cluster: rows and summary only
+    python -m research.estimators.nmi_noise --out <dir> --figure-only  # locally, from <dir>/summary.csv
 
 Each system's own y is standardised and Gaussian measurement noise of SD sigma is added: y_obs = y / sd(y) + sigma * e,
 sigma in {1/4, 1/2, 1, 2} (signal-to-noise variance ratio 16, 4, 1, 1/4). Static systems are defined without noise, so
@@ -243,9 +245,13 @@ def run(out, reps, workers):
     summ['order'] = summ.system.map({s: i for i, s in enumerate(SYSTEMS)})
     summ = summ.sort_values(['order', 'sigma']).drop(columns='order')
     summ.to_csv(out / 'summary.csv', index=False)
+    return summ
+
+
+def report(summ, out):
     (HERE / 'tables' / 'nmi').mkdir(parents=True, exist_ok=True)
     summ.round(4).to_csv(HERE / 'tables' / 'nmi' / 'noise.csv', index=False)
-    return summ
+    figure(summ, out)
 
 
 def figure(summ, out):
@@ -293,7 +299,9 @@ if __name__ == '__main__':
     ap.add_argument('--out', type=Path, default=Path('results/estimators/nmi-noise'))
     ap.add_argument('--reps', type=int, default=20)
     ap.add_argument('--workers', type=int, default=8)
-    ap.add_argument('--figure-only', action='store_true')
+    ap.add_argument('--figure-only', action='store_true', help='table and figure from <out>/summary.csv')
+    ap.add_argument('--run-only', action='store_true', help='no table or figure, so a cluster checkout stays clean')
     a = ap.parse_args()
     summ = pd.read_csv(a.out / 'summary.csv') if a.figure_only else run(a.out, a.reps, a.workers)
-    figure(summ, a.out)
+    if not a.run_only:
+        report(summ, a.out)
