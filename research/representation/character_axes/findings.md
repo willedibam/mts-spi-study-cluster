@@ -175,6 +175,25 @@ Code `episodic.py` at `b43ba00`, job 183659095; results `episodic/{neurotycho,pr
   - Under the reading rules this is "departure from linear-stationary-Gaussian", which includes within-window amplitude nonstationarity (time-varying gain).
 - **Deciding control (not run).** Divide each window by a sliding 1-s RMS envelope before the MinCovDet and surrogate step. If the effect vanishes, it is gain modulation, a weaker reading. If it survives, it is joint structure. Also select NREM windows by delta fraction and EMG before judging sleep.
 
+### Gain control and sleep tertiles (11–12 November)
+
+Code `episodic.py` at `3bb8305`, job 183664844. Per-window IAAFT on both variants, with and without each channel divided by its sliding 1-s RMS. A synthetic test confirms the control removes pure gain modulation. Results: `episodic/index-{neurotycho,propofol}{,-gain}.json`, `atlas-neurotycho-long-tertiles{,-gain}.json` (V).
+
+- **Macaque: survives gain control.**
+  - Discovery bank (6 units), beyond-surrogate flag fraction: +.077 / +.072 with the control (d 4.1 / 3.1, 6/6) against +.075 / +.068 without; focality survives (0/6).
+  - Atlas 10-s bank with gain control: ketamine +.08 to +.10 (4/4); ketamine–medetomidine +.07 to +.08 (11/11); propofol +.07 to +.08 (4/4); medetomidine +.03 to +.07 (3–4/4).
+  - This is joint structure, not within-window power modulation.
+- **Human propofol: gain modulation.** With the control, the moderate-against-baseline flag fraction falls to +.004 (d .13, 13/20) from +.021 to +.025 (d ≈ .8). A small event-clustering residual stays (d ≈ .7, 17/20), but it is not dose-graded (mild 16–17/20).
+- **Natural sleep, within-archive delta tertiles.**
+  - Deepest third +.03 (7/7 with and without the control); lightest third ≈ 0.
+  - The eyes-open-against-eyes-closed null in the same archives is +.02 to +.03 (7/7), so deep sleep is at most at the null, against about three times the null for the drugs.
+- **Status.** The cross-species statement is withdrawn: the human effect is gain. What stands is macaque-only:
+  - Under four anaesthetic regimes (ketamine, medetomidine, ketamine–medetomidine and propofol), macaque ECoG has more time points departing from the dominant covariance than stationary linear-Gaussian dynamics with the same spectra produce. It is robust to gain normalisation, montage (16 bipolar or average-referenced subsets), rate and window length, and reverses at recovery.
+  - The departures are brief (~100 ms), fast (20–45 Hz) and spatially focal.
+  - Deep natural sleep shows at most a null-sized effect.
+  - Independent archives: ketamine, medetomidine (4 + 4, two animals) and sleep (7). Ketamine–medetomidine and propofol are the discovery recordings.
+- **Open.** Physiology against artefact (inspect raw flagged epochs; check against known drug signatures such as ketamine gamma bursts and α2-agonist spindles); whether the 20–45 Hz focal transients are what MinCovDet's divergence in z picked up; the 16-channel matched pyspi arm.
+
 ## Open
 
 - Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. After stage 3 the core is band high share, band spread and mediation (one generator). Sub-axes are band organisation, lag (organisation and level), form (te − gc level) and location frequency; direction and warp are dropped. The core is not yet sufficient for z (above), but in every cohort z's discriminative information is contained in Pearson + strength + channel spectra, so no cohort shows a classification advantage beyond channel spectra. Open: whether the character readouts carry coupling information given channel spectra (a conditional test, e.g. spectra-adjusted effects as in `location_check.py`, or real − IAAFT), and a noise- and strength-robust correction.
