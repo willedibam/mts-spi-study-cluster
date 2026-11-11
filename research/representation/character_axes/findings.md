@@ -183,11 +183,12 @@ Code `episodic.py` at `3bb8305`, job 183664844. Per-window IAAFT on both variant
   - Discovery bank (6 units), beyond-surrogate flag fraction: +.077 / +.072 with the control (d 4.1 / 3.1, 6/6) against +.075 / +.068 without; focality survives (0/6).
   - Atlas 10-s bank with gain control: ketamine +.08 to +.10 (4/4); ketamine–medetomidine +.07 to +.08 (11/11); propofol +.07 to +.08 (4/4); medetomidine +.03 to +.07 (3–4/4).
   - This is joint structure, not within-window power modulation.
-- **Human propofol: gain modulation.** With the control, the moderate-against-baseline flag fraction falls to +.004 (d .13, 13/20) from +.021 to +.025 (d ≈ .8). A small event-clustering residual stays (d ≈ .7, 17/20), but it is not dose-graded (mild 16–17/20).
+- **Human propofol: removed by the gain control, cause not decided.** With the control, the moderate-against-baseline flag fraction falls to +.004 (d .13, 13/20) from +.021 to +.025 (d ≈ .8). A small event-clustering residual stays (d ≈ .7, 17/20), but it is not dose-graded (mild 16–17/20).
 - **Natural sleep, within-archive delta tertiles.**
   - Deepest third +.03 (7/7 with and without the control); lightest third ≈ 0.
   - The eyes-open-against-eyes-closed null in the same archives is +.02 to +.03 (7/7), so deep sleep is at most at the null, against about three times the null for the drugs.
-- **Status.** The cross-species statement is withdrawn: the human effect is gain. What stands is macaque-only:
+- **Correction (independent review, 12 November): the gain control is not specific.** In a pyspi-free synthetic calibration, sliding-RMS normalisation (and block-local surrogates) also erase genuine static nonlinear coupling: static quadratic coupling −.023 → +.002; moderate shared amplitude bursts −.063 → −.003; strong bursts are not removed. A readout that vanishes under the control is therefore compatible with gain modulation or with nonlinear coupling: "not decided", not "weaker". One that survives, as in the macaque, is neither.
+- **Status.** The cross-species statement is not supported: the human effect is undecided and the events differ in kind. What stands is macaque-only:
   - Under four anaesthetic regimes (ketamine, medetomidine, ketamine–medetomidine and propofol), macaque ECoG has more time points departing from the dominant covariance than stationary linear-Gaussian dynamics with the same spectra produce. It is robust to gain normalisation, montage (16 bipolar or average-referenced subsets), rate and window length, and reverses at recovery.
   - The departures are brief (~100 ms), fast (20–45 Hz) and spatially focal.
   - Deep natural sleep shows at most a null-sized effect.
