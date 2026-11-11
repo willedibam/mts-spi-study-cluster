@@ -1,6 +1,6 @@
 # Consciousness atlas: run design and pre-registration draft (11 November 2026)
 
-Status: **draft, revised after three review rounds** (Fable 5.2 critique of the first draft, an external review of the framing, and Fable on the hypothesis and a minimal launch). Not frozen; nothing extracted. The dataset search and prior art are in the [scoping note](../representation_state/notes/real-world-application-scoping.md) (application 1). This file is the run architecture and the analysis to freeze. Labels: **[V]** checked against the file, API or paper this session; **[E]** established result; **[R]** recorded in the repository; **[I]** inferred; **[U]** unverified; **[S]** speculation.
+Status: **draft, revised after four review rounds** (Fable 5.2 critique of the first draft, an external review of the framing, Fable on the hypothesis and a minimal launch, and Fable on the character-first analysis, 11 November). Analysis not frozen; step 1 extraction running (stage A). The dataset search and prior art are in the [scoping note](../representation_state/notes/real-world-application-scoping.md) (application 1). This file is the run architecture and the analysis to freeze. Labels: **[V]** checked against the file, API or paper this session; **[E]** established result; **[R]** recorded in the repository; **[I]** inferred; **[U]** unverified; **[S]** speculation.
 
 ## Question and success contract
 
@@ -43,7 +43,12 @@ Identity-free comparators exist; z's specific offer is how dependence measures c
 
 ## Frozen summaries (primary) and hypotheses
 
-The 41,000-dimension direction analysis is secondary. The primary objects are three scalars per window, computed from z alone at no extra cost:
+The paper's deliverable is named statements about the character of dependence ([introduction draft](../../../drafts/introduction_draft.md)), so statements come in two tiers (Fable 5.2, 11 November):
+
+- **Tier 1, confirmatory.** Only axes that passed construction validation at cohort-like coupling ([character axes](../character_axes/validation/README.md) [R]): band organisation, mediation (the precision–pairwise block, H1) and lag organisation. Each is a within-unit contrast of a family-block mean of z, worded in the axis's validated meaning.
+- **Tier 2, exploratory.** A family-block map of what departs from the linear-stationary-Gaussian expectation, worded as "departure from linear-stationary-Gaussian dependence in families F". "More nonlinear" is not available: the form axis failed validation and raw linear–rank pairs read marginal shape [R]. It becomes available only after a strength- and SNR-matched synthetic calibration shows the readout responds to nonlinearity and not to bursts or drift.
+
+Effective rank is a global descriptive summary, not a named statement. Classifier coefficients are not a readout (weights are not activation patterns, Haufe et al. 2014 [U]); readouts are within-unit contrasts of family-block means. The 41,000-dimension direction analysis is secondary. The primary objects are three scalars per window, computed from z alone at no extra cost:
 
 1. **Effective rank of z**: the participation ratio of its eigenvalues.
 2. **Mean between-family agreement**: the mean z between the frozen SPI families.
@@ -54,10 +59,16 @@ Hypotheses, each compared within unit, with unit-level effect sizes and interval
 - **H-within.** Wake and deep GABAergic or NREM states differ in z within each dataset. The only near-certain outcome.
 - **H-rank.** Effective rank falls from wake to propofol, medetomidine and deep sleep, and less or not at all under ketamine alone. The sign is pre-registered as falling, though the precision block detaching pushes the other way, so the result is uncertain [S].
 - **H1, decoupling.** The precision–rank block falls under GABAergic agents, medetomidine and NREM, and less under ketamine and REM. This is a statement about statistics: partial correlation is conditional association given the observed channels [E], not direct connectivity. It holds only where the SPIs involved pass a within-state split-half reliability floor (0.8).
-- **H-control.** Each effect is tested again after regressing, within unit, on covariance participation ratio, pooled spectral entropy, slow-power fraction, mean |Pearson| and edge reliability. Surviving these is the non-redundancy claim.
+- **H-control.** Each effect is tested again after regressing, within unit, on covariance participation ratio, pooled spectral entropy, slow-power fraction, mean |Pearson|, edge reliability, and the mean-SPI levels of the families in the statement (does the level picture already say it?). Two further controls, both from the stored MPIs at no extraction cost: z recomputed on edge subsets matched across states in their |r| distribution (the saturation objection: one global mode mechanically raises agreement among strength-like SPIs and detaches precision SPIs), and family-block contrasts disattenuated by within-state split-half edge reliability. The eyes-open against eyes-closed contrast gives the null effect size. Surviving these is the non-redundancy claim.
 - **H4, experience.** Deferred until a statement exists. DREAM (constituent studies with M ≥ 8) then tests it within a stage, and Bajwa labels if they arrive (exploratory).
 
-No "beyond-spectral" wording is available from this launch, because surrogates are deferred (user, 11 November). They run later, on whichever statements emerge.
+No "beyond-spectral" wording is available from this launch, because surrogates are deferred (user, 11 November). They run later, only for the at most three frozen statements and only on the SPIs those statements involve (no full extraction). The surrogate levels type each statement, as accounting rather than as contributions:
+
+- **Floor:** independent univariate surrogates (each channel's spectrum and amplitude distribution kept, coupling removed). Mostly estimator-noise covariance and channel-spectrum heterogeneity; a statement living here is an artefact.
+- **Linear strength and character:** multivariate surrogates minus the floor. This level still contains how linear strength is distributed across pairs (under Gaussianity z is fixed by it, Nolte et al. 2020 [R]), so it is split by the strength-matched control above. Use common-phase Fourier surrogates (cross-spectra exact, marginals Gaussianised) for the spectral, phase and lag families, which IAAFT reproduces poorly [R], and IAAFT for the covariance, precision and rank families.
+- **Departure from linear-stationary-Gaussian:** real minus multivariate surrogate. It includes nonlinearity, but also bursts, drift and within-window state switching.
+
+Inference uses unit-level means of surrogate draws with their draw-to-draw spread, not per-window residuals, and the level of edge reliability in real and surrogate data is reported beside each residual.
 
 ## Datasets in this launch
 
@@ -102,22 +113,22 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
   - The bundled p90 does not contain these (an earlier draft wrongly said it did). The user is adding them upstream by PR (11 November).
   - The repository's `configs/pyspi/benchmarked_p90.yaml` is the frozen r7 catalogue and not for new runs [V, README].
   - The bundled set drops the constant `dspli`/`dswpli` max SPIs, EllipticEnvelope (an exact duplicate of MinCovDet [R]), Lasso and ElasticNet, and bary-sq [V, diff].
-  - The three `gd_multitaper_delay` SPIs return no finite values at T = 200 [V, smoke run], so they leave the 2-s arm's coordinate set.
+  - The three `gd_multitaper_delay` SPIs return no finite values on the fly windows (M = 15, T = 200) [V, smoke run], and the five GraphicalLasso SPIs fail as ill-conditioned on NeuroTycho's 2-s windows (M = 127, T = 200) [V, profiling]. The 2-s arm's coordinate set is the SPIs finite in every window of the arm.
   - It keeps MinCovDet, so the NeuroTycho decoupling is reproducible as discovered [V].
   - K and the family lists are frozen from the profiling run. There is no comparison with r10 banks, and no dyad sampling (user).
 - **Runner.** [`extract.py`](extract.py) calls `run_pyspi` with the same arguments as `run_corpus`, a fixed seed per window and per-channel z-scoring (`normalise=True`).
-  - Shards scale with M (25 windows for M ≤ 32, 5 for M ≤ 96, 3 for M > 96), so a shard takes 1–2 h.
-  - One archive per shard, with provenance, resume and audit.
-- **Concurrency.** pyspi `n_jobs` is used wherever memory already pays for the cores: 1 worker for M ≤ 32, 2 for M ≤ 64, 4 for M of about 82–127. Nodes are sized so the cores requested don't exceed shards times workers. It shortens wall time at roughly equal SU.
+  - One window per shard at M = 127 (best load balance), with provenance, resume and audit.
+- **Profiling (M = 127, one window, 4 workers) [V].** 10-s: 4.1 CPU-hours, 2.0 h wall, 8.5 GB, no SPI errors. 2-s: 0.7 CPU-hours, 14 min wall, 3.3 GB, five GraphicalLasso errors. Four workers kept only half the cores busy (SPI-level concurrency waits on the slowest SPI).
+- **Concurrency.** Charged on the larger of cores and memory ÷ 3.96 GiB (HPC.md). 10-s: 3 workers per window, 16 windows per 48-core node (about 10.5 GiB each). 2-s: 1 worker per window, 48 per node. Fly: 1 worker.
 - **Order.**
   1. Smoke run (two windows per bank).
   2. Profiling (one window per (M, T) class on upstream r13: time, memory, K, float32 check).
-  3. Step 1 farms, all at once.
+  3. Step 1 farms, staged (user, 11 November): the 2-s arm, fly, and stage A of the 10-s arm now; stage B of the 10-s arm when the 105 kSU top-up lands.
   4. Discovery analysis, then freeze at most three statements.
   5. Step 2 farms.
 - **Storage.**
   - Raw NeuroTycho and ANPHY are staged, windowed and deleted one archive or subject at a time on copyq.
-  - MPIs are stored as float32 if the profiling run shows a maximum |Δz| below 1e-4.
+  - MPIs are stored as float64 (the float32 check was not run).
   - Outputs come to well under 100 GB.
 
 ## Analysis (to freeze before step 2)
@@ -132,16 +143,18 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
 
 ## Budget
 
-`ql44` Q4 rises to 105 kSU (pending at NCI); about 58 kSU is free, shared with other sessions. Estimates follow HPC.md's rule [I], ±1.5×, re-priced after profiling.
+`ql44` Q4 is to rise to 105 kSU; on 11 November `nci_account` still showed a 75 kSU grant with 28 kSU free, shared with other sessions. Re-priced from the profiling run [I from V]: the per-pair rule in HPC.md underestimated the 10-s cost by about 1.5×, and memory caps a node at 16 windows.
 
 | Step | kSU |
 |---|---:|
 | Smoke and profiling | about 0.2 |
-| Step 1: NeuroTycho (about 1,270 windows at M ≤ 127; 10-s and 2-s) | about 9.4 |
+| Step 1: NeuroTycho 2-s arm (1,260 windows) | about 2 |
+| Step 1: NeuroTycho 10-s stage A (500 windows) | about 6.5 |
+| Step 1: NeuroTycho 10-s stage B (760 windows) | about 9.5 |
 | Step 1: fly (208 windows, 2-s) | under 0.1 |
-| Step 2: Bajwa, ANPHY (W, N3, REM), Chennu (10-s and 2-s) | about 9 |
-| Reruns (20%) | about 3.5 |
-| **Total** | **about 22 (range 15–33)** |
+| Step 2: Bajwa, ANPHY (W, N3, REM), Chennu (10-s and 2-s) | about 9 (to re-price by M) |
+| Reruns (20%) | about 5 |
+| **Total** | **about 32** |
 
 ## Predictions before any atlas output (all [S])
 
@@ -156,5 +169,5 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
 
 ## Decisions open
 
-1. Step 1 released 11 November (user): NeuroTycho download job 183606163, fly bank built (208 windows), smoke job 183606432. Code: [`prepare.py`](prepare.py).
+1. Step 1 released 11 November (user). Banks: 1,260 NeuroTycho windows per arm from 30 archives (M 126–127, full rank in every window; one archive lacks recovery) and 208 fly windows. Staged (user): stage A of the 10-s arm is, for each animal × agent pair, the earliest archive with every state (12 archives, 500 windows); the other 18 archives (stage B) are within-dataset replication. Farms from snapshot `atlas-c25e6e5`, outputs under `$MTS_SCRATCH/atlas/pyspi/`: 10-s stage A 183627764, 2-s arm 183627765, fly 183627766. Code: [`prepare.py`](prepare.py).
 2. Watson's probe channel set, if Watson is later added.
