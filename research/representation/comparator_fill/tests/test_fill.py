@@ -110,6 +110,8 @@ def test_fusion_separates_redundant_from_unique_z(tmp_path):
         fusion.main('toy', root, root / 'out.json', repeats=1)
         results[kind] = json.loads((root / 'out.json').read_text())['contrasts']['one_vs_zero']
     red, uni = results['redundant'], results['unique']
-    assert red['scores']['r|z']['auroc'] < .75 and uni['scores']['r|z']['auroc'] > .9
-    assert abs(red['bases']['r']['commonality_bits']['unique_z']) < .15 < uni['bases']['r']['commonality_bits']['unique_z']
-    assert uni['scores']['r+z']['auroc'] > .9 and len(uni['bases']['r']['meta_weights_mean']) == 2
+    assert red['scores']['z|r']['auroc'] < .7 and uni['scores']['z|r']['auroc'] > .9
+    assert abs(red['bases']['r']['commonality_bits']['unique_z']) < .1 < uni['bases']['r']['commonality_bits']['unique_z']
+    lo, hi = uni['bases']['r']['commonality_interval']['unique_z']
+    assert lo > 0 and uni['scores']['r_z']['auroc'] > .9 and len(uni['meta_weights_mean']['r_z']) == 2
+    assert min(min(w) for w in uni['meta_weights_mean'].values()) >= 0
