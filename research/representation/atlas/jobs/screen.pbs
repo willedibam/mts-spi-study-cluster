@@ -17,6 +17,7 @@ for arm in neurotycho-long-stage-a:awake_ec neurotycho-short:awake_ec fly-short:
     IFS=: read -r bank ref <<< "$arm"
     python -u -m research.representation.atlas.discovery analyse "$O/$bank-reduced.npz" --reference "$ref" --output "$O/$bank-report.json"
     python -u -m research.representation.atlas.discovery pairs "$O/$bank-reduced.npz" --reference "$ref" --output "$O/$bank-pairs.json"
+    python -u -m research.representation.atlas.discovery explore "$O/$bank-reduced.npz" --reference "$ref" --output "$O/$bank-explore.json"
 done
 for arm in neurotycho-long-stage-a neurotycho-short; do
     python -u -m research.representation.atlas.discovery screen "$O/$arm-reduced.npz" --output "$O/$arm-screen.json"

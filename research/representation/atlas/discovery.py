@@ -534,6 +534,120 @@ def reliability(bank, pyspi_dir, output, reference, named=PAIRS, jobs=8):
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=1) + '\n')
 
+
+def _family(name):
+    """Collapse estimator, band and statistic variants so one representative per family pair is reported."""
+    return name.split('_')[0]
+
+
+def explore(reduced, output, reference, conditions=None, top=20, ceiling=.98):
+    """Every kept z coordinate, beyond the all-agents screen. Per condition (agent:state), per-unit effects raw and
+    strength-adjusted, scaled by the eyes-open null SD (by the condition's own between-unit SD where no eyes-open
+    state exists, i.e. Cohen's d). A condition is consistent on a coordinate when at least 75% of units agree in
+    sign, raw and adjusted, and every animal's mean agrees. Rankings:
+      single:    each condition's strongest consistent coordinates;
+      specific:  consistent in one condition at >= 4 scale units while every other condition stays within 1.5;
+      opposite:  two conditions consistent with opposite signs, ranked by the weaker of the two;
+      majority:  at least all-but-one drug conditions consistent with one sign at >= 3, ranked by the weakest of
+                 the agreeing ones.
+    Excludes node-additive SPIs, ceiling coordinates (|z| in the reference >= ceiling) and structural zeros, and
+    reports one coordinate per SPI-family pair."""
+    r = np.load(reduced, allow_pickle=False)
+    rows = json.loads(str(r['rows']))
+    spis = [str(s) for s in r['spis']]
+    keep = np.flatnonzero(r['valid'].all(0))
+    K = len(spis)
+    iu = np.triu_indices(K, 1)
+    kept = np.isin(iu[0], keep) & np.isin(iu[1], keep)
+    a_idx, b_idx = iu[0][kept], iu[1][kept]
+    Z = r['z'][:, kept].astype(np.float64)
+    unit = np.array([x['unit'] for x in rows])
+    animal_of = {x['unit']: x.get('animal') or x['unit'] for x in rows}
+    agent = np.array([x.get('agent', 'all') for x in rows])
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    names = [str(n) for n in r['covariate_names']]
+    cov = r['covariates'][:, [names.index(c) for c in COVARIATES]]
+    node = np.nanmedian(r['node_r2'][state == reference], 0) > .5
+    z0 = np.nanmean(Z[state == reference], 0)
+    if conditions is None:
+        conditions = sorted({f'{g}:{s}' for g, s in zip(agent, state)
+                             if s not in (reference, 'awake_eo') and not s.startswith('recovery')})
+    eff, units = {}, {}
+    for c in conditions:
+        g, s = c.split(':')
+        sel = agent == g
+        us = [u for u in np.unique(unit[sel]) if ((unit == u) & (state == s)).any() and ((unit == u) & (state == reference)).any()]
+        eff[c] = dict(raw=unit_effects(Z[sel], unit[sel], state[sel], s, reference),
+                      adjusted=unit_effects(Z[sel], unit[sel], state[sel], s, reference, cov[sel]))
+        units[c] = np.array([animal_of[u] for u in us])
+    recovery = {}
+    for g in sorted(set(agent)):
+        sel = agent == g
+        if ((state == 'recovery_ec') & sel).any():
+            recovery[g] = unit_effects(Z[sel], unit[sel], state[sel], 'recovery_ec', reference).mean(0)
+    if (state == 'awake_eo').any():
+        null = np.concatenate([unit_effects(Z[agent == g], unit[agent == g], state[agent == g], 'awake_eo', reference)
+                               for g in sorted(set(agent)) if ((agent == g) & (state == 'awake_eo')).any()])
+        scale = {c: null.std(0, ddof=1) for c in conditions}
+        scale_kind = 'eyes-open null SD'
+    else:
+        scale = {c: eff[c]['adjusted'].std(0, ddof=1) for c in conditions}
+        scale_kind = "condition's own between-unit SD (Cohen's d)"
+    strength, consistent = {}, {}
+    for c in conditions:
+        m = eff[c]['adjusted'].mean(0)
+        sign = np.sign(m)
+        ok = (np.mean(np.sign(eff[c]['adjusted']) == sign, 0) >= .75) & (np.mean(np.sign(eff[c]['raw']) == sign, 0) >= .75)
+        for a in np.unique(units[c]):
+            ok &= np.sign(eff[c]['adjusted'][units[c] == a].mean(0)) == sign
+        strength[c] = np.where(scale[c] > 1e-4, m / np.maximum(scale[c], 1e-4), 0.0)
+        consistent[c] = ok
+    usable = ~(node[a_idx] | node[b_idx]) & (np.abs(z0) < ceiling) & np.all([scale[c] > 1e-4 for c in conditions], 0)
+
+    def describe(i):
+        return dict(a=spis[a_idx[i]], b=spis[b_idx[i]], reference_z=float(z0[i]),
+                    conditions={c: dict(adjusted=float(eff[c]['adjusted'][:, i].mean()), raw=float(eff[c]['raw'][:, i].mean()),
+                                        scaled=float(strength[c][i]), consistent=bool(consistent[c][i]),
+                                        units=len(eff[c]['raw']), animals=int(len(np.unique(units[c]))))
+                                for c in conditions},
+                    recovery={g: float(v[i]) for g, v in recovery.items()})
+
+    def ranked(score, mask):
+        out, seen = [], set()
+        for i in np.argsort(-np.where(mask & usable, score, -np.inf)):
+            if not (mask[i] and usable[i]) or len(out) >= top:
+                break
+            fam = tuple(sorted((_family(spis[a_idx[i]]), _family(spis[b_idx[i]]))))
+            if fam in seen:
+                continue
+            seen.add(fam)
+            out.append(describe(i))
+        return out
+
+    S = {c: np.abs(strength[c]) for c in conditions}
+    drugs = [c for c in conditions if c.endswith(':drug') or c.endswith(':isoflurane')]
+    report = dict(reduced=str(reduced), reference=reference, scale=scale_kind, conditions=conditions,
+                  coordinates=int(Z.shape[1]), usable=int(usable.sum()),
+                  single={c: ranked(S[c], consistent[c]) for c in conditions},
+                  specific={c: ranked(S[c], consistent[c] & (S[c] >= 4) &
+                                      np.all([S[o] < 1.5 for o in conditions if o != c], 0)) for c in conditions},
+                  opposite={}, majority=[])
+    for k, c1 in enumerate(conditions):
+        for c2 in conditions[k + 1:]:
+            m = consistent[c1] & consistent[c2] & (np.sign(strength[c1]) == -np.sign(strength[c2]))
+            report['opposite'][f'{c1} vs {c2}'] = ranked(np.minimum(S[c1], S[c2]), m & (np.minimum(S[c1], S[c2]) >= 3))
+    if len(drugs) >= 3:
+        best = []
+        for sgn in (1, -1):
+            agree = np.array([consistent[c] & (np.sign(strength[c]) == sgn) & (S[c] >= 3) for c in drugs])
+            n = agree.sum(0)
+            weakest = np.min(np.where(agree, np.array([S[c] for c in drugs]), np.inf), 0)
+            best.append((n >= len(drugs) - 1, np.where(n >= len(drugs) - 1, weakest, 0)))
+        mask = best[0][0] | best[1][0]
+        report['majority'] = ranked(np.maximum(best[0][1], best[1][1]), mask)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -562,11 +676,17 @@ if __name__ == '__main__':
     e.add_argument('--output', type=Path, required=True)
     e.add_argument('--reference', default='awake_ec')
     e.add_argument('--jobs', type=int, default=8)
+    f = sub.add_parser('explore')
+    f.add_argument('reduced', type=Path)
+    f.add_argument('--output', type=Path, required=True)
+    f.add_argument('--reference', default='awake_ec')
     args = p.parse_args()
     if args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
     elif args.command == 'reliability':
         reliability(args.bank, args.pyspi, args.output, args.reference, jobs=args.jobs)
+    elif args.command == 'explore':
+        explore(args.reduced, args.output, args.reference)
     elif args.command == 'pairs':
         pairs(args.reduced, args.output, args.reference)
     elif args.command == 'screen':

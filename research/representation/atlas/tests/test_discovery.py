@@ -89,3 +89,13 @@ def test_reliability(tmp_path):
     assert e['cov_EmpiricalCovariance|spearmanr:raw']['units'] == 3
     assert np.isfinite(e['cov_EmpiricalCovariance|spearmanr:disattenuated']['mean'])
     assert abs(rep['reference_state']['spearmanr']['reliability']) < .2 and rep['states']['PF:drug']['spearmanr'][0] > .5
+
+
+def test_explore(tmp_path):
+    bank, pyspi = fake_atlas(tmp_path)
+    discovery.reduce(bank, pyspi, tmp_path / 'reduced.npz', jobs=1)
+    discovery.explore(tmp_path / 'reduced.npz', tmp_path / 'explore.json', 'awake_ec', ceiling=1.01)
+    rep = json.loads((tmp_path / 'explore.json').read_text())
+    assert rep['conditions'] == ['PF:drug'] and rep['scale'] == 'eyes-open null SD'
+    assert all('coint_x' not in (h['a'], h['b']) for h in rep['single']['PF:drug'])
+    assert rep['opposite'] == {} and rep['majority'] == []
