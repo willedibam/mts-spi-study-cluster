@@ -57,6 +57,11 @@ Best candidates, re-read (Fable 5.2, 11 November):
   - Test with a pyspi-free per-window index, real − surrogate: each edge's cross-product share in the top 5% of samples, plus their temporal clustering.
   - Predicted up under propofol, medetomidine and natural sleep; not under ketamine alone; null for eyes open against closed.
   - Order: NeuroTycho, then fly isoflurane, then Chennu and Bajwa.
+- **Deciding analyses run (11 November, [findings](../../research/representation/character_axes/findings.md#what-mincovdet-discards-deciding-analyses-exploratory-11-november)):**
+  - "Episodic coupling" is not earned in NeuroTycho: flag clustering is spectral, and flagged samples carry no distinct network.
+  - The propofol linear–rank residual is killed: not dose-graded, no recovery reversal.
+  - Surviving candidate, cross-species: the fraction of samples departing from the dominant covariance rises beyond spectra under anaesthesia. NeuroTycho 6/6 units (d 2.8–3.7, spatially focal, not common-mode); humans dose-graded with recovery reversal (d ≈ .8, 15–16/20). Top-5% co-fluctuation clustering rises slightly in both.
+  - Reading: more time-heterogeneous dependence, not a switch to another network. Artefact versus physiology is not yet separated.
 
 ## Named character axes built inside z (2 November)
 

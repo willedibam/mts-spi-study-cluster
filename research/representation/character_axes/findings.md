@@ -119,6 +119,33 @@ Exploratory search for a strong character result; many readouts across four coho
 - **Direct up-state test: negative (4 November;** `upstate_networks.py`, `upstate-networks/neurotycho.json`). Up epochs = top quarter of the smoothed channel-mean 0.5–4 Hz envelope (no robust estimator); null = the same mask circularly shifted (20 shifts). The readout detects a network switch in the generator (up-versus-rest partial r² similarity minus null −0.11/−0.05 at gains 2/3; surrogate ≈ 0). NeuroTycho shows none: +0.001 awake, +0.013 anaesthesia (d +0.44, 4/6), surrogate +0.03/+0.016. Similarities themselves fall under anaesthesia equally in real and surrogate data (spectral).
 - Assessment: state-dependent coupling tied to high-amplitude slow-wave epochs is not supported. The robust-versus-classical divergence beyond surrogates remains unexplained: whatever MinCovDet down-weights is not slow-wave-envelope epochs. Untested candidates: brief broadband transients or artefacts, and differences between the Mahalanobis-outlier samples and the delta envelope. The confirmed parts are descriptive: under anaesthesia, direct and pairwise dependence patterns decouple (65–71% linear-spectral) and robust and classical direct patterns diverge beyond spectra (6/6 units).
 
+## What MinCovDet discards: deciding analyses (exploratory, 11 November)
+
+Pre-stated criteria (Fable 5.2, [reading rules](../../../docs/interpreting-spi-pairs.md)): "episodic coupling" is earned only if the samples MinCovDet down-weights are temporally clustered beyond spectra, span several channels and carry a distinct network. pyspi-free, on raw windows; real minus each IAAFT variant (marginal-final / spectrum-final). About ten readouts per contrast were examined, so this is exploratory. Code [`episodic.py`](episodic.py) at `7b32eea`, job 183648829; results `results/representation/character-axes-261102/episodic/{neurotycho,propofol}.json` (V).
+
+- **NeuroTycho (M16/T2000 bipolar, 6 units, anaesthesia against awake).**
+  - **Flags rise beyond spectra.** The flagged (outside reweighted support) fraction rises .17 → .41. Beyond surrogates: +.072 / +.061, d 3.7 / 2.8, 6/6 units in both variants.
+  - **The excess flags are spatially focal.** Participation ratio / M is −.017 / −.034 (d −1.2 / −3.6, 1/6 and 0/6 units positive).
+  - **They are not common-mode** (ratio residual d −1.9, 0/6).
+  - **Their temporal clustering is spectral** (residual d +0.1 / −0.6).
+  - **They carry no distinct network.** Their partial-correlation pattern is no further from the bulk than a shifted mask; if anything it is closer (d +0.75 / +1.5).
+  - **Top-5% co-fluctuation clustering** rises a little beyond surrogates (+.02 / +.014, d 1.6 / 1.1, 6/6 and 5/6).
+  - **Pearson–Spearman (zero lag)** sits at .97–.99, and its small fall is marginal shape, not copula.
+  - **Verdict:** "episodic coupling" is not earned. Supported: under anaesthesia, more time points depart from the dominant covariance pattern than linear-Gaussian dynamics with the same auto- and cross-spectra produce, and these departures are spatially focal rather than global slow-wave samples. This is the likely source of the robust-versus-classical precision divergence. Physiological focal transients and artefacts are not yet separated.
+- **Propofol (M19/T1000, 20 people; baseline, mild, moderate, recovery).**
+  - **The simple Pearson–Spearman pair is at ceiling** (.998–.999). Its real − IAAFT residual has the earlier sign at moderate (14/20 lower, d −0.4 / −0.5) and shrinks when the top 5% joint-amplitude samples are removed (d −0.2). But it is no smaller at mild (d −0.6) and does not reverse at recovery.
+  - **Verdict on linear–rank: killed** under the pre-stated rule (no dose grading, no reversal). Levels are recorded in session order [I], so a monotone time effect fits better than a drug effect.
+  - **The flag fraction is graded and reverses.** Beyond surrogates: mild ≈ 0 (d .07 / .02), moderate +.020 / +.022 (d .78 / .73, 15/20), moderate against recovery d .92 / .85 (16/20).
+  - **Flag clustering** beyond surrogates rises at moderate (d 1.05 / .87, 17/20 and 16/20) and partly reverses (d .72 / .55).
+  - **Top-5% co-fluctuation clustering** follows the same pattern (d .89 / .92, 17/20; mild d .25 / .31; reversal d .52 / .51).
+  - **Focality and distinct network:** no change.
+- **Cross-species reading (candidate, not confirmed).** In both species, under anaesthesia more samples depart from the dominant joint covariance than linear-Gaussian dynamics with the same spectra produce, and extreme joint co-fluctuations cluster in time slightly more. In humans this is dose-graded and reverses. Neither species shows a distinct network during those samples.
+  - **Character reading:** dependence becomes more time-heterogeneous (heavier-tailed, intermittent joint excursions) under anaesthesia, without switching to another network.
+  - **Literal reading:** MinCovDet outlier fraction and top-5% cross-product clustering, real minus IAAFT, rise.
+- **Next:**
+  - Characterise flagged samples (topography, waveform, spectrum) to separate focal physiological transients from artefact; frontal eye or muscle sources in humans, single bad contacts in macaques.
+  - The index needs no pyspi, so test its predictions on the atlas banks with surrogates generated on the fly: up under medetomidine and natural sleep, not under ketamine alone, null for eyes open against closed. Also the fly isoflurane bank.
+
 ## Open
 
 - Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. After stage 3 the core is band high share, band spread and mediation (one generator). Sub-axes are band organisation, lag (organisation and level), form (te − gc level) and location frequency; direction and warp are dropped. The core is not yet sufficient for z (above), but in every cohort z's discriminative information is contained in Pearson + strength + channel spectra, so no cohort shows a classification advantage beyond channel spectra. Open: whether the character readouts carry coupling information given channel spectra (a conditional test, e.g. spectra-adjusted effects as in `location_check.py`, or real − IAAFT), and a noise- and strength-robust correction.
