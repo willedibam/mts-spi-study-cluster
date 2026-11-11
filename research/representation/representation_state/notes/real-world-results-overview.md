@@ -15,7 +15,8 @@ What holds:
 What does not hold:
 
 - z never adds over Pearson + strength + channel spectra (the S block) in any cohort tested (AD/FTD, LEMON, propofol, NeuroTycho); every interval includes or lies below zero. Channel power or spectra alone match or beat z on every grouped-CV cohort. Whatever z adds over Pearson is redundant, for classification, with per-channel spectra; this is redundancy in AUROC, not proof that z reads spectra.
-- No dataset shows z beating the strongest comparator. Winners: NeuroTycho enriched raw encoder and InceptionTime ensemble; fMRI MiniRocket, aligned MPIs and Pearson; Siena univariate and aligned MPIs (AUROC); HMC nonlinear univariate and aligned encoder; GRABMyo InceptionTime; LANL ties among many methods at BA 1.0.
+- No dataset shows z beating the strongest comparator. Winners: NeuroTycho enriched raw encoder, InceptionTime ensemble, MultiRocket-Hydra and QUANT (r10 bank: spectra alone .984 against z .836); fMRI MiniRocket, aligned MPIs, Pearson and tangent-space covariance; Siena univariate and aligned MPIs (AUROC); HMC nonlinear univariate and aligned encoder; GRABMyo InceptionTime; LANL ties among many methods at BA 1.0.
+- The comparator fill (11 November, full agreed ladder) adds two things. The K per-SPI edge means (mean-SPI) match z on every cohort and nearly every transfer column, so z's discriminating content is mostly in the per-SPI levels. And the best single SPI chosen inside each training fold is the strongest statistical block on AD vs HC (.928) and AD vs FTD (.780, cointegration in 20 of 25 folds, every other method ≤ .655): post hoc and unconfirmed, but the one new additive candidate. Details in [Comparator fill](#comparator-fill-11-november).
 - The one frozen independent confirmation failed. CHB-MIT → Siena: m+z did not beat m (Brier −.009 [−.045, +.034]), z fell from BA .958 to .685 and lost to m, aligned MPIs and Pearson. On fMRI, Pearson+z is worse than Pearson (Brier −.022 [−.040, −.005]).
 - Surrogates: every replicated named-axis state effect (NeuroTycho, propofol, AD/FTD, LEMON) is reproduced by multivariate IAAFT, so it is linear-spectral. The surviving beyond-surrogate candidates are NeuroTycho's top z pairs (robust precision versus rank/ids; residual d −1.3 to −2.2, 0/6 units) and propofol's linear–rank agreement (−.83/−.82). The non-Gaussian MI level shift was an estimator artefact and is withdrawn.
 - CHBMP IQ is a pre-registered null (0 of 31,415 z features at FWER, N = 135). Its post-hoc age signal is mostly shared with spectra and did not replicate in LEMON.
@@ -159,6 +160,144 @@ Transfer group, Brier improvement (positive = the augmented model is better) and
 
 fMRI separate fusion (single SPI 32 PCs + z-PCA ≤ 50) over single SPI: Brier **−.021 [−.042, −.002]**, BA −.083 (V). The GRABMyo m+z and LANL z-over-m intervals exclude zero but are tiny absolute Brier changes (≤ .007).
 
+## Comparator fill (11 November)
+
+The agreed ladder on the existing banks, under each column's frozen protocol (rules in the [gap matrix](#comparator-gap-matrix-10-november) section). Code `comparator_fill/` at `7b4c2f9` (AD/FTD, LEMON, propofol statistical runs; `ee1ddb7` for the rest, whose single-SPI step did not differ), aeon 1.5.0. Sources (V): `results/representation/comparator-fill-261110/{stat,library}/<dataset>.json`; tables printed by `python -m research.representation.comparator_fill.collate`. fMRI and Siena rows are post hoc (outcomes known) and exploratory; no multiplicity adjustment anywhere. Library rows on the cohorts use one five-fold split, not 5 × 5, so they carry more split variance than the statistical rows. Each column keeps its bank's pyspi version (inventory below). `>.999` rounds to 1 but is below it.
+
+What it shows:
+
+- **Reproduction.** z, Pearson, relative spectra and absolute power reproduce every Matrix 3 cell to three decimals, and the NeuroTycho r10 z and Pearson AUROC (1.0, .428; previously Vn) are reproduced, so those cells are now V.
+- **mean-SPI matches z.** The K edge-averaged SPI values (283 numbers per window) are never beaten by z in a cohort (AD vs FTD: mean-SPI ahead, −.109 [−.216, +.001]) and are within ±.01 Brier on every transfer column except Siena, where mean-SPI is better (−.060 [−.116, −.004]). Adding z to mean-SPI helps nowhere except GRABMyo (+.011 Brier). Inferred: whatever z carries for these labels is mostly also in the K per-SPI levels.
+- **Spectra.** In the cohorts z never adds over spectra, power or Pearson + spectra (every interval includes or lies below zero; power + z on propofol mild +.092 [+.005, +.175] is the lone exception and is one of 23 such cohort tests). On the discovery screen z adds Brier over spectra on CHB-MIT (+.097 [+.024, +.173]) and LANL (+.038), and over Pearson + spectra on HMC (+.046 [+.005, +.096]) and LANL; it does not on Siena or fMRI, the two held-out sets.
+- **Best single SPI, chosen inside each training fold, is the strongest statistical block on the AD contrasts.** AD vs HC .928 (z − single SPI −.091 [−.195, −.003]), with a lagged correlation (`corr_*_tau-2*`) chosen in 20 of 25 folds; AD vs FTD .780 (−.255 [−.402, −.102]), with a cointegration statistic (`coint_johansen_*`, `coint_aeg_*`) chosen in 20 of 25 folds, where every other block and library is ≤ .655. This is post hoc, n = 59, and unconfirmed; cointegration statistics are sensitive to slow drift, so a recording or amplitude difference between the AD and FTD groups is the first alternative to rule out. It is the one candidate this fill produced for the atlas-style "small but additive" result, and it needs an independent AD/FTD cohort.
+- **z's capacity.** Full-rank z beats the PCA-32 z on LEMON (+.058 [+.018, +.104]) and propofol mild (+.117 [+.042, +.185]), so the cohort PCA cap cost z some AUROC. z's first PC alone loses on every column (−.10 to −.41 AUROC): the discriminating content is not in z's leading component.
+- **Libraries and baselines.** ROCKET, MultiRocket-Hydra and QUANT match or beat z on most columns. NeuroTycho r10: MultiRocket-Hydra BA 1.0, QUANT .992 / .008, spectra alone .984 / .011, best single SPI .984 / .013, against z .836 / .104. fMRI: tangent-space covariance 1.0 / .042, better than z (Brier −.094 [−.156, −.031]), which agrees with tangent-space being the standard connectome baseline (Dadi et al., NeuroImage 2019; citation from memory, unverified here). z beats tangent on propofol moderate (+.105 [+.023, +.178]) and LANL. QUANT inverts on Siena (BA .262, AUROC .283).
+
+### Transfer columns, fixed threshold 0.5 (BA / Brier; adds to Matrix 1)
+
+| Representation | NT r10 (BA pooled over 128 windows) | fMRI primary | CHB-MIT screen | Siena (post hoc) | HMC | GRABMyo | LANL |
+|---|---|---|---|---|---|---|---|
+| z, first PC only | .594 / .264 | .667 / .170 | .792 / .201 | .649 / .217 | .667 / .212 | .088 / .466 | 1.0 / .012 |
+| z, full rank | .820 / .149 | .806 / .126 | .917 / .077 | .685 / .233 | .785 / .171 | .243 / .423 | 1.0 / .006 |
+| Pearson + z | .812 / .160 | not run | .931 / .095 | .774 / .144 | .743 / .169 | .449 / .389 | 1.0 / .008 |
+| per-channel spectra alone | .984 / .011 | not run | .792 / .155 | .643 / .231 | .785 / .162 | .471 / .386 | 1.0 / .046 |
+| spectra + z | .867 / .106 | .889 / .076 | .917 / .058 | .673 / .196 | .792 / .145 | .471 / .382 | 1.0 / .008 |
+| per-channel univariate + z | not run | not run | .958 / .081 | .738 / .186 | .826 / .124 | .441 / .373 | 1.0 / .007 |
+| Pearson + spectra | .977 / .013 | 1.0 / .056 | .833 / .138 | .643 / .195 | .764 / .171 | .463 / .376 | 1.0 / .047 |
+| Pearson + spectra + z | .859 / .100 | .972 / .066 | .833 / .123 | .804 / .166 | .819 / .125 | .456 / .375 | 1.0 / .008 |
+| mean-SPI (K edge means) | .891 / .065 | .833 / .131 | .917 / .088 | .792 / .169 | .729 / .189 | .221 / .429 | 1.0 / .008 |
+| mean-SPI + z | .844 / .101 | .833 / .108 | 1.0 / .075 | .720 / .177 | .785 / .176 | .294 / .418 | 1.0 / .024 |
+| tangent-space covariance | .852 / .109 | 1.0 / .042 | .708 / .133 | .649 / .251 | .792 / .153 | .382 / .395 | .675 / .235 |
+| per-channel catch22 | .828 / .093 | .944 / .069 | .889 / .111 | .631 / .263 | .764 / .203 | .346 / .412 | 1.0 / .127 |
+| z (PCA), now with Brier (NT r10 only) | .836 / .104 | — | — | — | — | — | — |
+| Pearson (r) (NT r10 only) | .570 / .335 | — | — | — | — | — | — |
+| m (NT r10 only) | .906 / .058 | — | — | — | — | — | — |
+| m + z (NT r10 only) | .867 / .094 | — | — | — | — | — | — |
+| full aligned MPIs (NT r10 only) | .891 / .081 | — | — | — | — | — | — |
+| best single SPI (NT r10 only) | .984 / .013 | — | — | — | — | — | — |
+| ROCKET | .945 / .059 | .944 / .097 | .778 / .179 | .738 / .165 | .812 / .145 | .500 / .370 | .975 / .058 |
+| MiniRocket (aeon, this fill) | .930 / .056 | 1.0 / .058 | .792 / .135 | .536 / .292 | .840 / .120 | .515 / .352 | .750 / .167 |
+| MultiRocket-Hydra | 1.0 / .054 | 1.0 / .063 | .875 / .132 | .589 / .297 | .806 / .112 | .551 / .353 | .750 / .152 |
+| QUANT | .992 / .008 | .917 / .110 | .667 / .205 | .262 / .421 | .764 / .150 | .419 / .353 | 1.0 / .025 |
+
+### Transfer columns, pooled AUROC (adds to Matrix 2; the "existing fit" rows close gap 2 for the discovery screen)
+
+| Representation | NT r10 (pooled over windows) | fMRI (mean within / pooled) | CHB-MIT screen | HMC | GRABMyo (one-vs-rest) | LANL | Siena |
+|---|---|---|---|---|---|---|---|
+| z, first PC only | .740 | 1.0 / .843 | .817 | .743 | .554 | 1.0 | .706 |
+| z, full rank | .982 | .917 / .932 | .982 | .833 | .739 | 1.0 | .871 |
+| Pearson + z | .964 | not run | 1.0 | .827 | .847 | 1.0 | .916 |
+| per-channel spectra alone | 1.0 | not run | .870 | .881 | .882 | 1.0 | .923 |
+| spectra + z | .983 | 1.0 / .991 | .994 | .903 | .881 | 1.0 | .841 |
+| per-channel univariate + z | not run | not run | .970 | .936 | .895 | 1.0 | .938 |
+| Pearson + spectra | >.999 | 1.0 / 1.0 | .911 | .881 | .881 | 1.0 | .956 |
+| Pearson + spectra + z | .999 | 1.0 / 1.0 | .929 | .936 | .890 | 1.0 | .910 |
+| mean-SPI (K edge means) | 1.0 | 1.0 / .895 | 1.0 | .792 | .747 | 1.0 | .874 |
+| mean-SPI + z | 1.0 | 1.0 / .960 | 1.0 | .819 | .768 | 1.0 | .856 |
+| tangent-space covariance | .949 | 1.0 / 1.0 | .988 | .881 | .868 | .732 | .857 |
+| per-channel catch22 | 1.0 | .972 / .994 | .994 | .795 | .806 | 1.0 | .771 |
+| ROCKET | 1.0 | 1.0 / 1.0 | .864 | .871 | .915 | 1.0 | .853 |
+| MiniRocket (aeon, this fill) | 1.0 | 1.0 / 1.0 | .876 | .920 | .910 | .975 | .613 |
+| MultiRocket-Hydra | 1.0 | 1.0 / 1.0 | .929 | .932 | .907 | .920 | .698 |
+| QUANT | .993 | .972 / .960 | .769 | .872 | .884 | 1.0 | .283 |
+| z (PCA) (existing fit) | see Matrix 2 | see Matrix 2 | .994 | .816 | .736 | 1.0 | see Matrix 2 |
+| Pearson (existing fit) | see Matrix 2 | see Matrix 2 | .822 | .810 | .842 | .665 | see Matrix 2 |
+| m (existing fit) | see Matrix 2 | see Matrix 2 | 1.0 | .779 | .746 | 1.0 | see Matrix 2 |
+| m + z (existing fit) | see Matrix 2 | see Matrix 2 | 1.0 | .825 | .754 | 1.0 | see Matrix 2 |
+| full aligned MPIs (existing fit) | see Matrix 2 | see Matrix 2 | 1.0 | .852 | .919 | 1.0 | see Matrix 2 |
+| best single SPI (existing fit) | see Matrix 2 | see Matrix 2 | .749 | .805 | .864 | 1.0 | see Matrix 2 |
+| source baseline + z (existing fit) | see Matrix 2 | see Matrix 2 | .793 | .936 | .889 | 1.0 | see Matrix 2 |
+| per-channel univariate (existing fit) | see Matrix 2 | see Matrix 2 | .917 | .896 | .896 | 1.0 | see Matrix 2 |
+| univariate RBF (existing fit) | see Matrix 2 | see Matrix 2 | .870 | .959 | .885 | 1.0 | see Matrix 2 |
+| validity (existing fit) | see Matrix 2 | see Matrix 2 | .562 | .514 | .574 | .865 | see Matrix 2 |
+| InceptionTime (existing fit) | see Matrix 2 | see Matrix 2 | .882 | .922 | .933 | 1.0 | see Matrix 2 |
+| MiniRocket (original) (existing fit) | see Matrix 2 | see Matrix 2 | .876 | .917 | .910 | .858 | see Matrix 2 |
+| aligned raw encoder (existing fit) | see Matrix 2 | see Matrix 2 | .911 | .949 | .685 | .953 | see Matrix 2 |
+
+### Cohort grouped-CV AUROC (adds to Matrix 3; the four "check" rows re-run existing cells)
+
+| Representation | AD vs HC | FTD vs HC | AD vs FTD | LEMON | Propofol moderate vs baseline | mild vs baseline | moderate vs recovery | NT r10 transfer |
+|---|---|---|---|---|---|---|---|---|
+| check: z | .837 | .796 | .525 | .874 | .930 | .757 | .927 | 1.0 |
+| check: Pearson | .835 | .799 | .531 | .859 | .747 | .710 | .845 | .428 |
+| check: relative spectra | .874 | .819 | .467 | .910 | .992 | .902 | .948 | 1.0 |
+| check: absolute power | .857 | .847 | .586 | .932 | .995 | .810 | .948 | not run |
+| z, first PC only | .738 | .727 | .255 | .486 | .518 | .573 | .620 | .740 |
+| z, full rank | .802 | .726 | .493 | .932 | .975 | .875 | .932 | .982 |
+| Pearson + z | .850 | .811 | .525 | .916 | .927 | .768 | .910 | .964 |
+| power + z | .874 | .859 | .529 | .908 | .958 | .902 | .935 | not run |
+| relative spectra + z | .835 | .810 | .466 | .916 | .975 | .923 | .927 | .983 |
+| Pearson + spectra | .867 | .816 | .473 | .946 | .990 | .920 | .953 | >.999 |
+| Pearson + spectra + z | .848 | .813 | .490 | .935 | .973 | .907 | .927 | .999 |
+| mean-SPI | .811 | .793 | .634 | .897 | .960 | .743 | .948 | 1.0 |
+| mean-SPI + z | .846 | .790 | .537 | .883 | .953 | .818 | .935 | 1.0 |
+| m (23 descriptors/SPI) | .834 | .754 | .603 | .921 | .970 | .823 | .920 | 1.0 |
+| m + z | .819 | .753 | .545 | .903 | .950 | .853 | .940 | 1.0 |
+| full aligned MPIs | .862 | .841 | .655 | .922 | .980 | .898 | .930 | 1.0 |
+| best single SPI (inner-fold) | .928 | .795 | .780 | .889 | .890 | .785 | .860 | .984 |
+| tangent-space covariance | .784 | .781 | .595 | .866 | .825 | .657 | .867 | .949 |
+| per-channel catch22 | .873 | .811 | .511 | .927 | .932 | .828 | .898 | 1.0 |
+| ROCKET | .875 | .792 | .377 | .956 | .960 | .850 | .912 | 1.0 |
+| MiniRocket (aeon, this fill) | .854 | .820 | .510 | .940 | .958 | .777 | .920 | 1.0 |
+| MultiRocket-Hydra | .873 | .825 | .501 | .956 | .950 | .838 | .930 | 1.0 |
+| QUANT | .853 | .852 | .614 | .924 | .915 | .815 | .905 | .993 |
+
+### Increments with 95% intervals (adds to Matrix 4)
+
+| AUROC difference [95%] | AD vs HC | FTD vs HC | AD vs FTD | LEMON | Propofol moderate vs baseline | mild vs baseline | moderate vs recovery | NT r10 transfer |
+|---|---|---|---|---|---|---|---|---|
+| pearson_z - pearson | +.014 [−.087, +.111] | +.012 [−.098, +.129] | −.006 [−.156, +.136] | +.057 [−.004, +.121] | +.180 [+.087, +.290] | +.058 [−.050, +.152] | +.065 [−.022, +.158] | +.536 [+.206, +.957] |
+| spectral_z - spectral | −.038 [−.096, +.009] | −.009 [−.081, +.060] | −.001 [−.126, +.122] | +.006 [−.021, +.035] | −.017 [−.055, +.000] | +.020 [−.070, +.118] | −.020 [−.075, +.025] | −.017 [−.017, +.000] |
+| power_z - power | +.016 [−.049, +.075] | +.012 [−.046, +.067] | −.057 [−.178, +.056] | −.024 [−.046, −.006] | −.037 [−.097, +.003] | +.092 [+.005, +.175] | −.013 [−.068, +.053] | not run |
+| pearson_spectral_z - pearson_spectral | −.019 [−.075, +.029] | −.003 [−.066, +.061] | +.017 [−.084, +.114] | −.011 [−.034, +.010] | −.017 [−.060, +.000] | −.012 [−.087, +.055] | −.025 [−.078, +.027] | −.001 [−.001, +.001] |
+| mean_spi_z - mean_spi | +.034 [−.037, +.122] | −.003 [−.083, +.084] | −.097 [−.198, −.005] | −.014 [−.048, +.020] | −.007 [−.068, +.050] | +.075 [−.008, +.168] | −.013 [−.070, +.050] | +.000 [+.000, +.000] |
+| m_z - m | −.015 [−.074, +.053] | −.001 [−.074, +.075] | −.058 [−.140, +.019] | −.018 [−.055, +.016] | −.020 [−.057, +.013] | +.030 [−.033, +.090] | +.020 [−.040, +.078] | +.000 [+.000, +.000] |
+| z - pearson | +.002 [−.120, +.118] | −.003 [−.117, +.118] | −.006 [−.190, +.175] | +.015 [−.068, +.105] | +.182 [+.088, +.295] | +.047 [−.067, +.158] | +.082 [+.005, +.163] | +.572 [+.206, +.957] |
+| z - mean_spi | +.026 [−.054, +.113] | +.003 [−.087, +.101] | −.109 [−.216, +.001] | −.023 [−.067, +.019] | −.030 [−.105, +.042] | +.015 [−.102, +.123] | −.020 [−.080, +.045] | +.000 [+.000, +.000] |
+| z - m | +.003 [−.070, +.084] | +.042 [−.043, +.131] | −.077 [−.187, +.034] | −.047 [−.096, −.001] | −.040 [−.098, +.007] | −.065 [−.178, +.037] | +.007 [−.073, +.080] | +.000 [+.000, +.000] |
+| z - aligned | −.025 [−.098, +.043] | −.045 [−.130, +.044] | −.129 [−.281, +.022] | −.048 [−.107, +.006] | −.050 [−.113, +.010] | −.140 [−.242, −.037] | −.002 [−.090, +.087] | +.000 [+.000, +.000] |
+| z - single_spi | −.091 [−.195, −.003] | +.001 [−.125, +.127] | −.255 [−.402, −.102] | −.015 [−.086, +.056] | +.040 [−.043, +.143] | −.028 [−.140, +.092] | +.068 [−.037, +.170] | +.016 [+.001, +.031] |
+| z - tangent | +.053 [−.078, +.181] | +.015 [−.101, +.137] | −.070 [−.233, +.092] | +.008 [−.080, +.104] | +.105 [+.023, +.178] | +.100 [−.023, +.212] | +.060 [−.017, +.145] | +.051 [+.000, +.051] |
+| z - catch22 | −.035 [−.116, +.039] | −.015 [−.132, +.119] | +.014 [−.182, +.219] | −.053 [−.110, −.003] | −.003 [−.077, +.072] | −.070 [−.210, +.057] | +.030 [−.048, +.117] | +.000 [+.000, +.000] |
+| z - spectral | −.036 [−.124, +.044] | −.022 [−.111, +.064] | +.058 [−.104, +.224] | −.036 [−.088, +.010] | −.062 [−.130, +.000] | −.145 [−.257, −.020] | −.020 [−.075, +.030] | +.000 [+.000, +.000] |
+| z_full - z | −.035 [−.084, +.005] | −.070 [−.148, +.000] | −.033 [−.132, +.057] | +.058 [+.018, +.104] | +.045 [+.000, +.090] | +.117 [+.042, +.185] | +.005 [−.045, +.050] | −.018 [−.018, +.000] |
+| z_pc1 - z | −.100 [−.218, +.013] | −.069 [−.180, +.033] | −.271 [−.445, −.080] | −.388 [−.507, −.268] | −.412 [−.545, −.285] | −.185 [−.282, −.098] | −.307 [−.430, −.170] | −.260 [−.260, −.131] |
+
+| Brier improvement [95%]; BA difference | CHB-MIT | Siena | HMC | GRABMyo | LANL | fMRI primary |
+|---|---|---|---|---|---|---|
+| pearson_z versus pearson | +.090 [+.061, +.137]; +.125 | +.016 [−.036, +.072]; −.012 | +.007 [−.018, +.031]; −.014 | +.020 [+.007, +.031]; +.096 | +.237 [+.224, +.250]; +.350 | −.022 [−.040, −.005]; −.111 |
+| spectra_z versus spectra | +.097 [+.024, +.173]; +.125 | +.035 [−.068, +.119]; +.030 | +.017 [−.002, +.040]; +.007 | +.004 [+.001, +.006]; +.000 | +.038 [+.005, +.071]; +.000 | +.013 [−.024, +.054]; −.028 |
+| univariate_z versus univariate | +.060 [+.031, +.089]; +.125 | +.026 [−.019, +.071]; +.095 | +.024 [−.007, +.064]; +.035 | +.002 [−.000, +.005]; −.007 | +.075 [+.020, +.130]; +.000 | not run |
+| pearson_spectra_z versus pearson_spectra | +.016 [−.034, +.073]; +.000 | +.029 [−.057, +.101]; +.161 | +.046 [+.005, +.096]; +.056 | +.001 [−.001, +.004]; −.007 | +.039 [+.006, +.073]; +.000 | −.009 [−.036, +.014]; −.028 |
+| mean_spi_z versus mean_spi | +.013 [−.023, +.056]; +.083 | −.008 [−.041, +.030]; −.071 | +.013 [−.013, +.038]; +.056 | +.011 [+.003, +.020]; +.074 | −.016 [−.036, +.005]; +.000 | +.023 [−.011, +.061]; +.000 |
+| z versus pearson | +.103 [+.055, +.166]; +.153 | −.069 [−.155, +.019]; −.101 | −.005 [−.037, +.029]; −.021 | −.016 [−.036, +.004]; −.110 | +.241 [+.224, +.257]; +.350 | −.071 [−.138, −.004]; −.194 |
+| z versus mean_spi | +.006 [−.049, +.071]; +.042 | −.060 [−.116, −.004]; −.107 | +.009 [−.025, +.041]; +.007 | +.004 [−.009, +.017]; +.022 | +.004 [+.003, +.005]; +.000 | −.005 [−.055, +.037]; −.056 |
+| z versus spectra | +.073 [−.030, +.168]; +.167 | +.002 [−.103, +.097]; +.042 | −.018 [−.091, +.060]; −.049 | −.039 [−.052, −.025]; −.228 | +.042 [+.005, +.078]; +.000 | −.047 [−.111, +.022]; −.139 |
+| z versus tangent | +.051 [−.013, +.121]; +.250 | +.022 [−.044, +.084]; +.036 | −.027 [−.062, +.009]; −.056 | −.030 [−.047, −.013]; −.140 | +.231 [+.206, +.255]; +.325 | −.094 [−.156, −.031]; −.222 |
+| z versus catch22 | +.029 [−.016, +.073]; +.069 | +.033 [−.032, +.091]; +.054 | +.023 [−.012, +.057]; −.028 | −.013 [−.027, +.004]; −.103 | +.123 [+.091, +.155]; +.000 | −.067 [−.140, +.007]; −.167 |
+| z_full versus z | +.005 [−.024, +.034]; −.042 | −.004 [−.052, +.042]; +.000 | +.009 [−.007, +.025]; +.049 | +.001 [−.004, +.006]; +.000 | −.001 [−.003, +.001]; +.000 | +.010 [−.010, +.032]; +.028 |
+| z_pc1 versus z | −.119 [−.236, −.022]; −.167 | +.012 [−.055, +.084]; −.036 | −.032 [−.060, −.005]; −.069 | −.042 [−.053, −.031]; −.154 | −.008 [−.011, −.005]; +.000 | −.034 [−.085, +.018]; −.111 |
+
 ## Other real-world data with z but no side-by-side classifier panel
 
 - **CHBMP IQ (Cuban Human Brain Mapping Project, resting EEG; final, pre-registered).** 215 prepared subjects (5,109 10-s windows, 19 channels, 100 Hz, r10), 135 with FSIQ. 0 of 31,415 finite z features pass max-|ρ| FWER (max |ρ| .25 versus .36); H1 phase-lag share ρ −.02; H2 core readouts all Holm p = 1; H3 ridge cross-validated R² < 0 for covariates, + spectra, + Pearson and + z. Post-hoc: z split-half reliability .97 (215/215 identified, within session only); age has 235 FWER features after IAF/slope/strength adjustment, 0 after five spectral PCs (p .06); the pre-specified LEMON replication failed (T1 concordance −.05, p .79; directed × undirected composite reversed, ρ −.23 with spectral PCs). IAAFT not run (no positive). Source: `research/representation/chbmp_iq/results.md` at `c01c112` (Vn; JSONs on Gadi scratch `chbmp-iq-261105/`). The dataset-candidates session is still active, but this write-up states its result as final.
@@ -218,6 +357,8 @@ All from `research/representation/character_axes/findings.md` (Vn; surrogate ban
 
 ## Comparator gap matrix (10 November)
 
+Status 11 November: every cell of the agreed ladder below is filled (results in [Comparator fill](#comparator-fill-11-november)) except InceptionTime on the three cohorts (not submitted; reasons under Run status). tsfresh and the core ladder on new datasets were dropped. The ○ marks are kept as the 10 November record.
+
 Target: every dataset scored, under its own frozen protocol, on the full ladder. ✓ = exists (source in the matrices above); ○ = missing, fillable on the existing bank or raw windows with CPU only; ● = missing, needs GPU; — = not applicable; ✗ = blocked. Nothing in this table needs new pyspi extraction. NeuroTycho is completed in its r10 column only: the K289 pilot stays frozen history, and its raw-learner predictions (same 480 windows) are re-scored under the r10 aggregation rather than refitted.
 
 | Comparator | NT r10 | fMRI | CHB-MIT | Siena (frozen CHB fits) | HMC | GRABMyo | LANL | AD/FTD | LEMON | Propofol |
@@ -269,4 +410,4 @@ Waits for the user (needs new pyspi extraction or an outside input): spectrum-fi
 
 Ladder agreed with the user on 10 November, which supersedes the row list above where they differ: r, per-channel spectra, z (source-selected PCA, plus first PC only and full rank), r + z, spectra + z, r + spectra (+ z), mean-SPI (+ z), the SPI marginals m (+ z), full aligned MPIs, best single SPI, tangent-space covariance, per-channel catch22, and the libraries ROCKET, MiniRocket, MultiRocket-Hydra, QUANT and InceptionTime. tsfresh and the core ladder on new datasets were dropped as low-value. pyspi versions are not unified for this scoping pass; each column keeps its version label. Drivers: [`comparator_fill/`](../../comparator_fill/) (`cohort.py`, `transfer.py`, `fmri.py`, `library.py`, `cohort_inception.py`); tests assert that they reproduce the original protocol code on synthetic banks.
 
-Run status (10 November, 19:40 AEDT): submitted from the frozen snapshot `operations/sources/comparator-fill-ee1ddb7` to run root `/scratch/ql44/we2614/mts-spi-study/representation/empirical/comparator-fill-261110/` (`stat/`, `library/`, `logs/`). Statistical jobs 183588599–183588607 (one per bank; CHB-MIT carries the Siena application); aeon wheels 183588598 (copyq, aeon 1.5.0 with CPU torch); library jobs 183588608–183588616, held on the wheels. The library driver was smoke-tested locally on a synthetic bank with all four methods. InceptionTime on the three EEG cohorts is not submitted: it already exists on the seven transfer columns, and the Rocket family plus QUANT cover the raw-learner rung there (dropped on the assistant's recommendation after the user questioned its value; reversible, `cohort_inception.py` and `jobs/inception.pbs` are ready). Inputs: the r10 banks listed in the inventory; Scratch inodes were 168,394 of 202,000 and gdata 83 of 100 GiB at submission.
+Run status (10 November, 19:40 AEDT): submitted from the frozen snapshot `operations/sources/comparator-fill-ee1ddb7` to run root `/scratch/ql44/we2614/mts-spi-study/representation/empirical/comparator-fill-261110/` (`stat/`, `library/`, `logs/`). Statistical jobs 183588599–183588607 (one per bank; CHB-MIT carries the Siena application); aeon wheels 183588598 (copyq, aeon 1.5.0 with CPU torch); library jobs 183588608–183588616, held on the wheels. The library driver was smoke-tested locally on a synthetic bank with all four methods. InceptionTime on the three EEG cohorts is not submitted: it already exists on the seven transfer columns, and the Rocket family plus QUANT cover the raw-learner rung there (dropped on the assistant's recommendation after the user questioned its value; reversible, `cohort_inception.py` and `jobs/inception.pbs` are ready). Inputs: the r10 banks listed in the inventory; Scratch inodes were 168,394 of 202,000 and gdata 83 of 100 GiB at submission. Completed 11 November: AD/FTD and LEMON first failed under `ee1ddb7` when an SPI's block could not be fitted during the best-single-SPI search; `7b4c2f9` makes such an SPI ineligible, and AD/FTD, LEMON and propofol were rerun from that snapshot (AD/FTD 2 h, 6 GB). Both snapshots were then removed (recorded in `operations/sources/ARCHIVED.md`).
