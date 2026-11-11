@@ -35,7 +35,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     - propofol +.22 (4/4)
   - Mixed-stage sleep: +.00. Deep-sleep tertile in the 10-s arm: −.01. The eyes-open change has the opposite sign (−.01 to −.05).
   - It survives spectral adjustment at 2–4 null SDs per agent. It partly reverses at recovery.
-- **Three estimator families agree**, each set against its own zero-lag-insensitive partner:
+- **Three estimator families agree in sign** (but see the reliability section: these partners are noisy, so this support is weak), each set against its own zero-lag-insensitive partner:
   - phase consistency: `ppc` against `dswpli`, both bias-corrected, so the coherence noise floor is excluded;
   - amplitude envelopes: `pec` against `pec_orth` (leakage-orthogonalised);
   - zero-lag against best-lag correlation: `cov-sq` against `xcorr-sq_max`, which falls by 4.5 to 12 null SDs.
@@ -82,7 +82,23 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - Conditional-mean curvature rises.
 - **Working name:** "nonlinear (non-Gaussian) dependence". Which form it takes is undecided: curved coupling, or amplitude-state-dependent coupling. The decisive test is on the 10-s arm (design.md).
 
-Reliability check (pending, job 183670442): per-SPI edge-profile reliability within unit and state, and disattenuated z, from the stored MPIs. If the kNN profile loses reliability under the drugs, the full-bank z fall is a reliability effect, and the IAAFT version carries the claim alone.
+## Edge-profile reliability (job 183670442, `*-reliability.json`)
+
+Reliability here is the mean correlation of an SPI's edge profile between windows of one unit and state. It mixes estimator noise with real window-to-window change of the coupling pattern. Disattenuating by it overcorrects: in wake the disattenuated z of the MI pair exceeds 1. So it bounds, but does not decide.
+
+- **Profiles become less reproducible between windows under every drug, not in sleep.** This is a result in its own right, not a z feature.
+  - 2-s arm, ketamine–medetomidine and propofol: Gaussian MI .82 → about .60, kNN MI .69 → about .46, distance correlation −.26, `xcorr-sq_max` −.33. Sleep changes by −.03 to −.06.
+  - The 10-s arm agrees, at about half the size.
+  - Reading: the coupling pattern changes more from one 2-s window to the next under anaesthesia, i.e. temporal non-stationarity of dependence, which is the lag-variability and intermittency priority.
+  - Confound: drug epochs may drift in depth, while wake is steady. Not yet controlled; compare adjacent windows against distant ones.
+- **MI pair (Gaussian against kNN): unresolved on the full bank.**
+  - Gaussian MI, a function of r with no Theiler window, loses reliability exactly as much as kNN MI. So a kNN-specific DCE artefact is not supported.
+  - But the raw z fall (−.03 to −.08) is far smaller than independent noise at these reliabilities would produce (about .91 → .64). So most of the reliability drop is shared, real non-stationarity, and the z fall cannot be attributed to noise or to character from this bank.
+  - The IAAFT version, whose surrogates share window length and autocorrelation, stays the anchor. The kNN-to-Gaussian level collapse is still unexplained.
+- **Lag pair holds.** In the 10-s arm (`icoh` reliability .46) z(`cohmag`, `icoh`) rises in every animal under every drug, raw and disattenuated (+.17 to +.24), and the deep tertile is −.04.
+- **Demoted:**
+  - Partners with near-zero between-window reliability: `dswpli` (.03), `pec_orth` (.03), `te_kraskov_DCE` (.03–.07), `icoh` in 2-s windows (.18). The `ppc|dswpli`, `pec|pec_orth` and TE `k-1|k-2` effects mostly carry within-window structure, and their disattenuated values swing in sign. They support the lag reading only weakly; the TE memory pair is not interpretable.
+  - The best-lag/zero-lag `xcorr` fall turns positive when disattenuated, and `xcorr` loses the most reliability (−.33). Read it as stability, not lag, until a within-window split-half check exists.
 
 ## Other named pairs (42 pre-listed pairs; `*-pairs.json`)
 
