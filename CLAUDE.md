@@ -26,6 +26,7 @@
 - Treat repository artifacts as the durable source of cross-session context; do not assume access to prior conversations.
 - Before substantive work, read `docs/context/INDEX.md` if present and open only the entries relevant to the task. Then inspect the task-relevant documentation, code, tests, data, configuration, decisions, and Git state. Prefer targeted inspection over exhaustive scanning.
 - Verify inherited claims when their dependencies may have changed. Distinguish verified facts from assumptions and open questions.
+- Before describing any SPI–SPI (z) feature, axis or contrast, read `docs/interpreting-spi-pairs.md`: character readings come from contrasting what each statistic assumes, every consequence of that contrast is listed, and the validation status sets the wording.
 
 #### Where knowledge lives
 

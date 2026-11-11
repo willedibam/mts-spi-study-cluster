@@ -45,6 +45,7 @@ Identity-free comparators exist; z's specific offer is how dependence measures c
 
 The paper's deliverable is named statements about the character of dependence ([introduction draft](../../../drafts/introduction_draft.md)), so statements come in two tiers (Fable 5.2, 11 November):
 
+- Every statement is worded under the [reading rules](../../../docs/interpreting-spi-pairs.md).
 - **Tier 1, confirmatory.** Only axes that passed construction validation at cohort-like coupling ([character axes](../character_axes/validation/README.md) [R]): band organisation, mediation (the precision–pairwise block, H1) and lag organisation. Each is a within-unit contrast of a family-block mean of z, worded in the axis's validated meaning.
 - **Tier 2, exploratory.** A family-block map of what departs from the linear-stationary-Gaussian expectation, worded as "departure from linear-stationary-Gaussian dependence in families F". "More nonlinear" is not available: the form axis failed validation and raw linear–rank pairs read marginal shape [R]. It becomes available only after a strength- and SNR-matched synthetic calibration shows the readout responds to nonlinearity and not to bursts or drift.
 
