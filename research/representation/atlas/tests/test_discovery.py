@@ -6,7 +6,7 @@ from research.representation.atlas import discovery, prepare
 
 
 def fake_atlas(tmp_path, M=8, T=400):
-    """A bank and extract-format shards: 3 units x (awake_ec, awake_eo, drug) x 3 windows, 6 SPIs."""
+    """A bank and extract-format shards: 3 units x (awake_ec, awake_eo, drug) x 5 windows, 6 SPIs."""
     rng = np.random.default_rng(0)
     spis = ['cov_EmpiricalCovariance', 'spearmanr', 'kendalltau', 'prec-sq_LedoitWolf', 'cov-sq_LedoitWolf', 'coint_x']
     modules = ['basic', 'basic', 'basic', 'basic', 'basic', 'misc']
@@ -15,17 +15,19 @@ def fake_atlas(tmp_path, M=8, T=400):
     out.mkdir()
     for u in range(3):
         for state in ('awake_ec', 'awake_eo', 'drug'):
-            for k in range(3):
+            for k in range(5):
                 wid = f'u{u}:{state}:{k:02d}'
                 x = rng.normal(size=(T, M))
                 if state == 'drug':
                     x[:, 1:] += .8 * x[:, :1]
-                rows.append(dict(id=wid, unit=f'u{u}', state=state, agent='PF', M=M, delta_fraction=.5))
+                rows.append(dict(id=wid, unit=f'u{u}', state=state, agent='PF', M=M, delta_fraction=rng.uniform(.3, .7)))
                 arrays[wid] = x
                 c = np.corrcoef(x.T)
                 slow = rng.normal(size=M)
                 mats = [c, c + .05 * rng.normal(size=(M, M)), .9 * c, np.linalg.inv(c) ** 2, c ** 2,
                         slow[:, None] + slow[None, :]]  # last: purely node-additive
+                for m in mats:
+                    np.fill_diagonal(m, np.nan)  # as pyspi stores MPIs
                 meta = dict(pyspi=dict(spis=[dict(module=f'pyspi.statistics.{m}') for m in modules]))
                 np.savez(out / f'shard-{shard:05d}.npz', **{wid: np.array(mats)}, __spis__=np.array(spis),
                          __meta__=np.array(json.dumps(meta)))
@@ -51,5 +53,6 @@ def test_reduce_and_analyse(tmp_path):
     assert 'coint_x' in rep['node_additive_spis']
     c = rep['contrasts']['PF:drug']
     assert c['cov_mean_abs_r']['raw']['mean_difference'] > .3 and c['cov_mean_abs_r']['raw']['units_positive'] == 3
+    assert c['cov_mean_abs_r']['raw']['d'] is not None and c['effective_rank']['adjusted'] is not None
     assert c['effective_rank']['raw']['units'] == 3 and 'PF:awake_eo' in rep['contrasts']
     assert 'PF:drug' in rep['directions'] and len(rep['top_direction_pairs']['PF:drug']) > 0

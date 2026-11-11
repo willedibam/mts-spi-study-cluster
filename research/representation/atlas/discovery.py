@@ -94,9 +94,10 @@ def reduce_window(mpis, spis, x, fs):
     P, Q = np.array(profiles), np.array(centred)
     z, valid = corr_upper(P)
     zdc, _ = corr_upper(Q)
-    cov = np.asarray(mpis[spis.index('cov_EmpiricalCovariance')], dtype=np.float64)
-    d = np.sqrt(np.diag(cov))
-    r = (cov / np.outer(d, d))[np.triu_indices(len(cov), 1)]
+    # pyspi leaves MPI diagonals NaN; channels are z-scored (normalise=True), so the covariance is the correlation.
+    cov = np.array(mpis[spis.index('cov_EmpiricalCovariance')], dtype=np.float64)
+    np.fill_diagonal(cov, 1.0)
+    r = cov[np.triu_indices(len(cov), 1)]
     lam = np.linalg.eigvalsh(cov)
     entropy, peak = spectral(x, fs)
     with np.errstate(all='ignore'):
