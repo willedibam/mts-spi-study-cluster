@@ -10,11 +10,13 @@
 # qsub -v MODE=cohort,COHORT=lemon,ROOT_DIR=<run>,OUT=<json> .../stat.pbs
 # qsub -v MODE=transfer,ROOT_DIR=<run>,OUT=<json>[,SIENA=<run>] .../stat.pbs
 # qsub -v MODE=fmri,ROOT_DIR=<run>,OUT=<json> .../stat.pbs
+# qsub -v MODE=fusion,COHORT=propofol,ROOT_DIR=<run>,OUT=<json>[,CONTRASTS=mild_vs_baseline] .../stat.pbs
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 case "${MODE:?}" in
     cohort) python -u -m research.representation.comparator_fill.cohort "${COHORT:?}" --root "${ROOT_DIR:?}" --output "${OUT:?}" --jobs 16 ;;
     transfer) python -u -m research.representation.comparator_fill.transfer --root "${ROOT_DIR:?}" --output "${OUT:?}" ${SIENA:+--siena "$SIENA"} ;;
+    fusion) python -u -m research.representation.comparator_fill.fusion "${COHORT:?}" --root "${ROOT_DIR:?}" --output "${OUT:?}" ${CONTRASTS:+--contrasts $CONTRASTS} ;;
     fmri) python -u -m research.representation.comparator_fill.fmri --root "${ROOT_DIR:?}" --output "${OUT:?}" ;;
 esac
