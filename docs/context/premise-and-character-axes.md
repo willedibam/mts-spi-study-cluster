@@ -62,6 +62,7 @@ Best candidates, re-read (Fable 5.2, 11 November):
   - The propofol linear–rank residual is killed: not dose-graded, no recovery reversal.
   - Surviving candidate, cross-species: the fraction of samples departing from the dominant covariance rises beyond spectra under anaesthesia. NeuroTycho 6/6 units (d 2.8–3.7, spatially focal, not common-mode); humans dose-graded with recovery reversal (d ≈ .8, 15–16/20). Top-5% co-fluctuation clustering rises slightly in both.
   - Reading: more time-heterogeneous dependence, not a switch to another network. Artefact versus physiology is not yet separated.
+  - Follow-up (same day): the index rises under ketamine alone too (4/4 new archives), so it is not GABAergic-specific. It is borderline under medetomidine, within the eyes-open null in mixed-stage natural sleep, and absent in fly isoflurane. Macaque flags are brief (~100 ms), fast (20–45 Hz) and often single-channel; human flags are diffuse and slower, so there is no shared mechanism. Next decisive control: normalise by a sliding RMS envelope to test whether it is only gain modulation.
 
 ## Named character axes built inside z (2 November)
 

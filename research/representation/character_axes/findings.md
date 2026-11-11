@@ -146,6 +146,35 @@ Pre-stated criteria (Fable 5.2, [reading rules](../../../docs/interpreting-spi-p
   - Characterise flagged samples (topography, waveform, spectrum) to separate focal physiological transients from artefact; frontal eye or muscle sources in humans, single bad contacts in macaques.
   - The index needs no pyspi, so test its predictions on the atlas banks with surrogates generated on the fly: up under medetomidine and natural sleep, not under ketamine alone, null for eyes open against closed. Also the fly isoflurane bank.
 
+### Follow-up: what the flags are, and where the index transfers (11 November)
+
+Code `episodic.py` at `b43ba00`, job 183659095; results `episodic/{neurotycho,propofol}-character.json`, `atlas-neurotycho-long.json`, `atlas-fly.json` (V). The atlas mode runs on two fixed, interleaved 16-channel subsets of the average-referenced 100 Hz 10-s windows, with both IAAFT variants generated per window. Contrasts are within archive against eyes-closed wake.
+
+- **What the macaque flags are** (discovery bank, beyond surrogates, 6 units).
+  - **Brief and fast.** About 100 ms against 22 ms awake (+52 to +63 ms, 6/6). The 20–45 Hz envelope at flagged samples rises ×2.96 against ×1.64 awake (6/6 beyond surrogates).
+  - **More often single-channel.** Share dominated by one channel: d 1.3 / 4.8.
+  - **One hotspot.** Bipolar channel 1 carries 16–23% of flags under anaesthesia in 5/6 units (uniform 6%) and in no awake state. It is state-dependent, so not a dead contact. Whether channel 1 is one anatomical site across animals is unknown: bipolar pairs are set at staging, possibly per animal.
+- **What the human flags are** (propofol, beyond surrogates).
+  - Not single-channel, not frontal-polar (no eye signature); P8 tops both real and surrogate data (a heavy marginal).
+  - Less fast content at moderate than surrogates predict (d −1.2 / −0.9, 2–4/20), so not muscle.
+  - Slightly longer at moderate (+5 ms, d .7, 15/20), reversing at recovery (16/20).
+  - The two species' events differ in kind (macaque brief, fast and focal; human longer, slower and diffuse), so a shared index does not mean a shared mechanism.
+- **Where the index transfers.** Beyond-surrogate flag fraction, drug minus eyes-closed wake; eyes-open-against-eyes-closed null +.01 to +.03:
+  - ketamine alone +.07 to +.09 (4/4 archives, both subsets and both variants);
+  - ketamine–medetomidine +.07 to +.08 (11/11);
+  - propofol +.06 to +.09 (4/4);
+  - medetomidine alone +.03 to +.05 (3–4/4, borderline against the null);
+  - natural sleep +.01 to +.03 (6/7, within the null; stages are mixed).
+  - Recovery returns to baseline for ketamine–medetomidine and medetomidine, partly for propofol.
+  - Fly isoflurane (2-s, 15-channel LFP): no effect (5–6/13).
+  - Flag clustering is below the surrogate expectation under every drug.
+  - Ketamine–medetomidine and propofol archives are the discovery recordings, re-windowed at another montage, rate and length: montage robustness, not independent evidence. Ketamine, medetomidine and sleep archives are new.
+- **Reading.**
+  - The pre-registered prediction "not under ketamine alone" failed, so the effect is not specific to GABAergic agents. It tracks drug-induced unresponsiveness across mechanisms, and not natural sleep at this resolution, in macaque ECoG only.
+  - Literal: under anaesthetics, more samples depart from the dominant covariance than linear-stationary-Gaussian dynamics with the same spectra produce.
+  - Under the reading rules this is "departure from linear-stationary-Gaussian", which includes within-window amplitude nonstationarity (time-varying gain).
+- **Deciding control (not run).** Divide each window by a sliding 1-s RMS envelope before the MinCovDet and surrogate step. If the effect vanishes, it is gain modulation, a weaker reading. If it survives, it is joint structure. Also select NREM windows by delta fraction and EMG before judging sleep.
+
 ## Open
 
 - Decision (user, 2 November): report a validated core and keep the 13 as an extended set; the core should be a sufficient interpretable readout, which the extended set tests. After stage 3 the core is band high share, band spread and mediation (one generator). Sub-axes are band organisation, lag (organisation and level), form (te − gc level) and location frequency; direction and warp are dropped. The core is not yet sufficient for z (above), but in every cohort z's discriminative information is contained in Pearson + strength + channel spectra, so no cohort shows a classification advantage beyond channel spectra. Open: whether the character readouts carry coupling information given channel spectra (a conditional test, e.g. spectra-adjusted effects as in `location_check.py`, or real − IAAFT), and a noise- and strength-robust correction.
