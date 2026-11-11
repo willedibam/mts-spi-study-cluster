@@ -96,8 +96,13 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
 ## Extraction and compute
 
 - **pyspi.** Upstream main `0c798b4` (r13, unchanged; the head is re-checked at launch), loaded through `PYSPI_SOURCE`.
-  - Config: pyspi's bundled `benchmarked_p90` at that commit (`$PYSPI_SOURCE/pyspi/configs/benchmarked_p90.yaml`). The repository's `configs/pyspi/benchmarked_p90.yaml` is the frozen r7 catalogue and not for new runs [V, README].
-  - The bundled set drops the constant `dspli`/`dswpli` max SPIs, EllipticEnvelope (an exact duplicate of MinCovDet [R]), Lasso and ElasticNet, and bary-sq. It adds pcorr and symbolic TE [V, diff].
+  - Config: [`configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml`](../../../configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml), 272 SPIs. It is pyspi's bundled `benchmarked_p90` at that commit, which has 264 SPIs [V, smoke run], plus two additions copied from upstream `full.yaml` at the same commit:
+    - partial correlation for the seven estimators of the Precision block;
+    - symbolic transfer entropy (k = 3).
+  - The bundled p90 does not contain these (an earlier draft wrongly said it did). The user is adding them upstream by PR (11 November).
+  - The repository's `configs/pyspi/benchmarked_p90.yaml` is the frozen r7 catalogue and not for new runs [V, README].
+  - The bundled set drops the constant `dspli`/`dswpli` max SPIs, EllipticEnvelope (an exact duplicate of MinCovDet [R]), Lasso and ElasticNet, and bary-sq [V, diff].
+  - The three `gd_multitaper_delay` SPIs return no finite values at T = 200 [V, smoke run], so they leave the 2-s arm's coordinate set.
   - It keeps MinCovDet, so the NeuroTycho decoupling is reproducible as discovered [V].
   - K and the family lists are frozen from the profiling run. There is no comparison with r10 banks, and no dyad sampling (user).
 - **Runner.** [`extract.py`](extract.py) calls `run_pyspi` with the same arguments as `run_corpus`, a fixed seed per window and per-channel z-scoring (`normalise=True`).
