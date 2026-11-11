@@ -46,7 +46,8 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
   Level questions ("all couplings became more nonlinear", "delays lengthened") need level scores or the per-edge estimators in [`research/estimators/`](../research/estimators/README.md) (N, ℓ, V).
 - **Strength bleeds in.** z is invariant to a positive affine change of each profile, but not to how strength is spread across pairs. Under Gaussianity, coupling measures are functions of coherency (Nolte et al. 2020), so a global mode can move agreement mechanically.
 - **Conditioning sets matter.** Precision and partial-correlation SPIs condition on the other channels in the window. Values from a different M, montage or reference are different quantities, so channel subsets of conditional SPIs must be re-extracted. Edge subsets, such as the strength-matched control, can be taken from stored MPIs for every SPI.
-- **Exact zeros.** Seven per cent of a stored z vector is identically zero: antisymmetric × symmetric statistics.
+- **Exact zeros.** Seven per cent of a stored z vector is identically zero: antisymmetric × symmetric statistics. PLI and wPLI are stored antisymmetric, so `plv|pli` and `plv|wpli` are not lag pairs; use `ppc|dswpli` (both debiased) or `cohmag|icoh` (`cohmag` is |C|², `icoh` is |Im C|).
+- **Ceiling pairs.** Pairs with z₀ near 1, such as Spearman against Kendall or Pearson against Spearman, have tiny null SDs. A change of −0.01 can be −10 SD, so report the z change, not only its SD multiple.
 - **Priorities.** Nonlinearity and timing (lag and its variability) are the most interpretable and actionable readings; finer characters risk being too narrow to matter.
 - **Wording tiers.** Confirmatory statements use only axes that pass validation. Everything else is exploratory, e.g. "departure from linear-stationary-Gaussian dependence in families F".
 
