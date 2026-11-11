@@ -90,3 +90,26 @@ def test_transfer_wrapper_matches_statistical_fit():
     scored = transfer.score(bank['y'][screen_ix], bank['group'][screen_ix], predictions, dict(z=predictions['z_full']))
     assert scored['methods']['tangent']['auroc_pooled'] > .9
     assert 'z_pc1 versus z' in scored['contrasts']
+
+
+def test_fusion_separates_redundant_from_unique_z(tmp_path):
+    """z that is a linear function of Pearson adds nothing given r; z with its own signal does."""
+    from research.representation.comparator_fill import fusion
+    cohort.CONTRASTS['toy'] = [('one_vs_zero', 1, 0)]
+    results = {}
+    for kind in ('redundant', 'unique'):
+        d = synthetic(n_groups=20, seed=1)
+        rng = np.random.default_rng(2)
+        if kind == 'redundant':
+            d['z'] = d['pearson'] @ rng.normal(size=(d['pearson'].shape[1], 20)) + .01 * rng.normal(size=(len(d['y']), 20))
+        else:
+            d['pearson'] = rng.normal(size=d['pearson'].shape)  # r carries no label; z keeps its shift
+        root = tmp_path / kind
+        root.mkdir()
+        np.savez(root / 'bank.npz', **d)
+        fusion.main('toy', root, root / 'out.json', repeats=1)
+        results[kind] = json.loads((root / 'out.json').read_text())['contrasts']['one_vs_zero']
+    red, uni = results['redundant'], results['unique']
+    assert red['scores']['r|z']['auroc'] < .75 and uni['scores']['r|z']['auroc'] > .9
+    assert abs(red['bases']['r']['commonality_bits']['unique_z']) < .15 < uni['bases']['r']['commonality_bits']['unique_z']
+    assert uni['scores']['r+z']['auroc'] > .9 and len(uni['bases']['r']['meta_weights_mean']) == 2
