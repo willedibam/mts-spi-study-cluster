@@ -56,3 +56,12 @@ def test_reduce_and_analyse(tmp_path):
     assert c['cov_mean_abs_r']['raw']['d'] is not None and c['effective_rank']['adjusted'] is not None
     assert c['effective_rank']['raw']['units'] == 3 and 'PF:awake_eo' in rep['contrasts']
     assert 'PF:drug' in rep['directions'] and len(rep['top_direction_pairs']['PF:drug']) > 0
+
+
+def test_screen(tmp_path):
+    bank, pyspi = fake_atlas(tmp_path)
+    discovery.reduce(bank, pyspi, tmp_path / 'reduced.npz', jobs=1)
+    discovery.screen(tmp_path / 'reduced.npz', tmp_path / 'screen.json', 'awake_ec')
+    rep = json.loads((tmp_path / 'screen.json').read_text())
+    assert rep['agents'] == ['PF'] and 'coint_x' in rep['excluded_node_additive']
+    assert all('coint_x' not in (h['a'], h['b']) for h in rep['hits'])

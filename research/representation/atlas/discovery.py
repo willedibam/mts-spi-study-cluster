@@ -274,6 +274,88 @@ def analyse(reduced, output, reference):
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+def unit_effects(Y, unit, state, s, ref, covariates=None):
+    """Per-unit effect of state s against ref on every column of Y (n, P): raw difference, or with covariates
+    the state coefficient of a within-unit OLS (all columns solved at once). Returns (units, P)."""
+    out = []
+    for u in np.unique(unit):
+        a, b = (unit == u) & (state == s), (unit == u) & (state == ref)
+        if not a.any() or not b.any():
+            continue
+        if covariates is None:
+            out.append(np.nanmean(Y[a], 0) - np.nanmean(Y[b], 0))
+            continue
+        m = a | b
+        C = covariates[m]
+        C = (C - C.mean(0)) / (C.std(0) + 1e-12)
+        X = np.column_stack([np.ones(m.sum()), a[m].astype(float), C])
+        if m.sum() <= X.shape[1] + 2:
+            continue
+        out.append(np.linalg.lstsq(X, np.nan_to_num(Y[m]), rcond=None)[0][1])
+    return np.array(out)
+
+
+def screen(reduced, output, reference, drug_state='drug', top=60, double_centred=False):
+    """Every kept z coordinate: per-agent drug effects (raw and strength-adjusted), the eyes-open null, sleep and
+    recovery. Keeps coordinates with the same sign under every agent, in both versions, in at least 75% of each
+    agent's units, and a mean beyond three eyes-open-null SDs; drops pairs touching a node-additive SPI."""
+    r = np.load(reduced, allow_pickle=False)
+    rows = json.loads(str(r['rows']))
+    spis = [str(s) for s in r['spis']]
+    keep = np.flatnonzero(r['valid'].all(0))
+    K = len(spis)
+    iu = np.triu_indices(K, 1)
+    kept = np.isin(iu[0], keep) & np.isin(iu[1], keep)
+    a_idx, b_idx = iu[0][kept], iu[1][kept]
+    Z = (r['zdc'] if double_centred else r['z'])[:, kept].astype(np.float64)
+    unit = np.array([x['unit'] for x in rows])
+    agent = np.array([x.get('agent', 'all') for x in rows])
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    names = [str(n) for n in r['covariate_names']]
+    cov = r['covariates'][:, [names.index(c) for c in COVARIATES]]
+    node = np.nanmedian(r['node_r2'][state == reference], 0) > .5
+    usable = ~(node[a_idx] | node[b_idx])
+    agents = sorted(set(agent[state == drug_state]))
+    eff = {}
+    for a in agents:
+        sel = agent == a
+        eff[a] = dict(raw=unit_effects(Z[sel], unit[sel], state[sel], drug_state, reference),
+                      adjusted=unit_effects(Z[sel], unit[sel], state[sel], drug_state, reference, cov[sel]))
+    null = np.concatenate([unit_effects(Z[agent == a], unit[agent == a], state[agent == a], 'awake_eo', reference)
+                           for a in sorted(set(agent)) if ((agent == a) & (state == 'awake_eo')).any()]) \
+        if (state == 'awake_eo').any() else np.zeros((2, Z.shape[1]))
+    null_sd = null.std(0, ddof=1) + 1e-6
+    sign = np.sign(np.mean([eff[a]['raw'].mean(0) for a in agents], 0))
+    ok = usable.copy()
+    for a in agents:
+        for v in ('raw', 'adjusted'):
+            e = eff[a][v]
+            ok &= np.mean(np.sign(e) == sign, 0) >= .75
+        ok &= np.abs(eff[a]['raw'].mean(0)) > 3 * null_sd
+    strength = np.min([np.abs(eff[a]['adjusted'].mean(0)) / null_sd for a in agents], 0)
+    order = np.argsort(-np.where(ok, strength, -np.inf))[:top]
+    other = {}
+    for s_name in sorted(set(state) - {reference, drug_state, 'awake_eo'}):
+        sel = np.isin(agent, sorted(set(agent[state == s_name])))
+        e = unit_effects(Z[sel], unit[sel], state[sel], s_name, reference)
+        if len(e):
+            other[s_name] = e
+    hits = []
+    for i in order[np.isfinite(strength[order]) & ok[order]]:
+        hits.append(dict(
+            a=spis[a_idx[i]], b=spis[b_idx[i]], reference_mean=float(np.nanmean(Z[state == reference, i])),
+            per_agent={a: dict(raw=float(eff[a]['raw'][:, i].mean()), adjusted=float(eff[a]['adjusted'][:, i].mean()),
+                               units=len(eff[a]['raw']), same_sign=int(np.sum(np.sign(eff[a]['raw'][:, i]) == sign[i])))
+                       for a in agents},
+            eyes_open_null_sd=float(null_sd[i]), min_adjusted_over_null=float(strength[i]),
+            other_states={k: float(v[:, i].mean()) for k, v in other.items()}))
+    report = dict(reduced=str(reduced), double_centred=double_centred, reference=reference, drug_state=drug_state,
+                  agents=agents, coordinates=int(Z.shape[1]), usable=int(usable.sum()), passing=int(ok.sum()),
+                  excluded_node_additive=[spis[k] for k in np.flatnonzero(node)], hits=hits)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -286,8 +368,16 @@ if __name__ == '__main__':
     b.add_argument('reduced', type=Path)
     b.add_argument('--output', type=Path, required=True)
     b.add_argument('--reference', default='awake_ec')
+    c = sub.add_parser('screen')
+    c.add_argument('reduced', type=Path)
+    c.add_argument('--output', type=Path, required=True)
+    c.add_argument('--reference', default='awake_ec')
+    c.add_argument('--drug-state', default='drug')
+    c.add_argument('--double-centred', action='store_true')
     args = p.parse_args()
     if args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
+    elif args.command == 'screen':
+        screen(args.reduced, args.output, args.reference, args.drug_state, double_centred=args.double_centred)
     else:
         analyse(args.reduced, args.output, args.reference)
