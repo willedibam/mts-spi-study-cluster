@@ -65,8 +65,8 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
 
 | Dataset | What it is | States, units | Native M (after reference) | Source fs, structure | Raw | Resampling and windows | What it buys |
 |---|---|---|---|---|---|---|---|
-| **Step 1: NeuroTycho** (Yanagawa et al. 2013) | macaque, 128-contact ECoG over one hemisphere | Chibi and George: natural sleep (4 + 3 archives), ketamine alone (2 + 2), medetomidine alone (2 + 2), ketamine–medetomidine (2 + 3), propofol (2 + 2); Kin2 and Su: ketamine–medetomidine (3 + 3) [V, live catalogue]. Each archive has awake eyes-closed and eyes-open intervals [V] | 127 (common average, one channel dropped) | 1 kHz continuous, intervals of about 10–45 min [V] | 30 archives, 41 GB [V]; staged one at a time | 1 kHz to 100 Hz (10×); 10 per archive-state for awake and drug, 30 spread across the unstaged sleep interval; plus 2-s | discovery and linking: five state classes in one montage; separates ketamine from medetomidine; eyes-open against eyes-closed is the built-in null contrast |
-| **Step 1: MNI iEEG sleep atlas** (Frauscher, von Ellenrieder) | human sEEG and ECoG, normal-appearing channels | resting wake, N2, N3, REM; about 106 patients [U] | about 17 per patient [U], as released | 200 Hz, 0.5–80 Hz, 60-s epochs per stage [V] | about 1 GB [U] | 200 to 100 Hz (2×); six 10-s windows per 60-s epoch; plus 2-s | staged human sleep at intracranial scale, almost free |
+| **Step 1: NeuroTycho** (Yanagawa et al. 2013) | macaque, 128-contact ECoG over one hemisphere | Chibi and George: natural sleep (4 + 3 archives), ketamine alone (2 + 2), medetomidine alone (2 + 2), ketamine–medetomidine (2 + 3), propofol (2 + 2); Kin2 and Su: ketamine–medetomidine (3 + 3) [V, live catalogue]. Each archive has awake eyes-closed and eyes-open intervals [V] | 127 (common average, one channel dropped) | 1 kHz continuous, intervals of about 10–45 min [V] | 30 archives, 41 GB [V]; staged one at a time | 1 kHz to 100 Hz (10×); 10 per archive-state for awake eyes-closed, awake eyes-open, drug and recovery eyes-closed, 30 spread across the unstaged sleep intervals; plus 2-s, cut centred in each 10-s window. Sleep archives carry chin EMG and eye EOG [V], whose per-window RMS is recorded, so REM-like windows can be separated without the ECoG | discovery and linking: five state classes in one montage; separates ketamine from medetomidine; eyes-open against eyes-closed is the built-in null contrast |
+| **Step 2 if access is granted: MNI iEEG sleep atlas** (Frauscher, von Ellenrieder); its site now returns HTTP 401 and the multicentre successor sits behind a LORIS login [V, 11 November], so it needs registration | human sEEG and ECoG, normal-appearing channels | resting wake, N2, N3, REM; about 106 patients [U] | about 17 per patient [U], as released | 200 Hz, 0.5–80 Hz, 60-s epochs per stage [V] | about 1 GB [U] | 200 to 100 Hz (2×); six 10-s windows per 60-s epoch; plus 2-s | staged human sleep at intracranial scale, almost free |
 | **Step 1: Fly** (Leung et al. 2025) | fly, 16-contact linear probe LFP | wake against isoflurane; 13 flies (and 56 unlabelled `validate1` series [V]) | 15 bipolar [V] | 1 kHz, 8 × 2.25-s epochs per fly-condition [V] | 229 MB [V] | 1 kHz to 100 Hz; 2-s arm only (8 per fly-condition) | species extreme; descriptive, because drug, species and scale are confounded |
 | **Step 2: Bajwa** (OpenNeuro ds005620) | human 64-channel scalp EEG | awake against propofol sedation, 20 people | about 62 (average reference, one dropped) | 5 kHz [R] | [U] | 5 kHz to 100 Hz (50×); 15 per person-state; plus 2-s | the untouched human propofol confirmation |
 | **Step 2: ANPHY-Sleep** (Wei et al. 2024) | human 83-channel overnight scalp EEG | W, N3, REM (N2 dropped), 29 people | 82 | 1 kHz, about 7 h, EDF [V] | about 4.7 GB per night [I]; download, window, delete | 1 kHz to 100 Hz (10×); 15 per person-stage, inside stably scored epochs; plus 2-s | the untouched staged human sleep, including REM |
@@ -132,11 +132,11 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
 | Step | kSU |
 |---|---:|
 | Smoke and profiling | about 0.2 |
-| Step 1: NeuroTycho (about 1,040 windows at M = 127; 10-s and 2-s) | about 7.7 |
-| Step 1: MNI and fly | about 0.4 |
+| Step 1: NeuroTycho (about 1,270 windows at M ≤ 127; 10-s and 2-s) | about 9.4 |
+| Step 1: fly (208 windows, 2-s) | under 0.1 |
 | Step 2: Bajwa, ANPHY (W, N3, REM), Chennu (10-s and 2-s) | about 9 |
 | Reruns (20%) | about 3.5 |
-| **Total** | **about 21 (range 14–31)** |
+| **Total** | **about 22 (range 15–33)** |
 
 ## Predictions before any atlas output (all [S])
 
@@ -151,5 +151,5 @@ Two steps. Step 2 is released only after step 1's statements are frozen.
 
 ## Decisions open
 
-1. Release step 1 (smoke, profiling, NeuroTycho, MNI, fly: about 8 kSU).
+1. Step 1 released 11 November (user): NeuroTycho download job 183606163, fly bank built (208 windows), smoke job 183606432. Code: [`prepare.py`](prepare.py).
 2. Watson's probe channel set, if Watson is later added.
