@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -N atlas-discovery
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=32,mem=190GB,walltime=04:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Step-1 discovery analysis on z (discovery.py): reduce each arm's MPIs, then analyse.
+# qsub research/representation/atlas/jobs/discovery.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A="$MTS_SCRATCH/atlas"
+O="$A/discovery"
+mkdir -p "$O"
+for arm in neurotycho-long-stage-a:neurotycho-long-stage-a:awake_ec neurotycho-short:neurotycho-short:awake_ec fly-short:fly-short:awake; do
+    IFS=: read -r bank out ref <<< "$arm"
+    python -u -m research.representation.atlas.discovery reduce "$A/banks/$bank" "$A/pyspi/$out" --output "$O/$bank-reduced.npz" --jobs 32
+    python -u -m research.representation.atlas.discovery analyse "$O/$bank-reduced.npz" --reference "$ref" --output "$O/$bank-report.json"
+done
