@@ -131,3 +131,20 @@ Reliability here is the mean correlation of an SPI's edge profile between window
 ## Fixed on the way
 
 `delta_fraction` exists only in the 10-s arm. Its all-NaN column emptied every adjusted 2-s contrast and the screen's adjusted effects, and in the 10-s arm it adjusted away the drug state itself. Adjustment now uses strength covariates in every arm, plus a separate spectral adjustment.
+
+## Beyond "all drugs": single-condition, opposite-sign and all-but-one rankings (`*-explore.json`)
+
+`discovery.py explore` treats each condition separately. A condition counts as consistent when at least 75% of its sessions agree in sign, raw and adjusted, and every animal's mean agrees. Ceiling coordinates (|z₀| ≥ .98) and node-additive SPIs are excluded, and only one coordinate per SPI-family pair is reported. These rankings are post-selection over about 17,500 coordinates; read them only where several coordinates or both window lengths converge.
+
+- **Propofol only: lagged high-band phase coupling appears as a pattern.**
+  - In 25–50 Hz, debiased lag-insensitive phase measures (`dswpli`, `dspli`, `icoh`) begin to track high-band phase locking.
+  - z(`plv` hi, `dswpli` hi): +.13 under propofol in both animals (2-s +.10/+.17; 10-s +.13/+.12). The other drugs are at most +.03, sleep +.005, and recovery largely reverses it (+.01 to +.05).
+  - The level moves too: the `dswpli/ppc` share in the high band rises +.33 (2-s) and +.30 (10-s) under propofol, in both animals, against at most +.07 for the other drugs.
+  - Many coordinates on `dswpli`/`dspli`/`icoh` in the high band rank propofol-specific in both arms, at +6 to +9 null SD.
+  - Reading: under propofol, but not ketamine, medetomidine or sleep, a reproducible non-zero-lag 25–50 Hz phase coupling emerges on the pairs with strong high-band locking. Physiology is not established [S].
+- **All but medetomidine: robust against classical dependence** (10-s arm). For example, z(`cov-sq_MinCovDet`, `mi_kraskov_DCE`) falls by about 9.5 SD under ketamine, ketamine–medetomidine and propofol, and by +0.1 SD under medetomidine. This is the same exception as the pyspi-free MinCovDet flag fraction (borderline under medetomidine), so two independent methods agree.
+- **Weaker or uninterpretable:**
+  - Ketamine-only and medetomidine-only hits are scattered across unrelated families.
+  - Opposite-sign pairs mostly involve noisy partners: `dswpli` broad against low band (ketamine against ketamine–medetomidine), non-DCE TE, and `psi`.
+  - Deep-sleep opposites rest on non-DCE `te_kraskov`.
+- **Fly:** nothing beyond d ≈ 1.7 among 13 flies.
