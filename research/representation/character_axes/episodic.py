@@ -21,7 +21,11 @@ JSON of per-window metrics with unit-level contrasts. Reading rules: docs/interp
   of the dominant channel at flagged samples relative to its unflagged mean, in 0.5-4 Hz and 20-45 Hz.
 - atlas mode: the same mcd and events readouts on an atlas window bank (prepare.py layout), on fixed 16-channel
   subsets, with both IAAFT variants generated per window; contrasts are within unit, each state against the
-  unit's reference state, grouped by agent.
+  unit's reference state, grouped by agent. Sleep windows are also split into within-archive delta-fraction
+  tertiles (sleep_deep, sleep_light).
+- index mode: the mcd and events readouts on a bank.npz with both IAAFT variants generated per window.
+- gain control (--gain, atlas and index modes): each channel divided by its sliding 1-s RMS before surrogates
+  and scoring, so within-window gain modulation cannot produce flags.
 """
 import argparse
 import json
@@ -29,6 +33,7 @@ from pathlib import Path
 
 import numpy as np
 from joblib import Parallel, delayed
+from scipy.ndimage import uniform_filter1d
 from scipy.signal import butter, hilbert, sosfiltfilt
 from scipy.stats import rankdata
 from sklearn.covariance import LedoitWolf, MinCovDet
@@ -241,31 +246,73 @@ def subsets(M):
     return dict(a=a, b=np.minimum(a + int(step // 2), M - 1))
 
 
-def atlas_window(x, seed):
+def gain_normalise(x, fs, seconds=1.0):
+    """Each channel divided by its centred sliding RMS over `seconds`."""
+    power = uniform_filter1d(x ** 2, size=max(3, int(round(fs * seconds))), axis=0, mode='reflect')
+    return x / np.sqrt(power + 1e-12 * power.mean())
+
+
+def versions_metrics(w, seed):
+    """mcd and events readouts on a window and on both IAAFT surrogates of it: {version: metrics}."""
     from mtsspi.surrogates import multivariate_iaaft
+    versions = {'real': w}
+    for v in VARIANTS:
+        versions[v] = multivariate_iaaft(w, np.random.default_rng(seed), final=v)[0]
+    return {name: dict(mcd_metrics(arr), **event_metrics(arr)) for name, arr in versions.items()}
+
+
+def atlas_window(x, seed, fs=None):
     out = {}
+    if fs:
+        x = gain_normalise(x, fs)
     for tag, idx in subsets(x.shape[1]).items():
-        w = x[:, idx]
-        versions = {'real': w}
-        for v in VARIANTS:
-            versions[v] = multivariate_iaaft(w, np.random.default_rng([seed, len(tag)]), final=v)[0]
-        for name, arr in versions.items():
-            metrics = dict(mcd_metrics(arr), **event_metrics(arr))
+        for name, metrics in versions_metrics(x[:, idx], [seed, len(tag)]).items():
             out.update({f'{name}|{tag}|{k}': v for k, v in metrics.items()})
     return out
 
 
-def atlas(bank, output, reference, jobs):
+def index_window(x, seed, fs=None):
+    return versions_metrics(gain_normalise(x, fs) if fs else x, seed)
+
+
+def index(dataset, bank_path, output, jobs, gain_fs=None):
+    """index mode: real and per-window surrogate readouts of a bank.npz, contrasted as in main."""
+    b = np.load(bank_path, allow_pickle=False)
+    x = np.asarray(b['x'], dtype=np.float64)
+    values = Parallel(n_jobs=jobs)(delayed(index_window)(x[k], k, gain_fs) for k in range(len(x)))
+    meta = dict(row_id=b['row_id'].astype(str).tolist(), y=b['y'].tolist(), group=b['group'].astype(str).tolist())
+    banks = {name: dict(meta, rows=[v[name] for v in values]) for name in ('real',) + VARIANTS}
+    report = dict(dataset=dataset, bank=str(bank_path), gain_normalised=bool(gain_fs),
+                  contrasts=contrasts(dataset, banks), windows={k: v['rows'] for k, v in banks.items()})
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
+def sleep_tertiles(rows):
+    """Relabel sleep windows by within-archive delta-fraction tertile: sleep_deep (top), sleep_light (bottom)."""
+    states = []
+    for r in rows:
+        if r['state'] != 'sleep':
+            states.append(r['state'])
+            continue
+        own = np.array([q['delta_fraction'] for q in rows if q['unit'] == r['unit'] and q['state'] == 'sleep'])
+        lo, hi = np.quantile(own, [1 / 3, 2 / 3])
+        states.append('sleep_deep' if r['delta_fraction'] >= hi else 'sleep_light' if r['delta_fraction'] <= lo else 'sleep_mid')
+    return states
+
+
+def atlas(bank, output, reference, jobs, gain=False):
     manifest = json.loads((bank / 'manifest.json').read_text())
     rows = manifest['rows']
     with np.load(bank / 'windows.npz') as archive:
-        values = Parallel(n_jobs=jobs)(delayed(atlas_window)(np.asarray(archive[r['id']], dtype=np.float64), k)
+        values = Parallel(n_jobs=jobs)(delayed(atlas_window)(np.asarray(archive[r['id']], dtype=np.float64), k,
+                                                             manifest['fs'] if gain else None)
                                        for k, r in enumerate(rows))
     agent = [r.get('agent', manifest['dataset']) for r in rows]
     unit = np.array([r['unit'] for r in rows])
-    state = np.array([r['state'] for r in rows])
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in r for r in rows) else [r['state'] for r in rows])
     keys = sorted({k.split('|', 1)[1] for v in values for k in v})
-    report = dict(bank=str(bank), reference=reference, subsets={t: i.tolist() for t, i in subsets(rows[0]['M']).items()},
+    report = dict(bank=str(bank), reference=reference, gain_normalised=gain, subsets={t: i.tolist() for t, i in subsets(rows[0]['M']).items()},
                   contrasts={}, windows=[dict(id=r['id'], **v) for r, v in zip(rows, values)])
     for name in ('real',) + tuple(f'real_minus_{v}' for v in VARIANTS):
         table = {}
@@ -294,6 +341,9 @@ def atlas(bank, output, reference, jobs):
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('dataset', choices=['neurotycho', 'propofol', 'atlas'])
+    p.add_argument('--mode', choices=['banks', 'index'], default='banks',
+                   help='banks: stored surrogate banks (main); index: surrogates generated per window')
+    p.add_argument('--gain', action='store_true', help='atlas and index modes: sliding 1-s RMS normalisation')
     p.add_argument('--real', type=Path, required=True, help='bank.npz, or an atlas bank directory in atlas mode')
     p.add_argument('--surrogates', type=Path, nargs='*', default=[])
     p.add_argument('--output', type=Path, required=True)
@@ -303,6 +353,8 @@ if __name__ == '__main__':
     p.add_argument('--reference', default='awake_ec', help='atlas mode: the reference state')
     a = p.parse_args()
     if a.dataset == 'atlas':
-        atlas(a.real, a.output, a.reference, a.jobs)
+        atlas(a.real, a.output, a.reference, a.jobs, a.gain)
+    elif a.mode == 'index':
+        index(a.dataset, a.real, a.output, a.jobs, a.fs if a.gain else None)
     else:
         main(a.dataset, a.real, a.surrogates, a.output, a.analyses, a.jobs, a.fs)
