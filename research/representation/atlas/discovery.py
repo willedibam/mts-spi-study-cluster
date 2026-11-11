@@ -451,6 +451,89 @@ def pairs(reduced, output, reference, named=PAIRS):
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+
+def _profiles(path, wanted):
+    d = np.load(path, allow_pickle=True)
+    spis = [str(s) for s in d['__spis__']]
+    out = {}
+    for wid in [k for k in d.files if not k.startswith('__')]:
+        m = d[wid]
+        out[wid] = np.stack([np.asarray(m[spis.index(w)], dtype=np.float64)[~np.eye(m.shape[1], dtype=bool)]
+                             for w in wanted]).astype(np.float32)
+    return out
+
+
+def reliability(bank, pyspi_dir, output, reference, named=PAIRS, jobs=8):
+    """Edge-profile reliability of the named pairs' SPIs: the mean correlation between the profiles of different
+    windows of one unit and state. Per unit and state: each SPI's reliability, mean level and share of negative
+    edges, and each pair's z raw and disattenuated (z / sqrt(rel_A rel_B)); then per agent the state-minus-reference
+    difference of both, with unit and animal sign counts. A z that falls only because a profile gets noisier falls
+    raw but not disattenuated."""
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    shards = sorted(pyspi_dir.glob('shard-*.npz'))
+    with np.load(shards[0], allow_pickle=True) as d:
+        have = {str(x) for x in d['__spis__']}
+    named = [(c, a, b) for c, a, b in named if a in have and b in have]
+    wanted = sorted({x for _, a, b in named for x in (a, b)})
+    merged = {}
+    for part in Parallel(n_jobs=jobs)(delayed(_profiles)(s, wanted) for s in shards):
+        merged.update(part)
+    rows = [r for r in manifest['rows'] if r['id'] in merged]
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    groups = {}
+    for u, s in sorted(set(zip(unit, state))):
+        P = np.stack([merged[rows[i]['id']] for i in np.flatnonzero((unit == u) & (state == s))])  # (n, SPI, edges)
+        ok = np.isfinite(P).all(axis=(0, 2))
+        rel = np.full(len(wanted), np.nan)
+        if len(P) > 1:
+            for k in np.flatnonzero(ok):
+                c = np.corrcoef(P[:, k])
+                rel[k] = c[~np.eye(len(P), dtype=bool)].mean()
+        z = {}
+        for c_, a, b in named:
+            ia, ib = wanted.index(a), wanted.index(b)
+            zw = [np.corrcoef(P[w, ia], P[w, ib])[0, 1] for w in range(len(P))] if ok[ia] and ok[ib] else [np.nan]
+            raw = float(np.nanmean(zw))
+            z[f'{a}|{b}'] = dict(raw=raw, disattenuated=raw / np.sqrt(rel[ia] * rel[ib]) if rel[ia] > 0 and rel[ib] > 0 else np.nan)
+        groups[(u, s)] = dict(windows=len(P), reliability=dict(zip(wanted, rel.tolist())),
+                              level=dict(zip(wanted, np.nanmean(P, axis=(0, 2)).tolist())),
+                              negative=dict(zip(wanted, np.nanmean(P < 0, axis=(0, 2)).tolist())), z=z)
+    agent = {r['unit']: r.get('agent', 'all') for r in rows}
+    animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
+    contrasts = {}
+    for u, s in groups:
+        if s == reference or (u, reference) not in groups:
+            continue
+        g, ref = groups[(u, s)], groups[(u, reference)]
+        e = contrasts.setdefault(f'{agent[u]}:{s}', {})
+        for key, v in g['z'].items():
+            for kind in ('raw', 'disattenuated'):
+                e.setdefault(f'{key}:{kind}', []).append((animal[u], v[kind] - ref['z'][key][kind]))
+        for w in wanted:
+            e.setdefault(f'{w}:reliability', []).append((animal[u], g['reliability'][w] - ref['reliability'][w]))
+    def summarise(pairs_):
+        d = np.array([x for _, x in pairs_], dtype=float)
+        by = {}
+        for a, x in pairs_:
+            by.setdefault(a, []).append(x)
+        means = [np.nanmean(v) for v in by.values()]
+        return dict(mean=float(np.nanmean(d)), units=int(np.isfinite(d).sum()), positive=int(np.sum(d > 0)),
+                    animals=len(by), animals_positive=int(np.sum(np.array(means) > 0)))
+    report = dict(bank=str(bank), reference=reference, spis=wanted,
+                  reference_state={w: dict(reliability=float(np.nanmean([g['reliability'][w] for (u, s), g in groups.items() if s == reference])),
+                                           level=float(np.nanmean([g['level'][w] for (u, s), g in groups.items() if s == reference])))
+                                   for w in wanted},
+                  states={f'{agent[u]}:{s}': {} for u, s in groups},
+                  contrasts={k: {m: summarise(v) for m, v in e.items()} for k, e in contrasts.items()})
+    for (u, s), g in groups.items():
+        st = report['states'][f'{agent[u]}:{s}']
+        for w in wanted:
+            st.setdefault(w, []).append([g['reliability'][w], g['level'][w], g['negative'][w]])
+    report['states'] = {k: {w: np.nanmean(v, 0).tolist() for w, v in d.items()} for k, d in report['states'].items()}
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -473,9 +556,17 @@ if __name__ == '__main__':
     d.add_argument('reduced', type=Path)
     d.add_argument('--output', type=Path, required=True)
     d.add_argument('--reference', default='awake_ec')
+    e = sub.add_parser('reliability')
+    e.add_argument('bank', type=Path)
+    e.add_argument('pyspi', type=Path)
+    e.add_argument('--output', type=Path, required=True)
+    e.add_argument('--reference', default='awake_ec')
+    e.add_argument('--jobs', type=int, default=8)
     args = p.parse_args()
     if args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
+    elif args.command == 'reliability':
+        reliability(args.bank, args.pyspi, args.output, args.reference, jobs=args.jobs)
     elif args.command == 'pairs':
         pairs(args.reduced, args.output, args.reference)
     elif args.command == 'screen':

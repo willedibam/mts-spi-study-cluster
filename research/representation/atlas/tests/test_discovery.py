@@ -77,3 +77,15 @@ def test_pairs(tmp_path):
     e = rep['pairs'][0]['effects']['PF:drug']
     assert e['raw']['units'] == 3 and e['adjusted'] is not None and e['spectral'] is not None
     assert np.isfinite(rep['pairs'][0]['eyes_open_null_sd'])
+
+
+def test_reliability(tmp_path):
+    bank, pyspi = fake_atlas(tmp_path)
+    named = [('monotone', 'cov_EmpiricalCovariance', 'spearmanr'), ('absent', 'mi_gaussian', 'dcorr')]
+    discovery.reliability(bank, pyspi, tmp_path / 'rel.json', 'awake_ec', named, jobs=1)
+    rep = json.loads((tmp_path / 'rel.json').read_text())
+    assert rep['spis'] == ['cov_EmpiricalCovariance', 'spearmanr']
+    e = rep['contrasts']['PF:drug']
+    assert e['cov_EmpiricalCovariance|spearmanr:raw']['units'] == 3
+    assert np.isfinite(e['cov_EmpiricalCovariance|spearmanr:disattenuated']['mean'])
+    assert abs(rep['reference_state']['spearmanr']['reliability']) < .2 and rep['states']['PF:drug']['spearmanr'][0] > .5
