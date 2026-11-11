@@ -36,7 +36,27 @@ Pearson aggregation is a selective compression: it removes profile levels and po
 - Comparing measures to interpret dynamics also has direct precedents: [Paluš 1995](https://doi.org/10.1016/0167-2789(95)90079-9) contrasts linear/nonlinear redundancies; [Nguyen et al. 2025](https://doi.org/10.1103/qnx2-yp4c) identifies feature-mediated dependence. The latter's final publication is Physical Review Research 7, 043283 (10 December 2025); the bibliography's DOI TODO can be resolved with this source. Introduction recommendation: motivate dependence character, explain ambiguity of individual scores, acknowledge existing complementary probes, then introduce their joint organisation as the recording descriptor. Keep selected calibrated demonstrations central and recording-size comparability secondary. Marginal edge distributions versus joint correspondence gives a precise information-loss example; it does not establish that all network summaries or full aligned MPI collections lack character information.
 - Introduction review, 2026-10-20 ([rewrite and source table](../../drafts/introduction_rewrite.md)). Most dangerous precedent: [Nolte et al. 2020](https://doi.org/10.3389/fnins.2020.577574). Under Gaussianity, coupling measures are fixed functions of coherency, so part of z is set by how strength is spread across pairs. A strength-matched linear-Gaussian surrogate null is therefore required, and z minus its surrogate expectation is a candidate formal definition of non-Gaussian character. Linear lag/spectral organisation survives that null, so each finding must say which kind it is. z is a correlation across pairs: it targets character that varies across pairs, and a uniform change, such as equal slowing of every connection, mostly does not register. Motivate with heterogeneity, not uniform ageing delays. [Mitra et al. 2015](https://doi.org/10.7554/eLife.10781) is the cleanest empirical motivation: zero-lag networks are preserved across wake and slow-wave sleep while lag structure reorganises. [Baum et al. 2020](https://doi.org/10.1073/pnas.1912034117) applies the same across-edge correlation between structural and functional connectivity. Targeted search found no prior per-recording representation built from the full profile of agreement between dependence statistics. That search is not exhaustive.
 
-Reading rules for any z feature (character against literal readings, decomposition into minimal pairs, wording tiers, past interpretation mistakes): [`docs/interpreting-spi-pairs.md`](../interpreting-spi-pairs.md) (11 November).
+## Reading status (11 November)
+
+Reading rules for any z feature: [`docs/interpreting-spi-pairs.md`](../interpreting-spi-pairs.md). The paper's chain (user, 11 November): character matters (introduction) → the construction makes sense (case studies) → z encodes useful information (proof-of-concept embeddings) → it works unsupervised and general-purpose (phase transitions) → it has real-world use (real-world overview, Zenodo) → bonus: one feature space across M and T.
+
+Priority characters and status at cohort-like coupling [R]:
+- **Nonlinearity:** the form axis fails; raw linear–rank pairs read marginal shape, and their real − IAAFT version reads joint bursts. The per-edge estimator N passes on synthetic families. Pair-level reading is copula departure; separate it with normal-score Pearson.
+- **Lag:** sub-axis, frequency-confounded. ℓ passes and transfers.
+- **Lag variability and intermittency:** warp fails. Tail is a whole-window proxy. V is accurate but imprecise.
+- **Mediation and band:** core; mediation is montage and M dependent, band level moves organisation.
+
+Best candidates, re-read (Fable 5.2, 11 November):
+- **NeuroTycho:** the mediation link is fully surrogate-reproduced. The beyond-surrogate part sits in the tail link: robust against classical precision diverges, 6/6 units. Defensible reading: a minority of samples carries a conditional-dependence pattern different from the bulk (time-heterogeneous dependence). "Episodic" is not yet earned.
+  - The generator shows state switching is sufficient, not necessary.
+  - The up-state test was negative. It used the channel-mean delta envelope, whereas MinCovDet discards pattern-atypical, not common-mode, samples.
+  - Deciding analysis, no pyspi: on raw windows, MinCovDet support masks per window. Measure flag fraction, temporal clustering against shuffles, spatial focality and spectra, in real and surrogate data, and compare classical precision on inliers and outliers.
+- **Propofol:** linear–rank agreement is lower than marginals and cross-spectra imply (16/20), consistent with dependence carried by brief joint events. Deciding analysis: drop the top few per cent of joint-amplitude samples, recompute Pearson and Spearman, and check grading mild < moderate with recovery reversal.
+- **Candidate cross-species statement:** "under GABAergic anaesthesia, part of inter-areal dependence concentrates in brief joint events" (about 25% [S]).
+  - Unequal evidence: d −.46 beyond surrogates in humans at moderate, against 6/6 units in NeuroTycho.
+  - Test with a pyspi-free per-window index, real − surrogate: each edge's cross-product share in the top 5% of samples, plus their temporal clustering.
+  - Predicted up under propofol, medetomidine and natural sleep; not under ketamine alone; null for eyes open against closed.
+  - Order: NeuroTycho, then fly isoflurane, then Chennu and Bajwa.
 
 ## Named character axes built inside z (2 November)
 
