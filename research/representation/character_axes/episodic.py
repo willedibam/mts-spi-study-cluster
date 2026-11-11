@@ -22,7 +22,6 @@ from pathlib import Path
 
 import numpy as np
 from joblib import Parallel, delayed
-from scipy.special import ndtri
 from scipy.stats import rankdata
 from sklearn.covariance import LedoitWolf, MinCovDet
 
@@ -73,6 +72,7 @@ def edges(c):
 
 
 def burst_metrics(x):
+    from scipy.special import ndtri  # imported here: joblib workers cannot unpickle the ufunc from __main__
     x = standardise(x)
     T = len(x)
     amp = (x ** 2).sum(1)
