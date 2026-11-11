@@ -31,7 +31,9 @@ PRECISION_SKIP = ('EmpiricalCovariance', 'GraphicalLasso')
 RANK = ('spearmanr', 'spearmanr-sq', 'kendalltau', 'kendalltau-sq', 'ids')
 CORR_FAMILY = ('cov_', 'cov-sq_', 'corr_', 'spearmanr', 'kendalltau', 'xcorr', 'mi_gaussian', 'tlmi_gaussian',
                'je_gaussian', 'ce_gaussian', 'lmfit', 'pdist_', 'gc_gaussian')
-COVARIATES = ('mean_abs_r', 'sd_abs_r', 'cov_pr', 'delta_fraction')
+STORED_COVARIATES = ('mean_abs_r', 'sd_abs_r', 'cov_pr', 'delta_fraction', 'spectral_entropy', 'peak_hz')
+COVARIATES = ('mean_abs_r', 'sd_abs_r', 'cov_pr')  # strength; delta_fraction exists only where sleep is staged
+SPECTRAL = COVARIATES + ('spectral_entropy', 'peak_hz')
 
 
 _PINV = {}
@@ -137,9 +139,9 @@ def reduce(bank, pyspi_dir, output, jobs):
         z=np.stack([v['z'] for v in w]), zdc=np.stack([v['zdc'] for v in w]), valid=np.stack([v['valid'] for v in w]),
         mean=np.stack([v['mean'] for v in w]), sd=np.stack([v['sd'] for v in w]), node_r2=np.stack([v['node_r2'] for v in w]),
         core=np.array([[v['core'].get(n, np.nan) for n in core_names] for v in w]), core_names=np.array(core_names),
-        covariates=np.array([[v[k] if k in v else r.get(k, np.nan) for k in COVARIATES + ('spectral_entropy', 'peak_hz')]
+        covariates=np.array([[v[k] if k in v else r.get(k, np.nan) for k in STORED_COVARIATES]
                              for v, r in zip(w, rows)]),
-        covariate_names=np.array(COVARIATES + ('spectral_entropy', 'peak_hz')),
+        covariate_names=np.array(STORED_COVARIATES),
         rows=np.array(json.dumps(rows)))
 
 
@@ -356,6 +358,99 @@ def screen(reduced, output, reference, drug_state='drug', top=60, double_centred
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+_MT = lambda f, band='0_fmax-0-5', stat='mean': f'{f}_multitaper_{stat}_fs-1_fmin-{band}'
+_LOW, _HIGH = '0_fmax-0-25', '0-25_fmax-0-5'
+_SGC = lambda order, band='1e-05_fmax-0-5': f'sgc_parametric_mean_fs-1_fmin-{band}_order-{order}'
+# Named minimal (or near-minimal) pairs: (character, A, B). Readings and confounds: docs/interpreting-spi-pairs.md.
+PAIRS = [
+    ('non-Gaussian dependence', 'mi_gaussian', 'mi_kraskov_NN-4_DCE-AUTO'),
+    ('non-Gaussian dependence', 'mi_gaussian', 'mi_kernel_W-0.25'),
+    ('non-Gaussian dependence', 'cov-sq_EmpiricalCovariance', 'dcorr'),
+    ('non-Gaussian dependence', 'je_gaussian', 'je_kozachenko'),
+    ('non-Gaussian dependence', 'xme_gaussian_k1', 'xme_kozachenko_k1'),
+    ('monotone (rank) nonlinearity', 'cov_EmpiricalCovariance', 'spearmanr'),
+    ('monotone (rank) nonlinearity', 'cov-sq_EmpiricalCovariance', 'spearmanr-sq'),
+    ('monotone (rank) nonlinearity', 'corr_pearson_tau-1', 'corr_spearman_tau-1'),
+    ('lagged vs zero-lag phase coupling', _MT('cohmag', _LOW), _MT('icoh', _LOW)),
+    ('lagged vs zero-lag phase coupling', _MT('cohmag'), _MT('icoh')),
+    ('lagged vs zero-lag phase coupling', _MT('cohmag', _HIGH), _MT('icoh', _HIGH)),
+    ('lagged vs zero-lag phase coupling', _MT('plv'), _MT('pli')),
+    ('lagged vs zero-lag phase coupling', _MT('plv'), _MT('wpli')),
+    ('lagged vs zero-lag phase coupling', _MT('ppc'), _MT('dswpli')),
+    ('lagged vs zero-lag amplitude coupling', 'pec', 'pec_orth'),
+    ('instantaneous vs lagged dependence', 'mi_gaussian', 'tlmi_gaussian'),
+    ('instantaneous vs lagged dependence', 'mi_kraskov_NN-4_DCE-AUTO', 'tlmi_kraskov_NN-4_DCE-AUTO'),
+    ('instantaneous vs lagged dependence', 'cov-sq_EmpiricalCovariance', 'xcorr-sq_max_sig-True'),
+    ('rigid vs elastic alignment', 'xpdist_euclidean_tau-1_min_rmse', 'dtw'),
+    ('rigid vs elastic alignment', 'dtw', 'dtw_constraint-sakoe-chiba_radius-auto'),
+    ('rigid vs elastic alignment', 'pdist_euclidean', 'dtw'),
+    ('rigid vs elastic alignment', 'lcss', 'lcss_constraint-sakoe-chiba'),
+    ('predictive vs contemporaneous', 'mi_gaussian', 'gc_gaussian_k-1_kt-1_l-1_lt-1'),
+    ('predictive vs contemporaneous', _MT('cohmag'), _SGC('None')),
+    ('nonlinear vs linear prediction', 'gc_gaussian_k-1_kt-1_l-1_lt-1', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'),
+    ('nonlinear vs linear prediction', 'te_symbolic_k-3', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'),
+    ('interaction memory', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1', 'te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1'),
+    ('interaction memory', _SGC('1'), _SGC('20')),
+    ('interaction memory', 'gc_gaussian_k-1_kt-1_l-1_lt-1', 'gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2'),
+    ('direct vs indirect (mediation)', 'cov-sq_EmpiricalCovariance', 'prec-sq_EmpiricalCovariance'),
+    ('direct vs indirect (mediation)', 'cov-sq_LedoitWolf', 'prec-sq_LedoitWolf'),
+    ('direct vs indirect (mediation)', _MT('dcoh'), _MT('pdcoh')),
+    ('bulk vs atypical samples', 'cov-sq_EmpiricalCovariance', 'cov-sq_MinCovDet'),
+    ('bulk vs atypical samples', 'prec-sq_LedoitWolf', 'prec-sq_MinCovDet'),
+    ('bulk vs atypical samples', 'pdist_euclidean', 'pdist_chebyshev'),
+    ('bulk vs atypical samples', 'pdist_euclidean', 'pdist_cityblock'),
+    ('band locus', _MT('cohmag', _LOW), _MT('cohmag', _HIGH)),
+    ('band locus', _MT('plv', _LOW), _MT('plv', _HIGH)),
+    ('broadband vs peaked', _MT('cohmag'), _MT('cohmag', stat='max')),
+    ('broadband vs peaked', _MT('plv'), _MT('plv', stat='max')),
+    ('phase vs amplitude coupling', _MT('plv'), 'pec'),
+    ('phase vs amplitude coupling', _MT('icoh'), 'pec_orth'),
+]
+
+
+def pairs(reduced, output, reference, named=PAIRS):
+    """Named SPI pairs: z in the reference state and every state's within-unit effect per agent, raw, adjusted for
+    strength, and adjusted for strength and the channel-mean spectrum (peak frequency, spectral entropy)."""
+    r = np.load(reduced, allow_pickle=False)
+    rows = json.loads(str(r['rows']))
+    spis = [str(s) for s in r['spis']]
+    K = len(spis)
+    index = np.full((K, K), -1)
+    index[np.triu_indices(K, 1)] = np.arange(K * (K - 1) // 2)
+    index = np.maximum(index, index.T)
+    keep = set(np.flatnonzero(r['valid'].all(0)).tolist())
+    unit = np.array([x['unit'] for x in rows])
+    agent = np.array([x.get('agent', 'all') for x in rows])
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    names = [str(n) for n in r['covariate_names']]
+    adjust = {'adjusted': r['covariates'][:, [names.index(c) for c in COVARIATES]],
+              'spectral': r['covariates'][:, [names.index(c) for c in SPECTRAL]]}
+    node = np.nanmedian(r['node_r2'][state == reference], 0)
+    present = [(c, a, b) for c, a, b in named if a in spis and b in spis and spis.index(a) in keep and spis.index(b) in keep]
+    cols = [index[spis.index(a), spis.index(b)] for _, a, b in present]
+    Z = r['z'][:, cols].astype(np.float64)
+    report = dict(reduced=str(reduced), reference=reference, adjusted_for=list(COVARIATES), spectral_for=list(SPECTRAL),
+                  missing=[[c, a, b] for c, a, b in named if (c, a, b) not in present], pairs=[])
+    effects = {}
+    for s in sorted(set(state) - {reference}):
+        for g in sorted(set(agent[state == s])):
+            sel = agent == g
+            effects[f'{g}:{s}'] = {v: unit_effects(Z[sel], unit[sel], state[sel], s, reference,
+                                                   None if v == 'raw' else adjust[v][sel])
+                                   for v in ('raw', 'adjusted', 'spectral')}
+    null = [e['raw'] for k, e in effects.items() if k.endswith(':awake_eo') and len(e['raw'])]
+    null_sd = np.concatenate(null).std(0, ddof=1) if null and sum(len(n) for n in null) > 2 else np.full(len(cols), np.nan)
+    for i, (c, a, b) in enumerate(present):
+        report['pairs'].append(dict(
+            character=c, a=a, b=b, node_r2=[float(node[spis.index(a)]), float(node[spis.index(b)])],
+            reference_z=float(np.nanmean(Z[state == reference, i])), eyes_open_null_sd=float(null_sd[i]),
+            effects={k: {v: None if not len(e) else dict(mean=float(e[:, i].mean()), units=len(e),
+                                                         positive=int(np.sum(e[:, i] > 0)))
+                         for v, e in d.items()} for k, d in effects.items()}))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -374,9 +469,15 @@ if __name__ == '__main__':
     c.add_argument('--reference', default='awake_ec')
     c.add_argument('--drug-state', default='drug')
     c.add_argument('--double-centred', action='store_true')
+    d = sub.add_parser('pairs')
+    d.add_argument('reduced', type=Path)
+    d.add_argument('--output', type=Path, required=True)
+    d.add_argument('--reference', default='awake_ec')
     args = p.parse_args()
     if args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
+    elif args.command == 'pairs':
+        pairs(args.reduced, args.output, args.reference)
     elif args.command == 'screen':
         screen(args.reduced, args.output, args.reference, args.drug_state, double_centred=args.double_centred)
     else:

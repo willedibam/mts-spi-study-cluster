@@ -65,3 +65,15 @@ def test_screen(tmp_path):
     rep = json.loads((tmp_path / 'screen.json').read_text())
     assert rep['agents'] == ['PF'] and 'coint_x' in rep['excluded_node_additive']
     assert all('coint_x' not in (h['a'], h['b']) for h in rep['hits'])
+
+
+def test_pairs(tmp_path):
+    bank, pyspi = fake_atlas(tmp_path)
+    discovery.reduce(bank, pyspi, tmp_path / 'reduced.npz', jobs=1)
+    named = [('monotone', 'cov_EmpiricalCovariance', 'spearmanr'), ('absent', 'mi_gaussian', 'dcorr')]
+    discovery.pairs(tmp_path / 'reduced.npz', tmp_path / 'pairs.json', 'awake_ec', named)
+    rep = json.loads((tmp_path / 'pairs.json').read_text())
+    assert rep['missing'] == [['absent', 'mi_gaussian', 'dcorr']] and len(rep['pairs']) == 1
+    e = rep['pairs'][0]['effects']['PF:drug']
+    assert e['raw']['units'] == 3 and e['adjusted'] is not None and e['spectral'] is not None
+    assert np.isfinite(rep['pairs'][0]['eyes_open_null_sd'])

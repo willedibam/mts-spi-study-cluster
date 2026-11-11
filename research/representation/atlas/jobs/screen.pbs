@@ -6,12 +6,18 @@
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -l wd
 #PBS -j oe
-# SPI-pair screen over every kept z coordinate (discovery.py screen), raw z and double-centred z, per arm.
+# Per arm (discovery.py): analyse (strength adjustment present in every arm), named SPI pairs, and the screen over
+# every kept z coordinate, raw z and double-centred z.
 # qsub research/representation/atlas/jobs/screen.pbs   (after discovery.pbs)
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 O="$MTS_SCRATCH/atlas/discovery"
+for arm in neurotycho-long-stage-a:awake_ec neurotycho-short:awake_ec fly-short:awake; do
+    IFS=: read -r bank ref <<< "$arm"
+    python -u -m research.representation.atlas.discovery analyse "$O/$bank-reduced.npz" --reference "$ref" --output "$O/$bank-report.json"
+    python -u -m research.representation.atlas.discovery pairs "$O/$bank-reduced.npz" --reference "$ref" --output "$O/$bank-pairs.json"
+done
 for arm in neurotycho-long-stage-a neurotycho-short; do
     python -u -m research.representation.atlas.discovery screen "$O/$arm-reduced.npz" --output "$O/$arm-screen.json"
     python -u -m research.representation.atlas.discovery screen "$O/$arm-reduced.npz" --double-centred --output "$O/$arm-screen-dc.json"
