@@ -1,0 +1,1680 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/neurotycho-long-stage-a",
+ "reference": "awake_ec",
+ "channels": 16,
+ "draws": 3,
+ "states": {
+  "KTMD:awake_ec": {
+   "real:diff": -0.005204853135832373,
+   "real:te_knn": -0.0024061406794871703,
+   "real:te_gauss": 0.0014635905031195116,
+   "real:diff_scores": -0.005127090741647589,
+   "null:diff": -0.0047263457573167725,
+   "null:te_knn": -0.001942774488523155,
+   "null:te_gauss": 0.0014533723979830682,
+   "null:diff_scores": -0.004654987585705823,
+   "residual:diff": -0.0004785073785155997,
+   "residual:te_knn": -0.0004633661909640153,
+   "residual:te_gauss": 1.0218105136443543e-05,
+   "residual:diff_scores": -0.0004721031559417661
+  },
+  "KTMD:awake_eo": {
+   "real:diff": -0.004208325595512249,
+   "real:te_knn": -0.002163410877891728,
+   "real:te_gauss": 0.0009142459540834886,
+   "real:diff_scores": -0.0041768382177218635,
+   "null:diff": -0.0038421292586756084,
+   "null:te_knn": -0.0018315040441340036,
+   "null:te_gauss": 0.0009039408089395834,
+   "null:diff_scores": -0.0038073604793665543,
+   "residual:diff": -0.00036619633683663996,
+   "residual:te_knn": -0.0003319068337577244,
+   "residual:te_gauss": 1.0305145143905054e-05,
+   "residual:diff_scores": -0.00036947773835530913
+  },
+  "KTMD:drug": {
+   "real:diff": -0.0321066060159869,
+   "real:te_knn": -0.028432189572161832,
+   "real:te_gauss": 0.001490796768850413,
+   "real:diff_scores": -0.031463831369472055,
+   "null:diff": -0.024071614101333988,
+   "null:te_knn": -0.020704379612766104,
+   "null:te_gauss": 0.0014148557239648907,
+   "null:diff_scores": -0.023602566905949647,
+   "residual:diff": -0.00803499191465291,
+   "residual:te_knn": -0.0077278099593957265,
+   "residual:te_gauss": 7.594104488552224e-05,
+   "residual:diff_scores": -0.007861264463522408
+  },
+  "KTMD:recovery_ec": {
+   "real:diff": -0.00496568285973801,
+   "real:te_knn": -0.0010804464537713917,
+   "real:te_gauss": 0.00217076474420741,
+   "real:diff_scores": -0.0047928097767950045,
+   "null:diff": -0.004837642669112256,
+   "null:te_knn": -0.0010577299194113416,
+   "null:te_gauss": 0.0021523975663605348,
+   "null:diff_scores": -0.004758837262254199,
+   "residual:diff": -0.00012804019062575439,
+   "residual:te_knn": -2.2716534360049255e-05,
+   "residual:te_gauss": 1.8367177846875118e-05,
+   "residual:diff_scores": -3.3972514540805856e-05
+  },
+  "SLP:awake_ec": {
+   "real:diff": -0.004333542451130067,
+   "real:te_knn": -0.0015269775222072238,
+   "real:te_gauss": 0.0013570856300594899,
+   "real:diff_scores": -0.004313176175011137,
+   "null:diff": -0.004691808928095544,
+   "null:te_knn": -0.0020267538365424742,
+   "null:te_gauss": 0.0013594409773488086,
+   "null:diff_scores": -0.004641662008827437,
+   "residual:diff": 0.00035826647696547795,
+   "residual:te_knn": 0.0004997763143352504,
+   "residual:te_gauss": -2.3553472893188427e-06,
+   "residual:diff_scores": 0.00032848583381629877
+  },
+  "SLP:awake_eo": {
+   "real:diff": -0.005156084906231543,
+   "real:te_knn": -0.0028611231314720877,
+   "real:te_gauss": 0.001244087304964516,
+   "real:diff_scores": -0.004986694806437624,
+   "null:diff": -0.004487465337338984,
+   "null:te_knn": -0.0019612627786344578,
+   "null:te_gauss": 0.0012311529673863803,
+   "null:diff_scores": -0.004423069811153965,
+   "residual:diff": -0.0006686195688925581,
+   "residual:te_knn": -0.0008998603528376301,
+   "residual:te_gauss": 1.2934337578135613e-05,
+   "residual:diff_scores": -0.0005636249952836568
+  },
+  "SLP:sleep_deep": {
+   "real:diff": -0.010309539276723173,
+   "real:te_knn": -0.00808305997254664,
+   "real:te_gauss": 0.0010351134274722128,
+   "real:diff_scores": -0.010092861538230642,
+   "null:diff": -0.008479691974232005,
+   "null:te_knn": -0.006288534204575319,
+   "null:te_gauss": 0.00104241744329998,
+   "null:diff_scores": -0.008421435028087228,
+   "residual:diff": -0.0018298473024911687,
+   "residual:te_knn": -0.0017945257679713223,
+   "residual:te_gauss": -7.3040158277673346e-06,
+   "residual:diff_scores": -0.0016714265101434136
+  },
+  "SLP:sleep_light": {
+   "real:diff": -0.004986918789900182,
+   "real:te_knn": -0.00183720479328498,
+   "real:te_gauss": 0.0014308239154106634,
+   "real:diff_scores": -0.004879204103740115,
+   "null:diff": -0.004888359571131461,
+   "null:te_knn": -0.0019701520603650174,
+   "null:te_gauss": 0.0014318038693868463,
+   "null:diff_scores": -0.004812029010697736,
+   "residual:diff": -9.855921876872093e-05,
+   "residual:te_knn": 0.0001329472670800376,
+   "residual:te_gauss": -9.79953976182937e-07,
+   "residual:diff_scores": -6.717509304237919e-05
+  },
+  "SLP:sleep_mid": {
+   "real:diff": -0.007882840042471731,
+   "real:te_knn": -0.005022345781693232,
+   "real:te_gauss": 0.0013136728928262694,
+   "real:diff_scores": -0.007661086849369362,
+   "null:diff": -0.00718986604396815,
+   "null:te_knn": -0.004365545348456229,
+   "null:te_gauss": 0.0012919053191654953,
+   "null:diff_scores": -0.0070908856000031165,
+   "residual:diff": -0.0006929739985035851,
+   "residual:te_knn": -0.0006568004332370038,
+   "residual:te_gauss": 2.176757366077395e-05,
+   "residual:diff_scores": -0.0005702012493662457
+  },
+  "KT:awake_ec": {
+   "real:diff": -0.007686512399195532,
+   "real:te_knn": -0.00464829018479917,
+   "real:te_gauss": 0.0013524344028609432,
+   "real:diff_scores": -0.0076193144716821485,
+   "null:diff": -0.006993004173028109,
+   "null:te_knn": -0.0041646120954336695,
+   "null:te_gauss": 0.0013209967807256543,
+   "null:diff_scores": -0.006864699169426251,
+   "residual:diff": -0.0006935082261674237,
+   "residual:te_knn": -0.00048367808936550054,
+   "residual:te_gauss": 3.143762213528908e-05,
+   "residual:diff_scores": -0.0007546153022558974
+  },
+  "KT:awake_eo": {
+   "real:diff": -0.005332581371416015,
+   "real:te_knn": -0.0031250264924804374,
+   "real:te_gauss": 0.0010518386596655627,
+   "real:diff_scores": -0.005200516738290312,
+   "null:diff": -0.004520134377968381,
+   "null:te_knn": -0.0023664562739728334,
+   "null:te_gauss": 0.001033205918290266,
+   "null:diff_scores": -0.004429561780441868,
+   "residual:diff": -0.0008124469934476337,
+   "residual:te_knn": -0.0007585702185076038,
+   "residual:te_gauss": 1.8632741375296708e-05,
+   "residual:diff_scores": -0.000770954957848445
+  },
+  "KT:drug": {
+   "real:diff": -0.0178238388834556,
+   "real:te_knn": -0.012470367318331876,
+   "real:te_gauss": 0.002412442336038793,
+   "real:diff_scores": -0.01721600876003114,
+   "null:diff": -0.016637888996684943,
+   "null:te_knn": -0.011028000787034108,
+   "null:te_gauss": 0.002368313752969712,
+   "null:diff_scores": -0.016210135975493405,
+   "residual:diff": -0.0011859498867706564,
+   "residual:te_knn": -0.001442366531297769,
+   "residual:te_gauss": 4.412858306908041e-05,
+   "residual:diff_scores": -0.0010058727845377365
+  },
+  "KT:recovery_ec": {
+   "real:diff": -0.010274439892288377,
+   "real:te_knn": -0.008292528501073171,
+   "real:te_gauss": 0.0009803010931680196,
+   "real:diff_scores": -0.01012611841206595,
+   "null:diff": -0.0090392804239428,
+   "null:te_knn": -0.007048965934112069,
+   "null:te_gauss": 0.0009641303682846082,
+   "null:diff_scores": -0.008963301423033336,
+   "residual:diff": -0.0012351594683455772,
+   "residual:te_knn": -0.0012435625669611021,
+   "residual:te_gauss": 1.617072488341173e-05,
+   "residual:diff_scores": -0.0011628169890326118
+  },
+  "MD:awake_ec": {
+   "real:diff": -0.006695084530476027,
+   "real:te_knn": -0.003571720985479221,
+   "real:te_gauss": 0.001440889016852177,
+   "real:diff_scores": -0.006577884199918734,
+   "null:diff": -0.00572179839436699,
+   "null:te_knn": -0.0027461865480933596,
+   "null:te_gauss": 0.0014352000158492388,
+   "null:diff_scores": -0.005656620104230903,
+   "residual:diff": -0.0009732861361090371,
+   "residual:te_knn": -0.0008255344373858609,
+   "residual:te_gauss": 5.689001002938036e-06,
+   "residual:diff_scores": -0.000921264095687831
+  },
+  "MD:awake_eo": {
+   "real:diff": -0.005116493599839857,
+   "real:te_knn": -0.00275418484688667,
+   "real:te_gauss": 0.001074416796661089,
+   "real:diff_scores": -0.0050551666131680405,
+   "null:diff": -0.003978652989674315,
+   "null:te_knn": -0.0016998486297302234,
+   "null:te_gauss": 0.0010594124252813575,
+   "null:diff_scores": -0.003912795626266875,
+   "residual:diff": -0.0011378406101655424,
+   "residual:te_knn": -0.0010543362171564466,
+   "residual:te_gauss": 1.5004371379731816e-05,
+   "residual:diff_scores": -0.0011423709869011654
+  },
+  "MD:drug": {
+   "real:diff": -0.020177711589560797,
+   "real:te_knn": -0.015828894520680658,
+   "real:te_gauss": 0.0018895889119664307,
+   "real:diff_scores": -0.019802026583322745,
+   "null:diff": -0.017003761785401198,
+   "null:te_knn": -0.012766971426022887,
+   "null:te_gauss": 0.0017971760587512384,
+   "null:diff_scores": -0.016769341968797216,
+   "residual:diff": -0.003173949804159594,
+   "residual:te_knn": -0.00306192309465777,
+   "residual:te_gauss": 9.241285321519248e-05,
+   "residual:diff_scores": -0.0030326846145255324
+  },
+  "MD:recovery_ec": {
+   "real:diff": -0.0073070959042632,
+   "real:te_knn": -0.004187060197838771,
+   "real:te_gauss": 0.0014035365998055628,
+   "real:diff_scores": -0.007236113886231741,
+   "null:diff": -0.007043521513693919,
+   "null:te_knn": -0.003924690996090314,
+   "null:te_gauss": 0.0013944982990854978,
+   "null:diff_scores": -0.006937134143758322,
+   "residual:diff": -0.00026357439056928246,
+   "residual:te_knn": -0.00026236920174845804,
+   "residual:te_gauss": 9.038300720065254e-06,
+   "residual:diff_scores": -0.0002989797424734188
+  },
+  "PF:awake_ec": {
+   "real:diff": -0.007528530109833984,
+   "real:te_knn": -0.00479886250843829,
+   "real:te_gauss": 0.0013646612291056855,
+   "real:diff_scores": -0.007463298378391934,
+   "null:diff": -0.00634159271830238,
+   "null:te_knn": -0.0035587819720515504,
+   "null:te_gauss": 0.0013400479508940757,
+   "null:diff_scores": -0.006276828289051814,
+   "residual:diff": -0.0011869373915316033,
+   "residual:te_knn": -0.0012400805363867395,
+   "residual:te_gauss": 2.4613278211609928e-05,
+   "residual:diff_scores": -0.0011864700893401202
+  },
+  "PF:awake_eo": {
+   "real:diff": -0.0060833302383910635,
+   "real:te_knn": -0.0037632424027495503,
+   "real:te_gauss": 0.0011918253923519626,
+   "real:diff_scores": -0.005955101823414797,
+   "null:diff": -0.004722162725395204,
+   "null:te_knn": -0.002184668595353208,
+   "null:te_gauss": 0.0011764439418804876,
+   "null:diff_scores": -0.004623149554603421,
+   "residual:diff": -0.0013611675129958593,
+   "residual:te_knn": -0.0015785738073963423,
+   "residual:te_gauss": 1.5381450471475366e-05,
+   "residual:diff_scores": -0.001331952268811375
+  },
+  "PF:drug": {
+   "real:diff": -0.03341275575616373,
+   "real:te_knn": -0.030670798842550223,
+   "real:te_gauss": 0.0011363692127687904,
+   "real:diff_scores": -0.03315219327778254,
+   "null:diff": -0.02319875946362913,
+   "null:te_knn": -0.02072078971505425,
+   "null:te_gauss": 0.0011295444526669678,
+   "null:diff_scores": -0.022960289240594223,
+   "residual:diff": -0.010213996292534607,
+   "residual:te_knn": -0.009950009127495975,
+   "residual:te_gauss": 6.824760101822408e-06,
+   "residual:diff_scores": -0.010191904037188323
+  },
+  "PF:recovery_ec": {
+   "real:diff": -0.006144319179267433,
+   "real:te_knn": -0.0021800518287026396,
+   "real:te_gauss": 0.0019354087676677224,
+   "real:diff_scores": -0.006057864012659649,
+   "null:diff": -0.005454853779297194,
+   "null:te_knn": -0.0017695425091667828,
+   "null:te_gauss": 0.001898495317714554,
+   "null:diff_scores": -0.00539172555017663,
+   "residual:diff": -0.0006894653999702405,
+   "residual:te_knn": -0.0004105093195358565,
+   "residual:te_gauss": 3.691344995316841e-05,
+   "residual:diff_scores": -0.0006661384624830194
+  }
+ },
+ "contrasts": {
+  "KTMD:awake_eo": {
+   "real:diff": {
+    "mean": 0.0009965275403201242,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:te_knn": {
+    "mean": 0.00024272980159544254,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:te_gauss": {
+    "mean": -0.0005493445490360234,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": 0.0009502525239257253,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:diff": {
+    "mean": 0.0008842164986411647,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:te_knn": {
+    "mean": 0.00011127044438915174,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:te_gauss": {
+    "mean": -0.000549431589043485,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.0008476271063392687,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:diff": {
+    "mean": 0.00011231104167895979,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:te_knn": {
+    "mean": 0.00013145935720629092,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:te_gauss": {
+    "mean": 8.704000746151129e-08,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": 0.00010262541758645702,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   }
+  },
+  "KTMD:drug": {
+   "real:diff": {
+    "mean": -0.026901752880154534,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.02602604889267466,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": 2.7206265730901066e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": -0.026336740627824467,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.019345268344017216,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.01876160512424295,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -3.8516674018177583e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.018947579320243824,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.00755648453613731,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.007264443768431711,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 6.572293974907872e-05,
+    "units": 4,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "residual:diff_scores": {
+    "mean": -0.007389161307580643,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   }
+  },
+  "KTMD:recovery_ec": {
+   "real:diff": {
+    "mean": 0.00023917027609436268,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0013256942257157788,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:te_gauss": {
+    "mean": 0.0007071742410878981,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": 0.00033428096485258396,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": -0.00011129691179548361,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0008850445691118133,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:te_gauss": {
+    "mean": 0.0006990251683774664,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.00010384967654837617,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": 0.0003504671878898455,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": 0.00044064965660396607,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:te_gauss": {
+    "mean": 8.149072710431578e-06,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": 0.00043813064140096024,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   }
+  },
+  "SLP:awake_eo": {
+   "real:diff": {
+    "mean": -0.0008225424551014764,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.0013341456092648637,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -0.00011299832509497406,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": -0.000673518631426487,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": 0.00020434359075655983,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_knn": {
+    "mean": 6.549105790801648e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": -0.0001282880099624283,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": 0.0002185921976734709,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": -0.0010268860458580362,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0013996366671728804,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 1.5289684867454454e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -0.0008921108290999556,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_deep": {
+   "real:diff": {
+    "mean": -0.005975996825593107,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.006556082450339417,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -0.00032197220258727694,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": -0.005779685363219505,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.00378788304613646,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.004261780368032845,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -0.0003170235340488286,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": -0.003779773019259791,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.0021881137794566466,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.002294302082306573,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": -4.948668538448492e-06,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff_scores": {
+    "mean": -0.0019999123439597127,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_light": {
+   "real:diff": {
+    "mean": -0.0006533763387701155,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.00031022727107775643,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": 7.373828535117341e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": -0.0005660279287289786,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": -0.0001965506430359165,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": 5.660177617745676e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": 7.23628920380377e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": -0.00017036700187029964,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.00045682569573419894,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.0003668290472552128,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": 1.3753933131359058e-06,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -0.00039566092685867796,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "SLP:sleep_mid": {
+   "real:diff": {
+    "mean": -0.003549297591341665,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.0034953682594860086,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -4.3412737233220486e-05,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": -0.003347910674358226,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.0024980571158726046,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.002338791511913755,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -6.753565818331327e-05,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": -0.0024492235911756804,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.0010512404754690632,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0011565767475722542,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 2.4122920950092795e-05,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.0008986870831825445,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:awake_eo": {
+   "real:diff": {
+    "mean": 0.0023539310277795175,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0015232636923187325,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": -0.0003005957431953805,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": 0.0024187977333918363,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.002472869795059728,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0017981558214608365,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": -0.0002877908624353882,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.0024351373889843833,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": -0.00011893876728020998,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.0002748921291421032,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -1.2804880759992372e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -1.6339655592547542e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "KT:drug": {
+   "real:diff": {
+    "mean": -0.010137326484260066,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.007822077133532706,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": 0.0010600079331778496,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": -0.009596694288348993,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.009644884823656833,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.006863388691600438,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": 0.0010473169722440582,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.009345436806067153,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.0004924416606032329,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0009586884419322685,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 1.2690960933791335e-05,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.00025125748228183904,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:recovery_ec": {
+   "real:diff": {
+    "mean": -0.002587927493092844,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.003644238316274002,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -0.00037213330969292356,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": -0.002506803940383803,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.0020462762509146897,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.002884353838678399,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -0.00035686641244104606,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": -0.002098602253607085,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.0005416512421781535,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0007598844775956015,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": -1.526689725187735e-05,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff_scores": {
+    "mean": -0.0004082016867767143,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:awake_eo": {
+   "real:diff": {
+    "mean": 0.00157859093063617,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0008175361385925505,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_gauss": {
+    "mean": -0.00036647222019108787,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": 0.0015227175867506945,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.0017431454046926754,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0010463379183631365,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_gauss": {
+    "mean": -0.0003757875905678813,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": 0.0017438244779640275,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": -0.00016455447405650534,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.00022880177977058582,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": 9.31537037679378e-06,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.00022110689121333424,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "MD:drug": {
+   "real:diff": {
+    "mean": -0.013482627059084769,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.012257173535201438,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": 0.00044869989511425376,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": -0.01322414238340401,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.011281963391034208,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.010020784877929527,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": 0.00036197604290199984,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.011112721864566312,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.002200663668050557,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0022363886572719094,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 8.672385221225445e-05,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.0021114205188377012,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:recovery_ec": {
+   "real:diff": {
+    "mean": -0.0006120113737871729,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_knn": {
+    "mean": -0.0006153392123595504,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": -3.735241704661419e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": -0.0006582296863130073,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": -0.0013217231193269287,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0011785044479969541,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": -4.0701716763741e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": -0.00128051403952742,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": 0.0007097117455397546,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": 0.0005631652356374028,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": 3.349299717127219e-06,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": 0.0006222843532144122,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:awake_eo": {
+   "real:diff": {
+    "mean": 0.00144519987144292,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0010356201056887393,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_gauss": {
+    "mean": -0.00017283583675372282,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": 0.0015081965549771374,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.0016194299929071759,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0013741133766983424,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_gauss": {
+    "mean": -0.00016360400901358808,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.0016536787344483923,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": -0.00017423012146425612,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.0003384932710096026,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -9.231827740134563e-06,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -0.00014548217947125475,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:drug": {
+   "real:diff": {
+    "mean": -0.02588422564632975,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.02587193633411193,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -0.00022829201633689533,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": -0.025688894899390614,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.01685716674532675,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0171620077430027,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -0.00021050349822710775,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": -0.01668346095154241,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.009027058901003002,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.008709928591109237,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": -1.778851810978752e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -0.009005433947848203,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "PF:recovery_ec": {
+   "real:diff": {
+    "mean": 0.0013842109305665508,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_knn": {
+    "mean": 0.00261881067973565,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_gauss": {
+    "mean": 0.0005707475385620369,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": 0.0014054343657322853,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": 0.0008867389390051874,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_knn": {
+    "mean": 0.0017892394628847676,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_gauss": {
+    "mean": 0.0005584473668204782,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": 0.0008851027388751837,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": 0.0004974719915613627,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": 0.000829571216850883,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_gauss": {
+    "mean": 1.2300171741558484e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.0005203316268571008,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   }
+  }
+ }
+}

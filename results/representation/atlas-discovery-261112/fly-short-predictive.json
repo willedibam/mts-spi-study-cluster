@@ -1,0 +1,124 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/fly-short",
+ "reference": "awake",
+ "channels": 16,
+ "draws": 3,
+ "states": {
+  "all:awake": {
+   "real:diff": -0.005747081199081697,
+   "real:te_knn": -0.0007327865492636765,
+   "real:te_gauss": 0.002524263811463398,
+   "real:diff_scores": -0.005622676200444258,
+   "null:diff": -0.006184345062656281,
+   "null:te_knn": -0.0009214019745745182,
+   "null:te_gauss": 0.002457638567046482,
+   "null:diff_scores": -0.006146984280538244,
+   "residual:diff": 0.00043726386357458496,
+   "residual:te_knn": 0.00018861542531084158,
+   "residual:te_gauss": 6.662524441691575e-05,
+   "residual:diff_scores": 0.0005243080800939873
+  },
+  "all:isoflurane": {
+   "real:diff": -0.004977253607680603,
+   "real:te_knn": 3.1209753648727815e-05,
+   "real:te_gauss": 0.0024045658287637633,
+   "real:diff_scores": -0.004798626906622385,
+   "null:diff": -0.00531965963158325,
+   "null:te_knn": -0.0002451339928113925,
+   "null:te_gauss": 0.002367062182675691,
+   "null:diff_scores": -0.005321729124528004,
+   "residual:diff": 0.00034240602390264756,
+   "residual:te_knn": 0.00027634374646012035,
+   "residual:te_gauss": 3.750364608807225e-05,
+   "residual:diff_scores": 0.0005231022179056181
+  }
+ },
+ "contrasts": {
+  "all:isoflurane": {
+   "real:diff": {
+    "mean": 0.0007698275914010928,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "real:te_knn": {
+    "mean": 0.0007639963029124042,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "real:te_gauss": {
+    "mean": -0.00011969798269963521,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "real:diff_scores": {
+    "mean": 0.0008240492938218721,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "null:diff": {
+    "mean": 0.0008646854310730303,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "null:te_knn": {
+    "mean": 0.0006762679817631256,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "null:te_gauss": {
+    "mean": -9.057638437079147e-05,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "null:diff_scores": {
+    "mean": 0.000825255156010241,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "residual:diff": {
+    "mean": -9.485783967193738e-05,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "residual:te_knn": {
+    "mean": 8.77283211492787e-05,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "residual:te_gauss": {
+    "mean": -2.9121598328843503e-05,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "residual:diff_scores": {
+    "mean": -1.2058621883691599e-06,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   }
+  }
+ }
+}

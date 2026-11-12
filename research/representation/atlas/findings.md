@@ -91,7 +91,20 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - The drop comes from DCE-kNN TE becoming more negative (−.010 to −.027); GC barely moves (+.000 to +.007). A negative kNN TE is bias.
   - Across all non-reference sessions the drop tracks the fall in channel spectral entropy: r = +.90 (2-s, n = 30) and +.85 (10-s, n = 16), not peak frequency (−.01, −.20). Fly, whose spectral entropy does not fall, shows nothing; sleep, which falls little, shows little.
   - Within-unit spectral adjustment halves it (2-s −.010 to −.016, still 0/4–0/11 except ketamine 1/4), and linear adjustment need not remove a nonlinear bias.
-- **What would give a signature:** the level against a spectrum-matched null, which shares the bias. Pyspi-free: 16-channel subsets, KSG TE with the AUTO Theiler window against Gaussian TE, real − multivariate IAAFT (several draws), per state, preferably with longer windows (continuous NeuroTycho intervals allow 30–60 s) and Gaussian TE also on normal scores (heavy tails inflate it). First a positive control with known nonlinear predictive coupling (electronic Rössler hardware, r7/r9 banks), since an instrument that misses it there will miss it in ECoG.
+- **Against a spectrum-matched null** (`predictive.py`, job 183723401, `predictive-controls.json`, `*-predictive.json`; pyspi-free, 16 evenly spaced channels, KSG TE with pyspi's AUTO Theiler window against Gaussian TE, three spectrum-final multivariate IAAFT draws per window):
+  - **Controls (12 windows each):**
+    - linear systems: residual ≈ 0 (fast ±.001);
+    - slow linear system: the raw bias is large (−.057 at T = 200, −.034 at T = 1000) and the null reproduces it, leaving −.008 at T = 200 (0/12, so the null is imperfect for slow short windows) and −.001 at T = 1000;
+    - quadratic coupling (invisible to GC): on the coupled pairs the residual is **positive**, +.09 to +.13 for fast systems and +.06 for slow ones at T = 1000, but only +.007 at T = 200. A median over all pairs barely moves when few pairs are coupled.
+  - **Atlas, residual change against wake (nats):**
+
+    | Arm | Ketamine | Ketamine–medetomidine | Medetomidine | Propofol | Sleep | Eyes open |
+    |---|---|---|---|---|---|---|
+    | 2-s | −.002 (1/4) | −.006 (0/11, 0/4 animals) | −.004 (0/4) | −.006 (0/4) | +.000 | ≈ 0 |
+    | 10-s | −.001 (0/2) | −.008 (0/4, 0/4 animals) | −.002 (0/2) | −.009 (0/2) | deep −.002 | ≈ 0 |
+
+    The null reproduces 65–80% of the raw fall; normal-score Gaussian TE gives the same residual. Fly: 0.
+  - **Reading.** A residual survives under ketamine–medetomidine and propofol, strongest in 10-s windows, where the linear control's artefact is −.001. In 2-s windows it is no larger than the slow-linear control's −.008, so it is not distinguished there. Its sign is opposite to what nonlinear coupling gives in the controls: model-free TE is *below* what a linear process with the same spectrum predicts. Gaussian TE does not differ between real and surrogate, so the kNN side carries it. The likeliest reading is that the target's own non-Gaussian dynamics (for example, sharp or asymmetric slow waves) explain away more of the source's apparent prediction once conditioning is model-free [I]; the deciding check is kNN against Gaussian active information storage, real − IAAFT. It matches the r10 16-channel result (d −3.0, 0/6) and the raw `gc|te` grouping (ketamine–medetomidine, propofol and deep sleep against the single agents).
 
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
 
