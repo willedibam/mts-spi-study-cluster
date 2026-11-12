@@ -54,3 +54,23 @@ def test_score_finds_a_planted_class_effect(tmp_path):
     assert abs(cls['mediation']['conditions']['KT:drug']['raw']['median_sd']) < 3
     assert cls['sign handling: signed vs sq']['tier']['KT:drug'] == 'partial'  # two members, one statistic
     assert set(report['rankings']) >= {'all_drugs', 'all_but_one', 'only:KT:drug'}
+
+
+def test_weighting_chain_and_null(tmp_path):
+    from research.representation.atlas.assumptions import _weighting_profiles, weighting_null
+    rng = np.random.default_rng(3)
+    x = rng.normal(size=(400, 5))
+    x[:, 1] += x[:, 0]                                         # zero-lag coupling: r^2 equals the phase-free version
+    p = _weighting_profiles(x)
+    assert p['r2'][0] <= p['power_weighted_coh'][0] < 1.25 * p['r2'][0]   # phase-free >= r^2; gap = |S| estimation bias
+    rows, arrays = [], {}
+    for s in ('awake_ec', 'drug'):
+        for w in range(4):
+            wid = f'u-{s}-{w}'
+            arrays[wid] = rng.normal(size=(100, 6))
+            rows.append(dict(id=wid, unit='u', state=s, M=6))
+    np.savez(tmp_path / 'windows.npz', **arrays)
+    (tmp_path / 'manifest.json').write_text(json.dumps(dict(fs=100, rows=rows)))
+    weighting_null(tmp_path, tmp_path / 'o.json', 'awake_ec', draws=1)
+    c = json.loads((tmp_path / 'o.json').read_text())['contrasts']['all:drug']
+    assert {'real:r2|low_band_coh', 'stationary:r2|low_band_coh:mean_profile', 'zero_phase:r2|power_weighted_coh'} <= set(c)

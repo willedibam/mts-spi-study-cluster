@@ -475,6 +475,102 @@ def score(reduced, output, reference, reliability=None, top=40, ceiling=.98):
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+WEIGHTING = ('r2', 'power_weighted_coh', 'low_band_coh')
+
+
+def _weighting_profiles(x, nw=3, k=5):
+    """Pyspi-free chain for z(r^2, low-band mean coherence), one window (T x M), upper triangle:
+      r2: zero-lag Pearson r^2 (all frequencies, power-weighted, real part of the cross-spectrum);
+      power_weighted_coh: (sum_f |S_xy|)^2 / (sum_f S_xx sum_f S_yy) over (0, .5): r^2 with every phase set to
+        zero (lag-insensitive, still power-weighted); equals r^2 when all coupling is in phase;
+      low_band_coh: mean over (0, .25] of |S_xy|^2 / (S_xx S_yy) (lag-insensitive, every frequency weighted
+        equally): pyspi cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25 up to estimator details.
+    r2 -> power_weighted_coh changes only lag sensitivity; power_weighted_coh -> low_band_coh changes the
+    weighting across frequency (and the band edge)."""
+    from scipy.signal.windows import dpss
+    T, M = x.shape
+    x = (x - x.mean(0)) / x.std(0)
+    a, b = np.triu_indices(M, 1)
+    f = np.fft.rfftfreq(T)
+    Xk = np.fft.rfft(dpss(T, nw, k)[:, :, None] * x[None], axis=1)
+    full, low = (f > 0) & (f < .5), (f > 0) & (f <= .25)
+    S = np.einsum('kfi,kfj->fij', Xk[:, full], Xk[:, full].conj()) / k
+    d = np.real(np.einsum('fii->fi', S))
+    Sab = np.abs(S[:, a, b])
+    r = (x.T @ x / T)[a, b]
+    lowf = low[full]
+    coh = Sab[lowf] ** 2 / (d[lowf][:, a] * d[lowf][:, b])
+    return dict(r2=r ** 2, power_weighted_coh=Sab.sum(0) ** 2 / (d[:, a].sum(0) * d[:, b].sum(0)),
+                low_band_coh=coh.mean(0))
+
+
+def _weighting_state(X):
+    P = [_weighting_profiles(x) for x in X]
+    out = {}
+    for p, q in combinations(WEIGHTING, 2):
+        out[f'{p}|{q}'] = float(np.nanmean([np.corrcoef(w[p], w[q])[0, 1] for w in P]))
+        out[f'{p}|{q}:mean_profile'] = float(np.corrcoef(np.mean([w[p] for w in P], 0), np.mean([w[q] for w in P], 0))[0, 1])
+    return out
+
+
+def weighting_null(bank, output, reference, draws=2, channels=64, seed=0):
+    """Is the drug fall of z(r^2, low-band mean coherence) (reverse ranking, findings.md) a reordering of the
+    state's coupling, or estimation noise at concentrated spectra? Per unit and state (evenly spaced channel
+    subset): z along the chain r2 -> power_weighted_coh -> low_band_coh per window and on window-mean profiles,
+    for real windows and two stationary Gaussian nulls with the same T and window count (zero_phase: state's
+    mean cross-spectrum with phases zeroed; stationary: the mean cross-spectrum itself). Read before the run:
+    a per-window fall that the stationary null reproduces while the mean-profile z holds is noise; a fall in
+    the mean-profile z is a reordering of the state's mean coupling (linear-spectral tier); the link that
+    falls names it (lag sensitivity or frequency weighting). Pyspi-free."""
+    from research.representation.atlas.discovery import _mean_periodogram, _zero_phase, gaussian_draws
+    from research.representation.character_axes.episodic import sleep_tertiles
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    rows = manifest['rows']
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    agent = {r['unit']: r.get('agent', 'all') for r in rows}
+    animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
+    rng = np.random.default_rng(seed)
+    table = {}
+    with np.load(bank / 'windows.npz') as archive:
+        M = np.asarray(archive[rows[0]['id']]).shape[1]
+        sub = np.unique(np.round(np.linspace(0, M - 1, min(channels, M))).astype(int))
+        for u, s in sorted(set(zip(unit, state))):
+            ix = np.flatnonzero((unit == u) & (state == s))
+            if len(ix) < 3:
+                continue
+            X = np.stack([np.asarray(archive[rows[i]['id']], dtype=np.float64)[:, sub] for i in ix])
+            n, T = len(X), X.shape[1]
+            S = _mean_periodogram(X)
+            mean = lambda L: {key: float(np.mean([d[key] for d in L])) for key in L[0]}
+            table[(u, s)] = dict(real=_weighting_state(X),
+                                 zero_phase=mean([_weighting_state(gaussian_draws(_zero_phase(S), n, T, rng)) for _ in range(draws)]),
+                                 stationary=mean([_weighting_state(gaussian_draws(S, n, T, rng)) for _ in range(draws)]))
+    report = dict(bank=str(bank), reference=reference, draws=draws, channels=sub.tolist(), states={}, contrasts={})
+    for (u, s), t in table.items():
+        e = report['states'].setdefault(f'{agent[u]}:{s}', {})
+        for kind, v in t.items():
+            for key, y in v.items():
+                e.setdefault(f'{kind}:{key}', []).append(y)
+        if s == reference or (u, reference) not in table:
+            continue
+        c = report['contrasts'].setdefault(f'{agent[u]}:{s}', {})
+        for kind, v in t.items():
+            for key, y in v.items():
+                c.setdefault(f'{kind}:{key}', []).append((animal[u], y - table[(u, reference)][kind][key]))
+    report['states'] = {k: {m: float(np.nanmean(v)) for m, v in e.items()} for k, e in report['states'].items()}
+    for e in report['contrasts'].values():
+        for m, v in e.items():
+            x = np.array([y for _, y in v])
+            by = {}
+            for a_, y in v:
+                by.setdefault(a_, []).append(y)
+            e[m] = dict(mean=float(np.nanmean(x)), units=len(x), positive=int((x > 0).sum()), animals=len(by),
+                        animals_positive=int(sum(np.mean(y) > 0 for y in by.values())))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
 def reliability_all(bank, pyspi_dir, reduced, output, reference, chunk=40, jobs=8):
     """discovery.reliability for every valid SPI of the reduced arm, in chunks (one pass needs about 200 GB):
     reference-state reliability per SPI and its per-condition change."""
@@ -512,8 +608,15 @@ if __name__ == '__main__':
     c.add_argument('--output', type=Path, required=True)
     c.add_argument('--reference', default='awake_ec')
     c.add_argument('--jobs', type=int, default=8)
+    w = sub.add_parser('weighting-null')
+    w.add_argument('bank', type=Path)
+    w.add_argument('--output', type=Path, required=True)
+    w.add_argument('--reference', default='awake_ec')
+    w.add_argument('--channels', type=int, default=64)
     args = p.parse_args()
-    if args.command == 'reliability':
+    if args.command == 'weighting-null':
+        weighting_null(args.bank, args.output, args.reference, channels=args.channels)
+    elif args.command == 'reliability':
         reliability_all(args.bank, args.pyspi, args.reduced, args.output, args.reference, jobs=args.jobs)
     elif args.command == 'catalogue':
         catalogue([x for x in args.spis.read_text().split() if x], args.output)
