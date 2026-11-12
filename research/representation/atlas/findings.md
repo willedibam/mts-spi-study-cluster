@@ -152,27 +152,38 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - Global Δz is about 0 (−.013 to +.014).
   - Held-out lower-tail excess +.22 to +.31 in every session of every drug (4/4, 11/11, 4/4, 4/4). Split-half .75–.82; within-animal agreement .79–.86 against .30 for eyes-open; sleep 1/7. It does not track A's spread.
   - But it tracks the channel spectral-entropy change: r −.42 under ketamine, −.58 to −.80 under the others.
-  - The regularised LedoitWolf version shows nothing.
+  - The regularised LedoitWolf version fails the held-out test, although its maps also agree within animal (.60–.74 against .24 for eyes-open).
   - The likeliest reading is that unregularised precision (T = 200, M = 125) degrades most at the spectrally concentrated channels [I]: an estimation effect, localised.
-- **Clean passes under the rule:** only mediation under ketamine, and `plv|pec` under medetomidine. Neither is a cross-drug result.
+- **Under the rule nothing passes cleanly.** The two exceptions, mediation under ketamine and `plv|pec` under medetomidine, sit at |r| ≈ .42 against the .5 cutoff. The spread covariate does not discriminate on its own: it is .6–.7 on the eyes-open maps too, it flags the known-positive MI pair, and it covers only A. So these results show that raw node-wise z is tied to local spread, not that the local changes lack character. The residualised rerun is below.
+- **Residualised rerun** (job 183766906; exploratory, because the readout was changed after the first results). Each half's change map is regressed on the changes in the spread of A, the spread of B and the channel spectral entropy, then held out as before.
+  - **Mediation (`cov-sq|prec-sq`, Empirical) keeps a local signature.** Ketamine +.17 (4/4), ketamine–medetomidine +.19 (10/11), propofol +.12 (4/4), medetomidine +.12 (2/4). Global Δz stays about 0.
+    - The LedoitWolf version does not keep it (5/11 under ketamine–medetomidine). So it is a change in which channels' unregularised partial dependence departs from their marginal dependence.
+    - A precision estimate conditioned on 124 channels from 200 samples may well be what moves [I].
+  - **The control pairs also pass under single agents, at tiny size.** Saturation-only: ketamine and medetomidine +.013 to +.015 (4/4). Identity: ketamine +.004 (4/4). So passing the residualised test is not enough on its own: the size has to clear the controls.
+    - The low-band `cohmag|plv` passes (ketamine–medetomidine 10/11, propofol 4/4) at .011–.016, which is control size. Not read.
+  - **Elsewhere:** scattered single-agent passes (MI kernel, `je`, kNN-MI against lagged kNN-MI, `xcorr`, sign structure under ketamine). No other pair passes under three or more agents.
 - **Scope.** Independent review ran the MI pair's fine-grained analysis beyond IAAFT (notes, `review-nature-level.md`). It reports:
   - propofol concentration that holds out;
   - edge maps that do not reproduce across sessions;
   - ketamine–medetomidine diffuse.
 
-### Further candidate pairs (now in `PAIRS`, `*-pairs.json`)
+### Further candidate pairs (now in `PAIRS`; NeuroTycho `*-pairs.json` regenerated, fly still has the 42-pair file)
 
 2-s arm, raw (spectral) Δz.
 
 - **Sign structure, z(r, r²) and z(ρ, ρ²).** Wake z = .49; eyes-open SD .037.
   - Falls under every drug, every session: ketamine −.20, ketamine–medetomidine −.17 (0/11), medetomidine −.13, propofol −.15. Spectral adjustment still gives −.07 to −.22 (0–1 sessions positive).
   - Sleep −.003. The 10-s arm is weaker: ketamine −.22, the others −.06 to −.07 with mixed sessions, deep sleep +.02.
-  - Under the common-average reference, mean r is about 0 by construction (.03 wake, about .00 under ketamine–medetomidine, medetomidine and propofol), and about half the edges are negative.
+  - Mean r is near 0: .03 in wake and about .00 under ketamine–medetomidine, medetomidine and propofol. The common-average reference pushes it toward 0 [I]. About half the edges are negative.
   - So z(r, r²) reads whether the strongly coupled pairs are in-phase (wake) or include strong anti-correlations (drugs). It is a property of the across-pair distribution of r alone, so it does not need SPI–SPI.
-  - **Unresolved:** whether the reference produces it. A stronger, spatially graded common mode becomes a dipole of positive and negative correlations after the common-average reference. Deciding test: the same z on a reference-free montage (bipolar or Laplacian) from the raw recordings.
+  - **Sign-structure null** (`discovery.py sign-null`, job 183766906, `*-sign-null.json`): z of each unit-state's window-mean r profile (noise averaged out), and stationary Gaussian windows with the state's mean cross-spectrum.
+    - Under ketamine–medetomidine, medetomidine and propofol, the per-window fall is noise. The null reproduces it (−.169 against −.165 under ketamine–medetomidine), and the window-mean profile does not fall (−.005, −.030, +.039).
+    - So it is fewer effective samples making r noisier, with no anticorrelation structure.
+    - Ketamine is different: its window-mean profile falls as much as the per-window z (2-s −.193, 1/4 positive; 10-s −.227, 0/2). Under ketamine, strongly anticorrelated pairs are part of the mean coupling pattern.
+  - **Unresolved for ketamine:** whether the reference produces it. A stronger, spatially graded common mode becomes a dipole of positive and negative correlations after the common-average reference. Deciding test: the same z on a reference-free montage (bipolar or Laplacian) from the raw recordings.
 - **Saturation control, z(r², Gaussian MI).** These are a deterministic monotone function of each other, so any change is pure strength-distribution mechanics.
   - Under every drug it moves by −.010 (0/4, 0/11, 0/4, 1/4 positive).
-  - That equals the raw full-bank change of the rank pairs (`cov|spearmanr` −.003 to −.011) and of `cov-sq|dcorr` (−.006 to −.016). So those raw changes are uninterpretable without a surrogate.
+  - That is the same size as the raw full-bank change of the rank pairs (`cov|spearmanr` −.003 to −.011) and of `cov-sq|dcorr` (−.006 to −.016). Changes of about .01 at the ceiling therefore happen mechanically, and those raw changes are not distinguishable from saturation without a surrogate. Independent review's beyond-IAAFT form ladder is the version to read.
 - **Amplitude-weighted against amplitude-free synchrony, high band (`cohmag|plv`, 25–50 Hz).**
   - Ketamine +.06 (4/4), ketamine–medetomidine +.04 (8/11), propofol +.03 (4/4).
   - Medetomidine −.055 (0/4): the medetomidine exception again, as for band locus and MinCovDet.
@@ -180,7 +191,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 - **Burst against proportional amplitude coupling, orthogonalised (`pec_orth|pec_orth_log`).**
   - +.04 to +.05 under every drug, every session (11/11 under ketamine–medetomidine); sleep +.009; eyes-open SD .009.
   - But `pec_orth` is unreliable between windows (.03), and a log transform also reads envelope marginal shape. Not read.
-- **Direct against marginal with partial correlation.** `pcorr` Empirical falls (−.06 to −.10, 0 positive), but it is node-additive (R² .63–.78). The LedoitWolf version is mixed. Not read.
+- **Direct against marginal with partial correlation.** `pcorr` Empirical falls under ketamine–medetomidine, medetomidine and propofol (−.06 to −.10, 0 positive); ketamine −.014 (1/4). But it is node-additive (R² .63–.78). The LedoitWolf version is mixed. Not read.
 - **No signal:** `psi|gc` (phase lead against predictive direction), and `xcorr` max against mean (null SD .07).
 
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
