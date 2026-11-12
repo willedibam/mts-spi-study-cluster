@@ -11653,7 +11653,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "sign handling: signed vs sq",
@@ -15016,7 +15025,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "lag: 0 vs L>1",
@@ -18467,7 +18485,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "aggregation: mean vs max",
@@ -20832,7 +20859,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Empirical vs spearman",
@@ -22463,7 +22499,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Empirical vs kendall",
@@ -24094,15 +24139,24 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: kendall vs spearman",
    "members": 16,
    "usable": 16,
-   "character": null,
+   "character": "weighting of large rank discordances (fixed relation under a Gaussian copula)",
    "literal": "two rank correlations",
-   "confound": "near-identity ceiling control",
+   "confound": "near-identity ceiling",
    "statistics": [
     "corr"
    ],
@@ -25725,7 +25779,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "band: broad vs low",
@@ -27362,7 +27425,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "band: broad vs high",
@@ -28999,7 +29071,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "band: low vs high",
@@ -30636,7 +30717,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "mediation",
@@ -31540,7 +31630,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: gaussian vs kernel",
@@ -32267,7 +32366,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "lag: 0 vs 1",
@@ -32988,7 +33096,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": "partial",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": "partial"
+   }
   },
   {
    "cls": "estimator: gaussian vs kozachenko",
@@ -33531,7 +33648,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "zero-lag removal (coherence)",
@@ -34253,7 +34379,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "amplitude weighting of synchrony",
@@ -34975,7 +35110,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "precedence (spectral)",
@@ -35697,7 +35841,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "phase-locking debiasing",
@@ -36419,7 +36572,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "imaginary-part weighting",
@@ -37143,7 +37305,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: default vs order-1",
@@ -37864,7 +38035,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: default vs order-20",
@@ -38585,7 +38765,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: order-1 vs order-20",
@@ -39306,7 +39495,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Empirical vs LedoitWolf",
@@ -39756,7 +39954,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Empirical vs MinCovDet",
@@ -40206,7 +40413,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "convergent",
+    "KTMD:drug": "convergent",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Empirical vs OAS",
@@ -40656,7 +40872,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Empirical vs Shrunk",
@@ -41106,7 +41331,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "mediation (normalised)",
@@ -41555,7 +41789,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: LedoitWolf vs MinCovDet",
@@ -42005,7 +42248,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "convergent",
+    "KTMD:drug": "convergent",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: LedoitWolf vs OAS",
@@ -42637,7 +42889,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: LedoitWolf vs Shrunk",
@@ -43269,7 +43530,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: MinCovDet vs OAS",
@@ -43719,7 +43989,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "convergent",
+    "KTMD:drug": "convergent",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: MinCovDet vs Shrunk",
@@ -44169,7 +44448,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "convergent",
+    "KTMD:drug": "convergent",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: OAS vs Shrunk",
@@ -44801,7 +45089,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "precision normalisation",
@@ -45250,7 +45547,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: kernel vs kozachenko",
@@ -45792,7 +46098,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "lag one sample (information)",
@@ -46332,7 +46647,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: max_eig vs trace",
@@ -46345,7 +46669,8 @@
     "coint_johansen"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   },
   {
    "cls": "option: order-0 vs order-1",
@@ -46358,7 +46683,8 @@
     "coint_johansen"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   },
   {
    "cls": "elastic distance against elastic similarity",
@@ -46807,7 +47133,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: dtw vs sgddtw",
@@ -47073,7 +47408,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "estimator-local",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "one marginal entropy removed",
@@ -47522,7 +47866,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: gaussian vs kraskov",
@@ -47972,7 +48325,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: gaussian vs kraskov_DCE",
@@ -48422,7 +48784,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: kraskov vs kraskov_DCE",
@@ -48872,7 +49243,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "convergent",
+    "KTMD:drug": "convergent",
+    "MD:drug": "partial",
+    "PF:drug": "convergent",
+    "SLP:sleep_deep": "partial",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: kraskov vs kernel",
@@ -49231,7 +49611,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: kernel vs kraskov_DCE",
@@ -49590,7 +49979,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "conditioning on the target past",
@@ -49948,7 +50346,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "zero-lag removal (debiased phase)",
@@ -50397,7 +50804,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: linear vs log",
@@ -50845,7 +51261,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "best lag against zero lag",
@@ -51203,7 +51628,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: LedoitWolf vs spearman",
@@ -51560,7 +51994,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: LedoitWolf vs kendall",
@@ -51917,7 +52360,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: MinCovDet vs spearman",
@@ -52274,7 +52726,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": "partial",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: MinCovDet vs kendall",
@@ -52631,7 +53092,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": "partial",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: OAS vs spearman",
@@ -52988,7 +53458,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: OAS vs kendall",
@@ -53345,7 +53824,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Shrunk vs spearman",
@@ -53702,7 +54190,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Shrunk vs kendall",
@@ -54059,7 +54556,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: threshold-False vs threshold-True",
@@ -54416,7 +54922,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: unconstrained vs itakura",
@@ -54774,7 +55289,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "partial",
+    "KTMD:drug": "partial",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": "partial",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: unconstrained vs sakoe-chiba",
@@ -55132,7 +55656,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: itakura vs sakoe-chiba",
@@ -55490,7 +56023,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": null,
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: dtw vs euclidean",
@@ -55503,7 +56045,8 @@
     "bary"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   },
   {
    "cls": "estimator: euclidean vs sgddtw",
@@ -55516,7 +56059,8 @@
     "bary"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   },
   {
    "cls": "aggregation: corr vs max",
@@ -55529,7 +56073,8 @@
     "bary"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   },
   {
    "cls": "marginal entropies added",
@@ -55887,7 +56432,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: k1 vs k10",
@@ -56153,7 +56707,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: norm-0 vs norm-1",
@@ -56510,7 +57073,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Geo vs star",
@@ -56867,7 +57439,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "zero-lag removal (envelope)",
@@ -57224,7 +57805,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "partial",
+    "MD:drug": "partial",
+    "PF:drug": "partial",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "sign handling: signed vs abs",
@@ -57581,7 +58171,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "identity control (distance)",
@@ -57848,7 +58447,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": null,
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "any dependence against linear",
@@ -58115,7 +58723,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": null,
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "saturation control",
@@ -58382,15 +58999,24 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: cityblock vs euclidean",
    "members": 1,
    "usable": 1,
-   "character": null,
-   "literal": null,
-   "confound": null,
+   "character": "tail weight of the pair disagreement signal x - y (mean absolute against RMS difference; constant for Gaussian x - y)",
+   "literal": "L1 against L2 distance",
+   "confound": "ceiling; marginal shape of each channel enters x - y",
    "statistics": [
     "pdist"
    ],
@@ -58648,7 +59274,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: cosine vs euclidean",
@@ -58914,15 +59549,24 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": null,
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: chebyshev vs euclidean",
    "members": 1,
    "usable": 1,
-   "character": null,
-   "literal": null,
-   "confound": null,
+   "character": "worst-case disagreement: intermittent large divergence of a pair",
+   "literal": "L-infinity against L2 distance",
+   "confound": "one-sample maximum is noisy; transients",
    "statistics": [
     "pdist"
    ],
@@ -59180,7 +59824,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: canberra vs euclidean",
@@ -59446,7 +60099,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": "estimator-local",
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": "estimator-local",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: braycurtis vs euclidean",
@@ -59712,7 +60374,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "rigid against elastic alignment",
@@ -59979,7 +60650,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: cityblock vs cosine",
@@ -60245,7 +60925,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: chebyshev vs cityblock",
@@ -60511,7 +61200,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": "estimator-local",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: canberra vs cityblock",
@@ -60777,7 +61475,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: braycurtis vs cityblock",
@@ -61043,7 +61750,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: chebyshev vs cosine",
@@ -61309,7 +62025,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: canberra vs cosine",
@@ -61575,7 +62300,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": "estimator-local",
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": "estimator-local",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: braycurtis vs cosine",
@@ -61841,7 +62575,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: canberra vs chebyshev",
@@ -62107,7 +62850,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": "estimator-local",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: braycurtis vs chebyshev",
@@ -62373,7 +63125,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": "estimator-local",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: braycurtis vs canberra",
@@ -62639,7 +63400,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": null,
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: biased vs unbiased",
@@ -62905,7 +63675,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "aggregation: mean vs min",
@@ -63171,7 +63950,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": "estimator-local",
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: history-1 vs history-auto",
@@ -63437,7 +64225,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "estimator-local",
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: gaussian vs symbolic",
@@ -63703,7 +64500,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": "estimator-local",
+    "MD:drug": "estimator-local",
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: history-1 vs history-2",
@@ -63969,7 +64775,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": "estimator-local",
+    "KTMD:drug": "estimator-local",
+    "MD:drug": "estimator-local",
+    "PF:drug": "estimator-local",
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: Ridge vs SGDRegressor",
@@ -64235,7 +65050,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: BayesianRidge vs Ridge",
@@ -64501,7 +65325,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "estimator: BayesianRidge vs SGDRegressor",
@@ -64767,7 +65600,16 @@
       }
      }
     }
-   ]
+   ],
+   "tier": {
+    "KT:drug": null,
+    "KTMD:drug": null,
+    "MD:drug": null,
+    "PF:drug": null,
+    "SLP:sleep_deep": null,
+    "SLP:sleep_light": null,
+    "SLP:sleep_mid": null
+   }
   },
   {
    "cls": "option: trend-c vs trend-ct",
@@ -64780,7 +65622,8 @@
     "coint_aeg"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   },
   {
    "cls": "estimator: aic vs bic",
@@ -64793,3001 +65636,2780 @@
     "coint_aeg"
    ],
    "conditions": {},
-   "pairs": []
+   "pairs": [],
+   "tier": {}
   }
  ],
- "top": [
-  {
-   "a": "cov_MinCovDet",
-   "b": "lcss_constraint-sakoe-chiba",
-   "z0": 0.943636595706145,
-   "weakest_sd": 4.047080619740108,
-   "differs": {
-    "stat": [
-     "corr",
-     "lcss"
-    ],
-    "est": [
-     "MinCovDet",
-     null
-    ],
-    "opt": [
-     null,
-     "sakoe-chiba"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8926618339677045,
-    0.9200053970100847
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.026884633302688588,
-     "sd": -4.047080619740108,
-     "spectral_sd": -8.959249458285816
-    },
-    "KTMD:drug": {
-     "dz": -0.08073735386133196,
-     "sd": -12.153804607356099,
-     "spectral_sd": -13.80852338895653
-    },
-    "MD:drug": {
-     "dz": -0.03825198411941527,
-     "sd": -5.758265766667918,
-     "spectral_sd": -1.5579454626352294
-    },
-    "PF:drug": {
-     "dz": -0.07760436236858365,
-     "sd": -11.68217945966088,
-     "spectral_sd": -4.057271037002138
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.025547140836715665,
-     "sd": -3.8457410746868343,
-     "spectral_sd": 4.296428287890562
-    },
-    "SLP:sleep_light": {
-     "dz": 0.004849937558174144,
-     "sd": 0.7300857734471441,
-     "spectral_sd": 0.36496476579285486
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.005693203210830666,
-     "sd": -0.857026842039566,
-     "spectral_sd": 1.4895606876172407
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "si_kernel_W-0.5_k-1",
-   "b": "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
-   "z0": 0.14070500296851,
-   "weakest_sd": 3.984009229602063,
-   "differs": {
-    "stat": [
-     "si",
-     "te"
-    ],
-    "est": [
-     "kernel",
-     "kraskov_DCE"
-    ],
-    "opt": [
-     "k-1",
-     "history-1"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.83753924610326,
-    0.07007127244357719
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.1697837609797716,
-     "sd": 6.886478496200607,
-     "spectral_sd": 3.2660522842635324
-    },
-    "KTMD:drug": {
-     "dz": 0.09822437856346371,
-     "sd": 3.984009229602063,
-     "spectral_sd": 6.699945812148939
-    },
-    "MD:drug": {
-     "dz": 0.1376331988722086,
-     "sd": 5.582442389821309,
-     "spectral_sd": 3.2008330506076628
-    },
-    "PF:drug": {
-     "dz": 0.20192863047122955,
-     "sd": 8.190283708422722,
-     "spectral_sd": 3.671837498076954
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.02781127654016017,
-     "sd": 1.128033427581568,
-     "spectral_sd": -0.8039171623320429
-    },
-    "SLP:sleep_light": {
-     "dz": 0.007768381386995309,
-     "sd": 0.31508779793258296,
-     "spectral_sd": 0.3860101303512907
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.01387720257043839,
-     "sd": 0.5628633535814392,
-     "spectral_sd": 2.0082236476324082
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "xcorr-sq_max_sig-True",
-   "b": "mi_kraskov_NN-4",
-   "z0": 0.9358434582750003,
-   "weakest_sd": 3.6339918102944857,
-   "differs": {
-    "stat": [
-     "xcorr",
-     "mi"
-    ],
-    "est": [
-     null,
-     "kraskov"
-    ],
-    "sign": [
-     "sq",
-     "signed"
-    ],
-    "agg": [
-     "max",
-     null
-    ],
-    "opt": [
-     "threshold-True",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9029370066081469,
-    0.8867604300887435
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.02885570824146272,
-     "sd": -5.936591531448548,
-     "spectral_sd": -6.724893490517365
-    },
-    "KTMD:drug": {
-     "dz": -0.07254950106143948,
-     "sd": -14.92587705725731,
-     "spectral_sd": -13.7650106416485
-    },
-    "MD:drug": {
-     "dz": -0.01766357123851775,
-     "sd": -3.6339918102944857,
-     "spectral_sd": -3.719905402967005
-    },
-    "PF:drug": {
-     "dz": -0.049357017874717746,
-     "sd": -10.154401752356744,
-     "spectral_sd": -2.847020541841768
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.004447808861732516,
-     "sd": -0.9150641599613214,
-     "spectral_sd": 0.10114580007800979
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0019563674926758035,
-     "sd": -0.4024907166455213,
-     "spectral_sd": -0.38142409973436486
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0020612299442291926,
-     "sd": -0.4240644564632908,
-     "spectral_sd": 0.445953596204203
-    }
-   },
-   "links": [
+ "usable": 3385,
+ "rankings": {
+  "all_drugs": {
+   "count": 1,
+   "top": [
     {
-     "cls": "best lag against zero lag",
-     "a": "xcorr-sq_max_sig-True",
-     "b": "cov-sq_EmpiricalCovariance",
-     "z0": 0.9890565658609073,
-     "sd": {
-      "KT:drug": -7.27588367256175,
-      "KTMD:drug": -21.788082134169258,
-      "MD:drug": -8.034389669342941,
-      "PF:drug": -16.688302008664852,
-      "SLP:sleep_deep": -2.4397623965804067,
-      "SLP:sleep_light": -0.2526232059903457,
-      "SLP:sleep_mid": -1.0459528893265004
+     "a": "cov_MinCovDet",
+     "b": "lcss_constraint-sakoe-chiba",
+     "z0": 0.943636595706145,
+     "strength_sd": 4.047080619740108,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "lcss"
+      ],
+      "est": [
+       "MinCovDet",
+       null
+      ],
+      "opt": [
+       null,
+       "sakoe-chiba"
+      ]
      },
-     "dz": {
-      "KT:drug": -0.01921760439872744,
-      "KTMD:drug": -0.057548300921916956,
-      "MD:drug": -0.021221026778221186,
-      "PF:drug": -0.04407838284969334,
-      "SLP:sleep_deep": -0.006444081664085388,
-      "SLP:sleep_light": -0.000667247176170338,
-      "SLP:sleep_mid": -0.0027626484632491954
-     }
-    },
-    {
-     "cls": "saturation control",
-     "a": "cov-sq_EmpiricalCovariance",
-     "b": "mi_gaussian",
-     "z0": 0.9654985348383586,
-     "sd": {
-      "KT:drug": -2.073574704123939,
-      "KTMD:drug": -2.021730607797119,
-      "MD:drug": -1.177764629416793,
-      "PF:drug": -0.5100270962264604,
-      "SLP:sleep_deep": -0.6150041106843382,
-      "SLP:sleep_light": -0.3906375840924438,
-      "SLP:sleep_mid": -0.4892631072904097
+     "reliability": [
+      0.8926618339677045,
+      0.9200053970100847
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.026884633302688588,
+       "sd": -4.047080619740108,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.08073735386133196,
+       "sd": -12.153804607356099,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.03825198411941527,
+       "sd": -5.758265766667918,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.07760436236858365,
+       "sd": -11.68217945966088,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.025547140836715665,
+       "sd": -3.8457410746868343,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.004849937558174144,
+       "sd": 0.7300857734471441,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.005693203210830666,
+       "sd": -0.857026842039566,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": -0.00947466492652893,
-      "KTMD:drug": -0.009237776696681993,
-      "MD:drug": -0.0053814917802810225,
-      "PF:drug": -0.0023304373025894165,
-      "SLP:sleep_deep": -0.002810102701187145,
-      "SLP:sleep_light": -0.0017849177122115645,
-      "SLP:sleep_mid": -0.002235561609268133
-     }
-    },
-    {
-     "cls": "estimator: gaussian vs kraskov",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4",
-     "z0": 0.9680631930629412,
-     "sd": {
-      "KT:drug": -4.374511679855315,
-      "KTMD:drug": -16.97950951367898,
-      "MD:drug": -2.7479929343209015,
-      "PF:drug": -12.65846212628157,
-      "SLP:sleep_deep": -1.2340477181439968,
-      "SLP:sleep_light": -0.09076255139803305,
-      "SLP:sleep_mid": -0.2424344355981739
-     },
-     "dz": {
-      "KT:drug": -0.015346699953079246,
-      "KTMD:drug": -0.05956766307353975,
-      "MD:drug": -0.009640532732009877,
-      "PF:drug": -0.04440852701663972,
-      "SLP:sleep_deep": -0.004329296946525563,
-      "SLP:sleep_light": -0.00031841397285459205,
-      "SLP:sleep_mid": -0.0008505105972290705
-     }
+     "links": []
     }
    ]
   },
-  {
-   "a": "mi_kraskov_NN-4",
-   "b": "lmfit_SGDRegressor",
-   "z0": -0.9341777568062146,
-   "weakest_sd": 2.9769601458175097,
-   "differs": {
-    "stat": [
-     "mi",
-     "lmfit"
-    ],
-    "est": [
-     "kraskov",
-     "SGDRegressor"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8867604300887435,
-    0.9075318162932698
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.02296421825885775,
-     "sd": 5.033127070924035,
-     "spectral_sd": 7.5013429020197355
-    },
-    "KTMD:drug": {
-     "dz": 0.06065077781677247,
-     "sd": 13.29298773688717,
-     "spectral_sd": 10.022785646059626
-    },
-    "MD:drug": {
-     "dz": 0.01358272135257721,
-     "sd": 2.9769601458175097,
-     "spectral_sd": 2.1014293486582116
-    },
-    "PF:drug": {
-     "dz": 0.04737163484096529,
-     "sd": 10.38256364855897,
-     "spectral_sd": 2.9628315769280125
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.007534477114677418,
-     "sd": 1.651350823427803,
-     "spectral_sd": -0.13875500515260958
-    },
-    "SLP:sleep_light": {
-     "dz": 0.002366289496421814,
-     "sd": 0.5186257850292804,
-     "spectral_sd": 0.4324316184096988
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0029299587011337724,
-     "sd": 0.6421666215298953,
-     "spectral_sd": -0.8423354350289588
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "cov-sq_ShrunkCovariance",
-   "b": "mi_kraskov_NN-4",
-   "z0": 0.9341781864563624,
-   "weakest_sd": 2.9763328130238014,
-   "differs": {
-    "stat": [
-     "corr",
-     "mi"
-    ],
-    "est": [
-     "Shrunk",
-     "kraskov"
-    ],
-    "sign": [
-     "sq",
-     "signed"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9075341610286803,
-    0.8867604300887435
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.02295837104320525,
-     "sd": -5.031990826779681,
-     "spectral_sd": -7.497169878420765
-    },
-    "KTMD:drug": {
-     "dz": -0.0606500118970871,
-     "sd": -13.29320372668795,
-     "spectral_sd": -10.026230170612372
-    },
-    "MD:drug": {
-     "dz": -0.01357946693897244,
-     "sd": -2.9763328130238014,
-     "spectral_sd": -2.1004344464671103
-    },
-    "PF:drug": {
-     "dz": -0.047373875975608826,
-     "sd": -10.383354676586002,
-     "spectral_sd": -2.963575893300729
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.007528334856033325,
-     "sd": -1.6500522561114854,
-     "spectral_sd": 0.1381809183540614
-    },
-    "SLP:sleep_light": {
-     "dz": -0.002363151311874423,
-     "sd": -0.5179529375697508,
-     "spectral_sd": -0.43139950045105846
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0029238611459732056,
-     "sd": -0.6408487099379423,
-     "spectral_sd": 0.8419024335636212
-    }
-   },
-   "links": [
+  "all_but_one": {
+   "count": 23,
+   "top": [
     {
-     "cls": "estimator: Empirical vs Shrunk",
-     "a": "cov-sq_ShrunkCovariance",
-     "b": "cov-sq_EmpiricalCovariance",
-     "z0": 1.0,
-     "sd": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
+     "a": "prec_ShrunkCovariance",
+     "b": "corr_spearman_tau-10-sq",
+     "z0": -0.13081043447212626,
+     "strength_sd": 5.220971679627074,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "prec",
+       "corr"
+      ],
+      "est": [
+       "Shrunk",
+       "spearman"
+      ],
+      "sign": [
+       "signed",
+       "sq"
+      ],
+      "lag": [
+       0,
+       10
+      ]
      },
-     "dz": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
-     }
-    },
-    {
-     "cls": "saturation control",
-     "a": "cov-sq_EmpiricalCovariance",
-     "b": "mi_gaussian",
-     "z0": 0.9654985348383586,
-     "sd": {
-      "KT:drug": -2.073574704123939,
-      "KTMD:drug": -2.021730607797119,
-      "MD:drug": -1.177764629416793,
-      "PF:drug": -0.5100270962264604,
-      "SLP:sleep_deep": -0.6150041106843382,
-      "SLP:sleep_light": -0.3906375840924438,
-      "SLP:sleep_mid": -0.4892631072904097
+     "reliability": [
+      0.8074687997339859,
+      0.320682793146579
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.14612439684569836,
+       "sd": -5.220971679627074,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.19579864523839208,
+       "sd": -6.995814550929913,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.16514880564063783,
+       "sd": -5.90070690306763,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.3091772632673383,
+       "sd": -11.04679143488897,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.10456686913967134,
+       "sd": -3.736136293393815,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.03790482701733707,
+       "sd": -1.354325715969625,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.07138059325516224,
+       "sd": -2.5504026973244773,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": -0.00947466492652893,
-      "KTMD:drug": -0.009237776696681993,
-      "MD:drug": -0.0053814917802810225,
-      "PF:drug": -0.0023304373025894165,
-      "SLP:sleep_deep": -0.002810102701187145,
-      "SLP:sleep_light": -0.0017849177122115645,
-      "SLP:sleep_mid": -0.002235561609268133
-     }
+     "links": []
     },
     {
-     "cls": "estimator: gaussian vs kraskov",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4",
-     "z0": 0.9680631930629412,
-     "sd": {
-      "KT:drug": -4.374511679855315,
-      "KTMD:drug": -16.97950951367898,
-      "MD:drug": -2.7479929343209015,
-      "PF:drug": -12.65846212628157,
-      "SLP:sleep_deep": -1.2340477181439968,
-      "SLP:sleep_light": -0.09076255139803305,
-      "SLP:sleep_mid": -0.2424344355981739
+     "a": "mi_kernel_W-0.25",
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.8935311059157054,
+     "strength_sd": 5.211871966986824,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "mi",
+       "plv"
+      ],
+      "est": [
+       "kernel",
+       null
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
      },
-     "dz": {
-      "KT:drug": -0.015346699953079246,
-      "KTMD:drug": -0.05956766307353975,
-      "MD:drug": -0.009640532732009877,
-      "PF:drug": -0.04440852701663972,
-      "SLP:sleep_deep": -0.004329296946525563,
-      "SLP:sleep_light": -0.00031841397285459205,
-      "SLP:sleep_mid": -0.0008505105972290705
-     }
-    }
-   ]
-  },
-  {
-   "a": "cov-sq_LedoitWolf",
-   "b": "mi_kraskov_NN-4",
-   "z0": 0.9341781864563624,
-   "weakest_sd": 2.9763328130238014,
-   "differs": {
-    "stat": [
-     "corr",
-     "mi"
-    ],
-    "est": [
-     "LedoitWolf",
-     "kraskov"
-    ],
-    "sign": [
-     "sq",
-     "signed"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9075341610286484,
-    0.8867604300887435
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.02295837104320525,
-     "sd": -5.031990826779681,
-     "spectral_sd": -7.497169878420765
-    },
-    "KTMD:drug": {
-     "dz": -0.0606500118970871,
-     "sd": -13.29320372668795,
-     "spectral_sd": -10.026230170612372
-    },
-    "MD:drug": {
-     "dz": -0.01357946693897244,
-     "sd": -2.9763328130238014,
-     "spectral_sd": -2.1004344464671103
-    },
-    "PF:drug": {
-     "dz": -0.047373875975608826,
-     "sd": -10.383354676586002,
-     "spectral_sd": -2.963575893300729
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.007528334856033325,
-     "sd": -1.6500522561114854,
-     "spectral_sd": 0.1381809183540614
-    },
-    "SLP:sleep_light": {
-     "dz": -0.002363151311874423,
-     "sd": -0.5179529375697508,
-     "spectral_sd": -0.43139950045105846
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0029238611459732056,
-     "sd": -0.6408487099379423,
-     "spectral_sd": 0.8419024335636212
-    }
-   },
-   "links": [
-    {
-     "cls": "estimator: Empirical vs LedoitWolf",
-     "a": "cov-sq_LedoitWolf",
-     "b": "cov-sq_EmpiricalCovariance",
-     "z0": 1.0,
-     "sd": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
+     "reliability": [
+      0.9136876317014386,
+      0.8780748171908779
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.055544117093086265,
+       "sd": -5.211871966986824,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.13535119444131852,
+       "sd": -12.700410645193209,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.06969408690929413,
+       "sd": -6.53960629563246,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.12069654166698457,
+       "sd": -11.325320393016282,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.01677630543708797,
+       "sd": -1.5741713181007757,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 6.688237190249913e-05,
+       "sd": 0.006275774599496001,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.005641761422157221,
+       "sd": -0.5293834836062046,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
-     }
+     "links": []
     },
     {
-     "cls": "saturation control",
-     "a": "cov-sq_EmpiricalCovariance",
-     "b": "mi_gaussian",
-     "z0": 0.9654985348383586,
-     "sd": {
-      "KT:drug": -2.073574704123939,
-      "KTMD:drug": -2.021730607797119,
-      "MD:drug": -1.177764629416793,
-      "PF:drug": -0.5100270962264604,
-      "SLP:sleep_deep": -0.6150041106843382,
-      "SLP:sleep_light": -0.3906375840924438,
-      "SLP:sleep_mid": -0.4892631072904097
+     "a": "prec_ShrunkCovariance",
+     "b": "corr_pearson_tau-10-sq",
+     "z0": -0.12978436666501997,
+     "strength_sd": 5.2098841142509045,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "prec",
+       "corr"
+      ],
+      "est": [
+       "Shrunk",
+       "Empirical"
+      ],
+      "sign": [
+       "signed",
+       "sq"
+      ],
+      "lag": [
+       0,
+       10
+      ]
      },
-     "dz": {
-      "KT:drug": -0.00947466492652893,
-      "KTMD:drug": -0.009237776696681993,
-      "MD:drug": -0.0053814917802810225,
-      "PF:drug": -0.0023304373025894165,
-      "SLP:sleep_deep": -0.002810102701187145,
-      "SLP:sleep_light": -0.0017849177122115645,
-      "SLP:sleep_mid": -0.002235561609268133
-     }
-    },
-    {
-     "cls": "estimator: gaussian vs kraskov",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4",
-     "z0": 0.9680631930629412,
-     "sd": {
-      "KT:drug": -4.374511679855315,
-      "KTMD:drug": -16.97950951367898,
-      "MD:drug": -2.7479929343209015,
-      "PF:drug": -12.65846212628157,
-      "SLP:sleep_deep": -1.2340477181439968,
-      "SLP:sleep_light": -0.09076255139803305,
-      "SLP:sleep_mid": -0.2424344355981739
+     "reliability": [
+      0.8074687997339859,
+      0.31752291511223857
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.13429367272183299,
+       "sd": -5.2098841142509045,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.19474746005726046,
+       "sd": -7.55517127411232,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.14627818930894138,
+       "sd": -5.6748199620736255,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.3089279210194945,
+       "sd": -11.984769167061133,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.09988256897777317,
+       "sd": -3.8749153170138126,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.03413134766742587,
+       "sd": -1.3241157413188187,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.06921116579324008,
+       "sd": -2.685027119199227,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": -0.015346699953079246,
-      "KTMD:drug": -0.05956766307353975,
-      "MD:drug": -0.009640532732009877,
-      "PF:drug": -0.04440852701663972,
-      "SLP:sleep_deep": -0.004329296946525563,
-      "SLP:sleep_light": -0.00031841397285459205,
-      "SLP:sleep_mid": -0.0008505105972290705
-     }
-    }
-   ]
-  },
-  {
-   "a": "cov-sq_OAS",
-   "b": "mi_kraskov_NN-4",
-   "z0": 0.9341781864563624,
-   "weakest_sd": 2.9763328130238014,
-   "differs": {
-    "stat": [
-     "corr",
-     "mi"
-    ],
-    "est": [
-     "OAS",
-     "kraskov"
-    ],
-    "sign": [
-     "sq",
-     "signed"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.907534161064171,
-    0.8867604300887435
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.02295837104320525,
-     "sd": -5.031990826779681,
-     "spectral_sd": -7.497169878420765
+     "links": []
     },
-    "KTMD:drug": {
-     "dz": -0.0606500118970871,
-     "sd": -13.29320372668795,
-     "spectral_sd": -10.026230170612372
-    },
-    "MD:drug": {
-     "dz": -0.01357946693897244,
-     "sd": -2.9763328130238014,
-     "spectral_sd": -2.1004344464671103
-    },
-    "PF:drug": {
-     "dz": -0.047373875975608826,
-     "sd": -10.383354676586002,
-     "spectral_sd": -2.963575893300729
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.007528334856033325,
-     "sd": -1.6500522561114854,
-     "spectral_sd": 0.1381809183540614
-    },
-    "SLP:sleep_light": {
-     "dz": -0.002363151311874423,
-     "sd": -0.5179529375697508,
-     "spectral_sd": -0.43139950045105846
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0029238611459732056,
-     "sd": -0.6408487099379423,
-     "spectral_sd": 0.8419024335636212
-    }
-   },
-   "links": [
     {
-     "cls": "estimator: Empirical vs OAS",
-     "a": "cov-sq_OAS",
-     "b": "cov-sq_EmpiricalCovariance",
-     "z0": 1.0,
-     "sd": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
+     "a": "mi_kernel_W-0.25",
+     "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.9091296558578809,
+     "strength_sd": 5.119432652880264,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "mi",
+       "cohmag"
+      ],
+      "est": [
+       "kernel",
+       null
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
      },
-     "dz": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
-     }
-    },
-    {
-     "cls": "saturation control",
-     "a": "cov-sq_EmpiricalCovariance",
-     "b": "mi_gaussian",
-     "z0": 0.9654985348383586,
-     "sd": {
-      "KT:drug": -2.073574704123939,
-      "KTMD:drug": -2.021730607797119,
-      "MD:drug": -1.177764629416793,
-      "PF:drug": -0.5100270962264604,
-      "SLP:sleep_deep": -0.6150041106843382,
-      "SLP:sleep_light": -0.3906375840924438,
-      "SLP:sleep_mid": -0.4892631072904097
+     "reliability": [
+      0.9136876317014386,
+      0.9040724473470853
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.05735546648502354,
+       "sd": -5.119432652880264,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.13120353221893313,
+       "sd": -11.71096127672892,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.06875687837600708,
+       "sd": -6.137099562430716,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.12015967369079594,
+       "sd": -10.72520885542312,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.01587087810039517,
+       "sd": -1.4166024017651573,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0005311965942382812,
+       "sd": -0.047413531025021514,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.005807456374168352,
+       "sd": -0.5183617816073087,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": -0.00947466492652893,
-      "KTMD:drug": -0.009237776696681993,
-      "MD:drug": -0.0053814917802810225,
-      "PF:drug": -0.0023304373025894165,
-      "SLP:sleep_deep": -0.002810102701187145,
-      "SLP:sleep_light": -0.0017849177122115645,
-      "SLP:sleep_mid": -0.002235561609268133
-     }
+     "links": []
     },
     {
-     "cls": "estimator: gaussian vs kraskov",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4",
-     "z0": 0.9680631930629412,
-     "sd": {
-      "KT:drug": -4.374511679855315,
-      "KTMD:drug": -16.97950951367898,
-      "MD:drug": -2.7479929343209015,
-      "PF:drug": -12.65846212628157,
-      "SLP:sleep_deep": -1.2340477181439968,
-      "SLP:sleep_light": -0.09076255139803305,
-      "SLP:sleep_mid": -0.2424344355981739
-     },
-     "dz": {
-      "KT:drug": -0.015346699953079246,
-      "KTMD:drug": -0.05956766307353975,
-      "MD:drug": -0.009640532732009877,
-      "PF:drug": -0.04440852701663972,
-      "SLP:sleep_deep": -0.004329296946525563,
-      "SLP:sleep_light": -0.00031841397285459205,
-      "SLP:sleep_mid": -0.0008505105972290705
-     }
-    }
-   ]
-  },
-  {
-   "a": "mi_kraskov_NN-4",
-   "b": "lmfit_Ridge",
-   "z0": -0.9341781864563624,
-   "weakest_sd": 2.9763328130238014,
-   "differs": {
-    "stat": [
-     "mi",
-     "lmfit"
-    ],
-    "est": [
-     "kraskov",
-     "Ridge"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8867604300887435,
-    0.9075341610171518
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.02295837104320525,
-     "sd": 5.031990826779681,
-     "spectral_sd": 7.497169878420765
-    },
-    "KTMD:drug": {
-     "dz": 0.0606500118970871,
-     "sd": 13.29320372668795,
-     "spectral_sd": 10.026230170612372
-    },
-    "MD:drug": {
-     "dz": 0.01357946693897244,
-     "sd": 2.9763328130238014,
-     "spectral_sd": 2.1004344464671103
-    },
-    "PF:drug": {
-     "dz": 0.047373875975608826,
-     "sd": 10.383354676586002,
-     "spectral_sd": 2.963575893300729
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.007528334856033325,
-     "sd": 1.6500522561114854,
-     "spectral_sd": -0.1381809183540614
-    },
-    "SLP:sleep_light": {
-     "dz": 0.002363151311874423,
-     "sd": 0.5179529375697508,
-     "spectral_sd": 0.43139950045105846
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0029238611459732056,
-     "sd": 0.6408487099379423,
-     "spectral_sd": -0.8419024335636212
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "cov-sq_EmpiricalCovariance",
-   "b": "mi_kraskov_NN-4",
-   "z0": 0.9341781864563624,
-   "weakest_sd": 2.9763328130238014,
-   "differs": {
-    "stat": [
-     "corr",
-     "mi"
-    ],
-    "est": [
-     "Empirical",
-     "kraskov"
-    ],
-    "sign": [
-     "sq",
-     "signed"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9075341610301324,
-    0.8867604300887435
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.02295837104320525,
-     "sd": -5.031990826779681,
-     "spectral_sd": -7.497169878420765
-    },
-    "KTMD:drug": {
-     "dz": -0.0606500118970871,
-     "sd": -13.29320372668795,
-     "spectral_sd": -10.026230170612372
-    },
-    "MD:drug": {
-     "dz": -0.01357946693897244,
-     "sd": -2.9763328130238014,
-     "spectral_sd": -2.1004344464671103
-    },
-    "PF:drug": {
-     "dz": -0.047373875975608826,
-     "sd": -10.383354676586002,
-     "spectral_sd": -2.963575893300729
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.007528334856033325,
-     "sd": -1.6500522561114854,
-     "spectral_sd": 0.1381809183540614
-    },
-    "SLP:sleep_light": {
-     "dz": -0.002363151311874423,
-     "sd": -0.5179529375697508,
-     "spectral_sd": -0.43139950045105846
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0029238611459732056,
-     "sd": -0.6408487099379423,
-     "spectral_sd": 0.8419024335636212
-    }
-   },
-   "links": [
-    {
-     "cls": "saturation control",
-     "a": "cov-sq_EmpiricalCovariance",
-     "b": "mi_gaussian",
-     "z0": 0.9654985348383586,
-     "sd": {
-      "KT:drug": -2.073574704123939,
-      "KTMD:drug": -2.021730607797119,
-      "MD:drug": -1.177764629416793,
-      "PF:drug": -0.5100270962264604,
-      "SLP:sleep_deep": -0.6150041106843382,
-      "SLP:sleep_light": -0.3906375840924438,
-      "SLP:sleep_mid": -0.4892631072904097
-     },
-     "dz": {
-      "KT:drug": -0.00947466492652893,
-      "KTMD:drug": -0.009237776696681993,
-      "MD:drug": -0.0053814917802810225,
-      "PF:drug": -0.0023304373025894165,
-      "SLP:sleep_deep": -0.002810102701187145,
-      "SLP:sleep_light": -0.0017849177122115645,
-      "SLP:sleep_mid": -0.002235561609268133
-     }
-    },
-    {
-     "cls": "estimator: gaussian vs kraskov",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4",
-     "z0": 0.9680631930629412,
-     "sd": {
-      "KT:drug": -4.374511679855315,
-      "KTMD:drug": -16.97950951367898,
-      "MD:drug": -2.7479929343209015,
-      "PF:drug": -12.65846212628157,
-      "SLP:sleep_deep": -1.2340477181439968,
-      "SLP:sleep_light": -0.09076255139803305,
-      "SLP:sleep_mid": -0.2424344355981739
-     },
-     "dz": {
-      "KT:drug": -0.015346699953079246,
-      "KTMD:drug": -0.05956766307353975,
-      "MD:drug": -0.009640532732009877,
-      "PF:drug": -0.04440852701663972,
-      "SLP:sleep_deep": -0.004329296946525563,
-      "SLP:sleep_light": -0.00031841397285459205,
-      "SLP:sleep_mid": -0.0008505105972290705
-     }
-    }
-   ]
-  },
-  {
-   "a": "mi_kraskov_NN-4",
-   "b": "lmfit_BayesianRidge",
-   "z0": -0.9341138278444608,
-   "weakest_sd": 2.9737004825228452,
-   "differs": {
-    "stat": [
-     "mi",
-     "lmfit"
-    ],
-    "est": [
-     "kraskov",
-     "BayesianRidge"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8867604300887435,
-    0.9074631984220985
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.022945401072502092,
-     "sd": 5.023627451919629,
-     "spectral_sd": 7.488007329944823
-    },
-    "KTMD:drug": {
-     "dz": 0.060640358924865745,
-     "sd": 13.27649801485889,
-     "spectral_sd": 10.018363490919205
-    },
-    "MD:drug": {
-     "dz": 0.013582366704940785,
-     "sd": 2.9737004825228452,
-     "spectral_sd": 2.099363122035671
-    },
-    "PF:drug": {
-     "dz": 0.047383275628089916,
-     "sd": 10.374014533675357,
-     "spectral_sd": 2.962860051949121
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.007532215118408181,
-     "sd": 1.6490904875899484,
-     "spectral_sd": -0.13875270961693356
-    },
-    "SLP:sleep_light": {
-     "dz": 0.0023601621389388594,
-     "sd": 0.5167299222484978,
-     "spectral_sd": 0.4299588736181726
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.002920407056808405,
-     "sd": 0.6393890006544436,
-     "spectral_sd": -0.8427962676702258
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "tlmi_kernel_W-0.25",
-   "b": "pec",
-   "z0": 0.8290040716528893,
-   "weakest_sd": 2.6684358512828497,
-   "differs": {
-    "stat": [
-     "tlmi",
-     "pec"
-    ],
-    "est": [
-     "kernel",
-     "linear"
-    ],
-    "opt": [
-     null,
-     "plain"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8367274848947827,
-    0.6991938127541606
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.09447459876537323,
-     "sd": -3.192593165060218,
-     "spectral_sd": -3.244311045639524
-    },
-    "KTMD:drug": {
-     "dz": -0.12560015469789507,
-     "sd": -4.244423375799258,
-     "spectral_sd": -3.2471106580889515
-    },
-    "MD:drug": {
-     "dz": -0.07896383702754978,
-     "sd": -2.6684358512828497,
-     "spectral_sd": -0.8395467495525147
-    },
-    "PF:drug": {
-     "dz": -0.1517326772212983,
-     "sd": -5.1275233188982305,
-     "spectral_sd": -3.650427630337553
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.038215002417564425,
-     "sd": -1.291404855013717,
-     "spectral_sd": 0.16044259242942488
-    },
-    "SLP:sleep_light": {
-     "dz": 0.003929799795150735,
-     "sd": 0.1328002672677317,
-     "spectral_sd": 0.28866535449988173
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.01996160447597506,
-     "sd": -0.6745652571852091,
-     "spectral_sd": 0.7485513795037126
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "lcss",
-   "b": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.8070040762424469,
-   "weakest_sd": 2.4734088851611435,
-   "differs": {
-    "stat": [
-     "lcss",
-     "ppc"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "unconstrained",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8552318815720819,
-    0.8967070628255905
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.14487289488315586,
-     "sd": -8.518004792817578,
-     "spectral_sd": -4.498563544912658
-    },
-    "KTMD:drug": {
-     "dz": -0.09271622896194456,
-     "sd": -5.451380558846274,
-     "spectral_sd": -4.19397697164031
-    },
-    "MD:drug": {
-     "dz": -0.042067351937293995,
-     "sd": -2.4734088851611435,
-     "spectral_sd": -3.0966442849671454
-    },
-    "PF:drug": {
-     "dz": -0.1154325634241104,
-     "sd": -6.7870192646237575,
-     "spectral_sd": -6.145639465600104
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.004442647099494879,
-     "sd": 0.26121165948133734,
-     "spectral_sd": 1.1328274075799716
-    },
-    "SLP:sleep_light": {
-     "dz": 0.006020969152450539,
-     "sd": 0.3540113155006989,
-     "spectral_sd": 0.07925061828798634
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0014838576316834051,
-     "sd": -0.08724548804476026,
-     "spectral_sd": 0.4695327534326974
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-   "b": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
-   "z0": 0.13627614219052095,
-   "weakest_sd": 2.269634950290351,
-   "differs": {
-    "stat": [
-     "cohmag",
-     "sgc"
-    ],
-    "band": [
-     "broad",
-     "high"
-    ],
-    "opt": [
-     null,
-     "order-20"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.863368988024198,
-    0.05732022823210406
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.05869042356498538,
-     "sd": 5.23533122146186,
-     "spectral_sd": 2.598422022088355
-    },
-    "KTMD:drug": {
-     "dz": 0.03928918689489364,
-     "sd": 3.504692832706055,
-     "spectral_sd": 13.211383520381101
-    },
-    "MD:drug": {
-     "dz": 0.025443631154485044,
-     "sd": 2.269634950290351,
-     "spectral_sd": 2.1377952374850646
-    },
-    "PF:drug": {
-     "dz": 0.04875503740040586,
-     "sd": 4.349070154916491,
-     "spectral_sd": 5.0318473214739186
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.004082982637919494,
-     "sd": 0.3642121692531008,
-     "spectral_sd": 0.9279864411511093
-    },
-    "SLP:sleep_light": {
-     "dz": 0.0029144350672140745,
-     "sd": 0.25997483019379775,
-     "spectral_sd": 0.5027681143647167
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.006761459051631384,
-     "sd": 0.6031389028304843,
-     "spectral_sd": -0.21161274942407238
-    }
-   },
-   "links": [
-    {
-     "cls": "band: broad vs high",
-     "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-     "b": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-     "z0": 0.8774568408727645,
-     "sd": {
-      "KT:drug": 0.7177558204764392,
-      "KTMD:drug": 5.0233210769954875,
-      "MD:drug": -0.7092868209884653,
-      "PF:drug": 1.9484867715885283,
-      "SLP:sleep_deep": -0.49718694944633335,
-      "SLP:sleep_light": -0.6943949285258619,
-      "SLP:sleep_mid": -0.7511727379784466
-     },
-     "dz": {
-      "KT:drug": 0.009095317125320412,
-      "KTMD:drug": 0.06365493237972258,
-      "MD:drug": -0.008987998962402322,
-      "PF:drug": 0.024690994620323203,
-      "SLP:sleep_deep": -0.006300294399261497,
-      "SLP:sleep_light": -0.00879929065704349,
-      "SLP:sleep_mid": -0.00951877236366272
-     }
-    },
-    {
-     "cls": "precedence (spectral)",
-     "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-     "b": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
-     "z0": 0.2569377915933728,
-     "sd": {
-      "KT:drug": 1.0433852995794426,
-      "KTMD:drug": -0.05344416946651615,
-      "MD:drug": 1.826811026708782,
-      "PF:drug": 1.6329474631014618,
-      "SLP:sleep_deep": 0.7962875838558028,
-      "SLP:sleep_light": -0.15462647487147968,
-      "SLP:sleep_mid": 0.9601425888702063
-     },
-     "dz": {
-      "KT:drug": 0.025005592778325092,
-      "KTMD:drug": -0.0012808337807655168,
-      "MD:drug": 0.04378103911876678,
-      "PF:drug": 0.039134938269853606,
-      "SLP:sleep_deep": 0.0190836913883686,
-      "SLP:sleep_light": -0.0037057515233755167,
-      "SLP:sleep_mid": 0.02301061227917671
-     }
-    },
-    {
-     "cls": "option: default vs order-20",
-     "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
-     "b": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
-     "z0": 0.9104212815562884,
-     "sd": {
-      "KT:drug": -5.612143326227359,
-      "KTMD:drug": -4.324737891268216,
-      "MD:drug": 2.169949640071438,
-      "PF:drug": -0.9899583778332075,
-      "SLP:sleep_deep": 0.6295821307232496,
-      "SLP:sleep_light": -0.23162895003144388,
-      "SLP:sleep_mid": 0.4080466119165256
-     },
-     "dz": {
-      "KT:drug": -0.07243867814540866,
-      "KTMD:drug": -0.05582150667905808,
-      "MD:drug": 0.028008601069450356,
-      "PF:drug": -0.012777876853942882,
-      "SLP:sleep_deep": 0.008126324415206942,
-      "SLP:sleep_light": -0.002989748120307889,
-      "SLP:sleep_mid": 0.005266857147216808
-     }
-    }
-   ]
-  },
-  {
-   "a": "lcss_constraint-itakura",
-   "b": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.8007294823726018,
-   "weakest_sd": 2.212539087995622,
-   "differs": {
-    "stat": [
-     "lcss",
-     "ppc"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "itakura",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8548542497689434,
-    0.8967070628255905
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.1554537832736969,
-     "sd": -8.629197904545535,
-     "spectral_sd": -4.2489871582001495
-    },
-    "KTMD:drug": {
-     "dz": -0.09469491913914682,
-     "sd": -5.256489617675947,
-     "spectral_sd": -4.402692151366836
-    },
-    "MD:drug": {
-     "dz": -0.03985857963562012,
-     "sd": -2.212539087995622,
-     "spectral_sd": -3.5439389512576187
-    },
-    "PF:drug": {
-     "dz": -0.11883966326713563,
-     "sd": -6.596757902225844,
-     "spectral_sd": -6.762472248365887
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.001023605465888977,
-     "sd": -0.05682006545816283,
-     "spectral_sd": 1.0635983428861444
-    },
-    "SLP:sleep_light": {
-     "dz": 0.004645001888275158,
-     "sd": 0.25784281164996325,
-     "spectral_sd": 0.03656511526332867
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.004316508769989014,
-     "sd": -0.23960824657037508,
-     "spectral_sd": 0.32540081111955915
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "lcss",
-   "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.7949078187346459,
-   "weakest_sd": 2.126514860505943,
-   "differs": {
-    "stat": [
-     "lcss",
-     "plv"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "unconstrained",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8552318815720819,
-    0.8780748171908779
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.1412165492773056,
-     "sd": -7.733673943508101,
-     "spectral_sd": -3.926453818665922
-    },
-    "KTMD:drug": {
-     "dz": -0.09147092774510379,
-     "sd": -5.00937272657537,
-     "spectral_sd": -4.3530730979929935
-    },
-    "MD:drug": {
-     "dz": -0.03883006870746614,
-     "sd": -2.126514860505943,
-     "spectral_sd": -2.7281749768493975
-    },
-    "PF:drug": {
-     "dz": -0.11095502674579621,
-     "sd": -6.076412457580913,
-     "spectral_sd": -6.19080529572462
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.008843767642974787,
-     "sd": 0.4843257800373518,
-     "spectral_sd": 1.0374793523374857
-    },
-    "SLP:sleep_light": {
-     "dz": 0.00542837381362915,
-     "sd": 0.29728295538256805,
-     "spectral_sd": 0.10620651500330687
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0011458367109298817,
-     "sd": 0.06275133870770452,
-     "spectral_sd": 0.6030332950406891
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "lcss",
-   "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.8090381671984991,
-   "weakest_sd": 2.1211659140167702,
-   "differs": {
-    "stat": [
-     "lcss",
-     "cohmag"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "unconstrained",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8552318815720819,
-    0.9040724473470853
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.14422870278358457,
-     "sd": -7.39497593800679,
-     "spectral_sd": -4.51992092906724
-    },
-    "KTMD:drug": {
-     "dz": -0.08849972113966945,
-     "sd": -4.537607949855687,
-     "spectral_sd": -4.626551497016639
-    },
-    "MD:drug": {
-     "dz": -0.041370385885238614,
-     "sd": -2.1211659140167702,
-     "spectral_sd": -2.3202262171068155
-    },
-    "PF:drug": {
-     "dz": -0.1114641427993775,
-     "sd": -5.715052815726804,
-     "spectral_sd": -6.151524101052256
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.009487971663475037,
-     "sd": 0.48647267012564305,
-     "spectral_sd": 0.9437796375488523
-    },
-    "SLP:sleep_light": {
-     "dz": 0.006092444062232971,
-     "sd": 0.31237525107237485,
-     "spectral_sd": 0.13437259197757162
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0006830871105194536,
-     "sd": 0.035023630167662245,
-     "spectral_sd": 0.4157919375571271
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "corr_kendall_tau-1-sq",
-   "b": "ids",
-   "z0": 0.9389458412925402,
-   "weakest_sd": 2.042409133769677,
-   "differs": {
-    "stat": [
-     "corr",
-     "ids"
-    ],
-    "est": [
-     "kendall",
-     null
-    ],
-    "sign": [
-     "sq",
-     "signed"
-    ],
-    "lag": [
-     1,
-     0
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8943340632153203,
-    0.8590070342217984
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.015439411997795138,
-     "sd": -2.042409133769677,
-     "spectral_sd": -7.896346476764962
-    },
-    "KTMD:drug": {
-     "dz": -0.023229040205478696,
-     "sd": -3.0728633895609483,
-     "spectral_sd": -6.22818008942367
-    },
-    "MD:drug": {
-     "dz": -0.026157930493354797,
-     "sd": -3.4603128777034837,
-     "spectral_sd": -2.5240845379002996
-    },
-    "PF:drug": {
-     "dz": -0.019164049625396806,
-     "sd": -2.535124394667063,
-     "spectral_sd": -2.9317199588090705
-    },
-    "SLP:sleep_deep": {
-     "dz": -2.834200859003211e-06,
-     "sd": -0.0003749234570715955,
-     "spectral_sd": 1.173779459835031
-    },
-    "SLP:sleep_light": {
-     "dz": 0.004137498140335094,
-     "sd": 0.5473306881105471,
-     "spectral_sd": 0.33066168640755805
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.003754118084907554,
-     "sd": 0.49661509563706724,
-     "spectral_sd": -0.6186955727030169
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "lcss_constraint-itakura",
-   "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.7888448437054952,
-   "weakest_sd": 1.9417677118443994,
-   "differs": {
-    "stat": [
-     "lcss",
-     "plv"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "itakura",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8548542497689434,
-    0.8780748171908779
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.15186758488416674,
-     "sd": -8.122274954114557,
-     "spectral_sd": -3.8411202017942356
-    },
-    "KTMD:drug": {
-     "dz": -0.09291033670306206,
-     "sd": -4.969087388577471,
-     "spectral_sd": -4.638587183839961
-    },
-    "MD:drug": {
-     "dz": -0.036306524276733365,
-     "sd": -1.9417677118443994,
-     "spectral_sd": -3.2964505015699856
-    },
-    "PF:drug": {
-     "dz": -0.1134302794933319,
-     "sd": -6.066547504983449,
-     "spectral_sd": -6.966381320186301
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.003262621164321855,
-     "sd": 0.17449349831926037,
-     "spectral_sd": 1.0045665555504892
-    },
-    "SLP:sleep_light": {
-     "dz": 0.004105320572853066,
-     "sd": 0.21956326291043884,
-     "spectral_sd": 0.07688037126000889
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0016339093446731678,
-     "sd": -0.08738573776395257,
-     "spectral_sd": 0.4870829116247726
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "lcss_constraint-itakura",
-   "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.8028057848413785,
-   "weakest_sd": 1.9318911110563735,
-   "differs": {
-    "stat": [
-     "lcss",
-     "cohmag"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "itakura",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.8548542497689434,
-    0.9040724473470853
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.1549007415771484,
-     "sd": -7.703201631815454,
-     "spectral_sd": -4.375815395142069
-    },
-    "KTMD:drug": {
-     "dz": -0.0900417782366276,
-     "sd": -4.477770512793201,
-     "spectral_sd": -4.888974109543224
-    },
-    "MD:drug": {
-     "dz": -0.03884766101837156,
-     "sd": -1.9318911110563735,
-     "spectral_sd": -2.8609097692018786
-    },
-    "PF:drug": {
-     "dz": -0.11414642035961153,
-     "sd": -5.67649245979962,
-     "spectral_sd": -6.729935475031875
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.003955951333045993,
-     "sd": 0.1967291470255814,
-     "spectral_sd": 0.8672274138391047
-    },
-    "SLP:sleep_light": {
-     "dz": 0.004756295680999778,
-     "sd": 0.23653020817222078,
-     "spectral_sd": 0.10688805087181809
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0023690193891525158,
-     "sd": -0.11781114692232231,
-     "spectral_sd": 0.3113786360889259
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "mi_gaussian",
-   "b": "mi_kraskov_NN-4_DCE-AUTO",
-   "z0": 0.9712163026134173,
-   "weakest_sd": 1.7341913464687144,
-   "differs": {
-    "est": [
-     "gaussian",
-     "kraskov_DCE"
-    ]
-   },
-   "cls": "estimator: gaussian vs kraskov_DCE",
-   "reliability": [
-    0.9283255815165435,
-    0.8848454279817638
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.010529908537864674,
-     "sd": -2.9525788286999446,
-     "spectral_sd": -9.720676700529477
-    },
-    "KTMD:drug": {
-     "dz": -0.03469616174697876,
-     "sd": -9.72877895785147,
-     "spectral_sd": -10.173240996821944
-    },
-    "MD:drug": {
-     "dz": -0.006184720993042014,
-     "sd": -1.7341913464687144,
-     "spectral_sd": -2.02148797795778
-    },
-    "PF:drug": {
-     "dz": -0.033075711131095864,
-     "sd": -9.274405763231124,
-     "spectral_sd": -1.2949127776863867
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.001986593008041382,
-     "sd": -0.5570392597138155,
-     "spectral_sd": 0.19563498299896157
-    },
-    "SLP:sleep_light": {
-     "dz": 0.0007971823215484619,
-     "sd": 0.22352935324689616,
-     "spectral_sd": -0.01605229712938937
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0006353199481963778,
-     "sd": 0.1781432594357334,
-     "spectral_sd": 0.9772671491228889
-    }
-   },
-   "links": [
-    {
-     "cls": "estimator: gaussian vs kraskov_DCE",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4_DCE-AUTO",
-     "z0": 0.9712163026134173,
-     "sd": {
-      "KT:drug": -2.9525788286999446,
-      "KTMD:drug": -9.72877895785147,
-      "MD:drug": -1.7341913464687144,
-      "PF:drug": -9.274405763231124,
-      "SLP:sleep_deep": -0.5570392597138155,
-      "SLP:sleep_light": 0.22352935324689616,
-      "SLP:sleep_mid": 0.1781432594357334
-     },
-     "dz": {
-      "KT:drug": -0.010529908537864674,
-      "KTMD:drug": -0.03469616174697876,
-      "MD:drug": -0.006184720993042014,
-      "PF:drug": -0.033075711131095864,
-      "SLP:sleep_deep": -0.001986593008041382,
-      "SLP:sleep_light": 0.0007971823215484619,
-      "SLP:sleep_mid": 0.0006353199481963778
-     }
-    }
-   ]
-  },
-  {
-   "a": "je_gaussian",
-   "b": "mi_kraskov_NN-4_DCE-AUTO",
-   "z0": -0.9712163026134173,
-   "weakest_sd": 1.7341913464687144,
-   "differs": {
-    "stat": [
-     "je",
-     "mi"
-    ],
-    "est": [
-     "gaussian",
-     "kraskov_DCE"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9283255803538104,
-    0.8848454279817638
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.010529908537864674,
-     "sd": 2.9525788286999446,
-     "spectral_sd": 9.720676700529477
-    },
-    "KTMD:drug": {
-     "dz": 0.03469616174697876,
-     "sd": 9.72877895785147,
-     "spectral_sd": 10.173240996821944
-    },
-    "MD:drug": {
-     "dz": 0.006184720993042014,
-     "sd": 1.7341913464687144,
-     "spectral_sd": 2.02148797795778
-    },
-    "PF:drug": {
-     "dz": 0.033075711131095864,
-     "sd": 9.274405763231124,
-     "spectral_sd": 1.2949127776863867
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.001986593008041382,
-     "sd": 0.5570392597138155,
-     "spectral_sd": -0.19563498299896157
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0007971823215484619,
-     "sd": -0.22352935324689616,
-     "spectral_sd": 0.01605229712938937
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0006353199481963778,
-     "sd": -0.1781432594357334,
-     "spectral_sd": -0.9772671491228889
-    }
-   },
-   "links": [
-    {
-     "cls": "marginal entropies added",
      "a": "je_gaussian",
-     "b": "mi_gaussian",
-     "z0": -1.0,
-     "sd": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": -0.8983677874008814,
+     "strength_sd": 5.085094516134167,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "je",
+       "plv"
+      ],
+      "est": [
+       "gaussian",
+       null
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
      },
-     "dz": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
-     }
+     "reliability": [
+      0.9283255803538104,
+      0.8780748171908779
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.05795325934886936,
+       "sd": 5.085094516134167,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.11749148666858675,
+       "sd": 10.309261657817995,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.06907452642917633,
+       "sd": 6.0609273662262435,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": 0.10036546289920806,
+       "sd": 8.806542905994245,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.01603195071220398,
+       "sd": 1.4067195799773806,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.004970592260360673,
+       "sd": 0.43614339778444433,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.00951695442199707,
+       "sd": 0.8350628296894965,
+       "consistent": false
+      }
+     },
+     "links": []
     },
     {
-     "cls": "estimator: gaussian vs kraskov_DCE",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4_DCE-AUTO",
-     "z0": 0.9712163026134173,
-     "sd": {
-      "KT:drug": -2.9525788286999446,
-      "KTMD:drug": -9.72877895785147,
-      "MD:drug": -1.7341913464687144,
-      "PF:drug": -9.274405763231124,
-      "SLP:sleep_deep": -0.5570392597138155,
-      "SLP:sleep_light": 0.22352935324689616,
-      "SLP:sleep_mid": 0.1781432594357334
+     "a": "lcss",
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.7949078187346459,
+     "strength_sd": 5.00937272657537,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "lcss",
+       "plv"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ],
+      "opt": [
+       "unconstrained",
+       null
+      ]
      },
-     "dz": {
-      "KT:drug": -0.010529908537864674,
-      "KTMD:drug": -0.03469616174697876,
-      "MD:drug": -0.006184720993042014,
-      "PF:drug": -0.033075711131095864,
-      "SLP:sleep_deep": -0.001986593008041382,
-      "SLP:sleep_light": 0.0007971823215484619,
-      "SLP:sleep_mid": 0.0006353199481963778
-     }
+     "reliability": [
+      0.8552318815720819,
+      0.8780748171908779
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.1412165492773056,
+       "sd": -7.733673943508101,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.09147092774510379,
+       "sd": -5.00937272657537,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.03883006870746614,
+       "sd": -2.126514860505943,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.11095502674579621,
+       "sd": -6.076412457580913,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.008843767642974787,
+       "sd": 0.4843257800373518,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.00542837381362915,
+       "sd": 0.29728295538256805,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.0011458367109298817,
+       "sd": 0.06275133870770452,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "je_gaussian",
+     "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": -0.9143496120969454,
+     "strength_sd": 4.916745501569431,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "je",
+       "cohmag"
+      ],
+      "est": [
+       "gaussian",
+       null
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
+     },
+     "reliability": [
+      0.9283255803538104,
+      0.9040724473470853
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.05911028683185571,
+       "sd": 4.916745501569431,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.11268208324909215,
+       "sd": 9.37280388265463,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.06731186211109164,
+       "sd": 5.5989458514793276,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": 0.10013305544853207,
+       "sd": 8.32898597388715,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.016029676795005776,
+       "sd": 1.3333354564434663,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.005738285183906566,
+       "sd": 0.47730588662090895,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.01043968498706821,
+       "sd": 0.8683644920211617,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "cov_MinCovDet",
+     "b": "pdist_canberra",
+     "z0": -0.9528597141305606,
+     "strength_sd": 4.847380490127969,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "pdist"
+      ],
+      "est": [
+       "MinCovDet",
+       "canberra"
+      ]
+     },
+     "reliability": [
+      0.8926618339677045,
+      0.9274586402293054
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.02195718586444856,
+       "sd": 4.847380490127969,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.07353207319974897,
+       "sd": 16.233316019073403,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.02429192066192626,
+       "sd": 5.362808467865339,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.06774916350841526,
+       "sd": 14.956651341414036,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.02197628915309907,
+       "sd": 4.851597829693861,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0010757386684417392,
+       "sd": -0.23748556240641386,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.006581720709800731,
+       "sd": 1.4530142777456754,
+       "consistent": false
+      }
+     },
+     "links": [
+      {
+       "cls": "estimator: Empirical vs MinCovDet",
+       "a": "cov_MinCovDet",
+       "b": "cov_EmpiricalCovariance",
+       "z0": 0.9719421471158664,
+       "dz": {
+        "KT:drug": -0.03136293590068817,
+        "KTMD:drug": -0.0515471965074539,
+        "MD:drug": -0.033273792266845736,
+        "PF:drug": -0.056822195649147034,
+        "SLP:sleep_deep": -0.02652015089988702,
+        "SLP:sleep_light": 0.0024426668882370217,
+        "SLP:sleep_mid": -0.009764045476913452
+       },
+       "sd": {
+        "KT:drug": -3.170663630464055,
+        "KTMD:drug": -5.21120923551617,
+        "MD:drug": -3.3638433379506734,
+        "PF:drug": -5.744489920151582,
+        "SLP:sleep_deep": -2.681078015111631,
+        "SLP:sleep_light": 0.24694356065377132,
+        "SLP:sleep_mid": -0.987104778005405
+       }
+      },
+      {
+       "cls": "identity control (distance)",
+       "a": "cov_EmpiricalCovariance",
+       "b": "pdist_euclidean",
+       "z0": -0.9898660371700923,
+       "dz": {
+        "KT:drug": 0.003305813670158364,
+        "KTMD:drug": 0.0024617627263069375,
+        "MD:drug": 0.001474466919898998,
+        "PF:drug": 0.0018874406814575195,
+        "SLP:sleep_deep": 0.00045101940631869786,
+        "SLP:sleep_light": 8.814632892606422e-05,
+        "SLP:sleep_mid": 0.00018287599086763695
+       },
+       "sd": {
+        "KT:drug": 5.623182892390301,
+        "KTMD:drug": 4.1874538098301635,
+        "MD:drug": 2.508065483005362,
+        "PF:drug": 3.2105330818191526,
+        "SLP:sleep_deep": 0.767183169650889,
+        "SLP:sleep_light": 0.14993674123814368,
+        "SLP:sleep_mid": 0.3110717196672971
+       }
+      },
+      {
+       "cls": "estimator: canberra vs euclidean",
+       "a": "pdist_euclidean",
+       "b": "pdist_canberra",
+       "z0": 0.9849389980236689,
+       "dz": {
+        "KT:drug": -0.017654260993003823,
+        "KTMD:drug": -0.019907061755657207,
+        "MD:drug": -0.012717208266258218,
+        "PF:drug": -0.01565204858779906,
+        "SLP:sleep_deep": -0.009452003240585316,
+        "SLP:sleep_light": -0.00021542012691500023,
+        "SLP:sleep_mid": -0.004138892889022805
+       },
+       "sd": {
+        "KT:drug": -9.975497346828675,
+        "KTMD:drug": -11.248436952722582,
+        "MD:drug": -7.185827680320341,
+        "PF:drug": -8.844152084411707,
+        "SLP:sleep_deep": -5.340831501587082,
+        "SLP:sleep_light": -0.12172262012811945,
+        "SLP:sleep_mid": -2.3386713864498105
+       }
+      }
+     ]
+    },
+    {
+     "a": "pcorr_ShrunkCovariance",
+     "b": "corr_spearman_tau-10-sq",
+     "z0": 0.12578992797255825,
+     "strength_sd": 4.7591755697321085,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "pcorr",
+       "corr"
+      ],
+      "est": [
+       "Shrunk",
+       "spearman"
+      ],
+      "sign": [
+       "signed",
+       "sq"
+      ],
+      "lag": [
+       0,
+       10
+      ]
+     },
+     "reliability": [
+      0.7758273500792879,
+      0.320682793146579
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.12804549895226955,
+       "sd": 4.7591755697321085,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.1737367140071001,
+       "sd": 6.457419679986883,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.1462581166997552,
+       "sd": 5.436099367553483,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.2856154259294271,
+       "sd": 10.61571057588407,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.08281573057174685,
+       "sd": 3.0780824390671664,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.03370406860485673,
+       "sd": 1.2527076798271637,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.05808642935007811,
+       "sd": 2.1589475440984414,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "pcorr_ShrunkCovariance",
+     "b": "corr_pearson_tau-10-sq",
+     "z0": 0.12534714826227475,
+     "strength_sd": 4.664214472521478,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "pcorr",
+       "corr"
+      ],
+      "est": [
+       "Shrunk",
+       "Empirical"
+      ],
+      "sign": [
+       "signed",
+       "sq"
+      ],
+      "lag": [
+       0,
+       10
+      ]
+     },
+     "reliability": [
+      0.7758273500792879,
+      0.31752291511223857
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.11703157369047404,
+       "sd": 4.664214472521478,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.17067791551817207,
+       "sd": 6.802253260347762,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.1293066143989563,
+       "sd": 5.153427944731273,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.2841379287652671,
+       "sd": 11.324125599168193,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.07691942118108272,
+       "sd": 3.06557167589368,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.028048633132129908,
+       "sd": 1.1178593644765664,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.055135825928300616,
+       "sd": 2.197401172519114,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "lcss",
+     "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.8090381671984991,
+     "strength_sd": 4.537607949855687,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "lcss",
+       "cohmag"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ],
+      "opt": [
+       "unconstrained",
+       null
+      ]
+     },
+     "reliability": [
+      0.8552318815720819,
+      0.9040724473470853
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.14422870278358457,
+       "sd": -7.39497593800679,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.08849972113966945,
+       "sd": -4.537607949855687,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.041370385885238614,
+       "sd": -2.1211659140167702,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.1114641427993775,
+       "sd": -5.715052815726804,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.009487971663475037,
+       "sd": 0.48647267012564305,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.006092444062232971,
+       "sd": 0.31237525107237485,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.0006830871105194536,
+       "sd": 0.035023630167662245,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "lcss_constraint-sakoe-chiba",
+     "b": "si_kernel_W-0.5_k-1",
+     "z0": 0.680342086404562,
+     "strength_sd": 4.189155519050978,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "lcss",
+       "si"
+      ],
+      "est": [
+       null,
+       "kernel"
+      ],
+      "opt": [
+       "sakoe-chiba",
+       "k-1"
+      ]
+     },
+     "reliability": [
+      0.9200053970100847,
+      0.83753924610326
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.1839217707514763,
+       "sd": -4.314999198164346,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.1785578317940235,
+       "sd": -4.189155519050978,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.0887774601578713,
+       "sd": -2.0828130777074247,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.1871799901127815,
+       "sd": -4.3914404692223155,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.014822241663932811,
+       "sd": -0.3477454606572445,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.00199804008007054,
+       "sd": -0.0468761327611098,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.006176409125328075,
+       "sd": -0.14490508825808304,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "cov_MinCovDet",
+     "b": "pdist_braycurtis",
+     "z0": -0.9625768000880878,
+     "strength_sd": 3.831315018547791,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "pdist"
+      ],
+      "est": [
+       "MinCovDet",
+       "braycurtis"
+      ]
+     },
+     "reliability": [
+      0.8926618339677045,
+      0.9124044162660806
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.03169097900390622,
+       "sd": 3.831315018547791,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.0590006172657013,
+       "sd": 7.132943132044253,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.03172104954719546,
+       "sd": 3.8349504292463923,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": 0.05482095777988438,
+       "sd": 6.627638699560414,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.01602874994277953,
+       "sd": 1.9378129775274135,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0015198379755019809,
+       "sd": -0.1837424479875573,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.003605428338050831,
+       "sd": 0.43588213977767304,
+       "consistent": false
+      }
+     },
+     "links": [
+      {
+       "cls": "estimator: Empirical vs MinCovDet",
+       "a": "cov_MinCovDet",
+       "b": "cov_EmpiricalCovariance",
+       "z0": 0.9719421471158664,
+       "dz": {
+        "KT:drug": -0.03136293590068817,
+        "KTMD:drug": -0.0515471965074539,
+        "MD:drug": -0.033273792266845736,
+        "PF:drug": -0.056822195649147034,
+        "SLP:sleep_deep": -0.02652015089988702,
+        "SLP:sleep_light": 0.0024426668882370217,
+        "SLP:sleep_mid": -0.009764045476913452
+       },
+       "sd": {
+        "KT:drug": -3.170663630464055,
+        "KTMD:drug": -5.21120923551617,
+        "MD:drug": -3.3638433379506734,
+        "PF:drug": -5.744489920151582,
+        "SLP:sleep_deep": -2.681078015111631,
+        "SLP:sleep_light": 0.24694356065377132,
+        "SLP:sleep_mid": -0.987104778005405
+       }
+      },
+      {
+       "cls": "identity control (distance)",
+       "a": "cov_EmpiricalCovariance",
+       "b": "pdist_euclidean",
+       "z0": -0.9898660371700923,
+       "dz": {
+        "KT:drug": 0.003305813670158364,
+        "KTMD:drug": 0.0024617627263069375,
+        "MD:drug": 0.001474466919898998,
+        "PF:drug": 0.0018874406814575195,
+        "SLP:sleep_deep": 0.00045101940631869786,
+        "SLP:sleep_light": 8.814632892606422e-05,
+        "SLP:sleep_mid": 0.00018287599086763695
+       },
+       "sd": {
+        "KT:drug": 5.623182892390301,
+        "KTMD:drug": 4.1874538098301635,
+        "MD:drug": 2.508065483005362,
+        "PF:drug": 3.2105330818191526,
+        "SLP:sleep_deep": 0.767183169650889,
+        "SLP:sleep_light": 0.14993674123814368,
+        "SLP:sleep_mid": 0.3110717196672971
+       }
+      },
+      {
+       "cls": "estimator: braycurtis vs euclidean",
+       "a": "pdist_euclidean",
+       "b": "pdist_braycurtis",
+       "z0": 0.9553323085109393,
+       "dz": {
+        "KT:drug": -0.03989289402961732,
+        "KTMD:drug": -0.018794208765029935,
+        "MD:drug": -0.005228444933891296,
+        "PF:drug": -0.01144368350505831,
+        "SLP:sleep_deep": -0.0014067322015762218,
+        "SLP:sleep_light": 5.006194114687279e-05,
+        "SLP:sleep_mid": -0.0013979017734527255
+       },
+       "sd": {
+        "KT:drug": -6.168109301921955,
+        "KTMD:drug": -2.9058993268269613,
+        "MD:drug": -0.8084051211571373,
+        "PF:drug": -1.769385059489456,
+        "SLP:sleep_deep": -0.21750434980760103,
+        "SLP:sleep_light": 0.007740414235955035,
+        "SLP:sleep_mid": -0.21613901778109892
+       }
+      }
+     ]
+    },
+    {
+     "a": "di_gaussian_n-5",
+     "b": "mi_kernel_W-0.25",
+     "z0": 0.9528654436270396,
+     "strength_sd": 3.664158583032333,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "di",
+       "mi"
+      ],
+      "est": [
+       "gaussian",
+       "kernel"
+      ],
+      "opt": [
+       "n-5",
+       null
+      ]
+     },
+     "reliability": [
+      0.9661702130754865,
+      0.9136876317014386
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.043487399816513006,
+       "sd": -3.9253205326878042,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.07187277972698211,
+       "sd": -6.487481412869914,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.04059406816959377,
+       "sd": -3.664158583032333,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.08441270589828492,
+       "sd": -7.619377775639184,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.015185680985450756,
+       "sd": -1.3707111859192385,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0005830705165862926,
+       "sd": -0.05262992683899167,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.008094865083694447,
+       "sd": -0.7306700390557228,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "cov-sq_EmpiricalCovariance",
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.8970726986726125,
+     "strength_sd": 3.326129656493574,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "plv"
+      ],
+      "est": [
+       "Empirical",
+       null
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
+     },
+     "reliability": [
+      0.9075341610301324,
+      0.8780748171908779
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.09011154770851137,
+       "sd": -3.565427295788538,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.14007359594106675,
+       "sd": -5.542266613853328,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.0840636104345322,
+       "sd": -3.326129656493574,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.12897357940673831,
+       "sd": -5.103074269014037,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.024854180216789312,
+       "sd": -0.9834008494231866,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.005170843005180392,
+       "sd": -0.2045938091369174,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.015822994709014937,
+       "sd": -0.6260655673025444,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "tlmi_kernel_W-0.25",
+     "b": "pec",
+     "z0": 0.8290040716528893,
+     "strength_sd": 3.192593165060218,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "tlmi",
+       "pec"
+      ],
+      "est": [
+       "kernel",
+       "linear"
+      ],
+      "opt": [
+       null,
+       "plain"
+      ]
+     },
+     "reliability": [
+      0.8367274848947827,
+      0.6991938127541606
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.09447459876537323,
+       "sd": -3.192593165060218,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.12560015469789507,
+       "sd": -4.244423375799258,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.07896383702754978,
+       "sd": -2.6684358512828497,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.1517326772212983,
+       "sd": -5.1275233188982305,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.038215002417564425,
+       "sd": -1.291404855013717,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.003929799795150735,
+       "sd": 0.1328002672677317,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.01996160447597506,
+       "sd": -0.6745652571852091,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "je_gaussian",
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "z0": -0.8909012089173,
+     "strength_sd": 3.1853409780289836,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "je",
+       "plv"
+      ],
+      "est": [
+       "gaussian",
+       null
+      ],
+      "band": [
+       null,
+       "broad"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
+     },
+     "reliability": [
+      0.9283255803538104,
+      0.8870493235739492
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.054082036018371527,
+       "sd": 3.1853409780289836,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.12278046905994414,
+       "sd": 7.2315631620341545,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": 0.07506398260593411,
+       "sd": 4.4211423491436905,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": 0.11812873482704161,
+       "sd": 6.957583837995185,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.02029705047607422,
+       "sd": 1.1954621418579625,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.009467837214469865,
+       "sd": 0.5576396909745401,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.013209119439125006,
+       "sd": 0.777994922728707,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "cov-sq_EmpiricalCovariance",
+     "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.9100435490409533,
+     "strength_sd": 3.1848257546256065,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "cohmag"
+      ],
+      "est": [
+       "Empirical",
+       null
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
+     },
+     "reliability": [
+      0.9075341610301324,
+      0.9040724473470853
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.09048449695110317,
+       "sd": -3.4676091511035665,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.135348516702652,
+       "sd": -5.186918985249306,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.08310548961162567,
+       "sd": -3.1848257546256065,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.12831139266490943,
+       "sd": -4.9172374758973385,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.02484374642372128,
+       "sd": -0.9520791444875476,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.005840957164764349,
+       "sd": -0.22384117940873255,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.016273045539855924,
+       "sd": -0.62362684804252,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "b": "ids",
+     "z0": 0.8443739816546441,
+     "strength_sd": 3.106389064052008,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "plv",
+       "ids"
+      ],
+      "band": [
+       "low",
+       null
+      ],
+      "agg": [
+       "mean",
+       null
+      ]
+     },
+     "reliability": [
+      0.8780748171908779,
+      0.8590070342217984
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.10355526804924009,
+       "sd": -3.308070216069031,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.16107500344514847,
+       "sd": -5.145536595943584,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.09724187552928926,
+       "sd": -3.106389064052008,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.1527361541986465,
+       "sd": -4.87915228398829,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.03280963897705075,
+       "sd": -1.0481030230963284,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0012940257787704135,
+       "sd": -0.0413376182420818,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.02237745523452761,
+       "sd": -0.7148471977066361,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "corr_spearman_tau-10-sq",
+     "b": "si_kozachenko_k-1",
+     "z0": 0.1493294807364388,
+     "strength_sd": 3.1039976033035837,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "si"
+      ],
+      "est": [
+       "spearman",
+       "kozachenko"
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "lag": [
+       10,
+       0
+      ],
+      "opt": [
+       null,
+       "k-1"
+      ]
+     },
+     "reliability": [
+      0.320682793146579,
+      0.4064069591226913
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.15857739914208652,
+       "sd": 3.518521201164797,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.13989509760867802,
+       "sd": 3.1039976033035837,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": 0.11469190157949924,
+       "sd": 2.544788157029832,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.22718063183128834,
+       "sd": 5.040692267100356,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.11083315453724936,
+       "sd": 2.459170134842931,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.032569703750778,
+       "sd": 0.7226577922373987,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.06307697511510925,
+       "sd": 1.3995542583530356,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "te_symbolic_k-3",
+     "b": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "z0": -0.2616968769541321,
+     "strength_sd": 3.1007871936629146,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "te",
+       "icoh"
+      ],
+      "est": [
+       "symbolic",
+       null
+      ],
+      "band": [
+       null,
+       "broad"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ],
+      "opt": [
+       "history-3",
+       null
+      ]
+     },
+     "reliability": [
+      0.3684531712311227,
+      0.4784755238870262
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.1220765294972807,
+       "sd": 4.9809311770001266,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.08704341893899255,
+       "sd": 3.5515203531041477,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": 0.07599650062620639,
+       "sd": 3.1007871936629146,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": 0.19691443005576728,
+       "sd": 8.034445506479033,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.0007177125662565231,
+       "sd": 0.029283900124892695,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.011358321085572262,
+       "sd": -0.46343892512741386,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.011107994988560702,
+       "sd": -0.4532251922652799,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "corr_pearson_tau-10-sq",
+     "b": "pdist_canberra",
+     "z0": -0.1509521969948158,
+     "strength_sd": 3.096453007135921,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "pdist"
+      ],
+      "est": [
+       "Empirical",
+       "canberra"
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "lag": [
+       10,
+       0
+      ]
+     },
+     "reliability": [
+      0.31752291511223857,
+      0.9274586402293054
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.11876034485176208,
+       "sd": -3.096453007135921,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.26539022090146314,
+       "sd": -6.919551712320656,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.15719394593033936,
+       "sd": -4.098536992184717,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.3342520747333765,
+       "sd": -8.714995255709951,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.12452400133188349,
+       "sd": -3.2467295279918265,
+       "consistent": true
+      },
+      "SLP:sleep_light": {
+       "dz": -0.06230056986387353,
+       "sd": -1.6243703834143122,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.1027174774761079,
+       "sd": -2.6781653624643496,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "b": "ids",
+     "z0": 0.8532436842719714,
+     "strength_sd": 3.0875462547892356,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "cohmag",
+       "ids"
+      ],
+      "band": [
+       "low",
+       null
+      ],
+      "agg": [
+       "mean",
+       null
+      ]
+     },
+     "reliability": [
+      0.9040724473470853,
+      0.8590070342217984
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.10302315950393676,
+       "sd": -3.288008532394444,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.15540985465049742,
+       "sd": -4.959942313645407,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.09674207568168641,
+       "sd": -3.0875462547892356,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.15031238496303562,
+       "sd": -4.797255361442626,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.031230178475379955,
+       "sd": -0.9967185416336097,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.001252406835555997,
+       "sd": -0.03997086073816138,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.021518155932426453,
+       "sd": -0.6867570422794955,
+       "consistent": false
+      }
+     },
+     "links": []
     }
    ]
   },
-  {
-   "a": "ce_gaussian",
-   "b": "mi_kraskov_NN-4_DCE-AUTO",
-   "z0": -0.9712163026134173,
-   "weakest_sd": 1.7341913464687144,
-   "differs": {
-    "stat": [
-     "ce",
-     "mi"
-    ],
-    "est": [
-     "gaussian",
-     "kraskov_DCE"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9283255818869622,
-    0.8848454279817638
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.010529908537864674,
-     "sd": 2.9525788286999446,
-     "spectral_sd": 9.720676700529477
-    },
-    "KTMD:drug": {
-     "dz": 0.03469616174697876,
-     "sd": 9.72877895785147,
-     "spectral_sd": 10.173240996821944
-    },
-    "MD:drug": {
-     "dz": 0.006184720993042014,
-     "sd": 1.7341913464687144,
-     "spectral_sd": 2.02148797795778
-    },
-    "PF:drug": {
-     "dz": 0.033075711131095864,
-     "sd": 9.274405763231124,
-     "spectral_sd": 1.2949127776863867
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.001986593008041382,
-     "sd": 0.5570392597138155,
-     "spectral_sd": -0.19563498299896157
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0007971823215484619,
-     "sd": -0.22352935324689616,
-     "spectral_sd": 0.01605229712938937
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0006353199481963778,
-     "sd": -0.1781432594357334,
-     "spectral_sd": -0.9772671491228889
-    }
-   },
-   "links": [
+  "only:KT:drug": {
+   "count": 6,
+   "top": [
     {
-     "cls": "one marginal entropy removed",
-     "a": "ce_gaussian",
+     "a": "prec-sq_EmpiricalCovariance",
+     "b": "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+     "z0": 0.0028832080449016453,
+     "strength_sd": 5.493497948417366,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "prec",
+       "te"
+      ],
+      "est": [
+       "Empirical",
+       "gaussian"
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "opt": [
+       null,
+       "history-auto"
+      ]
+     },
+     "reliability": [
+      0.8683186599918393,
+      0.5199704150683643
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.11580410679453053,
+       "sd": 5.493497948417366,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.0022395912075808128,
+       "sd": -0.10624139371817036,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": 0.019347571245452857,
+       "sd": 0.9178071994660384,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.00016518120246473804,
+       "sd": -0.007835841249284691,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.010035570390755307,
+       "sd": 0.4760658916063258,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.008691720197384711,
+       "sd": 0.4123165265396775,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.007928965611790772,
+       "sd": 0.3761330882567776,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "bary_euclidean_max",
+     "b": "xme_gaussian_k1",
+     "z0": -0.3382681631793579,
+     "strength_sd": 4.901840088327698,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "bary",
+       "xme"
+      ],
+      "est": [
+       "euclidean",
+       "gaussian"
+      ],
+      "agg": [
+       "max",
+       null
+      ],
+      "opt": [
+       null,
+       "k1"
+      ]
+     },
+     "reliability": [
+      0.5415313376136615,
+      0.8829395321102861
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.1767222478345502,
+       "sd": 4.901840088327698,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.0439585030078888,
+       "sd": 1.2193006534676722,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": 0.020411212742328627,
+       "sd": 0.5661567917888987,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.046216487884521484,
+       "sd": 1.2819315950878696,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.025908304005861305,
+       "sd": 0.7186325703338136,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0005167596042156275,
+       "sd": -0.014333639227721998,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.02369838282465936,
+       "sd": 0.6573347972984575,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "bary_euclidean_max",
+     "b": "tlmi_kraskov_NN-4_DCE-AUTO",
+     "z0": 0.3215993689994017,
+     "strength_sd": 4.705188782572678,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "bary",
+       "tlmi"
+      ],
+      "est": [
+       "euclidean",
+       "kraskov_DCE"
+      ],
+      "agg": [
+       "max",
+       null
+      ]
+     },
+     "reliability": [
+      0.5415313376136615,
+      0.7839331131041126
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.15659619166981428,
+       "sd": -4.705188782572678,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.010803026705980302,
+       "sd": 0.3245946119940649,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": -0.007598378509283049,
+       "sd": -0.228305713864378,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.008666048198938348,
+       "sd": -0.2603855964827962,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.010803379863500578,
+       "sd": -0.3246052231895555,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.0025206118822097834,
+       "sd": -0.0757359079229704,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.012578678131103499,
+       "sd": -0.3779469641691743,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "corr_pearson_tau-1-sq",
+     "b": "bary_euclidean_max",
+     "z0": 0.3341256774961948,
+     "strength_sd": 4.38427058271,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "bary"
+      ],
+      "est": [
+       "Empirical",
+       "euclidean"
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "lag": [
+       1,
+       0
+      ],
+      "agg": [
+       null,
+       "max"
+      ]
+     },
+     "reliability": [
+      0.880972096258866,
+      0.5415313376136615
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.20497532887384293,
+       "sd": -4.38427058271,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.050583378784358514,
+       "sd": -1.0819410355225467,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": -0.042830037698149664,
+       "sd": -0.9161028079234392,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.05584295615553855,
+       "sd": -1.194439502887584,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.03193637952208522,
+       "sd": -0.6830955219157991,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.00969903469085695,
+       "sd": -0.2074551737979152,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.030996361374855064,
+       "sd": -0.6629892294524203,
+       "consistent": false
+      }
+     },
+     "links": []
+    },
+    {
+     "a": "pdist_braycurtis",
      "b": "je_gaussian",
-     "z0": 1.0,
-     "sd": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
+     "z0": 0.4476074665784836,
+     "strength_sd": 4.034053796028417,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "pdist",
+       "je"
+      ],
+      "est": [
+       "braycurtis",
+       "gaussian"
+      ]
      },
-     "dz": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
-     }
+     "reliability": [
+      0.9124044162660806,
+      0.9283255803538104
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.2574417442083359,
+       "sd": -4.034053796028417,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.08159937169402837,
+       "sd": -1.2786436642125976,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": -0.04960311129689218,
+       "sd": -0.7772695140696173,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.0674207076430321,
+       "sd": -1.0564672113866493,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.020139716565609006,
+       "sd": 0.31558479496893,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.01470588445663451,
+       "sd": -0.23043787711534947,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.00678840950131418,
+       "sd": 0.10637283864737399,
+       "consistent": false
+      }
+     },
+     "links": []
     },
     {
-     "cls": "marginal entropies added",
-     "a": "je_gaussian",
-     "b": "mi_gaussian",
-     "z0": -1.0,
-     "sd": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
+     "a": "pdist_braycurtis",
+     "b": "dcorr_biased",
+     "z0": -0.34453862261337537,
+     "strength_sd": 4.0107921796407275,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "pdist",
+       "dcorr"
+      ],
+      "est": [
+       "braycurtis",
+       "biased"
+      ]
      },
-     "dz": {
-      "KT:drug": 0.0,
-      "KTMD:drug": 0.0,
-      "MD:drug": 0.0,
-      "PF:drug": 0.0,
-      "SLP:sleep_deep": 0.0,
-      "SLP:sleep_light": 0.0,
-      "SLP:sleep_mid": 0.0
-     }
-    },
-    {
-     "cls": "estimator: gaussian vs kraskov_DCE",
-     "a": "mi_gaussian",
-     "b": "mi_kraskov_NN-4_DCE-AUTO",
-     "z0": 0.9712163026134173,
-     "sd": {
-      "KT:drug": -2.9525788286999446,
-      "KTMD:drug": -9.72877895785147,
-      "MD:drug": -1.7341913464687144,
-      "PF:drug": -9.274405763231124,
-      "SLP:sleep_deep": -0.5570392597138155,
-      "SLP:sleep_light": 0.22352935324689616,
-      "SLP:sleep_mid": 0.1781432594357334
+     "reliability": [
+      0.9124044162660806,
+      0.8653883561863732
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.3048112701973878,
+       "sd": 4.0107921796407275,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.1072334413183853,
+       "sd": 1.4110076952116202,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": 0.08966091279871763,
+       "sd": 1.1797834366152897,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.10235460922122,
+       "sd": 1.3468106541756406,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.03993555530905721,
+       "sd": -0.52548323695332,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.009693061560392402,
+       "sd": 0.1275440224963544,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.022298840060830077,
+       "sd": -0.2934143913810018,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": -0.010529908537864674,
-      "KTMD:drug": -0.03469616174697876,
-      "MD:drug": -0.006184720993042014,
-      "PF:drug": -0.033075711131095864,
-      "SLP:sleep_deep": -0.001986593008041382,
-      "SLP:sleep_light": 0.0007971823215484619,
-      "SLP:sleep_mid": 0.0006353199481963778
-     }
+     "links": []
     }
    ]
   },
-  {
-   "a": "dtw_constraint-itakura",
-   "b": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-   "z0": 0.34454734324632835,
-   "weakest_sd": 1.6212406386245855,
-   "differs": {
-    "stat": [
-     "dtw",
-     "icoh"
-    ],
-    "band": [
-     null,
-     "broad"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "itakura",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.6535581353076537,
-    0.4784755238870262
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.08423566967248913,
-     "sd": -2.19912343308723,
-     "spectral_sd": -2.464761658761124
-    },
-    "KTMD:drug": {
-     "dz": -0.09986734194681049,
-     "sd": -2.6072163102550006,
-     "spectral_sd": -3.4529762718721657
-    },
-    "MD:drug": {
-     "dz": -0.06210032999515536,
-     "sd": -1.6212406386245855,
-     "spectral_sd": -4.569553265641858
-    },
-    "PF:drug": {
-     "dz": -0.22273373696953058,
-     "sd": -5.81486420435919,
-     "spectral_sd": -2.2899724555855867
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.07869437001645566,
-     "sd": -2.05445785411432,
-     "spectral_sd": -0.5335653372568152
-    },
-    "SLP:sleep_light": {
-     "dz": -0.01215867027640341,
-     "sd": -0.31742392295306376,
-     "spectral_sd": -0.5194202805973401
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.031214334443211533,
-     "sd": -0.8149062575174978,
-     "spectral_sd": 0.5651409312435376
-    }
-   },
-   "links": []
+  "only:KTMD:drug": {
+   "count": 0,
+   "top": []
   },
-  {
-   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-   "b": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
-   "z0": 0.15995558536766719,
-   "weakest_sd": 1.407465872072638,
-   "differs": {
-    "stat": [
-     "cohmag",
-     "sgc"
-    ],
-    "band": [
-     "broad",
-     "high"
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.863368988024198,
-    0.0601318687447391
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.07482233638875185,
-     "sd": 5.539760196628861,
-     "spectral_sd": 2.897072986898
-    },
-    "KTMD:drug": {
-     "dz": 0.02186594195663929,
-     "sd": 1.618929329923962,
-     "spectral_sd": 14.030859023513662
-    },
-    "MD:drug": {
-     "dz": 0.01900982735678553,
-     "sd": 1.407465872072638,
-     "spectral_sd": 3.0434103068179175
-    },
-    "PF:drug": {
-     "dz": 0.03894362524151802,
-     "sd": 2.8833414651005844,
-     "spectral_sd": 8.92992129013166
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.0025558879598975084,
-     "sd": -0.1892350208595157,
-     "spectral_sd": 1.318317521588613
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0024609141051769243,
-     "sd": -0.182203265297007,
-     "spectral_sd": 0.49424060272674203
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0018032043240964399,
-     "sd": -0.1335071854628722,
-     "spectral_sd": -0.5379752878542826
-    }
-   },
-   "links": [
+  "only:MD:drug": {
+   "count": 0,
+   "top": []
+  },
+  "only:PF:drug": {
+   "count": 1,
+   "top": [
     {
-     "cls": "band: broad vs high",
-     "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-     "b": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-     "z0": 0.8774568408727645,
-     "sd": {
-      "KT:drug": 0.7177558204764392,
-      "KTMD:drug": 5.0233210769954875,
-      "MD:drug": -0.7092868209884653,
-      "PF:drug": 1.9484867715885283,
-      "SLP:sleep_deep": -0.49718694944633335,
-      "SLP:sleep_light": -0.6943949285258619,
-      "SLP:sleep_mid": -0.7511727379784466
+     "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "b": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+     "z0": 0.2652774661158522,
+     "strength_sd": 4.136914758898224,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "plv",
+       "sgc"
+      ],
+      "band": [
+       "broad",
+       "low"
+      ],
+      "opt": [
+       null,
+       "order-20"
+      ]
      },
-     "dz": {
-      "KT:drug": 0.009095317125320412,
-      "KTMD:drug": 0.06365493237972258,
-      "MD:drug": -0.008987998962402322,
-      "PF:drug": 0.024690994620323203,
-      "SLP:sleep_deep": -0.006300294399261497,
-      "SLP:sleep_light": -0.00879929065704349,
-      "SLP:sleep_mid": -0.00951877236366272
-     }
-    },
-    {
-     "cls": "precedence (spectral)",
-     "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-     "b": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
-     "z0": 0.2569377915933728,
-     "sd": {
-      "KT:drug": 1.0433852995794426,
-      "KTMD:drug": -0.05344416946651615,
-      "MD:drug": 1.826811026708782,
-      "PF:drug": 1.6329474631014618,
-      "SLP:sleep_deep": 0.7962875838558028,
-      "SLP:sleep_light": -0.15462647487147968,
-      "SLP:sleep_mid": 0.9601425888702063
+     "reliability": [
+      0.8870493235739492,
+      0.36395384993149227
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.014950027316808681,
+       "sd": 0.5990890046114528,
+       "consistent": false
+      },
+      "KTMD:drug": {
+       "dz": 0.02729656286537646,
+       "sd": 1.0938488826670016,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": -0.003746766597032533,
+       "sd": -0.15014331569842346,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": 0.10323505885899066,
+       "sd": 4.136914758898224,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.02680862918496131,
+       "sd": 1.0742960285670191,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.02891769483685494,
+       "sd": 1.1588121311317652,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.00033712126314640323,
+       "sd": 0.013509382805251428,
+       "consistent": false
+      }
      },
-     "dz": {
-      "KT:drug": 0.025005592778325092,
-      "KTMD:drug": -0.0012808337807655168,
-      "MD:drug": 0.04378103911876678,
-      "PF:drug": 0.039134938269853606,
-      "SLP:sleep_deep": 0.0190836913883686,
-      "SLP:sleep_light": -0.0037057515233755167,
-      "SLP:sleep_mid": 0.02301061227917671
-     }
+     "links": []
     }
    ]
   },
-  {
-   "a": "si_gaussian_k-1",
-   "b": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-   "z0": 0.9456804648041726,
-   "weakest_sd": 1.3830105552476026,
-   "differs": {
-    "stat": [
-     "si",
-     "ppc"
-    ],
-    "est": [
-     "gaussian",
-     null
-    ],
-    "band": [
-     null,
-     "broad"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "k-1",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9631614514296074,
-    0.9044031831109004
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.008120790123939514,
-     "sd": -1.3830105552476026,
-     "spectral_sd": -3.3122365590123786
-    },
-    "KTMD:drug": {
-     "dz": -0.06816594898700712,
-     "sd": -11.608996848667068,
-     "spectral_sd": -6.931917855770879
-    },
-    "MD:drug": {
-     "dz": -0.0173811078071594,
-     "sd": -2.9600882663295156,
-     "spectral_sd": -2.9961134066463155
-    },
-    "PF:drug": {
-     "dz": -0.03048132061958314,
-     "sd": -5.191119030461952,
-     "spectral_sd": -2.262252334139512
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.00251021087169645,
-     "sd": 0.4275012749337412,
-     "spectral_sd": 1.3861950161949577
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0007814705371856911,
-     "sd": -0.13308828144157503,
-     "spectral_sd": -0.37575765921011944
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0017883986234664695,
-     "sd": 0.30457309393492127,
-     "spectral_sd": -0.39074860261625954
-    }
-   },
-   "links": []
+  "only:SLP:sleep_deep": {
+   "count": 0,
+   "top": []
   },
-  {
-   "a": "si_gaussian_k-1",
-   "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
-   "z0": 0.9297735407948494,
-   "weakest_sd": 1.356050738765371,
-   "differs": {
-    "stat": [
-     "si",
-     "plv"
-    ],
-    "est": [
-     "gaussian",
-     null
-    ],
-    "band": [
-     null,
-     "broad"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "k-1",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9631614514296074,
-    0.8870493235739492
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.009581312537193298,
-     "sd": -1.356050738765371,
-     "spectral_sd": -3.085718005394005
-    },
-    "KTMD:drug": {
-     "dz": -0.07060102820396424,
-     "sd": -9.992219341758963,
-     "spectral_sd": -5.657209427106576
-    },
-    "MD:drug": {
-     "dz": -0.018728065490722645,
-     "sd": -2.650597916074256,
-     "spectral_sd": -2.6176712160847
-    },
-    "PF:drug": {
-     "dz": -0.03624298870563508,
-     "sd": -5.129498846693339,
-     "spectral_sd": -2.150462184677203
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.0014376372098922618,
-     "sd": 0.2034699309706547,
-     "spectral_sd": 1.1202064255210713
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0011487364768982267,
-     "sd": -0.16258158181330842,
-     "spectral_sd": -0.46350933164943464
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.0015812277793884055,
-     "sd": 0.22379241780000356,
-     "spectral_sd": -0.22102696387430404
-    }
-   },
-   "links": []
+  "only:SLP:sleep_light": {
+   "count": 0,
+   "top": []
   },
-  {
-   "a": "si_kozachenko_k-1",
-   "b": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
-   "z0": 0.06624531286797719,
-   "weakest_sd": 1.2156712149553903,
-   "differs": {
-    "stat": [
-     "si",
-     "sgc"
-    ],
-    "est": [
-     "kozachenko",
-     null
-    ],
-    "band": [
-     null,
-     "broad"
-    ],
-    "agg": [
-     null,
-     "max"
-    ],
-    "opt": [
-     "k-1",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.4064069591226913,
-    0.1802888478952599
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.12185978201741818,
-     "sd": 8.766940940637232,
-     "spectral_sd": 3.8534528742149585
-    },
-    "KTMD:drug": {
-     "dz": 0.05386209427379071,
-     "sd": 3.874992976516754,
-     "spectral_sd": 9.344336257251568
-    },
-    "MD:drug": {
-     "dz": 0.016897733230143784,
-     "sd": 1.2156712149553903,
-     "spectral_sd": 3.8595353060577944
-    },
-    "PF:drug": {
-     "dz": 0.05150818022666499,
-     "sd": 3.7056456735030507,
-     "spectral_sd": 9.698408556789206
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.001491253201220389,
-     "sd": 0.10728501664943609,
-     "spectral_sd": -0.6162625780891277
-    },
-    "SLP:sleep_light": {
-     "dz": 0.015365498675964772,
-     "sd": 1.105437882667212,
-     "spectral_sd": 2.8731568081075487
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.011240369477309286,
-     "sd": -0.8086643002892164,
-     "spectral_sd": 1.222970558725905
-    }
-   },
-   "links": []
+  "only:SLP:sleep_mid": {
+   "count": 0,
+   "top": []
   },
-  {
-   "a": "phi_star_t-1_norm-0",
-   "b": "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.04336991660311469,
-   "weakest_sd": 1.1877805433344435,
-   "differs": {
-    "stat": [
-     "phi",
-     "dspli"
-    ],
-    "est": [
-     "star",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "norm-0",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9350527302636102,
-    0.024471441092433422
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.026463079325912985,
-     "sd": 2.8164379617117623,
-     "spectral_sd": 3.544490717046924
+  "drugs_not_sleep": {
+   "count": 7,
+   "top": [
+    {
+     "a": "lcss",
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.7949078187346459,
+     "strength_sd": 5.00937272657537,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "lcss",
+       "plv"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ],
+      "opt": [
+       "unconstrained",
+       null
+      ]
+     },
+     "reliability": [
+      0.8552318815720819,
+      0.8780748171908779
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.1412165492773056,
+       "sd": -7.733673943508101,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.09147092774510379,
+       "sd": -5.00937272657537,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.03883006870746614,
+       "sd": -2.126514860505943,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.11095502674579621,
+       "sd": -6.076412457580913,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.008843767642974787,
+       "sd": 0.4843257800373518,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.00542837381362915,
+       "sd": 0.29728295538256805,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.0011458367109298817,
+       "sd": 0.06275133870770452,
+       "consistent": false
+      }
+     },
+     "links": []
     },
-    "KTMD:drug": {
-     "dz": 0.023323638772126287,
-     "sd": 2.482310574444173,
-     "spectral_sd": 8.77656611436519
+    {
+     "a": "lcss",
+     "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.8090381671984991,
+     "strength_sd": 4.537607949855687,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "lcss",
+       "cohmag"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ],
+      "opt": [
+       "unconstrained",
+       null
+      ]
+     },
+     "reliability": [
+      0.8552318815720819,
+      0.9040724473470853
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.14422870278358457,
+       "sd": -7.39497593800679,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.08849972113966945,
+       "sd": -4.537607949855687,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.041370385885238614,
+       "sd": -2.1211659140167702,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.1114641427993775,
+       "sd": -5.715052815726804,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.009487971663475037,
+       "sd": 0.48647267012564305,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": 0.006092444062232971,
+       "sd": 0.31237525107237485,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": 0.0006830871105194536,
+       "sd": 0.035023630167662245,
+       "consistent": false
+      }
+     },
+     "links": []
     },
-    "MD:drug": {
-     "dz": 0.011160313547588884,
-     "sd": 1.1877805433344435,
-     "spectral_sd": 4.6082770942271996
+    {
+     "a": "lcss_constraint-sakoe-chiba",
+     "b": "si_kernel_W-0.5_k-1",
+     "z0": 0.680342086404562,
+     "strength_sd": 4.189155519050978,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "lcss",
+       "si"
+      ],
+      "est": [
+       null,
+       "kernel"
+      ],
+      "opt": [
+       "sakoe-chiba",
+       "k-1"
+      ]
+     },
+     "reliability": [
+      0.9200053970100847,
+      0.83753924610326
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.1839217707514763,
+       "sd": -4.314999198164346,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.1785578317940235,
+       "sd": -4.189155519050978,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.0887774601578713,
+       "sd": -2.0828130777074247,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.1871799901127815,
+       "sd": -4.3914404692223155,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.014822241663932811,
+       "sd": -0.3477454606572445,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.00199804008007054,
+       "sd": -0.0468761327611098,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.006176409125328075,
+       "sd": -0.14490508825808304,
+       "consistent": false
+      }
+     },
+     "links": []
     },
-    "PF:drug": {
-     "dz": 0.04959148881025612,
-     "sd": 5.2779704864596555,
-     "spectral_sd": 11.510475243224887
+    {
+     "a": "cov-sq_EmpiricalCovariance",
+     "b": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.8970726986726125,
+     "strength_sd": 3.326129656493574,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "plv"
+      ],
+      "est": [
+       "Empirical",
+       null
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
+     },
+     "reliability": [
+      0.9075341610301324,
+      0.8780748171908779
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.09011154770851137,
+       "sd": -3.565427295788538,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.14007359594106675,
+       "sd": -5.542266613853328,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.0840636104345322,
+       "sd": -3.326129656493574,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.12897357940673831,
+       "sd": -5.103074269014037,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.024854180216789312,
+       "sd": -0.9834008494231866,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.005170843005180392,
+       "sd": -0.2045938091369174,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.015822994709014937,
+       "sd": -0.6260655673025444,
+       "consistent": false
+      }
+     },
+     "links": []
     },
-    "SLP:sleep_deep": {
-     "dz": 0.006513649446424099,
-     "sd": 0.6932409242422403,
-     "spectral_sd": 2.055474115771648
+    {
+     "a": "cov-sq_EmpiricalCovariance",
+     "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "z0": 0.9100435490409533,
+     "strength_sd": 3.1848257546256065,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "cohmag"
+      ],
+      "est": [
+       "Empirical",
+       null
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "band": [
+       null,
+       "low"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ]
+     },
+     "reliability": [
+      0.9075341610301324,
+      0.9040724473470853
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.09048449695110317,
+       "sd": -3.4676091511035665,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.135348516702652,
+       "sd": -5.186918985249306,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.08310548961162567,
+       "sd": -3.1848257546256065,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.12831139266490943,
+       "sd": -4.9172374758973385,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.02484374642372128,
+       "sd": -0.9520791444875476,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.005840957164764349,
+       "sd": -0.22384117940873255,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.016273045539855924,
+       "sd": -0.62362684804252,
+       "consistent": false
+      }
+     },
+     "links": []
     },
-    "SLP:sleep_light": {
-     "dz": -0.006196008773986247,
-     "sd": -0.659434758413247,
-     "spectral_sd": -0.6880863429403126
+    {
+     "a": "te_symbolic_k-3",
+     "b": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "z0": -0.2616968769541321,
+     "strength_sd": 3.1007871936629146,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "te",
+       "icoh"
+      ],
+      "est": [
+       "symbolic",
+       null
+      ],
+      "band": [
+       null,
+       "broad"
+      ],
+      "agg": [
+       null,
+       "mean"
+      ],
+      "opt": [
+       "history-3",
+       null
+      ]
+     },
+     "reliability": [
+      0.3684531712311227,
+      0.4784755238870262
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": 0.1220765294972807,
+       "sd": 4.9809311770001266,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": 0.08704341893899255,
+       "sd": 3.5515203531041477,
+       "consistent": false
+      },
+      "MD:drug": {
+       "dz": 0.07599650062620639,
+       "sd": 3.1007871936629146,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": 0.19691443005576728,
+       "sd": 8.034445506479033,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": 0.0007177125662565231,
+       "sd": 0.029283900124892695,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.011358321085572262,
+       "sd": -0.46343892512741386,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.011107994988560702,
+       "sd": -0.4532251922652799,
+       "consistent": false
+      }
+     },
+     "links": []
     },
-    "SLP:sleep_mid": {
-     "dz": 0.003681158169638368,
-     "sd": 0.3917818287262832,
-     "spectral_sd": 0.6023953711517419
+    {
+     "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "b": "ids",
+     "z0": 0.8532436842719714,
+     "strength_sd": 3.0875462547892356,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "cohmag",
+       "ids"
+      ],
+      "band": [
+       "low",
+       null
+      ],
+      "agg": [
+       "mean",
+       null
+      ]
+     },
+     "reliability": [
+      0.9040724473470853,
+      0.8590070342217984
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.10302315950393676,
+       "sd": -3.288008532394444,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.15540985465049742,
+       "sd": -4.959942313645407,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.09674207568168641,
+       "sd": -3.0875462547892356,
+       "consistent": true
+      },
+      "PF:drug": {
+       "dz": -0.15031238496303562,
+       "sd": -4.797255361442626,
+       "consistent": false
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.031230178475379955,
+       "sd": -0.9967185416336097,
+       "consistent": false
+      },
+      "SLP:sleep_light": {
+       "dz": -0.001252406835555997,
+       "sd": -0.03997086073816138,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.021518155932426453,
+       "sd": -0.6867570422794955,
+       "consistent": false
+      }
+     },
+     "links": []
     }
-   },
-   "links": []
+   ]
   },
-  {
-   "a": "phi_star_t-1_norm-1",
-   "b": "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.04336627232041792,
-   "weakest_sd": 1.187249841326862,
-   "differs": {
-    "stat": [
-     "phi",
-     "dspli"
-    ],
-    "est": [
-     "star",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "norm-1",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9350517624748139,
-    0.024471441092433422
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.026458962693868673,
-     "sd": 2.8141582973807564,
-     "spectral_sd": 3.5449243827573698
-    },
-    "KTMD:drug": {
-     "dz": 0.02332659739768133,
-     "sd": 2.4810019340462315,
-     "spectral_sd": 8.76412838519416
-    },
-    "MD:drug": {
-     "dz": 0.01116262695286423,
-     "sd": 1.187249841326862,
-     "spectral_sd": 4.606577275832944
-    },
-    "PF:drug": {
-     "dz": 0.049580274091567844,
-     "sd": 5.273326144170054,
-     "spectral_sd": 11.499692939546446
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.006521556887309998,
-     "sd": 0.6936286066315408,
-     "spectral_sd": 2.0581257463410116
-    },
-    "SLP:sleep_light": {
-     "dz": -0.006192375370301304,
-     "sd": -0.6586170716687939,
-     "spectral_sd": -0.6870194744489523
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.003687084431294353,
-     "sd": 0.39215593466462106,
-     "spectral_sd": 0.6032775748040617
+  "drugs_and_deep_sleep": {
+   "count": 1,
+   "top": [
+    {
+     "a": "corr_pearson_tau-10-sq",
+     "b": "pdist_canberra",
+     "z0": -0.1509521969948158,
+     "strength_sd": 3.096453007135921,
+     "cls": null,
+     "differs": {
+      "stat": [
+       "corr",
+       "pdist"
+      ],
+      "est": [
+       "Empirical",
+       "canberra"
+      ],
+      "sign": [
+       "sq",
+       "signed"
+      ],
+      "lag": [
+       10,
+       0
+      ]
+     },
+     "reliability": [
+      0.31752291511223857,
+      0.9274586402293054
+     ],
+     "effects": {
+      "KT:drug": {
+       "dz": -0.11876034485176208,
+       "sd": -3.096453007135921,
+       "consistent": true
+      },
+      "KTMD:drug": {
+       "dz": -0.26539022090146314,
+       "sd": -6.919551712320656,
+       "consistent": true
+      },
+      "MD:drug": {
+       "dz": -0.15719394593033936,
+       "sd": -4.098536992184717,
+       "consistent": false
+      },
+      "PF:drug": {
+       "dz": -0.3342520747333765,
+       "sd": -8.714995255709951,
+       "consistent": true
+      },
+      "SLP:sleep_deep": {
+       "dz": -0.12452400133188349,
+       "sd": -3.2467295279918265,
+       "consistent": true
+      },
+      "SLP:sleep_light": {
+       "dz": -0.06230056986387353,
+       "sd": -1.6243703834143122,
+       "consistent": false
+      },
+      "SLP:sleep_mid": {
+       "dz": -0.1027174774761079,
+       "sd": -2.6781653624643496,
+       "consistent": false
+      }
+     },
+     "links": []
     }
-   },
-   "links": []
-  },
-  {
-   "a": "phi_star_t-1_norm-0",
-   "b": "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.04874048151541501,
-   "weakest_sd": 1.0483628799499725,
-   "differs": {
-    "stat": [
-     "phi",
-     "dswpli"
-    ],
-    "est": [
-     "star",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "norm-0",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9350527302636102,
-    0.030093694507025173
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.028734816215001048,
-     "sd": 2.312291602395758,
-     "spectral_sd": 3.3407983218442476
-    },
-    "KTMD:drug": {
-     "dz": 0.020858270130702294,
-     "sd": 1.6784656808957226,
-     "spectral_sd": 8.118613278733974
-    },
-    "MD:drug": {
-     "dz": 0.013027991214767097,
-     "sd": 1.0483628799499725,
-     "spectral_sd": 2.1451464808539837
-    },
-    "PF:drug": {
-     "dz": 0.05043349142652005,
-     "sd": 4.058384707682966,
-     "spectral_sd": 8.098991938108217
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.015200124308466907,
-     "sd": 1.223154501175861,
-     "spectral_sd": 2.7757318000778803
-    },
-    "SLP:sleep_light": {
-     "dz": -0.003295521398831625,
-     "sd": -0.26519071495072755,
-     "spectral_sd": 0.018475858353603485
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.005364256575558101,
-     "sd": 0.43166190240965735,
-     "spectral_sd": 0.7883662019336911
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "phi_star_t-1_norm-1",
-   "b": "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.048737332576032105,
-   "weakest_sd": 1.0482522427830367,
-   "differs": {
-    "stat": [
-     "phi",
-     "dswpli"
-    ],
-    "est": [
-     "star",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "norm-1",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9350517624748139,
-    0.030093694507025173
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.028733494435437025,
-     "sd": 2.3118247339277738,
-     "spectral_sd": 3.342727198345189
-    },
-    "KTMD:drug": {
-     "dz": 0.020860242056369313,
-     "sd": 1.6783626387662325,
-     "spectral_sd": 8.110855177044899
-    },
-    "MD:drug": {
-     "dz": 0.013028647692408407,
-     "sd": 1.0482522427830367,
-     "spectral_sd": 2.145770433958806
-    },
-    "PF:drug": {
-     "dz": 0.05041761368047446,
-     "sd": 4.056474460286555,
-     "spectral_sd": 8.095440369357645
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.015206761192530395,
-     "sd": 1.2234977798059832,
-     "spectral_sd": 2.7779623711823853
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0032877441859454834,
-     "sd": -0.2645236326884791,
-     "spectral_sd": 0.019049584620840058
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.005378140799439277,
-     "sd": 0.4327116895101974,
-     "spectral_sd": 0.788379592723555
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "te_symbolic_k-3",
-   "b": "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.03227244163717842,
-   "weakest_sd": 0.8891206217394408,
-   "differs": {
-    "stat": [
-     "te",
-     "dspli"
-    ],
-    "est": [
-     "symbolic",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "history-3",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.3684531712311227,
-    0.024471441092433422
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.008350529446033761,
-     "sd": 0.8891206217394408,
-     "spectral_sd": 1.7108614805829687
-    },
-    "KTMD:drug": {
-     "dz": 0.02987171011045576,
-     "sd": 3.180583175889969,
-     "spectral_sd": 12.09023198446888
-    },
-    "MD:drug": {
-     "dz": 0.012433003878686578,
-     "sd": 1.3238011086778698,
-     "spectral_sd": 1.4073349513036828
-    },
-    "PF:drug": {
-     "dz": 0.0899313423782587,
-     "sd": 9.575418129589172,
-     "spectral_sd": 16.031387363211266
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.009526414101128467,
-     "sd": -1.0143226586148697,
-     "spectral_sd": 0.724513759231589
-    },
-    "SLP:sleep_light": {
-     "dz": -0.012346810571034442,
-     "sd": -1.3146236969000038,
-     "spectral_sd": -0.5680054584692258
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.012436838817666288,
-     "sd": -1.3242094328867726,
-     "spectral_sd": 0.13657860163431063
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "si_gaussian_k-1",
-   "b": "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.043900672962869675,
-   "weakest_sd": 0.8852730547446405,
-   "differs": {
-    "stat": [
-     "si",
-     "dspli"
-    ],
-    "est": [
-     "gaussian",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "k-1",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9631614514296074,
-    0.024471441092433422
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.025885651772841807,
-     "sd": 2.560581143325709,
-     "spectral_sd": 2.7336026766516346
-    },
-    "KTMD:drug": {
-     "dz": 0.03029367645067396,
-     "sd": 2.996618256411398,
-     "spectral_sd": 9.174482321593933
-    },
-    "MD:drug": {
-     "dz": 0.008949480112642053,
-     "sd": 0.8852730547446405,
-     "spectral_sd": 2.105828568182155
-    },
-    "PF:drug": {
-     "dz": 0.0716014802805148,
-     "sd": 7.0827422793676105,
-     "spectral_sd": 11.74211661504061
-    },
-    "SLP:sleep_deep": {
-     "dz": 0.0003133613616228062,
-     "sd": 0.03099737262401323,
-     "spectral_sd": 0.3592140797988439
-    },
-    "SLP:sleep_light": {
-     "dz": -0.007920788461342457,
-     "sd": -0.7835159706376114,
-     "spectral_sd": -1.1371124320730122
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.0006693979477859144,
-     "sd": -0.06621613307337505,
-     "spectral_sd": -0.12579142872957144
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "te_symbolic_k-3",
-   "b": "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.060857346392731416,
-   "weakest_sd": 0.8707739732828743,
-   "differs": {
-    "stat": [
-     "te",
-     "wpli"
-    ],
-    "est": [
-     "symbolic",
-     null
-    ],
-    "sign": [
-     "signed",
-     "antisymmetric"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "history-3",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.3684531712311227,
-    0.46687731467050475
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.010907375933311413,
-     "sd": -0.8707739732828743,
-     "spectral_sd": -5.3817413780911565
-    },
-    "KTMD:drug": {
-     "dz": -0.028859578841365873,
-     "sd": -2.3039611258119685,
-     "spectral_sd": -4.201364844220698
-    },
-    "MD:drug": {
-     "dz": -0.026258381986235688,
-     "sd": -2.0962984822319397,
-     "spectral_sd": -5.6070456660928985
-    },
-    "PF:drug": {
-     "dz": -0.03792892282363028,
-     "sd": -3.027998579255449,
-     "spectral_sd": -10.893388687424277
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.006204671040177346,
-     "sd": -0.4953405922379477,
-     "spectral_sd": -1.0084484830068534
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0005964944502920844,
-     "sd": -0.04762023842377385,
-     "spectral_sd": -0.4623637089922159
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.010290472768247128,
-     "sd": 0.8215244357719101,
-     "spectral_sd": 1.7096012822478484
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "te_symbolic_k-3",
-   "b": "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
-   "z0": 0.059764779331938675,
-   "weakest_sd": 0.8491433957771335,
-   "differs": {
-    "stat": [
-     "te",
-     "pli"
-    ],
-    "est": [
-     "symbolic",
-     null
-    ],
-    "sign": [
-     "signed",
-     "antisymmetric"
-    ],
-    "band": [
-     null,
-     "low"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "history-3",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.3684531712311227,
-    0.4493427627672813
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": -0.010107641189824787,
-     "sd": -0.8491433957771335,
-     "spectral_sd": -5.7273878789959936
-    },
-    "KTMD:drug": {
-     "dz": -0.028956803184701133,
-     "sd": -2.4326623517126915,
-     "spectral_sd": -4.049732464376866
-    },
-    "MD:drug": {
-     "dz": -0.025010470801498742,
-     "sd": -2.101130788828252,
-     "spectral_sd": -5.7445174984917555
-    },
-    "PF:drug": {
-     "dz": -0.034407869051210585,
-     "sd": -2.890606642924012,
-     "spectral_sd": -10.409544330192317
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.0069730029441416215,
-     "sd": -0.5858022942794041,
-     "spectral_sd": -1.5239551797930582
-    },
-    "SLP:sleep_light": {
-     "dz": -0.0007600629585795098,
-     "sd": -0.0638529236972061,
-     "spectral_sd": -0.5921517045458938
-    },
-    "SLP:sleep_mid": {
-     "dz": 0.008642534958198663,
-     "sd": 0.7260597546651352,
-     "spectral_sd": 1.5711783245174251
-    }
-   },
-   "links": []
-  },
-  {
-   "a": "di_gaussian_n-5",
-   "b": "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
-   "z0": 0.04547098258141583,
-   "weakest_sd": 0.755012967494437,
-   "differs": {
-    "stat": [
-     "di",
-     "dspli"
-    ],
-    "est": [
-     "gaussian",
-     null
-    ],
-    "band": [
-     null,
-     "high"
-    ],
-    "agg": [
-     null,
-     "mean"
-    ],
-    "opt": [
-     "n-5",
-     null
-    ]
-   },
-   "cls": null,
-   "reliability": [
-    0.9661702130754865,
-    0.024471441092433422
-   ],
-   "effects": {
-    "KT:drug": {
-     "dz": 0.028845452365931126,
-     "sd": 2.6390690977923583,
-     "spectral_sd": 1.218111499999518
-    },
-    "KTMD:drug": {
-     "dz": 0.04477162263647188,
-     "sd": 4.096153676462537,
-     "spectral_sd": 8.76726861078007
-    },
-    "MD:drug": {
-     "dz": 0.008252413931768388,
-     "sd": 0.755012967494437,
-     "spectral_sd": 0.585844950983978
-    },
-    "PF:drug": {
-     "dz": 0.0895381535636261,
-     "sd": 8.191841512675987,
-     "spectral_sd": 11.638696184259844
-    },
-    "SLP:sleep_deep": {
-     "dz": -0.0027460455545224235,
-     "sd": -0.2512355802965157,
-     "spectral_sd": 0.20766028044744017
-    },
-    "SLP:sleep_light": {
-     "dz": -0.009688308590557426,
-     "sd": -0.8863829031648125,
-     "spectral_sd": -1.142603437292579
-    },
-    "SLP:sleep_mid": {
-     "dz": -0.003465946100186558,
-     "sd": -0.3170992477975314,
-     "spectral_sd": -0.49880479686974294
-    }
-   },
-   "links": []
+   ]
   }
- ],
- "consistent": 36,
- "usable": 22326
+ }
 }
