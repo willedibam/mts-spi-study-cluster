@@ -71,5 +71,6 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
 - Surrogate-reproduced effects called "beyond spectral".
 - Classifier weights averaged within families and read as a pattern. Use contrasts of family-block means.
 - Concatenated "+" models read as additivity tests. Use nested stacking ([`fusion.py`](../research/representation/comparator_fill/fusion.py)).
+- A lag-pair rise read as "more lag" when a zero-phase null with the state's spectrum reproduced most of it: |Im C|, best-lag correlation and other unsigned lag statistics have an estimation floor that rises as spectral concentration lowers the effective sample size. Test lag pairs against zero-phase and stationary nulls (`discovery.py lag-null`); debiased statistics (`ppc`, `dswpli`) have almost no floor.
 - A precision finding at one montage assumed to replicate at another (16 bipolar against 127 average-referenced channels).
 - "Pattern of A decouples from pattern of B" left as the conclusion, without the candidate links and their readings.
