@@ -24,14 +24,14 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 - **Scale:** the between-unit SD of the eyes-open effect.
 - **No surrogates in this bank.** Statements about these z effects therefore cannot say "beyond linear". Fixed-lag SPIs (sample units, 10 ms per sample) read dominant frequency.
 
-## Lag: the raw rise is mostly an estimation floor; what survives is lag variability (KTMD, PF), not sleep
+## Lag: the raw rise is mostly an estimation floor; a debiased non-stationary residual survives (KTMD, PF), not sleep
 
 - **Bank readout:** z(`cohmag` low band, `icoh` low band), where `cohmag` = |C|² and `icoh` = |Im C|. z₀ = −0.11 in wake. 2-s arm, strength-adjusted: ketamine +.19 (4/4), ketamine–medetomidine +.18 (11/11), medetomidine +.08 (4/4), propofol +.22 (4/4); sleep +.00. Fly isoflurane goes the opposite way (−.04, 11/13 negative).
 - **Lag null** (`discovery.py lag-null`, `*-lag-null.json`; pyspi-free, 32 evenly spaced channels, 3 draws per null, job 183766068). For each unit and state, the real windows are set against two stationary Gaussian nulls with the same T and window count:
   - *zero-phase:* the state's mean cross-spectrum with every phase set to zero. No lag at all, so whatever moves here is the **floor**: estimation noise in |Im C| and kin, which grows as spectral concentration lowers the effective sample size.
   - *stationary:* the state's mean cross-spectrum itself. Stationary − zero-phase is the **mean lag** (lags fixed across windows); real − stationary is the **residual** (anything that changes from window to window, or is non-Gaussian).
-  - Construction bias (a null re-drawn from a null) is within ±.02 everywhere. The pyspi-free real deltas reproduce the bank's raw deltas (`cohmag|icoh` KTMD +.146 against +.143; `ppc|dswpli` +.092 against +.090; `pec|pec_orth` +.131 against +.144; `cov-sq|xcorr-sq_max` −.150 against −.142).
-- **2-s arm, Δ against own eyes-closed wake** (sessions positive / total, animals positive / total; eyes-open contrasts of the residual are within ±.02):
+  - Construction bias (a null re-drawn from a null, one draw) is within ±.02 at 2 s and down to −.044 at 10 s; for phase dispersion it is −.006 to −.019 under the drugs, the size of its residual, so that row is read net of bias. The pyspi-free real deltas reproduce the bank's raw deltas (`cohmag|icoh` KTMD +.146 against +.143; `ppc|dswpli` +.092 against +.090; `pec|pec_orth` +.131 against +.144; `cov-sq|xcorr-sq_max` −.150 against −.142).
+- **2-s arm, Δ against own eyes-closed wake** (sessions positive / total, animals positive / total; eyes-open contrasts of the lag-pair residuals are within ±.02, of `pec|pec_orth` up to +.04):
 
   | Pair | Part | KT | KTMD | MD | PF | Sleep |
   |---|---|---|---|---|---|---|
@@ -48,18 +48,23 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   | | floor | −.038 | −.129 | −.057 | −.115 | −.023 |
   | | residual | −.016 | −.004 | +.006 | −.017 | −.010 |
   | Phase dispersion | residual | −.007 | +.016 (11/11, 4/4) | +.007 | +.025 (4/4, 2/2) | −.018 (1/7) |
+  | | bias | +.005 | −.009 | −.019 | −.006 | +.010 |
   | Magnitude dispersion | residual | −.001 | −.002 | −.000 | −.007 | −.006 |
 
   Phase dispersion is 1 − |Σ_w C_w| / Σ_w |C_w| per edge and frequency (zero when only magnitudes vary); magnitude dispersion is SD_w |C_w| / mean_w |C_w|; both in 0–25 Hz.
-- **10-s arm (stage A) agrees:** `ppc|dswpli` residual KTMD +.072 (3/4 animals), PF +.126 (2/2), KT +.042, MD +.034, deep tertile +.017; `cohmag|icoh` residual KTMD +.045 (4/4), PF +.091 (2/2), MD +.049 (2/2); phase-dispersion residual KTMD +.012 (4/4), PF +.011 (2/2), deep tertile +.009; magnitude-dispersion residual ≈ 0 everywhere; `cov-sq|xcorr-sq_max` residual ≈ 0.
-- **Reading (literal):** under ketamine–medetomidine and propofol, the pairs that are phase-locked within a 2-s window carry non-zero-lag phase more than a stationary process with the state's spectrum would give, and the phase of the coherency changes from window to window while its magnitude does not. The debiased pair has almost no floor, so this is not estimation noise. It reverses at recovery (KTMD residual −.002, PF +.012).
-- **Reading (character, inferred):** lag variability. The coupling keeps non-zero lags within a window, but which lag changes across windows, so the lags average towards zero in the mean cross-spectrum. Not in natural sleep (2-s phase-dispersion residual −.018; 10-s deep tertile small). Ketamine and medetomidine differ: their part is a stable mean lag (`cohmag|icoh` +.088 and +.053, every animal), with little residual. Both splits rest on 2 animals for KT, MD and PF; ketamine–medetomidine has 4.
+- **10-s arm (stage A) agrees:** `ppc|dswpli` residual KTMD +.072 (3/4 animals), PF +.126 (2/2), KT +.042, MD +.034, deep tertile +.017; `cohmag|icoh` residual KTMD +.045 (4/4), PF +.091 (2/2), MD +.049 (2/2); phase-dispersion residual KTMD +.012 (bias −.012), PF +.011 (bias −.002), deep tertile +.009 (bias .000); magnitude-dispersion residual ≈ 0 everywhere; `cov-sq|xcorr-sq_max` residual ≈ 0.
+- **Calibration** (`test_lag_null_calibration`; synthetic, 10 channels, 40 windows, five seeds): across-window phase dispersion beyond the stationary null rises only for window-varying lag (+.10 to +.12; zero-lag within-window bursts and window-to-window strength change ≤ +.025); magnitude dispersion falls with varying lag (−.06 to −.10) and rises with strength change (+.02 to +.03). The `ppc|dswpli` residual is not lag-specific: strength change raises it as well (+.01 to +.05), and it is noisy at this size.
+- **Reading (literal):** under ketamine–medetomidine and propofol, debiased lagged phase coupling (`dswpli`) tracks phase consistency (`ppc`) within a window more than a stationary Gaussian process with the state's spectrum allows (net of bias: KTMD +.08, PF +.14; both arms). The debiased pair has almost no floor here, so this is not estimation noise. It reverses at recovery (KTMD residual −.002, PF +.012) and is absent in natural sleep.
+- **Reading (character, inferred, by condition):**
+  - *Propofol:* lag variability is the leading candidate. Phase dispersion rises beyond the null net of bias (2 s +.019, 4/4; 10 s +.009) while magnitude dispersion does not rise (−.007), which in the calibration only varying lag does. Two animals.
+  - *Ketamine–medetomidine:* the residual is not across windows (phase dispersion net of bias +.007 at 2 s, ≈ 0 at 10 s; magnitude flat), so it is within-window structure or non-Gaussian, form unidentified.
+  - *Ketamine and medetomidine:* a stable mean lag (`cohmag|icoh` +.088 and +.053; 2 s every animal, 10 s ketamine 1/2), little residual. Two animals each.
 - **Withdrawn:**
   - the level claim ("more of the coupling is non-zero-lag": the `icoh/cohmag` share rises as much in the zero-phase null);
   - "the strongest pairs carry the lag" as a static statement;
   - the best-lag against zero-lag `xcorr-sq_max` fall, and with it the screen's top family: its floor carries 77–87% and its residual is ≈ 0;
   - `pec|pec_orth` as lag support: mostly floor, and its residual also appears in sleep and eyes open.
-- **Not resolved:** non-Gaussian stationary structure against true non-stationarity (the null is Gaussian; flat magnitude dispersion argues against bursts); the average reference; delay against phase as peak frequency falls; physiology (variable propagation direction of slow activity is one candidate [S]).
+- **Not resolved:** within-window lag switching against non-Gaussian stationary structure under ketamine–medetomidine (decider: whether the sign of Im C persists between the halves of a 10-s window); the average reference; delay against phase as peak frequency falls; physiology (variable propagation direction of slow activity is one candidate [S]).
 
 ## Gaussian against model-free MI: fewer pairs follow the Gaussian prediction (all four drugs, not sleep; survives IAAFT)
 
@@ -253,9 +258,9 @@ Reliability here is the mean correlation of an SPI's edge profile between window
   - Gaussian MI, a function of r with no Theiler window, loses reliability exactly as much as kNN MI. So a kNN-specific DCE artefact is not supported.
   - But the raw z fall (−.03 to −.08) is far smaller than independent noise at these reliabilities would produce (about .91 → .64). So most of the reliability drop is shared, real non-stationarity, and the z fall cannot be attributed to noise or to character from this bank.
   - The IAAFT version, whose surrogates share window length and autocorrelation, stays the anchor. The kNN-to-Gaussian level collapse is still unexplained.
-- **Lag pair:** in the 10-s arm (`icoh` reliability .46) z(`cohmag`, `icoh`) rises in every animal under every drug raw, and disattenuated by +.17 to +.24; but disattenuation does not touch the estimation floor, which the lag section shows carries most of the rise. The low between-window reliability of `dswpli` (.03) is what the lag-variability reading predicts, not only noise.
+- **Lag pair:** in the 10-s arm (`icoh` reliability .46) z(`cohmag`, `icoh`) rises in every animal under every drug raw, and disattenuated by +.17 to +.24; but disattenuation does not touch the estimation floor, which the lag section shows carries most of the rise. The low between-window reliability of `dswpli` (.03) is compatible with window-to-window lag change, but does not show it.
 - **Demoted:**
-  - Partners with near-zero between-window reliability: `dswpli` (.03), `pec_orth` (.03), `te_kraskov_DCE` (.03–.07), `icoh` in 2-s windows (.18). The `pec|pec_orth` and TE `k-1|k-2` effects mostly carry within-window structure, and their disattenuated values swing in sign; the TE memory pair is not interpretable. `ppc|dswpli` is the exception: its rise survives the lag null (lag section), and its low between-window reliability is what window-to-window lag change predicts.
+  - Partners with near-zero between-window reliability: `dswpli` (.03), `pec_orth` (.03), `te_kraskov_DCE` (.03–.07), `icoh` in 2-s windows (.18). The `pec|pec_orth` and TE `k-1|k-2` effects mostly carry within-window structure, and their disattenuated values swing in sign; the TE memory pair is not interpretable. `ppc|dswpli` is the exception: its rise survives the lag null (lag section).
   - The best-lag/zero-lag `xcorr` fall: an estimation floor (lag null), not lag.
 
 ## Other named pairs (42 pre-listed pairs; `*-pairs.json`)

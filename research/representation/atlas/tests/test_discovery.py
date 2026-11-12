@@ -175,3 +175,40 @@ def test_lag_null(tmp_path):
     c = rep['contrasts']['PF:drug']
     assert c['cohmag_low|icoh_low:residual']['units'] == 3 and len(rep['channels']) == 6
     assert abs(rep['states']['PF:drug']['phase_dispersion:bias']) < .1
+
+
+def test_lag_null_calibration():
+    """Phase dispersion beyond the stationary null responds to window-varying lag, not to zero-lag bursts or to
+    window-to-window strength change; magnitude dispersion falls with varying lag and rises with strength change.
+    (The ppc|dswpli residual is not lag-specific: strength change raises it too, and it is noisy at M = 10.)"""
+    rng = np.random.default_rng(0)
+    T, M, N = 200, 10, 40
+    gain = rng.uniform(.3, 1.2, M)
+
+    def window(kind):
+        e = rng.normal(size=T + 70)
+        s = np.zeros(T + 70)
+        for t in range(1, T + 70):
+            s[t] = .9 * s[t - 1] + e[t]
+        lags, g, a = np.zeros(M, int), np.ones(T), gain.copy()
+        if kind == 'varying_lag':
+            lags = rng.integers(0, 6, M)
+        if kind == 'bursts':
+            g = np.full(T, .15)
+            st = rng.integers(0, T - 50)
+            g[st:st + 50] = 1
+        if kind == 'strength':
+            lags, a = np.arange(M) % 4, gain * rng.uniform(.2, 1.5)
+        x = np.stack([a[i] * g * s[25 - lags[i]:25 - lags[i] + T] for i in range(M)], 1)
+        return x + rng.normal(size=(T, M))
+
+    res = {}
+    for kind in ('zero_lag', 'varying_lag', 'bursts', 'strength'):
+        X = np.stack([window(kind) for _ in range(N)])
+        real, S = discovery._lag_state(X), discovery._mean_periodogram(X)
+        null = [discovery._lag_state(discovery.gaussian_draws(S, N, T, rng)) for _ in range(2)]
+        res[kind] = {k: real[k] - np.mean([n[k] for n in null]) for k in real}
+    pd = {k: v['phase_dispersion'] - res['zero_lag']['phase_dispersion'] for k, v in res.items()}
+    assert pd['varying_lag'] > .05 and pd['bursts'] < .02 and pd['strength'] < .02
+    md = {k: v['magnitude_dispersion'] - res['zero_lag']['magnitude_dispersion'] for k, v in res.items()}
+    assert md['varying_lag'] < -.03 and md['strength'] > .005
