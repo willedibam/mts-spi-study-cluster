@@ -9,28 +9,58 @@
    "real:te_knn": -0.0007327865492636765,
    "real:te_gauss": 0.002524263811463398,
    "real:diff_scores": -0.005622676200444258,
+   "real:ais_diff": 0.012709398143607498,
+   "real:ais_knn": 0.2529089538659436,
+   "real:ais_gauss": 0.24005960995386572,
+   "real:ais_diff_scores": 0.02353728910608551,
+   "real:assoc": -0.018168755469421687,
    "null:diff": -0.006184345062656281,
    "null:te_knn": -0.0009214019745745182,
    "null:te_gauss": 0.002457638567046482,
    "null:diff_scores": -0.006146984280538244,
+   "null:ais_diff": 0.015243457748057779,
+   "null:ais_knn": 0.25085030133646613,
+   "null:ais_gauss": 0.235810407582385,
+   "null:ais_diff_scores": 0.021530138627331816,
+   "null:assoc": -0.04688630134209074,
    "residual:diff": 0.00043726386357458496,
    "residual:te_knn": 0.00018861542531084158,
    "residual:te_gauss": 6.662524441691575e-05,
-   "residual:diff_scores": 0.0005243080800939873
+   "residual:diff_scores": 0.0005243080800939873,
+   "residual:ais_diff": -0.0025340596044502815,
+   "residual:ais_knn": 0.0020586525294774153,
+   "residual:ais_gauss": 0.004249202371480696,
+   "residual:ais_diff_scores": 0.002007150478753692,
+   "residual:assoc": -0.008259846269315273
   },
   "all:isoflurane": {
    "real:diff": -0.004977253607680603,
    "real:te_knn": 3.1209753648727815e-05,
    "real:te_gauss": 0.0024045658287637633,
    "real:diff_scores": -0.004798626906622385,
+   "real:ais_diff": 0.008253874527444648,
+   "real:ais_knn": 0.2066601342944467,
+   "real:ais_gauss": 0.19766270943928588,
+   "real:ais_diff_scores": 0.016991721598903237,
+   "real:assoc": 0.008974266515921576,
    "null:diff": -0.00531965963158325,
    "null:te_knn": -0.0002451339928113925,
    "null:te_gauss": 0.002367062182675691,
    "null:diff_scores": -0.005321729124528004,
+   "null:ais_diff": 0.01240171037547978,
+   "null:ais_knn": 0.20930194467798852,
+   "null:ais_gauss": 0.19406849049834707,
+   "null:ais_diff_scores": 0.017152412429628484,
+   "null:assoc": -0.06607934354852141,
    "residual:diff": 0.00034240602390264756,
    "residual:te_knn": 0.00027634374646012035,
    "residual:te_gauss": 3.750364608807225e-05,
-   "residual:diff_scores": 0.0005231022179056181
+   "residual:diff_scores": 0.0005231022179056181,
+   "residual:ais_diff": -0.004147835848035132,
+   "residual:ais_knn": -0.0026418103835418156,
+   "residual:ais_gauss": 0.003594218940938834,
+   "residual:ais_diff_scores": -0.000160690830725244,
+   "residual:assoc": -0.026558802293588275
   }
  },
  "contrasts": {
@@ -63,6 +93,41 @@
     "animals": 13,
     "animals_positive": 8
    },
+   "real:ais_diff": {
+    "mean": -0.004455523616162848,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": -0.0462488195714968,
+    "units": 13,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "real:ais_gauss": {
+    "mean": -0.042396900514579824,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": -0.0065455675071822705,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "real:assoc": {
+    "mean": 0.027143021985343265,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
    "null:diff": {
     "mean": 0.0008646854310730303,
     "units": 13,
@@ -91,6 +156,41 @@
     "animals": 13,
     "animals_positive": 10
    },
+   "null:ais_diff": {
+    "mean": -0.0028417473725779966,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "null:ais_knn": {
+    "mean": -0.041548356658477566,
+    "units": 13,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "null:ais_gauss": {
+    "mean": -0.04174191708403796,
+    "units": 13,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "null:ais_diff_scores": {
+    "mean": -0.0043777261977033365,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "null:assoc": {
+    "mean": -0.019193042206430665,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
    "residual:diff": {
     "mean": -9.485783967193738e-05,
     "units": 13,
@@ -118,6 +218,41 @@
     "positive": 7,
     "animals": 13,
     "animals_positive": 7
+   },
+   "residual:ais_diff": {
+    "mean": -0.0016137762435848508,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "residual:ais_knn": {
+    "mean": -0.00470046291301923,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0006549834305418621,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "residual:ais_diff_scores": {
+    "mean": -0.002167841309478936,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "residual:assoc": {
+    "mean": -0.01829895602427301,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
    }
   }
  }

@@ -105,6 +105,26 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 
     The null reproduces 65–95% of the raw fall (least under propofol and ketamine–medetomidine); normal-score Gaussian TE gives the same residual. Fly: 0.
   - **Reading.** A residual survives under ketamine–medetomidine and propofol, strongest in 10-s windows, where the linear control's artefact is −.001. In 2-s windows it is no larger than the slow-linear control's −.008, so it is not distinguished there. Its sign is opposite to what nonlinear coupling gives in the controls: model-free TE is *below* what a linear process with the same spectrum predicts. Gaussian TE does not differ between real and surrogate, so the kNN side carries it. The likeliest reading is that the target's own non-Gaussian dynamics (for example, sharp or asymmetric slow waves) explain away more of the source's apparent prediction once conditioning is model-free [I]; the deciding check is kNN against Gaussian active information storage, real − IAAFT. It matches the r10 16-channel result (d −3.0, 0/6) and the raw `gc|te` grouping (ketamine–medetomidine, propofol and deep sleep against the single agents).
+- **Deciding check: kNN against Gaussian AIS (job 183737970, same outputs; history 1, same targets, distances and Theiler rule as TE; decision rule fixed in `predictive.py` before the run, commit c86ca33). The old TE fields reproduce exactly.**
+  - **Verdict: the rule is not met, so the explaining-away reading is not supported, and the TE − GC residual stays a small 10-s effect of unestablished cause.**
+    - The threshold-AR control (bounded nonlinear own dynamics, linear coupling) gives the negative TE residual only in its slow version (T = 1000: slow −.035, 0/12; fast +.006, 9/12).
+    - Its AIS residual is negative, not positive (fast −.023, slow −.033, 1/12 each).
+    - The AIS residual also rises under ketamine and medetomidine (10-s +.013, +.020), where the TE residual is ≈ 0.
+  - **Separate exploratory observation, node-level, not a z feature: model-free self-prediction beyond the spectrum-matched null rises under every drug.**
+    - Residual AIS_kNN − AIS_Gauss, change against wake:
+      - 10-s: propofol +.070 (2/2), ketamine–medetomidine +.034 (4/4 sessions and animals), medetomidine +.020 (2/2), ketamine +.013 (1/2).
+      - 2-s: propofol +.039 (4/4); others +.008 to +.009.
+      - Deep sleep +.007 (2/2); fly −.002. Recovery reverses it.
+      - The normal-score variant agrees.
+    - Per target, the channels with the largest AIS residual have the most negative incoming-TE residual. Residual association: ketamine–medetomidine −.44 (0/4) and propofol −.41 (0/2), against +.11 and −.01 in the linear controls. It is not specific: ketamine recovery shows −.22 without an AIS rise.
+  - **Null quality is imperfect, and how this bears on the result is inferred [I]:**
+    - The surrogates under-reproduce lag-1 linear persistence. The `residual:ais_gauss` is +.07 to +.19 in the slow controls and +.02 to +.05 under the drugs, against ≤ .016 in wake. The cause is unknown; it barely shrinks from T = 200 to T = 1000, so it is not mainly end-point mismatch.
+    - In the linear-slow control this mismatch pushes the readout down (−.015), and the kNN residual is smaller than the Gaussian one (.056 against .069).
+    - Under propofol (10-s) it is .119 against .018, and under ketamine–medetomidine .059 against .028. So the rise sits in the model-free estimate, against the artefact's sign [I].
+  - **Alternatives not separated:**
+    - nonlinear (for example, stereotyped or time-irreversible) waveform dynamics;
+    - within-window state switching, which IAAFT nulls also reject.
+  - Propofol rests on n = 2 sessions in the 10-s arm, so it is "consistent", not decided. No follow-up is planned.
 
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
 
