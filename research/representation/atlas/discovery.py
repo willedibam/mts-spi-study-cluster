@@ -807,6 +807,151 @@ def spectral_null(bank, output, reference, draws=10, seed=0):
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+
+def gaussian_draws(S, n, T, rng):
+    """n stationary Gaussian windows of length T whose expected rfft cross-periodogram is S (F x M x M, PSD)."""
+    w, V = np.linalg.eigh(S)
+    L = V * np.sqrt(np.clip(w, 0, None))[:, None, :]
+    Z = (rng.normal(size=(n, *S.shape[:2])) + 1j * rng.normal(size=(n, *S.shape[:2]))) / np.sqrt(2)
+    Z[:, 0] = rng.normal(size=(n, S.shape[1]))
+    if T % 2 == 0:
+        Z[:, -1] = rng.normal(size=(n, S.shape[1]))
+    return np.fft.irfft(np.einsum('fij,nfj->nfi', L, Z), n=T, axis=1)
+
+
+def _mean_periodogram(X):  # (n,T,M) -> (F,M,M): mean rfft cross-periodogram of the standardised windows
+    F = np.fft.rfft((X - X.mean(1, keepdims=True)) / X.std(1, keepdims=True), axis=1)
+    return np.einsum('nfi,nfj->fij', F, F.conj()) / len(X)
+
+
+def _zero_phase(S):  # same |S|, every phase zero, projected to PSD per frequency
+    w, V = np.linalg.eigh(np.abs(S))
+    return (V * np.clip(w, 0, None)[:, None, :]) @ V.transpose(0, 2, 1)
+
+
+LAG_PAIRS = (('cohmag_low', 'icoh_low'), ('ppc', 'dswpli'), ('pec', 'pec_orth'), ('cov2', 'xcorr2_max'))
+
+
+def lag_profiles(x, nw=3, k=5):
+    """Pyspi-free edge profiles of one window (T x M) for the lag pairs, upper triangle, and its low-band
+    coherency (F x E). Multitaper (NW 3, 5 tapers, as pyspi's spectral_connectivity default) with fs = 1:
+    cohmag = |C|^2 and icoh = |Im C| over (0, .25]; ppc and dswpli debiased over tapers, over (0, .5);
+    pec and pec_orth (pairwise-orthogonalised, symmetrised) on the broadband analytic signal; cov2 = r^2 and
+    xcorr2_max = the largest r(l)^2 over |l| <= T/4 among lags with |r(l)| > 1.96/sqrt(T), else 0 (pyspi
+    xcorr-sq_max_sig-True)."""
+    from scipy.signal import hilbert
+    from scipy.signal.windows import dpss
+    T, M = x.shape
+    x = (x - x.mean(0)) / x.std(0)
+    a, b = np.triu_indices(M, 1)
+    f = np.fft.rfftfreq(T)
+    Xk = np.fft.rfft(dpss(T, nw, k)[:, :, None] * x[None], axis=1)        # k x F x M
+    low, full = (f > 0) & (f <= .25), (f > 0) & (f < .5)
+    S = np.einsum('kfi,kfj->fij', Xk[:, low], Xk[:, low].conj()) / k
+    d = np.real(np.einsum('fii->fi', S))
+    C = (S / np.sqrt(d[:, :, None] * d[:, None, :]))[:, a, b]
+    out = dict(cohmag_low=(np.abs(C) ** 2).mean(0), icoh_low=np.abs(C.imag).mean(0))
+    P = Xk[:, full][:, :, a] * Xk[:, full][:, :, b].conj()                    # k x F x E per-taper cross-spectra
+    U = P / np.abs(P)
+    out['ppc'] = ((np.abs(U.sum(0)) ** 2 - k) / (k * (k - 1))).mean(0)
+    im = P.imag
+    sq = (im ** 2).sum(0)
+    out['dswpli'] = np.nanmean((im.sum(0) ** 2 - sq) / (np.abs(im).sum(0) ** 2 - sq), 0)
+    h = hilbert(x, axis=0)
+    env = np.abs(h)
+    out['pec'] = np.corrcoef(env.T)[a, b]
+    orth = lambda i, j: np.abs((h[:, j] * h[:, i].conj()).imag / env[:, i])  # |j orthogonalised to i|
+    corr = lambda u, v: np.corrcoef(u, v)[0, 1]
+    out['pec_orth'] = np.array([(corr(env[:, i], orth(i, j)) + corr(env[:, j], orth(j, i))) / 2 for i, j in zip(a, b)])
+    r = np.fft.irfft(np.fft.rfft(x, 2 * T, axis=0)[:, a] * np.fft.rfft(x, 2 * T, axis=0)[:, b].conj(), axis=0) / T
+    r = np.concatenate([r[-(T // 4):], r[:T // 4 + 1]])                     # lags -T/4..T/4
+    out['cov2'] = r[T // 4] ** 2
+    out['xcorr2_max'] = np.where(np.abs(r) > 1.96 / np.sqrt(T), r ** 2, 0).max(0)
+    return out, C
+
+
+def _lag_state(X, k=5):
+    """Pair z per window (mean over windows) and per-edge across-window dispersion of the low-band coherency:
+    phase dispersion 1 - |sum_w C_w| / sum_w |C_w| (zero when only magnitudes vary) and magnitude dispersion
+    SD_w |C_w| / mean_w |C_w|, each averaged over frequency and edges."""
+    zs, Cs = [], []
+    for x in X:
+        prof, C = lag_profiles(x, k=k)
+        zs.append([np.corrcoef(prof[p], prof[q])[0, 1] for p, q in LAG_PAIRS])
+        Cs.append(C)
+    Cs = np.stack(Cs)
+    A = np.abs(Cs)
+    out = dict(zip((f'{p}|{q}' for p, q in LAG_PAIRS), np.nanmean(zs, 0)))
+    out['phase_dispersion'] = float(np.mean(1 - np.abs(Cs.sum(0)) / A.sum(0)))
+    out['magnitude_dispersion'] = float(np.mean(A.std(0) / A.mean(0)))
+    return out
+
+
+def lag_null(bank, output, reference, draws=3, channels=32, seed=0):
+    """Is a state change in the lag pairs more than estimation noise at the state's spectrum? For each unit
+    and state (a subset of evenly spaced channels), the lag-pair z and the coherency dispersions of the real
+    windows are set against two stationary Gaussian nulls with the same T and window count:
+      zero_phase: the state's mean cross-spectrum with every phase set to zero (no lag at all), giving the
+        estimation floor;
+      stationary: the state's mean cross-spectrum itself (its mean lags, fixed across windows).
+    floor = zero_phase, mean_lag = stationary - zero_phase, residual = real - stationary (any window-to-window
+    non-stationarity or non-Gaussianity), bias = a stationary null re-drawn from a stationary draw's own
+    spectrum minus the stationary null (construction bias, should be ~0). Pyspi-free."""
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    rows = manifest['rows']
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    agent = {r['unit']: r.get('agent', 'all') for r in rows}
+    animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
+    rng = np.random.default_rng(seed)
+    table = {}
+    with np.load(bank / 'windows.npz') as archive:
+        M = np.asarray(archive[rows[0]['id']]).shape[1]
+        sub = np.unique(np.round(np.linspace(0, M - 1, min(channels, M))).astype(int))
+        for u, s in sorted(set(zip(unit, state))):
+            ix = np.flatnonzero((unit == u) & (state == s))
+            if len(ix) < 3:
+                continue
+            X = np.stack([np.asarray(archive[rows[i]['id']], dtype=np.float64)[:, sub] for i in ix])
+            n, T = len(X), X.shape[1]
+            S = _mean_periodogram(X)
+            mean = lambda L: {key: float(np.mean([d[key] for d in L])) for key in L[0]}
+            real = _lag_state(X)
+            zero = mean([_lag_state(gaussian_draws(_zero_phase(S), n, T, rng)) for _ in range(draws)])
+            null = [gaussian_draws(S, n, T, rng) for _ in range(draws)]
+            stat = mean([_lag_state(Y) for Y in null])
+            again = _lag_state(gaussian_draws(_mean_periodogram(null[0]), n, T, rng))
+            table[(u, s)] = {key: dict(real=real[key], floor=zero[key], mean_lag=stat[key] - zero[key],
+                                       residual=real[key] - stat[key], bias=again[key] - stat[key])
+                             for key in real}
+    report = dict(bank=str(bank), reference=reference, draws=draws, channels=sub.tolist(), states={}, contrasts={})
+    for (u, s), t in table.items():
+        e = report['states'].setdefault(f'{agent[u]}:{s}', {})
+        for key, v in t.items():
+            for m, y in v.items():
+                e.setdefault(f'{key}:{m}', []).append(y)
+        if s == reference or (u, reference) not in table:
+            continue
+        c = report['contrasts'].setdefault(f'{agent[u]}:{s}', {})
+        for key, v in t.items():
+            for m, y in v.items():
+                d = y - table[(u, reference)][key][m]
+                if np.isfinite(d):
+                    c.setdefault(f'{key}:{m}', []).append((animal[u], float(d)))
+    for e in report['states'].values():
+        for m, v in e.items():
+            e[m] = float(np.nanmean(v))
+    for e in report['contrasts'].values():
+        for m, v in e.items():
+            x = np.array([y for _, y in v])
+            by = {}
+            for a_, y in v:
+                by.setdefault(a_, []).append(y)
+            e[m] = dict(mean=float(x.mean()), units=len(x), positive=int((x > 0).sum()), animals=len(by),
+                        animals_positive=int(sum(np.mean(y) > 0 for y in by.values())))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -850,8 +995,16 @@ if __name__ == '__main__':
     h.add_argument('--output', type=Path, required=True)
     h.add_argument('--reference', default='awake_ec')
     h.add_argument('--draws', type=int, default=10)
+    i = sub.add_parser('lag-null')
+    i.add_argument('bank', type=Path)
+    i.add_argument('--output', type=Path, required=True)
+    i.add_argument('--reference', default='awake_ec')
+    i.add_argument('--draws', type=int, default=3)
+    i.add_argument('--channels', type=int, default=32)
     args = p.parse_args()
-    if args.command == 'spectral-null':
+    if args.command == 'lag-null':
+        lag_null(args.bank, args.output, args.reference, args.draws, args.channels)
+    elif args.command == 'spectral-null':
         spectral_null(args.bank, args.output, args.reference, args.draws)
     elif args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
