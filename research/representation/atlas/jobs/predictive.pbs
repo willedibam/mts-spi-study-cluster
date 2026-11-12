@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N atlas-predictive
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=190GB,walltime=02:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# TE_kNN - TE_Gauss against multivariate IAAFT: synthetic controls, then 16-channel subsets of every atlas window
+# (predictive.py). qsub research/representation/atlas/jobs/predictive.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+A="$MTS_SCRATCH/atlas"
+python -u -m research.representation.atlas.predictive controls --jobs 48 --output "$A/discovery/predictive-controls.json"
+for arm in neurotycho-short:awake_ec neurotycho-long-stage-a:awake_ec fly-short:awake; do
+    IFS=: read -r bank ref <<< "$arm"
+    python -u -m research.representation.atlas.predictive bank "$A/banks/$bank" --reference "$ref" --jobs 48 --output "$A/discovery/$bank-predictive.json"
+done
