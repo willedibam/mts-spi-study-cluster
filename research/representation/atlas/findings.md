@@ -126,6 +126,63 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     - within-window state switching, which IAAFT nulls also reject.
   - Propofol rests on n = 2 sessions in the 10-s arm, so it is "consistent", not decided. No follow-up is planned.
 
+## Channel-level z and further candidate pairs (12 November)
+
+### Channel-level z
+
+[`local.py`](local.py), job 183765960, `*-local.json`. Raw tier: stored pyspi, no surrogates.
+
+**Method.** For each pair, node-wise z_i is the correlation of A and B over the edges incident to channel i.
+- Even and odd windows are contrasted with wake separately.
+- The k = 5 channels with the largest even-half change are scored on the odd half, minus the odd half's all-channel mean. This removes the global shift.
+- The null is the same pipeline run on the eyes-open contrast.
+- The decision rule was fixed in the module before the run.
+- Pairs with a partner whose wake reliability is below .3 are skipped (20 of 42 in the 2-s arm).
+- The 10-s arm has one session per animal per agent, so its within-animal agreement is undefined and it is descriptive only.
+
+**Results.**
+- **Local structure under the drugs is real and reproducible.** For most reliable pairs, the change maps are stable under every drug and not in sleep:
+  - split-half .5–.8, against .2–.5 for eyes-open;
+  - within-animal agreement across sessions .6–.87, against .2–.45 for eyes-open and sleep.
+  - Several pairs have large local changes while the global z barely moves. This is what the global z hides.
+- **But nearly every such map tracks a nuisance map**, so under the rule only the literal reading stands:
+  - Most track the change in A's spread over incident edges (|r| .5–.9). This is the range restriction of the toy formula; the eyes-open maps track it too (.4–.8). It holds for the MI pair (.6–.8), `plv|pec`, `cov-sq|xcorr-sq_max`, `lcss` and the band-locus pairs.
+  - A few track the channel's change in spectral entropy instead.
+- **Mediation (`cov-sq|prec-sq`, Empirical) is the clearest local case.**
+  - Global Δz is about 0 (−.013 to +.014).
+  - Held-out lower-tail excess +.22 to +.31 in every session of every drug (4/4, 11/11, 4/4, 4/4). Split-half .75–.82; within-animal agreement .79–.86 against .30 for eyes-open; sleep 1/7. It does not track A's spread.
+  - But it tracks the channel spectral-entropy change: r −.42 under ketamine, −.58 to −.80 under the others.
+  - The regularised LedoitWolf version shows nothing.
+  - The likeliest reading is that unregularised precision (T = 200, M = 125) degrades most at the spectrally concentrated channels [I]: an estimation effect, localised.
+- **Clean passes under the rule:** only mediation under ketamine, and `plv|pec` under medetomidine. Neither is a cross-drug result.
+- **Scope.** Independent review ran the MI pair's fine-grained analysis beyond IAAFT (notes, `review-nature-level.md`). It reports:
+  - propofol concentration that holds out;
+  - edge maps that do not reproduce across sessions;
+  - ketamine–medetomidine diffuse.
+
+### Further candidate pairs (now in `PAIRS`, `*-pairs.json`)
+
+2-s arm, raw (spectral) Δz.
+
+- **Sign structure, z(r, r²) and z(ρ, ρ²).** Wake z = .49; eyes-open SD .037.
+  - Falls under every drug, every session: ketamine −.20, ketamine–medetomidine −.17 (0/11), medetomidine −.13, propofol −.15. Spectral adjustment still gives −.07 to −.22 (0–1 sessions positive).
+  - Sleep −.003. The 10-s arm is weaker: ketamine −.22, the others −.06 to −.07 with mixed sessions, deep sleep +.02.
+  - Under the common-average reference, mean r is about 0 by construction (.03 wake, about .00 under ketamine–medetomidine, medetomidine and propofol), and about half the edges are negative.
+  - So z(r, r²) reads whether the strongly coupled pairs are in-phase (wake) or include strong anti-correlations (drugs). It is a property of the across-pair distribution of r alone, so it does not need SPI–SPI.
+  - **Unresolved:** whether the reference produces it. A stronger, spatially graded common mode becomes a dipole of positive and negative correlations after the common-average reference. Deciding test: the same z on a reference-free montage (bipolar or Laplacian) from the raw recordings.
+- **Saturation control, z(r², Gaussian MI).** These are a deterministic monotone function of each other, so any change is pure strength-distribution mechanics.
+  - Under every drug it moves by −.010 (0/4, 0/11, 0/4, 1/4 positive).
+  - That equals the raw full-bank change of the rank pairs (`cov|spearmanr` −.003 to −.011) and of `cov-sq|dcorr` (−.006 to −.016). So those raw changes are uninterpretable without a surrogate.
+- **Amplitude-weighted against amplitude-free synchrony, high band (`cohmag|plv`, 25–50 Hz).**
+  - Ketamine +.06 (4/4), ketamine–medetomidine +.04 (8/11), propofol +.03 (4/4).
+  - Medetomidine −.055 (0/4): the medetomidine exception again, as for band locus and MinCovDet.
+  - Broad and low bands are at ceiling (z₀ .92–.96). The 10-s arm raw disagrees.
+- **Burst against proportional amplitude coupling, orthogonalised (`pec_orth|pec_orth_log`).**
+  - +.04 to +.05 under every drug, every session (11/11 under ketamine–medetomidine); sleep +.009; eyes-open SD .009.
+  - But `pec_orth` is unreliable between windows (.03), and a log transform also reads envelope marginal shape. Not read.
+- **Direct against marginal with partial correlation.** `pcorr` Empirical falls (−.06 to −.10, 0 positive), but it is node-additive (R² .63–.78). The LedoitWolf version is mixed. Not read.
+- **No signal:** `psi|gc` (phase lead against predictive direction), and `xcorr` max against mean (null SD .07).
+
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
 
 Reliability here is the mean correlation of an SPI's edge profile between windows of one unit and state. It mixes estimator noise with real window-to-window change of the coupling pattern. Disattenuating by it overcorrects: in wake the disattenuated z of the MI pair exceeds 1. So it bounds, but does not decide.

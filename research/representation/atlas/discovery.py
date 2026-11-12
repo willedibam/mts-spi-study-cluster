@@ -406,6 +406,21 @@ PAIRS = [
     ('broadband vs peaked', _MT('plv'), _MT('plv', stat='max')),
     ('phase vs amplitude coupling', _MT('plv'), 'pec'),
     ('phase vs amplitude coupling', _MT('icoh'), 'pec_orth'),
+    # added 12 November (findings.md, "Further candidate pairs")
+    ('amplitude-weighted vs amplitude-free synchrony', _MT('cohmag'), _MT('plv')),
+    ('amplitude-weighted vs amplitude-free synchrony', _MT('cohmag', _LOW), _MT('plv', _LOW)),
+    ('amplitude-weighted vs amplitude-free synchrony', _MT('cohmag', _HIGH), _MT('plv', _HIGH)),
+    ('burst vs scale-free amplitude coupling', 'pec', 'pec_log'),
+    ('burst vs scale-free amplitude coupling', 'pec_orth', 'pec_orth_log'),
+    ('sign (anticorrelation) structure', 'cov_EmpiricalCovariance', 'cov-sq_EmpiricalCovariance'),
+    ('sign (anticorrelation) structure', 'spearmanr', 'spearmanr-sq'),
+    ('direct vs indirect (mediation)', 'cov_EmpiricalCovariance', 'pcorr_LedoitWolf'),
+    ('direct vs indirect (mediation)', 'cov_EmpiricalCovariance', 'pcorr_EmpiricalCovariance'),
+    ('phase lead vs predictive direction', _MT('psi'), 'gc_gaussian_k-1_kt-1_l-1_lt-1'),
+    ('phase lead vs predictive direction', _MT('psi', _LOW), 'gc_gaussian_k-1_kt-1_l-1_lt-1'),
+    ('lag-concentrated vs lag-spread', 'xcorr_max_sig-True', 'xcorr_mean_sig-True'),
+    ('control: saturation only', 'cov-sq_EmpiricalCovariance', 'mi_gaussian'),
+    ('control: identity', 'cov_EmpiricalCovariance', 'pdist_euclidean'),
 ]
 
 
