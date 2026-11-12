@@ -90,7 +90,14 @@ Reliability here is the mean correlation of an SPI's edge profile between window
   - 2-s arm, ketamine–medetomidine and propofol: Gaussian MI .82 → about .60, kNN MI .69 → about .46, distance correlation −.26, `xcorr-sq_max` −.33. Sleep changes by −.03 to −.06.
   - The 10-s arm agrees, at about half the size.
   - Reading: the coupling pattern changes more from one 2-s window to the next under anaesthesia, i.e. temporal non-stationarity of dependence, which is the lag-variability and intermittency priority.
-  - Confound: drug epochs may drift in depth, while wake is steady. Not yet controlled; compare adjacent windows against distant ones.
+  - **Drift checked** (`*-stability.json`, job 183697156): agreement compared with wake within matched separations (0–150, 150–400, over 400 s). Drug windows are spaced about 120 s apart and wake about 60 s, so unmatched comparisons are biased.
+    - In 2-s windows the drop is already full at the shortest separation and barely grows with distance: Gaussian MI, propofol −.21 / −.23 / −.24; ketamine–medetomidine −.20 / −.21 / −.23.
+    - So it is neither slow drift in depth nor a spacing artefact. In 10-s windows it is about half the size and grows a little with separation (some drift there).
+  - **Live alternative: fewer effective samples.**
+    - Channel-mean spectral entropy falls far more under the drugs (−.15 to −.22) than in sleep (−.04), although peak frequency falls similarly.
+    - The ordering of the entropy fall (ketamine–medetomidine > propofol > medetomidine > ketamine) roughly matches the ordering of the reliability fall.
+    - A spectrally concentrated 2-s window carries fewer independent samples, so its profiles are noisier. That is estimator noise, not coupling fluctuation.
+    - Decisive and pyspi-free: compare the between-window agreement of r profiles on real windows with that on multivariate phase-randomised surrogates of the same windows. If the surrogates lose as much agreement, it is the spectrum.
 - **MI pair (Gaussian against kNN): unresolved on the full bank.**
   - Gaussian MI, a function of r with no Theiler window, loses reliability exactly as much as kNN MI. So a kNN-specific DCE artefact is not supported.
   - But the raw z fall (−.03 to −.08) is far smaller than independent noise at these reliabilities would produce (about .91 → .64). So most of the reliability drop is shared, real non-stationarity, and the z fall cannot be attributed to noise or to character from this bank.
