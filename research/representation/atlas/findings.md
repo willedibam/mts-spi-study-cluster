@@ -103,7 +103,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     | 2-s | −.002 (1/4) | −.006 (0/11, 0/4 animals) | −.004 (0/4) | −.006 (0/4) | +.000 | ≈ 0 |
     | 10-s | −.001 (0/2) | −.008 (0/4, 0/4 animals) | −.002 (0/2) | −.009 (0/2) | deep −.002 | ≈ 0 |
 
-    The null reproduces 65–80% of the raw fall; normal-score Gaussian TE gives the same residual. Fly: 0.
+    The null reproduces 65–95% of the raw fall (least under propofol and ketamine–medetomidine); normal-score Gaussian TE gives the same residual. Fly: 0.
   - **Reading.** A residual survives under ketamine–medetomidine and propofol, strongest in 10-s windows, where the linear control's artefact is −.001. In 2-s windows it is no larger than the slow-linear control's −.008, so it is not distinguished there. Its sign is opposite to what nonlinear coupling gives in the controls: model-free TE is *below* what a linear process with the same spectrum predicts. Gaussian TE does not differ between real and surrogate, so the kNN side carries it. The likeliest reading is that the target's own non-Gaussian dynamics (for example, sharp or asymmetric slow waves) explain away more of the source's apparent prediction once conditioning is model-free [I]; the deciding check is kNN against Gaussian active information storage, real − IAAFT. It matches the r10 16-channel result (d −3.0, 0/6) and the raw `gc|te` grouping (ketamine–medetomidine, propofol and deep sleep against the single agents).
 
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
