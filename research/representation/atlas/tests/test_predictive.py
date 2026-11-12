@@ -45,3 +45,21 @@ def test_readout_null_separates_quadratic_from_linear():
     assert quad['diff_marked'] > lin['diff_marked'] + .02
     r = P.readout_with_null(P.simulate('quadratic_fast', 400, M=4, rng=rng), seed=0, draws=1, marked=pairs)
     assert set(r) == {'real', 'null', 'residual'} and r['residual']['diff_marked'] > .02
+
+
+def test_ksg_ais_agrees_with_gaussian_on_linear_ar():
+    rng = np.random.default_rng(4)
+    x = np.zeros(900)
+    for t in range(1, 900):
+        x[t] = .6 * x[t - 1] + rng.normal()
+    x = x[100:]
+    z, y = x[1:], x[:-1]
+    dist = (np.abs(z[:, None] - z[None, :]), np.abs(y[:, None] - y[None, :]))
+    assert abs(P.gauss_ais(x) - .5 * np.log(1 / (1 - .36))) < .04
+    assert abs(P.ksg_ais(dist, 2) - P.gauss_ais(x)) < .04
+
+
+def test_readout_null_reports_ais_and_association():
+    rng = np.random.default_rng(5)
+    r = P.readout_with_null(P.simulate('threshold_fast', 300, M=4, rng=rng), seed=0, draws=1, marked=P.coupled(4))
+    assert {'ais_diff', 'ais_gauss', 'assoc'} <= set(r['residual']) and np.isfinite(r['residual']['assoc'])

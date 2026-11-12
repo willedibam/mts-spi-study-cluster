@@ -6,7 +6,7 @@
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -l wd
 #PBS -j oe
-# TE_kNN - TE_Gauss against multivariate IAAFT: synthetic controls, then 16-channel subsets of every atlas window
+# TE_kNN - TE_Gauss and AIS_kNN - AIS_Gauss against multivariate IAAFT: synthetic controls, then 16-channel subsets of every atlas window
 # (predictive.py). qsub research/representation/atlas/jobs/predictive.pbs
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
