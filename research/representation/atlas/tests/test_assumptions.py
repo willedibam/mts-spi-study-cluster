@@ -52,4 +52,5 @@ def test_score_finds_a_planted_class_effect(tmp_path):
     assert sign['KT:drug']['raw']['median_sd'] < -3 and sign['KT:drug']['raw']['same_sign'] == 1
     assert abs(sign['eyes_open']['raw']['median_sd']) < 3
     assert abs(cls['mediation']['conditions']['KT:drug']['raw']['median_sd']) < 3
-    assert report['top'] and all(set(t['differs']) for t in report['top'])
+    assert cls['sign handling: signed vs sq']['tier']['KT:drug'] == 'partial'  # two members, one statistic
+    assert set(report['rankings']) >= {'all_drugs', 'all_but_one', 'only:KT:drug'}

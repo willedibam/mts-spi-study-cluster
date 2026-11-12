@@ -204,6 +204,9 @@ PREFERRED = ['signed', 'gaussian', 'Empirical', '0', 'broad', 'low', 'mean', 'li
              'history-1', 'kraskov']
 
 
+EXCLUDE_REVERSE = ('xcorr',)  # best lag against zero lag is a spectral floor at 2 s (findings.md); uncorrected Kraskov too
+
+
 def classify(a, b):
     """Class name of a minimal pair, or None when the SPIs differ in more than one attribute."""
     A, B = parse(a), parse(b)
@@ -337,7 +340,7 @@ def score(reduced, output, reference, reliability=None, top=40, ceiling=.98):
     summ = {c: {v: condition_summary(E, animals[c]) for v, E in d.items() if len(E)} for c, d in eff.items()}
     drugs = [c for c in conditions if not c.startswith('SLP')]
     report = dict(reduced=str(reduced), reference=reference, conditions=conditions, scale='eyes-open null SD',
-                  reliability=str(reliability) if reliability else None, classes=[], top=[])
+                  reliability=str(reliability) if reliability else None, classes=[])
 
     position = {p: i for i, p in enumerate(pairs)}
     member_edges = edges(valid)
@@ -379,35 +382,95 @@ def score(reduced, output, reference, reliability=None, top=40, ceiling=.98):
                          for cond in conditions}))
         report['classes'].append(entry)
 
-    # Reverse: coordinates consistent under every drug condition (raw and spectral-adjusted, >= 75% of units and
-    # every animal agreeing), ranked by the weakest drug effect in null SD; ceiling, node-additive, structural out.
-    ok = ~structural & (np.abs(z0) < ceiling) & np.array([node[a] <= .5 and node[b] <= .5 for a, b in pairs])
-    signs = np.sign(np.mean([summ[c]['raw'][0] for c in drugs], 0))
-    for c in drugs:
-        for v in ('raw', 'spectral'):
-            if v in summ[c]:
-                m, share, agree = summ[c][v]
-                ok &= (np.sign(m) == signs) & (share >= .75) & agree
-    weakest = np.min([np.abs(summ[c]['raw'][0]) / null_sd for c in drugs], 0)
-    order = [j for j in np.argsort(-np.where(ok, weakest, -np.inf)) if ok[j]]
-    report['consistent'] = int(ok.sum())
-    report['usable'] = int((~structural & (np.abs(z0) < ceiling)).sum())
-    for j in order[:top]:
+    # Tiers (module docstring), per class and condition.
+    sat = {e['cls']: e for e in report['classes']}.get('saturation control')
+    sat_dz = {c: abs(sat['pairs'][0]['effects'][c]['dz']) for c in conditions} if sat and sat['pairs'] else {}
+    for e in report['classes']:
+        P, e['tier'] = e['pairs'], {}
+        if not P:
+            continue
+        nstat = len({parse(x)['stat'] for p in P for x in (p['a'], p['b'])})
+        near_ceiling = np.median([abs(p['z0']) for p in P]) > .9
+        reliable = np.mean([all((x or 0) >= .3 for x in p['reliability']) for p in P]) > .5
+        eo = abs(e['conditions']['eyes_open']['raw']['median_sd']) < 1
+        for c in conditions:
+            raw, sp = e['conditions'][c].get('raw'), e['conditions'][c].get('spectral')
+            if raw is None or not (abs(raw['median_sd']) > 3 and raw['same_sign'] >= .75):
+                e['tier'][c] = None
+                continue
+            spec = sp is not None and abs(sp['median_sd']) > 3 and np.sign(sp['median_sd']) == np.sign(raw['median_sd'])
+            above = not near_ceiling or abs(raw['median_dz']) > sat_dz.get(c, 0)
+            if len(P) == 1:
+                e['tier'][c] = 'estimator-local'
+            elif len(P) >= 3 and nstat >= 2 and spec and above and reliable and eo:
+                e['tier'][c] = 'convergent'
+            else:
+                e['tier'][c] = 'partial'
+
+    # Reverse rankings. Coordinates: SPIs collapsed to one representative per near-identical group (|z0| >= .99),
+    # excluded families dropped, both partners reliable (>= .3 in the reference state, where known), not
+    # node-additive, structural or at the ceiling. A condition is consistent on a coordinate when raw and
+    # spectral-adjusted effects share the sign in >= 75% of units with every animal agreeing.
+    rep = {x: x for x in valid}
+    for j in np.flatnonzero(np.abs(z0) >= .99):
         a, b = pairs[j]
-        A, B = parse(a), parse(b)
-        chain = links(valid, a, b)
-        item = dict(a=a, b=b, z0=float(z0[j]), weakest_sd=float(weakest[j]),
-                    differs={k: [A[k], B[k]] for k in A if A[k] != B[k]}, cls=classify(a, b),
-                    reliability=[rel.get(a), rel.get(b)],
-                    effects={c: dict(dz=float(summ[c]['raw'][0][j]), sd=float(summ[c]['raw'][0][j] / null_sd[j]),
-                                     spectral_sd=float(summ[c]['spectral'][0][j] / null_sd[j]) if 'spectral' in summ[c] else None)
-                             for c in conditions}, links=[])
-        for c, x, y in chain or []:
-            jj = position[(x, y)] if (x, y) in position else position[(y, x)]
-            item['links'].append(dict(cls=c, a=x, b=y, z0=float(z0[jj]),
-                                      sd={k: float(summ[k]['raw'][0][jj] / null_sd[jj]) for k in conditions},
-                                      dz={k: float(summ[k]['raw'][0][jj]) for k in conditions}))
-        report['top'].append(item)
+        ra, rb = rep[a], rep[b]
+        if ra != rb:
+            for x in valid:
+                if rep[x] == rb:
+                    rep[x] = ra
+    drop = lambda x: x.startswith(EXCLUDE_REVERSE) or ('kraskov' in x and 'DCE' not in x)
+    reliable = lambda x: rel.get(x) is None or rel[x] >= .3
+    ok = ~structural & (np.abs(z0) < ceiling) & np.array(
+        [rep[a] == a and rep[b] == b and not (drop(a) or drop(b)) and reliable(a) and reliable(b)
+         and node[a] <= .5 and node[b] <= .5 for a, b in pairs])
+    sd = {c: summ[c]['raw'][0] / null_sd for c in conditions}
+    cons = {}
+    for c in conditions:
+        m, share, agree = summ[c]['raw']
+        good = (share >= .75) & agree
+        if 'spectral' in summ[c]:
+            ms, shs, ags = summ[c]['spectral']
+            good &= (np.sign(ms) == np.sign(m)) & (shs >= .75) & ags
+        cons[c] = good & (np.abs(sd[c]) > 3)
+    sleep = [c for c in conditions if c.startswith('SLP')]
+    S = np.array([np.sign(sd[c]) * cons[c] for c in drugs])                      # (drugs, P): +1, -1 or 0
+    pos, neg = (S > 0).sum(0), (S < 0).sum(0)
+    weakest_of = lambda mask: np.min(np.where(mask, np.abs([sd[c] for c in drugs]), np.inf), 0)
+    rankings = {}
+    allc = ok & ((pos == len(drugs)) | (neg == len(drugs)))
+    rankings['all_drugs'] = (allc, weakest_of(np.ones_like(S, bool)))
+    agree3 = ok & ~allc & ((pos == len(drugs) - 1) | (neg == len(drugs) - 1)) & ((pos == 0) | (neg == 0))
+    rankings['all_but_one'] = (agree3, weakest_of(S != 0))
+    for c in conditions:
+        others = [k for k in conditions if k != c]
+        quiet = np.all([np.abs(sd[k]) < 1.5 for k in others], 0)
+        rankings[f'only:{c}'] = (ok & cons[c] & (np.abs(sd[c]) >= 4) & quiet, np.abs(sd[c]))
+    if sleep:
+        deep = sleep[0] if len(sleep) == 1 else next(c for c in sleep if 'deep' in c)
+        quiet_sleep = np.abs(sd[deep]) < 1
+        rankings['drugs_not_sleep'] = (ok & (allc | agree3) & quiet_sleep, weakest_of(S != 0))
+        both = np.sign(sd[deep]) == np.sign(np.mean([sd[c] for c in drugs], 0))
+        rankings['drugs_and_deep_sleep'] = (ok & (allc | agree3) & cons[deep] & both, np.minimum(weakest_of(S != 0), np.abs(sd[deep])))
+    report['usable'] = int(ok.sum())
+    report['rankings'] = {}
+    for name, (mask, strength) in rankings.items():
+        order = [j for j in np.argsort(-np.where(mask, strength, -np.inf)) if mask[j]][:top]
+        items = []
+        for j in order:
+            a, b = pairs[j]
+            A, B = parse(a), parse(b)
+            item = dict(a=a, b=b, z0=float(z0[j]), strength_sd=float(strength[j]), cls=classify(a, b),
+                        differs={k: [A[k], B[k]] for k in A if A[k] != B[k]}, reliability=[rel.get(a), rel.get(b)],
+                        effects={c: dict(dz=float(summ[c]['raw'][0][j]), sd=float(sd[c][j]), consistent=bool(cons[c][j]))
+                                 for c in conditions}, links=[])
+            for c, x, y in links(valid, a, b) or []:
+                jj = position[(x, y)] if (x, y) in position else position[(y, x)]
+                item['links'].append(dict(cls=c, a=x, b=y, z0=float(z0[jj]),
+                                          dz={k: float(summ[k]['raw'][0][jj]) for k in conditions},
+                                          sd={k: float(sd[k][jj]) for k in conditions}))
+            items.append(item)
+        report['rankings'][name] = dict(count=int(mask.sum()), top=items)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=1) + '\n')
 

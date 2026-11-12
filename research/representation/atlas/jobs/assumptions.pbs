@@ -2,7 +2,7 @@
 #PBS -N atlas-assumptions
 #PBS -P ql44
 #PBS -q normal
-#PBS -l ncpus=24,mem=96GB,walltime=01:30:00,jobfs=1GB
+#PBS -l ncpus=24,mem=96GB,walltime=00:45:00,jobfs=1GB
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -l wd
 #PBS -j oe
@@ -13,6 +13,6 @@ cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 A="$MTS_SCRATCH/atlas"
 for bank in neurotycho-short neurotycho-long-stage-a; do
-    python -u -m research.representation.atlas.assumptions reliability "$A/banks/$bank" "$A/pyspi/$bank" "$A/discovery/$bank-reduced.npz" --jobs 24 --output "$A/discovery/$bank-reliability-all.json"
+    [ -s "$A/discovery/$bank-reliability-all.json" ] || python -u -m research.representation.atlas.assumptions reliability "$A/banks/$bank" "$A/pyspi/$bank" "$A/discovery/$bank-reduced.npz" --jobs 24 --output "$A/discovery/$bank-reliability-all.json"
     python -u -m research.representation.atlas.assumptions score "$A/discovery/$bank-reduced.npz" --reliability "$A/discovery/$bank-reliability-all.json" --output "$A/discovery/$bank-assumptions.json"
 done
