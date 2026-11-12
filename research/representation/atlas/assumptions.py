@@ -155,7 +155,7 @@ READINGS = {
     'estimator: Empirical vs spearman': (
         'monotone-nonlinear dependence (rank invariance); channel marginal shape plus copula departure',
         'organisation of linear against rank dependence', 'marginal shape (raw); copula part needs normal scores or IAAFT'),
-    'estimator: kendall vs spearman': (None, 'two rank correlations', 'near-identity ceiling control'),
+    'estimator: kendall vs spearman': ('weighting of large rank discordances (fixed relation under a Gaussian copula)', 'two rank correlations', 'near-identity ceiling'),
     'estimator: Empirical vs kendall': ('monotone-nonlinear dependence (as Spearman)', 'linear against Kendall rank dependence', 'marginal shape'),
     'estimator: Empirical vs MinCovDet': (
         'time-heterogeneous dependence: a minority of samples carries a pattern different from the bulk',
@@ -193,6 +193,9 @@ READINGS = {
     'best lag against zero lag': ('coupling carried at a non-zero best lag', 'zero-lag against best-lag correlation', 'dominant frequency; xcorr reliability'),
     'any dependence against linear': ('non-linear (any-form) dependence share', 'r^2 against distance correlation', 'saturation; beyond-IAAFT ladder reported by independent review'),
     'rigid against elastic alignment': ('variable-lag (warped) alignment', 'Euclidean against DTW distance', 'warp failed construction validation'),
+    # Added after the first run (labels only; tiers unchanged):
+    'estimator: cityblock vs euclidean': ('tail weight of the pair disagreement signal x - y (mean absolute against RMS difference; constant for Gaussian x - y)', 'L1 against L2 distance', 'ceiling; marginal shape of each channel enters x - y'),
+    'estimator: chebyshev vs euclidean': ('worst-case disagreement: intermittent large divergence of a pair', 'L-infinity against L2 distance', 'one-sample maximum is noisy; transients'),
     'estimator: linear vs log': ('burst-driven against proportional amplitude coupling', 'envelope correlation on raw against log envelopes', 'heavy-tailed envelopes'),
 }
 
