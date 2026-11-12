@@ -717,6 +717,95 @@ def stability(bank, pyspi_dir, output, reference, wanted=STABILITY_SPIS, jobs=8)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=1) + '\n')
 
+
+def _r_profiles(X):
+    """Upper-triangle Pearson r of each window (n, T, M) -> (n, E)."""
+    Z = (X - X.mean(1, keepdims=True)) / X.std(1, keepdims=True)
+    C = np.einsum('ntm,ntk->nmk', Z, Z) / X.shape[1]
+    a, b = np.triu_indices(X.shape[2], 1)
+    return C[:, a, b]
+
+
+def stationary_draws(X, n, rng):
+    """Stationary Gaussian windows whose expected cross-periodogram is the mean of the windows' (n_w, T, M):
+    each frequency bin is an independent complex-Gaussian mixture of the windows' Fourier coefficients."""
+    F = np.fft.rfft((X - X.mean(1, keepdims=True)) / X.std(1, keepdims=True), axis=1)
+    w = (rng.normal(size=(n, len(X), F.shape[1])) + 1j * rng.normal(size=(n, len(X), F.shape[1]))) / np.sqrt(2)
+    w[:, :, 0] = rng.normal(size=(n, len(X)))  # real bins carry real weights
+    if X.shape[1] % 2 == 0:
+        w[:, :, -1] = rng.normal(size=(n, len(X)))
+    return np.fft.irfft(np.einsum('swf,wfm->sfm', w, F) / np.sqrt(len(X)), n=X.shape[1], axis=1)
+
+
+def _agreement(P):
+    c = np.corrcoef(P)
+    return c[np.triu_indices(len(P), 1)]
+
+
+def spectral_null(bank, output, reference, draws=10, seed=0):
+    """Is the drop in between-window agreement of coupling profiles more than the spectrum predicts? For each
+    unit and state, the agreement of r and r^2 profiles between its real windows is set against the same
+    agreement among stationary Gaussian windows sharing the state's mean cross-spectrum (same T, same count):
+    agreement that sampling noise alone gives at that spectral concentration. Real agreement below it means
+    the profile changes between windows (non-stationary or non-Gaussian dependence); a drug-minus-reference drop
+    reproduced by the null is the effective-sample-size explanation. Pyspi-free."""
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    rows = manifest['rows']
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    start = np.array([r.get('start_s', np.nan) for r in rows], dtype=float)
+    agent = {r['unit']: r.get('agent', 'all') for r in rows}
+    animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
+    rng = np.random.default_rng(seed)
+    measures = ('real', 'real_near', 'null', 'excess', 'excess_near')
+    table = {}
+    with np.load(bank / 'windows.npz') as archive:
+        for u, s in sorted(set(zip(unit, state))):
+            ix = np.flatnonzero((unit == u) & (state == s))
+            if len(ix) < 3:
+                continue
+            X = np.stack([np.asarray(archive[rows[i]['id']], dtype=np.float64) for i in ix])
+            a, b = np.triu_indices(len(ix), 1)
+            near = np.abs(start[ix][a] - start[ix][b]) < SEPARATIONS[1]
+            R = _r_profiles(X)
+            entry = {}
+            for name, f in (('r', lambda p: p), ('r2', np.square)):
+                real = _agreement(f(R))
+                null = np.mean([_agreement(f(_r_profiles(stationary_draws(X, len(ix), rng)))).mean()
+                                for _ in range(draws)])
+                rn = real[near].mean() if near.any() else np.nan
+                entry[name] = dict(real=real.mean(), real_near=rn, null=null, excess=real.mean() - null,
+                                   excess_near=rn - null)
+            table[(u, s)] = entry
+    report = dict(bank=str(bank), reference=reference, draws=draws, near_s=SEPARATIONS[1], states={}, contrasts={})
+    for (u, s), t in table.items():
+        e = report['states'].setdefault(f'{agent[u]}:{s}', {})
+        for name, v in t.items():
+            for m in measures:
+                e.setdefault(f'{name}:{m}', []).append(v[m])
+        if s == reference or (u, reference) not in table:
+            continue
+        c = report['contrasts'].setdefault(f'{agent[u]}:{s}', {})
+        for name, v in t.items():
+            for m in measures:
+                d = v[m] - table[(u, reference)][name][m]
+                if np.isfinite(d):
+                    c.setdefault(f'{name}:{m}', []).append((animal[u], float(d)))
+    for e in report['states'].values():
+        for m, v in e.items():
+            e[m] = float(np.nanmean(v))
+    for e in report['contrasts'].values():
+        for m, v in e.items():
+            x = np.array([y for _, y in v])
+            by = {}
+            for a_, y in v:
+                by.setdefault(a_, []).append(y)
+            e[m] = dict(mean=float(x.mean()), units=len(x), positive=int((x > 0).sum()), animals=len(by),
+                        animals_positive=int(sum(np.mean(y) > 0 for y in by.values())))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -755,8 +844,15 @@ if __name__ == '__main__':
     g.add_argument('--output', type=Path, required=True)
     g.add_argument('--reference', default='awake_ec')
     g.add_argument('--jobs', type=int, default=8)
+    h = sub.add_parser('spectral-null')
+    h.add_argument('bank', type=Path)
+    h.add_argument('--output', type=Path, required=True)
+    h.add_argument('--reference', default='awake_ec')
+    h.add_argument('--draws', type=int, default=10)
     args = p.parse_args()
-    if args.command == 'reduce':
+    if args.command == 'spectral-null':
+        spectral_null(args.bank, args.output, args.reference, args.draws)
+    elif args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
     elif args.command == 'reliability':
         reliability(args.bank, args.pyspi, args.output, args.reference, jobs=args.jobs)

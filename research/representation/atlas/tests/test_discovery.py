@@ -110,3 +110,32 @@ def test_stability(tmp_path):
     c = rep['contrasts']['PF:drug']
     assert c['spearmanr:150-400']['units'] == 3 and c['spearmanr:150-400']['mean'] > .3  # structured drug profiles agree
     assert 'spearmanr:0-150' not in c  # drug windows are 200 s apart: no matched bin, no contrast
+
+
+def test_stationary_draws_match_mean_cross_spectrum():
+    rng = np.random.default_rng(3)
+    X = rng.normal(size=(6, 128, 5))
+    X[:, :, 1] += np.roll(X[:, :, 0], 2, axis=1)  # lagged coupling
+    S = discovery.stationary_draws(X, 4000, rng)
+    F, G = np.fft.rfft(S, axis=1), np.fft.rfft((X - X.mean(1, keepdims=True)) / X.std(1, keepdims=True), axis=1)
+    cs = np.einsum('nfi,nfj->fij', F, F.conj()) / len(F)
+    target = np.einsum('nfi,nfj->fij', G, G.conj()) / len(G)
+    assert np.abs(cs - target).mean() / np.abs(target).mean() < .1
+    assert S.shape == (4000, 128, 5)
+
+
+def test_spectral_null(tmp_path):
+    rng = np.random.default_rng(4)
+    M, T = 10, 300
+    mix = rng.normal(size=(M, M))
+    stat = np.stack([rng.normal(size=(T, M)) @ mix for _ in range(8)])  # one coupling pattern
+    drift = np.stack([rng.normal(size=(T, M)) @ rng.normal(size=(M, M)) for _ in range(8)])  # new pattern per window
+    R = discovery._r_profiles
+    null = lambda X: discovery._agreement(R(discovery.stationary_draws(X, len(X), rng))).mean()
+    assert abs(discovery._agreement(R(stat)).mean() - null(stat)) < .05
+    assert discovery._agreement(R(drift)).mean() < null(drift) - .3
+    bank, _ = fake_atlas(tmp_path)
+    discovery.spectral_null(bank, tmp_path / 'null.json', 'awake_ec', draws=2)
+    rep = json.loads((tmp_path / 'null.json').read_text())
+    c = rep['contrasts']['PF:drug']
+    assert c['r:excess']['units'] == 3 and abs(rep['states']['PF:drug']['r:excess']) < .1
