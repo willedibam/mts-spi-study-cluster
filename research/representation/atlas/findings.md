@@ -24,39 +24,26 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 - **Scale:** the between-unit SD of the eyes-open effect.
 - **No surrogates in this bank.** Statements about these z effects therefore cannot say "beyond linear". Fixed-lag SPIs (sample units, 10 ms per sample) read dominant frequency.
 
-## Lag: the coupling becomes less zero-lag, and the strongest pairs carry the lag (all four drugs, not sleep)
+## Lag: the drug rise is mostly an estimation floor; a non-stationary residual remains (KTMD, PF)
 
-- **Main readout:** z(`cohmag` low band, `icoh` low band), where `cohmag` = |C|² and `icoh` = |Im C| = |C||sin φ|.
-  - It is negative in wake (z₀ = −0.11): the most coherent pairs are the most zero-phase, as expected from volume conduction and short-range coupling.
-  - It rises under every drug, in both arms and in every session after strength adjustment. 2-s arm, strength-adjusted:
-    - ketamine +.19 (4/4)
-    - ketamine–medetomidine +.18 (11/11)
-    - medetomidine +.08 (4/4)
-    - propofol +.22 (4/4)
-  - Mixed-stage sleep: +.00. Deep-sleep tertile in the 10-s arm: −.01. The eyes-open change has the opposite sign (−.01 to −.05).
-  - It survives spectral adjustment at 2–4 null SDs per agent. It partly reverses at recovery.
-- **Three estimator families agree in sign** (but see the reliability section: these partners are noisy, so this support is weak), each set against its own zero-lag-insensitive partner:
-  - phase consistency: `ppc` against `dswpli`, both bias-corrected, so the coherence noise floor is excluded;
-  - amplitude envelopes: `pec` against `pec_orth` (leakage-orthogonalised);
-  - zero-lag against best-lag correlation: `cov-sq` against `xcorr-sq_max`, which falls by 4.5 to 12 null SDs.
-  - The best-lag/zero-lag split is also the top family of the unsupervised screen: `xcorr-sq_max` parts from every zero-lag statistic, in every session of every agent.
-- **Level moves too.** The mean lagged share rises under every drug except ketamine:
-  - `icoh/cohmag`: +.03 to +.07;
-  - `dswpli/ppc`: +.09 to +.34;
-  - `pec_orth/pec`: +.13 to +.19.
-  - Sleep stays within ±.04.
-  - So the statement is not "lags became more heterogeneous". It is: more of the coupling is non-zero-lag, and the non-zero-lag part now sits on the strongly coupled pairs rather than the weak ones.
-- **Frequency works against the result.** Peak frequency falls 1–2 Hz under the drugs, which shrinks the phase of a fixed delay (φ = 2πfτ), so this confound predicts a fall, not the observed rise.
-- **Not resolved:**
-  - delay against phase (a lower carrier with longer delays is not separated);
-  - the average reference;
-  - whether the cause is physiological (propagating slow activity is one candidate [S]).
-- **Fly isoflurane goes the opposite way** (inferred):
-  - broadband `cohmag|icoh` −.04, with 11 of 13 flies negative;
-  - `cov-sq|xcorr-sq_max` +.05, with 11 of 13 flies positive.
-  - So the reading is regime-specific, not a generic marker of anaesthesia. The fly montage and probe geometry differ.
+- **Bank readout:** z(`cohmag` low band, `icoh` low band), where `cohmag` = |C|² and `icoh` = |Im C| = |C||sin φ|. z₀ = −0.11 in wake. 2-s arm, strength-adjusted: ketamine +.19 (4/4), ketamine–medetomidine +.18 (11/11), medetomidine +.08 (4/4), propofol +.22 (4/4); sleep +.00. The 10-s arm agrees in sign; fly isoflurane goes the opposite way (−.04, 11/13 negative).
+- **Most of it is a noise floor** (independent review, 12 November; pyspi-free multitaper NW 3, 0–25 Hz, scripts `lagnull.py`/`lagnull2.py` in that session's scratchpad, not yet in the repo, one null draw per unit-state). A process with no lag still has nonzero |Im C| from estimation noise, largest on weakly coherent pairs, so z(|C|², |Im C|) moves when spectral concentration lowers the effective sample size. The pyspi-free real rise matches the bank's (KTMD +.146 against +.143). Split of the 2-s windowed rise against own eyes-closed wake, 126 channels (32 agree):
 
-## Gaussian against model-free MI: fewer pairs follow the Gaussian prediction (all four drugs, not sleep)
+  | | KT | KTMD | MD | PF | Sleep | Eyes open |
+  |---|---|---|---|---|---|---|
+  | Real Δz | +.054 | +.146 | +.083 | +.185 | +.003 | −.025 |
+  | Floor: zero-phase null (state's |S|, no lag) | −.065 | +.109 | +.040 | +.113 | −.007 | −.021 |
+  | Mean lag: stationary null − zero-phase null | +.094 (3/4) | −.015 (2/11) | +.031 (3/4) | −.013 (0/4) | +.006 | −.004 |
+  | Residual: real − stationary null | +.026 (4/4) | +.052 (10/11) | +.012 (3/4) | +.085 (4/4) | +.003 | −.001 |
+
+  Null-of-null bias is ≈ 0 (|Δ| ≤ .004). The mean-lag row is one draw and flips sign between channel counts for propofol, so only ketamine's +.09 is read there.
+- **Withdrawn:** the level claim ("more of the coupling is non-zero-lag": the `icoh/cohmag` share rises as much in the zero-phase null as in the data) and "the strongest pairs carry the lag" (that pattern is what the floor produces).
+- **What survives:** a residual beyond a stationary Gaussian process with the state's own mean cross-spectrum, under ketamine–medetomidine (+.05, 10/11 sessions; per-animal not checked) and propofol (+.09, 4/4, 2 animals), not sleep or eyes open. Literal reading: window-to-window non-stationarity of the cross-spectrum moves z. Whether that is lag variability (phase moving across windows) or magnitude fluctuation (bursts, up and down states) is not yet separated; the per-edge phase-dispersion against magnitude-dispersion check decides the wording.
+- **Pooled cross-spectrum** (all windows of a unit-state, floor about 3× lower; measures lags stable across windows, a different quantity): excess over the zero-phase null is ≈ 0 for ketamine–medetomidine (−.008, 6/11), +.11 to +.12 for ketamine, medetomidine and propofol, and +.08 for sleep (7/7). So stable lags do not separate drugs from sleep.
+- **Partner pairs are untested against these nulls:** `ppc|dswpli` (unbiased in the mean but its noise still moves with spectral concentration), `pec|pec_orth`, and `cov-sq|xcorr-sq_max` (its 1.96/√T cut has no autocorrelation correction, so it is strongly floor-prone). They are not support until they are.
+- **Frequency:** peak frequency falls 1–2 Hz under the drugs, which shrinks the phase of a fixed delay; delay against phase, and the average reference, are unresolved.
+
+## Gaussian against model-free MI: fewer pairs follow the Gaussian prediction (all four drugs, not sleep; survives IAAFT)
 
 - **Full bank** (pyspi, 126 channels): z(`mi_gaussian`, `mi_kraskov_NN-4_DCE-AUTO`) has z₀ = .91 and null SD .010.
   - Spectrally adjusted, it falls under every drug in every session (0 positive):
@@ -76,12 +63,13 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     - Pearson-based Gaussian MI is inflated by large-amplitude joint epochs.
   - The first would lower z through reliability, not character; see the reliability check below.
   - The two model-free estimators disagree on level: kernel MI (no Theiler window) rises under every drug (2-s .30–.34 → .40–.42) while DCE-kNN MI falls. So level is estimator-dependent and is not read; only the pattern (z) is.
-- **The pyspi-free version is the anchor** (independent review, 16-channel subsets of the 2-s arm). It is real minus IAAFT, so it matches autocorrelation and marginal distributions.
-  - It falls under every drug.
-  - It survives normal scores and top-5% trimming.
-  - Gain normalisation cuts it to a third.
-  - Conditional-mean curvature rises.
-- **Working name:** "nonlinear (non-Gaussian) dependence". Which form it takes is undecided: curved coupling, or amplitude-state-dependent coupling. The decisive test is on the 10-s arm (design.md).
+- **The pyspi-free version is the anchor** (independent review, real minus window-matched IAAFT, so it matches spectra, autocorrelation and marginal distributions, and with them the effective sample size; scripts in that session's scratchpad, not in the repo).
+  - 2-s arm, 16 channels: falls under every drug in 22 of 23 sessions (−.018 to −.024); sleep −.005; eyes-open null SD .009. It survives normal scores, top-5% trimming and strength adjustment.
+  - 10-s arm (stage A, 16 channels), in eyes-open null SDs: ketamine −6.0, ketamine–medetomidine −4.7 (3/4), medetomidine −2.7, propofol −7.9; sleep +0.1, deep tertile −0.5. "Drugs, not deep sleep" holds at both window lengths.
+  - Where it sits (2-s, 32 channels, edges chosen on one half of the windows and tested on the other): under propofol about 5% of edges carry about 80% of the fall, and three channels carry 45% of it; under ketamine and medetomidine it sits on the most strongly coupled 5% of edges; ketamine–medetomidine is diffuse. Edge maps do not reproduce across sessions (r = .05), so no hub can be named.
+- **Level, beyond IAAFT:** kNN-minus-Gaussian MI falls beyond the surrogates under ketamine–medetomidine (−5.8 SD), propofol (−6.2) and medetomidine (−2.6), and rises under ketamine (+3.8). So the level fall is not only a DCE artefact: with spectra, marginals and r matched, model-free MI sits below the linear-Gaussian expectation. Since non-Gaussian dependence cannot lower true MI below the Gaussian value for Gaussian marginals, the level is not read as character; the z fall reads as a reshuffling of which pairs carry non-Gaussian dependence.
+- **Form: curved coupling is not supported.** A calibrated 10-s curvature readout (synthetic: static curvature positive, gain modulation negative, coupling switching ≈ 0) shows no positive curvature beyond IAAFT (−1.3 to −1.7 SD). Within-window coupling switching beyond IAAFT is large under every drug (propofol +20 SD) but also in deep sleep (+4.1), and the window-level z residual tracks none of switching, curvature or envelope co-modulation.
+- **Wording:** "non-Gaussian dependence beyond a linear process with the same spectra and marginals, drug-specific". Not "curved coupling" or "more nonlinear". The mechanism is unidentified; a human propofol replication (r10 bank and windows exist) is the next decisive test.
 
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
 
@@ -107,7 +95,7 @@ Reliability here is the mean correlation of an SPI's edge profile between window
   - Gaussian MI, a function of r with no Theiler window, loses reliability exactly as much as kNN MI. So a kNN-specific DCE artefact is not supported.
   - But the raw z fall (−.03 to −.08) is far smaller than independent noise at these reliabilities would produce (about .91 → .64). So most of the reliability drop is shared, real non-stationarity, and the z fall cannot be attributed to noise or to character from this bank.
   - The IAAFT version, whose surrogates share window length and autocorrelation, stays the anchor. The kNN-to-Gaussian level collapse is still unexplained.
-- **Lag pair holds.** In the 10-s arm (`icoh` reliability .46) z(`cohmag`, `icoh`) rises in every animal under every drug raw, and disattenuated by +.17 to +.24 (ketamine–medetomidine 3/4 animals); the deep tertile is −.04.
+- **Lag pair:** in the 10-s arm (`icoh` reliability .46) z(`cohmag`, `icoh`) rises in every animal under every drug raw, and disattenuated by +.17 to +.24; but disattenuation does not touch the estimation floor, which the lag section shows carries most of the rise.
 - **Demoted:**
   - Partners with near-zero between-window reliability: `dswpli` (.03), `pec_orth` (.03), `te_kraskov_DCE` (.03–.07), `icoh` in 2-s windows (.18). The `ppc|dswpli`, `pec|pec_orth` and TE `k-1|k-2` effects mostly carry within-window structure, and their disattenuated values swing in sign. They support the lag reading only weakly; the TE memory pair is not interpretable.
   - The best-lag/zero-lag `xcorr` fall turns positive when disattenuated, and `xcorr` loses the most reliability (−.33). Read it as stability, not lag, until a within-window split-half check exists.
