@@ -5796,6 +5796,257 @@
   },
   {
    "character": "predictive vs contemporaneous",
+   "a": "tlmi_gaussian",
+   "b": "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "node_r2": [
+    0.1647147510051611,
+    0.16794224891277387
+   ],
+   "reference_z": 0.2609370370333393,
+   "eyes_open_null_sd": 0.037028881669671894,
+   "effects": {
+    "KT:awake_eo": {
+     "raw": {
+      "mean": -0.016511704167351128,
+      "units": 4,
+      "positive": 1
+     },
+     "adjusted": {
+      "mean": -0.01892003779165986,
+      "units": 4,
+      "positive": 1
+     },
+     "spectral": {
+      "mean": -0.0260122303103072,
+      "units": 4,
+      "positive": 0
+     }
+    },
+    "KTMD:awake_eo": {
+     "raw": {
+      "mean": 0.004814295335249474,
+      "units": 11,
+      "positive": 7
+     },
+     "adjusted": {
+      "mean": 0.005629850515312249,
+      "units": 11,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": 0.01979612098781537,
+      "units": 11,
+      "positive": 7
+     }
+    },
+    "MD:awake_eo": {
+     "raw": {
+      "mean": -0.044247419366729435,
+      "units": 4,
+      "positive": 1
+     },
+     "adjusted": {
+      "mean": -0.043940942318004536,
+      "units": 4,
+      "positive": 1
+     },
+     "spectral": {
+      "mean": -0.04300694127287176,
+      "units": 4,
+      "positive": 1
+     }
+    },
+    "PF:awake_eo": {
+     "raw": {
+      "mean": -0.007572158845141522,
+      "units": 4,
+      "positive": 2
+     },
+     "adjusted": {
+      "mean": -0.0023690663854258505,
+      "units": 4,
+      "positive": 2
+     },
+     "spectral": {
+      "mean": 0.008767146738957272,
+      "units": 4,
+      "positive": 2
+     }
+    },
+    "SLP:awake_eo": {
+     "raw": {
+      "mean": -0.017863393801131416,
+      "units": 7,
+      "positive": 2
+     },
+     "adjusted": {
+      "mean": -0.007372167068033326,
+      "units": 7,
+      "positive": 2
+     },
+     "spectral": {
+      "mean": 0.023553448631069836,
+      "units": 7,
+      "positive": 5
+     }
+    },
+    "KT:drug": {
+     "raw": {
+      "mean": -0.03210857985541225,
+      "units": 4,
+      "positive": 0
+     },
+     "adjusted": {
+      "mean": -0.023474702836840593,
+      "units": 4,
+      "positive": 0
+     },
+     "spectral": {
+      "mean": 0.01602698894625297,
+      "units": 4,
+      "positive": 2
+     }
+    },
+    "KTMD:drug": {
+     "raw": {
+      "mean": -0.09994368675080212,
+      "units": 11,
+      "positive": 0
+     },
+     "adjusted": {
+      "mean": -0.075929379050862,
+      "units": 11,
+      "positive": 1
+     },
+     "spectral": {
+      "mean": -0.09941455192482071,
+      "units": 11,
+      "positive": 1
+     }
+    },
+    "MD:drug": {
+     "raw": {
+      "mean": -0.08580662205349654,
+      "units": 4,
+      "positive": 0
+     },
+     "adjusted": {
+      "mean": -0.10613707703109547,
+      "units": 4,
+      "positive": 0
+     },
+     "spectral": {
+      "mean": -0.06031532119311598,
+      "units": 4,
+      "positive": 1
+     }
+    },
+    "PF:drug": {
+     "raw": {
+      "mean": -0.009663779055699706,
+      "units": 4,
+      "positive": 1
+     },
+     "adjusted": {
+      "mean": 0.007590638621150414,
+      "units": 4,
+      "positive": 2
+     },
+     "spectral": {
+      "mean": 0.14272506610429472,
+      "units": 4,
+      "positive": 4
+     }
+    },
+    "KT:recovery_ec": {
+     "raw": {
+      "mean": 0.052323579229414455,
+      "units": 4,
+      "positive": 4
+     },
+     "adjusted": {
+      "mean": 0.0772002395087402,
+      "units": 4,
+      "positive": 4
+     },
+     "spectral": {
+      "mean": 0.08110167296649694,
+      "units": 4,
+      "positive": 4
+     }
+    },
+    "KTMD:recovery_ec": {
+     "raw": {
+      "mean": 0.06133228093385697,
+      "units": 10,
+      "positive": 10
+     },
+     "adjusted": {
+      "mean": 0.0718134538913223,
+      "units": 10,
+      "positive": 10
+     },
+     "spectral": {
+      "mean": 0.07232346410254369,
+      "units": 10,
+      "positive": 9
+     }
+    },
+    "MD:recovery_ec": {
+     "raw": {
+      "mean": -0.03240662571042776,
+      "units": 4,
+      "positive": 0
+     },
+     "adjusted": {
+      "mean": -0.03354828734638378,
+      "units": 4,
+      "positive": 0
+     },
+     "spectral": {
+      "mean": -0.026735882454835158,
+      "units": 4,
+      "positive": 1
+     }
+    },
+    "PF:recovery_ec": {
+     "raw": {
+      "mean": 0.06064002229832113,
+      "units": 4,
+      "positive": 4
+     },
+     "adjusted": {
+      "mean": 0.07382538244118286,
+      "units": 4,
+      "positive": 4
+     },
+     "spectral": {
+      "mean": 0.10285492199085366,
+      "units": 4,
+      "positive": 4
+     }
+    },
+    "SLP:sleep": {
+     "raw": {
+      "mean": -0.017329778860411833,
+      "units": 7,
+      "positive": 3
+     },
+     "adjusted": {
+      "mean": -0.011981589271381115,
+      "units": 7,
+      "positive": 2
+     },
+     "spectral": {
+      "mean": -0.010363706435603678,
+      "units": 7,
+      "positive": 2
+     }
+    }
+   }
+  },
+  {
+   "character": "predictive vs contemporaneous",
    "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
    "b": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
    "node_r2": [
@@ -9828,12 +10079,12 @@
       "positive": 3
      },
      "adjusted": {
-      "mean": -0.002439749078180991,
+      "mean": -0.0024397490781809745,
       "units": 4,
       "positive": 1
      },
      "spectral": {
-      "mean": -0.020386964685355884,
+      "mean": -0.020386964685355904,
       "units": 4,
       "positive": 0
      }
@@ -9845,12 +10096,12 @@
       "positive": 8
      },
      "adjusted": {
-      "mean": 0.006656055740219124,
+      "mean": 0.00665605574021912,
       "units": 11,
       "positive": 8
      },
      "spectral": {
-      "mean": -0.00356036632316189,
+      "mean": -0.003560366323161895,
       "units": 11,
       "positive": 5
      }
@@ -9862,12 +10113,12 @@
       "positive": 3
      },
      "adjusted": {
-      "mean": 0.01684985269779671,
+      "mean": 0.0168498526977967,
       "units": 4,
       "positive": 4
      },
      "spectral": {
-      "mean": 0.007739739374984724,
+      "mean": 0.007739739374984737,
       "units": 4,
       "positive": 3
      }
@@ -9879,12 +10130,12 @@
       "positive": 4
      },
      "adjusted": {
-      "mean": 0.004659182796232499,
+      "mean": 0.004659182796232533,
       "units": 4,
       "positive": 2
      },
      "spectral": {
-      "mean": -0.004716018463755462,
+      "mean": -0.004716018463755432,
       "units": 4,
       "positive": 2
      }
@@ -9896,12 +10147,12 @@
       "positive": 4
      },
      "adjusted": {
-      "mean": 0.0017767227543969023,
+      "mean": 0.0017767227543968845,
       "units": 7,
       "positive": 5
      },
      "spectral": {
-      "mean": -0.007888299473559957,
+      "mean": -0.007888299473559951,
       "units": 7,
       "positive": 3
      }
@@ -9913,12 +10164,12 @@
       "positive": 0
      },
      "adjusted": {
-      "mean": -0.12414069708361192,
+      "mean": -0.12414069708361197,
       "units": 4,
       "positive": 0
      },
      "spectral": {
-      "mean": -0.027039943777125187,
+      "mean": -0.027039943777125194,
       "units": 4,
       "positive": 1
      }
@@ -9935,7 +10186,7 @@
       "positive": 0
      },
      "spectral": {
-      "mean": -0.09659259322903341,
+      "mean": -0.09659259322903338,
       "units": 11,
       "positive": 0
      }
@@ -9947,12 +10198,12 @@
       "positive": 0
      },
      "adjusted": {
-      "mean": -0.16073516074294097,
+      "mean": -0.160735160742941,
       "units": 4,
       "positive": 0
      },
      "spectral": {
-      "mean": -0.1309660505598898,
+      "mean": -0.13096605055988986,
       "units": 4,
       "positive": 0
      }
@@ -9969,7 +10220,7 @@
       "positive": 0
      },
      "spectral": {
-      "mean": -0.09424380366298876,
+      "mean": -0.09424380366298879,
       "units": 4,
       "positive": 0
      }
@@ -9981,12 +10232,12 @@
       "positive": 1
      },
      "adjusted": {
-      "mean": -0.08487530388071424,
+      "mean": -0.08487530388071421,
       "units": 4,
       "positive": 0
      },
      "spectral": {
-      "mean": -0.032547892136679565,
+      "mean": -0.03254789213667961,
       "units": 4,
       "positive": 1
      }
@@ -9998,12 +10249,12 @@
       "positive": 3
      },
      "adjusted": {
-      "mean": -0.011234595621350698,
+      "mean": -0.011234595621350693,
       "units": 10,
       "positive": 6
      },
      "spectral": {
-      "mean": -0.01595196369534052,
+      "mean": -0.015951963695340514,
       "units": 10,
       "positive": 4
      }
@@ -10015,12 +10266,12 @@
       "positive": 3
      },
      "adjusted": {
-      "mean": -0.014567597232177465,
+      "mean": -0.014567597232177494,
       "units": 4,
       "positive": 1
      },
      "spectral": {
-      "mean": -0.009518774956978261,
+      "mean": -0.009518774956978277,
       "units": 4,
       "positive": 2
      }
@@ -10032,12 +10283,12 @@
       "positive": 1
      },
      "adjusted": {
-      "mean": -0.01131303324434413,
+      "mean": -0.011313033244344125,
       "units": 4,
       "positive": 2
      },
      "spectral": {
-      "mean": 0.004597323117679112,
+      "mean": 0.00459732311767908,
       "units": 4,
       "positive": 2
      }
@@ -10049,12 +10300,12 @@
       "positive": 1
      },
      "adjusted": {
-      "mean": -0.020507966189135442,
+      "mean": -0.02050796618913548,
       "units": 7,
       "positive": 2
      },
      "spectral": {
-      "mean": -0.003565431576032189,
+      "mean": -0.003565431576032195,
       "units": 7,
       "positive": 3
      }
@@ -10079,12 +10330,12 @@
       "positive": 1
      },
      "adjusted": {
-      "mean": -0.013839854221899386,
+      "mean": -0.013839854221899395,
       "units": 4,
       "positive": 0
      },
      "spectral": {
-      "mean": -0.010204684415249295,
+      "mean": -0.010204684415249283,
       "units": 4,
       "positive": 1
      }
@@ -10096,12 +10347,12 @@
       "positive": 6
      },
      "adjusted": {
-      "mean": -0.0033745349450712563,
+      "mean": -0.00337453494507126,
       "units": 11,
       "positive": 4
      },
      "spectral": {
-      "mean": 0.008204794713610073,
+      "mean": 0.008204794713610077,
       "units": 11,
       "positive": 5
      }
@@ -10113,12 +10364,12 @@
       "positive": 2
      },
      "adjusted": {
-      "mean": 0.007119829020811884,
+      "mean": 0.007119829020811875,
       "units": 4,
       "positive": 3
      },
      "spectral": {
-      "mean": -0.018882093913681654,
+      "mean": -0.01888209391368166,
       "units": 4,
       "positive": 1
      }
@@ -10130,7 +10381,7 @@
       "positive": 2
      },
      "adjusted": {
-      "mean": 0.00797721566576914,
+      "mean": 0.007977215665769142,
       "units": 4,
       "positive": 3
      },
@@ -10152,7 +10403,7 @@
       "positive": 6
      },
      "spectral": {
-      "mean": 0.012991921467476629,
+      "mean": 0.012991921467476639,
       "units": 7,
       "positive": 5
      }
@@ -10164,12 +10415,12 @@
       "positive": 3
      },
      "adjusted": {
-      "mean": 0.07716023603290738,
+      "mean": 0.07716023603290739,
       "units": 4,
       "positive": 4
      },
      "spectral": {
-      "mean": 0.13090095216154896,
+      "mean": 0.130900952161549,
       "units": 4,
       "positive": 4
      }
@@ -10181,12 +10432,12 @@
       "positive": 11
      },
      "adjusted": {
-      "mean": 0.02844032873752387,
+      "mean": 0.02844032873752389,
       "units": 11,
       "positive": 8
      },
      "spectral": {
-      "mean": 0.04147840811494163,
+      "mean": 0.04147840811494161,
       "units": 11,
       "positive": 6
      }
@@ -10203,7 +10454,7 @@
       "positive": 3
      },
      "spectral": {
-      "mean": 0.06772612144181461,
+      "mean": 0.0677261214418146,
       "units": 4,
       "positive": 4
      }
@@ -10215,7 +10466,7 @@
       "positive": 4
      },
      "adjusted": {
-      "mean": 0.11989563287117878,
+      "mean": 0.1198956328711788,
       "units": 4,
       "positive": 4
      },
@@ -10232,7 +10483,7 @@
       "positive": 1
      },
      "adjusted": {
-      "mean": -0.007322331958444138,
+      "mean": -0.007322331958444141,
       "units": 4,
       "positive": 1
      },
@@ -10249,12 +10500,12 @@
       "positive": 6
      },
      "adjusted": {
-      "mean": 0.0014519395230650155,
+      "mean": 0.001451939523065024,
       "units": 10,
       "positive": 7
      },
      "spectral": {
-      "mean": 0.006704975567626739,
+      "mean": 0.006704975567626756,
       "units": 10,
       "positive": 8
      }
@@ -10266,12 +10517,12 @@
       "positive": 1
      },
      "adjusted": {
-      "mean": -0.012658488722906796,
+      "mean": -0.012658488722906792,
       "units": 4,
       "positive": 1
      },
      "spectral": {
-      "mean": -0.028017103483942925,
+      "mean": -0.028017103483942908,
       "units": 4,
       "positive": 1
      }
@@ -10283,12 +10534,12 @@
       "positive": 4
      },
      "adjusted": {
-      "mean": 0.007414286136068365,
+      "mean": 0.007414286136068362,
       "units": 4,
       "positive": 3
      },
      "spectral": {
-      "mean": -0.010062773964150569,
+      "mean": -0.010062773964150585,
       "units": 4,
       "positive": 1
      }
@@ -10300,12 +10551,12 @@
       "positive": 4
      },
      "adjusted": {
-      "mean": 0.002399077804939801,
+      "mean": 0.0023990778049398005,
       "units": 7,
       "positive": 4
      },
      "spectral": {
-      "mean": -0.010846147517179055,
+      "mean": -0.010846147517179048,
       "units": 7,
       "positive": 1
      }

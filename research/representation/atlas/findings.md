@@ -75,6 +75,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     - the DCE Theiler window grows as drugged signals slow, which shrinks the effective sample;
     - Pearson-based Gaussian MI is inflated by large-amplitude joint epochs.
   - The first would lower z through reliability, not character; see the reliability check below.
+  - The two model-free estimators disagree on level: kernel MI (no Theiler window) rises under every drug (2-s .30–.34 → .40–.42) while DCE-kNN MI falls. So level is estimator-dependent and is not read; only the pattern (z) is.
 - **The pyspi-free version is the anchor** (independent review, 16-channel subsets of the 2-s arm). It is real minus IAAFT, so it matches autocorrelation and marginal distributions.
   - It falls under every drug.
   - It survives normal scores and top-5% trimming.
@@ -89,11 +90,15 @@ Reliability here is the mean correlation of an SPI's edge profile between window
 - **Profiles become less reproducible between windows under every drug, not in sleep.** This is a result in its own right, not a z feature.
   - 2-s arm, ketamine–medetomidine and propofol: Gaussian MI .82 → about .60, kNN MI .69 → about .46, distance correlation −.26, `xcorr-sq_max` −.33. Sleep changes by −.03 to −.06.
   - The 10-s arm agrees, at about half the size.
-  - Reading: the coupling pattern changes more from one 2-s window to the next under anaesthesia, i.e. temporal non-stationarity of dependence, which is the lag-variability and intermittency priority.
+  - **Resolved: it is the spectrum, not the coupling** (`*-spectral-null.json`, `discovery.py spectral-null`, pyspi-free). For each unit and state, the between-window agreement of r and r² profiles is set against that of stationary Gaussian windows with the state's mean cross-spectrum (same T and count, 10 draws). The null is biased slightly high (its common pattern is a mean of about ten windows), so excess contrasts within about ±.03 are undecided.
+    - 2-s arm, r² agreement drop against wake, real against null: ketamine −.125/−.090, ketamine–medetomidine −.261/−.240, medetomidine −.176/−.150, propofol −.277/−.227. So 75–90% of the drop is what a stationary process with the drug spectrum gives. Excess drops are −.02 to −.05 (largest under propofol).
+    - 10-s arm: fully reproduced (ketamine–medetomidine −.115/−.114, propofol −.122/−.113; ketamine's null drop exceeds the real one).
+    - Natural sleep is the exception: 2-s −.052/−.020; 10-s deep −.069/−.028, mid −.055/−.013. Its drop is mostly not spectral, so sleep, not anaesthesia, shows window-to-window change of the coupling pattern (or non-Gaussian amplitude structure; the null does not separate them).
+    - So the earlier reading, "temporal non-stationarity of dependence under anaesthesia", is withdrawn. Disattenuation by between-window reliability is better justified under the drugs than first thought, since the drop is mostly estimator noise.
   - **Drift checked** (`*-stability.json`, job 183697156): agreement compared with wake within matched separations (0–150, 150–400, over 400 s). Drug windows are spaced about 120 s apart and wake about 60 s, so unmatched comparisons are biased.
     - In 2-s windows the drop is already full at the shortest separation and barely grows with distance: Gaussian MI, propofol −.21 / −.23 / −.24; ketamine–medetomidine −.20 / −.21 / −.23.
     - So it is neither slow drift in depth nor a spacing artefact. In 10-s windows it is about half the size and grows a little with separation (some drift there).
-  - **Live alternative: fewer effective samples.**
+  - **Fewer effective samples (confirmed by the spectral null above).**
     - Channel-mean spectral entropy falls far more under the drugs (−.15 to −.22) than in sleep (−.04), although peak frequency falls similarly.
     - The ordering of the entropy fall (ketamine–medetomidine > propofol > medetomidine > ketamine) roughly matches the ordering of the reliability fall.
     - A spectrally concentrated 2-s window carries fewer independent samples, so its profiles are noisier. That is estimator noise, not coupling fluctuation.
@@ -120,7 +125,12 @@ Reliability here is the mean correlation of an SPI's edge profile between window
   - **Bulk against atypical samples** (`prec-sq` LedoitWolf against MinCovDet; `cov-sq` Empirical against MinCovDet): −4 to −14 SD in the 10-s arm only, where the deep tertile is −2.4 to −3.9 SD. This matches the macaque MinCovDet flag result.
   - **Rigid against elastic alignment** (`dtw|dtw_sakoe-chiba`): −5 to −14 SD in the 10-s arm only, deep tertile −3.4. The 2-s windows are too short for warping to matter. The warp axis failed construction validation.
   - All 10-s arm entries rest on two units per agent, and raw effects only.
-- **Inconsistent or null:** band locus, broadband against peaked, predictive against contemporaneous, nonlinear against linear prediction, `sgc` order, `gc` against AIS, and macaque mediation.
+- **Subsets of conditions** (relaxed: consistent sessions and animals within a condition, not across all four drugs; descriptive):
+  - **Band locus** (`cohmag` and `plv`, 0–25 against 25–50 Hz): rises under ketamine, ketamine–medetomidine and propofol (2-s raw and spectral, 4/4, 10/11–11/11, 4/4), not under medetomidine (−.03 to +.00) or sleep. Fly rises too (11/13, 10/13). The pairs strongly coupled at low frequency become more the same pairs as those coupled at high frequency. The medetomidine exception matches the MinCovDet one.
+  - **Precedence, conditioning link** `tlmi_gaussian|gc_gaussian` (lag-1 Gaussian MI against Gaussian GC: they differ only in GC conditioning on the target's own past). Raw, z₀ = .26, null SD .04: falls under ketamine (−.03 2-s 0/4; −.05 10-s 0/2), medetomidine (−.09 0/4; −.08 0/2) and ketamine–medetomidine (−.10 0/11; −.10 1/4); propofol ≈ 0 (−.01; +.03 2/2); sleep ≈ 0. GC's reliability rises under ketamine and medetomidine alone, so attenuation does not produce their fall.
+  - **Precedence, propofol only:** `mi_gaussian|gc_gaussian` +.05 raw (4/4), +.12 spectral (4/4); `cohmag|sgc` +.12 raw (4/4), +.06 spectral (4/4); 10-s raw +.08 and +.03 (2/2). Under propofol the pairs coupled at zero lag are more often the pairs with precedence; under the other agents the two rankings drift apart. This fits the propofol-only high-band lag (explore section).
+  - **Linear against model-free prediction** `gc_gaussian|te_kraskov_DCE`, raw, both arms: ketamine and medetomidine alone up (2-s/10-s +.06/+.16 and +.01/+.05; 3/4 and 2/2 sessions), ketamine–medetomidine, propofol and 10-s deep sleep down (−.06 to −.12, every session). Spectral adjustment scrambles it, and the TE partner's between-window reliability is .02–.24, so only the literal reading stands.
+- **Inconsistent or null:** broadband against peaked, `sgc` order, `gc` against AIS, and macaque mediation.
 - **Fly mediation:** `cov-sq|prec-sq` +.105 (13/13), and the LedoitWolf version +.076 (12/13). This is fly-specific.
 - **Structural zeros, dropped:** `plv|pli` and `plv|wpli`. PLI and wPLI are stored antisymmetric, so their z with a symmetric SPI is exactly 0.
 - **dcoh/pdcoh:** not testable here, because the spectral-directed SPIs are not finite in every 2-s window.
