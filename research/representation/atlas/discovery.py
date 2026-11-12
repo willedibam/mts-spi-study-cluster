@@ -386,6 +386,7 @@ PAIRS = [
     ('rigid vs elastic alignment', 'pdist_euclidean', 'dtw'),
     ('rigid vs elastic alignment', 'lcss', 'lcss_constraint-sakoe-chiba'),
     ('predictive vs contemporaneous', 'mi_gaussian', 'gc_gaussian_k-1_kt-1_l-1_lt-1'),
+    ('predictive vs contemporaneous', 'tlmi_gaussian', 'gc_gaussian_k-1_kt-1_l-1_lt-1'),  # link: target's past only
     ('predictive vs contemporaneous', _MT('cohmag'), _SGC('None')),
     ('nonlinear vs linear prediction', 'gc_gaussian_k-1_kt-1_l-1_lt-1', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'),
     ('nonlinear vs linear prediction', 'te_symbolic_k-3', 'te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1'),
