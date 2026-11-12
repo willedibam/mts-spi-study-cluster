@@ -83,6 +83,16 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - Conditional-mean curvature rises.
 - **Working name:** "nonlinear (non-Gaussian) dependence". Which form it takes is undecided: curved coupling, or amplitude-state-dependent coupling. The decisive test is on the 10-s arm (design.md).
 
+## Linear against model-free prediction: the TE − GC level tracks the spectrum here (12 November)
+
+- **Readout:** the core level median over edges of `te_kraskov_DCE` − `gc_gaussian` (k = 1). pyspi's `gc_gaussian` is the same TE class with the Gaussian estimator, i.e. Gaussian TE in nats (read from pyspi source), so for Gaussian data the difference is about zero; GC ≡ 2 TE for Gaussian variables (Barnett, Barrett & Seth 2009). In construction validation it was the only non-Gaussian reader that worked (character_axes findings), and on the r10 16-channel NeuroTycho bank its real − IAAFT residual was robust in all three variants (d −3.0, 0/6). The z version (`gc|te`) was insensitive in construction and TE's between-window reliability is .02–.24 here, so z is not the readout.
+- **Atlas, raw:** falls under every drug in every session and animal, both arms (2-s: ketamine −.015, ketamine–medetomidine −.027, medetomidine −.020, propofol −.021 nats; 10-s −.010 to −.027); eyes-open +.002; sleep −.003 (deep −.005); fly +.001.
+- **But it is spectral concentration plus estimator bias, not yet character:**
+  - The drop comes from DCE-kNN TE becoming more negative (−.010 to −.027); GC barely moves (+.000 to +.007). A negative kNN TE is bias.
+  - Across all non-reference sessions the drop tracks the fall in channel spectral entropy: r = +.90 (2-s, n = 30) and +.85 (10-s, n = 16), not peak frequency (−.01, −.20). Fly, whose spectral entropy does not fall, shows nothing; sleep, which falls little, shows little.
+  - Within-unit spectral adjustment halves it (2-s −.010 to −.016, still 0/4–0/11 except ketamine 1/4), and linear adjustment need not remove a nonlinear bias.
+- **What would give a signature:** the level against a spectrum-matched null, which shares the bias. Pyspi-free: 16-channel subsets, KSG TE with the AUTO Theiler window against Gaussian TE, real − multivariate IAAFT (several draws), per state, preferably with longer windows (continuous NeuroTycho intervals allow 30–60 s) and Gaussian TE also on normal scores (heavy tails inflate it). First a positive control with known nonlinear predictive coupling (electronic Rössler hardware, r7/r9 banks), since an instrument that misses it there will miss it in ECoG.
+
 ## Edge-profile reliability (job 183670442, `*-reliability.json`)
 
 Reliability here is the mean correlation of an SPI's edge profile between windows of one unit and state. It mixes estimator noise with real window-to-window change of the coupling pattern. Disattenuating by it overcorrects: in wake the disattenuated z of the MI pair exceeds 1. So it bounds, but does not decide.
@@ -155,6 +165,7 @@ Reliability here is the mean correlation of an SPI's edge profile between window
 
 - **Propofol only: lagged high-band phase coupling appears as a pattern.**
   - In 25–50 Hz, debiased lag-insensitive phase measures (`dswpli`, `dspli`, `icoh`) begin to track high-band phase locking.
+  - Band edge: `prepare.py` low-passes at 40 Hz (order-8 Butterworth) before resampling to 100 Hz, so "25–50 Hz" is effectively 25–40 Hz plus roll-off; bins above 40 Hz carry little signal.
   - z(`plv` hi, `dswpli` hi): +.13 under propofol in both animals (2-s +.10/+.17; 10-s +.13/+.12). The other drugs are at most +.03, sleep +.005, and recovery largely reverses it (+.01 to +.05).
   - The level moves too: the `dswpli/ppc` share in the high band rises +.33 (2-s) and +.30 (10-s) under propofol, in both animals, against at most +.07 for the other drugs.
   - Many coordinates on `dswpli`/`dspli`/`icoh` in the high band rank propofol-specific in both arms, at +6 to +9 null SD.
