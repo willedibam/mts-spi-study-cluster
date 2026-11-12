@@ -70,6 +70,9 @@ Best candidates, re-read (Fable 5.2, 11 November):
   - Gaussian against model-free MI: falls under all four drugs, and kernel MI and distance correlation agree. The full bank cannot decide it: between-window profile reliability falls equally for Gaussian MI, which has no DCE window, and mostly reflects shared non-stationarity. The IAAFT version remains the anchor.
   - New: SPI edge profiles become less reproducible between 2-s windows under every drug (Gaussian MI .82 → .60), not in sleep. This is a temporal non-stationarity candidate; drift in drug depth is not yet controlled.
   - Lag holds after disattenuation in the 10-s arm, in every animal. The `ppc|dswpli`, `pec|pec_orth`, `xcorr` and TE-memory pairs are demoted (noisy partners).
+  - Beyond all-drug effects (explore rankings, post-selection):
+    - Propofol only: in the 25–50 Hz band, lagged phase coupling (debiased wPLI) starts tracking high-band locking. z +.13 in both animals and both window lengths; level share +.30; other drugs ≤ +.07; recovery reverses.
+    - All but medetomidine: robust against classical dependence, with the same exception as the pyspi-free MinCovDet flag fraction.
 
 ## Named character axes built inside z (2 November)
 

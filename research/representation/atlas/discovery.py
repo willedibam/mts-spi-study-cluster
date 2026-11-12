@@ -648,6 +648,75 @@ def explore(reduced, output, reference, conditions=None, top=20, ceiling=.98):
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=1) + '\n')
 
+
+STABILITY_SPIS = ('mi_gaussian', 'mi_kraskov_NN-4_DCE-AUTO', 'dcorr', 'xcorr-sq_max_sig-True', 'cov-sq_EmpiricalCovariance',
+                  'cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25')
+SEPARATIONS = (0, 150, 400, np.inf)  # seconds between window starts
+
+
+def stability(bank, pyspi_dir, output, reference, wanted=STABILITY_SPIS, jobs=8):
+    """Edge-profile agreement between windows of one unit and state as a function of their separation in time.
+    States are sampled at different spacings (drug windows about twice as far apart as wake), so each state is
+    compared with the reference within the same separation bin. Drift predicts agreement that falls with
+    separation; fast fluctuation predicts low agreement already in the nearest bin."""
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    shards = sorted(pyspi_dir.glob('shard-*.npz'))
+    merged = {}
+    for part in Parallel(n_jobs=jobs)(delayed(_profiles)(sh, list(wanted)) for sh in shards):
+        merged.update(part)
+    rows = [r for r in manifest['rows'] if r['id'] in merged]
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    start = np.array([r.get('start_s', np.nan) for r in rows], dtype=float)
+    agent = {r['unit']: r.get('agent', 'all') for r in rows}
+    animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
+    nb = len(SEPARATIONS) - 1
+    table = {}
+    for u, s in sorted(set(zip(unit, state))):
+        ix = np.flatnonzero((unit == u) & (state == s))
+        P = np.stack([merged[rows[i]['id']] for i in ix])
+        a, b = np.triu_indices(len(ix), 1)
+        sep = np.abs(start[ix][a] - start[ix][b])
+        bins = np.digitize(sep, SEPARATIONS[1:-1])
+        agree = np.full((len(wanted), nb), np.nan)
+        for k in range(len(wanted)):
+            if not np.isfinite(P[:, k]).all():
+                continue
+            c = np.corrcoef(P[:, k])[a, b]
+            for j in range(nb):
+                if (bins == j).any():
+                    agree[k, j] = c[bins == j].mean()
+        table[(u, s)] = dict(agree=agree, pairs=np.bincount(bins, minlength=nb).tolist(),
+                             median_separation=float(np.median(sep)) if len(sep) else np.nan)
+    report = dict(bank=str(bank), reference=reference, spis=list(wanted),
+                  separation_bins_s=[f'{SEPARATIONS[j]}-{SEPARATIONS[j + 1]}' for j in range(nb)],
+                  states={}, contrasts={})
+    for (u, s), t in table.items():
+        e = report['states'].setdefault(f'{agent[u]}:{s}', dict(agree=[], median_separation=[]))
+        e['agree'].append(t['agree']); e['median_separation'].append(t['median_separation'])
+    for k, e in report['states'].items():
+        report['states'][k] = dict(agree={w: np.nanmean(np.array(e['agree'])[:, i], 0).tolist() for i, w in enumerate(wanted)},
+                                   median_separation_s=float(np.nanmedian(e['median_separation'])))
+    for (u, s), t in table.items():
+        if s == reference or (u, reference) not in table:
+            continue
+        d = t['agree'] - table[(u, reference)]['agree']
+        e = report['contrasts'].setdefault(f'{agent[u]}:{s}', {})
+        for i, w in enumerate(wanted):
+            for j in range(nb):
+                if np.isfinite(d[i, j]):
+                    e.setdefault(f'{w}:{report["separation_bins_s"][j]}', []).append((animal[u], float(d[i, j])))
+    for k, e in report['contrasts'].items():
+        for m, v in e.items():
+            x = np.array([y for _, y in v])
+            by = {}
+            for a_, y in v:
+                by.setdefault(a_, []).append(y)
+            e[m] = dict(mean=float(x.mean()), units=len(x), positive=int((x > 0).sum()), animals=len(by),
+                        animals_positive=int(sum(np.mean(y) > 0 for y in by.values())))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -680,11 +749,19 @@ if __name__ == '__main__':
     f.add_argument('reduced', type=Path)
     f.add_argument('--output', type=Path, required=True)
     f.add_argument('--reference', default='awake_ec')
+    g = sub.add_parser('stability')
+    g.add_argument('bank', type=Path)
+    g.add_argument('pyspi', type=Path)
+    g.add_argument('--output', type=Path, required=True)
+    g.add_argument('--reference', default='awake_ec')
+    g.add_argument('--jobs', type=int, default=8)
     args = p.parse_args()
     if args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)
     elif args.command == 'reliability':
         reliability(args.bank, args.pyspi, args.output, args.reference, jobs=args.jobs)
+    elif args.command == 'stability':
+        stability(args.bank, args.pyspi, args.output, args.reference, jobs=args.jobs)
     elif args.command == 'explore':
         explore(args.reduced, args.output, args.reference)
     elif args.command == 'pairs':

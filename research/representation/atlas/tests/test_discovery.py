@@ -20,7 +20,8 @@ def fake_atlas(tmp_path, M=8, T=400):
                 x = rng.normal(size=(T, M))
                 if state == 'drug':
                     x[:, 1:] += .8 * x[:, :1]
-                rows.append(dict(id=wid, unit=f'u{u}', state=state, agent='PF', M=M, delta_fraction=rng.uniform(.3, .7)))
+                rows.append(dict(id=wid, unit=f'u{u}', state=state, agent='PF', M=M, delta_fraction=rng.uniform(.3, .7),
+                                 start_s=100.0 * k * (2 if state == 'drug' else 1)))
                 arrays[wid] = x
                 c = np.corrcoef(x.T)
                 slow = rng.normal(size=M)
@@ -99,3 +100,13 @@ def test_explore(tmp_path):
     assert rep['conditions'] == ['PF:drug'] and rep['scale'] == 'eyes-open null SD'
     assert all('coint_x' not in (h['a'], h['b']) for h in rep['single']['PF:drug'])
     assert rep['opposite'] == {} and rep['majority'] == []
+
+
+def test_stability(tmp_path):
+    bank, pyspi = fake_atlas(tmp_path)
+    discovery.stability(bank, pyspi, tmp_path / 'stab.json', 'awake_ec', ('cov_EmpiricalCovariance', 'spearmanr'), jobs=1)
+    rep = json.loads((tmp_path / 'stab.json').read_text())
+    assert rep['states']['PF:drug']['median_separation_s'] > rep['states']['PF:awake_ec']['median_separation_s']
+    c = rep['contrasts']['PF:drug']
+    assert c['spearmanr:150-400']['units'] == 3 and c['spearmanr:150-400']['mean'] > .3  # structured drug profiles agree
+    assert 'spearmanr:0-150' not in c  # drug windows are 200 s apart: no matched bin, no contrast
