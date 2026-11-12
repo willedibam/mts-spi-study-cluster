@@ -139,3 +139,39 @@ def test_spectral_null(tmp_path):
     rep = json.loads((tmp_path / 'null.json').read_text())
     c = rep['contrasts']['PF:drug']
     assert c['r:excess']['units'] == 3 and abs(rep['states']['PF:drug']['r:excess']) < .1
+
+
+def test_gaussian_draws_and_zero_phase():
+    rng = np.random.default_rng(5)
+    X = rng.normal(size=(6, 128, 4))
+    X[:, :, 1] += np.roll(X[:, :, 0], 3, axis=1)
+    S = discovery._mean_periodogram(X)
+    D = discovery.gaussian_draws(S, 3000, 128, rng)
+    assert np.abs(discovery._mean_periodogram(D) - S).mean() / np.abs(S).mean() < .1
+    Z = discovery._zero_phase(S)
+    assert np.allclose(np.angle(Z[:, 0, 1])[np.abs(Z[:, 0, 1]) > 1e-9], 0, atol=1e-6)
+
+
+def test_lag_profiles_separate_lag_from_zero_lag():
+    rng = np.random.default_rng(6)
+    T = 400
+    s = np.convolve(rng.normal(size=T + 50), np.ones(4) / 4, 'same')[:T + 50]
+    x = np.stack([s[50:], s[50:] + .5 * rng.normal(size=T), s[47:T + 47] + .5 * rng.normal(size=T),
+                  rng.normal(size=T)], 1)           # 0-1 zero lag, 0-2 lag 3, 3 independent
+    prof, C = discovery.lag_profiles(x)
+    a, b = np.triu_indices(4, 1)
+    e = {(i, j): n for n, (i, j) in enumerate(zip(a, b))}
+    assert prof['icoh_low'][e[0, 2]] > 2 * prof['icoh_low'][e[0, 1]]
+    assert prof['dswpli'][e[0, 2]] > .15 > 3 * abs(prof['dswpli'][e[0, 1]])  # full band dilutes the lag
+    assert prof['xcorr2_max'][e[0, 2]] > 2 * prof['cov2'][e[0, 2]]
+    assert prof['pec'][e[0, 1]] > prof['pec_orth'][e[0, 1]]
+    assert C.shape[1] == 6
+
+
+def test_lag_null(tmp_path):
+    bank, _ = fake_atlas(tmp_path)
+    discovery.lag_null(bank, tmp_path / 'lag.json', 'awake_ec', draws=1, channels=6)
+    rep = json.loads((tmp_path / 'lag.json').read_text())
+    c = rep['contrasts']['PF:drug']
+    assert c['cohmag_low|icoh_low:residual']['units'] == 3 and len(rep['channels']) == 6
+    assert abs(rep['states']['PF:drug']['phase_dispersion:bias']) < .1
