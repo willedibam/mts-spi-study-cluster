@@ -21,7 +21,11 @@ Decision rule, fixed before the run: a pair has a local signature in a condition
 excess passes in at least 75% of sessions and in every animal (an animal passes when at least half its sessions
 do), and the mean within-animal agreement exceeds that of
 the eyes-open contrast. A map that correlates (|r| > .5 on average) with either covariate gets the literal reading
-only. Pairs with a partner whose wake between-window reliability is below RELIABILITY are skipped (their node maps
+only.
+
+Residualised variant (``*_resid`` fields; added after the first run, so exploratory): each half's change map is
+regressed on that half's changes in the spread of A, the spread of B and channel spectral entropy, and the held-out
+test is rerun on the residuals against the same eyes-open pipeline (pass: the held-out clause of the rule). Pairs with a partner whose wake between-window reliability is below RELIABILITY are skipped (their node maps
 are noise); the MI pair is kept as the known-positive reference. A null (stationary or zero-phase) is run only for
 pairs that pass.
 """
@@ -42,14 +46,14 @@ REFERENCE_PAIR = ('mi_gaussian', 'mi_kraskov_NN-4_DCE-AUTO')
 
 
 def node_stats(a, b, rows, cols, M):
-    """Per-channel correlation of a and b over incident edges, and the SD of a there."""
+    """Per-channel correlation of a and b over incident edges, and the SDs of a and of b there."""
     s = lambda v: np.bincount(rows, v, M) + np.bincount(cols, v, M)
     n = s(np.ones_like(a))
     ma, mb = s(a) / n, s(b) / n
     va, vb = s(a * a) / n - ma ** 2, s(b * b) / n - mb ** 2
     cab = s(a * b) / n - ma * mb
     with np.errstate(invalid='ignore', divide='ignore'):
-        return cab / np.sqrt(va * vb), np.sqrt(np.maximum(va, 0))
+        return cab / np.sqrt(va * vb), np.sqrt(np.maximum(va, 0)), np.sqrt(np.maximum(vb, 0))
 
 
 def spectral_entropy(X, fs):
@@ -97,12 +101,12 @@ def local(bank, pyspi_dir, reliability_json, output, reference, jobs=8, k=K_TOP)
         P = merged[r['id']]
         M = r['M']
         rr, cc = np.nonzero(~np.eye(M, dtype=bool))
-        out_z, out_sd, glob = [], [], []
+        out_z, out_sd, out_sdb, glob = [], [], [], []
         for _, a, b in named:
             x, y = P[wanted.index(a)].astype(np.float64), P[wanted.index(b)].astype(np.float64)
-            z, sd = node_stats(x, y, rr, cc, M)
-            out_z.append(z), out_sd.append(sd), glob.append(_corr(x, y))
-        return np.array(out_z), np.array(out_sd), np.array(glob)
+            z, sd, sdb = node_stats(x, y, rr, cc, M)
+            out_z.append(z), out_sd.append(sd), out_sdb.append(sdb), glob.append(_corr(x, y))
+        return np.array(out_z), np.array(out_sd), np.array(glob), np.array(out_sdb)
     W = [window(r) for r in rows]
 
     half = np.zeros(len(rows), int)
@@ -116,21 +120,35 @@ def local(bank, pyspi_dir, reliability_json, output, reference, jobs=8, k=K_TOP)
         ev, od = idx[half[idx] == 0], idx[half[idx] == 1]
         if len(ev) == 0 or len(od) == 0:
             continue
+        ent = lambda ix: np.mean([entropy[rows[i]['id']] for i in ix], 0)
         maps[(u, s)] = dict(even=mean(ev, 0), odd=mean(od, 0), z=mean(idx, 0), sd=mean(idx, 1), glob=mean(idx, 2),
-                            ent=np.mean([entropy[rows[i]['id']] for i in idx], 0))
+                            ent=ent(idx), cov_even=(mean(ev, 1), mean(ev, 3), ent(ev)),
+                            cov_odd=(mean(od, 1), mean(od, 3), ent(od)))
 
     def contrast(u, s):
         g, w = maps[(u, s)], maps[(u, reference)]
         de, do, d = g['even'] - w['even'], g['odd'] - w['odd'], g['z'] - w['z']
         res = dict(glob=g['glob'] - w['glob'], d=d, dsd=g['sd'] - w['sd'], dent=g['ent'] - w['ent'],
                    split=np.array([_corr(de[p], do[p]) for p in range(len(named))]))
-        for tail, sign in (('upper', 1), ('lower', -1)):
-            ex = []
-            for p in range(len(named)):
-                ok = np.isfinite(de[p]) & np.isfinite(do[p])
-                order = np.flatnonzero(ok)[np.argsort(-sign * de[p][ok])][:k]
-                ex.append(sign * (do[p][order].mean() - do[p][ok].mean()))
-            res[tail] = np.array(ex)
+        def residual(dz, half, p):
+            cv = [g[half][0][p] - w[half][0][p], g[half][1][p] - w[half][1][p], g[half][2] - w[half][2]]
+            X = np.column_stack([np.ones(len(dz))] + cv)
+            ok = np.isfinite(dz) & np.isfinite(X).all(1)
+            out = np.full(len(dz), np.nan)
+            if ok.sum() > X.shape[1] + 2:
+                out[ok] = dz[ok] - X[ok] @ np.linalg.lstsq(X[ok], dz[ok], rcond=None)[0]
+            return out
+        de_r = np.array([residual(de[p], 'cov_even', p) for p in range(len(named))])
+        do_r = np.array([residual(do[p], 'cov_odd', p) for p in range(len(named))])
+        for suffix, (E, O) in (('', (de, do)), ('_resid', (de_r, do_r))):
+            for tail, sign in (('upper', 1), ('lower', -1)):
+                ex = []
+                for p in range(len(named)):
+                    ok = np.isfinite(E[p]) & np.isfinite(O[p])
+                    order = np.flatnonzero(ok)[np.argsort(-sign * E[p][ok])][:k]
+                    ex.append(sign * (O[p][order].mean() - O[p][ok].mean()) if ok.any() else np.nan)
+                res[tail + suffix] = np.array(ex)
+        res['split_resid'] = np.array([_corr(de_r[p], do_r[p]) for p in range(len(named))])
         res['cov_entropy'] = np.array([_corr(d[p], res['dent']) for p in range(len(named))])
         res['cov_sd'] = np.array([_corr(d[p], res['dsd'][p]) for p in range(len(named))])
         absd = np.abs(d)
@@ -140,7 +158,8 @@ def local(bank, pyspi_dir, reliability_json, output, reference, jobs=8, k=K_TOP)
 
     C = {(u, s): contrast(u, s) for (u, s) in maps if s != reference and (u, reference) in maps}
     eo = [v for (u, s), v in C.items() if s == 'awake_eo']
-    thresholds = {t: np.nanpercentile(np.array([v[t] for v in eo]), 95, axis=0) for t in ('upper', 'lower')}
+    thresholds = {t: np.nanpercentile(np.array([v[t] for v in eo]), 95, axis=0)
+                  for t in ('upper', 'lower', 'upper_resid', 'lower_resid')}
 
     def agreement(units, s):
         out = []
@@ -169,7 +188,7 @@ def local(bank, pyspi_dir, reliability_json, output, reference, jobs=8, k=K_TOP)
             if not units:
                 continue
             e = {}
-            for tail in ('upper', 'lower'):
+            for tail in ('upper', 'lower', 'upper_resid', 'lower_resid'):
                 vals = np.array([C[(u, s)][tail][p] for u in units])
                 passed = vals > thresholds[tail][p]
                 by = {}
@@ -186,6 +205,8 @@ def local(bank, pyspi_dir, reliability_json, output, reference, jobs=8, k=K_TOP)
                      top_share=float(np.nanmean([C[(u, s)]['top_share'][p] for u in units])))
             frac = lambda t: e[t]['passed'] >= .75 * e[t]['units'] and e[t]['animals_all_pass'] == e[t]['animals']
             e['local_signature'] = bool((frac('upper') or frac('lower')) and agree > eo_agree[p])
+            e['split_half_resid'] = float(np.nanmean([C[(u, s)]['split_resid'][p] for u in units]))
+            e['local_signature_resid'] = bool(frac('upper_resid') or frac('lower_resid'))
             e['literal_only'] = bool(abs(e['cov_entropy']) > .5 or abs(e['cov_sd']) > .5)
             entry['conditions'][cond] = e
         report['pairs'].append(entry)

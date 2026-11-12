@@ -10,7 +10,7 @@ def test_node_stats_matches_brute_force():
     M = 6
     rr, cc = np.nonzero(~np.eye(M, dtype=bool))
     a, b = rng.normal(size=len(rr)), rng.normal(size=len(rr))
-    z, sd = L.node_stats(a, b, rr, cc, M)
+    z, sd, _ = L.node_stats(a, b, rr, cc, M)
     for i in range(M):
         m = (rr == i) | (cc == i)
         assert np.isclose(z[i], np.corrcoef(a[m], b[m])[0, 1])
@@ -45,3 +45,19 @@ def test_local_finds_a_planted_hub(tmp_path):
     L.local(tmp_path, tmp_path / 'pyspi', tmp_path / 'rel.json', tmp_path / 'out.json', 'awake_ec', jobs=1, k=2)
     e = json.loads((tmp_path / 'out.json').read_text())['pairs'][0]['conditions']['X:drug']
     assert e['lower']['passed'] == 4 and e['lower']['mean'] > .2 and e['local_signature']
+
+
+def test_sign_null_runs_on_a_tiny_bank(tmp_path):
+    from research.representation.atlas import discovery as D
+    rng = np.random.default_rng(2)
+    rows, arrays = [], {}
+    for s in ('awake_ec', 'drug'):
+        for w in range(4):
+            wid = f'u-{s}-{w}'
+            arrays[wid] = rng.normal(size=(100, 6))
+            rows.append(dict(id=wid, unit='u', state=s, M=6))
+    np.savez(tmp_path / 'windows.npz', **arrays)
+    (tmp_path / 'manifest.json').write_text(json.dumps(dict(fs=100, rows=rows)))
+    D.sign_null(tmp_path, tmp_path / 'o.json', 'awake_ec', draws=2)
+    c = json.loads((tmp_path / 'o.json').read_text())['contrasts']['all:drug']
+    assert {'real', 'real_mean_profile', 'null', 'null_mean_profile'} <= set(c)

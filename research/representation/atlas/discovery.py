@@ -822,6 +822,52 @@ def spectral_null(bank, output, reference, draws=10, seed=0):
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+def sign_null(bank, output, reference, draws=10, seed=0):
+    """Is the fall of z(r, r^2) (sign structure; findings.md, "Further candidate pairs") anticorrelation structure or
+    sampling noise? Per unit and state: the per-window z(r, r^2) (real), z of the window-mean r profile (noise
+    averaged out: the state's sign structure), and both on stationary Gaussian windows with the state's mean
+    cross-spectrum (null: what sampling noise adds at that spectral concentration). Read before the run: a fall
+    carried by the window-mean profile is sign structure (reference-induced or not); a per-window fall that the
+    null reproduces while the window-mean profile holds is fewer effective samples. Pyspi-free."""
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    rows = manifest['rows']
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    agent = {r['unit']: r.get('agent', 'all') for r in rows}
+    animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
+    rng = np.random.default_rng(seed)
+    zsq = lambda R: float(np.mean([np.corrcoef(x, x ** 2)[0, 1] for x in np.atleast_2d(R)]))
+    table = {}
+    with np.load(bank / 'windows.npz') as archive:
+        for u, s in sorted(set(zip(unit, state))):
+            ix = np.flatnonzero((unit == u) & (state == s))
+            if len(ix) < 3:
+                continue
+            X = np.stack([np.asarray(archive[rows[i]['id']], dtype=np.float64) for i in ix])
+            R = _r_profiles(X)
+            nulls = [_r_profiles(stationary_draws(X, len(ix), rng)) for _ in range(draws)]
+            table[(u, s)] = dict(real=zsq(R), real_mean_profile=zsq(R.mean(0)), null=np.mean([zsq(n) for n in nulls]),
+                                 null_mean_profile=np.mean([zsq(n.mean(0)) for n in nulls]), mean_r=float(R.mean()),
+                                 negative_share=float((R < 0).mean()))
+    report = dict(bank=str(bank), reference=reference, draws=draws, states={}, contrasts={})
+    for (u, s), t in table.items():
+        e = report['states'].setdefault(f'{agent[u]}:{s}', {})
+        for m, v in t.items():
+            e.setdefault(m, []).append(v)
+        if s == reference or (u, reference) not in table:
+            continue
+        c = report['contrasts'].setdefault(f'{agent[u]}:{s}', {})
+        for m, v in t.items():
+            c.setdefault(m, []).append((animal[u], v - table[(u, reference)][m]))
+    report['states'] = {k: {m: float(np.mean(v)) for m, v in e.items()} for k, e in report['states'].items()}
+    for e in report['contrasts'].values():
+        for m, v in e.items():
+            x = np.array([y for _, y in v])
+            e[m] = dict(mean=float(x.mean()), units=len(x), positive=int((x > 0).sum()))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -865,8 +911,14 @@ if __name__ == '__main__':
     h.add_argument('--output', type=Path, required=True)
     h.add_argument('--reference', default='awake_ec')
     h.add_argument('--draws', type=int, default=10)
+    i = sub.add_parser('sign-null')
+    i.add_argument('bank', type=Path)
+    i.add_argument('--output', type=Path, required=True)
+    i.add_argument('--reference', default='awake_ec')
     args = p.parse_args()
-    if args.command == 'spectral-null':
+    if args.command == 'sign-null':
+        sign_null(args.bank, args.output, args.reference)
+    elif args.command == 'spectral-null':
         spectral_null(args.bank, args.output, args.reference, args.draws)
     elif args.command == 'reduce':
         reduce(args.bank, args.pyspi, args.output, args.jobs)

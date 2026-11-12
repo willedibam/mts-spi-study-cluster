@@ -6,11 +6,13 @@
 #PBS -l storage=gdata/ql44+scratch/ql44
 #PBS -l wd
 #PBS -j oe
-# Channel-level (node-wise) z of the named SPI pairs, NeuroTycho arms (local.py). qsub research/representation/atlas/jobs/local.pbs
+# Channel-level (node-wise) z of the named SPI pairs (local.py) and the sign-structure null (discovery.py sign-null),
+# NeuroTycho arms. qsub research/representation/atlas/jobs/local.pbs
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 A="$MTS_SCRATCH/atlas"
 for bank in neurotycho-short neurotycho-long-stage-a; do
     python -u -m research.representation.atlas.local "$A/banks/$bank" "$A/pyspi/$bank" --reliability "$A/discovery/$bank-reliability.json" --jobs 24 --output "$A/discovery/$bank-local.json"
+    python -u -m research.representation.atlas.discovery sign-null "$A/banks/$bank" --output "$A/discovery/$bank-sign-null.json"
 done
