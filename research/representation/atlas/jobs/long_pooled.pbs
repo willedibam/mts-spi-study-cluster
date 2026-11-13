@@ -1,0 +1,52 @@
+#!/bin/bash
+#PBS -N atlas-long-pooled
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=190GB,walltime=10:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Every 10-s arm analysis on stages A and B pooled (bank `neurotycho-long`, 1260 windows). Both stages were computed
+# with one pyspi identity (config, extract.py, computation 3.0.0.r13); the shards are linked, not recomputed.
+# pyspi-based steps (reduce, report, pairs, explore, screens, reliability, stability, local, assumptions) run beside the
+# pyspi-free nulls (sign, spectral, lag, weighting, predictive). qsub research/representation/atlas/jobs/long_pooled.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A="$MTS_SCRATCH/atlas"
+b=neurotycho-long
+B="$A/banks/$b"
+P="$A/pyspi/$b"
+O="$A/discovery"
+mkdir -p "$P"
+for s in a b; do
+    for f in "$A/pyspi/$b-stage-$s"/shard-*.npz; do
+        ln -sfn "$f" "$P/shard-$s-${f##*/shard-}"
+    done
+done
+test "$(ls "$P"/shard-*.npz | wc -l)" -eq 1260
+d() { python -u -m research.representation.atlas.discovery "$@"; }
+(
+    d reduce "$B" "$P" --output "$O/$b-reduced.npz" --jobs 32
+    d analyse "$O/$b-reduced.npz" --output "$O/$b-report.json"
+    d pairs "$O/$b-reduced.npz" --output "$O/$b-pairs.json"
+    d explore "$O/$b-reduced.npz" --output "$O/$b-explore.json"
+    d screen "$O/$b-reduced.npz" --output "$O/$b-screen.json"
+    d screen "$O/$b-reduced.npz" --double-centred --output "$O/$b-screen-dc.json"
+    d reliability "$B" "$P" --jobs 32 --output "$O/$b-reliability.json"
+    d stability "$B" "$P" --jobs 32 --output "$O/$b-stability.json"
+    python -u -m research.representation.atlas.local "$B" "$P" --reliability "$O/$b-reliability.json" --jobs 32 --output "$O/$b-local.json"
+    python -u -m research.representation.atlas.assumptions reliability "$B" "$P" "$O/$b-reduced.npz" --jobs 32 --output "$O/$b-reliability-all.json"
+    python -u -m research.representation.atlas.assumptions score "$O/$b-reduced.npz" --reliability "$O/$b-reliability-all.json" --output "$O/$b-assumptions.json"
+) &
+pyspi_steps=$!
+(
+    d sign-null "$B" --output "$O/$b-sign-null.json"
+    d spectral-null "$B" --output "$O/$b-spectral-null.json"
+    d lag-null "$B" --output "$O/$b-lag-null.json"
+    python -u -m research.representation.atlas.assumptions weighting-null "$B" --output "$O/$b-weighting-null.json"
+    python -u -m research.representation.atlas.predictive bank "$B" --jobs 16 --output "$O/$b-predictive.json"
+) &
+null_steps=$!
+wait "$pyspi_steps"
+wait "$null_steps"
