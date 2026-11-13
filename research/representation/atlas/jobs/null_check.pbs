@@ -16,7 +16,7 @@ set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 A="$MTS_SCRATCH/atlas"
-CONFIG=configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml
+CONFIG="$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml"
 d() { python -u -m research.representation.atlas.discovery "$@"; }
 commands="$PBS_JOBFS/commands.txt"
 for kind in zero_phase stationary bias; do
