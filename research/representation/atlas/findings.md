@@ -6,8 +6,8 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 
 - **NeuroTycho macaque ECoG:** 126 channels, 100 Hz, pyspi r13 with 272 SPIs.
   - 2-s arm: 1,260 windows.
-  - 10-s arm (stage A): 500 windows.
-  - Units are sessions, and animals are fewer. In the 2-s arm:
+  - 10-s arm: 1,260 windows, stages A (500) and B (760) pooled. Both stages share one pyspi identity (config, `extract.py`, computation 3.0.0.r13, 272 SPIs in one order); job 183816046, `neurotycho-long-*.json`. Stage-A-only outputs stay as `neurotycho-long-stage-a-*.json`.
+  - Units are sessions, and animals are fewer. Both arms now have:
 
     | Condition | Sessions | Animals |
     |---|---|---|
@@ -22,6 +22,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - *Strength-adjusted:* within-unit OLS on mean |r|, SD |r| and the covariance participation ratio.
   - *Spectrally adjusted:* additionally on the channel-mean peak frequency and spectral entropy.
 - **Scale:** the between-unit SD of the eyes-open effect.
+- **Pooling the 10-s arm (13 November).** Raw and null-decomposed means replicate stage A closely for every named pair, lag-null, sign-null, spectral-null, weighting-null and predictive readout checked. What changes is the scale: stage A had two units per agent, and its eyes-open null SD was too small for some pairs (MI pair .0036 → .0059; `prec-sq` LedoitWolf against MinCovDet .019 → .064). So stage-A SD multiples overstated those effects; the numbers below are pooled unless marked.
 - **No surrogates in this bank.** Statements about these z effects therefore cannot say "beyond linear". Fixed-lag SPIs (sample units, 10 ms per sample) read dominant frequency.
 
 ## Lag: the raw rise is mostly an estimation floor; a debiased non-stationary residual survives (KTMD, PF), not sleep
@@ -52,13 +53,13 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   | Magnitude dispersion | residual | −.001 | −.002 | −.000 | −.007 | −.006 |
 
   Phase dispersion is 1 − |Σ_w C_w| / Σ_w |C_w| per edge and frequency (zero when only magnitudes vary); magnitude dispersion is SD_w |C_w| / mean_w |C_w|; both in 0–25 Hz.
-- **10-s arm (stage A) agrees:** `ppc|dswpli` residual KTMD +.072 (3/4 animals), PF +.126 (2/2), KT +.042, MD +.034, deep tertile +.017; `cohmag|icoh` residual KTMD +.045 (4/4), PF +.091 (2/2), MD +.049 (2/2); phase-dispersion residual KTMD +.012 (bias −.012), PF +.011 (bias −.002), deep tertile +.009 (bias .000); magnitude-dispersion residual ≈ 0 everywhere; `cov-sq|xcorr-sq_max` residual ≈ 0.
+- **10-s arm (pooled) agrees:** `ppc|dswpli` residual KTMD +.064 (10/11 sessions, 4/4 animals; bias −.007), PF +.126 (4/4, 2/2; bias +.010), KT +.022, MD +.007, deep tertile +.018; `cohmag|icoh` residual KTMD +.032 (3/4 animals), PF +.093 (2/2), MD +.024 (2/2); phase-dispersion residual KTMD +.011 (bias −.011), PF +.012 (bias −.008), deep tertile +.007 (bias −.002); magnitude-dispersion residual ≈ 0 everywhere; `cov2|xcorr2_max` residual ≈ 0.
 - **Calibration** (`test_lag_null_calibration`; synthetic, 10 channels, 40 windows, five seeds): across-window phase dispersion beyond the stationary null rises only for window-varying lag (+.10 to +.12; zero-lag within-window bursts and window-to-window strength change ≤ +.025); magnitude dispersion falls with varying lag (−.06 to −.10) and rises with strength change (+.02 to +.03). The `ppc|dswpli` residual is not lag-specific: strength change raises it as well (+.01 to +.05), and it is noisy at this size.
 - **Reading (literal):** under ketamine–medetomidine and propofol, debiased lagged phase coupling (`dswpli`) tracks phase consistency (`ppc`) within a window more than a stationary Gaussian process with the state's spectrum allows (net of bias: KTMD +.08, PF +.14; both arms). The debiased pair has almost no floor here, so this is not estimation noise. It reverses at recovery (KTMD residual −.002, PF +.012) and is absent in natural sleep.
 - **Reading (character, inferred, by condition):**
-  - *Propofol:* lag variability is the leading candidate. Phase dispersion rises beyond the null net of bias (2 s +.019, 4/4; 10 s +.009) while magnitude dispersion does not rise (−.007), which in the calibration only varying lag does. Two animals.
+  - *Propofol:* lag variability is the leading candidate. Phase dispersion rises beyond the null net of bias (2 s +.019, 4/4; 10 s +.004 pooled, +.009 in stage A, so weak at 10 s) while magnitude dispersion does not rise (−.007), which in the calibration only varying lag does. Two animals.
   - *Ketamine–medetomidine:* the residual is not across windows (phase dispersion net of bias +.007 at 2 s, ≈ 0 at 10 s; magnitude flat), so it is within-window structure or non-Gaussian, form unidentified.
-  - *Ketamine and medetomidine:* a stable mean lag (`cohmag|icoh` +.088 and +.053; 2 s every animal, 10 s ketamine 1/2), little residual. Two animals each.
+  - *Ketamine and medetomidine:* a stable mean lag (`cohmag|icoh` +.088 and +.053; 2 s every animal; 10 s +.188 and +.081, ketamine 1/2 animals), little residual. Two animals each.
 - **Withdrawn:**
   - the level claim ("more of the coupling is non-zero-lag": the `icoh/cohmag` share rises as much in the zero-phase null);
   - "the strongest pairs carry the lag" as a static statement;
@@ -74,7 +75,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     - ketamine–medetomidine −12.0 SD
     - medetomidine −4.1 SD
     - propofol −5.9 SD
-  - The 10-s arm agrees. Mixed-stage sleep is ≈ 0, and the deep tertile is −0.6 SD.
+  - 10-s arm (pooled), raw: ketamine −.014 (0/4), ketamine–medetomidine −.032 (0/11), propofol −.032 (0/4), medetomidine −.003 (1/4); deep tertile −.001. Spectral adjustment keeps ketamine and ketamine–medetomidine (−.030, −.022) and removes propofol (+.001) and medetomidine. So medetomidine does not reproduce at 10 s here, and the propofol fall is shared with the spectral covariates (the IAAFT version below keeps it).
 - **Two other model-free estimators agree:**
   - kernel MI: −2.2 to −7.0 SD;
   - distance correlation against r²: −4.5 to −9.7 SD; ketamine weak.
@@ -123,7 +124,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     | Arm | Ketamine | Ketamine–medetomidine | Medetomidine | Propofol | Sleep | Eyes open |
     |---|---|---|---|---|---|---|
     | 2-s | −.002 (1/4) | −.006 (0/11, 0/4 animals) | −.004 (0/4) | −.006 (0/4) | +.000 | ≈ 0 |
-    | 10-s | −.001 (0/2) | −.008 (0/4, 0/4 animals) | −.002 (0/2) | −.009 (0/2) | deep −.002 | ≈ 0 |
+    | 10-s (pooled) | −.000 (1/4) | −.007 (0/11, 0/4 animals) | −.002 (1/4) | −.008 (0/4) | deep −.001 | ≈ 0 |
 
     The null reproduces 65–95% of the raw fall (least under propofol and ketamine–medetomidine); normal-score Gaussian TE gives the same residual. Fly: 0.
   - **Reading.** A residual survives under ketamine–medetomidine and propofol, strongest in 10-s windows, where the linear control's artefact is −.001. In 2-s windows it is no larger than the slow-linear control's −.008, so it is not distinguished there. Its sign is opposite to what nonlinear coupling gives in the controls: model-free TE is *below* what a linear process with the same spectrum predicts. Gaussian TE does not differ between real and surrogate, so the kNN side carries it. The likeliest reading is that the target's own non-Gaussian dynamics (for example, sharp or asymmetric slow waves) explain away more of the source's apparent prediction once conditioning is model-free [I]; the deciding check is kNN against Gaussian active information storage, real − IAAFT. It matches the r10 16-channel result (d −3.0, 0/6) and the raw `gc|te` grouping (ketamine–medetomidine, propofol and deep sleep against the single agents).
@@ -134,7 +135,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
     - The AIS residual also rises under ketamine and medetomidine (10-s +.013, +.020), where the TE residual is ≈ 0.
   - **Separate exploratory observation, node-level, not a z feature: model-free self-prediction beyond the spectrum-matched null rises under every drug.**
     - Residual AIS_kNN − AIS_Gauss, change against wake:
-      - 10-s: propofol +.070 (2/2), ketamine–medetomidine +.034 (4/4 sessions and animals), medetomidine +.020 (2/2), ketamine +.013 (1/2).
+      - 10-s (pooled): propofol +.062 (4/4), ketamine–medetomidine +.025 (9/11, 4/4 animals), medetomidine +.020 (4/4), ketamine +.021 (3/4).
       - 2-s: propofol +.039 (4/4); others +.008 to +.009.
       - Deep sleep +.007 (2/2); fly −.002. Recovery reverses it.
       - The normal-score variant agrees.
@@ -146,7 +147,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - **Alternatives not separated:**
     - nonlinear (for example, stereotyped or time-irreversible) waveform dynamics;
     - within-window state switching, which IAAFT nulls also reject.
-  - Propofol rests on n = 2 sessions in the 10-s arm, so it is "consistent", not decided. No follow-up is planned.
+  - Propofol rests on 4 sessions in 2 animals, so it is "consistent", not decided. No follow-up is planned.
 
 ## Channel-level z and further candidate pairs (12 November)
 
@@ -160,7 +161,7 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 - The null is the same pipeline run on the eyes-open contrast.
 - The decision rule was fixed in the module before the run.
 - Pairs with a partner whose wake reliability is below .3 are skipped (20 of 42 in the 2-s arm).
-- The 10-s arm has one session per animal per agent, so its within-animal agreement is undefined and it is descriptive only.
+- Stage A of the 10-s arm had one session per animal per agent, so its within-animal agreement was undefined. The pooled run (`neurotycho-long-local.json`) has the 2-s session counts and is not yet read.
 
 **Results.**
 - **Local structure under the drugs is real and reproducible.** For most reliable pairs, the change maps are stable under every drug and not in sleep:
@@ -195,13 +196,13 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
 
 - **Sign structure, z(r, r²) and z(ρ, ρ²).** Wake z = .49; eyes-open SD .037.
   - Falls under every drug, every session: ketamine −.20, ketamine–medetomidine −.17 (0/11), medetomidine −.13, propofol −.15. Spectral adjustment still gives −.07 to −.22 (0–1 sessions positive).
-  - Sleep −.003. The 10-s arm is weaker: ketamine −.22, the others −.06 to −.07 with mixed sessions, deep sleep +.02.
+  - Sleep −.003. The 10-s arm is weaker: ketamine −.20, the others −.05 to −.09 with mixed sessions, deep sleep +.01.
   - Mean r is near 0: .03 in wake and about .00 under ketamine–medetomidine, medetomidine and propofol. The common-average reference pushes it toward 0 [I]. About half the edges are negative.
   - So z(r, r²) reads whether the strongly coupled pairs are in-phase (wake) or include strong anti-correlations (drugs). It is a property of the across-pair distribution of r alone, so it does not need SPI–SPI.
   - **Sign-structure null** (`discovery.py sign-null`, job 183766906, `*-sign-null.json`): z of each unit-state's window-mean r profile (noise averaged out), and stationary Gaussian windows with the state's mean cross-spectrum.
     - Under ketamine–medetomidine, medetomidine and propofol, the per-window fall is noise. The null reproduces it (−.169 against −.165 under ketamine–medetomidine), and the window-mean profile does not fall (−.005, −.030, +.039).
     - So it is fewer effective samples making r noisier, with no anticorrelation structure.
-    - Ketamine is different: its window-mean profile falls as much as the per-window z (2-s −.193, 1/4 positive; 10-s −.227, 0/2). Under ketamine, strongly anticorrelated pairs are part of the mean coupling pattern.
+    - Ketamine is different: its window-mean profile falls as much as the per-window z (2-s −.193, 1/4 positive; 10-s −.208, 1/4). Under ketamine, strongly anticorrelated pairs are part of the mean coupling pattern.
   - **Unresolved for ketamine:** whether the reference produces it. A stronger, spatially graded common mode becomes a dipole of positive and negative correlations after the common-average reference. Deciding test: the same z on a reference-free montage (bipolar or Laplacian) from the raw recordings.
 - **Saturation control, z(r², Gaussian MI).** These are a deterministic monotone function of each other, so any change is pure strength-distribution mechanics.
   - Under every drug it moves by −.010 (0/4, 0/11, 0/4, 1/4 positive).
@@ -224,20 +225,21 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - **Ceiling classes, against the saturation control per condition** (2-s raw Δz, KT / KTMD / MD / PF): saturation control −.011 / −.010 / −.010 / −.004; squared rank against squared linear −.015 / −.023 / −.007 / −.018; L1 against L2 distance −.010 / −.017 / −.005 / −.013; distance correlation against r² −.009 / −.016 / −.006 / −.012. So under KTMD they are 1.6–2.3× the control and under PF 3–4.5×, KT about 1×, MD below it: the MI pair's condition order (KTMD −.076, PF −.075, MD −.029, KT −.012) across four statistics of non-Gaussian form [I]. At 10 s only PF clears the control (−.005 against −.002). One control pair sets the bar and these classes have 1–2 usable members each, so this is a hint that agrees with independent review's beyond-IAAFT form ladder, not a separate result.
   - **Non-Gaussian dependence does not converge across statistics.** Of the Gaussian against bias-corrected kNN members, only MI moves (KTMD −.076, PF −.075, MD −.029, KT −.012); lagged MI does not (−.025 to +.052) and the TE partner is unreliable (.03). Gaussian against kernel members fall more (2-s `je`, `ce` −.03 to −.12; 10-s `si` −.15 to −.46, deep sleep −.10), but the kernel estimators have no autocorrelation correction. So the MI reading stays specific to same-sample MI [I].
   - **Sign handling** (37 members) does not converge; only the covariance members move, already read as sampling noise except under ketamine (10-s −.22).
-  - **Robust against classical** converges at 10 s only: `cov-sq` Empirical against MinCovDet −.085 (KT), −.119 (KTMD), −.075 (MD), −.149 (PF), graded in sleep (deep −.048, mid −.017, light +.006). Spectral adjustment keeps KT and KTMD and removes MD and PF. At 2 s, ≈ 0. Matches the earlier explore result; the MinCovDet flag analysis found flag clustering spectral.
+  - **Robust against classical** converges at 10 s only: LedoitWolf against MinCovDet (class median, pooled) −.084 (KT), −.188 (KTMD), −.094 (MD), −.161 (PF), graded in sleep (deep −.044, mid −.022, light −.006). Spectral adjustment keeps KT and KTMD (−.10, −.13), weakens MD (−.05, 1/4 beyond 3 SD) and reverses PF (+.08). At 2 s, ≈ 0. Matches the earlier explore result; the MinCovDet flag analysis found flag clustering spectral.
   - Lag classes (zero against lagged, adjacent lags, MI against lagged MI) rise about 2 SD under every drug, not sleep, and shrink after spectral adjustment: slower signals.
 - **Reverse (top coordinates):** 1,323 of 22,406 usable 2-s coordinates are consistent under all four drugs (raw and spectral, 75% of sessions, every animal); at 10 s, 36. At 2 s nearly every top coordinate links through one class, **best lag against zero lag** (`xcorr_max` against r): signed −.14 to −.25 under every drug (every session), sleep −.019; 10-s −.10 to −.19, deep sleep −.03; reliability ≥ .68.
   - **At 2 s it is mostly a spectral estimation floor; at 10 s it is mostly stable mean lag.** Lag null (`discovery.py lag-null`, job 183766068, `*-lag-null.json`; squared pair `cov2|xcorr2_max`; 32 channels, 3 draws):
     - 2 s: the zero-phase null (state spectrum, no lag) reproduces most of the fall (KTMD −.129 of −.150, PF −.115 of −.149, MD −.057 of −.104, KT −.038 of −.070). The mean-lag term (stationary minus zero-phase null) is within the null-of-null bias (≤ .014) except under MD (−.053, 0/4). Residual |Δ| ≤ .017.
-    - 10 s: the floor is small under KT and MD (−.002, −.005 of −.028, −.029) and the mean-lag term carries most of it: KT −.023, MD −.019, KTMD −.033, PF −.023, with no unit positive under any drug; deep sleep −.006; eyes-open ≤ +.004; bias ≤ .005; residual ≈ 0.
+    - 10 s (pooled): the floor is small under KT and MD (−.003, −.004 of −.033, −.046) and the mean-lag term carries most of it: KT −.030, MD −.031, KTMD −.032, PF −.017, with no unit positive under any drug; deep sleep −.006; eyes-open ≤ +.004; bias ≤ .005; residual ≈ 0.
     - **Character reading (candidate, linear tier):** under every drug, coupling at a stable non-zero lag reorders which pairs are strongest at their best lag relative to zero lag. It lives in the state's mean cross-spectrum (phases), so it is a linear-stationary property, not non-Gaussian. Two units per agent, 3 draws, 32 channels: a candidate. The signed pair was not nulled; it adds sign flips of anticorrelated pairs at half-period lags [I].
 - **Reading.** Forward, no class converges across statistics at 2 s except an estimator diagnostic; the ceiling form classes follow the MI pair's condition order at 1.6–4.5× the saturation control under KTMD and PF (hint). Reverse, the top class (best lag against zero lag) is floor at 2 s and stable mean lag at 10 s, a linear timing candidate. Time-heterogeneous dependence (robust against classical) converges at 10 s, graded with sleep depth. The second reverse pass converges on frequency weighting of coupling (r² against uniform low-band coherence): every drug, not sleep, half structure in the state's mean cross-spectrum (below).
 
 - **Reverse rankings, second pass** (job 183771638; near-identical SPIs collapsed at |z₀| ≥ .99, `xcorr` and uncorrected Kraskov dropped, both partners reliable ≥ .3; 2,200 usable 2-s coordinates, 3,385 at 10 s). A condition counts when raw and spectral-adjusted effects agree in ≥ 75% of sessions and every animal, beyond 3 SD.
-  - 2 s: 100 coordinates under all four drugs, 121 under all but one, 197 drugs-not-sleep, none single-agent, none drugs-and-deep-sleep. 10 s: 1, 23, 7; single-agent only ketamine (6) and propofol (1).
+  - 2 s: 100 coordinates under all four drugs, 121 under all but one, 197 drugs-not-sleep, none single-agent, none drugs-and-deep-sleep. 10 s (pooled, 3,550 usable): 11, 35, 15; single-agent only ketamine (7). Stage A had 1, 23, 7, ketamine 6 and propofol 1.
+  - **Pooled, the 10-s all-drug coordinates converge on the 2-s link:** low-band `cohmag`/`plv` against kernel MI, `cov-sq`, `je`, `ids` or `pec_log` (e.g. `cohmag` low against `pec_log` −.14 to −.21 under every drug, deep sleep −.04, not consistent).
   - **The 2-s rankings converge on one link: zero-lag time-domain coupling against uniform low-band coherence.** `cohmag` or `plv` mean over 0–25 Hz against r², ρ², squared MinCovDet covariance, `dcorr`, `ids` or kNN MI: −.09 to −.18 under every drug (every session), sleep −.011 to −.019; reliability ≥ .65. The two differ in power weighting across frequency and in lag sensitivity (r² uses the real part).
     - **Weighting null** (`assumptions.py weighting-null`, job 183772042, `*-weighting-null.json`; pyspi-free, 64 channels, 2 draws). Chain r² → phase-free power-weighted coherence (lag link) → uniform 0–25 Hz coherence (weighting link), per window and on window-mean profiles (noise averaged out), against zero-phase and stationary nulls with each state's mean cross-spectrum.
-    - The chain reproduces the atlas effect: z(r², low-band coherence) −.10 (KT), −.18 (KTMD), −.16 (MD), −.18 (PF), every session; sleep −.016; 10-s −.10 to −.15, deep sleep −.032.
+    - The chain reproduces the atlas effect: z(r², low-band coherence) −.10 (KT), −.18 (KTMD), −.16 (MD), −.18 (PF), every session; sleep −.016; 10-s pooled −.10 to −.15 (every session), deep sleep −.033.
     - **No lag:** the zero-phase null reproduces all of it (−.09 to −.22). The lag link is small and also reproduced by the null.
     - **About half is per-window noise, half is structure:** the window-mean profile z still falls −.07 to −.11 under every drug (every unit, both arms), against +.012 in 2-s sleep and −.007 in 10-s deep sleep. The weighting link carries it (mean profile −.06 to −.12). The stationary null's mean profile matches the real one, so it is a property of the state's mean cross-spectrum (linear-spectral tier). Residual noise in the mean profile is not fully excluded at 20–60 windows per state [I].
     - **Character reading (linear-spectral candidate):** under every anaesthetic, and not in sleep, the pairs coupled at the dominant (high-power, slow) frequencies stop being the pairs coupled across 0–25 Hz: the frequency locus of coupling becomes pair-specific. It needs pairs whose coherence spectra differ in shape, not only a channel-power change, and deep sleep (also slow) shows little of it. Related to band locus (above), which excludes medetomidine; this one does not.
@@ -254,7 +256,7 @@ Reliability here is the mean correlation of an SPI's edge profile between window
   - The 10-s arm agrees, at about half the size.
   - **Resolved: it is the spectrum, not the coupling** (`*-spectral-null.json`, `discovery.py spectral-null`, pyspi-free). For each unit and state, the between-window agreement of r and r² profiles is set against that of stationary Gaussian windows with the state's mean cross-spectrum (same T and count, 10 draws). The null is biased slightly high (its common pattern is a mean of about ten windows), so excess contrasts within about ±.03 are undecided.
     - 2-s arm, r² agreement drop against wake, real against null: ketamine −.125/−.090, ketamine–medetomidine −.261/−.240, medetomidine −.176/−.150, propofol −.277/−.227. So 75–90% of the drop is what a stationary process with the drug spectrum gives. Excess drops are −.02 to −.05 (largest under propofol).
-    - 10-s arm: reproduced for ketamine–medetomidine (−.115/−.114) and propofol (−.122/−.113); ketamine's null drop exceeds the real one; medetomidine is undecided (−.078/−.050, excess −.028, 0/2).
+    - 10-s arm (pooled): reproduced for ketamine–medetomidine (−.118/−.106) and propofol (−.122/−.114); ketamine's null drop exceeds the real one; medetomidine is undecided (−.068/−.051, excess −.017, 1/4).
     - Natural sleep is the exception: 2-s −.052/−.020; 10-s deep −.069/−.028, mid −.055/−.013. Its drop is mostly not spectral. The plainest explanation is stage mixing inside one state label (the 2-s sleep state is unstaged, and the 10-s tertiles are coarse); real window-to-window change of the coupling pattern and non-Gaussian amplitude structure are the alternatives, which the null does not separate.
     - So the earlier reading, "temporal non-stationarity of dependence under anaesthesia", is withdrawn. Disattenuation by between-window reliability is better justified under the drugs than first thought, since the drop is mostly estimator noise.
   - **Drift checked** (`*-stability.json`, job 183697156): agreement compared with wake within matched separations (0–150, 150–400, over 400 s). Drug windows are spaced about 120 s apart and wake about 60 s, so unmatched comparisons are biased.
@@ -283,10 +285,10 @@ Reliability here is the mean correlation of an SPI's edge profile between window
     - These are ceiling pairs (z₀ ≈ .99): large in SD, tiny in z.
     - Without surrogates they read marginal shape first; earlier work found the raw linear–rank readout tracks marginal shape.
 - **Consistent across drugs, but deep sleep also moves:**
-  - **Phase against amplitude coupling** (`plv|pec`): −4 to −9 SD in both arms; 10-s deep tertile −3.8 SD.
-  - **Bulk against atypical samples** (`prec-sq` LedoitWolf against MinCovDet; `cov-sq` Empirical against MinCovDet): −4 to −14 SD in the 10-s arm only, where the deep tertile is −2.4 to −3.9 SD. This matches the macaque MinCovDet flag result.
-  - **Rigid against elastic alignment** (`dtw|dtw_sakoe-chiba`): −5 to −14 SD in the 10-s arm only, deep tertile −3.4. The 2-s windows are too short for warping to matter. The warp axis failed construction validation.
-  - All 10-s arm entries rest on two units per agent, and raw effects only.
+  - **Phase against amplitude coupling** (`plv|pec`): −4 to −9 SD in both arms; 10-s pooled deep tertile −2.6 SD.
+  - **Bulk against atypical samples** (10-s arm only, pooled): `cov-sq` Empirical against MinCovDet −.05 to −.15 (−2.9 to −7.9 SD), deep tertile −.04 (−2.1); `prec-sq` LedoitWolf against MinCovDet −.09 to −.31 but only −1.4 to −4.8 SD, because its pooled null SD is .064, not stage A's .019. This matches the macaque MinCovDet flag result.
+  - **Rigid against elastic alignment** (`dtw|dtw_sakoe-chiba`): −.05 to −.17 (−3.7 to −13.2 SD) in the 10-s arm only, deep tertile −3.1; spectral adjustment removes it (|Δz| ≤ .04, mixed sign). The 2-s windows are too short for warping to matter. The warp axis failed construction validation.
+  - 10-s entries are raw effects on 4/11/4/4 sessions (2/4/2/2 animals).
 - **Subsets of conditions** (relaxed: consistent sessions and animals within a condition, not across all four drugs; descriptive):
   - **Band locus** (`cohmag` and `plv`, 0–25 against 25–50 Hz), a 2-s result (10-s raw ≈ 0): rises under ketamine, ketamine–medetomidine and propofol (2-s raw and spectral, 4/4, 10/11–11/11, 4/4), not under medetomidine (−.03 to +.00) or sleep. Fly rises too (11/13, 10/13). The pairs strongly coupled at low frequency become more the same pairs as those coupled at high frequency. The medetomidine exception matches the MinCovDet one.
   - **Precedence, conditioning link** `tlmi_gaussian|gc_gaussian` (lag-1 Gaussian MI against Gaussian GC: they differ only in GC conditioning on the target's own past). Raw, z₀ = .26, null SD .04: falls under ketamine (−.03 2-s 0/4; −.05 10-s 0/2), medetomidine (−.09 0/4; −.08 0/2) and ketamine–medetomidine (−.10 0/11; −.10 1/4); propofol ≈ 0 (−.01; +.03 2/2); sleep ≈ 0. GC's reliability rises under ketamine and medetomidine alone, so attenuation does not produce their fall; under ketamine–medetomidine both partners lose reliability (GC .14 → .10, lagged MI .63 → .50), so attenuation is not excluded there. Ketamine's fall is about one null SD. The notable fact is propofol holding at ≈ 0 despite GC's largest reliability loss (.15 → .05). GC's 2-s reliability is .05–.28, so the 10-s arm (wake .44–.52) is the one to read.
@@ -318,11 +320,11 @@ Reliability here is the mean correlation of an SPI's edge profile between window
 - **Propofol only: lagged high-band phase coupling appears as a pattern.**
   - In 25–50 Hz, debiased lag-insensitive phase measures (`dswpli`, `dspli`, `icoh`) begin to track high-band phase locking.
   - Band edge: `prepare.py` low-passes at 40 Hz (order-8 Butterworth) before resampling to 100 Hz, so "25–50 Hz" is effectively 25–40 Hz plus roll-off; bins above 40 Hz carry little signal.
-  - z(`plv` hi, `dswpli` hi): +.13 under propofol in both animals (2-s +.10/+.17; 10-s +.13/+.12). The other drugs are at most +.03, sleep +.005, and recovery largely reverses it (+.01 to +.05).
+  - z(`plv` hi, `dswpli` hi): +.13 under propofol in both animals (2-s +.10/+.17; 10-s stage A +.13/+.12). Pooled 10-s, the top propofol-specific coordinate is broadband `plv` max against high-band `dswpli` (+.076, +7.6 SD; other drugs ≤ +1.2 SD). The other drugs are at most +.03, sleep +.005, and recovery largely reverses it (+.01 to +.05).
   - The level moves too: the `dswpli/ppc` share in the high band rises +.33 (2-s) and +.30 (10-s) under propofol, in both animals, against at most +.07 for the other drugs.
   - Many coordinates on `dswpli`/`dspli`/`icoh` in the high band rank propofol-specific in both arms, at +6 to +9 null SD.
   - Reading: under propofol, but not ketamine, medetomidine or sleep, a reproducible non-zero-lag 25–50 Hz phase coupling emerges on the pairs with strong high-band locking. Physiology is not established [S].
-- **All but medetomidine: robust against classical dependence** (10-s arm). For example, z(`cov-sq_MinCovDet`, `mi_kraskov_DCE`) falls by about 9.5 SD under ketamine, ketamine–medetomidine and propofol, and by +0.1 SD under medetomidine. This is the same exception as the pyspi-free MinCovDet flag fraction (borderline under medetomidine), so two independent methods agree.
+- **All but medetomidine: robust against classical dependence** (10-s arm). For example, z(`cov-sq_MinCovDet`, `mi_kraskov_DCE`) falls by 6.6–10.9 SD (pooled) under ketamine, ketamine–medetomidine and propofol, and by −1.6 SD under medetomidine (stage A +0.1). This is the same exception as the pyspi-free MinCovDet flag fraction (borderline under medetomidine), so two independent methods agree.
 - **Weaker or uninterpretable:**
   - Ketamine-only and medetomidine-only hits are scattered across unrelated families.
   - Opposite-sign pairs mostly involve noisy partners: `dswpli` broad against low band (ketamine against ketamine–medetomidine), non-DCE TE, and `psi`.
