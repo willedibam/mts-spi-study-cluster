@@ -62,6 +62,12 @@ Exploratory. Reading rules: [`docs/interpreting-spi-pairs.md`](../../../docs/int
   - **Bias across all 36,046 coordinates, drug minus wake:** RMS .027, against a residual RMS of .049. Bias and residual correlate only weakly (r .11), so most of the bias is one-draw noise at 10 windows per state.
   - **Bias on the MI pair:** for the uncorrected Kraskov MI pair, the bias equals the residual (−.018 against −.024), so the bias arm is needed.
   - **Construction:** the zero-phase null clips 14% of the |S| eigenvalue mass and raises mean |r| (wake .152 → .265). It keeps coherence magnitude, which is the right floor for coherence-type lag statistics. For time-domain zero-lag pairs, the floor/mean-lag split therefore also moves strength, so read those pairs through the stationary residual only.
+  - **Full run (13 November, user: three banks):** every unit, 1,260 windows per kind, submitted from snapshot `atlas-252ff073` with `jobs/null_banks.pbs`:
+    - build job 183853102;
+    - one farm per kind, through `farm.pbs` with the real bank's identity and one window per shard: zero_phase 183853103, stationary 183853104, bias 183853105;
+    - audit and reduce job 183853106, writing `$A/discovery/null-<kind>-reduced.npz`.
+    
+    Expected about 5.8 kSU and 100 GB.
 - **Calibration** (`test_lag_null_calibration`; synthetic, 10 channels, 40 windows, five seeds): across-window phase dispersion beyond the stationary null rises only for window-varying lag (+.10 to +.12; zero-lag within-window bursts and window-to-window strength change ≤ +.025); magnitude dispersion falls with varying lag (−.06 to −.10) and rises with strength change (+.02 to +.03). The `ppc|dswpli` residual is not lag-specific: strength change raises it as well (+.01 to +.05), and it is noisy at this size.
 - **Reading (literal):** under ketamine–medetomidine and propofol, debiased lagged phase coupling (`dswpli`) tracks phase consistency (`ppc`) within a window more than a stationary Gaussian process with the state's spectrum allows (net of bias: KTMD +.08, PF +.14; both arms). The debiased pair has almost no floor here, so this is not estimation noise. It reverses at recovery (KTMD residual −.002, PF +.012) and is absent in natural sleep.
 - **Reading (character, inferred, by condition):**
