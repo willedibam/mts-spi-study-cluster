@@ -1018,6 +1018,7 @@ NULL_PAIRS = (('mi_gaussian', 'mi_kraskov_NN-4'), ('mi_gaussian', 'mi_kraskov_NN
               ('cov-sq_EmpiricalCovariance', 'cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25'),
               ('cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25', 'pec_log'),
               ('cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25', 'cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5'))
+BEYOND = (.04, .06)  # one |net| threshold for every condition, so drug, eyes-open and recovery counts compare
 
 
 def null_decompose(discovery, output, reference, units=None):
@@ -1028,8 +1029,8 @@ def null_decompose(discovery, output, reference, units=None):
     net = residual + bias (the stationary null is itself such a draw, so real minus a true-spectrum null is about
     residual + bias). Floor and mean lag are readable for coherence-type pairs only: the zero-phase PSD projection
     also moves time-domain strength. Per condition (agent:state): RMS of each part over coordinates, the share of the
-    real contrast's sum of squares left in the residual, unit-level t RMS, coordinates whose net exceeds 3x the
-    condition's bias RMS with every unit's residual of one sign, net RMS per SPI and per module pair, the named pairs
+    real contrast's sum of squares left in the residual, unit-level t RMS, coordinates whose |net| exceeds each
+    BEYOND threshold with every unit's residual of one sign, net RMS per SPI and per module pair, the named pairs
     (NULL_PAIRS) with session and animal counts, and covariate contrasts per bank."""
     banks = {'real': 'neurotycho-short', **{k: f'null-{k}' for k in NULL_KINDS}}
     data = {}
@@ -1081,11 +1082,11 @@ def null_decompose(discovery, output, reference, units=None):
         if n > 2:
             t = lambda X: np.nanmean(X, 0)[ok] / (np.nanstd(X, 0, ddof=1)[ok] / np.sqrt(n))
             e['t_rms'] = {k: rms(np.nan_to_num(t(P[k]))) for k in ('residual', 'bias', 'net')}
-        floor = 3 * e['rms']['bias']
         same = np.all(np.sign(P['residual']) == np.sign(M['residual']), 0)
-        hit = ok & same & (np.abs(M['net']) > floor)
-        e['beyond_bias'] = dict(threshold=floor, coordinates=int(hit.sum()),
-                                positive=int((hit & (M['net'] > 0)).sum()))
+        e['beyond'] = {}
+        for floor in BEYOND:
+            hit = ok & same & (np.abs(M['net']) > floor)
+            e['beyond'][str(floor)] = dict(coordinates=int(hit.sum()), positive=int((hit & (M['net'] > 0)).sum()))
         per_spi = np.zeros(K)
         for i in range(K):
             sel = ok & ((a == i) | (b == i))
