@@ -212,3 +212,19 @@ def test_lag_null_calibration():
     assert pd['varying_lag'] > .05 and pd['bursts'] < .02 and pd['strength'] < .02
     md = {k: v['magnitude_dispersion'] - res['zero_lag']['magnitude_dispersion'] for k, v in res.items()}
     assert md['varying_lag'] < -.03 and md['strength'] > .005
+
+
+def test_null_bank(tmp_path):
+    bank, _ = fake_atlas(tmp_path)
+    real = json.loads((bank / 'manifest.json').read_text())
+    for kind in discovery.NULL_KINDS:
+        out = tmp_path / kind
+        discovery.null_bank(bank, out, kind, units=['u0'])
+        m = json.loads((out / 'manifest.json').read_text())
+        assert m['rows'] == [r for r in real['rows'] if r['unit'] == 'u0'] and m['null']['kind'] == kind
+        assert {g['n'] for g in m['null']['groups'].values()} == {5}
+        with np.load(out / 'windows.npz') as a, np.load(bank / 'windows.npz') as b:
+            assert sorted(a.files) == [r['id'] for r in m['rows']]
+            drug = np.stack([a[f'u0:drug:{k:02d}'] for k in range(5)])
+            assert drug.shape == b['u0:drug:00'][None].repeat(5, 0).shape
+        assert discovery._r_profiles(drug).mean() > .3  # the drug state's common drive survives

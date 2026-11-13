@@ -1,0 +1,42 @@
+#!/bin/bash
+#PBS -N atlas-null-check
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=96,mem=380GB,walltime=02:30:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Cost and construction check for the pyspi null banks of the 2-s arm (discovery.py null_bank) on one unit:
+# the zero-phase, stationary and bias banks of UNIT, one window per nci-parallel task, the same pyspi identity as the
+# real bank (config, extract.py, PYSPI_SOURCE), then reduce each. Run from a source snapshot:
+#   qsub -v UNIT=<unit>,PYSPI_SOURCE=$MTS_SCRATCH/operations/sources/pyspi-upstream-0c798b4 \
+#        research/representation/atlas/jobs/null_check.pbs
+set -euo pipefail
+: "${UNIT:?}" "${PYSPI_SOURCE:?}"
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A="$MTS_SCRATCH/atlas"
+CONFIG=configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml
+d() { python -u -m research.representation.atlas.discovery "$@"; }
+commands="$PBS_JOBFS/commands.txt"
+for kind in zero_phase stationary bias; do
+    b="null-check-$kind"
+    d null-bank "$A/banks/neurotycho-short" --output "$A/banks/$b" --kind "$kind" --units "$UNIT"
+    n=$(python -m research.representation.atlas.extract "$A/banks/$b" --out "$A/pyspi/$b" --shard-size 1 --count)
+    for (( k = 0; k < n; k++ )); do
+        echo "python -m research.representation.atlas.extract $A/banks/$b --out $A/pyspi/$b --shard $k --shard-size 1 --config $CONFIG" >> "$commands"
+    done
+done
+python -c 'import pyspi, os; assert os.path.realpath(pyspi.__file__).startswith(os.path.realpath(os.environ["PYSPI_SOURCE"])), pyspi.__file__'
+workers=$(wc -l < "$commands")
+(( workers > PBS_NCPUS )) && workers=$PBS_NCPUS
+set +e
+mpirun -np "$workers" --map-by node:PE=1 nci-parallel --verbose --input-file "$commands" --status "$PBS_O_WORKDIR/null-check.status"
+rc=$?
+set -e
+for kind in zero_phase stationary bias; do
+    b="null-check-$kind"
+    python -m research.representation.atlas.extract "$A/banks/$b" --out "$A/pyspi/$b" --shard-size 1 --config "$CONFIG" --audit
+    d reduce "$A/banks/$b" "$A/pyspi/$b" --output "$A/discovery/$b-reduced.npz" --jobs 32
+done
+exit "$rc"

@@ -968,6 +968,49 @@ def lag_null(bank, output, reference, draws=3, channels=32, seed=0):
     output.write_text(json.dumps(report, indent=1) + '\n')
 
 
+NULL_KINDS = ('zero_phase', 'stationary', 'bias')
+
+
+def null_bank(bank, output, kind, units=None, seed=0):
+    """A Gaussian null of a window bank, for pyspi: real = floor + mean lag + residual for every coordinate, as
+    lag_null does for its pyspi-free pairs. Each unit and state (sleep tertiles where staged, as the analysis groups
+    them) is replaced by stationary Gaussian windows with the same count, T and M:
+      stationary: expected cross-periodogram = the state's mean standardised cross-periodogram (its mean lags);
+      zero_phase: the same with every phase set to zero (no lag), projected to PSD per frequency (the floor);
+      bias: drawn from the mean cross-periodogram of one stationary draw; bias - stationary is the construction
+        bias (the mean periodogram has rank <= n per frequency bin, so the null's coherence is inflated).
+    Window ids and manifest rows are unchanged, so extract's per-window seeds and reduce pair with the real bank.
+    The manifest's 'null' record holds the kind, seed, group sizes and, per group, the share of eigenvalue mass
+    clipped when projecting to PSD (0 for stationary and bias). Pyspi-free."""
+    import zlib
+    manifest = json.loads((bank / 'manifest.json').read_text())
+    rows = [r for r in manifest['rows'] if units is None or r['unit'] in units]
+    state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
+    unit = np.array([r['unit'] for r in rows])
+    windows, groups = {}, {}
+    with np.load(bank / 'windows.npz') as archive:
+        for u, s in sorted(set(zip(unit, state))):
+            ix = np.flatnonzero((unit == u) & (state == s))
+            X = np.stack([np.asarray(archive[rows[i]['id']], dtype=np.float64) for i in ix])
+            n, T = len(X), X.shape[1]
+            rng = np.random.default_rng([seed, zlib.crc32(f'{u}|{s}|{kind}'.encode())])
+            S = _mean_periodogram(X)
+            clipped = 0.
+            if kind == 'zero_phase':
+                w = np.linalg.eigvalsh(np.abs(S))
+                clipped = float(-w[w < 0].sum() / np.abs(w).sum())
+                S = _zero_phase(S)
+            elif kind == 'bias':
+                S = _mean_periodogram(gaussian_draws(S, n, T, rng))
+            for i, y in zip(ix, gaussian_draws(S, n, T, rng)):
+                windows[rows[i]['id']] = y
+            groups[f'{u}:{s}'] = dict(n=int(n), clipped=clipped)
+    output.mkdir(parents=True, exist_ok=True)
+    np.savez(output / 'windows.npz', **windows)
+    manifest = {**manifest, 'rows': rows, 'null': dict(kind=kind, seed=seed, source=str(bank), groups=groups)}
+    (output / 'manifest.json').write_text(json.dumps(manifest, indent=1) + '\n')
+
+
 def sign_null(bank, output, reference, draws=10, seed=0):
     """Is the fall of z(r, r^2) (sign structure; findings.md, "Further candidate pairs") anticorrelation structure or
     sampling noise? Per unit and state: the per-window z(r, r^2) (real), z of the window-mean r profile (noise
@@ -1067,8 +1110,16 @@ if __name__ == '__main__':
     j.add_argument('bank', type=Path)
     j.add_argument('--output', type=Path, required=True)
     j.add_argument('--reference', default='awake_ec')
+    k = sub.add_parser('null-bank')
+    k.add_argument('bank', type=Path)
+    k.add_argument('--output', type=Path, required=True)
+    k.add_argument('--kind', choices=NULL_KINDS, required=True)
+    k.add_argument('--units', nargs='+')
+    k.add_argument('--seed', type=int, default=0)
     args = p.parse_args()
-    if args.command == 'lag-null':
+    if args.command == 'null-bank':
+        null_bank(args.bank, args.output, args.kind, args.units, args.seed)
+    elif args.command == 'lag-null':
         lag_null(args.bank, args.output, args.reference, args.draws, args.channels)
     elif args.command == 'sign-null':
         sign_null(args.bank, args.output, args.reference)
