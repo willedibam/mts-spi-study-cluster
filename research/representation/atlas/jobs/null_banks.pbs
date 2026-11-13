@@ -1,0 +1,40 @@
+#!/bin/bash
+#PBS -N atlas-null-banks
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Full pyspi null banks of the 2-s arm (discovery.py null_bank: zero_phase, stationary, bias), every unit.
+# STAGE=build writes the three Gaussian window banks; pyspi then runs through farm.pbs with the real bank's identity
+# (config, extract.py, PYSPI_SOURCE, one window per shard); STAGE=reduce reduces the three outputs. Run from a source snapshot:
+#   qsub -l ncpus=4,mem=32GB,walltime=01:00:00 -v STAGE=build research/representation/atlas/jobs/null_banks.pbs
+#   qsub -W depend=afterok:<build> -l ncpus=192,mem=760GB,walltime=10:00:00,jobfs=10GB \
+#        -v BANK=$A/banks/null-<kind>,OUT=$A/pyspi/null-<kind>,SHARD_SIZE=1,CONFIG=<yaml>,PYSPI_SOURCE=<snapshot> \
+#        research/representation/atlas/jobs/farm.pbs                                     # once per kind
+#   qsub -W depend=afterany:<farms> -l ncpus=48,mem=190GB,walltime=06:00:00 -v STAGE=reduce research/representation/atlas/jobs/null_banks.pbs
+set -euo pipefail
+: "${STAGE:?}"
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A="$MTS_SCRATCH/atlas"
+d() { python -u -m research.representation.atlas.discovery "$@"; }
+kinds=(zero_phase stationary bias)
+case "$STAGE" in
+    build)
+        pids=()
+        for kind in "${kinds[@]}"; do
+            d null-bank "$A/banks/neurotycho-short" --output "$A/banks/null-$kind" --kind "$kind" &
+            pids+=($!)
+        done
+        for p in "${pids[@]}"; do wait "$p"; done
+        ;;
+    reduce)
+        for kind in "${kinds[@]}"; do
+            python -m research.representation.atlas.extract "$A/banks/null-$kind" --out "$A/pyspi/null-$kind" --shard-size 1 \
+                --config "$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml" --audit
+            d reduce "$A/banks/null-$kind" "$A/pyspi/null-$kind" --output "$A/discovery/null-$kind-reduced.npz" --jobs 32
+        done
+        ;;
+    *) echo "STAGE must be build or reduce" >&2; exit 2 ;;
+esac
