@@ -1011,6 +1011,110 @@ def null_bank(bank, output, kind, units=None, seed=0):
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=1) + '\n')
 
 
+NULL_PAIRS = (('mi_gaussian', 'mi_kraskov_NN-4'), ('mi_gaussian', 'mi_kraskov_NN-4_DCE-AUTO'),
+              ('ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5', 'dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5'),
+              ('cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25', 'icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25'),
+              ('pec', 'pec_orth'), ('cov-sq_EmpiricalCovariance', 'xcorr-sq_max_sig-True'),
+              ('cov-sq_EmpiricalCovariance', 'cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25'),
+              ('cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25', 'pec_log'),
+              ('cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25', 'cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5'))
+
+
+def null_decompose(discovery, output, reference, units=None):
+    """All-unit decomposition of z against the pyspi null banks (null_bank; reduced as null-<kind>-reduced.npz next
+    to neurotycho-short-reduced.npz). Per unit and state, the contrast against the unit's reference state in the real
+    bank and in each null splits as lag_null does: floor = zero_phase, mean_lag = stationary - zero_phase, residual =
+    real - stationary, bias = bias - stationary (the construction bias of a null drawn from an estimated spectrum),
+    net = residual + bias (the stationary null is itself such a draw, so real minus a true-spectrum null is about
+    residual + bias). Floor and mean lag are readable for coherence-type pairs only: the zero-phase PSD projection
+    also moves time-domain strength. Per condition (agent:state): RMS of each part over coordinates, the share of the
+    real contrast's sum of squares left in the residual, unit-level t RMS, coordinates whose net exceeds 3x the
+    condition's bias RMS with every unit's residual of one sign, net RMS per SPI and per module pair, the named pairs
+    (NULL_PAIRS) with session and animal counts, and covariate contrasts per bank."""
+    banks = {'real': 'neurotycho-short', **{k: f'null-{k}' for k in NULL_KINDS}}
+    data = {}
+    for key, name in banks.items():
+        with np.load(discovery / f'{name}-reduced.npz') as d:
+            data[key] = dict(ids=[str(x) for x in d['ids']], spis=[str(x) for x in d['spis']], z=d['z'],
+                             cov=d['covariates'], rows=json.loads(str(d['rows'])))
+            if key == 'real':
+                modules, cov_names = [str(x) for x in d['modules']], [str(x) for x in d['covariate_names']]
+    for key, v in data.items():
+        assert v['ids'] == data['real']['ids'] and v['spis'] == data['real']['spis'], key
+    rows, spis = data['real']['rows'], data['real']['spis']
+    unit, state = np.array([r['unit'] for r in rows]), np.array([r['state'] for r in rows])
+    agent = {r['unit']: r['agent'] for r in rows}
+    animal = {r['unit']: r['animal'] for r in rows}
+    K = len(spis)
+    a, b = np.triu_indices(K, 1)
+    index = {(spis[i], spis[j]): n for n, (i, j) in enumerate(zip(a, b))}
+    named = {f'{p}|{q}': index.get((p, q), index.get((q, p))) for p, q in NULL_PAIRS}
+    named = {k: n for k, n in named.items() if n is not None}
+    mean = {(key, u, s): (np.nanmean(v['z'][(unit == u) & (state == s)], 0),
+                          v['cov'][(unit == u) & (state == s)].mean(0))
+            for key, v in data.items() for u, s in set(zip(unit, state)) if units is None or u in units}
+    contrasts = {}
+    for (key, u, s), _ in mean.items():
+        if key != 'real' or s == reference or ('real', u, reference) not in mean:
+            continue
+        c = {k: mean[(k, u, s)][0] - mean[(k, u, reference)][0] for k in banks}
+        parts = dict(real=c['real'], floor=c['zero_phase'], mean_lag=c['stationary'] - c['zero_phase'],
+                     residual=c['real'] - c['stationary'], bias=c['bias'] - c['stationary'])
+        parts['net'] = parts['residual'] + parts['bias']
+        cov = {k: (mean[(k, u, s)][1] - mean[(k, u, reference)][1]).round(4).tolist() for k in banks}
+        contrasts.setdefault(f'{agent[u]}:{s}', []).append((u, parts, cov))
+    rms = lambda x: float(np.sqrt(np.mean(np.asarray(x, np.float64) ** 2)))
+    report = dict(discovery=str(discovery), reference=reference, units=units, covariate_names=cov_names,
+                  coordinates=len(a), conditions={})
+    for cond, L in sorted(contrasts.items()):
+        n = len(L)
+        P = {k: np.stack([p[k] for _, p, _ in L]) for k in L[0][1]}
+        M = {k: np.nanmean(v, 0) for k, v in P.items()}
+        ok = np.all([np.isfinite(v) for v in M.values()], 0)
+        lost = int((np.isfinite(M['real']) & ~ok).sum())
+        e = dict(units=n, animals=len({animal[u] for u, _, _ in L}), coordinates=int(ok.sum()), lost=lost)
+        e['rms'] = {k: rms(v[ok]) for k, v in M.items()}
+        ss = float(np.sum(M['real'][ok] ** 2))
+        e['residual_share'] = float(np.sum(M['residual'][ok] ** 2) / ss)
+        e['net_share'] = float(np.sum(M['net'][ok] ** 2) / ss)
+        e['bias_residual_r'] = float(np.corrcoef(M['bias'][ok], M['residual'][ok])[0, 1])
+        if n > 2:
+            t = lambda X: np.nanmean(X, 0)[ok] / (np.nanstd(X, 0, ddof=1)[ok] / np.sqrt(n))
+            e['t_rms'] = {k: rms(np.nan_to_num(t(P[k]))) for k in ('residual', 'bias', 'net')}
+        floor = 3 * e['rms']['bias']
+        same = np.all(np.sign(P['residual']) == np.sign(M['residual']), 0)
+        hit = ok & same & (np.abs(M['net']) > floor)
+        e['beyond_bias'] = dict(threshold=floor, coordinates=int(hit.sum()),
+                                positive=int((hit & (M['net'] > 0)).sum()))
+        per_spi = np.zeros(K)
+        for i in range(K):
+            sel = ok & ((a == i) | (b == i))
+            per_spi[i] = rms(M['net'][sel]) if sel.any() else np.nan
+        top = np.argsort(-np.nan_to_num(per_spi))[:15]
+        e['net_rms_by_spi'] = {spis[i]: round(float(per_spi[i]), 4) for i in top}
+        mods = {}
+        for n_ in np.flatnonzero(ok):
+            mods.setdefault('|'.join(sorted((modules[a[n_]], modules[b[n_]]))), []).append(M['net'][n_])
+        e['net_rms_by_module_pair'] = dict(sorted(((k, dict(rms=round(rms(np.array(v)), 4), mean=round(float(np.mean(v)), 4),
+                                                            coordinates=len(v))) for k, v in mods.items()),
+                                                  key=lambda kv: -kv[1]['rms']))
+        e['named'] = {}
+        for key, n_ in named.items():
+            row = {}
+            for k, X in P.items():
+                x = X[:, n_]
+                by = {}
+                for (u, _, _), y in zip(L, x):
+                    by.setdefault(animal[u], []).append(y)
+                row[k] = dict(mean=round(float(np.nanmean(x)), 4), positive=int((x > 0).sum()),
+                              animals_positive=int(sum(np.nanmean(y) > 0 for y in by.values())))
+            e['named'][key] = row
+        e['covariates'] = {k: np.mean([c[k] for _, _, c in L], 0).round(4).tolist() for k in banks}
+        report['conditions'][cond] = e
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=1) + '\n')
+
+
 def sign_null(bank, output, reference, draws=10, seed=0):
     """Is the fall of z(r, r^2) (sign structure; findings.md, "Further candidate pairs") anticorrelation structure or
     sampling noise? Per unit and state: the per-window z(r, r^2) (real), z of the window-mean r profile (noise
@@ -1116,8 +1220,15 @@ if __name__ == '__main__':
     k.add_argument('--kind', choices=NULL_KINDS, required=True)
     k.add_argument('--units', nargs='+')
     k.add_argument('--seed', type=int, default=0)
+    m = sub.add_parser('null-decompose')
+    m.add_argument('discovery', type=Path)
+    m.add_argument('--output', type=Path, required=True)
+    m.add_argument('--reference', default='awake_ec')
+    m.add_argument('--units', nargs='+')
     args = p.parse_args()
-    if args.command == 'null-bank':
+    if args.command == 'null-decompose':
+        null_decompose(args.discovery, args.output, args.reference, args.units)
+    elif args.command == 'null-bank':
         null_bank(args.bank, args.output, args.kind, args.units, args.seed)
     elif args.command == 'lag-null':
         lag_null(args.bank, args.output, args.reference, args.draws, args.channels)

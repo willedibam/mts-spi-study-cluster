@@ -7,12 +7,16 @@
 #PBS -j oe
 # Full pyspi null banks of the 2-s arm (discovery.py null_bank: zero_phase, stationary, bias), every unit.
 # STAGE=build writes the three Gaussian window banks; pyspi then runs through farm.pbs with the real bank's identity
-# (config, extract.py, PYSPI_SOURCE, one window per shard); STAGE=reduce reduces the three outputs. Run from a source snapshot:
+# (config, extract.py, PYSPI_SOURCE, one window per shard); STAGE=reduce audits and reduces the three outputs (PYSPI_SOURCE
+# required: the audit's identity includes the pyspi path); STAGE=decompose writes discovery.py null-decompose. Run from a
+# source snapshot:
 #   qsub -l ncpus=4,mem=32GB,walltime=01:00:00 -v STAGE=build research/representation/atlas/jobs/null_banks.pbs
 #   qsub -W depend=afterok:<build> -l ncpus=192,mem=760GB,walltime=10:00:00,jobfs=10GB \
 #        -v BANK=$A/banks/null-<kind>,OUT=$A/pyspi/null-<kind>,SHARD_SIZE=1,CONFIG=<yaml>,PYSPI_SOURCE=<snapshot> \
 #        research/representation/atlas/jobs/farm.pbs                                     # once per kind
-#   qsub -W depend=afterany:<farms> -l ncpus=48,mem=190GB,walltime=06:00:00 -v STAGE=reduce research/representation/atlas/jobs/null_banks.pbs
+#   qsub -W depend=afterany:<farms> -l ncpus=48,mem=190GB,walltime=06:00:00 -v STAGE=reduce,PYSPI_SOURCE=<snapshot> \
+#        research/representation/atlas/jobs/null_banks.pbs
+#   qsub -l ncpus=4,mem=32GB,walltime=01:00:00 -v STAGE=decompose research/representation/atlas/jobs/null_banks.pbs
 set -euo pipefail
 : "${STAGE:?}"
 cd "${PBS_O_WORKDIR:?}"
@@ -30,11 +34,17 @@ case "$STAGE" in
         for p in "${pids[@]}"; do wait "$p"; done
         ;;
     reduce)
+        : "${PYSPI_SOURCE:?}"
         for kind in "${kinds[@]}"; do
             python -m research.representation.atlas.extract "$A/banks/null-$kind" --out "$A/pyspi/null-$kind" --shard-size 1 \
                 --config "$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml" --audit
             d reduce "$A/banks/null-$kind" "$A/pyspi/null-$kind" --output "$A/discovery/null-$kind-reduced.npz" --jobs 32
         done
         ;;
-    *) echo "STAGE must be build or reduce" >&2; exit 2 ;;
+    decompose)
+        d null-decompose "$A/discovery" --output "$A/discovery/neurotycho-short-null-decompose.json"
+        d null-decompose "$A/discovery" --output "$A/discovery/null-decompose-check-20110621.json" \
+            --units 20110621ktmdanesthesiaandsleepchibitoruyanagawa
+        ;;
+    *) echo "STAGE must be build, reduce or decompose" >&2; exit 2 ;;
 esac
