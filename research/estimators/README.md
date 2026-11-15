@@ -1,5 +1,7 @@
 # Character estimators: per-edge axes of dependence character
 
+> Future development was extracted on 16 November 2026 to [character-estimators](https://github.com/willedibam/character-estimators) (sibling checkout `../character-estimators`). This directory preserves the original exploratory experiments and results; the successor README states the current scope, preferred MI nonlinearity construction and open monotonicity axis. The extraction does not turn the historical validation claims below into a generally validated framework.
+
 Question: can the character of a pairwise dependence, as opposed to its strength, be measured directly, edge by edge, on interpretable axes on [0, 1], and does each estimator respond to its named property and to nothing else in systems where the truth is known by construction?
 
 These estimators use no SPI–SPI features and no pyspi statistic as a building block. They are derived from one principle and use numpy/scipy only. They are a separate line from the [character axes inside z](../representation/character_axes/protocol.md), whose construction failures ([validation](../representation/character_axes/validation/README.md)) motivate several design choices below. Context: [`docs/context/premise-and-character-axes.md`](../../docs/context/premise-and-character-axes.md).

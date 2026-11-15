@@ -48,43 +48,15 @@ The future-direction axes below now have a first implementation that stays withi
 
 Seven per cent of every stored z vector is identically zero (antisymmetric × symmetric statistics).
 
-## Dedicated character estimators (built and scored, 5–6 November 2026)
+## Dedicated character estimators — extracted 16 November 2026
 
-[`research/estimators/`](../../research/estimators/README.md) holds direct per-edge estimators on [0, 1]. They are defined on the process and use no SPI–SPI features (a user constraint). Each axis is the share of a pair's dependence that needs one named property, is strength-free by construction, and is undefined without dependence (circular-shift floor). The axes are nonlinearity N (directional, plus a raw-scale variant), lag share ℓ and variability V, with directionality D as an auxiliary. Each relaxes one assumption of zero-lag Pearson correlation: linear, instantaneous, stationary, and (D) symmetric.
+Continued development now belongs to the sibling [character-estimators repository](https://github.com/willedibam/character-estimators), extracted from source commit `6b55e089e4fcbf78a4f0b3a3bb50a74ca621b108`. Its README owns the current brief and concise heritage; its indexed context preserves decisions and failed approaches. The original [`research/estimators/`](../../research/estimators/README.md), tracked tables and history remain here as provenance. This is an exploratory future project, not a rigorously established framework.
 
-- **History:** v2 `7a3ace0` (pre-registered): only ℓ passed. v3 `9d4ea7d`: N made cost-corrected and directional, and then passed. The transfer family (README) removes the first family's shared construction; N and ℓ transfer.
-- **v4 `ae7ae2f` (post-scoring, fresh seeds):** lag variability and intermittency are merged into V = 1 − Σ|E c|²/Σ E|c|².
-  - *Why merged, not repaired:* the old 1 − (1 − V)(1 − S) equals this exactly (the fourth moment cancels) and was stable, while the split needs a fourth moment of 25-sample estimates (SD up to 151).
-  - *V's results:* accurate in both families (bias ≤ 0.074 everywhere). It fails only on precision in the transfer family (SD up to 0.29, defined in 65–85%), which is near the sampling floor of a variance over 20 segments (≈ √(2/20)).
-  - *Tried and rejected:* local gain on the fixed prediction (projects onto the mean coupling, which vanishes under large phase drift); unwhitened channels; division by local power. Strength vs timing is no longer separated.
-- **Transfer truths include the resolution:** E|c|² comes from quarters 25 to 75 samples apart, so telegraph and warp truths are computed from the generators at that resolution (for θ = 0.4, telegraph 0.29 rather than θ). The warp truth's carrier approximation overstates the long-run gap (+0.08 at θ = 0.6).
-- **Bug fixed:** whitening amplified the mean that `circular()` leaves, giving wrong fixed delays (V = 0.48 on one steady long run). ℓ was unaffected.
-- **Decided:** one adversarial round with a triage rule. Envelope coupling was deferred, because its simple form reads volume conduction as envelope coupling. ℓ is a phase share, not a delay.
-- **Envelope axis: not adopted** ([ruled out](premise-and-character-axes-ruled-out.md)). A moment identity makes volume conduction read 0, but time-varying and nonlinear waveform coupling read as negative envelope coupling (−0.14 to −0.6), and SD is 0.15–6 at T = 2,000.
-- **Factorial test `522ed59`** (n × l × d × o, two levels each, README):
-  - *Definitions compose as predicted:* V follows the product rule 1 − (1 − o)(1 − d); ℓ is unchanged; N is inflated by drift exactly as predicted (0.72), because N is a share of time-invariant predictable dependence.
-  - *One interaction:* normal scores of gated nonlinear coupling shift ℓ to 0.58 (0.49 on standardised channels).
-  - *Estimation:* every F2 failure is precision, in cells with mean coherence² ≤ 0.10. ℓ under drift reaches SD 0.58, and N SD 0.48.
-- **N_MI = 1 − I_Gauss/I_KSG added `0feba7b` (10 November, user's choice of nonlinearity estimator):** `estimators.nonlinearity_mi`, scored by `nmi.py` on both families (README, 'N_MI').
-  - *What it means:* the share of the information between two channels that Pearson r does not account for. It reads dependence outside the conditional mean (variance-only coupling, clusters, a sign flip), which the regression N cannot.
-  - *Two deliberate departures from the principle:* standardised channels, not normal scores (the user's decision; with scores a noise-free exp reads 0), and not strength-free (for a fixed bend it falls with noise).
-  - *Guards for the ratio:* circular-shift null (undefined otherwise), null-mean subtraction for each estimator, Theiler window (required: see surrogates above), |r| ≥ 0.999 reads 0, tie jitter. Not clipped.
-  - *Scored:* 7 of 12 pre-registered predictions pass. Calibrated on linearity, rectifier and telegraph (bias ≤ 0.03), 0 on linear-Gaussian systems under every nuisance, null rate 2–6%. Every failure is at I ≤ 0.05 nats, or is a prediction that N_MI reads phase drift or warping, which it barely does (long run ≤ 0.17).
-  - *Limits:* SD per edge is 0.03–0.06 above 0.2 nats, 0.12 at 0.1–0.2 and 0.2–0.4 below 0.1 nats (|r| ≈ 0.43 for a Gaussian pair); a chance pass of the null reads ≈ 1; a monotone sensor distortion counts (sinh(3y)/3 of a linear coupling reads 0.9); marginal shape counts (lognormal source, linear coupling: −0.51 unclipped; t₃ noise +0.34; 1% gross outliers 0.82, exploratory).
-  - *Tried and set aside (exploratory, T = 2,000):* normal scores; nested fits r² ≤ R²_mono ≤ η² (the user finds this too literal a reading of nonlinearity); Spearman-based forms (fail with noise); a data-built linear reference 1 − I(x, ŷ + shuffled residuals)/I(x, y), which removes the marginal artefacts but shrinks exp + noise to 0.10.
-  - *Floor on I rejected (post hoc on the scored rows):* a per-recording floor (0.1 or 0.05 nats) selects recordings whose I, and hence N_MI, is high by chance: survivors near the floor read 0.07 higher on average (up to 0.45) and mean |bias| there rises (0.044 to 0.066). Its apparent benefit at cell level came only from dropping cells.
-  - *Uncertainty `744e924`:* `nonlinearity_mi_se`, a block jackknife of the two informations carried to N_MI by the delta method (the jackknife of the ratio itself blew up at small I). Conservative by about 1.4× (median SE/SD, 1.03 on `linearity`), with 95% interval coverage on fresh seeds. Fit for weighting and flagging, not exact tests.
-  - *Lag by the largest I_KSG (v2, `8c69ceb`; scored `2602175` on Gadi):* the moment score `_centre` missed dependence invisible to its three moments (sin 5x, circles, variance-only coupling, sign flips) and read I ≈ 0 at an arbitrary lag. v2 fixes that, at the cost of a small upward bias on lagged linear pairs (mean |bias| 0.030 → 0.046 on the repo systems; worst +0.11 on `lag` θ = 0.8). Its first form re-selected the lag inside the bias correction too and drove weak linear pairs to −0.3 to −0.6; cross-fitting the lag was tested and rejected (no gain, double SD).
-  - *Noise (sweep over 33 systems, `nmi_noise.py`):* as noise grows N_MI tends to 1 − r²/η², the regression share, by the small-signal expansion of mutual information; it does not tend to "no structure". Its sensitivity to noise is at the clean end, where it also reads determinism, marginal shape and outliers. Slow, strongly autocorrelated linear pairs read +0.08 to +0.11 (estimator bias at T = 2,000, present in v1 too).
-  - *Not done:* it is not in `estimate()`; a separate monotonicity axis (suggested by the user); real data.
-- **Open:**
-  - envelope coupling: only a model-based local form or a long-T-only auxiliary remain;
-  - whether N stays a share of time-invariant predictable dependence (V inflates it) or becomes local;
-  - an adversarial pass on V;
-  - N's small negative bias under on/off coupling (−0.08 to −0.15 at θ = 0.6, at the C3 edge);
-  - per-edge uncertainty for downstream use;
-  - application to data.
-- **Cost:** v4 runs locally, 30 minutes on 9 cores with truth reuse (`--truth`/`--refresh`).
+The user's preferred nonlinearity construction is N_MI = 1 − I_Gauss/I_KSG on standardised raw channels; monotonicity is unsettled, and the next investigation should select two additional broadly useful character axes rather than narrowly spectral properties. Simple mechanisms take priority over numerical polish. N_MI is not strength-free, and marginal distributions can produce negative population values: clipping or denominator guards alone cannot establish a universal [0, 1] interpretation ([Foster & Grassberger 2011](https://arxiv.org/abs/1008.0817)).
+
+The [experimental record](../../research/estimators/README.md) retains the historical regression N, lag share ℓ, variability V and auxiliary directionality D, plus the later MI ratio. Construction/transfer/factorial evidence is limited to the tested generators; low coherence, temporal resolution and normal-score interactions limit interpretation. Envelope coupling was not adopted ([ruled out](premise-and-character-axes-ruled-out.md)). These old candidates do not predetermine the successor project's axes.
+
+Latest MI evidence (`2602175`, offset 3, 11 November) reports 8/15 predictions passing, mean absolute bias 0.046 across 218 shared cells, SE/SD 1.39 and coverage 0.93. MI-based lag selection recovered dependence missed by moment selection but increased bias on lagged linear pairs. An MI floor, re-selecting the lag for bias subtraction, and lag cross-fitting each had documented drawbacks. `nonlinearity_mi` remains separate from `estimate()`; a dedicated monotonicity estimator and real-data validation remain open. The successor context and experimental record preserve reproduction details; the extraction did not rerun the full study.
 
 ## Paper framing and application assessment, 2026-10-12
 
