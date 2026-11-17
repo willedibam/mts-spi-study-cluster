@@ -50,6 +50,15 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
 - **Precedence pairs are not minimal.** Same-time MI against GC/TE differs in lag, in conditioning on the target's own past, and in direction. Read through the links: `mi_gaussian|tlmi_gaussian` (lag only, mostly reads autocorrelation at one sample), `tlmi_gaussian|gc_gaussian` (conditioning on the target's past only), and `cohmag|sgc` (Geweke 1982: total linear dependence is the sum of the two directed parts and an instantaneous part, and −log(1−|C|²) is its spectral density). GC and TE are equivalent for Gaussian variables (Barnett, Barrett & Seth 2009), so `gc_gaussian|te_kraskov` reads non-Gaussian predictive structure, plus TE estimator noise, which is large at T ≤ 1000. The `DCE-AUTO` Theiler window fixes kNN autocorrelation bias; it does not remove the conceptual dependence of GC/TE on autocorrelation, which is what conditioning on the target's past is.
 - **Ceiling pairs.** Pairs with z₀ near 1, such as Spearman against Kendall or Pearson against Spearman, have tiny null SDs. A change of −0.01 can be −10 SD, so report the z change, not only its SD multiple.
 - **Priorities.** Nonlinearity and timing (lag and its variability) are the most interpretable and actionable readings; finer characters risk being too narrow to matter.
+- **"Nonlinear dependence" (terminology, user decision 17 November).**
+  - *Definition:* dependence beyond the linear-Gaussian expectation, whatever produces it. This is what rejecting a linear-Gaussian surrogate null shows in the surrogate-data tradition (Theiler et al. 1992). It is a property of the joint distribution, not of the generating equations.
+  - *Three routes produce it:*
+    - a nonlinear coupling function;
+    - linear coupling with a time-varying gain or state (a mixture of Gaussians);
+    - linear mixing of non-Gaussian sources (ICA's "linear non-Gaussian" case).
+  - *Conditional mean:* only a pure scale mixture (one shared gain on an unchanged correlation pattern) keeps it linear. With state-dependent correlation or non-Gaussian sources it is generally nonlinear, even when the generating equations are linear.
+  - *Paper wording:* state the definition once. Reserve "nonlinear coupling" for a mechanism shown by a calibrated readout.
+  - *Two directions:* "more or less nonlinear" refers to a level (the mean excess over pairs); a fall in z(Gaussian, model-free) means the excess sits more unevenly across pairs. They are separate statements.
 - **Wording tiers.** Confirmatory statements use only axes that pass validation. Everything else is exploratory, e.g. "departure from linear-stationary-Gaussian dependence in families F".
 
 ## Controls that turn a z difference into a character statement

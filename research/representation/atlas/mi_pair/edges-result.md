@@ -92,6 +92,34 @@ Primary agents KT, KTMD and PF; 19 sessions; 4 animals.
 - **What does not hold.**
   - "Massively concentrated": about 95% of the held-out excess lies outside the top 1%.
   - A reproducible locus by the frozen bar.
-  - That the z fall is carried by the excess-gaining edges. The edgewise contributions to Δz are unrelated to ẽ, so the z fall is spread across many edges, not localised.
+  - That the z fall is carried by the excess-gaining edges. The edgewise contributions to Δz are unrelated to ẽ. Whether the z fall is broad or localised is not decided by this: per-edge products of standardised profiles are heavy-tailed under any structured change (a planted broad change gave a top-1% share of .09), so a drop test is needed (see the drop-test section).
 - **The one-animal hub result does not generalise under this measure.** Its "hub edges fail to gain" is not the pattern across animals.
 - **Claim this supports:** "Anaesthetics, not sleep, make model-free dependence beyond the linear-Gaussian expectation more uneven across pairs. The gain is enriched among strongly coupled pairs that recur within an animal across sessions, while the agreement change itself is broad."
+
+## Drop test: is the MI-pair z fall localised or broad? (post hoc, 17 November; `droptest.py`)
+
+- **Why a drop test.** Per-edge contributions to a correlation are products of standardised profiles. They are heavy-tailed and repeat across windows under any structured change, so a share of contributions cannot tell broad from localised. On a synthetic, a planted broad change scored a top-1% share of .09.
+- **Method.**
+  - Select the top 1% (or 5%) of edges carrying the change on one half.
+  - On the other half, recompute net Δz = Δ[corr(g, k) − corr(g_s, k_s)] without them.
+  - Compare with 20 random drops matched on wake leverage. f is the retained fraction, pooled over 19 sessions and both directions.
+- **Calibration** (three synthetic plants, before the real run):
+
+  | Plant | f, top 1% | f, random |
+  |---|---|---|
+  | Concentrated: 10 of 1,770 edges | .60 | 1.03 |
+  | Broad | 1.09 | 1.03 |
+  | Broad, on a skewed profile | 1.16 | 1.03 |
+
+  Decision, stated before the real run: localised if f < .8 and below every random draw; broad if f ≥ .9 or inside the random range.
+- **MI pair** (10 s, all channels, KT, KTMD and PF, 19 sessions):
+
+  | Drop | f | f, random |
+  |---|---|---|
+  | Top 1% of edges | 1.27 | 1.02–1.03 |
+  | Top 5% of edges | 1.50 | 1.08–1.11 |
+  | Edges of the top 6 nodes (about 740 edges) | 1.05 | .98–1.02 |
+
+  Every animal is above 1: Chibi 1.12, George 1.24, Kin2 1.36, Su 1.55.
+- **Verdict: BROAD.** Removing the edges that contribute most leaves the fall at least as large, as in the broad synthetic. The z fall is a system-wide reorganisation of which pairs carry non-Gaussian dependence, not a few edges or nodes.
+- **Scores:** `results/representation/atlas-mi-pair-261117/full/droptest.json`.
