@@ -53,6 +53,35 @@ Primary agents KT, KTMD and PF; 19 sessions; 4 animals.
 
   So the z fall holds against the stricter all-channel joint null. This is one noise realisation and descriptive.
 
+## Further descriptive (post hoc, 17 November, after scoring; computed from the same arrays)
+
+- **Level, mean over edges of the excess beyond IAAFT** (e = kNN_real − kNN_surr, nats; drug − wake):
+
+  | Agent | Change | Sessions | Eyes-open |
+  |---|---|---|---|
+  | KT | +.015 | 4/4 up | |
+  | KTMD | −.008 | 11/11 down | |
+  | PF | −.013 | 4/4 down | |
+  | MD | −.000 | | |
+  | Sleep | −.000 | | |
+  | Eyes-open control | | | −.002 to +.000 |
+
+  - So the level moves in opposite directions by agent while z falls under all three.
+  - The direction matches the earlier 32-channel IAAFT level result (KT up; KTMD, PF down).
+  - The raw kNN − Gaussian level changes the same way (KT +.011; KTMD −.019; PF −.024).
+- **Edge-map overlap within an animal, by session-pair type** (Spearman of ẽ maps; Jaccard of top-1% edges):
+
+  | Session pairs | Spearman | Jaccard | n |
+  |---|---|---|---|
+  | Same drug | .22 | .24 | 14 |
+  | Different drugs among KT/KTMD/PF | .08 | .09 | 28 |
+  | MD against the others | .06 | .03 | |
+  | Sleep against the drugs | .00 | .01 | |
+  | Eyes-open maps, any pairing | .02–.04 | .02–.03 | |
+
+  - The enriched edges are agent-specific and reproduce across sessions of the same agent within an animal.
+  - The frozen E2 pooled agents, which diluted this. Treat it as a prediction for new sessions, not a result.
+
 ## Reading
 
 - **What holds.** Under KT, KTMD and PF, the model-free dependence that pairs gain beyond the linear-Gaussian null is modestly concentrated:
