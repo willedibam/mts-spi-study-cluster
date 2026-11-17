@@ -1,0 +1,804 @@
+{
+ "sessions": {
+  "20110112ktmdanesthesiaandsleepgeorgetoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "George",
+   "target": "drug",
+   "M": 126,
+   "n": 40,
+   "drug": {
+    "C": 0.06675420303715288,
+    "Cneg": 0.013896545625860492,
+    "zres": -0.031268500286040904,
+    "e3_rho": -0.018681202690224673,
+    "e3_gain_frac": 0.3924050632911392,
+    "top5_node_share": 0.22402088187312535,
+    "additive_r2": 0.11035129803623278,
+    "top_label_dist_median": 11.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.020396977323672617,
+    "Cneg": 0.013309393369256212,
+    "zres": -0.0035746819077038905
+   }
+  },
+  "20110113ktmdanesthesiaandsleepgeorgetoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "George",
+   "target": "drug",
+   "M": 126,
+   "n": 40,
+   "drug": {
+    "C": 0.03829427793176773,
+    "Cneg": 0.01170166155715591,
+    "zres": -0.0262235260598296,
+    "e3_rho": -0.03870442467238656,
+    "e3_gain_frac": 0.6012658227848101,
+    "top5_node_share": 0.25310401615364075,
+    "additive_r2": 0.13514008733596727,
+    "top_label_dist_median": 11.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.011703757127220639,
+    "Cneg": 0.010582702148426847,
+    "zres": -0.004886613916894117
+   }
+  },
+  "20110114ktmdanesthesiaandsleepgeorgetoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.059718772230329856,
+    "Cneg": 0.015661485237901403,
+    "zres": -0.02373657706380904,
+    "e3_rho": -0.009932211418930047,
+    "e3_gain_frac": 0.5555555555555556,
+    "top5_node_share": 0.2255792709497507,
+    "additive_r2": 0.15573224810995157,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.01432872314610315,
+    "Cneg": 0.01706828679349616,
+    "zres": 0.00021227681299609578
+   }
+  },
+  "20110513ktmdanesthesiaandsleepkin2toruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Kin2",
+   "target": "drug",
+   "M": 126,
+   "n": 40,
+   "drug": {
+    "C": 0.05696864560724464,
+    "Cneg": 0.014704630247229627,
+    "zres": -0.01628922935443788,
+    "e3_rho": -0.008375306061889303,
+    "e3_gain_frac": 0.6075949367088608,
+    "top5_node_share": 0.21495026138839302,
+    "additive_r2": 0.10349663824361033,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 37.0
+   },
+   "eo": {
+    "C": 0.011440645021501723,
+    "Cneg": 0.01995642281933987,
+    "zres": -0.0014185564757358642
+   }
+  },
+  "20110523ktmdanesthesiaandsleepsutoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Su",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.054038171182145975,
+    "Cneg": 0.012581005522205743,
+    "zres": -0.013720988576118587,
+    "e3_rho": 0.013437039034204705,
+    "e3_gain_frac": 0.5061728395061729,
+    "top5_node_share": 0.21443803902299705,
+    "additive_r2": 0.07253876528917624,
+    "top_label_dist_median": 13.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.008227272106621416,
+    "Cneg": 0.011213344866799275,
+    "zres": -0.0001271561614557659
+   }
+  },
+  "20110524ktmdanesthesiaandsleepkin2toruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Kin2",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.05328041315200923,
+    "Cneg": 0.014510179409676568,
+    "zres": -0.015050474429672651,
+    "e3_rho": -0.03539960721293243,
+    "e3_gain_frac": 0.6049382716049383,
+    "top5_node_share": 0.2056256616614475,
+    "additive_r2": 0.10990724967622922,
+    "top_label_dist_median": 17.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.009508506399793091,
+    "Cneg": 0.016954376542164876,
+    "zres": 0.00151323470467594
+   }
+  },
+  "20110525ktmdanesthesiaandsleepkin2toruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Kin2",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.04400957590657387,
+    "Cneg": 0.014140458945034979,
+    "zres": -0.014100791911797998,
+    "e3_rho": -0.020689901800421663,
+    "e3_gain_frac": 0.5679012345679012,
+    "top5_node_share": 0.23584217339930796,
+    "additive_r2": 0.08866981806741692,
+    "top_label_dist_median": 17.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.01126363626888804,
+    "Cneg": 0.012719899695080958,
+    "zres": 0.0019246907357695219
+   }
+  },
+  "20110526ktmdanesthesiaandsleepsutoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Su",
+   "target": "drug",
+   "M": 126,
+   "n": 40,
+   "drug": {
+    "C": 0.06632800240424891,
+    "Cneg": 0.019098778365417485,
+    "zres": -0.011391648013194687,
+    "e3_rho": -0.02733162705978124,
+    "e3_gain_frac": 0.639240506329114,
+    "top5_node_share": 0.23784893467896873,
+    "additive_r2": 0.10763354361889366,
+    "top_label_dist_median": 11.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.010015159526979317,
+    "Cneg": 0.011283323166920815,
+    "zres": -0.0010168466646218136
+   }
+  },
+  "20110527ktmdanesthesiaandsleepsutoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Su",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.05124197510561331,
+    "Cneg": 0.016844291019537095,
+    "zres": -0.010982306188379025,
+    "e3_rho": -0.036005274143125265,
+    "e3_gain_frac": 0.6358024691358024,
+    "top5_node_share": 0.2545386584602792,
+    "additive_r2": 0.101416678915064,
+    "top_label_dist_median": 10.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.014436429164870292,
+    "Cneg": 0.03293763385793469,
+    "zres": -0.0004983279372394109
+   }
+  },
+  "20110621ktmdanesthesiaandsleepchibitoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 30,
+   "drug": {
+    "C": 0.052226147560071406,
+    "Cneg": 0.01693603841346055,
+    "zres": -0.006014156305506792,
+    "e3_rho": -0.03792338700570452,
+    "e3_gain_frac": 0.5617283950617284,
+    "top5_node_share": 0.18594653714701265,
+    "additive_r2": 0.09922120972937565,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.013326465684545392,
+    "Cneg": 0.01066771693205642,
+    "zres": 0.015172558029589786
+   }
+  },
+  "20110622ktmdanesthesiaandsleepchibitoruyanagawa|KTMD": {
+   "agent": "KTMD",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.04660456657283353,
+    "Cneg": 0.013051006013688589,
+    "zres": -0.00416888635729711,
+    "e3_rho": -0.036685904885327233,
+    "e3_gain_frac": 0.5864197530864197,
+    "top5_node_share": 0.19355856672939345,
+    "additive_r2": 0.08539138960775916,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.013413663650491247,
+    "Cneg": 0.009761490790625925,
+    "zres": 0.006545227811398691
+   }
+  },
+  "20120705slpanesthesiaandsleepchibitoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "Chibi",
+   "target": "sleep",
+   "M": 127,
+   "n": 50,
+   "drug": {
+    "C": 0.00971757399630125,
+    "Cneg": 0.019856335348397126,
+    "zres": 0.0015178358074870552,
+    "e3_rho": 0.025218074184116143,
+    "e3_gain_frac": 0.37037037037037035,
+    "top5_node_share": 0.1852099289640199,
+    "additive_r2": 0.07077183635197826,
+    "top_label_dist_median": 25.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.01921766552114341,
+    "Cneg": 0.01428806147349884,
+    "zres": 0.001517504210754955
+   }
+  },
+  "20120706slpanesthesiaandsleepchibitoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "Chibi",
+   "target": "sleep",
+   "M": 127,
+   "n": 50,
+   "drug": {
+    "C": 0.010124192486851072,
+    "Cneg": 0.018607855004070778,
+    "zres": 0.0022404263319165786,
+    "e3_rho": 0.0013154688455745084,
+    "e3_gain_frac": 0.4135802469135802,
+    "top5_node_share": 0.15542129916798622,
+    "additive_r2": 0.0830218305408631,
+    "top_label_dist_median": 28.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.01059158742284869,
+    "Cneg": 0.011450527901244527,
+    "zres": 0.0037698443952383634
+   }
+  },
+  "20120710slpanesthesiaandsleepchibitoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "Chibi",
+   "target": "sleep",
+   "M": 127,
+   "n": 50,
+   "drug": {
+    "C": 0.008864765761682204,
+    "Cneg": 0.012121379363398662,
+    "zres": 0.0003613462682625689,
+    "e3_rho": -0.013002443216529953,
+    "e3_gain_frac": 0.5617283950617284,
+    "top5_node_share": 0.21235068551206152,
+    "additive_r2": 0.03724986455015711,
+    "top_label_dist_median": 38.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.016027460813602,
+    "Cneg": 0.010613828256019388,
+    "zres": 0.003638238976085298
+   }
+  },
+  "20120711slpanesthesiaandsleepgeorgetoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "George",
+   "target": "sleep",
+   "M": 127,
+   "n": 50,
+   "drug": {
+    "C": 0.016508689398484974,
+    "Cneg": 0.014942851183748999,
+    "zres": -0.0013098860831333172,
+    "e3_rho": 0.014230548287187672,
+    "e3_gain_frac": 0.4012345679012346,
+    "top5_node_share": 0.23537143141286412,
+    "additive_r2": 0.12559509684726644,
+    "top_label_dist_median": 13.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.014308941112570138,
+    "Cneg": 0.023517858311644168,
+    "zres": -5.212003610022832e-06
+   }
+  },
+  "20120712slpanesthesiaandsleepgeorgetoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "George",
+   "target": "sleep",
+   "M": 126,
+   "n": 50,
+   "drug": {
+    "C": 0.01547423007869397,
+    "Cneg": 0.01322157513366258,
+    "zres": -0.0007378389438539663,
+    "e3_rho": -0.054034292433575555,
+    "e3_gain_frac": 0.5632911392405062,
+    "top5_node_share": 0.30512265645360936,
+    "additive_r2": 0.12212511692576211,
+    "top_label_dist_median": 16.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.014730333546875998,
+    "Cneg": 0.013848940496113314,
+    "zres": -0.0006665631133158582
+   }
+  },
+  "20120713slpanesthesiaandsleepgeorgetoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "George",
+   "target": "sleep",
+   "M": 126,
+   "n": 50,
+   "drug": {
+    "C": 0.014741430772467552,
+    "Cneg": 0.025793218116850154,
+    "zres": -0.0017354159690702777,
+    "e3_rho": 0.03410746236955967,
+    "e3_gain_frac": 0.31645569620253167,
+    "top5_node_share": 0.16513188789673408,
+    "additive_r2": 0.17806544593779572,
+    "top_label_dist_median": 20.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.02470415684523395,
+    "Cneg": 0.016576964897885273,
+    "zres": -0.00036551533320525566
+   }
+  },
+  "20120717slpanesthesiaandsleepchibitoruyanagawa|SLP": {
+   "agent": "SLP",
+   "animal": "Chibi",
+   "target": "sleep",
+   "M": 127,
+   "n": 50,
+   "drug": {
+    "C": 0.009563766160267578,
+    "Cneg": 0.011244354187511407,
+    "zres": 0.00012517654671186597,
+    "e3_rho": 0.006362721960117396,
+    "e3_gain_frac": 0.5987654320987654,
+    "top5_node_share": 0.20051837491038854,
+    "additive_r2": 0.027087613986017778,
+    "top_label_dist_median": 28.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.012355260474796652,
+    "Cneg": 0.012220660545311403,
+    "zres": 0.001426568651270862
+   }
+  },
+  "20120719ktanesthesiaandsleepchibitoruyanagawa|KT": {
+   "agent": "KT",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.07846922885217261,
+    "Cneg": 0.021788940579875016,
+    "zres": -0.013954028280024127,
+    "e3_rho": -0.20919764556423703,
+    "e3_gain_frac": 0.345679012345679,
+    "top5_node_share": 0.222418811739867,
+    "additive_r2": 0.3428209255011525,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.010388259593643718,
+    "Cneg": 0.012500039315089301,
+    "zres": 0.002613517847547711
+   }
+  },
+  "20120720mdanesthesiaandsleepchibitoruyanagawa|MD": {
+   "agent": "MD",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.031147357769024497,
+    "Cneg": 0.012398062238708325,
+    "zres": -0.006399001983773341,
+    "e3_rho": 0.0013109739766033373,
+    "e3_gain_frac": 0.4567901234567901,
+    "top5_node_share": 0.22329038915335891,
+    "additive_r2": 0.2057323905425521,
+    "top_label_dist_median": 22.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.014889867958941396,
+    "Cneg": 0.010101468384874215,
+    "zres": 0.0004079988649579158
+   }
+  },
+  "20120724ktanesthesiaandsleepgeorgetoruyanagawa|KT": {
+   "agent": "KT",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.022157094251391046,
+    "Cneg": 0.028600395799194836,
+    "zres": -0.006532905439933035,
+    "e3_rho": -0.038647337720313084,
+    "e3_gain_frac": 0.38271604938271603,
+    "top5_node_share": 0.21017086811639418,
+    "additive_r2": 0.18041694824298526,
+    "top_label_dist_median": 23.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.0357686899784829,
+    "Cneg": 0.029252883655505185,
+    "zres": -0.000400601825326274
+   }
+  },
+  "20120726mdanesthesiaandsleepgeorgetoruyanagawa|MD": {
+   "agent": "MD",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.019532674040555996,
+    "Cneg": 0.015702060464413095,
+    "zres": -0.0043790935734007485,
+    "e3_rho": 0.01157761684438283,
+    "e3_gain_frac": 0.4506172839506173,
+    "top5_node_share": 0.1717718164371149,
+    "additive_r2": 0.12965604451845247,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.01368292713132864,
+    "Cneg": 0.017982912568328693,
+    "zres": -0.0002625024797470355
+   }
+  },
+  "20120730pfanesthesiaandsleepchibitoruyanagawa|PF": {
+   "agent": "PF",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.06631866780902235,
+    "Cneg": 0.014204782240108585,
+    "zres": -0.017216686194137198,
+    "e3_rho": 0.0201088479754827,
+    "e3_gain_frac": 0.5061728395061729,
+    "top5_node_share": 0.22770443738071924,
+    "additive_r2": 0.13196197244090924,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.011070363163787959,
+    "Cneg": 0.009531835671994397,
+    "zres": 0.002955038347632878
+   }
+  },
+  "20120731pfanesthesiaandsleepgeorgetoruyanagawa|PF": {
+   "agent": "PF",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.056637876212489904,
+    "Cneg": 0.013006707369289973,
+    "zres": -0.01660562223297059,
+    "e3_rho": 0.03538420439181544,
+    "e3_gain_frac": 0.5185185185185186,
+    "top5_node_share": 0.1989095140911084,
+    "additive_r2": 0.13910686635096703,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.014739370432175054,
+    "Cneg": 0.011961504379501834,
+    "zres": -0.00044824250748453314
+   }
+  },
+  "20120802pfanesthesiaandsleepchibitoruyanagawa|PF": {
+   "agent": "PF",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.018220746175900023,
+    "Cneg": 0.011778583469937777,
+    "zres": -0.01453946267125161,
+    "e3_rho": -0.011756923805700245,
+    "e3_gain_frac": 0.5493827160493827,
+    "top5_node_share": 0.1911210223086731,
+    "additive_r2": 0.12434239619062148,
+    "top_label_dist_median": 13.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.013329572145198566,
+    "Cneg": 0.011836378032035804,
+    "zres": 0.0029606379103135952
+   }
+  },
+  "20120803pfanesthesiaandsleepgeorgetoruyanagawa|PF": {
+   "agent": "PF",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.07671607110841631,
+    "Cneg": 0.030309042794079966,
+    "zres": -0.016993220014555027,
+    "e3_rho": 0.05573476381560778,
+    "e3_gain_frac": 0.48148148148148145,
+    "top5_node_share": 0.22164671471048997,
+    "additive_r2": 0.20667468939387135,
+    "top_label_dist_median": 14.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.010148961896845863,
+    "Cneg": 0.04432403250681794,
+    "zres": 0.0004551826725809952
+   }
+  },
+  "20120809mdanesthesiaandsleepchibitoruyanagawa|MD": {
+   "agent": "MD",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.02730325175605061,
+    "Cneg": 0.01252679818265591,
+    "zres": 0.002248441217845787,
+    "e3_rho": -0.042438262001335075,
+    "e3_gain_frac": 0.5740740740740741,
+    "top5_node_share": 0.24360036337383562,
+    "additive_r2": 0.16765467841493653,
+    "top_label_dist_median": 25.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.011714447504033039,
+    "Cneg": 0.009822800887468904,
+    "zres": 0.0016876572761078425
+   }
+  },
+  "20120810ktanesthesiaandsleepgeorgetoruyanagawa|KT": {
+   "agent": "KT",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.027245604207204305,
+    "Cneg": 0.01662242600274853,
+    "zres": -0.010615197057819834,
+    "e3_rho": -0.08573913368067809,
+    "e3_gain_frac": 0.6296296296296297,
+    "top5_node_share": 0.23042603882337592,
+    "additive_r2": 0.1588909556921595,
+    "top_label_dist_median": 16.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.015956971458185497,
+    "Cneg": 0.013606952212516392,
+    "zres": 0.0002768132996781887
+   }
+  },
+  "20120813ktanesthesiaandsleepchibitoruyanagawa|KT": {
+   "agent": "KT",
+   "animal": "Chibi",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.0897169286937157,
+    "Cneg": 0.028945811377703183,
+    "zres": -0.021210158697941687,
+    "e3_rho": -0.20106688670445816,
+    "e3_gain_frac": 0.19753086419753085,
+    "top5_node_share": 0.2002108566445706,
+    "additive_r2": 0.4086437060492344,
+    "top_label_dist_median": 12.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.009735143164586194,
+    "Cneg": 0.011600414644244779,
+    "zres": 0.0011923565462444784
+   }
+  },
+  "20120814mdanesthesiaandsleepgeorgetoruyanagawa|MD": {
+   "agent": "MD",
+   "animal": "George",
+   "target": "drug",
+   "M": 127,
+   "n": 40,
+   "drug": {
+    "C": 0.025657922599933075,
+    "Cneg": 0.020072870886643272,
+    "zres": -0.005038248973133584,
+    "e3_rho": 0.0005798286086521115,
+    "e3_gain_frac": 0.4506172839506173,
+    "top5_node_share": 0.17831301176849385,
+    "additive_r2": 0.21245758142698135,
+    "top_label_dist_median": 11.0,
+    "all_label_dist_median": 38.0
+   },
+   "eo": {
+    "C": 0.013642460330060852,
+    "Cneg": 0.016805488387678782,
+    "zres": -0.0005274699141664763
+   }
+  }
+ },
+ "animals": {
+  "George": {
+   "C": 0.04964627128267886,
+   "C_eo": 0.017577635908955103,
+   "gain": 0.5087960172348358,
+   "rho": -0.014369334567872746,
+   "n": 7
+  },
+  "Kin2": {
+   "C": 0.051419544888609246,
+   "C_eo": 0.010737595896727618,
+   "gain": 0.5934781476272334,
+   "rho": -0.0214882716917478,
+   "n": 3
+  },
+  "Su": {
+   "C": 0.057202716230669394,
+   "C_eo": 0.010892953599490341,
+   "gain": 0.5937386049903631,
+   "rho": -0.016633287389567267,
+   "n": 3
+  },
+  "Chibi": {
+   "C": 0.05859271427728594,
+   "C_eo": 0.011877244567042177,
+   "gain": 0.4578189300411523,
+   "rho": -0.07942031666499076,
+   "n": 6
+  }
+ },
+ "E1": {
+  "verdict": "CONCENTRATED",
+  "beats_eo": 4,
+  "median_C": 0.05431113055963932
+ },
+ "E2": {
+  "verdict": "NOT REPRODUCIBLE",
+  "per_animal": {
+   "George": {
+    "drug": 0.1277164594036755,
+    "eo": 0.033712809169059985,
+    "n_sessions": 7,
+    "top_jaccard_drug": 0.12257096700713843,
+    "top_jaccard_eo": 0.03362184596599077
+   },
+   "Kin2": {
+    "drug": 0.1612199928382661,
+    "eo": 0.021127574474063642,
+    "n_sessions": 3,
+    "top_jaccard_drug": 0.16876739754101597,
+    "top_jaccard_eo": 0.008574755153756592
+   },
+   "Su": {
+    "drug": 0.18788187048152394,
+    "eo": 0.042904590599542373,
+    "n_sessions": 3,
+    "top_jaccard_drug": 0.31060100852513167,
+    "top_jaccard_eo": 0.004246284501061571
+   },
+   "Chibi": {
+    "drug": 0.10863541410454162,
+    "eo": 0.018113783372991903,
+    "n_sessions": 6,
+    "top_jaccard_drug": 0.12798921329361976,
+    "top_jaccard_eo": 0.014665131054862213
+   }
+  }
+ },
+ "E3": {
+  "verdict": "mixed"
+ },
+ "descriptive": {
+  "MD": {
+   "C": 0.025910301541391047,
+   "C_eo": 0.013482425731090982,
+   "n": 4
+  },
+  "SLP": {
+   "C": 0.012142092664964086,
+   "C_eo": 0.015990772248152978,
+   "n": 7
+  }
+ },
+ "zres_by_agent": {
+  "KT": {
+   "mean": -0.013078072368929671,
+   "down": 4,
+   "n": 4
+  },
+  "KTMD": {
+   "mean": -0.015722462231462207,
+   "down": 11,
+   "n": 11
+  },
+  "MD": {
+   "mean": -0.0033919758281154714,
+   "down": 3,
+   "n": 4
+  },
+  "PF": {
+   "mean": -0.016338747778228607,
+   "down": 4,
+   "n": 4
+  },
+  "SLP": {
+   "mean": 6.59491369029296e-05,
+   "down": 3,
+   "n": 7
+  }
+ }
+}
