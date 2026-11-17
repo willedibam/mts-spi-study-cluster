@@ -145,3 +145,24 @@ Values are net change by agent (KT, KTMD, PF / MD / sleep / eyes-open in drug se
   - Empirical −.085, −.085 (17/19) and MinCovDet similar; LedoitWolf, OAS and Shrunk −.01 (10–12/19); GraphicalLasso unusable.
   - Unregularised partial correlation is node-additive (R² .54–.59, against .02–.03 when regularised): near-singular precision at T = 200, M = 126 imposes channel-wise scaling.
   - So the movement is how a near-singular estimate behaves, not more mediation.
+
+## Raw change, channel effects and carriers (post hoc, 17 November; `families_carriers.py`, `families_carriers.json`)
+
+These are **raw** drug changes in z (real bank only, KT, KTMD and PF sessions), not net of the null. They are shown with the change in double-centred z: source and target channel effects are removed, leaving pair-level correspondence only.
+
+| Feature | Raw Δz (sessions negative of 19) | Double-centred Δz | Reading |
+|---|---|---|---|
+| `mi_gaussian\|mi_kraskov_NN-4_DCE-AUTO` | −.062 (17) | −.052 (16) | Pair-level. |
+| `pdist_chebyshev` against cityblock, Canberra, Bray–Curtis | −.087 to −.091 (16–18) | −.021 to −.041 (15–16) | About a third is pair-level. |
+| `pdist_chebyshev` against Euclidean, cosine | −.036, −.043 (16) | +.006, +.004 | Channel effects only. |
+| `prec-sq_{LedoitWolf,OAS,Shrunk}` against broadband `cohmag`, `plv`, `ppc` | −.014 to −.023 (12–13) | −.007 to .000 | Raw change small and channel-level. |
+| `prec-sq_GraphicalLassoCV` against the same three | −.050 to −.056 (19) | −.041 to −.047 (19) | Pair-level. |
+| `tlmi_kernel\|te_kernel` | −.023 (11) | +.023 | Raw change ≈ 0. The net +.10 comes from the null predicting a fall. |
+| `cov\|pcorr`, Empirical and MinCovDet | −.081, −.071 (18) | +.021, +.017 | Channel effects only, so the estimator reading stands. |
+| `cov\|pcorr`, LedoitWolf, OAS, Shrunk | +.013 to +.040 | +.023 to +.048 | Regularised mediation rises slightly. |
+
+- **Precision × phase coherence tracks coherence level.** Across sessions, Δz correlates −.8 with the rise in mean broadband coherence or PPC. LedoitWolf and OAS prec-sq levels rise by +153% and +129%, because their shrinkage intensities change with state; Shrunk (fixed shrinkage) does not change.
+- **Precision × phase coherence carriers.** The top-1% carrying edges sit at the 98th percentile of both partners in awake.
+  - 43% of them join electrodes with adjacent labels, against 1.6% of all edges; median label distance is 4–5, against 38.
+  - So the family is carried by the strongest, mostly neighbouring pairs, where both partners are near their maximum. Eyes-open maps share them because they are structural.
+  - The family is not hub-driven: node drops keep .91–.96.
