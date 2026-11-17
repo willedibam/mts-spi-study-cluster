@@ -1,0 +1,106 @@
+.statistics.basic:
+  Covariance:
+    labels:
+    - undirected
+    - linear
+    - signed
+    - multivariate
+    - contemporaneous
+    - M14
+    dependencies: null
+    configs:
+    - estimator: EmpiricalCovariance
+  Precision:
+    labels:
+    - undirected
+    - linear
+    - signed
+    - multivariate
+    - contemporaneous
+    - M14
+    dependencies: null
+    configs:
+    - estimator: GraphicalLassoCV
+      squared: true
+    - estimator: LedoitWolf
+      squared: true
+    - estimator: OAS
+      squared: true
+    - estimator: ShrunkCovariance
+      squared: true
+.statistics.distance:
+  PairwiseDistance:
+    labels:
+    - unsigned
+    - unordered
+    - nonlinear
+    - undirected
+    - MXX
+    dependencies: null
+    configs:
+    - metric: euclidean
+    - metric: cityblock
+    - metric: cosine
+    - metric: chebyshev
+    - metric: canberra
+    - metric: braycurtis
+.statistics.spectral:
+  CoherenceMagnitude:
+    labels:
+    - undirected
+    - linear
+    - unsigned
+    - bivariate
+    - frequency-dependent
+    - M12
+    dependencies: null
+    configs:
+    - fs: 1
+  PhaseLockingValue:
+    labels:
+    - undirected
+    - linear
+    - unsigned
+    - bivariate
+    - frequency-dependent
+    - M10
+    dependencies: null
+    configs:
+    - fs: 1
+  PairwisePhaseConsistency:
+    labels:
+    - undirected
+    - linear
+    - unsigned
+    - bivariate
+    - frequency-dependent
+    - M12
+    dependencies: null
+    configs:
+    - fs: 1
+.statistics.infotheory:
+  TimeLaggedMutualInfo:
+    labels:
+    - directed
+    - nonlinear
+    - unsigned
+    - bivariate
+    - time-dependent
+    - M14
+    configs:
+    - estimator: kernel
+      kernel_width: 0.25
+  TransferEntropy:
+    labels:
+    - directed
+    - nonlinear
+    - unsigned
+    - bivariate
+    - time-dependent
+    - M04
+    configs:
+    - estimator: kernel
+      kernel_width: 0.25
+      k_history: 1
+      labels:
+      - M14
