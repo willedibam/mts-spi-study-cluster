@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=02:30:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N c1_edges
+#PBS -j oe
+#PBS -o /home/562/we2614/critic1/edges/
+# submit with: qsub -J 0-9 jobs/edges_full.pbs   (indices 0-3: stage A in 4 shards; 4-9: stage B in 6 shards)
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd /home/562/we2614/critic1/edges && sha256sum -c edges-code.sha256 || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/full; mkdir -p $O
+PY="env PYTHONPATH=/home/562/we2614/mts-spi-study-cluster/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+i=$PBS_ARRAY_INDEX
+if [ $i -lt 4 ]; then S=A; D=$B/neurotycho-long-stage-a; k=$i; n=4; else S=B; D=$B/neurotycho-long-stage-b; k=$((i-4)); n=6; fi
+$PY edges.py full $D $O/edges_${S}_${k}of${n}.npz $S $k $n 48 && sha256sum $O/edges_${S}_${k}of${n}.npz >> $O/SHA256SUMS && echo SHARDDONE $S $k
