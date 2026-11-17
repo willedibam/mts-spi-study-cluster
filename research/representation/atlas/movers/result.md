@@ -82,7 +82,7 @@
 |---|---|---|---|
 | Kernel lagged MI against kernel TE (conditioning on the target's past) | +.07, +.14, +.12 / +.04 / −.05 | broad / broad | Conditioning on the target's own past changes the pair ranking less. Precedence structure becomes less tied to self-history, beyond a stationary Gaussian process with the same autocorrelation. Kernel estimators have no autocorrelation correction. |
 | Chebyshev against L1, L2, Canberra and cosine distance (4 members converge) | −.04 to −.10 / −.03 / +.02 | broad / broad | Which pairs differ at their single most extreme sample stops matching which pairs differ on average: extreme-sample dissimilarity becomes pair-specific. **Confound:** heavier channel tails pass a Gaussian null. Raw distance facets read marginal shape in calibration. |
-| Gaussian against Kozachenko causally conditioned entropy | −.03, −.05, −.07 / −.03 / +.01 | broad / broad | A second Gaussian-against-model-free pair, falling with the MI pair. It converges with the headline. No Theiler correction. |
+| Gaussian against Kozachenko causally conditioned entropy | −.03, −.05, −.07 / −.03 / +.01 | broad / broad | Gaussian against model-free *conditional entropy of the target*. Both profiles are about 70% node-additive (node R² .76, .69), so this reads mostly which **channels** have non-Gaussian dynamics, not pair dependence. It fits the earlier node-level AIS rise. It is not a second instance of the pair-level MI result. |
 | Covariance against partial correlation (mediation; Empirical and MinCovDet) | −.01, −.09, −.08 / −.06 / .00 | partial / localised | **Estimator-specific.** The regularised LedoitWolf version does not move (−.007, 10/19 sessions). At T = 200 and M = 126 the unregularised precision is near singular, and MinCovDet's default support covers most of the window [I], so the two agreeing estimators are not independent. A Gaussian null does not reproduce how a near-singular precision reacts to non-Gaussian samples. Read it as an estimation effect localised to a few nodes, not as more mediation. |
 | Low against high band (`cohmag`, `plv`) | +.08, +.05, +.07 / .00 / −.04 | broad and partial / partial | Low- and high-band coupling rankings converge. Earlier, eyes-open carried 60–75% of this, so it is weakly drug-specific. |
 | Joint entropy against kernel MI (marginal entropies added) | +.05, +.05, +.03 / .00 / −.01 | broad / broad | Literal only: channel-entropy spread. |
@@ -94,7 +94,7 @@
 - **Regularised precision² against broadband coherence, PLV or PPC.** The edge drop keeps .59–.74, against random .96–1.06; nodes are BROAD.
   - The carrier edges recur, but eyes-open maps share them too (Jaccard .22–.24 against .16–.17).
   - It is mostly Chibi and Kin2.
-  - Inferred reading: structural high-leverage edges where regularisation acts, so estimator-localised [I].
+  - Withdrawn reading: "estimator-localised". The named-family check below shows four regularised estimators agree.
 - **Partial correlation against Kozachenko or kernel SI.** These have the largest net changes: −.14 to −.20, and −.21 to −.24 under KTMD. Nodes are localised.
   - The regularised `pcorr_LedoitWolf` versions move about a third as much (−.04, −.05; 16/19 and 18/19 sessions), so part of this survives regularisation.
   - Top nodes fall in the high electrode labels in every animal (George 73–78 and 120; Kin2 73, 93, 105–117; Su 91–94, 104–120; Chibi 74–102).
@@ -110,7 +110,7 @@
   - a second Gaussian-against-model-free pair falls (non-Gaussian dependence reorganises);
   - conditioning on the target's past matters less (precedence less tied to self-history);
   - extreme-sample dissimilarity becomes pair-specific (with a marginal-shape confound).
-- **Localised changes** are mostly estimator effects of unregularised precision. Part of the partial-correlation change survives regularisation.
+- **Localised changes.** The unregularised partial-correlation movers are estimator effects. The regularised precision × phase-coherence family is real and consistent, and it sits on a fixed set of high-leverage edges.
 
 ## Limits
 
@@ -119,3 +119,29 @@
 - **Data.** 2-s arm only; 4 animals, 2 each for KT and PF.
 - **Anatomy.** None without electrode maps.
 - **Selection.** Individual movers are post-selection; the eyes-open estimate is for the set.
+
+## Named families, all windows (post hoc, 17 November; `named.json`)
+
+Values are net change by agent (KT, KTMD, PF / MD / sleep / eyes-open in drug sessions), the primary sessions going the drug way, and node R² of the two profiles (awake). Node R² is the share of an SPI's edge profile explained by channel effects a_i + a_j; high means the SPI reads channel properties, not pair dependence.
+
+- **Gaussian against model-free, all minimal pairs.**
+  - Only same-time MI is consistent at the pair level: Kraskov-DCE −.022, −.025, −.021 (17/19); kernel −.041, −.022, −.026 (16/19). Lagged MI (`tlmi`) moves under KT and PF but not KTMD.
+  - `je`, `ce` and `xme` are inconsistent (8–15/19), mostly KT- or one-animal-driven, and kernel versions move in eyes-open too.
+  - CCE is 19/19 but channel-level, as above.
+  - TE (Kraskov) against GC is 19/19, but both partners are at noise reliability (.03–.14).
+- **Chebyshev (L∞) against L1, L2, Canberra, Bray–Curtis and cosine distance:**
+  - −.04 to −.08 under KT, KTMD and PF; MD −.03 to −.06; sleep +.01; eyes-open +.00 to +.01.
+  - 16–19/19 sessions, every animal negative except Su in two members.
+  - Node R² .13–.18, so pair-level.
+- **Regularised precision² against broadband (0–50 Hz) coherence, PLV and PPC**, over LedoitWolf, OAS, Shrunk and GraphicalLassoCV (12 coordinates):
+  - −.03 to −.06 under KT, KTMD and PF; MD −.01 to −.04; sleep −.01 to −.02; eyes-open ±.005.
+  - 18–19/19 sessions and every animal.
+  - The unregularised (Empirical, MinCovDet) versions are inconsistent in sign.
+- **Kernel lagged MI against kernel TE:**
+  - +.07, +.13, +.10; 0/19 against (all rise); every animal +.06 to +.12; MD +.02; sleep −.03; eyes-open −.02.
+  - The kernel TE profile is node-additive (R² .67), so its target channel dominates.
+  - The Kraskov-DCE version rises too (+.02 to +.03, 17/19), but its TE is at noise reliability. The Gaussian version (`tlmi_gaussian|gc_gaussian`) does not move.
+- **Mediation, covariance against partial correlation:**
+  - Empirical −.085, −.085 (17/19) and MinCovDet similar; LedoitWolf, OAS and Shrunk −.01 (10–12/19); GraphicalLasso unusable.
+  - Unregularised partial correlation is node-additive (R² .54–.59, against .02–.03 when regularised): near-singular precision at T = 200, M = 126 imposes channel-wise scaling.
+  - So the movement is how a near-singular estimate behaves, not more mediation.

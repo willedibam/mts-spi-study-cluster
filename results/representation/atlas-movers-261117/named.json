@@ -1,0 +1,1956 @@
+{
+"gaussian_vs_modelfree": [
+{
+"pair": "je_gaussian|je_kozachenko",
+"cls": "estimator: gaussian vs kozachenko",
+"z0": 0.688,
+"rel": [
+0.82,
+0.43
+],
+"node_r2": [
+0.13,
+0.18
+],
+"KT": -0.066,
+"KTMD": -0.02,
+"PF": -0.011,
+"MD": -0.003,
+"SLP": 0.003,
+"EO": 0.001,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": 0.004,
+"Kin2": 0.01,
+"Su": -0.078,
+"Chibi": -0.058
+}
+},
+{
+"pair": "je_gaussian|je_kernel_W-0.5",
+"cls": "estimator: gaussian vs kernel",
+"z0": 0.891,
+"rel": [
+0.82,
+0.68
+],
+"node_r2": [
+0.13,
+0.25
+],
+"KT": -0.079,
+"KTMD": -0.046,
+"PF": -0.02,
+"MD": 0.005,
+"SLP": -0.009,
+"EO": -0.03,
+"neg": 13,
+"n": 19,
+"animals": {
+"George": -0.024,
+"Kin2": -0.004,
+"Su": -0.155,
+"Chibi": -0.043
+}
+},
+{
+"pair": "ce_gaussian|ce_kozachenko",
+"cls": "estimator: gaussian vs kozachenko",
+"z0": 0.609,
+"rel": [
+0.82,
+0.34
+],
+"node_r2": [
+0.14,
+0.37
+],
+"KT": -0.043,
+"KTMD": -0.005,
+"PF": 0.008,
+"MD": -0.0,
+"SLP": 0.012,
+"EO": 0.002,
+"neg": 8,
+"n": 19,
+"animals": {
+"George": 0.009,
+"Kin2": 0.018,
+"Su": -0.044,
+"Chibi": -0.03
+}
+},
+{
+"pair": "ce_gaussian|ce_kernel_W-0.5",
+"cls": "estimator: gaussian vs kernel",
+"z0": 0.918,
+"rel": [
+0.82,
+0.72
+],
+"node_r2": [
+0.14,
+0.21
+],
+"KT": -0.058,
+"KTMD": -0.038,
+"PF": -0.019,
+"MD": 0.003,
+"SLP": -0.007,
+"EO": -0.02,
+"neg": 15,
+"n": 19,
+"animals": {
+"George": -0.016,
+"Kin2": -0.006,
+"Su": -0.123,
+"Chibi": -0.037
+}
+},
+{
+"pair": "cce_gaussian_n-5|cce_kozachenko_n-5",
+"cls": "estimator: gaussian vs kozachenko",
+"z0": 0.901,
+"rel": [
+0.76,
+0.64
+],
+"node_r2": [
+0.76,
+0.69
+],
+"KT": -0.027,
+"KTMD": -0.06,
+"PF": -0.107,
+"MD": -0.03,
+"SLP": 0.002,
+"EO": 0.001,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.065,
+"Kin2": -0.024,
+"Su": -0.032,
+"Chibi": -0.095
+}
+},
+{
+"pair": "xme_gaussian_k1|xme_kozachenko_k1",
+"cls": "estimator: gaussian vs kozachenko",
+"z0": 0.422,
+"rel": [
+0.68,
+0.15
+],
+"node_r2": [
+0.18,
+0.47
+],
+"KT": -0.055,
+"KTMD": -0.015,
+"PF": -0.004,
+"MD": 0.015,
+"SLP": 0.019,
+"EO": 0.007,
+"neg": 13,
+"n": 19,
+"animals": {
+"George": -0.004,
+"Kin2": 0.022,
+"Su": -0.068,
+"Chibi": -0.041
+}
+},
+{
+"pair": "xme_gaussian_k1|xme_kernel_W-0.5_k1",
+"cls": "estimator: gaussian vs kernel",
+"z0": 0.826,
+"rel": [
+0.68,
+0.5
+],
+"node_r2": [
+0.18,
+0.33
+],
+"KT": -0.066,
+"KTMD": -0.03,
+"PF": -0.009,
+"MD": 0.028,
+"SLP": 0.004,
+"EO": -0.031,
+"neg": 14,
+"n": 19,
+"animals": {
+"George": -0.012,
+"Kin2": 0.032,
+"Su": -0.128,
+"Chibi": -0.043
+}
+},
+{
+"pair": "xme_gaussian_k10|xme_kozachenko_k10",
+"cls": "estimator: gaussian vs kozachenko",
+"z0": 0.331,
+"rel": [
+0.67,
+0.17
+],
+"node_r2": [
+0.22,
+0.58
+],
+"KT": -0.057,
+"KTMD": -0.012,
+"PF": -0.025,
+"MD": 0.012,
+"SLP": 0.018,
+"EO": 0.002,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.012,
+"Kin2": 0.049,
+"Su": -0.05,
+"Chibi": -0.062
+}
+},
+{
+"pair": "si_gaussian_k-1|si_kozachenko_k-1",
+"cls": "estimator: gaussian vs kozachenko",
+"z0": 0.364,
+"rel": [
+0.87,
+0.13
+],
+"node_r2": [
+0.1,
+0.59
+],
+"KT": 0.019,
+"KTMD": 0.024,
+"PF": 0.011,
+"MD": 0.026,
+"SLP": 0.016,
+"EO": -0.007,
+"neg": 5,
+"n": 19,
+"animals": {
+"George": 0.017,
+"Kin2": 0.01,
+"Su": 0.055,
+"Chibi": 0.012
+}
+},
+{
+"pair": "si_gaussian_k-1|si_kernel_W-0.5_k-1",
+"cls": "estimator: gaussian vs kernel",
+"z0": 0.336,
+"rel": [
+0.87,
+0.46
+],
+"node_r2": [
+0.1,
+0.64
+],
+"KT": -0.02,
+"KTMD": -0.039,
+"PF": -0.143,
+"MD": -0.052,
+"SLP": -0.014,
+"EO": -0.028,
+"neg": 13,
+"n": 19,
+"animals": {
+"George": -0.081,
+"Kin2": -0.126,
+"Su": 0.056,
+"Chibi": -0.05
+}
+},
+{
+"pair": "mi_gaussian|mi_kraskov_NN-4",
+"cls": "estimator: gaussian vs kraskov",
+"z0": 0.905,
+"rel": [
+0.82,
+0.7
+],
+"node_r2": [
+0.14,
+0.14
+],
+"KT": -0.033,
+"KTMD": -0.019,
+"PF": -0.02,
+"MD": -0.007,
+"SLP": 0.001,
+"EO": 0.004,
+"neg": 15,
+"n": 19,
+"animals": {
+"George": 0.0,
+"Kin2": -0.007,
+"Su": -0.046,
+"Chibi": -0.044
+}
+},
+{
+"pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+"cls": "estimator: gaussian vs kraskov_DCE",
+"z0": 0.912,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.14,
+0.14
+],
+"KT": -0.022,
+"KTMD": -0.025,
+"PF": -0.021,
+"MD": -0.004,
+"SLP": 0.002,
+"EO": 0.002,
+"neg": 17,
+"n": 19,
+"animals": {
+"George": -0.013,
+"Kin2": -0.01,
+"Su": -0.033,
+"Chibi": -0.039
+}
+},
+{
+"pair": "mi_gaussian|mi_kernel_W-0.25",
+"cls": "estimator: gaussian vs kernel",
+"z0": 0.894,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.14,
+0.16
+],
+"KT": -0.041,
+"KTMD": -0.022,
+"PF": -0.026,
+"MD": -0.003,
+"SLP": 0.005,
+"EO": 0.001,
+"neg": 16,
+"n": 19,
+"animals": {
+"George": -0.006,
+"Kin2": -0.006,
+"Su": -0.048,
+"Chibi": -0.052
+}
+},
+{
+"pair": "tlmi_gaussian|tlmi_kraskov_NN-4",
+"cls": "estimator: gaussian vs kraskov",
+"z0": 0.79,
+"rel": [
+0.68,
+0.46
+],
+"node_r2": [
+0.19,
+0.19
+],
+"KT": -0.053,
+"KTMD": -0.027,
+"PF": -0.035,
+"MD": 0.004,
+"SLP": 0.009,
+"EO": 0.009,
+"neg": 14,
+"n": 19,
+"animals": {
+"George": -0.003,
+"Kin2": 0.015,
+"Su": -0.076,
+"Chibi": -0.075
+}
+},
+{
+"pair": "tlmi_gaussian|tlmi_kraskov_NN-4_DCE-AUTO",
+"cls": "estimator: gaussian vs kraskov_DCE",
+"z0": 0.814,
+"rel": [
+0.68,
+0.48
+],
+"node_r2": [
+0.19,
+0.15
+],
+"KT": -0.035,
+"KTMD": -0.033,
+"PF": -0.032,
+"MD": 0.005,
+"SLP": 0.008,
+"EO": 0.006,
+"neg": 15,
+"n": 19,
+"animals": {
+"George": -0.014,
+"Kin2": 0.008,
+"Su": -0.064,
+"Chibi": -0.061
+}
+},
+{
+"pair": "tlmi_gaussian|tlmi_kernel_W-0.25",
+"cls": "estimator: gaussian vs kernel",
+"z0": 0.765,
+"rel": [
+0.68,
+0.44
+],
+"node_r2": [
+0.19,
+0.22
+],
+"KT": -0.06,
+"KTMD": -0.024,
+"PF": -0.036,
+"MD": 0.011,
+"SLP": 0.018,
+"EO": 0.006,
+"neg": 14,
+"n": 19,
+"animals": {
+"George": -0.005,
+"Kin2": 0.022,
+"Su": -0.065,
+"Chibi": -0.08
+}
+},
+{
+"pair": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1|gc_gaussian_k-1_kt-1_l-1_lt-1",
+"cls": "estimator: gaussian vs kraskov",
+"z0": 0.273,
+"rel": [
+0.04,
+0.14
+],
+"node_r2": [
+0.09,
+0.18
+],
+"KT": -0.037,
+"KTMD": -0.058,
+"PF": -0.079,
+"MD": 0.016,
+"SLP": -0.003,
+"EO": -0.021,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.04,
+"Kin2": -0.063,
+"Su": -0.07,
+"Chibi": -0.07
+}
+},
+{
+"pair": "te_kernel_W-0.25_k-1|gc_gaussian_k-1_kt-1_l-1_lt-1",
+"cls": "estimator: gaussian vs kernel",
+"z0": -0.026,
+"rel": [
+0.49,
+0.14
+],
+"node_r2": [
+0.67,
+0.18
+],
+"KT": 0.028,
+"KTMD": 0.057,
+"PF": -0.03,
+"MD": 0.011,
+"SLP": -0.022,
+"EO": -0.013,
+"neg": 6,
+"n": 19,
+"animals": {
+"George": 0.041,
+"Kin2": 0.04,
+"Su": 0.071,
+"Chibi": -0.0
+}
+},
+{
+"pair": "gc_gaussian_k-1_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+"cls": "estimator: gaussian vs kraskov_DCE",
+"z0": 0.275,
+"rel": [
+0.14,
+0.03
+],
+"node_r2": [
+0.18,
+0.07
+],
+"KT": -0.058,
+"KTMD": -0.017,
+"PF": -0.075,
+"MD": 0.007,
+"SLP": -0.004,
+"EO": -0.022,
+"neg": 15,
+"n": 19,
+"animals": {
+"George": -0.014,
+"Kin2": -0.009,
+"Su": -0.059,
+"Chibi": -0.07
+}
+},
+{
+"pair": "gc_gaussian_k-1_kt-1_l-1_lt-1|te_symbolic_k-3",
+"cls": "estimator: gaussian vs symbolic",
+"z0": 0.053,
+"rel": [
+0.14,
+0.19
+],
+"node_r2": [
+0.18,
+0.43
+],
+"KT": 0.007,
+"KTMD": -0.004,
+"PF": 0.018,
+"MD": -0.044,
+"SLP": 0.023,
+"EO": -0.001,
+"neg": 9,
+"n": 19,
+"animals": {
+"George": 0.006,
+"Kin2": -0.028,
+"Su": 0.028,
+"Chibi": 0.002
+}
+},
+{
+"pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+"cls": "estimator: gaussian vs kraskov_DCE",
+"z0": 0.912,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.14,
+0.14
+],
+"KT": -0.022,
+"KTMD": -0.025,
+"PF": -0.021,
+"MD": -0.004,
+"SLP": 0.002,
+"EO": 0.002,
+"neg": 17,
+"n": 19,
+"animals": {
+"George": -0.013,
+"Kin2": -0.01,
+"Su": -0.033,
+"Chibi": -0.039
+}
+},
+{
+"pair": "mi_gaussian|mi_kraskov_NN-4",
+"cls": "estimator: gaussian vs kraskov",
+"z0": 0.905,
+"rel": [
+0.82,
+0.7
+],
+"node_r2": [
+0.14,
+0.14
+],
+"KT": -0.033,
+"KTMD": -0.019,
+"PF": -0.02,
+"MD": -0.007,
+"SLP": 0.001,
+"EO": 0.004,
+"neg": 15,
+"n": 19,
+"animals": {
+"George": 0.0,
+"Kin2": -0.007,
+"Su": -0.046,
+"Chibi": -0.044
+}
+}
+],
+"target_past": [
+{
+"pair": "tlmi_gaussian|gc_gaussian_k-1_kt-1_l-1_lt-1",
+"cls": "conditioning on the target past",
+"z0": 0.261,
+"rel": [
+0.68,
+0.14
+],
+"node_r2": [
+0.19,
+0.18
+],
+"KT": -0.051,
+"KTMD": -0.004,
+"PF": -0.003,
+"MD": 0.004,
+"SLP": 0.035,
+"EO": -0.017,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.024,
+"Kin2": 0.03,
+"Su": -0.013,
+"Chibi": -0.024
+}
+},
+{
+"pair": "tlmi_kraskov_NN-4_DCE-AUTO|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+"cls": "conditioning on the target past",
+"z0": 0.275,
+"rel": [
+0.48,
+0.03
+],
+"node_r2": [
+0.15,
+0.07
+],
+"KT": 0.031,
+"KTMD": 0.023,
+"PF": 0.018,
+"MD": 0.012,
+"SLP": 0.009,
+"EO": 0.001,
+"neg": 2,
+"n": 19,
+"animals": {
+"George": 0.026,
+"Kin2": 0.024,
+"Su": 0.029,
+"Chibi": 0.019
+}
+},
+{
+"pair": "tlmi_kernel_W-0.25|te_kernel_W-0.25_k-1",
+"cls": "conditioning on the target past",
+"z0": -0.324,
+"rel": [
+0.44,
+0.49
+],
+"node_r2": [
+0.22,
+0.67
+],
+"KT": 0.072,
+"KTMD": 0.126,
+"PF": 0.1,
+"MD": 0.019,
+"SLP": -0.028,
+"EO": -0.024,
+"neg": 0,
+"n": 19,
+"animals": {
+"George": 0.122,
+"Kin2": 0.11,
+"Su": 0.06,
+"Chibi": 0.119
+}
+}
+],
+"chebyshev": [
+{
+"pair": "pdist_euclidean|pdist_chebyshev",
+"cls": "estimator: chebyshev vs euclidean",
+"z0": 0.783,
+"rel": [
+0.83,
+0.52
+],
+"node_r2": [
+0.13,
+0.18
+],
+"KT": -0.037,
+"KTMD": -0.048,
+"PF": -0.053,
+"MD": -0.027,
+"SLP": 0.012,
+"EO": 0.01,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.048,
+"Kin2": -0.041,
+"Su": -0.021,
+"Chibi": -0.061
+}
+},
+{
+"pair": "pdist_cityblock|pdist_chebyshev",
+"cls": "estimator: chebyshev vs cityblock",
+"z0": 0.716,
+"rel": [
+0.82,
+0.52
+],
+"node_r2": [
+0.14,
+0.18
+],
+"KT": -0.069,
+"KTMD": -0.084,
+"PF": -0.082,
+"MD": -0.034,
+"SLP": 0.012,
+"EO": 0.002,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.081,
+"Kin2": -0.06,
+"Su": -0.073,
+"Chibi": -0.094
+}
+},
+{
+"pair": "pdist_cosine|pdist_chebyshev",
+"cls": "estimator: chebyshev vs cosine",
+"z0": 0.771,
+"rel": [
+0.81,
+0.52
+],
+"node_r2": [
+0.14,
+0.18
+],
+"KT": -0.041,
+"KTMD": -0.045,
+"PF": -0.056,
+"MD": -0.034,
+"SLP": 0.013,
+"EO": 0.013,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.047,
+"Kin2": -0.043,
+"Su": -0.009,
+"Chibi": -0.067
+}
+},
+{
+"pair": "pdist_chebyshev|pdist_canberra",
+"cls": "estimator: canberra vs chebyshev",
+"z0": 0.706,
+"rel": [
+0.52,
+0.79
+],
+"node_r2": [
+0.18,
+0.13
+],
+"KT": -0.066,
+"KTMD": -0.07,
+"PF": -0.073,
+"MD": -0.026,
+"SLP": 0.015,
+"EO": 0.008,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.066,
+"Kin2": -0.038,
+"Su": -0.066,
+"Chibi": -0.092
+}
+},
+{
+"pair": "pdist_chebyshev|pdist_braycurtis",
+"cls": "estimator: braycurtis vs chebyshev",
+"z0": 0.698,
+"rel": [
+0.52,
+0.76
+],
+"node_r2": [
+0.18,
+0.15
+],
+"KT": -0.066,
+"KTMD": -0.05,
+"PF": -0.064,
+"MD": -0.055,
+"SLP": 0.014,
+"EO": 0.013,
+"neg": 16,
+"n": 19,
+"animals": {
+"George": -0.055,
+"Kin2": -0.051,
+"Su": 0.002,
+"Chibi": -0.091
+}
+}
+],
+"mediation": [
+{
+"pair": "cov_EmpiricalCovariance|prec_EmpiricalCovariance",
+"cls": "mediation",
+"z0": -0.14,
+"rel": [
+0.81,
+0.5
+],
+"node_r2": [
+0.14,
+0.47
+],
+"KT": -0.036,
+"KTMD": 0.044,
+"PF": 0.052,
+"MD": 0.035,
+"SLP": 0.003,
+"EO": -0.006,
+"neg": 4,
+"n": 19,
+"animals": {
+"George": 0.041,
+"Kin2": 0.032,
+"Su": 0.073,
+"Chibi": -0.009
+}
+},
+{
+"pair": "cov_EmpiricalCovariance|pcorr_EmpiricalCovariance",
+"cls": "mediation (normalised)",
+"z0": 0.161,
+"rel": [
+0.81,
+0.52
+],
+"node_r2": [
+0.14,
+0.59
+],
+"KT": 0.004,
+"KTMD": -0.085,
+"PF": -0.085,
+"MD": -0.055,
+"SLP": -0.006,
+"EO": 0.018,
+"neg": 17,
+"n": 19,
+"animals": {
+"George": -0.063,
+"Kin2": -0.04,
+"Su": -0.123,
+"Chibi": -0.054
+}
+},
+{
+"pair": "cov_GraphicalLasso|prec_GraphicalLasso",
+"cls": "mediation",
+"z0": -0.406,
+"rel": [
+0,
+0
+],
+"node_r2": [
+0.12,
+0.01
+],
+"KT": NaN,
+"KTMD": NaN,
+"PF": NaN,
+"MD": NaN,
+"SLP": NaN,
+"EO": NaN,
+"neg": 4,
+"n": 19,
+"animals": {
+"George": NaN,
+"Kin2": NaN,
+"Su": 0.007,
+"Chibi": NaN
+}
+},
+{
+"pair": "cov_GraphicalLasso|pcorr_GraphicalLasso",
+"cls": "mediation (normalised)",
+"z0": 0.414,
+"rel": [
+0,
+0
+],
+"node_r2": [
+0.12,
+0.01
+],
+"KT": NaN,
+"KTMD": NaN,
+"PF": NaN,
+"MD": NaN,
+"SLP": NaN,
+"EO": NaN,
+"neg": 4,
+"n": 19,
+"animals": {
+"George": NaN,
+"Kin2": NaN,
+"Su": -0.012,
+"Chibi": NaN
+}
+},
+{
+"pair": "cov_GraphicalLassoCV|prec_GraphicalLassoCV",
+"cls": "mediation",
+"z0": -0.574,
+"rel": [
+0,
+0
+],
+"node_r2": [
+0.15,
+0.01
+],
+"KT": 0.001,
+"KTMD": -0.029,
+"PF": -0.045,
+"MD": 0.003,
+"SLP": -0.033,
+"EO": 0.004,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.02,
+"Kin2": -0.042,
+"Su": -0.005,
+"Chibi": -0.035
+}
+},
+{
+"pair": "cov_GraphicalLassoCV|pcorr_GraphicalLassoCV",
+"cls": "mediation (normalised)",
+"z0": 0.563,
+"rel": [
+0,
+0
+],
+"node_r2": [
+0.15,
+0.01
+],
+"KT": -0.0,
+"KTMD": 0.026,
+"PF": 0.04,
+"MD": -0.004,
+"SLP": 0.031,
+"EO": -0.005,
+"neg": 7,
+"n": 19,
+"animals": {
+"George": 0.018,
+"Kin2": 0.039,
+"Su": 0.003,
+"Chibi": 0.033
+}
+},
+{
+"pair": "cov_LedoitWolf|prec_LedoitWolf",
+"cls": "mediation",
+"z0": -0.408,
+"rel": [
+0.81,
+0.54
+],
+"node_r2": [
+0.14,
+0.03
+],
+"KT": -0.004,
+"KTMD": 0.011,
+"PF": 0.004,
+"MD": 0.013,
+"SLP": 0.018,
+"EO": 0.006,
+"neg": 10,
+"n": 19,
+"animals": {
+"George": 0.016,
+"Kin2": 0.036,
+"Su": -0.001,
+"Chibi": -0.016
+}
+},
+{
+"pair": "cov_LedoitWolf|pcorr_LedoitWolf",
+"cls": "mediation (normalised)",
+"z0": 0.384,
+"rel": [
+0.81,
+0.5
+],
+"node_r2": [
+0.14,
+0.03
+],
+"KT": 0.005,
+"KTMD": -0.012,
+"PF": -0.008,
+"MD": -0.014,
+"SLP": -0.02,
+"EO": -0.006,
+"neg": 10,
+"n": 19,
+"animals": {
+"George": -0.017,
+"Kin2": -0.035,
+"Su": 0.0,
+"Chibi": 0.014
+}
+},
+{
+"pair": "cov_MinCovDet|prec_MinCovDet",
+"cls": "mediation",
+"z0": -0.125,
+"rel": [
+0.79,
+0.41
+],
+"node_r2": [
+0.14,
+0.45
+],
+"KT": -0.033,
+"KTMD": 0.041,
+"PF": 0.049,
+"MD": 0.034,
+"SLP": 0.001,
+"EO": -0.01,
+"neg": 3,
+"n": 19,
+"animals": {
+"George": 0.035,
+"Kin2": 0.024,
+"Su": 0.072,
+"Chibi": -0.003
+}
+},
+{
+"pair": "cov_MinCovDet|pcorr_MinCovDet",
+"cls": "mediation (normalised)",
+"z0": 0.142,
+"rel": [
+0.79,
+0.41
+],
+"node_r2": [
+0.14,
+0.54
+],
+"KT": 0.003,
+"KTMD": -0.074,
+"PF": -0.075,
+"MD": -0.051,
+"SLP": -0.005,
+"EO": 0.021,
+"neg": 17,
+"n": 19,
+"animals": {
+"George": -0.052,
+"Kin2": -0.035,
+"Su": -0.109,
+"Chibi": -0.05
+}
+},
+{
+"pair": "cov_OAS|prec_OAS",
+"cls": "mediation",
+"z0": -0.406,
+"rel": [
+0.81,
+0.54
+],
+"node_r2": [
+0.14,
+0.03
+],
+"KT": 0.003,
+"KTMD": 0.016,
+"PF": 0.009,
+"MD": 0.014,
+"SLP": 0.019,
+"EO": 0.01,
+"neg": 8,
+"n": 19,
+"animals": {
+"George": 0.023,
+"Kin2": 0.034,
+"Su": 0.01,
+"Chibi": -0.012
+}
+},
+{
+"pair": "cov_OAS|pcorr_OAS",
+"cls": "mediation (normalised)",
+"z0": 0.382,
+"rel": [
+0.81,
+0.5
+],
+"node_r2": [
+0.14,
+0.03
+],
+"KT": -0.002,
+"KTMD": -0.016,
+"PF": -0.014,
+"MD": -0.015,
+"SLP": -0.021,
+"EO": -0.01,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.024,
+"Kin2": -0.034,
+"Su": -0.011,
+"Chibi": 0.01
+}
+},
+{
+"pair": "cov_ShrunkCovariance|prec_ShrunkCovariance",
+"cls": "mediation",
+"z0": -0.452,
+"rel": [
+0.81,
+0.57
+],
+"node_r2": [
+0.14,
+0.03
+],
+"KT": 0.004,
+"KTMD": 0.013,
+"PF": 0.007,
+"MD": 0.008,
+"SLP": 0.013,
+"EO": 0.007,
+"neg": 8,
+"n": 19,
+"animals": {
+"George": 0.019,
+"Kin2": 0.024,
+"Su": 0.009,
+"Chibi": -0.008
+}
+},
+{
+"pair": "cov_ShrunkCovariance|pcorr_ShrunkCovariance",
+"cls": "mediation (normalised)",
+"z0": 0.43,
+"rel": [
+0.81,
+0.54
+],
+"node_r2": [
+0.14,
+0.02
+],
+"KT": -0.003,
+"KTMD": -0.013,
+"PF": -0.011,
+"MD": -0.009,
+"SLP": -0.014,
+"EO": -0.007,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.02,
+"Kin2": -0.024,
+"Su": -0.009,
+"Chibi": 0.007
+}
+},
+{
+"pair": "cov-sq_EmpiricalCovariance|prec-sq_EmpiricalCovariance",
+"cls": "mediation",
+"z0": 0.12,
+"rel": [
+0.77,
+0.56
+],
+"node_r2": [
+0.19,
+0.33
+],
+"KT": 0.099,
+"KTMD": 0.025,
+"PF": 0.03,
+"MD": -0.0,
+"SLP": 0.007,
+"EO": 0.02,
+"neg": 8,
+"n": 19,
+"animals": {
+"George": -0.027,
+"Kin2": -0.016,
+"Su": 0.044,
+"Chibi": 0.149
+}
+},
+{
+"pair": "cov-sq_GraphicalLasso|prec-sq_GraphicalLasso",
+"cls": "mediation",
+"z0": 0.432,
+"rel": [
+0,
+0
+],
+"node_r2": [
+0.14,
+0.02
+],
+"KT": NaN,
+"KTMD": NaN,
+"PF": NaN,
+"MD": NaN,
+"SLP": NaN,
+"EO": NaN,
+"neg": 3,
+"n": 19,
+"animals": {
+"George": NaN,
+"Kin2": NaN,
+"Su": 0.038,
+"Chibi": NaN
+}
+},
+{
+"pair": "cov-sq_GraphicalLassoCV|prec-sq_GraphicalLassoCV",
+"cls": "mediation",
+"z0": 0.671,
+"rel": [
+0,
+0
+],
+"node_r2": [
+0.16,
+0.01
+],
+"KT": 0.017,
+"KTMD": 0.021,
+"PF": 0.02,
+"MD": -0.003,
+"SLP": 0.016,
+"EO": -0.005,
+"neg": 6,
+"n": 19,
+"animals": {
+"George": 0.016,
+"Kin2": 0.023,
+"Su": 0.015,
+"Chibi": 0.026
+}
+},
+{
+"pair": "cov-sq_LedoitWolf|prec-sq_LedoitWolf",
+"cls": "mediation",
+"z0": 0.504,
+"rel": [
+0.77,
+0.82
+],
+"node_r2": [
+0.19,
+0.01
+],
+"KT": -0.004,
+"KTMD": -0.019,
+"PF": -0.02,
+"MD": -0.026,
+"SLP": -0.033,
+"EO": -0.008,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.027,
+"Kin2": -0.051,
+"Su": -0.003,
+"Chibi": 0.008
+}
+},
+{
+"pair": "cov-sq_MinCovDet|prec-sq_MinCovDet",
+"cls": "mediation",
+"z0": 0.113,
+"rel": [
+0.74,
+0.46
+],
+"node_r2": [
+0.19,
+0.35
+],
+"KT": 0.072,
+"KTMD": 0.018,
+"PF": 0.023,
+"MD": 0.001,
+"SLP": 0.017,
+"EO": 0.007,
+"neg": 7,
+"n": 19,
+"animals": {
+"George": -0.022,
+"Kin2": -0.022,
+"Su": 0.028,
+"Chibi": 0.118
+}
+},
+{
+"pair": "cov-sq_OAS|prec-sq_OAS",
+"cls": "mediation",
+"z0": 0.504,
+"rel": [
+0.77,
+0.81
+],
+"node_r2": [
+0.19,
+0.01
+],
+"KT": -0.004,
+"KTMD": -0.019,
+"PF": -0.021,
+"MD": -0.026,
+"SLP": -0.033,
+"EO": -0.009,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.028,
+"Kin2": -0.049,
+"Su": -0.005,
+"Chibi": 0.008
+}
+},
+{
+"pair": "cov-sq_ShrunkCovariance|prec-sq_ShrunkCovariance",
+"cls": "mediation",
+"z0": 0.516,
+"rel": [
+0.77,
+0.82
+],
+"node_r2": [
+0.19,
+0.01
+],
+"KT": -0.002,
+"KTMD": -0.021,
+"PF": -0.027,
+"MD": -0.027,
+"SLP": -0.032,
+"EO": -0.009,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.03,
+"Kin2": -0.049,
+"Su": -0.005,
+"Chibi": 0.004
+}
+}
+],
+"precision_phase": [
+{
+"pair": "prec-sq_EmpiricalCovariance|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.149,
+"rel": [
+0.56,
+0.69
+],
+"node_r2": [
+0.33,
+0.18
+],
+"KT": 0.08,
+"KTMD": -0.02,
+"PF": -0.069,
+"MD": -0.016,
+"SLP": 0.004,
+"EO": 0.02,
+"neg": 14,
+"n": 19,
+"animals": {
+"George": -0.102,
+"Kin2": -0.029,
+"Su": 0.023,
+"Chibi": 0.093
+}
+},
+{
+"pair": "prec-sq_EmpiricalCovariance|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.135,
+"rel": [
+0.56,
+0.69
+],
+"node_r2": [
+0.33,
+0.13
+],
+"KT": 0.075,
+"KTMD": -0.022,
+"PF": -0.063,
+"MD": -0.001,
+"SLP": 0.006,
+"EO": 0.023,
+"neg": 13,
+"n": 19,
+"animals": {
+"George": -0.104,
+"Kin2": -0.026,
+"Su": 0.018,
+"Chibi": 0.094
+}
+},
+{
+"pair": "prec-sq_EmpiricalCovariance|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.147,
+"rel": [
+0.56,
+0.73
+],
+"node_r2": [
+0.33,
+0.12
+],
+"KT": 0.078,
+"KTMD": -0.024,
+"PF": -0.059,
+"MD": 0.0,
+"SLP": 0.005,
+"EO": 0.024,
+"neg": 13,
+"n": 19,
+"animals": {
+"George": -0.108,
+"Kin2": -0.03,
+"Su": 0.018,
+"Chibi": 0.101
+}
+},
+{
+"pair": "prec-sq_GraphicalLasso|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.425,
+"rel": [
+0,
+0.69
+],
+"node_r2": [
+0.02,
+0.18
+],
+"KT": NaN,
+"KTMD": NaN,
+"PF": NaN,
+"MD": NaN,
+"SLP": NaN,
+"EO": NaN,
+"neg": 5,
+"n": 19,
+"animals": {
+"George": NaN,
+"Kin2": NaN,
+"Su": 0.023,
+"Chibi": NaN
+}
+},
+{
+"pair": "prec-sq_GraphicalLasso|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.416,
+"rel": [
+0,
+0.69
+],
+"node_r2": [
+0.02,
+0.13
+],
+"KT": NaN,
+"KTMD": NaN,
+"PF": NaN,
+"MD": NaN,
+"SLP": NaN,
+"EO": NaN,
+"neg": 5,
+"n": 19,
+"animals": {
+"George": NaN,
+"Kin2": NaN,
+"Su": 0.013,
+"Chibi": NaN
+}
+},
+{
+"pair": "prec-sq_GraphicalLasso|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.456,
+"rel": [
+0,
+0.73
+],
+"node_r2": [
+0.02,
+0.12
+],
+"KT": NaN,
+"KTMD": NaN,
+"PF": NaN,
+"MD": NaN,
+"SLP": NaN,
+"EO": NaN,
+"neg": 5,
+"n": 19,
+"animals": {
+"George": NaN,
+"Kin2": NaN,
+"Su": 0.009,
+"Chibi": NaN
+}
+},
+{
+"pair": "prec-sq_GraphicalLassoCV|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.567,
+"rel": [
+0,
+0.69
+],
+"node_r2": [
+0.01,
+0.18
+],
+"KT": -0.035,
+"KTMD": -0.037,
+"PF": -0.05,
+"MD": -0.025,
+"SLP": -0.009,
+"EO": 0.005,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.053,
+"Kin2": -0.028,
+"Su": -0.023,
+"Chibi": -0.037
+}
+},
+{
+"pair": "prec-sq_GraphicalLassoCV|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.561,
+"rel": [
+0,
+0.69
+],
+"node_r2": [
+0.01,
+0.13
+],
+"KT": -0.04,
+"KTMD": -0.034,
+"PF": -0.046,
+"MD": -0.008,
+"SLP": -0.006,
+"EO": -0.003,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.051,
+"Kin2": -0.017,
+"Su": -0.032,
+"Chibi": -0.035
+}
+},
+{
+"pair": "prec-sq_GraphicalLassoCV|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.598,
+"rel": [
+0,
+0.73
+],
+"node_r2": [
+0.01,
+0.12
+],
+"KT": -0.042,
+"KTMD": -0.035,
+"PF": -0.045,
+"MD": -0.009,
+"SLP": -0.007,
+"EO": -0.003,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.05,
+"Kin2": -0.019,
+"Su": -0.035,
+"Chibi": -0.038
+}
+},
+{
+"pair": "prec-sq_LedoitWolf|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.536,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.01,
+0.18
+],
+"KT": -0.033,
+"KTMD": -0.043,
+"PF": -0.055,
+"MD": -0.033,
+"SLP": -0.022,
+"EO": 0.003,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.06,
+"Kin2": -0.05,
+"Su": -0.024,
+"Chibi": -0.031
+}
+},
+{
+"pair": "prec-sq_LedoitWolf|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.531,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.01,
+0.13
+],
+"KT": -0.036,
+"KTMD": -0.035,
+"PF": -0.05,
+"MD": -0.012,
+"SLP": -0.017,
+"EO": -0.003,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.054,
+"Kin2": -0.033,
+"Su": -0.028,
+"Chibi": -0.027
+}
+},
+{
+"pair": "prec-sq_LedoitWolf|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.564,
+"rel": [
+0.82,
+0.73
+],
+"node_r2": [
+0.01,
+0.12
+],
+"KT": -0.039,
+"KTMD": -0.035,
+"PF": -0.05,
+"MD": -0.012,
+"SLP": -0.018,
+"EO": -0.003,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.053,
+"Kin2": -0.033,
+"Su": -0.03,
+"Chibi": -0.03
+}
+},
+{
+"pair": "prec-sq_MinCovDet|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.138,
+"rel": [
+0.46,
+0.69
+],
+"node_r2": [
+0.35,
+0.18
+],
+"KT": 0.049,
+"KTMD": -0.012,
+"PF": -0.056,
+"MD": -0.006,
+"SLP": 0.008,
+"EO": 0.014,
+"neg": 13,
+"n": 19,
+"animals": {
+"George": -0.087,
+"Kin2": -0.029,
+"Su": 0.022,
+"Chibi": 0.078
+}
+},
+{
+"pair": "prec-sq_MinCovDet|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.124,
+"rel": [
+0.46,
+0.69
+],
+"node_r2": [
+0.35,
+0.13
+],
+"KT": 0.047,
+"KTMD": -0.015,
+"PF": -0.051,
+"MD": 0.008,
+"SLP": 0.007,
+"EO": 0.018,
+"neg": 12,
+"n": 19,
+"animals": {
+"George": -0.091,
+"Kin2": -0.026,
+"Su": 0.017,
+"Chibi": 0.081
+}
+},
+{
+"pair": "prec-sq_MinCovDet|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.136,
+"rel": [
+0.46,
+0.73
+],
+"node_r2": [
+0.35,
+0.12
+],
+"KT": 0.049,
+"KTMD": -0.017,
+"PF": -0.05,
+"MD": 0.01,
+"SLP": 0.006,
+"EO": 0.018,
+"neg": 11,
+"n": 19,
+"animals": {
+"George": -0.096,
+"Kin2": -0.029,
+"Su": 0.018,
+"Chibi": 0.086
+}
+},
+{
+"pair": "prec-sq_OAS|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.535,
+"rel": [
+0.81,
+0.69
+],
+"node_r2": [
+0.01,
+0.18
+],
+"KT": -0.033,
+"KTMD": -0.043,
+"PF": -0.056,
+"MD": -0.033,
+"SLP": -0.022,
+"EO": 0.003,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.06,
+"Kin2": -0.048,
+"Su": -0.026,
+"Chibi": -0.031
+}
+},
+{
+"pair": "prec-sq_OAS|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.53,
+"rel": [
+0.81,
+0.69
+],
+"node_r2": [
+0.01,
+0.13
+],
+"KT": -0.036,
+"KTMD": -0.034,
+"PF": -0.051,
+"MD": -0.012,
+"SLP": -0.017,
+"EO": -0.004,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.054,
+"Kin2": -0.031,
+"Su": -0.029,
+"Chibi": -0.027
+}
+},
+{
+"pair": "prec-sq_OAS|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.563,
+"rel": [
+0.81,
+0.73
+],
+"node_r2": [
+0.01,
+0.12
+],
+"KT": -0.039,
+"KTMD": -0.034,
+"PF": -0.051,
+"MD": -0.012,
+"SLP": -0.018,
+"EO": -0.004,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.053,
+"Kin2": -0.031,
+"Su": -0.031,
+"Chibi": -0.03
+}
+},
+{
+"pair": "prec-sq_ShrunkCovariance|cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.542,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.01,
+0.18
+],
+"KT": -0.033,
+"KTMD": -0.043,
+"PF": -0.062,
+"MD": -0.036,
+"SLP": -0.02,
+"EO": 0.003,
+"neg": 19,
+"n": 19,
+"animals": {
+"George": -0.06,
+"Kin2": -0.047,
+"Su": -0.026,
+"Chibi": -0.036
+}
+},
+{
+"pair": "prec-sq_ShrunkCovariance|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.537,
+"rel": [
+0.82,
+0.69
+],
+"node_r2": [
+0.01,
+0.13
+],
+"KT": -0.037,
+"KTMD": -0.034,
+"PF": -0.058,
+"MD": -0.015,
+"SLP": -0.016,
+"EO": -0.004,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.055,
+"Kin2": -0.03,
+"Su": -0.03,
+"Chibi": -0.03
+}
+},
+{
+"pair": "prec-sq_ShrunkCovariance|ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+"cls": null,
+"z0": 0.568,
+"rel": [
+0.82,
+0.73
+],
+"node_r2": [
+0.01,
+0.12
+],
+"KT": -0.039,
+"KTMD": -0.034,
+"PF": -0.057,
+"MD": -0.016,
+"SLP": -0.017,
+"EO": -0.004,
+"neg": 18,
+"n": 19,
+"animals": {
+"George": -0.054,
+"Kin2": -0.03,
+"Su": -0.032,
+"Chibi": -0.033
+}
+}
+]
+}
