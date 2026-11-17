@@ -1,0 +1,205 @@
+% =====================================================================
+% TEMPLATE SWITCH: leave \naturetrue commented for LoG; uncomment it for
+% Springer Nature / Nature Portfolio (sn-jnl class, sn-nature reference style).
+% Everything below branches on \ifnature; nothing else needs editing.
+% =====================================================================
+\newif\ifnature
+\newif\ifnatureprint
+% \naturetrue
+% \natureprinttrue	% with \naturetrue: preview at Nature's printed page width
+						% (two 89 mm columns, 183 mm text block; figures span both columns)
+
+% Both classes load xcolor; pass extra options here, before the class, to avoid an option clash.
+\PassOptionsToPackage{table}{xcolor}        % \rowcolors / \rowcolor in tables
+
+\ifnature
+  % --- Springer Nature (template v3.1, Dec 2024) ---------------------------
+  % sn-jnl already loads hyperref, geometry and natbib[numbers,sort&compress],
+  % and sets \bibliographystyle{sn-nature}. Do NOT load natbib or hyperref yourself.
+  % The submission template is a generic single column with a 31 pc (131 mm) text width,
+  % not Nature's printed layout, so figures drawn at 183 mm are shown at ~72% size.
+  \ifnatureprint
+    \documentclass[pdflatex,sn-nature,iicol]{sn-jnl}
+    \geometry{text={183mm,247mm},columnsep=5mm,bindingoffset=0mm,hcentering}
+    \setlength\columnhsize{89mm}
+  \else
+    \documentclass[pdflatex,sn-nature]{sn-jnl}
+    % \documentclass[pdflatex,sn-nature,lineno]{sn-jnl}	% with line numbers
+    % \documentclass[pdflatex,sn-nature,referee]{sn-jnl}	% double-spaced referee copy
+  \fi
+  \usepackage{xcolor}
+  \usepackage{amsmath}
+  \hypersetup{bookmarksdepth=2}
+\else
+  % --- LoG 2025 --------------------------------------------------------------
+  \documentclass{article}
+  \usepackage{log_2025}						% for camera-ready version
+  % \usepackage[review]{log_2025}			% for anonymous submission to proceedings track
+  % \usepackage[review,eabstract]{log_2025}	% for anonymous submission to extended abstract track
+  % \usepackage[preprint]{log_2025}			% for preprint version
+  % \usepackage[eabstract]{log_2025}		% for accepted extended abstract papers
+  % Citation colour: the style file sets citecolor=NavyBlue (near-black); override it here
+  % (any xcolor svgnames colour, e.g. RoyalBlue, MediumBlue, Teal). Comment out for the default.
+  \AtBeginDocument{\hypersetup{citecolor=RoyalBlue}}
+  % First-page footer ("Proceedings of the ... Learning on Graphs Conference" / "Submitted to ...").
+  % This line removes it; comment it out to restore the footer.
+  \makeatletter\renewcommand{\@notice}{}\makeatother
+  % NB: the style file already loads amsmath, microtype, xcolor, caption, geometry, url and
+  % hyperref (at end of preamble). Do NOT \usepackage{hyperref} yourself.
+  \usepackage{subcaption}					% (a)/(b) subfigures
+  \usepackage[numbers,compress,sort]{natbib}	% for numerical citations
+  % \usepackage[sort,round]{natbib}			% for textual citations
+\fi
+
+\usepackage{etoolbox}						% \AtEndPreamble (used for cleveref below)
+\usepackage{booktabs}						% professional-quality tables
+\usepackage{multirow}						% tabular cells spanning multiple rows
+\usepackage{tabularx}						% fixed-width tables with X columns
+\usepackage{amssymb}						% blackboard math symbols (superset of amsfonts)
+\usepackage{bm}								% bold math
+\usepackage{graphicx}						% figures
+\graphicspath{{figures/}}					% figures are PDFs converted from the repo's SVGs
+\usepackage{siunitx}						% \SI{3}{\second}; S table columns
+\usepackage{soul}							% \hl highlighting for annotations
+% \usepackage{algorithm}					% algorithm floats
+% \usepackage{algpseudocode}				% pseudocode inside them
+% \usepackage{tikz}							% schematics drawn in TikZ
+
+% cleveref must load after hyperref (LoG loads it at end of preamble; sn-jnl in the class)
+\AtEndPreamble{\usepackage[capitalise,nameinlink]{cleveref}}	% \cref{fig:x} -> "Figure 1"
+
+% Back-matter headings: \bmhead in sn-jnl, unnumbered sections in LoG.
+\ifnature
+  \newcommand{\backhead}[1]{\bmhead{#1}}
+\else
+  \newcommand{\backhead}[1]{\section*{#1}}
+\fi
+
+% --- front matter (shared text) -------------------------------------------
+% Title in Initial Caps; the optional argument is the running head.
+\title[Dependence profiles]{Reading the Character of Dependence in Multivariate Time Series}
+
+% Single paragraph, ideally 4--6 sentences (Nature Portfolio: check the journal's word limit, usually ~150--200 words, no citations).
+\newcommand{\abstracttext}{%
+A strong association between two signals can reflect shared fluctuations, delayed responses or dependence confined to particular amplitudes. Across a recording, these possibilities can be distinguished when statistics sensitive to different properties assign strength to different channel pairs. We represent each recording by the correlations between its edge profiles, one profile per statistic. Controlled changes in observation form and timing yield distinct signatures, and the representation separates nine simulated classes across recording sizes. In noisy oscillators, its leading component tracks the onset of cross-frequency locking even as recording quality dominates the leading component of mean edge strengths. In four macaques, Gaussian and nearest-neighbour estimates of mutual information agree less closely during anaesthesia than expected from the spectra of the same windows. Ketamine and propofol produce this change despite opposite shifts in mean excess information. A prespecified window selection during mouse isoflurane induction shows the same direction. Together, these examples give recording-level descriptors an interpretation in terms of which properties of dependence distinguish one set of edges from another.%
+}
+
+\ifnature
+  \author*[1]{\fnm{Will} \sur{Edibam}}\email{will.edibam@sydney.edu.au}
+  \author[1]{\fnm{Ben D.} \sur{Fulcher}}
+  \affil*[1]{\orgdiv{School of Physics}, \orgname{The University of Sydney}, \orgaddress{\city{Sydney}, \state{NSW}, \country{Australia}}}
+  \abstract{\abstracttext}
+  \keywords{multivariate time series, statistics of pairwise interactions, representation learning, dependence}
+\else
+  % Abbreviated author list in [ ] is used in the first-page footnote. Authors are hidden under [review].
+  \author[W. Edibam and B. D. Fulcher]{%
+  Will Edibam \and Ben D. Fulcher \\
+  The University of Sydney \\
+  \email{will.edibam@sydney.edu.au}
+  }
+\fi
+
+\begin{document}
+
+\maketitle
+\ifnature\else
+  \suppressfloats[t] % stop floats landing above the title on page 1
+  \begin{abstract}
+  \abstracttext
+  \end{abstract}
+\fi
+
+\section{Introduction}
+
+Consider a cortical recording in which neighbouring electrodes fluctuate together. A change in their correlation after anaesthesia tells us that the strength of their linear association has changed. It leaves open a question about the recording as a whole. Are the electrode pairs that share the most information still the ones whose signals are most closely correlated? The distinction matters even when every electrode can be matched between recordings. A drug could strengthen dependence on some pairs and weaken it on others while preserving the correspondence between the two measures. It could also change that correspondence, so that knowing which pairs are strongly correlated becomes a poorer guide to where information is shared.
+
+Every measure of coupling makes a choice about what counts as an interaction. A covariance gives weight to simultaneous deviations from the mean. A lagged covariance asks whether a deviation in one signal precedes a deviation in another. Mutual information gives weight to any departure of the joint distribution from independence. Each supplies a set of edge strengths. The information gained by comparing them resides in the identity of the edges. Two measures can have identical distributions of strengths in two recordings and still disagree about the edges to which those strengths belong.
+
+Comparisons of this kind already inform the study of dependence. Contrasts between linear and nonlinear redundancy test Gaussian descriptions of time series \cite{palus1995testing,hlinka2011functional}. Comparisons of phase and amplitude coupling reveal which spatial patterns recur across distinct physiological measures \cite{mostame2020phase,siems2020dissociated}. At catalogue scale, Cliff et al.\ compared the edge profiles of pairwise statistics across diverse systems, and Liu et al.\ compared functional connectivity measures across individuals \cite{cliff2023unifying,liu2025benchmarking}. Here we retain a signed profile correlation for each pair of statistics \emph{in each recording}. We ask which of these correspondences persists between recordings and which changes with state. A change can then be sought in the joint behaviour of many statistics, and a selected coordinate can be read against the particular difference between its two estimators.
+
+We develop this argument at four levels. We first change the observation map or the timing of a shared signal and ask which statistic pairs respond. We next ask whether a common representation separates simulated dynamical families across channel counts and record lengths. In systems with a known order parameter, we test what a label-free coordinate tracks and when simple strength summaries recover the same transition. Finally, in cortical recordings, we examine a pair of estimators of the same quantity. Their agreement has a natural reference under Gaussian dependence, which makes the change during anaesthesia interpretable even though the underlying neural coupling function is unknown.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=\linewidth]{method-schematic}
+\caption{\textbf{From channels to a recording descriptor.} Each statistic assigns a value to every ordered pair of distinct channels. The values for one statistic form an edge profile. Aligning two profiles by channel pair gives one point per edge in their scatterplot and one correlation per recording. Statistic identities supply the common coordinates when recordings differ in sensor identity or count.}
+\label{fig:method}
+\end{figure}
+
+\ifnature\else\input{methods}\fi
+
+\section{Results}
+
+\subsection{Two contrasts distinguish observation form and timing}
+
+A monotone distortion provides a case in which the outcome can be predicted edge by edge. Each channel observed a noisy version of the same Gaussian signal. Applying $g(w)=\sinh(2w)$ to one block preserves the ranks of its samples and the information shared with every other channel. It can nevertheless change Pearson correlation by different amounts on different edges. Across 20 realisations, mean $z(r,\rho)$ fell from $1.000$ to $0.500$, while $z(\rho,\mathrm{MI})$ moved only from $0.942$ to $0.939$ (\cref{fig:form}). The recording changed under observation through a different marginal scale, although its copula was preserved.
+
+Folding one block instead, $g(w)=w^2$, produced a different signature. For a folded and an untransformed channel, the sign of the latent fluctuation cancels out of both Pearson and rank correlation by symmetry. Its magnitude still carries information. Mean $z(r,\rho)$ remained $0.995$, while $z(\rho,\mathrm{MI})$ fell to $0.622$. With both transformations present the coordinates were $0.874$ and $0.618$. These two readings are calibrated to the specified perturbations. In particular, the first example shows why raw Pearson--rank disagreement alone is an ambiguous indicator of a change in the dependence copula.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=\linewidth]{case-form-ladder}
+\caption{\textbf{Changing how a common signal is observed.} Blocks apply linear, monotone or folded maps to signals with the same latent noise schedule (a). Each recording has two coordinates (b). Edge-level views (c) show how the monotone block moves points away from Pearson--rank agreement, and how folded edges can retain information at small rank correlation.}
+\label{fig:form}
+\end{figure}
+
+Timing affords a corresponding experiment without changing the observation map. One distance compared signals sample by sample (ED), a second allowed a constant shift (xED), and a third allowed the alignment to vary in time (DTW). All three closely agreed when channels were aligned. Giving one block fixed delays reduced $z(\mathrm{ED},\mathrm{xED})$ from $1.000$ to $0.264$, with $z(\mathrm{xED},\mathrm{DTW})$ at $0.990$. Smoothly varying the delay produced the complementary pattern, $0.999$ and $0.426$. When both kinds of delay were present, the coordinates were $0.623$ and $0.420$ (\cref{fig:timing}). Agreement shifted at the comparison whose alignment rule mattered for the affected pairs. This identifies which tolerance changed the organisation of the distance estimates, without estimating a conduction delay from their correlation.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=\linewidth]{case-drift-blocks}
+\caption{\textbf{Constant and varying delays separate along different coordinates.} Signals share one smooth trajectory. In a lagged block, a fixed shift aligns it across channels. In a warped block the appropriate shift varies throughout the record (a). Coordinates for 20 realisations per condition (b) are built from the distances of individual channel pairs (c).}
+\label{fig:timing}
+\end{figure}
+
+\subsection{A common set of coordinates separates nine generative classes}
+
+We applied the representation to 810 recordings spanning independent noises, vector autoregressions, coupled oscillators, coupled map lattices and a wave equation. Within several families even the coupling graph is identical across variants. The two autoregressions, for instance, have the same ring, spectral radius and total weight. They differ in how much of that weight is assigned to a channel's own past. Across three channel counts and three record lengths, recordings grouped by generator in a common embedding (\cref{fig:proof}). In the 50-dimensional principal-component space underlying the display, five nearest neighbours from other size cells classified 808 of 810 recordings correctly. All cells contributed to the unsupervised projection.
+
+Individual coordinates help explain the separation. In the ring autoregressions, lagged MI credits information shared by the source's past and target's present. Transfer entropy asks how much the source adds once the target's own past is known. Moving weight between self-memory and neighbours changes the correspondence between these profiles. In the lattice maps, even the choice of one versus two time steps separates intermittency from developed turbulence. For each of four within-family contrasts, a coordinate selected on six instances per cell perfectly ordered the remaining four per cell (36 recordings per variant, AUC $1.00$). Selection used class labels. The result establishes separation for the specified generators; in the independent-noise example, it is variation in sample correlations under heavy tails that supplies the signal.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=.93\linewidth,height=.61\textheight,keepaspectratio]{proof-of-concept}
+\caption{\textbf{Different recording sizes occupy the same feature space.} The t-SNE display uses 23,176 retained coordinates. Colour denotes class, area channel count, and marker shape recording length. Example traces illustrate the generator families. Below, each coordinate compares a pair of variants across size cells, with selection and display using disjoint instances. Distances between islands have no calibrated physical scale.}
+\label{fig:proof}
+\end{figure}
+
+\subsection{When a leading coordinate tracks a physical transition}
+
+Two populations can become locked at a $2{:}1$ frequency ratio while their observed waveforms have almost zero linear correlation. This gives a demanding comparison because the physical target, the stability of the collective phase difference, is defined independently of the interaction statistics. We varied the coupling between two oscillator communities, added a third uncoupled community, and independently varied measurement noise between recordings. On 168 held-out recordings, the first principal component of centred profile correlations tracked the future locking index with absolute Spearman correlation $0.871$. The corresponding values for mean absolute Pearson correlation and the first component of per-statistic means were $0.032$ and $0.020$ (\cref{fig:order}). In clean recordings the leading component of the means also tracked locking. Varying measurement quality changed which source of variation dominated that representation.
+
+The limits of this advantage are informative. In a finer Stuart--Landau sweep, the profile coordinate and the physical coherence changed most sharply in the same sampled interval, $0.720$--$0.725$. Mean absolute Pearson correlation tracked the order parameter at least as closely across the sweep ($0.915$ versus $0.886$). In a two-dimensional coupled map lattice the corresponding correlations were $0.966$ and $0.883$. In electronic oscillators the profile coordinate moved abruptly where late oscillators stopped slipping phase, yet mean edge strengths equalled or exceeded its rank association with the frequency range. These systems establish that collective order is accessible to a target-blind readout. The noisy locking experiment identifies a narrower advantage, when variation in signal quality dominates edge strengths but leaves enough of their relative organisation intact.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=\linewidth,height=.63\textheight,keepaspectratio]{order-parameter-inference}
+\caption{\textbf{A target-blind coordinate compared with physical order.} In the locking experiment, $q$ is fitted without the locking index $Q$. The figure shows the transition, mean-strength comparators and the behaviour of selected edge profiles. Companion panels show hardware, a fine Stuart--Landau sweep and a two-dimensional coupled map lattice. Curve scales are chosen separately for display. Agreement with $Q$ is assessed on the original values.}
+\label{fig:order}
+\end{figure}
+
+\subsection{Anaesthesia changes where Gaussian dependence predicts shared information}
+
+In macaque electrocorticography, we asked whether the electrode pairs that share information are those expected from their linear correlation. We rank-transformed each channel to a standard normal marginal and estimated instantaneous MI twice on the same samples. The Gaussian estimate $G$ depends only on correlation. The nearest-neighbour estimate $K$ permits a more general joint distribution. A homogeneous Gaussian process can still yield imperfect agreement at finite sample size, particularly when its spectrum changes across states. We therefore measured $z(G,K)$ relative to a multichannel surrogate constructed separately for each window (\cref{fig:mi}).
+
+Relative to eyes-closed wake, this surrogate-adjusted agreement fell in all 23 drug sessions. The session-mean changes were $-0.0159$ under ketamine (4 sessions), $-0.0155$ under ketamine--medetomidine (11), $-0.0062$ under medetomidine (4) and $-0.0117$ under propofol (4). Sleep gave a much smaller change, $-0.0010$ across seven sessions. For comparison, the between-session standard deviation of eyes-open minus eyes-closed residuals was $0.0020$. That scale describes the wake contrast. Biological replication is limited to four macaques, all with a negative pooled drug contrast (one-sided sign probability $1/16$). Only two received each single agent. Ketamine illustrates the contribution of the control especially clearly. Observed agreement fell by $0.0066$, although the matched-surrogate agreement \emph{rose} by $0.0093$.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=\linewidth]{mi-character}
+\caption{\textbf{Which edges share more information than Gaussian correlation predicts?} (a) Each point is one of 496 pairs among 32 channels, from a representative wake or drug window of the first propofol date. The diagonal marks equal MI estimates. (b) The state contrast in agreement is estimated in the recording and again in the matched surrogate. (c) Subtracting the latter gives the residual contrast. Each dot is an animal's mean over its sessions for that condition; the vertical tick is the mean over sessions. Sleep also uses eyes-closed wake as its reference.}
+\label{fig:mi}
+\end{figure}
+
+The residual fall was robust to bipolar re-referencing under ketamine, the combination and propofol. Recovery values approached baseline. At all 126--127 retained channels, the same change coexisted with opposite movements in \emph{level}. Mean kNN MI in excess of the matched surrogate rose by $0.015$ nats under ketamine and fell by $0.013$ under propofol and $0.008$ under the combination. Removing on held-out windows the top $1\%$ of edges selected for their contribution to the change retained $127\%$ of the original fall. A small group of unusually influential edges is thus insufficient to explain the profile result.
+
+Mouse EEG provides a qualified test in another species \cite{claar2023}. Under sustained isoflurane, burst suppression can create the same signature through a shared amplitude envelope. During induction, a frozen follow-up selected windows with elevated delta power and with burst index above a prespecified awake threshold. All nine qualifying mice showed a decrease (mean $-0.0063$, mouse-bootstrap 95\% interval $[-0.0095,-0.0034]$). The result supports a departure during induction in continuous activity under that selection. A human sub-anaesthetic ketamine dataset gave a mean change near zero in seven patients (95\% interval $[-0.0053,0.0051]$) \cite{kauvar2025}. The evidence concerns particular states, recording modalities and doses.
+
+\input{lag-result}
+
+\section{Discussion}
+
+The empirical MI contrast has a precise population reference. With continuous, normal-scored marginals, the excess of true MI over its Gaussian prediction at the same correlation equals the relative entropy from the covariance-matched bivariate Gaussian. Consequently, systematic departures are meaningful even in the absence of a proposed neuronal input--output law. Here the change concerns the organisation of those departures \emph{across} edges. An equal excess added to every edge leaves the correlation unchanged. The opposite changes in mean excess under ketamine and propofol make the distinction observable. We use \emph{nonlinear dependence} in the surrogate-data sense of a departure from the stationary linear-Gaussian expectation \cite{theiler1992testing,schreiber2000surrogate}. The window-matched contrast measures that departure under the stated constraints.
+
+A direct measure addresses a different question. For an edge with positive true information $I$, $(I-G)/I$ is the fraction left unexplained by the Gaussian copula model. An invertible monotone transformation of a Gaussian pair can make a regression curve visibly nonlinear on the measurement scale and still give zero fraction after normal-scoring. For a complementary example, take independent standard Gaussian innovations $u,v$ and an independent, fluctuating positive gain $a$ with finite fourth moment. For $X=au$ and $Y=av$, $\operatorname{cov}(X,Y)=0$ yet $\operatorname{cov}(X^2,Y^2)=\operatorname{var}(a^2)>0$. The conditional mean of $Y$ given $X$ is identically zero. The dependence is in the magnitudes and survives invertible normal-scoring. Identifying curvature in a direct coupling law would require a model for the inputs, hidden state and measurement process, ideally tested by perturbing the putative source. A curved conditional regression fitted to observations alone would address a weaker question. A companion rank or monotonicity contrast on the measurement scale would expose sensitivity to a monotone observation map. In finite data a ratio needs a reliability criterion for $I$, a null estimate of the paired-estimator bias and a report of the fraction of edges for which a denominator is resolved. Truncating negative excess to zero before that assessment creates positive bias. A fixed threshold on noisy estimated MI can also select upward fluctuations in the ratio. Reporting excess in nats alongside any fraction preserves the distinction between a large relative change and substantial information.
+
+Two consequences follow for interpreting a catalogue. First, a contrast has the clearest meaning when its two estimators differ in a property one can state and test. A lag tolerance, a conditioning set and a Gaussian approximation each permit a different counterfactual calculation on the same data. Second, a recording descriptor can usefully discard information. It can preserve a transition across a change of sensors or measurement quality, while losing a uniform strengthening of all edges or the anatomical identity of a critical pathway. When the scientific target is a particular connection, the edge profiles must be retained. For comparisons between recordings, their agreement instead answers a question about the system: which distinctions between forms of dependence organise its interactions?
+
+\ifnature\input{methods}\backmatter\fi
+\ifnature\else\bibliographystyle{unsrtnat}\fi
+\bibliography{refs}
+\end{document}
