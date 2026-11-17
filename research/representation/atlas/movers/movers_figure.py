@@ -1,4 +1,4 @@
-"""Minimal figure for the movers result (descriptive). Usage: python movers_figure.py <score.json> <movers.json> <out stem>
+"""Minimal figure for the movers result (descriptive). Usage: python movers_figure.py <score.json> <movers.json> <out stem> <agents_all.json>
 a: drop test per decomposed feature (fraction of held-out net Δz kept after removing the top-1% carrying edges), against
    leverage-matched random drops; b: each of the confirmed movers' change by agent, in units of its mean drug change."""
 import sys, json, shutil, numpy as np, matplotlib as mpl
@@ -42,15 +42,16 @@ if __name__ == '__main__':
     a.set_xticks([]); a.set_xlabel(f'decomposed movers (n = {len(F)}), sorted')
     a.set_ylabel('net $\\Delta z$ kept after dropping\nthe top-1\\% carrying edges')
     a.legend(loc='lower right', fontsize=6, handletextpad=.3, borderaxespad=.2)
-    a.set_title('a  Most movers are carried broadly', loc='left', fontsize=8)
-    b = ax[1]; mv = m['movers']; ag = ('KT', 'KTMD', 'PF', 'MD', 'SLP')
-    A = np.array([[x['h1_by_agent'][g] or 0 for g in ag] for x in mv]); sg = np.sign([x['net_h1'] for x in mv])
-    R = (A * sg[:, None]) / (A * sg[:, None])[:, :3].mean(1, keepdims=True)
+    a.set_title('a  Most decomposed movers are carried broadly', loc='left', fontsize=8)
+    b = ax[1]; o = json.load(open(sys.argv[4])); sg = np.array(o['sign'])  # all-window nets per agent (post hoc)
+    dm = np.mean([np.array(o[g]) * sg for g in ('KT', 'KTMD', 'PF')], 0)
+    eo = np.mean([np.array(o['EO_' + g]) * sg for g in ('KT', 'KTMD', 'PF')], 0)
+    R = [np.array(o[g]) * sg / dm for g in ('KT', 'KTMD', 'PF', 'MD', 'SLP')] + [eo / dm]
     b.axhline(0, color='0.4', lw=.6); b.axhline(1, color='0.4', lw=.6, ls=':')
-    b.boxplot([R[:, i] for i in range(5)], widths=.55, showfliers=False, medianprops=dict(color='k', lw=1.2),
+    b.boxplot(R, widths=.55, showfliers=False, medianprops=dict(color='k', lw=1.2),
               boxprops=dict(lw=.7), whiskerprops=dict(lw=.7), capprops=dict(lw=.7))
-    b.set_xticks(range(1, 6), ['ketamine', 'ket.–medet.', 'propofol', 'medet.', 'sleep'], rotation=30)
+    b.set_xticks(range(1, 7), ['ketamine', 'ket.–medet.', 'propofol', 'medet.', 'sleep', 'eyes open'], rotation=30)
     b.set_ylabel('change / mean drug change')
-    b.set_title(f'b  {len(mv)} movers: sleep goes the other way', loc='left', fontsize=8)
+    b.set_title(f'b  {len(sg)} movers by state (all windows)', loc='left', fontsize=8)
     for ext in ('svg', 'pdf', 'png'): fig.savefig(f'{sys.argv[3]}.{ext}')
     print('saved', sys.argv[3])

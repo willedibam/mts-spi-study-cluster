@@ -1,0 +1,731 @@
+{
+ "accounting": {
+  "total": 36856,
+  "finite_every_window": 24753,
+  "plus_reliability": 7140,
+  "plus_ceiling": 6957,
+  "spis_with_no_finite_coordinate": [
+   "cov_GraphicalLasso",
+   "cov_GraphicalLassoCV",
+   "cov-sq_GraphicalLasso",
+   "cov-sq_GraphicalLassoCV",
+   "prec_GraphicalLasso",
+   "prec_GraphicalLassoCV",
+   "prec-sq_GraphicalLasso",
+   "prec-sq_GraphicalLassoCV",
+   "pcorr_GraphicalLasso",
+   "pcorr_GraphicalLassoCV",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-5",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-25",
+   "gd_multitaper_delay_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_mean_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_max_fs-1_fmin-0-25_fmax-0-5"
+  ],
+  "spis_failing_reliability": [
+   "bary-sq_dtw_max",
+   "bary-sq_sgddtw_max",
+   "bary_dtw_max",
+   "bary_sgddtw_max",
+   "cds",
+   "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "coint_aeg_tstat_trend-c_autolag-aic_maxlag-10",
+   "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10",
+   "coint_aeg_tstat_trend-ct_autolag-bic_maxlag-10",
+   "coint_johansen_max_eig_stat_order-0_ardiff-10",
+   "coint_johansen_max_eig_stat_order-1_ardiff-10",
+   "coint_johansen_trace_stat_order-0_ardiff-10",
+   "coint_johansen_trace_stat_order-1_ardiff-10",
+   "corr_kendall_tau-10",
+   "corr_kendall_tau-10-sq",
+   "corr_kendall_tau-20",
+   "corr_kendall_tau-20-sq",
+   "corr_kendall_tau-3-sq",
+   "corr_kendall_tau-4-sq",
+   "corr_kendall_tau-5-sq",
+   "corr_pearson_tau-10",
+   "corr_pearson_tau-10-sq",
+   "corr_pearson_tau-20",
+   "corr_pearson_tau-20-sq",
+   "corr_pearson_tau-3-sq",
+   "corr_pearson_tau-4-sq",
+   "corr_pearson_tau-5-sq",
+   "corr_spearman_tau-10",
+   "corr_spearman_tau-10-sq",
+   "corr_spearman_tau-20",
+   "corr_spearman_tau-20-sq",
+   "corr_spearman_tau-3-sq",
+   "corr_spearman_tau-4-sq",
+   "corr_spearman_tau-5-sq",
+   "cov-sq_GraphicalLasso",
+   "cov-sq_GraphicalLassoCV",
+   "cov_GraphicalLasso",
+   "cov_GraphicalLassoCV",
+   "dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+   "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "gd_multitaper_delay_fs-1_fmin-0-25_fmax-0-5",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-25",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "pcorr_GraphicalLasso",
+   "pcorr_GraphicalLassoCV",
+   "pdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "pec_orth",
+   "pec_orth_abs",
+   "pec_orth_log",
+   "pec_orth_log_abs",
+   "phase_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "phase_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "phase_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "phi_Geo_t-1_norm-0",
+   "phi_Geo_t-1_norm-1",
+   "pli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "prec-sq_GraphicalLasso",
+   "prec-sq_GraphicalLassoCV",
+   "prec_GraphicalLasso",
+   "prec_GraphicalLassoCV",
+   "psi_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "psi_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "psi_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "psi_wavelet_mean_fs-1_fmin-0-25_fmax-0-5_mean",
+   "reci",
+   "sgc_nonparametric_max_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "si_kozachenko_k-1",
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+   "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1",
+   "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
+   "te_symbolic_k-3",
+   "wpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "xcorr_mean_sig-False",
+   "xcorr_mean_sig-True",
+   "xme_kozachenko_k1",
+   "xme_kozachenko_k10"
+  ]
+ },
+ "partial_correlation": {
+  "pcorr_EmpiricalCovariance": {
+   "cov_EmpiricalCovariance": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.5207335097397199,
+     0.8059390449668234
+    ],
+    "drug_net": -0.06585898250341415,
+    "eo_net": 0.017534783110022545,
+    "sessions_neg": 17
+   },
+   "cce_kozachenko_n-5": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.5207335097397199,
+     0.6384436497499572
+    ],
+    "drug_net": -0.15389512479305267,
+    "eo_net": 0.005824356339871883,
+    "sessions_neg": 18
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.5207335097397199,
+     0.459969011628966
+    ],
+    "drug_net": -0.19468803703784943,
+    "eo_net": -0.018623823300004005,
+    "sessions_neg": 18
+   }
+  },
+  "pcorr_GraphicalLasso": {
+   "cov_GraphicalLasso": {
+    "usable": false,
+    "finite": false,
+    "reliability": [
+     null,
+     null
+    ],
+    "drug_net": NaN,
+    "eo_net": NaN,
+    "sessions_neg": 4
+   },
+   "cce_kozachenko_n-5": {
+    "usable": false,
+    "finite": false,
+    "reliability": [
+     null,
+     0.6384436497499572
+    ],
+    "drug_net": NaN,
+    "eo_net": NaN,
+    "sessions_neg": 7
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": false,
+    "finite": false,
+    "reliability": [
+     null,
+     0.459969011628966
+    ],
+    "drug_net": NaN,
+    "eo_net": NaN,
+    "sessions_neg": 6
+   }
+  },
+  "pcorr_GraphicalLassoCV": {
+   "cov_GraphicalLassoCV": {
+    "usable": false,
+    "finite": false,
+    "reliability": [
+     null,
+     null
+    ],
+    "drug_net": 0.023637279868125916,
+    "eo_net": -0.004912006203085184,
+    "sessions_neg": 7
+   },
+   "cce_kozachenko_n-5": {
+    "usable": false,
+    "finite": false,
+    "reliability": [
+     null,
+     0.6384436497499572
+    ],
+    "drug_net": -0.03778902813792229,
+    "eo_net": 0.026151683181524277,
+    "sessions_neg": 15
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": false,
+    "finite": false,
+    "reliability": [
+     null,
+     0.459969011628966
+    ],
+    "drug_net": -0.0552055723965168,
+    "eo_net": -0.013506552204489708,
+    "sessions_neg": 19
+   }
+  },
+  "pcorr_LedoitWolf": {
+   "cov_LedoitWolf": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.4979370071294682,
+     0.8059390449682298
+    ],
+    "drug_net": -0.007398555055260658,
+    "eo_net": -0.006298253312706947,
+    "sessions_neg": 10
+   },
+   "cce_kozachenko_n-5": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.4979370071294682,
+     0.6384436497499572
+    ],
+    "drug_net": -0.03893439471721649,
+    "eo_net": 0.018031436949968338,
+    "sessions_neg": 16
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.4979370071294682,
+     0.459969011628966
+    ],
+    "drug_net": -0.05445600301027298,
+    "eo_net": -0.013999595306813717,
+    "sessions_neg": 18
+   }
+  },
+  "pcorr_MinCovDet": {
+   "cov_MinCovDet": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.4108926772536117,
+     0.7938707455155226
+    ],
+    "drug_net": -0.058060187846422195,
+    "eo_net": 0.02133113145828247,
+    "sessions_neg": 17
+   },
+   "cce_kozachenko_n-5": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.4108926772536117,
+     0.6384436497499572
+    ],
+    "drug_net": -0.137867271900177,
+    "eo_net": 0.0012234222376719117,
+    "sessions_neg": 18
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.4108926772536117,
+     0.459969011628966
+    ],
+    "drug_net": -0.16786126792430878,
+    "eo_net": -0.012938804924488068,
+    "sessions_neg": 18
+   }
+  },
+  "pcorr_OAS": {
+   "cov_OAS": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.49663635037488046,
+     0.8059390449687769
+    ],
+    "drug_net": -0.012820027768611908,
+    "eo_net": -0.009569072164595127,
+    "sessions_neg": 12
+   },
+   "cce_kozachenko_n-5": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.49663635037488046,
+     0.6384436497499572
+    ],
+    "drug_net": -0.03901105001568794,
+    "eo_net": 0.019814949482679367,
+    "sessions_neg": 16
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.49663635037488046,
+     0.459969011628966
+    ],
+    "drug_net": -0.055203430354595184,
+    "eo_net": -0.01482179295271635,
+    "sessions_neg": 18
+   }
+  },
+  "pcorr_ShrunkCovariance": {
+   "cov_ShrunkCovariance": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.5373304850222894,
+     0.8059390449544941
+    ],
+    "drug_net": -0.01027046237140894,
+    "eo_net": -0.007273267954587936,
+    "sessions_neg": 12
+   },
+   "cce_kozachenko_n-5": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.5373304850222894,
+     0.6384436497499572
+    ],
+    "drug_net": -0.040333155542612076,
+    "eo_net": 0.021566472947597504,
+    "sessions_neg": 15
+   },
+   "si_kernel_W-0.5_k-1": {
+    "usable": true,
+    "finite": true,
+    "reliability": [
+     0.5373304850222894,
+     0.459969011628966
+    ],
+    "drug_net": -0.05169044807553291,
+    "eo_net": -0.01507530827075243,
+    "sessions_neg": 18
+   }
+  }
+ },
+ "sign_control": {
+  "eo_in_drug_sessions": {
+   "median_ratio": -0.16349046864074926,
+   "frac_same_sign": 0.3333333333333333,
+   "median_signed": -0.00976037047803402
+  },
+  "sleep": {
+   "median_ratio": -0.03248710360192411,
+   "frac_same_sign": 0.43555555555555553,
+   "median_signed": -0.0020457592327147722
+  },
+  "eo_in_sleep_sessions": {
+   "median_ratio": -0.2175643365990746,
+   "frac_same_sign": 0.24,
+   "median_signed": -0.014574618078768253
+  },
+  "sleep_session_mean_sign_agreement": {
+   "20120705slpanesthesiaandsleepchibitoruyanagawa": -0.31555555555555553,
+   "20120706slpanesthesiaandsleepchibitoruyanagawa": -0.48444444444444446,
+   "20120710slpanesthesiaandsleepchibitoruyanagawa": -0.14666666666666667,
+   "20120711slpanesthesiaandsleepgeorgetoruyanagawa": -0.0044444444444444444,
+   "20120712slpanesthesiaandsleepgeorgetoruyanagawa": -0.37777777777777777,
+   "20120713slpanesthesiaandsleepgeorgetoruyanagawa": 0.4311111111111111,
+   "20120717slpanesthesiaandsleepchibitoruyanagawa": 0.04888888888888889
+  },
+  "sleep_animals": [
+   "Chibi",
+   "George"
+  ],
+  "by_family": {
+   "pcorr": {
+    "n": 71,
+    "frac_same_sign": 0.8732394366197183,
+    "eo_in_sleep_frac_same": 0.11267605633802817
+   },
+   "coint": {
+    "n": 10,
+    "frac_same_sign": 0.5,
+    "eo_in_sleep_frac_same": 0.2
+   },
+   "pdist_chebyshev": {
+    "n": 24,
+    "frac_same_sign": 0.20833333333333334,
+    "eo_in_sleep_frac_same": 0.041666666666666664
+   },
+   "kernel": {
+    "n": 31,
+    "frac_same_sign": 0.3225806451612903,
+    "eo_in_sleep_frac_same": 0.2903225806451613
+   },
+   "cce_kozachenko": {
+    "n": 33,
+    "frac_same_sign": 0.15151515151515152,
+    "eo_in_sleep_frac_same": 0.12121212121212122
+   },
+   "xcorr": {
+    "n": 3,
+    "frac_same_sign": 0.0,
+    "eo_in_sleep_frac_same": 0.0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0-25": {
+    "n": 29,
+    "frac_same_sign": 0.0,
+    "eo_in_sleep_frac_same": 0.5862068965517241
+   },
+   "bary": {
+    "n": 2,
+    "frac_same_sign": 0.0,
+    "eo_in_sleep_frac_same": 0.0
+   },
+   "other": {
+    "n": 22,
+    "frac_same_sign": 0.5,
+    "eo_in_sleep_frac_same": 0.5909090909090909
+   }
+  }
+ },
+ "hubs": {
+  "cce_kozachenko_n-5": {
+   "movers": 38,
+   "usable_partners": 119,
+   "rate": 0.31932773109243695,
+   "up": 8,
+   "down": 30,
+   "top": [
+    {
+     "pair": "pcorr_EmpiricalCovariance|cce_kozachenko_n-5",
+     "net": -0.171,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_MinCovDet|cce_kozachenko_n-5",
+     "net": -0.153,
+     "chain": null
+    },
+    {
+     "pair": "cce_kozachenko_n-5|coint_johansen_trace_stat_order-1_ardiff-1",
+     "net": -0.123,
+     "chain": null
+    }
+   ]
+  },
+  "pcorr_EmpiricalCovariance": {
+   "movers": 33,
+   "usable_partners": 119,
+   "rate": 0.2773109243697479,
+   "up": 7,
+   "down": 26,
+   "top": [
+    {
+     "pair": "pcorr_EmpiricalCovariance|si_kernel_W-0.5_k-1",
+     "net": -0.216,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_EmpiricalCovariance|cce_kozachenko_n-5",
+     "net": -0.171,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_EmpiricalCovariance|cce_gaussian_n-5",
+     "net": -0.168,
+     "chain": null
+    }
+   ]
+  },
+  "pcorr_MinCovDet": {
+   "movers": 33,
+   "usable_partners": 119,
+   "rate": 0.2773109243697479,
+   "up": 7,
+   "down": 26,
+   "top": [
+    {
+     "pair": "pcorr_MinCovDet|si_kernel_W-0.5_k-1",
+     "net": -0.185,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_MinCovDet|cce_kozachenko_n-5",
+     "net": -0.153,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_MinCovDet|cce_gaussian_n-5",
+     "net": -0.149,
+     "chain": null
+    }
+   ]
+  },
+  "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": {
+   "movers": 30,
+   "usable_partners": 119,
+   "rate": 0.25210084033613445,
+   "up": 20,
+   "down": 10,
+   "top": [
+    {
+     "pair": "mi_kernel_W-0.25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "net": 0.078,
+     "chain": null
+    },
+    {
+     "pair": "lcss|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "net": 0.077,
+     "chain": null
+    },
+    {
+     "pair": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5|pec_log",
+     "net": 0.077,
+     "chain": null
+    }
+   ]
+  },
+  "pdist_chebyshev": {
+   "movers": 24,
+   "usable_partners": 119,
+   "rate": 0.20168067226890757,
+   "up": 17,
+   "down": 7,
+   "top": [
+    {
+     "pair": "pdist_chebyshev|coint_johansen_max_eig_stat_order-0_ardiff-1",
+     "net": 0.139,
+     "chain": null
+    },
+    {
+     "pair": "pdist_chebyshev|coint_johansen_max_eig_stat_order-1_ardiff-1",
+     "net": 0.136,
+     "chain": null
+    },
+    {
+     "pair": "pdist_chebyshev|coint_johansen_trace_stat_order-0_ardiff-1",
+     "net": 0.129,
+     "chain": null
+    }
+   ]
+  },
+  "te_kernel_W-0.25_k-1": {
+   "movers": 9,
+   "usable_partners": 119,
+   "rate": 0.07563025210084033,
+   "up": 5,
+   "down": 4,
+   "top": [
+    {
+     "pair": "pcorr_EmpiricalCovariance|te_kernel_W-0.25_k-1",
+     "net": -0.143,
+     "chain": null
+    },
+    {
+     "pair": "xme_kernel_W-0.5_k1|te_kernel_W-0.25_k-1",
+     "net": -0.127,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_MinCovDet|te_kernel_W-0.25_k-1",
+     "net": -0.127,
+     "chain": null
+    }
+   ]
+  },
+  "je_kernel_W-0.5": {
+   "movers": 9,
+   "usable_partners": 119,
+   "rate": 0.07563025210084033,
+   "up": 8,
+   "down": 1,
+   "top": [
+    {
+     "pair": "xcorr-sq_mean_sig-False|je_kernel_W-0.5",
+     "net": 0.1,
+     "chain": null
+    },
+    {
+     "pair": "xcorr-sq_mean_sig-True|je_kernel_W-0.5",
+     "net": 0.095,
+     "chain": null
+    },
+    {
+     "pair": "je_kernel_W-0.5|cce_gaussian_n-5",
+     "net": -0.088,
+     "chain": null
+    }
+   ]
+  },
+  "si_kernel_W-0.5_k-1": {
+   "movers": 8,
+   "usable_partners": 119,
+   "rate": 0.06722689075630252,
+   "up": 4,
+   "down": 4,
+   "top": [
+    {
+     "pair": "pcorr_EmpiricalCovariance|si_kernel_W-0.5_k-1",
+     "net": -0.216,
+     "chain": null
+    },
+    {
+     "pair": "pcorr_MinCovDet|si_kernel_W-0.5_k-1",
+     "net": -0.185,
+     "chain": null
+    },
+    {
+     "pair": "si_kernel_W-0.5_k-1|coint_johansen_max_eig_stat_order-1_ardiff-1",
+     "net": 0.132,
+     "chain": null
+    }
+   ]
+  }
+ }
+}
