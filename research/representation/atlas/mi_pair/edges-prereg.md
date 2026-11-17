@@ -82,3 +82,9 @@ The primary set is KT, KTMD and PF pooled, over 4 animals (Chibi, George, Kin2, 
 - Physiology against artefact.
 - The form (decoupling against shared gain).
 - Any cross-feature (all-SPI) edge pass. That runs only if E1 or E2 holds out, and needs its own rule.
+
+## Added before any output was read (17 November, with the scorer)
+
+- **E3 naming thresholds** (left open above): "gain (a)" if the mean fraction of the bottom-1% Δp edges with ẽ above the median is > .60 in every primary animal; "fail to gain (b)" if < .40 in every primary animal; otherwise "mixed".
+- **Sessions are grouped by unit and agent**, so a unit's sleep rows (agent SLP) and drug rows stay separate.
+- **Descriptive E2b:** the Jaccard overlap of each session's top-1% edges with another session's, within an animal, against EO. Whole-map Spearman can miss a sparse locus; on synthetic data with two planted edges, E2 did not detect them.
