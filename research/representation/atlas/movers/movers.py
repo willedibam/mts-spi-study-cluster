@@ -3,12 +3,12 @@
 phase 1:  python movers.py select <atlas dir> <out movers.json>
 phase 2:  python movers.py edges  <atlas dir> <movers.json> <out dir> <workers>
 """
-import sys, json, glob, numpy as np
+import sys, json, glob, zlib, numpy as np
 from pathlib import Path
 from multiprocessing import Pool
 
 PRIMARY, REF, ANCHOR, TOP_N, CAP = ('KT', 'KTMD', 'PF'), 'awake_ec', ('mi_gaussian', 'mi_kraskov_NN-4_DCE-AUTO'), 60, 3
-SEL, CONF, FRAC = .04, .02, 15  # |H0 mean net|, |H1 mean net|, sessions of one sign out of 19
+SEL, CONF, FRAC, DRAWS = .04, .02, 15, 20  # |H0 mean net|, |H1 mean net|, sessions of one sign out of 19
 BANKS = {'real': 'neurotycho-short', 'stationary': 'null-stationary', 'bias': 'null-bias'}
 
 
@@ -97,30 +97,78 @@ def select(atlas, out):
                confirmed_positive=int((m1[conf_d] > 0).sum()), movers=movers,
                decompose=[int(c) for c in dec], per_spi=dict(sorted(per_spi.items(), key=lambda kv: -kv[1])),
                by_class=dict(sorted({k: sum(1 for mv in movers if (mv['cls'] or 'compound') == k) for k in {mv['cls'] or 'compound' for mv in movers}}.items(), key=lambda kv: -kv[1])),
-               anchor=int(anchor) if anchor is not None else None, spis=spis)
+               anchor=int(anchor) if anchor is not None else None, spis=spis,
+               net_h0_by_coord={str(int(c)): float(m0[c]) for c in dec})
     Path(out).write_text(json.dumps(res, indent=1))
     print('usable', res['usable'], 'confirmed', res['confirmed'], 'eo_confirmed', res['eo_confirmed'], 'fdp', round(fdp, 3), flush=True)
 
 
+def _load(shard, bank, wid):
+    with np.load(shard[bank][wid], allow_pickle=True) as d:
+        return d[wid]
+
+
+def _profiles(X, need, M):
+    off = ~np.eye(M, dtype=bool); Y, R = {}, {}
+    for k in need:
+        A = np.asarray(X[k], np.float64); p = A[off]; c = p - p.mean(); n = np.linalg.norm(c)
+        R[k] = A
+        if np.isfinite(n) and n >= 1e-12:
+            Y[k] = np.zeros((M, M)); Y[k][off] = c / n
+        else:
+            Y[k] = np.full((M, M), np.nan)
+    return Y, R
+
+
+def _zdrop(A, B, sets):
+    """corr over the ordered off-diagonal entries of A, B, after removing each unordered edge set (I, J) both ways."""
+    M = len(A); off = ~np.eye(M, dtype=bool); a, b = A[off], B[off]; n = a.size
+    T = np.array([a.sum(), b.sum(), (a * a).sum(), (b * b).sum(), (a * b).sum()])
+    out = []
+    for I, J in sets:
+        da = np.concatenate([A[I, J], A[J, I]]); db = np.concatenate([B[I, J], B[J, I]])
+        S = T - np.array([da.sum(), db.sum(), (da * da).sum(), (db * db).sum(), (da * db).sum()]); m = n - da.size
+        cov = S[4] / m - S[0] * S[1] / m ** 2; va = S[2] / m - (S[0] / m) ** 2; vb = S[3] / m - (S[1] / m) ** 2
+        out.append(cov / np.sqrt(va * vb))
+    return np.array(out)
+
+
 def unit_job(args):
-    atlas, unit, wins, need, pairs, M, shard = args  # wins: [(row index, id, state, half)]; shard: {bank: {id: file}}
-    acc = {}
-    for bank, name in BANKS.items():
+    atlas, unit, wins, need, pairs, M, shard, signs, target_state, draws = args
+    iu = np.triu_indices(M, 1); acc = {}
+    for bank in BANKS:                                   # pass 1: mean per-edge contributions per state and half
         for _, wid, st, h in wins:
-            f = shard[bank][wid]
-            with np.load(f, allow_pickle=True) as d:
-                X = d[wid]
-            off = ~np.eye(M, dtype=bool); iu = np.triu_indices(M, 1)
-            Y = {}
-            for k in need:
-                p = np.asarray(X[k], np.float64)[off]; p = p - p.mean(); n = np.linalg.norm(p)
-                Y[k] = np.full((M, M), np.nan) if not np.isfinite(n) or n < 1e-12 else np.zeros((M, M))
-                if np.isfinite(n) and n >= 1e-12:
-                    Y[k][off] = p / n
+            Y, R = _profiles(_load(shard, bank, wid), need, M)
             q = np.array([(Y[i] * Y[j])[iu] + (Y[i] * Y[j]).T[iu] for i, j in pairs], np.float32)
             for key in ((bank, st, h), (bank, st, 'all')):
                 s, c = acc.get(key, (0, 0)); acc[key] = (s + q, c + 1)
-    return unit, {k: s / c for k, (s, c) in acc.items()}
+    mean = {k: s / c for k, (s, c) in acc.items()}
+    net = lambda c, h: sum(w * (mean[(k, c, h)] - mean[(k, REF, h)]) for k, w in (('real', 1), ('stationary', -2), ('bias', 1)))
+    lev = np.abs(mean[('real', REF, 'all')]); E = lev.shape[1]; ke = max(1, int(np.ceil(.01 * E))); kn = max(1, int(round(.05 * M)))
+    rng = np.random.default_rng(zlib.crc32(unit.encode()))
+    sets = {}                                            # per selection half: per feature list of (I, J) edge sets
+    for hs in (0, 1):
+        dq = net(target_state, hs); S = []
+        for f in range(len(pairs)):
+            sg = signs[f]; hot = np.argsort(-sg * dq[f])[:ke]
+            node = np.zeros(M); np.add.at(node, iu[0], dq[f] / 2); np.add.at(node, iu[1], dq[f] / 2)
+            hn = np.argsort(-sg * node)[:kn]; nodeset = lambda s_: np.flatnonzero(np.isin(iu[0], s_) | np.isin(iu[1], s_))
+            bins = np.minimum((np.argsort(np.argsort(lev[f])) * 10) // E, 9)
+            L = [np.array([], int), hot, nodeset(hn)]
+            L += [np.concatenate([rng.choice(np.flatnonzero(bins == b_), np.sum(bins[hot] == b_), replace=False) for b_ in range(10)]) for _ in range(draws)]
+            L += [nodeset(rng.choice(M, kn, replace=False)) for _ in range(draws)]
+            S.append([(iu[0][e], iu[1][e]) for e in L])
+        sets[hs] = S
+    zsum = {}                                            # pass 2: held-out z with each set removed
+    for bank in BANKS:
+        for _, wid, st, h in wins:
+            if st not in (target_state, REF): continue
+            hs = 1 - h; _, R = _profiles(_load(shard, bank, wid), need, M)
+            Z = np.array([_zdrop(R[i], R[j], sets[hs][f]) for f, (i, j) in enumerate(pairs)])
+            s, c = zsum.get((bank, st, h), (0, 0)); zsum[(bank, st, h)] = (s + Z, c + 1)
+    zm = {k: s / c for k, (s, c) in zsum.items()}
+    drop = {h: sum(w * (zm[(k, target_state, h)] - zm[(k, REF, h)]) for k, w in (('real', 1), ('stationary', -2), ('bias', 1))) for h in (0, 1)}
+    return unit, mean, drop
 
 
 SHARD = {}
@@ -128,7 +176,10 @@ SHARD = {}
 
 def edges(atlas, movers_json, out, workers):
     A = Path(atlas); m = json.loads(Path(movers_json).read_text()); spis = m['spis']; K = len(spis)
+    if m['fdp_estimate'] > .2:
+        print('STOP: eyes-open false-discovery estimate', m['fdp_estimate'], '> .2 (prereg)', flush=True); return
     a, b = np.triu_indices(K, 1); coords = m['decompose']; pairs = [(int(a[c]), int(b[c])) for c in coords]
+    signs = [float(np.sign(m['net_h0_by_coord'][str(c)])) for c in coords]
     need = sorted({i for p in pairs for i in p})
     with np.load(A / 'discovery' / 'neurotycho-short-reduced.npz') as d:
         rows = json.loads(str(d['rows'])); ids = [str(x) for x in d['ids']]
@@ -148,19 +199,21 @@ def edges(atlas, movers_json, out, workers):
         wins = [(i, ids[i], rows[i]['state'], h) for h in (0, 1) for s in ('awake_ec', 'awake_eo', 'drug', 'sleep')
                 for i in H.get((u, s, h), [])]
         M = next(r['M'] for r in rows if r['unit'] == u)
-        jobs.append((atlas, u, wins, need, pairs, M, {k: {w[1]: SHARD[k][w[1]] for w in wins} for k in BANKS}))
+        ag = next(r['agent'] for r in rows if r['unit'] == u)
+        jobs.append((atlas, u, wins, need, pairs, M, {k: {w[1]: SHARD[k][w[1]] for w in wins} for k in BANKS}, signs, target(ag), DRAWS))
     with Pool(workers) as p:
         res = p.map(unit_job, jobs, chunksize=1)
     Path(out).mkdir(parents=True, exist_ok=True)
     agent = {r['unit']: r['agent'] for r in rows}; animal = {r['unit']: r['animal'] for r in rows}
-    for u, acc in res:
+    for u, acc, drop in res:
         M = next(r['M'] for r in rows if r['unit'] == u); s = target(agent[u]); D = {}
         for c in (s, 'awake_eo'):
             for h in (0, 1, 'all'):
                 if ('real', c, h) not in acc or ('real', REF, h) not in acc: continue
                 d = {k: acc[(k, c, h)] - acc[(k, REF, h)] for k in BANKS}
                 D[f'{c}_{h}'] = (d['real'] - 2 * d['stationary'] + d['bias']).astype(np.float32)
-        np.savez(Path(out) / f'{u}.npz', coords=np.array(coords), chan=np.array(kept[u][:M]), agent=agent[u], animal=animal[u], **D)
+        np.savez(Path(out) / f'{u}.npz', coords=np.array(coords), chan=np.array(kept[u][:M]), agent=agent[u], animal=animal[u],
+                 drop_0=drop[0], drop_1=drop[1], **D)  # drop_h: (features, 3 + 2*DRAWS) held-out net dz measured on half h
     print('done edges', len(res), flush=True)
 
 
