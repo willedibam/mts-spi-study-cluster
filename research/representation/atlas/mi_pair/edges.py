@@ -98,6 +98,8 @@ if __name__ == '__main__':
         jobs = [(W[rows[g]['id']].astype(float), seed0 + 1000 * g) for g in idx]
         with Pool(nw) as p: res = p.map(one_full, jobs, chunksize=1)
         m, kept = meta([rows[g] for g in idx], man)
-        np.savez(out, X=np.array(res, dtype=object), row=np.array(idx), M=np.array([rows[g]['M'] for g in idx]),
+        Xo = np.empty(len(res), dtype=object)
+        for q, a in enumerate(res): Xo[q] = a  # per-window (5, E); E differs between 126- and 127-channel units
+        np.savez(out, X=Xo, row=np.array(idx), M=np.array([rows[g]['M'] for g in idx]),
                  chan=np.array([json.dumps(kept[rows[g]['unit']][:rows[g]['M']]) for g in idx]), **m)
     print('done', mode, out, flush=True)

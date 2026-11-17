@@ -88,3 +88,10 @@ The primary set is KT, KTMD and PF pooled, over 4 animals (Chibi, George, Kin2, 
 - **E3 naming thresholds** (left open above): "gain (a)" if the mean fraction of the bottom-1% Δp edges with ẽ above the median is > .60 in every primary animal; "fail to gain (b)" if < .40 in every primary animal; otherwise "mixed".
 - **Sessions are grouped by unit and agent**, so a unit's sleep rows (agent SLP) and drug rows stay separate.
 - **Descriptive E2b:** the Jaccard overlap of each session's top-1% edges with another session's, within an animal, against EO. Whole-map Spearman can miss a sparse locus; on synthetic data with two planted edges, E2 did not detect them.
+
+## Deviation 1 (17 November, before any edge output existed)
+
+- **What failed.** The first edge array (job 184230192, 10 shards) computed every window but failed on save in all shards (`np.array(res, dtype=object)` broadcast error), so no output was written. It cost about 850 SU.
+- **Fix.** The fix in `edges.py` changes only how the object array is built; the computation is unchanged.
+- **Testing.** The full mode and the scorer were then tested end to end on a synthetic bank with mixed channel counts.
+- **Resubmission.** The array is resubmitted with the same seeds and rules.
