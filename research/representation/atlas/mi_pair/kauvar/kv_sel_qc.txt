@@ -1,0 +1,7 @@
+sub-SD168 {'subject': 'sub-SD168', 'reference': '43/58 pass', 'n_common': 154, 'n_bad': 6, 'infusion': '52/58 pass', 'postinfusion': '43/58 pass'} loc sample ['LPC2-LPC1', 'LPC7-LPC6', 'LaHH2-LaHH1', 'LaHH7-LaHH6']
+sub-SD172 {'subject': 'sub-SD172', 'reference': '53/58 pass', 'n_common': 162, 'n_bad': 13, 'infusion': '48/58 pass', 'postinfusion': '38/58 pass'} loc sample ['LaTH2-LaTH1', 'LaTH7-LaTH6', 'LaTH12-LaTH11', 'RORB3-RORB2']
+sub-SD181 {'subject': 'sub-SD181', 'reference': '58/58 pass', 'n_common': 113, 'n_bad': 3, 'infusion': '58/58 pass', 'postinfusion': '58/58 pass'} loc sample ['RaCN2-RaCN1', 'RaCN6-RaCN5', 'RaCN9-RaCN8', 'RaCN13-RaCN12']
+sub-SD185 {'subject': 'sub-SD185', 'reference': '56/58 pass', 'n_common': 94, 'n_bad': 6, 'infusion': '58/58 pass', 'postinfusion': '58/58 pass'} loc sample ['RThM2-RThM1', 'RThM5-RThM4', 'RThM10-RThM9', 'RThM12-RThM11']
+sub-SD186 {'subject': 'sub-SD186', 'reference': '57/58 pass', 'n_common': 72, 'n_bad': 3, 'infusion': '58/58 pass', 'postinfusion': 'missing'} loc sample ['LaTH2-LaTH1', 'LaTH4-LaTH3', 'LaTH6-LaTH5', 'LaTH9-LaTH8']
+sub-SD211 {'subject': 'sub-SD211', 'reference': '57/58 pass', 'n_common': 97, 'n_bad': 0, 'infusion': '58/58 pass', 'postinfusion': '56/58 pass'} loc sample ['LANT2-LANT1', 'LANT5-LANT4', 'LANT8-LANT7', 'LANT11-LANT10']
+sub-SD245 {'subject': 'sub-SD245', 'reference': '58/58 pass', 'n_common': 174, 'n_bad': 11, 'infusion': '55/58 pass', 'postinfusion': '57/58 pass'} loc sample ['LPCn2-LPCn1', 'LPCn7-LPCn6', 'LPCn12-LPCn11', 'LPIN3-LPIN2']

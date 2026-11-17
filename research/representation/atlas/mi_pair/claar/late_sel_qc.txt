@@ -1,0 +1,13 @@
+sub-551397_ses-20210211: late 120 s, 11/11 pass, 11 used; BI median 0.97, δ median 0.29
+sub-569062_ses-20210218: late 151 s, 14/14 pass, 14 used; BI median 1.00, δ median 0.20
+sub-569064_ses-20210408: late 57 s, 5/5 pass, 5 used; BI median 0.96, δ median 0.50
+sub-569072_ses-20210422: late 48 s, 4/4 pass, 4 used; BI median 0.91, δ median 0.43
+sub-569073_ses-20210415: late 206 s, 8/20 pass, 8 used; BI median 0.95, δ median 0.46
+sub-571619_ses-20210319: late 712 s, 70/70 pass, 60 used; BI median 0.97, δ median 0.45
+sub-571620_ses-20210513: late 292 s, 28/28 pass, 28 used; BI median 0.97, δ median 0.38
+sub-575102_ses-20210603: late 78 s, 7/7 pass, 7 used; BI median 0.99, δ median 0.40
+sub-586466_ses-20210729: late 319 s, 29/30 pass, 29 used; BI median 0.97, δ median 0.42
+sub-586468_ses-20210819: late 247 s, 23/23 pass, 23 used; BI median 0.97, δ median 0.43
+sub-590479_ses-20210921: late 160 s, 15/15 pass, 15 used; BI median 0.97, δ median 0.41
+sub-590480_ses-20211111: late 161 s, 11/14 pass, 11 used; BI median 0.99, δ median 0.28
+sub-599017_ses-20220210: late 221 s, 20/20 pass, 20 used; BI median 1.01, δ median 0.32

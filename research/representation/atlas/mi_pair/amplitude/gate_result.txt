@@ -1,0 +1,25 @@
+  sub-551399_ses-20210128: target  7, Δgate -0.0154, split-half -0.0085
+  sub-569062_ses-20210218: target  4, Δgate +0.0233, split-half +0.0130
+  sub-569070_ses-20210401: target  9, Δgate +0.0540, split-half +0.0498
+  sub-569072_ses-20210422: target 11, Δgate -0.1621, split-half -0.0016
+  sub-571619_ses-20210319: target  3, Δgate -0.1416, split-half -0.0299
+  sub-575102_ses-20210603: target  3, Δgate -0.1091, split-half +0.0732
+  sub-586468_ses-20210819: target  4, Δgate -0.1090, split-half +0.0157
+  sub-590479_ses-20210921: target  3, Δgate +0.0474, split-half -0.0348
+  sub-599017_ses-20220210: target  5, Δgate -0.3203, split-half +0.0142
+mouse awake split-half null SD 0.0348 (n=9)
+PRIMARY mouse induction Δgate: n=9, negative 6, positive 3 (need 8), mean -0.0814 [-0.1587, -0.0118] = -2.3 null SD → INCONCLUSIVE
+  secondary Δimbal: mean +0.0147, negative 5/9
+  secondary Δswitch: mean +0.0043, negative 4/9
+SIGN CONTROL isoflurane epoch − awake: n=17, positive 1, mean -0.1621 [-0.2374, -0.0960] → NOT as predicted: primary not interpreted
+secondary link, within-mouse Spearman(gate res, z res) over target windows: median +0.39, positive 3/4
+
+macaque eyes-open null SD 0.0248
+  KT    n= 4 Δgate -0.0655 (-2.6 SD), negative 3/4
+  KTMD  n=11 Δgate -0.0248 (-1.0 SD), negative 9/11
+  MD    n= 4 Δgate +0.0104 (+0.4 SD), negative 1/4
+  PF    n= 4 Δgate -0.0427 (-1.7 SD), negative 3/4
+  SLP   n= 7 Δgate -0.0052 (-0.2 SD), negative 4/7
+macaque pooled drug Δgate: n=23, negative 16, positive 7 (need 17), mean -0.0289 [-0.0489, -0.0111] = -1.2 null SD → NEITHER
+  George PF (seen before): [-0.0977 -0.0725]
+  link within drug sessions, Spearman(gate res, z res): median +0.05, positive 12/23
