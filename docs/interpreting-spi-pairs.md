@@ -30,6 +30,14 @@ Spearman is Pearson on ranks, and it is invariant to any monotone transform of e
 
 "Monotone nonlinearity of the coupling" is earned only for the copula part, and only after a calibration shows the readout responds to a nonlinear coupling function rather than to bursts.
 
+### Worked example: Gaussian against flexible MI (clarified 17 November)
+
+For a continuous pair with population normal-score marginals, let G = −½ log(1 − ρ²), with ρ measured after that transform. Then I − G = D_KL(p || q_ρ) ≥ 0, where q_ρ is the bivariate Gaussian with the same covariance. This follows from Gaussian maximum entropy with the marginals and covariance fixed; see [Ince et al.](https://pmc.ncbi.nlm.nih.gov/articles/PMC5324576/). Thus the Gaussian-versus-flexible MI pairing has a principled non-Gaussian-dependence interpretation, not merely an unnamed disagreement. The identity concerns population quantities: finite-sample kNN estimates can fall below G, so the observed comparison still needs matched estimator/null calibration.
+
+Under the operational definition below, a validated residual after normal-scoring and window-matched IAAFT is evidence of nonlinear dependence. Gain mixtures and linear mixtures of non-Gaussian sources can generate such dependence; identifying its generating mechanism is a further question, not a prerequisite for this statistical reading. Exact surrogate preservation depends on the final step: spectrum-final IAAFT keeps cross-spectra exactly and marginals approximately, so diagnostics/calibration remain part of the evidence.
+
+For edge profiles I = G + E, z = corr(G, G + E). A fall in z concerns how Gaussian-predicted dependence accounts for the organisation of MI across edges; it is not a monotone measure of mean E, its variance, or the number of nonlinear pairs. For example, adding the same excess to every edge leaves z unchanged. A change in the spread of G also changes z's sensitivity. Report the null-corrected organisation result separately from any level claim; do not require a nonlinear coupling-function mechanism before calling the former nonlinear dependence under the stated definition.
+
 ### Worked example: robust against classical precision (tail link)
 
 MinCovDet keeps the half of the time samples with the smallest Mahalanobis distance. Mahalanobis distance penalises departure from the dominant covariance structure, not amplitude along it. Large common-mode samples (a global slow wave) lie along the leading mode and are kept. The discarded samples are those where channels disagree with the common pattern: spatially focal or pattern-atypical transients [I].
@@ -58,7 +66,7 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
     - linear mixing of non-Gaussian sources (ICA's "linear non-Gaussian" case).
   - *Conditional mean:* only a pure scale mixture (one shared gain on an unchanged correlation pattern) keeps it linear. With state-dependent correlation or non-Gaussian sources it is generally nonlinear, even when the generating equations are linear.
   - *Paper wording:* state the definition once. Reserve "nonlinear coupling" for a mechanism shown by a calibrated readout.
-  - *Two directions:* "more or less nonlinear" refers to a level (the mean excess over pairs); a fall in z(Gaussian, model-free) means the excess sits more unevenly across pairs. They are separate statements.
+  - *Two directions:* "more or less nonlinear" requires a declared level measure, such as population mean excess MI. A fall in z(Gaussian, model-free) concerns organisation relative to the Gaussian profile; it does not by itself identify the amount or spread of excess MI (worked example above).
 - **Wording tiers.** Confirmatory statements use only axes that pass validation. Everything else is exploratory, e.g. "departure from linear-stationary-Gaussian dependence in families F".
 
 ## Controls that turn a z difference into a character statement
