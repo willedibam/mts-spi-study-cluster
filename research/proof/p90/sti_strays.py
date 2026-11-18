@@ -119,16 +119,19 @@ def plot_continuum(frame):
     ax.legend(fontsize=6, frameon=False); fig.tight_layout(); fig.savefig(OUT/'sti-continuum.png', dpi=200); plt.close(fig)
 
 
-# Inset recordings (class, M, T, instance, title), ordered so that leaders do not cross.
-INSETS = [('fdstc', 32, 2000, 9, 'developed turb.\nweakest'), ('sti-i', 8, 500, 8, 'near noise\nturbulent window'),
-          ('sti-i', 8, 2000, 0, 'intermittency\nas weak, $T=2000$'), ('sti-i', 8, 500, 6, 'intermittency\ntypical'),
-          ('sti-i', 8, 500, 3, 'intermittency\none bursting site'), ('sti-i', 8, 1000, 4, 'near noise\nfully laminar')]
+# Insets: (class, M, T, instance, title, lower-left corner of the inset in axes fraction).
+INSETS = [('gaussian-noise', 8, 500, 8, 'Gaussian noise', (.085, .73)),
+          ('sti-i', 8, 500, 8, 'Near noise: turbulent window', (.265, .73)),
+          ('sti-i', 8, 500, 6, 'Intermittency, typical', (.445, .62)),
+          ('sti-i', 8, 1000, 4, 'Near noise: fully laminar', (.765, .70)),
+          ('fdstc', 32, 2000, 9, 'Developed turbulence, weakest', (.5, .05))]
+INSET_W, LATTICE_H, CARPET_H = .155, .095, .09  # Axes fraction.
 CARPET_STEPS = 120  # First steps of each window: enough to resolve the period-3 orbit.
 
 
 def plot_figure(config, frame, name='sti-strays'):
     """Appendix figure: every intermittency and developed-turbulence recording by cross-channel
-    dependence against relative distance to noise, with lattice and carpet insets at six of them."""
+    dependence against relative distance to noise, with lattice and carpet insets placed around it."""
     import matplotlib.pyplot as plt
     from matplotlib.colors import ListedColormap
     from research.cases.composite_style import INK, save
@@ -137,9 +140,8 @@ def plot_figure(config, frame, name='sti-strays'):
     labels = {'sti-i': 'CML intermittency', 'fdstc': 'CML developed turbulence'}
     specs = {(s.mts_class, s.M, s.T, s.instance): s for s in _specs(config['panel_a']['generation'])}
     style()
-    W, H = 7.2, 4.05
-    fig = plt.figure(figsize=(W, H)); inch = lambda l, b, w, h: fig.add_axes([l/W, b/H, w/W, h/H])
-    ax = inch(.62, .42, 6.45, 2.2)
+    W, H = 7.2, 3.6
+    fig = plt.figure(figsize=(W, H)); ax = fig.add_axes([.62/W, .42/H, 6.45/W, 3.1/H])
     noise = frame[frame.cls == 'gaussian-noise'].dep
     ax.axvspan(noise.min(), noise.max(), color=colors['gaussian-noise'], alpha=.3, lw=0, label='Gaussian noise (range)')
     for cls in ('fdstc', 'sti-i'):
@@ -148,34 +150,41 @@ def plot_figure(config, frame, name='sti-strays'):
             ax.scatter(f.dep, f.noise_ratio, s=marker_area(f.M, mk), marker=mk, color=colors[cls], alpha=.85,
                        edgecolors='white', linewidths=.3, label=labels[cls] if t == 1000 else None, zorder=3)
     ax.axhline(1, color='.55', lw=.5, ls=(0, (3, 2)), zorder=1)
-    ax.text(.6, 1.06, 'nearer noise', transform=ax.get_yaxis_transform(), ha='left', va='bottom', fontsize=6,
+    ax.text(.62, 1.04, 'nearer noise', transform=ax.get_yaxis_transform(), ha='left', va='bottom', fontsize=6,
             color='.4')
-    ax.set(yscale='log', xlim=(0, 1.04), ylim=(.05, 2.4),
+    ax.set(yscale='log', xlim=(0, 1.04), ylim=(.05, 8),
            xlabel=r'Cross-channel dependence, mean over pairs of max $|r|$ at lags 0--3',
-           ylabel='Distance to own class\n/ distance to noise', yticks=[.1, .2, .5, 1, 2], yticklabels=['0.1', '0.2', '0.5', '1', '2'])
+           ylabel='Distance to own class / distance to noise', yticks=[.1, .2, .5, 1, 2, 5],
+           yticklabels=['0.1', '0.2', '0.5', '1', '2', '5'])
     ax.minorticks_off()
     ax.legend(loc='lower right', fontsize=6, frameon=False, handletextpad=.3, markerscale=1.3)
-    w, gap, x0, top = .98, .1, .62, H - .08
-    for k, (cls, m, t, i, title) in enumerate(INSETS):
-        spec = specs[cls, m, t, i]; x, lattice = _series(spec, full=True)
-        turb = np.abs(lattice[3:] - lattice[:-3]) >= LAMINAR; lo = (lattice.shape[1] - m)//2
-        left = x0 + k*(w + gap) + (6.45 - 6*w - 5*gap)/2
-        head = fig.text((left + w/2)/W, top/H, title + f'\n$M={m}$, $T={t}$', ha='center', va='top', fontsize=6,
-                        color=INK, linespacing=1.15)
-        la = inch(left, top - .74, w, .36)
-        la.imshow(turb.T, aspect='auto', cmap=ListedColormap(['#f2efe6', '#222222']), interpolation='antialiased',
-                  rasterized=True)
-        la.add_patch(plt.Rectangle((-.5, lo - .5), turb.shape[0], m, fill=False, ec='#d62728', lw=.6))
-        la.set_xticks([]); la.set_yticks([])
-        if k == 0: la.set_ylabel('lattice', fontsize=6, labelpad=2)
-        ca = inch(left, top - 1.08, w, .3); carpet(ca, x[:CARPET_STEPS].T)
-        if k == 0: ca.set_ylabel('window', fontsize=6, labelpad=2)
-        row = frame[(frame.cls == cls) & (frame.M == m) & (frame['T'] == t) & (frame.instance == i)].iloc[0]
-        ax.scatter(row.dep, row.noise_ratio, s=marker_area(m, T_MARKERS[t])*3.2, facecolors='none', edgecolors=INK,
-                   linewidths=.6, zorder=4)
-        point = fig.transFigure.inverted().transform(ax.transData.transform((row.dep, row.noise_ratio)))
-        fig.add_artist(plt.Line2D([(left + w/2)/W, point[0]], [(top - 1.08)/H, point[1]], color='.45', lw=.45,
-                                  zorder=5))
+    to_axes = lambda xy: ax.transAxes.inverted().transform(ax.transData.transform(xy))
+    for cls, m, t, i, title, (x0, y0) in INSETS:
+        spec = specs[cls, m, t, i]
+        lattice_h = LATTICE_H if spec.generator == 'cml_logistic' else 0.
+        top = y0 + CARPET_H + lattice_h
+        if spec.generator == 'cml_logistic':
+            x, lattice = _series(spec, full=True)
+            turb = np.abs(lattice[3:] - lattice[:-3]) >= LAMINAR; lo = (lattice.shape[1] - m)//2
+            la = ax.inset_axes([x0, y0 + CARPET_H + .008, INSET_W, LATTICE_H - .008], zorder=5)
+            la.imshow(turb.T, aspect='auto', cmap=ListedColormap(['#f2efe6', '#222222']),
+                      interpolation='antialiased', rasterized=True)
+            la.add_patch(plt.Rectangle((-.5, lo - .5), turb.shape[0], m, fill=False, ec='#d62728', lw=.6))
+            la.set_xticks([]); la.set_yticks([])
+            for sp in la.spines.values(): sp.set_linewidth(.5); sp.set_color(INK)
+            row = frame[(frame.cls == cls) & (frame.M == m) & (frame['T'] == t) & (frame.instance == i)].iloc[0]
+            target = to_axes((row.dep, row.noise_ratio))
+            ax.scatter(row.dep, row.noise_ratio, s=marker_area(m, T_MARKERS[t])*3.2, facecolors='none',
+                       edgecolors=INK, linewidths=.6, zorder=4)
+        else:  # Noise has no lattice; its leader ends at the band.
+            x = _series(spec)
+            target = (to_axes((noise.max(), 1))[0], y0 + CARPET_H/2)
+        carpet(ax.inset_axes([x0, y0, INSET_W, CARPET_H], zorder=5), x[:CARPET_STEPS].T)
+        ax.text(x0 + INSET_W/2, top + .012, f'{title}\n$M={m}$, $T={t}$', transform=ax.transAxes, ha='center',
+                va='bottom', fontsize=6, color=INK, linespacing=1.1, zorder=5)
+        # Leader: from the nearest point of the inset's edge to the recording, under the markers.
+        start = (np.clip(target[0], x0, x0 + INSET_W), np.clip(target[1], y0, top))
+        ax.plot([start[0], target[0]], [start[1], target[1]], transform=ax.transAxes, color='.45', lw=.45, zorder=2)
     save(fig, OUT, name); plt.close(fig)
     return OUT/f'{name}.pdf'
 
