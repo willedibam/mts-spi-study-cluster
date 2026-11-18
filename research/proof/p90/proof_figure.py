@@ -209,7 +209,7 @@ def _geometry(config, columns, legend, order=None, silos=True):
     gap_b, left, right = .3, .4, .09
     size = (W - left - right - 3*gap_b)/4
     bottom = (.42 if legend else 0.) + .55
-    ya = bottom + size + .35
+    ya = bottom + size + .2
     ey0 = ya + .3  # Room for the "t-SNE" label under the embedding.
     ex0 = (W - SIDE)/2
     side_h = {k: sum(count[f]*section for f in columns.get(k, [])) + COL_GAP*(len(columns.get(k, []))-1)
