@@ -21,8 +21,8 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Panel a:** carpet → shared traces → graph.
   - The carpet sits on one hairline card with a vertical "channel" label and no row numbers.
   - x_i (channel 2) and x_j (channel 6) are each drawn once, as a bare trace centred over the gap between the carpet and the graph: x_i above, x_j below, both on a common time axis. A ⟺ joins carpet and graph between them.
-  - Each trace sits in a hairline box, and its carpet row and its graph node project into the box's facing edge (under x_i, above x_j) as faint straight beams, like panel d's projection.
-  - Each box starts at the carpet card's right edge, so no beam runs behind the card. The row's beam rises from the end of its row, just clear of the card, with its outer side flush with the box's left edge; the node's beam fans evenly from the node into the box's right part. Curved beams and beams drawn under the carpet were tried and set aside: the first adds a second line style, and the second reads as the top row's beam unless i is that row. Leader lines and label-only links (i, j beside row and node) were also tried.
+  - Each trace sits in a hairline box (0.78 × 0.32 in), and its carpet row and its graph node project into the box's facing edge (under x_i, above x_j) as beams.
+  - Each box starts at the carpet card's right edge, so no beam runs behind the card. The facing edge is split into two equal landings: the row's beam fans from the row's end (just clear of the card) into the left half, the node's beam from the node into the right half. Both fade from their source (`beam`, peak alpha 0.24) and have no outline. Curved beams and beams drawn under the carpet were tried and set aside: the first adds a second line style, and the second reads as the top row's beam unless i is that row. Leader lines and label-only links (i, j beside row and node) were also tried.
   - `TRACE_LINKS = "curve"` swaps the beams for two curved dotted lines and drops the box.
   - Nodes i and j sit on the graph's left, and the central node is raised clear of the strongest connection.
 - **Panel a graph:** the generator's coupling per ordered pair s→t, |lagged coupling of t on s| plus |innovation correlation|, scaled to [0, 1].
@@ -33,7 +33,7 @@ How z is constructed, with its geometric reading: one recording, viewed through 
   - Each layer's edges are its statistic's min–max scaled strength raised to the power 1.6, so weak edges recede. Euclidean distance is flipped to a similarity for drawing only.
   - The directed statistics (a, b) are drawn with one tapered arc per direction and the symmetric ones with one line per pair, so the layers show which statistics are directed.
   - The matrices stack down-right: A⁽ᵇ⁾ is offset by 0.45 of a matrix, so A⁽ᵃ⁾ covers about 30% of it, and the rest of the K are grey cards behind.
-  - A⁽ᵃ⁾'s layer projects onto its matrix's card as a faint sage beam (5% fill, edges at 25%; `SHOW_PLANE_PROJECTION`), drawn behind the labels. Only A⁽ᵃ⁾ has one; colour and labels carry the rest. A ⟺ between layer and matrix was the alternative, and a white halo on the layer label was dropped because, with usetex, it ate the superscript.
+  - A⁽ᵃ⁾'s layer projects onto its matrix's card as a sage beam with no outline that fades in toward the matrix (peak alpha 0.09; `SHOW_PLANE_PROJECTION`), so the busy layers and their labels stay clear. Only A⁽ᵃ⁾ has one; colour and labels carry the rest. A ⟺ between layer and matrix was the alternative, and a white halo on the layer label was dropped because, with usetex, it ate the superscript.
   - Both matrices outline the (i, j) and (j, i) entries.
   - A⁽ᵃ⁾'s two glyphs sit in the gaps the offset leaves, right of A⁽ᵃ⁾ and below it, 0.07 in clear of the matrices and flush with the outer edges of the stack's rectangle. The leaders are short.
   - The glyphs (`b_top`) and panel c's z_ab label (`c_top`) sit on a layer above the cross-panel lines.
@@ -59,7 +59,8 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Contract check:** z is asserted equal to `build_unified_feature_values` (`unified_ordered_v3`), which uses all M(M−1) ordered entries in row-major order.
 - **Extraction lines:**
   - Only the highlighted pair's four lines (from A⁽ᵃ⁾ and A⁽ᵇ⁾, solid for i→j and dotted for j→i) run into the scatter. `SHOW_ALL_EXTRACTION = True` restores a faint line for every entry.
-  - z_ab's cell of R projects into panel c as a faint beam in that cell's colour, from its right corners to the scatter's left corners.
+  - z_ab's cell of R projects into panel c as a beam in that cell's colour, from its right corners to the scatter's left corners, with no outline, fading from the cell (peak alpha 0.48).
+  - Beam gradients are rasters clipped to the beam's shape (matplotlib writes no vector gradients), so in the SVG and PDF each is an embedded 300 px/in image: movable in Illustrator, but the gradient itself is not editable there. Fading toward the source was tried for panel b (it hazes the layer labels), and fading toward the target for panels a and d.
   - Panel c is boxed, with no ticks. The fitted line carries the correlation.
   - z_ab is drawn in its own value's colour from R's colour map, wherever it is marked: its R and z cells, the projection beam, the fitted line and the outlined label. Fills use the exact cell colour; strokes use a stronger colour from the same side of the map (grey when |z_ab| < 0.05).
   - Rugs on the bottom (sage) and left (lavender) edges show that each axis is one statistic's edge profile.

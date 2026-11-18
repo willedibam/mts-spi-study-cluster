@@ -414,34 +414,33 @@ def figure(x, coupling, mats, c):
     # With TRACE_LINKS = "beam" (default) each trace sits in a hairline box that starts at the carpet card's right
     # edge, and its carpet row and graph node project into it, like panel d's projection; "curve" uses two dotted
     # lines and no box.
-    tx, tw, th = (cx + cw + 0.03, 0.66, 0.24) if TRACE_LINKS == "beam" else (1.12, 0.74, 0.24)
+    beamed = TRACE_LINKS == "beam"
+    tx, tw, th = (cx + cw + 0.03, 0.78, 0.32) if beamed else (1.12, 0.74, 0.24)
     link = dict(lw=0.5, ls=(0, (1.2, 1.4)), head=False, color=MUTED, z=0.8)
-    for m, lab, ty, up in [(i, "$x_i$", 4.12, True), (j, "$x_j$", 2.72, False)]:
+    for m, lab, ty, up in [(i, "$x_i$", 4.06 if beamed else 4.12, True), (j, "$x_j$", 2.64 if beamed else 2.72, False)]:
         y = cy + (M - 1 - m) * pitch
         rounded(a, cx - 0.012, y + gap - 0.012, cw + 0.024, pitch - 2 * gap + 0.024, "none", r=0.03, z=2,
                 ec=INK, lw=0.7)
-        trace(a, tx + (0.04 if TRACE_LINKS == "beam" else 0), ty + (0.03 if TRACE_LINKS == "beam" else 0),
-              tw - (0.08 if TRACE_LINKS == "beam" else 0), th - (0.06 if TRACE_LINKS == "beam" else 0),
+        trace(a, tx + (0.04 if beamed else 0), ty + (0.03 if beamed else 0),
+              tw - (0.08 if beamed else 0), th - (0.06 if beamed else 0),
               scaled[m, t0:t1], lw=0.6)
         text(a, tx + tw / 2, ty + th + 0.03 if up else ty - 0.03, lab, 8, ha="center",
              va="bottom" if up else "top")
         row_end = (cx + cw + 0.05, y + pitch / 2)  # just outside the carpet's card
-        if TRACE_LINKS == "beam":
+        if beamed:
             rounded(a, tx, ty, tw, th, "white", r=0.03, z=1.5, ec=HAIR, lw=0.5)
             edge = ty if up else ty + th  # the box edge facing the carpet and graph
             half = pitch / 2 - gap
-            # The row's beam rises from the row's end, just clear of the card, its outer side flush with the box's
-            # left edge. The node's beam fans evenly from the node into the box's right part.
-            rx0 = cx + cw + 0.045
-            y_far = row_end[1] - half if up else row_end[1] + half  # the row corner farther from the box
-            nx = float(np.clip(pos[m][0], tx + tw - 0.24, tx + tw - 0.18))
-            beams = [[(rx0, y_far), (rx0, edge), (rx0 + 0.18, edge)],
-                     [(nx - 0.11, edge), (nx + 0.11, edge), tuple(pos[m])]]
-            for poly in beams:
-                L["a"]["back"].add_patch(Polygon(poly, closed=True, fc=MUTED, ec="none", alpha=0.08, zorder=0.7))
-            for p0, p1 in [(beams[0][0], beams[0][1]), (beams[0][0], beams[0][2]), (beams[1][0], beams[1][2]),
-                           (beams[1][1], beams[1][2])]:
-                L["a"]["back"].plot(*zip(p0, p1), color=MUTED, lw=0.5, alpha=0.45, zorder=0.75)
+            # The box's facing edge is split into two equal landings: the row's beam fans from the row's end (just
+            # clear of the card) into the left half, the node's beam from the node into the right half. Both fade
+            # from their source.
+            rx0, mid, inset = cx + cw + 0.045, tx + tw / 2, 0.03
+            row_src = [(rx0, row_end[1] + half), (rx0, row_end[1] - half)]
+            row_dst = [(tx + inset, edge), (mid - inset, edge)]
+            node_dst = [(mid + inset, edge), (tx + tw - inset, edge)]
+            far, near = (row_src[1], row_src[0]) if up else row_src  # the row corners farther from and nearer the box
+            beam(L["a"]["back"], [far, row_dst[1], row_dst[0], near], row_src, row_dst, MUTED, 0.24, "source")
+            beam(L["a"]["back"], [tuple(pos[m]), *node_dst], [pos[m]], node_dst, MUTED, 0.24, "source")
         else:
             edge = ty - 0.025 if up else ty + th + 0.025
             bend = 0.3 if up else -0.3
@@ -483,12 +482,10 @@ def figure(x, coupling, mats, c):
         card(b, Bx + d * 0.08, By - d * 0.08, M, s, fc=CARD, z=6 - d * 0.5)
     cb = matrix(b, mats[names[B]], HUES[1], Bx, By, s, z=7, mark=True)
     ca = matrix(b, mats[names[A]], HUES[0], Gx, Gy, s, z=9, mark=True)
-    if SHOW_PLANE_PROJECTION:  # A^(a)'s layer projects onto its matrix's card; the labels sit above it
+    if SHOW_PLANE_PROJECTION:  # A^(a)'s layer projects onto its matrix's card, fading in toward the matrix
         o, u, v, pad = np.array([lx, layer_y[A]]), np.array([LW, 0.0]), np.array([SKEW, LH]), 0.12 * s
         poly = [o + u, o + u + v, (Gx - pad, Gy + M * s + pad), (Gx - pad, Gy - pad)]
-        L["b"]["back"].add_patch(Polygon(poly, closed=True, fc=HUES[0], ec="none", alpha=0.05, zorder=0.7))
-        for p0, p1 in [(poly[1], poly[2]), (poly[0], poly[3])]:
-            L["b"]["back"].plot(*zip(p0, p1), color=HUES[0], lw=0.5, alpha=0.25, zorder=0.75)
+        beam(L["b"]["back"], poly, poly[:2], poly[2:], HUES[0], 0.09, "target")  # kept faint at the busy layers
     text(b, Gx, Gy + M * s + 0.05, "$A^{(a)}$", 8, shade(HUES[0], 0.7), ha="left", va="bottom", zorder=30)
     text(b, Bx + 0.07, By - 0.03, "$A^{(b)}$", 8, shade(HUES[1], 0.7), ha="right", va="top", zorder=30)
     text(b, Bx + (K - 2) * 0.08 + M * s, By - (K - 2) * 0.08 - 0.05, "$A^{(K)}$", 8, MUTED, ha="right",
@@ -584,10 +581,8 @@ def figure(x, coupling, mats, c):
     text(d, rx + K * rs / 2, 0.2, r"feature value $z_{ab}$", 7, MUTED, ha="center", va="top")
     parts["d"].append(cax)
     # Projection: z_ab's cell of R opens out into the scatter of panel c.
-    beam = [(cell_x + rs, cell_y + rs), (sx0, sy0 + sw), (sx0, sy0), (cell_x + rs, cell_y)]
-    links["back"].add_patch(Polygon(beam, closed=True, fc=feat, ec="none", alpha=0.16, zorder=1))
-    for p0, p1 in [(beam[0], beam[1]), (beam[3], beam[2])]:
-        links["back"].plot(*zip(p0, p1), color=feat_ink, lw=0.6, alpha=0.55, zorder=1.1)
+    poly = [(cell_x + rs, cell_y + rs), (sx0, sy0 + sw), (sx0, sy0), (cell_x + rs, cell_y)]
+    beam(links["back"], poly, [poly[0], poly[3]], poly[1:3], feat, 0.48, "source", z=1)
 
     motivation(L["motivation"])
 
@@ -595,6 +590,27 @@ def figure(x, coupling, mats, c):
     title(L["e"]["base"], 0.02, 2.25, "e", "Statistical learning")
     uses(L["e"]["base"])
     return fig, parts
+
+
+def beam(ax, poly, src, dst, color, peak, fade="source", z=0.7, px_per_in=300):
+    """A projection beam with no outline: polygon `poly` filled with a linear gradient along the axis from the mean of
+    the points `src` to the mean of `dst`, at alpha `peak` at the source end ("source") or at the target end
+    ("target"), and 0 at the other. The gradient is a raster clipped to the polygon: matplotlib writes no vector
+    gradients, so in SVG and PDF it is an embedded image at px_per_in."""
+    poly = np.asarray(poly, float)
+    s0 = np.mean(src, axis=0)
+    axis = np.mean(dst, axis=0) - s0
+    (x0, y0), (x1, y1) = poly.min(0), poly.max(0)
+    nx, ny = max(2, int((x1 - x0) * px_per_in)), max(2, int((y1 - y0) * px_per_in))
+    gx, gy = np.meshgrid(np.linspace(x0, x1, nx), np.linspace(y1, y0, ny))
+    t = np.clip(((gx - s0[0]) * axis[0] + (gy - s0[1]) * axis[1]) / (axis @ axis), 0, 1)
+    rgba = np.zeros((ny, nx, 4))
+    rgba[..., :3] = to_rgb(color)
+    rgba[..., 3] = peak * ((1 - t) if fade == "source" else t)
+    clip = Polygon(poly, closed=True, fc="none", ec="none", transform=ax.transData)
+    ax.add_patch(clip)
+    im = ax.imshow(rgba, extent=(x0, x1, y0, y1), aspect="auto", interpolation="bilinear", zorder=z)
+    im.set_clip_path(clip)
 
 
 def heatmap(ax, scaled, limit, x0, y0, k=1.0, cmap=MTS, fade=1.0, under="white", z=1):
