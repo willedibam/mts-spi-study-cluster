@@ -31,6 +31,7 @@ import matplotlib as mpl
 mpl.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.collections import LineCollection
 from matplotlib.colors import LinearSegmentedColormap, Normalize, to_rgb
 from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch, Polygon
 from matplotlib.transforms import Bbox
@@ -439,8 +440,10 @@ def figure(x, coupling, mats, c):
             row_dst = [(tx + inset, edge), (mid - inset, edge)]
             node_dst = [(mid + inset, edge), (tx + tw - inset, edge)]
             far, near = (row_src[1], row_src[0]) if up else row_src  # the row corners farther from and nearer the box
-            beam(L["a"]["back"], [far, row_dst[1], row_dst[0], near], row_src, row_dst, MUTED, 0.24, "source")
-            beam(L["a"]["back"], [tuple(pos[m]), *node_dst], [pos[m]], node_dst, MUTED, 0.24, "source")
+            beam(L["a"]["back"], [far, row_dst[1], row_dst[0], near], row_src, row_dst, MUTED, 0.24, "source",
+                 edges=[(far, row_dst[1]), (near, row_dst[0])])
+            beam(L["a"]["back"], [tuple(pos[m]), *node_dst], [pos[m]], node_dst, MUTED, 0.24, "source",
+                 edges=[(pos[m], node_dst[0]), (pos[m], node_dst[1])])
         else:
             edge = ty - 0.025 if up else ty + th + 0.025
             bend = 0.3 if up else -0.3
@@ -485,7 +488,8 @@ def figure(x, coupling, mats, c):
     if SHOW_PLANE_PROJECTION:  # A^(a)'s layer projects onto its matrix's card, fading in toward the matrix
         o, u, v, pad = np.array([lx, layer_y[A]]), np.array([LW, 0.0]), np.array([SKEW, LH]), 0.12 * s
         poly = [o + u, o + u + v, (Gx - pad, Gy + M * s + pad), (Gx - pad, Gy - pad)]
-        beam(L["b"]["back"], poly, poly[:2], poly[2:], HUES[0], 0.09, "target")  # kept faint at the busy layers
+        beam(L["b"]["back"], poly, poly[:2], poly[2:], HUES[0], 0.09, "target",  # kept faint at the busy layers
+             edges=[(poly[1], poly[2]), (poly[0], poly[3])], edge_alpha=0.3)
     text(b, Gx, Gy + M * s + 0.05, "$A^{(a)}$", 8, shade(HUES[0], 0.7), ha="left", va="bottom", zorder=30)
     text(b, Bx + 0.07, By - 0.03, "$A^{(b)}$", 8, shade(HUES[1], 0.7), ha="right", va="top", zorder=30)
     text(b, Bx + (K - 2) * 0.08 + M * s, By - (K - 2) * 0.08 - 0.05, "$A^{(K)}$", 8, MUTED, ha="right",
@@ -582,7 +586,8 @@ def figure(x, coupling, mats, c):
     parts["d"].append(cax)
     # Projection: z_ab's cell of R opens out into the scatter of panel c.
     poly = [(cell_x + rs, cell_y + rs), (sx0, sy0 + sw), (sx0, sy0), (cell_x + rs, cell_y)]
-    beam(links["back"], poly, [poly[0], poly[3]], poly[1:3], feat, 0.48, "source", z=1)
+    beam(links["back"], poly, [poly[0], poly[3]], poly[1:3], feat, 0.48, "source",
+         edges=[(poly[0], poly[1]), (poly[3], poly[2])], edge_color=feat_ink, edge_alpha=0.55, lw=0.6, z=1)
 
     motivation(L["motivation"])
 
@@ -592,25 +597,38 @@ def figure(x, coupling, mats, c):
     return fig, parts
 
 
-def beam(ax, poly, src, dst, color, peak, fade="source", z=0.7, px_per_in=300):
-    """A projection beam with no outline: polygon `poly` filled with a linear gradient along the axis from the mean of
-    the points `src` to the mean of `dst`, at alpha `peak` at the source end ("source") or at the target end
-    ("target"), and 0 at the other. The gradient is a raster clipped to the polygon: matplotlib writes no vector
-    gradients, so in SVG and PDF it is an embedded image at px_per_in."""
+def beam(ax, poly, src, dst, color, peak, fade="source", edges=(), edge_color=None, edge_alpha=0.45, lw=0.5, z=0.7,
+         px_per_in=300):
+    """A projection beam: polygon `poly` filled with a linear gradient along the axis from the mean of the points `src`
+    to the mean of `dst`, at alpha `peak` at the source end ("source") or at the target end ("target"), and 0 at the
+    other. `edges` are point pairs drawn as lines that fade the same way, from edge_alpha. The fill is a raster
+    clipped to the polygon: matplotlib writes no vector gradients, so in SVG and PDF it is an embedded image at
+    px_per_in; the edges stay vector, as short segments of stepped alpha."""
     poly = np.asarray(poly, float)
     s0 = np.mean(src, axis=0)
     axis = np.mean(dst, axis=0) - s0
+
+    def ramp(x, y):  # 1 at the faded-from end, 0 at the other
+        t = np.clip(((x - s0[0]) * axis[0] + (y - s0[1]) * axis[1]) / (axis @ axis), 0, 1)
+        return (1 - t) if fade == "source" else t
     (x0, y0), (x1, y1) = poly.min(0), poly.max(0)
     nx, ny = max(2, int((x1 - x0) * px_per_in)), max(2, int((y1 - y0) * px_per_in))
     gx, gy = np.meshgrid(np.linspace(x0, x1, nx), np.linspace(y1, y0, ny))
-    t = np.clip(((gx - s0[0]) * axis[0] + (gy - s0[1]) * axis[1]) / (axis @ axis), 0, 1)
     rgba = np.zeros((ny, nx, 4))
     rgba[..., :3] = to_rgb(color)
-    rgba[..., 3] = peak * ((1 - t) if fade == "source" else t)
+    rgba[..., 3] = peak * ramp(gx, gy)
     clip = Polygon(poly, closed=True, fc="none", ec="none", transform=ax.transData)
     ax.add_patch(clip)
     im = ax.imshow(rgba, extent=(x0, x1, y0, y1), aspect="auto", interpolation="bilinear", zorder=z)
     im.set_clip_path(clip)
+    rgb = to_rgb(edge_color or color)
+    for p0, p1 in edges:
+        k = np.linspace(0, 1, 41)[:, None]
+        pts = np.asarray(p0, float) + k * (np.asarray(p1, float) - np.asarray(p0, float))
+        mids = (pts[:-1] + pts[1:]) / 2
+        alphas = edge_alpha * np.clip(1.3 * ramp(*mids.T), 0, 1)  # held at full strength a little longer than the fill
+        ax.add_collection(LineCollection(np.stack([pts[:-1], pts[1:]], 1), colors=[(*rgb, a_) for a_ in alphas],
+                                         lw=lw, capstyle="butt", zorder=z + 0.05))
 
 
 def heatmap(ax, scaled, limit, x0, y0, k=1.0, cmap=MTS, fade=1.0, under="white", z=1):
