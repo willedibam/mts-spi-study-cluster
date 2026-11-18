@@ -120,10 +120,10 @@ def plot_continuum(frame):
 
 
 # Insets in a row above the plot, ordered so that leaders do not cross.
-INSETS = [('gaussian-noise', 8, 500, 8, 'Gaussian noise'), ('sti-i', 8, 500, 8, 'Near noise: turbulent'),
-          ('fdstc', 32, 2000, 9, 'Developed turb., weakest'), ('sti-i', 8, 500, 6, 'Intermittency, typical'),
-          ('sti-i', 8, 1000, 4, 'Near noise: laminar')]
-INSET_W, LATTICE_H, CARPET_H = .86, .26, .22  # Inches.
+INSETS = [('gaussian-noise', 8, 500, 8, 'Gaussian noise'), ('sti-i', 8, 500, 8, 'Turbulent window'),
+          ('fdstc', 32, 2000, 9, 'Dev. turbulence'), ('sti-i', 8, 500, 6, 'Intermittency'),
+          ('sti-i', 8, 1000, 4, 'Laminar window')]
+INSET_W, LATTICE_H, CARPET_H = .78, .22, .19  # Inches.
 CARPET_STEPS = 120  # First steps of each window: enough to resolve the period-3 orbit.
 
 
@@ -138,8 +138,8 @@ def plot_figure(config, frame, name='sti-strays'):
     labels = {'sti-i': 'CML intermittency', 'fdstc': 'CML developed turbulence'}
     specs = {(s.mts_class, s.M, s.T, s.instance): s for s in _specs(config['panel_a']['generation'])}
     style()
-    W, H = 7.2, 3.62
-    left, bottom, aw, ah = .62, .42, 6.45, 2.2
+    W, H = 5.02, 3.5
+    left, bottom, aw, ah = .62, .42, 4.3, 2.2
     fig = plt.figure(figsize=(W, H)); inch = lambda l, b, w, h: fig.add_axes([l/W, b/H, w/W, h/H])
     ax = inch(left, bottom, aw, ah)
     noise = frame[frame.cls == 'gaussian-noise'].dep
@@ -153,14 +153,14 @@ def plot_figure(config, frame, name='sti-strays'):
     ax.text(.62, 1.04, 'nearer noise', transform=ax.get_yaxis_transform(), ha='left', va='bottom', fontsize=6,
             color='.4')
     ax.set(yscale='log', xlim=(0, 1.04), ylim=(.05, 2.4),
-           xlabel=r'Cross-channel dependence, mean over pairs of max $|r|$ at lags 0--3',
+           xlabel=r'Cross-channel dependence (mean max $|r|$, lags 0--3)',
            ylabel='Distance to own class\n/ distance to noise', yticks=[.1, .2, .5, 1, 2],
            yticklabels=['0.1', '0.2', '0.5', '1', '2'])
     ax.minorticks_off()
     ax.legend(loc='lower right', fontsize=6, frameon=False, handletextpad=.3, markerscale=1.3)
     to_axes = lambda xy: ax.transAxes.inverted().transform(ax.transData.transform(xy))
     gap = (aw - len(INSETS)*INSET_W)/(len(INSETS) - 1)
-    y0 = bottom + ah + .24  # Carpet bottom, inches.
+    y0 = bottom + ah + .22  # Carpet bottom, inches.
     for k, (cls, m, t, i, title) in enumerate(INSETS):
         spec = specs[cls, m, t, i]; x0 = left + k*(INSET_W + gap)
         if spec.generator == 'cml_logistic':
