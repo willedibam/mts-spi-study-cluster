@@ -727,7 +727,8 @@ def motivation(L):
             rects.append((tx - 0.22, y0, tw + 0.22, h))
         bubble(ax, rects, fill, tint(hue, 0.28), cl["bubble_seed"], floor + 0.04, PIPE_H + TOP_H - 0.04)
     (lx, ly, lw, lh), (rx, ry, rw, rh) = fg["left"], fg["right"]
-    p0, p1 = np.array([lx + lw + 0.1, ly + lh / 2]), np.array([rx - 0.1, ry + rh / 2])
+    ya = (max(ly, ry) + min(ly + lh, ry + rh)) / 2  # level, at the middle of the two cards' shared height
+    p0, p1 = np.array([lx + lw + 0.22, ya]), np.array([rx - 0.22, ya])
     block_arrow(ax, p0, p1)
     d = (p1 - p0) / np.linalg.norm(p1 - p0)
     text(ax, *((p0 + p1) / 2 + 0.24 * np.array([-d[1], d[0]])), r"\textbf{?}", 26, ha="center", va="center", zorder=5)
