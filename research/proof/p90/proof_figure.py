@@ -1,5 +1,6 @@
-"""Proof figure. a: one t-SNE of the displayed classes, ringed by one silo per generator family
-with carpets of the recordings behind ringed points; b: fixed class-contrast rainclouds.
+"""Proof figure. a: one t-SNE of the displayed classes, surrounded by one silo per generator family
+whose strips are tiled with example carpets (height encodes M; ``carpet_strips``); b: fixed
+class-contrast rainclouds.
 
 Settings, classes, contrasts and panel-a layout live in ``configs/analysis/proof-figure-261029.yaml``.
 Colour = class (a family's variants take neighbouring hues), marker area proportional to M,
@@ -11,7 +12,7 @@ from textwrap import fill
 
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import Circle, FancyBboxPatch
+from matplotlib.patches import Circle, FancyBboxPatch, PathPatch
 from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
@@ -22,6 +23,7 @@ import yaml
 
 from mtsspi.figures import raincloud
 from research.cases.composite_style import INK, carpet, panel_title, style
+from research.proof.p90.carpet_strips import bands, brick, format_layout, mirror, parse, place, rank_layouts
 from research.proof.p90.refresh_proof_figures import ROOT, preprocess, rank_pair
 
 CONFIG = ROOT/'research/proof/p90/configs/analysis/proof-figure-261029.yaml'
@@ -180,20 +182,9 @@ def _save(fig, output, name, dpi=600):
 
 
 # --------------------------------------------------------------------------- panel a geometry
-# Inches. Carpets share one ruler: height per channel and width per sample.
-SILO_W, PAD, HEAD, NAME, DIVIDE, COL_GAP = 1.95, .07, .2, .13, .09, .1
-CH_IN = .0095
-
-
-def _silo_heights(config):
-    tallest = max(m for m, _ in config['panel_a']['sizes'])*CH_IN
-    block = NAME + tallest
-    count = {f: sum(c['family'] == f for c in config['classes']) for c in config['classes'] for f in [c['family']]}
-    return {f: 2*PAD + HEAD + n*block + (n-1)*DIVIDE for f, n in count.items()}, block
-
-
-def _column_height(names, heights):
-    return sum(heights[f] for f in names) + COL_GAP*(len(names)-1)
+# Inches. Silos: EDGE from the canvas side, COL_GAP between silos and to the embedding. Each variant
+# has a HEAD-tall tinted header and a carpet strip inset by MARGIN. Carpet geometry: carpet_strips.
+EDGE, COL_GAP, HEAD, MARGIN, GLYPH, SIDE = .1, .1, .276, .05, .236, 2.8
 
 
 def _members(config, family, order=None):
@@ -204,29 +195,102 @@ def _members(config, family, order=None):
 
 
 def _geometry(config, columns, legend, order=None, silos=True):
-    """Figure inches for a given silo arrangement (and optional variant order within silos).
-    Without silos the embedding sits just above panel b, leaving the space above free."""
-    heights, block = _silo_heights(config)
+    """Figure inches for a silo arrangement: ``columns`` maps 'left'/'right' (and optionally
+    'top', above the embedding) to families. Side strips hold ``silos.channels`` channels at
+    ``silos.unit_in`` per 8; the top silo takes the height left over by aligning the side columns
+    with the embedding, and its strip's unit stretches to fill it. Without silos the canvas is the
+    same, so a draw.io overlay still lines up."""
+    s = config['panel_a']['silos']
+    u, gap = s['unit_in'], s['gap_in']
+    count = {f: len(_members(config, f)) for f in dict.fromkeys(c['family'] for c in config['classes'])}
+    strip = brick(s['channels'], u, gap)
+    section = HEAD + 2*MARGIN + strip
     W = 183/25.4  # Nature double-column width.
-    side, gap, left, right = 2.8, .3, .4, .09
-    size = (W - left - right - 3*gap)/4
-    Ha = max(side + .3, *(_column_height(columns[k], heights) for k in columns))
+    gap_b, left, right = .3, .4, .09
+    size = (W - left - right - 3*gap_b)/4
     bottom = (.42 if legend else 0.) + .55
     ya = bottom + size + .6
-    H = ya + Ha + .25  # Top margin keeps the panel letter clear of the silos.
-    g = dict(W=W, H=H, Ha=Ha, ya=ya, side=side, size=size, gap=gap, left=left, bottom=bottom, block=block,
-             ex0=(W-side)/2, ey0=ya + (Ha-side)/2 + .1 if silos else bottom + size + .5)
-    rects, anchors = {}, {}
-    for key, x in [('left', 0.), ('right', W - SILO_W)]:
-        top = ya + (Ha + _column_height(columns[key], heights))/2
-        for f in columns[key]:
-            h = heights[f]; top -= h
-            rects[f] = (x, top, SILO_W, h)
+    ey0 = ya + .3  # Room for the "t-SNE" label under the embedding.
+    ex0 = (W - SIDE)/2
+    side_h = {k: sum(count[f]*section for f in columns.get(k, [])) + COL_GAP*(len(columns.get(k, []))-1)
+              for k in ('left', 'right')}
+    Ha = max(SIDE, *side_h.values())
+    top = columns.get('top', [])
+    top_h = Ha - SIDE - COL_GAP if top else 0.
+    if top and top_h < HEAD + 2*MARGIN + .2:
+        raise ValueError('No room for the top silo: raise silos.unit_in or silos.channels.')
+    if not top: Ha = max(Ha, SIDE + .3)
+    H = ey0 + Ha + .3  # Top margin for the panel letter.
+    sw = ex0 - COL_GAP - EDGE
+    g = dict(W=W, H=H, Ha=Ha, ya=ya, side=SIDE, size=size, gap=gap_b, left=left, bottom=bottom,
+             ex0=ex0, ey0=ey0)
+    rects, anchors, strips = {}, {}, {}
+    for key, x in [('left', EDGE), ('right', W - EDGE - sw)]:
+        y = ey0 + (Ha + side_h[key])/2  # Shorter column centred on the taller.
+        for f in columns.get(key, []):
+            h = count[f]*section; y -= h
+            rects[f] = (x, y, sw, h)
             for i, c in enumerate(_members(config, f, order)):
-                yc = top + h - PAD - HEAD - i*(block + DIVIDE) - block/2
-                anchors[c['name']] = (x + SILO_W if key == 'left' else x, yc)
-            top -= COL_GAP
-    return dict(g, rects=rects, anchors=anchors)
+                y_top = y + h - i*section
+                strips[c['name']] = (x + MARGIN, y_top - HEAD - MARGIN, sw - 2*MARGIN, strip, u)
+                anchors[c['name']] = (x + sw if key == 'left' else x, y_top - section/2, section/2 - HEAD)
+            y -= COL_GAP
+    if top:
+        tw = (SIDE - (len(top)-1)*COL_GAP)/len(top)
+        tstrip = top_h - HEAD - 2*MARGIN
+        for j, f in enumerate(top):
+            if count[f] != 1:
+                raise ValueError(f'The top silo holds one variant; {f} has {count[f]}.')
+            x = ex0 + j*(tw + COL_GAP)
+            rects[f] = (x, ey0 + SIDE + COL_GAP, tw, top_h)
+            c = _members(config, f)[0]
+            ut = (tstrip + gap)/(s['top_channels']/8)  # Stretched unit: fills the top strip exactly.
+            strips[c['name']] = (x + MARGIN, ey0 + Ha - HEAD - MARGIN, tw - 2*MARGIN, tstrip, ut)
+    return dict(g, rects=rects, anchors=anchors, strips=strips)
+
+
+def _blocked(p0, p1, obstacles):
+    line = p0 + np.linspace(0, 1, 200)[:, None]*(p1 - p0)
+    return any(((line[:, 0] > ox) & (line[:, 0] < ox+ow) & (line[:, 1] > oy) & (line[:, 1] < oy+oh)).any()
+               for ox, oy, ow, oh in obstacles)
+
+
+def _leader(anchor, contour, obstacles, g, drawn=(), avoid=None, step=.02, radius=.08):
+    """Leader vertices (inches) from the silo's inner edge to the island contour. Straight from the
+    best point of the variant's section (anchor y +- span: short, central, not crossing ``drawn``
+    leaders, not over ``avoid`` points: other classes) if one clears the
+    other silos and the key; otherwise out of the section centre, down the gap beside the embedding
+    to the highest point from which it can enter clear of them, with rounded corners."""
+    from matplotlib.path import Path as MPath
+    x, yc, span = anchor
+    nearest = lambda p0: contour[np.argmin(np.linalg.norm(contour - p0, axis=1))]
+    best = None
+    for y in np.arange(yc - span, yc + span + 1e-9, step):
+        p0 = np.array([x, y]); p1 = nearest(p0)
+        crossings = sum(_crosses(p0, p1, a, b) for v in drawn for a, b in zip(v[:-1], v[1:]))
+        over = 0
+        if avoid is not None:
+            w = p1 - p0; t = np.clip((avoid - p0) @ w/(w @ w), 0, 1)
+            over = (np.linalg.norm(p0 + t[:, None]*w - avoid, axis=1) < .05).sum()
+        key = np.linalg.norm(p1 - p0) + .5*abs(y - yc) + 5*crossings + .05*over
+        if not _blocked(p0, p1, obstacles) and (best is None or key < best[0]):
+            best = (key, p0, p1)
+    if best is not None:
+        return MPath([best[1], best[2]])
+    left = x < g['ex0']
+    xg = (x + g['ex0'])/2 if left else (x + g['ex0'] + g['side'])/2
+    for yb in np.arange(g['ey0'] + g['side'] - radius, g['ey0'] + radius, -step):  # Highest clear entry.
+        p1 = nearest(np.array([xg, yb]))
+        if not _blocked(np.array([xg, yb]) + radius*(p1 - [xg, yb])/np.linalg.norm(p1 - [xg, yb]), p1, obstacles):
+            break
+    p0 = np.array([x, yc])
+    sgn = 1 if left else -1
+    d = (p1 - [xg, yb])/np.linalg.norm(p1 - [xg, yb])
+    L, C = MPath.LINETO, MPath.CURVE3
+    verts = [p0, (xg - sgn*radius, yc), (xg, yc), (xg, yc - radius), (xg, yb + radius), (xg, yb),
+             np.array([xg, yb]) + radius*d, p1]
+    codes = [MPath.MOVETO, L, C, C, L, C, C, L]
+    return MPath(np.array(verts, dtype=float), codes)
 
 
 def _orient(xy, angle, reflect):
@@ -274,7 +338,7 @@ def choose_layout(xy, labels, config, *, step=6, legend=False, keep=60):
 
     def cost(columns, order, angle, reflect):
         g = _geometry(config, columns, legend, order)
-        anchors = np.array([g['anchors'][n] for n in names])
+        anchors = np.array([g['anchors'][n][:2] for n in names])
         q = _orient(xy, angle, reflect); pts = _frame(q, g)(q)
         cen = np.array([pts[owner == i].mean(0) for i in range(len(names))])
         rad = np.array([np.sqrt(((pts[owner == i] - cen[i])**2).sum(1).mean())*1.6 for i in range(len(names))])
@@ -337,34 +401,151 @@ def _glyph(fig, x, y, w, h, kind, W, H, color):
         ax.add_patch(Circle(p, .2, fc='white', ec=color, lw=.5, zorder=2))
 
 
-def _silo(fig, rect, family, members, examples, block, W, H, kind):
-    x, y, w, h = rect
+def _bold(text):
+    return rf'\textbf{{{text}}}' if plt.rcParams['text.usetex'] else text
+
+
+def _silo(fig, rect, family, members, strips, carpets, config):
+    """Rounded frame in the darker variant's hue; per variant a tinted header (weighted coupling
+    glyph, bold name) over its carpet strip; a dashed rule in the lower variant's hue between them."""
     from matplotlib.colors import to_rgb
-    hue = min((c['color'] for c in members), key=lambda h: sum(to_rgb(h)))  # The darker variant names the family.
-    fig.add_artist(FancyBboxPatch((x/W, y/H), w/W, h/H, transform=fig.transFigure,
-                                  boxstyle='round,pad=0,rounding_size=0.012', fc='none', ec=hue, lw=.5))
-    fig.text((x+PAD)/W, (y+h-PAD-.13)/H, family, color=hue, fontsize=8, va='baseline')
-    _glyph(fig, x+w-PAD-.3, y+h-PAD-.19, .3, .19, kind, W, H, hue)
+    from matplotlib.patches import Rectangle
+    a = config['panel_a']; inch = fig.dpi_scale_trans
+    x, y, w, h = rect
+    hue = min((c['color'] for c in members), key=lambda c: sum(to_rgb(c)))
+    frame = FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0,rounding_size=0.06', transform=inch,
+                           fc='none', ec=hue, lw=.65, zorder=3)
+    fig.add_artist(frame)
+    params = _generation(config)
+    section = h/len(members)
     for i, c in enumerate(members):
-        top = y + h - PAD - HEAD - i*(block + DIVIDE)
-        if i:  # Subtle internal split between variants.
-            yd = top + DIVIDE/2
-            fig.add_artist(Line2D([(x+PAD)/W, (x+w-PAD)/W], [yd/H, yd/H], transform=fig.transFigure,
-                                  color=hue, lw=.4, ls=(0, (1, 1.5)), alpha=.7))
-        fig.text((x+PAD)/W, (top-.1)/H, c['label'], color=c['color'], fontsize=7, va='baseline')
-        cells = [e for e in examples if e['name'] == c['name']]
-        width = w - 2*PAD; gaps = .05*(len(cells)-1)
-        per_sample = (width - gaps)/sum(e['carpet'].shape[1] for e in cells)
-        cx = x + PAD
-        for e in cells:
-            cw, ch = e['carpet'].shape[1]*per_sample, e['carpet'].shape[0]*CH_IN
-            cax = fig.add_axes([cx/W, (top-block)/H, cw/W, ch/H])
-            carpet(cax, e['carpet']); _crisp(cax)
+        top = y + h - i*section
+        band = Rectangle((x, top - HEAD), w, HEAD, transform=inch, fc=c['color'], alpha=.12, lw=0, zorder=1)
+        fig.add_artist(band); band.set_clip_path(frame)
+        if i:
+            fig.add_artist(Line2D([x, x+w], [top, top], transform=inch, color=c['color'], lw=.65,
+                                  ls=(0, (3, 2)), zorder=3))
+        fig.text((x + w/2)/fig.get_figwidth(), (top - HEAD/2)/fig.get_figheight(),
+                 _bold(a.get('silo_labels', {}).get(c['name'], legend_label(c))),
+                 ha='center', va='center', fontsize=7)
+        gax = fig.add_axes([(x + .03)/fig.get_figwidth(), (top - HEAD/2 - GLYPH/2)/fig.get_figheight(),
+                            GLYPH/fig.get_figwidth(), GLYPH/fig.get_figheight()])
+        gax.set_axis_off(); gax.set(xlim=(-1.75, 1.75), ylim=(-1.75, 1.75)); gax.set_aspect('equal')
+        _weighted_glyph(gax, a['topology'][family], *_glyph_weights(c, params), c['color'],
+                        repulsive=params[c['name']].get('K', 0) < 0)
+        sx, sy, _, _, _ = strips[c['name']]
+        for r in carpets[c['name']]:
+            cax = fig.add_axes([(sx + r['x'])/fig.get_figwidth(), (sy - r['y'] - r['h'])/fig.get_figheight(),
+                                r['w']/fig.get_figwidth(), r['h']/fig.get_figheight()])
+            carpet(cax, r['view']); _crisp(cax)
             for spine in cax.spines.values(): spine.set_linewidth(.4)
-            cx += cw + .05
 
 
-def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, legend=True, silos=True,
+def silo_carpets(config, legend=True):
+    """Fill each variant's carpet strip from its frozen layout (``panel_a.silos.layouts``). Slots
+    that need M channels take recordings with that M; wider slots take longer recordings (T by
+    width tercile); instances follow ``silos.instances`` without repeats within a strip. Each view
+    is the recording at ``carpets.per_in`` samples per inch (with the class stride), or the whole
+    record decimated to the slot for ``carpets.whole`` classes; a record too short for its slot
+    is stretched rather than repeated."""
+    a = config['panel_a']; s, cfg = a['silos'], a['carpets']
+    g = _geometry(config, a['columns'], legend, a.get('variant_order'))
+    aspect = tuple(s['aspect'])
+    out = {}
+    for c in config['classes']:
+        if c['name'] not in g['strips']:
+            continue
+        _, _, w, _, u = g['strips'][c['name']]
+        rects = place(s['layouts'][c['name']], w, u, s['gap_in'], aspect)
+        rank = np.argsort(np.argsort([r['w'] for r in rects], kind='stable'), kind='stable')
+        used = {}
+        for r, k in zip(rects, rank):
+            t = a['T_values'][min(len(a['T_values'])-1, k*len(a['T_values'])//len(rects))]
+            n_used = used.get((r['M'], t), 0); used[(r['M'], t)] = n_used + 1
+            inst = s['instances'][n_used % len(s['instances'])]
+            series = _recording(config, c['name'], r['M'], t, inst)
+            n = max(2, int(round(r['w']*cfg['per_in'])))
+            if c['name'] in cfg.get('whole', []):
+                view = series[:, ::int(np.ceil(t/n))]
+            else:
+                view = series[:, ::cfg.get('stride', {}).get(c['name'], 1)][:, :n]
+            r.update(T=t, instance=inst, view=view)
+        out[c['name']] = rects
+    return out
+
+
+def _recording(config, name, m, t, instance):
+    """One recording (channels x T), regenerated from the frozen generation config."""
+    from mtsspi.generators.harness import generate_from_spec
+    spec = next(sp for sp in _specs(config['panel_a']['generation']) if sp.mts_class == name and sp.M == m
+                and sp.T == t and sp.instance == instance)
+    x = np.asarray(generate_from_spec(spec)[0], dtype=float)
+    return (x if x.shape == (t, m) else x.T).T
+
+
+@__import__('functools').lru_cache(maxsize=None)
+def _specs(generation):
+    from mtsspi.mapping import DatasetMapping, ExperimentConfig
+    return DatasetMapping(ExperimentConfig.from_file(ROOT/generation)).specs
+
+
+def choose_strips(config, legend=True, top=3, preview=None):
+    """Rank strip layouts for the side and top strips and deal them out: side variants cycle
+    through the ``top`` best distinct layouts (mirrored on alternate rounds), so variants sharing
+    a silo differ. Returns ``{class: layout}`` for ``panel_a.silos.layouts``; ``preview`` writes a
+    sheet of the candidates (M by shade) to that path."""
+    a = config['panel_a']; s = a['silos']; aspect = tuple(s['aspect']); gap = s['gap_in']
+    g = _geometry(config, a['columns'], legend, a.get('variant_order'))
+    order = [c['name'] for k in ('left', 'right', 'top') for f in a['columns'].get(k, [])
+             for c in _members(config, f, a.get('variant_order'))]
+    side = [n for n in order if n not in {c['name'] for f in a['columns'].get('top', []) for c in _members(config, f)}]
+    _, _, w, _, u = g['strips'][side[0]]
+    ranked = {'side': rank_layouts(s['channels'], w, u, gap, aspect, n_items=tuple(s['items']), top=200)}
+    strips = {'side': g['strips'][side[0]]}
+    def distinct(ranked, k):
+        picked, sets = [], []
+        for _, spec in ranked:
+            key = sorted(str(sorted(map(str, col))) for b in bands(spec) for col in parse(b))  # Level order ignored.
+            if key not in sets:
+                picked.append(spec); sets.append(key)
+            if len(picked) == k: break
+        return picked
+    chosen = distinct(ranked['side'], top)
+    layouts = {n: chosen[i % len(chosen)] if (i//len(chosen)) % 2 == 0 else mirror(chosen[i % len(chosen)])
+               for i, n in enumerate(side)}
+    for n in (n for n in order if n not in side):
+        _, _, wt, _, ut = g['strips'][n]
+        ranked[n] = rank_layouts(s['top_channels'], wt, ut, gap, aspect, n_items=tuple(s['top_items']),
+                                 max_columns=5, max_splits=2, max_levels=5, top=200)
+        layouts[n] = distinct(ranked[n], 1)[0]; strips[n] = g['strips'][n]
+    if preview:
+        _strip_sheet([(k, ranked[k], strips[k]) for k in ranked], config, preview)
+    return layouts
+
+
+def _strip_sheet(groups, config, path, per_row=4, rows=6):
+    """Candidate layouts at true size (``groups``: label, ranked layouts, strip), M by shade."""
+    from matplotlib.patches import Rectangle
+    s = config['panel_a']['silos']; shade = {8: '#c6dbef', 16: '#6baed6', 32: '#2171b5'}
+    groups = [(key, rk[:per_row*rows], strip) for key, rk, strip in groups]
+    widest = max(st[2] for _, _, st in groups)
+    W = per_row*(widest + .3) + .2
+    heights = [len(rk[::per_row])*(st[3] + .35) + .3 for _, rk, st in groups]
+    fig = plt.figure(figsize=(W, sum(heights)))
+    y = sum(heights)
+    for (key, rk, (_, _, w, h, u)), gh in zip(groups, heights):
+        fig.text(.1/W, (y - .2)/sum(heights), key, fontsize=8)
+        for i, (sc, spec) in enumerate(rk):
+            ox, oy = .1 + (i % per_row)*(widest + .3), y - .3 - (i//per_row + 1)*(h + .35) + .2
+            for r in place(spec, w, u, s['gap_in'], tuple(s['aspect'])):
+                fig.add_artist(Rectangle((ox + r['x'], oy + h - r['y'] - r['h']), r['w'], r['h'],
+                                         transform=fig.dpi_scale_trans, fc=shade[r['M']], lw=0))
+            fig.text(ox/W, (oy - .1)/sum(heights), f'{i}  {sc:.3f}  {spec}', fontsize=4.5)
+        y -= gh
+    fig.savefig(path, dpi=150); plt.close(fig)
+
+
+def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, legend=True, silos=True, carpets=None,
                       rings=True, title_tt=False, sans=False, name='proof-figure'):
     """Full page width (183 mm). a: square t-SNE with family silos; b: class-contrast rainclouds.
     Font sizes follow the case composites at final size. ``sans`` sets text in Helvetica (TeX
@@ -400,15 +581,22 @@ def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, l
     ax.set(xticks=[], yticks=[], xlim=(centre[0]-half, centre[0]+half), ylim=(centre[1]-half, centre[1]+half))
     ax.set_xlabel('t-SNE', labelpad=3)
     ax.set_box_aspect(1)
-    _encoding_legend(ax, _key_corner(np.vstack([to_in(xy)] + [to_in(v) for v in contours.values()]), g)[0])
+    corner = _key_corner(np.vstack([to_in(xy)] + [to_in(v) for v in contours.values()]), g)[0]
+    _encoding_legend(ax, corner)
+    key_box = (*_corner_boxes(g)[corner], KEY_W, KEY_H)  # Leaders avoid it.
+    drawn = []  # Leader vertices so far; later leaders avoid crossing them.
+    if silos and carpets is None:
+        carpets = silo_carpets(config, legend)
     for f, rect in (g['rects'] if silos else {}).items():
         members = _members(config, f, order)
-        _silo(fig, rect, f, members, examples, g['block'], W, H, a['topology'][f])
-        for c in members:  # Leader: variant anchor -> nearest point on its island contour.
-            p0 = np.array(g['anchors'][c['name']]); pts = to_in(contours[c['name']])
-            p1 = pts[np.argmin(np.linalg.norm(pts - p0, axis=1))]
-            fig.add_artist(Line2D([p0[0]/W, p1[0]/W], [p0[1]/H, p1[1]/H], transform=fig.transFigure,
-                                  color=c['color'], lw=.5, alpha=.8))
+        _silo(fig, rect, f, members, g['strips'], carpets, config)
+        for c in (c for c in members if c['name'] in g['anchors']):  # Side silos: anchor -> island contour.
+            path = _leader(g['anchors'][c['name']], to_in(contours[c['name']]),
+                           [r for k, r in g['rects'].items() if k != f] + [key_box], g, drawn,
+                           to_in(xy[y != c['name']]))
+            drawn.append(path.vertices)
+            fig.add_artist(PathPatch(path, transform=fig.dpi_scale_trans, fc='none', ec=c['color'], lw=.57,
+                                     alpha=.7, ls=(0, (3, 2))))
     for k, (_, row) in enumerate(contrasts.iterrows()):
         rax = inch(left + k*(size+gap), bottom, size, size)
         col = int(row.feature_index)
@@ -538,6 +726,14 @@ def _weighted_glyph(ax, kind, self_w, edge_w, color, repulsive=False):
         ax.add_patch(Circle(q, r, fc='white', ec=color, lw=.5, zorder=2))
 
 
+def _glyph_weights(c, params):
+    """(self weight, per-neighbour weight) of a class's coupling glyph; None where not drawn."""
+    p = params[c['name']]
+    if c['family'] == 'VAR': return p['phi'], p['coupling']
+    if c['family'] == 'CML': return 1 - p['eps'], p['eps']/2
+    return None, None
+
+
 def export_glyphs(config, output):
     """SVG glyphs at final size: the current topology glyph per family, and candidate
     weighted-coupling glyphs per class built from the generator parameters."""
@@ -553,9 +749,7 @@ def export_glyphs(config, output):
             fig.savefig(output/'topology'/f"{name.replace(' ', '-').lower()}.svg"); plt.close(fig)
     for c in config['classes']:
         p, kind = params[c['name']], a['topology'][c['family']]
-        if c['family'] == 'VAR': self_w, edge_w = p['phi'], p['coupling']
-        elif c['family'] == 'CML': self_w, edge_w = 1 - p['eps'], p['eps']/2
-        else: self_w, edge_w = None, None
+        self_w, edge_w = _glyph_weights(c, params)
         fig = plt.figure(figsize=(.45, .45)); ax = fig.add_axes([0, 0, 1, 1]); ax.set_axis_off()
         ax.set(xlim=(-1.75, 1.75), ylim=(-1.75, 1.75)); ax.set_aspect('equal')
         _weighted_glyph(ax, kind, self_w, edge_w, c['color'], repulsive=p.get('K', 0) < 0)
