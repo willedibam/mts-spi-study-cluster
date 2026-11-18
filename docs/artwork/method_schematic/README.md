@@ -9,17 +9,20 @@ How z is constructed, with its geometric reading: one recording, viewed through 
 - **Recording:** a directed VAR(1) with heterogeneous lagged coupling and correlated innovations, M = 6, T = 1,000, seed 0.
   - Channels are relabelled (`CHANNEL_ORDER`) so that the illustrated, strongly asymmetric pair is (i, j) = (2, 6). z is unchanged by the relabelling, and so are the drawn values.
   - The carpet and traces show samples 200–300, with the order-parameter composite's heatmap glyph: robust scaling per channel, icefire, limit at the 99th percentile of |x|.
-- **Motivation band (unlettered, full width, above the pipeline):** the question the method answers, how to compare two recordings.
-  - Left: a 6-channel VAR (`MOTIVE`: unidirectional ring, spectral radius 0.9, seed 1, T = 200), as one unbroken heatmap. Its channels are drawn as traces x₁, x₂, ⋮, x_M, each level with its row, with no connectors.
-  - Right: a 16-channel 1-D wave recording, raised a little and drawn without traces. It comes from a different system with a different M, which is the comparison z makes possible.
-  - Between them, an angled double-lined double arrow (`double_arrow`, drawn like ⟺ at any angle) with a bold question mark above it.
-  - Both heatmaps are free diagrams: each `MOTIVE_BOX` entry is a lower-left corner and size in figure inches, and the traces follow the left one (`MOTIVE_TRACES`). The band's heatmaps are unbroken; panel a's carpet keeps one strip per channel. The band adds `TOP_H` = 1.45 in on top of the 4.9 in pipeline, so nothing below it moves.
+- **Motivation band (unlettered, full width, above the pipeline):** the question the method answers, how to compare recordings of different systems and sizes.
+  - Two classes (`MOTIVE`), each one foreground recording in icefire in front of faded members from the same generator with other M, T and seeds, all inside an irregular bubble (`bubble`). Left: VAR, unidirectional ring, spectral radius 0.9 (foreground M = 6, T = 150), with its channels drawn as traces x₁, x₂, ⋮, x_M level with their rows. Right: 1-D wave (foreground M = 9, T = 55), tall and narrow.
+  - Every heatmap shares one scale (`MOTIVE_SCALE`: 0.1 in per channel, 120 samples per inch), so each one's shape shows its M and T. Members are drawn at 0.6 of it, as if further back, in their class's sequential map, blended toward the bubble fill (opaque, not transparent).
+  - Class colours (`CLASS_HUES`) are muted: mauve-grey for the VAR class and blue-grey for the wave class. Panel e's classification icon uses brighter versions of the same two hues (`CLASS_INK`). Sage and lavender are avoided because they mean statistics a and b.
+  - Positions are hand-placed and deliberately irregular; members may sit partly behind their foreground. Automatic placement crammed members under the left foreground or onto its trace labels.
+  - A filled double-headed block arrow (`block_arrow`) joins the two foregrounds, under a bold 26 pt question mark. It is not ⟺, which panels a and b use for "the same object drawn two ways".
+  - The band adds `TOP_H` = 1.95 in on top of the 4.9 in pipeline, so nothing below it moves; its contents start 0.15 in above the a and b titles (`MOTIVE_FLOOR`).
   - The band has no letter yet. Lettering it a would shift the pipeline to b–f.
+  - Set aside: a tinted rounded band behind the whole question; bubbles in rose/sky, amber/rose or other stronger pairs; members in icefire (they read as grey noise when faded); every heatmap in the class hue (it breaks the icefire link to panel a); grey sheets under each panel or under the whole pipeline (the cross-panel lines break at the gutters, and the figure's own greys lose contrast).
 - **Panel a:** carpet → shared traces → graph.
   - The carpet sits on one hairline card with a vertical "channel" label and no row numbers.
   - x_i (channel 2) and x_j (channel 6) are each drawn once, as a bare trace centred over the gap between the carpet and the graph: x_i above, x_j below, both on a common time axis. A ⟺ joins carpet and graph between them.
   - Each trace sits in a hairline box, and its carpet row and its graph node project into the box's facing edge (under x_i, above x_j) as faint straight beams, like panel d's projection.
-  - The row's beam lands just right of the carpet's card. Where the box overhangs the carpet, a beam would have to run behind the card and seem to leave from its corner. Curved beams and beams drawn under the carpet were tried and set aside: the first adds a second line style, and the second reads as the top row's beam unless i is that row.
+  - Each box starts at the carpet card's right edge, so no beam runs behind the card. The row's beam rises from the end of its row, just clear of the card, with its outer side flush with the box's left edge; the node's beam fans evenly from the node into the box's right part. Curved beams and beams drawn under the carpet were tried and set aside: the first adds a second line style, and the second reads as the top row's beam unless i is that row. Leader lines and label-only links (i, j beside row and node) were also tried.
   - `TRACE_LINKS = "curve"` swaps the beams for two curved dotted lines and drops the box.
   - Nodes i and j sit on the graph's left, and the central node is raised clear of the strongest connection.
 - **Panel a graph:** the generator's coupling per ordered pair s→t, |lagged coupling of t on s| plus |innovation correlation|, scaled to [0, 1].
@@ -30,6 +33,7 @@ How z is constructed, with its geometric reading: one recording, viewed through 
   - Each layer's edges are its statistic's min–max scaled strength raised to the power 1.6, so weak edges recede. Euclidean distance is flipped to a similarity for drawing only.
   - The directed statistics (a, b) are drawn with one tapered arc per direction and the symmetric ones with one line per pair, so the layers show which statistics are directed.
   - The matrices stack down-right: A⁽ᵇ⁾ is offset by 0.45 of a matrix, so A⁽ᵃ⁾ covers about 30% of it, and the rest of the K are grey cards behind.
+  - A⁽ᵃ⁾'s layer projects onto its matrix's card as a faint sage beam (5% fill, edges at 25%; `SHOW_PLANE_PROJECTION`), drawn behind the labels. Only A⁽ᵃ⁾ has one; colour and labels carry the rest. A ⟺ between layer and matrix was the alternative, and a white halo on the layer label was dropped because, with usetex, it ate the superscript.
   - Both matrices outline the (i, j) and (j, i) entries.
   - A⁽ᵃ⁾'s two glyphs sit in the gaps the offset leaves, right of A⁽ᵃ⁾ and below it, 0.07 in clear of the matrices and flush with the outer edges of the stack's rectangle. The leaders are short.
   - The glyphs (`b_top`) and panel c's z_ab label (`c_top`) sit on a layer above the cross-panel lines.
@@ -66,10 +70,10 @@ How z is constructed, with its geometric reading: one recording, viewed through 
   - Diagonals are empty dashed outlines, so they cannot be confused with near-zero cells; the diverging map's centre is near-white.
   - The channel pair (i, j) is ink: solid for i→j, dotted for j→i.
   - R and z share a soft diverging map on [−1, 1].
-  - Panel e's icons use one pastel family (`PASTELS`: sage, lavender, amber, rose, sky), so they belong with a and b without implying a or b.
+  - Panel e's icons use one pastel family (`PASTELS`: sage, lavender, amber, rose, sky), so they belong with a and b without implying a or b. The classification icon instead takes the band's two classes, in brighter versions of their hues (`CLASS_INK`).
 - **For Illustrator:**
   - With usetex, SVG glyphs are paths. Retype labels you need to edit, or set `text.usetex` to False for a live-text variant.
-  - A few tertiary labels are 7 pt, below the 8 pt floor in `docs/figure-style.md`.
+  - A few tertiary labels are 7 pt, below the 8 pt floor in `docs/figure-style.md`, including the band's x₁ … x_M.
 
 ```bash
 .venv/bin/python docs/artwork/method_schematic/method_schematic.py

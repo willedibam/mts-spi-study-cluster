@@ -8,8 +8,9 @@ computation for i -> j and j -> i attached to the front matrix. Row 2, right to 
 the off-diagonal entries of A^(a) and A^(b) drawn out into one scatter, whose Pearson
 correlation is z_ab; (d) z_ab's place in the K x K agreement matrix, one strict triangle of
 which is drawn out into z; (e) schematic icons for what one z per recording supports.
-A full-width, unlettered motivation band sits above the pipeline: two recordings of different
-systems and sizes, the first fed by its channels, joined by a double arrow under a question mark.
+A full-width, unlettered motivation band sits above the pipeline: two classes of recordings from
+different systems, each a bubble of recordings of many sizes behind one representative, the two
+representatives compared by a block arrow under a question mark.
 
 Every value drawn is computed here from a small synthetic recording (directed VAR(1),
 M = 6, T = 1000) with K = 5 numpy statistics; nothing is case-study data and no pyspi
@@ -339,25 +340,36 @@ def box_scatter(x0, y0, w, h, xs, ys, pad=0.08):
 # --- figure ------------------------------------------------------------------------------------
 
 PANELS = ("motivation", *"abcde")
-PIPE_H, TOP_H = 4.9, 1.45  # heights of the pipeline (rows 1 and 2) and of the motivation band above it
+PIPE_H, TOP_H = 4.9, 1.95  # heights of the pipeline (rows 1 and 2) and of the motivation band above it
 # Panel extents in figure inches (x0, y0, x1, y1), used to crop single-panel exports.
 PANEL_BOXES = {"a": (0.0, 2.42, 3.2, 4.92), "b": (3.16, 2.42, 7.2, 4.92), "e": (0.0, 0.0, 2.36, 2.42),
                "d": (2.36, 0.0, 4.72, 2.42), "c": (4.72, 0.0, 7.2, 2.42),
                "motivation": (0.0, PIPE_H, 7.09, PIPE_H + TOP_H)}
-# Motivation band: two recordings of different systems and sizes. Both heatmaps are free: each box is its
-# lower-left corner and size in figure inches, so they can be moved independently. The left recording's
-# channels sit to its left as traces, one beside each row.
-MOTIVE = {"left": dict(gen="var", seed=1, M=6, T=200, target_rho=0.9, topology="ring-unidirectional"),
-          "right": dict(gen="wave_1d", seed=1, M=16, T=300)}
-MOTIVE_BOX = {"left": (1.85, PIPE_H + 0.22, 1.5, 0.9), "right": (4.35, PIPE_H + 0.42, 1.6, 0.92)}
-MOTIVE_TRACES = dict(w=0.62, gap=0.1)  # trace width and gap to the heatmap
+# Motivation band: two classes of recordings, each a bubble of faded members (other M and T, same generator, other
+# seeds) behind one foreground recording in icefire. Every heatmap shares one scale (inches per channel, samples per
+# inch); members are drawn at a fraction of it, as if further back, and blended toward their bubble's fill. Positions
+# are hand-placed lower-left corners in figure inches, x from the left edge and y above MOTIVE_FLOOR.
+MOTIVE_FLOOR = PIPE_H + 0.15  # clear of the a and b titles below
+MOTIVE_SCALE = dict(pitch=0.1, dens=120.0, bg=0.6, fade=0.55)  # bg: members' scale; fade: colour they keep
+MOTIVE_TRACES = dict(w=0.55, gap=0.08)  # the left foreground's channel traces: width and gap to the heatmap
+CLASS_HUES = ("#C7AFBC", "#A6B4C8")  # mauve-grey (VAR) and blue-grey (wave): bubbles and members
+CLASS_INK = ("#BB81A1", "#8199BB")  # the same two hues, brighter, for panel e's classification icon
+MOTIVE = {  # gen: generator and fixed parameters; fg: (M, T, seed); bg: [(M, T, seed, x, y)]
+    "left": dict(gen=dict(gen="var", target_rho=0.9, topology="ring-unidirectional"), fg=(6, 150, 1), at=(1.85, 0.62),
+                 bg=[(4, 180, 11, 2.35, 1.12), (8, 120, 12, 2.7, 0.3), (3, 200, 13, 1.1, 1.38),
+                     (5, 130, 14, 0.85, 0.18), (7, 100, 15, 1.75, 0.1)], bubble_seed=3),
+    "right": dict(gen=dict(gen="wave_1d"), fg=(9, 55, 3), at=(4.35, 0.42),
+                  bg=[(14, 60, 21, 4.65, 0.62), (6, 130, 22, 5.0, 1.15), (12, 50, 23, 5.35, 0.3),
+                      (8, 80, 24, 4.1, 0.12), (5, 110, 26, 5.65, 0.62), (10, 70, 27, 4.95, 0.2)], bubble_seed=8),
+}
 SHOW_ALL_EXTRACTION = False  # True adds a faint line from every off-diagonal entry of A^(a) and A^(b)
 TRACE_LINKS = "beam"  # panel a: "beam" (boxed traces, faint projections like panel d's) or "curve" (dotted lines)
+SHOW_PLANE_PROJECTION = True  # panel b: a faint sage beam from A^(a)'s graph layer to its matrix
 SHOW_SLIDING_WINDOW = True  # a fourth, prospective use in panel e: z over sliding windows (not shown in the paper)
 USE_TITLES = {"embed": "clustering", "track": "inference", "coord": "classification", "slide": "change detection"}
 
 
-def figure(x, coupling, mats, c, views):
+def figure(x, coupling, mats, c):
     """Draw the full schematic. Returns the figure and, per panel, the axes that belong to it."""
     M, edges, P, R, z = c["M"], c["edges"], c["P"], c["R"], c["z"]
     K, A, B = len(P), A_IDX, B_IDX
@@ -398,10 +410,11 @@ def figure(x, coupling, mats, c, views):
     gx, gy, gs = 1.78, 2.95 + lift, 1.05
     pos = np.column_stack([gx + LAYOUT[:, 0] * gs, gy + LAYOUT[:, 1] * gs])
     graph(a, pos, coupling ** 1.3, NODE, "#8C929E", 0.042, 0.026, z=1, floor=0.08, rings=PAIR, directed=True)
-    # One shared trace per highlighted channel, centred over the gap between carpet and graph: x_i above,
-    # x_j below. With TRACE_LINKS = "beam" (default) each trace sits in a hairline box that its carpet row and
-    # its graph node project into, like panel d's projection; "curve" uses two dotted lines and no box.
-    tx, tw, th = 1.12, 0.74, 0.24
+    # One shared trace per highlighted channel over the gap between carpet and graph: x_i above, x_j below.
+    # With TRACE_LINKS = "beam" (default) each trace sits in a hairline box that starts at the carpet card's right
+    # edge, and its carpet row and graph node project into it, like panel d's projection; "curve" uses two dotted
+    # lines and no box.
+    tx, tw, th = (cx + cw + 0.03, 0.66, 0.24) if TRACE_LINKS == "beam" else (1.12, 0.74, 0.24)
     link = dict(lw=0.5, ls=(0, (1.2, 1.4)), head=False, color=MUTED, z=0.8)
     for m, lab, ty, up in [(i, "$x_i$", 4.12, True), (j, "$x_j$", 2.72, False)]:
         y = cy + (M - 1 - m) * pitch
@@ -417,16 +430,16 @@ def figure(x, coupling, mats, c, views):
             rounded(a, tx, ty, tw, th, "white", r=0.03, z=1.5, ec=HAIR, lw=0.5)
             edge = ty if up else ty + th  # the box edge facing the carpet and graph
             half = pitch / 2 - gap
-            # The row's beam lands just right of the carpet's card, so no edge runs behind it. The row corner
-            # nearer the box goes to the landing's inner end, so the two edges do not cross.
-            land = cx + cw + 0.07
-            s = half if up else -half
-            near, far = (row_end[0], row_end[1] + s), (row_end[0], row_end[1] - s)
-            beams = [[near, (land, edge), (land + 0.16, edge), far],
-                     [(tx + 0.62 * tw, edge), (tx + tw, edge), tuple(pos[m])]]
+            # The row's beam rises from the row's end, just clear of the card, its outer side flush with the box's
+            # left edge. The node's beam fans evenly from the node into the box's right part.
+            rx0 = cx + cw + 0.045
+            y_far = row_end[1] - half if up else row_end[1] + half  # the row corner farther from the box
+            nx = float(np.clip(pos[m][0], tx + tw - 0.24, tx + tw - 0.18))
+            beams = [[(rx0, y_far), (rx0, edge), (rx0 + 0.18, edge)],
+                     [(nx - 0.11, edge), (nx + 0.11, edge), tuple(pos[m])]]
             for poly in beams:
                 L["a"]["back"].add_patch(Polygon(poly, closed=True, fc=MUTED, ec="none", alpha=0.08, zorder=0.7))
-            for p0, p1 in [(beams[0][0], beams[0][1]), (beams[0][3], beams[0][2]), (beams[1][0], beams[1][2]),
+            for p0, p1 in [(beams[0][0], beams[0][1]), (beams[0][0], beams[0][2]), (beams[1][0], beams[1][2]),
                            (beams[1][1], beams[1][2])]:
                 L["a"]["back"].plot(*zip(p0, p1), color=MUTED, lw=0.5, alpha=0.45, zorder=0.75)
         else:
@@ -470,6 +483,12 @@ def figure(x, coupling, mats, c, views):
         card(b, Bx + d * 0.08, By - d * 0.08, M, s, fc=CARD, z=6 - d * 0.5)
     cb = matrix(b, mats[names[B]], HUES[1], Bx, By, s, z=7, mark=True)
     ca = matrix(b, mats[names[A]], HUES[0], Gx, Gy, s, z=9, mark=True)
+    if SHOW_PLANE_PROJECTION:  # A^(a)'s layer projects onto its matrix's card; the labels sit above it
+        o, u, v, pad = np.array([lx, layer_y[A]]), np.array([LW, 0.0]), np.array([SKEW, LH]), 0.12 * s
+        poly = [o + u, o + u + v, (Gx - pad, Gy + M * s + pad), (Gx - pad, Gy - pad)]
+        L["b"]["back"].add_patch(Polygon(poly, closed=True, fc=HUES[0], ec="none", alpha=0.05, zorder=0.7))
+        for p0, p1 in [(poly[1], poly[2]), (poly[0], poly[3])]:
+            L["b"]["back"].plot(*zip(p0, p1), color=HUES[0], lw=0.5, alpha=0.25, zorder=0.75)
     text(b, Gx, Gy + M * s + 0.05, "$A^{(a)}$", 8, shade(HUES[0], 0.7), ha="left", va="bottom", zorder=30)
     text(b, Bx + 0.07, By - 0.03, "$A^{(b)}$", 8, shade(HUES[1], 0.7), ha="right", va="top", zorder=30)
     text(b, Bx + (K - 2) * 0.08 + M * s, By - (K - 2) * 0.08 - 0.05, "$A^{(K)}$", 8, MUTED, ha="right",
@@ -570,7 +589,7 @@ def figure(x, coupling, mats, c, views):
     for p0, p1 in [(beam[0], beam[1]), (beam[3], beam[2])]:
         links["back"].plot(*zip(p0, p1), color=feat_ink, lw=0.6, alpha=0.55, zorder=1.1)
 
-    motivation(L["motivation"], views)
+    motivation(L["motivation"])
 
     # (e) What one z per recording supports: schematic icons, not data. --------------------------
     title(L["e"]["base"], 0.02, 2.25, "e", "Statistical learning")
@@ -578,65 +597,107 @@ def figure(x, coupling, mats, c, views):
     return fig, parts
 
 
-def carpet(ax, scaled, limit, x0, y0, w, h, z=1):
-    """A channel x time heatmap, rows unbroken, with rounded corners on a hairline card."""
-    rounded(ax, x0 - 0.03, y0 - 0.03, w + 0.06, h + 0.06, "white", r=0.04, z=z - 0.5, ec=HAIR, lw=0.5)
-    clip = FancyBboxPatch((x0, y0), w, h, boxstyle="round,pad=0,rounding_size=0.025", transform=ax.transData,
+def heatmap(ax, scaled, limit, x0, y0, k=1.0, cmap=MTS, fade=1.0, under="white", z=1):
+    """A channel x time heatmap at the band's scale (k < 1 for members) on a white card. A faded heatmap is blended
+    toward `under`, so it stays opaque. Returns its rectangle (x0, y0, w, h)."""
+    n_ch, n_t = scaled.shape
+    w, h = k * n_t / MOTIVE_SCALE["dens"], k * n_ch * MOTIVE_SCALE["pitch"]
+    under = np.array(to_rgb(under))
+    rgb = fade * cmap(np.clip((scaled + limit) / (2 * limit), 0, 1))[..., :3] + (1 - fade) * under
+    rounded(ax, x0 - 0.025, y0 - 0.025, w + 0.05, h + 0.05, tuple(fade + (1 - fade) * under), r=0.035, z=z - 0.05,
+            ec=HAIR if fade == 1 else "none", lw=0.5)
+    clip = FancyBboxPatch((x0, y0), w, h, boxstyle="round,pad=0,rounding_size=0.02", transform=ax.transData,
                           fc="none", ec="none")
     ax.add_patch(clip)
-    im = ax.imshow(scaled, cmap=MTS, vmin=-limit, vmax=limit, aspect="auto", interpolation="nearest",
-                   extent=(x0, x0 + w, y0, y0 + h), zorder=z)
+    im = ax.imshow(rgb, aspect="auto", interpolation="nearest", extent=(x0, x0 + w, y0, y0 + h), zorder=z)
     im.set_clip_path(clip)
+    return x0, y0, w, h
 
 
-def double_arrow(ax, p0, p1, sep=0.024, head=0.075, lw=0.7, color=INK, z=3):
-    """A double-lined double arrow (like \\Longleftrightarrow) from p0 to p1, drawn at any angle."""
+def bubble(ax, rects, fc, ec, seed, lo, hi, pad=0.1, wobble=0.05, kmax=4, n=360, z=0.1):
+    """An irregular closed outline around rectangles: their padded radial envelope about the centroid (in a frame
+    normalised to the cloud's extent), low-passed in angle, lifted to enclose every point, given a seeded wobble, and
+    squeezed vertically into [lo, hi]."""
+    t = np.linspace(0, 1, 12)
+    pts = np.vstack([np.r_[np.c_[x - pad + t * (w + 2 * pad), np.full(12, y - pad)],
+                           np.c_[x - pad + t * (w + 2 * pad), np.full(12, y + h + pad)],
+                           np.c_[np.full(12, x - pad), y - pad + t * (h + 2 * pad)],
+                           np.c_[np.full(12, x + w + pad), y - pad + t * (h + 2 * pad)]] for x, y, w, h in rects])
+    c = pts.mean(0)
+    half = np.ptp(pts, axis=0) / 2
+    q = (pts - c) / half
+    th = np.linspace(-np.pi, np.pi, n, endpoint=False)
+    r = np.zeros(n)
+    np.maximum.at(r, np.digitize(np.arctan2(q[:, 1], q[:, 0]), th) % n, np.hypot(*q.T))
+    for _ in range(3):  # fill empty angular bins from their neighbours
+        r = np.maximum(r, 0.98 * np.maximum(np.roll(r, 1), np.roll(r, -1)))
+
+    def lowpass(v, k):
+        F = np.fft.rfft(v)
+        F[k + 1:] = 0
+        return np.fft.irfft(F, n)
+    env = lowpass(r, kmax)
+    env += (r - env).clip(0).max()
+    rng = np.random.default_rng(seed)
+    env *= 1 + sum(wobble / k * rng.normal() * np.cos(k * th + rng.uniform(0, 2 * np.pi)) for k in (2, 3))
+    env = lowpass(np.maximum(env, 1.01 * r), kmax + 1)
+    xy = c + np.c_[env * np.cos(th), env * np.sin(th)] * half
+    squeeze = min(1.0, (c[1] - lo) / (c[1] - xy[:, 1].min()), (hi - c[1]) / (xy[:, 1].max() - c[1]))
+    xy[:, 1] = c[1] + (xy[:, 1] - c[1]) * squeeze
+    ax.add_patch(Polygon(xy, closed=True, fc=fc, ec=ec, lw=0.6, zorder=z))
+
+
+def block_arrow(ax, p0, p1, shaft=0.02, head_l=0.11, head_w=0.065, color=INK, z=4):
+    """A filled double-headed block arrow from p0 to p1: shaft half-width, head length and head half-width in inches."""
     p0, p1 = np.asarray(p0, float), np.asarray(p1, float)
     d = (p1 - p0) / np.linalg.norm(p1 - p0)
     n = np.array([-d[1], d[0]])
-    spread = 0.8  # arm half-width per unit of head length
-    inset = sep / 2 / spread  # where each shaft line meets the arms
-    kw = dict(color=color, lw=lw, solid_capstyle="round", solid_joinstyle="round", zorder=z)
-    for side in (1, -1):
-        ax.plot(*np.array([p0 + d * inset, p1 - d * inset]).T + (side * n * sep / 2)[:, None], **kw)
-    for tip, out in ((p0, d), (p1, -d)):
-        ax.plot(*np.array([tip + head * (out + spread * n), tip, tip + head * (out - spread * n)]).T, **kw)
+    a, b = p0 + d * head_l, p1 - d * head_l
+    ax.add_patch(Polygon([p0, a + n * head_w, a + n * shaft, b + n * shaft, b + n * head_w, p1, b - n * head_w,
+                          b - n * shaft, a - n * shaft, a - n * head_w], closed=True, fc=color, ec=color, lw=0.6,
+                         joinstyle="round", zorder=z))
 
 
-def motivation_views() -> dict:
-    """The motivation band's two recordings, robust-scaled per channel: {side: (channels x time, limit)}."""
-    views = {}
-    for side, spec in MOTIVE.items():
-        spec = dict(spec)
-        views[side] = robust_scaled(generate_series(spec.pop("gen"), seed=spec.pop("seed"), **spec))
-    return views
+def motive_series(spec: dict, M: int, T: int, seed: int) -> tuple[np.ndarray, float]:
+    """One band recording, robust-scaled per channel: (channels x time, limit)."""
+    spec = dict(spec)
+    return robust_scaled(generate_series(spec.pop("gen"), seed=seed, M=M, T=T, **spec))
 
 
-def motivation(L, views):
-    """Two recordings to compare: the left with its channel traces, the right raised; a double arrow and a ?."""
+def motivation(L):
+    """Two classes of recordings to compare: per class, a bubble of faded members of other sizes behind one
+    foreground in icefire (the left one with its channel traces); a block arrow under a question mark joins them."""
     ax = L["base"]
-    for side in ("left", "right"):
-        carpet(ax, *views[side], *MOTIVE_BOX[side])
-    s, _ = views["left"]
-    lx, ly, lw, lh = MOTIVE_BOX["left"]
-    M = len(s)
-    pitch = lh / M
-    tw = MOTIVE_TRACES["w"]
-    tx = lx - 0.03 - MOTIVE_TRACES["gap"] - tw  # clear of the card
-    labels = {0: "$x_1$", 1: "$x_2$", M - 1: "$x_M$"}
-    for m in range(M):
-        cy = ly + (M - 0.5 - m) * pitch  # level with its row
-        trace(ax, tx, cy - 0.36 * pitch, tw, 0.72 * pitch, s[m], lw=0.5)
-        if m in labels:
-            text(ax, tx - 0.05, cy, labels[m], 8, ha="right", va="center")
-    text(ax, tx - 0.07, ly + lh / 2 - 0.5 * pitch, r"$\vdots$", 8, ha="right", va="center")
-    # Compare: a double arrow from the left heatmap to the right one, with a bold question mark above it.
-    rx, ry, rw, rh = MOTIVE_BOX["right"]
-    p0, p1 = np.array([lx + lw + 0.16, ly + lh / 2]), np.array([rx - 0.16, ry + rh / 2])
-    double_arrow(ax, p0, p1)
+    pitch, floor = MOTIVE_SCALE["pitch"], MOTIVE_FLOOR
+    fg = {}
+    for (side, cl), hue in zip(MOTIVE.items(), CLASS_HUES):
+        fill = tint(hue, 0.09)
+        rects = []
+        for k, (m, t, seed, x, y) in enumerate(cl["bg"]):
+            s, lim = motive_series(cl["gen"], m, t, seed)
+            rects.append(heatmap(ax, s, lim, x, floor + y, k=MOTIVE_SCALE["bg"], cmap=seq(hue),
+                                 fade=MOTIVE_SCALE["fade"], under=fill, z=0.5 + 0.01 * k))
+        M, T, seed = cl["fg"]
+        series = motive_series(cl["gen"], M, T, seed)
+        s = series[0]
+        x0, y0, w, h = fg[side] = heatmap(ax, *series, cl["at"][0], floor + cl["at"][1], z=2)
+        rects.append(fg[side])
+        if side == "left":  # the foreground's channels as traces, each level with its row
+            tw = MOTIVE_TRACES["w"]
+            tx = x0 - 0.03 - MOTIVE_TRACES["gap"] - tw  # clear of the card
+            for m in range(M):
+                cy = y0 + (M - 0.5 - m) * pitch
+                trace(ax, tx, cy - 0.36 * pitch, tw, 0.72 * pitch, s[m], lw=0.45, z=2)
+            for m, lab in {0: "$x_1$", 1: "$x_2$", M - 1: "$x_M$"}.items():
+                text(ax, tx - 0.04, y0 + (M - 0.5 - m) * pitch, lab, 7, ha="right", va="center", zorder=3)
+            text(ax, tx - 0.06, y0 + h / 2 - 0.5 * pitch, r"$\vdots$", 7, ha="right", va="center", zorder=3)
+            rects.append((tx - 0.22, y0, tw + 0.22, h))
+        bubble(ax, rects, fill, tint(hue, 0.28), cl["bubble_seed"], floor + 0.04, PIPE_H + TOP_H - 0.04)
+    (lx, ly, lw, lh), (rx, ry, rw, rh) = fg["left"], fg["right"]
+    p0, p1 = np.array([lx + lw + 0.1, ly + lh / 2]), np.array([rx - 0.1, ry + rh / 2])
+    block_arrow(ax, p0, p1)
     d = (p1 - p0) / np.linalg.norm(p1 - p0)
-    q = (p0 + p1) / 2 + 0.2 * np.array([-d[1], d[0]])
-    text(ax, *q, r"\textbf{?}", 20, ha="center", va="center")
+    text(ax, *((p0 + p1) / 2 + 0.24 * np.array([-d[1], d[0]])), r"\textbf{?}", 26, ha="center", va="center", zorder=5)
 
 
 def uses(ax, sz=0.86, sliding=None):
@@ -672,7 +733,7 @@ def uses(ax, sz=0.86, sliding=None):
     # One named coordinate z_ab separating two conditions (rainclouds).
     x0, y0 = spots["coord"]
     rounded(ax, x0, y0, sz, sz, "white", r=0.03, z=2, ec=HAIR, lw=0.5)
-    for cx, mu, hue in [(0.3, 0.72, shade(rose, 0.9)), (0.68, 0.3, shade(sky, 0.85))]:
+    for cx, mu, hue in [(0.3, 0.72, CLASS_INK[0]), (0.68, 0.3, CLASS_INK[1])]:  # the band's two classes
         vals = mu + rng.normal(0, 0.07, 12)
         yy = np.linspace(vals.min(), vals.max(), 30)
         dens = np.exp(-0.5 * ((yy - mu) / 0.07) ** 2)
@@ -737,7 +798,7 @@ def build(font: str = "cm"):
     x, coupling = toy_recording()
     mats = statistics(x)
     c = construction(mats)
-    fig, parts = figure(x, coupling, mats, c, motivation_views())
+    fig, parts = figure(x, coupling, mats, c)
     names = list(mats)
     summary = {
         "contract": UNIFIED_CONTRACT_VERSION, "M": c["M"], "T": len(x), "K": len(c["P"]),
