@@ -119,19 +119,17 @@ def plot_continuum(frame):
     ax.legend(fontsize=6, frameon=False); fig.tight_layout(); fig.savefig(OUT/'sti-continuum.png', dpi=200); plt.close(fig)
 
 
-# Insets: (class, M, T, instance, title, lower-left corner of the inset in axes fraction).
-INSETS = [('gaussian-noise', 8, 500, 8, 'Gaussian noise', (.085, .73)),
-          ('sti-i', 8, 500, 8, 'Near noise: turbulent window', (.265, .73)),
-          ('sti-i', 8, 500, 6, 'Intermittency, typical', (.445, .62)),
-          ('sti-i', 8, 1000, 4, 'Near noise: fully laminar', (.765, .70)),
-          ('fdstc', 32, 2000, 9, 'Developed turbulence, weakest', (.5, .05))]
-INSET_W, LATTICE_H, CARPET_H = .155, .095, .09  # Axes fraction.
+# Insets in a row above the plot, ordered so that leaders do not cross.
+INSETS = [('gaussian-noise', 8, 500, 8, 'Gaussian noise'), ('sti-i', 8, 500, 8, 'Near noise: turbulent'),
+          ('fdstc', 32, 2000, 9, 'Developed turb., weakest'), ('sti-i', 8, 500, 6, 'Intermittency, typical'),
+          ('sti-i', 8, 1000, 4, 'Near noise: laminar')]
+INSET_W, LATTICE_H, CARPET_H = .86, .26, .22  # Inches.
 CARPET_STEPS = 120  # First steps of each window: enough to resolve the period-3 orbit.
 
 
 def plot_figure(config, frame, name='sti-strays'):
     """Appendix figure: every intermittency and developed-turbulence recording by cross-channel
-    dependence against relative distance to noise, with lattice and carpet insets placed around it."""
+    dependence against relative distance to noise, with lattice and carpet insets above it."""
     import matplotlib.pyplot as plt
     from matplotlib.colors import ListedColormap
     from research.cases.composite_style import INK, save
@@ -140,8 +138,10 @@ def plot_figure(config, frame, name='sti-strays'):
     labels = {'sti-i': 'CML intermittency', 'fdstc': 'CML developed turbulence'}
     specs = {(s.mts_class, s.M, s.T, s.instance): s for s in _specs(config['panel_a']['generation'])}
     style()
-    W, H = 7.2, 3.6
-    fig = plt.figure(figsize=(W, H)); ax = fig.add_axes([.62/W, .42/H, 6.45/W, 3.1/H])
+    W, H = 7.2, 3.62
+    left, bottom, aw, ah = .62, .42, 6.45, 2.2
+    fig = plt.figure(figsize=(W, H)); inch = lambda l, b, w, h: fig.add_axes([l/W, b/H, w/W, h/H])
+    ax = inch(left, bottom, aw, ah)
     noise = frame[frame.cls == 'gaussian-noise'].dep
     ax.axvspan(noise.min(), noise.max(), color=colors['gaussian-noise'], alpha=.3, lw=0, label='Gaussian noise (range)')
     for cls in ('fdstc', 'sti-i'):
@@ -152,21 +152,21 @@ def plot_figure(config, frame, name='sti-strays'):
     ax.axhline(1, color='.55', lw=.5, ls=(0, (3, 2)), zorder=1)
     ax.text(.62, 1.04, 'nearer noise', transform=ax.get_yaxis_transform(), ha='left', va='bottom', fontsize=6,
             color='.4')
-    ax.set(yscale='log', xlim=(0, 1.04), ylim=(.05, 8),
+    ax.set(yscale='log', xlim=(0, 1.04), ylim=(.05, 2.4),
            xlabel=r'Cross-channel dependence, mean over pairs of max $|r|$ at lags 0--3',
-           ylabel='Distance to own class / distance to noise', yticks=[.1, .2, .5, 1, 2, 5],
-           yticklabels=['0.1', '0.2', '0.5', '1', '2', '5'])
+           ylabel='Distance to own class\n/ distance to noise', yticks=[.1, .2, .5, 1, 2],
+           yticklabels=['0.1', '0.2', '0.5', '1', '2'])
     ax.minorticks_off()
     ax.legend(loc='lower right', fontsize=6, frameon=False, handletextpad=.3, markerscale=1.3)
     to_axes = lambda xy: ax.transAxes.inverted().transform(ax.transData.transform(xy))
-    for cls, m, t, i, title, (x0, y0) in INSETS:
-        spec = specs[cls, m, t, i]
-        lattice_h = LATTICE_H if spec.generator == 'cml_logistic' else 0.
-        top = y0 + CARPET_H + lattice_h
+    gap = (aw - len(INSETS)*INSET_W)/(len(INSETS) - 1)
+    y0 = bottom + ah + .24  # Carpet bottom, inches.
+    for k, (cls, m, t, i, title) in enumerate(INSETS):
+        spec = specs[cls, m, t, i]; x0 = left + k*(INSET_W + gap)
         if spec.generator == 'cml_logistic':
             x, lattice = _series(spec, full=True)
             turb = np.abs(lattice[3:] - lattice[:-3]) >= LAMINAR; lo = (lattice.shape[1] - m)//2
-            la = ax.inset_axes([x0, y0 + CARPET_H + .008, INSET_W, LATTICE_H - .008], zorder=5)
+            la = inch(x0, y0 + CARPET_H + .03, INSET_W, LATTICE_H)
             la.imshow(turb.T, aspect='auto', cmap=ListedColormap(['#f2efe6', '#222222']),
                       interpolation='antialiased', rasterized=True)
             la.add_patch(plt.Rectangle((-.5, lo - .5), turb.shape[0], m, fill=False, ec='#d62728', lw=.6))
@@ -176,15 +176,16 @@ def plot_figure(config, frame, name='sti-strays'):
             target = to_axes((row.dep, row.noise_ratio))
             ax.scatter(row.dep, row.noise_ratio, s=marker_area(m, T_MARKERS[t])*3.2, facecolors='none',
                        edgecolors=INK, linewidths=.6, zorder=4)
-        else:  # Noise has no lattice; its leader ends at the band.
+        else:  # Noise has no lattice; its leader ends at the top of the noise band.
             x = _series(spec)
-            target = (to_axes((noise.max(), 1))[0], y0 + CARPET_H/2)
-        carpet(ax.inset_axes([x0, y0, INSET_W, CARPET_H], zorder=5), x[:CARPET_STEPS].T)
-        ax.text(x0 + INSET_W/2, top + .012, f'{title}\n$M={m}$, $T={t}$', transform=ax.transAxes, ha='center',
-                va='bottom', fontsize=6, color=INK, linespacing=1.1, zorder=5)
-        # Leader: from the nearest point of the inset's edge to the recording, under the markers.
-        start = (np.clip(target[0], x0, x0 + INSET_W), np.clip(target[1], y0, top))
-        ax.plot([start[0], target[0]], [start[1], target[1]], transform=ax.transAxes, color='.45', lw=.45, zorder=2)
+            target = (to_axes((noise.mean(), 1))[0], 1.)
+        carpet(inch(x0, y0, INSET_W, CARPET_H), x[:CARPET_STEPS].T)
+        head = y0 + CARPET_H + .03 + (LATTICE_H + .03 if spec.generator == 'cml_logistic' else 0.)
+        fig.text((x0 + INSET_W/2)/W, head/H, f'{title}\n$M={m}$, $T={t}$',
+                 ha='center', va='bottom', fontsize=6, color=INK, linespacing=1.1)
+        start = ((x0 + INSET_W/2 - left)/aw, (y0 - bottom)/ah)  # Inset bottom centre, axes fraction.
+        ax.plot([start[0], target[0]], [start[1], target[1]], transform=ax.transAxes, color='.45', lw=.45,
+                zorder=2, clip_on=False)
     save(fig, OUT, name); plt.close(fig)
     return OUT/f'{name}.pdf'
 
