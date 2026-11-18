@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=64GB,walltime=01:30:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_est
+#PBS -j oe
+# Estimator check (estimators.py docstring holds the frozen rule). Runs from the synced checkout.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; cd $R/research/representation/atlas/mi_pair || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117; mkdir -p $O/est
+PY="env PYTHONPATH=$R/src $R/.venv/bin/python"; git -C $R log -1 --format='commit %H' > $O/est/commit.txt
+for a in PF KT KTMD MD SLP; do $PY estimators.py $B/neurotycho-long-stage-a $O/est/est_A_$a.npz $a first 48 || exit 3; done
+for a in PF KT KTMD MD; do $PY estimators.py $B/neurotycho-long-stage-b $O/est/est_B_$a.npz $a first 48 || exit 3; done
+$PY estimators.py $B/neurotycho-long-stage-b $O/est/est_B_SLP.npz SLP row 48 || exit 3
+$PY estimators.py score $O/est > $O/est/score.txt && cd $O/est && sha256sum est_*.npz > SHA256SUMS && echo ALLDONE
