@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N atlas-weighting
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=8,mem=32GB,walltime=01:30:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Pyspi-free null for z(r^2, low-band mean coherence) and its links (assumptions.py weighting-null), NeuroTycho arms.
+# qsub research/representation/atlas/jobs/weighting.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A="$MTS_SCRATCH/atlas"
+for bank in neurotycho-short neurotycho-long-stage-a; do
+    python -u -m research.representation.atlas.assumptions weighting-null "$A/banks/$bank" --output "$A/discovery/$bank-weighting-null.json" &
+done
+wait

@@ -1,0 +1,1860 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/fly-short",
+ "reference": "awake",
+ "spis": [
+  "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+  "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "corr_pearson_tau-1",
+  "corr_spearman_tau-1",
+  "cov-sq_EmpiricalCovariance",
+  "cov-sq_LedoitWolf",
+  "cov-sq_MinCovDet",
+  "cov_EmpiricalCovariance",
+  "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "dcorr",
+  "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "dtw",
+  "dtw_constraint-sakoe-chiba_radius-auto",
+  "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+  "gc_gaussian_k-1_kt-1_l-1_lt-1",
+  "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+  "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+  "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "je_gaussian",
+  "je_kozachenko",
+  "lcss",
+  "lcss_constraint-sakoe-chiba",
+  "mi_gaussian",
+  "mi_kernel_W-0.25",
+  "mi_kraskov_NN-4_DCE-AUTO",
+  "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "pdist_chebyshev",
+  "pdist_cityblock",
+  "pdist_euclidean",
+  "pec",
+  "pec_orth",
+  "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+  "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+  "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+  "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "prec-sq_EmpiricalCovariance",
+  "prec-sq_LedoitWolf",
+  "prec-sq_MinCovDet",
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+  "spearmanr",
+  "spearmanr-sq",
+  "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+  "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1",
+  "te_symbolic_k-3",
+  "tlmi_gaussian",
+  "tlmi_kraskov_NN-4_DCE-AUTO",
+  "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "xcorr-sq_max_sig-True",
+  "xme_gaussian_k1",
+  "xme_kozachenko_k1",
+  "xpdist_euclidean_tau-1_min_rmse"
+ ],
+ "reference_state": {
+  "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.02452938830915384,
+   "level": 0.8260137484623835
+  },
+  "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": {
+   "reliability": 0.2523360115984041,
+   "level": 0.24541078622524554
+  },
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": {
+   "reliability": 0.26039143857893765,
+   "level": 0.23827560589863703
+  },
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.3617134349353782,
+   "level": 0.24209541770128104
+  },
+  "corr_pearson_tau-1": {
+   "reliability": 0.38093263970569685,
+   "level": -0.015600331127643585
+  },
+  "corr_spearman_tau-1": {
+   "reliability": 0.3843530241537296,
+   "level": -0.014658792266765466
+  },
+  "cov-sq_EmpiricalCovariance": {
+   "reliability": 0.4282132954391293,
+   "level": 0.04743811645759986
+  },
+  "cov-sq_LedoitWolf": {
+   "reliability": 0.4282132940483525,
+   "level": 0.03603663739676659
+  },
+  "cov-sq_MinCovDet": {
+   "reliability": 0.4123706990180806,
+   "level": 0.03133783317529238
+  },
+  "cov_EmpiricalCovariance": {
+   "reliability": 0.52282322740575,
+   "level": -0.028568328596380664
+  },
+  "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.05709416231524852,
+   "level": 0.3186915860726283
+  },
+  "dcorr": {
+   "reliability": 0.42240689108303187,
+   "level": 0.037361596925900534
+  },
+  "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.037987809876025305,
+   "level": 0.017941045574843884
+  },
+  "dtw": {
+   "reliability": 0.08482207885482623,
+   "level": 9.39838482783391
+  },
+  "dtw_constraint-sakoe-chiba_radius-auto": {
+   "reliability": 0.10447926151887084,
+   "level": 9.713596197275015
+  },
+  "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2": {
+   "reliability": 0.043704382683813416,
+   "level": 0.03476206327860172
+  },
+  "gc_gaussian_k-1_kt-1_l-1_lt-1": {
+   "reliability": 0.11427512477591605,
+   "level": 0.005409433148228205
+  },
+  "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": {
+   "reliability": 0.03686081301631976,
+   "level": 0.26253196138602036
+  },
+  "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25": {
+   "reliability": 0.059125906712979265,
+   "level": 0.2606466848116655
+  },
+  "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.07171530942685393,
+   "level": 0.26161473989486694
+  },
+  "je_gaussian": {
+   "reliability": 0.43611561315308756,
+   "level": 2.810904466188871
+  },
+  "je_kozachenko": {
+   "reliability": 0.05276376585497671,
+   "level": 2.7729520614330587
+  },
+  "lcss": {
+   "reliability": 0.11454415984516263,
+   "level": 0.7828488945960999
+  },
+  "lcss_constraint-sakoe-chiba": {
+   "reliability": 0.3774492533702146,
+   "level": 0.6585979782618009
+  },
+  "mi_gaussian": {
+   "reliability": 0.4361156056297618,
+   "level": 0.026972607136345826
+  },
+  "mi_kernel_W-0.25": {
+   "reliability": 0.17534320343416085,
+   "level": 0.2605019441017738
+  },
+  "mi_kraskov_NN-4_DCE-AUTO": {
+   "reliability": 0.18082183496455675,
+   "level": 0.02018473956447381
+  },
+  "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.2650402826383189,
+   "level": 0.13161784983598268
+  },
+  "pdist_chebyshev": {
+   "reliability": 0.19015670015366692,
+   "level": 4.305051180032583
+  },
+  "pdist_cityblock": {
+   "reliability": 0.5038078172996332,
+   "level": 226.05357008713943
+  },
+  "pdist_euclidean": {
+   "reliability": 0.5151132269003222,
+   "level": 20.114545822143555
+  },
+  "pec": {
+   "reliability": 0.12381995450165198,
+   "level": 0.06260707515936631
+  },
+  "pec_orth": {
+   "reliability": 0.028748289560466767,
+   "level": 0.014627648087648245
+  },
+  "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.23876890557245084,
+   "level": 5.117157765897564e-12
+  },
+  "plv_multitaper_max_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.04810410130087453,
+   "level": 0.9179549171374395
+  },
+  "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": {
+   "reliability": 0.2344141569506489,
+   "level": 0.4240124890437493
+  },
+  "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25": {
+   "reliability": 0.21451240383072845,
+   "level": 0.42746225228676427
+  },
+  "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.33170831317459154,
+   "level": 0.4258522322544685
+  },
+  "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.348569340536332,
+   "level": 0.03029442994067302
+  },
+  "prec-sq_EmpiricalCovariance": {
+   "reliability": 0.612979631576992,
+   "level": 0.39201070769475055
+  },
+  "prec-sq_LedoitWolf": {
+   "reliability": 0.6197386404854266,
+   "level": 0.07996203993948606
+  },
+  "prec-sq_MinCovDet": {
+   "reliability": 0.5551582107389879,
+   "level": 0.614686964223018
+  },
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1": {
+   "reliability": 0.11390083375063186,
+   "level": 0.010144899885814924
+  },
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20": {
+   "reliability": 0.02149701573385345,
+   "level": 0.12351090747576493
+  },
+  "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None": {
+   "reliability": 0.0556560502908999,
+   "level": 0.04210628024660624
+  },
+  "spearmanr": {
+   "reliability": 0.5304541089198522,
+   "level": -0.02751934629486641
+  },
+  "spearmanr-sq": {
+   "reliability": 0.43524544611726956,
+   "level": 0.04197049499131166
+  },
+  "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1": {
+   "reliability": 0.012363067072043453,
+   "level": 0.00038499726528803317
+  },
+  "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1": {
+   "reliability": 0.009733320856126226,
+   "level": 0.00038235729348693544
+  },
+  "te_symbolic_k-3": {
+   "reliability": 0.004220012191573008,
+   "level": 0.16886154161049768
+  },
+  "tlmi_gaussian": {
+   "reliability": 0.21426864658263925,
+   "level": 0.020096202309315022
+  },
+  "tlmi_kraskov_NN-4_DCE-AUTO": {
+   "reliability": 0.05545766529490288,
+   "level": 0.013179500121623278
+  },
+  "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5": {
+   "reliability": 0.25254936758775304,
+   "level": 6.208817227709718e-11
+  },
+  "xcorr-sq_max_sig-True": {
+   "reliability": 0.35120785056881654,
+   "level": 0.08741234300228265
+  },
+  "xme_gaussian_k1": {
+   "reliability": 0.20038380692914512,
+   "level": 1.3963075601137602
+  },
+  "xme_kozachenko_k1": {
+   "reliability": 0.013767905647085459,
+   "level": 1.3719448768175566
+  },
+  "xpdist_euclidean_tau-1_min_rmse": {
+   "reliability": 0.4068939969812203,
+   "level": 1.3852695043270404
+  }
+ },
+ "states": {
+  "all:awake": {
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5": [
+    0.024529388309153848,
+    0.8260137484623835,
+    0.0
+   ],
+   "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": [
+    0.2523360115984041,
+    0.24541078622524554,
+    0.0
+   ],
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+    0.26039143857893765,
+    0.23827560589863703,
+    0.0
+   ],
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.3617134349353782,
+    0.24209541770128104,
+    0.0
+   ],
+   "corr_pearson_tau-1": [
+    0.3809326397056969,
+    -0.015600331127643585,
+    0.5407509157509157
+   ],
+   "corr_spearman_tau-1": [
+    0.3843530241537296,
+    -0.014658792266765466,
+    0.5377289377289377
+   ],
+   "cov-sq_EmpiricalCovariance": [
+    0.4282132954391292,
+    0.04743811645759986,
+    0.0
+   ],
+   "cov-sq_LedoitWolf": [
+    0.4282132940483525,
+    0.03603663739676659,
+    0.0
+   ],
+   "cov-sq_MinCovDet": [
+    0.4123706990180806,
+    0.03133783317529238,
+    0.0
+   ],
+   "cov_EmpiricalCovariance": [
+    0.52282322740575,
+    -0.028568328596380664,
+    0.558882783882784
+   ],
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.05709416231524851,
+    0.3186915860726283,
+    0.0
+   ],
+   "dcorr": [
+    0.42240689108303187,
+    0.037361596925900534,
+    0.20815018315018313
+   ],
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.037987809876025305,
+    0.017941045574843884,
+    0.421978021978022
+   ],
+   "dtw": [
+    0.08482207885482623,
+    9.39838482783391,
+    0.0
+   ],
+   "dtw_constraint-sakoe-chiba_radius-auto": [
+    0.10447926151887084,
+    9.713596197275015,
+    0.0
+   ],
+   "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2": [
+    0.043704382683813416,
+    0.03476206327860172,
+    0.0
+   ],
+   "gc_gaussian_k-1_kt-1_l-1_lt-1": [
+    0.11427512477591605,
+    0.005409433148228205,
+    0.0
+   ],
+   "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": [
+    0.03686081301631976,
+    0.26253196138602036,
+    0.0
+   ],
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+    0.05912590671297925,
+    0.2606466848116655,
+    0.0
+   ],
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.07171530942685393,
+    0.26161473989486694,
+    0.0
+   ],
+   "je_gaussian": [
+    0.4361156131530877,
+    2.810904466188871,
+    0.0
+   ],
+   "je_kozachenko": [
+    0.05276376585497671,
+    2.7729520614330587,
+    0.0
+   ],
+   "lcss": [
+    0.11454415984516263,
+    0.7828488945960999,
+    0.0
+   ],
+   "lcss_constraint-sakoe-chiba": [
+    0.3774492533702146,
+    0.6585979782618009,
+    0.0
+   ],
+   "mi_gaussian": [
+    0.43611560562976187,
+    0.026972607136345826,
+    0.0
+   ],
+   "mi_kernel_W-0.25": [
+    0.17534320343416085,
+    0.2605019441017738,
+    0.0
+   ],
+   "mi_kraskov_NN-4_DCE-AUTO": [
+    0.18082183496455675,
+    0.02018473956447381,
+    0.40998168498168497
+   ],
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.2650402826383189,
+    0.13161784983598268,
+    0.0
+   ],
+   "pdist_chebyshev": [
+    0.19015670015366692,
+    4.305051180032583,
+    0.0
+   ],
+   "pdist_cityblock": [
+    0.5038078172996332,
+    226.05357008713943,
+    0.0
+   ],
+   "pdist_euclidean": [
+    0.5151132269003222,
+    20.114545822143555,
+    0.0
+   ],
+   "pec": [
+    0.12381995450165198,
+    0.06260707515936631,
+    0.3487179487179487
+   ],
+   "pec_orth": [
+    0.028748289560466767,
+    0.014627648087648245,
+    0.4546703296703297
+   ],
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.23876890557245084,
+    5.117157765897564e-12,
+    0.5
+   ],
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-5": [
+    0.04810410130087453,
+    0.9179549171374395,
+    0.0
+   ],
+   "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": [
+    0.2344141569506489,
+    0.4240124890437493,
+    0.0
+   ],
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+    0.21451240383072845,
+    0.42746225228676427,
+    0.0
+   ],
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.33170831317459154,
+    0.4258522322544685,
+    0.0
+   ],
+   "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.34856934053633204,
+    0.03029442994067302,
+    0.2633699633699634
+   ],
+   "prec-sq_EmpiricalCovariance": [
+    0.612979631576992,
+    0.39201070769475055,
+    0.0
+   ],
+   "prec-sq_LedoitWolf": [
+    0.6197386404854266,
+    0.07996203993948606,
+    0.0
+   ],
+   "prec-sq_MinCovDet": [
+    0.5551582107389879,
+    0.614686964223018,
+    0.0
+   ],
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1": [
+    0.11390083375063186,
+    0.010144899885814924,
+    0.0
+   ],
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20": [
+    0.02149701573385345,
+    0.12351090747576493,
+    0.0
+   ],
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None": [
+    0.0556560502908999,
+    0.04210628024660624,
+    0.0
+   ],
+   "spearmanr": [
+    0.5304541089198522,
+    -0.02751934629486641,
+    0.5569597069597069
+   ],
+   "spearmanr-sq": [
+    0.43524544611726956,
+    0.04197049499131166,
+    0.0
+   ],
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1": [
+    0.012363067072043453,
+    0.00038499726528803317,
+    0.5096153846153846
+   ],
+   "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1": [
+    0.009733320856126226,
+    0.00038235729348693544,
+    0.5049908424908425
+   ],
+   "te_symbolic_k-3": [
+    0.004220012191573008,
+    0.16886154161049768,
+    0.0
+   ],
+   "tlmi_gaussian": [
+    0.21426864658263925,
+    0.020096202309315022,
+    0.0
+   ],
+   "tlmi_kraskov_NN-4_DCE-AUTO": [
+    0.055457665294902876,
+    0.013179500121623278,
+    0.4413003663003663
+   ],
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.252549367587753,
+    6.208817227709718e-11,
+    0.5
+   ],
+   "xcorr-sq_max_sig-True": [
+    0.3512078505688165,
+    0.08741234300228265,
+    0.0
+   ],
+   "xme_gaussian_k1": [
+    0.20038380692914512,
+    1.3963075601137602,
+    0.0
+   ],
+   "xme_kozachenko_k1": [
+    0.013767905647085462,
+    1.3719448768175566,
+    0.0
+   ],
+   "xpdist_euclidean_tau-1_min_rmse": [
+    0.4068939969812203,
+    1.3852695043270404,
+    0.0
+   ]
+  },
+  "all:isoflurane": {
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5": [
+    0.0362639836923251,
+    0.8284188417287973,
+    0.0
+   ],
+   "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": [
+    0.3339153098596794,
+    0.24634056366406953,
+    0.0
+   ],
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+    0.2969084727416769,
+    0.2355638570510424,
+    0.0
+   ],
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.4442818341188647,
+    0.24120383423108321,
+    0.0
+   ],
+   "corr_pearson_tau-1": [
+    0.36015940445128325,
+    -0.01124339303574883,
+    0.5231684981684982
+   ],
+   "corr_spearman_tau-1": [
+    0.3687630049250483,
+    -0.010730111514791273,
+    0.5226190476190476
+   ],
+   "cov-sq_EmpiricalCovariance": [
+    0.5149079022228943,
+    0.039643920671481356,
+    0.0
+   ],
+   "cov-sq_LedoitWolf": [
+    0.5149079019834522,
+    0.028516683011100843,
+    0.0
+   ],
+   "cov-sq_MinCovDet": [
+    0.4934425774479894,
+    0.029882865886275586,
+    0.0
+   ],
+   "cov_EmpiricalCovariance": [
+    0.5250494263642135,
+    -0.027790110970202547,
+    0.5377289377289377
+   ],
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.06873852346740614,
+    0.31874870566221386,
+    0.0
+   ],
+   "dcorr": [
+    0.511176565874339,
+    0.030405605784975566,
+    0.23663003663003665
+   ],
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.035382964589420564,
+    0.015836597760566153,
+    0.43031135531135534
+   ],
+   "dtw": [
+    0.07996062494867363,
+    9.613935177142803,
+    0.0
+   ],
+   "dtw_constraint-sakoe-chiba_radius-auto": [
+    0.10083702811678696,
+    9.875469647921049,
+    0.0
+   ],
+   "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2": [
+    0.042339796351829634,
+    0.034396410848085694,
+    0.0
+   ],
+   "gc_gaussian_k-1_kt-1_l-1_lt-1": [
+    0.10416392284857043,
+    0.0052329056466428134,
+    0.0
+   ],
+   "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": [
+    0.027642090603221568,
+    0.2628524968257317,
+    0.0
+   ],
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+    0.06684021177607721,
+    0.2597857644924751,
+    0.0
+   ],
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.0674022327765768,
+    0.2613572913866777,
+    0.0
+   ],
+   "je_gaussian": [
+    0.5237190043214309,
+    2.8160916291750393,
+    0.0
+   ],
+   "je_kozachenko": [
+    0.0623820815930528,
+    2.785506872030405,
+    0.0
+   ],
+   "lcss": [
+    0.1071683570225753,
+    0.782172157214238,
+    0.0
+   ],
+   "lcss_constraint-sakoe-chiba": [
+    0.35608238423091954,
+    0.6637033040706928,
+    0.0
+   ],
+   "mi_gaussian": [
+    0.523719002208818,
+    0.02178545668721199,
+    0.0
+   ],
+   "mi_kernel_W-0.25": [
+    0.2150652619770321,
+    0.255512006007708,
+    0.0
+   ],
+   "mi_kraskov_NN-4_DCE-AUTO": [
+    0.23899514367130467,
+    0.016995716123626783,
+    0.41126373626373625
+   ],
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.18875007485762255,
+    0.13080104497762826,
+    0.0
+   ],
+   "pdist_chebyshev": [
+    0.18694424974324383,
+    4.300252657670241,
+    0.0
+   ],
+   "pdist_cityblock": [
+    0.4994226970701341,
+    226.4833503136268,
+    0.0
+   ],
+   "pdist_euclidean": [
+    0.5085823445580282,
+    20.132292087261494,
+    0.0
+   ],
+   "pec": [
+    0.1595127948815055,
+    0.05433501446476349,
+    0.34304029304029304
+   ],
+   "pec_orth": [
+    0.028243231528589395,
+    0.011613148980988907,
+    0.45613553113553107
+   ],
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.21094036289007245,
+    8.49448100000897e-11,
+    0.5
+   ],
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-5": [
+    0.06169625689070912,
+    0.9181642807446994,
+    0.0
+   ],
+   "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5": [
+    0.29700250152238716,
+    0.4252823614157163,
+    0.0
+   ],
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+    0.2452385453787752,
+    0.4240986681901492,
+    0.0
+   ],
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.3935420898090196,
+    0.4248030988069681,
+    0.0
+   ],
+   "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.41521642162237377,
+    0.02907111280812667,
+    0.2652930402930403
+   ],
+   "prec-sq_EmpiricalCovariance": [
+    0.6450050192521526,
+    0.3233448163821147,
+    0.0
+   ],
+   "prec-sq_LedoitWolf": [
+    0.6703243330385351,
+    0.05615612792854126,
+    0.0
+   ],
+   "prec-sq_MinCovDet": [
+    0.5911750896572379,
+    0.46360929482258284,
+    0.0
+   ],
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1": [
+    0.10311361929430497,
+    0.009857872930856852,
+    0.0
+   ],
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20": [
+    0.02378685238136027,
+    0.12309419363737106,
+    0.0
+   ],
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None": [
+    0.039810645365677765,
+    0.04194948363762636,
+    0.0
+   ],
+   "spearmanr": [
+    0.5378626337382932,
+    -0.027275940022753693,
+    0.5392857142857144
+   ],
+   "spearmanr-sq": [
+    0.5275105257774432,
+    0.035570658886661895,
+    0.0
+   ],
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1": [
+    0.004566897077312277,
+    0.0008673630866094475,
+    0.5007326007326007
+   ],
+   "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1": [
+    0.00600631764216319,
+    0.000851547051682316,
+    0.5010531135531135
+   ],
+   "te_symbolic_k-3": [
+    0.0065941983498195664,
+    0.1695897625042842,
+    0.0
+   ],
+   "tlmi_gaussian": [
+    0.2254275275526333,
+    0.015138425004596893,
+    0.0
+   ],
+   "tlmi_kraskov_NN-4_DCE-AUTO": [
+    0.056934368796789356,
+    0.010187056130514694,
+    0.4439102564102564
+   ],
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5": [
+    0.22660141118489968,
+    6.498789727514233e-11,
+    0.5
+   ],
+   "xcorr-sq_max_sig-True": [
+    0.42464125744382947,
+    0.0773978944008167,
+    0.0
+   ],
+   "xme_gaussian_k1": [
+    0.20540812810360365,
+    1.4005378576425405,
+    0.0
+   ],
+   "xme_kozachenko_k1": [
+    0.019729470263514834,
+    1.3742247086304884,
+    0.0
+   ],
+   "xpdist_euclidean_tau-1_min_rmse": [
+    0.37206157737190415,
+    1.3843976901127741,
+    0.0
+   ]
+  }
+ },
+ "contrasts": {
+  "all:isoflurane": {
+   "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO:raw": {
+    "mean": 0.02469913918541656,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO:disattenuated": {
+    "mean": -0.18510393382564475,
+    "units": 13,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "mi_gaussian|mi_kernel_W-0.25:raw": {
+    "mean": 0.024278862034112034,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "mi_gaussian|mi_kernel_W-0.25:disattenuated": {
+    "mean": -0.31075318849244754,
+    "units": 13,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "cov-sq_EmpiricalCovariance|dcorr:raw": {
+    "mean": 0.005615679488280507,
+    "units": 13,
+    "positive": 12,
+    "animals": 13,
+    "animals_positive": 12
+   },
+   "cov-sq_EmpiricalCovariance|dcorr:disattenuated": {
+    "mean": -0.4036908231145959,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "je_gaussian|je_kozachenko:raw": {
+    "mean": 0.02337129221247263,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "je_gaussian|je_kozachenko:disattenuated": {
+    "mean": 0.5702889875472764,
+    "units": 11,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "xme_gaussian_k1|xme_kozachenko_k1:raw": {
+    "mean": 0.02520744947433528,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "xme_gaussian_k1|xme_kozachenko_k1:disattenuated": {
+    "mean": -0.1700127307379996,
+    "units": 4,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "cov_EmpiricalCovariance|spearmanr:raw": {
+    "mean": 0.0006397041882256162,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "cov_EmpiricalCovariance|spearmanr:disattenuated": {
+    "mean": 0.03190005098653312,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "cov-sq_EmpiricalCovariance|spearmanr-sq:raw": {
+    "mean": 0.003983952415543399,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "cov-sq_EmpiricalCovariance|spearmanr-sq:disattenuated": {
+    "mean": -0.4275509929770803,
+    "units": 13,
+    "positive": 1,
+    "animals": 13,
+    "animals_positive": 1
+   },
+   "corr_pearson_tau-1|corr_spearman_tau-1:raw": {
+    "mean": 0.000994318205997209,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "corr_pearson_tau-1|corr_spearman_tau-1:disattenuated": {
+    "mean": 0.23956548727180438,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25:raw": {
+    "mean": -0.005441688126425259,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25:disattenuated": {
+    "mean": -0.39080427283302904,
+    "units": 12,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": -0.04062734125921253,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": 0.08103262679949631,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5|icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:raw": {
+    "mean": -0.05155702263035237,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5|icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:disattenuated": {
+    "mean": -0.6461010590255136,
+    "units": 11,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|pli_multitaper_mean_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": -1.358365096334838e-18,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|pli_multitaper_mean_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": -9.48176534333386e-19,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": -3.3977196149553364e-19,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": -1.785025918247528e-18,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5|dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": -0.019478102847369488,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5|dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": -0.956844367396729,
+    "units": 9,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "pec|pec_orth:raw": {
+    "mean": -0.022798704895283496,
+    "units": 13,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "pec|pec_orth:disattenuated": {
+    "mean": -10.4353943641336,
+    "units": 10,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "mi_gaussian|tlmi_gaussian:raw": {
+    "mean": -0.01680580836008114,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "mi_gaussian|tlmi_gaussian:disattenuated": {
+    "mean": -0.2508469000714317,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "mi_kraskov_NN-4_DCE-AUTO|tlmi_kraskov_NN-4_DCE-AUTO:raw": {
+    "mean": -0.01457707288164588,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "mi_kraskov_NN-4_DCE-AUTO|tlmi_kraskov_NN-4_DCE-AUTO:disattenuated": {
+    "mean": -1.195522198642024,
+    "units": 12,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance|xcorr-sq_max_sig-True:raw": {
+    "mean": 0.05072952225517423,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "cov-sq_EmpiricalCovariance|xcorr-sq_max_sig-True:disattenuated": {
+    "mean": -0.0924840897611056,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "xpdist_euclidean_tau-1_min_rmse|dtw:raw": {
+    "mean": 0.05583317467804669,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "xpdist_euclidean_tau-1_min_rmse|dtw:disattenuated": {
+    "mean": 0.6124931178670153,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "dtw|dtw_constraint-sakoe-chiba_radius-auto:raw": {
+    "mean": 0.009696120412562693,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "dtw|dtw_constraint-sakoe-chiba_radius-auto:disattenuated": {
+    "mean": 2.4788928705624835,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "pdist_euclidean|dtw:raw": {
+    "mean": 0.04754579024435506,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "pdist_euclidean|dtw:disattenuated": {
+    "mean": 0.34886397984820344,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "lcss|lcss_constraint-sakoe-chiba:raw": {
+    "mean": 0.016154353566074572,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "lcss|lcss_constraint-sakoe-chiba:disattenuated": {
+    "mean": 0.8936178734703961,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "mi_gaussian|gc_gaussian_k-1_kt-1_l-1_lt-1:raw": {
+    "mean": 0.02712466346419753,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "mi_gaussian|gc_gaussian_k-1_kt-1_l-1_lt-1:disattenuated": {
+    "mean": 0.13596030572311169,
+    "units": 12,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None:raw": {
+    "mean": -0.013009660195678894,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None:disattenuated": {
+    "mean": 0.0752473401342796,
+    "units": 12,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "gc_gaussian_k-1_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1:raw": {
+    "mean": -0.007367560677122025,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "gc_gaussian_k-1_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1:disattenuated": {
+    "mean": -3.2006525953623366,
+    "units": 6,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "te_symbolic_k-3|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1:raw": {
+    "mean": -0.01116842344196713,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "te_symbolic_k-3|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1:disattenuated": {
+    "mean": -1.0972844518053158,
+    "units": 3,
+    "positive": 1,
+    "animals": 13,
+    "animals_positive": 1
+   },
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1:raw": {
+    "mean": -0.016490072655101478,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1:disattenuated": {
+    "mean": 26.992140505639007,
+    "units": 2,
+    "positive": 1,
+    "animals": 13,
+    "animals_positive": 1
+   },
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20:raw": {
+    "mean": 0.012840453324760923,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20:disattenuated": {
+    "mean": 6.207686621375632,
+    "units": 8,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "gc_gaussian_k-1_kt-1_l-1_lt-1|gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2:raw": {
+    "mean": -0.002291442868100547,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "gc_gaussian_k-1_kt-1_l-1_lt-1|gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2:disattenuated": {
+    "mean": -1.1623572067836097,
+    "units": 12,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "cov-sq_EmpiricalCovariance|prec-sq_EmpiricalCovariance:raw": {
+    "mean": 0.10545326865298053,
+    "units": 13,
+    "positive": 13,
+    "animals": 13,
+    "animals_positive": 13
+   },
+   "cov-sq_EmpiricalCovariance|prec-sq_EmpiricalCovariance:disattenuated": {
+    "mean": 0.00581397464762319,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "cov-sq_LedoitWolf|prec-sq_LedoitWolf:raw": {
+    "mean": 0.07608888271830705,
+    "units": 13,
+    "positive": 12,
+    "animals": 13,
+    "animals_positive": 12
+   },
+   "cov-sq_LedoitWolf|prec-sq_LedoitWolf:disattenuated": {
+    "mean": -0.09545958060367613,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": 0.047969248417344214,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": -1.2226512111160046,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "cov-sq_EmpiricalCovariance|cov-sq_MinCovDet:raw": {
+    "mean": 0.032315708152257414,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "cov-sq_EmpiricalCovariance|cov-sq_MinCovDet:disattenuated": {
+    "mean": -0.2584160060482359,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "prec-sq_LedoitWolf|prec-sq_MinCovDet:raw": {
+    "mean": 0.028436196791078935,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "prec-sq_LedoitWolf|prec-sq_MinCovDet:disattenuated": {
+    "mean": -0.13311987578065165,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "pdist_euclidean|pdist_chebyshev:raw": {
+    "mean": 0.007783487286669324,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "pdist_euclidean|pdist_chebyshev:disattenuated": {
+    "mean": 0.07925303031810228,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "pdist_euclidean|pdist_cityblock:raw": {
+    "mean": -3.539274867820224e-05,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "pdist_euclidean|pdist_cityblock:disattenuated": {
+    "mean": 0.07801833006487416,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:raw": {
+    "mean": 0.0544017964192351,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:disattenuated": {
+    "mean": -0.03469663845116286,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:raw": {
+    "mean": 0.04122276991657924,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:disattenuated": {
+    "mean": -0.04184916547437561,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": 0.0037221463776470278,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": -0.432009205841705,
+    "units": 11,
+    "positive": 3,
+    "animals": 13,
+    "animals_positive": 3
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_max_fs-1_fmin-0_fmax-0-5:raw": {
+    "mean": -0.01789532550956783,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_max_fs-1_fmin-0_fmax-0-5:disattenuated": {
+    "mean": -1.3691060412076348,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|pec:raw": {
+    "mean": 0.04112104868111556,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|pec:disattenuated": {
+    "mean": -0.18853437769626233,
+    "units": 13,
+    "positive": 2,
+    "animals": 13,
+    "animals_positive": 2
+   },
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|pec_orth:raw": {
+    "mean": 0.0058118074192592675,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|pec_orth:disattenuated": {
+    "mean": 0.03500068840544266,
+    "units": 10,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": 0.01173459538317125,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:reliability": {
+    "mean": 0.0815792982612753,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:reliability": {
+    "mean": 0.03651703416273921,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": 0.08256839918348645,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "corr_pearson_tau-1:reliability": {
+    "mean": -0.020773235254413658,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "corr_spearman_tau-1:reliability": {
+    "mean": -0.015590019228681275,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "cov-sq_EmpiricalCovariance:reliability": {
+    "mean": 0.08669460678376505,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "cov-sq_LedoitWolf:reliability": {
+    "mean": 0.08669460793509973,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "cov-sq_MinCovDet:reliability": {
+    "mean": 0.08107187842990879,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "cov_EmpiricalCovariance:reliability": {
+    "mean": 0.0022261989584633725,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": 0.011644361152157627,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "dcorr:reliability": {
+    "mean": 0.08876967479130725,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": -0.002604845286604737,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "dtw:reliability": {
+    "mean": -0.004861453906152608,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "dtw_constraint-sakoe-chiba_radius-auto:reliability": {
+    "mean": -0.0036422334020838887,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2:reliability": {
+    "mean": -0.0013645863319837748,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "gc_gaussian_k-1_kt-1_l-1_lt-1:reliability": {
+    "mean": -0.010111201927345605,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:reliability": {
+    "mean": -0.009218722413098183,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25:reliability": {
+    "mean": 0.007714305063097943,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": -0.004313076650277123,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "je_gaussian:reliability": {
+    "mean": 0.08760339116834329,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "je_kozachenko:reliability": {
+    "mean": 0.009618315738076089,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "lcss:reliability": {
+    "mean": -0.007375802822587317,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "lcss_constraint-sakoe-chiba:reliability": {
+    "mean": -0.02136686913929505,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "mi_gaussian:reliability": {
+    "mean": 0.08760339657905605,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "mi_kernel_W-0.25:reliability": {
+    "mean": 0.039722058542871246,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:reliability": {
+    "mean": 0.05817330870674794,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": -0.07629020778069634,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "pdist_chebyshev:reliability": {
+    "mean": -0.00321245041042312,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "pdist_cityblock:reliability": {
+    "mean": -0.004385120229498987,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "pdist_euclidean:reliability": {
+    "mean": -0.006530882342293846,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "pec:reliability": {
+    "mean": 0.03569284037985352,
+    "units": 13,
+    "positive": 11,
+    "animals": 13,
+    "animals_positive": 11
+   },
+   "pec_orth:reliability": {
+    "mean": -0.0005050580318773645,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": -0.02782854268237834,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": 0.013592155589834586,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5:reliability": {
+    "mean": 0.06258834457173826,
+    "units": 13,
+    "positive": 12,
+    "animals": 13,
+    "animals_positive": 12
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25:reliability": {
+    "mean": 0.0307261415480468,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": 0.06183377663442818,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": 0.0666470810860417,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "prec-sq_EmpiricalCovariance:reliability": {
+    "mean": 0.03202538767516061,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "prec-sq_LedoitWolf:reliability": {
+    "mean": 0.05058569255310851,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "prec-sq_MinCovDet:reliability": {
+    "mean": 0.03601687891824989,
+    "units": 13,
+    "positive": 9,
+    "animals": 13,
+    "animals_positive": 9
+   },
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1:reliability": {
+    "mean": -0.010787214456326901,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20:reliability": {
+    "mean": 0.00228983664750682,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None:reliability": {
+    "mean": -0.015845404925222142,
+    "units": 13,
+    "positive": 4,
+    "animals": 13,
+    "animals_positive": 4
+   },
+   "spearmanr:reliability": {
+    "mean": 0.007408524818440894,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "spearmanr-sq:reliability": {
+    "mean": 0.09226507966017351,
+    "units": 13,
+    "positive": 12,
+    "animals": 13,
+    "animals_positive": 12
+   },
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1:reliability": {
+    "mean": -0.007796169994731178,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1:reliability": {
+    "mean": -0.0037270032139630344,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   },
+   "te_symbolic_k-3:reliability": {
+    "mean": 0.0023741861582465577,
+    "units": 13,
+    "positive": 8,
+    "animals": 13,
+    "animals_positive": 8
+   },
+   "tlmi_gaussian:reliability": {
+    "mean": 0.01115888096999404,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "tlmi_kraskov_NN-4_DCE-AUTO:reliability": {
+    "mean": 0.001476703501886482,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5:reliability": {
+    "mean": -0.025947956402853307,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "xcorr-sq_max_sig-True:reliability": {
+    "mean": 0.07343340687501301,
+    "units": 13,
+    "positive": 10,
+    "animals": 13,
+    "animals_positive": 10
+   },
+   "xme_gaussian_k1:reliability": {
+    "mean": 0.005024321174458593,
+    "units": 13,
+    "positive": 6,
+    "animals": 13,
+    "animals_positive": 6
+   },
+   "xme_kozachenko_k1:reliability": {
+    "mean": 0.005961564616429376,
+    "units": 13,
+    "positive": 7,
+    "animals": 13,
+    "animals_positive": 7
+   },
+   "xpdist_euclidean_tau-1_min_rmse:reliability": {
+    "mean": -0.034832419609316115,
+    "units": 13,
+    "positive": 5,
+    "animals": 13,
+    "animals_positive": 5
+   }
+  }
+ }
+}

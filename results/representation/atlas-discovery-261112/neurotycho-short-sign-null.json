@@ -1,0 +1,609 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/neurotycho-short",
+ "reference": "awake_ec",
+ "draws": 10,
+ "states": {
+  "KTMD:awake_ec": {
+   "real": 0.4774760537448781,
+   "real_mean_profile": 0.5987919610288296,
+   "null": 0.4858807462378312,
+   "null_mean_profile": 0.5916140008865667,
+   "mean_r": 0.02937965825551199,
+   "negative_share": 0.5089071866016748
+  },
+  "KTMD:awake_eo": {
+   "real": 0.5027519487511303,
+   "real_mean_profile": 0.6303044577987579,
+   "null": 0.5189198241159345,
+   "null_mean_profile": 0.6195668713526844,
+   "mean_r": 0.03954488613607979,
+   "negative_share": 0.494275306495779
+  },
+  "KTMD:drug": {
+   "real": 0.31212352411069405,
+   "real_mean_profile": 0.5942521402545125,
+   "null": 0.3173049554328138,
+   "null_mean_profile": 0.5626921702975758,
+   "mean_r": 0.0008758437176523502,
+   "negative_share": 0.536713619888423
+  },
+  "KTMD:recovery_ec": {
+   "real": 0.4378702350273029,
+   "real_mean_profile": 0.5834173510532876,
+   "null": 0.46017203834929765,
+   "null_mean_profile": 0.5760151520589788,
+   "mean_r": 0.018619541301009297,
+   "negative_share": 0.5237540407449067
+  },
+  "SLP:awake_ec": {
+   "real": 0.5004048061165235,
+   "real_mean_profile": 0.5977454042616824,
+   "null": 0.5062978904102199,
+   "null_mean_profile": 0.5859047909187807,
+   "mean_r": 0.022216902402964058,
+   "negative_share": 0.53474898494831
+  },
+  "SLP:awake_eo": {
+   "real": 0.518211682718363,
+   "real_mean_profile": 0.6147598512196553,
+   "null": 0.5332357416362993,
+   "null_mean_profile": 0.6105449569790162,
+   "mean_r": 0.030701083591908734,
+   "negative_share": 0.5244015212384167
+  },
+  "SLP:sleep": {
+   "real": 0.4972810016163575,
+   "real_mean_profile": 0.6432868943796807,
+   "null": 0.5311181070269736,
+   "null_mean_profile": 0.6451026646610608,
+   "mean_r": 0.023767923017478255,
+   "negative_share": 0.5316821016420566
+  },
+  "KT:awake_ec": {
+   "real": 0.5201538046749785,
+   "real_mean_profile": 0.6361536256018854,
+   "null": 0.5405360183444639,
+   "null_mean_profile": 0.6307015626028745,
+   "mean_r": 0.029082813255056114,
+   "negative_share": 0.5327646544181978
+  },
+  "KT:awake_eo": {
+   "real": 0.5342235984187393,
+   "real_mean_profile": 0.645693332367991,
+   "null": 0.55205473441959,
+   "null_mean_profile": 0.6336660500299863,
+   "mean_r": 0.035509627330569705,
+   "negative_share": 0.5224628171478565
+  },
+  "KT:drug": {
+   "real": 0.3226002435162113,
+   "real_mean_profile": 0.44333234555509443,
+   "null": 0.33737106519658633,
+   "null_mean_profile": 0.436492984503644,
+   "mean_r": 0.031064054828624996,
+   "negative_share": 0.49951881014873134
+  },
+  "KT:recovery_ec": {
+   "real": 0.3883509972079185,
+   "real_mean_profile": 0.5265486382644048,
+   "null": 0.40997751837941737,
+   "null_mean_profile": 0.5214082696234382,
+   "mean_r": 0.021685561188578513,
+   "negative_share": 0.517591551056118
+  },
+  "MD:awake_ec": {
+   "real": 0.4816687722869638,
+   "real_mean_profile": 0.5704506573634005,
+   "null": 0.4897013378670857,
+   "null_mean_profile": 0.5636608344993982,
+   "mean_r": 0.03356677372760191,
+   "negative_share": 0.5204786901637295
+  },
+  "MD:awake_eo": {
+   "real": 0.5312196148982938,
+   "real_mean_profile": 0.624748749317405,
+   "null": 0.5401601323028602,
+   "null_mean_profile": 0.6137531996859338,
+   "mean_r": 0.03737153464447168,
+   "negative_share": 0.5184914385701787
+  },
+  "MD:drug": {
+   "real": 0.3507362918422976,
+   "real_mean_profile": 0.5407007061653106,
+   "null": 0.3841889488964346,
+   "null_mean_profile": 0.5300352955184637,
+   "mean_r": 0.0035906818946641,
+   "negative_share": 0.5386420447444069
+  },
+  "MD:recovery_ec": {
+   "real": 0.48938707988641683,
+   "real_mean_profile": 0.5888905872384314,
+   "null": 0.5044584520291455,
+   "null_mean_profile": 0.5793929342033745,
+   "mean_r": 0.03057435303422991,
+   "negative_share": 0.522650293713286
+  },
+  "PF:awake_ec": {
+   "real": 0.49446756435022626,
+   "real_mean_profile": 0.5867569768171812,
+   "null": 0.5072175307818368,
+   "null_mean_profile": 0.5856770039164624,
+   "mean_r": 0.0439109887906978,
+   "negative_share": 0.5086832895888014
+  },
+  "PF:awake_eo": {
+   "real": 0.5251113066676294,
+   "real_mean_profile": 0.6259522313425906,
+   "null": 0.5460684221903617,
+   "null_mean_profile": 0.6212868882102851,
+   "mean_r": 0.050642574656870554,
+   "negative_share": 0.4991438570178728
+  },
+  "PF:drug": {
+   "real": 0.34666720986980204,
+   "real_mean_profile": 0.6258850961138,
+   "null": 0.3787594821585287,
+   "null_mean_profile": 0.6006221865788642,
+   "mean_r": 0.006448590121096965,
+   "negative_share": 0.5360017497812772
+  },
+  "PF:recovery_ec": {
+   "real": 0.4802709136553348,
+   "real_mean_profile": 0.6084162016582769,
+   "null": 0.5017448564165827,
+   "null_mean_profile": 0.6065364683581912,
+   "mean_r": 0.024502931849487944,
+   "negative_share": 0.5307461567304088
+  }
+ },
+ "contrasts": {
+  "KTMD:awake_eo": {
+   "real": {
+    "mean": 0.025275895006252116,
+    "units": 11,
+    "positive": 10
+   },
+   "real_mean_profile": {
+    "mean": 0.031512496769928185,
+    "units": 11,
+    "positive": 5
+   },
+   "null": {
+    "mean": 0.03303907787810331,
+    "units": 11,
+    "positive": 9
+   },
+   "null_mean_profile": {
+    "mean": 0.027952870466117705,
+    "units": 11,
+    "positive": 5
+   },
+   "mean_r": {
+    "mean": 0.010165227880567791,
+    "units": 11,
+    "positive": 9
+   },
+   "negative_share": {
+    "mean": -0.014631880105895854,
+    "units": 11,
+    "positive": 2
+   }
+  },
+  "KTMD:drug": {
+   "real": {
+    "mean": -0.165352529634184,
+    "units": 11,
+    "positive": 0
+   },
+   "real_mean_profile": {
+    "mean": -0.004539820774317335,
+    "units": 11,
+    "positive": 6
+   },
+   "null": {
+    "mean": -0.16857579080501744,
+    "units": 11,
+    "positive": 0
+   },
+   "null_mean_profile": {
+    "mean": -0.02892183058899103,
+    "units": 11,
+    "positive": 4
+   },
+   "mean_r": {
+    "mean": -0.028503814537859648,
+    "units": 11,
+    "positive": 0
+   },
+   "negative_share": {
+    "mean": 0.027806433286748235,
+    "units": 11,
+    "positive": 10
+   }
+  },
+  "KTMD:recovery_ec": {
+   "real": {
+    "mean": -0.0429441612681701,
+    "units": 10,
+    "positive": 3
+   },
+   "real_mean_profile": {
+    "mean": -0.009926228401707603,
+    "units": 10,
+    "positive": 6
+   },
+   "null": {
+    "mean": -0.028681446043081316,
+    "units": 10,
+    "positive": 3
+   },
+   "null_mean_profile": {
+    "mean": -0.012029934768100974,
+    "units": 10,
+    "positive": 6
+   },
+   "mean_r": {
+    "mean": -0.01224604020580145,
+    "units": 10,
+    "positive": 1
+   },
+   "negative_share": {
+    "mean": 0.0146760454943132,
+    "units": 10,
+    "positive": 9
+   }
+  },
+  "SLP:awake_eo": {
+   "real": {
+    "mean": 0.017806876601839723,
+    "units": 7,
+    "positive": 6
+   },
+   "real_mean_profile": {
+    "mean": 0.01701444695797281,
+    "units": 7,
+    "positive": 5
+   },
+   "null": {
+    "mean": 0.02693785122607952,
+    "units": 7,
+    "positive": 6
+   },
+   "null_mean_profile": {
+    "mean": 0.024640166060235454,
+    "units": 7,
+    "positive": 6
+   },
+   "mean_r": {
+    "mean": 0.008484181188944678,
+    "units": 7,
+    "positive": 7
+   },
+   "negative_share": {
+    "mean": -0.010347463709893399,
+    "units": 7,
+    "positive": 1
+   }
+  },
+  "SLP:sleep": {
+   "real": {
+    "mean": -0.003123804500165877,
+    "units": 7,
+    "positive": 3
+   },
+   "real_mean_profile": {
+    "mean": 0.045541490117998226,
+    "units": 7,
+    "positive": 7
+   },
+   "null": {
+    "mean": 0.02482021661675394,
+    "units": 7,
+    "positive": 7
+   },
+   "null_mean_profile": {
+    "mean": 0.05919787374227999,
+    "units": 7,
+    "positive": 7
+   },
+   "mean_r": {
+    "mean": 0.0015510206145142016,
+    "units": 7,
+    "positive": 4
+   },
+   "negative_share": {
+    "mean": -0.00306688330625336,
+    "units": 7,
+    "positive": 2
+   }
+  },
+  "KT:awake_eo": {
+   "real": {
+    "mean": 0.014069793743760842,
+    "units": 4,
+    "positive": 3
+   },
+   "real_mean_profile": {
+    "mean": 0.009539706766105549,
+    "units": 4,
+    "positive": 2
+   },
+   "null": {
+    "mean": 0.011518716075126043,
+    "units": 4,
+    "positive": 2
+   },
+   "null_mean_profile": {
+    "mean": 0.002964487427111945,
+    "units": 4,
+    "positive": 1
+   },
+   "mean_r": {
+    "mean": 0.0064268140755135905,
+    "units": 4,
+    "positive": 3
+   },
+   "negative_share": {
+    "mean": -0.01030183727034123,
+    "units": 4,
+    "positive": 1
+   }
+  },
+  "KT:drug": {
+   "real": {
+    "mean": -0.1975535611587673,
+    "units": 4,
+    "positive": 0
+   },
+   "real_mean_profile": {
+    "mean": -0.19282128004679094,
+    "units": 4,
+    "positive": 1
+   },
+   "null": {
+    "mean": -0.20316495314787764,
+    "units": 4,
+    "positive": 0
+   },
+   "null_mean_profile": {
+    "mean": -0.19420857809923048,
+    "units": 4,
+    "positive": 1
+   },
+   "mean_r": {
+    "mean": 0.0019812415735688824,
+    "units": 4,
+    "positive": 2
+   },
+   "negative_share": {
+    "mean": -0.033245844269466335,
+    "units": 4,
+    "positive": 2
+   }
+  },
+  "KT:recovery_ec": {
+   "real": {
+    "mean": -0.13180280746706013,
+    "units": 4,
+    "positive": 0
+   },
+   "real_mean_profile": {
+    "mean": -0.10960498733748059,
+    "units": 4,
+    "positive": 2
+   },
+   "null": {
+    "mean": -0.1305584999650466,
+    "units": 4,
+    "positive": 0
+   },
+   "null_mean_profile": {
+    "mean": -0.10929329297943627,
+    "units": 4,
+    "positive": 1
+   },
+   "mean_r": {
+    "mean": -0.0073972520664775995,
+    "units": 4,
+    "positive": 1
+   },
+   "negative_share": {
+    "mean": -0.015173103362079762,
+    "units": 4,
+    "positive": 2
+   }
+  },
+  "MD:awake_eo": {
+   "real": {
+    "mean": 0.04955084261132994,
+    "units": 4,
+    "positive": 4
+   },
+   "real_mean_profile": {
+    "mean": 0.05429809195400441,
+    "units": 4,
+    "positive": 4
+   },
+   "null": {
+    "mean": 0.05045879443577454,
+    "units": 4,
+    "positive": 4
+   },
+   "null_mean_profile": {
+    "mean": 0.050092365186535565,
+    "units": 4,
+    "positive": 4
+   },
+   "mean_r": {
+    "mean": 0.00380476091686977,
+    "units": 4,
+    "positive": 4
+   },
+   "negative_share": {
+    "mean": -0.001987251593550801,
+    "units": 4,
+    "positive": 0
+   }
+  },
+  "MD:drug": {
+   "real": {
+    "mean": -0.1309324804446662,
+    "units": 4,
+    "positive": 0
+   },
+   "real_mean_profile": {
+    "mean": -0.029749951198089902,
+    "units": 4,
+    "positive": 2
+   },
+   "null": {
+    "mean": -0.10551238897065102,
+    "units": 4,
+    "positive": 0
+   },
+   "null_mean_profile": {
+    "mean": -0.03362553898093454,
+    "units": 4,
+    "positive": 2
+   },
+   "mean_r": {
+    "mean": -0.029976091832937812,
+    "units": 4,
+    "positive": 0
+   },
+   "negative_share": {
+    "mean": 0.018163354580677415,
+    "units": 4,
+    "positive": 2
+   }
+  },
+  "MD:recovery_ec": {
+   "real": {
+    "mean": 0.007718307599452995,
+    "units": 4,
+    "positive": 2
+   },
+   "real_mean_profile": {
+    "mean": 0.018439929875030722,
+    "units": 4,
+    "positive": 2
+   },
+   "null": {
+    "mean": 0.014757114162059881,
+    "units": 4,
+    "positive": 3
+   },
+   "null_mean_profile": {
+    "mean": 0.015732099703976196,
+    "units": 4,
+    "positive": 2
+   },
+   "mean_r": {
+    "mean": -0.0029924206933719987,
+    "units": 4,
+    "positive": 2
+   },
+   "negative_share": {
+    "mean": 0.0021716035495563113,
+    "units": 4,
+    "positive": 3
+   }
+  },
+  "PF:awake_eo": {
+   "real": {
+    "mean": 0.030643742317403147,
+    "units": 4,
+    "positive": 3
+   },
+   "real_mean_profile": {
+    "mean": 0.039195254525409465,
+    "units": 4,
+    "positive": 3
+   },
+   "null": {
+    "mean": 0.038850891408524865,
+    "units": 4,
+    "positive": 3
+   },
+   "null_mean_profile": {
+    "mean": 0.035609884293822724,
+    "units": 4,
+    "positive": 3
+   },
+   "mean_r": {
+    "mean": 0.006731585866172761,
+    "units": 4,
+    "positive": 2
+   },
+   "negative_share": {
+    "mean": -0.009539432570928638,
+    "units": 4,
+    "positive": 2
+   }
+  },
+  "PF:drug": {
+   "real": {
+    "mean": -0.14780035448042422,
+    "units": 4,
+    "positive": 0
+   },
+   "real_mean_profile": {
+    "mean": 0.03912811929661887,
+    "units": 4,
+    "positive": 2
+   },
+   "null": {
+    "mean": -0.12845804862330815,
+    "units": 4,
+    "positive": 1
+   },
+   "null_mean_profile": {
+    "mean": 0.014945182662401829,
+    "units": 4,
+    "positive": 2
+   },
+   "mean_r": {
+    "mean": -0.03746239866960083,
+    "units": 4,
+    "positive": 0
+   },
+   "negative_share": {
+    "mean": 0.027318460192475927,
+    "units": 4,
+    "positive": 4
+   }
+  },
+  "PF:recovery_ec": {
+   "real": {
+    "mean": -0.014196650694891469,
+    "units": 4,
+    "positive": 2
+   },
+   "real_mean_profile": {
+    "mean": 0.02165922484109585,
+    "units": 4,
+    "positive": 3
+   },
+   "null": {
+    "mean": -0.005472674365254074,
+    "units": 4,
+    "positive": 2
+   },
+   "null_mean_profile": {
+    "mean": 0.020859464441728842,
+    "units": 4,
+    "positive": 3
+   },
+   "mean_r": {
+    "mean": -0.01940805694120985,
+    "units": 4,
+    "positive": 0
+   },
+   "negative_share": {
+    "mean": 0.02206286714160731,
+    "units": 4,
+    "positive": 4
+   }
+  }
+ }
+}

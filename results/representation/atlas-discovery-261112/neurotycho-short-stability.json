@@ -1,0 +1,2436 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/neurotycho-short",
+ "reference": "awake_ec",
+ "spis": [
+  "mi_gaussian",
+  "mi_kraskov_NN-4_DCE-AUTO",
+  "dcorr",
+  "xcorr-sq_max_sig-True",
+  "cov-sq_EmpiricalCovariance",
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+ ],
+ "separation_bins_s": [
+  "0-150",
+  "150-400",
+  "400-inf"
+ ],
+ "states": {
+  "KTMD:awake_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.7877919999848859,
+     0.7797707605153108,
+     0.7804369650220113
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.6231179647341331,
+     0.6162775706999777,
+     0.6156912002906387
+    ],
+    "dcorr": [
+     0.7330051970670368,
+     0.7251905501671729,
+     0.7258796177138186
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.6917415299509752,
+     0.6853149911755563,
+     0.684413389867224
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7315485814604146,
+     0.7233457770547814,
+     0.7220983163464687
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.6508164694122888,
+     0.6470533844610565,
+     0.6439137940756621
+    ]
+   },
+   "median_separation_s": 400.0
+  },
+  "KTMD:awake_eo": {
+   "agree": {
+    "mi_gaussian": [
+     0.7858043281788702,
+     0.7822011755563479,
+     0.7734412062936776
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.6257961963632401,
+     0.6247557077524349,
+     0.6182302777662066
+    ],
+    "dcorr": [
+     0.731689808791496,
+     0.7317631734244926,
+     0.7217284504103101
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.6955670600725772,
+     0.6923608531452223,
+     0.6857813618133671
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7294159173033182,
+     0.7276542873317008,
+     0.7187432050009966
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.6485726486001467,
+     0.6455271113729446,
+     0.6415980188419687
+    ]
+   },
+   "median_separation_s": 400.0
+  },
+  "KTMD:drug": {
+   "agree": {
+    "mi_gaussian": [
+     0.5877319677771887,
+     0.5747872646443783,
+     0.5546103293985601
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.3941643911439216,
+     0.3993775032644873,
+     0.3912891643114021
+    ],
+    "dcorr": [
+     0.4794452156795388,
+     0.4803116669368441,
+     0.4646115889190748
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.3632716053434251,
+     0.366475503673473,
+     0.354529448305023
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.48663520908670566,
+     0.4776142616867601,
+     0.46020281908531435
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.6564568383312034,
+     0.5882450888311694,
+     0.5719759541380459
+    ]
+   },
+   "median_separation_s": 590.0000000000002
+  },
+  "KTMD:recovery_ec": {
+   "agree": {
+    "mi_gaussian": [
+     NaN,
+     0.7841466539619507,
+     0.7637731739760947
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     NaN,
+     0.6281634013446037,
+     0.6105811658712551
+    ],
+    "dcorr": [
+     NaN,
+     0.734177235563141,
+     0.7117372976483635
+    ],
+    "xcorr-sq_max_sig-True": [
+     NaN,
+     0.6840938275720378,
+     0.6602568232344599
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     NaN,
+     0.7256270878440485,
+     0.7028535046933391
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     NaN,
+     0.6514691452186,
+     0.6418852929431744
+    ]
+   },
+   "median_separation_s": 610.0
+  },
+  "SLP:awake_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.8456893392486773,
+     0.8438929948152953,
+     0.8543716400528172
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7302758722477657,
+     0.727829749099383,
+     0.7765761756291947
+    ],
+    "dcorr": [
+     0.7989942848492626,
+     0.7975085383465278,
+     0.8142906403908332
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7718017269025731,
+     0.7672752018308231,
+     0.7843194179013697
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7936013713769104,
+     0.7914675529159005,
+     0.8105006468677475
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7454237373921246,
+     0.7424277496889521,
+     0.8068426797076663
+    ]
+   },
+   "median_separation_s": 149.99999999999977
+  },
+  "SLP:awake_eo": {
+   "agree": {
+    "mi_gaussian": [
+     0.8536323842056939,
+     0.8420057664989639,
+     0.8511348667730914
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7468010795349557,
+     0.7374589664463403,
+     0.745842268178051
+    ],
+    "dcorr": [
+     0.8073726575443235,
+     0.7949559464432896,
+     0.8068998682247566
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7826731313104288,
+     0.7712903132125264,
+     0.785931352568355
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.80265142494434,
+     0.7908464830598743,
+     0.8076479521374612
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7470972675257164,
+     0.7450807679695791,
+     0.760679963065951
+    ]
+   },
+   "median_separation_s": 220.0
+  },
+  "SLP:sleep": {
+   "agree": {
+    "mi_gaussian": [
+     0.8077034745824244,
+     0.8063187211368446,
+     0.8064446021721167
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.70107170897231,
+     0.6999210532793197,
+     0.6995814874873653
+    ],
+    "dcorr": [
+     0.7541888789570285,
+     0.7510920104145572,
+     0.7517400265021187
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7120236688486662,
+     0.7093294209467411,
+     0.709341329405552
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7406262846678152,
+     0.7382446815695095,
+     0.73919581029403
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7245830288067696,
+     0.7253054592455678,
+     0.7267459866707002
+    ]
+   },
+   "median_separation_s": 860.0
+  },
+  "KT:awake_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.8408085648193647,
+     0.8386781061830819,
+     0.8421317142368121
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7331933746357527,
+     0.7294401954972107,
+     0.7327271988187127
+    ],
+    "dcorr": [
+     0.7944243903390436,
+     0.7900145980455504,
+     0.7946765280455428
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7631001919368123,
+     0.758592844185604,
+     0.7669721304117818
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7874898824138765,
+     0.7864508852494758,
+     0.7916248333416911
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7589887081321158,
+     0.7586466458359935,
+     0.7566015602814398
+    ]
+   },
+   "median_separation_s": 270.0000000000001
+  },
+  "KT:awake_eo": {
+   "agree": {
+    "mi_gaussian": [
+     0.8319237025600875,
+     0.8323802410498407,
+     0.8202987779805608
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7329026419862905,
+     0.7320494764916905,
+     0.7259117412691652
+    ],
+    "dcorr": [
+     0.7910358081929457,
+     0.7919995168962168,
+     0.7783590083072216
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7615121541742095,
+     0.7634514112125581,
+     0.7468555498553175
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7817772051058164,
+     0.7841717913587446,
+     0.7677802548314592
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7600816404840973,
+     0.7582831373480232,
+     0.7422880045781766
+    ]
+   },
+   "median_separation_s": 310.0
+  },
+  "KT:drug": {
+   "agree": {
+    "mi_gaussian": [
+     0.7666018708023374,
+     0.7519366775030496,
+     0.7342579779612279
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.6746152305003592,
+     0.6580683218635694,
+     0.6471499067575943
+    ],
+    "dcorr": [
+     0.6966522999646689,
+     0.6746971602242022,
+     0.6624532046537741
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.6005098678746997,
+     0.5786755933821505,
+     0.5610228855728489
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.6767877660563202,
+     0.6604126232100279,
+     0.6431910472579364
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7494085967551392,
+     0.7558429301434983,
+     0.7446739905190893
+    ]
+   },
+   "median_separation_s": 190.00000000000003
+  },
+  "KT:recovery_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.7726406333676206,
+     0.7652755776974159,
+     0.726455494875564
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.661217569032432,
+     0.656917035820072,
+     0.6209682330503455
+    ],
+    "dcorr": [
+     0.7108710532450644,
+     0.7058382628516917,
+     0.6613486490406761
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.642804070031358,
+     0.6395731281992356,
+     0.5844174839203207
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7040069639191233,
+     0.6972408627999018,
+     0.649674321490246
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7448091064396051,
+     0.7443778681862052,
+     0.7301002496695603
+    ]
+   },
+   "median_separation_s": 225.0
+  },
+  "MD:awake_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.8327897173249488,
+     0.8328486614075497,
+     0.844235094886062
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.739175287362959,
+     0.7365263465763257,
+     0.7463427937407684
+    ],
+    "dcorr": [
+     0.785343400993763,
+     0.7836398771301512,
+     0.7986749825753631
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7617354470531141,
+     0.7607935168471254,
+     0.7734912975770984
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7790846586217457,
+     0.7806215807838253,
+     0.797230848795417
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7562781335200933,
+     0.7606166363080944,
+     0.7713772531018331
+    ]
+   },
+   "median_separation_s": 270.0
+  },
+  "MD:awake_eo": {
+   "agree": {
+    "mi_gaussian": [
+     0.8512911575513298,
+     0.8489650989803229,
+     0.8472482484937541
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7466776805698725,
+     0.744832431587819,
+     0.7430939470810625
+    ],
+    "dcorr": [
+     0.8136686127639883,
+     0.8105039471782289,
+     0.8083177479547257
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7876354251630038,
+     0.7826999957586228,
+     0.7846006767900254
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.8051794236220109,
+     0.8020541255635705,
+     0.8004621779700576
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7644447899719318,
+     0.7615632603184339,
+     0.7613161024800748
+    ]
+   },
+   "median_separation_s": 265.0
+  },
+  "MD:drug": {
+   "agree": {
+    "mi_gaussian": [
+     0.717737353179299,
+     0.7107102208149076,
+     0.7225579282624173
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.5837434768930748,
+     0.5786632536554489,
+     0.5871513264733993
+    ],
+    "dcorr": [
+     0.6153950630302183,
+     0.600583674012358,
+     0.612155196472197
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.543120869815515,
+     0.5344533816795526,
+     0.5470335625159845
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.6160762787296868,
+     0.6048300786032932,
+     0.6216337323429324
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.727764147320059,
+     0.7297683979594003,
+     0.7319183873510974
+    ]
+   },
+   "median_separation_s": 245.0
+  },
+  "MD:recovery_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.8554807658273472,
+     0.8533125593774252,
+     0.8431482871398717
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7573181285523947,
+     0.75588499107207,
+     0.7487543004852141
+    ],
+    "dcorr": [
+     0.8109484108371418,
+     0.8080893212179017,
+     0.7981684790126171
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7846731751104798,
+     0.7790444363601762,
+     0.768009001190936
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.806278005157475,
+     0.8027647051963233,
+     0.7912687855737837
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7713415331054889,
+     0.7685615025809136,
+     0.7595310109922621
+    ]
+   },
+   "median_separation_s": 235.0
+  },
+  "PF:awake_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.8459020073172188,
+     0.8469391597711291,
+     0.8487236324301487
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7493101146948127,
+     0.7498424891806271,
+     0.7481664135139859
+    ],
+    "dcorr": [
+     0.7934627647651471,
+     0.7940225798732254,
+     0.7964718209726148
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7602008841022214,
+     0.7639578834108341,
+     0.7720725858634392
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7893354620712281,
+     0.7901816286074694,
+     0.795959353654363
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7593199841784372,
+     0.7661767198273004,
+     0.7662869801780683
+    ]
+   },
+   "median_separation_s": 310.0
+  },
+  "PF:awake_eo": {
+   "agree": {
+    "mi_gaussian": [
+     0.8530648081674514,
+     0.8472245890526513,
+     0.8440265720948196
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7638068098518761,
+     0.7627861552179314,
+     0.7586242386295141
+    ],
+    "dcorr": [
+     0.8016311939609765,
+     0.798405958992961,
+     0.7936817077263632
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7801000118398529,
+     0.7736222226822878,
+     0.7718450450106846
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.796982417309111,
+     0.7896461908976639,
+     0.786754862049846
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7690991698533004,
+     0.7687531453001463,
+     0.7683652400966706
+    ]
+   },
+   "median_separation_s": 310.0
+  },
+  "PF:drug": {
+   "agree": {
+    "mi_gaussian": [
+     0.6375412181011955,
+     0.621562331269599,
+     0.6103027741243824
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.5023971086328598,
+     0.4948442950676574,
+     0.48728212226222123
+    ],
+    "dcorr": [
+     0.5281028971281987,
+     0.5181078525397832,
+     0.5085687724480261
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.4223224359828204,
+     0.40103069398756463,
+     0.38869770752304134
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.5231001231863308,
+     0.5111764083577276,
+     0.5054167040394117
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.6968481725554735,
+     0.6846909599595218,
+     0.6467696941605808
+    ]
+   },
+   "median_separation_s": 185.0
+  },
+  "PF:recovery_ec": {
+   "agree": {
+    "mi_gaussian": [
+     0.8096935705571862,
+     0.7982585300661831,
+     0.8015648061601697
+    ],
+    "mi_kraskov_NN-4_DCE-AUTO": [
+     0.7110226688646929,
+     0.6992152880375583,
+     0.7046751751960052
+    ],
+    "dcorr": [
+     0.7553993634510828,
+     0.7375787668854797,
+     0.7416939395546129
+    ],
+    "xcorr-sq_max_sig-True": [
+     0.7085795595074663,
+     0.6926523649217972,
+     0.6980722551741713
+    ],
+    "cov-sq_EmpiricalCovariance": [
+     0.7439706562972135,
+     0.7275568392130416,
+     0.7315433822266721
+    ],
+    "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25": [
+     0.7443749886513159,
+     0.7372530106684823,
+     0.7388303885077567
+    ]
+   },
+   "median_separation_s": 305.0
+  }
+ },
+ "contrasts": {
+  "KTMD:awake_eo": {
+   "mi_gaussian:0-150": {
+    "mean": -0.001987671806015647,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "mi_gaussian:150-400": {
+    "mean": 0.0024304150410371576,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.006995758728333801,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": 0.0026782316291070955,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": 0.008478137052457329,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": 0.0025390774755680652,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "dcorr:0-150": {
+    "mean": -0.0013153882755406845,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "dcorr:150-400": {
+    "mean": 0.0065726232573196245,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "dcorr:400-inf": {
+    "mean": -0.0041511673035084925,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": 0.0038255301216017956,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": 0.007045861969666036,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": 0.0013679719461432579,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.002132664157096534,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": 0.004308510276919183,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.003355111345472016,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.0022438208121421488,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.001526273088112045,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.002315775233693458,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   }
+  },
+  "KTMD:drug": {
+   "mi_gaussian:0-150": {
+    "mean": -0.20225541301271802,
+    "units": 3,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.2049834958709325,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.22582663562345137,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.2864914961588834,
+    "units": 3,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.21690006743549048,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.22440203597923658,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.248419273762524,
+    "units": 3,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "dcorr:150-400": {
+    "mean": -0.2448788832303289,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "dcorr:400-inf": {
+    "mean": -0.26126802879474376,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.31969694457866776,
+    "units": 3,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.3188394875020833,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.329883941562201,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.2377999433263953,
+    "units": 3,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.2457315153680214,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.2618954972611544,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.07113958240351641,
+    "units": 3,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.05880829562988719,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.07193783993761628,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   }
+  },
+  "KTMD:recovery_ec": {
+   "mi_gaussian:150-400": {
+    "mean": -0.005901488205969729,
+    "units": 10,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.02695306894913113,
+    "units": 10,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.015275149283172501,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.03208261060448814,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "dcorr:150-400": {
+    "mean": 2.5487025784709517e-05,
+    "units": 10,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "dcorr:400-inf": {
+    "mean": -0.023345622645552642,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.014272189655215673,
+    "units": 10,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.03704959819760194,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.006788823404185307,
+    "units": 10,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.02805025297307958,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.017732100070235023,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.02444379571794192,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   }
+  },
+  "SLP:awake_eo": {
+   "mi_gaussian:0-150": {
+    "mean": 0.007943044957016381,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.0018872283163315112,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": 0.01652520728718987,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": 0.009629217346957304,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "dcorr:0-150": {
+    "mean": 0.008378372695060856,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "dcorr:150-400": {
+    "mean": -0.002552591903238247,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": 0.010871404407855532,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": 0.004015111381703248,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": 0.009050053567429495,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.0006210698560261685,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": 0.0016735301335918543,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": 0.0026530182806269653,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.01143896909255454,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.01103299942744021,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:400-inf": {
+    "mean": -0.0211594464433994,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.015674845314033625,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.013780729226508553,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.0026461147739914315,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "SLP:sleep": {
+   "mi_gaussian:0-150": {
+    "mean": -0.03798586466625294,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.037574273678450884,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.02920416327545567,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.02790869582006326,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.04480540589223403,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:150-400": {
+    "mean": -0.04641652793197056,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.05977805805390709,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.05794578088408193,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.05297508670909531,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.05322287134639111,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.020840708585354854,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.017122290443384376,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.05017248005491379,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.051922127151762476,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:400-inf": {
+    "mean": -0.06947716656364228,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.08328065219637887,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.08071520501914006,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.031262245590908205,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:awake_eo": {
+   "mi_gaussian:0-150": {
+    "mean": -0.008884862259277176,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.006297865133241182,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.021832936256251267,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.000290732649462333,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": 0.0026092809944796846,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.006815457549547599,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:0-150": {
+    "mean": -0.003388582146097746,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:150-400": {
+    "mean": 0.001984918850666345,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:400-inf": {
+    "mean": -0.016317519738321073,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.001588037762602773,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": 0.004858567026954169,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.020116580556464175,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.0057126773080601045,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.0022790938907311376,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.023844578510231862,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": 0.0010929323519814904,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.0003635084879702599,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.014313555703263287,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:drug": {
+   "mi_gaussian:0-150": {
+    "mean": -0.07420669401702737,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.08674142868003226,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.10787373627558416,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.05857814413539367,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.07137187363364128,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.08557729206111858,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.09777209037437454,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:150-400": {
+    "mean": -0.11531743782134829,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:400-inf": {
+    "mean": -0.1322233233917686,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.16259032406211252,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.17991725080345364,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.20594924483893293,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.11070211635755628,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.12603826203944782,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.14843378608375468,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.009580111376976785,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.002803715692495129,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.011927569762350376,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:recovery_ec": {
+   "mi_gaussian:0-150": {
+    "mean": -0.06816793145174413,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.07340252848566609,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.11567621936124806,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.07197580560332084,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.07252315967713877,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.11175896576836733,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.083553337093979,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:150-400": {
+    "mean": -0.08417633519385867,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:400-inf": {
+    "mean": -0.13332787900486662,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.1202961219054543,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.1190197159863684,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.18255464649146108,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.08348291849475331,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.0892100224495738,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.1419505118514452,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.01417960169251084,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.0142687776497884,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.02650131061187952,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:awake_eo": {
+   "mi_gaussian:0-150": {
+    "mean": 0.018501440226381116,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_gaussian:150-400": {
+    "mean": 0.016116437572773257,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_gaussian:400-inf": {
+    "mean": 0.003013153607692276,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": 0.007502393206913371,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": 0.008306085011493325,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.0032488466597059285,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:0-150": {
+    "mean": 0.028325211770225206,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "dcorr:150-400": {
+    "mean": 0.02686407004807767,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "dcorr:400-inf": {
+    "mean": 0.009642765379362483,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": 0.025899978109889726,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": 0.02190647891149733,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": 0.011109379212926984,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": 0.02609476500026517,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": 0.021432544779745155,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": 0.003231329174640557,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": 0.008166656451838422,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": 0.0009466240103394863,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.01006115062175833,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:drug": {
+   "mi_gaussian:0-150": {
+    "mean": -0.11505236414564973,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.12213844059264209,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.12167716662364464,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.15543181046988416,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.15786309292087672,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.15919146726736907,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.1699483379635448,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:150-400": {
+    "mean": -0.18305620311779322,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:400-inf": {
+    "mean": -0.18651978610316608,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.21861457723759906,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.2263401351675728,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.22645773506111405,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.16300837989205888,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.1757915021805321,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.17559711645248471,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.028513986200034425,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.0308482383486941,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.03945886575073576,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:recovery_ec": {
+   "mi_gaussian:0-150": {
+    "mean": 0.022691048502398503,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_gaussian:150-400": {
+    "mean": 0.02046389796987555,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.0010868077461902437,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": 0.01814284118943557,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": 0.019358644495744315,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": 0.002411506744445735,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:0-150": {
+    "mean": 0.02560500984337874,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "dcorr:150-400": {
+    "mean": 0.02444944408775046,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "dcorr:400-inf": {
+    "mean": -0.0005065035627460079,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": 0.02293772805736574,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": 0.018250919513050745,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.005482296386162655,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": 0.027193346535729357,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": 0.022143124412497828,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.005962063221633368,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": 0.015063399585395515,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": 0.007944866272819151,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.011846242109571192,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:awake_eo": {
+   "mi_gaussian:0-150": {
+    "mean": 0.00716280085023277,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_gaussian:150-400": {
+    "mean": 0.00028542928152208713,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.004697060335329212,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": 0.014496695157063394,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": 0.012943666037304236,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": 0.010457825115528147,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:0-150": {
+    "mean": 0.008168429195829385,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:150-400": {
+    "mean": 0.00438337911973552,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:400-inf": {
+    "mean": -0.0027901132462516687,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": 0.019899127737631417,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": 0.009664339271453687,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.00022754085275453195,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": 0.007646955237882919,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.0005354377098054919,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.009204491604517001,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": 0.009779185674863272,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": 0.0025764254728458114,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": 0.0020782599186022765,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:drug": {
+   "mi_gaussian:0-150": {
+    "mean": -0.20836078921602316,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.22537682850153024,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.23842085830576637,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.24691300606195296,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.2549981941129697,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.2608842912517647,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.2653598676369484,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:150-400": {
+    "mean": -0.2759147273334422,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:400-inf": {
+    "mean": -0.28790304852458865,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.3378784481194011,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.3629271894232694,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.3833748783403978,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.26623533888489725,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.27900522024974184,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.2905426496149513,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.0624718116229635,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.08148575986777865,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.11951728601748754,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "PF:recovery_ec": {
+   "mi_gaussian:0-150": {
+    "mean": -0.036208436760032464,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_gaussian:150-400": {
+    "mean": -0.04868062970494613,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "mi_gaussian:400-inf": {
+    "mean": -0.047158826269979054,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:0-150": {
+    "mean": -0.03828744583011984,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:150-400": {
+    "mean": -0.05062720114306879,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "mi_kraskov_NN-4_DCE-AUTO:400-inf": {
+    "mean": -0.04349123831798074,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "dcorr:0-150": {
+    "mean": -0.03806340131406427,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:150-400": {
+    "mean": -0.05644381298774562,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "dcorr:400-inf": {
+    "mean": -0.054777881418001995,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "xcorr-sq_max_sig-True:0-150": {
+    "mean": -0.0516213245947551,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:150-400": {
+    "mean": -0.07130551848903688,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "xcorr-sq_max_sig-True:400-inf": {
+    "mean": -0.07400033068926792,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:0-150": {
+    "mean": -0.045364805774014666,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cov-sq_EmpiricalCovariance:150-400": {
+    "mean": -0.06262478939442784,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "cov-sq_EmpiricalCovariance:400-inf": {
+    "mean": -0.0644159714276909,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:0-150": {
+    "mean": -0.014944995527121196,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:150-400": {
+    "mean": -0.028923709158818256,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25:400-inf": {
+    "mean": -0.02745659167031156,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  }
+ }
+}

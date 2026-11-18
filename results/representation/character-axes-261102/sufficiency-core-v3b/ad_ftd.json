@@ -1,0 +1,1776 @@
+{
+ "cohort": "ad_ftd",
+ "core": [
+  "band",
+  "band_high_share",
+  "band_spread",
+  "mediation_ledoit_wolf",
+  "mediation_empirical",
+  "lag",
+  "lag_sin_phi",
+  "form_te_minus_gc",
+  "location_frequency"
+ ],
+ "core_roles": {
+  "band": "sub",
+  "band_high_share": "core",
+  "band_spread": "core",
+  "mediation_ledoit_wolf": "core",
+  "mediation_empirical": "core",
+  "lag": "sub",
+  "lag_sin_phi": "sub",
+  "form_te_minus_gc": "sub",
+  "location_frequency": "sub"
+ },
+ "core_missing": {
+  "band": 0.0,
+  "band_high_share": 0.0,
+  "band_spread": 0.0,
+  "mediation_ledoit_wolf": 0.0,
+  "mediation_empirical": 0.0,
+  "lag": 0.0,
+  "lag_sin_phi": 0.0,
+  "form_te_minus_gc": 0.0,
+  "location_frequency": 0.9673295454545454
+ },
+ "contrasts": {
+  "AD_vs_control": {
+   "windows": 520,
+   "core_effects": {
+    "band": {
+     "difference": 0.019276725890954194,
+     "standardized": 0.29001824156231887,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.3064253733112433
+    },
+    "band_high_share": {
+     "difference": 0.0010742521092207968,
+     "standardized": 0.03683146306031854,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.8173584020936654
+    },
+    "band_spread": {
+     "difference": -0.0023114938876804964,
+     "standardized": -0.30665987732204375,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.3064253733112433
+    },
+    "mediation_ledoit_wolf": {
+     "difference": -0.004250673935791205,
+     "standardized": -0.05579064340058292,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.8793737711310677
+    },
+    "mediation_empirical": {
+     "difference": 0.01692871229066284,
+     "standardized": 0.31369298679429036,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.288080526667542
+    },
+    "lag": {
+     "difference": -0.008215018443318844,
+     "standardized": -0.42976596313478205,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.01849144714305743
+    },
+    "lag_sin_phi": {
+     "difference": -0.0024550355030018844,
+     "standardized": -0.06120014363484739,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.6489010799616424
+    },
+    "form_te_minus_gc": {
+     "difference": -0.002145079553656214,
+     "standardized": -1.0289391091381361,
+     "units": [
+      36,
+      29
+     ],
+     "p": 0.00041533646770052385
+    },
+    "location_frequency": {
+     "difference": -0.011869766909623335,
+     "standardized": -1.7637696892148826,
+     "units": [
+      2,
+      7
+     ],
+     "p": 0.1111111111111111
+    }
+   },
+   "readouts": {
+    "form_monotone": {
+     "raw": {
+      "difference": -0.008131191643594105,
+      "standardized": -0.6889300070483473,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.011073124296618128
+     },
+     "adjusted": {
+      "difference": -0.006876002975243933,
+      "standardized": -0.5912598064012242,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.06562850089207134
+     },
+     "verdict": "partial"
+    },
+    "form_information": {
+     "raw": {
+      "difference": -0.020661496692834902,
+      "standardized": -0.5211317008184002,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.11785985184196177
+     },
+     "adjusted": {
+      "difference": -0.0014488277931149485,
+      "standardized": -0.06224088614415145,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.8482486491639653
+     },
+     "verdict": "not eligible"
+    },
+    "timing_fixed_lag": {
+     "raw": {
+      "difference": 0.03996436922399382,
+      "standardized": 0.3461647770829691,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.04015981690351106
+     },
+     "adjusted": {
+      "difference": -0.001158515922826675,
+      "standardized": -0.016093125336549826,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.9631597886664748
+     },
+     "verdict": "not eligible"
+    },
+    "timing_best_shift": {
+     "raw": {
+      "difference": 0.00014732875417888813,
+      "standardized": 0.058868184250026455,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.03266630803524638
+     },
+     "adjusted": {
+      "difference": -0.0008178955231207263,
+      "standardized": -0.42570349016345266,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.0002032862877091933
+     },
+     "verdict": "not eligible"
+    },
+    "timing_warping": {
+     "raw": {
+      "difference": 0.00552568861831626,
+      "standardized": 0.22008579803223965,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.24284057527113379
+     },
+     "adjusted": {
+      "difference": 0.0019180861447798403,
+      "standardized": 0.12352203737789423,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.5394460561896536
+     },
+     "verdict": "not eligible"
+    },
+    "phase_lag": {
+     "raw": {
+      "difference": -0.0010245849164525478,
+      "standardized": -0.03697301525088059,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.7364801124277571
+     },
+     "adjusted": {
+      "difference": 0.0005655809832706415,
+      "standardized": 0.02439757721610131,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.42463493473389413
+     },
+     "verdict": "not eligible"
+    },
+    "predictive": {
+     "raw": {
+      "difference": 0.01619130862119597,
+      "standardized": 0.21378367862976116,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.19364069041707854
+     },
+     "adjusted": {
+      "difference": -0.0009853370154797592,
+      "standardized": -0.019630306658691105,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.7766164974203399
+     },
+     "verdict": "not eligible"
+    },
+    "history": {
+     "raw": {
+      "difference": -0.01177326294303016,
+      "standardized": -0.112324484714695,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.38737371504738594
+     },
+     "adjusted": {
+      "difference": 0.0018935528908886612,
+      "standardized": 0.024877870805836477,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.7265525836114208
+     },
+     "verdict": "not eligible"
+    },
+    "mediation": {
+     "raw": {
+      "difference": -0.006586969181927138,
+      "standardized": -0.0821795770491153,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.5930163182021437
+     },
+     "adjusted": {
+      "difference": -0.01764343079752534,
+      "standardized": -0.2261537370102002,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.24284057527113379
+     },
+     "verdict": "not eligible"
+    },
+    "band": {
+     "raw": {
+      "difference": 0.017841346377157286,
+      "standardized": 0.47093729231630743,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.0737493175205623
+     },
+     "adjusted": {
+      "difference": 0.0012819453112562496,
+      "standardized": 0.052732290880751265,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.8482486491639653
+     },
+     "verdict": "not eligible"
+    },
+    "spectral_peak": {
+     "raw": {
+      "difference": 0.007343238861599155,
+      "standardized": 0.1816965124821449,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.6394369710191687
+     },
+     "adjusted": {
+      "difference": 0.006917885051671069,
+      "standardized": 0.19750374357073097,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.31270869773579035
+     },
+     "verdict": "not eligible"
+    },
+    "phase_amplitude": {
+     "raw": {
+      "difference": 0.022813100786417517,
+      "standardized": 0.5582109081003915,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.10884408648375535
+     },
+     "adjusted": {
+      "difference": 0.015760711834226004,
+      "standardized": 0.4900472102799169,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.22723711899882215
+     },
+     "verdict": "not eligible"
+    },
+    "tail": {
+     "raw": {
+      "difference": -0.016450058048103844,
+      "standardized": -0.5772751022030802,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.05652879866894798
+     },
+     "adjusted": {
+      "difference": 0.005193054346848247,
+      "standardized": 0.24474148295452242,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.40203274889444707
+     },
+     "verdict": "not eligible"
+    },
+    "level_form_information": {
+     "raw": {
+      "difference": 0.012536444184683034,
+      "standardized": 0.7069730005775745,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.002250173104795605
+     },
+     "adjusted": {
+      "difference": 0.004465058297078023,
+      "standardized": 0.3954464295667069,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.1376394210027462
+     },
+     "verdict": "partial"
+    },
+    "level_form_monotone": {
+     "raw": {
+      "difference": -0.000536158858518136,
+      "standardized": -0.093590742114741,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.583920636204915
+     },
+     "adjusted": {
+      "difference": -0.0005188353243451372,
+      "standardized": -0.0959103523179081,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.6300311927229357
+     },
+     "verdict": "not eligible"
+    },
+    "level_timing_best_shift": {
+     "raw": {
+      "difference": -3.8985149098984265e-05,
+      "standardized": -0.2626128657194327,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.9524107109442248
+     },
+     "adjusted": {
+      "difference": -1.3248917398180645e-05,
+      "standardized": -0.10298052216208979,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.15218616888733663
+     },
+     "verdict": "not eligible"
+    },
+    "level_phase_lag": {
+     "raw": {
+      "difference": -0.0067612530036109675,
+      "standardized": -0.08992379780797334,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.6300311927229357
+     },
+     "adjusted": {
+      "difference": -0.002752708497593015,
+      "standardized": -0.36949907037858876,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.15599954913015449
+     },
+     "verdict": "not eligible"
+    },
+    "level_band": {
+     "raw": {
+      "difference": 0.0010742521092207968,
+      "standardized": 0.03683146306031854,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.8173584020936654
+     },
+     "adjusted": {
+      "difference": -1.6653345369377348e-16,
+      "standardized": -1.3115397511213036,
+      "units": [
+       36,
+       29
+      ],
+      "p": 1.0
+     },
+     "verdict": "not eligible"
+    },
+    "level_spectral_peak": {
+     "raw": {
+      "difference": -0.04320601941728164,
+      "standardized": -0.18686512507259498,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.49673570271969536
+     },
+     "adjusted": {
+      "difference": -0.02548994886924838,
+      "standardized": -0.506750190016498,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.06003411063607649
+     },
+     "verdict": "not eligible"
+    },
+    "level_timing_warping": {
+     "raw": {
+      "difference": -0.021219139166508638,
+      "standardized": -0.43766525372682075,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.09768182397363567
+     },
+     "adjusted": {
+      "difference": -0.009739735946766359,
+      "standardized": -0.4415018125461916,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.0319945367764329
+     },
+     "verdict": "not eligible"
+    },
+    "level_tail": {
+     "raw": {
+      "difference": 0.006564829533391547,
+      "standardized": 0.6877553457920533,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.027073057141173952
+     },
+     "adjusted": {
+      "difference": 0.0037836234626514725,
+      "standardized": 0.5295801785546111,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.07590306141844198
+     },
+     "verdict": "partial"
+    }
+   },
+   "survivors": [],
+   "sufficient_for_extended": true,
+   "scores": {
+    "P": {
+     "auroc": 0.8400383141762452,
+     "brier": 0.17261094118009926,
+     "balanced_accuracy": 0.7164750957854407
+    },
+    "P_z": {
+     "auroc": 0.8486590038314177,
+     "brier": 0.15485119596814156,
+     "balanced_accuracy": 0.7198275862068966
+    },
+    "P_core": {
+     "auroc": 0.8400383141762452,
+     "brier": 0.1634460866169145,
+     "balanced_accuracy": 0.671455938697318
+    },
+    "P_core_z": {
+     "auroc": 0.8591954022988506,
+     "brier": 0.15213583615030066,
+     "balanced_accuracy": 0.771551724137931
+    }
+   },
+   "z_increment": {
+    "z_over_P": {
+     "difference": 0.008620689655172487,
+     "interval": [
+      -0.0900383141762453,
+      0.1043867971636871
+     ]
+    },
+    "z_over_P_core": {
+     "difference": 0.019157088122605415,
+     "interval": [
+      -0.06261859582542695,
+      0.10721954046852822
+     ]
+    },
+    "core_over_P": {
+     "difference": 0.0,
+     "interval": [
+      -0.05429351395730715,
+      0.04857840722495872
+     ]
+    },
+    "z_adds": false,
+    "core_accounts": null
+   }
+  },
+  "FTD_vs_control": {
+   "windows": 416,
+   "core_effects": {
+    "band": {
+     "difference": 0.008596440203651023,
+     "standardized": 0.11447814821269713,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.6319169675744776
+    },
+    "band_high_share": {
+     "difference": -0.002125806317162693,
+     "standardized": -0.06847053381301156,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.9266017130519044
+    },
+    "band_spread": {
+     "difference": -0.0006402432085437677,
+     "standardized": -0.06931358531220241,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.5554749883681698
+    },
+    "mediation_ledoit_wolf": {
+     "difference": 0.007663744252151605,
+     "standardized": 0.11067540769786982,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.5431873514520562
+    },
+    "mediation_empirical": {
+     "difference": 0.014316029920045381,
+     "standardized": 0.27249169400371387,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.2239847813568775
+    },
+    "lag": {
+     "difference": -0.0006583581219582468,
+     "standardized": -0.027146088800355076,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.27702327185596975
+    },
+    "lag_sin_phi": {
+     "difference": -0.00013764972000462894,
+     "standardized": -0.002905693572377769,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.8250215963449802
+    },
+    "form_te_minus_gc": {
+     "difference": -0.0013341255491318123,
+     "standardized": -0.424697762209403,
+     "units": [
+      23,
+      29
+     ],
+     "p": 0.2533279379736072
+    },
+    "location_frequency": {
+     "difference": 0.05065398138207769,
+     "standardized": null,
+     "units": [
+      1,
+      7
+     ],
+     "p": 0.25
+    }
+   },
+   "readouts": {
+    "form_monotone": {
+     "raw": {
+      "difference": -0.000541676106460609,
+      "standardized": -0.05309439788254382,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.7541194377722729
+     },
+     "adjusted": {
+      "difference": 0.0006942196723046523,
+      "standardized": 0.07510770874096193,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.671742526891383
+     },
+     "verdict": "not eligible"
+    },
+    "form_information": {
+     "raw": {
+      "difference": -0.0031054008945683442,
+      "standardized": -0.07407312126292573,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.8393955305064702
+     },
+     "adjusted": {
+      "difference": 0.00537350838220696,
+      "standardized": 0.21784027868373196,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.28524707020857654
+     },
+     "verdict": "not eligible"
+    },
+    "timing_fixed_lag": {
+     "raw": {
+      "difference": 0.09064237433628797,
+      "standardized": 0.8906521045877215,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.001735476468970621
+     },
+     "adjusted": {
+      "difference": 0.07225723178359722,
+      "standardized": 0.9555361082465339,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.008421974695987135
+     },
+     "verdict": "survives"
+    },
+    "timing_best_shift": {
+     "raw": {
+      "difference": -0.00038488442048623117,
+      "standardized": -0.14609655175279432,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.14352376279012408
+     },
+     "adjusted": {
+      "difference": -6.264980993642144e-05,
+      "standardized": -0.032236429313277214,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.23833770600585713
+     },
+     "verdict": "not eligible"
+    },
+    "timing_warping": {
+     "raw": {
+      "difference": -0.003185671675836943,
+      "standardized": -0.07624158627254278,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5310365880555215
+     },
+     "adjusted": {
+      "difference": 0.004748330290089142,
+      "standardized": 0.26370792397721443,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.38652325419303757
+     },
+     "verdict": "not eligible"
+    },
+    "phase_lag": {
+     "raw": {
+      "difference": -0.006920490523302736,
+      "standardized": -0.22515848088558355,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.4954304530817656
+     },
+     "adjusted": {
+      "difference": -0.004146566483069741,
+      "standardized": -0.1712532633248839,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.9119767766049669
+     },
+     "verdict": "not eligible"
+    },
+    "predictive": {
+     "raw": {
+      "difference": 0.026378359305001403,
+      "standardized": 0.3077197784381262,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.21704472057557767
+     },
+     "adjusted": {
+      "difference": 0.014142640955115665,
+      "standardized": 0.2522646192418207,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.3569395450859103
+     },
+     "verdict": "not eligible"
+    },
+    "history": {
+     "raw": {
+      "difference": 0.02834516879597415,
+      "standardized": 0.2595117187113067,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.36663833997040995
+     },
+     "adjusted": {
+      "difference": 0.03737132078425298,
+      "standardized": 0.4633475187690837,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.1404977893301252
+     },
+     "verdict": "not eligible"
+    },
+    "mediation": {
+     "raw": {
+      "difference": 0.006149141812737402,
+      "standardized": 0.07086364380471367,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.868299997559508
+     },
+     "adjusted": {
+      "difference": -0.00040103487872189536,
+      "standardized": -0.005235948718706049,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.9853004086027637
+     },
+     "verdict": "not eligible"
+    },
+    "band": {
+     "raw": {
+      "difference": 0.01841787216939683,
+      "standardized": 0.4633611520333332,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.0832950526045318
+     },
+     "adjusted": {
+      "difference": 0.009448546668066105,
+      "standardized": 0.36054669720045673,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.23108207682320425
+     },
+     "verdict": "not eligible"
+    },
+    "spectral_peak": {
+     "raw": {
+      "difference": 0.01981848361344185,
+      "standardized": 0.4454593664036566,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.3569395450859103
+     },
+     "adjusted": {
+      "difference": 0.01443126653839838,
+      "standardized": 0.3875245669806225,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.3288241058103816
+     },
+     "verdict": "not eligible"
+    },
+    "phase_amplitude": {
+     "raw": {
+      "difference": -0.004467856877166221,
+      "standardized": -0.09077347947806597,
+      "units": [
+       23,
+       29
+      ],
+      "p": 1.0
+     },
+     "adjusted": {
+      "difference": -0.0015114977933122775,
+      "standardized": -0.04422516047330772,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.9706058060367676
+     },
+     "verdict": "not eligible"
+    },
+    "tail": {
+     "raw": {
+      "difference": -0.005846797484225452,
+      "standardized": -0.19103819005181863,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.7401637818237918
+     },
+     "adjusted": {
+      "difference": 0.005680298500568504,
+      "standardized": 0.2769230126225886,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.39670790206752604
+     },
+     "verdict": "not eligible"
+    },
+    "level_form_information": {
+     "raw": {
+      "difference": 0.004747896683590248,
+      "standardized": 0.2720811983389045,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.4070528250733173
+     },
+     "adjusted": {
+      "difference": -0.00012270515623519912,
+      "standardized": -0.012622548060158926,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.38652325419303757
+     },
+     "verdict": "not eligible"
+    },
+    "level_form_monotone": {
+     "raw": {
+      "difference": 0.000289305859342618,
+      "standardized": 0.04240644291441333,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5804500603577427
+     },
+     "adjusted": {
+      "difference": -0.0007342613516276558,
+      "standardized": -0.13386884540561494,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.8107060927295099
+     },
+     "verdict": "not eligible"
+    },
+    "level_timing_best_shift": {
+     "raw": {
+      "difference": -3.89851490989973e-05,
+      "standardized": -0.2626128657195205,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.34041993184847663
+     },
+     "adjusted": {
+      "difference": -3.715431123393278e-05,
+      "standardized": -0.2544626512936755,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5931317837782728
+     },
+     "verdict": "not eligible"
+    },
+    "level_phase_lag": {
+     "raw": {
+      "difference": -0.00020670941584172153,
+      "standardized": -0.0023813118849697833,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.7541194377722729
+     },
+     "adjusted": {
+      "difference": 0.0005712621689010766,
+      "standardized": 0.07814562766459487,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.41755697927944735
+     },
+     "verdict": "not eligible"
+    },
+    "level_band": {
+     "raw": {
+      "difference": -0.002125806317162693,
+      "standardized": -0.06847053381301156,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.9266017130519044
+     },
+     "adjusted": {
+      "difference": 0.0,
+      "standardized": 0.0,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.42520048382373943
+     },
+     "verdict": "not eligible"
+    },
+    "level_spectral_peak": {
+     "raw": {
+      "difference": -0.021219822919288367,
+      "standardized": -0.08309080826269394,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5931317837782728
+     },
+     "adjusted": {
+      "difference": -0.005384087202406906,
+      "standardized": -0.11270441744761764,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.941251492259036
+     },
+     "verdict": "not eligible"
+    },
+    "level_timing_warping": {
+     "raw": {
+      "difference": 0.006355447113897905,
+      "standardized": 0.12138630914849381,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.23833770600585713
+     },
+     "adjusted": {
+      "difference": 0.011258189156980958,
+      "standardized": 0.47924638464768726,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.12170975803425592
+     },
+     "verdict": "not eligible"
+    },
+    "level_tail": {
+     "raw": {
+      "difference": 0.0004266889326874218,
+      "standardized": 0.0786039287099612,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5190252513873392
+     },
+     "adjusted": {
+      "difference": -0.00033317039682430327,
+      "standardized": -0.0734932478323662,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.712511657356875
+     },
+     "verdict": "not eligible"
+    }
+   },
+   "survivors": [
+    "timing_fixed_lag"
+   ],
+   "sufficient_for_extended": false,
+   "scores": {
+    "P": {
+     "auroc": 0.793103448275862,
+     "brier": 0.19208999584299827,
+     "balanced_accuracy": 0.7218890554722639
+    },
+    "P_z": {
+     "auroc": 0.808095952023988,
+     "brier": 0.17659335423938582,
+     "balanced_accuracy": 0.7743628185907047
+    },
+    "P_core": {
+     "auroc": 0.7871064467766117,
+     "brier": 0.1937941636681095,
+     "balanced_accuracy": 0.704647676161919
+    },
+    "P_core_z": {
+     "auroc": 0.8035982008995501,
+     "brier": 0.1824643916284215,
+     "balanced_accuracy": 0.7526236881559221
+    }
+   },
+   "z_increment": {
+    "z_over_P": {
+     "difference": 0.014992503748125996,
+     "interval": [
+      -0.10195207499800417,
+      0.13782956932773097
+     ]
+    },
+    "z_over_P_core": {
+     "difference": 0.016491754122938462,
+     "interval": [
+      -0.08612440191387549,
+      0.12592620356488407
+     ]
+    },
+    "core_over_P": {
+     "difference": -0.0059970014992503096,
+     "interval": [
+      -0.0794659506184408,
+      0.06407263165292361
+     ]
+    },
+    "z_adds": false,
+    "core_accounts": null
+   }
+  },
+  "AD_vs_FTD": {
+   "windows": 472,
+   "core_effects": {
+    "band": {
+     "difference": 0.01068028568730317,
+     "standardized": 0.14568589192898077,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.7976120139524459
+    },
+    "band_high_share": {
+     "difference": 0.0032000584263834897,
+     "standardized": 0.1026765493420836,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.6244417311778434
+    },
+    "band_spread": {
+     "difference": -0.0016712506791367286,
+     "standardized": -0.18437250778320613,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.6578092902505288
+    },
+    "mediation_ledoit_wolf": {
+     "difference": -0.01191441818794281,
+     "standardized": -0.1502803756352824,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.47947359009814694
+    },
+    "mediation_empirical": {
+     "difference": 0.0026126823706174584,
+     "standardized": 0.04294527002998718,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.9195335086703755
+    },
+    "lag": {
+     "difference": -0.007556660321360598,
+     "standardized": -0.2944994410026938,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.5496015828632834
+    },
+    "lag_sin_phi": {
+     "difference": -0.0023173857829972555,
+     "standardized": -0.04719274881244693,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.9195335086703755
+    },
+    "form_te_minus_gc": {
+     "difference": -0.0008109540045244017,
+     "standardized": -0.23645676524707218,
+     "units": [
+      36,
+      23
+     ],
+     "p": 0.09174197219213785
+    },
+    "location_frequency": {
+     "difference": -0.06252374829170103,
+     "standardized": null,
+     "units": [
+      2,
+      1
+     ],
+     "p": 0.6666666666666666
+    }
+   },
+   "readouts": {
+    "form_monotone": {
+     "raw": {
+      "difference": -0.0075895155371334955,
+      "standardized": -0.6604220108164996,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.03521245827467496
+     },
+     "adjusted": {
+      "difference": -0.007025585486673536,
+      "standardized": -0.662970335214363,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.025731469842907324
+     },
+     "verdict": "survives"
+    },
+    "form_information": {
+     "raw": {
+      "difference": -0.017556095798266558,
+      "standardized": -0.3476665235787462,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.13367177111084116
+     },
+     "adjusted": {
+      "difference": -0.009268613508095491,
+      "standardized": -0.32288114305441634,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.3313694506255037
+     },
+     "verdict": "not eligible"
+    },
+    "timing_fixed_lag": {
+     "raw": {
+      "difference": -0.050678005112294144,
+      "standardized": -0.40340794699414545,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.16899365235457653
+     },
+     "adjusted": {
+      "difference": -0.05331936027399431,
+      "standardized": -0.635636833606561,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.05898270384050412
+     },
+     "verdict": "not eligible"
+    },
+    "timing_best_shift": {
+     "raw": {
+      "difference": 0.0005322131746651193,
+      "standardized": 0.22353251901112753,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.9274517118483402
+     },
+     "adjusted": {
+      "difference": 3.2642183596443e-05,
+      "standardized": 0.020056678441832034,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.9690064989233663
+     },
+     "verdict": "not eligible"
+    },
+    "timing_warping": {
+     "raw": {
+      "difference": 0.008711360294153203,
+      "standardized": 0.20190829621819198,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7976120139524459
+     },
+     "adjusted": {
+      "difference": 0.001692401756451134,
+      "standardized": 0.0897249464079481,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7856369599908809
+     },
+     "verdict": "not eligible"
+    },
+    "phase_lag": {
+     "raw": {
+      "difference": 0.005895905606850188,
+      "standardized": 0.2042405828992818,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.49899875114368264
+     },
+     "adjusted": {
+      "difference": 0.009129309447619027,
+      "standardized": 0.39552942429784066,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.15956737071177163
+     },
+     "verdict": "not eligible"
+    },
+    "predictive": {
+     "raw": {
+      "difference": -0.010187050683805432,
+      "standardized": -0.10851039959060639,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.635483308044913
+     },
+     "adjusted": {
+      "difference": -0.0013839849025797935,
+      "standardized": -0.024031424164838156,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7500254475361029
+     },
+     "verdict": "not eligible"
+    },
+    "history": {
+     "raw": {
+      "difference": -0.04011843173900431,
+      "standardized": -0.37757635235830256,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.09477348275648168
+     },
+     "adjusted": {
+      "difference": -0.0358531418218857,
+      "standardized": -0.48839817746032227,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.07020070057078875
+     },
+     "verdict": "not eligible"
+    },
+    "mediation": {
+     "raw": {
+      "difference": -0.01273611099466454,
+      "standardized": -0.14817724710497476,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7265718823559904
+     },
+     "adjusted": {
+      "difference": -0.0072428752739910895,
+      "standardized": -0.09458849414168627,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7500254475361029
+     },
+     "verdict": "not eligible"
+    },
+    "band": {
+     "raw": {
+      "difference": -0.0005765257922395461,
+      "standardized": -0.014496910783822068,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.8581496425719736
+     },
+     "adjusted": {
+      "difference": -0.005733152990472057,
+      "standardized": -0.2247934394899418,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.5600175059745567
+     },
+     "verdict": "not eligible"
+    },
+    "spectral_peak": {
+     "raw": {
+      "difference": -0.012475244751842696,
+      "standardized": -0.2860266037548995,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.3798847351177539
+     },
+     "adjusted": {
+      "difference": -0.0031300637714108404,
+      "standardized": -0.0867376656249998,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.981400904981659
+     },
+     "verdict": "not eligible"
+    },
+    "phase_amplitude": {
+     "raw": {
+      "difference": 0.027280957663583738,
+      "standardized": 0.5290099133637439,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.11830081572892007
+     },
+     "adjusted": {
+      "difference": 0.016146133017008624,
+      "standardized": 0.5102034760977439,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.06327719520002512
+     },
+     "verdict": "not eligible"
+    },
+    "tail": {
+     "raw": {
+      "difference": -0.010603260563878392,
+      "standardized": -0.3250078953878044,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.17386067047346954
+     },
+     "adjusted": {
+      "difference": -0.0020922026748744216,
+      "standardized": -0.10889217216535978,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7856369599908809
+     },
+     "verdict": "not eligible"
+    },
+    "level_form_information": {
+     "raw": {
+      "difference": 0.007788547501092785,
+      "standardized": 0.41475168687604863,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.06109870318786773
+     },
+     "adjusted": {
+      "difference": 0.003109519447610537,
+      "standardized": 0.27928762151079084,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.2664672541096289
+     },
+     "verdict": "not eligible"
+    },
+    "level_form_monotone": {
+     "raw": {
+      "difference": -0.0008254647178607541,
+      "standardized": -0.11035388481593167,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.2664672541096289
+     },
+     "adjusted": {
+      "difference": -0.0010813202884810804,
+      "standardized": -0.1614678647636524,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.210894122279923
+     },
+     "verdict": "not eligible"
+    },
+    "level_timing_best_shift": {
+     "raw": {
+      "difference": 1.3039757143091352e-17,
+      "standardized": 0.23546202238817485,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.3994883741159745
+     },
+     "adjusted": {
+      "difference": 1.936336284461245e-17,
+      "standardized": 0.4295032565158706,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.10435179190713686
+     },
+     "verdict": "not eligible"
+    },
+    "level_phase_lag": {
+     "raw": {
+      "difference": -0.006554543587769246,
+      "standardized": -0.07320748450291763,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.9318801070462757
+     },
+     "adjusted": {
+      "difference": -0.0011728117950330352,
+      "standardized": -0.1481980743844942,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7976120139524459
+     },
+     "verdict": "not eligible"
+    },
+    "level_band": {
+     "raw": {
+      "difference": 0.0032000584263834897,
+      "standardized": 0.1026765493420836,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.6244417311778434
+     },
+     "adjusted": {
+      "difference": -5.551115123125783e-17,
+      "standardized": -1.2348086796129694,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.3327745925237441
+     },
+     "verdict": "not eligible"
+    },
+    "level_spectral_peak": {
+     "raw": {
+      "difference": -0.02198619649799327,
+      "standardized": -0.08502114481695221,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.8096348888478
+     },
+     "adjusted": {
+      "difference": -0.0025737192458870073,
+      "standardized": -0.047324795496406856,
+      "units": [
+       36,
+       23
+      ],
+      "p": 1.0
+     },
+     "verdict": "not eligible"
+    },
+    "level_timing_warping": {
+     "raw": {
+      "difference": -0.027574586280406543,
+      "standardized": -0.4474600458615152,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.04929503319066999
+     },
+     "adjusted": {
+      "difference": -0.023424499859084902,
+      "standardized": -0.8476587548301672,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.0032278663097159957
+     },
+     "verdict": "not eligible"
+    },
+    "level_tail": {
+     "raw": {
+      "difference": 0.006138140600704126,
+      "standardized": 0.6767645519610791,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.11830081572892007
+     },
+     "adjusted": {
+      "difference": 0.004208314483272219,
+      "standardized": 0.5990342072308353,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.0394672843004082
+     },
+     "verdict": "not eligible"
+    }
+   },
+   "survivors": [
+    "form_monotone"
+   ],
+   "sufficient_for_extended": false,
+   "scores": {
+    "P": {
+     "auroc": 0.532608695652174,
+     "brier": 0.24776167048429243,
+     "balanced_accuracy": 0.5591787439613527
+    },
+    "P_z": {
+     "auroc": 0.5314009661835749,
+     "brier": 0.27067615870097167,
+     "balanced_accuracy": 0.5410628019323671
+    },
+    "P_core": {
+     "auroc": 0.4516908212560386,
+     "brier": 0.260593661576199,
+     "balanced_accuracy": 0.5018115942028986
+    },
+    "P_core_z": {
+     "auroc": 0.5398550724637682,
+     "brier": 0.2693407646636174,
+     "balanced_accuracy": 0.5271739130434783
+    }
+   },
+   "z_increment": {
+    "z_over_P": {
+     "difference": -0.0012077294685990392,
+     "interval": [
+      -0.14990437571959317,
+      0.15047443036354322
+     ]
+    },
+    "z_over_P_core": {
+     "difference": 0.08816425120772958,
+     "interval": [
+      -0.05406139835487672,
+      0.22706417112299457
+     ]
+    },
+    "core_over_P": {
+     "difference": -0.08091787439613535,
+     "interval": [
+      -0.1607230392156862,
+      -0.016908212560386437
+     ]
+    },
+    "z_adds": false,
+    "core_accounts": null
+   }
+  }
+ }
+}

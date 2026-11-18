@@ -1,0 +1,3675 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/neurotycho-long",
+ "reference": "awake_ec",
+ "channels": 16,
+ "draws": 3,
+ "states": {
+  "KTMD:awake_ec": {
+   "real:diff": -0.0051250235364261425,
+   "real:te_knn": -0.0021794753853928454,
+   "real:te_gauss": 0.0014725451517147623,
+   "real:diff_scores": -0.005051066787808433,
+   "real:ais_diff": 0.027308830036041745,
+   "real:ais_knn": 0.6417607270303901,
+   "real:ais_gauss": 0.614319256956731,
+   "real:ais_diff_scores": 0.04031460957100831,
+   "real:assoc": -0.09705924023725698,
+   "null:diff": -0.004594196351621688,
+   "null:te_knn": -0.001696701559886961,
+   "null:te_gauss": 0.0014575051951069313,
+   "null:diff_scores": -0.0045522785927154565,
+   "null:ais_diff": 0.019639161645857498,
+   "null:ais_knn": 0.6306183624793749,
+   "null:ais_gauss": 0.6114212243792377,
+   "null:ais_diff_scores": 0.026167077902818196,
+   "null:assoc": -0.09405146559205324,
+   "residual:diff": -0.0005308271848044562,
+   "residual:te_knn": -0.00048277382550588455,
+   "residual:te_gauss": 1.503995660783095e-05,
+   "residual:diff_scores": -0.0004987881950929778,
+   "residual:ais_diff": 0.007669668390184247,
+   "residual:ais_knn": 0.011142364551015136,
+   "residual:ais_gauss": 0.0028980325774932707,
+   "residual:ais_diff_scores": 0.01414753166819011,
+   "residual:assoc": -0.02922415158625813
+  },
+  "KTMD:awake_eo": {
+   "real:diff": -0.004303334909461047,
+   "real:te_knn": -0.002152391688121163,
+   "real:te_gauss": 0.0009424895397111336,
+   "real:diff_scores": -0.00427516083295149,
+   "real:ais_diff": 0.025297865606390465,
+   "real:ais_knn": 0.5938367959450109,
+   "real:ais_gauss": 0.5666999295985362,
+   "real:ais_diff_scores": 0.03714888798914918,
+   "real:assoc": -0.128214569061738,
+   "null:diff": -0.0036641720285956647,
+   "null:te_knn": -0.0015416344594390752,
+   "null:te_gauss": 0.0009365853245913849,
+   "null:diff_scores": -0.0036241666269954714,
+   "null:ais_diff": 0.01759096288045757,
+   "null:ais_knn": 0.5823502815208161,
+   "null:ais_gauss": 0.5646146967235812,
+   "null:ais_diff_scores": 0.023073396553229455,
+   "null:assoc": -0.10011779151921223,
+   "residual:diff": -0.0006391628808653829,
+   "residual:te_knn": -0.0006107572286820879,
+   "residual:te_gauss": 5.904215119748478e-06,
+   "residual:diff_scores": -0.0006509942059560191,
+   "residual:ais_diff": 0.007706902725932893,
+   "residual:ais_knn": 0.011486514424195036,
+   "residual:ais_gauss": 0.002085232874954936,
+   "residual:ais_diff_scores": 0.01407549143591972,
+   "residual:assoc": -0.053927463091760816
+  },
+  "KTMD:drug": {
+   "real:diff": -0.030309610962571166,
+   "real:te_knn": -0.026416578744085626,
+   "real:te_gauss": 0.0016083881704946517,
+   "real:diff_scores": -0.029663955525793196,
+   "real:ais_diff": 0.07872953750943419,
+   "real:ais_knn": 1.552127874078783,
+   "real:ais_gauss": 1.472619149741557,
+   "real:ais_diff_scores": 0.15055734281949051,
+   "real:assoc": 0.019228640882181722,
+   "null:diff": -0.023076312032625904,
+   "null:te_knn": -0.019534425534399606,
+   "null:te_gauss": 0.0015414430256669152,
+   "null:diff_scores": -0.022671134174712806,
+   "null:ais_diff": 0.04648129330374559,
+   "null:ais_knn": 1.495161714528065,
+   "null:ais_gauss": 1.4463591965332976,
+   "null:ais_diff_scores": 0.0930736750320562,
+   "null:assoc": -0.21251144952834242,
+   "residual:diff": -0.007233298929945261,
+   "residual:te_knn": -0.0068821532096860144,
+   "residual:te_gauss": 6.69451448277369e-05,
+   "residual:diff_scores": -0.006992821351080384,
+   "residual:ais_diff": 0.032248244205688614,
+   "residual:ais_knn": 0.05696615955071778,
+   "residual:ais_gauss": 0.026259953208259624,
+   "residual:ais_diff_scores": 0.0574836677874343,
+   "residual:assoc": -0.3751642978187689
+  },
+  "KTMD:recovery_ec": {
+   "real:diff": -0.00530487572830426,
+   "real:te_knn": -0.0021915424412138813,
+   "real:te_gauss": 0.0016596348452990587,
+   "real:diff_scores": -0.005206627463140994,
+   "real:ais_diff": 0.020594322210248404,
+   "real:ais_knn": 0.5569941929766145,
+   "real:ais_gauss": 0.5433000969615855,
+   "real:ais_diff_scores": 0.03963303344795531,
+   "real:assoc": -0.20384218258560377,
+   "null:diff": -0.004686251137321068,
+   "null:te_knn": -0.0015325438119336374,
+   "null:te_gauss": 0.0016415407347475767,
+   "null:diff_scores": -0.004637536145062918,
+   "null:ais_diff": 0.02215442051685721,
+   "null:ais_knn": 0.5596610666201751,
+   "null:ais_gauss": 0.5408893263392578,
+   "null:ais_diff_scores": 0.03057955370745516,
+   "null:assoc": -0.1875306937734457,
+   "residual:diff": -0.0006186245909831928,
+   "residual:te_knn": -0.000658998629280243,
+   "residual:te_gauss": 1.809411055148195e-05,
+   "residual:diff_scores": -0.0005690913180780749,
+   "residual:ais_diff": -0.0015600983066088108,
+   "residual:ais_knn": -0.002666873643560673,
+   "residual:ais_gauss": 0.0024107706223276968,
+   "residual:ais_diff_scores": 0.009053479740500149,
+   "residual:assoc": -0.03483597620877522
+  },
+  "SLP:awake_ec": {
+   "real:diff": -0.005341636827051085,
+   "real:te_knn": -0.0026390150058363004,
+   "real:te_gauss": 0.001286252408671038,
+   "real:diff_scores": -0.0052926044097334705,
+   "real:ais_diff": 0.019877279844581562,
+   "real:ais_knn": 0.6224884674947191,
+   "real:ais_gauss": 0.6018604680180574,
+   "real:ais_diff_scores": 0.03531820781849648,
+   "real:assoc": -0.13152124815820324,
+   "null:diff": -0.004890297253147976,
+   "null:te_knn": -0.0021869597867618614,
+   "null:te_gauss": 0.0012751643353747795,
+   "null:diff_scores": -0.0048312792677732115,
+   "null:ais_diff": 0.01780230581640711,
+   "null:ais_knn": 0.6173381798070141,
+   "null:ais_gauss": 0.5998138549278782,
+   "null:ais_diff_scores": 0.025394132689099725,
+   "null:assoc": -0.14208802528320744,
+   "residual:diff": -0.000451339573903108,
+   "residual:te_knn": -0.00045205521907443837,
+   "residual:te_gauss": 1.1088073296258399e-05,
+   "residual:diff_scores": -0.0004613251419602584,
+   "residual:ais_diff": 0.0020749740281744496,
+   "residual:ais_knn": 0.005150287687705007,
+   "residual:ais_gauss": 0.002046613090179071,
+   "residual:ais_diff_scores": 0.009924075129396753,
+   "residual:assoc": -0.019220249497279605
+  },
+  "SLP:awake_eo": {
+   "real:diff": -0.004751223523154415,
+   "real:te_knn": -0.0023063274167590096,
+   "real:te_gauss": 0.0011789295421626082,
+   "real:diff_scores": -0.004633477760407796,
+   "real:ais_diff": 0.02126299560868595,
+   "real:ais_knn": 0.6053993861377954,
+   "real:ais_gauss": 0.5782732192129773,
+   "real:ais_diff_scores": 0.039775215793524235,
+   "real:assoc": -0.08055760229902552,
+   "null:diff": -0.004159552496294828,
+   "null:te_knn": -0.0016715874318153478,
+   "null:te_gauss": 0.0011706632801485061,
+   "null:diff_scores": -0.00409308658827705,
+   "null:ais_diff": 0.01747407193801988,
+   "null:ais_knn": 0.5926632886972124,
+   "null:ais_gauss": 0.5763001177854035,
+   "null:ais_diff_scores": 0.02486294868439462,
+   "null:assoc": -0.09380022544503426,
+   "residual:diff": -0.0005916710268595877,
+   "residual:te_knn": -0.0006347399849436619,
+   "residual:te_gauss": 8.266262014102065e-06,
+   "residual:diff_scores": -0.0005403911721307472,
+   "residual:ais_diff": 0.003788923670666064,
+   "residual:ais_knn": 0.012736097440583015,
+   "residual:ais_gauss": 0.00197310142757379,
+   "residual:ais_diff_scores": 0.014912267109129618,
+   "residual:assoc": 0.005699789172217681
+  },
+  "SLP:sleep_deep": {
+   "real:diff": -0.00971040110040855,
+   "real:te_knn": -0.007459290467714534,
+   "real:te_gauss": 0.001046400161127401,
+   "real:diff_scores": -0.009588192041598484,
+   "real:ais_diff": 0.03567616096650619,
+   "real:ais_knn": 0.8847482696709177,
+   "real:ais_gauss": 0.8493451421019662,
+   "real:ais_diff_scores": 0.05863743804444695,
+   "real:assoc": -0.16887147568894328,
+   "null:diff": -0.007997528348520778,
+   "null:te_knn": -0.005711110021746126,
+   "null:te_gauss": 0.0010448769677051293,
+   "null:diff_scores": -0.00793882442564486,
+   "null:ais_diff": 0.028809691418630354,
+   "null:ais_knn": 0.8735075068382482,
+   "null:ais_gauss": 0.8450416529117891,
+   "null:ais_diff_scores": 0.0393657072144834,
+   "null:assoc": -0.17805840919155624,
+   "residual:diff": -0.0017128727518877721,
+   "residual:te_knn": -0.001748180445968409,
+   "residual:te_gauss": 1.5231934222716847e-06,
+   "residual:diff_scores": -0.0016493676159536235,
+   "residual:ais_diff": 0.006866469547875835,
+   "residual:ais_knn": 0.011240762832669445,
+   "residual:ais_gauss": 0.004303489190177136,
+   "residual:ais_diff_scores": 0.019271730829963533,
+   "residual:assoc": -0.09367173466740379
+  },
+  "SLP:sleep_light": {
+   "real:diff": -0.005322747097142091,
+   "real:te_knn": -0.0025123083063993278,
+   "real:te_gauss": 0.0013678195770898374,
+   "real:diff_scores": -0.00525244108065085,
+   "real:ais_diff": 0.021328749111737037,
+   "real:ais_knn": 0.6605055877433024,
+   "real:ais_gauss": 0.6412538787226805,
+   "real:ais_diff_scores": 0.03853800863934207,
+   "real:assoc": -0.04661225747057721,
+   "null:diff": -0.005485373798750333,
+   "null:te_knn": -0.0026671859354320186,
+   "null:te_gauss": 0.001355660415221532,
+   "null:diff_scores": -0.005428901427551885,
+   "null:ais_diff": 0.020256694885933672,
+   "null:ais_knn": 0.6574069721217839,
+   "null:ais_gauss": 0.6379885111452958,
+   "null:ais_diff_scores": 0.027078449240798167,
+   "null:assoc": -0.1313092588348605,
+   "residual:diff": 0.00016262670160824318,
+   "residual:te_knn": 0.00015487762903269034,
+   "residual:te_gauss": 1.2159161868305558e-05,
+   "residual:diff_scores": 0.00017646034690103584,
+   "residual:ais_diff": 0.0010720542258033634,
+   "residual:ais_knn": 0.0030986156215184984,
+   "residual:ais_gauss": 0.0032653675773847103,
+   "residual:ais_diff_scores": 0.011459559398543904,
+   "residual:assoc": -0.013207071946834598
+  },
+  "SLP:sleep_mid": {
+   "real:diff": -0.00761476202297282,
+   "real:te_knn": -0.004966992111374697,
+   "real:te_gauss": 0.0012552799995368764,
+   "real:diff_scores": -0.007533400808896716,
+   "real:ais_diff": 0.02761319878427228,
+   "real:ais_knn": 0.7581662573843639,
+   "real:ais_gauss": 0.7304537833896062,
+   "real:ais_diff_scores": 0.04627922619233648,
+   "real:assoc": -0.1076639139825101,
+   "null:diff": -0.006496318968001028,
+   "null:te_knn": -0.0038222376243745577,
+   "null:te_gauss": 0.0012389510821357486,
+   "null:diff_scores": -0.0064184231017286745,
+   "null:ais_diff": 0.02338221313377681,
+   "null:ais_knn": 0.7485129957699638,
+   "null:ais_gauss": 0.72648586711611,
+   "null:ais_diff_scores": 0.03246568473460557,
+   "null:assoc": -0.12894147184323504,
+   "residual:diff": -0.001118443054971791,
+   "residual:te_knn": -0.0011447544870001399,
+   "residual:te_gauss": 1.632891740112765e-05,
+   "residual:diff_scores": -0.0011149777071680419,
+   "residual:ais_diff": 0.004230985650495469,
+   "residual:ais_knn": 0.009653261614400334,
+   "residual:ais_gauss": 0.003967916273496168,
+   "residual:ais_diff_scores": 0.013813541457730904,
+   "residual:assoc": -0.004535159863441869
+  },
+  "KT:awake_ec": {
+   "real:diff": -0.007427617155611787,
+   "real:te_knn": -0.00437686161473084,
+   "real:te_gauss": 0.001426577869407843,
+   "real:diff_scores": -0.007354527980506965,
+   "real:ais_diff": 0.02249418900774536,
+   "real:ais_knn": 0.7448401254888046,
+   "real:ais_gauss": 0.7215491171072083,
+   "real:ais_diff_scores": 0.04114019935657813,
+   "real:assoc": -0.0675359061011427,
+   "null:diff": -0.00663757701671491,
+   "null:te_knn": -0.0036888190992302077,
+   "null:te_gauss": 0.0014086545787673716,
+   "null:diff_scores": -0.006571986348672256,
+   "null:ais_diff": 0.022650467099168185,
+   "null:ais_knn": 0.7421572448033988,
+   "null:ais_gauss": 0.7180725031180484,
+   "null:ais_diff_scores": 0.03215044030674852,
+   "null:assoc": -0.1230930497651736,
+   "residual:diff": -0.0007900401388968753,
+   "residual:te_knn": -0.0006880425155006317,
+   "residual:te_gauss": 1.792329064047167e-05,
+   "residual:diff_scores": -0.0007825416318347088,
+   "residual:ais_diff": -0.0001562780914228229,
+   "residual:ais_knn": 0.0026828806854059858,
+   "residual:ais_gauss": 0.003476613989159885,
+   "residual:ais_diff_scores": 0.008989759049829611,
+   "residual:assoc": 0.01115366319165114
+  },
+  "KT:awake_eo": {
+   "real:diff": -0.005325172490633412,
+   "real:te_knn": -0.0030815880943191043,
+   "real:te_gauss": 0.0010606754930742653,
+   "real:diff_scores": -0.005168633397172698,
+   "real:ais_diff": 0.021474925456871848,
+   "real:ais_knn": 0.6496997760325108,
+   "real:ais_gauss": 0.6216775529071673,
+   "real:ais_diff_scores": 0.040251119880095255,
+   "real:assoc": 0.009807927999645576,
+   "null:diff": -0.004637085350427557,
+   "null:te_knn": -0.002477651626569702,
+   "null:te_gauss": 0.0010533106097491184,
+   "null:diff_scores": -0.004591856981632376,
+   "null:ais_diff": 0.01821463158610528,
+   "null:ais_knn": 0.6365645020129787,
+   "null:ais_gauss": 0.619421677400813,
+   "null:ais_diff_scores": 0.02537952477621181,
+   "null:assoc": -0.060659962460058454,
+   "residual:diff": -0.0006880871402058547,
+   "residual:te_knn": -0.0006039364677494025,
+   "residual:te_gauss": 7.364883325146826e-06,
+   "residual:diff_scores": -0.0005767764155403224,
+   "residual:ais_diff": 0.00326029387076657,
+   "residual:ais_knn": 0.01313527401953209,
+   "residual:ais_gauss": 0.0022558755063542477,
+   "residual:ais_diff_scores": 0.014871595103883448,
+   "residual:assoc": 0.03455179787144071
+  },
+  "KT:drug": {
+   "real:diff": -0.018682128746972036,
+   "real:te_knn": -0.01304896655685885,
+   "real:te_gauss": 0.002741293908126017,
+   "real:diff_scores": -0.017986518496473872,
+   "real:ais_diff": 0.0637650192368697,
+   "real:ais_knn": 1.2671460830016352,
+   "real:ais_gauss": 1.2188408394443397,
+   "real:ais_diff_scores": 0.11960339147293478,
+   "real:assoc": -0.05263901551395107,
+   "null:diff": -0.017721937501102254,
+   "null:te_knn": -0.01156202281760864,
+   "null:te_gauss": 0.0027030250147193637,
+   "null:diff_scores": -0.017252166079986683,
+   "null:ais_diff": 0.04306205527759557,
+   "null:ais_knn": 1.2508075640701348,
+   "null:ais_gauss": 1.2067759541996181,
+   "null:ais_diff_scores": 0.07496099689854568,
+   "null:assoc": -0.15531084755878763,
+   "residual:diff": -0.0009601912458697792,
+   "residual:te_knn": -0.0014869437392502078,
+   "residual:te_gauss": 3.826889340665351e-05,
+   "residual:diff_scores": -0.0007343524164871921,
+   "residual:ais_diff": 0.020702963959274134,
+   "residual:ais_knn": 0.016338518931500713,
+   "residual:ais_gauss": 0.012064885244721678,
+   "residual:ais_diff_scores": 0.044642394574389094,
+   "residual:assoc": -0.03868183968592939
+  },
+  "KT:recovery_ec": {
+   "real:diff": -0.010791250675094786,
+   "real:te_knn": -0.007259322813742421,
+   "real:te_gauss": 0.0020358558860337295,
+   "real:diff_scores": -0.010649988966451406,
+   "real:ais_diff": 0.03285706905683619,
+   "real:ais_knn": 0.8707278846239837,
+   "real:ais_gauss": 0.844581426188274,
+   "real:ais_diff_scores": 0.06750972404548834,
+   "real:assoc": -0.21000122466471433,
+   "null:diff": -0.010094539827560395,
+   "null:te_knn": -0.006428224809568825,
+   "null:te_gauss": 0.00201640325344072,
+   "null:diff_scores": -0.0100131649592514,
+   "null:ais_diff": 0.034029941259525846,
+   "null:ais_knn": 0.8697539261856544,
+   "null:ais_gauss": 0.8376292354017907,
+   "null:ais_diff_scores": 0.05222287043219155,
+   "null:assoc": -0.2486186006720002,
+   "residual:diff": -0.0006967108475343914,
+   "residual:te_knn": -0.0008310980041735972,
+   "residual:te_gauss": 1.9452632593009327e-05,
+   "residual:diff_scores": -0.0006368240072000024,
+   "residual:ais_diff": -0.0011728722026896495,
+   "residual:ais_knn": 0.0009739584383292323,
+   "residual:ais_gauss": 0.006952190786483177,
+   "residual:ais_diff_scores": 0.015286853613296784,
+   "residual:assoc": -0.07465943828124437
+  },
+  "MD:awake_ec": {
+   "real:diff": -0.0065728977141865635,
+   "real:te_knn": -0.003464887011060699,
+   "real:te_gauss": 0.0014562535190426468,
+   "real:diff_scores": -0.00647635398122056,
+   "real:ais_diff": 0.023228936098244352,
+   "real:ais_knn": 0.7296215331949769,
+   "real:ais_gauss": 0.7059764979610854,
+   "real:ais_diff_scores": 0.041262309608374736,
+   "real:assoc": -0.054227153713157374,
+   "null:diff": -0.005776916365182007,
+   "null:te_knn": -0.002872208125855728,
+   "null:te_gauss": 0.0014290463036311,
+   "null:diff_scores": -0.005719078929990858,
+   "null:ais_diff": 0.02167931607753835,
+   "null:ais_knn": 0.7230087914855956,
+   "null:ais_gauss": 0.7017389102688274,
+   "null:ais_diff_scores": 0.029676477309833513,
+   "null:assoc": -0.08511382130103137,
+   "residual:diff": -0.0007959813490045556,
+   "residual:te_knn": -0.0005926788852049716,
+   "residual:te_gauss": 2.7207215411546625e-05,
+   "residual:diff_scores": -0.0007572750512297023,
+   "residual:ais_diff": 0.001549620020706002,
+   "residual:ais_knn": 0.006612741709381321,
+   "residual:ais_gauss": 0.004237587692257882,
+   "residual:ais_diff_scores": 0.011585832298541224,
+   "residual:assoc": -0.041263351146793116
+  },
+  "MD:awake_eo": {
+   "real:diff": -0.005021975563229952,
+   "real:te_knn": -0.002679997894233954,
+   "real:te_gauss": 0.0010743371008347024,
+   "real:diff_scores": -0.004969009663539861,
+   "real:ais_diff": 0.024009508772704295,
+   "real:ais_knn": 0.6161573454590508,
+   "real:ais_gauss": 0.5932199179349857,
+   "real:ais_diff_scores": 0.03964060686974053,
+   "real:assoc": 0.05588346916395191,
+   "null:diff": -0.004457222410630914,
+   "null:te_knn": -0.002187308957953667,
+   "null:te_gauss": 0.001062124401144461,
+   "null:diff_scores": -0.004408566515033482,
+   "null:ais_diff": 0.01779523947829972,
+   "null:ais_knn": 0.6093965327209596,
+   "null:ais_gauss": 0.5903786005091065,
+   "null:ais_diff_scores": 0.023957343636008217,
+   "null:assoc": -0.054356465243915665,
+   "residual:diff": -0.000564753152599037,
+   "residual:te_knn": -0.0004926889362802869,
+   "residual:te_gauss": 1.2212699690241331e-05,
+   "residual:diff_scores": -0.0005604431485063781,
+   "residual:ais_diff": 0.006214269294404575,
+   "residual:ais_knn": 0.006760812738091289,
+   "residual:ais_gauss": 0.0028413174258790806,
+   "residual:ais_diff_scores": 0.015683263233732314,
+   "residual:assoc": 0.04175489530829388
+  },
+  "MD:drug": {
+   "real:diff": -0.020447504751314113,
+   "real:te_knn": -0.014517627240203688,
+   "real:te_gauss": 0.0029962776281839054,
+   "real:diff_scores": -0.01969492785179309,
+   "real:ais_diff": 0.0593185959868934,
+   "real:ais_knn": 1.3427714116643412,
+   "real:ais_gauss": 1.281855913747759,
+   "real:ais_diff_scores": 0.09541597572533028,
+   "real:assoc": -0.01882875113931065,
+   "null:diff": -0.01739756914896514,
+   "null:te_knn": -0.011581026734929228,
+   "null:te_gauss": 0.002810775575833375,
+   "null:diff_scores": -0.01693040556320423,
+   "null:ais_diff": 0.038138787332949425,
+   "null:ais_knn": 1.3050855809072934,
+   "null:ais_gauss": 1.2667291179735634,
+   "null:ais_diff_scores": 0.06247210672790779,
+   "null:assoc": -0.11112786503902713,
+   "residual:diff": -0.003049935602348968,
+   "residual:te_knn": -0.0029366005052744604,
+   "residual:te_gauss": 0.0001855020523505304,
+   "residual:diff_scores": -0.002764522288588857,
+   "residual:ais_diff": 0.021179808653943987,
+   "residual:ais_knn": 0.03768583075704769,
+   "residual:ais_gauss": 0.015126795774195602,
+   "residual:ais_diff_scores": 0.0329438689974225,
+   "residual:assoc": -0.10751947569968368
+  },
+  "MD:recovery_ec": {
+   "real:diff": -0.006322559166591945,
+   "real:te_knn": -0.0031063726705266633,
+   "real:te_gauss": 0.001468458498848481,
+   "real:diff_scores": -0.006270653203044754,
+   "real:ais_diff": 0.02320053861338804,
+   "real:ais_knn": 0.7012765353775944,
+   "real:ais_gauss": 0.6783485476774684,
+   "real:ais_diff_scores": 0.04258394049029189,
+   "real:assoc": -0.13502020189086655,
+   "null:diff": -0.005908637089634754,
+   "null:te_knn": -0.0029973350428801762,
+   "null:te_gauss": 0.0014523181383560091,
+   "null:diff_scores": -0.005826102874709539,
+   "null:ais_diff": 0.021500892103245857,
+   "null:ais_knn": 0.6972020086808468,
+   "null:ais_gauss": 0.6744652188000395,
+   "null:ais_diff_scores": 0.030879416867302174,
+   "null:assoc": -0.09012274421722974,
+   "residual:diff": -0.00041392207695719035,
+   "residual:te_knn": -0.00010903762764648731,
+   "residual:te_gauss": 1.6140360492471426e-05,
+   "residual:diff_scores": -0.00044455032833521404,
+   "residual:ais_diff": 0.001699646510142189,
+   "residual:ais_knn": 0.004074526696747556,
+   "residual:ais_gauss": 0.0038833288774288996,
+   "residual:ais_diff_scores": 0.01170452362298972,
+   "residual:assoc": -0.11801220902812595
+  },
+  "PF:awake_ec": {
+   "real:diff": -0.007855409469260322,
+   "real:te_knn": -0.005023927013881757,
+   "real:te_gauss": 0.0015240934259335972,
+   "real:diff_scores": -0.007793356700457034,
+   "real:ais_diff": 0.025619153276156315,
+   "real:ais_knn": 0.7458576321219469,
+   "real:ais_gauss": 0.7203005590542148,
+   "real:ais_diff_scores": 0.0454722939001365,
+   "real:assoc": -0.02708623597745549,
+   "null:diff": -0.00630530758827059,
+   "null:te_knn": -0.0033809634445459117,
+   "null:te_gauss": 0.0014993108190360523,
+   "null:diff_scores": -0.006247994409432456,
+   "null:ais_diff": 0.023565792354578344,
+   "null:ais_knn": 0.7393190937849297,
+   "null:ais_gauss": 0.7161238083575265,
+   "null:ais_diff_scores": 0.03334795079587075,
+   "null:assoc": -0.13068514762718686,
+   "residual:diff": -0.0015501018809897316,
+   "residual:te_knn": -0.0016429635693358453,
+   "residual:te_gauss": 2.47826068975452e-05,
+   "residual:diff_scores": -0.0015453622910245783,
+   "residual:ais_diff": 0.00205336092157797,
+   "residual:ais_knn": 0.006538538337017374,
+   "residual:ais_gauss": 0.004176750696688156,
+   "residual:ais_diff_scores": 0.012124343104265745,
+   "residual:assoc": 0.01993208699459644
+  },
+  "PF:awake_eo": {
+   "real:diff": -0.005897434262294108,
+   "real:te_knn": -0.00347133854457469,
+   "real:te_gauss": 0.0011938923631570212,
+   "real:diff_scores": -0.005801923359602258,
+   "real:ais_diff": 0.02581289674075842,
+   "real:ais_knn": 0.6480401502967541,
+   "real:ais_gauss": 0.6191071197464372,
+   "real:ais_diff_scores": 0.042265776809249755,
+   "real:assoc": 0.01845194097344515,
+   "null:diff": -0.00449075195702368,
+   "null:te_knn": -0.002095821080801653,
+   "null:te_gauss": 0.0011891666863621804,
+   "null:diff_scores": -0.0044438791078025884,
+   "null:ais_diff": 0.018090252338555175,
+   "null:ais_knn": 0.6340738856219722,
+   "null:ais_gauss": 0.6165321300168721,
+   "null:ais_diff_scores": 0.02554078009806591,
+   "null:assoc": -0.08531800706570206,
+   "residual:diff": -0.0014066823052704279,
+   "residual:te_knn": -0.0013755174637730366,
+   "residual:te_gauss": 4.725676794840807e-06,
+   "residual:diff_scores": -0.0013580442517996697,
+   "residual:ais_diff": 0.007722644402203246,
+   "residual:ais_knn": 0.013966264674781957,
+   "residual:ais_gauss": 0.0025749897295650054,
+   "residual:ais_diff_scores": 0.01672499671118385,
+   "residual:assoc": 0.012075338468383703
+  },
+  "PF:drug": {
+   "real:diff": -0.03214162329841846,
+   "real:te_knn": -0.02921774933525521,
+   "real:te_gauss": 0.0012290975458315876,
+   "real:diff_scores": -0.03176480818730878,
+   "real:ais_diff": 0.12126304672720012,
+   "real:ais_knn": 1.5110321505807272,
+   "real:ais_gauss": 1.3588527606369392,
+   "real:ais_diff_scores": 0.18556692837948666,
+   "real:assoc": -0.02549137323659881,
+   "null:diff": -0.022904921783115782,
+   "null:te_knn": -0.020351503120480282,
+   "null:te_gauss": 0.0012095344857649772,
+   "null:diff_scores": -0.022659298131558453,
+   "null:ais_diff": 0.05763626871731522,
+   "null:ais_knn": 1.396234139306164,
+   "null:ais_gauss": 1.3389863965011588,
+   "null:ais_diff_scores": 0.10340092022617818,
+   "null:assoc": -0.3692109363546637,
+   "residual:diff": -0.009236701515302679,
+   "residual:te_knn": -0.008866246214774928,
+   "residual:te_gauss": 1.9563060066610088e-05,
+   "residual:diff_scores": -0.009105510055750322,
+   "residual:ais_diff": 0.06362677800988491,
+   "residual:ais_knn": 0.11479801127456343,
+   "residual:ais_gauss": 0.019866364135780537,
+   "residual:ais_diff_scores": 0.08216600815330852,
+   "residual:assoc": -0.3786063155304137
+  },
+  "PF:recovery_ec": {
+   "real:diff": -0.006594613470513029,
+   "real:te_knn": -0.0032527551130043355,
+   "real:te_gauss": 0.0016494733450491002,
+   "real:diff_scores": -0.006491449915061755,
+   "real:ais_diff": 0.0278205804414004,
+   "real:ais_knn": 0.6913025368347945,
+   "real:ais_gauss": 0.6718283524340374,
+   "real:ais_diff_scores": 0.0499872708622525,
+   "real:assoc": -0.09880448212120568,
+   "null:diff": -0.005535092235383008,
+   "null:te_knn": -0.002225882724030563,
+   "null:te_gauss": 0.0016238528663950326,
+   "null:diff_scores": -0.005471820717193964,
+   "null:ais_diff": 0.025902624194257755,
+   "null:ais_knn": 0.6924305041340773,
+   "null:ais_gauss": 0.6683765764895903,
+   "null:ais_diff_scores": 0.035281068716700496,
+   "null:assoc": -0.16276953732405314,
+   "residual:diff": -0.0010595212351300189,
+   "residual:te_knn": -0.0010268723889737719,
+   "residual:te_gauss": 2.5620478654067573e-05,
+   "residual:diff_scores": -0.0010196291978677918,
+   "residual:ais_diff": 0.0019179562471426431,
+   "residual:ais_knn": -0.0011279672992826298,
+   "residual:ais_gauss": 0.0034517759444470638,
+   "residual:ais_diff_scores": 0.014706202145552008,
+   "residual:assoc": 0.01607876310920768
+  }
+ },
+ "contrasts": {
+  "KTMD:awake_eo": {
+   "real:diff": {
+    "mean": 0.0008216886269650957,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:te_knn": {
+    "mean": 2.7083697271682204e-05,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:te_gauss": {
+    "mean": -0.0005300556120036286,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": 0.0007759059548569432,
+    "units": 11,
+    "positive": 9,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:ais_diff": {
+    "mean": -0.002010964429651287,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": -0.047923931085379,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": -0.047619327358194734,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": -0.003165721581859134,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": -0.031155328824481025,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.0009300243230260227,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:te_knn": {
+    "mean": 0.00015506710044788563,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:te_gauss": {
+    "mean": -0.0005209198705155462,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.000928111965719985,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:ais_diff": {
+    "mean": -0.0020481987653999316,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": -0.04826808095855888,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": -0.04680652765565641,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": -0.0030936813495887412,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.006066325927158999,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": -0.00010833569606092668,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:te_knn": {
+    "mean": -0.00012798340317620339,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:te_gauss": {
+    "mean": -9.13574148808247e-06,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.00015220601086304112,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:ais_diff": {
+    "mean": 3.7234335748645957e-05,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.00034414987317989837,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0008127997025383347,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "residual:ais_diff_scores": {
+    "mean": -7.204023227039296e-05,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:assoc": {
+    "mean": -0.024703311505502704,
+    "units": 11,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 1
+   }
+  },
+  "KTMD:drug": {
+   "real:diff": {
+    "mean": -0.02518458742614502,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.02423710335869278,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": 0.00013584301877988983,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": -0.024612888737984763,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.051420707473392446,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "real:ais_knn": {
+    "mean": 0.9103671470483928,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "real:ais_gauss": {
+    "mean": 0.8582998927848262,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.11024273324848219,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "real:assoc": {
+    "mean": 0.11628788111943869,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": -0.018482115681004215,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.01783772397451265,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": 8.393783055998398e-05,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.018118855581997353,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.02684213165788809,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "null:ais_knn": {
+    "mean": 0.8645433520486902,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "null:ais_gauss": {
+    "mean": 0.83493797215406,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.06690659712923798,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "null:assoc": {
+    "mean": -0.11845998393628919,
+    "units": 11,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.0067024717451408065,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.00639937938418013,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 5.190518821990597e-05,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "residual:diff_scores": {
+    "mean": -0.006494033155987408,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "residual:ais_diff": {
+    "mean": 0.024578575815504364,
+    "units": 11,
+    "positive": 9,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "residual:ais_knn": {
+    "mean": 0.045823794999702655,
+    "units": 11,
+    "positive": 10,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "residual:ais_gauss": {
+    "mean": 0.02336192063076635,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.04333613611924419,
+    "units": 11,
+    "positive": 11,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "residual:assoc": {
+    "mean": -0.34594014623251074,
+    "units": 11,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   }
+  },
+  "KTMD:recovery_ec": {
+   "real:diff": {
+    "mean": 7.229162212449639e-05,
+    "units": 10,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.00010220557134670511,
+    "units": 10,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:te_gauss": {
+    "mean": 0.00010830101950067209,
+    "units": 10,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": 7.97754811958842e-05,
+    "units": 10,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:ais_diff": {
+    "mean": -0.008454004797565676,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "real:ais_knn": {
+    "mean": -0.1057192938807661,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "real:ais_gauss": {
+    "mean": -0.08972548998836047,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "real:ais_diff_scores": {
+    "mean": -0.002545348934341157,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": -0.10642584086125,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": 0.0001275519004137522,
+    "units": 10,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0002417053490477725,
+    "units": 10,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:te_gauss": {
+    "mean": 0.00010717746145520926,
+    "units": 10,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": 0.00013104182086631438,
+    "units": 10,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "null:ais_diff": {
+    "mean": 0.001774372279899418,
+    "units": 10,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:ais_knn": {
+    "mean": -0.09004629197885614,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "null:ais_gauss": {
+    "mean": -0.0890462733934399,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.0033184860111866187,
+    "units": 10,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "null:assoc": {
+    "mean": -0.0856004651905256,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": -5.526027828925569e-05,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": -0.00013949977770106727,
+    "units": 10,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:te_gauss": {
+    "mean": 1.1235580454628932e-06,
+    "units": 10,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -5.126633967043001e-05,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:ais_diff": {
+    "mean": -0.010228377077465094,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": -0.015673001901909962,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0006792165949205412,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "residual:ais_diff_scores": {
+    "mean": -0.005863834945527781,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.016086394133534056,
+    "units": 10,
+    "positive": 5,
+    "animals": 4,
+    "animals_positive": 2
+   }
+  },
+  "SLP:awake_eo": {
+   "real:diff": {
+    "mean": 0.0005904133038966691,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.00033268758907729,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": -0.00010732286650842988,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": 0.0006591266493256734,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff": {
+    "mean": 0.001385715764104385,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_knn": {
+    "mean": -0.01708908135692372,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_gauss": {
+    "mean": -0.02358724880508012,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.004457007975027756,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": 0.05096364585917772,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.0007307447568531486,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_knn": {
+    "mean": 0.0005153723549465136,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": -0.0001045010552262734,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.0007381926794961626,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_diff": {
+    "mean": -0.0003282338783872314,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_knn": {
+    "mean": -0.02467489110980173,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_gauss": {
+    "mean": -0.023513737142474796,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_diff_scores": {
+    "mean": -0.0005311840047051091,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:assoc": {
+    "mean": 0.04828779983817318,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": -0.00014033145295647967,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.0001826847658692236,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -2.821811282156332e-06,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": -7.906603017048878e-05,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff": {
+    "mean": 0.0017139496424916137,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.007585809752878008,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": -7.35116626052809e-05,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.0049881919797328655,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": 0.024920038669497293,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "SLP:sleep_deep": {
+   "real:diff": {
+    "mean": -0.004368764273357467,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.004820275461878235,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -0.00023985224754363702,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": -0.004295587631865014,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.01579888112192463,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.26225980217619865,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.24748467408390887,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.023319230225950466,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": -0.03735022753074002,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.0031072310953728028,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.003524150234984265,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -0.0002302873676696503,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": -0.0031075451578716495,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.011007385602223243,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.25616932703123413,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.2452277979839108,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.013971574525383685,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.035970383908348814,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.0012615331779846641,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0012961252268939706,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": -9.564879873986714e-06,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff_scores": {
+    "mean": -0.001188042473993365,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_diff": {
+    "mean": 0.004791495519701386,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.006090475144964439,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": 0.0022568760999980655,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.009347655700566782,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.07445148517012422,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_light": {
+   "real:diff": {
+    "mean": 1.8889729908992915e-05,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_knn": {
+    "mean": 0.00012670669943697216,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": 8.156716841879936e-05,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": 4.016332908262027e-05,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_diff": {
+    "mean": 0.0014514692671554763,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.03801712024858319,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.03939341070462306,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.003219800820845591,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": 0.08490899068762602,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": -0.0005950765456023578,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0004802261486701567,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": 8.049607984675223e-05,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.0005976221597786737,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.0024543890695265624,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.04006879231476973,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.038174656217417426,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.0016843165516984427,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": 0.010778766448346962,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": 0.0006139662755113513,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": 0.0006069328481071287,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_gauss": {
+    "mean": 1.0710885720471603e-06,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.0006377854888612942,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff": {
+    "mean": -0.0010029198023710864,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_knn": {
+    "mean": -0.0020516720661865077,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_gauss": {
+    "mean": 0.0012187544872056394,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.0015354842691471498,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:assoc": {
+    "mean": 0.006013177550445008,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "SLP:sleep_mid": {
+   "real:diff": {
+    "mean": -0.0022731251959217354,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.002327977105538397,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -3.097240913416171e-05,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": -0.0022407963991632465,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.00773591893969072,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.13567778988964488,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.12859331537154875,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.010961018373839995,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": 0.023857334175693135,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": -0.0016060217148530528,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0016352778376126959,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -3.621325323903106e-05,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": -0.001587143833955463,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.005579907317369701,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.13117481596294953,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.12667201218823168,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.0070715520455058465,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": 0.013146553439972394,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": -0.000667103481068683,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0006926992679257016,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 5.240844104869253e-06,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.0006536525652077833,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_diff": {
+    "mean": 0.002156011622321019,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": 0.004502973926695329,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": 0.0019213031833170966,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.0038894663283341505,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": 0.014685089633837745,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "KT:awake_eo": {
+   "real:diff": {
+    "mean": 0.0021024446649783755,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0012952735204117356,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": -0.0003659023763335779,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": 0.002185894583334268,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff": {
+    "mean": -0.0010192635508735142,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_knn": {
+    "mean": -0.09514034945629381,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_gauss": {
+    "mean": -0.09987156420004098,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_diff_scores": {
+    "mean": -0.0008890794764828723,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:assoc": {
+    "mean": 0.07734383410078828,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": 0.0020004916662873544,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0012111674726605062,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": -0.00035534396901825327,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.001980129367039881,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff": {
+    "mean": -0.004435835513062903,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_knn": {
+    "mean": -0.10559274279042,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_gauss": {
+    "mean": -0.09865082571723542,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_diff_scores": {
+    "mean": -0.0067709155305367055,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:assoc": {
+    "mean": 0.06243308730511514,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": 0.00010195299869102073,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": 8.410604775122921e-05,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -1.0558407315324843e-05,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.0002057652162943864,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff": {
+    "mean": 0.0034165719621893926,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.010452393334126103,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0012207384828056373,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.005881836054053837,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": 0.02339813467978958,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "KT:drug": {
+   "real:diff": {
+    "mean": -0.011254511591360249,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.00867210494212801,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": 0.001314716038718174,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": -0.010631990515966909,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.041270830229124346,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.5223059575128307,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.49729172233713137,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.07846319211635665,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": 0.014896890587191638,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": -0.011084360484387346,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.007873203718378432,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": 0.001294370435951992,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.010680179731314425,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.020411588178427392,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.508650319266736,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.4887034510815697,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.04281055659179717,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.03221779779361403,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": -0.00017015110697290396,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.0007989012237495761,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 2.0345602766181832e-05,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 4.8189215347516534e-05,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff": {
+    "mean": 0.020859242050696954,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": 0.013655638246094727,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": 0.008588271255561792,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.03565263552455948,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.04983550287758055,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:recovery_ec": {
+   "real:diff": {
+    "mean": -0.0033636335194829987,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.0028824611990115826,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": 0.0006092780166258863,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": -0.00329546098594444,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.010362880049090828,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.12588775913517886,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.12303230908106576,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.026369524688910212,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": -0.14246531856357164,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.003456962810845482,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0027394057103386164,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": 0.0006077486746733486,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": -0.003441178610579144,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.011379474160357658,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.12759668138225558,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.11955673228374233,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.020072430125443026,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.1255255509068266,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": 9.332929136248407e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": -0.00014305548867296543,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": 1.5293419525376589e-06,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.00014571762463470639,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff": {
+    "mean": -0.001016594111266827,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": -0.001708922247076754,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_gauss": {
+    "mean": 0.003475576797323292,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.0062970945634671744,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.08581310147289553,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:awake_eo": {
+   "real:diff": {
+    "mean": 0.0015509221509566115,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0007848891168267451,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_gauss": {
+    "mean": -0.0003819164182079446,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": 0.0015073443176807004,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff": {
+    "mean": 0.0007805726744599425,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": -0.11346418773592619,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_gauss": {
+    "mean": -0.11275658002609958,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff_scores": {
+    "mean": -0.0016217027386342094,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:assoc": {
+    "mean": 0.11011062287710928,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.001319693954551093,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0006848991679020608,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_gauss": {
+    "mean": -0.0003669219024866393,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": 0.0013105124149573749,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff": {
+    "mean": -0.003884076599238631,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_knn": {
+    "mean": -0.11361225876463601,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_gauss": {
+    "mean": -0.11136030975972078,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff_scores": {
+    "mean": -0.005719133673825297,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:assoc": {
+    "mean": 0.03075735605711571,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff": {
+    "mean": 0.00023122819640551852,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": 9.998994892468465e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -1.4994515721305292e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.00019683190272332422,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff": {
+    "mean": 0.004664649273698574,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": 0.00014807102870996762,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0013962702663788018,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.004097430935191089,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:assoc": {
+    "mean": 0.08301824645508699,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   }
+  },
+  "MD:drug": {
+   "real:diff": {
+    "mean": -0.013874607037127548,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.011052740229142988,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": 0.0015400241091412584,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:diff_scores": {
+    "mean": -0.013218573870572526,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.03608965988864905,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.6131498784693643,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.5758794157866736,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.054153666116955546,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": 0.03539840257384672,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": -0.011620652783783134,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0087088186090735,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": 0.001381729272202275,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff_scores": {
+    "mean": -0.011211326633213375,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.016459471255411078,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.5820767894216978,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.564990207704736,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.03279562941807427,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.026014043737995755,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": -0.002253954253344413,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0023439216200694885,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": 0.0001582948369389838,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:diff_scores": {
+    "mean": -0.0020072472373591547,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_diff": {
+    "mean": 0.019630188633237983,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.03107308904766637,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": 0.010889208081937721,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.02135803669888128,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.06625612455289054,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:recovery_ec": {
+   "real:diff": {
+    "mean": 0.0002503385475946179,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_knn": {
+    "mean": 0.00035851434053403553,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_gauss": {
+    "mean": 1.2204979805833724e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": 0.00020570077817580782,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_diff": {
+    "mean": -2.8397484856308632e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_knn": {
+    "mean": -0.02834499781738259,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_gauss": {
+    "mean": -0.027627950283616837,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.0013216308819171503,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:assoc": {
+    "mean": -0.08079304817770916,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": -0.00013172072445274778,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.0001251269170244486,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": 2.3271834724909095e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": -0.00010702394471868147,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": -0.00017842397429249394,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_knn": {
+    "mean": -0.025806782804748712,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_gauss": {
+    "mean": -0.02727369146878794,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.0012029395574686594,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.005008922916198368,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": 0.0003820592720473651,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": 0.0004836412575584843,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -1.1066854919075198e-05,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.00031272472289448826,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff": {
+    "mean": 0.00015002648943618704,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": -0.0025382150126337655,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0003542588148289826,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.00011869132444849496,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:assoc": {
+    "mean": -0.07674885788133284,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "PF:awake_eo": {
+   "real:diff": {
+    "mean": 0.001957975206966215,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_knn": {
+    "mean": 0.0015525884693070673,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_gauss": {
+    "mean": -0.0003302010627765762,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": 0.001991433340854776,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff": {
+    "mean": 0.00019374346460210735,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_knn": {
+    "mean": -0.09781748182519279,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_gauss": {
+    "mean": -0.10119343930777766,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff_scores": {
+    "mean": -0.003206517090886739,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:assoc": {
+    "mean": 0.04553817695090064,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:diff": {
+    "mean": 0.0018145556312469102,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_knn": {
+    "mean": 0.0012851423637442586,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:te_gauss": {
+    "mean": -0.00031014413267387204,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": 0.0018041153016298676,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff": {
+    "mean": -0.00547554001602317,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_knn": {
+    "mean": -0.10524520816295749,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_gauss": {
+    "mean": -0.09959167834065441,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff_scores": {
+    "mean": -0.007807170697804842,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:assoc": {
+    "mean": 0.04536714056148479,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": 0.00014341957571930376,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_knn": {
+    "mean": 0.0002674461055628084,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:te_gauss": {
+    "mean": -2.0056930102704395e-05,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff_scores": {
+    "mean": 0.00018731803922490865,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff": {
+    "mean": 0.005669283480625276,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.007427726337764582,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0016017609671231505,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.0046006536069181075,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:assoc": {
+    "mean": -0.007856748526212744,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:drug": {
+   "real:diff": {
+    "mean": -0.02428621382915814,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_knn": {
+    "mean": -0.024193822321373452,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:te_gauss": {
+    "mean": -0.00029499588010201,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:diff_scores": {
+    "mean": -0.023971451486851744,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:ais_diff": {
+    "mean": 0.09564389345104381,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_knn": {
+    "mean": 0.7651745184587805,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_gauss": {
+    "mean": 0.6385522015827245,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.14009463447935017,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:assoc": {
+    "mean": 0.0015948627408566701,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff": {
+    "mean": -0.016599614194845194,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_knn": {
+    "mean": -0.01697053967593437,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:te_gauss": {
+    "mean": -0.0002897763332710751,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff_scores": {
+    "mean": -0.016411303722126,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:ais_diff": {
+    "mean": 0.03407047636273688,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_knn": {
+    "mean": 0.6569150455212343,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_gauss": {
+    "mean": 0.6228625881436324,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.07005296943030744,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "null:assoc": {
+    "mean": -0.23852578872747687,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff": {
+    "mean": -0.007686599634312947,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_knn": {
+    "mean": -0.0072232826454390825,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:te_gauss": {
+    "mean": -5.21954683093511e-06,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:diff_scores": {
+    "mean": -0.0075601477647257425,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_diff": {
+    "mean": 0.06157341708830693,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_knn": {
+    "mean": 0.10825947293754606,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_gauss": {
+    "mean": 0.015689613439092382,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.07004166504904276,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.39853840252501016,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "PF:recovery_ec": {
+   "real:diff": {
+    "mean": 0.0012607959987472942,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:te_knn": {
+    "mean": 0.0017711719008774217,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:te_gauss": {
+    "mean": 0.00012537991911550284,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:diff_scores": {
+    "mean": 0.001301906785395279,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_diff": {
+    "mean": 0.0022014271652440825,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_knn": {
+    "mean": -0.054555095287152355,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_gauss": {
+    "mean": -0.04847220662017744,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:ais_diff_scores": {
+    "mean": 0.0045149769621159975,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:assoc": {
+    "mean": -0.07171824614375019,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "null:diff": {
+    "mean": 0.0007702153528875812,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_knn": {
+    "mean": 0.001155080720515348,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:te_gauss": {
+    "mean": 0.0001245420473589803,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:diff_scores": {
+    "mean": 0.0007761736922384917,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_diff": {
+    "mean": 0.0023368318396794112,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_knn": {
+    "mean": -0.04688858965085252,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_gauss": {
+    "mean": -0.04774723186793629,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:ais_diff_scores": {
+    "mean": 0.0019331179208297473,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "null:assoc": {
+    "mean": -0.032084389696866306,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff": {
+    "mean": 0.0004905806458597128,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_knn": {
+    "mean": 0.0006160911803620734,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:te_gauss": {
+    "mean": 8.378717565223725e-07,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:diff_scores": {
+    "mean": 0.0005257330931567867,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:ais_diff": {
+    "mean": -0.0001354046744353266,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_knn": {
+    "mean": -0.0076665056363000045,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "residual:ais_gauss": {
+    "mean": -0.0007249747522410922,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "residual:ais_diff_scores": {
+    "mean": 0.0025818590412862628,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "residual:assoc": {
+    "mean": -0.0038533238853887654,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  }
+ }
+}

@@ -1,0 +1,13 @@
+CAR: eyes-open null SD 0.0020 (n=30)
+  KT    n= 4 Δ -0.0159 (-8.0 SD) 4/4 negative (p=0.062); recovery -0.0042
+  KTMD  n=11 Δ -0.0155 (-7.8 SD) 11/11 negative (p=0.000); recovery -0.0035
+  MD    n= 4 Δ -0.0062 (-3.1 SD) 4/4 negative (p=0.062); recovery -0.0008
+  PF    n= 4 Δ -0.0117 (-5.9 SD) 4/4 negative (p=0.062); recovery -0.0032
+  SLP   n= 7 Δ -0.0010 (-0.5 SD) 7/7 negative (p=0.008); recovery +nan
+bipolar: eyes-open null SD 0.0082 (n=30)
+  KT    n= 4 Δ -0.0316 (-3.8 SD) 4/4 negative (p=0.062); recovery -0.0079
+  KTMD  n=11 Δ -0.0325 (-3.9 SD) 11/11 negative (p=0.000); recovery -0.0044
+  MD    n= 4 Δ -0.0123 (-1.5 SD) 3/4 negative (p=0.312); recovery -0.0049
+  PF    n= 4 Δ -0.0345 (-4.2 SD) 4/4 negative (p=0.062); recovery -0.0055
+  SLP   n= 7 Δ -0.0040 (-0.5 SD) 5/7 negative (p=0.227); recovery +nan
+per-session drug Δ, CAR vs bipolar: r = +0.80 over 23 sessions

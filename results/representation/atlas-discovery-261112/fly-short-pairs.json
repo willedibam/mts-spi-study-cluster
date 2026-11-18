@@ -1,0 +1,1279 @@
+{
+ "reduced": "/scratch/ql44/we2614/mts-spi-study/atlas/discovery/fly-short-reduced.npz",
+ "reference": "awake",
+ "adjusted_for": [
+  "mean_abs_r",
+  "sd_abs_r",
+  "cov_pr"
+ ],
+ "spectral_for": [
+  "mean_abs_r",
+  "sd_abs_r",
+  "cov_pr",
+  "spectral_entropy",
+  "peak_hz"
+ ],
+ "missing": [],
+ "pairs": [
+  {
+   "character": "non-Gaussian dependence",
+   "a": "mi_gaussian",
+   "b": "mi_kraskov_NN-4_DCE-AUTO",
+   "node_r2": [
+    0.2071140700739615,
+    0.15482314470954106
+   ],
+   "reference_z": 0.6162204266740725,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.02469913589839752,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.009065529987170846,
+      "units": 13,
+      "positive": 5
+     },
+     "spectral": {
+      "mean": 0.012128786144843588,
+      "units": 13,
+      "positive": 5
+     }
+    }
+   }
+  },
+  {
+   "character": "non-Gaussian dependence",
+   "a": "mi_gaussian",
+   "b": "mi_kernel_W-0.25",
+   "node_r2": [
+    0.2071140700739615,
+    0.23912758732181644
+   ],
+   "reference_z": 0.5713051147758961,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.024278861972001884,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.0214115231002307,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": 0.03142369627102832,
+      "units": 13,
+      "positive": 9
+     }
+    }
+   }
+  },
+  {
+   "character": "non-Gaussian dependence",
+   "a": "cov-sq_EmpiricalCovariance",
+   "b": "dcorr",
+   "node_r2": [
+    0.2078447407336218,
+    0.20478881254147263
+   ],
+   "reference_z": 0.9751637778603114,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.005615679690471062,
+      "units": 13,
+      "positive": 12
+     },
+     "adjusted": {
+      "mean": 0.0036854307137462,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": 0.006079149629354469,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "non-Gaussian dependence",
+   "a": "je_gaussian",
+   "b": "je_kozachenko",
+   "node_r2": [
+    0.20711407007396143,
+    0.22379057002324249
+   ],
+   "reference_z": 0.31501135710949224,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.02337129599450586,
+      "units": 13,
+      "positive": 10
+     },
+     "adjusted": {
+      "mean": 0.0052581540912453656,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": 0.010660052535737779,
+      "units": 13,
+      "positive": 5
+     }
+    }
+   }
+  },
+  {
+   "character": "non-Gaussian dependence",
+   "a": "xme_gaussian_k1",
+   "b": "xme_kozachenko_k1",
+   "node_r2": [
+    0.31524494545639226,
+    0.5379470817958786
+   ],
+   "reference_z": 0.17430588074449377,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.025207465301858835,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.04414349149952824,
+      "units": 13,
+      "positive": 10
+     },
+     "spectral": {
+      "mean": 0.04703471624718596,
+      "units": 13,
+      "positive": 9
+     }
+    }
+   }
+  },
+  {
+   "character": "monotone (rank) nonlinearity",
+   "a": "cov_EmpiricalCovariance",
+   "b": "spearmanr",
+   "node_r2": [
+    0.07058949008699106,
+    0.07352249747407602
+   ],
+   "reference_z": 0.9858096683254609,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.0006397016919576204,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.0020396671434609456,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": 0.005473701280942036,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "monotone (rank) nonlinearity",
+   "a": "cov-sq_EmpiricalCovariance",
+   "b": "spearmanr-sq",
+   "node_r2": [
+    0.2078447407336218,
+    0.1896082934077145
+   ],
+   "reference_z": 0.9723101968948658,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.0039839515319237346,
+      "units": 13,
+      "positive": 10
+     },
+     "adjusted": {
+      "mean": 0.002091974223137426,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": 0.01014329414195007,
+      "units": 13,
+      "positive": 6
+     }
+    }
+   }
+  },
+  {
+   "character": "monotone (rank) nonlinearity",
+   "a": "corr_pearson_tau-1",
+   "b": "corr_spearman_tau-1",
+   "node_r2": [
+    0.07066646124180159,
+    0.06903192799186497
+   ],
+   "reference_z": 0.9848261939791533,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.0009943200991703914,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.0029095091613478403,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": 0.006864945482064276,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag phase coupling",
+   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "b": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "node_r2": [
+    0.20565210968625186,
+    0.18621271505257353
+   ],
+   "reference_z": 0.3787124755058008,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.005441686416116471,
+      "units": 13,
+      "positive": 5
+     },
+     "adjusted": {
+      "mean": -0.024535905011783578,
+      "units": 13,
+      "positive": 4
+     },
+     "spectral": {
+      "mean": -0.018523919175517708,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag phase coupling",
+   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.2064114730355941,
+    0.18314794788709837
+   ],
+   "reference_z": 0.2801673137358963,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.04062734748451756,
+      "units": 13,
+      "positive": 2
+     },
+     "adjusted": {
+      "mean": -0.04885641990681206,
+      "units": 13,
+      "positive": 2
+     },
+     "spectral": {
+      "mean": -0.04193553339141108,
+      "units": 13,
+      "positive": 3
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag phase coupling",
+   "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "b": "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "node_r2": [
+    0.218014441186001,
+    0.15877101561860985
+   ],
+   "reference_z": 0.3172261492134287,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.05155702125977349,
+      "units": 13,
+      "positive": 4
+     },
+     "adjusted": {
+      "mean": -0.05240137395170178,
+      "units": 13,
+      "positive": 3
+     },
+     "spectral": {
+      "mean": -0.05272803359957496,
+      "units": 13,
+      "positive": 2
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag phase coupling",
+   "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.1845145950197009,
+    0.0995668866698497
+   ],
+   "reference_z": -4.039047729243629e-19,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 2.7772364062715698e-18,
+      "units": 13,
+      "positive": 8
+     },
+     "adjusted": {
+      "mean": 1.9899614400427002e-18,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": -2.1654545656482707e-20,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag phase coupling",
+   "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.1845145950197009,
+    0.09018554635435078
+   ],
+   "reference_z": 2.813463522721755e-18,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 1.3024463627432977e-18,
+      "units": 13,
+      "positive": 7
+     },
+     "adjusted": {
+      "mean": -3.498455640823305e-19,
+      "units": 13,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": -3.896132001080334e-18,
+      "units": 13,
+      "positive": 6
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag phase coupling",
+   "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.18561821736037604,
+    0.17594403786418095
+   ],
+   "reference_z": 0.449098425415846,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.019478102429555014,
+      "units": 13,
+      "positive": 4
+     },
+     "adjusted": {
+      "mean": -0.026507257066547833,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": -0.02414494791168028,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "lagged vs zero-lag amplitude coupling",
+   "a": "pec",
+   "b": "pec_orth",
+   "node_r2": [
+    0.23857133454987606,
+    0.21324813826096572
+   ],
+   "reference_z": 0.6909285995822686,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.022798702120780945,
+      "units": 13,
+      "positive": 3
+     },
+     "adjusted": {
+      "mean": -0.010801200212991215,
+      "units": 13,
+      "positive": 5
+     },
+     "spectral": {
+      "mean": -0.0030667188489753097,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "instantaneous vs lagged dependence",
+   "a": "mi_gaussian",
+   "b": "tlmi_gaussian",
+   "node_r2": [
+    0.2071140700739615,
+    0.24879987447702206
+   ],
+   "reference_z": 0.7884667985714399,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.016805805552464265,
+      "units": 13,
+      "positive": 6
+     },
+     "adjusted": {
+      "mean": -0.034880762616050776,
+      "units": 13,
+      "positive": 2
+     },
+     "spectral": {
+      "mean": -0.0264392305830994,
+      "units": 13,
+      "positive": 2
+     }
+    }
+   }
+  },
+  {
+   "character": "instantaneous vs lagged dependence",
+   "a": "mi_kraskov_NN-4_DCE-AUTO",
+   "b": "tlmi_kraskov_NN-4_DCE-AUTO",
+   "node_r2": [
+    0.15482314470954106,
+    0.1568127719609001
+   ],
+   "reference_z": 0.32125915470533073,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.01457707087795895,
+      "units": 13,
+      "positive": 7
+     },
+     "adjusted": {
+      "mean": -0.022243716751608286,
+      "units": 13,
+      "positive": 4
+     },
+     "spectral": {
+      "mean": -0.010033949473307121,
+      "units": 13,
+      "positive": 7
+     }
+    }
+   }
+  },
+  {
+   "character": "instantaneous vs lagged dependence",
+   "a": "cov-sq_EmpiricalCovariance",
+   "b": "xcorr-sq_max_sig-True",
+   "node_r2": [
+    0.2078447407336218,
+    0.2522455006651584
+   ],
+   "reference_z": 0.8247806911285107,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.050729525777009815,
+      "units": 13,
+      "positive": 11
+     },
+     "adjusted": {
+      "mean": 0.03727846028989171,
+      "units": 13,
+      "positive": 9
+     },
+     "spectral": {
+      "mean": 0.03226141239757362,
+      "units": 13,
+      "positive": 9
+     }
+    }
+   }
+  },
+  {
+   "character": "rigid vs elastic alignment",
+   "a": "xpdist_euclidean_tau-1_min_rmse",
+   "b": "dtw",
+   "node_r2": [
+    0.07928836279448276,
+    0.32631559081211026
+   ],
+   "reference_z": 0.5104654210691268,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.05583317405902422,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.022323027106354094,
+      "units": 13,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": -0.012655255146714775,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "rigid vs elastic alignment",
+   "a": "dtw",
+   "b": "dtw_constraint-sakoe-chiba_radius-auto",
+   "node_r2": [
+    0.32631559081211026,
+    0.2854007194291231
+   ],
+   "reference_z": 0.9351896970317914,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.00969611738736813,
+      "units": 13,
+      "positive": 7
+     },
+     "adjusted": {
+      "mean": 0.011015727103990307,
+      "units": 13,
+      "positive": 9
+     },
+     "spectral": {
+      "mean": 0.0058453703977723115,
+      "units": 13,
+      "positive": 10
+     }
+    }
+   }
+  },
+  {
+   "character": "rigid vs elastic alignment",
+   "a": "pdist_euclidean",
+   "b": "dtw",
+   "node_r2": [
+    0.07061467943070415,
+    0.32631559081211026
+   ],
+   "reference_z": 0.4568937488186818,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.04754579081558264,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.013994089706628413,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": -0.01992076297758437,
+      "units": 13,
+      "positive": 5
+     }
+    }
+   }
+  },
+  {
+   "character": "rigid vs elastic alignment",
+   "a": "lcss",
+   "b": "lcss_constraint-sakoe-chiba",
+   "node_r2": [
+    0.1870280471947321,
+    0.15102682690377045
+   ],
+   "reference_z": 0.6669839299642123,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.01615436403797223,
+      "units": 13,
+      "positive": 8
+     },
+     "adjusted": {
+      "mean": 0.006389646345124036,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": -0.015922050946962852,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "predictive vs contemporaneous",
+   "a": "mi_gaussian",
+   "b": "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "node_r2": [
+    0.2071140700739615,
+    0.20577635185713683
+   ],
+   "reference_z": 0.16785155835364443,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.027124663140337082,
+      "units": 13,
+      "positive": 8
+     },
+     "adjusted": {
+      "mean": 0.02619320798327009,
+      "units": 13,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": 0.03847573527971431,
+      "units": 13,
+      "positive": 7
+     }
+    }
+   }
+  },
+  {
+   "character": "predictive vs contemporaneous",
+   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "node_r2": [
+    0.2064114730355941,
+    0.22439585291139297
+   ],
+   "reference_z": 0.3146217640919181,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.013009666107021846,
+      "units": 13,
+      "positive": 6
+     },
+     "adjusted": {
+      "mean": -0.016050261369205086,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": -0.01674532719409103,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "nonlinear vs linear prediction",
+   "a": "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "b": "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+   "node_r2": [
+    0.20577635185713683,
+    0.14796679520125655
+   ],
+   "reference_z": 0.23001242583044446,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.007367560836988,
+      "units": 13,
+      "positive": 5
+     },
+     "adjusted": {
+      "mean": 0.012709516048676624,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": 0.01352306902819401,
+      "units": 13,
+      "positive": 6
+     }
+    }
+   }
+  },
+  {
+   "character": "nonlinear vs linear prediction",
+   "a": "te_symbolic_k-3",
+   "b": "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+   "node_r2": [
+    0.22001075494479888,
+    0.14796679520125655
+   ],
+   "reference_z": 0.0200476635632535,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.011168422183310702,
+      "units": 13,
+      "positive": 6
+     },
+     "adjusted": {
+      "mean": -0.009761940339474612,
+      "units": 13,
+      "positive": 6
+     },
+     "spectral": {
+      "mean": 0.006797947681366537,
+      "units": 13,
+      "positive": 7
+     }
+    }
+   }
+  },
+  {
+   "character": "interaction memory",
+   "a": "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+   "b": "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1",
+   "node_r2": [
+    0.14796679520125655,
+    0.1404269707481628
+   ],
+   "reference_z": 0.44771768553898883,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.01649007172538684,
+      "units": 13,
+      "positive": 6
+     },
+     "adjusted": {
+      "mean": -0.016004152449093072,
+      "units": 13,
+      "positive": 4
+     },
+     "spectral": {
+      "mean": -0.008059808489100958,
+      "units": 13,
+      "positive": 5
+     }
+    }
+   }
+  },
+  {
+   "character": "interaction memory",
+   "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "b": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "node_r2": [
+    0.20526241409754276,
+    0.23910746047432874
+   ],
+   "reference_z": 0.2708600220055534,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.012840451386112433,
+      "units": 13,
+      "positive": 7
+     },
+     "adjusted": {
+      "mean": 0.026233861766059526,
+      "units": 13,
+      "positive": 9
+     },
+     "spectral": {
+      "mean": 0.021050256988962353,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "interaction memory",
+   "a": "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "b": "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+   "node_r2": [
+    0.20577635185713683,
+    0.21431928765777253
+   ],
+   "reference_z": 0.40001039393246174,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.00229144490395601,
+      "units": 13,
+      "positive": 6
+     },
+     "adjusted": {
+      "mean": 0.014690204458720444,
+      "units": 13,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": 0.01822423300017561,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "direct vs indirect (mediation)",
+   "a": "cov-sq_EmpiricalCovariance",
+   "b": "prec-sq_EmpiricalCovariance",
+   "node_r2": [
+    0.2078447407336218,
+    0.24859516997852948
+   ],
+   "reference_z": 0.646053451543244,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.10545326905468336,
+      "units": 13,
+      "positive": 13
+     },
+     "adjusted": {
+      "mean": 0.07561372632839904,
+      "units": 13,
+      "positive": 12
+     },
+     "spectral": {
+      "mean": 0.07681474445265199,
+      "units": 13,
+      "positive": 11
+     }
+    }
+   }
+  },
+  {
+   "character": "direct vs indirect (mediation)",
+   "a": "cov-sq_LedoitWolf",
+   "b": "prec-sq_LedoitWolf",
+   "node_r2": [
+    0.2078447407336219,
+    0.17664092416289134
+   ],
+   "reference_z": 0.7636914317711041,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.07608888627817997,
+      "units": 13,
+      "positive": 12
+     },
+     "adjusted": {
+      "mean": 0.043931706627075254,
+      "units": 13,
+      "positive": 12
+     },
+     "spectral": {
+      "mean": 0.04183937243653275,
+      "units": 13,
+      "positive": 11
+     }
+    }
+   }
+  },
+  {
+   "character": "direct vs indirect (mediation)",
+   "a": "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.21448809360001025,
+    0.6500758043120956
+   ],
+   "reference_z": 0.6610118093398901,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.047969250151744254,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.030578658616059278,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": -0.008327401659069105,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "bulk vs atypical samples",
+   "a": "cov-sq_EmpiricalCovariance",
+   "b": "cov-sq_MinCovDet",
+   "node_r2": [
+    0.2078447407336218,
+    0.18504219363223595
+   ],
+   "reference_z": 0.8249444428544778,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.032315708267001,
+      "units": 13,
+      "positive": 11
+     },
+     "adjusted": {
+      "mean": 0.01286916978437903,
+      "units": 13,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": 0.0242500430791109,
+      "units": 13,
+      "positive": 7
+     }
+    }
+   }
+  },
+  {
+   "character": "bulk vs atypical samples",
+   "a": "prec-sq_LedoitWolf",
+   "b": "prec-sq_MinCovDet",
+   "node_r2": [
+    0.17664092416289134,
+    0.2761800323335619
+   ],
+   "reference_z": 0.8576984290893261,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.028436198830604553,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.00996710285276417,
+      "units": 13,
+      "positive": 9
+     },
+     "spectral": {
+      "mean": 0.007971088846463891,
+      "units": 13,
+      "positive": 7
+     }
+    }
+   }
+  },
+  {
+   "character": "bulk vs atypical samples",
+   "a": "pdist_euclidean",
+   "b": "pdist_chebyshev",
+   "node_r2": [
+    0.07061467943070415,
+    0.17697989404928482
+   ],
+   "reference_z": 0.6142551944806025,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.007783484860108449,
+      "units": 13,
+      "positive": 8
+     },
+     "adjusted": {
+      "mean": 0.005049738147052654,
+      "units": 13,
+      "positive": 9
+     },
+     "spectral": {
+      "mean": 0.004470897545098009,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "bulk vs atypical samples",
+   "a": "pdist_euclidean",
+   "b": "pdist_cityblock",
+   "node_r2": [
+    0.07061467943070415,
+    0.08214950874527882
+   ],
+   "reference_z": 0.9717154422631631,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -3.538739222746629e-05,
+      "units": 13,
+      "positive": 8
+     },
+     "adjusted": {
+      "mean": 0.00087356689182478,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": 0.003821265850457762,
+      "units": 13,
+      "positive": 4
+     }
+    }
+   }
+  },
+  {
+   "character": "band locus",
+   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "b": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "node_r2": [
+    0.20565210968625186,
+    0.218014441186001
+   ],
+   "reference_z": 0.24605668136008227,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.054401796942469306,
+      "units": 13,
+      "positive": 11
+     },
+     "adjusted": {
+      "mean": 0.06076725542483892,
+      "units": 13,
+      "positive": 10
+     },
+     "spectral": {
+      "mean": 0.0669830360405988,
+      "units": 13,
+      "positive": 11
+     }
+    }
+   }
+  },
+  {
+   "character": "band locus",
+   "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "b": "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "node_r2": [
+    0.18648352861271283,
+    0.17520546578446444
+   ],
+   "reference_z": 0.22201075022502875,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.041222772731159166,
+      "units": 13,
+      "positive": 10
+     },
+     "adjusted": {
+      "mean": 0.04083822297711459,
+      "units": 13,
+      "positive": 10
+     },
+     "spectral": {
+      "mean": 0.03799991742581759,
+      "units": 13,
+      "positive": 9
+     }
+    }
+   }
+  },
+  {
+   "character": "broadband vs peaked",
+   "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.2064114730355941,
+    0.31980129307163996
+   ],
+   "reference_z": 0.38572571555582374,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.0037221427147205058,
+      "units": 13,
+      "positive": 7
+     },
+     "adjusted": {
+      "mean": 0.003893902282833338,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": 0.0011119848892526532,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "broadband vs peaked",
+   "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "node_r2": [
+    0.1845145950197009,
+    0.15942194998843429
+   ],
+   "reference_z": 0.4348200135506116,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": -0.017895321576641157,
+      "units": 13,
+      "positive": 4
+     },
+     "adjusted": {
+      "mean": -0.022915136128059795,
+      "units": 13,
+      "positive": 4
+     },
+     "spectral": {
+      "mean": -0.021950490462876962,
+      "units": 13,
+      "positive": 6
+     }
+    }
+   }
+  },
+  {
+   "character": "phase vs amplitude coupling",
+   "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "pec",
+   "node_r2": [
+    0.1845145950197009,
+    0.23857133454987606
+   ],
+   "reference_z": 0.26850675789263245,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.04112104722746433,
+      "units": 13,
+      "positive": 8
+     },
+     "adjusted": {
+      "mean": 0.03492456490071465,
+      "units": 13,
+      "positive": 8
+     },
+     "spectral": {
+      "mean": 0.039074254184633825,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  },
+  {
+   "character": "phase vs amplitude coupling",
+   "a": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "b": "pec_orth",
+   "node_r2": [
+    0.18314794788709837,
+    0.21324813826096572
+   ],
+   "reference_z": 0.09563719308341835,
+   "eyes_open_null_sd": NaN,
+   "effects": {
+    "all:isoflurane": {
+     "raw": {
+      "mean": 0.0058118053157858625,
+      "units": 13,
+      "positive": 9
+     },
+     "adjusted": {
+      "mean": 0.010424910930823495,
+      "units": 13,
+      "positive": 7
+     },
+     "spectral": {
+      "mean": -0.006184880323010503,
+      "units": 13,
+      "positive": 8
+     }
+    }
+   }
+  }
+ ]
+}

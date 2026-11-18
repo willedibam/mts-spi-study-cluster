@@ -1,0 +1,3636 @@
+{
+ "spis": 222,
+ "classes": [
+  {
+   "cls": "lag: adjacent or longer",
+   "members": 130,
+   "statistics": [
+    "coint_johansen",
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-2"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-3"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-4"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-5"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-10"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_pearson_tau-3"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_pearson_tau-4"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_pearson_tau-5"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_pearson_tau-10"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_pearson_tau-4"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_pearson_tau-5"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_pearson_tau-10"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "corr_pearson_tau-4",
+     "corr_pearson_tau-5"
+    ],
+    [
+     "corr_pearson_tau-4",
+     "corr_pearson_tau-10"
+    ],
+    [
+     "corr_pearson_tau-4",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "corr_pearson_tau-5",
+     "corr_pearson_tau-10"
+    ],
+    [
+     "corr_pearson_tau-5",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_pearson_tau-2-sq"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_pearson_tau-3-sq"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_pearson_tau-4-sq"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_pearson_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_pearson_tau-3-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_pearson_tau-4-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_pearson_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_pearson_tau-3-sq",
+     "corr_pearson_tau-4-sq"
+    ],
+    [
+     "corr_pearson_tau-3-sq",
+     "corr_pearson_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-3-sq",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-3-sq",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_pearson_tau-4-sq",
+     "corr_pearson_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-4-sq",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-4-sq",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_pearson_tau-5-sq",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-5-sq",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_pearson_tau-10",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "corr_pearson_tau-10-sq",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-2"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-3"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-4"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-5"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_spearman_tau-3"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_spearman_tau-4"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_spearman_tau-5"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_spearman_tau-3",
+     "corr_spearman_tau-4"
+    ],
+    [
+     "corr_spearman_tau-3",
+     "corr_spearman_tau-5"
+    ],
+    [
+     "corr_spearman_tau-3",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "corr_spearman_tau-3",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_spearman_tau-4",
+     "corr_spearman_tau-5"
+    ],
+    [
+     "corr_spearman_tau-4",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "corr_spearman_tau-4",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_spearman_tau-5",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "corr_spearman_tau-5",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_spearman_tau-2-sq"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_spearman_tau-3-sq"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_spearman_tau-4-sq"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-2-sq",
+     "corr_spearman_tau-3-sq"
+    ],
+    [
+     "corr_spearman_tau-2-sq",
+     "corr_spearman_tau-4-sq"
+    ],
+    [
+     "corr_spearman_tau-2-sq",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "corr_spearman_tau-2-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-2-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-3-sq",
+     "corr_spearman_tau-4-sq"
+    ],
+    [
+     "corr_spearman_tau-3-sq",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "corr_spearman_tau-3-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-3-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-4-sq",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "corr_spearman_tau-4-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-4-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-5-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-5-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-10",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_spearman_tau-10-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-2"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-3"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-4"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_kendall_tau-2",
+     "corr_kendall_tau-3"
+    ],
+    [
+     "corr_kendall_tau-2",
+     "corr_kendall_tau-4"
+    ],
+    [
+     "corr_kendall_tau-2",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "corr_kendall_tau-2",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_kendall_tau-2",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_kendall_tau-3",
+     "corr_kendall_tau-4"
+    ],
+    [
+     "corr_kendall_tau-3",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "corr_kendall_tau-3",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_kendall_tau-3",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_kendall_tau-4",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "corr_kendall_tau-4",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_kendall_tau-4",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_kendall_tau-5",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_kendall_tau-5",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_kendall_tau-1-sq",
+     "corr_kendall_tau-2-sq"
+    ],
+    [
+     "corr_kendall_tau-1-sq",
+     "corr_kendall_tau-3-sq"
+    ],
+    [
+     "corr_kendall_tau-1-sq",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "corr_kendall_tau-1-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_kendall_tau-1-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_kendall_tau-1-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-2-sq",
+     "corr_kendall_tau-3-sq"
+    ],
+    [
+     "corr_kendall_tau-2-sq",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "corr_kendall_tau-2-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_kendall_tau-2-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_kendall_tau-2-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-3-sq",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "corr_kendall_tau-3-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_kendall_tau-3-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_kendall_tau-3-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-4-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_kendall_tau-4-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_kendall_tau-4-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-5-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_kendall_tau-5-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-10",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_kendall_tau-10-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "coint_johansen_max_eig_stat_order-0_ardiff-10",
+     "coint_johansen_max_eig_stat_order-0_ardiff-1"
+    ],
+    [
+     "coint_johansen_trace_stat_order-0_ardiff-10",
+     "coint_johansen_trace_stat_order-0_ardiff-1"
+    ],
+    [
+     "coint_johansen_max_eig_stat_order-1_ardiff-10",
+     "coint_johansen_max_eig_stat_order-1_ardiff-1"
+    ],
+    [
+     "coint_johansen_trace_stat_order-1_ardiff-10",
+     "coint_johansen_trace_stat_order-1_ardiff-1"
+    ]
+   ]
+  },
+  {
+   "cls": "sign handling: signed vs sq",
+   "members": 39,
+   "statistics": [
+    "bary",
+    "corr",
+    "prec",
+    "xcorr"
+   ],
+   "character": "sign structure: whether the strongest couplings include anticorrelations",
+   "literal": "organisation of signed against squared dependence",
+   "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "cov-sq_EmpiricalCovariance"
+    ],
+    [
+     "cov_LedoitWolf",
+     "cov-sq_LedoitWolf"
+    ],
+    [
+     "cov_MinCovDet",
+     "cov-sq_MinCovDet"
+    ],
+    [
+     "cov_OAS",
+     "cov-sq_OAS"
+    ],
+    [
+     "cov_ShrunkCovariance",
+     "cov-sq_ShrunkCovariance"
+    ],
+    [
+     "prec_EmpiricalCovariance",
+     "prec-sq_EmpiricalCovariance"
+    ],
+    [
+     "prec_LedoitWolf",
+     "prec-sq_LedoitWolf"
+    ],
+    [
+     "prec_MinCovDet",
+     "prec-sq_MinCovDet"
+    ],
+    [
+     "prec_OAS",
+     "prec-sq_OAS"
+    ],
+    [
+     "prec_ShrunkCovariance",
+     "prec-sq_ShrunkCovariance"
+    ],
+    [
+     "spearmanr-sq",
+     "spearmanr"
+    ],
+    [
+     "kendalltau-sq",
+     "kendalltau"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_pearson_tau-1-sq"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_pearson_tau-2-sq"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_pearson_tau-3-sq"
+    ],
+    [
+     "corr_pearson_tau-4",
+     "corr_pearson_tau-4-sq"
+    ],
+    [
+     "corr_pearson_tau-5",
+     "corr_pearson_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-10",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-20",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_spearman_tau-1-sq"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_spearman_tau-2-sq"
+    ],
+    [
+     "corr_spearman_tau-3",
+     "corr_spearman_tau-3-sq"
+    ],
+    [
+     "corr_spearman_tau-4",
+     "corr_spearman_tau-4-sq"
+    ],
+    [
+     "corr_spearman_tau-5",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "corr_spearman_tau-10",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-20",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "corr_kendall_tau-1",
+     "corr_kendall_tau-1-sq"
+    ],
+    [
+     "corr_kendall_tau-2",
+     "corr_kendall_tau-2-sq"
+    ],
+    [
+     "corr_kendall_tau-3",
+     "corr_kendall_tau-3-sq"
+    ],
+    [
+     "corr_kendall_tau-4",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "corr_kendall_tau-5",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_kendall_tau-10",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_kendall_tau-20",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "xcorr_max_sig-True",
+     "xcorr-sq_max_sig-True"
+    ],
+    [
+     "xcorr_mean_sig-True",
+     "xcorr-sq_mean_sig-True"
+    ],
+    [
+     "xcorr_mean_sig-False",
+     "xcorr-sq_mean_sig-False"
+    ],
+    [
+     "bary_euclidean_max",
+     "bary-sq_euclidean_max"
+    ],
+    [
+     "bary_dtw_max",
+     "bary-sq_dtw_max"
+    ],
+    [
+     "bary_sgddtw_max",
+     "bary-sq_sgddtw_max"
+    ]
+   ]
+  },
+  {
+   "cls": "lag: 0 vs L>1",
+   "members": 36,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-2"
+    ],
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-3"
+    ],
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-4"
+    ],
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-5"
+    ],
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-10"
+    ],
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-20"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-2-sq"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-3-sq"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-4-sq"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-5-sq"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-10-sq"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-20-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-2-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-3-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-4-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-20-sq"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-2"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-3"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-4"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-5"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-2-sq"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-3-sq"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-20-sq"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-2"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-3"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-4"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-20"
+    ]
+   ]
+  },
+  {
+   "cls": "aggregation: mean vs max",
+   "members": 24,
+   "statistics": [
+    "bary",
+    "cohmag",
+    "icoh",
+    "plv",
+    "ppc",
+    "sgc",
+    "xcorr"
+   ],
+   "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+   "literal": "peak against mean over frequencies or lags",
+   "confound": "spectral concentration of the channels",
+   "pairs": [
+    [
+     "xcorr_max_sig-True",
+     "xcorr_mean_sig-True"
+    ],
+    [
+     "xcorr-sq_max_sig-True",
+     "xcorr-sq_mean_sig-True"
+    ],
+    [
+     "bary-sq_euclidean_mean",
+     "bary-sq_euclidean_max"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Empirical vs spearman",
+   "members": 16,
+   "statistics": [
+    "corr"
+   ],
+   "character": "monotone-nonlinear dependence (rank invariance); channel marginal shape plus copula departure",
+   "literal": "organisation of linear against rank dependence",
+   "confound": "marginal shape (raw); copula part needs normal scores or IAAFT",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "spearmanr"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "spearmanr-sq"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_spearman_tau-1"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_spearman_tau-2"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_spearman_tau-3"
+    ],
+    [
+     "corr_pearson_tau-4",
+     "corr_spearman_tau-4"
+    ],
+    [
+     "corr_pearson_tau-5",
+     "corr_spearman_tau-5"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_spearman_tau-1-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_spearman_tau-2-sq"
+    ],
+    [
+     "corr_pearson_tau-3-sq",
+     "corr_spearman_tau-3-sq"
+    ],
+    [
+     "corr_pearson_tau-4-sq",
+     "corr_spearman_tau-4-sq"
+    ],
+    [
+     "corr_pearson_tau-5-sq",
+     "corr_spearman_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-10",
+     "corr_spearman_tau-10"
+    ],
+    [
+     "corr_pearson_tau-10-sq",
+     "corr_spearman_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-20",
+     "corr_spearman_tau-20"
+    ],
+    [
+     "corr_pearson_tau-20-sq",
+     "corr_spearman_tau-20-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Empirical vs kendall",
+   "members": 16,
+   "statistics": [
+    "corr"
+   ],
+   "character": "monotone-nonlinear dependence (as Spearman)",
+   "literal": "linear against Kendall rank dependence",
+   "confound": "marginal shape",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "kendalltau"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "kendalltau-sq"
+    ],
+    [
+     "corr_pearson_tau-1",
+     "corr_kendall_tau-1"
+    ],
+    [
+     "corr_pearson_tau-2",
+     "corr_kendall_tau-2"
+    ],
+    [
+     "corr_pearson_tau-3",
+     "corr_kendall_tau-3"
+    ],
+    [
+     "corr_pearson_tau-4",
+     "corr_kendall_tau-4"
+    ],
+    [
+     "corr_pearson_tau-5",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "corr_pearson_tau-1-sq",
+     "corr_kendall_tau-1-sq"
+    ],
+    [
+     "corr_pearson_tau-2-sq",
+     "corr_kendall_tau-2-sq"
+    ],
+    [
+     "corr_pearson_tau-3-sq",
+     "corr_kendall_tau-3-sq"
+    ],
+    [
+     "corr_pearson_tau-4-sq",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "corr_pearson_tau-5-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_pearson_tau-10",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_pearson_tau-10-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_pearson_tau-20",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_pearson_tau-20-sq",
+     "corr_kendall_tau-20-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: kendall vs spearman",
+   "members": 16,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": "two rank correlations",
+   "confound": "near-identity ceiling control",
+   "pairs": [
+    [
+     "spearmanr-sq",
+     "kendalltau-sq"
+    ],
+    [
+     "spearmanr",
+     "kendalltau"
+    ],
+    [
+     "corr_spearman_tau-1",
+     "corr_kendall_tau-1"
+    ],
+    [
+     "corr_spearman_tau-2",
+     "corr_kendall_tau-2"
+    ],
+    [
+     "corr_spearman_tau-3",
+     "corr_kendall_tau-3"
+    ],
+    [
+     "corr_spearman_tau-4",
+     "corr_kendall_tau-4"
+    ],
+    [
+     "corr_spearman_tau-5",
+     "corr_kendall_tau-5"
+    ],
+    [
+     "corr_spearman_tau-1-sq",
+     "corr_kendall_tau-1-sq"
+    ],
+    [
+     "corr_spearman_tau-2-sq",
+     "corr_kendall_tau-2-sq"
+    ],
+    [
+     "corr_spearman_tau-3-sq",
+     "corr_kendall_tau-3-sq"
+    ],
+    [
+     "corr_spearman_tau-4-sq",
+     "corr_kendall_tau-4-sq"
+    ],
+    [
+     "corr_spearman_tau-5-sq",
+     "corr_kendall_tau-5-sq"
+    ],
+    [
+     "corr_spearman_tau-10",
+     "corr_kendall_tau-10"
+    ],
+    [
+     "corr_spearman_tau-10-sq",
+     "corr_kendall_tau-10-sq"
+    ],
+    [
+     "corr_spearman_tau-20",
+     "corr_kendall_tau-20"
+    ],
+    [
+     "corr_spearman_tau-20-sq",
+     "corr_kendall_tau-20-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "band: broad vs low",
+   "members": 16,
+   "statistics": [
+    "cohmag",
+    "dspli",
+    "dswpli",
+    "icoh",
+    "plv",
+    "ppc",
+    "sgc"
+   ],
+   "character": null,
+   "literal": "broadband against low band",
+   "confound": "dominated by the low band",
+   "pairs": [
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ]
+   ]
+  },
+  {
+   "cls": "band: broad vs high",
+   "members": 16,
+   "statistics": [
+    "cohmag",
+    "dspli",
+    "dswpli",
+    "icoh",
+    "plv",
+    "ppc",
+    "sgc"
+   ],
+   "character": null,
+   "literal": "broadband against high band",
+   "confound": "mostly band power",
+   "pairs": [
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ]
+   ]
+  },
+  {
+   "cls": "band: low vs high",
+   "members": 16,
+   "statistics": [
+    "cohmag",
+    "dspli",
+    "dswpli",
+    "icoh",
+    "plv",
+    "ppc",
+    "sgc"
+   ],
+   "character": "frequency locus of coupling: which pairs couple fast and which slow",
+   "literal": "organisation of low- against high-band coupling",
+   "confound": "within-band location; spectral",
+   "pairs": [
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ]
+   ]
+  },
+  {
+   "cls": "mediation",
+   "members": 10,
+   "statistics": [
+    "corr",
+    "prec"
+   ],
+   "character": "mediation: direct against indirect coupling (marginal against conditional on all other channels)",
+   "literal": "organisation of marginal against partial dependence",
+   "confound": "montage, reference, M and T (precision near-singular at T=200)",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "prec_EmpiricalCovariance"
+    ],
+    [
+     "cov_LedoitWolf",
+     "prec_LedoitWolf"
+    ],
+    [
+     "cov_MinCovDet",
+     "prec_MinCovDet"
+    ],
+    [
+     "cov_OAS",
+     "prec_OAS"
+    ],
+    [
+     "cov_ShrunkCovariance",
+     "prec_ShrunkCovariance"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "prec-sq_EmpiricalCovariance"
+    ],
+    [
+     "cov-sq_LedoitWolf",
+     "prec-sq_LedoitWolf"
+    ],
+    [
+     "cov-sq_MinCovDet",
+     "prec-sq_MinCovDet"
+    ],
+    [
+     "cov-sq_OAS",
+     "prec-sq_OAS"
+    ],
+    [
+     "cov-sq_ShrunkCovariance",
+     "prec-sq_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: gaussian vs kernel",
+   "members": 7,
+   "statistics": [
+    "ce",
+    "je",
+    "mi",
+    "si",
+    "te",
+    "tlmi",
+    "xme"
+   ],
+   "character": "non-Gaussian dependence (kernel estimator)",
+   "literal": "Gaussian against kernel information",
+   "confound": "kernel bandwidth; autocorrelation bias",
+   "pairs": [
+    [
+     "je_gaussian",
+     "je_kernel_W-0.5"
+    ],
+    [
+     "ce_gaussian",
+     "ce_kernel_W-0.5"
+    ],
+    [
+     "xme_gaussian_k1",
+     "xme_kernel_W-0.5_k1"
+    ],
+    [
+     "si_gaussian_k-1",
+     "si_kernel_W-0.5_k-1"
+    ],
+    [
+     "mi_gaussian",
+     "mi_kernel_W-0.25"
+    ],
+    [
+     "tlmi_gaussian",
+     "tlmi_kernel_W-0.25"
+    ],
+    [
+     "te_kernel_W-0.25_k-1",
+     "gc_gaussian_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "lag: 0 vs 1",
+   "members": 6,
+   "statistics": [
+    "corr"
+   ],
+   "character": "one-sample persistence of coupling",
+   "literal": "zero-lag against lag-1 correlation",
+   "confound": "autocorrelation, dominant frequency (10 ms per sample)",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "corr_pearson_tau-1"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "corr_pearson_tau-1-sq"
+    ],
+    [
+     "spearmanr-sq",
+     "corr_spearman_tau-1-sq"
+    ],
+    [
+     "spearmanr",
+     "corr_spearman_tau-1"
+    ],
+    [
+     "kendalltau-sq",
+     "corr_kendall_tau-1-sq"
+    ],
+    [
+     "kendalltau",
+     "corr_kendall_tau-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: gaussian vs kozachenko",
+   "members": 6,
+   "statistics": [
+    "cce",
+    "ce",
+    "je",
+    "si",
+    "xme"
+   ],
+   "character": "non-Gaussian dependence (entropy estimator)",
+   "literal": "Gaussian against Kozachenko-Leonenko entropy",
+   "confound": "marginal entropies are node-level",
+   "pairs": [
+    [
+     "je_gaussian",
+     "je_kozachenko"
+    ],
+    [
+     "ce_gaussian",
+     "ce_kozachenko"
+    ],
+    [
+     "cce_gaussian_n-5",
+     "cce_kozachenko_n-5"
+    ],
+    [
+     "xme_gaussian_k1",
+     "xme_kozachenko_k1"
+    ],
+    [
+     "xme_gaussian_k10",
+     "xme_kozachenko_k10"
+    ],
+    [
+     "si_gaussian_k-1",
+     "si_kozachenko_k-1"
+    ]
+   ]
+  },
+  {
+   "cls": "zero-lag removal (coherence)",
+   "members": 6,
+   "statistics": [
+    "cohmag",
+    "icoh"
+   ],
+   "character": "non-zero-lag share of coupling",
+   "literal": "coherence magnitude against imaginary coherence",
+   "confound": "estimation floor of icoh (zero-phase null reproduces 50-75% of the drug rise)",
+   "pairs": [
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+     "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ]
+   ]
+  },
+  {
+   "cls": "amplitude weighting of synchrony",
+   "members": 6,
+   "statistics": [
+    "cohmag",
+    "plv"
+   ],
+   "character": "amplitude-weighted against pure phase synchrony",
+   "literal": "coherence against phase-locking value",
+   "confound": "medetomidine exception at high band",
+   "pairs": [
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+     "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ]
+   ]
+  },
+  {
+   "cls": "precedence (spectral)",
+   "members": 6,
+   "statistics": [
+    "cohmag",
+    "sgc"
+   ],
+   "character": "predictive (directed) share of spectral coupling",
+   "literal": "coherence against spectral Granger",
+   "confound": "AR model order",
+   "pairs": [
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None"
+    ],
+    [
+     "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None"
+    ],
+    [
+     "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None"
+    ]
+   ]
+  },
+  {
+   "cls": "phase-locking debiasing",
+   "members": 6,
+   "statistics": [
+    "plv",
+    "ppc"
+   ],
+   "character": null,
+   "literal": "PLV against its unbiased square",
+   "confound": "estimator diagnostic",
+   "pairs": [
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
+     "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+     "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5"
+    ]
+   ]
+  },
+  {
+   "cls": "imaginary-part weighting",
+   "members": 6,
+   "statistics": [
+    "dspli",
+    "dswpli",
+    "pli",
+    "wpli"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "pli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "wpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ],
+    [
+     "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ]
+   ]
+  },
+  {
+   "cls": "option: default vs order-1",
+   "members": 6,
+   "statistics": [
+    "sgc"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1"
+    ]
+   ]
+  },
+  {
+   "cls": "option: default vs order-20",
+   "members": 6,
+   "statistics": [
+    "sgc"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ]
+   ]
+  },
+  {
+   "cls": "option: order-1 vs order-20",
+   "members": 6,
+   "statistics": [
+    "sgc"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
+     "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ],
+    [
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+     "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
+     "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20"
+    ],
+    [
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
+     "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Empirical vs LedoitWolf",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": "shrinkage",
+   "confound": "identity for covariance (uniform scaling); conditioning for precision at T=200, M=125",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "cov_LedoitWolf"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "cov-sq_LedoitWolf"
+    ],
+    [
+     "prec_EmpiricalCovariance",
+     "prec_LedoitWolf"
+    ],
+    [
+     "prec-sq_EmpiricalCovariance",
+     "prec-sq_LedoitWolf"
+    ],
+    [
+     "pcorr_EmpiricalCovariance",
+     "pcorr_LedoitWolf"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Empirical vs MinCovDet",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": "time-heterogeneous dependence: a minority of samples carries a pattern different from the bulk",
+   "literal": "classical against minimum-covariance-determinant estimate",
+   "confound": "spatially focal transients; spectral flag clustering",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "cov_MinCovDet"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "cov-sq_MinCovDet"
+    ],
+    [
+     "prec_EmpiricalCovariance",
+     "prec_MinCovDet"
+    ],
+    [
+     "prec-sq_EmpiricalCovariance",
+     "prec-sq_MinCovDet"
+    ],
+    [
+     "pcorr_EmpiricalCovariance",
+     "pcorr_MinCovDet"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Empirical vs OAS",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": "shrinkage",
+   "confound": "as LedoitWolf",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "cov_OAS"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "cov-sq_OAS"
+    ],
+    [
+     "prec_EmpiricalCovariance",
+     "prec_OAS"
+    ],
+    [
+     "prec-sq_EmpiricalCovariance",
+     "prec-sq_OAS"
+    ],
+    [
+     "pcorr_EmpiricalCovariance",
+     "pcorr_OAS"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Empirical vs Shrunk",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": "shrinkage",
+   "confound": "as LedoitWolf",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "cov_ShrunkCovariance"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "cov-sq_ShrunkCovariance"
+    ],
+    [
+     "prec_EmpiricalCovariance",
+     "prec_ShrunkCovariance"
+    ],
+    [
+     "prec-sq_EmpiricalCovariance",
+     "prec-sq_ShrunkCovariance"
+    ],
+    [
+     "pcorr_EmpiricalCovariance",
+     "pcorr_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "mediation (normalised)",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr"
+   ],
+   "character": "mediation (partial correlation)",
+   "literal": "marginal against partial correlation",
+   "confound": "as mediation",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "pcorr_EmpiricalCovariance"
+    ],
+    [
+     "cov_LedoitWolf",
+     "pcorr_LedoitWolf"
+    ],
+    [
+     "cov_MinCovDet",
+     "pcorr_MinCovDet"
+    ],
+    [
+     "cov_OAS",
+     "pcorr_OAS"
+    ],
+    [
+     "cov_ShrunkCovariance",
+     "pcorr_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: LedoitWolf vs MinCovDet",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": "time-heterogeneous dependence (shrunk classical against robust)",
+   "literal": "shrunk against robust estimate",
+   "confound": "shrinkage as well as robustness differ",
+   "pairs": [
+    [
+     "cov_LedoitWolf",
+     "cov_MinCovDet"
+    ],
+    [
+     "cov-sq_LedoitWolf",
+     "cov-sq_MinCovDet"
+    ],
+    [
+     "prec_LedoitWolf",
+     "prec_MinCovDet"
+    ],
+    [
+     "prec-sq_LedoitWolf",
+     "prec-sq_MinCovDet"
+    ],
+    [
+     "pcorr_LedoitWolf",
+     "pcorr_MinCovDet"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: LedoitWolf vs OAS",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_LedoitWolf",
+     "cov_OAS"
+    ],
+    [
+     "cov-sq_LedoitWolf",
+     "cov-sq_OAS"
+    ],
+    [
+     "prec_LedoitWolf",
+     "prec_OAS"
+    ],
+    [
+     "prec-sq_LedoitWolf",
+     "prec-sq_OAS"
+    ],
+    [
+     "pcorr_LedoitWolf",
+     "pcorr_OAS"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: LedoitWolf vs Shrunk",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_LedoitWolf",
+     "cov_ShrunkCovariance"
+    ],
+    [
+     "cov-sq_LedoitWolf",
+     "cov-sq_ShrunkCovariance"
+    ],
+    [
+     "prec_LedoitWolf",
+     "prec_ShrunkCovariance"
+    ],
+    [
+     "prec-sq_LedoitWolf",
+     "prec-sq_ShrunkCovariance"
+    ],
+    [
+     "pcorr_LedoitWolf",
+     "pcorr_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: MinCovDet vs OAS",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_MinCovDet",
+     "cov_OAS"
+    ],
+    [
+     "cov-sq_MinCovDet",
+     "cov-sq_OAS"
+    ],
+    [
+     "prec_MinCovDet",
+     "prec_OAS"
+    ],
+    [
+     "prec-sq_MinCovDet",
+     "prec-sq_OAS"
+    ],
+    [
+     "pcorr_MinCovDet",
+     "pcorr_OAS"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: MinCovDet vs Shrunk",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_MinCovDet",
+     "cov_ShrunkCovariance"
+    ],
+    [
+     "cov-sq_MinCovDet",
+     "cov-sq_ShrunkCovariance"
+    ],
+    [
+     "prec_MinCovDet",
+     "prec_ShrunkCovariance"
+    ],
+    [
+     "prec-sq_MinCovDet",
+     "prec-sq_ShrunkCovariance"
+    ],
+    [
+     "pcorr_MinCovDet",
+     "pcorr_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: OAS vs Shrunk",
+   "members": 5,
+   "statistics": [
+    "corr",
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_OAS",
+     "cov_ShrunkCovariance"
+    ],
+    [
+     "cov-sq_OAS",
+     "cov-sq_ShrunkCovariance"
+    ],
+    [
+     "prec_OAS",
+     "prec_ShrunkCovariance"
+    ],
+    [
+     "prec-sq_OAS",
+     "prec-sq_ShrunkCovariance"
+    ],
+    [
+     "pcorr_OAS",
+     "pcorr_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "precision normalisation",
+   "members": 5,
+   "statistics": [
+    "pcorr",
+    "prec"
+   ],
+   "character": null,
+   "literal": "precision against partial correlation",
+   "confound": "node normalisation",
+   "pairs": [
+    [
+     "prec_EmpiricalCovariance",
+     "pcorr_EmpiricalCovariance"
+    ],
+    [
+     "prec_LedoitWolf",
+     "pcorr_LedoitWolf"
+    ],
+    [
+     "prec_MinCovDet",
+     "pcorr_MinCovDet"
+    ],
+    [
+     "prec_OAS",
+     "pcorr_OAS"
+    ],
+    [
+     "prec_ShrunkCovariance",
+     "pcorr_ShrunkCovariance"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: kernel vs kozachenko",
+   "members": 4,
+   "statistics": [
+    "ce",
+    "je",
+    "si",
+    "xme"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "je_kozachenko",
+     "je_kernel_W-0.5"
+    ],
+    [
+     "ce_kozachenko",
+     "ce_kernel_W-0.5"
+    ],
+    [
+     "xme_kozachenko_k1",
+     "xme_kernel_W-0.5_k1"
+    ],
+    [
+     "si_kozachenko_k-1",
+     "si_kernel_W-0.5_k-1"
+    ]
+   ]
+  },
+  {
+   "cls": "lag one sample (information)",
+   "members": 4,
+   "statistics": [
+    "mi",
+    "tlmi"
+   ],
+   "character": "one-sample persistence of dependence",
+   "literal": "MI against lagged MI",
+   "confound": "autocorrelation",
+   "pairs": [
+    [
+     "mi_gaussian",
+     "tlmi_gaussian"
+    ],
+    [
+     "mi_kraskov_NN-4",
+     "tlmi_kraskov_NN-4"
+    ],
+    [
+     "mi_kraskov_NN-4_DCE-AUTO",
+     "tlmi_kraskov_NN-4_DCE-AUTO"
+    ],
+    [
+     "mi_kernel_W-0.25",
+     "tlmi_kernel_W-0.25"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: max_eig vs trace",
+   "members": 4,
+   "statistics": [
+    "coint_johansen"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "coint_johansen_max_eig_stat_order-0_ardiff-10",
+     "coint_johansen_trace_stat_order-0_ardiff-10"
+    ],
+    [
+     "coint_johansen_max_eig_stat_order-0_ardiff-1",
+     "coint_johansen_trace_stat_order-0_ardiff-1"
+    ],
+    [
+     "coint_johansen_max_eig_stat_order-1_ardiff-10",
+     "coint_johansen_trace_stat_order-1_ardiff-10"
+    ],
+    [
+     "coint_johansen_max_eig_stat_order-1_ardiff-1",
+     "coint_johansen_trace_stat_order-1_ardiff-1"
+    ]
+   ]
+  },
+  {
+   "cls": "option: order-0 vs order-1",
+   "members": 4,
+   "statistics": [
+    "coint_johansen"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "coint_johansen_max_eig_stat_order-0_ardiff-10",
+     "coint_johansen_max_eig_stat_order-1_ardiff-10"
+    ],
+    [
+     "coint_johansen_trace_stat_order-0_ardiff-10",
+     "coint_johansen_trace_stat_order-1_ardiff-10"
+    ],
+    [
+     "coint_johansen_max_eig_stat_order-0_ardiff-1",
+     "coint_johansen_max_eig_stat_order-1_ardiff-1"
+    ],
+    [
+     "coint_johansen_trace_stat_order-0_ardiff-1",
+     "coint_johansen_trace_stat_order-1_ardiff-1"
+    ]
+   ]
+  },
+  {
+   "cls": "elastic distance against elastic similarity",
+   "members": 3,
+   "statistics": [
+    "dtw",
+    "lcss"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "dtw",
+     "lcss"
+    ],
+    [
+     "dtw_constraint-itakura",
+     "lcss_constraint-itakura"
+    ],
+    [
+     "dtw_constraint-sakoe-chiba_radius-auto",
+     "lcss_constraint-sakoe-chiba"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: dtw vs sgddtw",
+   "members": 3,
+   "statistics": [
+    "bary"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "bary_dtw_corr",
+     "bary_sgddtw_corr"
+    ],
+    [
+     "bary_dtw_max",
+     "bary_sgddtw_max"
+    ],
+    [
+     "bary-sq_dtw_max",
+     "bary-sq_sgddtw_max"
+    ]
+   ]
+  },
+  {
+   "cls": "one marginal entropy removed",
+   "members": 3,
+   "statistics": [
+    "ce",
+    "je"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "je_gaussian",
+     "ce_gaussian"
+    ],
+    [
+     "je_kozachenko",
+     "ce_kozachenko"
+    ],
+    [
+     "je_kernel_W-0.5",
+     "ce_kernel_W-0.5"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: gaussian vs kraskov",
+   "members": 3,
+   "statistics": [
+    "mi",
+    "te",
+    "tlmi"
+   ],
+   "character": null,
+   "literal": "Gaussian against uncorrected kNN information",
+   "confound": "autocorrelation bias of uncorrected KSG dominates",
+   "pairs": [
+    [
+     "mi_gaussian",
+     "mi_kraskov_NN-4"
+    ],
+    [
+     "tlmi_gaussian",
+     "tlmi_kraskov_NN-4"
+    ],
+    [
+     "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
+     "gc_gaussian_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: gaussian vs kraskov_DCE",
+   "members": 3,
+   "statistics": [
+    "mi",
+    "te",
+    "tlmi"
+   ],
+   "character": "non-Gaussian dependence: how far each pair departs from the dependence a Gaussian process with its covariance would carry",
+   "literal": "organisation of Gaussian against kNN (bias-corrected) information (mi, tlmi) or prediction (te: GC against TE)",
+   "confound": "spectral concentration, kNN estimator bias at T=200; MI part survives IAAFT; TE part tracks spectral entropy",
+   "pairs": [
+    [
+     "mi_gaussian",
+     "mi_kraskov_NN-4_DCE-AUTO"
+    ],
+    [
+     "tlmi_gaussian",
+     "tlmi_kraskov_NN-4_DCE-AUTO"
+    ],
+    [
+     "gc_gaussian_k-1_kt-1_l-1_lt-1",
+     "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: kraskov vs kraskov_DCE",
+   "members": 3,
+   "statistics": [
+    "mi",
+    "te",
+    "tlmi"
+   ],
+   "character": null,
+   "literal": "kNN information with and without the dynamic correlation exclusion",
+   "confound": "estimator diagnostic: autocorrelation bias",
+   "pairs": [
+    [
+     "mi_kraskov_NN-4",
+     "mi_kraskov_NN-4_DCE-AUTO"
+    ],
+    [
+     "tlmi_kraskov_NN-4",
+     "tlmi_kraskov_NN-4_DCE-AUTO"
+    ],
+    [
+     "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
+     "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: kraskov vs kernel",
+   "members": 3,
+   "statistics": [
+    "mi",
+    "te",
+    "tlmi"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "mi_kraskov_NN-4",
+     "mi_kernel_W-0.25"
+    ],
+    [
+     "tlmi_kraskov_NN-4",
+     "tlmi_kernel_W-0.25"
+    ],
+    [
+     "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
+     "te_kernel_W-0.25_k-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: kernel vs kraskov_DCE",
+   "members": 3,
+   "statistics": [
+    "mi",
+    "te",
+    "tlmi"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "mi_kraskov_NN-4_DCE-AUTO",
+     "mi_kernel_W-0.25"
+    ],
+    [
+     "tlmi_kraskov_NN-4_DCE-AUTO",
+     "tlmi_kernel_W-0.25"
+    ],
+    [
+     "te_kernel_W-0.25_k-1",
+     "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "conditioning on the target past",
+   "members": 3,
+   "statistics": [
+    "te",
+    "tlmi"
+   ],
+   "character": "information the source adds beyond the target own past",
+   "literal": "lagged MI against TE/GC",
+   "confound": "autocorrelation",
+   "pairs": [
+    [
+     "tlmi_gaussian",
+     "gc_gaussian_k-1_kt-1_l-1_lt-1"
+    ],
+    [
+     "tlmi_kraskov_NN-4_DCE-AUTO",
+     "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1"
+    ],
+    [
+     "tlmi_kernel_W-0.25",
+     "te_kernel_W-0.25_k-1"
+    ]
+   ]
+  },
+  {
+   "cls": "zero-lag removal (debiased phase)",
+   "members": 3,
+   "statistics": [
+    "dswpli",
+    "ppc"
+   ],
+   "character": "non-zero-lag share of phase coupling",
+   "literal": "PPC against debiased wPLI",
+   "confound": "dswpli unreliable (reliability .03)",
+   "pairs": [
+    [
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5"
+    ],
+    [
+     "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+     "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25"
+    ],
+    [
+     "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+     "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: linear vs log",
+   "members": 3,
+   "statistics": [
+    "pec"
+   ],
+   "character": "burst-driven against proportional amplitude coupling",
+   "literal": "envelope correlation on raw against log envelopes",
+   "confound": "heavy-tailed envelopes",
+   "pairs": [
+    [
+     "pec",
+     "pec_log"
+    ],
+    [
+     "pec_orth",
+     "pec_orth_log"
+    ],
+    [
+     "pec_orth_abs",
+     "pec_orth_log_abs"
+    ]
+   ]
+  },
+  {
+   "cls": "best lag against zero lag",
+   "members": 2,
+   "statistics": [
+    "corr",
+    "xcorr"
+   ],
+   "character": "coupling carried at a non-zero best lag",
+   "literal": "zero-lag against best-lag correlation",
+   "confound": "dominant frequency; xcorr reliability",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "xcorr_max_sig-True"
+    ],
+    [
+     "cov-sq_EmpiricalCovariance",
+     "xcorr-sq_max_sig-True"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: LedoitWolf vs spearman",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_LedoitWolf",
+     "spearmanr"
+    ],
+    [
+     "cov-sq_LedoitWolf",
+     "spearmanr-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: LedoitWolf vs kendall",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_LedoitWolf",
+     "kendalltau"
+    ],
+    [
+     "cov-sq_LedoitWolf",
+     "kendalltau-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: MinCovDet vs spearman",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_MinCovDet",
+     "spearmanr"
+    ],
+    [
+     "cov-sq_MinCovDet",
+     "spearmanr-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: MinCovDet vs kendall",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_MinCovDet",
+     "kendalltau"
+    ],
+    [
+     "cov-sq_MinCovDet",
+     "kendalltau-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: OAS vs spearman",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_OAS",
+     "spearmanr"
+    ],
+    [
+     "cov-sq_OAS",
+     "spearmanr-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: OAS vs kendall",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_OAS",
+     "kendalltau"
+    ],
+    [
+     "cov-sq_OAS",
+     "kendalltau-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Shrunk vs spearman",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_ShrunkCovariance",
+     "spearmanr"
+    ],
+    [
+     "cov-sq_ShrunkCovariance",
+     "spearmanr-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Shrunk vs kendall",
+   "members": 2,
+   "statistics": [
+    "corr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "cov_ShrunkCovariance",
+     "kendalltau"
+    ],
+    [
+     "cov-sq_ShrunkCovariance",
+     "kendalltau-sq"
+    ]
+   ]
+  },
+  {
+   "cls": "option: threshold-False vs threshold-True",
+   "members": 2,
+   "statistics": [
+    "xcorr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "xcorr_mean_sig-True",
+     "xcorr_mean_sig-False"
+    ],
+    [
+     "xcorr-sq_mean_sig-True",
+     "xcorr-sq_mean_sig-False"
+    ]
+   ]
+  },
+  {
+   "cls": "option: unconstrained vs itakura",
+   "members": 2,
+   "statistics": [
+    "dtw",
+    "lcss"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "dtw",
+     "dtw_constraint-itakura"
+    ],
+    [
+     "lcss",
+     "lcss_constraint-itakura"
+    ]
+   ]
+  },
+  {
+   "cls": "option: unconstrained vs sakoe-chiba",
+   "members": 2,
+   "statistics": [
+    "dtw",
+    "lcss"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "dtw",
+     "dtw_constraint-sakoe-chiba_radius-auto"
+    ],
+    [
+     "lcss",
+     "lcss_constraint-sakoe-chiba"
+    ]
+   ]
+  },
+  {
+   "cls": "option: itakura vs sakoe-chiba",
+   "members": 2,
+   "statistics": [
+    "dtw",
+    "lcss"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "dtw_constraint-itakura",
+     "dtw_constraint-sakoe-chiba_radius-auto"
+    ],
+    [
+     "lcss_constraint-itakura",
+     "lcss_constraint-sakoe-chiba"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: dtw vs euclidean",
+   "members": 2,
+   "statistics": [
+    "bary"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "bary_euclidean_max",
+     "bary_dtw_max"
+    ],
+    [
+     "bary-sq_euclidean_max",
+     "bary-sq_dtw_max"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: euclidean vs sgddtw",
+   "members": 2,
+   "statistics": [
+    "bary"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "bary_euclidean_max",
+     "bary_sgddtw_max"
+    ],
+    [
+     "bary-sq_euclidean_max",
+     "bary-sq_sgddtw_max"
+    ]
+   ]
+  },
+  {
+   "cls": "aggregation: corr vs max",
+   "members": 2,
+   "statistics": [
+    "bary"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "bary_dtw_corr",
+     "bary_dtw_max"
+    ],
+    [
+     "bary_sgddtw_corr",
+     "bary_sgddtw_max"
+    ]
+   ]
+  },
+  {
+   "cls": "marginal entropies added",
+   "members": 2,
+   "statistics": [
+    "je",
+    "mi"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "je_gaussian",
+     "mi_gaussian"
+    ],
+    [
+     "je_kernel_W-0.5",
+     "mi_kernel_W-0.25"
+    ]
+   ]
+  },
+  {
+   "cls": "option: k1 vs k10",
+   "members": 2,
+   "statistics": [
+    "xme"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "xme_gaussian_k1",
+     "xme_gaussian_k10"
+    ],
+    [
+     "xme_kozachenko_k1",
+     "xme_kozachenko_k10"
+    ]
+   ]
+  },
+  {
+   "cls": "option: norm-0 vs norm-1",
+   "members": 2,
+   "statistics": [
+    "phi"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "phi_star_t-1_norm-0",
+     "phi_star_t-1_norm-1"
+    ],
+    [
+     "phi_Geo_t-1_norm-0",
+     "phi_Geo_t-1_norm-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Geo vs star",
+   "members": 2,
+   "statistics": [
+    "phi"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "phi_star_t-1_norm-0",
+     "phi_Geo_t-1_norm-0"
+    ],
+    [
+     "phi_star_t-1_norm-1",
+     "phi_Geo_t-1_norm-1"
+    ]
+   ]
+  },
+  {
+   "cls": "zero-lag removal (envelope)",
+   "members": 2,
+   "statistics": [
+    "pec"
+   ],
+   "character": "lagged share of amplitude coupling (volume-conduction-free)",
+   "literal": "envelope correlation with and without orthogonalisation",
+   "confound": "pec_orth unreliable",
+   "pairs": [
+    [
+     "pec",
+     "pec_orth"
+    ],
+    [
+     "pec_log",
+     "pec_orth_log"
+    ]
+   ]
+  },
+  {
+   "cls": "sign handling: signed vs abs",
+   "members": 2,
+   "statistics": [
+    "pec"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pec_orth",
+     "pec_orth_abs"
+    ],
+    [
+     "pec_orth_log",
+     "pec_orth_log_abs"
+    ]
+   ]
+  },
+  {
+   "cls": "identity control (distance)",
+   "members": 1,
+   "statistics": [
+    "corr",
+    "pdist"
+   ],
+   "character": null,
+   "literal": "Euclidean distance is a fixed function of r on z-scored data",
+   "confound": "identity, z = -1",
+   "pairs": [
+    [
+     "cov_EmpiricalCovariance",
+     "pdist_euclidean"
+    ]
+   ]
+  },
+  {
+   "cls": "any dependence against linear",
+   "members": 1,
+   "statistics": [
+    "corr",
+    "dcorr"
+   ],
+   "character": "non-linear (any-form) dependence share",
+   "literal": "r^2 against distance correlation",
+   "confound": "saturation; beyond-IAAFT ladder reported by independent review",
+   "pairs": [
+    [
+     "cov-sq_EmpiricalCovariance",
+     "dcorr"
+    ]
+   ]
+  },
+  {
+   "cls": "saturation control",
+   "members": 1,
+   "statistics": [
+    "corr",
+    "mi"
+   ],
+   "character": null,
+   "literal": "r^2 against -1/2 log(1-r^2): a fixed monotone function",
+   "confound": "pure saturation and range restriction: the floor any ceiling class must beat",
+   "pairs": [
+    [
+     "cov-sq_EmpiricalCovariance",
+     "mi_gaussian"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: cityblock vs euclidean",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_euclidean",
+     "pdist_cityblock"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: cosine vs euclidean",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_euclidean",
+     "pdist_cosine"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: chebyshev vs euclidean",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_euclidean",
+     "pdist_chebyshev"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: canberra vs euclidean",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_euclidean",
+     "pdist_canberra"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: braycurtis vs euclidean",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_euclidean",
+     "pdist_braycurtis"
+    ]
+   ]
+  },
+  {
+   "cls": "rigid against elastic alignment",
+   "members": 1,
+   "statistics": [
+    "dtw",
+    "pdist"
+   ],
+   "character": "variable-lag (warped) alignment",
+   "literal": "Euclidean against DTW distance",
+   "confound": "warp failed construction validation",
+   "pairs": [
+    [
+     "pdist_euclidean",
+     "dtw"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: cityblock vs cosine",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cityblock",
+     "pdist_cosine"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: chebyshev vs cityblock",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cityblock",
+     "pdist_chebyshev"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: canberra vs cityblock",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cityblock",
+     "pdist_canberra"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: braycurtis vs cityblock",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cityblock",
+     "pdist_braycurtis"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: chebyshev vs cosine",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cosine",
+     "pdist_chebyshev"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: canberra vs cosine",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cosine",
+     "pdist_canberra"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: braycurtis vs cosine",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_cosine",
+     "pdist_braycurtis"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: canberra vs chebyshev",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_chebyshev",
+     "pdist_canberra"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: braycurtis vs chebyshev",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_chebyshev",
+     "pdist_braycurtis"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: braycurtis vs canberra",
+   "members": 1,
+   "statistics": [
+    "pdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "pdist_canberra",
+     "pdist_braycurtis"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: biased vs unbiased",
+   "members": 1,
+   "statistics": [
+    "dcorr"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "dcorr",
+     "dcorr_biased"
+    ]
+   ]
+  },
+  {
+   "cls": "aggregation: mean vs min",
+   "members": 1,
+   "statistics": [
+    "xpdist"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "xpdist_euclidean_tau-1_min_rmse",
+     "xpdist_euclidean_tau-1_mean_rmse"
+    ]
+   ]
+  },
+  {
+   "cls": "option: history-1 vs history-auto",
+   "members": 1,
+   "statistics": [
+    "te"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+     "gc_gaussian_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: gaussian vs symbolic",
+   "members": 1,
+   "statistics": [
+    "te"
+   ],
+   "character": "ordinal-pattern (amplitude-free) predictive structure",
+   "literal": "Gaussian against symbolic TE",
+   "confound": "pattern length 3; T",
+   "pairs": [
+    [
+     "gc_gaussian_k-1_kt-1_l-1_lt-1",
+     "te_symbolic_k-3"
+    ]
+   ]
+  },
+  {
+   "cls": "option: history-1 vs history-2",
+   "members": 1,
+   "statistics": [
+    "te"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1",
+     "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: Ridge vs SGDRegressor",
+   "members": 1,
+   "statistics": [
+    "lmfit"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "lmfit_Ridge",
+     "lmfit_SGDRegressor"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: BayesianRidge vs Ridge",
+   "members": 1,
+   "statistics": [
+    "lmfit"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "lmfit_Ridge",
+     "lmfit_BayesianRidge"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: BayesianRidge vs SGDRegressor",
+   "members": 1,
+   "statistics": [
+    "lmfit"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "lmfit_SGDRegressor",
+     "lmfit_BayesianRidge"
+    ]
+   ]
+  },
+  {
+   "cls": "option: trend-c vs trend-ct",
+   "members": 1,
+   "statistics": [
+    "coint_aeg"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "coint_aeg_tstat_trend-c_autolag-aic_maxlag-10",
+     "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10"
+    ]
+   ]
+  },
+  {
+   "cls": "estimator: aic vs bic",
+   "members": 1,
+   "statistics": [
+    "coint_aeg"
+   ],
+   "character": null,
+   "literal": null,
+   "confound": null,
+   "pairs": [
+    [
+     "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10",
+     "coint_aeg_tstat_trend-ct_autolag-bic_maxlag-10"
+    ]
+   ]
+  }
+ ]
+}

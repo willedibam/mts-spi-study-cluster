@@ -1,0 +1,28 @@
+#!/bin/bash
+#PBS -N axes-episodic-3
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=32,mem=96GB,walltime=03:00:00,jobfs=1GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Episodic gain control (episodic.py): flag index with per-window IAAFT, with and without sliding 1-s RMS
+# normalisation, on the discovery NeuroTycho bank, propofol and the atlas NeuroTycho 10-s bank (sleep tertiles).
+# qsub research/representation/character_axes/jobs/episodic_gain.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+E="$MTS_SCRATCH/representation/empirical"
+C="$E/character-axes-261102"
+B="$MTS_SCRATCH/atlas/banks"
+O=/g/data/ql44/we2614/mts-spi-study/representation/empirical/character-axes-261102/episodic
+NT="$E/character-transfer-261031/neurotycho-primary/bank.npz"
+for gain in "" "--gain"; do
+    tag=${gain:+-gain}
+    python -u -m research.representation.character_axes.episodic neurotycho --mode index --real "$NT" --fs 250 $gain \
+        --output "$O/index-neurotycho$tag.json" --jobs 32
+    python -u -m research.representation.character_axes.episodic propofol --mode index --real "$C/propofol/bank.npz" --fs 100 $gain \
+        --output "$O/index-propofol$tag.json" --jobs 32
+    python -u -m research.representation.character_axes.episodic atlas --real "$B/neurotycho-long" --reference awake_ec $gain \
+        --output "$O/atlas-neurotycho-long-tertiles$tag.json" --jobs 32
+done

@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N fill-wheels
+#PBS -P ql44
+#PBS -q copyq
+#PBS -l ncpus=1,mem=8GB,walltime=01:00:00,jobfs=8GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# Wheels for the job-local aeon environment: aeon 1.5.0 and its dependencies, plus CPU torch (Hydra and QUANT need it).
+# qsub -v WHEELHOUSE=<dir> .../wheels.pbs
+set -euo pipefail
+module purge
+module load python3/3.12.1
+python3 -m venv "$PBS_JOBFS/downloader"
+mkdir -p "${WHEELHOUSE:?}"
+export PIP_CACHE_DIR="$PBS_JOBFS/pip-cache"
+"$PBS_JOBFS/downloader/bin/python" -m pip download --only-binary=:all: --dest "$WHEELHOUSE" aeon==1.5.0 pyyaml
+"$PBS_JOBFS/downloader/bin/python" -m pip download --only-binary=:all: --dest "$WHEELHOUSE" \
+    --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple torch
+ls "$WHEELHOUSE" | wc -l

@@ -1,0 +1,518 @@
+{
+ "cohort": "neurotycho",
+ "core": [
+  "band",
+  "band_high_share",
+  "band_spread",
+  "mediation_ledoit_wolf",
+  "mediation_empirical",
+  "lag",
+  "lag_sin_phi",
+  "form_te_minus_gc",
+  "location_frequency"
+ ],
+ "core_roles": {
+  "band": "sub",
+  "band_high_share": "core",
+  "band_spread": "core",
+  "mediation_ledoit_wolf": "core",
+  "mediation_empirical": "core",
+  "lag": "sub",
+  "lag_sin_phi": "sub",
+  "form_te_minus_gc": "sub",
+  "location_frequency": "sub"
+ },
+ "core_missing": {
+  "band": 0.0,
+  "band_high_share": 0.0,
+  "band_spread": 0.0,
+  "mediation_ledoit_wolf": 0.0,
+  "mediation_empirical": 0.0,
+  "lag": 0.0,
+  "lag_sin_phi": 0.0,
+  "form_te_minus_gc": 0.0,
+  "location_frequency": 0.08958333333333333
+ },
+ "contrasts": {
+  "anaesthesia_vs_awake": {
+   "windows": 480,
+   "core_effects": {
+    "band": {
+     "difference": 0.38710053408913264,
+     "standardized": 3.385542368371262,
+     "positive": 6,
+     "units": 6,
+     "p": 0.03125
+    },
+    "band_high_share": {
+     "difference": 0.012128655843770245,
+     "standardized": 1.4012211446264102,
+     "positive": 6,
+     "units": 6,
+     "p": 0.03125
+    },
+    "band_spread": {
+     "difference": 0.01347915185823569,
+     "standardized": 1.7602457788749617,
+     "positive": 6,
+     "units": 6,
+     "p": 0.03125
+    },
+    "mediation_ledoit_wolf": {
+     "difference": -0.16623063734295157,
+     "standardized": -2.1118142566892946,
+     "positive": 0,
+     "units": 6,
+     "p": 0.03125
+    },
+    "mediation_empirical": {
+     "difference": -0.16901179481943074,
+     "standardized": -2.1549766533058725,
+     "positive": 0,
+     "units": 6,
+     "p": 0.03125
+    },
+    "lag": {
+     "difference": 0.14415398426123852,
+     "standardized": 1.7398400760206048,
+     "positive": 6,
+     "units": 6,
+     "p": 0.03125
+    },
+    "lag_sin_phi": {
+     "difference": -0.010840749050404571,
+     "standardized": -1.4548376224984474,
+     "positive": 0,
+     "units": 6,
+     "p": 0.03125
+    },
+    "form_te_minus_gc": {
+     "difference": -0.034747487535087336,
+     "standardized": -2.460418756959659,
+     "positive": 0,
+     "units": 6,
+     "p": 0.03125
+    },
+    "location_frequency": {
+     "difference": -0.012938012992890718,
+     "standardized": -0.5008140837989318,
+     "positive": 2,
+     "units": 6,
+     "p": 0.3125
+    }
+   },
+   "readouts": {
+    "form_monotone": {
+     "raw": {
+      "difference": -0.005183511344295418,
+      "standardized": -0.16194254802451294,
+      "positive": 3,
+      "units": 6,
+      "p": 1.0
+     },
+     "adjusted": {
+      "difference": -0.03930652721744619,
+      "standardized": -3.1956922358546795,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "not eligible"
+    },
+    "form_information": {
+     "raw": {
+      "difference": -0.03282996567877298,
+      "standardized": -0.32405048751101495,
+      "positive": 2,
+      "units": 6,
+      "p": 0.4375
+     },
+     "adjusted": {
+      "difference": -0.08465981357819606,
+      "standardized": -2.2077551792253964,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "not eligible"
+    },
+    "timing_fixed_lag": {
+     "raw": {
+      "difference": 0.12424462810770993,
+      "standardized": 1.359863044081243,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.05869634963251552,
+      "standardized": 0.947464970305641,
+      "positive": 4,
+      "units": 6,
+      "p": 0.15625
+     },
+     "verdict": "partial"
+    },
+    "timing_best_shift": {
+     "raw": {
+      "difference": -0.04838902884980487,
+      "standardized": -1.0462036134738206,
+      "positive": 1,
+      "units": 6,
+      "p": 0.0625
+     },
+     "adjusted": {
+      "difference": -0.12446219924760306,
+      "standardized": -3.2278216803669224,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "not eligible"
+    },
+    "timing_warping": {
+     "raw": {
+      "difference": 0.16650892046437307,
+      "standardized": 2.6963914078219253,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": -0.048620717069590036,
+      "standardized": -1.4179742535658186,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "partial"
+    },
+    "phase_lag": {
+     "raw": {
+      "difference": 0.04902298168888541,
+      "standardized": 0.6221561830692276,
+      "positive": 4,
+      "units": 6,
+      "p": 0.21875
+     },
+     "adjusted": {
+      "difference": -0.010249161447637276,
+      "standardized": -0.4727625995141754,
+      "positive": 2,
+      "units": 6,
+      "p": 0.3125
+     },
+     "verdict": "not eligible"
+    },
+    "predictive": {
+     "raw": {
+      "difference": 0.04885406996159728,
+      "standardized": 3.1275944163858616,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.01979901906969851,
+      "standardized": 1.675179748813997,
+      "positive": 5,
+      "units": 6,
+      "p": 0.0625
+     },
+     "verdict": "partial"
+    },
+    "history": {
+     "raw": {
+      "difference": 0.11310369303799783,
+      "standardized": 1.6412656502329819,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.0547234890816668,
+      "standardized": 1.075434766888469,
+      "positive": 5,
+      "units": 6,
+      "p": 0.0625
+     },
+     "verdict": "partial"
+    },
+    "mediation": {
+     "raw": {
+      "difference": -0.0025468401584640608,
+      "standardized": -0.11944763021555901,
+      "positive": 2,
+      "units": 6,
+      "p": 0.84375
+     },
+     "adjusted": {
+      "difference": -0.008927460741805124,
+      "standardized": -0.47611298560569987,
+      "positive": 2,
+      "units": 6,
+      "p": 0.3125
+     },
+     "verdict": "not eligible"
+    },
+    "band": {
+     "raw": {
+      "difference": 0.1326037597785464,
+      "standardized": 3.5158700749309055,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.007578084931949326,
+      "standardized": 0.9962623685998904,
+      "positive": 5,
+      "units": 6,
+      "p": 0.0625
+     },
+     "verdict": "absorbed"
+    },
+    "spectral_peak": {
+     "raw": {
+      "difference": 0.07488940920328062,
+      "standardized": 2.917816051636907,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.011474502240795251,
+      "standardized": 1.321052183931771,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "survives"
+    },
+    "phase_amplitude": {
+     "raw": {
+      "difference": 0.049846792558239435,
+      "standardized": 0.5335113118352076,
+      "positive": 4,
+      "units": 6,
+      "p": 0.3125
+     },
+     "adjusted": {
+      "difference": -0.03693267690832566,
+      "standardized": -0.7228322297617499,
+      "positive": 1,
+      "units": 6,
+      "p": 0.15625
+     },
+     "verdict": "not eligible"
+    },
+    "tail": {
+     "raw": {
+      "difference": -0.10484802638984679,
+      "standardized": -1.57957763918158,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": -0.08984159973359807,
+      "standardized": -3.8454216070267075,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "survives"
+    },
+    "level_form_information": {
+     "raw": {
+      "difference": 0.20539288492224572,
+      "standardized": 2.274190751617975,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": -0.0052526828755235415,
+      "standardized": -0.4489915378837919,
+      "positive": 1,
+      "units": 6,
+      "p": 0.3125
+     },
+     "verdict": "absorbed"
+    },
+    "level_form_monotone": {
+     "raw": {
+      "difference": 0.004638797231224894,
+      "standardized": 1.2586361342735954,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 1.5141401698697327e-05,
+      "standardized": 0.006502440799176661,
+      "positive": 2,
+      "units": 6,
+      "p": 0.84375
+     },
+     "verdict": "absorbed"
+    },
+    "level_timing_best_shift": {
+     "raw": {
+      "difference": 0.03895764840538838,
+      "standardized": 3.9899052885495756,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.01188977807387013,
+      "standardized": 5.120571520529221,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "verdict": "survives"
+    },
+    "level_phase_lag": {
+     "raw": {
+      "difference": -0.04926134386551828,
+      "standardized": -1.844582710495396,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.00608515353520378,
+      "standardized": 0.7985679731837413,
+      "positive": 5,
+      "units": 6,
+      "p": 0.21875
+     },
+     "verdict": "absorbed"
+    },
+    "level_band": {
+     "raw": {
+      "difference": 0.012128655843770245,
+      "standardized": 1.4012211446264102,
+      "positive": 6,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.0,
+      "standardized": null,
+      "positive": 0,
+      "units": 6,
+      "p": null
+     },
+     "verdict": "not estimable"
+    },
+    "level_spectral_peak": {
+     "raw": {
+      "difference": -0.13226041974729977,
+      "standardized": -1.7818933328368092,
+      "positive": 0,
+      "units": 6,
+      "p": 0.03125
+     },
+     "adjusted": {
+      "difference": 0.022393101940150945,
+      "standardized": 0.838623035091211,
+      "positive": 5,
+      "units": 6,
+      "p": 0.15625
+     },
+     "verdict": "absorbed"
+    },
+    "level_timing_warping": {
+     "raw": {
+      "difference": -0.013172950625603705,
+      "standardized": -0.571260722420181,
+      "positive": 2,
+      "units": 6,
+      "p": 0.21875
+     },
+     "adjusted": {
+      "difference": -0.001351286708874457,
+      "standardized": -0.13364699682866604,
+      "positive": 3,
+      "units": 6,
+      "p": 0.84375
+     },
+     "verdict": "not eligible"
+    },
+    "level_tail": {
+     "raw": {
+      "difference": -0.005304821425935404,
+      "standardized": -0.6149186046693514,
+      "positive": 2,
+      "units": 6,
+      "p": 0.3125
+     },
+     "adjusted": {
+      "difference": 0.0014620542863668234,
+      "standardized": 0.4407202243972557,
+      "positive": 4,
+      "units": 6,
+      "p": 0.3125
+     },
+     "verdict": "not eligible"
+    }
+   },
+   "survivors": [
+    "spectral_peak",
+    "tail",
+    "level_timing_best_shift"
+   ],
+   "sufficient_for_extended": false,
+   "scores": {
+    "P": {
+     "auroc": 0.599609375,
+     "brier": 0.24936316391488564,
+     "balanced_accuracy": 0.6640625
+    },
+    "P_z": {
+     "auroc": 0.95166015625,
+     "brier": 0.1707024892627963,
+     "balanced_accuracy": 0.8125
+    },
+    "P_core": {
+     "auroc": 0.96923828125,
+     "brier": 0.1042324702654974,
+     "balanced_accuracy": 0.8515625
+    },
+    "P_core_z": {
+     "auroc": 1.0,
+     "brier": 0.10315510520073426,
+     "balanced_accuracy": 0.8359375
+    }
+   },
+   "z_increment": {
+    "z_over_P": {
+     "difference": 0.35205078125,
+     "interval": [
+      0.0673828125,
+      0.6669921875
+     ]
+    },
+    "z_over_P_core": {
+     "difference": 0.03076171875,
+     "interval": [
+      0.0,
+      0.03076171875
+     ]
+    },
+    "core_over_P": {
+     "difference": 0.36962890625,
+     "interval": [
+      0.0673828125,
+      0.6630859375
+     ]
+    },
+    "z_adds": true,
+    "core_accounts": true
+   }
+  }
+ }
+}

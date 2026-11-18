@@ -1,0 +1,185 @@
+### transcript line 392
+S=/private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad; cd $S && ls banks; sed -i '' 's/^name, a, c = sys.argv/if __name__ != "__main__": raise SystemExit\nname, a, c = sys.argv/' between.py 2>/dev/null; head -12 between.py | tail -3
+
+### transcript line 396
+S=/private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad; cd $S && sed -i '' '/^if __name__ != "__main__": raise SystemExit$/d' between.py && sed -n '/^def pmeans/,/^    return (np.nanmean(a, 0)/p' between.py > helpers.py && sed -i '' '1i\
+import numpy as np
+' helpers.py && sed -i '' 's/^from between import pmeans, hedges/from helpers import pmeans, hedges/' beyond.py && P=/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python && $P -c "import numpy as np; b=np.load('banks/adftd.npz'); print(np.unique(b['y'],return_counts=True), len(np.unique(b['group'])))" && $P beyond.py adftd 1 0 adftd_surr_m adftd_surr_spec 2>&1 | head -40
+
+### transcript line 711
+S=/private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad; cd $S && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+import re
+s = open('trajplot.py').read()
+s = s.replace("def panel(ax, P, ev, unit, state, cond, paths, colours, title, faint=True):", "def panel(ax, P, ev, unit, state, cond, paths, colours, title, faint=True, endpoint=None):")
+s = s.replace("            for k in range(1, len(order)): ax.plot(cents[:, k, 0], cents[:, k, 1], 'o', color=col, alpha=.25, ms=3, mec='none')",
+              "            k = order.index(endpoint[c]) if endpoint else len(order) - 1\n            ax.plot(cents[:, k, 0], cents[:, k, 1], 'o', color=col, alpha=.3, ms=3, mec='none')")
+open('trajplot.py', 'w').write(s)
+t = open('emb_r10b.py').read()
+t = t.replace("panel(axes[1], P, ev, unit, state, cond, paths, colours, 'centred on each unit\\'s awake mean')",
+              "panel(axes[1], P, ev, unit, state, cond, paths, colours, 'centred on each unit\\'s awake mean', endpoint={'macaque KTMD': 'anaesthesia', 'macaque propofol': 'anaesthesia', 'human propofol': 'moderate'})")
+open('emb_r10b.py', 'w').write(t)
+EOF
+/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python emb_r10b.py && echo ok
+
+### transcript line 914
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && sed -i '' 's/^from scipy.special import ndtri$//' split.py && sed -i '' 's/^def zpair(x, keep=None):$/def zpair(x, keep=None):\n    from scipy.special import ndtri/' split.py && time /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python split.py
+
+### transcript line 980
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && sed -i '' "s|exec(open('decide.py').read().split(\"if __name__\")\[0\])|exec(open('decide.py').read().split(\"\\\\nif __name__ == '__main__':\")[0])|" calib.py && head -5 calib.py | tail -2 && time /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python calib.py
+
+### transcript line 1409
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && <heredoc omitted>
+sed -i '' 's/from decide10 import one, NAMES/from decide10b import one, NAMES/; s/delayed(one)(gen(kind,s,7919\*k+len(kind)),k)/delayed(one)(gen(kind,s,7919*k+len(kind)),k,False)/' calib10.py
+time /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python calib10.py
+
+### transcript line 1583
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && sed -i '' "s/rows = \[r for r in json.load(open(f'{d}\/manifest.json'))\['rows'\] if r\['state'\] in states\]/rows = [r for r in json.load(open(f'{d}\/manifest.json'))['rows'] if r['state'] in states and (len(sys.argv) < 6 or r['agent'] in sys.argv[5].split(','))]/" edgemi.py && grep -n "rows = " edgemi.py && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python edgemi.py raw/nt 126 edgemi_nt2s_126.npz awake_ec,awake_eo,drug,recovery_ec PF,KT,MD,KTMD
+
+### transcript line 1587
+pkill -f "edgemi.py raw/nt 126"; sleep 2; cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && sed -i '' 's/n_jobs=8, verbose=0/n_jobs=6, verbose=0/' edgemi.py && echo restarted
+
+### transcript line 1704
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+import re
+s=open('fig1.py').read()
+# split into separate simple figures: trajectories, ladder, 10-s
+s=s.replace("fig=plt.figure(figsize=(7.4,5.0)); gs=fig.add_gridspec(2,4,height_ratios=[1,1.05],width_ratios=[1,1,1.25,1.25])","")
+a=s.index('# a:'); b=s.index('# b:'); s=s[:a]+s[b:]
+s=s.replace("ax=fig.add_subplot(gs[0,2:]); xs=","fig,ax=plt.subplots(figsize=(4.2,3.0)); xs=")
+s=s.replace("ax.legend(handles=[Line2D([],[],color=COL[a],lw=1.5,label=NAME[a]) for a in COL],ncol=2,fontsize=7,loc='lower left')\nax.text(-.12,1.08,'b',transform=ax.transAxes,fontweight='bold',fontsize=11)",
+ "ax.legend(handles=[Line2D([],[],color=COL[a],lw=1.5,label=NAME[a]) for a in COL],fontsize=7,loc='center left',bbox_to_anchor=(1.01,.5))\nax.set_title('z(Gaussian MI, kNN MI), 2-s windows',fontsize=9)\nfig.savefig('fig/mi_trajectories.png')")
+s=s.replace("ax=fig.add_subplot(gs[1,:2]); DS=","fig,ax=plt.subplots(figsize=(4.0,2.6)); DS=")
+s=s.replace("ax.text(-.62,1.04,'c',transform=ax.transAxes,fontweight='bold',fontsize=11)","ax.set_title('beyond IAAFT, filled = beyond 2 null SD',fontsize=8,color='#555555')\nfig.savefig('fig/form_ladder.png')")
+s=s.replace("ax=fig.add_subplot(gs[1,2:]); G=","fig,ax=plt.subplots(figsize=(3.6,2.8)); G=")
+s=s.replace("ax.text(-.12,1.04,'d',transform=ax.transAxes,fontweight='bold',fontsize=11)\nfig.savefig('fig/mi_feature.png'); fig.savefig('fig/mi_feature.svg')","fig.savefig('fig/mi_10s.png')")
+open('figs_simple.py','w').write(s)
+EOF
+/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python figs_simple.py && ls fig/
+
+### transcript line 2523
+cd "/Users/wedi0306/Library/Application Support/Claude/side-session-notes/local_89f26329-f8af-40ac-adc4-5cbb414827de" && sed -i '' 's/exmi −3.8 \[−5.4, −2\] and −1.6 \[−2.6, −0.?\] surrogate SD/exmi −3.8 [−5.4, −2.4] and −1.6 [−2.6, −0.6] surrogate SD (edge bootstrap); switch −1.6 both; gate +4.3 both; rkurt −12.7 and −8.5/' review-nature-level.md && grep -c "−2.6, −0.6" review-nature-level.md
+
+### transcript line 2570
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && sed -i '' "s/W = np.load(f'{d}\/windows.npz'); sub = np.round(np.arange(32) \* (rows\[0\]\['M'\] - 1) \/ 31).astype(int)/W = np.load(f'{d}\/windows.npz'); S = lambda m: np.round(np.arange(32) * (m - 1) \/ 31).astype(int)/; s/W\[r\['id'\]\].astype(float)\[:, sub\]/W[r['id']].astype(float)[:, S(r['M'])]/" zgk_ns.py && grep -n "S(r\|S = lambda" zgk_ns.py && PY=/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python && ($PY zgk_ns.py raw/nt10b zns_B_SLP.npz SLP && echo SLP_DONE) > zns_slp.log 2>&1 &
+sleep 2; echo launched
+
+### transcript line 2611
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && PY=/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python; $PY sumall.py 2>/dev/null; python3 - <<'EOF' 2>/dev/null || true
+EOF
+sed -e "s|^L = \[np.load(f) for f in ('decide10_nt.npz', 'decide10b_nt.npz')\]|import glob; L = [np.load(f) for f in sorted(glob.glob('zns_[AB]_*.npz'))]|" -e "s|^i = list(L\[0\]\['names'\]).index('zgk')|i = 0|" -e "s|res = np.concatenate(\[d\['V'\]\[:, 0, i\] - d\['V'\]\[:, 1, i\] for d in L\])|res = np.concatenate([d['V'][:, 1, 0] - d['V'][:, 1, 1] for d in L])|" sleepmatch.py > sleepmatch_ns.py && grep -n "glob\|res = " sleepmatch_ns.py && $PY sleepmatch_ns.py
+
+### transcript line 2699
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && <heredoc omitted>
+sed -i '' "s/^import sys, h5py, fsspec, numpy as np/import sys, h5py, numpy as np\nfrom curlfile import CurlFile/; s/^fs = fsspec.filesystem('http'); f = fs.open(url, block_size=2\*\*20, cache_type='blockcache')/f = CurlFile(url)/" nwbpeek.py && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python nwbpeek.py 6ab37be4-adfe-4bea-a031-eb1a2b0782a8 2>&1 | grep -v -E "^units/|spike|^general/devices" | head -90
+
+### transcript line 2712
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && $(true) /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+import re
+s=open('curlfile.py').read()
+s=s.replace("""        self.url = subprocess.run(['curl', '-sIL', '-o', '/dev/null', '-w', '%{url_effective}', url], capture_output=True, text=True).stdout
+        h = subprocess.run(['curl', '-sI', self.url], capture_output=True, text=True).stdout
+        self.size = int([l.split(':')[1] for l in h.splitlines() if l.lower().startswith('content-length')][-1]); self.pos = 0; self.cache = {}; self.nreq = 0""",
+"""        loc = subprocess.run(['curl', '-sI', url], capture_output=True, text=True).stdout
+        loc = [l.split(': ', 1)[1].strip() for l in loc.splitlines() if l.lower().startswith('location')]
+        self.url = loc[0].split('?')[0] if loc else url          # public S3 blob, unsigned
+        h = subprocess.run(['curl', '-s', '-r', '0-0', '-D', '-', '-o', '/dev/null', self.url], capture_output=True, text=True).stdout
+        self.size = int(re.search(r'content-range: bytes 0-0/(\\d+)', h, re.I).group(1)); self.pos = 0; self.cache = {}; self.nreq = 0""")
+s=s.replace('import subprocess, io','import subprocess, io, re')
+open('curlfile.py','w').write(s)
+EOF
+/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python nwbpeek.py 6ab37be4-adfe-4bea-a031-eb1a2b0782a8 2>&1 | grep -v -E "^units/|spike|^general/devices" | head -90
+
+### transcript line 3013
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+import re
+s = open('extract_claar.py').read()
+s = s.replace("""        fl = flat_runs(X, NOMINAL_FS)                    # any good channel; reduced per channel below is not needed (atlas uses any)
+        y = continuous(X.astype(np.float64) * conv, NOMINAL_FS, MAINS); m = len(y)""",
+"""        fl = flat_any(X, NOMINAL_FS)                     # atlas flat_runs semantics, vectorised
+        y = np.column_stack([continuous(X[:, [j]].astype(np.float64) * conv, NOMINAL_FS, MAINS)[:, 0] for j in range(X.shape[1])]); m = len(y)""")
+s = s.replace("""def stretches(""", """def flat_any(x, fs):
+    \"\"\"Same as atlas flat_runs: samples inside a run of ≥ fs identical consecutive values in any channel.\"\"\"
+    flat = np.zeros(len(x), bool)
+    for col in x.T:
+        e = np.r_[0, np.flatnonzero(np.diff(col) != 0) + 1, len(col)]; L = np.diff(e)
+        for a, b in zip(e[:-1][L >= fs], e[1:][L >= fs]): flat[a:b] = True
+    return flat
+
+
+def stretches(""")
+open('extract_claar.py', 'w').write(s)
+EOF
+/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+import sys, numpy as np
+sys.path.insert(0, '/Users/wedi0306/Code/mts-spi-study-cluster/.claude/worktrees/real-world-apps-9b53a1')
+sys.path.insert(0, '/private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad')
+from research.representation.atlas.prepare import flat_runs
+from extract_claar import flat_any
+rng = np.random.default_rng(0); x = rng.integers(-3, 3, (20000, 3)).astype(np.int16); x[5000:8000, 1] = 7; x[100:2600, 2] = 0; x[19000:, 0] = 1
+print((flat_runs(x, 2500) == flat_any(x, 2500)).all(), flat_any(x, 2500).sum())
+EOF
+
+### transcript line 3124
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+s = open('select_claar.py').read()
+s = s.replace("        el.append((k, s['state'], max(a, 0), min(b, s['n100'])))", "        el.append((k, s['state'], max(a, 0), min(b, s['n100'] - 300)))      # ≥ 3 s from stretch edges")
+s = s.replace("L, CAP = 1000, 30\nsrc, dst = sys.argv[1], sys.argv[2]",
+ "L, CAP = 1000, 30\nsrc, dst = sys.argv[1], sys.argv[2]; RULE = sys.argv[3] if len(sys.argv) > 3 else 'awake'   # 'awake' (deviation 1, primary) or 'own' (clarification 4)\nburst = lambda c: float(np.median(1.4826 * np.median(np.abs(c - np.median(c, 0)), 0) / c.std(0)))")
+s = s.replace("""    for state in ('awake', 'iso'):
+        spans = [(k, a, b) for k, st, a, b in el if st == state and b - a >= L]
+        X = {k: Z[f'X{k}'].astype(np.float64)[:, good] for k, _, _ in spans}
+        centre, scale = robust_scale(reference(np.concatenate([X[k][a:b] for k, a, b in spans]), 'car'))""",
+"""    sp = lambda state: [(k, a, b) for k, st, a, b in el if st == state and b - a >= L]
+    eligible = lambda state: reference(np.concatenate([Z[f'X{k}'].astype(np.float64)[a:b][:, good] for k, a, b in sp(state)]), 'car')
+    if RULE == 'awake': centre, scale = robust_scale(eligible('awake'))
+    for state in ('awake', 'iso'):
+        spans = sp(state)
+        X = {k: Z[f'X{k}'].astype(np.float64)[:, good] for k, _, _ in spans}
+        if RULE == 'own': centre, scale = robust_scale(eligible(state))""")
+s = s.replace("delta_fraction=delta_fraction(c), rms_uv", "delta_fraction=delta_fraction(c), burst=burst(c), rms_uv")
+s = s.replace("speed=float(np.median([r['speed'] for r in rs])) if rs else None)", "speed=float(np.median([r['speed'] for r in rs])) if rs else None,\n                          burst=float(np.median([r['burst'] for r in rs])) if rs else None)")
+s = s.replace("rms {i['rms_uv']:.0f}µV δ {i['delta']:.2f} |", "rms {i['rms_uv']:.0f}µV δ {i['delta']:.2f} BI {i['burst']:.2f} |")
+open('select_claar.py', 'w').write(s)
+EOF
+grep -n "RULE\|burst\|n100'\] - 300" select_claar.py | head; mkdir -p qc_pilot && cp claar/sub-569070_ses-20210401.npz qc_pilot/ && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python select_claar.py qc_pilot qc_pilot/sel && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python select_claar.py qc_pilot qc_pilot/sel_own own
+
+### transcript line 3134
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+s = open('select_claar.py').read()
+s = s.replace("        el.append((k, s['state'], max(a, 0), min(b, s['n100'])))", "        el.append((k, s['state'], max(a, 0), min(b, s['n100'] - 300)))      # ≥ 3 s from stretch edges")
+s = s.replace("L, CAP = 1000, 30\nsrc, dst = sys.argv[1], sys.argv[2]",
+ "L, CAP = 1000, 30\nsrc, dst = sys.argv[1], sys.argv[2]; RULE = sys.argv[3] if len(sys.argv) > 3 else 'awake'   # 'awake' (deviation 1, primary) or 'own' (clarification 4)\nburst = lambda c: float(np.median(1.4826 * np.median(np.abs(c - np.median(c, 0)), 0) / c.std(0)))")
+s = s.replace("""    for state in ('awake', 'iso'):
+        spans = [(k, a, b) for k, st, a, b in el if st == state and b - a >= L]
+        X = {k: Z[f'X{k}'].astype(np.float64)[:, good] for k, _, _ in spans}
+        centre, scale = robust_scale(reference(np.concatenate([X[k][a:b] for k, a, b in spans]), 'car'))""",
+"""    sp = lambda state: [(k, a, b) for k, st, a, b in el if st == state and b - a >= L]
+    eligible = lambda state: reference(np.concatenate([Z[f'X{k}'].astype(np.float64)[a:b][:, good] for k, a, b in sp(state)]), 'car')
+    if RULE == 'awake': centre, scale = robust_scale(eligible('awake'))
+    for state in ('awake', 'iso'):
+        spans = sp(state)
+        X = {k: Z[f'X{k}'].astype(np.float64)[:, good] for k, _, _ in spans}
+        if RULE == 'own': centre, scale = robust_scale(eligible(state))""")
+s = s.replace("delta_fraction=delta_fraction(c), rms_uv", "delta_fraction=delta_fraction(c), burst=burst(c), rms_uv")
+s = s.replace("speed=float(np.median([r['speed'] for r in rs])) if rs else None)", "speed=float(np.median([r['speed'] for r in rs])) if rs else None,\n                          burst=float(np.median([r['burst'] for r in rs])) if rs else None)")
+s = s.replace("rms {i['rms_uv']:.0f}µV δ {i['delta']:.2f} |", "rms {i['rms_uv']:.0f}µV δ {i['delta']:.2f} BI {i['burst']:.2f} |")
+open('select_claar.py', 'w').write(s)
+EOF
+grep -n "RULE\|burst\|n100'\] - 300" select_claar.py | head; mkdir -p qc_pilot && cp claar/sub-569070_ses-20210401.npz qc_pilot/ && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python select_claar.py qc_pilot qc_pilot/sel && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python select_claar.py qc_pilot qc_pilot/sel_own own
+
+### transcript line 3169
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && /Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python - <<'EOF'
+s = open('claar_sum.py').read()
+s = s.replace("""lo_fals = max(j for j in range(len(P) + 1) if binom.sf(j - 1, len(P), .5) > .5) if False else None
+verdict = 'REPLICATES' if neg >= k and d.mean() < -2 * sd else ('FALSIFIED' if (neg <= len(P) // 2 + (len(P) % 2 == 0 and 0) or abs(d.mean()) < 2 * sd) else 'INCONCLUSIVE')
+print('verdict (≥k negative and mean beyond −2 null SD → replicates; ≤ n/2+0.5 negative or within 2 SD → falsified):', verdict)""",
+"""fl = int(np.ceil(len(P) / 2))                     # n = 17 → 9, as frozen
+verdict = 'REPLICATES' if neg >= k and d.mean() < -2 * sd else ('FALSIFIED' if neg <= fl or d.mean() > -2 * sd else 'INCONCLUSIVE')
+print(f'verdict (≥{k} negative and mean beyond −2 null SD → replicates; ≤{fl} negative or mean not beyond −2 SD → falsified; else inconclusive):', verdict)""")
+open('claar_sum.py', 'w').write(s)
+EOF
+/Users/wedi0306/Code/mts-spi-study-cluster/.venv/bin/python -c "import ast;ast.parse(open('/private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad/claar_sum.py').read())" && cat extract_all.log; ls claar | grep -v log
+
+### transcript line 3385
+cd /private/tmp/claude-502/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc/scratchpad && du -sh claar claar_sel claar_sel_own && D="/Users/wedi0306/Library/Application Support/Claude/side-session-notes/local_89f26329-f8af-40ac-adc4-5cbb414827de/claar" && mkdir -p "$D/code" && cp -R claar_sel "$D/" && cp curlfile.py extract_claar.py select_claar.py claar_z.py claar_sum.py zgk_ns.py surr_pairs.py claar_jobs.txt "$D/code/" && cp claar_sel_qc.txt claar_sel_own_qc.txt "$D/" && du -sh "$D"
+

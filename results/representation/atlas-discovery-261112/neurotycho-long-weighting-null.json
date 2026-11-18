@@ -1,0 +1,2543 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/neurotycho-long",
+ "reference": "awake_ec",
+ "draws": 2,
+ "channels": [
+  0,
+  2,
+  4,
+  6,
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  22,
+  24,
+  26,
+  28,
+  30,
+  32,
+  34,
+  36,
+  38,
+  40,
+  42,
+  44,
+  46,
+  48,
+  50,
+  52,
+  54,
+  56,
+  58,
+  60,
+  62,
+  63,
+  65,
+  67,
+  69,
+  71,
+  73,
+  75,
+  77,
+  79,
+  81,
+  83,
+  85,
+  87,
+  89,
+  91,
+  93,
+  95,
+  97,
+  99,
+  101,
+  103,
+  105,
+  107,
+  109,
+  111,
+  113,
+  115,
+  117,
+  119,
+  121,
+  123,
+  125
+ ],
+ "states": {
+  "KTMD:awake_ec": {
+   "real:r2|power_weighted_coh": 0.9178857240920493,
+   "real:r2|power_weighted_coh:mean_profile": 0.9651527719694162,
+   "real:r2|low_band_coh": 0.8761435811242724,
+   "real:r2|low_band_coh:mean_profile": 0.939685073632852,
+   "real:power_weighted_coh|low_band_coh": 0.8945145583048759,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9463225665774133,
+   "zero_phase:r2|power_weighted_coh": 0.945028080010312,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.985911221505252,
+   "zero_phase:r2|low_band_coh": 0.8633494323575515,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9443727407802993,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.8748302362336712,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9331629487947932,
+   "stationary:r2|power_weighted_coh": 0.9279807371159937,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.968877021994857,
+   "stationary:r2|low_band_coh": 0.8904004777864212,
+   "stationary:r2|low_band_coh:mean_profile": 0.9426994776078819,
+   "stationary:power_weighted_coh|low_band_coh": 0.9071236396533848,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.946227524009193
+  },
+  "KTMD:awake_eo": {
+   "real:r2|power_weighted_coh": 0.9278100128749284,
+   "real:r2|power_weighted_coh:mean_profile": 0.9730111920918895,
+   "real:r2|low_band_coh": 0.8955360003464602,
+   "real:r2|low_band_coh:mean_profile": 0.9586382170366478,
+   "real:power_weighted_coh|low_band_coh": 0.9146811344621391,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9642391571312767,
+   "zero_phase:r2|power_weighted_coh": 0.9413469669372194,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9860619874319574,
+   "zero_phase:r2|low_band_coh": 0.8722187461987804,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.956503998995316,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.88803880132356,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9484663005093853,
+   "stationary:r2|power_weighted_coh": 0.9344398895306179,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9761652007617072,
+   "stationary:r2|low_band_coh": 0.9090412722913803,
+   "stationary:r2|low_band_coh:mean_profile": 0.961204143828743,
+   "stationary:power_weighted_coh|low_band_coh": 0.9245932154850842,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9637783243953596
+  },
+  "KTMD:drug": {
+   "real:r2|power_weighted_coh": 0.8719280350780287,
+   "real:r2|power_weighted_coh:mean_profile": 0.9587710990467201,
+   "real:r2|low_band_coh": 0.7224351082788597,
+   "real:r2|low_band_coh:mean_profile": 0.8452214548416134,
+   "real:power_weighted_coh|low_band_coh": 0.6975509945676959,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.8387900559120429,
+   "zero_phase:r2|power_weighted_coh": 0.9022771597559537,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9794302178775343,
+   "zero_phase:r2|low_band_coh": 0.6470937218275034,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.8134877109536803,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.6393079173340585,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.8036700443060041,
+   "stationary:r2|power_weighted_coh": 0.8744864993356416,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9598877330423078,
+   "stationary:r2|low_band_coh": 0.7487722901278647,
+   "stationary:r2|low_band_coh:mean_profile": 0.8497357164646169,
+   "stationary:power_weighted_coh|low_band_coh": 0.7210722613160724,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.8401190474153317
+  },
+  "KTMD:recovery_ec": {
+   "real:r2|power_weighted_coh": 0.9089963229707474,
+   "real:r2|power_weighted_coh:mean_profile": 0.9578347656783711,
+   "real:r2|low_band_coh": 0.8491424808149404,
+   "real:r2|low_band_coh:mean_profile": 0.9250804589384943,
+   "real:power_weighted_coh|low_band_coh": 0.8433164686146668,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9206487539683292,
+   "zero_phase:r2|power_weighted_coh": 0.9399819401371209,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9837878097970607,
+   "zero_phase:r2|low_band_coh": 0.8161047392700785,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9178282104786565,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.8087284741444005,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.8973207859489433,
+   "stationary:r2|power_weighted_coh": 0.9183761047375786,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.962662610919957,
+   "stationary:r2|low_band_coh": 0.8688134868601651,
+   "stationary:r2|low_band_coh:mean_profile": 0.9256973242364225,
+   "stationary:power_weighted_coh|low_band_coh": 0.8624788805028396,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9217053134118103
+  },
+  "SLP:awake_ec": {
+   "real:r2|power_weighted_coh": 0.9575577879960283,
+   "real:r2|power_weighted_coh:mean_profile": 0.9828221834727202,
+   "real:r2|low_band_coh": 0.9268979456886083,
+   "real:r2|low_band_coh:mean_profile": 0.9643727352518764,
+   "real:power_weighted_coh|low_band_coh": 0.9350240578920047,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9661178079971345,
+   "zero_phase:r2|power_weighted_coh": 0.9685973098094184,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9928591669705098,
+   "zero_phase:r2|low_band_coh": 0.919269343473453,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9678077382077585,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9257853043425394,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9612946331491402,
+   "stationary:r2|power_weighted_coh": 0.9623386872697536,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9845702145051722,
+   "stationary:r2|low_band_coh": 0.9361985847762717,
+   "stationary:r2|low_band_coh:mean_profile": 0.9669645191662332,
+   "stationary:power_weighted_coh|low_band_coh": 0.9466155663258434,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.969347978820567
+  },
+  "SLP:awake_eo": {
+   "real:r2|power_weighted_coh": 0.9599675845408254,
+   "real:r2|power_weighted_coh:mean_profile": 0.9852787694263438,
+   "real:r2|low_band_coh": 0.9276333582912336,
+   "real:r2|low_band_coh:mean_profile": 0.9650413494562452,
+   "real:power_weighted_coh|low_band_coh": 0.9357007096731459,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.966250878281273,
+   "zero_phase:r2|power_weighted_coh": 0.971135280384798,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.994069667993642,
+   "zero_phase:r2|low_band_coh": 0.9218827453717894,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9683878447416514,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9250225160205304,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9612037804171835,
+   "stationary:r2|power_weighted_coh": 0.9650254065203959,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9868386941532199,
+   "stationary:r2|low_band_coh": 0.9382670476065019,
+   "stationary:r2|low_band_coh:mean_profile": 0.9667435534053043,
+   "stationary:power_weighted_coh|low_band_coh": 0.9445946064565269,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9668749631282552
+  },
+  "SLP:sleep_deep": {
+   "real:r2|power_weighted_coh": 0.9431474212386057,
+   "real:r2|power_weighted_coh:mean_profile": 0.983119389713862,
+   "real:r2|low_band_coh": 0.8936706609019677,
+   "real:r2|low_band_coh:mean_profile": 0.9517755631022901,
+   "real:power_weighted_coh|low_band_coh": 0.8939864364688799,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9541370732197703,
+   "zero_phase:r2|power_weighted_coh": 0.9546221000104164,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9928505346314124,
+   "zero_phase:r2|low_band_coh": 0.8768311843129107,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9512595351284355,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.8772598911422242,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9480772420244213,
+   "stationary:r2|power_weighted_coh": 0.9538959173858598,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9880345732849894,
+   "stationary:r2|low_band_coh": 0.9133344004660914,
+   "stationary:r2|low_band_coh:mean_profile": 0.9540548202869669,
+   "stationary:power_weighted_coh|low_band_coh": 0.9108235903758042,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9542298186636246
+  },
+  "SLP:sleep_light": {
+   "real:r2|power_weighted_coh": 0.954155574427418,
+   "real:r2|power_weighted_coh:mean_profile": 0.9818307022314631,
+   "real:r2|low_band_coh": 0.9230772857373256,
+   "real:r2|low_band_coh:mean_profile": 0.963017165807994,
+   "real:power_weighted_coh|low_band_coh": 0.9293088398318314,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.96321776853065,
+   "zero_phase:r2|power_weighted_coh": 0.9672101071649191,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9932166980372923,
+   "zero_phase:r2|low_band_coh": 0.9132035503321402,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9651129845005456,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9198181785831457,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9596784193526281,
+   "stationary:r2|power_weighted_coh": 0.9598308382977769,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9841689189296228,
+   "stationary:r2|low_band_coh": 0.932445560256739,
+   "stationary:r2|low_band_coh:mean_profile": 0.9646556213575608,
+   "stationary:power_weighted_coh|low_band_coh": 0.941308114464003,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9658821829901534
+  },
+  "SLP:sleep_mid": {
+   "real:r2|power_weighted_coh": 0.9506327247852655,
+   "real:r2|power_weighted_coh:mean_profile": 0.9829857462144485,
+   "real:r2|low_band_coh": 0.9111588015378239,
+   "real:r2|low_band_coh:mean_profile": 0.9605551499315033,
+   "real:power_weighted_coh|low_band_coh": 0.9150788646529465,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9605595086946496,
+   "zero_phase:r2|power_weighted_coh": 0.9624914791851286,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9930845474236196,
+   "zero_phase:r2|low_band_coh": 0.9019018104195465,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.961848691390837,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9070493806424798,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9581814542878256,
+   "stationary:r2|power_weighted_coh": 0.9586079589916562,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9869242088930682,
+   "stationary:r2|low_band_coh": 0.9265132399627182,
+   "stationary:r2|low_band_coh:mean_profile": 0.9632123440379784,
+   "stationary:power_weighted_coh|low_band_coh": 0.931324717304245,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9643022453752474
+  },
+  "KT:awake_ec": {
+   "real:r2|power_weighted_coh": 0.9531278079163854,
+   "real:r2|power_weighted_coh:mean_profile": 0.9830084985499269,
+   "real:r2|low_band_coh": 0.9167367520291967,
+   "real:r2|low_band_coh:mean_profile": 0.9577314124014336,
+   "real:power_weighted_coh|low_band_coh": 0.9232446914412591,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9622040771344197,
+   "zero_phase:r2|power_weighted_coh": 0.9687460156723806,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9938563520092685,
+   "zero_phase:r2|low_band_coh": 0.9106718341987694,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9604627504890404,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.915460764186608,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9558477716407939,
+   "stationary:r2|power_weighted_coh": 0.9613192723681954,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9853156455759553,
+   "stationary:r2|low_band_coh": 0.9257274270048463,
+   "stationary:r2|low_band_coh:mean_profile": 0.9571131711912465,
+   "stationary:power_weighted_coh|low_band_coh": 0.9332143600203201,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9603337685920987
+  },
+  "KT:awake_eo": {
+   "real:r2|power_weighted_coh": 0.9647950175087687,
+   "real:r2|power_weighted_coh:mean_profile": 0.989967918061976,
+   "real:r2|low_band_coh": 0.9305629143398084,
+   "real:r2|low_band_coh:mean_profile": 0.9680214438826595,
+   "real:power_weighted_coh|low_band_coh": 0.9357965050454554,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9700286604202847,
+   "zero_phase:r2|power_weighted_coh": 0.9700287742118017,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.995283565597848,
+   "zero_phase:r2|low_band_coh": 0.923824556164178,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9695728217783559,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9297452849161367,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9672644006305178,
+   "stationary:r2|power_weighted_coh": 0.9709092925381758,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9920924084910332,
+   "stationary:r2|low_band_coh": 0.9448132067441606,
+   "stationary:r2|low_band_coh:mean_profile": 0.9719612781937859,
+   "stationary:power_weighted_coh|low_band_coh": 0.9485812723048175,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9720670271506986
+  },
+  "KT:drug": {
+   "real:r2|power_weighted_coh": 0.9121766496065233,
+   "real:r2|power_weighted_coh:mean_profile": 0.9561891295552664,
+   "real:r2|low_band_coh": 0.812923234499054,
+   "real:r2|low_band_coh:mean_profile": 0.8624605926195945,
+   "real:power_weighted_coh|low_band_coh": 0.8073806869874413,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.8742546025118154,
+   "zero_phase:r2|power_weighted_coh": 0.9651758457121739,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9940483392519106,
+   "zero_phase:r2|low_band_coh": 0.811720636978616,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.88419308503847,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.7972564767486957,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.8754400855013718,
+   "stationary:r2|power_weighted_coh": 0.9157522174871169,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9559835940241019,
+   "stationary:r2|low_band_coh": 0.8349517230977255,
+   "stationary:r2|low_band_coh:mean_profile": 0.874413307327428,
+   "stationary:power_weighted_coh|low_band_coh": 0.8225105677389654,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.8773361318324094
+  },
+  "KT:recovery_ec": {
+   "real:r2|power_weighted_coh": 0.9338412017981002,
+   "real:r2|power_weighted_coh:mean_profile": 0.9723738748519912,
+   "real:r2|low_band_coh": 0.8603279927841287,
+   "real:r2|low_band_coh:mean_profile": 0.9210410932651494,
+   "real:power_weighted_coh|low_band_coh": 0.8597230003769449,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9265773474051866,
+   "zero_phase:r2|power_weighted_coh": 0.9548157211641805,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9917314676632327,
+   "zero_phase:r2|low_band_coh": 0.8432516136118067,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9215922506382224,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.8395597839676324,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9173138609675033,
+   "stationary:r2|power_weighted_coh": 0.9393195777508885,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9753040976160634,
+   "stationary:r2|low_band_coh": 0.8831172422365358,
+   "stationary:r2|low_band_coh:mean_profile": 0.9287081821613082,
+   "stationary:power_weighted_coh|low_band_coh": 0.8760305389344085,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.928785264032314
+  },
+  "MD:awake_ec": {
+   "real:r2|power_weighted_coh": 0.9623864506458415,
+   "real:r2|power_weighted_coh:mean_profile": 0.986964040673912,
+   "real:r2|low_band_coh": 0.909476201572643,
+   "real:r2|low_band_coh:mean_profile": 0.9434253187506857,
+   "real:power_weighted_coh|low_band_coh": 0.9178877028927503,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9472910235453817,
+   "zero_phase:r2|power_weighted_coh": 0.9732245761629486,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9949555219884338,
+   "zero_phase:r2|low_band_coh": 0.9065398138730805,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9510550155112938,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9131587625174974,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9474152679317801,
+   "stationary:r2|power_weighted_coh": 0.967504062114646,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9883873980394327,
+   "stationary:r2|low_band_coh": 0.9217988511084961,
+   "stationary:r2|low_band_coh:mean_profile": 0.9495072624116999,
+   "stationary:power_weighted_coh|low_band_coh": 0.929774460544645,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9514943354131526
+  },
+  "MD:awake_eo": {
+   "real:r2|power_weighted_coh": 0.9656038400559757,
+   "real:r2|power_weighted_coh:mean_profile": 0.9889473764522607,
+   "real:r2|low_band_coh": 0.9380695349597465,
+   "real:r2|low_band_coh:mean_profile": 0.9737731718397118,
+   "real:power_weighted_coh|low_band_coh": 0.9465807866103526,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9769382735567385,
+   "zero_phase:r2|power_weighted_coh": 0.9728714779653393,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9953065928282667,
+   "zero_phase:r2|low_band_coh": 0.9309472443617022,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9739960738246376,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.937813388377571,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9716419320906353,
+   "stationary:r2|power_weighted_coh": 0.9702872695900474,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9903304012608186,
+   "stationary:r2|low_band_coh": 0.9490865328781863,
+   "stationary:r2|low_band_coh:mean_profile": 0.9753527408384524,
+   "stationary:power_weighted_coh|low_band_coh": 0.9556161841913714,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9765653748306796
+  },
+  "MD:drug": {
+   "real:r2|power_weighted_coh": 0.9047936974483639,
+   "real:r2|power_weighted_coh:mean_profile": 0.9537907655543687,
+   "real:r2|low_band_coh": 0.7761353462861346,
+   "real:r2|low_band_coh:mean_profile": 0.8375500679214792,
+   "real:power_weighted_coh|low_band_coh": 0.774013725200045,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.8465456917830579,
+   "zero_phase:r2|power_weighted_coh": 0.9578541968937149,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9936502929107961,
+   "zero_phase:r2|low_band_coh": 0.7653701239824581,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.8483767824436097,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.7574706949093197,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.843342083233533,
+   "stationary:r2|power_weighted_coh": 0.9187086368462928,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9604600854332175,
+   "stationary:r2|low_band_coh": 0.8058488984960709,
+   "stationary:r2|low_band_coh:mean_profile": 0.8547793690336358,
+   "stationary:power_weighted_coh|low_band_coh": 0.7947530035592498,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.8540629818956099
+  },
+  "MD:recovery_ec": {
+   "real:r2|power_weighted_coh": 0.9596423997779879,
+   "real:r2|power_weighted_coh:mean_profile": 0.9834540974003949,
+   "real:r2|low_band_coh": 0.9106646363374319,
+   "real:r2|low_band_coh:mean_profile": 0.948641275680428,
+   "real:power_weighted_coh|low_band_coh": 0.9169264514995555,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9488403392311511,
+   "zero_phase:r2|power_weighted_coh": 0.9716502198988026,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.994272662869372,
+   "zero_phase:r2|low_band_coh": 0.9061756460499688,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9531205232922031,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9101000429135397,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9480861341395426,
+   "stationary:r2|power_weighted_coh": 0.9626155745541769,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9847265415710735,
+   "stationary:r2|low_band_coh": 0.9208085779558928,
+   "stationary:r2|low_band_coh:mean_profile": 0.9498286908231314,
+   "stationary:power_weighted_coh|low_band_coh": 0.9262652914500481,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9502375338143179
+  },
+  "PF:awake_ec": {
+   "real:r2|power_weighted_coh": 0.9570371080590743,
+   "real:r2|power_weighted_coh:mean_profile": 0.9847471618472495,
+   "real:r2|low_band_coh": 0.8999807469132952,
+   "real:r2|low_band_coh:mean_profile": 0.9387258504222625,
+   "real:power_weighted_coh|low_band_coh": 0.9051860720057799,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.941541614147556,
+   "zero_phase:r2|power_weighted_coh": 0.972525911187389,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9948664118103508,
+   "zero_phase:r2|low_band_coh": 0.8973123948724498,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.9434457440474977,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9011766977955393,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9384771080644199,
+   "stationary:r2|power_weighted_coh": 0.964764495761539,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9875989203780453,
+   "stationary:r2|low_band_coh": 0.9176392010546263,
+   "stationary:r2|low_band_coh:mean_profile": 0.9459493412365968,
+   "stationary:power_weighted_coh|low_band_coh": 0.9245886993167339,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9493458905176737
+  },
+  "PF:awake_eo": {
+   "real:r2|power_weighted_coh": 0.9680578955748256,
+   "real:r2|power_weighted_coh:mean_profile": 0.9905890336233119,
+   "real:r2|low_band_coh": 0.9375553915100571,
+   "real:r2|low_band_coh:mean_profile": 0.9722735548737367,
+   "real:power_weighted_coh|low_band_coh": 0.9429693591267385,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9741134304989403,
+   "zero_phase:r2|power_weighted_coh": 0.9759357327477012,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9957631531045954,
+   "zero_phase:r2|low_band_coh": 0.937719756318676,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.976879949610918,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.9421232336947294,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9740404351019442,
+   "stationary:r2|power_weighted_coh": 0.9731958972922438,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9915464251695291,
+   "stationary:r2|low_band_coh": 0.9491439418588413,
+   "stationary:r2|low_band_coh:mean_profile": 0.974124758134907,
+   "stationary:power_weighted_coh|low_band_coh": 0.9545691189756474,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9754297736026987
+  },
+  "PF:drug": {
+   "real:r2|power_weighted_coh": 0.9154072182320717,
+   "real:r2|power_weighted_coh:mean_profile": 0.9792086840805196,
+   "real:r2|low_band_coh": 0.769257696833199,
+   "real:r2|low_band_coh:mean_profile": 0.8653536507905664,
+   "real:power_weighted_coh|low_band_coh": 0.7396916634186728,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.8624920005119503,
+   "zero_phase:r2|power_weighted_coh": 0.9231588968719759,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9871725500403066,
+   "zero_phase:r2|low_band_coh": 0.7075622910221742,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.8508400956963124,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.6859815508564409,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.8425705719461631,
+   "stationary:r2|power_weighted_coh": 0.9107226565650692,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9808806743334475,
+   "stationary:r2|low_band_coh": 0.7878120509931392,
+   "stationary:r2|low_band_coh:mean_profile": 0.8656748125835995,
+   "stationary:power_weighted_coh|low_band_coh": 0.7502654350260247,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.8611769045171037
+  },
+  "PF:recovery_ec": {
+   "real:r2|power_weighted_coh": 0.9430545661103561,
+   "real:r2|power_weighted_coh:mean_profile": 0.9820300946937472,
+   "real:r2|low_band_coh": 0.8787208392442244,
+   "real:r2|low_band_coh:mean_profile": 0.9368331593546197,
+   "real:power_weighted_coh|low_band_coh": 0.8729293149399239,
+   "real:power_weighted_coh|low_band_coh:mean_profile": 0.9407636331579493,
+   "zero_phase:r2|power_weighted_coh": 0.9593587365624348,
+   "zero_phase:r2|power_weighted_coh:mean_profile": 0.9927773748448436,
+   "zero_phase:r2|low_band_coh": 0.8677289763921001,
+   "zero_phase:r2|low_band_coh:mean_profile": 0.938782288848688,
+   "zero_phase:power_weighted_coh|low_band_coh": 0.8656271451055648,
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": 0.9363538011210588,
+   "stationary:r2|power_weighted_coh": 0.954856628394298,
+   "stationary:r2|power_weighted_coh:mean_profile": 0.9865341900715092,
+   "stationary:r2|low_band_coh": 0.9041124027913496,
+   "stationary:r2|low_band_coh:mean_profile": 0.9438975669089066,
+   "stationary:power_weighted_coh|low_band_coh": 0.8961025693778724,
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": 0.9422141779635093
+  }
+ },
+ "contrasts": {
+  "KTMD:awake_eo": {
+   "real:r2|power_weighted_coh": {
+    "mean": 0.009924288782879027,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 4
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.007858420122473508,
+    "units": 11,
+    "positive": 10,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:r2|low_band_coh": {
+    "mean": 0.01939241922218813,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": 0.018953143403795666,
+    "units": 11,
+    "positive": 9,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": 0.02016657615726315,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.01791659055386332,
+    "units": 11,
+    "positive": 9,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.003681113073092722,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0001507659267052753,
+    "units": 11,
+    "positive": 4,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": 0.00886931384122882,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": 0.012131258215016776,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": 0.013208565089888739,
+    "units": 11,
+    "positive": 6,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.015303351714592002,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": 0.006459152414624066,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.007288178766850425,
+    "units": 11,
+    "positive": 9,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": 0.018640794504958993,
+    "units": 11,
+    "positive": 8,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": 0.01850466622086105,
+    "units": 11,
+    "positive": 9,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": 0.017469575831699533,
+    "units": 11,
+    "positive": 7,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.017550800386166843,
+    "units": 11,
+    "positive": 10,
+    "animals": 4,
+    "animals_positive": 3
+   }
+  },
+  "KTMD:drug": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.04595768901402045,
+    "units": 11,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.00638167292269595,
+    "units": 11,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.15370847284541247,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.09446361879123866,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.1969635637371802,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.10753251066537035,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.04275092025435847,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.006481003627717641,
+    "units": 11,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.21625571053004816,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.130885029826619,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.23552231889961286,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.12949290448878917,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.053494237780352234,
+    "units": 11,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.008989288952549124,
+    "units": 11,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.14162818765855648,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.09296376114326499,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.1860513783373124,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.10610847659386126,
+    "units": 11,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   }
+  },
+  "KTMD:recovery_ec": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.01703254811659164,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.011457908498011472,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.033353184514717804,
+    "units": 10,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.014799444040605602,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.054656570646713,
+    "units": 10,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.026532077590598068,
+    "units": 10,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.013015200432750196,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.005357551182623599,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.056812050589537276,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.02750058379337108,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.07186069786546342,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.03927691220298827,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.01869290361567344,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.01056565356368484,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.028648965079117926,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.017562446632591787,
+    "units": 10,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.04783049287627531,
+    "units": 10,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.025827002524469865,
+    "units": 10,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 0
+   }
+  },
+  "SLP:awake_eo": {
+   "real:r2|power_weighted_coh": {
+    "mean": 0.002409796544797021,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0024565859536236517,
+    "units": 7,
+    "positive": 7,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|low_band_coh": {
+    "mean": 0.0007354126026253452,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": 0.0006686142043688273,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": 0.0006766517811412433,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.00013307028413862238,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": 0.0025379705753795856,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0012105010231322647,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": 0.002613401898336476,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": 0.0005801065338929545,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.0007627883220089338,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -9.085273195674759e-05,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": 0.0026867192506424553,
+    "units": 7,
+    "positive": 6,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0022684796480478037,
+    "units": 7,
+    "positive": 5,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": 0.0020684628302303854,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.00022096576092876598,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.0020209598693167025,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.002473015692311937,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_deep": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.014410366757422513,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.00029720624114187063,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.03322728478664071,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.012597172149586318,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.04103762142312501,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.011980734777364261,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.01397520979900202,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -8.632339097377642e-06,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.04243815916054239,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.01654820307932284,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.04852541320031513,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.01321739112471898,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.008442769883893808,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.003464358779817513,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.022864184310180242,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.012909698879266249,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.03579197595003926,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.015118160156942482,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_light": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.0034022135686104316,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0009914812412570148,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.0038206599512826045,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.0013555694438823127,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.0057152180601733405,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.002900039466484618,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.001387202644499319,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0003575310667825698,
+    "units": 7,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.0060657931413129,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.0026947537072126637,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.005967125759393653,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.0016162137965122067,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.0025078489719766927,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0004012955755492114,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.003753024519532649,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.0023088978086722722,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.005307451861840562,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.003465795830413763,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_mid": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.006925063210762837,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.00016356274172827208,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.015739144150784305,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.003817585320373113,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.019945193239058363,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.005558299302484891,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.006105830624289916,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.00022538045310988814,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.017367533053906672,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.005959046816921466,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.018735923700059658,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.003113178861314744,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.003730728278097411,
+    "units": 7,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0023539943878960906,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.009685344813553511,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.0037521751282546534,
+    "units": 7,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.015290849021598354,
+    "units": 7,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.005045733445319556,
+    "units": 7,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:awake_eo": {
+   "real:r2|power_weighted_coh": {
+    "mean": 0.011667209592383293,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.006959419512049064,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|low_band_coh": {
+    "mean": 0.01382616231061179,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": 0.01029003148122598,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": 0.01255181360419616,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.007824583285865078,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": 0.001282758539421086,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0014272135885794734,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": 0.013152721965408731,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": 0.009110071289315402,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": 0.014284520729528766,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.011416628989723787,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": 0.009590020169980451,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.006776762915077811,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": 0.019085779739314274,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": 0.014848107002539301,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": 0.015366912284497297,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.01173325855859983,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "KT:drug": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.04095115830986221,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.02681936899466056,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.10381351753014259,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.09527081978183896,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.11586400445381803,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.08794947462260422,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.0035701699602067316,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0001919872426419944,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.09895119722015339,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.07626966545057037,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.11820428743791223,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.08040768613942223,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.045567054881078456,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.02933205155185334,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.09077570390712075,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.08269986386381853,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.11070379228135482,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.08299763675968938,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:recovery_ec": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.01928660611828531,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.010634623697935719,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.05640875924506786,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.036690319136284205,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.06352169106431427,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.035626729729233086,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.013930294508200047,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0021248843460358047,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.06742022058696281,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.038870499850818,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.07590098021897554,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.03853391067329062,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.021999694617306942,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.01001154795989187,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.042610184768310494,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.02840498902993832,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.05718382108591166,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.03154850455978481,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:awake_eo": {
+   "real:r2|power_weighted_coh": {
+    "mean": 0.003217389410134164,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.001983335778348666,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|low_band_coh": {
+    "mean": 0.02859333338710343,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": 0.030347853089026072,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": 0.02869308371760232,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.029647250011356735,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.00035309819760917516,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0003510708398329343,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": 0.024407430488621734,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": 0.022941058313343754,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": 0.024654625860073554,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.02422666415885505,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": 0.0027832074754012837,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0019430032213858528,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": 0.02728768176969032,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": 0.025845478426752555,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": 0.025841723646726433,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.025071039417526947,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "MD:drug": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.05759275319747742,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.03317327511954321,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.1333408552865085,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.10587525082920637,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.14387397769270524,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.10074533176232386,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.015370379269233847,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0013052290776376652,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.14116968989062242,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.10267823306768403,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.15568806760817763,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.1040731846982472,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.04879542526835323,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.027927312606215227,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.11594995261242519,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.0947278933780642,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.1350214569853952,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.09743135351754276,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:recovery_ec": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.002744050867853426,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0035099432735170855,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": 0.0011884347647888593,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": 0.005215956929742277,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.0009612513931947231,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.0015493156857693535,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.0015743562641458708,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0006828591190618793,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.000364167823111633,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": 0.002065507780909276,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.003058719603957649,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.0006708662077624661,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.004888487560469196,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0036608564683593414,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.0009902731526033326,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": 0.00032142841143151246,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.0035091690945968645,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.0012568015988347059,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:awake_eo": {
+   "real:r2|power_weighted_coh": {
+    "mean": 0.011020787515751279,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.005841871776062213,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|low_band_coh": {
+    "mean": 0.037574644596761936,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": 0.03354770445147415,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": 0.037783287120958686,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.03257181635138423,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": 0.0034098215603123594,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0008967412942445241,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": 0.0404073614462262,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": 0.03343420556342022,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": 0.04094653589919017,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.03556332703752438,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": 0.008431401530704735,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": 0.0039475047914838135,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": 0.031504740804215114,
+    "units": 4,
+    "positive": 4,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": 0.02817541689831013,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": 0.029980419658913515,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": 0.02608388308502499,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:drug": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.041629889827002636,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.005538477766729943,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.13072305008009627,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.0733721996316962,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.16549440858710704,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.07904961363560575,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.04936701431541288,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.007693861770044247,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.18975010385027566,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.0926056483511854,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.21519514693909847,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.0959065361182567,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.05404183919646968,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.006718246044597892,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.129827150061487,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.08027452865299736,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.17432326429070916,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.08816898600057005,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "PF:recovery_ec": {
+   "real:r2|power_weighted_coh": {
+    "mean": -0.013982541948718147,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "real:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.002717067153502395,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh": {
+    "mean": -0.02125990766907085,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:r2|low_band_coh:mean_profile": {
+    "mean": -0.0018926910676428932,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh": {
+    "mean": -0.03225675706585607,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "real:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.0007779809896066858,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|power_weighted_coh": {
+    "mean": -0.013167174624954064,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0020890369655071905,
+    "units": 4,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "zero_phase:r2|low_band_coh": {
+    "mean": -0.029583418480349705,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:r2|low_band_coh:mean_profile": {
+    "mean": -0.004663455198809813,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh": {
+    "mean": -0.03554955268997445,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "zero_phase:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.002123306943360992,
+    "units": 4,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|power_weighted_coh": {
+    "mean": -0.009907867367241058,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "stationary:r2|power_weighted_coh:mean_profile": {
+    "mean": -0.0010647303065360048,
+    "units": 4,
+    "positive": 3,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh": {
+    "mean": -0.013526798263276657,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:r2|low_band_coh:mean_profile": {
+    "mean": -0.0020517743276902978,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh": {
+    "mean": -0.028486129938861543,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "stationary:power_weighted_coh|low_band_coh:mean_profile": {
+    "mean": -0.007131712554164504,
+    "units": 4,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  }
+ }
+}

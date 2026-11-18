@@ -87,7 +87,10 @@ def pyspi_commit() -> str:
             return info.get("vcs_info", {}).get("commit_id", "unknown")
     except (PackageNotFoundError, OSError, ValueError):
         pass
-    # A snapshot directory under operations/sources/ is named by its commit.
+    # A snapshot directory under operations/sources/ is named by its commit; newer ones record it.
+    snapshot = source / "SNAPSHOT_COMMIT"
+    if snapshot.is_file() and snapshot.read_text().split():
+        return snapshot.read_text().split()[0]
     return "unknown"
 
 

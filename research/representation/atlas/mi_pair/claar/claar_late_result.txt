@@ -1,0 +1,16 @@
+sub-551397 late windows 11, Δ_late +0.0005
+sub-569062 late windows 14, Δ_late -0.0028, induction target − late +0.0020 (4 targets)
+sub-569064 late windows  5, Δ_late +0.0000
+sub-569072 late windows  4, Δ_late -0.0007, induction target − late -0.0071 (11 targets)
+sub-569073 late windows  8, Δ_late +0.0015
+sub-571619 late windows 60, Δ_late +0.0009, induction target − late -0.0164 (3 targets)
+sub-571620 late windows 28, Δ_late -0.0002
+sub-575102 late windows  7, Δ_late -0.0004, induction target − late -0.0065 (3 targets)
+sub-586466 late windows 29, Δ_late +0.0004
+sub-586468 late windows 23, Δ_late -0.0003, induction target − late -0.0110 (4 targets)
+sub-590479 late windows 15, Δ_late -0.0005, induction target − late -0.0004 (3 targets)
+sub-590480 late windows 11, Δ_late +0.0008
+sub-599017 late windows 20, Δ_late +0.0003, induction target − late -0.0063 (5 targets)
+PRIMARY Δ_late (late − early awake): n=13, negative 6 (p=0.7095), mean -0.0000 [-0.0006, +0.0004] = -0.0 null SD
+verdict: DRIFT NEGLIGIBLE (explains if mean ≤ -0.0032; negligible if mean > -0.0032 and CI lower > -0.0063)
+secondary induction target − late awake: n=7, negative 6 (p=0.0625), mean -0.0065 [-0.0108, -0.0024] = -2.5 null SD

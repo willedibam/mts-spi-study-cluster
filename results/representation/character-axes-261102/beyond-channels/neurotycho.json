@@ -1,0 +1,45 @@
+{
+ "cohort": "neurotycho",
+ "contrasts": {
+  "anaesthesia_vs_awake": {
+   "auroc": {
+    "S": 0.999755859375,
+    "S_core": 1.0,
+    "S_z": 0.998779296875,
+    "S_core_z": 0.998779296875,
+    "Q": 0.695068359375,
+    "Q_z": 0.950439453125
+   },
+   "differences": {
+    "core_over_S": {
+     "difference": 0.000244140625,
+     "interval": [
+      0.0,
+      0.0009765625
+     ]
+    },
+    "z_over_S": {
+     "difference": -0.0009765625,
+     "interval": [
+      -0.0009765625,
+      0.0009765625
+     ]
+    },
+    "z_over_S_core": {
+     "difference": -0.001220703125,
+     "interval": [
+      -0.001220703125,
+      0.0
+     ]
+    },
+    "z_over_Q": {
+     "difference": 0.25537109375,
+     "interval": [
+      0.02734375,
+      0.462890625
+     ]
+    }
+   }
+  }
+ }
+}

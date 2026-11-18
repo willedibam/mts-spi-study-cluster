@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N fill-library
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=16,mem=64GB,walltime=10:00:00,jobfs=8GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# ROCKET, MiniRocket, MultiRocket-Hydra and QUANT for one bank, in a job-local aeon environment.
+# qsub -v PROTOCOL=cohort,COHORT=lemon,ROOT_DIR=<run>,OUT=<json>,WHEELHOUSE=<dir> .../library.pbs
+# qsub -v PROTOCOL=discovery,ROOT_DIR=<run>,OUT=<json>,WHEELHOUSE=<dir>[,SIENA=<run>] .../library.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+module purge
+module load python3/3.12.1
+export PYTHONPATH="$PWD/src:$PWD"
+python3 -m venv "$PBS_JOBFS/aeon"
+"$PBS_JOBFS/aeon/bin/python" -m pip install -q --no-index --find-links "${WHEELHOUSE:?}" aeon==1.5.0 torch pyyaml
+"$PBS_JOBFS/aeon/bin/python" -u -m research.representation.comparator_fill.library "${PROTOCOL:?}" --root "${ROOT_DIR:?}" \
+    --output "${OUT:?}" --jobs 16 ${COHORT:+--cohort "$COHORT"} ${SIENA:+--siena "$SIENA"} ${METHODS:+--methods $METHODS}

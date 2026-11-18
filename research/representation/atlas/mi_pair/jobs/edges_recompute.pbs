@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=02:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N c1_zns_re
+#PBS -j oe
+#PBS -o /home/562/we2614/critic1/edges/recompute.log
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd /home/562/we2614/critic1/edges && sha256sum -c edges-code.sha256 || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/zns; mkdir -p $O
+PY="env PYTHONPATH=/home/562/we2614/mts-spi-study-cluster/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+for a in PF KT KTMD MD SLP; do $PY edges.py recompute $B/neurotycho-long-stage-a $O/zns_A_$a.npz $a first 48 || exit 3; done
+for a in PF KT KTMD MD; do $PY edges.py recompute $B/neurotycho-long-stage-b $O/zns_B_$a.npz $a first 48 || exit 3; done
+$PY edges.py recompute $B/neurotycho-long-stage-b $O/zns_B_SLP.npz SLP row 48 || exit 3
+cd $O && sha256sum zns_*.npz > SHA256SUMS && echo ALLDONE

@@ -1,0 +1,20 @@
+sub-551397 induction windows 26, target  0
+sub-551399 induction windows 24, target  7, Δ_ind -0.0059
+sub-569062 induction windows 27, target  4, Δ_ind -0.0008
+sub-569064 induction windows 22, target  1
+sub-569068 induction windows 37, target  2
+sub-569069 induction windows 26, target  0
+sub-569070 induction windows 32, target  9, Δ_ind -0.0011
+sub-569072 induction windows 23, target 11, Δ_ind -0.0078
+sub-569073 induction windows 27, target  2
+sub-571619 induction windows 11, target  3, Δ_ind -0.0155
+sub-571620 induction windows 25, target  1
+sub-575102 induction windows 23, target  3, Δ_ind -0.0070
+sub-586466 induction windows 23, target  0
+sub-586468 induction windows 15, target  4, Δ_ind -0.0113
+sub-590479 induction windows 23, target  3, Δ_ind -0.0009
+sub-590480 induction windows  8, target  0
+sub-599017 induction windows 25, target  5, Δ_ind -0.0060
+PRIMARY Δ_ind: n=9, negative 9 (need ≥8, p=0.0020), mean -0.0063 [-0.0095, -0.0034] = -2.4 null SD → PRESENT
+secondary all induction windows: mean -0.0074, negative 17/17
+secondary within-induction Spearman: residual~BI median +0.63 (17/17 positive); residual~δ median -0.56 (17/17 negative)

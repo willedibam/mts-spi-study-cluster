@@ -1,0 +1,857 @@
+{
+ "cohort": "ad_ftd",
+ "windows": 704,
+ "participants": 88,
+ "identity_floor": 0.9591771675388456,
+ "contrasts": {
+  "AD_vs_control": {
+   "windows": 520,
+   "scores": {
+    "power": {
+     "auroc": 0.85727969348659,
+     "brier": 0.16030414037397106,
+     "balanced_accuracy": 0.7648467432950192
+    },
+    "spectral": {
+     "auroc": 0.8735632183908045,
+     "brier": 0.14722778160830804,
+     "balanced_accuracy": 0.8271072796934866
+    },
+    "pearson": {
+     "auroc": 0.8352490421455938,
+     "brier": 0.17241145348427395,
+     "balanced_accuracy": 0.7131226053639848
+    },
+    "z": {
+     "auroc": 0.8371647509578544,
+     "brier": 0.15515141194832688,
+     "balanced_accuracy": 0.7092911877394636
+    },
+    "axes": {
+     "auroc": 0.6408045977011494,
+     "brier": 0.23834521793467608,
+     "balanced_accuracy": 0.5407088122605364
+    },
+    "axes_levels": {
+     "auroc": 0.6685823754789272,
+     "brier": 0.23298429990863415,
+     "balanced_accuracy": 0.5886015325670498
+    },
+    "pearson_axes": {
+     "auroc": 0.8448275862068966,
+     "brier": 0.1655101927120902,
+     "balanced_accuracy": 0.7131226053639848
+    },
+    "pearson_axes_levels": {
+     "auroc": 0.8802681992337165,
+     "brier": 0.1517229349458518,
+     "balanced_accuracy": 0.7303639846743295
+    },
+    "power_axes": {
+     "auroc": 0.8601532567049808,
+     "brier": 0.16099051212592805,
+     "balanced_accuracy": 0.7926245210727969
+    },
+    "power_pearson": {
+     "auroc": 0.8879310344827586,
+     "brier": 0.13915054367670932,
+     "balanced_accuracy": 0.8098659003831418
+    },
+    "power_pearson_axes": {
+     "auroc": 0.8793103448275862,
+     "brier": 0.13993049978185515,
+     "balanced_accuracy": 0.7648467432950192
+    }
+   },
+   "primary": {
+    "axes_levels - pearson": {
+     "auroc_difference": -0.16666666666666663,
+     "interval": [
+      -0.34115118975599923,
+      0.003067257945306519
+     ]
+    },
+    "pearson_axes_levels - pearson": {
+     "auroc_difference": 0.04501915708812265,
+     "interval": [
+      -0.010479729729729886,
+      0.10322125087750092
+     ]
+    },
+    "power_axes - power": {
+     "auroc_difference": 0.002873563218390718,
+     "interval": [
+      -0.024366471734892814,
+      0.029693486590038124
+     ]
+    },
+    "power_pearson_axes - power_pearson": {
+     "auroc_difference": -0.008620689655172376,
+     "interval": [
+      -0.03475530888030881,
+      0.01138819875776397
+     ]
+    }
+   },
+   "effects": {
+    "real": {
+     "form_monotone": {
+      "difference": -0.008131191643594105,
+      "standardized": -0.6889300070483473,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.011073124296618128
+     },
+     "form_information": {
+      "difference": -0.020661496692834902,
+      "standardized": -0.5211317008184002,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.11785985184196177
+     },
+     "timing_fixed_lag": {
+      "difference": 0.03996436922399382,
+      "standardized": 0.3461647770829691,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.04015981690351106
+     },
+     "timing_best_shift": {
+      "difference": 0.00014732875417888813,
+      "standardized": 0.058868184250026455,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.03266630803524638
+     },
+     "timing_warping": {
+      "difference": 0.00552568861831626,
+      "standardized": 0.22008579803223965,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.24284057527113379
+     },
+     "phase_lag": {
+      "difference": -0.0010245849164525478,
+      "standardized": -0.03697301525088059,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.7364801124277571
+     },
+     "predictive": {
+      "difference": 0.01619130862119597,
+      "standardized": 0.21378367862976116,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.19364069041707854
+     },
+     "history": {
+      "difference": -0.01177326294303016,
+      "standardized": -0.112324484714695,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.38737371504738594
+     },
+     "mediation": {
+      "difference": -0.006586969181927138,
+      "standardized": -0.0821795770491153,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.5930163182021437
+     },
+     "band": {
+      "difference": 0.017841346377157286,
+      "standardized": 0.47093729231630743,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.0737493175205623
+     },
+     "spectral_peak": {
+      "difference": 0.007343238861599155,
+      "standardized": 0.1816965124821449,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.6394369710191687
+     },
+     "phase_amplitude": {
+      "difference": 0.022813100786417517,
+      "standardized": 0.5582109081003915,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.10884408648375535
+     },
+     "tail": {
+      "difference": -0.016450058048103844,
+      "standardized": -0.5772751022030802,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.05652879866894798
+     },
+     "level_form_information": {
+      "difference": 0.012536444184683034,
+      "standardized": 0.7069730005775745,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.002250173104795605
+     },
+     "level_form_monotone": {
+      "difference": -0.000536158858518136,
+      "standardized": -0.093590742114741,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.583920636204915
+     },
+     "level_timing_best_shift": {
+      "difference": -3.8985149098984265e-05,
+      "standardized": -0.2626128657194327,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.9524107109442248
+     },
+     "level_phase_lag": {
+      "difference": -0.0067612530036109675,
+      "standardized": -0.08992379780797334,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.6300311927229357
+     },
+     "level_band": {
+      "difference": 0.0010742521092207968,
+      "standardized": 0.03683146306031854,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.8173584020936654
+     },
+     "level_spectral_peak": {
+      "difference": -0.04320601941728164,
+      "standardized": -0.18686512507259498,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.49673570271969536
+     },
+     "level_timing_warping": {
+      "difference": -0.021219139166508638,
+      "standardized": -0.43766525372682075,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.09768182397363567
+     },
+     "level_tail": {
+      "difference": 0.006564829533391547,
+      "standardized": 0.6877553457920533,
+      "units": [
+       36,
+       29
+      ],
+      "p": 0.027073057141173952
+     }
+    }
+   }
+  },
+  "FTD_vs_control": {
+   "windows": 416,
+   "scores": {
+    "power": {
+     "auroc": 0.8470764617691154,
+     "brier": 0.16755736250448905,
+     "balanced_accuracy": 0.7616191904047975
+    },
+    "spectral": {
+     "auroc": 0.8185907046476762,
+     "brier": 0.1727794002313414,
+     "balanced_accuracy": 0.7353823088455772
+    },
+    "pearson": {
+     "auroc": 0.7991004497751125,
+     "brier": 0.19051156392680538,
+     "balanced_accuracy": 0.704647676161919
+    },
+    "z": {
+     "auroc": 0.7961019490254873,
+     "brier": 0.18704785465496274,
+     "balanced_accuracy": 0.7526236881559221
+    },
+    "axes": {
+     "auroc": 0.6011994002998501,
+     "brier": 0.24286929725864684,
+     "balanced_accuracy": 0.5524737631184408
+    },
+    "axes_levels": {
+     "auroc": 0.5472263868065967,
+     "brier": 0.24927177198245726,
+     "balanced_accuracy": 0.5307346326836582
+    },
+    "pearson_axes": {
+     "auroc": 0.7781109445277362,
+     "brier": 0.1946969062626393,
+     "balanced_accuracy": 0.6874062968515742
+    },
+    "pearson_axes_levels": {
+     "auroc": 0.7931034482758621,
+     "brier": 0.19143211143172234,
+     "balanced_accuracy": 0.6919040479760119
+    },
+    "power_axes": {
+     "auroc": 0.8590704647676162,
+     "brier": 0.16564710537845223,
+     "balanced_accuracy": 0.7833583208395802
+    },
+    "power_pearson": {
+     "auroc": 0.8620689655172414,
+     "brier": 0.1592837116340497,
+     "balanced_accuracy": 0.7788605697151424
+    },
+    "power_pearson_axes": {
+     "auroc": 0.8500749625187406,
+     "brier": 0.16213671356751502,
+     "balanced_accuracy": 0.7788605697151424
+    }
+   },
+   "primary": {
+    "axes_levels - pearson": {
+     "auroc_difference": -0.2518740629685158,
+     "interval": [
+      -0.4228215691261512,
+      -0.08506324404761906
+     ]
+    },
+    "pearson_axes_levels - pearson": {
+     "auroc_difference": -0.005997001499250421,
+     "interval": [
+      -0.08397960617905341,
+      0.06994047619047605
+     ]
+    },
+    "power_axes - power": {
+     "auroc_difference": 0.01199400299850073,
+     "interval": [
+      -0.010497535323247573,
+      0.04697026657552976
+     ]
+    },
+    "power_pearson_axes - power_pearson": {
+     "auroc_difference": -0.011994002998500841,
+     "interval": [
+      -0.0510366826156301,
+      0.030313503700600496
+     ]
+    }
+   },
+   "effects": {
+    "real": {
+     "form_monotone": {
+      "difference": -0.000541676106460609,
+      "standardized": -0.05309439788254382,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.7541194377722729
+     },
+     "form_information": {
+      "difference": -0.0031054008945683442,
+      "standardized": -0.07407312126292573,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.8393955305064702
+     },
+     "timing_fixed_lag": {
+      "difference": 0.09064237433628797,
+      "standardized": 0.8906521045877215,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.001735476468970621
+     },
+     "timing_best_shift": {
+      "difference": -0.00038488442048623117,
+      "standardized": -0.14609655175279432,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.14352376279012408
+     },
+     "timing_warping": {
+      "difference": -0.003185671675836943,
+      "standardized": -0.07624158627254278,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5310365880555215
+     },
+     "phase_lag": {
+      "difference": -0.006920490523302736,
+      "standardized": -0.22515848088558355,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.4954304530817656
+     },
+     "predictive": {
+      "difference": 0.026378359305001403,
+      "standardized": 0.3077197784381262,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.21704472057557767
+     },
+     "history": {
+      "difference": 0.02834516879597415,
+      "standardized": 0.2595117187113067,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.36663833997040995
+     },
+     "mediation": {
+      "difference": 0.006149141812737402,
+      "standardized": 0.07086364380471367,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.868299997559508
+     },
+     "band": {
+      "difference": 0.01841787216939683,
+      "standardized": 0.4633611520333332,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.0832950526045318
+     },
+     "spectral_peak": {
+      "difference": 0.01981848361344185,
+      "standardized": 0.4454593664036566,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.3569395450859103
+     },
+     "phase_amplitude": {
+      "difference": -0.004467856877166221,
+      "standardized": -0.09077347947806597,
+      "units": [
+       23,
+       29
+      ],
+      "p": 1.0
+     },
+     "tail": {
+      "difference": -0.005846797484225452,
+      "standardized": -0.19103819005181863,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.7401637818237918
+     },
+     "level_form_information": {
+      "difference": 0.004747896683590248,
+      "standardized": 0.2720811983389045,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.4070528250733173
+     },
+     "level_form_monotone": {
+      "difference": 0.000289305859342618,
+      "standardized": 0.04240644291441333,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5804500603577427
+     },
+     "level_timing_best_shift": {
+      "difference": -3.89851490989973e-05,
+      "standardized": -0.2626128657195205,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.34041993184847663
+     },
+     "level_phase_lag": {
+      "difference": -0.00020670941584172153,
+      "standardized": -0.0023813118849697833,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.7541194377722729
+     },
+     "level_band": {
+      "difference": -0.002125806317162693,
+      "standardized": -0.06847053381301156,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.9266017130519044
+     },
+     "level_spectral_peak": {
+      "difference": -0.021219822919288367,
+      "standardized": -0.08309080826269394,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5931317837782728
+     },
+     "level_timing_warping": {
+      "difference": 0.006355447113897905,
+      "standardized": 0.12138630914849381,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.23833770600585713
+     },
+     "level_tail": {
+      "difference": 0.0004266889326874218,
+      "standardized": 0.0786039287099612,
+      "units": [
+       23,
+       29
+      ],
+      "p": 0.5190252513873392
+     }
+    }
+   }
+  },
+  "AD_vs_FTD": {
+   "windows": 472,
+   "scores": {
+    "power": {
+     "auroc": 0.5857487922705313,
+     "brier": 0.23522601925547368,
+     "balanced_accuracy": 0.5670289855072463
+    },
+    "spectral": {
+     "auroc": 0.4673913043478261,
+     "brier": 0.2563400812349342,
+     "balanced_accuracy": 0.4897342995169082
+    },
+    "pearson": {
+     "auroc": 0.5314009661835749,
+     "brier": 0.24833155861271072,
+     "balanced_accuracy": 0.5591787439613527
+    },
+    "z": {
+     "auroc": 0.5253623188405798,
+     "brier": 0.26998436238437146,
+     "balanced_accuracy": 0.5132850241545894
+    },
+    "axes": {
+     "auroc": 0.5579710144927537,
+     "brier": 0.23459727138892944,
+     "balanced_accuracy": 0.5513285024154589
+    },
+    "axes_levels": {
+     "auroc": 0.5990338164251208,
+     "brier": 0.23038950104160766,
+     "balanced_accuracy": 0.5531400966183575
+    },
+    "pearson_axes": {
+     "auroc": 0.532608695652174,
+     "brier": 0.2421794999077257,
+     "balanced_accuracy": 0.5513285024154589
+    },
+    "pearson_axes_levels": {
+     "auroc": 0.5688405797101449,
+     "brier": 0.23493920419178652,
+     "balanced_accuracy": 0.5452898550724637
+    },
+    "power_axes": {
+     "auroc": 0.5942028985507246,
+     "brier": 0.23361314667544728,
+     "balanced_accuracy": 0.5392512077294687
+    },
+    "power_pearson": {
+     "auroc": 0.5785024154589372,
+     "brier": 0.23641732506319266,
+     "balanced_accuracy": 0.6105072463768115
+    },
+    "power_pearson_axes": {
+     "auroc": 0.5954106280193237,
+     "brier": 0.22814547396667453,
+     "balanced_accuracy": 0.6105072463768115
+    }
+   },
+   "primary": {
+    "axes_levels - pearson": {
+     "auroc_difference": 0.06763285024154586,
+     "interval": [
+      -0.11405648115325533,
+      0.25513111888111895
+     ]
+    },
+    "pearson_axes_levels - pearson": {
+     "auroc_difference": 0.03743961352656999,
+     "interval": [
+      -0.047374686716792014,
+      0.1261904761904762
+     ]
+    },
+    "power_axes - power": {
+     "auroc_difference": 0.008454106280193274,
+     "interval": [
+      -0.0482352941176471,
+      0.06876456876456882
+     ]
+    },
+    "power_pearson_axes - power_pearson": {
+     "auroc_difference": 0.016908212560386437,
+     "interval": [
+      -0.03241023035230355,
+      0.06504370682804572
+     ]
+    }
+   },
+   "effects": {
+    "real": {
+     "form_monotone": {
+      "difference": -0.0075895155371334955,
+      "standardized": -0.6604220108164996,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.03521245827467496
+     },
+     "form_information": {
+      "difference": -0.017556095798266558,
+      "standardized": -0.3476665235787462,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.13367177111084116
+     },
+     "timing_fixed_lag": {
+      "difference": -0.050678005112294144,
+      "standardized": -0.40340794699414545,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.16899365235457653
+     },
+     "timing_best_shift": {
+      "difference": 0.0005322131746651193,
+      "standardized": 0.22353251901112753,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.9274517118483402
+     },
+     "timing_warping": {
+      "difference": 0.008711360294153203,
+      "standardized": 0.20190829621819198,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7976120139524459
+     },
+     "phase_lag": {
+      "difference": 0.005895905606850188,
+      "standardized": 0.2042405828992818,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.49899875114368264
+     },
+     "predictive": {
+      "difference": -0.010187050683805432,
+      "standardized": -0.10851039959060639,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.635483308044913
+     },
+     "history": {
+      "difference": -0.04011843173900431,
+      "standardized": -0.37757635235830256,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.09477348275648168
+     },
+     "mediation": {
+      "difference": -0.01273611099466454,
+      "standardized": -0.14817724710497476,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.7265718823559904
+     },
+     "band": {
+      "difference": -0.0005765257922395461,
+      "standardized": -0.014496910783822068,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.8581496425719736
+     },
+     "spectral_peak": {
+      "difference": -0.012475244751842696,
+      "standardized": -0.2860266037548995,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.3798847351177539
+     },
+     "phase_amplitude": {
+      "difference": 0.027280957663583738,
+      "standardized": 0.5290099133637439,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.11830081572892007
+     },
+     "tail": {
+      "difference": -0.010603260563878392,
+      "standardized": -0.3250078953878044,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.17386067047346954
+     },
+     "level_form_information": {
+      "difference": 0.007788547501092785,
+      "standardized": 0.41475168687604863,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.06109870318786773
+     },
+     "level_form_monotone": {
+      "difference": -0.0008254647178607541,
+      "standardized": -0.11035388481593167,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.2664672541096289
+     },
+     "level_timing_best_shift": {
+      "difference": 1.3039757143091352e-17,
+      "standardized": 0.23546202238817485,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.3994883741159745
+     },
+     "level_phase_lag": {
+      "difference": -0.006554543587769246,
+      "standardized": -0.07320748450291763,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.9318801070462757
+     },
+     "level_band": {
+      "difference": 0.0032000584263834897,
+      "standardized": 0.1026765493420836,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.6244417311778434
+     },
+     "level_spectral_peak": {
+      "difference": -0.02198619649799327,
+      "standardized": -0.08502114481695221,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.8096348888478
+     },
+     "level_timing_warping": {
+      "difference": -0.027574586280406543,
+      "standardized": -0.4474600458615152,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.04929503319066999
+     },
+     "level_tail": {
+      "difference": 0.006138140600704126,
+      "standardized": 0.6767645519610791,
+      "units": [
+       36,
+       23
+      ],
+      "p": 0.11830081572892007
+     }
+    }
+   }
+  }
+ }
+}

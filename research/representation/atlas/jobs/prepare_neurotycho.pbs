@@ -1,0 +1,25 @@
+#!/bin/bash
+#PBS -N atlas-prep-nt
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=190GB,walltime=06:00:00,jobfs=10GB
+#PBS -l storage=gdata/ql44+scratch/ql44
+#PBS -l wd
+#PBS -j oe
+# NeuroTycho window banks (long and short arms) from the 30 downloaded archives, then a profiling subset:
+# one long and one short window from the largest-M unit. Submit from a source snapshot:
+#   qsub -W depend=afterok:<download job> -v ROOT=<data/atlas>,BANKS=<banks dir> research/representation/atlas/jobs/prepare_neurotycho.pbs
+set -euo pipefail
+: "${ROOT:?}" "${BANKS:?}"
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+python -m research.representation.atlas.prepare neurotycho --root "$ROOT" --out "$BANKS" --workers 8
+python - "$BANKS" <<'EOF'
+import json, sys, subprocess
+banks = sys.argv[1]
+for arm in ('long', 'short'):
+    rows = json.load(open(f'{banks}/neurotycho-{arm}/manifest.json'))['rows']
+    top = max(rows, key=lambda r: (r['M'], r['id']))
+    subprocess.run([sys.executable, '-m', 'research.representation.atlas.prepare', 'subset', f'{banks}/neurotycho-{arm}',
+                    '--ids', top['id'], '--out', f'{banks}/profile-neurotycho-{arm}'], check=True)
+EOF

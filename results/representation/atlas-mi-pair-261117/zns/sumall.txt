@@ -1,0 +1,6 @@
+session-level EO SD: raw 0.0015  normal-scored 0.0020   n_sess 30
+KT    n= 4 raw -0.0158 (-10.3 SD, 4/4 down) | normal-scored -0.0159 (-8.0 SD, 4/4 down) | ns recovery -0.0042
+KTMD  n=11 raw -0.0166 (-10.8 SD, 11/11 down) | normal-scored -0.0155 (-7.8 SD, 11/11 down) | ns recovery -0.0035
+MD    n= 4 raw -0.0048 (-3.1 SD, 4/4 down) | normal-scored -0.0062 (-3.1 SD, 4/4 down) | ns recovery -0.0008
+PF    n= 4 raw -0.0115 (-7.5 SD, 4/4 down) | normal-scored -0.0117 (-5.9 SD, 4/4 down) | ns recovery -0.0032
+SLP   n= 7 raw -0.0019 (-1.2 SD, 6/7 down) | normal-scored -0.0010 (-0.5 SD, 7/7 down) | ns recovery +nan

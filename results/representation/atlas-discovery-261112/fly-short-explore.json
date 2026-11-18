@@ -1,0 +1,339 @@
+{
+ "reduced": "/scratch/ql44/we2614/mts-spi-study/atlas/discovery/fly-short-reduced.npz",
+ "reference": "awake",
+ "scale": "condition's own between-unit SD (Cohen's d)",
+ "conditions": [
+  "all:isoflurane"
+ ],
+ "coordinates": 36046,
+ "usable": 26721,
+ "single": {
+  "all:isoflurane": [
+   {
+    "a": "dcorr_biased",
+    "b": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.2704608345604636,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07233398681926893,
+      "raw": 0.08800705205794657,
+      "scaled": 1.7374287739422947,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "dcorr_biased",
+    "b": "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.2626979319113441,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.06770138651229156,
+      "raw": 0.08393601396696446,
+      "scaled": 1.5701221325452928,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "prec-sq_ShrunkCovariance",
+    "b": "ids",
+    "reference_z": 0.6115158713207796,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.057267668837481515,
+      "raw": 0.08076715268767796,
+      "scaled": 1.5642255033502126,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "cov-sq_MinCovDet",
+    "b": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.29740499789477326,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07731156369400598,
+      "raw": 0.09792415921065885,
+      "scaled": 1.3576816599749904,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "b": "ids",
+    "reference_z": 0.25029065135123135,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07594201316342614,
+      "raw": 0.08806808490547925,
+      "scaled": 1.3298537838809452,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "b": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+    "reference_z": 0.25927684255517447,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.03237577317109036,
+      "raw": 0.02660459795823464,
+      "scaled": 1.3191232919558176,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "b": "ids",
+    "reference_z": 0.25826609193777234,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.09458256002393568,
+      "raw": 0.09453952084787978,
+      "scaled": 1.284363703893435,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "b": "ids",
+    "reference_z": 0.24221039829549576,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07209836778882396,
+      "raw": 0.08478953627379199,
+      "scaled": 1.2754535922332202,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "spearmanr-sq",
+    "b": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.30689011564335,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07033734444203292,
+      "raw": 0.08851704477834013,
+      "scaled": 1.263395425067778,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "dcorr_biased",
+    "b": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.2763427373406907,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.09377061694642067,
+      "raw": 0.09546186247518143,
+      "scaled": 1.2555759963555948,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "cov-sq_MinCovDet",
+    "b": "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.28883831838286894,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07217446630147971,
+      "raw": 0.09371372375496251,
+      "scaled": 1.2454035764365685,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "prec-sq_MinCovDet",
+    "b": "dcorr_biased",
+    "reference_z": 0.5210719019747697,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.0652327229223772,
+      "raw": 0.10660289571835445,
+      "scaled": 1.2307128929750055,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "kendalltau-sq",
+    "b": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.3086343622193314,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07052436845069925,
+      "raw": 0.08914338997923411,
+      "scaled": 1.2028108959113444,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "prec-sq_OAS",
+    "b": "di_gaussian_n-5",
+    "reference_z": 0.7519102322940643,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.06947775835715017,
+      "raw": 0.09147733421279834,
+      "scaled": 1.1104010034221963,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "spearmanr",
+    "b": "xcorr-sq_mean_sig-True",
+    "reference_z": -0.13559213630819264,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": -0.06328114307520262,
+      "raw": -0.08666564812133751,
+      "scaled": -1.1019988853589164,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "prec-sq_ShrunkCovariance",
+    "b": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+    "reference_z": 0.5092785693705082,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.08588080394079842,
+      "raw": 0.08990798890590668,
+      "scaled": 1.0872637441039057,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "kendalltau",
+    "b": "xcorr-sq_mean_sig-True",
+    "reference_z": -0.1394056670475178,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": -0.06447235864383385,
+      "raw": -0.08930758917211698,
+      "scaled": -1.0815146631061927,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "spearmanr-sq",
+    "b": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.31258066108253285,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.08823608625658602,
+      "raw": 0.09416403790685134,
+      "scaled": 1.0724026385917274,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "tlmi_gaussian",
+    "b": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
+    "reference_z": 0.502654748610579,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.07135494721044608,
+      "raw": 0.06189059021954353,
+      "scaled": 1.0580024106850066,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   },
+   {
+    "a": "kendalltau-sq",
+    "b": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "reference_z": 0.31423282013229953,
+    "conditions": {
+     "all:isoflurane": {
+      "adjusted": 0.08738784584087698,
+      "raw": 0.0942897880405116,
+      "scaled": 1.0401851959592654,
+      "consistent": true,
+      "units": 13,
+      "animals": 13
+     }
+    },
+    "recovery": {}
+   }
+  ]
+ },
+ "specific": {
+  "all:isoflurane": []
+ },
+ "opposite": {},
+ "majority": []
+}

@@ -1,0 +1,1386 @@
+{
+ "bank": "/scratch/ql44/we2614/mts-spi-study/atlas/banks/neurotycho-long-stage-a",
+ "reference": "awake_ec",
+ "draws": 10,
+ "near_s": 150,
+ "states": {
+  "KTMD:awake_ec": {
+   "r:real": 0.8965416013204353,
+   "r:real_near": 0.899905187457187,
+   "r:null": 0.9439581623100647,
+   "r:excess": -0.047416560989629375,
+   "r:excess_near": -0.04405297485287765,
+   "r2:real": 0.8734550080168505,
+   "r2:real_near": 0.8812556438955823,
+   "r2:null": 0.9394075174692308,
+   "r2:excess": -0.06595250945238035,
+   "r2:excess_near": -0.058151873573648455
+  },
+  "KTMD:awake_eo": {
+   "r:real": 0.8816232488553168,
+   "r:real_near": 0.8913922529859132,
+   "r:null": 0.939373747438905,
+   "r:excess": -0.057750498583588106,
+   "r:excess_near": -0.047981494452991824,
+   "r2:real": 0.8719178429543423,
+   "r2:real_near": 0.8796346880634203,
+   "r2:null": 0.9434502166954146,
+   "r2:excess": -0.07153237374107241,
+   "r2:excess_near": -0.06381552863199447
+  },
+  "KTMD:drug": {
+   "r:real": 0.776117197345568,
+   "r:real_near": 0.7817178050586574,
+   "r:null": 0.8288076198596456,
+   "r:excess": -0.05269042251407757,
+   "r:excess_near": -0.04534138893130324,
+   "r2:real": 0.7583077297572036,
+   "r2:real_near": 0.7531497600097156,
+   "r2:null": 0.8250562253445639,
+   "r2:excess": -0.06674849558736032,
+   "r2:excess_near": -0.06174863347319648
+  },
+  "KTMD:recovery_ec": {
+   "r:real": 0.8767666252256006,
+   "r:real_near": NaN,
+   "r:null": 0.9313370041956165,
+   "r:excess": -0.05457037897001585,
+   "r:excess_near": NaN,
+   "r2:real": 0.8442316074656512,
+   "r2:real_near": NaN,
+   "r2:null": 0.9192391033221895,
+   "r2:excess": -0.07500749585653838,
+   "r2:excess_near": NaN
+  },
+  "SLP:awake_ec": {
+   "r:real": 0.9504890122795928,
+   "r:real_near": 0.9534609916658916,
+   "r:null": 0.9711714295432123,
+   "r:excess": -0.020682417263619524,
+   "r:excess_near": -0.017710437877320684,
+   "r2:real": 0.9388897231496867,
+   "r2:real_near": 0.9432870164618063,
+   "r2:null": 0.9664504702484373,
+   "r2:excess": -0.027560747098750615,
+   "r2:excess_near": -0.023163453786630983
+  },
+  "SLP:awake_eo": {
+   "r:real": 0.9434712295539986,
+   "r:real_near": 0.9428622128860138,
+   "r:null": 0.9699201371425641,
+   "r:excess": -0.026448907588565385,
+   "r:excess_near": -0.027057924256550347,
+   "r2:real": 0.9246376895594646,
+   "r2:real_near": 0.9245421630858166,
+   "r2:null": 0.9662935238911825,
+   "r2:excess": -0.04165583433171799,
+   "r2:excess_near": -0.04175136080536601
+  },
+  "SLP:sleep_deep": {
+   "r:real": 0.8852634802616142,
+   "r:real_near": 0.9074874712714864,
+   "r:null": 0.9400875039717568,
+   "r:excess": -0.054824023710142555,
+   "r:excess_near": -0.0326000327002704,
+   "r2:real": 0.869885985269323,
+   "r2:real_near": 0.9021515656605716,
+   "r2:null": 0.9382967751641615,
+   "r2:excess": -0.06841078989483851,
+   "r2:excess_near": -0.036145209503589903
+  },
+  "SLP:sleep_light": {
+   "r:real": 0.9351293340231247,
+   "r:real_near": 0.9453080321603797,
+   "r:null": 0.9702420113263381,
+   "r:excess": -0.03511267730321338,
+   "r:excess_near": -0.02493397916595841,
+   "r2:real": 0.912239641142218,
+   "r2:real_near": 0.9261356924278712,
+   "r2:null": 0.9638152134546425,
+   "r2:excess": -0.051575572312424545,
+   "r2:excess_near": -0.0376795210267713
+  },
+  "SLP:sleep_mid": {
+   "r:real": 0.9006750317817672,
+   "r:real_near": 0.8962510684680829,
+   "r:null": 0.9587133595200977,
+   "r:excess": -0.05803832773833051,
+   "r:excess_near": -0.06246229105201484,
+   "r2:real": 0.8839897685278398,
+   "r2:real_near": 0.8974799178664673,
+   "r2:null": 0.9531249212301149,
+   "r2:excess": -0.06913515270227505,
+   "r2:excess_near": -0.05564500336364758
+  },
+  "KT:awake_ec": {
+   "r:real": 0.9324091051060414,
+   "r:real_near": 0.9328545775925883,
+   "r:null": 0.9635721804381878,
+   "r:excess": -0.03116307533214646,
+   "r:excess_near": -0.0307176028455996,
+   "r2:real": 0.9156289383257483,
+   "r2:real_near": 0.9173875994349512,
+   "r2:null": 0.958260171163045,
+   "r2:excess": -0.04263123283729664,
+   "r2:excess_near": -0.04087257172809372
+  },
+  "KT:awake_eo": {
+   "r:real": 0.9072449750033317,
+   "r:real_near": 0.9149992602788868,
+   "r:null": 0.9667501298610627,
+   "r:excess": -0.059505154857731,
+   "r:excess_near": -0.05175086958217584,
+   "r2:real": 0.8864241092129903,
+   "r2:real_near": 0.901623863490766,
+   "r2:null": 0.9625120996413126,
+   "r2:excess": -0.07608799042832226,
+   "r2:excess_near": -0.06088823615054656
+  },
+  "KT:drug": {
+   "r:real": 0.928546881867742,
+   "r:real_near": 0.9307063674290235,
+   "r:null": 0.9448697433470661,
+   "r:excess": -0.016322861479324158,
+   "r:excess_near": -0.014163375918042675,
+   "r2:real": 0.8972153728646983,
+   "r2:real_near": 0.9011427777080774,
+   "r2:null": 0.9240960504602407,
+   "r2:excess": -0.026880677595542468,
+   "r2:excess_near": -0.02295327275216341
+  },
+  "KT:recovery_ec": {
+   "r:real": 0.891213466212349,
+   "r:real_near": 0.8917910179381188,
+   "r:null": 0.9310699371552786,
+   "r:excess": -0.039856470942929656,
+   "r:excess_near": -0.03927891921715987,
+   "r2:real": 0.8770644609998541,
+   "r2:real_near": 0.8794478846691831,
+   "r2:null": 0.9270835775925887,
+   "r2:excess": -0.05001911659273456,
+   "r2:excess_near": -0.047635692923405526
+  },
+  "MD:awake_ec": {
+   "r:real": 0.9454606689007228,
+   "r:real_near": 0.9497549549281369,
+   "r:null": 0.9718302611540934,
+   "r:excess": -0.026369592253370655,
+   "r:excess_near": -0.022075306225956493,
+   "r2:real": 0.9294797533873873,
+   "r2:real_near": 0.9377711896263731,
+   "r2:null": 0.9638901170126435,
+   "r2:excess": -0.03441036362525607,
+   "r2:excess_near": -0.026118927386270363
+  },
+  "MD:awake_eo": {
+   "r:real": 0.9366969624876939,
+   "r:real_near": 0.9396942217681574,
+   "r:null": 0.970379182966089,
+   "r:excess": -0.03368222047839514,
+   "r:excess_near": -0.030684961197931515,
+   "r2:real": 0.9220414557609127,
+   "r2:real_near": 0.922369408821013,
+   "r2:null": 0.9647084430447336,
+   "r2:excess": -0.042666987283820845,
+   "r2:excess_near": -0.042339034223720595
+  },
+  "MD:drug": {
+   "r:real": 0.8846082571270308,
+   "r:real_near": 0.8809865630667768,
+   "r:null": 0.9298695821198006,
+   "r:excess": -0.0452613249927698,
+   "r:excess_near": -0.04888301905302389,
+   "r2:real": 0.8512432124013445,
+   "r2:real_near": 0.8447115850613598,
+   "r2:null": 0.9133940235909581,
+   "r2:excess": -0.062150811189613686,
+   "r2:excess_near": -0.06868243852959827
+  },
+  "MD:recovery_ec": {
+   "r:real": 0.919097478833541,
+   "r:real_near": 0.9234397680272213,
+   "r:null": 0.9629662422343882,
+   "r:excess": -0.04386876340084722,
+   "r:excess_near": -0.03952647420716693,
+   "r2:real": 0.8936581517152377,
+   "r2:real_near": 0.8980702482789038,
+   "r2:null": 0.9539713313885426,
+   "r2:excess": -0.06031317967330496,
+   "r2:excess_near": -0.055901083109638816
+  },
+  "PF:awake_ec": {
+   "r:real": 0.934953586052745,
+   "r:real_near": 0.9311424532552415,
+   "r:null": 0.9676755289792731,
+   "r:excess": -0.03272194292652808,
+   "r:excess_near": -0.03653307572403164,
+   "r2:real": 0.9142965352980261,
+   "r2:real_near": 0.9115340800652301,
+   "r2:null": 0.959226368485844,
+   "r2:excess": -0.04492983318781785,
+   "r2:excess_near": -0.04769228842061385
+  },
+  "PF:awake_eo": {
+   "r:real": 0.9326286403563397,
+   "r:real_near": 0.9333942639760788,
+   "r:null": 0.9712884255475218,
+   "r:excess": -0.03865978519118207,
+   "r:excess_near": -0.037894161571442986,
+   "r2:real": 0.9073889014918857,
+   "r2:real_near": 0.9114631224803378,
+   "r2:null": 0.9640710794022829,
+   "r2:excess": -0.05668217791039731,
+   "r2:excess_near": -0.05260795692194509
+  },
+  "PF:drug": {
+   "r:real": 0.8186449628312917,
+   "r:real_near": 0.8339520531603412,
+   "r:null": 0.8632092293283037,
+   "r:excess": -0.04456426649701195,
+   "r:excess_near": -0.02925717616796253,
+   "r2:real": 0.7924026212899308,
+   "r2:real_near": 0.809309185305384,
+   "r2:null": 0.8463138344696433,
+   "r2:excess": -0.053911213179712425,
+   "r2:excess_near": -0.03700464916425922
+  },
+  "PF:recovery_ec": {
+   "r:real": 0.8881915582292882,
+   "r:real_near": 0.8902806041498765,
+   "r:null": 0.9527493564412073,
+   "r:excess": -0.06455779821191904,
+   "r:excess_near": -0.062468752291330754,
+   "r2:real": 0.8501293815825053,
+   "r2:real_near": 0.8528522473715447,
+   "r2:null": 0.9371389471496578,
+   "r2:excess": -0.08700956556715261,
+   "r2:excess_near": -0.08428669977811304
+  }
+ },
+ "contrasts": {
+  "KTMD:awake_eo": {
+   "r:real": {
+    "mean": -0.014918352465118329,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.00851293447127377,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r:null": {
+    "mean": -0.004584414871159598,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "r:excess": {
+    "mean": -0.01033393759395873,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r:excess_near": {
+    "mean": -0.003928519600114172,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "r2:real": {
+    "mean": -0.0015371650625082278,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "r2:real_near": {
+    "mean": -0.0016209558321621798,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r2:null": {
+    "mean": 0.004042699226183832,
+    "units": 4,
+    "positive": 3,
+    "animals": 4,
+    "animals_positive": 3
+   },
+   "r2:excess": {
+    "mean": -0.00557986428869206,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r2:excess_near": {
+    "mean": -0.005663655058346012,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   }
+  },
+  "KTMD:drug": {
+   "r:real": {
+    "mean": -0.12042440397486726,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.15343472038546802,
+    "units": 1,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.11515054245041906,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.005273861524448198,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "r:excess_near": {
+    "mean": -0.006935704450533042,
+    "units": 1,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.1151472782596468,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.10287456206963308,
+    "units": 1,
+    "positive": 0,
+    "animals": 1,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.11435129212466683,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.0007959861349799702,
+    "units": 4,
+    "positive": 2,
+    "animals": 4,
+    "animals_positive": 2
+   },
+   "r2:excess_near": {
+    "mean": 0.01686950795865727,
+    "units": 1,
+    "positive": 1,
+    "animals": 1,
+    "animals_positive": 1
+   }
+  },
+  "KTMD:recovery_ec": {
+   "r:real": {
+    "mean": -0.01977497609483464,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r:null": {
+    "mean": -0.012621158114448167,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r:excess": {
+    "mean": -0.007153817980386473,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   },
+   "r2:real": {
+    "mean": -0.029223400551199374,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.020168414147041347,
+    "units": 4,
+    "positive": 0,
+    "animals": 4,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.009054986404158027,
+    "units": 4,
+    "positive": 1,
+    "animals": 4,
+    "animals_positive": 1
+   }
+  },
+  "SLP:awake_eo": {
+   "r:real": {
+    "mean": -0.007017782725594057,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:real_near": {
+    "mean": -0.01059877877987786,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.0012512924006481962,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:excess": {
+    "mean": -0.005766490324945861,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:excess_near": {
+    "mean": -0.009347486379229664,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.01425203359022209,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.018744853375989745,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.00015694635725471695,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:excess": {
+    "mean": -0.014095087232967374,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.018587907018735028,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_deep": {
+   "r:real": {
+    "mean": -0.06522553201797854,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.04597352039440522,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.031083925571455506,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.03414160644652303,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.014889594822949714,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.06900373788036368,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.04113545080123471,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.028153695084275787,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.04085004279608789,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.01298175571695892,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "SLP:sleep_light": {
+   "r:real": {
+    "mean": -0.015359678256468057,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.008152959505511925,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.0009294182168742005,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:excess": {
+    "mean": -0.014430260039593856,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.007223541288637725,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.026650082007468656,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.017151324033935045,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.002635256793794727,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.02401482521367393,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.014516067240140318,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "SLP:sleep_mid": {
+   "r:real": {
+    "mean": -0.04981398049782554,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.05720992319780871,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:null": {
+    "mean": -0.012458070023114554,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.037355910474710985,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.044751853174694156,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:real": {
+    "mean": -0.054899954621846825,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.04580709859533899,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.013325549018322391,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.041574405603524434,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.0324815495770166,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:awake_eo": {
+   "r:real": {
+    "mean": -0.02516413010270968,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.01785531731370138,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": 0.0031779494228748595,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r:excess": {
+    "mean": -0.02834207952558454,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.02103326673657624,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.029204829112758013,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.01576373594418523,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:null": {
+    "mean": 0.004251928478267608,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:excess": {
+    "mean": -0.03345675759102562,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.02001566442245284,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "KT:drug": {
+   "r:real": {
+    "mean": -0.003862223238299378,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:real_near": {
+    "mean": -0.0021482101635647566,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:null": {
+    "mean": -0.018702437091121682,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": 0.014840213852822304,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r:excess_near": {
+    "mean": 0.016554226927556925,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r2:real": {
+    "mean": -0.018413565461049997,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.01624482172687386,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.03416412070280417,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": 0.01575055524175417,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r2:excess_near": {
+    "mean": 0.01791929897593031,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   }
+  },
+  "KT:recovery_ec": {
+   "r:real": {
+    "mean": -0.04119563889369238,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.04106355965446945,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.03250224328290918,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.008693395610783194,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.008561316371560268,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.03856447732589413,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.03793971476576802,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.031176593570456212,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.007387883755437918,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.006763121195311805,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "MD:awake_eo": {
+   "r:real": {
+    "mean": -0.008763706413028871,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.010060733159979407,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.0014510781880043844,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.007312628225024487,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.008609654971975023,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.0074382976264746326,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.015401780805360088,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": 0.0008183260320901442,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r2:excess": {
+    "mean": -0.008256623658564777,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.016220106837450232,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:drug": {
+   "r:real": {
+    "mean": -0.06085241177369183,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.06876839186136008,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.04196067903429268,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.018891732739399147,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.026807712827067398,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.07823654098604294,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.09305960456501322,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.05049609342168532,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.027740447564357618,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.0425635111433279,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "MD:recovery_ec": {
+   "r:real": {
+    "mean": -0.02636319006718174,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.02631518690091561,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.008864018919705174,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:excess": {
+    "mean": -0.017499171147476567,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.017451167981210436,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.035821601672149705,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.039700941347469265,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.009918785624100812,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.025902816048048893,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.029782155723368453,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  },
+  "PF:awake_eo": {
+   "r:real": {
+    "mean": -0.0023249456964052895,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": 0.002251810720837355,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:null": {
+    "mean": 0.0036128965682487024,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r:excess": {
+    "mean": -0.005937842264653992,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.0013610858474113474,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:real": {
+    "mean": -0.006907633806140512,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:real_near": {
+    "mean": -7.095758489228388e-05,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:null": {
+    "mean": 0.004844710916438955,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r2:excess": {
+    "mean": -0.011752344722579466,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.0049156685013312384,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:drug": {
+   "r:real": {
+    "mean": -0.1163086232214533,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.09719040009490032,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.10446629965096943,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.01184232357048387,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r:excess_near": {
+    "mean": 0.00727589955606911,
+    "units": 2,
+    "positive": 2,
+    "animals": 2,
+    "animals_positive": 2
+   },
+   "r2:real": {
+    "mean": -0.12189391400809535,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.10222489475984614,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.11291253401620077,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.008981379991894578,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   },
+   "r2:excess_near": {
+    "mean": 0.01068763925635463,
+    "units": 2,
+    "positive": 1,
+    "animals": 2,
+    "animals_positive": 1
+   }
+  },
+  "PF:recovery_ec": {
+   "r:real": {
+    "mean": -0.04676202782345684,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:real_near": {
+    "mean": -0.040861849105365,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:null": {
+    "mean": -0.014926172538065885,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess": {
+    "mean": -0.03183585528539096,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r:excess_near": {
+    "mean": -0.025935676567299115,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real": {
+    "mean": -0.0641671537155209,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:real_near": {
+    "mean": -0.05868183269368532,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:null": {
+    "mean": -0.02208742133618613,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess": {
+    "mean": -0.04207973237933477,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   },
+   "r2:excess_near": {
+    "mean": -0.03659441135749919,
+    "units": 2,
+    "positive": 0,
+    "animals": 2,
+    "animals_positive": 0
+   }
+  }
+ }
+}
