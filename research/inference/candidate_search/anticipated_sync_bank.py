@@ -84,7 +84,7 @@ def extract():
     from mtsspi.utils import slugify
     from research.proof.p90.spi_baseline_exploration import sha, summarize
     manifest = json.loads((DATA / 'manifest.json').read_text()); rows = manifest['rows']
-    means, dists, zs, sources, order = [], [], [], [], None
+    means, dists, zs, antis, sources, order = [], [], [], [], [], None
     with np.load(DATA / 'observations.npz') as raw:
         assert sha(DATA / 'observations.npz') == manifest['archive_sha256']
         for r in rows:
@@ -100,9 +100,11 @@ def extract():
             marginal = summarize(mpis, order)
             z, _, _ = build_unified_feature_values(mpis, order)
             means.append(marginal[:, 0]); dists.append(marginal.reshape(-1)); zs.append(z)
+            pos = np.argsort(r['channel_order']); m = gen.MODULES  # pos[physical] = displayed index; senders 0..m-1
+            antis.append([np.mean([mpis[k][pos[i], pos[i + m]] - mpis[k][pos[i + m], pos[i]] for i in range(m)]) for k in order])
             sources.append(dict(row_id=r['row_id'], mpi_sha256=sha(p), pyspi=meta['pyspi'].get('version'), commit=meta['pyspi'].get('commit')))
     OUT.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(OUT / 'features.npz', mean=means, distribution=dists, z=zs, row_id=np.array([r['row_id'] for r in rows]),
+    np.savez_compressed(OUT / 'features.npz', mean=means, distribution=dists, z=zs, anti=antis, row_id=np.array([r['row_id'] for r in rows]),
                         spi_order=np.array(order))
     (OUT / 'sources.json').write_text(json.dumps(dict(sources=sources, n_spis=len(order), manifest_sha256=sha(DATA / 'manifest.json'),
                                       features_sha256=sha(OUT / 'features.npz'), code_sha256=sha(Path(__file__))), indent=1) + '\n')
