@@ -412,11 +412,11 @@ def figure(x, coupling, mats, c):
     pos = np.column_stack([gx + LAYOUT[:, 0] * gs, gy + LAYOUT[:, 1] * gs])
     graph(a, pos, coupling ** 1.3, NODE, "#8C929E", 0.042, 0.026, z=1, floor=0.08, rings=PAIR, directed=True)
     # One shared trace per highlighted channel over the gap between carpet and graph: x_i above, x_j below.
-    # With TRACE_LINKS = "beam" (default) each trace sits in a hairline box that starts at the carpet card's right
-    # edge, and its carpet row and graph node project into it, like panel d's projection; "curve" uses two dotted
-    # lines and no box.
+    # With TRACE_LINKS = "beam" (default) each trace sits in a hairline box that starts 0.08 in right of the carpet
+    # card's right edge, and its carpet row and graph node project into it, like panel d's projection; "curve" uses
+    # two dotted lines and no box.
     beamed = TRACE_LINKS == "beam"
-    tx, tw, th = (cx + cw + 0.03, 0.78, 0.32) if beamed else (1.12, 0.74, 0.24)
+    tx, tw, th = (cx + cw + 0.08, 0.78, 0.32) if beamed else (1.12, 0.74, 0.24)
     link = dict(lw=0.5, ls=(0, (1.2, 1.4)), head=False, color=MUTED, z=0.8)
     for m, lab, ty, up in [(i, "$x_i$", 4.06 if beamed else 4.12, True), (j, "$x_j$", 2.64 if beamed else 2.72, False)]:
         y = cy + (M - 1 - m) * pitch
