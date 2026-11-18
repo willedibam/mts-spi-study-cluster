@@ -1,7 +1,5 @@
-import hashlib
 import numpy as np
 from research.inference.benchmarks.order_parameter_simple_baselines import input_statistics, attach
-from research.inference.benchmarks.build_order_parameter_baseline_notebook import build, SOURCE
 import pandas as pd
 
 
@@ -44,17 +42,3 @@ def test_existing_baselines_act_as_identity_check():
         pass
     else:
         raise AssertionError('Mismatch should fail')
-
-
-def test_new_copy_preserves_source_and_uses_separate_figure_paths():
-    before = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
-    nb = build()
-    assert hashlib.sha256(SOURCE.read_bytes()).hexdigest() == before
-    for i, cell in enumerate(nb.cells):
-        if cell.cell_type == 'code':
-            compile(cell.source, f'cell{i}', 'exec')
-            assert 'figures/lean' not in cell.source
-            assert cell.outputs == []
-    assert any('baseline_mt(sl' in c.source for c in nb.cells)
-    assert any('baseline_mt(views' in c.source for c in nb.cells)
-    assert any('baseline_mt(plotted' in c.source for c in nb.cells)

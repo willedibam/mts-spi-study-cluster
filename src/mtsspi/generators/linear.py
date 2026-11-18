@@ -978,7 +978,7 @@ def generate_filter_roll_mts(
     n_linear, n_monotonic, n_nonmonotonic : channel counts (must sum to M; default all linear)
     beta            : sigmoid gain for monotonic channels. Moderate beta maximises the r-rho
                       separation while keeping rho high; very large beta binarises (ties) and
-                      drops rho too. See the beta-sweep in notebooks/exploration/r_rho_mi_260622.ipynb.
+                      drops rho too. See the beta-sweep in research/cases/r_rho_mi/notebooks/r_rho_mi_260622.ipynb at tag archive/pre-cleanup-2026-11-18.
     noise_std       : base per-channel noise std (on unit-variance signal; SNR = 1/std^2)
     noise_std_variable : if True, channel i std = noise_std * Geom(1/noise_std_scale)
     noise_std_scale : per-channel noise multiplier spread (E[kappa] = noise_std_scale)

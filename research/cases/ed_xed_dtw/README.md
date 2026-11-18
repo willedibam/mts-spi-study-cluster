@@ -13,7 +13,7 @@ Lag and warping each in their own block, so each $z$ answers to one mechanism. C
 - Warps of 2–10 (up from 1.2–6) lower $z$(xED, DTW) under warping from 0.51 to 0.43 but raise "all three" on $z$(ED, xED) from 0.43 to 0.62, since larger warps inflate ED and xED together. Lag (5) and warp (10) are no longer matched in their cost to ED.
 - Stacking warp on lag in the same channels (the 2026-10-28 design below, or lags 0–5 on all channels plus warp) makes $z$(ED, xED) climb back (0.17 → 0.74 in the pilot), because warped pairs raise ED and xED together. Keeping the mechanisms in separate blocks avoids that; "all three" shows the mixture.
 
-## Previous case (2026-10-28): `drift_261028.py`
+## Previous case (2026-10-28): `drift_261028.py` (removed 18 November 2026; at tag `archive/pre-cleanup-2026-11-18`)
 
 One system, one knob: whether each channel's delay is absent, constant, or drifts slowly over time. Channel $i$ reads one smooth mother at $t-\tau_i-Dc_i\sin(2\pi t/250+\theta_i)$ (generator `drifting_delay_mts`). The mother is an Ornstein–Uhlenbeck process on an 8× finer grid with lag-one autocorrelation 0.9, so fractional and drifting delays do not smooth the signal. Levels: no delay; $\tau_i=0$–4 samples; the same plus drift $D=3$ and $D=6$, with $c_i\sim U(0,1)$ so pairs drift by different amounts. M = 12, T = 1,000, observation noise log-spaced in 0.1–0.4, 20 recordings per level, the same draws at every level. SPIs: `spis/dtw_euclidean_norm.yaml` (xED is the minimum over shifts $|h|\le10$). Outputs in `results/cases/drift-261028/`.
 
@@ -29,11 +29,11 @@ One system, one knob: whether each channel's delay is absent, constant, or drift
 
 ## Earlier material
 
-- `configs/`: generated corpora, named by date. `260924_lagged-warping.yaml` and its `-extra` extension are the current ones.
-- `spis/`: the SPI sets these corpora are run with (`dtw_euclidean_norm.yaml` for the current corpus).
-- `notebooks/`: `pdist-euclid_dtw_261020.ipynb` is the current figure viewer (Fig. 1-style edge planes, redundancy checks, interpretation and flags; outputs in `results/cases/dtw-euclidean-261020/`). `pdist-euclid_dtw_261016.ipynb` holds the generating maps, fitted alignments and realised warp.
+- `notebooks/drift_figure.ipynb` builds the paper figure from `drift_overview_261029.py`.
+- `configs/`: generated corpora, named by date. `260924_lagged-warping.yaml` and its `-extra` extension are the September corpus, kept because the proof-refresh replay test (`tests/test_synthetic_input_replay.py`) reads it; the others are earlier explorations.
+- `spis/`: `ed_xed_dtw_261029.yaml` is the current SPI set; `dtw_euclidean_norm.yaml` was used for the September corpus and the 28 October design.
+- The dated viewers of the September corpus (`pdist-euclid_dtw*.ipynb`) were removed on 18 November 2026 and are kept at tag `archive/pre-cleanup-2026-11-18` (see [research/README.md](../../README.md)).
 
 ```bash
-python -m mtsspi.run_corpus --config research/cases/ed_xed_dtw/configs/260924_lagged-warping.yaml --count-only
-python -m research.cases.refresh_case_figures --help
+python -m research.cases.ed_xed_dtw.drift_blocks_261029   # pyspi on ED, xED, DTW; writes results/cases/drift-blocks-261029/
 ```

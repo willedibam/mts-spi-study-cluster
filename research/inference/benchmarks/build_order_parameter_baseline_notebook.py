@@ -5,7 +5,7 @@ import nbformat
 from nbclient import NotebookClient
 
 ROOT = Path(__file__).resolve().parents[3]
-SOURCE = ROOT / 'research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb'
+SOURCE = ROOT / 'research/inference/benchmarks/notebooks/order-parameter-benchmarks-lean.ipynb'  # removed 2026-11-18; restore with `git show archive/pre-cleanup-2026-11-18:<path>` before build()
 TARGET = SOURCE.with_name('order-parameter-benchmarks-baselines.ipynb')
 
 

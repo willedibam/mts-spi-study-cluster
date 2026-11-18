@@ -25,8 +25,8 @@ Out of scope:
 The paper has four sections. Current notebook prose is placeholder: rewrite it for meaning and interpretation, with fewer tables, before the figures are polished externally.
 
 **1. Case studies.** Agreement between statistics with nested assumptions reads a named character axis by construction.
-- *Sources:* [`r_rho_mi_261016`](../research/cases/r_rho_mi/notebooks/r_rho_mi_261016.ipynb) and [`pdist-euclid_dtw_261016`](../research/cases/ed_xed_dtw/notebooks/pdist-euclid_dtw_261016.ipynb).
-- *Candidate third:* the timing triplet (r, maximum cross-correlation, phase-aligned P) on branch `claude/festive-poitras-ecb972`. Admit it only if it isolates an axis the first two miss.
+- *Sources:* the form case ([`form_ladder_261028.py`](../research/cases/r_rho_mi/form_ladder_261028.py); figure [`form_figure.ipynb`](../research/cases/r_rho_mi/notebooks/form_figure.ipynb); construction and checks [`form_case.ipynb`](../research/cases/r_rho_mi/notebooks/form_case.ipynb)) and the timing case ([`drift_blocks_261029.py`](../research/cases/ed_xed_dtw/drift_blocks_261029.py); figure [`drift_figure.ipynb`](../research/cases/ed_xed_dtw/notebooks/drift_figure.ipynb)).
+- *Candidate third:* the timing triplet (r, maximum cross-correlation, phase-aligned P), read as dispersion ([`r_xcorr_p/`](../research/cases/r_xcorr_p/README.md), `dispersion_261028.py`). Admit it only if it isolates an axis the first two miss.
 - *Figure plan:* one panel set per triplet.
 
 **2. Proof of concept.** z embeds systems of different M into one space whose class structure and selected feature axes follow the generative process.

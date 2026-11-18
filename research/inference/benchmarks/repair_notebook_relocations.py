@@ -9,8 +9,7 @@ import nbformat
 ROOT=Path(__file__).resolve().parents[3]
 FOLDER=ROOT/'research/inference/benchmarks/notebooks'
 TARGETS=[FOLDER/name for name in [
-    'order-parameter-benchmarks-lean.ipynb','order-parameter-benchmarks-lean-extended.ipynb',
-    'order-parameter-benchmarks-lean-2.ipynb','order-parameter-benchmark-comparison.ipynb']]
+    'order-parameter-benchmarks-lean-extended.ipynb','order-parameter-benchmark-comparison.ipynb']]
 TARGETS+=[ROOT/'research/methods/pair_sampling/notebooks/channel-pair-sampling.ipynb']
 LINK=re.compile(r'(?<=\]\()([^\s)]+)(?=\))')
 

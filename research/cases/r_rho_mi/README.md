@@ -21,12 +21,12 @@ One 4/4/4 channel layout, 2 × 2 over the maps. Twelve channels in three blocks 
 
 ## Earlier material
 
-- `configs/`: generated corpora, named by date and generator setting. `260924_beta.yaml` is the current one.
-- `spis/`: the SPI sets these corpora are run with (`r_rho_mi_260924.yaml` for the current corpus).
-- `notebooks/`: `r_rho_mi_261020.ipynb` is the current figure viewer (Fig. 1-style edge planes, interpretation and flags; outputs in `results/cases/r-rho-mi-261020/`). `r_rho_mi_261016.ipynb` holds the construction, matrices and pair-type decomposition; the others are earlier explorations.
-- `gen_sweep_configs.py`: writes a parameter sweep of configs from a base config.
+- `notebooks/form_figure.ipynb` builds the paper figure; `notebooks/form_case.ipynb` shows how the case works: the construction, per-pair-type planes, population predictions, per-SPI means, and the sensitivity checks quoted above.
+- `spis/r_rho_mi_261024.yaml`: the current SPI set (r, ρ, KSG MI).
+- `configs/`: generated corpora named by date. `260924_beta.yaml` (with `spis/r_rho_mi_260924.yaml`) is the September sigmoid corpus, kept because the proof-refresh replay test (`tests/test_synthetic_input_replay.py`) reads it; the others are earlier explorations.
+- `gen_sweep_configs.py` writes a parameter sweep of configs from a base config; `strength_spread_261024.py` and `figures/` are the 24 October strength-spread sweep and figure drafts.
+- The dated viewers of the September corpus (`r_rho_mi_260622` … `r_rho_mi_261020`) were removed on 18 November 2026 and are kept at tag `archive/pre-cleanup-2026-11-18` (see [research/README.md](../../README.md)).
 
 ```bash
-python -m mtsspi.run_corpus --config research/cases/r_rho_mi/configs/260924_beta.yaml --count-only
-python -m research.cases.refresh_case_figures --help
+python -m research.cases.r_rho_mi.form_ladder_261028   # pyspi on r, rho, MI; writes results/cases/form-ladder-261028/
 ```

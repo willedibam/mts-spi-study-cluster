@@ -1,11 +1,10 @@
 """Frozen-prefix notebook assembly and label-blind family-sensitivity invariants."""
 import ast
-import hashlib
 from pathlib import Path
 import nbformat
 import numpy as np
 
-from research.inference.benchmarks.build_lean_interpretation_appendix import SOURCE, TARGET, build
+from research.inference.benchmarks.build_lean_interpretation_appendix import TARGET
 from research.inference.locking.locking_feature_sensitivity_261007 import feature_masks, project
 
 
@@ -38,36 +37,11 @@ def test_projection_uses_only_development_data():
         np.testing.assert_allclose((w*delta).sum(), q[12:16].mean()-q[:4].mean(), atol=1e-12)
 
 
-def test_copy_preserves_original_cells_and_outputs():
-    before = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
-    result, original, extra = build()
-    nbformat.validate(result)
-    assert result.cells[:len(original.cells)] == original.cells
-    assert hashlib.sha256(SOURCE.read_bytes()).hexdigest() == before
-    markdown = '\n'.join(c.source for c in extra if c.cell_type=='markdown')
-    for required in ['Resonant oscillator', 'NeuroTycho', 'retrospective', '.041', 'not a thermodynamic',
-                     'mean absolute Pearson', 'cointegration']:
-        assert required in markdown
-    assert r'\[' not in markdown and r'\]' not in markdown
-    for c in extra:
-        if c.cell_type=='code':
-            ast.parse(c.source)
-
-
-def test_delivered_copy_is_executed_and_preserves_prefix():
-    import json
-    original = nbformat.read(SOURCE,4)
+def test_delivered_appendix_is_executed():
+    # The lean source notebook was removed on 2026-11-18 (tag archive/pre-cleanup-2026-11-18); it had
+    # 33 cells, so only the appended cells after them are checked here.
     result = nbformat.read(TARGET,4)
-    expected=[c.source for c in original.cells]
-    if 'font_fallback_repair' in result.metadata:
-        expected=[s.replace("'font.serif': ['Computer Modern Roman']", "'font.serif': ['Computer Modern Roman', 'DejaVu Serif']") for s in expected]
-    assert [c.source for c in result.cells[:len(original.cells)]] == expected
-    if 'typography_refresh' in result.metadata:
-        digest=hashlib.sha256(json.dumps(result.cells[:len(original.cells)],sort_keys=True).encode()).hexdigest()
-        assert digest==result.metadata.typography_refresh.preserved_prefix_sha256
-    else:
-        assert result.cells[:len(original.cells)] == original.cells
-    extra = result.cells[len(original.cells):]
+    extra = result.cells[33:]
     images = []
     for cell in extra:
         if cell.cell_type == 'code':

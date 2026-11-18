@@ -15,4 +15,6 @@ One folder per research stream, one folder per study inside it. A study holds wh
 
 All streams were moved in October 2026; `scripts/`, `tests/` and `configs/` now hold only what is shared or infrastructure. Within a stream, `shared/` holds modules that several of its studies use. Large inputs and outputs stay in the ignored `data/` and `results/` directories, under the study's name.
 
-Study folders are importable (`python -m research.cases.refresh_case_figures`), so their names use underscores.
+Study folders are importable (`python -m research.cases.r_rho_mi.form_ladder_261028`), so their names use underscores.
+
+On 18 November 2026 superseded and abandoned work was removed to keep the repository focused on the paper: dated case viewers on the September corpus, the lean and lean-2 order-parameter notebooks, the 3–5 October proof-baseline scouts, the small-lattice (M=N) CML2D diagnostic, and the bridge and TUH scouts. Everything is kept at tag `archive/pre-cleanup-2026-11-18`. Paths to those files in context notes, protocols and the research log refer to that tag: `git show archive/pre-cleanup-2026-11-18:<path>` prints a file, `git checkout archive/pre-cleanup-2026-11-18 -- <path>` restores it, and `git log --diff-filter=D --name-only -- research/` lists what was deleted.
