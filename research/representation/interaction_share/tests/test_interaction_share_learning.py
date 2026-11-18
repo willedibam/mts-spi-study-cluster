@@ -58,6 +58,7 @@ def test_raw_regularization_selection_cannot_use_held_labels_or_values():
 
 
 def test_shared_runner_filters_training_family_and_keeps_both_test_families(tmp_path):
+    pytest.importorskip("torch")
     from research.representation.representation_state.run_representation_state_random_control import run as run_random
     p=yaml.safe_load(Path('research/representation/interaction_share/configs/analysis/interaction-share-260908.yaml').read_text())
     p['methods']['subset_seeds']=[11];p['sampling']['labelled_training_masters_per_coupling']=[2]

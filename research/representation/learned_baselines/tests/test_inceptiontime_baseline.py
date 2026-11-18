@@ -1,3 +1,8 @@
+import pytest
+
+# torch is the optional `neural` extra (pyproject.toml).
+pytest.importorskip("torch")
+
 import numpy as np
 import pytest
 import torch

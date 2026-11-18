@@ -1,3 +1,8 @@
+import pytest
+
+# torch is the optional `neural` extra (pyproject.toml).
+pytest.importorskip("torch")
+
 import numpy as np
 import pytest
 from research.representation.neurotycho.neurotycho_evaluation import audited_cuda_tolerance, summarize_run, verify_pearson_edges

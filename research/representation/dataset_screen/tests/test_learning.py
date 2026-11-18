@@ -84,7 +84,7 @@ def test_raw_source_loader_and_scaler_do_not_read_heldout_data(tmp_path):
 
 @pytest.mark.parametrize('method', ['inceptiontime', 'aligned_encoder'])
 def test_network_multiclass_training_and_legacy_output(method):
-    import torch
+    torch = pytest.importorskip("torch")
     torch.set_num_threads(1)
     spec, _, _ = neural_spec(method, 4, 17)
     x = torch.randn(3, 96, 4)

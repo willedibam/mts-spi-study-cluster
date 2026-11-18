@@ -1,3 +1,8 @@
+import pytest
+
+# torch is the optional `neural` extra (pyproject.toml).
+pytest.importorskip("torch")
+
 import numpy as np
 import torch
 from research.representation.shared.spi_edge_pool import SPIEdgePool,standardize_edges,pack_inputs

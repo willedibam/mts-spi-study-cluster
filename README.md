@@ -15,6 +15,7 @@ Local datasets and feature banks live together under `data/`; see the [data layo
 
 ```bash
 uv sync --locked --inexact                      # the environment; pyspi is pinned by commit (HPC.md)
+# add --extra neural for torch (learned baselines in research/representation)
 python -m mtsspi.run_corpus --config configs/generate/test.yaml --list
 python -m mtsspi.run_corpus --config configs/generate/test.yaml --job-index 1 --n-jobs 4
 ```

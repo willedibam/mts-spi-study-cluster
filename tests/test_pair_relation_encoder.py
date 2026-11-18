@@ -1,3 +1,8 @@
+import pytest
+
+# torch is the optional `neural` extra (pyproject.toml).
+pytest.importorskip("torch")
+
 import torch
 import pytest
 from research.representation.shared.representation_state_neural import make_encoder

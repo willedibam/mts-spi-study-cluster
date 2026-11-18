@@ -29,8 +29,6 @@ dependencies = [
     "dtaidistance==2.3.13",
     "dtw-python",
     "fastdtw",
-    "torch>=2.1.0",
-    "torch-geometric>=2.5.0",
     "plotly>=6.7.0",
     "nbformat>=5.10.4",
     "opentsne>=1.0.4",
@@ -50,6 +48,10 @@ real = ["yfinance"]
 prep = ["mne>=1.6.0", "moabb>=1.0.0"]
 atlas = ["pycatch22>=0.5.0"]
 interactive = ["anywidget>=0.9", "ipywidgets>=8.1"]
+# Learned baselines and neural readouts in research/representation only. On
+# Linux torch pulls the CUDA stack (~14k files of torch alone); keep it out of
+# the default environment so cluster checkouts stay within inode quotas.
+neural = ["torch>=2.1.0", "torch-geometric>=2.5.0"]
 
 [project.scripts]
 run-corpus = "mtsspi.run_corpus:main"
