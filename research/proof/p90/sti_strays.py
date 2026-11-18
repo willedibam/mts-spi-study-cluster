@@ -119,10 +119,76 @@ def plot_continuum(frame):
     ax.legend(fontsize=6, frameon=False); fig.tight_layout(); fig.savefig(OUT/'sti-continuum.png', dpi=200); plt.close(fig)
 
 
+# Inset recordings (class, M, T, instance, title), ordered so that leaders do not cross.
+INSETS = [('fdstc', 32, 2000, 9, 'developed turb.\nweakest'), ('sti-i', 8, 500, 8, 'near noise\nturbulent window'),
+          ('sti-i', 8, 2000, 0, 'intermittency\nas weak, $T=2000$'), ('sti-i', 8, 500, 6, 'intermittency\ntypical'),
+          ('sti-i', 8, 500, 3, 'intermittency\none bursting site'), ('sti-i', 8, 1000, 4, 'near noise\nfully laminar')]
+CARPET_STEPS = 120  # First steps of each window: enough to resolve the period-3 orbit.
+
+
+def plot_figure(config, frame, name='sti-strays'):
+    """Appendix figure: every intermittency and developed-turbulence recording by cross-channel
+    dependence against relative distance to noise, with lattice and carpet insets at six of them."""
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import ListedColormap
+    from research.cases.composite_style import INK, save
+    from research.proof.p90.proof_figure import T_MARKERS, marker_area
+    colors = {c['name']: c['color'] for c in config['classes']}
+    labels = {'sti-i': 'CML intermittency', 'fdstc': 'CML developed turbulence'}
+    specs = {(s.mts_class, s.M, s.T, s.instance): s for s in _specs(config['panel_a']['generation'])}
+    style()
+    W, H = 7.2, 4.05
+    fig = plt.figure(figsize=(W, H)); inch = lambda l, b, w, h: fig.add_axes([l/W, b/H, w/W, h/H])
+    ax = inch(.62, .42, 6.45, 2.2)
+    noise = frame[frame.cls == 'gaussian-noise'].dep
+    ax.axvspan(noise.min(), noise.max(), color=colors['gaussian-noise'], alpha=.3, lw=0, label='Gaussian noise (range)')
+    for cls in ('fdstc', 'sti-i'):
+        for t, mk in T_MARKERS.items():
+            f = frame[(frame.cls == cls) & (frame['T'] == t)]
+            ax.scatter(f.dep, f.noise_ratio, s=marker_area(f.M, mk), marker=mk, color=colors[cls], alpha=.85,
+                       edgecolors='white', linewidths=.3, label=labels[cls] if t == 1000 else None, zorder=3)
+    ax.axhline(1, color='.55', lw=.5, ls=(0, (3, 2)), zorder=1)
+    ax.text(.6, 1.06, 'nearer noise', transform=ax.get_yaxis_transform(), ha='left', va='bottom', fontsize=6,
+            color='.4')
+    ax.set(yscale='log', xlim=(0, 1.04), ylim=(.05, 2.4),
+           xlabel=r'Cross-channel dependence, mean over pairs of max $|r|$ at lags 0--3',
+           ylabel='Distance to own class\n/ distance to noise', yticks=[.1, .2, .5, 1, 2], yticklabels=['0.1', '0.2', '0.5', '1', '2'])
+    ax.minorticks_off()
+    ax.legend(loc='lower right', fontsize=6, frameon=False, handletextpad=.3, markerscale=1.3)
+    w, gap, x0, top = .98, .1, .62, H - .08
+    for k, (cls, m, t, i, title) in enumerate(INSETS):
+        spec = specs[cls, m, t, i]; x, lattice = _series(spec, full=True)
+        turb = np.abs(lattice[3:] - lattice[:-3]) >= LAMINAR; lo = (lattice.shape[1] - m)//2
+        left = x0 + k*(w + gap) + (6.45 - 6*w - 5*gap)/2
+        head = fig.text((left + w/2)/W, top/H, title + f'\n$M={m}$, $T={t}$', ha='center', va='top', fontsize=6,
+                        color=INK, linespacing=1.15)
+        la = inch(left, top - .74, w, .36)
+        la.imshow(turb.T, aspect='auto', cmap=ListedColormap(['#f2efe6', '#222222']), interpolation='antialiased',
+                  rasterized=True)
+        la.add_patch(plt.Rectangle((-.5, lo - .5), turb.shape[0], m, fill=False, ec='#d62728', lw=.6))
+        la.set_xticks([]); la.set_yticks([])
+        if k == 0: la.set_ylabel('lattice', fontsize=6, labelpad=2)
+        ca = inch(left, top - 1.08, w, .3); carpet(ca, x[:CARPET_STEPS].T)
+        if k == 0: ca.set_ylabel('window', fontsize=6, labelpad=2)
+        row = frame[(frame.cls == cls) & (frame.M == m) & (frame['T'] == t) & (frame.instance == i)].iloc[0]
+        ax.scatter(row.dep, row.noise_ratio, s=marker_area(m, T_MARKERS[t])*3.2, facecolors='none', edgecolors=INK,
+                   linewidths=.6, zorder=4)
+        point = fig.transFigure.inverted().transform(ax.transData.transform((row.dep, row.noise_ratio)))
+        fig.add_artist(plt.Line2D([(left + w/2)/W, point[0]], [(top - 1.08)/H, point[1]], color='.45', lw=.45,
+                                  zorder=5))
+    save(fig, OUT, name); plt.close(fig)
+    return OUT/f'{name}.pdf'
+
+
 if __name__ == '__main__':
     sys.path.insert(0, '.')
     OUT.mkdir(parents=True, exist_ok=True)
     config = load_config()
-    bank = load_bank('data/proof/refresh-261014/features.npz', expected_spis=283, contract='unified_ordered_v3')
-    frame = continuum(config, bank); frame.to_csv(OUT/'sti-continuum.csv', index=False)
-    plot_lattices(config); plot_continuum(frame)
+    csv = OUT/'sti-continuum.csv'
+    if '--figure' in sys.argv and csv.exists():  # Reuse the continuum table: figure only.
+        frame = pd.read_csv(csv)
+    else:
+        bank = load_bank('data/proof/refresh-261014/features.npz', expected_spis=283, contract='unified_ordered_v3')
+        frame = continuum(config, bank); frame.to_csv(csv, index=False)
+        plot_lattices(config); plot_continuum(frame)
+    print(plot_figure(config, frame))
