@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N prios_screen
+#PBS -j oe
+# PRIOS full-pyspi screen (../prios-prereg.md). Run from a source snapshot's root. STAGE:
+#   bank    qsub -l ncpus=48,mem=190GB,walltime=01:00:00 -v STAGE=bank research/representation/atlas/movers/jobs/prios.pbs
+#   (pyspi) research/representation/atlas/jobs/farm.pbs once per bank: BANK=$MTS_SCRATCH/atlas/banks/prios-{ns,iaaft},
+#           OUT=$MTS_SCRATCH/atlas/pyspi/prios-{ns,iaaft}, SHARD_SIZE=2, CONFIG=$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml,
+#           PYSPI_SOURCE=$MTS_SCRATCH/operations/sources/pyspi-upstream-0c798b4
+#   post    qsub -l ncpus=48,mem=190GB,walltime=04:00:00 -v STAGE=post ...   (audit, reduce, reliability, score)
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+export PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-upstream-0c798b4
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; O=$MTS_GDATA/representation/atlas-prios-screen-261119; mkdir -p "$O"
+W=$MTS_GDATA/representation/atlas-mi-pair-261117/human/prios-sfull/windows
+CONFIG=$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml
+P=research/representation/atlas/movers/prios.py
+echo "source $PWD" > "$O/source-$STAGE.txt"
+case "$STAGE" in
+    bank) python -u $P bank "$W" "$A" "$PBS_NCPUS" ;;
+    post)
+        for b in ns iaaft; do
+            python -m research.representation.atlas.extract "$A/banks/prios-$b" --out "$A/pyspi/prios-$b" --shard-size 2 --config "$CONFIG" --audit
+            python -u -m research.representation.atlas.discovery reduce "$A/banks/prios-$b" "$A/pyspi/prios-$b" \
+                --output "$A/discovery/prios-$b-reduced.npz" --jobs 32
+        done
+        python -u -m research.representation.atlas.assumptions reliability "$A/banks/prios-ns" "$A/pyspi/prios-ns" \
+            "$A/discovery/prios-ns-reduced.npz" --output "$A/discovery/prios-ns-reliability-all.json" --reference awake --jobs 16
+        python -u $P score "$A" "$MTS_GDATA/representation/atlas-movers-261117/movers.json" "$O/prios-screen.json" | tee "$O/summary.txt"
+        ;;
+    *) echo "STAGE must be bank or post" >&2; exit 2 ;;
+esac
