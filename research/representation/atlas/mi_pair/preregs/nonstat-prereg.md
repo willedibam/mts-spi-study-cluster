@@ -105,3 +105,5 @@ Eyes-open SD is .0017–.0023 under every null.
 **Limits:**
 - These are comparisons with synthetic generators whose timescales and SNR were chosen, not fitted. One draw per window and null; four animals.
 - The reading is "favours", not a verdict, because the calibration showed no segment length separates gain from coupling outright.
+
+**Terminology correction (19 November, after the result; the reading map is unchanged).** "Slow non-stationarity of linear dependence" above means variation within the 10-s window on about 1-s scales. Drift slower than the window, the classic false positive, is excluded by the 5-s and 2-s rows. A within-window Gaussian mixture is itself non-Gaussian dependence under the operational definition ([reading guide](../../../../../docs/interpreting-spi-pairs.md)), so this result gives the timescale and form of the departure; it does not reclassify it as linear.

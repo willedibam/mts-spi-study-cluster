@@ -67,6 +67,7 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
     - linear coupling with a time-varying gain or state (a mixture of Gaussians);
     - linear mixing of non-Gaussian sources (ICA's "linear non-Gaussian" case).
   - *Conditional mean:* only a pure scale mixture (one shared gain on an unchanged correlation pattern) keeps it linear. With state-dependent correlation or non-Gaussian sources it is generally nonlinear, even when the generating equations are linear.
+  - *Segment surrogates locate a timescale; they do not reclassify route 2 as linear.* Any process is close to linear-Gaussian on short enough stretches, and a surrogate fitted per short segment absorbs everything (a static quadratic keeps .14 of its residual at 50-sample segments). The classic non-stationarity false positive is drift slower than the analysis window, tested by segments long relative to the drift. Absorption only at segments much shorter than the window says the departure is a mixture over that timescale, which is route 2. Same-sample MI pools the window's samples, so it cannot tell drift from recurrent switching; that distinction concerns the generator, not the statistic.
   - *Paper wording:* state the definition once. Reserve "nonlinear coupling" for a mechanism shown by a calibrated readout.
   - *Two directions:* "more or less nonlinear" requires a declared level measure, such as population mean excess MI. A fall in z(Gaussian, model-free) concerns organisation relative to the Gaussian profile; it does not by itself identify the amount or spread of excess MI (worked example above).
 - **Wording tiers.** Confirmatory statements use only axes that pass validation. Everything else is exploratory, e.g. "departure from linear-stationary-Gaussian dependence in families F".
@@ -86,6 +87,7 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
 ## Mistakes already made, kept so they are not repeated
 
 - A non-Gaussian MI "level rise" from the uncorrected Kraskov estimator, read as character. Withdrawn.
+- Absorption by 1-s segment surrogates read as "non-stationarity rather than nonlinear dependence" (19 November). A mixture within the window is route 2 of the definition; only drift slower than the window is the classic false positive.
 - A raw linear–rank fall read as nonlinearity when it tracks marginal shape.
 - Surrogate-reproduced effects called "beyond spectral".
 - Classifier weights averaged within families and read as a pattern. Use contrasts of family-block means.
