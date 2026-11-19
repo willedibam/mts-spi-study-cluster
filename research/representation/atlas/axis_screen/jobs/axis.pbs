@@ -1,0 +1,25 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N axis_screen
+#PBS -j oe
+# Axis screen compute (../prereg.md). From the synced checkout's root:
+#   qsub -l ncpus=48,mem=190GB,walltime=08:00:00 -v ARM=long  research/representation/atlas/axis_screen/jobs/axis.pbs
+#   qsub -l ncpus=48,mem=190GB,walltime=04:00:00 -v ARM=short research/representation/atlas/axis_screen/jobs/axis.pbs
+#   ARM=prios (after the macaque score) adds --prios and uses all channels for KSG.
+set -euo pipefail
+: "${ARM:?}"
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; O=$A/axis_screen/$ARM; mkdir -p "$O"
+git rev-parse HEAD > "$O/commit.txt"
+case "$ARM" in
+    long)  B=$A/banks/neurotycho-long;  FLAGS=--sub32 ;;
+    short) B=$A/banks/neurotycho-short; FLAGS=--sub32 ;;
+    prios) B=$A/banks/prios-ns;         FLAGS=--prios ;;
+    *) echo "ARM must be long, short or prios" >&2; exit 2 ;;
+esac
+python -u -m research.representation.atlas.axis_screen.run compute "$B" "$O" "$PBS_NCPUS" $FLAGS
+python -u -m research.representation.atlas.axis_screen.run collect "$O" "$O/../screen-$ARM.npz"
