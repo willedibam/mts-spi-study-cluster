@@ -1,0 +1,13 @@
+reproduction gate: max |(real, N0) z - stored| = 0.00e+00 -> PASS
+N0       pooled drug Δ -0.0133 | animal means [-0.0189 -0.0087 -0.0115 -0.0137] (4/4 < 0, one-sided t p = 0.0044) | eyes-open SD 0.0020
+          KT -0.0159 (4/4 down)  KTMD -0.0155 (11/11 down)  MD -0.0062 (4/4 down)  PF -0.0117 (4/4 down)  SLP -0.0010 (7/7 down)
+N2 L500  pooled drug Δ -0.0145 | animal means [-0.0205 -0.0103 -0.0117 -0.0137] (4/4 < 0, one-sided t p = 0.0042) | eyes-open SD 0.0023
+          KT -0.0158 (4/4 down)  KTMD -0.0180 (11/11 down)  MD -0.0063 (4/4 down)  PF -0.0119 (4/4 down)  SLP -0.0014 (7/7 down)
+N2 L200  pooled drug Δ -0.0128 | animal means [-0.018  -0.0081 -0.0102 -0.0156] (4/4 < 0, one-sided t p = 0.0055) | eyes-open SD 0.0022
+          KT -0.0146 (4/4 down)  KTMD -0.0152 (11/11 down)  MD -0.0062 (4/4 down)  PF -0.0110 (4/4 down)  SLP -0.0007 (5/7 down)
+N2 L100  pooled drug Δ -0.0057 | animal means [-0.009  -0.0029 -0.0031 -0.0078] (4/4 < 0, one-sided t p = 0.0183) | eyes-open SD 0.0022
+          KT -0.0095 (4/4 down)  KTMD -0.0049 (10/11 down)  MD -0.0040 (4/4 down)  PF -0.0056 (4/4 down)  SLP -0.0005 (6/7 down)
+N2 L50   pooled drug Δ -0.0039 | animal means [-0.0041 -0.004  -0.0037 -0.003 ] (4/4 < 0, one-sided t p = 0.0004) | eyes-open SD 0.0017
+          KT -0.0028 (4/4 down)  KTMD -0.0047 (11/11 down)  MD -0.0010 (3/4 down)  PF -0.0055 (4/4 down)  SLP +0.0004 (3/7 down)
+
+retention R(L) = pooled drug Δ under N2(L) / under N0: L500 1.09  L200 0.96  L100 0.43  L50 0.29

@@ -78,3 +78,30 @@ Result (`results/representation/atlas-mi-pair-261117/nonstat/calib1.txt`, `.npz`
 ## Compute
 
 Gadi, 48 cpus. About 1,260 windows × 6 MI evaluations × ~10 s ≈ 21 cpu-hours, about 0.5 h wall; walltime request 2 h. Expected ≈ 0.05 kSU, worst case 0.2 kSU.
+
+## Result (19 November 2026; job 184637760, 55 min on 48 cpus, about 0.09 kSU)
+
+Output `results/representation/atlas-mi-pair-261117/nonstat/score.txt`; per-window arrays on gdata `.../atlas-mi-pair-261117/nonstat/` (SHA256SUMS here). Reproduction gate passed exactly: real and N0 z equal the stored zns values.
+
+| Null | Pooled drug Δ | Animal means < 0 | One-sided p | Retained R(L) | KT | KTMD | MD | PF | Sleep |
+|---|---|---|---|---|---|---|---|---|---|
+| N0 | −.0133 | 4/4 | .004 | 1 | −.0159 | −.0155 | −.0062 | −.0117 | −.0010 |
+| N2, 5 s | −.0145 | 4/4 | .004 | 1.09 | −.0158 | −.0180 | −.0063 | −.0119 | −.0014 |
+| N2, 2 s | −.0128 | 4/4 | .006 | .96 | −.0146 | −.0152 | −.0062 | −.0110 | −.0007 |
+| N2, 1 s | −.0057 | 4/4 | .018 | **.43** | −.0095 | −.0049 | −.0040 | −.0056 | −.0005 |
+| N2, 0.5 s | −.0039 | 4/4 | .0004 | .29 | −.0028 | −.0047 | −.0010 | −.0055 | +.0004 |
+
+Eyes-open SD is .0017–.0023 under every null.
+
+**Reading by the prestated map:**
+- **R(1 s) = .43 ≤ .5.** That is like slow gain, slow switching and per-channel gain (.36–.55 in calibration), and unlike a static nonlinearity (.92), local decoupling (.74) and 0.8-s burst gain (.80).
+- So the larger part of the drug change is reproduced by linear-Gaussian dependence that changes between 1-s segments: slow non-stationarity of linear dependence is the main generator.
+- **R(0.5 s) = .29 < .5,** within the calibrated range. A smaller residual persists below 1 s in every animal (4/4, p = .0004; KTMD 11/11). It is the size 0.8-s burst gain leaves (.34), and it is not identifiable further.
+
+**Descriptive, post hoc:**
+- Retention at 1 s differs by agent: KT .60, MD .65, PF .48, KTMD .32. KT's larger remainder fits its reproducible pair-level reordering (`reorder.py`).
+- Sleep is ≈ 0 under every null.
+
+**Limits:**
+- These are comparisons with synthetic generators whose timescales and SNR were chosen, not fitted. One draw per window and null; four animals.
+- The reading is "favours", not a verdict, because the calibration showed no segment length separates gain from coupling outright.
