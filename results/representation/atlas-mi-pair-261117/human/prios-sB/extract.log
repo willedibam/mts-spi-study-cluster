@@ -1,0 +1,7 @@
+{"subject": "sub-PRIOS01", "M": 42, "bad": [], "M_good": 42, "awake": {"cand": 341, "passed": 322, "used": 100}, "anaes": {"cand": 153, "passed": 149, "used": 100}}
+{"subject": "sub-PRIOS02", "M": 69, "bad": [], "M_good": 69, "awake": {"cand": 579, "passed": 567, "used": 100}, "anaes": {"cand": 0, "passed": 0, "used": 0}}
+{"subject": "sub-PRIOS03", "M": 61, "bad": [], "M_good": 61, "awake": {"cand": 518, "passed": 461, "used": 100}, "anaes": {"cand": 39, "passed": 39, "used": 39}}
+{"subject": "sub-PRIOS04", "M": 56, "bad": [], "M_good": 56, "awake": {"cand": 489, "passed": 438, "used": 100}, "anaes": {"cand": 97, "passed": 97, "used": 97}}
+{"subject": "sub-PRIOS05", "M": 63, "bad": [], "M_good": 63, "awake": {"cand": 510, "passed": 504, "used": 100}, "anaes": {"cand": 163, "passed": 163, "used": 100}}
+{"subject": "sub-PRIOS06", "M": 40, "bad": [], "M_good": 40, "awake": {"cand": 295, "passed": 268, "used": 100}, "anaes": {"cand": 64, "passed": 64, "used": 64}}
+{"subject": "sub-PRIOS09", "M": 50, "bad": ["T17"], "M_good": 49, "awake": {"cand": 431, "passed": 337, "used": 100}, "anaes": {"cand": 152, "passed": 150, "used": 100}}

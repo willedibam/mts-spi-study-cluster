@@ -1,0 +1,14 @@
+prios: included 6/7 subjects {np.str_('sub-PRIOS01'): {'awake': 100, 'anaes': 100}, np.str_('sub-PRIOS02'): {'awake': 100, 'anaes': 0}, np.str_('sub-PRIOS03'): {'awake': 100, 'anaes': 39}, np.str_('sub-PRIOS04'): {'awake': 100, 'anaes': 97}, np.str_('sub-PRIOS05'): {'awake': 100, 'anaes': 100}, np.str_('sub-PRIOS06'): {'awake': 100, 'anaes': 64}, np.str_('sub-PRIOS09'): {'awake': 100, 'anaes': 100}}
+
+[car (primary)] subject Δ [-0.0005 -0.0103 -0.0106 -0.0092 -0.0199 -0.007 ]; mean -0.0096 [-0.0162, -0.0030]; 6/6 negative; one-sided p(less) 0.0067, p(greater) 0.9933; null SD 0.0130 -> -0.7 SD; real z awake 0.746, anaes 0.773
+VERDICT: REPLICATES
+
+[asis] subject Δ [ 0.0011  0.0019 -0.0049 -0.0091 -0.019  -0.0038]; mean -0.0056 [-0.0137, +0.0024]; 4/6 negative; one-sided p(less) 0.0665, p(greater) 0.9335; null SD 0.0147 -> -0.4 SD; real z awake 0.801, anaes 0.856
+  sub-PRIOS01: burst awake 0.94 anaes 0.96; delta awake 0.46 anaes 0.47
+  sub-PRIOS03: burst awake 0.95 anaes 0.96; delta awake 0.69 anaes 0.54
+  sub-PRIOS04: burst awake 0.96 anaes 0.97; delta awake 0.39 anaes 0.38
+  sub-PRIOS05: burst awake 0.95 anaes 0.96; delta awake 0.07 anaes 0.30
+  sub-PRIOS06: burst awake 0.96 anaes 1.01; delta awake 0.45 anaes 0.80
+  sub-PRIOS09: burst awake 0.96 anaes 0.99; delta awake 0.59 anaes 0.56
+matched burst index (descriptive): 6 subjects, mean -0.0106, 6/6 negative
+epochs starting ≥ 3 s after a pulse (descriptive): 6 subjects, mean -0.0066, 5/6 negative

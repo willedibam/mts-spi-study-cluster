@@ -1,0 +1,21 @@
+# python research/representation/atlas/mi_pair/human/nulls.py <z.npz>... (primary CAR variant)
+atlas-mi-pair-261117/human/prios/z.npz
+  included 5: PRIOS01 -0.0022 (split +0.0006), PRIOS03 -0.0103 (split +0.0301), PRIOS04 -0.0150 (split -0.0032), PRIOS05 -0.0054 (split +0.0022), PRIOS09 -0.0087 (split -0.0003)
+  mean Δ -0.0083, 5/5 negative, one-sided p 0.0095; null SD 0.0137 -> -0.6; robust null SD 0.0024 -> -3.5; d_z -1.70
+  Δ real z +0.0151 (3/5 negative), Δ surrogate z +0.0235; real z awake 0.749
+atlas-mi-pair-261117/human/prios-sA/z.npz
+  included 6: PRIOS01 +0.0000 (split +0.0006), PRIOS02 -0.0064 (split -0.0082), PRIOS03 -0.0103 (split +0.0301), PRIOS04 -0.0150 (split -0.0032), PRIOS05 -0.0077 (split +0.0022), PRIOS09 -0.0091 (split -0.0003)
+  mean Δ -0.0081, 5/6 negative, one-sided p 0.0052; null SD 0.0135 -> -0.6; robust null SD 0.0040 -> -2.0; d_z -1.63
+  Δ real z -0.0073 (4/6 negative), Δ surrogate z +0.0008; real z awake 0.753
+atlas-mi-pair-261117/human/prios-sB/z.npz
+  included 6: PRIOS01 -0.0005 (split +0.0006), PRIOS03 -0.0103 (split +0.0301), PRIOS04 -0.0106 (split -0.0032), PRIOS05 -0.0092 (split +0.0022), PRIOS06 -0.0199 (split -0.0046), PRIOS09 -0.0070 (split -0.0003)
+  mean Δ -0.0096, 6/6 negative, one-sided p 0.0067; null SD 0.0130 -> -0.7; robust null SD 0.0040 -> -2.4; d_z -1.53
+  Δ real z +0.0268 (2/6 negative), Δ surrogate z +0.0364; real z awake 0.746
+atlas-mi-pair-261117/human/prios-sAB/z.npz
+  included 7: PRIOS01 -0.0008 (split +0.0006), PRIOS02 -0.0076 (split -0.0082), PRIOS03 -0.0103 (split +0.0301), PRIOS04 -0.0106 (split -0.0032), PRIOS05 -0.0068 (split +0.0022), PRIOS06 -0.0199 (split -0.0046), PRIOS09 -0.0071 (split -0.0003)
+  mean Δ -0.0090, 7/7 negative, one-sided p 0.0031; null SD 0.0127 -> -0.7; robust null SD 0.0043 -> -2.1; d_z -1.56
+  Δ real z +0.0062 (4/7 negative), Δ surrogate z +0.0152; real z awake 0.750
+atlas-mi-pair-261117/human/prios-sfull/z.npz
+  included 7: PRIOS01 +0.0011 (split +0.0019), PRIOS02 -0.0038 (split -0.0021), PRIOS03 -0.0105 (split +0.0331), PRIOS04 -0.0041 (split +0.0014), PRIOS05 -0.0092 (split +0.0017), PRIOS06 -0.0260 (split -0.0006), PRIOS09 -0.0054 (split -0.0017)
+  mean Δ -0.0083, 6/7 negative, one-sided p 0.0226; null SD 0.0126 -> -0.7; robust null SD 0.0031 -> -2.7; d_z -0.95
+  Δ real z +0.0217 (3/7 negative), Δ surrogate z +0.0300; real z awake 0.766
