@@ -32,5 +32,9 @@ case "$STAGE" in
         python -u $P score "$A" "$O/matched-screen.json" | tee "$O/summary.txt"
         python -u $P cross "$A" "$O/matched-screen.json" "$O/prios-cross.json" | tee "$O/cross.txt"
         ;;
-    *) echo "STAGE must be bank or post" >&2; exit 2 ;;
+    score)
+        python -u $P score "$A" "$O/matched-screen.json" | tee "$O/summary.txt"
+        python -u $P cross "$A" "$O/matched-screen.json" "$O/prios-cross.json" | tee "$O/cross.txt"
+        ;;
+    *) echo "STAGE must be bank, post or score" >&2; exit 2 ;;
 esac

@@ -33,5 +33,6 @@ case "$STAGE" in
             "$A/discovery/prios-ns-reduced.npz" --output "$A/discovery/prios-ns-reliability-all.json" --reference awake --jobs 16
         python -u $P score "$A" "$MTS_GDATA/representation/atlas-movers-261117/movers.json" "$O/prios-screen.json" | tee "$O/summary.txt"
         ;;
-    *) echo "STAGE must be bank or post" >&2; exit 2 ;;
+    score) python -u $P score "$A" "$MTS_GDATA/representation/atlas-movers-261117/movers.json" "$O/prios-screen.json" | tee "$O/summary.txt" ;;
+    *) echo "STAGE must be bank, post or score" >&2; exit 2 ;;
 esac

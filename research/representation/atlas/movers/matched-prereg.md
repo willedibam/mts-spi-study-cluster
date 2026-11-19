@@ -41,3 +41,7 @@ PRIOS Δ and usability exactly as [prios-prereg.md](prios-prereg.md). Prediction
 ## Compute
 
 Bank: 48 cpus, under 1 h. Two farms, one window per shard, 432 cpus each: the atlas 2-s arm measured about 0.78 cpu-hours per window at M 126, so about 3 rounds of 0.8 h, about 2 kSU per farm. Post: 48 cpus, at most 4 h. Expected about 4.2 kSU in all; worst case (both farms at a 4-h walltime, post at 4 h) about 7.4 kSU.
+
+## Note before any output (19 November)
+
+`bh` and `holm` (imported from `prios.py`) now count an undefined p as 1 (PRIOS Deviation 2); the post stage is resubmitted from the fixed snapshot before any macaque output exists.

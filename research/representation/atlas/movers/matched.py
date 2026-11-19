@@ -122,7 +122,7 @@ def score(atlas, out):
                                spis_failing_reliability=sorted(s for s in spis if rel.get(s, 0) < REL)))
     c, p, q, disc = screen(mins & usable); _, _, _, ctrl = screen(mins & usable, Cn)
     fdp = float(ctrl.sum() / max(disc.sum(), 1))
-    res['primary'] = dict(tested=int(len(c)), discoveries=int(disc.sum()), control_discoveries=int(ctrl.sum()), fdp_estimate=fdp,
+    res['primary'] = dict(tested=int(len(c)), undefined_p=int((~np.isfinite(p)).sum()), discoveries=int(disc.sum()), control_discoveries=int(ctrl.sum()), fdp_estimate=fdp,
                           claims=bool(fdp <= .2), rising=int((Dn[:, c[disc]].mean(0) > 0).sum()),
                           rows=sorted([row(c[k], p[k], q[k]) for k in np.flatnonzero(disc)], key=lambda r: r['p']),
                           top_not_passing=sorted([row(c[k], p[k], q[k]) for k in np.argsort(p)[:30] if not disc[k]], key=lambda r: r['p']))

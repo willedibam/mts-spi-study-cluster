@@ -60,13 +60,14 @@ def channels(src, atlas):
 
 
 def bh(p):
-    p = np.asarray(p, float); n = len(p); o = np.argsort(p); q = np.empty(n)
+    # an undefined p (Delta identically 0, e.g. two covariance-determined SPIs, which spectrum-final IAAFT keeps) is no evidence
+    p = np.where(np.isfinite(p), p, 1.); n = len(p); o = np.argsort(p); q = np.empty(n)
     q[o] = np.minimum.accumulate((p[o] * n / np.arange(1, n + 1))[::-1])[::-1]
     return np.minimum(q, 1)
 
 
 def holm(p):
-    p = np.asarray(p, float); n = len(p); o = np.argsort(p); a = np.empty(n)
+    p = np.where(np.isfinite(p), p, 1.); n = len(p); o = np.argsort(p); a = np.empty(n)
     a[o] = np.maximum.accumulate(np.minimum(p[o] * (n - np.arange(n)), 1)); return a
 
 
@@ -154,7 +155,7 @@ def score(atlas, movers_json, out):
     # 1. primary discovery: usable minimal pairs, with the awake split-half control
     c, p, q, disc = screen(mins & usable); _, _, _, ctrl = screen(mins & usable, Cn)
     fdp = float(ctrl.sum() / max(disc.sum(), 1))
-    res['primary'] = dict(tested=int(len(c)), discoveries=int(disc.sum()), control_discoveries=int(ctrl.sum()), fdp_estimate=fdp,
+    res['primary'] = dict(tested=int(len(c)), undefined_p=int((~np.isfinite(p)).sum()), discoveries=int(disc.sum()), control_discoveries=int(ctrl.sum()), fdp_estimate=fdp,
                           claims=bool(fdp <= .2), rows=sorted([row(c[k], p[k], q[k]) for k in np.flatnonzero(disc)], key=lambda r: r['p']),
                           top_not_passing=sorted([row(c[k], p[k], q[k]) for k in np.argsort(p)[:30] if not disc[k]], key=lambda r: r['p']))
     # 2. macaque predictions
