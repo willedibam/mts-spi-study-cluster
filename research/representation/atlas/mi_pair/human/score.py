@@ -1,6 +1,6 @@
 """z(Gaussian MI, kNN MI), real and 3 joint-IAAFT draws, per selected window (rules: ../preregs/human-prereg.md).
 
-    python score.py <windows dir> <out.npz> <n workers>
+    python score.py <windows dir> <out.npz> <n workers> [all<draws>]   (e.g. all10: every good channel, 10 draws; prereg full-data row)
     python score.py summary <out.npz> <prios|ds004541>
 
 Variants: car = CAR over good channels, last dropped, then the evenly spaced 32 (primary); asis = recorded reference, same
@@ -16,27 +16,28 @@ from mtsspi.surrogates import multivariate_iaaft
 warnings.filterwarnings('ignore')
 
 
-def channels(m):  # indices into the CAR-dropped good channels (m - 1 of them)
-    return np.arange(m - 1) if m - 1 <= 32 else sub32(m - 1)
+def channels(m, every=False):  # indices into the CAR-dropped good channels (m - 1 of them)
+    return np.arange(m - 1) if every or m - 1 <= 32 else sub32(m - 1)
 
 
 def one(args):
     """Stimulated electrodes (PRIOS rows' 'stim', Deviation 1) leave the CAR and the analysed set; none: as frozen."""
-    w, seed, stim = args; w = w.astype(float); keep = np.isin(np.arange(w.shape[1]), stim, invert=True)
-    idx = [j for j in channels(w.shape[1]) if keep[j]]; out = []
+    w, seed, stim, nd, every = args; w = w.astype(float); keep = np.isin(np.arange(w.shape[1]), stim, invert=True)
+    idx = [j for j in channels(w.shape[1], every) if keep[j]]; out = []
     for v in ((w - w[:, keep].mean(1, keepdims=True))[:, idx], w[:, idx]):
         v = ns(v); z = [zc(*edge_mi(v))]
-        z += [zc(*edge_mi(multivariate_iaaft(v, np.random.default_rng(seed + d), final='spectrum')[0])) for d in range(3)]
+        z += [zc(*edge_mi(multivariate_iaaft(v, np.random.default_rng(seed + d), final='spectrum')[0])) for d in range(nd)]
         out.append(z)
     return out
 
 
-def run(src, out, nw):
+def run(src, out, nw, opt=''):
+    nd, every = int(opt[3:] or 3) if opt.startswith('all') else 3, opt.startswith('all')
     jobs, rows = [], []
     for fn in sorted(glob.glob(f'{src}/sub-*.npz')):
         Z = np.load(fn); s = os.path.basename(fn)[:-4]
         for i, r in enumerate(json.loads(str(Z['rows']))):
-            rows.append(dict(r, subject=s)); jobs.append((Z['W'][i], zlib.crc32(f'{s}:{i}'.encode()) * 10, r.get('stim', [])))
+            rows.append(dict(r, subject=s)); jobs.append((Z['W'][i], zlib.crc32(f'{s}:{i}'.encode()) * 10, r.get('stim', []), nd, every))
     with Pool(nw) as p: res = p.map(one, jobs, chunksize=1)
     np.savez(out, Z=np.array(res), rows=json.dumps(rows)); print('done', out, len(rows), flush=True)
 
@@ -78,4 +79,4 @@ def summary(fn, ds):
 
 
 if __name__ == '__main__':
-    summary(sys.argv[2], sys.argv[3]) if sys.argv[1] == 'summary' else run(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+    summary(sys.argv[2], sys.argv[3]) if sys.argv[1] == 'summary' else run(sys.argv[1], sys.argv[2], int(sys.argv[3]), *sys.argv[4:5])

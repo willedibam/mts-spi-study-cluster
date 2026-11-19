@@ -5,11 +5,11 @@
 #PBS -l storage=scratch/ql44+gdata/ql44
 #PBS -N mi_human
 #PBS -j oe
-# Human replication (../preregs/human-prereg.md). DS = prios or ds004541; ROOT = its BIDS dir; optional OPT = A|B|AB (PRIOS sensitivity), TAG = output name.
+# Human replication (../preregs/human-prereg.md). DS = prios or ds004541; ROOT = its BIDS dir; optional OPT (extract letters A, B, F), SOPT (score, e.g. all10), TAG = output name.
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 R=/home/562/we2614/mts-spi-study-cluster; cd $R/research/representation/atlas/mi_pair/human || exit 2
 O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/human/${TAG:-$DS}; mkdir -p $O
 PY="env PYTHONPATH=$R/src:$R $R/.venv/bin/python"; git -C $R log -1 --format='commit %H' > $O/commit.txt
 $PY extract.py $DS $ROOT $O/windows $OPT > $O/extract.log 2>&1 || exit 3
-$PY score.py $O/windows $O/z.npz 48 || exit 4
+$PY score.py $O/windows $O/z.npz 48 $SOPT || exit 4
 $PY score.py summary $O/z.npz $DS > $O/summary.txt && echo ALLDONE

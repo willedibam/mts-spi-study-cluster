@@ -1,6 +1,6 @@
 """Window selection for the human replication (rules: ../preregs/human-prereg.md). No z, no state contrast here.
 
-    python extract.py prios   <ds004370 dir> <out dir> [A|B|AB]   (sensitivity rows S-A, S-B, S-AB; prereg)
+    python extract.py prios   <ds004370 dir> <out dir> [letters from A, B, F]   (S-A, S-B; F: no epoch cap; prereg)
     python extract.py ds004541 <ds004541 dir> <out dir>
 
 Per subject, saves <out>/<subject>.npz: W (windows, T, good channels; pre-CAR, µV, float32), rows (JSON: state, onset_s,
@@ -88,7 +88,7 @@ def prios(root, out, qc, cap=100, opt=''):
                 drop = set(sites[i] + sites[i + 1]).union(*[el for s, e, el in local if s < b and e > a])
                 info = dict(delay_s=float(a - p0), run=os.path.basename(run), stim=sorted(drop))
                 cands.append((state, a, short_epoch(x, fs), has_flat(x, fs), info))
-        finish(subject, cands, names, out, qc, cap, {}, own_scale='B' in opt)
+        finish(subject, cands, names, out, qc, 10 ** 9 if 'F' in opt else cap, {}, own_scale='B' in opt)
 
 
 def ds004541(root, out, qc, cap=30):
