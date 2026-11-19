@@ -1,0 +1,25 @@
+reproduction gate: max |k4 z − stored| = 7.46e-09 -> PASS
+
+k4: verdict SUPPORTS
+  animal means [-0.0189 -0.0087 -0.0115 -0.0137]; 4/4 < 0; one-sided t p = 0.0044; pooled drug -0.0133; eyes-open SD 0.0020
+  KT    Δz -0.0159 (4/4 down) | level Δ(e − g) real − surr +0.0149 nats
+  KTMD  Δz -0.0155 (11/11 down) | level Δ(e − g) real − surr -0.0086 nats
+  MD    Δz -0.0062 (4/4 down) | level Δ(e − g) real − surr -0.0022 nats
+  PF    Δz -0.0117 (4/4 down) | level Δ(e − g) real − surr -0.0150 nats
+  SLP   Δz -0.0010 (7/7 down) | level Δ(e − g) real − surr -0.0009 nats
+
+k10: verdict SUPPORTS
+  animal means [-0.0181 -0.0083 -0.0109 -0.0122]; 4/4 < 0; one-sided t p = 0.0047; pooled drug -0.0126; eyes-open SD 0.0017
+  KT    Δz -0.0144 (4/4 down) | level Δ(e − g) real − surr +0.0194 nats
+  KTMD  Δz -0.0154 (11/11 down) | level Δ(e − g) real − surr +0.0003 nats
+  MD    Δz -0.0059 (4/4 down) | level Δ(e − g) real − surr +0.0007 nats
+  PF    Δz -0.0096 (4/4 down) | level Δ(e − g) real − surr -0.0035 nats
+  SLP   Δz -0.0009 (7/7 down) | level Δ(e − g) real − surr -0.0003 nats
+
+kde: verdict SUPPORTS
+  animal means [-0.0127 -0.0064 -0.0063 -0.0172]; 4/4 < 0; one-sided t p = 0.0139; pooled drug -0.0100; eyes-open SD 0.0010
+  KT    Δz -0.0145 (4/4 down) | level Δ(e − g) real − surr +0.0110 nats
+  KTMD  Δz -0.0098 (11/11 down) | level Δ(e − g) real − surr -0.0044 nats
+  MD    Δz -0.0045 (3/4 down) | level Δ(e − g) real − surr +0.0005 nats
+  PF    Δz -0.0114 (4/4 down) | level Δ(e − g) real − surr -0.0095 nats
+  SLP   Δz -0.0015 (7/7 down) | level Δ(e − g) real − surr -0.0013 nats

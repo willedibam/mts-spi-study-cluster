@@ -46,6 +46,13 @@ calibration or real output. Estimator noise differs between windows; pair-specif
   STABLE PAIR-LEVEL REORDERING  4/4 animal means > 0, one-sided t p < .05, every agent's session mean > 0 (gate holds).
   NOT REPRODUCIBLE              animal means > 0 in ≤ 2/4, or pooled drug Δ ≤ 0: consistent with window-specific noise.
   PARTIAL                       anything else. Descriptive: awake_ec excess itself, eyes-open contrast, sleep.
+
+Outcome of version 2 (19 November): the gate FAILED narrowly. Shared gain with a homogeneous floor gives no reproducible
+residual (−.002), but shared gain with a heterogeneous, fixed channel floor does (+.037, p = .033; pair-specific coupling
++.90), because SNR-ordered gain leaves a product structure f(SNR_i, SNR_j) that the additive node fit does not remove.
+Real data, descriptive only: drug − awake excess, animal means +.082, +.019, +.031, +.045 (one-sided p = .024); KT +.149
+(4/4), KTMD +.028 (11/11), MD +.027 (4/4), PF +.008 (2/4), sleep +.006 (5/7); awake_ec excess +.007; eyes-open SD .015.
+Only KT clearly exceeds the heterogeneous-gain calibration; propofol's reordering does not repeat across windows.
 """
 import sys, glob, numpy as np, warnings
 from multiprocessing import Pool
