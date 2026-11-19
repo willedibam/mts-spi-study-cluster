@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N matched_screen
+#PBS -j oe
+# Macaque screen against per-window joint IAAFT, and its PRIOS test (../matched-prereg.md). Run from a source snapshot's root. STAGE:
+#   bank    qsub -l ncpus=48,mem=190GB,walltime=01:00:00 -v STAGE=bank research/representation/atlas/movers/jobs/matched.pbs
+#   (pyspi) research/representation/atlas/jobs/farm.pbs once per bank: BANK=$MTS_SCRATCH/atlas/banks/nt-{ns,iaaft},
+#           OUT=$MTS_SCRATCH/atlas/pyspi/nt-{ns,iaaft}, SHARD_SIZE=1, CONFIG=$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml,
+#           PYSPI_SOURCE=$MTS_SCRATCH/operations/sources/pyspi-upstream-0c798b4
+#   post    qsub -l ncpus=48,mem=190GB,walltime=04:00:00 -v STAGE=post ...   (audit, reduce, reliability, score, cross on PRIOS)
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+export PYSPI_SOURCE=/scratch/ql44/we2614/mts-spi-study/operations/sources/pyspi-upstream-0c798b4
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; O=$MTS_GDATA/representation/atlas-matched-screen-261119; mkdir -p "$O"
+CONFIG=$PWD/configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml
+P=research/representation/atlas/movers/matched.py
+echo "source $PWD" > "$O/source-$STAGE.txt"
+case "$STAGE" in
+    bank) python -u $P bank "$A" "$PBS_NCPUS" ;;
+    post)
+        for b in ns iaaft; do
+            python -m research.representation.atlas.extract "$A/banks/nt-$b" --out "$A/pyspi/nt-$b" --shard-size 1 --config "$CONFIG" --audit
+            python -u -m research.representation.atlas.discovery reduce "$A/banks/nt-$b" "$A/pyspi/nt-$b" \
+                --output "$A/discovery/nt-$b-reduced.npz" --jobs 32
+        done
+        python -u -m research.representation.atlas.assumptions reliability "$A/banks/nt-ns" "$A/pyspi/nt-ns" \
+            "$A/discovery/nt-ns-reduced.npz" --output "$A/discovery/nt-ns-reliability-all.json" --reference awake_ec --jobs 16
+        python -u $P score "$A" "$O/matched-screen.json" | tee "$O/summary.txt"
+        python -u $P cross "$A" "$O/matched-screen.json" "$O/prios-cross.json" | tee "$O/cross.txt"
+        ;;
+    *) echo "STAGE must be bank or post" >&2; exit 2 ;;
+esac
