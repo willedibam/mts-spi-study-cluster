@@ -1,0 +1,11 @@
+ds004541: included 4/7 subjects {np.str_('sub-02'): {'awake': 30, 'anaes': 30}, np.str_('sub-03'): {'awake': 30, 'anaes': 0}, np.str_('sub-04'): {'awake': 30, 'anaes': 30}, np.str_('sub-07'): {'awake': 30, 'anaes': 30}, np.str_('sub-08'): {'awake': 30, 'anaes': 30}, np.str_('sub-09'): {'awake': 30, 'anaes': 6}, np.str_('sub-10'): {'awake': 30, 'anaes': 0}}
+
+[car (primary)] subject Δ [-0.0013  0.0025  0.0197  0.0011]; mean +0.0055 [-0.0098, +0.0208]; 1/4 negative; one-sided p(less) 0.8323, p(greater) 0.1677; null SD 0.0073 -> +0.8 SD; real z awake 0.985, anaes 0.995
+VERDICT: NOT DETECTED
+
+[asis] subject Δ [0.0004 0.0008 0.0003 0.0006]; mean +0.0005 [+0.0002, +0.0009]; 0/4 negative; one-sided p(less) 0.9895, p(greater) 0.0105; null SD 0.0015 -> +0.4 SD; real z awake 0.996, anaes 0.998
+  sub-02: burst awake 0.99 anaes 0.95; delta awake 0.43 anaes 0.66
+  sub-04: burst awake 0.95 anaes 0.99; delta awake 0.28 anaes 0.73
+  sub-07: burst awake 0.96 anaes 0.95; delta awake 0.48 anaes 0.79
+  sub-08: burst awake 0.97 anaes 1.00; delta awake 0.44 anaes 0.81
+matched burst index (descriptive): 4 subjects, mean -0.0015, 3/4 negative

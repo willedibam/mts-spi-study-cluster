@@ -1,0 +1,8 @@
+{"subject": "sub-02", "M": 9, "bad": ["Pz", "P2"], "M_good": 7, "loc_s": 895.848, "roc_s": 1970.693, "awake": {"cand": 36, "passed": 31, "used": 30}, "anaes": {"cand": 91, "passed": 55, "used": 30}}
+{"subject": "sub-03", "M": 23, "bad": [], "M_good": 23, "loc_s": 897.309, "roc_s": 1456.794, "awake": {"cand": 74, "passed": 34, "used": 30}, "anaes": {"cand": 39, "passed": 0, "used": 0}}
+{"subject": "sub-04", "M": 9, "bad": [], "M_good": 9, "loc_s": 1026.446, "roc_s": 4773.877, "awake": {"cand": 59, "passed": 48, "used": 30}, "anaes": {"cand": 353, "passed": 285, "used": 30}}
+{"subject": "sub-07", "M": 6, "bad": [], "M_good": 6, "loc_s": 981.542, "roc_s": 2594.025, "awake": {"cand": 58, "passed": 32, "used": 30}, "anaes": {"cand": 141, "passed": 140, "used": 30}}
+{"subject": "sub-08", "M": 16, "bad": ["Pz"], "M_good": 15, "loc_s": 785.033, "roc_s": 2085.152, "awake": {"cand": 50, "passed": 31, "used": 30}, "anaes": {"cand": 110, "passed": 103, "used": 30}}
+{"subject": "sub-09", "M": 16, "bad": [], "M_good": 16, "loc_s": 993.448, "roc_s": 1366.69, "awake": {"cand": 47, "passed": 31, "used": 30}, "anaes": {"cand": 25, "passed": 6, "used": 6}}
+{"subject": "sub-10", "M": 21, "bad": [], "M_good": 21, "loc_s": 761.013, "roc_s": 3103.811, "awake": {"cand": 48, "passed": 40, "used": 30}, "anaes": {"cand": 214, "passed": 0, "used": 0}}
+sub-11 excluded

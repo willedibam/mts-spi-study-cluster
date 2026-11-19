@@ -13,7 +13,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../..')))
 from edges import edge_mi, ns, zc, sub32
 from mtsspi.surrogates import multivariate_iaaft
-from research.representation.atlas.prepare import reference
 warnings.filterwarnings('ignore')
 
 
@@ -22,8 +21,10 @@ def channels(m):  # indices into the CAR-dropped good channels (m - 1 of them)
 
 
 def one(args):
-    w, seed = args; idx = channels(w.shape[1]); out = []
-    for v in (reference(w.astype(float), 'car')[:, idx], w.astype(float)[:, idx]):
+    """Stimulated electrodes (PRIOS rows' 'stim', Deviation 1) leave the CAR and the analysed set; none: as frozen."""
+    w, seed, stim = args; w = w.astype(float); keep = np.isin(np.arange(w.shape[1]), stim, invert=True)
+    idx = [j for j in channels(w.shape[1]) if keep[j]]; out = []
+    for v in ((w - w[:, keep].mean(1, keepdims=True))[:, idx], w[:, idx]):
         v = ns(v); z = [zc(*edge_mi(v))]
         z += [zc(*edge_mi(multivariate_iaaft(v, np.random.default_rng(seed + d), final='spectrum')[0])) for d in range(3)]
         out.append(z)
@@ -35,7 +36,7 @@ def run(src, out, nw):
     for fn in sorted(glob.glob(f'{src}/sub-*.npz')):
         Z = np.load(fn); s = os.path.basename(fn)[:-4]
         for i, r in enumerate(json.loads(str(Z['rows']))):
-            rows.append(dict(r, subject=s)); jobs.append((Z['W'][i], zlib.crc32(f'{s}:{i}'.encode()) * 10))
+            rows.append(dict(r, subject=s)); jobs.append((Z['W'][i], zlib.crc32(f'{s}:{i}'.encode()) * 10, r.get('stim', [])))
     with Pool(nw) as p: res = p.map(one, jobs, chunksize=1)
     np.savez(out, Z=np.array(res), rows=json.dumps(rows)); print('done', out, len(rows), flush=True)
 

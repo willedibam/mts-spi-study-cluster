@@ -10,8 +10,8 @@ import sys, json, glob, os
 import numpy as np, pandas as pd, mne
 from scipy.signal import detrend
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../..')))
-from research.representation.atlas.prepare import (short_epoch, continuous, reference, bad_channels, robust_scale,
-                                                   window_ok, spread, delta_fraction)
+from research.representation.atlas.prepare import (short_epoch, continuous, bad_channels, window_ok, spread,
+                                                   delta_fraction)
 mne.set_log_level('ERROR')
 burst = lambda c: float(np.median(1.4826 * np.median(np.abs(c - np.median(c, 0)), 0) / c.std(0)))
 
@@ -31,18 +31,26 @@ def blocked(intervals, a, b):
 
 
 def finish(subject, cands, names, out, qc, cap, extra):
-    """cands: list of (state, onset_s, W100 (T, M) pre-CAR, flat, info). Bad-channel screen, awake scale, window_ok, spread."""
+    """cands: list of (state, onset_s, W100 (T, M) pre-CAR, flat, info). Bad-channel screen, awake scale, window_ok, spread.
+    info['stim'] (PRIOS): names of the stimulated electrodes, which carry the stimulator's common signal between pulses
+    (Deviation 1); they are left out of the CAR, the artefact check and the indices, and score.py leaves them out of z."""
     X = np.concatenate([c[2] for c in cands]); bad = bad_channels(X); good = [j for j in range(X.shape[1]) if j not in bad]
-    aw = [reference(c[2][:, good], 'car') for c in cands if c[0] == 'awake']
-    centre, scale = robust_scale(np.concatenate(aw))
+    gname = [names[j] for j in good]
+    def car(c):  # CAR over the good, non-stimulated channels; stimulated ones NaN; last dropped. Also the kept mask.
+        keep = np.array([n not in c[4].get('stim', ()) for n in gname]); w = c[2][:, good].astype(float)
+        r = w - w[:, keep].mean(1, keepdims=True); r[:, ~keep] = np.nan; return r[:, :-1], keep[:-1]
+    aw = np.concatenate([car(c)[0] for c in cands if c[0] == 'awake'])  # robust_scale, NaN-aware
+    centre = np.nanmedian(aw, 0); scale = 1.4826 * np.nanmedian(np.abs(aw - centre), 0)
     W, rows, rec = [], [], dict(subject=subject, M=len(names), bad=[names[j] for j in bad], M_good=len(good), **extra)
     for state in ('awake', 'anaes'):
         cs = [c for c in cands if c[0] == state]
-        ok = [c for c in cs if not c[3] and window_ok(reference(c[2][:, good], 'car'), centre, scale, np.zeros(1, bool))]
+        ok = [c for c in cs if not c[3] and (lambda r, k: window_ok(r[:, k], centre[k], scale[k], np.zeros(1, bool)))(*car(c))]
         sel = [ok[i] for i in spread(len(ok), cap)]
         for c in sel:
-            w = c[2][:, good]; r = reference(w, 'car'); W.append(w.astype(np.float32))
-            rows.append(dict(state=state, onset_s=c[1], burst=burst(r), delta_fraction=delta_fraction(r), **c[4]))
+            w = c[2][:, good]; r, k = car(c); r = r[:, k]; W.append(w.astype(np.float32))
+            info = dict(c[4]); info.pop('stim', None)
+            if 'stim' in c[4]: info['stim'] = [j for j, n in enumerate(gname) if n in c[4]['stim']]
+            rows.append(dict(state=state, onset_s=c[1], burst=burst(r), delta_fraction=delta_fraction(r), **info))
         rec[state] = dict(cand=len(cs), passed=len(ok), used=len(sel))
     np.savez(f'{out}/{subject}.npz', W=np.array(W), rows=json.dumps(rows), meta=json.dumps(dict(names=names, good=good, bad=bad)))
     qc.append(rec); print(json.dumps(rec), flush=True)
@@ -58,17 +66,19 @@ def prios(root, out, qc, cap=100):
             state = 'anaes' if 'task-SPESprop' in run else 'awake'
             raw = mne.io.read_raw_brainvision(run, preload=False); fs = raw.info['sfreq']; picks = [raw.ch_names.index(n) for n in names]
             ev = pd.read_csv(run.replace('_ieeg.vhdr', '_events.tsv'), sep='\t')
-            pulses = np.sort(ev[ev['trial_type'] == 'electrical_stimulation']['onset'].astype(float).values)
+            st = ev[ev['trial_type'] == 'electrical_stimulation'].assign(t=lambda e: e['onset'].astype(float)).sort_values('t')
+            pulses = st['t'].values; sites = [str(s).split('-') for s in st['electrical_stimulation_site']]
             excl = [(o - 2, o + d + 2) for o, d, t in zip(ev['onset'].astype(float), pd.to_numeric(ev['duration'], errors='coerce').fillna(0), ev['trial_type'])
                     if t in ('artefact', 'seizure', 'burst suppression')]
-            for p0, p1 in zip(pulses[:-1], pulses[1:]):
+            for i, (p0, p1) in enumerate(zip(pulses[:-1], pulses[1:])):
                 if p1 - p0 < 4.0: continue
                 b = p1 - 0.25; a = b - 2.25
                 if blocked(excl, a, b): continue
                 s0 = int(round(a * fs)); n = int(round(2.25 * fs))
                 if s0 + n > raw.n_times: continue
                 x = raw.get_data(picks=picks, start=s0, stop=s0 + n).T * 1e6
-                cands.append((state, a, short_epoch(x, fs), has_flat(x, fs), dict(delay_s=float(a - p0), run=os.path.basename(run))))
+                info = dict(delay_s=float(a - p0), run=os.path.basename(run), stim=sorted(set(sites[i] + sites[i + 1])))
+                cands.append((state, a, short_epoch(x, fs), has_flat(x, fs), info))
         finish(subject, cands, names, out, qc, cap, {})
 
 
