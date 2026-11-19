@@ -28,6 +28,7 @@ case "$STAGE" in
             python -u -m research.representation.atlas.discovery reduce "$A/banks/prios-$b" "$A/pyspi/prios-$b" \
                 --output "$A/discovery/prios-$b-reduced.npz" --jobs 32
         done
+        python -u $P channels "$W" "$A"
         python -u -m research.representation.atlas.assumptions reliability "$A/banks/prios-ns" "$A/pyspi/prios-ns" \
             "$A/discovery/prios-ns-reduced.npz" --output "$A/discovery/prios-ns-reliability-all.json" --reference awake --jobs 16
         python -u $P score "$A" "$MTS_GDATA/representation/atlas-movers-261117/movers.json" "$O/prios-screen.json" | tee "$O/summary.txt"

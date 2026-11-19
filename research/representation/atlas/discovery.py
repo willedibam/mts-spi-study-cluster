@@ -479,6 +479,28 @@ def _profiles(path, wanted):
     return out
 
 
+def _aligned(ids, merged, channels):
+    """Stack per-window edge profiles (n, SPI, edges). With channels ({id: original channel indices}), windows whose
+    channel sets differ are placed on the union of their channels, absent edges NaN; also returns the present mask."""
+    if channels is None:
+        P = np.stack([merged[i] for i in ids]); return P, np.ones((len(ids), P.shape[2]), bool)
+    U = sorted(set().union(*(channels[i] for i in ids))); pos = {c: k for k, c in enumerate(U)}; n = len(U)
+    P = np.full((len(ids), merged[ids[0]].shape[0], n * (n - 1)), np.nan, np.float32); present = np.zeros((len(ids), n * (n - 1)), bool)
+    for w, i in enumerate(ids):
+        g = np.array([pos[c] for c in channels[i]]); r, c = np.nonzero(~np.eye(len(g), dtype=bool))
+        pr, pc = g[r], g[c]; idx = pr * (n - 1) + pc - (pc > pr)
+        P[w][:, idx] = merged[i]; present[w, idx] = True
+    return P, present
+
+
+def _pairwise_r(X, M):
+    """Correlations between rows of X over the columns both rows have (M), as np.corrcoef when M is all True."""
+    X0 = np.where(M, X, 0.).astype(np.float64); Mf = M.astype(np.float64); N = Mf @ Mf.T
+    Sx = X0 @ Mf.T; Sxx = (X0 ** 2) @ Mf.T; Sxy = X0 @ X0.T
+    with np.errstate(invalid='ignore', divide='ignore'):
+        return (Sxy - Sx * Sx.T / N) / np.sqrt((Sxx - Sx ** 2 / N) * (Sxx.T - Sx.T ** 2 / N))
+
+
 def reliability(bank, pyspi_dir, output, reference, named=PAIRS, jobs=8):
     """Edge-profile reliability of the named pairs' SPIs: the mean correlation between the profiles of different
     windows of one unit and state. Per unit and state: each SPI's reliability, mean level and share of negative
@@ -497,24 +519,28 @@ def reliability(bank, pyspi_dir, output, reference, named=PAIRS, jobs=8):
     rows = [r for r in manifest['rows'] if r['id'] in merged]
     state = np.array(sleep_tertiles(rows) if any('delta_fraction' in x for x in rows) else [x['state'] for x in rows])
     unit = np.array([r['unit'] for r in rows])
+    chan_file = bank / 'channels.json'  # per-window channel indices, for banks whose channel set varies by window
+    channels = json.loads(chan_file.read_text()) if chan_file.exists() else None
     groups = {}
     for u, s in sorted(set(zip(unit, state))):
-        P = np.stack([merged[rows[i]['id']] for i in np.flatnonzero((unit == u) & (state == s))])  # (n, SPI, edges)
-        ok = np.isfinite(P).all(axis=(0, 2))
+        P, present = _aligned([rows[i]['id'] for i in np.flatnonzero((unit == u) & (state == s))], merged, channels)  # (n, SPI, edges)
+        full = present.all()
+        ok = np.isfinite(P).all(axis=(0, 2)) if full else np.array([np.isfinite(P[:, k][present]).all() for k in range(P.shape[1])])
         rel = np.full(len(wanted), np.nan)
         if len(P) > 1:
             for k in np.flatnonzero(ok):
-                c = np.corrcoef(P[:, k])
+                c = np.corrcoef(P[:, k]) if full else _pairwise_r(P[:, k], present)
                 rel[k] = c[~np.eye(len(P), dtype=bool)].mean()
         z = {}
         for c_, a, b in named:
             ia, ib = wanted.index(a), wanted.index(b)
-            zw = [np.corrcoef(P[w, ia], P[w, ib])[0, 1] for w in range(len(P))] if ok[ia] and ok[ib] else [np.nan]
+            zw = [np.corrcoef(P[w, ia][present[w]], P[w, ib][present[w]])[0, 1] for w in range(len(P))] if ok[ia] and ok[ib] else [np.nan]
             raw = float(np.nanmean(zw))
             z[f'{a}|{b}'] = dict(raw=raw, disattenuated=raw / np.sqrt(rel[ia] * rel[ib]) if rel[ia] > 0 and rel[ib] > 0 else np.nan)
+        neg = np.where(present[:, None, :], P < 0, np.nan)
         groups[(u, s)] = dict(windows=len(P), reliability=dict(zip(wanted, rel.tolist())),
                               level=dict(zip(wanted, np.nanmean(P, axis=(0, 2)).tolist())),
-                              negative=dict(zip(wanted, np.nanmean(P < 0, axis=(0, 2)).tolist())), z=z)
+                              negative=dict(zip(wanted, np.nanmean(neg, axis=(0, 2)).tolist())), z=z)
     agent = {r['unit']: r.get('agent', 'all') for r in rows}
     animal = {r['unit']: r.get('animal') or r['unit'] for r in rows}
     contrasts = {}

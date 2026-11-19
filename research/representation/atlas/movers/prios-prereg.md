@@ -41,3 +41,7 @@ Class and reading (`assumptions.READINGS`: character, literal, confound) with th
 ## Compute
 
 One profile farm before the full farms; the per-window time it measures sets the request. Every submission states expected and worst-case KSU (recorded with the result).
+
+## Deviation 1 (19 November, before any score was computed)
+
+The first post stage (job 184616789) passed audit (1,956 of 1,956 shards) and reduce, then failed at `assumptions.py reliability`: it stacks each patient-state's edge profiles and assumes one channel set, but each S-full epoch drops its own stimulated electrodes, so M varies by 1–4 channels within a patient and state. Fix: `prios.py channels` writes each window's original channel indices (`<bank>/channels.json`); when that file exists, `discovery.reliability` places windows on the union of their channels and correlates two windows' profiles over the edges both have (pairwise-complete Pearson, identical to the old computation when every window has every channel, so the macaque reliability is unchanged). Nothing else changes.

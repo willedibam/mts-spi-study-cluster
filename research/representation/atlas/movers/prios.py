@@ -1,6 +1,7 @@
 """PRIOS full-pyspi screen: minimal pairs beyond a per-window joint IAAFT null, propofol against awake. Rules: prios-prereg.md.
 
 bank:  python prios.py bank <S-full windows dir> <atlas dir> <workers>      -> <atlas>/banks/prios-ns, prios-iaaft
+channels: python prios.py channels <S-full windows dir> <atlas dir>  (per-window channel indices; bank also writes them)
 score: python prios.py score <atlas dir> <macaque movers.json> <out.json>
 pyspi runs between them through ../jobs/farm.pbs, then discovery.py reduce and assumptions.py reliability (jobs/prios.pbs).
 """
@@ -40,6 +41,22 @@ def bank(src, atlas, workers):
         if k: man['null'] = dict(kind='iaaft_spectrum_final_joint', draws=1, seed='crc32(subject:index) * 10, as mi_pair/human/score.py draw 0')
         (d / 'manifest.json').write_text(json.dumps(man, indent=1) + '\n')
     print('bank', len(rows), 'windows', flush=True)
+    channels(src, atlas)
+
+
+def channels(src, atlas):
+    """<bank>/channels.json: each window's original channel indices (window() keeps j < M - 1 not stimulated), which
+    discovery.reliability uses to align windows whose channel sets differ (Deviation 1 in prios-prereg.md)."""
+    ch = {}
+    for fn in sorted(glob.glob(f'{src}/sub-*.npz')):
+        Z = np.load(fn); s = os.path.basename(fn)[:-4]; M = Z['W'].shape[2]
+        for i, r in enumerate(json.loads(str(Z['rows']))):
+            ch[f'{s}:{r["state"]}:{i:04d}'] = [j for j in range(M - 1) if j not in set(r.get('stim', []))]
+    for name in ('prios-ns', 'prios-iaaft'):
+        d = Path(atlas) / 'banks' / name; man = json.loads((d / 'manifest.json').read_text())
+        assert all(len(ch[r['id']]) == r['M'] for r in man['rows']), name
+        (d / 'channels.json').write_text(json.dumps({r['id']: ch[r['id']] for r in man['rows']}) + '\n')
+    print('channels', len(ch), 'windows', flush=True)
 
 
 def bh(p):
@@ -185,5 +202,7 @@ def score(atlas, movers_json, out):
 if __name__ == '__main__':
     if sys.argv[1] == 'bank':
         bank(sys.argv[2], sys.argv[3], int(sys.argv[4]))
+    elif sys.argv[1] == 'channels':
+        channels(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == 'score':
         score(sys.argv[2], sys.argv[3], sys.argv[4])
