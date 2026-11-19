@@ -1,0 +1,22 @@
+{'patients': [np.str_('sub-PRIOS01'), np.str_('sub-PRIOS02'), np.str_('sub-PRIOS03'), np.str_('sub-PRIOS04'), np.str_('sub-PRIOS05'), np.str_('sub-PRIOS06'), np.str_('sub-PRIOS09')], 'macaque_claims': True, 'not_usable_in_prios': ['pdist_chebyshev|pdist_canberra', 'pdist_cityblock|pdist_chebyshev', 'pdist_euclidean|pdist_chebyshev', 'cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5', 'tlmi_gaussian|tlmi_kraskov_NN-4_DCE-AUTO', 'pdist_cosine|pdist_chebyshev', 'tlmi_gaussian|tlmi_kraskov_NN-4', 'ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25|ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5', 'tlmi_gaussian|tlmi_kernel_W-0.25', 'bary-sq_euclidean_max|bary-sq_sgddtw_max', 'bary_euclidean_max|bary_sgddtw_max', 'pdist_chebyshev|pdist_braycurtis', 'tlmi_kraskov_NN-4_DCE-AUTO|tlmi_kernel_W-0.25', 'dtw_constraint-itakura|lcss_constraint-itakura', 'tlmi_kraskov_NN-4|tlmi_kraskov_NN-4_DCE-AUTO', 'bary_euclidean_max|bary-sq_euclidean_max', 'ce_gaussian|ce_kozachenko', 'tlmi_kraskov_NN-4|tlmi_kernel_W-0.25', 'bary-sq_euclidean_mean|bary-sq_euclidean_max', 'bary_sgddtw_corr|bary_sgddtw_max', 'dtw_constraint-itakura|dtw_constraint-sakoe-chiba_radius-auto', 'pec|pec_log', 'mi_kernel_W-0.25|tlmi_kernel_W-0.25', 'xme_gaussian_k1|xme_kernel_W-0.5_k1', 'dtw|lcss', 'dtw|dtw_constraint-sakoe-chiba_radius-auto', 'cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0_fmax-0-25', 'cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5', 'dtw|dtw_constraint-itakura', 'cov-sq_EmpiricalCovariance|corr_pearson_tau-1-sq', 'coint_johansen_max_eig_stat_order-0_ardiff-1|coint_johansen_trace_stat_order-0_ardiff-1', 'pdist_euclidean|dtw', 'cov-sq_EmpiricalCovariance|corr_pearson_tau-2-sq', 'xcorr-sq_max_sig-True|xcorr-sq_mean_sig-True'], 'A_aggregate': {'tested': 21, 'signed_mean': 0.008708951830053005, 'p_signflip': 0.0078125, 'frac_same_sign': 0.8095238095238095}, 'C_concordance_minimal': {'coordinates': 67, 'r': 0.5535397524224462, 'p_signflip': 0.21875, 'same_sign': 0.6865671641791045}, 'C_concordance_all': {'coordinates': 2858, 'r': 0.35441374414142, 'p_signflip': 0.3046875, 'same_sign': 0.6826452064380686}}
+  pdist_euclidean|pdist_canberra pred -1 -0.0013 4/7 holm 1
+  dcorr|dcorr_biased pred +1 +0.0005 6/7 holm 0.353
+  pdist_cosine|pdist_canberra pred -1 -0.0012 5/7 holm 1
+  mi_gaussian|mi_kraskov_NN-4_DCE-AUTO pred -1 -0.0132 7/7 holm 0.205
+  mi_gaussian|mi_kraskov_NN-4 pred -1 -0.0148 6/7 holm 0.878
+  mi_gaussian|mi_kernel_W-0.25 pred -1 -0.0102 6/7 holm 1
+  cov-sq_EmpiricalCovariance|xcorr-sq_max_sig-True pred -1 -0.0025 5/7 holm 1
+  mi_kraskov_NN-4|mi_kraskov_NN-4_DCE-AUTO pred -1 -0.0235 6/7 holm 0.72
+  cov_EmpiricalCovariance|xcorr_max_sig-True pred -1 -0.0073 6/7 holm 1
+  mi_kraskov_NN-4_DCE-AUTO|mi_kernel_W-0.25 pred -1 -0.0175 5/7 holm 1
+  bary_dtw_corr|bary_sgddtw_corr pred -1 -0.0000 2/7 holm 1
+  cce_gaussian_n-5|cce_kozachenko_n-5 pred -1 -0.0631 7/7 holm 0.00861
+  pdist_canberra|pdist_braycurtis pred -1 -0.0013 5/7 holm 0.781
+  xcorr_max_sig-True|xcorr-sq_max_sig-True pred +1 +0.0062 7/7 holm 0.205
+  ce_gaussian|ce_kernel_W-0.5 pred -1 -0.0093 7/7 holm 0.00399
+  pdist_cosine|pdist_braycurtis pred -1 +0.0001 3/7 holm 1
+  cov_EmpiricalCovariance|corr_pearson_tau-2 pred -1 +0.0001 3/7 holm 1
+  pdist_cityblock|pdist_braycurtis pred -1 -0.0005 5/7 holm 1
+  pdist_euclidean|pdist_braycurtis pred -1 +0.0001 4/7 holm 1
+  corr_pearson_tau-1|corr_pearson_tau-2 pred -1 +0.0002 3/7 holm 1
+  cov-sq_MinCovDet|kendalltau-sq pred -1 -0.0110 6/7 holm 0.166

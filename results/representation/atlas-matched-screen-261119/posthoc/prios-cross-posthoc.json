@@ -1,0 +1,236 @@
+{
+ "patients": [
+  "sub-PRIOS01",
+  "sub-PRIOS02",
+  "sub-PRIOS03",
+  "sub-PRIOS04",
+  "sub-PRIOS05",
+  "sub-PRIOS06",
+  "sub-PRIOS09"
+ ],
+ "macaque_claims": true,
+ "not_usable_in_prios": [
+  "pdist_chebyshev|pdist_canberra",
+  "pdist_cityblock|pdist_chebyshev",
+  "pdist_euclidean|pdist_chebyshev",
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+  "tlmi_gaussian|tlmi_kraskov_NN-4_DCE-AUTO",
+  "pdist_cosine|pdist_chebyshev",
+  "tlmi_gaussian|tlmi_kraskov_NN-4",
+  "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25|ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+  "tlmi_gaussian|tlmi_kernel_W-0.25",
+  "bary-sq_euclidean_max|bary-sq_sgddtw_max",
+  "bary_euclidean_max|bary_sgddtw_max",
+  "pdist_chebyshev|pdist_braycurtis",
+  "tlmi_kraskov_NN-4_DCE-AUTO|tlmi_kernel_W-0.25",
+  "dtw_constraint-itakura|lcss_constraint-itakura",
+  "tlmi_kraskov_NN-4|tlmi_kraskov_NN-4_DCE-AUTO",
+  "bary_euclidean_max|bary-sq_euclidean_max",
+  "ce_gaussian|ce_kozachenko",
+  "tlmi_kraskov_NN-4|tlmi_kernel_W-0.25",
+  "bary-sq_euclidean_mean|bary-sq_euclidean_max",
+  "bary_sgddtw_corr|bary_sgddtw_max",
+  "dtw_constraint-itakura|dtw_constraint-sakoe-chiba_radius-auto",
+  "pec|pec_log",
+  "mi_kernel_W-0.25|tlmi_kernel_W-0.25",
+  "xme_gaussian_k1|xme_kernel_W-0.5_k1",
+  "dtw|lcss",
+  "dtw|dtw_constraint-sakoe-chiba_radius-auto",
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+  "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+  "dtw|dtw_constraint-itakura",
+  "cov-sq_EmpiricalCovariance|corr_pearson_tau-1-sq",
+  "coint_johansen_max_eig_stat_order-0_ardiff-1|coint_johansen_trace_stat_order-0_ardiff-1",
+  "pdist_euclidean|dtw",
+  "cov-sq_EmpiricalCovariance|corr_pearson_tau-2-sq",
+  "xcorr-sq_max_sig-True|xcorr-sq_mean_sig-True"
+ ],
+ "A_aggregate": {
+  "tested": 21,
+  "signed_mean": 0.008708951830053005,
+  "p_signflip": 0.0078125,
+  "frac_same_sign": 0.8095238095238095
+ },
+ "B_per_pair": [
+  {
+   "pair": "pdist_euclidean|pdist_canberra",
+   "predicted": -1,
+   "mean": -0.0012516975402832031,
+   "same_sign": 4,
+   "p_one": 0.21128681166382665,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "dcorr|dcorr_biased",
+   "predicted": 1,
+   "mean": 0.00046139955520629883,
+   "same_sign": 6,
+   "p_one": 0.0220511571295427,
+   "p_holm": 0.3528185140726832
+  },
+  {
+   "pair": "pdist_cosine|pdist_canberra",
+   "predicted": -1,
+   "mean": -0.0012075050035491586,
+   "same_sign": 5,
+   "p_one": 0.23249688241812874,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+   "predicted": -1,
+   "mean": -0.01324439886957407,
+   "same_sign": 7,
+   "p_one": 0.011386918458788276,
+   "p_holm": 0.20496453225818898
+  },
+  {
+   "pair": "mi_gaussian|mi_kraskov_NN-4",
+   "predicted": -1,
+   "mean": -0.014754124917089939,
+   "same_sign": 6,
+   "p_one": 0.06756826527540007,
+   "p_holm": 0.8783874485802009
+  },
+  {
+   "pair": "mi_gaussian|mi_kernel_W-0.25",
+   "predicted": -1,
+   "mean": -0.010222128592431545,
+   "same_sign": 6,
+   "p_one": 0.1305221281667979,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "cov-sq_EmpiricalCovariance|xcorr-sq_max_sig-True",
+   "predicted": -1,
+   "mean": -0.0025254827924072742,
+   "same_sign": 5,
+   "p_one": 0.14786362312417134,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "mi_kraskov_NN-4|mi_kraskov_NN-4_DCE-AUTO",
+   "predicted": -1,
+   "mean": -0.023507585749030113,
+   "same_sign": 6,
+   "p_one": 0.04798861108953352,
+   "p_holm": 0.7198291663430028
+  },
+  {
+   "pair": "cov_EmpiricalCovariance|xcorr_max_sig-True",
+   "predicted": -1,
+   "mean": -0.007275994401425123,
+   "same_sign": 6,
+   "p_one": 0.12067341552129272,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "mi_kraskov_NN-4_DCE-AUTO|mi_kernel_W-0.25",
+   "predicted": -1,
+   "mean": -0.017500178888440132,
+   "same_sign": 5,
+   "p_one": 0.11141083475594546,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "bary_dtw_corr|bary_sgddtw_corr",
+   "predicted": -1,
+   "mean": -4.030976924696006e-05,
+   "same_sign": 2,
+   "p_one": 0.4116087054226697,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "cce_gaussian_n-5|cce_kozachenko_n-5",
+   "predicted": -1,
+   "mean": -0.0631406307220459,
+   "same_sign": 7,
+   "p_one": 0.0004303681632462716,
+   "p_holm": 0.008607363264925432
+  },
+  {
+   "pair": "pdist_canberra|pdist_braycurtis",
+   "predicted": -1,
+   "mean": -0.001332725747488439,
+   "same_sign": 5,
+   "p_one": 0.055800870970270505,
+   "p_holm": 0.781212193583787
+  },
+  {
+   "pair": "xcorr_max_sig-True|xcorr-sq_max_sig-True",
+   "predicted": 1,
+   "mean": 0.006156836170703173,
+   "same_sign": 7,
+   "p_one": 0.011778283076583514,
+   "p_holm": 0.20496453225818898
+  },
+  {
+   "pair": "ce_gaussian|ce_kernel_W-0.5",
+   "predicted": -1,
+   "mean": -0.009316853247582912,
+   "same_sign": 7,
+   "p_one": 0.0001900946685661478,
+   "p_holm": 0.003991988039889104
+  },
+  {
+   "pair": "pdist_cosine|pdist_braycurtis",
+   "predicted": -1,
+   "mean": 0.00013507263793144375,
+   "same_sign": 3,
+   "p_one": 0.6029589525235508,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "cov_EmpiricalCovariance|corr_pearson_tau-2",
+   "predicted": -1,
+   "mean": 6.657413177890703e-05,
+   "same_sign": 3,
+   "p_one": 0.5962650746063626,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "pdist_cityblock|pdist_braycurtis",
+   "predicted": -1,
+   "mean": -0.0004573123878799379,
+   "same_sign": 5,
+   "p_one": 0.20825990819094795,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "pdist_euclidean|pdist_braycurtis",
+   "predicted": -1,
+   "mean": 7.602998084621504e-05,
+   "same_sign": 4,
+   "p_one": 0.5514800005782552,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "corr_pearson_tau-1|corr_pearson_tau-2",
+   "predicted": -1,
+   "mean": 0.00019471986161079258,
+   "same_sign": 3,
+   "p_one": 0.7993865683075962,
+   "p_holm": 1.0
+  },
+  {
+   "pair": "cov-sq_MinCovDet|kendalltau-sq",
+   "predicted": -1,
+   "mean": -0.01096521969884634,
+   "same_sign": 6,
+   "p_one": 0.008716628257786062,
+   "p_holm": 0.1656159368979352
+  }
+ ],
+ "C_concordance_minimal": {
+  "coordinates": 67,
+  "r": 0.5535397524224462,
+  "p_signflip": 0.21875,
+  "same_sign": 0.6865671641791045
+ },
+ "C_concordance_all": {
+  "coordinates": 2858,
+  "r": 0.35441374414142,
+  "p_signflip": 0.3046875,
+  "same_sign": 0.6826452064380686
+ }
+}

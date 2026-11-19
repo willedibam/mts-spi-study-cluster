@@ -1,0 +1,24 @@
+{
+ "patients": [
+  "sub-PRIOS01",
+  "sub-PRIOS02",
+  "sub-PRIOS03",
+  "sub-PRIOS04",
+  "sub-PRIOS05",
+  "sub-PRIOS06",
+  "sub-PRIOS09"
+ ],
+ "macaque_claims": false,
+ "C_concordance_minimal": {
+  "coordinates": 67,
+  "r": 0.5535397524224462,
+  "p_signflip": 0.21875,
+  "same_sign": 0.6865671641791045
+ },
+ "C_concordance_all": {
+  "coordinates": 2858,
+  "r": 0.35441374414142,
+  "p_signflip": 0.3046875,
+  "same_sign": 0.6826452064380686
+ }
+}

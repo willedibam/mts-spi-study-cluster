@@ -43,4 +43,4 @@ The next pairs have q ≥ .15.
 - Across species and against a per-window spectrum- and cross-spectrum-matched null, the Gaussian against model-free information family is the robust change under propofol: the KSG anchor, a kernel re-estimate of it, and a channel-level conditional-entropy counterpart predicted from the macaque at the same size. Its interpretation remains that of the [MI pair](../findings.md).
 - No new pair-level character beyond that family passes in humans. Most macaque candidates could not be tested, because only 85 SPIs are reliable on these 2-s human windows.
 - Limits: 7 patients with epilepsy; awake ward days against propofol in theatre on a later day; one surrogate draw per window; Deviation 2 was found after a faulty summary was seen.
-- The matched macaque screen ([matched-prereg.md](matched-prereg.md)) and its frozen test on PRIOS are running.
+- The matched macaque screen ([matched-result.md](matched-result.md)) made no frozen claims: its eyes-open control was a disjoint real change. Post hoc, its 21 PRIOS-usable discoveries agree in direction in every patient (p = .0078).

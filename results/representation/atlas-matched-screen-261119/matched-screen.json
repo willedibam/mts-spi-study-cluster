@@ -1,0 +1,6375 @@
+{
+ "sessions": [
+  "20110112ktmdanesthesiaandsleepgeorgetoruyanagawa",
+  "20110113ktmdanesthesiaandsleepgeorgetoruyanagawa",
+  "20110114ktmdanesthesiaandsleepgeorgetoruyanagawa",
+  "20110513ktmdanesthesiaandsleepkin2toruyanagawa",
+  "20110523ktmdanesthesiaandsleepsutoruyanagawa",
+  "20110524ktmdanesthesiaandsleepkin2toruyanagawa",
+  "20110525ktmdanesthesiaandsleepkin2toruyanagawa",
+  "20110526ktmdanesthesiaandsleepsutoruyanagawa",
+  "20110527ktmdanesthesiaandsleepsutoruyanagawa",
+  "20110621ktmdanesthesiaandsleepchibitoruyanagawa",
+  "20110622ktmdanesthesiaandsleepchibitoruyanagawa",
+  "20120719ktanesthesiaandsleepchibitoruyanagawa",
+  "20120724ktanesthesiaandsleepgeorgetoruyanagawa",
+  "20120730pfanesthesiaandsleepchibitoruyanagawa",
+  "20120731pfanesthesiaandsleepgeorgetoruyanagawa",
+  "20120802pfanesthesiaandsleepchibitoruyanagawa",
+  "20120803pfanesthesiaandsleepgeorgetoruyanagawa",
+  "20120810ktanesthesiaandsleepgeorgetoruyanagawa",
+  "20120813ktanesthesiaandsleepchibitoruyanagawa"
+ ],
+ "animals": [
+  "Chibi",
+  "George",
+  "Kin2",
+  "Su"
+ ],
+ "spis": 272,
+ "coordinates": 36856,
+ "specificity_sessions": {
+  "MD drug": 4,
+  "sleep": 7,
+  "recovery": 18
+ },
+ "accounting": {
+  "finite": 24753,
+  "plus_ceiling": 24509,
+  "plus_reliability": 6679,
+  "minimal": 704,
+  "minimal_usable": 164,
+  "spis_failing_reliability": [
+   "bary-sq_dtw_max",
+   "bary_dtw_max",
+   "cds",
+   "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "coint_aeg_tstat_trend-c_autolag-aic_maxlag-10",
+   "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10",
+   "coint_aeg_tstat_trend-ct_autolag-bic_maxlag-10",
+   "coint_johansen_max_eig_stat_order-0_ardiff-10",
+   "coint_johansen_max_eig_stat_order-1_ardiff-10",
+   "coint_johansen_trace_stat_order-0_ardiff-10",
+   "coint_johansen_trace_stat_order-1_ardiff-10",
+   "corr_kendall_tau-10",
+   "corr_kendall_tau-10-sq",
+   "corr_kendall_tau-20",
+   "corr_kendall_tau-20-sq",
+   "corr_kendall_tau-3-sq",
+   "corr_kendall_tau-4-sq",
+   "corr_kendall_tau-5-sq",
+   "corr_pearson_tau-10",
+   "corr_pearson_tau-10-sq",
+   "corr_pearson_tau-20",
+   "corr_pearson_tau-20-sq",
+   "corr_pearson_tau-3-sq",
+   "corr_pearson_tau-4-sq",
+   "corr_pearson_tau-5-sq",
+   "corr_spearman_tau-10",
+   "corr_spearman_tau-10-sq",
+   "corr_spearman_tau-20",
+   "corr_spearman_tau-20-sq",
+   "corr_spearman_tau-3-sq",
+   "corr_spearman_tau-4-sq",
+   "corr_spearman_tau-5-sq",
+   "cov-sq_GraphicalLasso",
+   "cov-sq_GraphicalLassoCV",
+   "cov_GraphicalLasso",
+   "cov_GraphicalLassoCV",
+   "dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+   "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "gd_multitaper_delay_fs-1_fmin-0-25_fmax-0-5",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-25",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "pcorr_EmpiricalCovariance",
+   "pcorr_GraphicalLasso",
+   "pcorr_GraphicalLassoCV",
+   "pcorr_MinCovDet",
+   "pdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "pec_orth",
+   "pec_orth_abs",
+   "pec_orth_log",
+   "pec_orth_log_abs",
+   "phase_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "phase_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "phase_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "phi_Geo_t-1_norm-0",
+   "phi_Geo_t-1_norm-1",
+   "pli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "prec-sq_GraphicalLasso",
+   "prec-sq_GraphicalLassoCV",
+   "prec_EmpiricalCovariance",
+   "prec_GraphicalLasso",
+   "prec_GraphicalLassoCV",
+   "prec_MinCovDet",
+   "psi_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "psi_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "psi_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "psi_wavelet_mean_fs-1_fmin-0-25_fmax-0-5_mean",
+   "sgc_nonparametric_max_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "si_kozachenko_k-1",
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+   "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1",
+   "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
+   "te_symbolic_k-3",
+   "wpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "xcorr_mean_sig-False",
+   "xcorr_mean_sig-True",
+   "xme_kozachenko_k1",
+   "xme_kozachenko_k10"
+  ]
+ },
+ "primary": {
+  "tested": 164,
+  "undefined_p": 17,
+  "discoveries": 55,
+  "control_discoveries": 26,
+  "fdp_estimate": 0.4727272727272727,
+  "claims": false,
+  "rising": 9,
+  "rows": [
+   {
+    "pair": "pdist_chebyshev|pdist_canberra",
+    "cls": "estimator: canberra vs chebyshev",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.06657294183969498,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 2.0520456167627543e-10,
+    "q": 3.365354928064335e-08,
+    "animals": {
+     "Chibi": -0.07548320293426514,
+     "George": -0.05623888224363327,
+     "Kin2": -0.05935037136077881,
+     "Su": -0.0800878182053566
+    },
+    "t_animals": -11.526359892754035,
+    "d_real": -0.07505089044570923,
+    "d_surr": -0.008477957919239998,
+    "d_dc": -0.051176976412534714,
+    "eyes_open": -0.0015249535208567977,
+    "z0": 0.7265797853469849,
+    "node_r2": [
+     0.12244117189375801,
+     0.13867072453387697
+    ],
+    "reliability": [
+     0.5702911090207852,
+     0.7970982810950076
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.023257121443748474,
+     "sleep": -0.005286446772515774,
+     "recovery": -0.0032407459802925587
+    },
+    "old_net": -0.06955631077289581
+   },
+   {
+    "pair": "pdist_euclidean|pdist_canberra",
+    "cls": "estimator: canberra vs euclidean",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.012869248166680336,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 4.293915500941381e-10,
+    "q": 3.50991271602652e-08,
+    "animals": {
+     "Chibi": -0.016965916380286217,
+     "George": -0.010137463919818401,
+     "Kin2": -0.00826998520642519,
+     "Su": -0.015649339184165
+    },
+    "t_animals": -6.06520604926846,
+    "d_real": -0.02087678760290146,
+    "d_surr": -0.008007538504898548,
+    "d_dc": -0.0107526620849967,
+    "eyes_open": -0.0019716117531061172,
+    "z0": 0.9642135500907898,
+    "node_r2": [
+     0.14765085037905362,
+     0.13867072453387697
+    ],
+    "reliability": [
+     0.8353142984509927,
+     0.7970982810950076
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.005636349320411682,
+     "sleep": -0.0014531697379425168,
+     "recovery": -0.0021445618476718664
+    },
+    "old_net": -0.016930460929870605
+   },
+   {
+    "pair": "dcorr|dcorr_biased",
+    "cls": "estimator: biased vs unbiased",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.0019780397415161133,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 6.420571851961654e-10,
+    "q": 3.50991271602652e-08,
+    "animals": {
+     "Chibi": 0.0024945337790995836,
+     "George": 0.001662509748712182,
+     "Kin2": 0.0019342502346262336,
+     "Su": 0.0017250776290893555
+    },
+    "t_animals": 10.323631555172094,
+    "d_real": 0.009129790589213371,
+    "d_surr": 0.007151751313358545,
+    "d_dc": 0.0019179488299414515,
+    "eyes_open": 0.00013640365796163678,
+    "z0": 0.9637760519981384,
+    "node_r2": [
+     0.18154041623029943,
+     0.22611919244869194
+    ],
+    "reliability": [
+     0.7731532860548757,
+     0.6868412897288788
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.0010513514280319214,
+     "sleep": 0.00018336091306991875,
+     "recovery": 0.00014648503565695137
+    },
+    "old_net": 0.0020232200622558594
+   },
+   {
+    "pair": "pdist_cosine|pdist_canberra",
+    "cls": "estimator: canberra vs cosine",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.012623351067304611,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.1020925283489191e-09,
+    "q": 4.2229399355164785e-08,
+    "animals": {
+     "Chibi": -0.01391613483428955,
+     "George": -0.01163572072982788,
+     "Kin2": -0.007011711597442627,
+     "Su": -0.017953893169760704
+    },
+    "t_animals": -5.531621537148144,
+    "d_real": -0.0224218238145113,
+    "d_surr": -0.009798473678529263,
+    "d_dc": -0.011083580553531647,
+    "eyes_open": -0.002351149218156934,
+    "z0": 0.9494204521179199,
+    "node_r2": [
+     0.15726786616815805,
+     0.13867072453387697
+    ],
+    "reliability": [
+     0.8097611209944872,
+     0.7970982810950076
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.00508861243724823,
+     "sleep": -0.001166599104180932,
+     "recovery": -0.0025275382213294506
+    },
+    "old_net": -0.018816059455275536
+   },
+   {
+    "pair": "pdist_cityblock|pdist_chebyshev",
+    "cls": "estimator: chebyshev vs cityblock",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.05436697602272034,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.2874816768260189e-09,
+    "q": 4.2229399355164785e-08,
+    "animals": {
+     "Chibi": -0.06153761222958565,
+     "George": -0.044295959174633026,
+     "Kin2": -0.049489278346300125,
+     "Su": -0.06840246915817261
+    },
+    "t_animals": -10.157564609380563,
+    "d_real": -0.05379369482398033,
+    "d_surr": 0.000573286903090775,
+    "d_dc": -0.04226284474134445,
+    "eyes_open": -0.00033548002829775214,
+    "z0": 0.7589980363845825,
+    "node_r2": [
+     0.14724105431231294,
+     0.12244117189375801
+    ],
+    "reliability": [
+     0.8257149523605255,
+     0.5702911090207852
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.015356525778770447,
+     "sleep": -0.0036330309230834246,
+     "recovery": -0.0006718204822391272
+    },
+    "old_net": -0.08053050190210342
+   },
+   {
+    "pair": "pdist_euclidean|pdist_chebyshev",
+    "cls": "estimator: chebyshev vs euclidean",
+    "character": "worst-case disagreement: intermittent large divergence of a pair",
+    "literal": "L-infinity against L2 distance",
+    "confound": "one-sample maximum is noisy; transients",
+    "mean": -0.03698539361357689,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.7737659119276827e-09,
+    "q": 4.848293618427609e-08,
+    "animals": {
+     "Chibi": -0.040505021810531616,
+     "George": -0.030022144317626953,
+     "Kin2": -0.03671155497431755,
+     "Su": -0.04646756127476692
+    },
+    "t_animals": -11.148946741047368,
+    "d_real": -0.02140549011528492,
+    "d_surr": 0.015579904429614544,
+    "d_dc": -0.029547393321990967,
+    "eyes_open": 0.0013252213830128312,
+    "z0": 0.8052722811698914,
+    "node_r2": [
+     0.14765085037905362,
+     0.12244117189375801
+    ],
+    "reliability": [
+     0.8353142984509927,
+     0.5702911090207852
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.011133983731269836,
+     "sleep": -0.0019501277711242437,
+     "recovery": 0.0015965071506798267
+    },
+    "old_net": -0.046706411987543106
+   },
+   {
+    "pair": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": -0.03366677463054657,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 3.6674212555709573e-09,
+    "q": 8.592244122545318e-08,
+    "animals": {
+     "Chibi": -0.03760559484362602,
+     "George": -0.03131907805800438,
+     "Kin2": -0.041419047862291336,
+     "Su": -0.023514827713370323
+    },
+    "t_animals": -8.545579161722955,
+    "d_real": 0.05566694959998131,
+    "d_surr": 0.08933371305465698,
+    "d_dc": -0.009214651770889759,
+    "eyes_open": -0.00920703262090683,
+    "z0": 0.4535455107688904,
+    "node_r2": [
+     0.1692571131797469,
+     0.08789164762613118
+    ],
+    "reliability": [
+     0.7104981207451158,
+     0.3591694438776794
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.023566655814647675,
+     "sleep": 0.0040227388963103294,
+     "recovery": -0.01866157352924347
+    },
+    "old_net": 0.06762217730283737
+   },
+   {
+    "pair": "tlmi_gaussian|tlmi_kraskov_NN-4_DCE-AUTO",
+    "cls": "estimator: gaussian vs kraskov_DCE",
+    "character": "non-Gaussian dependence: how far each pair departs from the dependence a Gaussian process with its covariance would carry",
+    "literal": "organisation of Gaussian against kNN (bias-corrected) information (mi, tlmi) or prediction (te: GC against TE)",
+    "confound": "spectral concentration, kNN estimator bias at T=200; MI part survives IAAFT; TE part tracks spectral entropy",
+    "mean": -0.03248978406190872,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 6.175288724818984e-09,
+    "q": 1.2107946329504355e-07,
+    "animals": {
+     "Chibi": -0.047724902629852295,
+     "George": -0.02118797041475773,
+     "Kin2": -0.03066575527191162,
+     "Su": -0.030214468017220497
+    },
+    "t_animals": -5.856787993336909,
+    "d_real": 0.016827261075377464,
+    "d_surr": 0.04931704327464104,
+    "d_dc": -0.03181140497326851,
+    "eyes_open": -0.0007239956757985055,
+    "z0": 0.8061253428459167,
+    "node_r2": [
+     0.18407926660021692,
+     0.14734052126373084
+    ],
+    "reliability": [
+     0.6866253506482234,
+     0.48259692270847754
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.01644022762775421,
+     "sleep": -0.00495015736669302,
+     "recovery": -0.004139208234846592
+    },
+    "old_net": -0.033154815435409546
+   },
+   {
+    "pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+    "cls": "estimator: gaussian vs kraskov_DCE",
+    "character": "non-Gaussian dependence: how far each pair departs from the dependence a Gaussian process with its covariance would carry",
+    "literal": "organisation of Gaussian against kNN (bias-corrected) information (mi, tlmi) or prediction (te: GC against TE)",
+    "confound": "spectral concentration, kNN estimator bias at T=200; MI part survives IAAFT; TE part tracks spectral entropy",
+    "mean": -0.02775271050632,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 6.644604422234579e-09,
+    "q": 1.2107946329504355e-07,
+    "animals": {
+     "Chibi": -0.039706211537122726,
+     "George": -0.020097723230719566,
+     "Kin2": -0.026854434981942177,
+     "Su": -0.022605618461966515
+    },
+    "t_animals": -6.26642271492465,
+    "d_real": -0.050001055002212524,
+    "d_surr": -0.022248342633247375,
+    "d_dc": -0.026696618646383286,
+    "eyes_open": -0.000698742107488215,
+    "z0": 0.9033352732658386,
+    "node_r2": [
+     0.14397136826728338,
+     0.13682225777568435
+    ],
+    "reliability": [
+     0.8243784076717104,
+     0.69472423487987
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.01401624083518982,
+     "sleep": -0.0018699595239013433,
+     "recovery": -0.0032935473136603832
+    },
+    "old_net": -0.02362440526485443
+   },
+   {
+    "pair": "pdist_cosine|pdist_chebyshev",
+    "cls": "estimator: chebyshev vs cosine",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.03733661025762558,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.5229142391604e-08,
+    "q": 2.497579316695919e-07,
+    "animals": {
+     "Chibi": -0.04358420893549919,
+     "George": -0.0291275717318058,
+     "Kin2": -0.03691019490361214,
+     "Su": -0.044422250241041183
+    },
+    "t_animals": -10.845975091198072,
+    "d_real": -0.02604125626385212,
+    "d_surr": 0.011295353062450886,
+    "d_dc": -0.02947871945798397,
+    "eyes_open": 0.000733428867533803,
+    "z0": 0.791170597076416,
+    "node_r2": [
+     0.15726786616815805,
+     0.12244117189375801
+    ],
+    "reliability": [
+     0.8097611209944872,
+     0.5702911090207852
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.012947708368301392,
+     "sleep": -0.0022868853993713856,
+     "recovery": 0.0018978648586198688
+    },
+    "old_net": -0.046683039516210556
+   },
+   {
+    "pair": "mi_gaussian|mi_kraskov_NN-4",
+    "cls": "estimator: gaussian vs kraskov",
+    "character": null,
+    "literal": "Gaussian against uncorrected kNN information",
+    "confound": "autocorrelation bias of uncorrected KSG dominates",
+    "mean": -0.03742953762412071,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.8332661610998002e-08,
+    "q": 2.733233114585429e-07,
+    "animals": {
+     "Chibi": -0.05627065896987915,
+     "George": -0.022470755502581596,
+     "Kin2": -0.026435473933815956,
+     "Su": -0.045645177364349365
+    },
+    "t_animals": -4.716831361126863,
+    "d_real": -0.07259825617074966,
+    "d_surr": -0.03516871854662895,
+    "d_dc": -0.02932238020002842,
+    "eyes_open": 0.00017758105241227895,
+    "z0": 0.893574059009552,
+    "node_r2": [
+     0.14397136826728338,
+     0.14264365192252496
+    ],
+    "reliability": [
+     0.8243784076717104,
+     0.7016447262355746
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.020191118121147156,
+     "sleep": -0.00344135076738894,
+     "recovery": -0.008381618186831474
+    },
+    "old_net": -0.022166308015584946
+   },
+   {
+    "pair": "mi_gaussian|mi_kernel_W-0.25",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.03925057500600815,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 2.2066211968763128e-08,
+    "q": 3.0157156061250134e-07,
+    "animals": {
+     "Chibi": -0.059295427054166794,
+     "George": -0.024453196674585342,
+     "Kin2": -0.026010235771536827,
+     "Su": -0.04692842438817024
+    },
+    "t_animals": -4.640704942001685,
+    "d_real": -0.05052519217133522,
+    "d_surr": -0.011274617165327072,
+    "d_dc": -0.02770114876329899,
+    "eyes_open": -0.0013444392243400216,
+    "z0": 0.8872219920158386,
+    "node_r2": [
+     0.14397136826728338,
+     0.13654952158101433
+    ],
+    "reliability": [
+     0.8243784076717104,
+     0.6960013487950615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.018681064248085022,
+     "sleep": -0.004055100027471781,
+     "recovery": -0.007391042076051235
+    },
+    "old_net": -0.02688063122332096
+   },
+   {
+    "pair": "tlmi_gaussian|tlmi_kraskov_NN-4",
+    "cls": "estimator: gaussian vs kraskov",
+    "character": null,
+    "literal": "Gaussian against uncorrected kNN information",
+    "confound": "autocorrelation bias of uncorrected KSG dominates",
+    "mean": -0.04620664194226265,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 4.0677502255448417e-08,
+    "q": 5.131623416113703e-07,
+    "animals": {
+     "Chibi": -0.0711153969168663,
+     "George": -0.02820502780377865,
+     "Kin2": -0.031126180663704872,
+     "Su": -0.053473372012376785
+    },
+    "t_animals": -4.55172291985509,
+    "d_real": -0.009113566018640995,
+    "d_surr": 0.03709307685494423,
+    "d_dc": -0.03770921379327774,
+    "eyes_open": 0.0005640105227939785,
+    "z0": 0.7773258090019226,
+    "node_r2": [
+     0.18407926660021692,
+     0.18847408163373136
+    ],
+    "reliability": [
+     0.6866253506482234,
+     0.46241161686174614
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.025101929903030396,
+     "sleep": -0.007552760187536478,
+     "recovery": -0.005550934001803398
+    },
+    "old_net": -0.03418886661529541
+   },
+   {
+    "pair": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25|ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": -0.03030126728117466,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 9.961227931398753e-08,
+    "q": 1.1668866396316195e-06,
+    "animals": {
+     "Chibi": -0.03300026059150696,
+     "George": -0.026527775451540947,
+     "Kin2": -0.04219074174761772,
+     "Su": -0.021818598732352257
+    },
+    "t_animals": -7.001723318027541,
+    "d_real": 0.04924102872610092,
+    "d_surr": 0.07954229414463043,
+    "d_dc": -0.008216396905481815,
+    "eyes_open": -0.008215869776904583,
+    "z0": 0.4268861711025238,
+    "node_r2": [
+     0.1596100002125809,
+     0.07655384784224947
+    ],
+    "reliability": [
+     0.6876777555354204,
+     0.32588617825131855
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.017581604421138763,
+     "sleep": 0.005130112171173096,
+     "recovery": -0.016190918162465096
+    },
+    "old_net": 0.048066552728414536
+   },
+   {
+    "pair": "cov-sq_EmpiricalCovariance|xcorr-sq_max_sig-True",
+    "cls": "best lag against zero lag",
+    "character": "coupling carried at a non-zero best lag",
+    "literal": "zero-lag against best-lag correlation",
+    "confound": "dominant frequency; xcorr reliability",
+    "mean": -0.01722337119281292,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.286190496330164e-07,
+    "q": 1.3571016632554614e-06,
+    "animals": {
+     "Chibi": -0.019554296508431435,
+     "George": -0.014102484099566936,
+     "Kin2": -0.016008177772164345,
+     "Su": -0.02105877734720707
+    },
+    "t_animals": -11.086236470494171,
+    "d_real": -0.11758031696081161,
+    "d_surr": -0.10035694390535355,
+    "d_dc": -0.015544182620942593,
+    "eyes_open": 0.0007433796999976039,
+    "z0": 0.9386160969734192,
+    "node_r2": [
+     0.1877132514820498,
+     0.17338465903472594
+    ],
+    "reliability": [
+     0.7723342627520845,
+     0.7444193174764888
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.010949969291687012,
+     "sleep": -0.002536467043682933,
+     "recovery": -0.005202293395996094
+    },
+    "old_net": -0.011924979276955128
+   },
+   {
+    "pair": "tlmi_gaussian|tlmi_kernel_W-0.25",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.04749837517738342,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.3774807428035274e-07,
+    "q": 1.3571016632554614e-06,
+    "animals": {
+     "Chibi": -0.07528165727853775,
+     "George": -0.028190162032842636,
+     "Kin2": -0.030178984627127647,
+     "Su": -0.05430370569229126
+    },
+    "t_animals": -4.216937841291021,
+    "d_real": 0.027615446597337723,
+    "d_surr": 0.07511382550001144,
+    "d_dc": -0.03139637038111687,
+    "eyes_open": -0.0013266300084069371,
+    "z0": 0.7615861892700195,
+    "node_r2": [
+     0.18407926660021692,
+     0.1752953063849112
+    ],
+    "reliability": [
+     0.6866253506482234,
+     0.44917497930632805
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.022576957941055298,
+     "sleep": -0.007819755002856255,
+     "recovery": -0.0017511679325252771
+    },
+    "old_net": -0.03393903374671936
+   },
+   {
+    "pair": "bary-sq_euclidean_max|bary-sq_sgddtw_max",
+    "cls": "estimator: euclidean vs sgddtw",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.06024579703807831,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.406751692911712e-07,
+    "q": 1.3571016632554614e-06,
+    "animals": {
+     "Chibi": 0.060039859265089035,
+     "George": 0.056621748954057693,
+     "Kin2": 0.0725165382027626,
+     "Su": 0.056843023747205734
+    },
+    "t_animals": 16.390207963102416,
+    "d_real": -0.002339024329558015,
+    "d_surr": -0.06258481740951538,
+    "d_dc": 0.02737320400774479,
+    "eyes_open": -0.007349920924752951,
+    "z0": 0.8714156150817871,
+    "node_r2": [
+     0.13383035381334402,
+     0.1259424834100911
+    ],
+    "reliability": [
+     0.5120369460822033,
+     0.41186830265381597
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.07057659327983856,
+     "sleep": 0.015392755158245564,
+     "recovery": -0.014820377342402935
+    },
+    "old_net": 0.038520485162734985
+   },
+   {
+    "pair": "bary_euclidean_max|bary_sgddtw_max",
+    "cls": "estimator: euclidean vs sgddtw",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.056645482778549194,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.7198043167354626e-07,
+    "q": 1.5669328503362421e-06,
+    "animals": {
+     "Chibi": 0.05955924466252327,
+     "George": 0.05178307741880417,
+     "Kin2": 0.06450799852609634,
+     "Su": 0.05430104210972786
+    },
+    "t_animals": 20.314854686876927,
+    "d_real": -0.011893441900610924,
+    "d_surr": -0.06853891909122467,
+    "d_dc": 0.023821281269192696,
+    "eyes_open": -0.008696728385984898,
+    "z0": 0.8153679966926575,
+    "node_r2": [
+     0.1384899629890753,
+     0.13059395017614492
+    ],
+    "reliability": [
+     0.48340803728449805,
+     0.34030210781441766
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.07782948017120361,
+     "sleep": 0.012280081398785114,
+     "recovery": -0.02233840711414814
+    },
+    "old_net": 0.030515996739268303
+   },
+   {
+    "pair": "mi_kraskov_NN-4|mi_kraskov_NN-4_DCE-AUTO",
+    "cls": "estimator: kraskov vs kraskov_DCE",
+    "character": null,
+    "literal": "kNN information with and without the dynamic correlation exclusion",
+    "confound": "estimator diagnostic: autocorrelation bias",
+    "mean": -0.03200022131204605,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.8437411597460596e-07,
+    "q": 1.5914397648119024e-06,
+    "animals": {
+     "Chibi": -0.043135326355695724,
+     "George": -0.019247403368353844,
+     "Kin2": -0.021638115867972374,
+     "Su": -0.04984869435429573
+    },
+    "t_animals": -4.369579895761411,
+    "d_real": -0.1438726931810379,
+    "d_surr": -0.11187247186899185,
+    "d_dc": -0.020448405295610428,
+    "eyes_open": -0.00040652250754646957,
+    "z0": 0.9634822010993958,
+    "node_r2": [
+     0.14264365192252496,
+     0.13682225777568435
+    ],
+    "reliability": [
+     0.7016447262355746,
+     0.69472423487987
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0188409686088562,
+     "sleep": -0.003430988173931837,
+     "recovery": -0.008446554653346539
+    },
+    "old_net": -0.018985653296113014
+   },
+   {
+    "pair": "cov_EmpiricalCovariance|xcorr_max_sig-True",
+    "cls": "best lag against zero lag",
+    "character": "coupling carried at a non-zero best lag",
+    "literal": "zero-lag against best-lag correlation",
+    "confound": "dominant frequency; xcorr reliability",
+    "mean": -0.03708905726671219,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 2.2456302417594998e-07,
+    "q": 1.8414168152958154e-06,
+    "animals": {
+     "Chibi": -0.04334522411227226,
+     "George": -0.03132227808237076,
+     "Kin2": -0.04642072319984436,
+     "Su": -0.028700867667794228
+    },
+    "t_animals": -8.566161412875289,
+    "d_real": -0.21942174434661865,
+    "d_surr": -0.18233266472816467,
+    "d_dc": -0.03646368160843849,
+    "eyes_open": -0.0003178715705871582,
+    "z0": 0.6505681872367859,
+    "node_r2": [
+     0.15736687441988043,
+     0.1562819732028275
+    ],
+    "reliability": [
+     0.8097611210520108,
+     0.6802894647309077
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.02462315559387207,
+     "sleep": -0.005689399782568216,
+     "recovery": -0.01848461665213108
+    },
+    "old_net": -0.019988909363746643
+   },
+   {
+    "pair": "pdist_chebyshev|pdist_braycurtis",
+    "cls": "estimator: braycurtis vs chebyshev",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.040835972875356674,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 3.2308011554960103e-07,
+    "q": 2.523101838527336e-06,
+    "animals": {
+     "Chibi": -0.0522780604660511,
+     "George": -0.030839374288916588,
+     "Kin2": -0.03686674311757088,
+     "Su": -0.045246422290802
+    },
+    "t_animals": -8.787365399508,
+    "d_real": -0.05756730958819389,
+    "d_surr": -0.01673133485019207,
+    "d_dc": -0.03234217315912247,
+    "eyes_open": -0.0014734456781297922,
+    "z0": 0.7288062572479248,
+    "node_r2": [
+     0.12244117189375801,
+     0.1638630959083345
+    ],
+    "reliability": [
+     0.5702911090207852,
+     0.7578291176871615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.01776997745037079,
+     "sleep": -0.0034360375721007586,
+     "recovery": 0.0022241175174713135
+    },
+    "old_net": -0.05641505494713783
+   },
+   {
+    "pair": "mi_kraskov_NN-4_DCE-AUTO|mi_kernel_W-0.25",
+    "cls": "estimator: kernel vs kraskov_DCE",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.03241186961531639,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 8.369732995561208e-07,
+    "q": 6.239255361089652e-06,
+    "animals": {
+     "Chibi": -0.0486694760620594,
+     "George": -0.01707298494875431,
+     "Kin2": -0.020370662212371826,
+     "Su": -0.04772859811782837
+    },
+    "t_animals": -3.918963452883594,
+    "d_real": -0.08475179970264435,
+    "d_surr": -0.05233993008732796,
+    "d_dc": -0.016354266554117203,
+    "eyes_open": -0.0009932925458997488,
+    "z0": 0.9080979228019714,
+    "node_r2": [
+     0.13682225777568435,
+     0.13654952158101433
+    ],
+    "reliability": [
+     0.69472423487987,
+     0.6960013487950615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.018974781036376953,
+     "sleep": -0.004116041120141745,
+     "recovery": -0.007108734920620918
+    },
+    "old_net": -0.009898069314658642
+   },
+   {
+    "pair": "bary_dtw_corr|bary_sgddtw_corr",
+    "cls": "estimator: dtw vs sgddtw",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0012909770011901855,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 8.788479135546368e-07,
+    "q": 6.266567810519558e-06,
+    "animals": {
+     "Chibi": -0.0014925102004781365,
+     "George": -0.0008827532874420285,
+     "Kin2": -0.0009778738021850586,
+     "Su": -0.002153535606339574
+    },
+    "t_animals": -4.722092197780629,
+    "d_real": 0.013242417015135288,
+    "d_surr": 0.014533394016325474,
+    "d_dc": -0.001078263740055263,
+    "eyes_open": -0.0003011006920132786,
+    "z0": 0.9764329791069031,
+    "node_r2": [
+     0.22175856748287257,
+     0.17589617108001712
+    ],
+    "reliability": [
+     0.7282663066683187,
+     0.7835638640474856
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0007276684045791626,
+     "sleep": -0.00016415970458183438,
+     "recovery": -0.00027207203675061464
+    },
+    "old_net": 0.0005033267079852521
+   },
+   {
+    "pair": "tlmi_kraskov_NN-4_DCE-AUTO|tlmi_kernel_W-0.25",
+    "cls": "estimator: kernel vs kraskov_DCE",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.041916098445653915,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 9.341326290268626e-07,
+    "q": 6.383239451679401e-06,
+    "animals": {
+     "Chibi": -0.06156532093882561,
+     "George": -0.02062285877764225,
+     "Kin2": -0.024907013401389122,
+     "Su": -0.06931096315383911
+    },
+    "t_animals": -3.542152342992364,
+    "d_real": -0.043176911771297455,
+    "d_surr": -0.0012608139077201486,
+    "d_dc": -0.01893828809261322,
+    "eyes_open": -0.0013033590512350202,
+    "z0": 0.8222221732139587,
+    "node_r2": [
+     0.14734052126373084,
+     0.1752953063849112
+    ],
+    "reliability": [
+     0.48259692270847754,
+     0.44917497930632805
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0252210795879364,
+     "sleep": -0.00899872649461031,
+     "recovery": -0.009182287380099297
+    },
+    "old_net": -0.011003180406987667
+   },
+   {
+    "pair": "dtw_constraint-itakura|lcss_constraint-itakura",
+    "cls": "elastic distance against elastic similarity",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.027271505445241928,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.5157086181716295e-06,
+    "q": 9.866958582558884e-06,
+    "animals": {
+     "Chibi": 0.03528786823153496,
+     "George": 0.014338365755975246,
+     "Kin2": 0.026629110798239708,
+     "Su": 0.04205850884318352
+    },
+    "t_animals": 4.945175319904538,
+    "d_real": -0.021148622035980225,
+    "d_surr": -0.04842012748122215,
+    "d_dc": 0.01860746555030346,
+    "eyes_open": -0.0013625966385006905,
+    "z0": -0.7734317183494568,
+    "node_r2": [
+     0.26335038515575365,
+     0.16065355819659458
+    ],
+    "reliability": [
+     0.4602777340922589,
+     0.6664927276305872
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.017373695969581604,
+     "sleep": -0.0015496356645599008,
+     "recovery": 0.014279567636549473
+    },
+    "old_net": 0.02450704202055931
+   },
+   {
+    "pair": "cce_gaussian_n-5|cce_kozachenko_n-5",
+    "cls": "estimator: gaussian vs kozachenko",
+    "character": "non-Gaussian dependence (entropy estimator)",
+    "literal": "Gaussian against Kozachenko-Leonenko entropy",
+    "confound": "marginal entropies are node-level",
+    "mean": -0.051900267601013184,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.564273929943738e-06,
+    "q": 9.866958582558884e-06,
+    "animals": {
+     "Chibi": -0.07988628000020981,
+     "George": -0.048545997589826584,
+     "Kin2": -0.03682335093617439,
+     "Su": -0.01883178949356079
+    },
+    "t_animals": -3.585438837322621,
+    "d_real": -0.013558183796703815,
+    "d_surr": 0.03834208473563194,
+    "d_dc": 0.00964867789298296,
+    "eyes_open": -0.002475227229297161,
+    "z0": 0.9090193510055542,
+    "node_r2": [
+     0.7764806934254134,
+     0.6943576341491754
+    ],
+    "reliability": [
+     0.7530757237032645,
+     0.6570251420785298
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.03359684348106384,
+     "sleep": -0.005100701469928026,
+     "recovery": -0.001449075061827898
+    },
+    "old_net": -0.06260909885168076
+   },
+   {
+    "pair": "tlmi_kraskov_NN-4|tlmi_kraskov_NN-4_DCE-AUTO",
+    "cls": "estimator: kraskov vs kraskov_DCE",
+    "character": null,
+    "literal": "kNN information with and without the dynamic correlation exclusion",
+    "confound": "estimator diagnostic: autocorrelation bias",
+    "mean": -0.03417443856596947,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 2.772627567537711e-06,
+    "q": 1.6841144921878975e-05,
+    "animals": {
+     "Chibi": -0.04635448381304741,
+     "George": -0.021108372136950493,
+     "Kin2": -0.0131886200979352,
+     "Su": -0.06128766015172005
+    },
+    "t_animals": -3.1869072575990813,
+    "d_real": -0.15591995418071747,
+    "d_surr": -0.12174549698829651,
+    "d_dc": -0.02119133621454239,
+    "eyes_open": -0.0033444135915488005,
+    "z0": 0.930911123752594,
+    "node_r2": [
+     0.18847408163373136,
+     0.14734052126373084
+    ],
+    "reliability": [
+     0.46241161686174614,
+     0.48259692270847754
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.018926113843917847,
+     "sleep": -0.0054971748031675816,
+     "recovery": -0.01294395700097084
+    },
+    "old_net": -0.02018948644399643
+   },
+   {
+    "pair": "bary_euclidean_max|bary-sq_euclidean_max",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": -0.029317572712898254,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 6.204158125910908e-06,
+    "q": 3.6338639412341376e-05,
+    "animals": {
+     "Chibi": -0.04091905429959297,
+     "George": -0.025372181087732315,
+     "Kin2": -0.03303303197026253,
+     "Su": -0.011605064384639263
+    },
+    "t_animals": -4.442407076262737,
+    "d_real": -0.019513996317982674,
+    "d_surr": 0.009803577326238155,
+    "d_dc": -0.02657863311469555,
+    "eyes_open": -0.00067563122138381,
+    "z0": 0.8191095590591431,
+    "node_r2": [
+     0.1384899629890753,
+     0.13383035381334402
+    ],
+    "reliability": [
+     0.48340803728449805,
+     0.5120369460822033
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.01126188039779663,
+     "sleep": -0.0004959276993758976,
+     "recovery": -0.010680334642529488
+    },
+    "old_net": 0.08022600412368774
+   },
+   {
+    "pair": "ce_gaussian|ce_kozachenko",
+    "cls": "estimator: gaussian vs kozachenko",
+    "character": "non-Gaussian dependence (entropy estimator)",
+    "literal": "Gaussian against Kozachenko-Leonenko entropy",
+    "confound": "marginal entropies are node-level",
+    "mean": -0.02700275555253029,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.0997335266438313e-05,
+    "q": 6.011876588066419e-05,
+    "animals": {
+     "Chibi": -0.04735628888010979,
+     "George": -0.013570989482104778,
+     "Kin2": -0.024145523086190224,
+     "Su": -0.020493706688284874
+    },
+    "t_animals": -3.603375778379851,
+    "d_real": 0.0054842703975737095,
+    "d_surr": 0.03248702362179756,
+    "d_dc": -0.00644306605681777,
+    "eyes_open": 0.0029513773042708635,
+    "z0": 0.7216089367866516,
+    "node_r2": [
+     0.1405654473550721,
+     0.110401800466812
+    ],
+    "reliability": [
+     0.8243784076042633,
+     0.485025465386973
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.016656309366226196,
+     "sleep": -0.0051361448131501675,
+     "recovery": 0.006328374147415161
+    },
+    "old_net": -0.010379493236541748
+   },
+   {
+    "pair": "tlmi_kraskov_NN-4|tlmi_kernel_W-0.25",
+    "cls": "estimator: kraskov vs kernel",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.014169137924909592,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 1.3597475117421709e-05,
+    "q": 7.193503270466482e-05,
+    "animals": {
+     "Chibi": -0.02213037945330143,
+     "George": -0.007719244342297316,
+     "Kin2": -0.023441055789589882,
+     "Su": -0.004024485591799021
+    },
+    "t_animals": -2.8960206591766635,
+    "d_real": 0.08064056932926178,
+    "d_surr": 0.09480971097946167,
+    "d_dc": -0.005839736666530371,
+    "eyes_open": 0.001928558456711471,
+    "z0": 0.8685352802276611,
+    "node_r2": [
+     0.18847408163373136,
+     0.1752953063849112
+    ],
+    "reliability": [
+     0.46241161686174614,
+     0.44917497930632805
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.006968706846237183,
+     "sleep": -0.002738645998761058,
+     "recovery": 0.00719056511297822
+    },
+    "old_net": -0.018109198659658432
+   },
+   {
+    "pair": "pdist_canberra|pdist_braycurtis",
+    "cls": "estimator: braycurtis vs canberra",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.005944669246673584,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 1.4455404198088218e-05,
+    "q": 7.397469810464166e-05,
+    "animals": {
+     "Chibi": -0.004819313529878855,
+     "George": -0.0064383745193481445,
+     "Kin2": -0.0025346477050334215,
+     "Su": -0.0104534225538373
+    },
+    "t_animals": -3.632540012702647,
+    "d_real": -0.03082098998129368,
+    "d_surr": -0.024876320734620094,
+    "d_dc": -0.0059486315585672855,
+    "eyes_open": -0.0010845441138371825,
+    "z0": 0.9327436685562134,
+    "node_r2": [
+     0.13867072453387697,
+     0.1638630959083345
+    ],
+    "reliability": [
+     0.7970982810950076,
+     0.7578291176871615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0007599890232086182,
+     "sleep": -0.0005534631782211363,
+     "recovery": -0.0010034342994913459
+    },
+    "old_net": -0.013646054081618786
+   },
+   {
+    "pair": "bary-sq_euclidean_mean|bary-sq_euclidean_max",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": -0.019000204280018806,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.488515226810705e-05,
+    "q": 7.397469810464166e-05,
+    "animals": {
+     "Chibi": -0.030252784490585327,
+     "George": -0.014110718853771687,
+     "Kin2": -0.016559600830078125,
+     "Su": -0.010344445705413818
+    },
+    "t_animals": -4.107289559285208,
+    "d_real": 0.006895724218338728,
+    "d_surr": 0.02589592896401882,
+    "d_dc": -0.020994966849684715,
+    "eyes_open": -0.0005888782325200737,
+    "z0": 0.7706621289253235,
+    "node_r2": [
+     0.1571547973865888,
+     0.13383035381334402
+    ],
+    "reliability": [
+     0.8097611210377791,
+     0.5120369460822033
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.006439268589019775,
+     "sleep": 0.0015053494134917855,
+     "recovery": 0.0023642347659915686
+    },
+    "old_net": -0.033519018441438675
+   },
+   {
+    "pair": "bary_sgddtw_corr|bary_sgddtw_max",
+    "cls": "aggregation: corr vs max",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.043509591370821,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 2.152407068933826e-05,
+    "q": 0.00010382198482094442,
+    "animals": {
+     "Chibi": 0.02476445399224758,
+     "George": 0.05262133851647377,
+     "Kin2": 0.05702231451869011,
+     "Su": 0.0462263822555542
+    },
+    "t_animals": 6.315728889006917,
+    "d_real": 0.008463677950203419,
+    "d_surr": -0.03504591062664986,
+    "d_dc": -0.0019726173486560583,
+    "eyes_open": -0.005525256507098675,
+    "z0": 0.5934548377990723,
+    "node_r2": [
+     0.17589617108001712,
+     0.13059395017614492
+    ],
+    "reliability": [
+     0.7835638640474856,
+     0.34030210781441766
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.06544207781553268,
+     "sleep": 0.011650264263153076,
+     "recovery": -0.02672000788152218
+    },
+    "old_net": -0.030332647264003754
+   },
+   {
+    "pair": "xcorr_max_sig-True|xcorr-sq_max_sig-True",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.01575588248670101,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 3.7970778066664934e-05,
+    "q": 0.00017792021057435445,
+    "animals": {
+     "Chibi": 0.014353454113006592,
+     "George": 0.013643341138958931,
+     "Kin2": 0.03110206127166748,
+     "Su": 0.00814382266253233
+    },
+    "t_animals": 3.3880500812124983,
+    "d_real": -0.02646665833890438,
+    "d_surr": -0.04222254082560539,
+    "d_dc": 0.013220636174082756,
+    "eyes_open": -0.0013290612259879708,
+    "z0": 0.8825750946998596,
+    "node_r2": [
+     0.1562819732028275,
+     0.17338465903472594
+    ],
+    "reliability": [
+     0.6802894647309077,
+     0.7444193174764888
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.007687970995903015,
+     "sleep": 0.0007666264427825809,
+     "recovery": 0.006607439834624529
+    },
+    "old_net": 0.02569829486310482
+   },
+   {
+    "pair": "ce_gaussian|ce_kernel_W-0.5",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.016638504341244698,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 3.940926762879826e-05,
+    "q": 0.00017953110444876883,
+    "animals": {
+     "Chibi": -0.02551806904375553,
+     "George": -0.007378739770501852,
+     "Kin2": -0.005002498626708984,
+     "Su": -0.03212149813771248
+    },
+    "t_animals": -2.617519478052855,
+    "d_real": -0.050070930272340775,
+    "d_surr": -0.03343242406845093,
+    "d_dc": -0.02344394661486149,
+    "eyes_open": -0.002750293118879199,
+    "z0": 0.9450608491897583,
+    "node_r2": [
+     0.1405654473550721,
+     0.15165809741612368
+    ],
+    "reliability": [
+     0.8243784076042633,
+     0.7625549341287068
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.006785646080970764,
+     "sleep": -0.0016868114471435547,
+     "recovery": -0.007861180230975151
+    },
+    "old_net": -0.03831029683351517
+   },
+   {
+    "pair": "dtw_constraint-itakura|dtw_constraint-sakoe-chiba_radius-auto",
+    "cls": "option: itakura vs sakoe-chiba",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.021359089761972427,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 5.5994070862652734e-05,
+    "q": 0.00024818994004178693,
+    "animals": {
+     "Chibi": -0.022796630859375,
+     "George": -0.019601821899414062,
+     "Kin2": -0.02231154777109623,
+     "Su": -0.021631836891174316
+    },
+    "t_animals": -30.70322229968713,
+    "d_real": -0.05659504979848862,
+    "d_surr": -0.03523595631122589,
+    "d_dc": -0.019738050177693367,
+    "eyes_open": 0.007703253999352455,
+    "z0": 0.8644382357597351,
+    "node_r2": [
+     0.26335038515575365,
+     0.2643791467426841
+    ],
+    "reliability": [
+     0.4602777340922589,
+     0.4865159738840366
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.006040528416633606,
+     "sleep": -0.0030543634202331305,
+     "recovery": -0.016758611425757408
+    },
+    "old_net": -0.017212428152561188
+   },
+   {
+    "pair": "pec|pec_log",
+    "cls": "estimator: linear vs log",
+    "character": "burst-driven against proportional amplitude coupling",
+    "literal": "envelope correlation on raw against log envelopes",
+    "confound": "heavy-tailed envelopes",
+    "mean": -0.005878247786313295,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 0.00012184668594272807,
+    "q": 0.000499571394175291,
+    "animals": {
+     "Chibi": -0.010028034448623657,
+     "George": -0.004953631199896336,
+     "Kin2": -0.0038924813270568848,
+     "Su": -0.0017218788852915168
+    },
+    "t_animals": -2.925731465837691,
+    "d_real": 0.005921367090195417,
+    "d_surr": 0.011799614876508713,
+    "d_dc": -0.006399559322744608,
+    "eyes_open": -0.002501694718375802,
+    "z0": 0.9355775117874146,
+    "node_r2": [
+     0.20713870459229364,
+     0.18348626104382515
+    ],
+    "reliability": [
+     0.4183829094095906,
+     0.3927678261105946
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.008497044444084167,
+     "sleep": -0.000660291756503284,
+     "recovery": 0.0019728774204850197
+    },
+    "old_net": -0.007474021054804325
+   },
+   {
+    "pair": "mi_kernel_W-0.25|tlmi_kernel_W-0.25",
+    "cls": "lag one sample (information)",
+    "character": "one-sample persistence of dependence",
+    "literal": "MI against lagged MI",
+    "confound": "autocorrelation",
+    "mean": 0.016653919592499733,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 0.0001332118990831077,
+    "q": 0.0005328475792960423,
+    "animals": {
+     "Chibi": 0.029330337420105934,
+     "George": 0.004636636935174465,
+     "Kin2": 0.0018737713107839227,
+     "Su": 0.0341215543448925
+    },
+    "t_animals": 2.108321475967041,
+    "d_real": 0.1984817087650299,
+    "d_surr": 0.18182779848575592,
+    "d_dc": 0.006058788392692804,
+    "eyes_open": 0.003130481345579028,
+    "z0": 0.7139972448348999,
+    "node_r2": [
+     0.13654952158101433,
+     0.1752953063849112
+    ],
+    "reliability": [
+     0.6960013487950615,
+     0.44917497930632805
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.008660197257995605,
+     "sleep": 0.0035865220706909895,
+     "recovery": 0.01399772334843874
+    },
+    "old_net": 0.0022024025674909353
+   },
+   {
+    "pair": "pdist_cosine|pdist_braycurtis",
+    "cls": "estimator: braycurtis vs cosine",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0021019671112298965,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0001476252218708396,
+    "q": 0.0005752996996391651,
+    "animals": {
+     "Chibi": -0.004034668207168579,
+     "George": -0.0009199210326187313,
+     "Kin2": -0.001828571199439466,
+     "Su": -0.0012680689105764031
+    },
+    "t_animals": -2.8776666495435013,
+    "d_real": -0.01773998886346817,
+    "d_surr": -0.015638021752238274,
+    "d_dc": -0.0016210612375289202,
+    "eyes_open": -9.00343875400722e-05,
+    "z0": 0.9763067364692688,
+    "node_r2": [
+     0.15726786616815805,
+     0.1638630959083345
+    ],
+    "reliability": [
+     0.8097611209944872,
+     0.7578291176871615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.001256003975868225,
+     "sleep": -5.332061118679121e-05,
+     "recovery": 8.608234929852188e-05
+    },
+    "old_net": -0.0047814249992370605
+   },
+   {
+    "pair": "xme_gaussian_k1|xme_kernel_W-0.5_k1",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.020217491313815117,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 0.000356192555045709,
+    "q": 0.001327626830474897,
+    "animals": {
+     "Chibi": -0.03663516044616699,
+     "George": -0.007003051694482565,
+     "Kin2": -0.0002398689539404586,
+     "Su": -0.038193464279174805
+    },
+    "t_animals": -2.081451384385086,
+    "d_real": -0.008635323494672775,
+    "d_surr": 0.011582167819142342,
+    "d_dc": -0.024289896711707115,
+    "eyes_open": -0.005232977215200663,
+    "z0": 0.879258930683136,
+    "node_r2": [
+     0.1782209774481013,
+     0.20247383773468006
+    ],
+    "reliability": [
+     0.6837479311443813,
+     0.5610280038671527
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0076436847448349,
+     "sleep": -0.004443202633410692,
+     "recovery": -0.008689039386808872
+    },
+    "old_net": -0.033026937395334244
+   },
+   {
+    "pair": "dtw|lcss",
+    "cls": "elastic distance against elastic similarity",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.029691627249121666,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0003717944782692939,
+    "q": 0.0013549843596087562,
+    "animals": {
+     "Chibi": 0.03928598761558533,
+     "George": 0.00931038148701191,
+     "Kin2": 0.0594794936478138,
+     "Su": 0.028271278366446495
+    },
+    "t_animals": 3.250648820764497,
+    "d_real": 0.044381070882081985,
+    "d_surr": 0.014689440838992596,
+    "d_dc": 0.015364800579845905,
+    "eyes_open": -0.01049899309873581,
+    "z0": -0.6689708828926086,
+    "node_r2": [
+     0.2892662378731408,
+     0.1504411088078415
+    ],
+    "reliability": [
+     0.41667243381186925,
+     0.669054213057937
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.023464202880859375,
+     "sleep": -0.006754917558282614,
+     "recovery": 0.011538351885974407
+    },
+    "old_net": 0.021321767941117287
+   },
+   {
+    "pair": "cov_EmpiricalCovariance|corr_pearson_tau-2",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.001031571300700307,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 0.0004471350694075227,
+    "q": 0.0015941336750984192,
+    "animals": {
+     "Chibi": -0.0016331076622009277,
+     "George": -0.00044023137888871133,
+     "Kin2": -0.0015704830875620246,
+     "Su": -0.0006693800096400082
+    },
+    "t_animals": -3.522649822408808,
+    "d_real": 0.12180707603693008,
+    "d_surr": 0.12283864617347717,
+    "d_dc": -0.0011174051323905587,
+    "eyes_open": 0.0004421597986947745,
+    "z0": 0.8700868487358093,
+    "node_r2": [
+     0.15736687441988043,
+     0.1431805367059945
+    ],
+    "reliability": [
+     0.8097611210520108,
+     0.6055190298500879
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.001028314232826233,
+     "sleep": 0.0008394547621719539,
+     "recovery": -0.0003545979561749846
+    },
+    "old_net": 0.02443285658955574
+   },
+   {
+    "pair": "dtw|dtw_constraint-sakoe-chiba_radius-auto",
+    "cls": "option: unconstrained vs sakoe-chiba",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.027019554749131203,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0008891148609109223,
+    "q": 0.0031024433196859156,
+    "animals": {
+     "Chibi": -0.03440578654408455,
+     "George": -0.016980519518256187,
+     "Kin2": -0.034527022391557693,
+     "Su": -0.028164029121398926
+    },
+    "t_animals": -6.916733311257363,
+    "d_real": -0.15100926160812378,
+    "d_surr": -0.12398970872163773,
+    "d_dc": -0.024854278191924095,
+    "eyes_open": 0.006285799201577902,
+    "z0": 0.9025848507881165,
+    "node_r2": [
+     0.2892662378731408,
+     0.2643791467426841
+    ],
+    "reliability": [
+     0.41667243381186925,
+     0.4865159738840366
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.014044076204299927,
+     "sleep": -0.0024876934476196766,
+     "recovery": -0.02249901182949543
+    },
+    "old_net": -0.030576879158616066
+   },
+   {
+    "pair": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+    "cls": "amplitude weighting of synchrony",
+    "character": "amplitude-weighted against pure phase synchrony",
+    "literal": "coherence against phase-locking value",
+    "confound": "medetomidine exception at high band",
+    "mean": -0.004564313683658838,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0010529172141104937,
+    "q": 0.0035974672064185143,
+    "animals": {
+     "Chibi": -0.006983747240155935,
+     "George": -0.0036338993813842535,
+     "Kin2": -0.004160106182098389,
+     "Su": -0.0023006200790405273
+    },
+    "t_animals": -4.331473332494545,
+    "d_real": -0.010871730744838715,
+    "d_surr": -0.006307417061179876,
+    "d_dc": -0.003990546800196171,
+    "eyes_open": 0.00040539627661928535,
+    "z0": 0.9541281461715698,
+    "node_r2": [
+     0.1692571131797469,
+     0.1659171737887273
+    ],
+    "reliability": [
+     0.7104981207451158,
+     0.6433854772926384
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.002346411347389221,
+     "sleep": -0.00021202223433647305,
+     "recovery": 0.00033035542583093047
+    },
+    "old_net": 0.0015688632847741246
+   },
+   {
+    "pair": "pdist_cityblock|pdist_braycurtis",
+    "cls": "estimator: braycurtis vs cityblock",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0018764169653877616,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0016074858140200377,
+    "q": 0.005380156697059164,
+    "animals": {
+     "Chibi": -0.0010050932178273797,
+     "George": -0.0016854405403137207,
+     "Kin2": -0.002187192440032959,
+     "Su": -0.0037539005279541016
+    },
+    "t_animals": -3.6916263348737024,
+    "d_real": -0.026141364127397537,
+    "d_surr": -0.024264946579933167,
+    "d_dc": -0.0014900972601026297,
+    "eyes_open": -1.2319338566157967e-05,
+    "z0": 0.9520793557167053,
+    "node_r2": [
+     0.14724105431231294,
+     0.1638630959083345
+    ],
+    "reliability": [
+     0.8257149523605255,
+     0.7578291176871615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 2.3826956748962402e-05,
+     "sleep": 0.0002541882568039,
+     "recovery": -0.0001909997663460672
+    },
+    "old_net": -0.0074349455535411835
+   },
+   {
+    "pair": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+    "cls": "amplitude weighting of synchrony",
+    "character": "amplitude-weighted against pure phase synchrony",
+    "literal": "coherence against phase-locking value",
+    "confound": "medetomidine exception at high band",
+    "mean": -0.007088720798492432,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0016887262463569641,
+    "q": 0.005457893587075747,
+    "animals": {
+     "Chibi": -0.008894085884094238,
+     "George": -0.0056631737388670444,
+     "Kin2": -0.012470166198909283,
+     "Su": -0.0014228224754333496
+    },
+    "t_animals": -3.024760218326706,
+    "d_real": -0.0027096648700535297,
+    "d_surr": 0.004379055928438902,
+    "d_dc": -0.005649353377521038,
+    "eyes_open": 0.0018683671951293945,
+    "z0": 0.9491093158721924,
+    "node_r2": [
+     0.13991014003720603,
+     0.13412648815363243
+    ],
+    "reliability": [
+     0.7101322705357591,
+     0.6389282945664249
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.011627644300460815,
+     "sleep": -0.0003470778465270996,
+     "recovery": 0.002441548742353916
+    },
+    "old_net": 0.00278350873850286
+   },
+   {
+    "pair": "dtw|dtw_constraint-itakura",
+    "cls": "option: unconstrained vs itakura",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.021955596283078194,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.001707785646431148,
+    "q": 0.005457893587075747,
+    "animals": {
+     "Chibi": -0.021964361891150475,
+     "George": -0.015505952760577202,
+     "Kin2": -0.042130470275878906,
+     "Su": -0.016812363639473915
+    },
+    "t_animals": -3.907388125133416,
+    "d_real": -0.04954702407121658,
+    "d_surr": -0.02759142592549324,
+    "d_dc": -0.022920146584510803,
+    "eyes_open": 0.011290211230516434,
+    "z0": 0.8573542237281799,
+    "node_r2": [
+     0.2892662378731408,
+     0.26335038515575365
+    ],
+    "reliability": [
+     0.41667243381186925,
+     0.4602777340922589
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.02287091314792633,
+     "sleep": 0.010814709588885307,
+     "recovery": -0.0038195981178432703
+    },
+    "old_net": -0.030686933547258377
+   },
+   {
+    "pair": "cov-sq_EmpiricalCovariance|corr_pearson_tau-1-sq",
+    "cls": "lag: 0 vs 1",
+    "character": "one-sample persistence of coupling",
+    "literal": "zero-lag against lag-1 correlation",
+    "confound": "autocorrelation, dominant frequency (10 ms per sample)",
+    "mean": -0.0002643716870807111,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0017305515939369798,
+    "q": 0.005457893587075747,
+    "animals": {
+     "Chibi": -0.0005139808054082096,
+     "George": -0.00018112148973159492,
+     "Kin2": -0.0001399517059326172,
+     "Su": -8.382400119444355e-05
+    },
+    "t_animals": -2.3724272580210073,
+    "d_real": 0.016926750540733337,
+    "d_surr": 0.017191121354699135,
+    "d_dc": -0.00024630522239021957,
+    "eyes_open": 0.00015942360914777964,
+    "z0": 0.9775739908218384,
+    "node_r2": [
+     0.1877132514820498,
+     0.21334246783410163
+    ],
+    "reliability": [
+     0.7723342627520845,
+     0.7000944930413511
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0001334547996520996,
+     "sleep": -0.00012761354446411133,
+     "recovery": 1.0520219802856445e-05
+    },
+    "old_net": 0.0027614831924438477
+   },
+   {
+    "pair": "coint_johansen_max_eig_stat_order-0_ardiff-1|coint_johansen_trace_stat_order-0_ardiff-1",
+    "cls": "estimator: max_eig vs trace",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0011933540226891637,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.0017792588332667947,
+    "q": 0.00550563099249354,
+    "animals": {
+     "Chibi": -0.0013314088573679328,
+     "George": -0.0009857416152954102,
+     "Kin2": -0.0023366014938801527,
+     "Su": -0.0002584258618298918
+    },
+    "t_animals": -2.843352117215293,
+    "d_real": 0.02256409451365471,
+    "d_surr": 0.02375744841992855,
+    "d_dc": 0.0013759449357166886,
+    "eyes_open": 0.00019484758377075195,
+    "z0": 0.9183652997016907,
+    "node_r2": [
+     0.8141887641503018,
+     0.9280286913376793
+    ],
+    "reliability": [
+     0.44141639790604614,
+     0.510373887146614
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.00026060640811920166,
+     "sleep": 7.071665459079668e-05,
+     "recovery": 6.847249460406601e-05
+    },
+    "old_net": 0.0021142582409083843
+   },
+   {
+    "pair": "pdist_euclidean|dtw",
+    "cls": "rigid against elastic alignment",
+    "character": "variable-lag (warped) alignment",
+    "literal": "Euclidean against DTW distance",
+    "confound": "warp failed construction validation",
+    "mean": -0.03825642541050911,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0021299258805811405,
+    "q": 0.006351051547310569,
+    "animals": {
+     "Chibi": -0.04229266941547394,
+     "George": -0.017990658059716225,
+     "Kin2": -0.042357902973890305,
+     "Su": -0.07336926460266113
+    },
+    "t_animals": -3.8784126135164505,
+    "d_real": -0.04853637143969536,
+    "d_surr": -0.01027994230389595,
+    "d_dc": -0.021231764927506447,
+    "eyes_open": 0.017883189022541046,
+    "z0": 0.5850520730018616,
+    "node_r2": [
+     0.14765085037905362,
+     0.2892662378731408
+    ],
+    "reliability": [
+     0.8353142984509927,
+     0.41667243381186925
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.009589672088623047,
+     "sleep": 0.0012139464961364865,
+     "recovery": -0.031735267490148544
+    },
+    "old_net": -0.016278285533189774
+   },
+   {
+    "pair": "pdist_euclidean|pdist_braycurtis",
+    "cls": "estimator: braycurtis vs euclidean",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0021805167198181152,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.005153306294232607,
+    "q": 0.014324444835468873,
+    "animals": {
+     "Chibi": -0.005158881191164255,
+     "George": -0.0004016927268821746,
+     "Kin2": -0.002254386665299535,
+     "Su": -0.0003005067410413176
+    },
+    "t_animals": -1.7861576515292321,
+    "d_real": -0.027410374954342842,
+    "d_surr": -0.025229858234524727,
+    "d_dc": -0.0015242790104821324,
+    "eyes_open": 9.919467993313447e-05,
+    "z0": 0.9485338926315308,
+    "node_r2": [
+     0.14765085037905362,
+     0.1638630959083345
+    ],
+    "reliability": [
+     0.8353142984509927,
+     0.7578291176871615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0013818442821502686,
+     "sleep": -8.32506557344459e-05,
+     "recovery": 0.00032188824843615294
+    },
+    "old_net": -0.004840116947889328
+   },
+   {
+    "pair": "corr_pearson_tau-1|corr_pearson_tau-2",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0004969521542079747,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.00767286354675889,
+    "q": 0.0206286829026019,
+    "animals": {
+     "Chibi": -0.0006681978702545166,
+     "George": -0.0002124054153682664,
+     "Kin2": -0.0009914437541738153,
+     "Su": -0.0003239115176256746
+    },
+    "t_animals": -3.110013820116469,
+    "d_real": 0.07912678271532059,
+    "d_surr": 0.0796237513422966,
+    "d_dc": -0.000519153312779963,
+    "eyes_open": 0.00014404873945750296,
+    "z0": 0.9177903532981873,
+    "node_r2": [
+     0.15827038251082756,
+     0.1431805367059945
+    ],
+    "reliability": [
+     0.7769757062971753,
+     0.6055190298500879
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.0009170621633529663,
+     "sleep": 0.0007906811661086977,
+     "recovery": -0.00016625721764285117
+    },
+    "old_net": 0.018975432962179184
+   },
+   {
+    "pair": "cov-sq_EmpiricalCovariance|corr_pearson_tau-2-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0009371638298034668,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.011689328588545322,
+    "q": 0.030920159432195848,
+    "animals": {
+     "Chibi": -0.00030759969376958907,
+     "George": -0.001327267731539905,
+     "Kin2": -0.0015743374824523926,
+     "Su": -0.0006488760118372738
+    },
+    "t_animals": -3.284789968282786,
+    "d_real": 0.23318246006965637,
+    "d_surr": 0.23411963880062103,
+    "d_dc": -0.0011480074608698487,
+    "eyes_open": 0.0013616555370390415,
+    "z0": 0.7400062680244446,
+    "node_r2": [
+     0.1877132514820498,
+     0.2845915496503146
+    ],
+    "reliability": [
+     0.7723342627520845,
+     0.4392337206299615
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.0010265856981277466,
+     "sleep": 0.0009525375789962709,
+     "recovery": -0.00029016038752160966
+    },
+    "old_net": 0.025693673640489578
+   },
+   {
+    "pair": "xcorr-sq_max_sig-True|xcorr-sq_mean_sig-True",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.006265580654144287,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.014962087385356426,
+    "q": 0.03894892571464417,
+    "animals": {
+     "Chibi": 0.00030268231057561934,
+     "George": 0.008092011325061321,
+     "Kin2": 0.013656437397003174,
+     "Su": 0.006538847927004099
+    },
+    "t_animals": 2.602958963416352,
+    "d_real": 0.007186033297330141,
+    "d_surr": 0.000920452584978193,
+    "d_dc": 0.0036986940540373325,
+    "eyes_open": 0.0007197668892331421,
+    "z0": 0.8597824573516846,
+    "node_r2": [
+     0.17338465903472594,
+     0.24874616204169786
+    ],
+    "reliability": [
+     0.7444193174764888,
+     0.48399099192813216
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.00843210518360138,
+     "sleep": -0.0014059628592804074,
+     "recovery": -0.002104395069181919
+    },
+    "old_net": -0.0093796132132411
+   },
+   {
+    "pair": "cov-sq_MinCovDet|kendalltau-sq",
+    "cls": "estimator: MinCovDet vs kendall",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0023314952850341797,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.016746414825320244,
+    "q": 0.04225249290466308,
+    "animals": {
+     "Chibi": -0.0024728376884013414,
+     "George": -0.0008486509323120117,
+     "Kin2": -0.0007531046867370605,
+     "Su": -0.0070871710777282715
+    },
+    "t_animals": -1.8783273829488905,
+    "d_real": -0.0050973109900951385,
+    "d_surr": -0.002765815472230315,
+    "d_dc": -0.0024879449047148228,
+    "eyes_open": -0.0014900031965225935,
+    "z0": 0.9697202444076538,
+    "node_r2": [
+     0.18057535617794396,
+     0.162861072992489
+    ],
+    "reliability": [
+     0.7527708239442468,
+     0.8002134367957541
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": -0.002153918147087097,
+     "sleep": -0.0007434402359649539,
+     "recovery": -0.0016661816043779254
+    },
+    "old_net": -0.015453953295946121
+   }
+  ],
+  "top_not_passing": [
+   {
+    "pair": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.011387364007532597,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 9.887052328849677e-06,
+    "q": 5.5912986461972366e-05,
+    "animals": {
+     "Chibi": -0.018625816330313683,
+     "George": -0.010400508530437946,
+     "Kin2": 0.002178887603804469,
+     "Su": -0.012779374606907368
+    },
+    "t_animals": -2.260000078361618,
+    "d_real": -0.017997754737734795,
+    "d_surr": -0.006610390264540911,
+    "d_dc": -0.0044115688651800156,
+    "eyes_open": -0.007505015470087528,
+    "z0": 0.9027956128120422,
+    "node_r2": [
+     0.13412648815363243,
+     0.1659171737887273
+    ],
+    "reliability": [
+     0.6389282945664249,
+     0.6433854772926384
+    ],
+    "usable": true,
+    "specificity": {
+     "MD drug": 0.01827012002468109,
+     "sleep": 0.0019607117865234613,
+     "recovery": -0.012634260579943657
+    },
+    "old_net": 0.006614760495722294
+   }
+  ]
+ },
+ "minimal_no_reliability": {
+  "tested": 473,
+  "discoveries": 155,
+  "control_discoveries": 44,
+  "rows": [
+   {
+    "pair": "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+    "cls": "option: history-1 vs history-2",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.030435094609856606,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 2.361592699173798e-09,
+    "q": 1.5957618870743318e-07,
+    "animals": {
+     "Chibi": 0.04174555465579033,
+     "George": 0.02330562099814415,
+     "Kin2": 0.02703171968460083,
+     "Su": 0.027852991595864296
+    },
+    "t_animals": 7.415476419698388,
+    "d_real": 0.21504303812980652,
+    "d_surr": 0.18460792303085327,
+    "d_dc": 0.03232980892062187,
+    "eyes_open": 0.003503592452034354,
+    "z0": 0.5576774477958679,
+    "node_r2": [
+     0.1035778735291851,
+     0.07052619389032394
+    ],
+    "reliability": [
+     0.06715082839072409,
+     0.026403429676763603
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.02158510684967041,
+     "sleep": 0.0030437964014708996,
+     "recovery": 0.000835633953101933
+    },
+    "old_net": 0.026089470833539963
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.029201535508036613,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 3.5966247757812653e-09,
+    "q": 1.9274336359052944e-07,
+    "animals": {
+     "Chibi": 0.033624231815338135,
+     "George": 0.020821450278162956,
+     "Kin2": 0.040398985147476196,
+     "Su": 0.028712227940559387
+    },
+    "t_animals": 7.491458031180613,
+    "d_real": -0.21040458977222443,
+    "d_surr": -0.2396061271429062,
+    "d_dc": 0.029767362400889397,
+    "eyes_open": 0.008966470137238503,
+    "z0": 0.35986441373825073,
+    "node_r2": [
+     0.2242350540647307,
+     0.19037554790891772
+    ],
+    "reliability": [
+     0.09465037453893511,
+     0.1184074487444926
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.025876792147755623,
+     "sleep": -0.0009047346538864076,
+     "recovery": 0.01276897732168436
+    },
+    "old_net": 0.09504609555006027
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None|sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.021107178181409836,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 5.623506549312651e-09,
+    "q": 2.619081556076708e-07,
+    "animals": {
+     "Chibi": 0.022587850689888,
+     "George": 0.01829516515135765,
+     "Kin2": 0.030647052451968193,
+     "Su": 0.01516732294112444
+    },
+    "t_animals": 6.459550438372408,
+    "d_real": -0.16138096153736115,
+    "d_surr": -0.18248814344406128,
+    "d_dc": 0.02145727351307869,
+    "eyes_open": 0.006495319772511721,
+    "z0": 0.24893273413181305,
+    "node_r2": [
+     0.22468963114320825,
+     0.19037554790891772
+    ],
+    "reliability": [
+     0.09332885587203253,
+     0.1184074487444926
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.027040798217058182,
+     "sleep": 0.0015877442201599479,
+     "recovery": 0.011517499573528767
+    },
+    "old_net": 0.08076872676610947
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.021006913855671883,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 3.323859587567313e-08,
+    "q": 9.826160294323927e-07,
+    "animals": {
+     "Chibi": 0.025168130174279213,
+     "George": 0.01915932632982731,
+     "Kin2": 0.0226112212985754,
+     "Su": 0.015391211025416851
+    },
+    "t_animals": 9.692031321300078,
+    "d_real": 0.013844556175172329,
+    "d_surr": -0.007162357680499554,
+    "d_dc": 0.02046094462275505,
+    "eyes_open": 0.0012320562964305282,
+    "z0": 0.703096330165863,
+    "node_r2": [
+     0.2054829600362237,
+     0.14051314470534523
+    ],
+    "reliability": [
+     0.14049166292642684,
+     0.09225096628657536
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.002214774489402771,
+     "sleep": 0.002727883169427514,
+     "recovery": 0.008046027272939682
+    },
+    "old_net": 0.019656285643577576
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.02827928215265274,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 8.035332399458639e-08,
+    "q": 2.11150674860821e-06,
+    "animals": {
+     "Chibi": 0.036119118332862854,
+     "George": 0.030091242864727974,
+     "Kin2": 0.02557314746081829,
+     "Su": 0.011077831499278545
+    },
+    "t_animals": 4.819291517299004,
+    "d_real": 0.07919827848672867,
+    "d_surr": 0.05091899633407593,
+    "d_dc": 0.021118039265275,
+    "eyes_open": -0.0015964617487043142,
+    "z0": 0.1304636001586914,
+    "node_r2": [
+     0.2078234813547024,
+     0.1358942065343675
+    ],
+    "reliability": [
+     0.07019718561783651,
+     0.038855144084340404
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00900331512093544,
+     "sleep": 0.0010665421141311526,
+     "recovery": 0.0034039048478007317
+    },
+    "old_net": 0.05780814215540886
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.027328455820679665,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.822505737436586e-07,
+    "q": 3.4883583430200816e-06,
+    "animals": {
+     "Chibi": 0.038863878697156906,
+     "George": 0.02445029281079769,
+     "Kin2": 0.029754221439361572,
+     "Su": 0.008547564037144184
+    },
+    "t_animals": 3.9953811580400687,
+    "d_real": 0.055296510457992554,
+    "d_surr": 0.02796804904937744,
+    "d_dc": 0.022715678438544273,
+    "eyes_open": -0.001077247317880392,
+    "z0": 0.6872367858886719,
+    "node_r2": [
+     0.18837200229082024,
+     0.1358942065343675
+    ],
+    "reliability": [
+     0.07702504219094412,
+     0.038855144084340404
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.017700061202049255,
+     "sleep": 0.0024461832363158464,
+     "recovery": 0.0032974316272884607
+    },
+    "old_net": -0.015734151005744934
+   },
+   {
+    "pair": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1|te_kernel_W-0.25_k-1",
+    "cls": "estimator: kraskov vs kernel",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.14505091309547424,
+    "sessions_same_sign": 19,
+    "n": 19,
+    "p": 5.523164077203546e-07,
+    "q": 9.330202634113707e-06,
+    "animals": {
+     "Chibi": 0.14904075860977173,
+     "George": 0.16193020343780518,
+     "Kin2": 0.18317057192325592,
+     "Su": 0.059566427022218704
+    },
+    "t_animals": 5.086950604404308,
+    "d_real": 0.0639631524682045,
+    "d_surr": -0.08108776062726974,
+    "d_dc": 0.05212075635790825,
+    "eyes_open": 0.012369668111205101,
+    "z0": 0.08432799577713013,
+    "node_r2": [
+     0.08465871160500783,
+     0.6680962660425354
+    ],
+    "reliability": [
+     0.03494598131118928,
+     0.5270028556381182
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03448377549648285,
+     "sleep": -0.008190715685486794,
+     "recovery": -0.005349671468138695
+    },
+    "old_net": 0.1953650563955307
+   },
+   {
+    "pair": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": -0.026290247216820717,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 2.0128863980062306e-06,
+    "q": 2.8002801734734984e-05,
+    "animals": {
+     "Chibi": -0.0289310235530138,
+     "George": -0.021782372146844864,
+     "Kin2": -0.041475582867860794,
+     "Su": -0.01634172536432743
+    },
+    "t_animals": -4.9953654788956685,
+    "d_real": 0.05603323504328728,
+    "d_surr": 0.08232349157333374,
+    "d_dc": -0.004968354012817144,
+    "eyes_open": -0.0062818764708936214,
+    "z0": 0.38472357392311096,
+    "node_r2": [
+     0.1659171737887273,
+     0.07462023077946024
+    ],
+    "reliability": [
+     0.6433854772926384,
+     0.2830557325154322
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.021565623581409454,
+     "sleep": 0.005391342099756002,
+     "recovery": -0.012057103216648102
+    },
+    "old_net": 0.054117511957883835
+   },
+   {
+    "pair": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5|cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.02039222978055477,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 2.369634330534609e-06,
+    "q": 3.2023915887943335e-05,
+    "animals": {
+     "Chibi": 0.030389586463570595,
+     "George": 0.015646951273083687,
+     "Kin2": 0.0046503543853759766,
+     "Su": 0.027211705222725868
+    },
+    "t_animals": 3.3179540650125054,
+    "d_real": 0.049665417522192,
+    "d_surr": 0.02927318774163723,
+    "d_dc": 0.0035320583265274763,
+    "eyes_open": 0.010515483096241951,
+    "z0": 0.595319926738739,
+    "node_r2": [
+     0.08789164762613118,
+     0.048224791149021465
+    ],
+    "reliability": [
+     0.3591694438776794,
+     0.08845295537225858
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.022178635001182556,
+     "sleep": -0.0002834626648109406,
+     "recovery": 0.019734375178813934
+    },
+    "old_net": -0.017319170758128166
+   },
+   {
+    "pair": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+    "cls": "estimator: kraskov vs kraskov_DCE",
+    "character": null,
+    "literal": "kNN information with and without the dynamic correlation exclusion",
+    "confound": "estimator diagnostic: autocorrelation bias",
+    "mean": -0.055534638464450836,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 2.6082402655447368e-06,
+    "q": 3.426937877924906e-05,
+    "animals": {
+     "Chibi": -0.08061506599187851,
+     "George": -0.03364047780632973,
+     "Kin2": -0.02697068452835083,
+     "Su": -0.08502409607172012
+    },
+    "t_animals": -3.7097309409721375,
+    "d_real": -0.3204842209815979,
+    "d_surr": -0.26494958996772766,
+    "d_dc": -0.05997895076870918,
+    "eyes_open": -0.001051981234923005,
+    "z0": 0.8408406972885132,
+    "node_r2": [
+     0.08465871160500783,
+     0.07052619389032394
+    ],
+    "reliability": [
+     0.03494598131118928,
+     0.026403429676763603
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.03362429141998291,
+     "sleep": -0.012188000604510307,
+     "recovery": -0.004400196950882673
+    },
+    "old_net": -0.03366514667868614
+   },
+   {
+    "pair": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5|ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.011698246002197266,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 3.878994448314188e-06,
+    "q": 4.828327310908782e-05,
+    "animals": {
+     "Chibi": 0.014415641315281391,
+     "George": 0.011268198490142822,
+     "Kin2": 0.0018110474338755012,
+     "Su": 0.01715409755706787
+    },
+    "t_animals": 3.3410440257234324,
+    "d_real": 0.033692438155412674,
+    "d_surr": 0.02199419215321541,
+    "d_dc": 0.0010015744483098388,
+    "eyes_open": 0.005360681563615799,
+    "z0": 0.5648696422576904,
+    "node_r2": [
+     0.07655384784224947,
+     0.03929192966022276
+    ],
+    "reliability": [
+     0.32588617825131855,
+     0.06104597425001503
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.017712578177452087,
+     "sleep": -0.00024190118710976094,
+     "recovery": 0.011221610940992832
+    },
+    "old_net": 0.028325870633125305
+   },
+   {
+    "pair": "xme_gaussian_k1|xme_kozachenko_k1",
+    "cls": "estimator: gaussian vs kozachenko",
+    "character": "non-Gaussian dependence (entropy estimator)",
+    "literal": "Gaussian against Kozachenko-Leonenko entropy",
+    "confound": "marginal entropies are node-level",
+    "mean": -0.025256268680095673,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 5.101349415781442e-06,
+    "q": 6.116339936852455e-05,
+    "animals": {
+     "Chibi": -0.015932651236653328,
+     "George": -0.041051145642995834,
+     "Kin2": -0.027156442403793335,
+     "Su": -0.005148609634488821
+    },
+    "t_animals": -2.9022091285335962,
+    "d_real": 0.1002369225025177,
+    "d_surr": 0.12549318373203278,
+    "d_dc": -0.01219115313142538,
+    "eyes_open": 0.0029449330177158117,
+    "z0": 0.5429237484931946,
+    "node_r2": [
+     0.1782209774481013,
+     0.12039990025874199
+    ],
+    "reliability": [
+     0.6837479311443813,
+     0.24823216561931938
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.015104614198207855,
+     "sleep": 0.0008716242737136781,
+     "recovery": -0.0009933254914358258
+    },
+    "old_net": -0.021516676992177963
+   },
+   {
+    "pair": "pec_log|pec_orth_log",
+    "cls": "zero-lag removal (envelope)",
+    "character": "lagged share of amplitude coupling (volume-conduction-free)",
+    "literal": "envelope correlation with and without orthogonalisation",
+    "confound": "pec_orth unreliable",
+    "mean": 0.04012054577469826,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 5.172380497242557e-06,
+    "q": 6.116339936852455e-05,
+    "animals": {
+     "Chibi": 0.049933742731809616,
+     "George": 0.03094390407204628,
+     "Kin2": 0.010375658981502056,
+     "Su": 0.07165119796991348
+    },
+    "t_animals": 3.1098742749140107,
+    "d_real": 0.12962858378887177,
+    "d_surr": 0.0895080491900444,
+    "d_dc": 0.03261463716626167,
+    "eyes_open": 0.00859664287418127,
+    "z0": 0.5978624224662781,
+    "node_r2": [
+     0.18348626104382515,
+     0.158316646422777
+    ],
+    "reliability": [
+     0.3927678261105946,
+     0.019592947534678315
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.012956567108631134,
+     "sleep": 0.0065735578536987305,
+     "recovery": 0.01361002679914236
+    },
+    "old_net": 0.04877915233373642
+   },
+   {
+    "pair": "pec|pec_orth",
+    "cls": "zero-lag removal (envelope)",
+    "character": "lagged share of amplitude coupling (volume-conduction-free)",
+    "literal": "envelope correlation with and without orthogonalisation",
+    "confound": "pec_orth unreliable",
+    "mean": 0.03794318065047264,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 8.799172974249814e-06,
+    "q": 9.909544938376971e-05,
+    "animals": {
+     "Chibi": 0.04622144624590874,
+     "George": 0.021910786628723145,
+     "Kin2": 0.021784603595733643,
+     "Su": 0.07495415210723877
+    },
+    "t_animals": 3.2640039452530223,
+    "d_real": 0.13357257843017578,
+    "d_surr": 0.09562940150499344,
+    "d_dc": 0.034477781504392624,
+    "eyes_open": -0.0011338669573888183,
+    "z0": 0.593544602394104,
+    "node_r2": [
+     0.20713870459229364,
+     0.2003044606782731
+    ],
+    "reliability": [
+     0.4183829094095906,
+     0.028507592338896694
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.005883663892745972,
+     "sleep": 0.00995329488068819,
+     "recovery": 0.01612432859838009
+    },
+    "old_net": 0.041358575224876404
+   },
+   {
+    "pair": "tlmi_kraskov_NN-4_DCE-AUTO|te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+    "cls": "conditioning on the target past",
+    "character": "information the source adds beyond the target own past",
+    "literal": "lagged MI against TE/GC",
+    "confound": "autocorrelation",
+    "mean": 0.016832854598760605,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.0138665857084561e-05,
+    "q": 0.00010899065951393409,
+    "animals": {
+     "Chibi": 0.018231665715575218,
+     "George": 0.01506046298891306,
+     "Kin2": 0.017053663730621338,
+     "Su": 0.017949998378753662
+    },
+    "t_animals": 23.82609517530999,
+    "d_real": 0.117818683385849,
+    "d_surr": 0.1009858250617981,
+    "d_dc": 0.019005604088306427,
+    "eyes_open": 0.000864551228005439,
+    "z0": 0.2861051857471466,
+    "node_r2": [
+     0.14734052126373084,
+     0.07052619389032394
+    ],
+    "reliability": [
+     0.48259692270847754,
+     0.026403429676763603
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.008284490555524826,
+     "sleep": -0.0014348498079925776,
+     "recovery": -0.0018191561102867126
+    },
+    "old_net": 0.023920293897390366
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+    "cls": "option: default vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.023759735748171806,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 1.588059967616573e-05,
+    "q": 0.00015329639902528453,
+    "animals": {
+     "Chibi": -0.02296695113182068,
+     "George": -0.03314298391342163,
+     "Kin2": -0.0173202957957983,
+     "Su": -0.009890496730804443
+    },
+    "t_animals": -4.250711665873307,
+    "d_real": -0.029316401109099388,
+    "d_surr": -0.0055566634982824326,
+    "d_dc": -0.02415607124567032,
+    "eyes_open": -0.004948304034769535,
+    "z0": 0.5292792320251465,
+    "node_r2": [
+     0.22468963114320825,
+     0.20636420323169133
+    ],
+    "reliability": [
+     0.09332885587203253,
+     0.0455408240482202
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.020588167011737823,
+     "sleep": -0.0009052753448486328,
+     "recovery": -0.011253371834754944
+    },
+    "old_net": -0.0449775829911232
+   },
+   {
+    "pair": "corr_pearson_tau-20|corr_kendall_tau-20",
+    "cls": "estimator: Empirical vs kendall",
+    "character": "monotone-nonlinear dependence (as Spearman)",
+    "literal": "linear against Kendall rank dependence",
+    "confound": "marginal shape",
+    "mean": -0.0032036148477345705,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 2.1773090338683687e-05,
+    "q": 0.00020193474769007925,
+    "animals": {
+     "Chibi": -0.0029702584724873304,
+     "George": -0.003482912201434374,
+     "Kin2": -0.0016750892391428351,
+     "Su": -0.004547158721834421
+    },
+    "t_animals": -5.312797508590069,
+    "d_real": 0.0007738784770481288,
+    "d_surr": 0.00397749338299036,
+    "d_dc": -0.002947584493085742,
+    "eyes_open": -0.0008697666344232857,
+    "z0": 0.9793105721473694,
+    "node_r2": [
+     0.09576436355819691,
+     0.09715048272024476
+    ],
+    "reliability": [
+     0.16993998159487445,
+     0.17048732083167906
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0005624741315841675,
+     "sleep": -0.00024123702314682305,
+     "recovery": -0.0001297659327974543
+    },
+    "old_net": -0.014532886445522308
+   },
+   {
+    "pair": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5|cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.018899967893958092,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 2.4295242837979458e-05,
+    "q": 0.0002209932650797642,
+    "animals": {
+     "Chibi": 0.025177115574479103,
+     "George": 0.016662409529089928,
+     "Kin2": 0.006909191608428955,
+     "Su": 0.02355741523206234
+    },
+    "t_animals": 4.350556785363131,
+    "d_real": 0.06844634562730789,
+    "d_surr": 0.04954637959599495,
+    "d_dc": 0.014599637128412724,
+    "eyes_open": 0.010575548745691776,
+    "z0": 0.4279559254646301,
+    "node_r2": [
+     0.14096382471075214,
+     0.048224791149021465
+    ],
+    "reliability": [
+     0.21128896515117132,
+     0.08845295537225858
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.02163882553577423,
+     "sleep": 0.003227050881832838,
+     "recovery": 0.01717868447303772
+    },
+    "old_net": 0.026640094816684723
+   },
+   {
+    "pair": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5|cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.01666150987148285,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 2.5840485250228085e-05,
+    "q": 0.0002263435162603855,
+    "animals": {
+     "Chibi": -0.027431726455688477,
+     "George": -0.009787440299987793,
+     "Kin2": -0.0136338472366333,
+     "Su": -0.014188230037689209
+    },
+    "t_animals": -4.223215113849823,
+    "d_real": -0.018785376101732254,
+    "d_surr": -0.0021238671615719795,
+    "d_dc": -0.015588111244142056,
+    "eyes_open": -0.006340879946947098,
+    "z0": 0.8379679322242737,
+    "node_r2": [
+     0.14096382471075214,
+     0.1729284344709758
+    ],
+    "reliability": [
+     0.21128896515117132,
+     0.22770460234396106
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0055852532386779785,
+     "sleep": -0.003507682355120778,
+     "recovery": -0.015179753303527832
+    },
+    "old_net": 0.01867191679775715
+   },
+   {
+    "pair": "corr_pearson_tau-20-sq|corr_kendall_tau-20-sq",
+    "cls": "estimator: Empirical vs kendall",
+    "character": "monotone-nonlinear dependence (as Spearman)",
+    "literal": "linear against Kendall rank dependence",
+    "confound": "marginal shape",
+    "mean": -0.006904053036123514,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 3.717873914865777e-05,
+    "q": 0.0003197371621023525,
+    "animals": {
+     "Chibi": -0.007307430263608694,
+     "George": -0.006193450652062893,
+     "Kin2": -0.004601577762514353,
+     "Su": -0.010057847015559673
+    },
+    "t_animals": -6.127316018871737,
+    "d_real": 0.0013002627529203892,
+    "d_surr": 0.008204315789043903,
+    "d_dc": -0.006761739030480385,
+    "eyes_open": -0.00242112809792161,
+    "z0": 0.9586727023124695,
+    "node_r2": [
+     0.2726130747300756,
+     0.268386481132741
+    ],
+    "reliability": [
+     0.06833268847531157,
+     0.06845659719212453
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0012756884098052979,
+     "sleep": 0.0010807684157043695,
+     "recovery": -0.0010061495704576373
+    },
+    "old_net": -0.027228854596614838
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+    "cls": "option: order-1 vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.023671066388487816,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 3.9640817703912035e-05,
+    "q": 0.00032327770544537184,
+    "animals": {
+     "Chibi": -0.019140705466270447,
+     "George": -0.03461361676454544,
+     "Kin2": -0.02152743935585022,
+     "Su": -0.0093427998945117
+    },
+    "t_animals": -4.066117542122383,
+    "d_real": 0.0633021742105484,
+    "d_surr": 0.08697324246168137,
+    "d_dc": -0.02515804022550583,
+    "eyes_open": -0.005727781914174557,
+    "z0": 0.35085225105285645,
+    "node_r2": [
+     0.21858670195157634,
+     0.20636420323169133
+    ],
+    "reliability": [
+     0.1370275501424345,
+     0.0455408240482202
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.024820223450660706,
+     "sleep": 0.0009979137685149908,
+     "recovery": -0.006388031877577305
+    },
+    "old_net": -0.07815903425216675
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.002898909617215395,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 4.3758944229921326e-05,
+    "q": 0.00034609915067752205,
+    "animals": {
+     "Chibi": -0.004375179763883352,
+     "George": -0.0006875140243209898,
+     "Kin2": -0.003257195232436061,
+     "Su": -0.004748006816953421
+    },
+    "t_animals": -3.5653943308881466,
+    "d_real": 0.013843925669789314,
+    "d_surr": 0.016742834821343422,
+    "d_dc": -0.0030137519352138042,
+    "eyes_open": -0.0005811703740619123,
+    "z0": 0.9789334535598755,
+    "node_r2": [
+     0.2242350540647307,
+     0.22468963114320825
+    ],
+    "reliability": [
+     0.09465037453893511,
+     0.09332885587203253
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.001029089093208313,
+     "sleep": 0.00010198354721069336,
+     "recovery": -0.0004414849681779742
+    },
+    "old_net": 0.010974896140396595
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+    "cls": "option: order-1 vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.025320544838905334,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 4.390264075482264e-05,
+    "q": 0.00034609915067752205,
+    "animals": {
+     "Chibi": -0.024536771699786186,
+     "George": -0.03671276569366455,
+     "Kin2": -0.02221553586423397,
+     "Su": -0.0034112532157450914
+    },
+    "t_animals": -3.156398216666413,
+    "d_real": 0.058129988610744476,
+    "d_surr": 0.08345053344964981,
+    "d_dc": -0.02622061036527157,
+    "eyes_open": -0.004551941528916359,
+    "z0": 0.3280567228794098,
+    "node_r2": [
+     0.21858670195157634,
+     0.18794020735493489
+    ],
+    "reliability": [
+     0.13702755023522062,
+     0.04388284625416446
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.02629857510328293,
+     "sleep": 0.00044759895536117256,
+     "recovery": -0.006556557957082987
+    },
+    "old_net": -0.07105638831853867
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+    "cls": "option: default vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.019078686833381653,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 9.168629912892357e-05,
+    "q": 0.000688374929484867,
+    "animals": {
+     "Chibi": 0.023337170481681824,
+     "George": 0.012935454957187176,
+     "Kin2": 0.019219040870666504,
+     "Su": 0.024755576625466347
+    },
+    "t_animals": 7.571185217863403,
+    "d_real": -0.1025213673710823,
+    "d_surr": -0.12160006165504456,
+    "d_dc": 0.015329922549426556,
+    "eyes_open": 0.0026214923709630966,
+    "z0": 0.5263641476631165,
+    "node_r2": [
+     0.14051314470534523,
+     0.1358942065343675
+    ],
+    "reliability": [
+     0.09225096628657536,
+     0.038855144084340404
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.008425526320934296,
+     "sleep": -0.00034242868423461914,
+     "recovery": 0.012423548847436905
+    },
+    "old_net": -0.0031285302247852087
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": -0.003490288043394685,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 9.859219426289201e-05,
+    "q": 0.0007286579348146915,
+    "animals": {
+     "Chibi": -0.0028032660484313965,
+     "George": -0.003356635570526123,
+     "Kin2": -0.005682507995516062,
+     "Su": -0.0029839675407856703
+    },
+    "t_animals": -5.543511649892983,
+    "d_real": -0.0642990693449974,
+    "d_surr": -0.06080878525972366,
+    "d_dc": -0.003526675049215555,
+    "eyes_open": 0.0008408332942053676,
+    "z0": 0.9082630276679993,
+    "node_r2": [
+     0.17969450894377226,
+     0.20114706044729672
+    ],
+    "reliability": [
+     0.1354143840569474,
+     0.1797224079349518
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.005396366119384766,
+     "sleep": 0.00011547974281711504,
+     "recovery": -9.182757639791816e-05
+    },
+    "old_net": -0.021817194297909737
+   },
+   {
+    "pair": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.006077888887375593,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0001034099404932931,
+    "q": 0.0007525061758664938,
+    "animals": {
+     "Chibi": -0.007806310895830393,
+     "George": -0.005074211396276951,
+     "Kin2": -0.008470515720546246,
+     "Su": -0.00257033109664917
+    },
+    "t_animals": -4.4183448183599925,
+    "d_real": -0.009168433956801891,
+    "d_surr": -0.0030905448365956545,
+    "d_dc": -0.00382268731482327,
+    "eyes_open": -0.002880796091631055,
+    "z0": 0.7754928469657898,
+    "node_r2": [
+     0.10763458810946996,
+     0.14150676399771453
+    ],
+    "reliability": [
+     0.14355216550612052,
+     0.16781928398085236
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.008709520101547241,
+     "sleep": -0.001507724984548986,
+     "recovery": -0.0021426512394100428
+    },
+    "old_net": 0.0026682771276682615
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+    "cls": "option: default vs order-1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.015055039897561073,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00010973993630614132,
+    "q": 0.0007864695155259335,
+    "animals": {
+     "Chibi": -0.016497856006026268,
+     "George": -0.01719789393246174,
+     "Kin2": -0.0035911102313548326,
+     "Su": -0.018633345142006874
+    },
+    "t_animals": -4.004158223471316,
+    "d_real": 0.08555792272090912,
+    "d_surr": 0.10061296820640564,
+    "d_dc": -0.01548736821860075,
+    "eyes_open": -0.00294886133633554,
+    "z0": 0.47645172476768494,
+    "node_r2": [
+     0.2054829600362237,
+     0.17969450894377226
+    ],
+    "reliability": [
+     0.14049166292642684,
+     0.1354143840569474
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.012678220868110657,
+     "sleep": 0.005010430235415697,
+     "recovery": -0.007372872903943062
+    },
+    "old_net": -0.04714371636509895
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+    "cls": "option: default vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.02256632037460804,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00011477019870653749,
+    "q": 0.0007983280126662815,
+    "animals": {
+     "Chibi": -0.02551807463169098,
+     "George": -0.03274748846888542,
+     "Kin2": -0.01268276572227478,
+     "Su": -0.002790302038192749
+    },
+    "t_animals": -2.76642122195211,
+    "d_real": -0.031137635931372643,
+    "d_surr": -0.008571317419409752,
+    "d_dc": -0.022031133994460106,
+    "eyes_open": -0.0042438083328306675,
+    "z0": 0.5077031254768372,
+    "node_r2": [
+     0.2242350540647307,
+     0.18794020735493489
+    ],
+    "reliability": [
+     0.09465037453893511,
+     0.04388284625416446
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.018967241048812866,
+     "sleep": -0.0015192882856354117,
+     "recovery": -0.010190493427217007
+    },
+    "old_net": -0.0215180404484272
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+    "cls": "option: order-1 vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.014413430355489254,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.00012479945144150406,
+    "q": 0.0008432877383061818,
+    "animals": {
+     "Chibi": -0.010651995427906513,
+     "George": -0.020948737859725952,
+     "Kin2": -0.008006423711776733,
+     "Su": -0.01309425663203001
+    },
+    "t_animals": -4.7196199419455,
+    "d_real": -0.0062211062759160995,
+    "d_surr": 0.008192324079573154,
+    "d_dc": -0.012833808548748493,
+    "eyes_open": -0.0050810230895876884,
+    "z0": 0.3816845417022705,
+    "node_r2": [
+     0.17988643590956183,
+     0.2078234813547024
+    ],
+    "reliability": [
+     0.13290547348816997,
+     0.07019718561783651
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.006361454725265503,
+     "sleep": 0.006543874740600586,
+     "recovery": -0.006856406573206186
+    },
+    "old_net": -0.03143338859081268
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": -0.0035747101064771414,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 0.0001392086414853111,
+    "q": 0.0009145234814948506,
+    "animals": {
+     "Chibi": -0.0028922755736857653,
+     "George": -0.003489851951599121,
+     "Kin2": -0.005691091064363718,
+     "Su": -0.003021200420334935
+    },
+    "t_animals": -5.788375761806348,
+    "d_real": -0.06153205782175064,
+    "d_surr": -0.05795736238360405,
+    "d_dc": -0.0036416901275515556,
+    "eyes_open": 0.0009197122417390347,
+    "z0": 0.8866125345230103,
+    "node_r2": [
+     0.17988643590956183,
+     0.20114706044729672
+    ],
+    "reliability": [
+     0.13290547348816997,
+     0.1797224079349518
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.005763247609138489,
+     "sleep": 0.0001417824241798371,
+     "recovery": -0.00013913048314861953
+    },
+    "old_net": -0.024746106937527657
+   },
+   {
+    "pair": "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25|wpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+    "cls": "imaginary-part weighting",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0024999065790325403,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.00016415918071288615,
+    "q": 0.0010352972149848937,
+    "animals": {
+     "Chibi": -0.0021193523425608873,
+     "George": -0.002542010275647044,
+     "Kin2": -0.002324124099686742,
+     "Su": -0.003338555572554469
+    },
+    "t_animals": -9.672098389280075,
+    "d_real": -0.0025329652708023787,
+    "d_surr": -3.305861901026219e-05,
+    "d_dc": -0.002523064613342285,
+    "eyes_open": 0.0004938778001815081,
+    "z0": 0.9504764676094055,
+    "node_r2": [
+     0.059051926065529975,
+     0.0610757606267375
+    ],
+    "reliability": [
+     0.16371887050242764,
+     0.1738308616187478
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.0026995092630386353,
+     "sleep": -0.00040978193283081055,
+     "recovery": 0.00035695897531695664
+    },
+    "old_net": -0.0019911841955035925
+   },
+   {
+    "pair": "kendalltau-sq|corr_kendall_tau-10-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.030559305101633072,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00017371409921906888,
+    "q": 0.0010811416922431242,
+    "animals": {
+     "Chibi": 0.03932102397084236,
+     "George": 0.03486812487244606,
+     "Kin2": 0.01724880374968052,
+     "Su": 0.016292445361614227
+    },
+    "t_animals": 4.533940589601345,
+    "d_real": 0.2404693067073822,
+    "d_surr": 0.20991000533103943,
+    "d_dc": 0.035807956010103226,
+    "eyes_open": -0.005514455493539572,
+    "z0": 0.15298137068748474,
+    "node_r2": [
+     0.162861072992489,
+     0.23493606311325613
+    ],
+    "reliability": [
+     0.8002134367957541,
+     0.05016683650067203
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03546364977955818,
+     "sleep": 0.00834671501070261,
+     "recovery": 0.004627049434930086
+    },
+    "old_net": 0.02371743693947792
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.008512797765433788,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.00021916399418842047,
+    "q": 0.0013462931111261442,
+    "animals": {
+     "Chibi": -0.013027439825236797,
+     "George": -0.0022895336151123047,
+     "Kin2": -0.013881961815059185,
+     "Su": -0.008635302074253559
+    },
+    "t_animals": -3.5670232801126547,
+    "d_real": 0.011219510808587074,
+    "d_surr": 0.019732309505343437,
+    "d_dc": -0.008011278696358204,
+    "eyes_open": -0.0017011291347444057,
+    "z0": 0.8980523943901062,
+    "node_r2": [
+     0.2054829600362237,
+     0.21928129366791807
+    ],
+    "reliability": [
+     0.14049166292642684,
+     0.13173117695635692
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0016577690839767456,
+     "sleep": -0.0016235539223998785,
+     "recovery": -0.003967758733779192
+    },
+    "old_net": 0.023858243599534035
+   },
+   {
+    "pair": "plv_multitaper_max_fs-1_fmin-0_fmax-0-5|plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.011588811874389648,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00023695554409641773,
+    "q": 0.001436922699213028,
+    "animals": {
+     "Chibi": 0.01741856336593628,
+     "George": 0.007105069700628519,
+     "Kin2": 0.007924546487629414,
+     "Su": 0.014055639505386353
+    },
+    "t_animals": 4.694514119112107,
+    "d_real": 0.05700834095478058,
+    "d_surr": 0.04541952535510063,
+    "d_dc": 0.008556393906474113,
+    "eyes_open": 0.0029440850485116243,
+    "z0": 0.46666374802589417,
+    "node_r2": [
+     0.08636132919500426,
+     0.03725086771616487
+    ],
+    "reliability": [
+     0.1472468384426576,
+     0.05706507792033165
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.011096380650997162,
+     "sleep": 0.005796232260763645,
+     "recovery": 0.007739755790680647
+    },
+    "old_net": 0.040350329130887985
+   },
+   {
+    "pair": "corr_kendall_tau-1-sq|corr_kendall_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.029829680919647217,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00025802734307944775,
+    "q": 0.0015448978807352765,
+    "animals": {
+     "Chibi": 0.039116021245718,
+     "George": 0.03175174817442894,
+     "Kin2": 0.013194079510867596,
+     "Su": 0.023407792672514915
+    },
+    "t_animals": 4.820257458449756,
+    "d_real": 0.24992072582244873,
+    "d_surr": 0.22009101510047913,
+    "d_dc": 0.035016369074583054,
+    "eyes_open": -0.003956986125558615,
+    "z0": 0.17020002007484436,
+    "node_r2": [
+     0.19742480349546013,
+     0.23493606311325613
+    ],
+    "reliability": [
+     0.7106251401951212,
+     0.05016683650067203
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03600035607814789,
+     "sleep": 0.010277309454977512,
+     "recovery": 0.008883754722774029
+    },
+    "old_net": 0.028546970337629318
+   },
+   {
+    "pair": "cov-sq_EmpiricalCovariance|corr_pearson_tau-20-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.04160791635513306,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.00032167171593755484,
+    "q": 0.0019018840044736861,
+    "animals": {
+     "Chibi": 0.04710891842842102,
+     "George": 0.047119803726673126,
+     "Kin2": 0.02923988364636898,
+     "Su": 0.030112842097878456
+    },
+    "t_animals": 7.622559011476008,
+    "d_real": 0.16077381372451782,
+    "d_surr": 0.11916589736938477,
+    "d_dc": 0.04476405680179596,
+    "eyes_open": 0.008433464914560318,
+    "z0": 0.2530267834663391,
+    "node_r2": [
+     0.1877132514820498,
+     0.2726130747300756
+    ],
+    "reliability": [
+     0.7723342627520845,
+     0.06833268847531157
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.04459400847554207,
+     "sleep": 0.011661565862596035,
+     "recovery": 0.02228154055774212
+    },
+    "old_net": 0.01817634142935276
+   },
+   {
+    "pair": "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5|ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.011454368941485882,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0003434851532801986,
+    "q": 0.0019897269766505172,
+    "animals": {
+     "Chibi": 0.017374923452734947,
+     "George": 0.006902400869876146,
+     "Kin2": 0.007140616420656443,
+     "Su": 0.014548271894454956
+    },
+    "t_animals": 4.3447297490156265,
+    "d_real": 0.057757165282964706,
+    "d_surr": 0.04630279168486595,
+    "d_dc": 0.00870451144874096,
+    "eyes_open": 0.0029946346767246723,
+    "z0": 0.47615915536880493,
+    "node_r2": [
+     0.09211078325071606,
+     0.03929192966022276
+    ],
+    "reliability": [
+     0.15341138230708393,
+     0.06104597425001503
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.012528486549854279,
+     "sleep": 0.005573613103479147,
+     "recovery": 0.008187524043023586
+    },
+    "old_net": 0.04079141095280647
+   },
+   {
+    "pair": "corr_spearman_tau-1-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.029415691271424294,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00034494209103286266,
+    "q": 0.0019897269766505172,
+    "animals": {
+     "Chibi": 0.03847751393914223,
+     "George": 0.03394242748618126,
+     "Kin2": 0.014574557542800903,
+     "Su": 0.015570794232189655
+    },
+    "t_animals": 4.1524524509237875,
+    "d_real": 0.26702800393104553,
+    "d_surr": 0.23761235177516937,
+    "d_dc": 0.03349655121564865,
+    "eyes_open": -0.0030952251981943846,
+    "z0": 0.17163042724132538,
+    "node_r2": [
+     0.2120330847591823,
+     0.23613946532787655
+    ],
+    "reliability": [
+     0.6923266312753195,
+     0.05014141517822086
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03300032764673233,
+     "sleep": 0.00955893099308014,
+     "recovery": 0.006514335982501507
+    },
+    "old_net": 0.029056265950202942
+   },
+   {
+    "pair": "spearmanr-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.029761290177702904,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00035120118991471827,
+    "q": 0.002001423613134637,
+    "animals": {
+     "Chibi": 0.03868327662348747,
+     "George": 0.03624927997589111,
+     "Kin2": 0.016855858266353607,
+     "Su": 0.009684090502560139
+    },
+    "t_animals": 3.5460526080286945,
+    "d_real": 0.25977247953414917,
+    "d_surr": 0.23001116514205933,
+    "d_dc": 0.034008294343948364,
+    "eyes_open": -0.004642060492187738,
+    "z0": 0.15829558670520782,
+    "node_r2": [
+     0.18588256834807265,
+     0.23613946532787655
+    ],
+    "reliability": [
+     0.7672144201880153,
+     0.05014141517822086
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03282713517546654,
+     "sleep": 0.0073623633943498135,
+     "recovery": 0.002894499571993947
+    },
+    "old_net": 0.024897893890738487
+   },
+   {
+    "pair": "corr_kendall_tau-4|corr_kendall_tau-4-sq",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.01382377278059721,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.00036281649954617023,
+    "q": 0.0020189670955433566,
+    "animals": {
+     "Chibi": 0.019132139161229134,
+     "George": 0.011626040562987328,
+     "Kin2": 0.0008224546909332275,
+     "Su": 0.021336400881409645
+    },
+    "t_animals": 2.8582578976657573,
+    "d_real": 0.19374226033687592,
+    "d_surr": 0.17991848289966583,
+    "d_dc": 0.013761705718934536,
+    "eyes_open": 0.006044714245945215,
+    "z0": 0.029342779889702797,
+    "node_r2": [
+     0.10915271210500188,
+     0.3083543547113219
+    ],
+    "reliability": [
+     0.36172799292374613,
+     0.21614398100563142
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.013517574407160282,
+     "sleep": -0.0048973760567605495,
+     "recovery": 0.004733758978545666
+    },
+    "old_net": 0.011607919819653034
+   },
+   {
+    "pair": "te_kernel_W-0.25_k-1|gc_gaussian_k-1_kt-1_l-1_lt-1",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": 0.012851697392761707,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0003740036045201123,
+    "q": 0.0020333759743591836,
+    "animals": {
+     "Chibi": 0.010947178117930889,
+     "George": 0.01584850437939167,
+     "Kin2": 0.021740326657891273,
+     "Su": 0.000779557041823864
+    },
+    "t_animals": 2.7785641847914144,
+    "d_real": -0.056823913007974625,
+    "d_surr": -0.06967560201883316,
+    "d_dc": 0.0318244993686676,
+    "eyes_open": -0.0012299653608351946,
+    "z0": -0.017204001545906067,
+    "node_r2": [
+     0.6680962660425354,
+     0.17744652797244762
+    ],
+    "reliability": [
+     0.5270028556381182,
+     0.13979413454969836
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.01652306318283081,
+     "sleep": -0.003552138339728117,
+     "recovery": 8.747550600674003e-05
+    },
+    "old_net": 0.03259171172976494
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20|sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.011659368872642517,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0004110738809686154,
+    "q": 0.002184696076961046,
+    "animals": {
+     "Chibi": 0.01693716086447239,
+     "George": 0.011495901271700859,
+     "Kin2": 0.012623083777725697,
+     "Su": 0.0005214884877204895
+    },
+    "t_animals": 2.975276132745083,
+    "d_real": 0.017981823533773422,
+    "d_surr": 0.006322457455098629,
+    "d_dc": 0.007890802808105946,
+    "eyes_open": -0.0019472078420221806,
+    "z0": 0.08151611685752869,
+    "node_r2": [
+     0.20636420323169133,
+     0.11535188747779343
+    ],
+    "reliability": [
+     0.0455408240482202,
+     0.030846024177421483
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00024976953864097595,
+     "sleep": -0.0008345544338226318,
+     "recovery": 0.0022857054136693478
+    },
+    "old_net": 0.03544872626662254
+   },
+   {
+    "pair": "corr_spearman_tau-2-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.029401136562228203,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0004157004877924919,
+    "q": 0.0021847370598051283,
+    "animals": {
+     "Chibi": 0.03749869391322136,
+     "George": 0.029231389984488487,
+     "Kin2": 0.01539484690874815,
+     "Su": 0.027608389034867287
+    },
+    "t_animals": 6.016357319567713,
+    "d_real": 0.29609599709510803,
+    "d_surr": 0.2666948437690735,
+    "d_dc": 0.032296232879161835,
+    "eyes_open": -0.0022264604922384024,
+    "z0": 0.1789223849773407,
+    "node_r2": [
+     0.28223177493900825,
+     0.23613946532787655
+    ],
+    "reliability": [
+     0.4324640325730239,
+     0.05014141517822086
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.034578271210193634,
+     "sleep": 0.01326522883027792,
+     "recovery": 0.01154709979891777
+    },
+    "old_net": 0.046694859862327576
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+    "cls": "option: default vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.012689723633229733,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0004425275546964258,
+    "q": 0.002274138632641044,
+    "animals": {
+     "Chibi": -0.009167979471385479,
+     "George": -0.012874765321612358,
+     "Kin2": -0.02435986138880253,
+     "Su": -0.007631311658769846
+    },
+    "t_animals": -3.5728975083101613,
+    "d_real": -0.08057906478643417,
+    "d_surr": -0.06788935512304306,
+    "d_dc": -0.010505425743758678,
+    "eyes_open": -0.005003951024264097,
+    "z0": 0.6502929329872131,
+    "node_r2": [
+     0.21928129366791807,
+     0.2078234813547024
+    ],
+    "reliability": [
+     0.13173117695635692,
+     0.07019718561783651
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.011393740773200989,
+     "sleep": -0.00042620726162567735,
+     "recovery": -0.005425486247986555
+    },
+    "old_net": 0.011895733885467052
+   },
+   {
+    "pair": "corr_kendall_tau-2-sq|corr_kendall_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.030111106112599373,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.00044673416414298117,
+    "q": 0.002274138632641044,
+    "animals": {
+     "Chibi": 0.03918682038784027,
+     "George": 0.02691335417330265,
+     "Kin2": 0.013468814082443714,
+     "Su": 0.03606336936354637
+    },
+    "t_animals": 5.012039181572507,
+    "d_real": 0.2830927073955536,
+    "d_surr": 0.252981573343277,
+    "d_dc": 0.034217920154333115,
+    "eyes_open": -0.0028293412178754807,
+    "z0": 0.17897075414657593,
+    "node_r2": [
+     0.27391034894726285,
+     0.23493606311325613
+    ],
+    "reliability": [
+     0.43962849745060384,
+     0.05016683650067203
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.038837216794490814,
+     "sleep": 0.013333475217223167,
+     "recovery": 0.014262969605624676
+    },
+    "old_net": 0.047369103878736496
+   },
+   {
+    "pair": "corr_pearson_tau-20|corr_spearman_tau-20",
+    "cls": "estimator: Empirical vs spearman",
+    "character": "monotone-nonlinear dependence (rank invariance); channel marginal shape plus copula departure",
+    "literal": "organisation of linear against rank dependence",
+    "confound": "marginal shape (raw); copula part needs normal scores or IAAFT",
+    "mean": -0.002171839587390423,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0006235128385014832,
+    "q": 0.0031374635848593203,
+    "animals": {
+     "Chibi": -0.001966973068192601,
+     "George": -0.002053558826446533,
+     "Kin2": -0.0010488629341125488,
+     "Su": -0.003980537410825491
+    },
+    "t_animals": -3.672020280722414,
+    "d_real": 0.0019874447025358677,
+    "d_surr": 0.0041592842899262905,
+    "d_dc": -0.001985684735700488,
+    "eyes_open": -0.000851041404530406,
+    "z0": 0.9799214601516724,
+    "node_r2": [
+     0.09576436355819691,
+     0.09746073543695931
+    ],
+    "reliability": [
+     0.16993998159487445,
+     0.17172436948686193
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0008898675441741943,
+     "sleep": -0.00015936579438857734,
+     "recovery": -9.766552102519199e-05
+    },
+    "old_net": -0.013410781510174274
+   },
+   {
+    "pair": "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2|gc_gaussian_k-1_kt-1_l-1_lt-1",
+    "cls": "option: history-1 vs history-auto",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.013413071632385254,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0006407572072930634,
+    "q": 0.003190296260934127,
+    "animals": {
+     "Chibi": -0.019812574610114098,
+     "George": -0.0021379205863922834,
+     "Kin2": -0.020014235749840736,
+     "Su": -0.020321587100625038
+    },
+    "t_animals": -3.4764904964817585,
+    "d_real": -0.01730743609368801,
+    "d_surr": -0.003894361900165677,
+    "d_dc": -0.015285509638488293,
+    "eyes_open": 0.0016885556979104877,
+    "z0": 0.37693047523498535,
+    "node_r2": [
+     0.24716448289668502,
+     0.17744652797244762
+    ],
+    "reliability": [
+     0.15332627281940955,
+     0.13979413454969836
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.004804961383342743,
+     "sleep": 0.001846117665991187,
+     "recovery": 0.0007967667188495398
+    },
+    "old_net": -0.035729508846998215
+   },
+   {
+    "pair": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+    "cls": "zero-lag removal (coherence)",
+    "character": "non-zero-lag share of coupling",
+    "literal": "coherence magnitude against imaginary coherence",
+    "confound": "estimation floor of icoh (zero-phase null reproduces 50-75% of the drug rise)",
+    "mean": 0.017331438139081,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.0007343841716647148,
+    "q": 0.0036183719833691916,
+    "animals": {
+     "Chibi": 0.017669009044766426,
+     "George": 0.01517358236014843,
+     "Kin2": 0.03197658061981201,
+     "Su": 0.0070461551658809185
+    },
+    "t_animals": 3.460693399577538,
+    "d_real": 0.15595757961273193,
+    "d_surr": 0.1386261284351349,
+    "d_dc": 0.015580940060317516,
+    "eyes_open": -0.004448279272764921,
+    "z0": -0.05968853086233139,
+    "node_r2": [
+     0.1692571131797469,
+     0.14150676399771453
+    ],
+    "reliability": [
+     0.7104981207451158,
+     0.16781928398085236
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.008163023740053177,
+     "sleep": 0.001265583443455398,
+     "recovery": 0.000496604130603373
+    },
+    "old_net": 0.04719701409339905
+   },
+   {
+    "pair": "phi_star_t-1_norm-1|phi_Geo_t-1_norm-1",
+    "cls": "estimator: Geo vs star",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03576255962252617,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 0.0008076669764705002,
+    "q": 0.003903258819969333,
+    "animals": {
+     "Chibi": 0.049976546317338943,
+     "George": 0.02602161094546318,
+     "Kin2": 0.05507029965519905,
+     "Su": 0.010755727998912334
+    },
+    "t_animals": 3.4135008764159487,
+    "d_real": 0.03934411704540253,
+    "d_surr": 0.003581550670787692,
+    "d_dc": 0.029876891523599625,
+    "eyes_open": -0.0023974874056875706,
+    "z0": 0.3675321936607361,
+    "node_r2": [
+     0.13746470336026628,
+     0.17666722980723415
+    ],
+    "reliability": [
+     0.7348432925671072,
+     0.1455952540508635
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03657945245504379,
+     "sleep": 0.0021804890129715204,
+     "recovery": -0.001437599421478808
+    },
+    "old_net": -0.005010789725929499
+   },
+   {
+    "pair": "phi_star_t-1_norm-0|phi_Geo_t-1_norm-0",
+    "cls": "estimator: Geo vs star",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03577414155006409,
+    "sessions_same_sign": 18,
+    "n": 19,
+    "p": 0.0008087090100161731,
+    "q": 0.003903258819969333,
+    "animals": {
+     "Chibi": 0.04997408762574196,
+     "George": 0.02597939409315586,
+     "Kin2": 0.055094391107559204,
+     "Su": 0.010908405296504498
+    },
+    "t_animals": 3.424426598988363,
+    "d_real": 0.03937619552016258,
+    "d_surr": 0.003602058393880725,
+    "d_dc": 0.029880166053771973,
+    "eyes_open": -0.002434495138004422,
+    "z0": 0.36756590008735657,
+    "node_r2": [
+     0.13742500445174188,
+     0.17666070045990834
+    ],
+    "reliability": [
+     0.734917004831169,
+     0.14559357969292727
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.036749642342329025,
+     "sleep": 0.0022137442138046026,
+     "recovery": -0.001427960116416216
+    },
+    "old_net": -0.0048432438634335995
+   },
+   {
+    "pair": "corr_pearson_tau-20-sq|corr_spearman_tau-20-sq",
+    "cls": "estimator: Empirical vs spearman",
+    "character": "monotone-nonlinear dependence (rank invariance); channel marginal shape plus copula departure",
+    "literal": "organisation of linear against rank dependence",
+    "confound": "marginal shape (raw); copula part needs normal scores or IAAFT",
+    "mean": -0.005248913541436195,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0008402384119108319,
+    "q": 0.004014472467730744,
+    "animals": {
+     "Chibi": -0.005681941751390696,
+     "George": -0.003752810647711158,
+     "Kin2": -0.0036964218597859144,
+     "Su": -0.009426255710422993
+    },
+    "t_animals": -4.195908180546916,
+    "d_real": 0.0037702603731304407,
+    "d_surr": 0.009019173681735992,
+    "d_dc": -0.004769717343151569,
+    "eyes_open": -0.0023500353563576937,
+    "z0": 0.9588984251022339,
+    "node_r2": [
+     0.2726130747300756,
+     0.2693283277795492
+    ],
+    "reliability": [
+     0.06833268847531157,
+     0.06991716050322787
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.002891063690185547,
+     "sleep": 0.0012292095925658941,
+     "recovery": -0.000816947896964848
+    },
+    "old_net": -0.025622235611081123
+   },
+   {
+    "pair": "corr_pearson_tau-1-sq|corr_pearson_tau-20-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.039420925080776215,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0009048452484421432,
+    "q": 0.004237542648126583,
+    "animals": {
+     "Chibi": 0.04694083333015442,
+     "George": 0.046178705990314484,
+     "Kin2": 0.019380709156394005,
+     "Su": 0.02865317463874817
+    },
+    "t_animals": 5.205536625713787,
+    "d_real": 0.1360132098197937,
+    "d_surr": 0.09659228473901749,
+    "d_dc": 0.04304485023021698,
+    "eyes_open": 0.008166136220097542,
+    "z0": 0.2894921600818634,
+    "node_r2": [
+     0.21334246783410163,
+     0.2726130747300756
+    ],
+    "reliability": [
+     0.7000944930413511,
+     0.06833268847531157
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0421367846429348,
+     "sleep": 0.0116122430190444,
+     "recovery": 0.02708311937749386
+    },
+    "old_net": 0.013894635252654552
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1|sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+    "cls": "option: order-1 vs order-20",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.014456409029662609,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0010574933839961886,
+    "q": 0.004856256026666141,
+    "animals": {
+     "Chibi": -0.01624002493917942,
+     "George": -0.018956128507852554,
+     "Kin2": -0.003259519813582301,
+     "Su": -0.011586715467274189
+    },
+    "t_animals": -3.638258409045238,
+    "d_real": -0.011838685721158981,
+    "d_surr": 0.002617723075672984,
+    "d_dc": -0.01329303253442049,
+    "eyes_open": -0.004478232003748417,
+    "z0": 0.3212697505950928,
+    "node_r2": [
+     0.17969450894377226,
+     0.18837200229082024
+    ],
+    "reliability": [
+     0.1354143840569474,
+     0.07702504219094412
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.004072815179824829,
+     "sleep": 0.0058213770389556885,
+     "recovery": -0.00816934835165739
+    },
+    "old_net": 0.008511055260896683
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": -0.008879799395799637,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0012003638548776507,
+    "q": 0.005459347023413732,
+    "animals": {
+     "Chibi": -0.01063835620880127,
+     "George": -0.006414617877453566,
+     "Kin2": -0.0021405816078186035,
+     "Su": -0.01785399578511715
+    },
+    "t_animals": -2.766089019530321,
+    "d_real": -0.07594501227140427,
+    "d_surr": -0.06706521660089493,
+    "d_dc": -0.009026235900819302,
+    "eyes_open": -0.0025897056329995394,
+    "z0": 0.7185143232345581,
+    "node_r2": [
+     0.2078234813547024,
+     0.20636420323169133
+    ],
+    "reliability": [
+     0.07019718561783651,
+     0.0455408240482202
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.011422201991081238,
+     "sleep": -0.0008538450347259641,
+     "recovery": -0.005208095069974661
+    },
+    "old_net": -0.0013354577822610736
+   },
+   {
+    "pair": "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5|ppc_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.01279250904917717,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0012976897414773703,
+    "q": 0.005790634537642857,
+    "animals": {
+     "Chibi": -0.02104463241994381,
+     "George": -0.00781551469117403,
+     "Kin2": -0.011378924362361431,
+     "Su": -0.00931483507156372
+    },
+    "t_animals": -4.162235154965017,
+    "d_real": -0.015612483024597168,
+    "d_surr": -0.002819974208250642,
+    "d_dc": -0.011419848538935184,
+    "eyes_open": -0.006111643742769957,
+    "z0": 0.7554717063903809,
+    "node_r2": [
+     0.09211078325071606,
+     0.12658732124430777
+    ],
+    "reliability": [
+     0.15341138230708393,
+     0.178137927177202
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.005341246724128723,
+     "sleep": 3.2322746847057715e-05,
+     "recovery": -0.01509256474673748
+    },
+    "old_net": -0.010909892618656158
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None|sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.011401988565921783,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.0013998233480378985,
+    "q": 0.006188004373389983,
+    "animals": {
+     "Chibi": 0.010407228954136372,
+     "George": 0.018525144085288048,
+     "Kin2": 0.005976726766675711,
+     "Su": 0.002196073532104492
+    },
+    "t_animals": 2.642856980525817,
+    "d_real": 0.048452094197273254,
+    "d_surr": 0.03705010935664177,
+    "d_dc": 0.012558269314467907,
+    "eyes_open": -0.0037620319053530693,
+    "z0": 0.32188770174980164,
+    "node_r2": [
+     0.21928129366791807,
+     0.14051314470534523
+    ],
+    "reliability": [
+     0.13173117695635692,
+     0.09225096628657536
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.010829098522663116,
+     "sleep": 0.0011808659182861447,
+     "recovery": 0.0020095009822398424
+    },
+    "old_net": 0.06776640564203262
+   },
+   {
+    "pair": "corr_pearson_tau-10|corr_pearson_tau-20",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.04139571264386177,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0015393695794045925,
+    "q": 0.006741868676962676,
+    "animals": {
+     "Chibi": -0.06084774434566498,
+     "George": -0.0305794570595026,
+     "Kin2": -0.03416252136230469,
+     "Su": -0.034962791949510574
+    },
+    "t_animals": -5.759797401190065,
+    "d_real": -0.07490845024585724,
+    "d_surr": -0.03351274132728577,
+    "d_dc": -0.03990135341882706,
+    "eyes_open": 0.011289650574326515,
+    "z0": -0.20690856873989105,
+    "node_r2": [
+     0.0913309900466298,
+     0.09576436355819691
+    ],
+    "reliability": [
+     0.11507094026736533,
+     0.16993998159487445
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03223831579089165,
+     "sleep": 0.015429656021296978,
+     "recovery": -0.02334701269865036
+    },
+    "old_net": -0.11452194303274155
+   },
+   {
+    "pair": "cov-sq_EmpiricalCovariance|corr_pearson_tau-10-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.017632780596613884,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0015550790121778846,
+    "q": 0.006748186885763746,
+    "animals": {
+     "Chibi": 0.017608987167477608,
+     "George": 0.028153512626886368,
+     "Kin2": 0.008653429336845875,
+     "Su": 0.0021113406401127577
+    },
+    "t_animals": 2.500771740877492,
+    "d_real": 0.23665621876716614,
+    "d_surr": 0.21902340650558472,
+    "d_dc": 0.018594058230519295,
+    "eyes_open": 0.009996697306632996,
+    "z0": 0.14720535278320312,
+    "node_r2": [
+     0.1877132514820498,
+     0.2323711055186765
+    ],
+    "reliability": [
+     0.7723342627520845,
+     0.045925725136955156
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.010348942130804062,
+     "sleep": 6.640596257057041e-05,
+     "recovery": 0.0048762536607682705
+    },
+    "old_net": 0.009457788430154324
+   },
+   {
+    "pair": "corr_spearman_tau-3-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.024149542674422264,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.001586051657795906,
+    "q": 0.006820021976124156,
+    "animals": {
+     "Chibi": 0.027769997715950012,
+     "George": 0.023019056767225266,
+     "Kin2": 0.01438477635383606,
+     "Su": 0.02931119315326214
+    },
+    "t_animals": 7.035657265239422,
+    "d_real": 0.31508123874664307,
+    "d_surr": 0.29093170166015625,
+    "d_dc": 0.028581757098436356,
+    "eyes_open": -0.007682083640247583,
+    "z0": 0.1998385637998581,
+    "node_r2": [
+     0.2997891095411371,
+     0.23613946532787655
+    ],
+    "reliability": [
+     0.2647794722419211,
+     0.05014141517822086
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.038980960845947266,
+     "sleep": 0.014429646544158459,
+     "recovery": 0.009490501135587692
+    },
+    "old_net": 0.01960194669663906
+   },
+   {
+    "pair": "plv_multitaper_max_fs-1_fmin-0_fmax-0-5|plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "band: broad vs low",
+    "character": null,
+    "literal": "broadband against low band",
+    "confound": "dominated by the low band",
+    "mean": -0.012619310058653355,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0016537721967324615,
+    "q": 0.006984234388385501,
+    "animals": {
+     "Chibi": -0.020668139681220055,
+     "George": -0.007669142447412014,
+     "Kin2": -0.011817951686680317,
+     "Su": -0.008873403072357178
+    },
+    "t_animals": -4.174861520190778,
+    "d_real": -0.014328298158943653,
+    "d_surr": -0.0017089875182136893,
+    "d_dc": -0.011205199174582958,
+    "eyes_open": -0.006083397660404444,
+    "z0": 0.7429986000061035,
+    "node_r2": [
+     0.08636132919500426,
+     0.12255007233734674
+    ],
+    "reliability": [
+     0.1472468384426576,
+     0.168921818018061
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00473003089427948,
+     "sleep": 0.00015848875045776367,
+     "recovery": -0.014841954223811626
+    },
+    "old_net": -0.010073043406009674
+   },
+   {
+    "pair": "corr_spearman_tau-10|corr_spearman_tau-20",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.03639548644423485,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0018645358504727483,
+    "q": 0.007521105014671714,
+    "animals": {
+     "Chibi": -0.0645209476351738,
+     "George": -0.018738508224487305,
+     "Kin2": -0.021840596571564674,
+     "Su": -0.03589906916022301
+    },
+    "t_animals": -3.3741876246868916,
+    "d_real": -0.07290691137313843,
+    "d_surr": -0.03651142865419388,
+    "d_dc": -0.03523469716310501,
+    "eyes_open": 0.012650547549128532,
+    "z0": -0.20896291732788086,
+    "node_r2": [
+     0.09274801457542457,
+     0.09746073543695931
+    ],
+    "reliability": [
+     0.11714948063119347,
+     0.17172436948686193
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.010023524984717369,
+     "sleep": 0.006862063426524401,
+     "recovery": -0.01577910967171192
+    },
+    "old_net": -0.11363253742456436
+   },
+   {
+    "pair": "corr_pearson_tau-1-sq|corr_pearson_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.01785595528781414,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.001876301015727222,
+    "q": 0.007521105014671714,
+    "animals": {
+     "Chibi": 0.017905203625559807,
+     "George": 0.0283229760825634,
+     "Kin2": 0.007003717124462128,
+     "Su": 0.004186642821878195
+    },
+    "t_animals": 2.6022559303120554,
+    "d_real": 0.24504554271697998,
+    "d_surr": 0.2271895855665207,
+    "d_dc": 0.018574077636003494,
+    "eyes_open": 0.012001736089587212,
+    "z0": 0.15897929668426514,
+    "node_r2": [
+     0.21334246783410163,
+     0.2323711055186765
+    ],
+    "reliability": [
+     0.7000944930413511,
+     0.045925725136955156
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.010570690035820007,
+     "sleep": 0.0012338204542174935,
+     "recovery": 0.006026445887982845
+    },
+    "old_net": 0.011998120695352554
+   },
+   {
+    "pair": "corr_kendall_tau-5|corr_kendall_tau-5-sq",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.012442437000572681,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.002095094881951809,
+    "q": 0.008250406950958505,
+    "animals": {
+     "Chibi": 0.011560658924281597,
+     "George": 0.013109111227095127,
+     "Kin2": 0.003749493509531021,
+     "Su": 0.021343372762203217
+    },
+    "t_animals": 3.4502422157890056,
+    "d_real": 0.1536153256893158,
+    "d_surr": 0.1411728858947754,
+    "d_dc": 0.012407016940414906,
+    "eyes_open": 0.010040893219411373,
+    "z0": 0.028968211263418198,
+    "node_r2": [
+     0.10583886866303424,
+     0.3098079285086033
+    ],
+    "reliability": [
+     0.3070416697309639,
+     0.15874438321278944
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.011722080409526825,
+     "sleep": -0.005626150406897068,
+     "recovery": 0.0026333825662732124
+    },
+    "old_net": 0.0035351011902093887
+   },
+   {
+    "pair": "spearmanr-sq|corr_spearman_tau-20-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03421903774142265,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0021105692721903324,
+    "q": 0.008250406950958505,
+    "animals": {
+     "Chibi": 0.046557288616895676,
+     "George": 0.03913232311606407,
+     "Kin2": 0.02486039139330387,
+     "Su": 0.0074368915520608425
+    },
+    "t_animals": 3.421152067198912,
+    "d_real": 0.15218102931976318,
+    "d_surr": 0.11796202510595322,
+    "d_dc": 0.04363738372921944,
+    "eyes_open": 0.008550736121833324,
+    "z0": 0.2525551915168762,
+    "node_r2": [
+     0.18588256834807265,
+     0.2693283277795492
+    ],
+    "reliability": [
+     0.7672144201880153,
+     0.06991716050322787
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.05362221971154213,
+     "sleep": 0.007383359130471945,
+     "recovery": 0.025501759722828865
+    },
+    "old_net": 0.0001762924948707223
+   },
+   {
+    "pair": "corr_kendall_tau-3-sq|corr_kendall_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.024873698130249977,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0021746244747191668,
+    "q": 0.008362580121048098,
+    "animals": {
+     "Chibi": 0.02934311144053936,
+     "George": 0.021052533760666847,
+     "Kin2": 0.01252881158143282,
+     "Su": 0.037195805460214615
+    },
+    "t_animals": 4.711278651104377,
+    "d_real": 0.30475878715515137,
+    "d_surr": 0.27988508343696594,
+    "d_dc": 0.030416492372751236,
+    "eyes_open": -0.007923279888927937,
+    "z0": 0.1999083161354065,
+    "node_r2": [
+     0.2946226351213213,
+     0.23493606311325613
+    ],
+    "reliability": [
+     0.267918779486035,
+     0.05016683650067203
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.043863870203495026,
+     "sleep": 0.014145719818770885,
+     "recovery": 0.012177647091448307
+    },
+    "old_net": 0.020340725779533386
+   },
+   {
+    "pair": "corr_pearson_tau-2-sq|corr_pearson_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.018496962264180183,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0022950347047299147,
+    "q": 0.00868441104888916,
+    "animals": {
+     "Chibi": 0.017312437295913696,
+     "George": 0.028190720826387405,
+     "Kin2": 0.00840795785188675,
+     "Su": 0.008336253464221954
+    },
+    "t_animals": 3.3056701389850707,
+    "d_real": 0.276455283164978,
+    "d_surr": 0.257958322763443,
+    "d_dc": 0.01841919496655464,
+    "eyes_open": 0.014005783013999462,
+    "z0": 0.1638520359992981,
+    "node_r2": [
+     0.2845915496503146,
+     0.2323711055186765
+    ],
+    "reliability": [
+     0.4392337206299615,
+     0.045925725136955156
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.013439316302537918,
+     "sleep": 0.002500871429219842,
+     "recovery": 0.007163762114942074
+    },
+    "old_net": 0.026515182107686996
+   },
+   {
+    "pair": "corr_pearson_tau-5|corr_pearson_tau-20",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.030799219384789467,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.002322089159861207,
+    "q": 0.008717048735845657,
+    "animals": {
+     "Chibi": -0.04345620796084404,
+     "George": -0.030656669288873672,
+     "Kin2": -0.022581985220313072,
+     "Su": -0.01403509546071291
+    },
+    "t_animals": -4.42366948418199,
+    "d_real": -0.15251567959785461,
+    "d_surr": -0.1217164620757103,
+    "d_dc": -0.03136603906750679,
+    "eyes_open": -0.0039057652465999126,
+    "z0": -0.4886084198951721,
+    "node_r2": [
+     0.10634184821428318,
+     0.09576436355819691
+    ],
+    "reliability": [
+     0.3077674063287888,
+     0.16993998159487445
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.0018028393387794495,
+     "sleep": -0.013307400047779083,
+     "recovery": -0.011845223605632782
+    },
+    "old_net": -0.12007231265306473
+   },
+   {
+    "pair": "corr_kendall_tau-10|corr_kendall_tau-20",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.03553898259997368,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.002361205406486988,
+    "q": 0.008725391700863838,
+    "animals": {
+     "Chibi": -0.0636393204331398,
+     "George": -0.019297471269965172,
+     "Kin2": -0.01826741360127926,
+     "Su": -0.03450673818588257
+    },
+    "t_animals": -3.2077750795095143,
+    "d_real": -0.07171037048101425,
+    "d_surr": -0.03617138788104057,
+    "d_dc": -0.03439847007393837,
+    "eyes_open": 0.012684824876487255,
+    "z0": -0.20864391326904297,
+    "node_r2": [
+     0.0921450921115541,
+     0.09715048272024476
+    ],
+    "reliability": [
+     0.11691630647315589,
+     0.17048732083167906
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00921385083347559,
+     "sleep": 0.007656433619558811,
+     "recovery": -0.01589251309633255
+    },
+    "old_net": -0.1121576726436615
+   },
+   {
+    "pair": "spearmanr|corr_spearman_tau-10",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03919150307774544,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.002889698836952448,
+    "q": 0.01043379852789959,
+    "animals": {
+     "Chibi": 0.0579259991645813,
+     "George": 0.0184224434196949,
+     "Kin2": 0.02397151105105877,
+     "Su": 0.06540363281965256
+    },
+    "t_animals": 3.5005086585926697,
+    "d_real": 0.5023801922798157,
+    "d_surr": 0.46318867802619934,
+    "d_dc": 0.03893543407320976,
+    "eyes_open": -0.02392701618373394,
+    "z0": 0.1086864098906517,
+    "node_r2": [
+     0.15799957012112067,
+     0.09274801457542457
+    ],
+    "reliability": [
+     0.8061217167459037,
+     0.11714948063119347
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03351588174700737,
+     "sleep": 0.024173269048333168,
+     "recovery": 0.014122958295047283
+    },
+    "old_net": -0.03194858506321907
+   },
+   {
+    "pair": "corr_pearson_tau-5-sq|corr_kendall_tau-5-sq",
+    "cls": "estimator: Empirical vs kendall",
+    "character": "monotone-nonlinear dependence (as Spearman)",
+    "literal": "linear against Kendall rank dependence",
+    "confound": "marginal shape",
+    "mean": -0.0042258938774466515,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.003079923102632165,
+    "q": 0.010953411123806373,
+    "animals": {
+     "Chibi": -0.006874332670122385,
+     "George": -0.002333249431103468,
+     "Kin2": -0.00019862253975588828,
+     "Su": -0.007372458931058645
+    },
+    "t_animals": -2.3981850745937807,
+    "d_real": 0.006888549774885178,
+    "d_surr": 0.011114443652331829,
+    "d_dc": -0.0033332298044115305,
+    "eyes_open": -0.00380160310305655,
+    "z0": 0.9690356850624084,
+    "node_r2": [
+     0.3138502732727725,
+     0.3098079285086033
+    ],
+    "reliability": [
+     0.1578943404066519,
+     0.15874438321278944
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 6.712973117828369e-05,
+     "sleep": 0.00017891611787490547,
+     "recovery": -0.0026774671860039234
+    },
+    "old_net": -0.01731310971081257
+   },
+   {
+    "pair": "kendalltau|corr_kendall_tau-10",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03935565799474716,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0031886431388556957,
+    "q": 0.011255434199945251,
+    "animals": {
+     "Chibi": 0.059823762625455856,
+     "George": 0.01809096336364746,
+     "Kin2": 0.022761201485991478,
+     "Su": 0.06463152915239334
+    },
+    "t_animals": 3.40296012581941,
+    "d_real": 0.4950776994228363,
+    "d_surr": 0.45572206377983093,
+    "d_dc": 0.03902198001742363,
+    "eyes_open": -0.023507770150899887,
+    "z0": 0.10613615810871124,
+    "node_r2": [
+     0.15253737286276142,
+     0.0921450921115541
+    ],
+    "reliability": [
+     0.8140302921675766,
+     0.11691630647315589
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03597388416528702,
+     "sleep": 0.023996174335479736,
+     "recovery": 0.014529758132994175
+    },
+    "old_net": -0.030245190486311913
+   },
+   {
+    "pair": "corr_kendall_tau-3|corr_kendall_tau-3-sq",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.011382815428078175,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.0032487998250871897,
+    "q": 0.01138283235055429,
+    "animals": {
+     "Chibi": 0.013896417804062366,
+     "George": 0.010283674113452435,
+     "Kin2": 0.0020280282478779554,
+     "Su": 0.018275057896971703
+    },
+    "t_animals": 3.229793469455466,
+    "d_real": 0.17273147404193878,
+    "d_surr": 0.16134867072105408,
+    "d_dc": 0.012458443641662598,
+    "eyes_open": 0.002045375294983387,
+    "z0": 0.09471701085567474,
+    "node_r2": [
+     0.11593331858704727,
+     0.2946226351213213
+    ],
+    "reliability": [
+     0.4198433503157989,
+     0.267918779486035
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.013601393438875675,
+     "sleep": 0.002111920854076743,
+     "recovery": 0.0026626563630998135
+    },
+    "old_net": 0.015074830502271652
+   },
+   {
+    "pair": "xcorr_mean_sig-True|xcorr_mean_sig-False",
+    "cls": "option: threshold-False vs threshold-True",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03532871976494789,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.00343645503744483,
+    "q": 0.011864549052106203,
+    "animals": {
+     "Chibi": 0.036492329090833664,
+     "George": 0.03979334607720375,
+     "Kin2": 0.04394230246543884,
+     "Su": 0.013970454223453999
+    },
+    "t_animals": 5.0059396597270185,
+    "d_real": 0.27543964982032776,
+    "d_surr": 0.24011090397834778,
+    "d_dc": 0.03271842002868652,
+    "eyes_open": 0.01144715677946806,
+    "z0": 0.5364368557929993,
+    "node_r2": [
+     0.08623370915927225,
+     0.08960611458612981
+    ],
+    "reliability": [
+     0.039080493898228166,
+     0.024110362021055428
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.04455195367336273,
+     "sleep": 0.004201310221105814,
+     "recovery": 0.024476420134305954
+    },
+    "old_net": 0.030728697776794434
+   },
+   {
+    "pair": "corr_pearson_tau-4|corr_pearson_tau-20",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.03223460540175438,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.0035439631901681423,
+    "q": 0.012147062066672504,
+    "animals": {
+     "Chibi": -0.05164780095219612,
+     "George": -0.03410540893673897,
+     "Kin2": -0.015443235635757446,
+     "Su": -0.005834370851516724
+    },
+    "t_animals": -2.63299303463864,
+    "d_real": -0.157216876745224,
+    "d_surr": -0.12498226761817932,
+    "d_dc": -0.03258542716503143,
+    "eyes_open": 0.0029474026523530483,
+    "z0": -0.5005446672439575,
+    "node_r2": [
+     0.1101350343424958,
+     0.09576436355819691
+    ],
+    "reliability": [
+     0.362756525371262,
+     0.16993998159487445
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.004643768072128296,
+     "sleep": -0.014454682357609272,
+     "recovery": -0.011286239139735699
+    },
+    "old_net": -0.1097651943564415
+   },
+   {
+    "pair": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1|gc_gaussian_k-1_kt-1_l-1_lt-1",
+    "cls": "estimator: gaussian vs kraskov",
+    "character": null,
+    "literal": "Gaussian against uncorrected kNN information",
+    "confound": "autocorrelation bias of uncorrected KSG dominates",
+    "mean": -0.01623518019914627,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0038428923580795527,
+    "q": 0.01307689285964417,
+    "animals": {
+     "Chibi": -0.031578417867422104,
+     "George": -0.007704228162765503,
+     "Kin2": -0.0048449039459228516,
+     "Su": -0.01684454083442688
+    },
+    "t_animals": -2.5335802296440737,
+    "d_real": -0.005476552993059158,
+    "d_surr": 0.010758626274764538,
+    "d_dc": -0.014710712246596813,
+    "eyes_open": -0.004429715219885111,
+    "z0": 0.26975899934768677,
+    "node_r2": [
+     0.08465871160500783,
+     0.17744652797244762
+    ],
+    "reliability": [
+     0.03494598131118928,
+     0.13979413454969836
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.010228954255580902,
+     "sleep": -0.008045760914683342,
+     "recovery": 0.0010455516166985035
+    },
+    "old_net": -0.05798317864537239
+   },
+   {
+    "pair": "corr_spearman_tau-4-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.02241852506995201,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0038743563927710056,
+    "q": 0.01308978966304234,
+    "animals": {
+     "Chibi": 0.031489185988903046,
+     "George": 0.01733546145260334,
+     "Kin2": 0.00942791998386383,
+     "Su": 0.029128298163414
+    },
+    "t_animals": 4.2265020666399336,
+    "d_real": 0.3499722480773926,
+    "d_surr": 0.32755371928215027,
+    "d_dc": 0.02764168567955494,
+    "eyes_open": -0.006732459180057049,
+    "z0": 0.21703238785266876,
+    "node_r2": [
+     0.31210383588170615,
+     0.23613946532787655
+    ],
+    "reliability": [
+     0.2153040367762324,
+     0.05014141517822086
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03844219446182251,
+     "sleep": 0.021622156724333763,
+     "recovery": 0.009413107298314571
+    },
+    "old_net": -0.014641692861914635
+   },
+   {
+    "pair": "bary_euclidean_max|bary_dtw_max",
+    "cls": "estimator: dtw vs euclidean",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.020600777119398117,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.004095921292901039,
+    "q": 0.013740218277518632,
+    "animals": {
+     "Chibi": 0.022014250978827477,
+     "George": 0.015672734007239342,
+     "Kin2": 0.010406474582850933,
+     "Su": 0.03946689888834953
+    },
+    "t_animals": 3.462972439688549,
+    "d_real": 0.05727451667189598,
+    "d_surr": 0.03667374327778816,
+    "d_dc": -0.011654806323349476,
+    "eyes_open": -0.003742961445823312,
+    "z0": 0.6567613482475281,
+    "node_r2": [
+     0.1384899629890753,
+     0.12350053023941589
+    ],
+    "reliability": [
+     0.48340803728449805,
+     0.22828695620021267
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.04250425100326538,
+     "sleep": 0.007239605765789747,
+     "recovery": -0.024597320705652237
+    },
+    "old_net": 0.007339728530496359
+   },
+   {
+    "pair": "gc_gaussian_k-1_kt-1_l-1_lt-1|te_symbolic_k-3",
+    "cls": "estimator: gaussian vs symbolic",
+    "character": "ordinal-pattern (amplitude-free) predictive structure",
+    "literal": "Gaussian against symbolic TE",
+    "confound": "pattern length 3; T",
+    "mean": -0.015894463285803795,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.004357581026852131,
+    "q": 0.014413536845387279,
+    "animals": {
+     "Chibi": -0.025315918028354645,
+     "George": -0.00952229369431734,
+     "Kin2": -0.025385597720742226,
+     "Su": -0.002428817329928279
+    },
+    "t_animals": -2.7110426163141246,
+    "d_real": -0.04223695397377014,
+    "d_surr": -0.02634248696267605,
+    "d_dc": -0.007955484092235565,
+    "eyes_open": -0.0026911552995443344,
+    "z0": 0.060748230665922165,
+    "node_r2": [
+     0.17744652797244762,
+     0.42516792331921877
+    ],
+    "reliability": [
+     0.13979413454969836,
+     0.19072241861194403
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.029793929308652878,
+     "sleep": -0.00026215187972411513,
+     "recovery": 0.0016620601527392864
+    },
+    "old_net": 0.0029520061798393726
+   },
+   {
+    "pair": "kendalltau-sq|corr_kendall_tau-20-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.031096192076802254,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.0047564273700118065,
+    "q": 0.015623542997572158,
+    "animals": {
+     "Chibi": 0.0429181270301342,
+     "George": 0.036849524825811386,
+     "Kin2": 0.02156130038201809,
+     "Su": 0.0035627682227641344
+    },
+    "t_animals": 2.983753441323096,
+    "d_real": 0.1471194475889206,
+    "d_surr": 0.11602327972650528,
+    "d_dc": 0.03866472840309143,
+    "eyes_open": 0.007514683064073324,
+    "z0": 0.24257193505764008,
+    "node_r2": [
+     0.162861072992489,
+     0.268386481132741
+    ],
+    "reliability": [
+     0.8002134367957541,
+     0.06845659719212453
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.046720556914806366,
+     "sleep": 0.006608692463487387,
+     "recovery": 0.023898333311080933
+    },
+    "old_net": -0.0031664951238781214
+   },
+   {
+    "pair": "cov_EmpiricalCovariance|corr_pearson_tau-10",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.02539610117673874,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.005080076865851879,
+    "q": 0.016142475683957536,
+    "animals": {
+     "Chibi": 0.031238719820976257,
+     "George": 0.028202805668115616,
+     "Kin2": 0.00583827868103981,
+     "Su": 0.0267197098582983
+    },
+    "t_animals": 3.9673315353982894,
+    "d_real": 0.48066961765289307,
+    "d_surr": 0.45527341961860657,
+    "d_dc": 0.02649627812206745,
+    "eyes_open": -0.016144409775733948,
+    "z0": 0.08958712220191956,
+    "node_r2": [
+     0.15736687441988043,
+     0.0913309900466298
+    ],
+    "reliability": [
+     0.8097611210520108,
+     0.11507094026736533
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.007700775749981403,
+     "sleep": 0.013143034651875496,
+     "recovery": 0.015690231695771217
+    },
+    "old_net": -0.04903959110379219
+   },
+   {
+    "pair": "corr_spearman_tau-1|corr_spearman_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03661021962761879,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.005090621300041676,
+    "q": 0.016142475683957536,
+    "animals": {
+     "Chibi": 0.05431687459349632,
+     "George": 0.016759997233748436,
+     "Kin2": 0.018951743841171265,
+     "Su": 0.06517259031534195
+    },
+    "t_animals": 3.1540427296451345,
+    "d_real": 0.5056225657463074,
+    "d_surr": 0.4690123200416565,
+    "d_dc": 0.03624257445335388,
+    "eyes_open": -0.024586722254753113,
+    "z0": 0.11739429831504822,
+    "node_r2": [
+     0.1586389600682687,
+     0.09274801457542457
+    ],
+    "reliability": [
+     0.7731609773026041,
+     0.11714948063119347
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.030254513025283813,
+     "sleep": 0.02443595416843891,
+     "recovery": 0.014323774725198746
+    },
+    "old_net": -0.0402233861386776
+   },
+   {
+    "pair": "bary-sq_euclidean_max|bary-sq_dtw_max",
+    "cls": "estimator: dtw vs euclidean",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.026572786271572113,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.005102275870740414,
+    "q": 0.016142475683957536,
+    "animals": {
+     "Chibi": 0.018939971923828125,
+     "George": 0.01680546998977661,
+     "Kin2": 0.04036235809326172,
+     "Su": 0.050839245319366455
+    },
+    "t_animals": 3.825263356356175,
+    "d_real": 0.06938892602920532,
+    "d_surr": 0.04281613230705261,
+    "d_dc": 0.001033215201459825,
+    "eyes_open": -0.0031701766420155764,
+    "z0": 0.6818403601646423,
+    "node_r2": [
+     0.13383035381334402,
+     0.11787883490641586
+    ],
+    "reliability": [
+     0.5120369460822033,
+     0.27284851809969474
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.040525421500205994,
+     "sleep": 0.011368947103619576,
+     "recovery": -0.023223992437124252
+    },
+    "old_net": 0.018576622009277344
+   },
+   {
+    "pair": "corr_kendall_tau-4-sq|corr_kendall_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.023185646161437035,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.005137037020176649,
+    "q": 0.016142475683957536,
+    "animals": {
+     "Chibi": 0.03302110359072685,
+     "George": 0.016249245032668114,
+     "Kin2": 0.0078256381675601,
+     "Su": 0.03505967557430267
+    },
+    "t_animals": 3.4942018470581293,
+    "d_real": 0.34191107749938965,
+    "d_surr": 0.31872543692588806,
+    "d_dc": 0.029545670375227928,
+    "eyes_open": -0.006357938516885042,
+    "z0": 0.216902956366539,
+    "node_r2": [
+     0.3083543547113219,
+     0.23493606311325613
+    ],
+    "reliability": [
+     0.21614398100563142,
+     0.05016683650067203
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.044296927750110626,
+     "sleep": 0.021697500720620155,
+     "recovery": 0.011867244727909565
+    },
+    "old_net": -0.013471419923007488
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1|sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": -0.006361009087413549,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.005472847260534763,
+    "q": 0.016919324600618648,
+    "animals": {
+     "Chibi": -0.009683236479759216,
+     "George": -0.0013882474740967155,
+     "Kin2": -0.004889289382845163,
+     "Su": -0.012791384942829609
+    },
+    "t_animals": -2.846044843483128,
+    "d_real": -0.14784426987171173,
+    "d_surr": -0.14148326218128204,
+    "d_dc": -0.006353673059493303,
+    "eyes_open": 0.0041352384723722935,
+    "z0": 0.6193907856941223,
+    "node_r2": [
+     0.21858670195157634,
+     0.2002603623318282
+    ],
+    "reliability": [
+     0.13702755023522062,
+     0.17861226482607648
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.014825135469436646,
+     "sleep": -0.0007955431938171387,
+     "recovery": -0.0008162276353687048
+    },
+    "old_net": -0.04366472363471985
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1|sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": -0.006361009087413549,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.005472847260534763,
+    "q": 0.016919324600618648,
+    "animals": {
+     "Chibi": -0.009683236479759216,
+     "George": -0.0013882474740967155,
+     "Kin2": -0.004889289382845163,
+     "Su": -0.012791384942829609
+    },
+    "t_animals": -2.846044843483128,
+    "d_real": -0.14784429967403412,
+    "d_surr": -0.14148327708244324,
+    "d_dc": -0.0063536702655255795,
+    "eyes_open": 0.0041352384723722935,
+    "z0": 0.6193907856941223,
+    "node_r2": [
+     0.21858670195157634,
+     0.2002603623318282
+    ],
+    "reliability": [
+     0.1370275501424345,
+     0.17861226482607648
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.01482515037059784,
+     "sleep": -0.0007940445793792605,
+     "recovery": -0.0007705704774707556
+    },
+    "old_net": -0.043664734810590744
+   },
+   {
+    "pair": "corr_kendall_tau-1|corr_kendall_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03666562959551811,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.0057692937552928925,
+    "q": 0.01760565080950337,
+    "animals": {
+     "Chibi": 0.05614250898361206,
+     "George": 0.01621980592608452,
+     "Kin2": 0.01753213256597519,
+     "Su": 0.06455225497484207
+    },
+    "t_animals": 3.0477730579030564,
+    "d_real": 0.498858243227005,
+    "d_surr": 0.46219268441200256,
+    "d_dc": 0.03619498386979103,
+    "eyes_open": -0.024295026436448097,
+    "z0": 0.11641577631235123,
+    "node_r2": [
+     0.15383099212286594,
+     0.0921450921115541
+    ],
+    "reliability": [
+     0.7773434446000426,
+     0.11691630647315589
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03268270567059517,
+     "sleep": 0.02449033223092556,
+     "recovery": 0.014827605336904526
+    },
+    "old_net": -0.03882884234189987
+   },
+   {
+    "pair": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.005622706841677427,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.0059880721382796764,
+    "q": 0.018096436360839067,
+    "animals": {
+     "Chibi": 0.009592711925506592,
+     "George": 0.005059421062469482,
+     "Kin2": 0.003772735595703125,
+     "Su": 0.0008470018510706723
+    },
+    "t_animals": 2.648275772591779,
+    "d_real": 0.03611327335238457,
+    "d_surr": 0.030490567907691002,
+    "d_dc": 0.005762394983321428,
+    "eyes_open": 0.001774160540662706,
+    "z0": 0.68743896484375,
+    "node_r2": [
+     0.10763458810946996,
+     0.05998554610552165
+    ],
+    "reliability": [
+     0.14355216550612052,
+     0.024401783011273524
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00015977025032043457,
+     "sleep": 0.0013185313437134027,
+     "recovery": 0.003657178720459342
+    },
+    "old_net": 0.027172844856977463
+   },
+   {
+    "pair": "cov_EmpiricalCovariance|corr_pearson_tau-20",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0337291844189167,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.006006639450788498,
+    "q": 0.018096436360839067,
+    "animals": {
+     "Chibi": -0.02658179961144924,
+     "George": -0.04737309738993645,
+     "Kin2": -0.04230469465255737,
+     "Su": -0.007612655404955149
+    },
+    "t_animals": -3.458088868200637,
+    "d_real": -0.21250729262828827,
+    "d_surr": -0.17877811193466187,
+    "d_dc": -0.03506369888782501,
+    "eyes_open": 0.01900668628513813,
+    "z0": -0.43578600883483887,
+    "node_r2": [
+     0.15736687441988043,
+     0.09576436355819691
+    ],
+    "reliability": [
+     0.8097611210520108,
+     0.16993998159487445
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.03079937770962715,
+     "sleep": -0.006072565913200378,
+     "recovery": -0.006099199876189232
+    },
+    "old_net": -0.06714989989995956
+   },
+   {
+    "pair": "corr_pearson_tau-5-sq|corr_spearman_tau-5-sq",
+    "cls": "estimator: Empirical vs spearman",
+    "character": "monotone-nonlinear dependence (rank invariance); channel marginal shape plus copula departure",
+    "literal": "organisation of linear against rank dependence",
+    "confound": "marginal shape (raw); copula part needs normal scores or IAAFT",
+    "mean": -0.0036808692384511232,
+    "sessions_same_sign": 16,
+    "n": 19,
+    "p": 0.006052714306861162,
+    "q": 0.01811983464639398,
+    "animals": {
+     "Chibi": -0.005894253496080637,
+     "George": -0.0014867952559143305,
+     "Kin2": -0.0006086826324462891,
+     "Su": -0.007445792201906443
+    },
+    "t_animals": -2.31999922054221,
+    "d_real": 0.007352719083428383,
+    "d_surr": 0.011033588089048862,
+    "d_dc": -0.002735373331233859,
+    "eyes_open": -0.003261575475335121,
+    "z0": 0.9692987203598022,
+    "node_r2": [
+     0.3138502732727725,
+     0.31267489170077717
+    ],
+    "reliability": [
+     0.1578943404066519,
+     0.15922442069395348
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00037088990211486816,
+     "sleep": -0.00032651424407958984,
+     "recovery": -0.0025214983616024256
+    },
+    "old_net": -0.01647357828915119
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+    "cls": "option: default vs order-1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.007170391734689474,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.006140569690614939,
+    "q": 0.018154333531856536,
+    "animals": {
+     "Chibi": -0.005547990556806326,
+     "George": -0.007135510444641113,
+     "Kin2": -0.008443276397883892,
+     "Su": -0.009223699569702148
+    },
+    "t_animals": -9.42737469626421,
+    "d_real": 0.2509964406490326,
+    "d_surr": 0.2581668496131897,
+    "d_dc": -0.007651933003216982,
+    "eyes_open": -0.00469423271715641,
+    "z0": 0.5544670224189758,
+    "node_r2": [
+     0.2242350540647307,
+     0.21858670195157634
+    ],
+    "reliability": [
+     0.09465037453893511,
+     0.13702755023522062
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.011891297996044159,
+     "sleep": 0.003852043766528368,
+     "recovery": -0.002873985329642892
+    },
+    "old_net": -0.08051381260156631
+   },
+   {
+    "pair": "si_gaussian_k-1|si_kozachenko_k-1",
+    "cls": "estimator: gaussian vs kozachenko",
+    "character": "non-Gaussian dependence (entropy estimator)",
+    "literal": "Gaussian against Kozachenko-Leonenko entropy",
+    "confound": "marginal entropies are node-level",
+    "mean": 0.018574312329292297,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.006141000892966986,
+    "q": 0.018154333531856536,
+    "animals": {
+     "Chibi": 0.025158986449241638,
+     "George": 0.0015908990753814578,
+     "Kin2": 0.019596466794610023,
+     "Su": 0.04401076212525368
+    },
+    "t_animals": 2.5863906456534185,
+    "d_real": -0.03073972836136818,
+    "d_surr": -0.04931403324007988,
+    "d_dc": 0.020194416865706444,
+    "eyes_open": -0.014251596294343472,
+    "z0": 0.4633857309818268,
+    "node_r2": [
+     0.11013299544491184,
+     0.37354796928844014
+    ],
+    "reliability": [
+     0.8655986550759008,
+     0.2397582551453935
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.008600644767284393,
+     "sleep": 0.0033758878707885742,
+     "recovery": 0.0034688611049205065
+    },
+    "old_net": 0.0200965479016304
+   },
+   {
+    "pair": "corr_spearman_tau-1-sq|corr_spearman_tau-20-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03167286515235901,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.007094765082001686,
+    "q": 0.02061924320057126,
+    "animals": {
+     "Chibi": 0.04563517868518829,
+     "George": 0.03892355412244797,
+     "Kin2": 0.014964883215725422,
+     "Su": 0.003537942888215184
+    },
+    "t_animals": 2.5997631166608572,
+    "d_real": 0.12584316730499268,
+    "d_surr": 0.09417029470205307,
+    "d_dc": 0.04134754836559296,
+    "eyes_open": 0.00977245718240738,
+    "z0": 0.2891612946987152,
+    "node_r2": [
+     0.2120330847591823,
+     0.2693283277795492
+    ],
+    "reliability": [
+     0.6923266312753195,
+     0.06991716050322787
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.047973938286304474,
+     "sleep": 0.006571062840521336,
+     "recovery": 0.030170252546668053
+    },
+    "old_net": -0.003366634948179126
+   },
+   {
+    "pair": "corr_pearson_tau-1|corr_pearson_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.02443094551563263,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.007105574477463961,
+    "q": 0.02061924320057126,
+    "animals": {
+     "Chibi": 0.030234957113862038,
+     "George": 0.027217088267207146,
+     "Kin2": 0.0038040541112422943,
+     "Su": 0.026948804035782814
+    },
+    "t_animals": 3.598531346117794,
+    "d_real": 0.4859178364276886,
+    "d_surr": 0.4614868760108948,
+    "d_dc": 0.02547948993742466,
+    "eyes_open": -0.01636332832276821,
+    "z0": 0.09675421565771103,
+    "node_r2": [
+     0.15827038251082756,
+     0.0913309900466298
+    ],
+    "reliability": [
+     0.7769757062971753,
+     0.11507094026736533
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.006716638803482056,
+     "sleep": 0.014031874015927315,
+     "recovery": 0.015758991241455078
+    },
+    "old_net": -0.055440884083509445
+   },
+   {
+    "pair": "corr_pearson_tau-4-sq|corr_spearman_tau-4-sq",
+    "cls": "estimator: Empirical vs spearman",
+    "character": "monotone-nonlinear dependence (rank invariance); channel marginal shape plus copula departure",
+    "literal": "organisation of linear against rank dependence",
+    "confound": "marginal shape (raw); copula part needs normal scores or IAAFT",
+    "mean": -0.0033056829124689102,
+    "sessions_same_sign": 17,
+    "n": 19,
+    "p": 0.0072096530348062515,
+    "q": 0.020793693821604658,
+    "animals": {
+     "Chibi": -0.005532254930585623,
+     "George": -0.0016041739145293832,
+     "Kin2": -0.00039784112595953047,
+     "Su": -0.005730569362640381
+    },
+    "t_animals": -2.438788987734249,
+    "d_real": 0.005148373078554869,
+    "d_surr": 0.008454056456685066,
+    "d_dc": -0.0025184343103319407,
+    "eyes_open": -0.0035417801700532436,
+    "z0": 0.9731181263923645,
+    "node_r2": [
+     0.3155842930081304,
+     0.31210383588170615
+    ],
+    "reliability": [
+     0.2144283465927646,
+     0.2153040367762324
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.00034762918949127197,
+     "sleep": -0.0002188427170040086,
+     "recovery": -0.002323693595826626
+    },
+    "old_net": -0.0155640272423625
+   },
+   {
+    "pair": "corr_pearson_tau-1|corr_pearson_tau-20",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.03166903182864189,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.009503382258117199,
+    "q": 0.026287134627849734,
+    "animals": {
+     "Chibi": -0.024649010971188545,
+     "George": -0.046813298016786575,
+     "Kin2": -0.03671659901738167,
+     "Su": -0.005324880126863718
+    },
+    "t_animals": -3.1812477357417257,
+    "d_real": -0.19529134035110474,
+    "d_surr": -0.16362231969833374,
+    "d_dc": -0.03293497487902641,
+    "eyes_open": 0.020453164353966713,
+    "z0": -0.45868682861328125,
+    "node_r2": [
+     0.15827038251082756,
+     0.09576436355819691
+    ],
+    "reliability": [
+     0.7769757062971753,
+     0.16993998159487445
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.02833637222647667,
+     "sleep": -0.005447410978376865,
+     "recovery": -0.005809061229228973
+    },
+    "old_net": -0.06931374967098236
+   },
+   {
+    "pair": "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5|wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+    "cls": "imaginary-part weighting",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0011719904141500592,
+    "sessions_same_sign": 13,
+    "n": 19,
+    "p": 0.01017508003860712,
+    "q": 0.02798146979753361,
+    "animals": {
+     "Chibi": -0.0006676912307739258,
+     "George": -0.0014731287956237793,
+     "Kin2": -8.455912029603496e-05,
+     "Su": -0.002565364120528102
+    },
+    "t_animals": -2.228418819873457,
+    "d_real": -0.0013453615829348564,
+    "d_surr": -0.00017337109602522105,
+    "d_dc": -0.0012499407166615129,
+    "eyes_open": 0.0005984337767586112,
+    "z0": 0.9471784830093384,
+    "node_r2": [
+     0.04373065365255511,
+     0.04503312513201828
+    ],
+    "reliability": [
+     0.12412886987182689,
+     0.1318367930530555
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": -0.002401977777481079,
+     "sleep": 0.000558265601284802,
+     "recovery": 0.0008655223646201193
+    },
+    "old_net": 0.0015555683057755232
+   },
+   {
+    "pair": "corr_kendall_tau-1-sq|corr_kendall_tau-20-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.02882244624197483,
+    "sessions_same_sign": 14,
+    "n": 19,
+    "p": 0.015170680359005928,
+    "q": 0.040025483237372504,
+    "animals": {
+     "Chibi": 0.041923653334379196,
+     "George": 0.03731894493103027,
+     "Kin2": 0.011356502771377563,
+     "Su": 0.0002608050999697298
+    },
+    "t_animals": 2.257010970758354,
+    "d_real": 0.11864089965820312,
+    "d_surr": 0.08981845527887344,
+    "d_dc": 0.03656141832470894,
+    "eyes_open": 0.009488203562796116,
+    "z0": 0.28525689244270325,
+    "node_r2": [
+     0.19742480349546013,
+     0.268386481132741
+    ],
+    "reliability": [
+     0.7106251401951212,
+     0.06845659719212453
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.04035624861717224,
+     "sleep": 0.005559840239584446,
+     "recovery": 0.028945978730916977
+    },
+    "old_net": -0.007362621370702982
+   },
+   {
+    "pair": "corr_spearman_tau-2|corr_spearman_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03001590073108673,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.018037233501672745,
+    "q": 0.044946389449270145,
+    "animals": {
+     "Chibi": 0.04648249223828316,
+     "George": 0.01323696319013834,
+     "Kin2": 0.006907999515533447,
+     "Su": 0.059341464191675186
+    },
+    "t_animals": 2.4781371149658935,
+    "d_real": 0.49799180030822754,
+    "d_surr": 0.4679759740829468,
+    "d_dc": 0.02942647412419319,
+    "eyes_open": -0.02756292000412941,
+    "z0": 0.14798367023468018,
+    "node_r2": [
+     0.14328962770077075,
+     0.09274801457542457
+    ],
+    "reliability": [
+     0.6015186061750637,
+     0.11714948063119347
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.02352769672870636,
+     "sleep": 0.022611843422055244,
+     "recovery": 0.011237340047955513
+    },
+    "old_net": -0.07375732064247131
+   },
+   {
+    "pair": "corr_spearman_tau-5-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.01918988861143589,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.019313566386699677,
+    "q": 0.04782888402489467,
+    "animals": {
+     "Chibi": 0.03251401707530022,
+     "George": 0.013261820189654827,
+     "Kin2": 0.002816836116835475,
+     "Su": 0.022746846079826355
+    },
+    "t_animals": 2.8023109216779822,
+    "d_real": 0.4052377939224243,
+    "d_surr": 0.3860478699207306,
+    "d_dc": 0.02367531880736351,
+    "eyes_open": -0.00944144744426012,
+    "z0": 0.2221589833498001,
+    "node_r2": [
+     0.31267489170077717,
+     0.23613946532787655
+    ],
+    "reliability": [
+     0.15922442069395348,
+     0.05014141517822086
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.03877625614404678,
+     "sleep": 0.02346690185368061,
+     "recovery": 0.00793314166367054
+    },
+    "old_net": -0.026713605970144272
+   },
+   {
+    "pair": "corr_kendall_tau-2|corr_kendall_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03003876470029354,
+    "sessions_same_sign": 15,
+    "n": 19,
+    "p": 0.020274778828024864,
+    "q": 0.049179336352226065,
+    "animals": {
+     "Chibi": 0.04834083840250969,
+     "George": 0.012738083489239216,
+     "Kin2": 0.005334349814802408,
+     "Su": 0.05850730463862419
+    },
+    "t_animals": 2.389762023786633,
+    "d_real": 0.4920932948589325,
+    "d_surr": 0.4620545506477356,
+    "d_dc": 0.02934132143855095,
+    "eyes_open": -0.027430666610598564,
+    "z0": 0.14817334711551666,
+    "node_r2": [
+     0.1398947695788212,
+     0.0921450921115541
+    ],
+    "reliability": [
+     0.6021190135424307,
+     0.11691630647315589
+    ],
+    "usable": false,
+    "specificity": {
+     "MD drug": 0.02600105293095112,
+     "sleep": 0.022706469520926476,
+     "recovery": 0.011593152768909931
+    },
+    "old_net": -0.07238046824932098
+   }
+  ]
+ },
+ "all_usable": {
+  "tested": 6679,
+  "discoveries": 2519,
+  "control_discoveries": 678,
+  "rising": 1166,
+  "by_spi": {
+   "bary_sgddtw_max": 106,
+   "bary-sq_sgddtw_max": 106,
+   "cce_kozachenko_n-5": 103,
+   "xcorr-sq_max_sig-True": 98,
+   "dtw": 94,
+   "pdist_chebyshev": 82,
+   "bary_euclidean_max": 75,
+   "bary-sq_euclidean_max": 75,
+   "si_gaussian_k-1": 71,
+   "dtw_constraint-sakoe-chiba_radius-auto": 70,
+   "ce_kernel_W-0.5": 70,
+   "mi_kraskov_NN-4_DCE-AUTO": 69,
+   "tlmi_kraskov_NN-4_DCE-AUTO": 68,
+   "te_kernel_W-0.25_k-1": 65,
+   "xcorr_max_sig-True": 63,
+   "mi_kraskov_NN-4": 62,
+   "mi_kernel_W-0.25": 61,
+   "tlmi_kraskov_NN-4": 61,
+   "ids": 61,
+   "ce_kozachenko": 59,
+   "tlmi_kernel_W-0.25": 58,
+   "kendalltau-sq": 53,
+   "lcss": 53,
+   "pec_log": 53,
+   "lcss_constraint-sakoe-chiba": 52
+  }
+ },
+ "anchor": {
+  "pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+  "cls": "estimator: gaussian vs kraskov_DCE",
+  "character": "non-Gaussian dependence: how far each pair departs from the dependence a Gaussian process with its covariance would carry",
+  "literal": "organisation of Gaussian against kNN (bias-corrected) information (mi, tlmi) or prediction (te: GC against TE)",
+  "confound": "spectral concentration, kNN estimator bias at T=200; MI part survives IAAFT; TE part tracks spectral entropy",
+  "mean": -0.02775271050632,
+  "sessions_same_sign": 19,
+  "n": 19,
+  "p": null,
+  "q": null,
+  "animals": {
+   "Chibi": -0.039706211537122726,
+   "George": -0.020097723230719566,
+   "Kin2": -0.026854434981942177,
+   "Su": -0.022605618461966515
+  },
+  "t_animals": -6.26642271492465,
+  "d_real": -0.050001055002212524,
+  "d_surr": -0.022248342633247375,
+  "d_dc": -0.026696618646383286,
+  "eyes_open": -0.000698742107488215,
+  "z0": 0.9033352732658386,
+  "node_r2": [
+   0.14397136826728338,
+   0.13682225777568435
+  ],
+  "reliability": [
+   0.8243784076717104,
+   0.69472423487987
+  ],
+  "usable": true,
+  "specificity": {
+   "MD drug": -0.01401624083518982,
+   "sleep": -0.0018699595239013433,
+   "recovery": -0.0032935473136603832
+  },
+  "old_net": -0.02362440526485443
+ }
+}

@@ -1,0 +1,57 @@
+sessions 19, animals 4; usable minimal 164; discoveries 55 (control 26, fdp 0.47, rising 9)
+  pdist_chebyshev|pdist_canberra [estimator: canberra vs chebyshev] -0.0666 19/19 q 3.37e-08 t3 -11.5 dc -0.0512 eo -0.0015 nodeR2 0.12,0.14
+  pdist_euclidean|pdist_canberra [estimator: canberra vs euclidean] -0.0129 19/19 q 3.51e-08 t3 -6.1 dc -0.0108 eo -0.0020 nodeR2 0.15,0.14
+  dcorr|dcorr_biased [estimator: biased vs unbiased] +0.0020 19/19 q 3.51e-08 t3 +10.3 dc +0.0019 eo +0.0001 nodeR2 0.18,0.23
+  pdist_cosine|pdist_canberra [estimator: canberra vs cosine] -0.0126 19/19 q 4.22e-08 t3 -5.5 dc -0.0111 eo -0.0024 nodeR2 0.16,0.14
+  pdist_cityblock|pdist_chebyshev [estimator: chebyshev vs cityblock] -0.0544 19/19 q 4.22e-08 t3 -10.2 dc -0.0423 eo -0.0003 nodeR2 0.15,0.12
+  pdist_euclidean|pdist_chebyshev [estimator: chebyshev vs euclidean] -0.0370 18/19 q 4.85e-08 t3 -11.1 dc -0.0295 eo +0.0013 nodeR2 0.15,0.12
+  cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5 [band: low vs high] -0.0337 19/19 q 8.59e-08 t3 -8.5 dc -0.0092 eo -0.0092 nodeR2 0.17,0.09
+  tlmi_gaussian|tlmi_kraskov_NN-4_DCE-AUTO [estimator: gaussian vs kraskov_DCE] -0.0325 19/19 q 1.21e-07 t3 -5.9 dc -0.0318 eo -0.0007 nodeR2 0.18,0.15
+  mi_gaussian|mi_kraskov_NN-4_DCE-AUTO [estimator: gaussian vs kraskov_DCE] -0.0278 19/19 q 1.21e-07 t3 -6.3 dc -0.0267 eo -0.0007 nodeR2 0.14,0.14
+  pdist_cosine|pdist_chebyshev [estimator: chebyshev vs cosine] -0.0373 18/19 q 2.5e-07 t3 -10.8 dc -0.0295 eo +0.0007 nodeR2 0.16,0.12
+  mi_gaussian|mi_kraskov_NN-4 [estimator: gaussian vs kraskov] -0.0374 19/19 q 2.73e-07 t3 -4.7 dc -0.0293 eo +0.0002 nodeR2 0.14,0.14
+  mi_gaussian|mi_kernel_W-0.25 [estimator: gaussian vs kernel] -0.0393 19/19 q 3.02e-07 t3 -4.6 dc -0.0277 eo -0.0013 nodeR2 0.14,0.14
+  tlmi_gaussian|tlmi_kraskov_NN-4 [estimator: gaussian vs kraskov] -0.0462 19/19 q 5.13e-07 t3 -4.6 dc -0.0377 eo +0.0006 nodeR2 0.18,0.19
+  ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25|ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5 [band: low vs high] -0.0303 18/19 q 1.17e-06 t3 -7.0 dc -0.0082 eo -0.0082 nodeR2 0.16,0.08
+  cov-sq_EmpiricalCovariance|xcorr-sq_max_sig-True [best lag against zero lag] -0.0172 19/19 q 1.36e-06 t3 -11.1 dc -0.0155 eo +0.0007 nodeR2 0.19,0.17
+  tlmi_gaussian|tlmi_kernel_W-0.25 [estimator: gaussian vs kernel] -0.0475 19/19 q 1.36e-06 t3 -4.2 dc -0.0314 eo -0.0013 nodeR2 0.18,0.18
+  bary-sq_euclidean_max|bary-sq_sgddtw_max [estimator: euclidean vs sgddtw] +0.0602 19/19 q 1.36e-06 t3 +16.4 dc +0.0274 eo -0.0073 nodeR2 0.13,0.13
+  bary_euclidean_max|bary_sgddtw_max [estimator: euclidean vs sgddtw] +0.0566 19/19 q 1.57e-06 t3 +20.3 dc +0.0238 eo -0.0087 nodeR2 0.14,0.13
+  mi_kraskov_NN-4|mi_kraskov_NN-4_DCE-AUTO [estimator: kraskov vs kraskov_DCE] -0.0320 18/19 q 1.59e-06 t3 -4.4 dc -0.0204 eo -0.0004 nodeR2 0.14,0.14
+  cov_EmpiricalCovariance|xcorr_max_sig-True [best lag against zero lag] -0.0371 18/19 q 1.84e-06 t3 -8.6 dc -0.0365 eo -0.0003 nodeR2 0.16,0.16
+  pdist_chebyshev|pdist_braycurtis [estimator: braycurtis vs chebyshev] -0.0408 18/19 q 2.52e-06 t3 -8.8 dc -0.0323 eo -0.0015 nodeR2 0.12,0.16
+  mi_kraskov_NN-4_DCE-AUTO|mi_kernel_W-0.25 [estimator: kernel vs kraskov_DCE] -0.0324 18/19 q 6.24e-06 t3 -3.9 dc -0.0164 eo -0.0010 nodeR2 0.14,0.14
+  bary_dtw_corr|bary_sgddtw_corr [estimator: dtw vs sgddtw] -0.0013 19/19 q 6.27e-06 t3 -4.7 dc -0.0011 eo -0.0003 nodeR2 0.22,0.18
+  tlmi_kraskov_NN-4_DCE-AUTO|tlmi_kernel_W-0.25 [estimator: kernel vs kraskov_DCE] -0.0419 18/19 q 6.38e-06 t3 -3.5 dc -0.0189 eo -0.0013 nodeR2 0.15,0.18
+  dtw_constraint-itakura|lcss_constraint-itakura [elastic distance against elastic similarity] +0.0273 18/19 q 9.87e-06 t3 +4.9 dc +0.0186 eo -0.0014 nodeR2 0.26,0.16
+  cce_gaussian_n-5|cce_kozachenko_n-5 [estimator: gaussian vs kozachenko] -0.0519 19/19 q 9.87e-06 t3 -3.6 dc +0.0096 eo -0.0025 nodeR2 0.78,0.69
+  tlmi_kraskov_NN-4|tlmi_kraskov_NN-4_DCE-AUTO [estimator: kraskov vs kraskov_DCE] -0.0342 18/19 q 1.68e-05 t3 -3.2 dc -0.0212 eo -0.0033 nodeR2 0.19,0.15
+  bary_euclidean_max|bary-sq_euclidean_max [sign handling: signed vs sq] -0.0293 18/19 q 3.63e-05 t3 -4.4 dc -0.0266 eo -0.0007 nodeR2 0.14,0.13
+  ce_gaussian|ce_kozachenko [estimator: gaussian vs kozachenko] -0.0270 18/19 q 6.01e-05 t3 -3.6 dc -0.0064 eo +0.0030 nodeR2 0.14,0.11
+  tlmi_kraskov_NN-4|tlmi_kernel_W-0.25 [estimator: kraskov vs kernel] -0.0142 19/19 q 7.19e-05 t3 -2.9 dc -0.0058 eo +0.0019 nodeR2 0.19,0.18
+  pdist_canberra|pdist_braycurtis [estimator: braycurtis vs canberra] -0.0059 17/19 q 7.4e-05 t3 -3.6 dc -0.0059 eo -0.0011 nodeR2 0.14,0.16
+  bary-sq_euclidean_mean|bary-sq_euclidean_max [aggregation: mean vs max] -0.0190 18/19 q 7.4e-05 t3 -4.1 dc -0.0210 eo -0.0006 nodeR2 0.16,0.13
+  bary_sgddtw_corr|bary_sgddtw_max [aggregation: corr vs max] +0.0435 17/19 q 0.000104 t3 +6.3 dc -0.0020 eo -0.0055 nodeR2 0.18,0.13
+  xcorr_max_sig-True|xcorr-sq_max_sig-True [sign handling: signed vs sq] +0.0158 17/19 q 0.000178 t3 +3.4 dc +0.0132 eo -0.0013 nodeR2 0.16,0.17
+  ce_gaussian|ce_kernel_W-0.5 [estimator: gaussian vs kernel] -0.0166 18/19 q 0.00018 t3 -2.6 dc -0.0234 eo -0.0028 nodeR2 0.14,0.15
+  dtw_constraint-itakura|dtw_constraint-sakoe-chiba_radius-auto [option: itakura vs sakoe-chiba] -0.0214 17/19 q 0.000248 t3 -30.7 dc -0.0197 eo +0.0077 nodeR2 0.26,0.26
+  pec|pec_log [estimator: linear vs log] -0.0059 19/19 q 0.0005 t3 -2.9 dc -0.0064 eo -0.0025 nodeR2 0.21,0.18
+  mi_kernel_W-0.25|tlmi_kernel_W-0.25 [lag one sample (information)] +0.0167 18/19 q 0.000533 t3 +2.1 dc +0.0061 eo +0.0031 nodeR2 0.14,0.18
+  pdist_cosine|pdist_braycurtis [estimator: braycurtis vs cosine] -0.0021 17/19 q 0.000575 t3 -2.9 dc -0.0016 eo -0.0001 nodeR2 0.16,0.16
+  xme_gaussian_k1|xme_kernel_W-0.5_k1 [estimator: gaussian vs kernel] -0.0202 18/19 q 0.00133 t3 -2.1 dc -0.0243 eo -0.0052 nodeR2 0.18,0.20
+  dtw|lcss [elastic distance against elastic similarity] +0.0297 16/19 q 0.00135 t3 +3.3 dc +0.0154 eo -0.0105 nodeR2 0.29,0.15
+  cov_EmpiricalCovariance|corr_pearson_tau-2 [lag: 0 vs L>1] -0.0010 18/19 q 0.00159 t3 -3.5 dc -0.0011 eo +0.0004 nodeR2 0.16,0.14
+  dtw|dtw_constraint-sakoe-chiba_radius-auto [option: unconstrained vs sakoe-chiba] -0.0270 17/19 q 0.0031 t3 -6.9 dc -0.0249 eo +0.0063 nodeR2 0.29,0.26
+  cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0_fmax-0-25 [amplitude weighting of synchrony] -0.0046 17/19 q 0.0036 t3 -4.3 dc -0.0040 eo +0.0004 nodeR2 0.17,0.17
+  pdist_cityblock|pdist_braycurtis [estimator: braycurtis vs cityblock] -0.0019 15/19 q 0.00538 t3 -3.7 dc -0.0015 eo -0.0000 nodeR2 0.15,0.16
+  cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5|plv_multitaper_mean_fs-1_fmin-0_fmax-0-5 [amplitude weighting of synchrony] -0.0071 15/19 q 0.00546 t3 -3.0 dc -0.0056 eo +0.0019 nodeR2 0.14,0.13
+  dtw|dtw_constraint-itakura [option: unconstrained vs itakura] -0.0220 16/19 q 0.00546 t3 -3.9 dc -0.0229 eo +0.0113 nodeR2 0.29,0.26
+  cov-sq_EmpiricalCovariance|corr_pearson_tau-1-sq [lag: 0 vs 1] -0.0003 16/19 q 0.00546 t3 -2.4 dc -0.0002 eo +0.0002 nodeR2 0.19,0.21
+  coint_johansen_max_eig_stat_order-0_ardiff-1|coint_johansen_trace_stat_order-0_ardiff-1 [estimator: max_eig vs trace] -0.0012 14/19 q 0.00551 t3 -2.8 dc +0.0014 eo +0.0002 nodeR2 0.81,0.93
+  pdist_euclidean|dtw [rigid against elastic alignment] -0.0383 15/19 q 0.00635 t3 -3.9 dc -0.0212 eo +0.0179 nodeR2 0.15,0.29
+  pdist_euclidean|pdist_braycurtis [estimator: braycurtis vs euclidean] -0.0022 16/19 q 0.0143 t3 -1.8 dc -0.0015 eo +0.0001 nodeR2 0.15,0.16
+  corr_pearson_tau-1|corr_pearson_tau-2 [lag: adjacent or longer] -0.0005 15/19 q 0.0206 t3 -3.1 dc -0.0005 eo +0.0001 nodeR2 0.16,0.14
+  cov-sq_EmpiricalCovariance|corr_pearson_tau-2-sq [lag: 0 vs L>1] -0.0009 14/19 q 0.0309 t3 -3.3 dc -0.0011 eo +0.0014 nodeR2 0.19,0.28
+  xcorr-sq_max_sig-True|xcorr-sq_mean_sig-True [aggregation: mean vs max] +0.0063 15/19 q 0.0389 t3 +2.6 dc +0.0037 eo +0.0007 nodeR2 0.17,0.25
+  cov-sq_MinCovDet|kendalltau-sq [estimator: MinCovDet vs kendall] -0.0023 13/19 q 0.0423 t3 -1.9 dc -0.0025 eo -0.0015 nodeR2 0.18,0.16
+all usable {'tested': 6679, 'discoveries': 2519, 'control_discoveries': 678, 'rising': 1166} anchor -0.0278 19
