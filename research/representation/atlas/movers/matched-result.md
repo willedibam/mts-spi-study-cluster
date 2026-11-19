@@ -35,6 +35,16 @@
   - the MI anchor is 7/7 but Holm p = .21.
 - The chance-level control result and the eyes-open composition make the 55 a plausible prediction set, but A is not the frozen test.
 
+**Breadth and a common driver** ([`matched_drivers.py`](matched_drivers.py), `posthoc/drivers.txt`; one surrogate draw, exploratory).
+- **Breadth:** with 5 drug windows against the first awake half (power-matched to the split-half control), 2,218 of 6,679 usable coordinates move beyond the surrogate; the split-half control moves 0. The departure from the linear-Gaussian-stationary null under these drugs is pervasive, not specific to MI.
+- **Local amplitude non-stationarity:** the envelope CV over 8 blocks of 25 samples is .246 in real awake windows against .218 in their surrogates, and .359 against .302 under drug. So the excess beyond the surrogate doubles (.028 → .057). The excess shared co-fluctuation of channel envelopes barely moves (.086 → .096).
+- **Within drug windows,** after removing each session's mean:
+  - the MI and Chebyshev nets covary (r = +.55; awake +.27);
+  - both track the window's envelope-CV excess (MI r = −.51, Chebyshev −.43; awake −.16, −.33).
+- **Adjusting the drug contrast** by the within-state slope removes 18% of MI (−.0278 → −.0228, 19/19, animal t −4.5), 27% of Chebyshev (−.0666 → −.0483, 19/19, t −13.5) and 15% of CCE.
+  - The index is noisy, so regression dilution makes this an under-correction: it bounds the gain explanation, it does not exclude it.
+- **Reading:** the residuals travel with local, not shared, amplitude non-stationarity. That is the false-positive class the surrogate-data literature names, and it fits the propofol amplitude-linked decoupling candidate. A crude linear adjustment does not remove the drug effect. A null that preserves each window's local envelopes is the decisive test.
+
 ## The macaque discoveries, by family
 
 Δ is the net change (drug − awake); "real/surr" splits it into the real and surrogate changes; dc is the double-centred (pair-level) Δ.
