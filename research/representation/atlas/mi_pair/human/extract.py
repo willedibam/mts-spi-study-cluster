@@ -1,6 +1,6 @@
 """Window selection for the human replication (rules: ../preregs/human-prereg.md). No z, no state contrast here.
 
-    python extract.py prios   <ds004370 dir> <out dir>
+    python extract.py prios   <ds004370 dir> <out dir> [A|B|AB]   (sensitivity rows S-A, S-B, S-AB; prereg)
     python extract.py ds004541 <ds004541 dir> <out dir>
 
 Per subject, saves <out>/<subject>.npz: W (windows, T, good channels; pre-CAR, µV, float32), rows (JSON: state, onset_s,
@@ -30,7 +30,7 @@ def blocked(intervals, a, b):
     return any(s < b and e > a for s, e in intervals)
 
 
-def finish(subject, cands, names, out, qc, cap, extra):
+def finish(subject, cands, names, out, qc, cap, extra, own_scale=False):
     """cands: list of (state, onset_s, W100 (T, M) pre-CAR, flat, info). Bad-channel screen, awake scale, window_ok, spread.
     info['stim'] (PRIOS): names of the stimulated electrodes, which carry the stimulator's common signal between pulses
     (Deviation 1); they are left out of the CAR, the artefact check and the indices, and score.py leaves them out of z."""
@@ -39,11 +39,14 @@ def finish(subject, cands, names, out, qc, cap, extra):
     def car(c):  # CAR over the good, non-stimulated channels; stimulated ones NaN; last dropped. Also the kept mask.
         keep = np.array([n not in c[4].get('stim', ()) for n in gname]); w = c[2][:, good].astype(float)
         r = w - w[:, keep].mean(1, keepdims=True); r[:, ~keep] = np.nan; return r[:, :-1], keep[:-1]
-    aw = np.concatenate([car(c)[0] for c in cands if c[0] == 'awake'])  # robust_scale, NaN-aware
-    centre = np.nanmedian(aw, 0); scale = 1.4826 * np.nanmedian(np.abs(aw - centre), 0)
+    def robust(state):  # robust_scale, NaN-aware
+        x = np.concatenate([car(c)[0] for c in cands if c[0] == state]); m = np.nanmedian(x, 0)
+        return m, 1.4826 * np.nanmedian(np.abs(x - m), 0)
+    centre, scale = robust('awake')
     W, rows, rec = [], [], dict(subject=subject, M=len(names), bad=[names[j] for j in bad], M_good=len(good), **extra)
     for state in ('awake', 'anaes'):
         cs = [c for c in cands if c[0] == state]
+        if own_scale and cs: centre, scale = robust(state)  # S-B
         ok = [c for c in cs if not c[3] and (lambda r, k: window_ok(r[:, k], centre[k], scale[k], np.zeros(1, bool)))(*car(c))]
         sel = [ok[i] for i in spread(len(ok), cap)]
         for c in sel:
@@ -56,7 +59,7 @@ def finish(subject, cands, names, out, qc, cap, extra):
     qc.append(rec); print(json.dumps(rec), flush=True)
 
 
-def prios(root, out, qc, cap=100):
+def prios(root, out, qc, cap=100, opt=''):
     for sdir in sorted(glob.glob(f'{root}/sub-PRIOS*')):
         subject = os.path.basename(sdir); runs = sorted(glob.glob(f'{sdir}/ses-1/ieeg/*_ieeg.vhdr'))
         ch = [pd.read_csv(r.replace('_ieeg.vhdr', '_channels.tsv'), sep='\t') for r in runs]
@@ -68,8 +71,13 @@ def prios(root, out, qc, cap=100):
             ev = pd.read_csv(run.replace('_ieeg.vhdr', '_events.tsv'), sep='\t')
             st = ev[ev['trial_type'] == 'electrical_stimulation'].assign(t=lambda e: e['onset'].astype(float)).sort_values('t')
             pulses = st['t'].values; sites = [str(s).split('-') for s in st['electrical_stimulation_site']]
-            excl = [(o - 2, o + d + 2) for o, d, t in zip(ev['onset'].astype(float), pd.to_numeric(ev['duration'], errors='coerce').fillna(0), ev['trial_type'])
-                    if t in ('artefact', 'seizure', 'burst suppression')]
+            excl, local = [], []  # local: S-A, (start, end, electrodes) of artefacts naming electrodes
+            for o, d, t, e0, e1 in zip(ev['onset'].astype(float), pd.to_numeric(ev['duration'], errors='coerce').fillna(0), ev['trial_type'],
+                                       ev.get('electrodes_involved_onset', 'all'), ev.get('electrodes_involved_offset', 'all')):
+                if t not in ('artefact', 'seizure', 'burst suppression'): continue
+                el = {n.strip() for n in f'{e0},{e1}'.split(',')} - {'nan', ''}
+                if 'A' in opt and t == 'artefact' and 'all' not in {x.lower() for x in el}: local.append((o - 2, o + d + 2, el))
+                else: excl.append((o - 2, o + d + 2))
             for i, (p0, p1) in enumerate(zip(pulses[:-1], pulses[1:])):
                 if p1 - p0 < 4.0: continue
                 b = p1 - 0.25; a = b - 2.25
@@ -77,9 +85,10 @@ def prios(root, out, qc, cap=100):
                 s0 = int(round(a * fs)); n = int(round(2.25 * fs))
                 if s0 + n > raw.n_times: continue
                 x = raw.get_data(picks=picks, start=s0, stop=s0 + n).T * 1e6
-                info = dict(delay_s=float(a - p0), run=os.path.basename(run), stim=sorted(set(sites[i] + sites[i + 1])))
+                drop = set(sites[i] + sites[i + 1]).union(*[el for s, e, el in local if s < b and e > a])
+                info = dict(delay_s=float(a - p0), run=os.path.basename(run), stim=sorted(drop))
                 cands.append((state, a, short_epoch(x, fs), has_flat(x, fs), info))
-        finish(subject, cands, names, out, qc, cap, {})
+        finish(subject, cands, names, out, qc, cap, {}, own_scale='B' in opt)
 
 
 def ds004541(root, out, qc, cap=30):
@@ -106,5 +115,5 @@ def ds004541(root, out, qc, cap=30):
 
 if __name__ == '__main__':
     mode, root, out = sys.argv[1:4]; os.makedirs(out, exist_ok=True); qc = []
-    {'prios': prios, 'ds004541': ds004541}[mode](root, out, qc)
+    prios(root, out, qc, opt=sys.argv[4] if len(sys.argv) > 4 else '') if mode == 'prios' else ds004541(root, out, qc)
     json.dump(qc, open(f'{out}/qc.json', 'w'), indent=1)
