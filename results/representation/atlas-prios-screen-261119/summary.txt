@@ -1,0 +1,7 @@
+subjects 7; usable minimal 123; discoveries 3 (control 0, fdp 0.00)
+  je_gaussian|je_kernel_W-0.5 [estimator: gaussian vs kernel] -0.0102 7/7 neg q 0.0234 dc +0.0002 nodeR2 -0.07,0.05 macaque -0.047461412847042084
+  ce_gaussian|ce_kernel_W-0.5 [estimator: gaussian vs kernel] -0.0093 7/7 neg q 0.0234 dc -0.0012 nodeR2 0.08,0.17 macaque -0.03831029683351517
+  cce_gaussian_n-5|cce_kozachenko_n-5 [estimator: gaussian vs kozachenko] -0.0631 7/7 neg q 0.0353 dc +0.0157 nodeR2 0.93,0.80 macaque -0.06260909885168076
+movers_minimal [('cce_gaussian_n-5|cce_kozachenko_n-5', -0.0631, 0.001), ('je_kernel_W-0.5|mi_kernel_W-0.25', -0.0031, 0.638)]
+{'movers_all': {'tested': 46, 'signed_mean': 0.011035561686676713, 'frac_same_sign': 0.8260869565217391, 'p_signflip': 0.015625}, 'concordance_minimal': {'coordinates': 77, 'r': 0.4189829187797312, 'p_signflip': 0.125, 'same_sign': 0.4805194805194805}, 'concordance_all': {'coordinates': 2883, 'r': 0.3234832208689241, 'p_signflip': 0.0859375, 'same_sign': 0.6385709330558446}}
+all usable {'tested': 3408, 'discoveries': 8, 'control_discoveries': 0, 'rising': 4} anchor -0.0132 7

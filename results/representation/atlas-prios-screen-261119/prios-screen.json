@@ -1,0 +1,3102 @@
+{
+ "subjects": [
+  "sub-PRIOS01",
+  "sub-PRIOS02",
+  "sub-PRIOS03",
+  "sub-PRIOS04",
+  "sub-PRIOS05",
+  "sub-PRIOS06",
+  "sub-PRIOS09"
+ ],
+ "windows": {
+  "sub-PRIOS01:awake": 322,
+  "sub-PRIOS01:anaes": 261,
+  "sub-PRIOS02:awake": 567,
+  "sub-PRIOS02:anaes": 210,
+  "sub-PRIOS03:awake": 461,
+  "sub-PRIOS03:anaes": 39,
+  "sub-PRIOS04:awake": 438,
+  "sub-PRIOS04:anaes": 97,
+  "sub-PRIOS05:awake": 504,
+  "sub-PRIOS05:anaes": 192,
+  "sub-PRIOS06:awake": 268,
+  "sub-PRIOS06:anaes": 64,
+  "sub-PRIOS09:awake": 337,
+  "sub-PRIOS09:anaes": 151
+ },
+ "spis": 272,
+ "coordinates": 36856,
+ "accounting": {
+  "finite": 34453,
+  "plus_ceiling": 34218,
+  "plus_reliability": 3408,
+  "minimal": 704,
+  "minimal_usable": 123,
+  "spis_failing_reliability": [
+   "bary-sq_dtw_max",
+   "bary-sq_euclidean_max",
+   "bary-sq_sgddtw_max",
+   "bary_dtw_max",
+   "bary_euclidean_max",
+   "bary_sgddtw_max",
+   "cds",
+   "ce_kozachenko",
+   "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "coint_aeg_tstat_trend-c_autolag-aic_maxlag-10",
+   "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10",
+   "coint_aeg_tstat_trend-ct_autolag-bic_maxlag-10",
+   "coint_johansen_max_eig_stat_order-0_ardiff-1",
+   "coint_johansen_max_eig_stat_order-0_ardiff-10",
+   "coint_johansen_max_eig_stat_order-1_ardiff-1",
+   "coint_johansen_max_eig_stat_order-1_ardiff-10",
+   "coint_johansen_trace_stat_order-0_ardiff-10",
+   "coint_johansen_trace_stat_order-1_ardiff-10",
+   "corr_kendall_tau-10",
+   "corr_kendall_tau-10-sq",
+   "corr_kendall_tau-2-sq",
+   "corr_kendall_tau-20",
+   "corr_kendall_tau-20-sq",
+   "corr_kendall_tau-3",
+   "corr_kendall_tau-3-sq",
+   "corr_kendall_tau-4",
+   "corr_kendall_tau-4-sq",
+   "corr_kendall_tau-5",
+   "corr_kendall_tau-5-sq",
+   "corr_pearson_tau-10",
+   "corr_pearson_tau-10-sq",
+   "corr_pearson_tau-2-sq",
+   "corr_pearson_tau-20",
+   "corr_pearson_tau-20-sq",
+   "corr_pearson_tau-3",
+   "corr_pearson_tau-3-sq",
+   "corr_pearson_tau-4",
+   "corr_pearson_tau-4-sq",
+   "corr_pearson_tau-5",
+   "corr_pearson_tau-5-sq",
+   "corr_spearman_tau-10",
+   "corr_spearman_tau-10-sq",
+   "corr_spearman_tau-2-sq",
+   "corr_spearman_tau-20",
+   "corr_spearman_tau-20-sq",
+   "corr_spearman_tau-3",
+   "corr_spearman_tau-3-sq",
+   "corr_spearman_tau-4",
+   "corr_spearman_tau-4-sq",
+   "corr_spearman_tau-5",
+   "corr_spearman_tau-5-sq",
+   "cov-sq_GraphicalLasso",
+   "cov_GraphicalLasso",
+   "dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "ddtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "dtw",
+   "dtw_constraint-itakura",
+   "dtw_constraint-sakoe-chiba_radius-auto",
+   "gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2",
+   "gc_gaussian_k-1_kt-1_l-1_lt-1",
+   "gd_multitaper_delay_fs-1_fmin-0-25_fmax-0-5",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-25",
+   "gd_multitaper_delay_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "gwtau",
+   "icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "je_kozachenko",
+   "pcorr_EmpiricalCovariance",
+   "pcorr_GraphicalLasso",
+   "pcorr_MinCovDet",
+   "pdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "pdist_chebyshev",
+   "pec",
+   "pec_log",
+   "pec_orth",
+   "pec_orth_abs",
+   "pec_orth_log",
+   "pec_orth_log_abs",
+   "phase_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "phase_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "phase_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "phi_Geo_t-1_norm-0",
+   "phi_Geo_t-1_norm-1",
+   "pli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "pli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "ppc_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+   "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25",
+   "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
+   "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "prec-sq_GraphicalLasso",
+   "prec_GraphicalLasso",
+   "prec_MinCovDet",
+   "psi_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "psi_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "psi_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "psi_wavelet_mean_fs-1_fmin-0-25_fmax-0-5_mean",
+   "sgc_nonparametric_max_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_max_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-0-25_fmax-0-5",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-25",
+   "sgc_nonparametric_mean_fs-1_fmin-1e-05_fmax-0-5",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20",
+   "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
+   "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
+   "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
+   "si_kernel_W-0.5_k-1",
+   "si_kozachenko_k-1",
+   "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
+   "te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1",
+   "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
+   "te_symbolic_k-3",
+   "tlmi_kernel_W-0.25",
+   "tlmi_kraskov_NN-4",
+   "tlmi_kraskov_NN-4_DCE-AUTO",
+   "wpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
+   "wpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
+   "xcorr-sq_mean_sig-False",
+   "xcorr-sq_mean_sig-True",
+   "xcorr_mean_sig-False",
+   "xcorr_mean_sig-True",
+   "xme_kernel_W-0.5_k1",
+   "xme_kozachenko_k1",
+   "xme_kozachenko_k10"
+  ]
+ },
+ "primary": {
+  "tested": 123,
+  "undefined_p": 20,
+  "discoveries": 3,
+  "control_discoveries": 0,
+  "fdp_estimate": 0.0,
+  "claims": true,
+  "rows": [
+   {
+    "pair": "je_gaussian|je_kernel_W-0.5",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.010171676985919476,
+    "ci95": [
+     -0.013434374813745592,
+     -0.006908979158093359
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.0002646618813741952,
+    "q": 0.023381652310490608,
+    "subjects": [
+     -0.0065,
+     -0.0053,
+     -0.009,
+     -0.0125,
+     -0.0111,
+     -0.0114,
+     -0.0155
+    ],
+    "d_real": 0.01623276248574257,
+    "d_surr": 0.02640444040298462,
+    "d_dc": 0.00022492239077109843,
+    "z0": 0.8284683227539062,
+    "node_r2": [
+     -0.07383456306975787,
+     0.04629968448037505
+    ],
+    "reliability": [
+     0.541989632793762,
+     0.42339607209570124
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.047461412847042084,
+    "macaque_usable": true
+   },
+   {
+    "pair": "ce_gaussian|ce_kernel_W-0.5",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.009316853247582912,
+    "ci95": [
+     -0.012509663212313504,
+     -0.0061240432828523214
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.00038018947816453874,
+    "q": 0.023381652310490608,
+    "subjects": [
+     -0.0034,
+     -0.0087,
+     -0.01,
+     -0.0072,
+     -0.013,
+     -0.0136,
+     -0.0094
+    ],
+    "d_real": 0.01623276248574257,
+    "d_surr": 0.025549616664648056,
+    "d_dc": -0.0011642660247161984,
+    "z0": 0.8284683227539062,
+    "node_r2": [
+     0.08301959494702447,
+     0.170103624390876
+    ],
+    "reliability": [
+     0.5419896320927017,
+     0.42339607254429307
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.03831029683351517,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cce_gaussian_n-5|cce_kozachenko_n-5",
+    "cls": "estimator: gaussian vs kozachenko",
+    "character": "non-Gaussian dependence (entropy estimator)",
+    "literal": "Gaussian against Kozachenko-Leonenko entropy",
+    "confound": "marginal entropies are node-level",
+    "mean": -0.0631406307220459,
+    "ci95": [
+     -0.08833925900099385,
+     -0.03794200244309794
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.0008607369964011014,
+    "q": 0.035290216406186424,
+    "subjects": [
+     -0.1075,
+     -0.047,
+     -0.0693,
+     -0.056,
+     -0.0825,
+     -0.0581,
+     -0.0215
+    ],
+    "d_real": -0.06593326479196548,
+    "d_surr": -0.002792630810290575,
+    "d_dc": 0.01573519967496395,
+    "z0": 0.8650800585746765,
+    "node_r2": [
+     0.9345837698746234,
+     0.8002395199289737
+    ],
+    "reliability": [
+     0.49219969159217775,
+     0.4412622453150164
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.06260909885168076,
+    "macaque_usable": true
+   }
+  ],
+  "top_not_passing": [
+   {
+    "pair": "prec_EmpiricalCovariance|prec_LedoitWolf",
+    "cls": "estimator: Empirical vs LedoitWolf",
+    "character": null,
+    "literal": "shrinkage",
+    "confound": "identity for covariance (uniform scaling); conditioning for precision at T=200, M=125",
+    "mean": 0.001458431943319738,
+    "ci95": [
+     0.0006360432596696261,
+     0.0022808206269698495
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.004878614563494921,
+    "q": 0.1500173956155777,
+    "subjects": [
+     0.0012,
+     0.0004,
+     0.0023,
+     0.0024,
+     0.0002,
+     0.0017,
+     0.002
+    ],
+    "d_real": 0.011396603658795357,
+    "d_surr": 0.009938172064721584,
+    "d_dc": 0.0013366426574066281,
+    "z0": 0.8104931712150574,
+    "node_r2": [
+     0.19647772852447506,
+     0.0660666331865912
+    ],
+    "reliability": [
+     0.37739957324386836,
+     0.37792886955213734
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.03222951292991638,
+    "macaque_usable": true
+   },
+   {
+    "pair": "prec-sq_EmpiricalCovariance|prec-sq_MinCovDet",
+    "cls": "estimator: Empirical vs MinCovDet",
+    "character": "time-heterogeneous dependence: a minority of samples carries a pattern different from the bulk",
+    "literal": "classical against minimum-covariance-determinant estimate",
+    "confound": "spatially focal transients; spectral flag clustering",
+    "mean": -0.05029736086726189,
+    "ci95": [
+     -0.0803620438562654,
+     -0.020232677878258377
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.0064031826332211494,
+    "q": 0.15751829147338867,
+    "subjects": [
+     -0.018,
+     -0.1104,
+     -0.0717,
+     -0.0485,
+     -0.0519,
+     -0.0228,
+     -0.0288
+    ],
+    "d_real": -0.07798819243907928,
+    "d_surr": -0.0276908278465271,
+    "d_dc": -0.05191997066140175,
+    "z0": 0.7819827198982239,
+    "node_r2": [
+     0.18471330438190983,
+     0.21626223091351493
+    ],
+    "reliability": [
+     0.4853776406260493,
+     0.4036005932905019
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.03890157490968704,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov_LedoitWolf|prec_LedoitWolf",
+    "cls": "mediation",
+    "character": "mediation: direct against indirect coupling (marginal against conditional on all other channels)",
+    "literal": "organisation of marginal against partial dependence",
+    "confound": "montage, reference, M and T (precision near-singular at T=200)",
+    "mean": 0.0013589859008789062,
+    "ci95": [
+     0.00037253005484469567,
+     0.0023454417469131166
+    ],
+    "negative": 1,
+    "n": 7,
+    "p": 0.015024329535663128,
+    "q": 0.2634054314006459,
+    "subjects": [
+     0.0004,
+     -0.0,
+     0.0021,
+     0.0026,
+     0.0004,
+     0.0023,
+     0.0019
+    ],
+    "d_real": 0.017910191789269447,
+    "d_surr": 0.01655120588839054,
+    "d_dc": 0.0014146821340546012,
+    "z0": -0.6219605207443237,
+    "node_r2": [
+     0.058423413927509237,
+     0.0660666331865912
+    ],
+    "reliability": [
+     0.4857405096056454,
+     0.37792886955213734
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.006583442911505699,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov-sq_MinCovDet|kendalltau-sq",
+    "cls": "estimator: MinCovDet vs kendall",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.01096521969884634,
+    "ci95": [
+     -0.019217049578903054,
+     -0.0027133898187896265
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.01743326522409916,
+    "q": 0.2634054314006459,
+    "subjects": [
+     -0.0023,
+     -0.0144,
+     -0.0167,
+     0.003,
+     -0.0116,
+     -0.0237,
+     -0.0112
+    ],
+    "d_real": 0.00249657453969121,
+    "d_surr": 0.013461793772876263,
+    "d_dc": -0.00895954854786396,
+    "z0": 0.8491455912590027,
+    "node_r2": [
+     0.16083293173802377,
+     0.1407874305864584
+    ],
+    "reliability": [
+     0.3712840341679457,
+     0.5094209375926806
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.015453953295946121,
+    "macaque_usable": true
+   },
+   {
+    "pair": "kendalltau-sq|kendalltau",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.0024965342599898577,
+    "ci95": [
+     0.0005191888731699997,
+     0.004473879646809715
+    ],
+    "negative": 1,
+    "n": 7,
+    "p": 0.02140442468225956,
+    "q": 0.2634054314006459,
+    "subjects": [
+     0.0039,
+     0.0048,
+     0.0027,
+     -0.0016,
+     0.004,
+     0.0014,
+     0.0022
+    ],
+    "d_real": 0.04914354532957077,
+    "d_surr": 0.04664700850844383,
+    "d_dc": 0.0018755431519821286,
+    "z0": 0.3152199387550354,
+    "node_r2": [
+     0.1407874305864584,
+     0.05805198957596784
+    ],
+    "reliability": [
+     0.5094209375926806,
+     0.49237714499166246
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.00764073058962822,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov_LedoitWolf|pcorr_LedoitWolf",
+    "cls": "mediation (normalised)",
+    "character": "mediation (partial correlation)",
+    "literal": "marginal against partial correlation",
+    "confound": "as mediation",
+    "mean": -0.0012892825761809945,
+    "ci95": [
+     -0.002312332230848228,
+     -0.00026623292151376084
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.021561240777373314,
+    "q": 0.2634054314006459,
+    "subjects": [
+     -0.0002,
+     0.0,
+     -0.002,
+     -0.0026,
+     -0.0002,
+     -0.0021,
+     -0.002
+    ],
+    "d_real": -0.018328649923205376,
+    "d_surr": -0.01703936792910099,
+    "d_dc": -0.001347235287539661,
+    "z0": 0.6061583161354065,
+    "node_r2": [
+     0.058423413927509237,
+     0.07064704199722953
+    ],
+    "reliability": [
+     0.4857405096056454,
+     0.3293480368110942
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.007398555055260658,
+    "macaque_usable": true
+   },
+   {
+    "pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+    "cls": "estimator: gaussian vs kraskov_DCE",
+    "character": "non-Gaussian dependence: how far each pair departs from the dependence a Gaussian process with its covariance would carry",
+    "literal": "organisation of Gaussian against kNN (bias-corrected) information (mi, tlmi) or prediction (te: GC against TE)",
+    "confound": "spectral concentration, kNN estimator bias at T=200; MI part survives IAAFT; TE part tracks spectral entropy",
+    "mean": -0.01324439886957407,
+    "ci95": [
+     -0.02390140845336984,
+     -0.002587389285778301
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.02277386374771595,
+    "q": 0.2634054314006459,
+    "subjects": [
+     -0.0013,
+     -0.0099,
+     -0.0172,
+     -0.006,
+     -0.012,
+     -0.0369,
+     -0.0094
+    ],
+    "d_real": 0.018840083852410316,
+    "d_surr": 0.03208448365330696,
+    "d_dc": -0.011574634350836277,
+    "z0": 0.7424646019935608,
+    "node_r2": [
+     0.1347065350004595,
+     0.10053204095750408
+    ],
+    "reliability": [
+     0.5419896327759226,
+     0.32809458664774027
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.02362440526485443,
+    "macaque_usable": true
+   },
+   {
+    "pair": "xcorr_max_sig-True|xcorr-sq_max_sig-True",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.006156836170703173,
+    "ci95": [
+     0.001159622477009915,
+     0.01115404986439643
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.023556582629680634,
+    "q": 0.2634054314006459,
+    "subjects": [
+     0.0034,
+     0.0049,
+     0.0049,
+     0.001,
+     0.0102,
+     0.0164,
+     0.0022
+    ],
+    "d_real": 0.006465963087975979,
+    "d_surr": 0.00030912671354599297,
+    "d_dc": 0.005407444201409817,
+    "z0": 0.8348850607872009,
+    "node_r2": [
+     0.18296843803026466,
+     0.20887748141903278
+    ],
+    "reliability": [
+     0.3105974798986772,
+     0.3817731675912448
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.02569829486310482,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov-sq_MinCovDet|spearmanr-sq",
+    "cls": "estimator: MinCovDet vs spearman",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.009695751592516899,
+    "ci95": [
+     -0.018091584605047336,
+     -0.0012999185799864622
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.030124986544251442,
+    "q": 0.30878110726674396,
+    "subjects": [
+     -0.0014,
+     -0.0127,
+     -0.0169,
+     0.0032,
+     -0.0101,
+     -0.0234,
+     -0.0066
+    ],
+    "d_real": 0.003508244175463915,
+    "d_surr": 0.013203995302319527,
+    "d_dc": -0.008123934268951416,
+    "z0": 0.8540419936180115,
+    "node_r2": [
+     0.16083293173802377,
+     0.14865857898654863
+    ],
+    "reliability": [
+     0.3712840341679457,
+     0.4676177144219095
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.013650141656398773,
+    "macaque_usable": true
+   },
+   {
+    "pair": "prec-sq_EmpiricalCovariance|prec-sq_LedoitWolf",
+    "cls": "estimator: Empirical vs LedoitWolf",
+    "character": null,
+    "literal": "shrinkage",
+    "confound": "identity for covariance (uniform scaling); conditioning for precision at T=200, M=125",
+    "mean": 0.0025256702210754156,
+    "ci95": [
+     0.00019831402650642314,
+     0.004853026415644408
+    ],
+    "negative": 2,
+    "n": 7,
+    "p": 0.037754613906145096,
+    "q": 0.35721672498262846,
+    "subjects": [
+     -0.0001,
+     0.0002,
+     0.0045,
+     0.0052,
+     -0.0004,
+     0.0047,
+     0.0037
+    ],
+    "d_real": -0.005540098529309034,
+    "d_surr": -0.008065768517553806,
+    "d_dc": 0.0024704847019165754,
+    "z0": 0.7271741628646851,
+    "node_r2": [
+     0.18471330438190983,
+     0.04833714287656217
+    ],
+    "reliability": [
+     0.4853776406260493,
+     0.5576475472701974
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.03510855510830879,
+    "macaque_usable": true
+   },
+   {
+    "pair": "dcorr|dcorr_biased",
+    "cls": "estimator: biased vs unbiased",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.00046139955520629883,
+    "ci95": [
+     1.6846774521912854e-05,
+     0.0009059523358906849
+    ],
+    "negative": 1,
+    "n": 7,
+    "p": 0.044102370738983154,
+    "q": 0.3874708243778774,
+    "subjects": [
+     -0.0001,
+     0.0002,
+     0.0005,
+     0.0006,
+     0.0,
+     0.0014,
+     0.0006
+    ],
+    "d_real": 0.0013394781854003668,
+    "d_surr": 0.000878078571986407,
+    "d_dc": 0.0006146771484054625,
+    "z0": 0.9626580476760864,
+    "node_r2": [
+     0.1587220776731018,
+     0.18217111450069795
+    ],
+    "reliability": [
+     0.472929934967178,
+     0.37339077741022375
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.0020232200622558594,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov-sq_LedoitWolf|prec-sq_LedoitWolf",
+    "cls": "mediation",
+    "character": "mediation: direct against indirect coupling (marginal against conditional on all other channels)",
+    "literal": "organisation of marginal against partial dependence",
+    "confound": "montage, reference, M and T (precision near-singular at T=200)",
+    "mean": -0.001475862110964954,
+    "ci95": [
+     -0.0030295357720865985,
+     7.78115501566905e-05
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.059094782918691635,
+    "q": 0.484577210744222,
+    "subjects": [
+     -0.0003,
+     0.0007,
+     -0.0017,
+     -0.0039,
+     -0.0002,
+     -0.0032,
+     -0.0017
+    ],
+    "d_real": 0.008933459408581257,
+    "d_surr": 0.010409320704638958,
+    "d_dc": -0.00181861431337893,
+    "z0": 0.5821423530578613,
+    "node_r2": [
+     0.14979526506147478,
+     0.04833714287656217
+    ],
+    "reliability": [
+     0.4731218910884168,
+     0.5576475472701974
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.01580544374883175,
+    "macaque_usable": true
+   },
+   {
+    "pair": "corr_kendall_tau-1|corr_kendall_tau-1-sq",
+    "cls": "sign handling: signed vs sq",
+    "character": "sign structure: whether the strongest couplings include anticorrelations",
+    "literal": "organisation of signed against squared dependence",
+    "confound": "sampling noise at high spectral concentration (stationary null reproduces the per-window fall except under ketamine); common-average reference induces anticorrelations",
+    "mean": 0.002541840076446533,
+    "ci95": [
+     -0.0005365437418513074,
+     0.005620223894744374
+    ],
+    "negative": 1,
+    "n": 7,
+    "p": 0.08984695374965668,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0059,
+     0.005,
+     0.0002,
+     -0.0029,
+     0.0061,
+     0.0019,
+     0.0016
+    ],
+    "d_real": 0.043550994247198105,
+    "d_surr": 0.04100915417075157,
+    "d_dc": 0.0014436074998229742,
+    "z0": 0.26155564188957214,
+    "node_r2": [
+     0.05846385301942075,
+     0.1645719137660282
+    ],
+    "reliability": [
+     0.46013138754670874,
+     0.4428258084516445
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.011097925715148449,
+    "macaque_usable": true
+   },
+   {
+    "pair": "mi_kraskov_NN-4|mi_kraskov_NN-4_DCE-AUTO",
+    "cls": "estimator: kraskov vs kraskov_DCE",
+    "character": null,
+    "literal": "kNN information with and without the dynamic correlation exclusion",
+    "confound": "estimator diagnostic: autocorrelation bias",
+    "mean": -0.023507585749030113,
+    "ci95": [
+     -0.05266464081929323,
+     0.005649469321233003
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.09597723931074142,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0108,
+     -0.0366,
+     -0.0224,
+     -0.0021,
+     -0.0218,
+     -0.0857,
+     -0.0067
+    ],
+    "d_real": -0.023094236850738525,
+    "d_surr": 0.00041334968409501016,
+    "d_dc": -0.009123708121478558,
+    "z0": 0.8598484992980957,
+    "node_r2": [
+     0.221789494802652,
+     0.10053204095750408
+    ],
+    "reliability": [
+     0.35480320312521546,
+     0.32809458664774027
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.018985653296113014,
+    "macaque_usable": true
+   },
+   {
+    "pair": "kendalltau|corr_kendall_tau-2",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.0034173002932220697,
+    "ci95": [
+     -0.0010455353960833547,
+     0.007880135982527493
+    ],
+    "negative": 2,
+    "n": 7,
+    "p": 0.11011885106563568,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0094,
+     0.0018,
+     0.0036,
+     0.0095,
+     0.0039,
+     -0.0031,
+     -0.0011
+    ],
+    "d_real": 0.036217208951711655,
+    "d_surr": 0.03279990702867508,
+    "d_dc": 0.0033762794919312,
+    "z0": 0.8734201788902283,
+    "node_r2": [
+     0.05805198957596784,
+     0.05418164068411216
+    ],
+    "reliability": [
+     0.49237714499166246,
+     0.341984848181501
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.02713652327656746,
+    "macaque_usable": true
+   },
+   {
+    "pair": "pdist_canberra|pdist_braycurtis",
+    "cls": "estimator: braycurtis vs canberra",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.001332725747488439,
+    "ci95": [
+     -0.0030822137849395915,
+     0.00041676228996271334
+    ],
+    "negative": 5,
+    "n": 7,
+    "p": 0.11160178482532501,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0005,
+     -0.0024,
+     -0.0007,
+     0.0017,
+     -0.0028,
+     -0.0023,
+     -0.0033
+    ],
+    "d_real": 0.0026273727416992188,
+    "d_surr": 0.00396009860560298,
+    "d_dc": -0.0007165244896896183,
+    "z0": 0.9243594408035278,
+    "node_r2": [
+     0.04858361876423442,
+     0.06306900735488934
+    ],
+    "reliability": [
+     0.4719933134823308,
+     0.42934607383912976
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.013646054081618786,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov-sq_GraphicalLassoCV|cov-sq_MinCovDet",
+    "cls": "estimator: GraphicalLassoCV vs MinCovDet",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.006549707613885403,
+    "ci95": [
+     -0.015165239998975144,
+     0.002065824771204339
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.11219370365142822,
+    "q": 0.6176484680175781,
+    "subjects": [
+     -0.0007,
+     -0.0142,
+     -0.0076,
+     0.0114,
+     -0.012,
+     -0.0151,
+     -0.0077
+    ],
+    "d_real": 0.0064783948473632336,
+    "d_surr": 0.013028101995587349,
+    "d_dc": -0.005644866265356541,
+    "z0": 0.8088356852531433,
+    "node_r2": [
+     0.16288982997057108,
+     0.16083293173802377
+    ],
+    "reliability": [
+     0.5445763988421931,
+     0.3712840341679457
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.023828748613595963,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_kendall_tau-1|corr_kendall_tau-2",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.00201527145691216,
+    "ci95": [
+     -0.0006901628357741702,
+     0.00472070574959849
+    ],
+    "negative": 2,
+    "n": 7,
+    "p": 0.11817771941423416,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0052,
+     0.0009,
+     0.0017,
+     0.0062,
+     0.0025,
+     -0.0018,
+     -0.0007
+    ],
+    "d_real": 0.0367976613342762,
+    "d_surr": 0.03478238731622696,
+    "d_dc": 0.0019642242696136236,
+    "z0": 0.910650908946991,
+    "node_r2": [
+     0.05846385301942075,
+     0.05418164068411216
+    ],
+    "reliability": [
+     0.46013138754670874,
+     0.341984848181501
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.02155981957912445,
+    "macaque_usable": true
+   },
+   {
+    "pair": "mi_gaussian|mi_kraskov_NN-4",
+    "cls": "estimator: gaussian vs kraskov",
+    "character": null,
+    "literal": "Gaussian against uncorrected kNN information",
+    "confound": "autocorrelation bias of uncorrected KSG dominates",
+    "mean": -0.014754124917089939,
+    "ci95": [
+     -0.03567311243361755,
+     0.006164862599437677
+    ],
+    "negative": 6,
+    "n": 7,
+    "p": 0.1351366490125656,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0005,
+     -0.0101,
+     -0.0006,
+     -0.0059,
+     -0.0159,
+     -0.0645,
+     -0.0068
+    ],
+    "d_real": 0.019206242635846138,
+    "d_surr": 0.03396036848425865,
+    "d_dc": -0.004038555081933737,
+    "z0": 0.7206169962882996,
+    "node_r2": [
+     0.1347065350004595,
+     0.221789494802652
+    ],
+    "reliability": [
+     0.5419896327759226,
+     0.35480320312521546
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.022166308015584946,
+    "macaque_usable": true
+   },
+   {
+    "pair": "spearmanr|corr_spearman_tau-2",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.0031184894032776356,
+    "ci95": [
+     -0.0013140124064923387,
+     0.00755099121304761
+    ],
+    "negative": 2,
+    "n": 7,
+    "p": 0.13593749701976776,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0092,
+     0.0016,
+     0.0035,
+     0.0095,
+     0.0022,
+     -0.0031,
+     -0.0011
+    ],
+    "d_real": 0.03619961813092232,
+    "d_surr": 0.03308112546801567,
+    "d_dc": 0.0030520346481353045,
+    "z0": 0.8759194016456604,
+    "node_r2": [
+     0.058787510035644266,
+     0.05504927385471728
+    ],
+    "reliability": [
+     0.48134780626750245,
+     0.3382012068280833
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.027118908241391182,
+    "macaque_usable": true
+   },
+   {
+    "pair": "xme_gaussian_k1|xme_gaussian_k10",
+    "cls": "option: k1 vs k10",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.00195110694039613,
+    "ci95": [
+     -0.0008590396374343599,
+     0.00476125351822662
+    ],
+    "negative": 2,
+    "n": 7,
+    "p": 0.14025051891803741,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0058,
+     0.0004,
+     0.0061,
+     0.0006,
+     -0.001,
+     0.0029,
+     -0.0011
+    ],
+    "d_real": 0.035706792026758194,
+    "d_surr": 0.03375568613409996,
+    "d_dc": 0.002151940483599901,
+    "z0": 0.7912349104881287,
+    "node_r2": [
+     0.08515748529295346,
+     0.23804014375198443
+    ],
+    "reliability": [
+     0.42084237181543427,
+     0.33772123117997666
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.003110794583335519,
+    "macaque_usable": true
+   },
+   {
+    "pair": "pdist_euclidean|pdist_cityblock",
+    "cls": "estimator: cityblock vs euclidean",
+    "character": "tail weight of the pair disagreement signal x - y (mean absolute against RMS difference; constant for Gaussian x - y)",
+    "literal": "L1 against L2 distance",
+    "confound": "ceiling; marginal shape of each channel enters x - y",
+    "mean": -0.0009763496345840394,
+    "ci95": [
+     -0.0023845357691198174,
+     0.00043183649995173854
+    ],
+    "negative": 4,
+    "n": 7,
+    "p": 0.14071057736873627,
+    "q": 0.6176484680175781,
+    "subjects": [
+     -0.0004,
+     -0.0029,
+     -0.0027,
+     0.0008,
+     -0.0021,
+     0.0002,
+     0.0002
+    ],
+    "d_real": 0.0018836259841918945,
+    "d_surr": 0.002859975676983595,
+    "d_dc": -0.0007065279060043395,
+    "z0": 0.9777749180793762,
+    "node_r2": [
+     0.052676485509514155,
+     0.05535044533253314
+    ],
+    "reliability": [
+     0.5243188302585791,
+     0.5114102201321081
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.010231745429337025,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_spearman_tau-1|corr_spearman_tau-2",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.0018312250031158328,
+    "ci95": [
+     -0.0008653608493215388,
+     0.004527810855553205
+    ],
+    "negative": 2,
+    "n": 7,
+    "p": 0.14764216542243958,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.0052,
+     0.0008,
+     0.0017,
+     0.0062,
+     0.0014,
+     -0.0018,
+     -0.0007
+    ],
+    "d_real": 0.036891091614961624,
+    "d_surr": 0.035059865564107895,
+    "d_dc": 0.0017655789852142334,
+    "z0": 0.91160649061203,
+    "node_r2": [
+     0.05933569331701805,
+     0.05504927385471728
+    ],
+    "reliability": [
+     0.4524140864093168,
+     0.3382012068280833
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.021689249202609062,
+    "macaque_usable": true
+   },
+   {
+    "pair": "cov-sq_MinCovDet|cov-sq_ShrunkCovariance",
+    "cls": "estimator: MinCovDet vs Shrunk",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.004667520523071289,
+    "ci95": [
+     -0.011812365997236646,
+     0.0024773249510940667
+    ],
+    "negative": 4,
+    "n": 7,
+    "p": 0.1610482633113861,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.003,
+     -0.0128,
+     -0.0103,
+     0.0058,
+     -0.0086,
+     -0.011,
+     0.0013
+    ],
+    "d_real": 0.007274764124304056,
+    "d_surr": 0.011942284181714058,
+    "d_dc": -0.0035758784506469965,
+    "z0": 0.850791871547699,
+    "node_r2": [
+     0.16083293173802377,
+     0.14980407482327632
+    ],
+    "reliability": [
+     0.3712840341679457,
+     0.47312189113235964
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.00117427424993366,
+    "macaque_usable": false
+   },
+   {
+    "pair": "cov-sq_LedoitWolf|cov-sq_MinCovDet",
+    "cls": "estimator: LedoitWolf vs MinCovDet",
+    "character": "time-heterogeneous dependence (shrunk classical against robust)",
+    "literal": "shrunk against robust estimate",
+    "confound": "shrinkage as well as robustness differ",
+    "mean": -0.004667520523071289,
+    "ci95": [
+     -0.011812365997236646,
+     0.0024773249510940667
+    ],
+    "negative": 4,
+    "n": 7,
+    "p": 0.1610482633113861,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.003,
+     -0.0128,
+     -0.0103,
+     0.0058,
+     -0.0086,
+     -0.011,
+     0.0013
+    ],
+    "d_real": 0.007274764124304056,
+    "d_surr": 0.011942284181714058,
+    "d_dc": -0.0035773005802184343,
+    "z0": 0.850791871547699,
+    "node_r2": [
+     0.14979526506147478,
+     0.16083293173802377
+    ],
+    "reliability": [
+     0.4731218910884168,
+     0.3712840341679457
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.00117427424993366,
+    "macaque_usable": false
+   },
+   {
+    "pair": "cov-sq_MinCovDet|cov-sq_OAS",
+    "cls": "estimator: MinCovDet vs OAS",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.004667520523071289,
+    "ci95": [
+     -0.011812365997236646,
+     0.0024773249510940667
+    ],
+    "negative": 4,
+    "n": 7,
+    "p": 0.1610482633113861,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.003,
+     -0.0128,
+     -0.0103,
+     0.0058,
+     -0.0086,
+     -0.011,
+     0.0013
+    ],
+    "d_real": 0.007274764124304056,
+    "d_surr": 0.011942284181714058,
+    "d_dc": -0.003576942952349782,
+    "z0": 0.850791871547699,
+    "node_r2": [
+     0.16083293173802377,
+     0.1497948255867861
+    ],
+    "reliability": [
+     0.3712840341679457,
+     0.4731218912174748
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.00117427424993366,
+    "macaque_usable": false
+   },
+   {
+    "pair": "cov-sq_EmpiricalCovariance|cov-sq_MinCovDet",
+    "cls": "estimator: Empirical vs MinCovDet",
+    "character": "time-heterogeneous dependence: a minority of samples carries a pattern different from the bulk",
+    "literal": "classical against minimum-covariance-determinant estimate",
+    "confound": "spatially focal transients; spectral flag clustering",
+    "mean": -0.004667520523071289,
+    "ci95": [
+     -0.011812365997236646,
+     0.0024773249510940667
+    ],
+    "negative": 4,
+    "n": 7,
+    "p": 0.1610482633113861,
+    "q": 0.6176484680175781,
+    "subjects": [
+     0.003,
+     -0.0128,
+     -0.0103,
+     0.0058,
+     -0.0086,
+     -0.011,
+     0.0013
+    ],
+    "d_real": 0.007274764124304056,
+    "d_surr": 0.011942284181714058,
+    "d_dc": -0.0035791993141174316,
+    "z0": 0.850791871547699,
+    "node_r2": [
+     0.1497898731223415,
+     0.16083293173802377
+    ],
+    "reliability": [
+     0.4731218911323238,
+     0.3712840341679457
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.00117427424993366,
+    "macaque_usable": false
+   }
+  ]
+ },
+ "movers_minimal": {
+  "tested": 2,
+  "rows": [
+   {
+    "pair": "cce_gaussian_n-5|cce_kozachenko_n-5",
+    "cls": "estimator: gaussian vs kozachenko",
+    "character": "non-Gaussian dependence (entropy estimator)",
+    "literal": "Gaussian against Kozachenko-Leonenko entropy",
+    "confound": "marginal entropies are node-level",
+    "mean": -0.0631406307220459,
+    "ci95": [
+     -0.08833925900099385,
+     -0.03794200244309794
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": null,
+    "q": null,
+    "subjects": [
+     -0.1075,
+     -0.047,
+     -0.0693,
+     -0.056,
+     -0.0825,
+     -0.0581,
+     -0.0215
+    ],
+    "d_real": -0.06593326479196548,
+    "d_surr": -0.002792630810290575,
+    "d_dc": 0.01573519967496395,
+    "z0": 0.8650800585746765,
+    "node_r2": [
+     0.9345837698746234,
+     0.8002395199289737
+    ],
+    "reliability": [
+     0.49219969159217775,
+     0.4412622453150164
+    ],
+    "usable": true,
+    "macaque_drug_net": -0.06260909885168076,
+    "macaque_usable": true,
+    "predicted": -1,
+    "p_one": 0.0004303681632462716,
+    "p_holm": 0.0008607363264925433
+   },
+   {
+    "pair": "je_kernel_W-0.5|mi_kernel_W-0.25",
+    "cls": "marginal entropies added",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.0031100085470825434,
+    "ci95": [
+     -0.023619640499245337,
+     0.01739962340508025
+    ],
+    "negative": 3,
+    "n": 7,
+    "p": null,
+    "q": null,
+    "subjects": [
+     0.0127,
+     -0.0268,
+     -0.0355,
+     0.0091,
+     -0.0148,
+     0.02,
+     0.0135
+    ],
+    "d_real": -0.025892743840813637,
+    "d_surr": -0.022782733663916588,
+    "d_dc": -0.008944971486926079,
+    "z0": -0.8260800242424011,
+    "node_r2": [
+     0.04629968448037505,
+     0.20330220884885486
+    ],
+    "reliability": [
+     0.42339607209570124,
+     0.34502882486560826
+    ],
+    "usable": true,
+    "macaque_drug_net": 0.050381310284137726,
+    "macaque_usable": true,
+    "predicted": 1,
+    "p_one": 0.6383223925953834,
+    "p_holm": 0.6383223925953834
+   }
+  ],
+  "not_usable": [
+   "tlmi_kernel_W-0.25|te_kernel_W-0.25_k-1",
+   "pdist_cityblock|pdist_chebyshev",
+   "cov_EmpiricalCovariance|pcorr_EmpiricalCovariance",
+   "pdist_chebyshev|pdist_canberra",
+   "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25|cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+   "cov_MinCovDet|pcorr_MinCovDet",
+   "pdist_cosine|pdist_chebyshev",
+   "pdist_euclidean|pdist_chebyshev",
+   "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25|plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5"
+  ]
+ },
+ "movers_all": {
+  "tested": 46,
+  "signed_mean": 0.011035561686676713,
+  "frac_same_sign": 0.8260869565217391,
+  "p_signflip": 0.015625
+ },
+ "concordance_minimal": {
+  "coordinates": 77,
+  "r": 0.4189829187797312,
+  "p_signflip": 0.125,
+  "same_sign": 0.4805194805194805
+ },
+ "concordance_all": {
+  "coordinates": 2883,
+  "r": 0.3234832208689241,
+  "p_signflip": 0.0859375,
+  "same_sign": 0.6385709330558446
+ },
+ "minimal_no_reliability": {
+  "tested": 595,
+  "discoveries": 40,
+  "control_discoveries": 0,
+  "rows": [
+   {
+    "pair": "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-5|dtf_multitaper_max_fs-1_fmin-0_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.009430212900042534,
+    "ci95": [
+     0.00745192629516738,
+     0.011408499504917687
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 2.3931763280415908e-05,
+    "q": 0.00783234927803278,
+    "subjects": [
+     0.0088,
+     0.0105,
+     0.012,
+     0.0111,
+     0.008,
+     0.01,
+     0.0057
+    ],
+    "d_real": 0.02358483336865902,
+    "d_surr": 0.01415462139993906,
+    "d_dc": 0.006908182520419359,
+    "z0": 0.6530678868293762,
+    "node_r2": [
+     0.7349278324315001,
+     0.37678049817082804
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.01998303085565567,
+    "macaque_usable": false
+   },
+   {
+    "pair": "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.009408950805664062,
+    "ci95": [
+     0.007402245057228678,
+     0.011415656554099447
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 2.6327224986744113e-05,
+    "q": 0.00783234927803278,
+    "subjects": [
+     0.0087,
+     0.0105,
+     0.012,
+     0.0111,
+     0.008,
+     0.01,
+     0.0056
+    ],
+    "d_real": 0.023570213466882706,
+    "d_surr": 0.014161263592541218,
+    "d_dc": 0.006853950675576925,
+    "z0": 0.6530836820602417,
+    "node_r2": [
+     0.735003451588622,
+     0.37677551632756495
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.019936567172408104,
+    "macaque_usable": false
+   },
+   {
+    "pair": "pec_log|pec_orth_log",
+    "cls": "zero-lag removal (envelope)",
+    "character": "lagged share of amplitude coupling (volume-conduction-free)",
+    "literal": "envelope correlation with and without orthogonalisation",
+    "confound": "pec_orth unreliable",
+    "mean": 0.026647210121154785,
+    "ci95": [
+     0.019232087993069392,
+     0.03406233224924018
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00011998174886684865,
+    "q": 0.016470345003264292,
+    "subjects": [
+     0.0235,
+     0.0242,
+     0.035,
+     0.0348,
+     0.0325,
+     0.0128,
+     0.0239
+    ],
+    "d_real": 0.0020159396808594465,
+    "d_surr": -0.02463127113878727,
+    "d_dc": 0.02945590950548649,
+    "z0": 0.7513989210128784,
+    "node_r2": [
+     0.1830960430244188,
+     0.14411518309679724
+    ],
+    "reliability": [
+     0.11916584690803832,
+     0.017752145115239686
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.04877915233373642,
+    "macaque_usable": false
+   },
+   {
+    "pair": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20|sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.004029401578009129,
+    "ci95": [
+     0.002881650759305729,
+     0.005177152396712528
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00013678314280696213,
+    "q": 0.016470345003264292,
+    "subjects": [
+     0.0022,
+     0.0049,
+     0.0028,
+     0.0053,
+     0.0044,
+     0.0034,
+     0.0051
+    ],
+    "d_real": 0.011887950822710991,
+    "d_surr": 0.007858549244701862,
+    "d_dc": 0.002672450849786401,
+    "z0": 0.6041055917739868,
+    "node_r2": [
+     0.15057679731582208,
+     0.16270441802146868
+    ],
+    "reliability": [
+     0.03431420175592388,
+     0.028150556997229594
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.004134651739150286,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25|dcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.008262336254119873,
+    "ci95": [
+     0.005901141214038299,
+     0.010623531294201446
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00013931574358139187,
+    "q": 0.016470345003264292,
+    "subjects": [
+     0.0088,
+     0.0124,
+     0.0086,
+     0.0063,
+     0.0103,
+     0.0055,
+     0.0059
+    ],
+    "d_real": 0.029160192236304283,
+    "d_surr": 0.02089785598218441,
+    "d_dc": 0.006530914921313524,
+    "z0": 0.5581680536270142,
+    "node_r2": [
+     0.13887962430417447,
+     0.14855614831267996
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.012453333474695683,
+    "macaque_usable": false
+   },
+   {
+    "pair": "xme_gaussian_k1|xme_kernel_W-0.5_k1",
+    "cls": "estimator: gaussian vs kernel",
+    "character": "non-Gaussian dependence (kernel estimator)",
+    "literal": "Gaussian against kernel information",
+    "confound": "kernel bandwidth; autocorrelation bias",
+    "mean": -0.012807352468371391,
+    "ci95": [
+     -0.01658768728074802,
+     -0.009027017655994764
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.0001669140619924292,
+    "q": 0.016470345003264292,
+    "subjects": [
+     -0.0134,
+     -0.0057,
+     -0.012,
+     -0.0117,
+     -0.0196,
+     -0.0142,
+     -0.013
+    ],
+    "d_real": 0.01576272025704384,
+    "d_surr": 0.02857007272541523,
+    "d_dc": -0.004362583160400391,
+    "z0": 0.7658200263977051,
+    "node_r2": [
+     0.08515748529295346,
+     0.19465717950579256
+    ],
+    "reliability": [
+     0.42084237181543427,
+     0.2958478132817236
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.033026937395334244,
+    "macaque_usable": true
+   },
+   {
+    "pair": "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25|dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.006033197045326233,
+    "ci95": [
+     0.004204015444209203,
+     0.007862378646443263
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00019376876298338175,
+    "q": 0.016470345003264292,
+    "subjects": [
+     0.0039,
+     0.0073,
+     0.0078,
+     0.0027,
+     0.007,
+     0.0074,
+     0.0062
+    ],
+    "d_real": 0.031065572053194046,
+    "d_surr": 0.025032376870512962,
+    "d_dc": 0.00392836332321167,
+    "z0": 0.04292821139097214,
+    "node_r2": [
+     0.09464013886626055,
+     0.055422352265219785
+    ],
+    "reliability": [
+     0.018946080493948,
+     0.003359749224234656
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.05584993585944176,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dtf_multitaper_max_fs-1_fmin-0_fmax-0-5|dtf_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.01677381992340088,
+    "ci95": [
+     0.011350342332206696,
+     0.022197297514595062
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0002765321696642786,
+    "q": 0.016472329199314118,
+    "subjects": [
+     0.0213,
+     0.0139,
+     0.0229,
+     0.0191,
+     0.0106,
+     0.0214,
+     0.0082
+    ],
+    "d_real": 0.035229358822107315,
+    "d_surr": 0.018455538898706436,
+    "d_dc": 0.018489275127649307,
+    "z0": 0.5767582058906555,
+    "node_r2": [
+     0.37678049817082804,
+     0.3899512179817422
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.03788457065820694,
+    "macaque_usable": false
+   },
+   {
+    "pair": "pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5|pdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.016773631796240807,
+    "ci95": [
+     0.011349097353475956,
+     0.022198166239005657
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00027684587985277176,
+    "q": 0.016472329199314118,
+    "subjects": [
+     0.0213,
+     0.0139,
+     0.0229,
+     0.0191,
+     0.0106,
+     0.0214,
+     0.0081
+    ],
+    "d_real": 0.035228628665208817,
+    "d_surr": 0.01845499500632286,
+    "d_dc": 0.018516672775149345,
+    "z0": 0.5767582654953003,
+    "node_r2": [
+     0.37677551632756495,
+     0.38999018124870727
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.03787866607308388,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dtf_multitaper_mean_fs-1_fmin-0_fmax-0-25|dtf_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.007708174642175436,
+    "ci95": [
+     0.0050547896433472085,
+     0.010361559641003663
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00038957144715823233,
+    "q": 0.01738454827240535,
+    "subjects": [
+     0.0071,
+     0.0108,
+     0.0115,
+     0.0072,
+     0.0084,
+     0.0053,
+     0.0035
+    ],
+    "d_real": 0.021650979295372963,
+    "d_surr": 0.013942803256213665,
+    "d_dc": 0.005682540591806173,
+    "z0": 0.6883446574211121,
+    "node_r2": [
+     0.6166946869929757,
+     0.35856834103303137
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.01415343303233385,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-5|dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.02194705232977867,
+    "ci95": [
+     0.01435524477419313,
+     0.029538859885364213
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.000400053831981495,
+    "q": 0.01738454827240535,
+    "subjects": [
+     0.0324,
+     0.0233,
+     0.0286,
+     0.0247,
+     0.0102,
+     0.0118,
+     0.0227
+    ],
+    "d_real": 0.04981641098856926,
+    "d_surr": 0.027869360521435738,
+    "d_dc": 0.015914252027869225,
+    "z0": 0.4213215708732605,
+    "node_r2": [
+     0.12870784413335085,
+     0.0748838086859163
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.002280376385897398,
+    "macaque_usable": false
+   },
+   {
+    "pair": "pdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25|pdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.00769265228882432,
+    "ci95": [
+     0.005020741810304222,
+     0.010364562767344418
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.00040904819616116583,
+    "q": 0.01738454827240535,
+    "subjects": [
+     0.0071,
+     0.0108,
+     0.0115,
+     0.0072,
+     0.0084,
+     0.0053,
+     0.0034
+    ],
+    "d_real": 0.021640846505761147,
+    "d_surr": 0.01394819375127554,
+    "d_dc": 0.005684835370630026,
+    "z0": 0.6883552670478821,
+    "node_r2": [
+     0.6167321892648637,
+     0.3585481478368414
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.014154883101582527,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dcoh_multitaper_max_fs-1_fmin-0_fmax-0-25|dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.009449011646211147,
+    "ci95": [
+     0.005977135157732754,
+     0.012920888134689541
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0005543357692658901,
+    "q": 0.021497854962944984,
+    "subjects": [
+     0.0014,
+     0.0109,
+     0.0125,
+     0.0089,
+     0.0117,
+     0.0114,
+     0.0093
+    ],
+    "d_real": 0.03327895328402519,
+    "d_surr": 0.02382994070649147,
+    "d_dc": 0.005593831185251474,
+    "z0": 0.05434197932481766,
+    "node_r2": [
+     0.14855614831267996,
+     0.0748838086859163
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.03202786296606064,
+    "macaque_usable": false
+   },
+   {
+    "pair": "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25|gpdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.009250568225979805,
+    "ci95": [
+     0.005824929855047857,
+     0.012676206596911753
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0005780935753136873,
+    "q": 0.021497854962944984,
+    "subjects": [
+     0.0016,
+     0.0108,
+     0.0127,
+     0.0081,
+     0.0121,
+     0.0099,
+     0.0096
+    ],
+    "d_real": 0.0331047885119915,
+    "d_surr": 0.023854222148656845,
+    "d_dc": 0.005601770244538784,
+    "z0": 0.05406753346323967,
+    "node_r2": [
+     0.1542828667737126,
+     0.07732928075600992
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.03190888464450836,
+    "macaque_usable": false
+   },
+   {
+    "pair": "gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5|gpdcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.023185938596725464,
+    "ci95": [
+     0.01434721500837757,
+     0.032024662185073355
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0006750371539965272,
+    "q": 0.022928946548038058,
+    "subjects": [
+     0.0354,
+     0.0239,
+     0.0311,
+     0.0266,
+     0.0103,
+     0.0107,
+     0.0244
+    ],
+    "d_real": 0.05155900865793228,
+    "d_surr": 0.028373071923851967,
+    "d_dc": 0.017373820766806602,
+    "z0": 0.4181149899959564,
+    "node_r2": [
+     0.1348339904105363,
+     0.07732928075600992
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.0005846729618497193,
+    "macaque_usable": false
+   },
+   {
+    "pair": "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-25|gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.0074026924557983875,
+    "ci95": [
+     0.004566264124116397,
+     0.010239120787480377
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0006936488207429647,
+    "q": 0.022928946548038058,
+    "subjects": [
+     0.007,
+     0.0123,
+     0.0086,
+     0.004,
+     0.01,
+     0.0048,
+     0.0051
+    ],
+    "d_real": 0.026201512664556503,
+    "d_surr": 0.018798818811774254,
+    "d_dc": 0.006154068745672703,
+    "z0": 0.6098618507385254,
+    "node_r2": [
+     0.1476165366551572,
+     0.1542828667737126
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.006007461342960596,
+    "macaque_usable": false
+   },
+   {
+    "pair": "spearmanr-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.026591943576931953,
+    "ci95": [
+     0.015136027418737728,
+     0.03804785973512618
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0012835002271458507,
+    "q": 0.038184133172035215,
+    "subjects": [
+     0.0176,
+     0.025,
+     0.0107,
+     0.0472,
+     0.0384,
+     0.0225,
+     0.0246
+    ],
+    "d_real": 0.1402442455291748,
+    "d_surr": 0.1136522963643074,
+    "d_dc": 0.025827115401625633,
+    "z0": 0.24199998378753662,
+    "node_r2": [
+     0.14865857898654863,
+     0.1741853891109498
+    ],
+    "reliability": [
+     0.4676177144219095,
+     0.03603232170662213
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.024897893890738487,
+    "macaque_usable": false
+   },
+   {
+    "pair": "cov_EmpiricalCovariance|corr_pearson_tau-10",
+    "cls": "lag: 0 vs L>1",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.020262708887457848,
+    "ci95": [
+     0.011107764456411593,
+     0.0294176533185041
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0016393172554671764,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0279,
+     0.0141,
+     0.0145,
+     0.0383,
+     0.0219,
+     0.0152,
+     0.01
+    ],
+    "d_real": 0.5371618866920471,
+    "d_surr": 0.5168991684913635,
+    "d_dc": 0.020215516909956932,
+    "z0": -0.008140872232615948,
+    "node_r2": [
+     0.058427135410758474,
+     0.038567275931073335
+    ],
+    "reliability": [
+     0.48574050962624876,
+     0.060559856355382476
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.04903959110379219,
+    "macaque_usable": false
+   },
+   {
+    "pair": "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25|icoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.006158440373837948,
+    "ci95": [
+     0.0033713279061367055,
+     0.00894555284153919
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.001653352053835988,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0082,
+     0.008,
+     0.0107,
+     0.0062,
+     0.0039,
+     0.0045,
+     0.0018
+    ],
+    "d_real": 0.022370105609297752,
+    "d_surr": 0.01621166802942753,
+    "d_dc": 0.003491626586765051,
+    "z0": 0.03367672860622406,
+    "node_r2": [
+     0.07511396252783129,
+     0.04656093744855139
+    ],
+    "reliability": [
+     0.024029041370894254,
+     0.0018415941158815999
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.02214243821799755,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_pearson_tau-4|corr_pearson_tau-5",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.0010845576180145144,
+    "ci95": [
+     0.0005909101735889833,
+     0.0015782050624400456
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0017021973617374897,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0011,
+     0.0006,
+     0.0012,
+     0.0017,
+     0.0018,
+     0.0006,
+     0.0005
+    ],
+    "d_real": 0.06687633693218231,
+    "d_surr": 0.0657917782664299,
+    "d_dc": 0.0010956270853057504,
+    "z0": 0.9008137583732605,
+    "node_r2": [
+     0.04266417387684836,
+     0.04195839456028584
+    ],
+    "reliability": [
+     0.1961905866506663,
+     0.14859914497266669
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.011177496053278446,
+    "macaque_usable": true
+   },
+   {
+    "pair": "corr_spearman_tau-1-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.02962672710418701,
+    "ci95": [
+     0.016101915899530035,
+     0.04315153830884399
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0017279965104535222,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0198,
+     0.0281,
+     0.0135,
+     0.053,
+     0.0458,
+     0.0191,
+     0.028
+    ],
+    "d_real": 0.1648981273174286,
+    "d_surr": 0.13527140021324158,
+    "d_dc": 0.028646383434534073,
+    "z0": 0.24710962176322937,
+    "node_r2": [
+     0.1700443734948898,
+     0.1741853891109498
+    ],
+    "reliability": [
+     0.413279206105085,
+     0.03603232170662213
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.029056265950202942,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|dcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.013737878762185574,
+    "ci95": [
+     0.007369928150671158,
+     0.02010582937369999
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.001867306069470942,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.017,
+     0.0139,
+     0.021,
+     0.0185,
+     0.0037,
+     0.0046,
+     0.0174
+    ],
+    "d_real": 0.04142669588327408,
+    "d_surr": 0.02768881805241108,
+    "d_dc": 0.00786842592060566,
+    "z0": 0.4811832904815674,
+    "node_r2": [
+     0.11959047882533477,
+     0.12870784413335085
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.0015895962715148926,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_pearson_tau-3|corr_pearson_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.01141385454684496,
+    "ci95": [
+     0.006003327909372507,
+     0.01682438118431741
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0020908149890601635,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0168,
+     0.0118,
+     0.0071,
+     0.0214,
+     0.0092,
+     0.0089,
+     0.0047
+    ],
+    "d_real": 0.4368340075016022,
+    "d_surr": 0.4254201054573059,
+    "d_dc": 0.011310389265418053,
+    "z0": 0.05021948367357254,
+    "node_r2": [
+     0.04599093406581438,
+     0.038567275931073335
+    ],
+    "reliability": [
+     0.26089863101150473,
+     0.060559856355382476
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.09754762798547745,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_pearson_tau-1|corr_pearson_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.019425364211201668,
+    "ci95": [
+     0.010198986260871165,
+     0.02865174216153217
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0021116130519658327,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0267,
+     0.0134,
+     0.0136,
+     0.0373,
+     0.0226,
+     0.0129,
+     0.0094
+    ],
+    "d_real": 0.5513859391212463,
+    "d_surr": 0.5319606065750122,
+    "d_dc": 0.019350329414010048,
+    "z0": -0.004035673104226589,
+    "node_r2": [
+     0.05894800853627188,
+     0.038567275931073335
+    ],
+    "reliability": [
+     0.45645071954179517,
+     0.060559856355382476
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.055440884083509445,
+    "macaque_usable": false
+   },
+   {
+    "pair": "pec|pec_orth",
+    "cls": "zero-lag removal (envelope)",
+    "character": "lagged share of amplitude coupling (volume-conduction-free)",
+    "literal": "envelope correlation with and without orthogonalisation",
+    "confound": "pec_orth unreliable",
+    "mean": 0.028994450345635414,
+    "ci95": [
+     0.015188387423722253,
+     0.04280051326754858
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0021384835708886385,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0379,
+     0.0242,
+     0.0338,
+     0.0529,
+     0.0283,
+     0.005,
+     0.0209
+    ],
+    "d_real": 0.003143702168017626,
+    "d_surr": -0.025850746780633926,
+    "d_dc": 0.033440716564655304,
+    "z0": 0.7541481852531433,
+    "node_r2": [
+     0.20810040942297758,
+     0.1706743164881249
+    ],
+    "reliability": [
+     0.14035200700868,
+     0.02638586947984677
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.041358575224876404,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dtw|dtw_constraint-sakoe-chiba_radius-auto",
+    "cls": "option: unconstrained vs sakoe-chiba",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": -0.028454601764678955,
+    "ci95": [
+     -0.042022314080201316,
+     -0.014886889449156592
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.0021533493418246508,
+    "q": 0.04249340466090611,
+    "subjects": [
+     -0.0266,
+     -0.035,
+     -0.0243,
+     -0.0274,
+     -0.0497,
+     -0.0348,
+     -0.0014
+    ],
+    "d_real": -0.06693202257156372,
+    "d_surr": -0.038477420806884766,
+    "d_dc": -0.025364186614751816,
+    "z0": 0.8437705636024475,
+    "node_r2": [
+     0.34813870378064987,
+     0.28134977042133236
+    ],
+    "reliability": [
+     0.1688723607089712,
+     0.21892913294957492
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.030576879158616066,
+    "macaque_usable": true
+   },
+   {
+    "pair": "corr_pearson_tau-3-sq|corr_pearson_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.007874591276049614,
+    "ci95": [
+     0.004105350390510968,
+     0.01164383216158826
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.002195346402004361,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0045,
+     0.0108,
+     0.0077,
+     0.0138,
+     0.0018,
+     0.0101,
+     0.0065
+    ],
+    "d_real": 0.16026221215724945,
+    "d_surr": 0.1523876041173935,
+    "d_dc": 0.00705705164000392,
+    "z0": 0.21755853295326233,
+    "node_r2": [
+     0.21043595153252756,
+     0.17552541332121005
+    ],
+    "reliability": [
+     0.2219470962082391,
+     0.03552569986989854
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.003895061556249857,
+    "macaque_usable": false
+   },
+   {
+    "pair": "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|gpdcoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.012641617096960545,
+    "ci95": [
+     0.006500632035552421,
+     0.018782602158368668
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0023635614197701216,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0157,
+     0.0132,
+     0.0193,
+     0.0168,
+     0.0033,
+     0.0033,
+     0.0168
+    ],
+    "d_real": 0.03552620857954025,
+    "d_surr": 0.022884590551257133,
+    "d_dc": 0.007742864545434713,
+    "z0": 0.5343747138977051,
+    "node_r2": [
+     0.1298086215683216,
+     0.1348339904105363
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.009741099551320076,
+    "macaque_usable": false
+   },
+   {
+    "pair": "cov_MinCovDet|pcorr_MinCovDet",
+    "cls": "mediation (normalised)",
+    "character": "mediation (partial correlation)",
+    "literal": "marginal against partial correlation",
+    "confound": "as mediation",
+    "mean": -0.011401249095797539,
+    "ci95": [
+     -0.016953691863823804,
+     -0.005848806327771273
+    ],
+    "negative": 7,
+    "n": 7,
+    "p": 0.002393510425463319,
+    "q": 0.04249340466090611,
+    "subjects": [
+     -0.004,
+     -0.0163,
+     -0.0169,
+     -0.0037,
+     -0.0115,
+     -0.018,
+     -0.0094
+    ],
+    "d_real": -0.029176652431488037,
+    "d_surr": -0.0177754033356905,
+    "d_dc": -0.015870865434408188,
+    "z0": 0.3378596603870392,
+    "node_r2": [
+     0.05170177835323565,
+     0.23443229989575345
+    ],
+    "reliability": [
+     0.42034075038727525,
+     0.19981391859790085
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.058060187846422195,
+    "macaque_usable": true
+   },
+   {
+    "pair": "dcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|dcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.011420556344091892,
+    "ci95": [
+     0.005844662582350231,
+     0.016996450105833553
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.002423795871436596,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0146,
+     0.0086,
+     0.0194,
+     0.0166,
+     0.0017,
+     0.0076,
+     0.0114
+    ],
+    "d_real": 0.03311176970601082,
+    "d_surr": 0.02169121243059635,
+    "d_dc": 0.005874522961676121,
+    "z0": 0.7280263304710388,
+    "node_r2": [
+     0.11959047882533477,
+     0.08288882211416003
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.016347000375390053,
+    "macaque_usable": false
+   },
+   {
+    "pair": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.005989704746752977,
+    "ci95": [
+     0.00305751377641829,
+     0.008921895717087664
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0024562408216297626,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0093,
+     0.009,
+     0.0085,
+     0.006,
+     0.0008,
+     0.0049,
+     0.0036
+    ],
+    "d_real": 0.024853352457284927,
+    "d_surr": 0.018863648176193237,
+    "d_dc": 0.0033935096580535173,
+    "z0": 0.4836815297603607,
+    "node_r2": [
+     0.08319248529558855,
+     0.0570332998366196
+    ],
+    "reliability": [
+     0.02944942582139868,
+     0.01112949050152175
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.034047793596982956,
+    "macaque_usable": false
+   },
+   {
+    "pair": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20|sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-20",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.01432756893336773,
+    "ci95": [
+     0.0072889503926652135,
+     0.021366187474070243
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.002499612048268318,
+    "q": 0.04249340466090611,
+    "subjects": [
+     0.0168,
+     0.016,
+     0.0104,
+     0.0197,
+     0.0074,
+     0.0261,
+     0.0039
+    ],
+    "d_real": 0.06194484978914261,
+    "d_surr": 0.04761728271842003,
+    "d_dc": 0.012950999662280083,
+    "z0": 0.31116294860839844,
+    "node_r2": [
+     0.16270441802146868,
+     0.11581276031387071
+    ],
+    "reliability": [
+     0.028150556997229594,
+     0.009585253735267746
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.004264732822775841,
+    "macaque_usable": false
+   },
+   {
+    "pair": "gpdcoh_multitaper_mean_fs-1_fmin-0_fmax-0-5|gpdcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: broad vs high",
+    "character": null,
+    "literal": "broadband against high band",
+    "confound": "mostly band power",
+    "mean": 0.014903520233929157,
+    "ci95": [
+     0.007513638512059617,
+     0.022293401955798698
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.002617558464407921,
+    "q": 0.0432624253961775,
+    "subjects": [
+     0.0195,
+     0.0095,
+     0.0247,
+     0.0224,
+     0.0026,
+     0.0095,
+     0.016
+    ],
+    "d_real": 0.03888732194900513,
+    "d_surr": 0.023983802646398544,
+    "d_dc": 0.008495100773870945,
+    "z0": 0.7128342390060425,
+    "node_r2": [
+     0.1298086215683216,
+     0.08724954029387116
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.01192823238670826,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_pearson_tau-2|corr_pearson_tau-10",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.017280472442507744,
+    "ci95": [
+     0.008646671253983718,
+     0.02591427363103177
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0027178185991942883,
+    "q": 0.043705460187551136,
+    "subjects": [
+     0.0238,
+     0.0128,
+     0.0116,
+     0.034,
+     0.0207,
+     0.0103,
+     0.0078
+    ],
+    "d_real": 0.551205575466156,
+    "d_surr": 0.5339251160621643,
+    "d_dc": 0.017149439081549644,
+    "z0": 0.011006633751094341,
+    "node_r2": [
+     0.0547158928585181,
+     0.038567275931073335
+    ],
+    "reliability": [
+     0.34056234846514283,
+     0.060559856355382476
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.08150054514408112,
+    "macaque_usable": false
+   },
+   {
+    "pair": "corr_spearman_tau-2-sq|corr_spearman_tau-10-sq",
+    "cls": "lag: adjacent or longer",
+    "character": null,
+    "literal": null,
+    "confound": null,
+    "mean": 0.03391284868121147,
+    "ci95": [
+     0.01674314159521137,
+     0.051082555767211574
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.002901288215070963,
+    "q": 0.045428065877211724,
+    "subjects": [
+     0.0226,
+     0.0352,
+     0.0167,
+     0.0663,
+     0.049,
+     0.0147,
+     0.0328
+    ],
+    "d_real": 0.19281257688999176,
+    "d_surr": 0.1588997095823288,
+    "d_dc": 0.032707296311855316,
+    "z0": 0.24318841099739075,
+    "node_r2": [
+     0.20103328669821477,
+     0.1741853891109498
+    ],
+    "reliability": [
+     0.2794372598993645,
+     0.03603232170662213
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.046694859862327576,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dcoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5|dcoh_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "aggregation: mean vs max",
+    "character": "spectral peakedness of coupling: narrowband (one frequency) against broadband coupling",
+    "literal": "peak against mean over frequencies or lags",
+    "confound": "spectral concentration of the channels",
+    "mean": 0.01241488941013813,
+    "ci95": [
+     0.006074043553025967,
+     0.018755735267250294
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0030289290007203817,
+    "q": 0.04621058243971605,
+    "subjects": [
+     0.02,
+     0.0081,
+     0.0181,
+     0.0185,
+     0.0011,
+     0.01,
+     0.0111
+    ],
+    "d_real": 0.02738269791007042,
+    "d_surr": 0.014967807568609715,
+    "d_dc": 0.004147972445935011,
+    "z0": 0.646647572517395,
+    "node_r2": [
+     0.08288882211416003,
+     0.0748838086859163
+    ],
+    "reliability": [
+     null,
+     null
+    ],
+    "usable": false,
+    "macaque_drug_net": -0.021211812272667885,
+    "macaque_usable": false
+   },
+   {
+    "pair": "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25|dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
+    "cls": "band: low vs high",
+    "character": "frequency locus of coupling: which pairs couple fast and which slow",
+    "literal": "organisation of low- against high-band coupling",
+    "confound": "within-band location; spectral",
+    "mean": 0.012089686468243599,
+    "ci95": [
+     0.005797515645797939,
+     0.01838185729068926
+    ],
+    "negative": 0,
+    "n": 7,
+    "p": 0.0033211312256753445,
+    "q": 0.04940182566642761,
+    "subjects": [
+     0.0033,
+     0.0141,
+     0.0243,
+     0.0083,
+     0.0161,
+     0.0104,
+     0.0081
+    ],
+    "d_real": 0.0421413891017437,
+    "d_surr": 0.030051706358790398,
+    "d_dc": 0.00935305468738079,
+    "z0": 0.050814539194107056,
+    "node_r2": [
+     0.10340342865118365,
+     0.0608414845119142
+    ],
+    "reliability": [
+     0.021909065862651015,
+     0.00436611607095123
+    ],
+    "usable": false,
+    "macaque_drug_net": 0.06548937410116196,
+    "macaque_usable": false
+   }
+  ]
+ },
+ "all_usable": {
+  "tested": 3408,
+  "discoveries": 8,
+  "control_discoveries": 0,
+  "rising": 4,
+  "by_spi": {
+   "je_kernel_W-0.5": 7,
+   "cov_MinCovDet": 1,
+   "prec-sq_LedoitWolf": 1,
+   "cov-sq_EmpiricalCovariance": 1,
+   "cov-sq_LedoitWolf": 1,
+   "cov-sq_OAS": 1,
+   "cov-sq_ShrunkCovariance": 1,
+   "lmfit_Ridge": 1,
+   "lmfit_SGDRegressor": 1,
+   "lmfit_BayesianRidge": 1
+  }
+ },
+ "anchor": {
+  "pair": "mi_gaussian|mi_kraskov_NN-4_DCE-AUTO",
+  "cls": "estimator: gaussian vs kraskov_DCE",
+  "character": "non-Gaussian dependence: how far each pair departs from the dependence a Gaussian process with its covariance would carry",
+  "literal": "organisation of Gaussian against kNN (bias-corrected) information (mi, tlmi) or prediction (te: GC against TE)",
+  "confound": "spectral concentration, kNN estimator bias at T=200; MI part survives IAAFT; TE part tracks spectral entropy",
+  "mean": -0.01324439886957407,
+  "ci95": [
+   -0.02390140845336984,
+   -0.002587389285778301
+  ],
+  "negative": 7,
+  "n": 7,
+  "p": null,
+  "q": null,
+  "subjects": [
+   -0.0013,
+   -0.0099,
+   -0.0172,
+   -0.006,
+   -0.012,
+   -0.0369,
+   -0.0094
+  ],
+  "d_real": 0.018840083852410316,
+  "d_surr": 0.03208448365330696,
+  "d_dc": -0.011574634350836277,
+  "z0": 0.7424646019935608,
+  "node_r2": [
+   0.1347065350004595,
+   0.10053204095750408
+  ],
+  "reliability": [
+   0.5419896327759226,
+   0.32809458664774027
+  ],
+  "usable": true,
+  "macaque_drug_net": -0.02362440526485443,
+  "macaque_usable": true
+ }
+}
