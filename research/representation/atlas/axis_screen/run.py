@@ -167,6 +167,11 @@ def group(args):
 
 def jobs(bank, out, prios=False, sub32=True):
     man = json.loads((Path(bank) / 'manifest.json').read_text())
+    if not prios and any('delta_fraction' not in r for r in man['rows']):  # the 2-s manifest has none: same definition
+        from research.representation.atlas.prepare import delta_fraction
+        with np.load(Path(bank) / 'windows.npz') as W:
+            for r in man['rows']:
+                r.setdefault('delta_fraction', delta_fraction(np.asarray(W[r['id']], np.float64)))
     rows = {r['id']: r for r in man['rows']}
     fs = man.get('fs', 100)
     J = []
