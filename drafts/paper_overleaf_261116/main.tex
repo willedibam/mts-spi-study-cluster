@@ -1,0 +1,316 @@
+% =====================================================================
+% TEMPLATE SWITCH: leave \naturetrue commented for LoG; uncomment it for
+% Springer Nature / Nature Portfolio (sn-jnl class, sn-nature reference style).
+% Everything below branches on \ifnature; nothing else needs editing.
+% =====================================================================
+\newif\ifnature
+\newif\ifnatureprint
+% \naturetrue
+% \natureprinttrue	% with \naturetrue: preview at Nature's printed page width
+						% (two 89 mm columns, 183 mm text block; figures span both columns)
+
+% Both classes load xcolor; pass extra options here, before the class, to avoid an option clash.
+\PassOptionsToPackage{table}{xcolor}        % \rowcolors / \rowcolor in tables
+
+\ifnature
+  % --- Springer Nature (template v3.1, Dec 2024) ---------------------------
+  % sn-jnl already loads hyperref, geometry and natbib[numbers,sort&compress],
+  % and sets \bibliographystyle{sn-nature}. Do NOT load natbib or hyperref yourself.
+  % The submission template is a generic single column with a 31 pc (131 mm) text width,
+  % not Nature's printed layout, so figures drawn at 183 mm are shown at ~72% size.
+  \ifnatureprint
+    \documentclass[pdflatex,sn-nature,iicol]{sn-jnl}
+    \geometry{text={183mm,247mm},columnsep=5mm,bindingoffset=0mm,hcentering}
+    \setlength\columnhsize{89mm}
+  \else
+    \documentclass[pdflatex,sn-nature]{sn-jnl}
+    % \documentclass[pdflatex,sn-nature,lineno]{sn-jnl}	% with line numbers
+    % \documentclass[pdflatex,sn-nature,referee]{sn-jnl}	% double-spaced referee copy
+  \fi
+  \usepackage{xcolor}
+  \usepackage{amsmath}
+\else
+  % --- LoG 2025 --------------------------------------------------------------
+  \documentclass{article}
+  \usepackage{log_2025}						% for camera-ready version
+  % \usepackage[review]{log_2025}			% for anonymous submission to proceedings track
+  % \usepackage[review,eabstract]{log_2025}	% for anonymous submission to extended abstract track
+  % \usepackage[preprint]{log_2025}			% for preprint version
+  % \usepackage[eabstract]{log_2025}		% for accepted extended abstract papers
+  % Citation colour: the style file sets citecolor=NavyBlue (near-black); override it here
+  % (any xcolor svgnames colour, e.g. RoyalBlue, MediumBlue, Teal). Comment out for the default.
+  \AtBeginDocument{\hypersetup{citecolor=RoyalBlue}}
+  % First-page footer ("Proceedings of the ... Learning on Graphs Conference" / "Submitted to ...").
+  % This line removes it; comment it out to restore the footer.
+  \makeatletter\renewcommand{\@notice}{}\makeatother
+  % NB: the style file already loads amsmath, microtype, xcolor, caption, geometry, url and
+  % hyperref (at end of preamble). Do NOT \usepackage{hyperref} yourself.
+  \usepackage{subcaption}					% (a)/(b) subfigures
+  \usepackage[numbers,compress,sort]{natbib}	% for numerical citations
+  % \usepackage[sort,round]{natbib}			% for textual citations
+\fi
+
+\usepackage{etoolbox}						% \AtEndPreamble (used for cleveref below)
+\usepackage{booktabs}						% professional-quality tables
+\usepackage{multirow}						% tabular cells spanning multiple rows
+\usepackage{tabularx}						% fixed-width tables with X columns
+\usepackage{amssymb}						% blackboard math symbols (superset of amsfonts)
+\usepackage{bm}								% bold math
+\usepackage{graphicx}						% figures
+\graphicspath{{figures/}}					% figures are PDFs converted from the repo's SVGs
+\usepackage{siunitx}						% \SI{3}{\second}; S table columns
+\usepackage{soul}							% \hl highlighting for annotations
+% \usepackage{algorithm}					% algorithm floats
+% \usepackage{algpseudocode}				% pseudocode inside them
+% \usepackage{tikz}							% schematics drawn in TikZ
+
+% cleveref must load after hyperref (LoG loads it at end of preamble; sn-jnl in the class)
+\AtEndPreamble{\usepackage[capitalise,nameinlink]{cleveref}}	% \cref{fig:x} -> "Figure 1"
+
+% Back-matter headings: \bmhead in sn-jnl, unnumbered sections in LoG.
+\ifnature
+  \newcommand{\backhead}[1]{\bmhead{#1}}
+\else
+  \newcommand{\backhead}[1]{\section*{#1}}
+\fi
+
+% --- annotation macros ---------------------------------------------------
+% Set \draftnotesfalse to hide all comments (highlights keep their text, unhighlighted).
+% Hide them before any submission: [review] does not do this for you.
+\newif\ifdraftnotes
+\draftnotestrue
+\definecolor{benorange}{RGB}{255,102,51}
+\definecolor{mypurple}{RGB}{129,51,255}
+\definecolor{benhlyellow}{RGB}{255,242,140}
+\definecolor{willgreen}{RGB}{0,255,0}
+\ifdraftnotes
+  \newcommand{\ben}[1]{\textcolor{benorange}{[#1]}}
+  \newcommand{\benrp}[1]{\textcolor{mypurple}{[#1]}}
+  \newcommand{\benhl}[1]{{\sethlcolor{benhlyellow}\hl{#1}}}
+  \newcommand{\will}[1]{\textcolor{mypurple}{[#1]}}
+  \newcommand{\willhl}[1]{{\sethlcolor{willgreen}\hl{#1}}}
+\else
+  \newcommand{\ben}[1]{}
+  \newcommand{\benrp}[1]{}
+  \newcommand{\benhl}[1]{#1}
+  \newcommand{\will}[1]{}
+  \newcommand{\willhl}[1]{#1}
+\fi
+
+% --- table style ----------------------------------------------------------
+\definecolor{tableheader}{HTML}{C6D9E8}
+\definecolor{tablestripe}{HTML}{EDF3F8}
+
+% --- project macros -------------------------------------------------------
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% --- front matter (shared text) -------------------------------------------
+% Title in Initial Caps; the optional argument is the running head.
+\title[Short Title]{Learning Mechanistic Similarity in Multivariate Time Series}
+
+% Single paragraph, ideally 4--6 sentences (Nature Portfolio: check the journal's word limit, usually ~150--200 words, no citations).
+\newcommand{\abstracttext}{%
+\will{Abstract.}%
+}
+
+\ifnature
+  \author*[1]{\fnm{Will} \sur{Edibam}}\email{will.edibam@sydney.edu.au}
+  \author[1]{\fnm{Ben D.} \sur{Fulcher}}
+  \affil*[1]{\orgdiv{School of Physics}, \orgname{The University of Sydney}, \orgaddress{\city{Sydney}, \state{NSW}, \country{Australia}}}
+  \abstract{\abstracttext}
+  \keywords{multivariate time series, statistics of pairwise interactions, representation learning, dependence}
+\else
+  % Abbreviated author list in [ ] is used in the first-page footnote. Authors are hidden under [review].
+  \author[W. Edibam and B. D. Fulcher]{%
+  Will Edibam \and Ben D. Fulcher \\
+  The University of Sydney \\
+  \email{will.edibam@sydney.edu.au}
+  }
+\fi
+
+\begin{document}
+
+\maketitle
+\ifnature\else
+  \suppressfloats[t] % stop floats landing above the title on page 1
+  \begin{abstract}
+  \abstracttext
+  \end{abstract}
+\fi
+
+% ---------------------------------------------------------------------------
+% FIGURES. Each source SVG has a PDF sibling in the repo; upload the PDF to
+% figures/ and include it by basename. Placeholder titles/captions below.
+% ---------------------------------------------------------------------------
+\begin{figure*}[ht]
+	\centering
+	\includegraphics[width=\linewidth]{method-schematic-helvetica}	% 2026-11-18 schematic (commit cc7970a9), Helvetica rendition
+	% \includegraphics[width=\linewidth]{method-schematic}		% previous schematic (2026-10-30), outdated
+	\caption{\textbf{The SPI--SPI representation.} \will{Placeholder caption. From an $M$-channel recording, compute every SPI over all ordered channel pairs; each SPI's edge profile is correlated with every other's to give $z_{ab}$; the vector of $z_{ab}$ is a fixed-length representation independent of $M$ and $T$.}}
+	\label{fig:method}
+\end{figure*}
+
+\section{Introdcution}
+\textbf{Motivation: why is it important to compare multivariate time series?}
+\begin{itemize}
+    \item 
+\end{itemize}
+
+
+\section{Introduction}
+\label{sec:intro}
+\will{Introduction.}
+Many of the properties that distinguish complex systems are properties of how their constituents interact. Cognition, a climate teleconnection, and systemic financial risk are not attributes of a single cortical region, ocean basin, or asset's volatility \cite{bassett2017network, tsonis2004architecture, mantegna1999hierarchical}. Multivariate time series (MTS), simultaneous recordings of many interacting univariate components, are the main empirical access to those interactions. Many scientific questions about such systems are therefore comparisons between multivariate time series: a young brain against an ageing one, a patient against a control, a system before and after an intervention, or two systems that may share a common organizational principle. Important information for analysis between systems may lie within individual channels, though much of it is encoded in the dependency structures \emph{between} channels -- the coupling \cite{friston2011functional, runge2019inferring}. A significant
+
+The prevailing way to make dependence comparable is to summarise it. A pairwise statistic, such as a correlation, coherence, Granger-causal or transfer-entropy estimate, or phase-locking index, is computed for every pair of channels. The resulting matrix of coupling strengths then stands in for the recording in all downstream analysis \cite{pereda2005nonlinear,bastos2016tutorial}. When channels correspond across recordings, these matrices are compared entry by entry or through their geometry, as in connectome fingerprinting \cite{finn2015functional}, dynamic functional connectivity \cite{hutchison2013dynamic} and Riemannian classification \cite{barachant2012multiclass,dadi2019benchmarking}. When channels do not correspond, the matrix is abstracted further into mean coupling, edge-weight distributions or network topology \cite{bullmore2009complex,rubinov2010complex}, which brings its own sensitivities to network size and density \cite{vanwijk2010comparing,tantardini2019comparing}. Multilayer approaches keep several such matrices, typically one per frequency band, as the layers of one network \cite{brookes2016multilayer,buldu2018frequency}. Machine learning takes one of three routes. It infers an adjacency of interaction strengths \cite{wu2020connecting,jin2024gnn4ts}, discards cross-channel dependence by treating channels independently \cite{nie2023patchtst,han2024capacity}, or learns dependence end to end in coordinates that have no stated meaning \cite{liu2024itransformer,woo2024moirai}. Across these traditions the primitive is the same: how strongly pairs of components are coupled, under one or a few chosen notions of coupling. Each further abstraction trades information for comparability, and none can restore what the first summary removed, because any function of two identical strength matrices is identical.
+
+Hundreds of pairwise statistics exist because dependence has many facets. It can be linear or nonlinear, instantaneous or lagged, directed or symmetric, carried by phase or by amplitude, and confined to one frequency band or spread across several. Choosing a statistic fixes, before any data are seen, the sense in which components are taken to interact; the matrix then reports how strongly they interact in that sense. Pearson correlation measures linear, zero-lag association. The phase-lag index discards zero-phase coupling by design, to suppress volume conduction \cite{nolte2004identifying,stam2007phase}. Transfer entropy depends on the history length it is given \cite{schreiber2000measuring,wibral2013measuring}. Systematic comparisons find that conclusions about network organisation, structure–function correspondence, individual identification and behavioural prediction can change substantially with the statistic \cite{smith2011network,wang2014systematic,liu2025benchmarking}. The *pyspi* library extended the highly comparative approach of univariate time-series analysis \cite{fulcher2013highly,fulcher2017hctsa} to pairwise dependence. Its more than two hundred statistics of pairwise interactions (SPIs) make the choice of statistic empirical rather than conventional \cite{cliff2023unifying}, and across tasks the best and worst statistics differ widely in performance \cite{cliff2023unifying,bryant2024extracting}. `[ALIGN: quote the published spread.]`
+
+Choosing well does not change what is represented. A pairwise statistic compresses the relationship between two time series, a joint process with form, timing and spectral content, into one number. That map is many-to-one: relationships of very different form can share a correlation coefficient \cite{anscombe1973graphs}, and correlation summarises dependence completely only for elliptical distributions \cite{embrechts2002correlation}. Two recordings can therefore share every zero-lag correlation while their components interact differently. In one, components move together without delay; in the other, they follow one another at delays that differ from pair to pair. Every analysis built on that matrix, whether entry-wise, spectral or topological, returns the same answer for both. A change in *how* components interact is therefore not invisible to a strength representation; it is aliased. A fixed statistic registers at most a change in its value, which cannot be distinguished from a change in coupling strength, and a better statistic changes which differences are aliased, not whether some are. Such differences occur in real systems. Between wakefulness and slow-wave sleep, networks defined by zero-lag correlation are largely preserved, while the lag structure of propagated activity reorganises \cite{mitra2015propagated}. Axonal conduction delays vary systematically across the human cortex \cite{lemarechal2022atlas} and continue to shorten into adulthood \cite{vanblooijs2023developmental}. Transitions between dynamical regimes are a further case. At a synchronisation transition the coupling law stays fixed, while the observed dependence between components reorganises, for example from intermittent phase slips to sustained locking \cite{arenas2008synchronization}. Statements about such changes, that interactions became more variably delayed or changed from intermittent to locked, map onto experiments more directly than a list of edges that strengthened or weakened. Neither kind of statement identifies mechanism on its own \cite{mehler2018lure,reid2019advancing}.
+
+The character of dependence has not been ignored, but it has been interrogated one hypothesis at a time.
+- *Nonlinearity.* Surrogate-data tests ask whether a dependence exceeds what a linear Gaussian process could produce \cite{theiler1992testing,prichard1994generating,schreiber2000surrogate}. Comparisons of linear with nonlinear redundancies \cite{palus1995testing}, or of mutual information with its Gaussian counterpart, quantify nonlinear interdependence in electroencephalography \cite{breakspear2002detection} and functional magnetic resonance imaging \cite{hlinka2011functional}. Contrasts between linear and nonlinear dependence networks have characterised climate dynamics and financial crises \cite{donges2009complex,haluszczynski2017linear}.
+- *Timing.* Cross-correlograms \cite{perkel1967neuronal}, lag-structure analyses \cite{mitra2014lag} and delay-resolved transfer entropy \cite{wibral2013measuring} target delays.
+- *Phase versus amplitude.* Phase- and amplitude-coupling patterns have been contrasted directly \cite{engel2013intrinsic,siems2020dissociated,mostame2020phase}.
+- *Redundancy versus synergy.* Information decomposition separates redundant from synergistic interaction \cite{luppi2022synergistic}.
+
+Each of these approaches detects a change of character only if the researcher already suspects which kind of change to test. Agreement between statistics has itself been studied in two ways. Analytically, it appears as fixed relations that hold under Gaussianity and whose violation signals non-Gaussian coupling \cite{nolte2020mathematical}. Empirically, it has been measured and averaged over recordings to characterise the statistics \cite{cliff2023unifying,liu2025benchmarking}, not to describe an individual recording. A vector of per-statistic summaries can register a change of character, but only as a shift in apparent strength, and any recording-wide change in gain or signal-to-noise ratio moves all of its entries together. What such summaries discard is which channel pairs score jointly high or low across statistics. That joint organisation is where character becomes visible, and to our knowledge it has not been used to represent a recording.
+
+We propose such a representation by inverting the role of the statistic library: rather than selecting the best statistic, we measure how statistics relate within a recording. Each statistic's values over all channel pairs of a recording form its *edge profile*. For SPIs $a$ and $b$ computed on an $M$-channel recording, $z_{ab}$ is the correlation between their edge profiles across all $M(M-1)$ ordered off-diagonal entries, so both directions of every channel pair are retained. The vector of all $z_{ab}$ is the SPI–SPI representation. A coordinate $z_{ab}$ is high when two statistics order channel pairs alike. It falls when the property that distinguishes them varies across pairs independently of shared strength. If delays vary from pair to pair, Euclidean distance and its lag-tolerant counterpart disagree about which pairs are closest. If the form of dependence varies, Pearson correlation, Spearman correlation and mutual information disagree about which pairs are most dependent. The representation therefore targets how the character of dependence is organised across a system; a change applied uniformly to every pair registers only weakly.
+
+Because $z_{ab}$ is unchanged by positive affine rescaling of either profile, recording-wide shifts in a statistic's level or spread do not register as change. Coupling strength can still affect $z$ through the shape of the profiles. For linear Gaussian data, many coupling measures are fixed functions of coherency \cite{nolte2020mathematical}, so the spread of strength across pairs alone determines part of $z$. We therefore test readings against multivariate linear surrogates that preserve that spread \cite{prichard1994generating}. `[ALIGN: required analysis, not yet run.]` The construction also requires heterogeneity across pairs in both profiles, and it becomes ill-conditioned when a statistic saturates. Each coordinate is indexed by two statistics with documented assumptions, which proposes a candidate interpretation. As with any multivariate readout \cite{haufe2014interpretation}, we accept that interpretation only after perturbation, surrogate and transfer tests.
+
+Comparable second-order constructions compare neural representations \cite{kriegeskorte2008representational,kornblith2019similarity} and the layers of multiplex networks \cite{nicosia2015measuring,dedomenico2015structural}. The same across-edge correlation, applied between structural and functional connectivity, tracks brain development \cite{baum2020development}. Here the layers are alternative notions of dependence evaluated on one system.
+
+The construction also addresses the comparability problem that motivated topological abstraction. The dimension of $z$ depends only on the number of statistics, not on the number of channels or samples. Recordings of different sizes, sensor layouts and systems therefore share one coordinate system without channel correspondence. A shared coordinate system does not by itself make positions comparable: estimates depend on recording length and channel count, and sampling must be matched to each system's timescales. We quantify these dependencies. `[ALIGN]`
+
+We demonstrate the representation
+
+% Methods lives in sections/methods.tex: LoG places it here, Nature after the Conclusion.
+\ifnature\else
+  \input{sections/methods}
+\fi
+
+\section{Results}
+\label{sec:results}
+\will{Results overview.}
+
+\subsection{Case studies}
+\label{sec:cases}
+\will{Two minimal-pair systems in which one property of dependence is varied across channel pairs while strength is held fixed (\cref{fig:cases}).}
+
+\subsubsection{Linear, monotone and non-monotone dependence}
+\label{sec:cases-form}
+Pearson correlation $r$, Spearman correlation $\rho$ and mutual information (MI) form a ladder of nested invariances: $r$ is unchanged by positive affine transformations of each variable, $\rho$ by any strictly increasing transformation, and MI by any invertible one. Each rung therefore registers a form of dependence that the rung below misreads. We built recordings in which three blocks of channels observe one latent signal, each block through its own map, with the same set of channel strengths in every block (\cref{fig:cases}, top a; \cref{sec:methods-cases}). Changing one block's map changes the form of dependence on a third of the edges and leaves the distribution of strength untouched.
+
+When every map is linear, the three statistics rank edges alike. $z(r,\rho) = 1.00$, and $z(\rho,\mathrm{MI}) = 0.94$ (mean over 20 realisations; s.d.\ $< 0.004$). The second value sits below one because, under Gaussian dependence, MI is a convex function of correlation: the edges lie on the Gaussian curve (\cref{fig:cases}, top c, right), so the ranks agree but a Pearson-type coordinate registers the curvature. Readings are therefore relative to this reference, not to one.
+
+Passing one block through a monotone map, $\sinh(2w)$, separates $r$ from the other two. The map leaves the copula of every pair unchanged, so $\rho$ and MI are unchanged edge by edge and $z(\rho,\mathrm{MI})$ holds at $0.94$. Pearson $r$, in contrast, is attenuated by different amounts on different kinds of edge. For jointly Gaussian inputs with correlation $c$, a monotone--linear pair has $r = \kappa c$ for a constant $\kappa < 1$, whereas a monotone--monotone pair has $r = \sinh(4c)/\sinh 4$, which compresses weak pairs far more than strong ones. The edges are reordered (\cref{fig:cases}, top c, middle), and $z(r,\rho)$ falls to $0.50 \pm 0.12$. Its larger spread across realisations reflects the heavy tails of the transformed channels, which make sample Pearson correlations unstable.
+
+Folding one block instead, $w^2$, separates MI from the two correlations. A folded channel and a linear one are uncorrelated in population, in rank as well as in value, so $r$ and $\rho$ both assign those edges zero and continue to agree, $z(r,\rho) = 0.995$. MI still detects the dependence and assigns those edges values that grow with strength (\cref{fig:cases}, top c, right), so $z(\rho,\mathrm{MI})$ falls to $0.62 \pm 0.01$ and $z(r,\mathrm{MI})$ to $0.59$.
+
+The two coordinates thus form a code for the form of dependence (\cref{fig:cases}, top b). A fall in $z(r,\rho)$ alone indicates monotone nonlinearity; a fall in $z(\rho,\mathrm{MI})$ alone indicates non-monotone dependence; and a recording containing both kinds of block falls in both ($z(r,\rho) = 0.87$, $z(\rho,\mathrm{MI}) = 0.62$). A per-statistic summary sees the same recordings differently. Under the monotone map the mean of $\rho$ and of MI are unchanged in population, and only the mean of $r$ drops, which cannot be told apart from weaker coupling \will{report the measured per-SPI means}. None of these contrasts is new on its own: comparing linear with nonlinear dependence measures is an established test for nonlinearity \cite{palus1995testing,hlinka2011functional}. What differs is that no comparison was chosen in advance. Both readings are coordinates of one representation, and which coordinate moves identifies the change.
+
+\subsubsection{Instantaneous, lagged and warped dependence}
+\label{sec:cases-timing}
+\will{$\{\mathrm{ED}, \mathrm{XED}, \mathrm{DTW}\}$: Euclidean distance against its lag-tolerant and warping-tolerant (dynamic time warping) counterparts (\cref{fig:cases}, bottom).}
+
+\begin{figure*}[htp]	% too tall for h or t (~0.9 page); p lets it take its own page instead of blocking later floats
+	\centering
+	\includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{case-form-ladder}\par\vspace{6pt}
+	\includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{case-drift-blocks}
+	\caption{\textbf{Pairs of statistics read the form and timing of dependence.} \will{Placeholder caption. Top: form ladder (linear, monotone, non-monotone) read by $\{r, \rho, \mathrm{MI}\}$. Bottom: delay structure (no lag, lag, warping) read by $\{\mathrm{ED}, \mathrm{XED}, \mathrm{DTW}\}$. NB both halves carry their own panels a--c; re-letter the bottom d--f at source.}}
+	\label{fig:cases}
+\end{figure*}
+
+\subsection{Separating generative mechanisms across systems and recording sizes}
+\label{sec:proof}
+\will{Nine classes from four families (noise, VAR, Kuramoto, CML) at several $(M, T)$ form separate islands in one coordinate system; single interpretable coordinates separate the variants within each family (\cref{fig:proof}).}
+
+\begin{figure*}[ht]
+	\centering
+	\includegraphics[width=\linewidth]{proof-of-concept}
+	\caption{\textbf{One coordinate system separates generative mechanisms across recording sizes.} \will{Placeholder caption. (a) t-SNE of $z$ for nine classes; marker area encodes $M$, shape encodes $T$; carpets show example recordings of each variant, height $\propto M$ and width a time window. Two $M=8$ intermittency recordings sit with Gaussian noise: in one, all eight sites stay on the same period-3 orbit; in the other, dependence is weak and nearly uniform at $T=500$ (\cref{fig:strays}). Contour shape carries no meaning. (b) One fixed coordinate per family pair separates its variants.}}
+	\label{fig:proof}
+\end{figure*}
+
+\subsection{Unsupervised inference of dynamical transitions}
+\label{sec:transitions}
+\will{Without labels, a coordinate of $z$ tracks the order parameter across a regime transition (\cref{fig:transitions}).}
+
+\begin{figure*}[ht]
+	\centering
+	\includegraphics[width=\linewidth]{order-parameter-inference}
+	\caption{\textbf{SPI--SPI coordinates infer an order parameter without supervision.} \will{Placeholder caption.}}
+	\label{fig:transitions}
+\end{figure*}
+
+% Table style example (striped rows, shaded header); delete when unused.
+\begin{table}
+	\centering
+	\caption{\textbf{Table title.} \will{Caption; table captions go above the table.}}
+	\label{tab:example}
+	\rowcolors{2}{white}{tablestripe} % xcolor: {odd}{even}, so data rows start striped
+	\begin{tabularx}{0.8\linewidth}{@{} >{\raggedright\arraybackslash}X *{2}{>{\centering\arraybackslash}X} @{}}
+		\toprule
+		\rowcolor{tableheader}
+		\textbf{Item} & \textbf{$n$} & \textbf{Value} \\
+		\midrule
+		A & 0 & 0.00 \\
+		B & 0 & 0.00 \\
+		C & 0 & 0.00 \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+\section{Discussion}
+\label{sec:discussion}
+\will{Discussion.}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\will{Conclusion.}
+
+% Nature Portfolio order: Introduction, Results, Discussion, Methods.
+\ifnature
+  \input{sections/methods}
+\fi
+
+% ---------------------------------------------------------------------------
+% BACK MATTER. LoG: remove Author Contributions and Acknowledgements for the
+% [review] version; neither counts towards the page limit.
+% Nature Portfolio additionally requires data/code availability and competing interests.
+% ---------------------------------------------------------------------------
+\ifnature
+  \backmatter
+  \backhead{Data availability}
+  \will{Data availability statement.}
+
+  \backhead{Code availability}
+  \will{Code availability statement.}
+\fi
+
+\backhead{Author Contributions}
+\will{Contributions, e.g., using CRediT (https://credit.niso.org/).}
+
+\backhead{Acknowledgements}
+\will{Acknowledgements and funding.}
+
+\ifnature
+  \backhead{Competing interests}
+  The authors declare no competing interests.
+\fi
+
+% Bibliography: sn-jnl sets \bibliographystyle{sn-nature} itself (a second call breaks BibTeX).
+\ifnature\else
+  \bibliographystyle{unsrtnat}
+\fi
+\bibliography{refs}
+
+% Appendices go after the bibliography. LoG: submitted with the main paper, the main text must be
+% self-contained. Nature Portfolio: move this material to Supplementary Information / Extended Data.
+\appendix
+\input{sections/appendix}
+
+\end{document}

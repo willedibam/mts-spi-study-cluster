@@ -63,3 +63,15 @@ random/
 
 # Retired analysis-cache location
 /analysis/feature_cache/
+
+# LaTeX build artefacts in paper drafts (sources, figures and refs are tracked; figures need `git add -f`)
+drafts/**/*.aux
+drafts/**/*.bbl
+drafts/**/*.blg
+drafts/**/*.brf
+drafts/**/*.fdb_latexmk
+drafts/**/*.fls
+drafts/**/*.log
+drafts/**/*.out
+drafts/**/*.synctex.gz
+drafts/**/main.pdf

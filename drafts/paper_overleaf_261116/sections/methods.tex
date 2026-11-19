@@ -1,0 +1,48 @@
+% Methods. Input from main.tex at a style-dependent position (see \ifnature there).
+% Nature (sn-jnl) asks for a single .tex at final submission: paste this back into main.tex then.
+% Subsections mirror the Results; parameter values live in sections/appendix.tex.
+% \will{} marks values still to be pinned.
+\section{Methods}
+\label{sec:methods}
+
+\subsection{Statistics of pairwise interactions}
+\label{sec:methods-spis}
+A recording is a multivariate time series $X \in \mathbb{R}^{T \times M}$ of $M$ channels and $T$ samples. Each channel is $z$-scored before any statistic is computed \will{confirm per study}. A statistic of pairwise interactions (SPI) $a$ maps an ordered pair of channels $(i,j)$ to a scalar $A^{(a)}_{ij}$, giving an $M \times M$ matrix of pairwise interactions (MPI). Undirected SPIs give symmetric MPIs; directed SPIs, such as transfer entropy or Granger causality, need not. We compute SPIs with \textit{pyspi} \cite{cliff2023unifying}, using its benchmarked catalogue of $K$ statistics spanning basic, distance, causal-inference, information-theoretic, spectral and miscellaneous families \will{pin pyspi version and $K$}. The case studies use small hand-chosen subsets (\cref{sec:methods-cases}).
+
+\subsection{The SPI--SPI representation}
+\label{sec:methods-z}
+For each SPI $a$, the \emph{edge profile} $\mathbf{v}_a \in \mathbb{R}^{M(M-1)}$ lists every ordered off-diagonal entry $A^{(a)}_{ij}$, $i \neq j$, in one fixed order shared by all SPIs. Both directions of every channel pair are kept, so directed SPIs retain their orientation and are compared entry by entry with undirected ones. The SPI--SPI coordinate for a pair of statistics is the Pearson correlation of their edge profiles,
+\begin{equation}
+	z_{ab} = \mathrm{corr}\Big(A_{ij}^{(a)}, A_{ij}^{(b)}\Big)_{i \neq j}, \qquad a,b \in \{1,\dots,K\},
+	\label{eq:z-raw}
+\end{equation}
+
+or, equivalently, the cosine of their centred edge profiles,
+
+\begin{equation}
+	z_{ab} = \frac{\tilde{\mathbf{v}}_a^{\top}\tilde{\mathbf{v}}_b}{\lVert\tilde{\mathbf{v}}_a\rVert\,\lVert\tilde{\mathbf{v}}_b\rVert}, \qquad \tilde{\mathbf{v}}_a = \mathbf{v}_a - \bar{v}_a\mathbf{1},
+	\label{eq:z}
+\end{equation}
+and the representation of the recording is the vector $\mathbf{z} = (z_{ab})_{a<b}$ of $K(K-1)/2$ coordinates. An SPI whose profile contains a non-finite entry, or has zero variance across edges, is invalid for that recording, and every coordinate involving it is missing \will{state the imputation or exclusion rule used downstream}.
+
+Three properties follow from \cref{eq:z}. First, $z_{ab}$ is invariant to positive affine transformations of either profile, so recording-wide changes in a statistic's level or scale do not register; a sign reversal of one profile reverses the sign of $z_{ab}$. Second, $\mathbf{z}$ is invariant to any permutation applied to all profiles at once, including a relabelling of channels, so recordings need no channel correspondence and $\dim\mathbf{z}$ is independent of $M$ and $T$. Third, $\mathbf{z}$ is the upper triangle of the Gram matrix $R = B^{\top}B$ of the normalised profiles, so the full $K \times K$ matrix is positive semidefinite with rank at most $\min\{K, M(M-1)-1\}$. The construction discards each statistic's mean, scale and edge identities; what it retains is which edges the statistics rank alike. It requires heterogeneity across edges and is ill-conditioned when a statistic saturates \will{cite the saturation analysis}.
+
+\subsection{Case studies}
+\label{sec:methods-cases}
+Each case study varies one property of dependence across channel pairs within a recording while holding the distribution of coupling strength fixed. Channels form three equal blocks that share one latent signal; each block is switched independently between a reference form and a modified one, and every block carries the same set of channel noise levels, so the spread of strength across edges is identical in every configuration. Each configuration is simulated in 20 independent realisations. Generator equations, parameters and SPI settings are in \cref{app:cases}.
+
+\paragraph{Form of dependence.} Channel $i$ mixes the latent $u$ with independent noise, $w_i = (u + s_i \varepsilon_i)/\sqrt{1+s_i^2}$, and is observed through its block's map, $x_i = g(w_i)$, which is linear, monotone ($\sinh$) or non-monotone (a fold, $w^2$). Because strength enters before the map, a monotone map leaves the copula of every pair unchanged. The SPIs are Pearson correlation $r$, Spearman correlation $\rho$ and mutual information (MI), whose invariances are nested: $r$ is invariant to positive affine transformations of each variable, $\rho$ to strictly increasing ones, and MI to any invertible one.
+
+\paragraph{Timing of dependence.} Channels are noisy readings of one smooth mother signal, $x_i(t) = m\big(t - d_i(t)\big) + \sigma_i \varepsilon_i(t)$, with delay $d_i = 0$ in an aligned block, a constant delay graded across channels in a lagged block, and a zero-mean sinusoidal delay of graded amplitude in a warped block. The SPIs are Euclidean distance (ED), its lag-tolerant counterpart (xED, the minimum Euclidean distance over integer shifts) and dynamic time warping (DTW), whose tolerances are again nested: ED tolerates no misalignment, xED a constant one, and DTW a time-varying one.
+
+\subsection{Generative mechanisms across recording sizes}
+\label{sec:methods-proof}
+Nine classes from four families (independent noise, vector autoregression, Kuramoto oscillators and coupled map lattices, plus a wave equation) were simulated on a grid of channel counts and recording lengths, with ten instances per cell (\cref{app:proof}). The two variants within each family differ in one generative property at matched overall scale; for example, the two autoregressions share spectral radius and total weight and differ only in whether that weight sits on self-memory or on neighbour coupling. The full catalogue was computed on each recording. Recordings were embedded with t-SNE \will{cite openTSNE; Kobak et al.}; distances between clusters and cluster shapes in the embedding carry no meaning. Separability was checked with a five-nearest-neighbour classifier, holding out each $(M,T)$ cell in turn. For each pair of variants, one coordinate $z_{ab}$ was chosen for interpretability among those that separate the variants in every $(M,T)$ cell on a training split, and its distributions are shown on the held-out instances.
+
+\subsection{Unsupervised inference of order parameters}
+\label{sec:methods-order}
+Each system is swept along one control parameter through a change of dynamical regime, and an independently defined physical order parameter $Q$ is computed from the simulated state, not from the observed channels used for $\mathbf{z}$ (systems and definitions of $Q$ in \cref{app:order}). The order coordinate $q$ is the first principal component of centred $\mathbf{z}$, fitted on development recordings only; held-out recordings are projected onto it. Every choice of preprocessing and reduction is blind to the control parameter and to $Q$, which are used only to orient the sign of $q$ for display. Agreement is reported as the Spearman correlation between $q$ and $Q$ on held-out recordings, alongside two strength baselines computed on the same recordings: mean absolute zero-lag Pearson correlation over ordered edges, and the first principal component of the per-SPI edge means.
+
+\subsection{Software and reproducibility}
+\label{sec:methods-software}
+\will{pyspi version and commit; Python environment; generators, configurations and seeds in the accompanying repository; compute (NCI Gadi); data and code availability.}
