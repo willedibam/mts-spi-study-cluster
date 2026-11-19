@@ -245,6 +245,20 @@ Data: Binance publishes 1-min spot klines as monthly and daily zip files ([binan
   - Plankton mesocosms: N = 1.
   - 12-lead ECG: leads are near-instantaneous linear projections of one cardiac source, so a character question is ill-posed. It is a useful negative example of "simultaneous sensors" that are not separate subsystems [I].
 
+## Part C — anaesthesia replication of the atlas MI pair (19 November 2026)
+
+Screened by a subagent that opened each repository page; IDs and counts below are as it reported them, not re-checked here. Already used: NeuroTycho, Chennu, Bajwa ds005620, Kauvar DANDI 001347, Claar DANDI 000458, Leung fly. No open dataset has raw, continuous human intracranial recordings awake and under general anaesthesia in the same patients without a major confound.
+
+- **PRIOS, OpenNeuro ds004370** (CC0, 29.6 GB): human ECoG (e.g. 48 channels, 2048 Hz), awake on the ward and propofol general anaesthesia (~53 min) in theatre, 6–9 patients. Single-pulse stimulation every ~9 s in both states, so only inter-pulse windows (~6 s) are usable; states differ in day and setting; depth unverified for burst suppression. The only open raw within-patient intracranial test.
+- **Krause, Nourski, Banks et al., Zenodo 15497531** (CC-BY-SA 4.0): Iowa iEEG, 19 propofol and 10 dexmedetomidine inductions (awake, sedated, unresponsive) plus 24 overnight sleeps. Derived matrices only (spectra, alpha wPLI, gamma envelope correlation), so the MI pair cannot be computed from it; the raw data would be decisive and need a request to the Banks/Nourski group.
+- **Purdon et al. 2013, DANDI 001285** (CC-BY-4.0): 64-channel scalp EEG, stepped propofol through loss of consciousness, ideal protocol, but only 1 of 10 subjects published.
+- **OpenNeuro ds004541** (CC0): 58-channel scalp EEG at 1 kHz, 8 surgical patients, awake baseline and loss of consciousness; agent unstated, short maintenance segment.
+- **RESPect, OpenNeuro ds003848** (CC0, 69.8 GB): long-term ECoG/sEEG sleep and rest runs, 6 patients; a sleep control, needs own staging.
+- **Rodent, EBRAINS 10.25493/S0DM-BK5** (open) and **10.25493/8CQN-Y8S** (embargoed): rat 16-channel epidural EEG, awake against propofol, sevoflurane and ketamine at light general anaesthesia; the open one is stimulation-centred.
+- Weak or excluded: Zenodo 7657814 and 23655785 (derived only), PhysioNet eeg-gaba-anesthesia (credentialed, 4 subjects), DANDI 000397 (no awake baseline), OpenNeuro ds004551/ds005398/ds003498 (sleep only). Unverified leads: Krom et al. 2020 (Nir lab), Lewis et al. 2012 (MGH).
+
+Route: request the raw Iowa propofol and sleep iEEG; meanwhile, a frozen PRIOS inter-pulse test with its confounds stated; request the remaining Purdon 2013 subjects for scalp at loss-of-consciousness depth.
+
 ## Access steps the user would need to take
 
 - **CHBMP:** any logged-in Synapse account can download; no group approval is needed for syn22324937. Use a personal access token stored by the user on Gadi. The LORIS mirror is at chbmp-open.loris.ca.
