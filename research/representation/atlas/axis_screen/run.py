@@ -103,21 +103,21 @@ def group(args):
     ids = [i for i, _ in members]
     with np.load(Path(bank) / 'windows.npz') as W:
         raw = [np.asarray(W[i], np.float64) for i in ids]
-    if prios:  # PRIOS windows are already normal-scored and may differ in channels: nulls on the group's common set
+    if prios:  # PRIOS windows are already normal-scored and differ in channels: real and IAAFT only (prereg addendum)
         V = raw
         raw = [None] * len(V)
+        ch = json.loads((Path(bank) / 'channels.json').read_text())
+        ch = [np.array(ch[i]) for i in ids]
     else:
         V = [_ns(x) for x in raw]
-    M = {v.shape[1] for v in V}
-    assert len(M) == 1, (unit, state, M)
-    M = M.pop()
+        assert len({v.shape[1] for v in V}) == 1, (unit, state)
     n, T = len(V), V[0].shape[0]
     ver = {k: [None] * n for k in VERSIONS}
     ver['real'] = V
     for w, (wid, v) in enumerate(zip(ids, V)):
         for b in range(B_IAAFT):
             ver[f'iaaft{b}'][w] = multivariate_iaaft(v, np.random.default_rng([seed(wid), 10, b]), final='spectrum')[0]
-    for sub in sorted({s for _, s in members}):
+    for sub in ([] if prios else sorted({s for _, s in members})):
         ix = [w for w, (_, s) in enumerate(members) if s == sub]
         X = np.stack([V[w] for w in ix])
         S = _mean_periodogram(X)
@@ -126,43 +126,68 @@ def group(args):
             Sk = _zero_phase(S) if kind == 'zero_phase' else _mean_periodogram(gaussian_draws(S, len(ix), T, rng)) if kind == 'bias' else S
             for w, y in zip(ix, gaussian_draws(Sk, len(ix), T, rng)):
                 ver[kind][w] = y
-    a, b_ = np.triu_indices(M, 1)
-    s32 = np.round(np.arange(32) * (M - 1) / 31).astype(int) if sub32 else np.arange(M)
-    e32 = np.flatnonzero(np.isin(a, s32) & np.isin(b_, s32))
     S_ = len(KEYS)
-    Pall = np.full((n, len(VERSIONS), S_, len(a)), np.nan, np.float32)
+    Pall = [[None] * len(VERSIONS) for _ in range(n)]  # per window, version: (S_ + 1, E_w); last row KSG (NaN off the subset)
     Z = np.full((n, len(VERSIONS), S_, S_), np.nan, np.float32); Zdc = Z.copy()
     Z32 = np.full((n, len(VERSIONS), S_ + 1, S_ + 1), np.nan, np.float32)
     R2 = np.full((n, len(VERSIONS), S_), np.nan, np.float32)
-    K32 = np.full((n, len(VERSIONS), len(e32)), np.nan, np.float32)
     fin = np.full((n, len(VERSIONS)), np.nan)
     cov = np.array([_covariates(raw[w], V[w], fs, rows[ids[w]]) for w in range(n)])
     from research.representation.atlas.mi_pair.edges import edge_mi
     for w in range(n):
+        M = V[w].shape[1]
+        a, b_ = np.triu_indices(M, 1)
+        s32 = np.round(np.arange(32) * (M - 1) / 31).astype(int) if sub32 else np.arange(M)
+        e32 = np.flatnonzero(np.isin(a, s32) & np.isin(b_, s32))
         for k, name in enumerate(VERSIONS):
             x = ver[name][w]
+            if x is None:
+                continue
             P = profiles(x)
             P = np.array([P[key] for key in KEYS])
-            Pall[w, k] = P
             Z[w, k], Zdc[w, k], R2[w, k], fin[w, k] = _reduce(P, M)
             _, kk = edge_mi(x[:, s32])
-            K32[w, k] = kk
             Z32[w, k] = _zmat(np.vstack([P[:, e32], kk[None]]))[0]
+            K = np.full(len(a), np.nan); K[e32] = kk
+            Pall[w][k] = np.vstack([P, K[None]]).astype(np.float32)
     rel = np.full((len(VERSIONS), S_ + 1), np.nan, np.float32)
     zmean = np.full((len(VERSIONS), S_, S_), np.nan, np.float32)
-    if n >= 3:
+    if n >= (2 if prios else 3):
+        pairs = [(i, j) for i in range(n) for j in range(i + 1, n)]
+        if prios:  # edges among the channels both windows keep (sorted original indices)
+            def idx(c, common):
+                p = np.searchsorted(c, common); M = len(c); i, j = np.triu_indices(len(common), 1)
+                return p[i] * M - p[i] * (p[i] + 1) // 2 + p[j] - p[i] - 1
+            E = {}
+            for i, j in pairs:
+                common = np.intersect1d(ch[i], ch[j])
+                E[i, j] = (idx(ch[i], common), idx(ch[j], common)) if len(common) >= 3 else None
         for k in range(len(VERSIONS)):
-            for s in range(S_):
-                c = np.corrcoef(Pall[:, k, s][:, np.isfinite(Pall[:, k, s]).all(0)])
-                rel[k, s] = c[np.triu_indices(n, 1)].mean()
-            c = np.corrcoef(K32[:, k])
-            rel[k, S_] = c[np.triu_indices(n, 1)].mean()
-            zmean[k] = _zmat(np.nanmean(Pall[:, k], 0))[0]
+            if Pall[0][k] is None:
+                continue
+            for s in range(S_ + 1):
+                c = []
+                for i, j in pairs:
+                    if prios:
+                        if E[i, j] is None:
+                            continue
+                        u, v = Pall[i][k][s][E[i, j][0]], Pall[j][k][s][E[i, j][1]]
+                    else:
+                        u, v = Pall[i][k][s], Pall[j][k][s]
+                    ok = np.isfinite(u) & np.isfinite(v)
+                    if ok.sum() > 2:
+                        c.append(np.corrcoef(u[ok], v[ok])[0, 1])
+                rel[k, s] = np.nanmean(c) if c else np.nan
+            if not prios:
+                zmean[k] = _zmat(np.nanmean(np.stack([Pall[w][k][:S_] for w in range(n)]), 0))[0]
     np.savez(target, ids=np.array(ids), sub=np.array([s for _, s in members]), Z=Z, Zdc=Zdc, Z32=Z32, R2=R2, fin=fin,
-             cov=cov, rel=rel, zmean=zmean, M=M, keys=np.array(KEYS), versions=np.array(VERSIONS), e32=e32)
-    np.save(Path(out) / 'profiles' / f'{unit}__{state}.npy', Pall)
-    np.save(Path(out) / 'profiles' / f'{unit}__{state}__ksg32.npy', K32)
+             cov=cov, rel=rel, zmean=zmean, M=V[0].shape[1], keys=np.array(KEYS), versions=np.array(VERSIONS))
+    np.savez(Path(out) / 'profiles' / f'{unit}__{state}.npz',
+             **{f'{i}|{v}': Pall[w][k] for w, i in enumerate(ids) for k, v in enumerate(VERSIONS) if Pall[w][k] is not None})
     return str(target), time.time() - t0
+
+
+CHUNK = 40  # PRIOS: windows per task (no group-level nulls), consecutive in time; reliability within chunk
 
 
 def jobs(bank, out, prios=False, sub32=True):
@@ -176,6 +201,12 @@ def jobs(bank, out, prios=False, sub32=True):
     fs = man.get('fs', 100)
     J = []
     for (unit, state), members in _groups(man['rows']):
+        if prios:
+            members = sorted(members, key=lambda m: (rows[m[0]]['run'], rows[m[0]]['onset_s']))
+            for c in range(0, len(members), CHUNK):
+                ch = members[c:c + CHUNK]
+                J.append((str(bank), str(out), unit, f'{state}__c{c // CHUNK:02d}', ch, {i: rows[i] for i, _ in ch}, fs, prios, sub32))
+            continue
         J.append((str(bank), str(out), unit, state, members, {i: rows[i] for i, _ in members}, fs, prios, sub32))
     return sorted(J, key=lambda j: -len(j[4]))  # largest groups first
 
