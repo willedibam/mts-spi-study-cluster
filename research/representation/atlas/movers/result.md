@@ -166,3 +166,17 @@ These are **raw** drug changes in z (real bank only, KT, KTMD and PF sessions), 
   - 43% of them join electrodes with adjacent labels, against 1.6% of all edges; median label distance is 4–5, against 38.
   - So the family is carried by the strongest, mostly neighbouring pairs, where both partners are near their maximum. Eyes-open maps share them because they are structural.
   - The family is not hub-driven: node drops keep .91–.96.
+
+## Named families against per-window joint IAAFT (post hoc; rule fixed in `families_iaaft.py` before outputs; computed 18 November, jobs 184281076[0–9], scored 19 November; `families_iaaft.json`)
+
+1,040 windows, three draws per window. Residual = real − surrogate, drug contrast over KT, KTMD and PF (19 sessions); eyes-open session SD in brackets.
+
+| Family | raw − marginal-final IAAFT | normal-scored − spectrum-final IAAFT | same, double-centred | Pyspi-bank net (for comparison) |
+|---|---|---|---|---|
+| Chebyshev against the other five distances | +.003, 7/19: **reproduced** | −.047, 19/19, every animal (.009): **survives** | −.038, 19/19 (.008) | −.060, 18/19 |
+| Regularised precision² against broadband `cohmag`, `plv`, `ppc` | +.014, 7/19: **reproduced** | +.002, 10/19: **reproduced** | +.001 | −.040, 19/19 |
+| Kernel lagged MI against kernel TE | +.042, 19/19, every animal (.008): **survives** | +.044, 15/19: partial | +.035, 19/19 (.006) | +.109, 19/19 |
+
+- **Precision × phase coherence is withdrawn as a character change.** Each window's own linear (second-order) structure reproduces it; its net beyond the pyspi bank came from between-window variation that a state-mean spectrum does not hold.
+- **Chebyshev is a copula-level change.** On raw data, each window's marginals plus linear structure reproduce it, consistent with the channel-tail confound. After normal-scoring, extreme-sample dissimilarity still becomes pair-specific beyond exact cross-spectra, in every session, and pair-level (double-centred). This is the same construction as the MI-pair anchor.
+- **Kernel lagged MI against TE survives an autocorrelation-preserving null**, so conditioning on the target's past matters less beyond what each window's spectra give. It is partial on the normal-scored scale, and the double-centred version survives.
