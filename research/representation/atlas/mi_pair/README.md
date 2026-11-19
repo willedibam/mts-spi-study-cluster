@@ -12,6 +12,7 @@ This folder holds the pyspi-free code behind the Gaussian-against-kNN MI result 
 | `edges.py`, `edges_score.py`, `edges_posthoc.py` | Recompute of the lost arrays and the all-channel edge-concentration test | Frozen: [`edges-prereg.md`](edges-prereg.md); result [`edges-result.md`](edges-result.md) | `zns/` (checksums, `sumall.txt`); `full/` (scores; per-window arrays on gdata) |
 | `montage/` | Macaque bipolar montage, stages A and B | Robustness check, not frozen | `montage/zbip_[AB].npz` |
 | `amplitude/` | Amplitude-gate form test, macaque and mouse, with synthetic calibrations | Frozen: [`preregs/amplitude-prereg.md`](preregs/amplitude-prereg.md); inconclusive | `amplitude/gate_*.npz` |
+| `nonstat/` | Non-stationary (segment) surrogates against the stationary IAAFT null, 10-s macaque, with synthetic calibration | Frozen: [`preregs/nonstat-prereg.md`](preregs/nonstat-prereg.md); calibration shows it cannot separate gain from a coupling nonlinearity, so the real-data run is descriptive | `nonstat/calib1.*`, `nonstat/` scores |
 
 Each folder's `*_result.txt`, `*_qc.txt` or `*_sum.py` output reproduces the numbers quoted in `findings.md`.
 
