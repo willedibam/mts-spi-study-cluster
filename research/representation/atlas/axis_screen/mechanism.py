@@ -155,7 +155,8 @@ def score(path, manifest, output):
         return np.array(o)
 
     out = dict(sessions=len(ses), animals=animals, metrics={})
-    for k, name in enumerate(METRICS):
+    MN = [str(n) for n in D['metrics']]  # as stored (older outputs lack kurt)
+    for k, name in enumerate(MN):
         x, xr, xi = net[:, k], M[:, 0, k], M[:, 1:, k].mean(1)
         lev = lambda s, y: float(np.mean([mean(y, u, s) for u in ses]))
         dd = delta(x, ses, 'drug'); sh = split_half(x); nsd = float(np.nanstd(sh, ddof=1) / np.sqrt(2))
@@ -172,8 +173,8 @@ def score(path, manifest, output):
     # within drug sessions, window-level correlation of the axis net with each metric's net (session-demeaned)
     dw = np.isin(unit, ses) & (state == 'drug')
     dm = lambda y: y[dw] - np.array([np.nanmean(y[dw & (unit == u)]) for u in unit[dw]])
-    out['window_r_with_axis'] = {n: float(np.corrcoef(dm(net[:, METRICS.index('z_pc')]), dm(net[:, k]))[0, 1])
-                                 for k, n in enumerate(METRICS) if n != 'z_pc'}
+    out['window_r_with_axis'] = {n: float(np.corrcoef(dm(net[:, MN.index('z_pc')]), dm(net[:, k]))[0, 1])
+                                 for k, n in enumerate(MN) if n != 'z_pc'}
     G = [str(g) for g in D['groups']]; R = D['recurrence']
     rec = lambda s: np.array([R[G.index(f'{u}__{s}')] for u in ses])
     rd, ra = rec('drug'), rec(REF)
