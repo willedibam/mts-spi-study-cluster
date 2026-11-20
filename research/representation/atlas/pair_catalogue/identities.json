@@ -290,5 +290,42 @@
    "se": 0.0004186536922348862
   }
  },
+ "chatterjee_xi": [
+  {
+   "rho": 0.0,
+   "xi": -0.0015194122537985466,
+   "formula": -5.551115123125783e-17,
+   "mean_T200": 0.0001571289282232066,
+   "sd_T200": 0.04486503027440644
+  },
+  {
+   "rho": 0.3,
+   "xi": 0.05165113212912783,
+   "formula": 0.05041106052776445,
+   "mean_T200": 0.05142278556963923,
+   "sd_T200": 0.047273103563700056
+  },
+  {
+   "rho": 0.6,
+   "xi": 0.2153281175383203,
+   "formula": 0.21406071739327226,
+   "mean_T200": 0.20828545713642843,
+   "sd_T200": 0.04872199795249656
+  },
+  {
+   "rho": 0.8,
+   "xi": 0.4176218830440547,
+   "formula": 0.4180798958759304,
+   "mean_T200": 0.4155409510237756,
+   "sd_T200": 0.04346243348970145
+  },
+  {
+   "rho": 0.95,
+   "xi": 0.701082007002705,
+   "formula": 0.7005984839306394,
+   "mean_T200": 0.6910230255756394,
+   "sd_T200": 0.025042125011105004
+  }
+ ],
  "notes": "dcor2 uses every 4th sample (250 points); kendall in check 1 uses the first 4000 samples. Envelope check: AR(1) carrier .9, shared source with a lag in samples. Canberra: excess = mean canberra - f_G(r), f_G tabulated on Gaussian pairs; 20 reps of T 20000 iid samples, gain in 50-sample blocks."
 }

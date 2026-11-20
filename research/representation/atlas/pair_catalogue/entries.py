@@ -189,7 +189,7 @@ ENTRIES = [
          gaussian_relation='bary-sq mean = (1 + r)/2 exactly; max/mean fixed given T and spectrum of x + y',
          validation='not validated', atlas='matched 2-s screen -.019, 18/19, dc -.021',
          calibration='co-burst synthetic against Gaussian; read with Chebyshev (disagreement extremes) as its contrast',
-         shortlist=dict(rank=6, contrast='z(bary-sq mean, bary-sq max) and the cross pair z(pdist_chebyshev, bary-sq max): extreme agreement against extreme disagreement', null=IAAFT)),
+         shortlist=dict(rank=6, contrast='z(r, bary-sq max) (identical to z(bary-sq mean, bary-sq max), since the mean is (1 + r)/2) and the cross pair z(pdist_chebyshev, bary-sq max): extreme agreement against extreme disagreement', null=IAAFT)),
     dict(id='bary-sign', level='assumption', title='Signed against two-sided max of the barycentre: asymmetry of co-excursions',
          pairs=[['bary_euclidean_max', 'bary-sq_euclidean_max']], classes=[],
          differs='largest positive co-excursion against largest co-excursion of either sign',
@@ -267,7 +267,7 @@ ENTRIES = [
          gaussian_relation='precision = inverse covariance: fixed by the covariance, edgewise relation not fixed',
          validation='core axis by construction (strong instantaneous mediation, SR 3.25/2.88); fails with lagged, partial mediation',
          atlas='global dz ~ 0; local signature in unregularised precision tracks spectral entropy (estimation effect); LedoitWolf fails the held-out test',
-         calibration='done (construction)', shortlist=dict(rank=12, contrast='z(cov-sq LW, prec-sq LW) at 10 s, strength-matched edges, channel-subset re-extraction for any M change', null='stationary Gaussian null with the state covariance; strength covariates')),
+         calibration='done (construction)', shortlist=dict(rank=12, contrast='z(cov-sq_EmpiricalCovariance, prec-sq_LedoitWolf) at 10 s (identical to z(cov-sq LW, prec-sq LW): one shrinkage factor per window), strength-matched edges, channel-subset re-extraction for any M change', null='stationary Gaussian null with the state covariance; strength covariates')),
     dict(id='coh-icoh', level='assumption', title='|C|^2 against |Im C| (lag)',
          pairs=[[mt('cohmag', LO), mt('icoh', LO)], [mt('cohmag', BB), mt('icoh', BB)], [mt('cohmag', HI), mt('icoh', HI)]],
          classes=['zero-lag removal (coherence)'], differs='removal of the zero-phase (real) part of coherency',
@@ -377,6 +377,7 @@ GUIDE_PROPOSALS = [
     'Envelope correlation: under Gaussianity its partner is |gamma|^2 = r^2 + corr(x, H[y])^2, not r^2; z(pec, r^2) mixes in lag.',
     'Remove saturation from z0 by mapping the Gaussian-determined partner through the known relation (arcsin for ranks, Thm 7 for dCor, -1/2 log for MI, closed envelope forms) before correlating; z0 is then 1 minus estimator noise under the null.',
     'Canberra gain invariance holds on z-scored, not normal-scored, windows; a normal-scored IAAFT construction removes it.',
+    'SPIs unbundled upstream as exact affine functions of a kept SPI (pdist_cosine, bary-sq_euclidean_mean, the shrinkage covariances) give exactly the z of the kept SPI, because z is a Pearson correlation of edge profiles; read and name such pairs through the kept SPI.',
 ]
 
 # Atlas status per entry (short; the full record is each entry's `atlas` field).
@@ -389,4 +390,70 @@ STATUS = {
     'mediation': 'raw; local estimator effect', 'coh-icoh': 'failed (floor, covariates)', 'ppc-dswpli': 'failed (reliability, covariates)',
     'best-lag': 'failed (covariates); stable mean lag 10 s', 'band': 'failed (not drug-specific)', 'peak': 'raw; max SPIs unreliable',
     'precedence': 'raw (10 s)', 'history': 'raw; unreliable', 'warp': 'failed construction', 'pec-orth': 'floor', 'symbolic': 'untested',
+}
+
+# Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 20 Nov 2026: pin 5d61d9c (r13), upstream main 5e25d27.
+# `spis` patterns mark the affected members in catalogue.json; the atlas config is a frozen copy, so nothing leaves the bank until it is re-synced.
+UPSTREAM = dict(
+    checked='2026-11-20', pin='5d61d9c (computation 3.0.0.r13)', upstream_main='5e25d27',
+    principle=('z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly '
+               'the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one '
+               'delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) '
+               'changes z only through curvature, which the catalogue already treats as an identity or saturation control, and the mapped-partner convention uses the '
+               'analytic form. Kendall is not an exact function of Spearman (the relation depends on the copula), but its residual was already excluded as a '
+               'near-ceiling diagnostic. So the merged cuts remove no reading; they agree with the identity, shrinkage, kendall-spearman and debias exclusions.'),
+    prs=[
+        dict(pr='#135-#143', state='merged 20 Nov', spis=r'^cov_(ShrunkCovariance|LedoitWolf|OAS)$|^cov-sq_(EmpiricalCovariance|ShrunkCovariance|GraphicalLasso|LedoitWolf|MinCovDet|OAS)$'
+             r'|^lmfit_|^g?pdcoh_|^ppc_|^kendalltau|^pdist_(cosine|euclidean)$|^bary-sq_euclidean_mean$|^phi_(Geo|star)_t-1_norm-1$',
+             what='37 SPIs unbundled as redundant (shrinkage covariances, six cov-sq, lmfit, pdcoh/gpdcoh, ppc, kendalltau(-sq), pdist cosine/euclidean, bary-sq mean, phi norm-1)',
+             impact='config only: classes and values unchanged, still r13. All 37 are in the 272-SPI bank; no catalogue reading depends on one that has no exact kept equivalent'),
+        dict(pr='#144 (on #112)', state='open; decision A4 approved 20 Nov', spis=r'^corr_.*_tau-|^xcorr',
+             what='48 corr_*_tau-k and xcorr SPIs leave the bundles (45 are in the bank); 13 directed lagcorr_* SPIs (lag, peak, asym, onesided) come in',
+             impact='removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak'),
+        dict(pr='#134 (on #133)', state='open (own PR)', spis=r'^(mi|tlmi|te)_kernel',
+             what='kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14',
+             impact='kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer'),
+        dict(pr='#133', state='open (own PR)', spis=None,
+             what='kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90',
+             impact='existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank)'),
+        dict(pr='#127', state='open', spis=None, what='undirected pairs evaluated once',
+             impact='bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact'),
+    ],
+    pending='spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions',
+    candidates=[
+        ('Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: '
+         'xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads '
+         'functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads '
+         'which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.'),
+        ('lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) '
+         'contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.'),
+        ('Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); '
+         'mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.'),
+    ],
+)
+
+UPSTREAM_NOTES = {
+    'mediation': 'cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged.',
+    'bary-max': 'bary-sq_euclidean_mean is unbundled (#141); it is (1 + r)/2, so z(bary-sq mean, bary-sq max) = z(r, bary-sq max) exactly. bary-sq_euclidean_max stays.',
+    'chebyshev': 'pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays.',
+    'canberra': 'pdist_euclidean and pdist_cosine are unbundled (#141); the shortlist already uses the analytic f_G(r). pdist_canberra stays.',
+    'cityblock': 'pdist_euclidean and pdist_cosine are unbundled (#141); L2 comes from r. pdist_cityblock stays.',
+    'mcd': 'cov-sq_MinCovDet is unbundled (#136): it is the square of cov_MinCovDet. The axis readouts (pcorr|pcorr_mcd, r^2|mcd^2) are unaffected.',
+    'rank-linear': 'kendalltau is unbundled (#140) and the lagged corr_* members leave with #144 (open); spearmanr stays, and spearmanr-sq is pending. The shortlist uses Spearman.',
+    'dcorr': 'cov-sq_EmpiricalCovariance is unbundled (#136); use r^2 or the Thm-7 map of r, as the shortlist already does.',
+    'best-lag': '#144 (open) removes xcorr_* and adds lagcorr_peak (signed r at the lag of max |r|, over min(max_lag, T // 4) lags) and lagcorr_lag. If it merges before the run, shortlist row 13 becomes z(r^2, lagcorr_peak^2) with lagcorr_lag as a direct lag readout; r13 xcorr z0 and reliability do not transfer.',
+    'peak': 'The xcorr member leaves with #144 (open); the ppc members are unbundled (#139). Read the frequency peak through plv mean|max, which carries ppc (PPC = (N PLV^2 - 1)/(N - 1) per frequency).',
+    'ppc-dswpli': 'ppc is unbundled (#139); plv|dswpli carries the same lag reading, with the plv band means .98-.99 against ppc rather than exact.',
+    'band': 'The ppc members are unbundled (#139); the cohmag and plv band pairs stay.',
+    'coh-plv': 'One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.',
+    'warp': 'pdist_euclidean is unbundled (#141); take L2 from r.',
+    'mi-kernel': '#134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.',
+    'tlmi-ksg': 'The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.',
+    'gc-te': 'te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).',
+    'precedence': 'The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.',
+    'entropies': 'With #134 kernel MI, TLMI and TE leave one point out but kernel je, ce, si, xme and cce still count it, so kernel MI is no longer H + H - JE of pyspi\'s kernel entropies. The exclusion stands.',
+    'identity': 'The cuts (#136, #137, #141) remove exactly the members this entry already called identities.',
+    'shrinkage': 'The shrinkage covariances are unbundled (#136) on the same identity this exclusion uses; the precision forms stay.',
+    'kendall-spearman': 'kendalltau is unbundled (#140) on the near-identity this exclusion uses; the lagged Kendall members leave with #144.',
+    'fixed-lag': '169 of 175 pairs leave with #144 (open).',
 }

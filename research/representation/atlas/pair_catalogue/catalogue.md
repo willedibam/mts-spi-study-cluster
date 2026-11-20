@@ -60,17 +60,63 @@ Ordered for the next computation: the gain-discriminating and envelope readouts 
 | 3 | Envelope correlation on amplitude against log power | `pec` · `pec_log` | burst-driven against proportional amplitude co-modulation: log compresses large excursions, so the pair… | z(pec, pec_log) net, run beside envelope-gamma (same windows, z-scored) | real - joint spectrum-final IAAFT on z-scored (not normal-scored) windows |
 | 4 | Chebyshev against L2 or L1 distance: extreme disagreement | `pdist_euclidean` · `pdist_chebyshev` | heavy-tailed disagreement: intermittent large divergence of a pair beyond what a Gaussian difference signal… | z(l1, linf) and z(l2, linf), 2-s windows (or a fixed sample count), with Canberra and bary-max as links | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
 | 5 | Classical against MinCovDet covariance, precision, partial correlation | `pcorr_EmpiricalCovariance` · `pcorr_MinCovDet` | time-heterogeneous dependence: a fraction of samples departs from the dominant covariance | already an axis; next computation is the calibration synthetic and a 2-s test at M <= 60 | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
-| 6 | Mean against max of the squared barycentre: extreme co-excursion | `bary-sq_euclidean_mean` · `bary-sq_euclidean_max` | joint extreme excursions (co-bursts): pairs whose largest common excursion exceeds what a Gaussian sum with… | z(bary-sq mean, bary-sq max) and the cross pair z(pdist_chebyshev, bary-sq max): extreme agreement against extreme disagreement | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
+| 6 | Mean against max of the squared barycentre: extreme co-excursion | `bary-sq_euclidean_mean` · `bary-sq_euclidean_max` | joint extreme excursions (co-bursts): pairs whose largest common excursion exceeds what a Gaussian sum with… | z(r, bary-sq max) (identical to z(bary-sq mean, bary-sq max), since the mean is (1 + r)/2) and the cross pair z(pdist_chebyshev, bary-sq max): extreme agreement against extreme disagreement | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
 | 7 | Signed against two-sided max of the barycentre: asymmetry of co-excursions | `bary_euclidean_max` · `bary-sq_euclidean_max` | asymmetry (skew) of joint excursions: whether pairs co-burst upward and downward alike | z(bary_euclidean_max, bary-sq_euclidean_max) | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
 | 8 | Coherence against phase-locking value: amplitude-dependent synchrony | `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` | amplitude-dependent synchrony: phase locking concentrated in high- or low-amplitude epochs, beyond the fixed… | pyspi-free Daniell coherence against per-frequency PLV mapped through the Gaussian relation, high band and broadband | IAAFT with a Daniell estimator |
 | 9 | Pearson against Spearman or Kendall (with a normal-score intermediate) | `cov_EmpiricalCovariance` · `spearmanr` | copula departure in concordance: dependence that is monotone but not Gaussian-copula (joint bursts read here… | z(pearson on normal scores, spearman) after mapping r through (6/pi) arcsin(r/2); level of the mapped excess per edge | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
 | 10 | r^2 against distance correlation (and IDS) | `cov-sq_EmpiricalCovariance` · `dcorr` | any-form (including non-monotone) dependence beyond the Gaussian value | z(Thm-7-mapped r, dcorr) and z(r^2, ids); same F1 family as the anchor | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
 | 11 | Gaussian GC against model-free TE (GC = 2 TE for Gaussians) | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_kernel_W-0.25_k-1` | non-Gaussian predictive (directed) dependence: prediction of the target from the source beyond its own past… | z(gc_gaussian k1, te_kernel k1) net, 10-s arm only (reliability .47/.68); report the level median(te - gc) beside it | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
-| 12 | Marginal against conditional (covariance against precision or partial correlation) | `cov-sq_EmpiricalCovariance` · `prec-sq_EmpiricalCovariance` | mediation: direct against indirect association given the observed channels | z(cov-sq LW, prec-sq LW) at 10 s, strength-matched edges, channel-subset re-extraction for any M change | stationary Gaussian null with the state covariance |
+| 12 | Marginal against conditional (covariance against precision or partial correlation) | `cov-sq_EmpiricalCovariance` · `prec-sq_EmpiricalCovariance` | mediation: direct against indirect association given the observed channels | z(cov-sq_EmpiricalCovariance, prec-sq_LedoitWolf) at 10 s (identical to z(cov-sq LW, prec-sq LW): one shrinkage factor per window), strength-matched edges, channel-subset re-extraction for any M change | stationary Gaussian null with the state covariance |
 | 13 | Zero lag against best lag | `cov-sq_EmpiricalCovariance` · `xcorr-sq_max_sig-True` | coupling carried at a stable non-zero lag | z(r^2, xcorr-sq max), 10 s, mean-lag term = stationary - zero-phase, per agent | zero-phase and stationary Gaussian nulls with the state mean cross-spectrum (discovery.py lag-null) |
 | 14 | Lagged MI against GC (conditioning on the target past) | `tlmi_gaussian` · `gc_gaussian_k-1_kt-1_l-1_lt-1` | precedence: what the source adds beyond the target's past | z(tlmi_gaussian, gc_gaussian) at 10 s and the kernel link beside it (higher-order part) | stationary null (Gaussian) |
 
 Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's windows with the screen's IAAFT draws or a Gaussian FT surrogate. That is the axis-screen pipeline (0.23 kSU for 33 SPIs in both arms), so about 0.1–0.3 kSU expected and 0.5 kSU worst case on Gadi. Row 8 needs a Daniell estimator added to the same pipeline. Calibration synthetics (rows 1, 2, 5, 8) are local and take minutes.
+
+## Upstream pyspi changes (checked 2026-11-20)
+
+Pin 5d61d9c (computation 3.0.0.r13), upstream main 5e25d27. The atlas config is a frozen copy of `benchmarked_p90`, so no r13 number here changes and nothing leaves the bank until the main session re-syncs it. z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) changes z only through curvature, which the catalogue already treats as an identity or saturation control, and the mapped-partner convention uses the analytic form. Kendall is not an exact function of Spearman (the relation depends on the copula), but its residual was already excluded as a near-ceiling diagnostic. So the merged cuts remove no reading; they agree with the identity, shrinkage, kendall-spearman and debias exclusions.
+
+| PR | State | What | Impact on the catalogue |
+|---|---|---|---|
+| #135-#143 | merged 20 Nov | 37 SPIs unbundled as redundant (shrinkage covariances, six cov-sq, lmfit, pdcoh/gpdcoh, ppc, kendalltau(-sq), pdist cosine/euclidean, bary-sq mean, phi norm-1) | config only: classes and values unchanged, still r13. All 37 are in the 272-SPI bank; no catalogue reading depends on one that has no exact kept equivalent |
+| #144 (on #112) | open; decision A4 approved 20 Nov | 48 corr_*_tau-k and xcorr SPIs leave the bundles (45 are in the bank); 13 directed lagcorr_* SPIs (lag, peak, asym, onesided) come in | removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak |
+| #134 (on #133) | open (own PR) | kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14 | kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer |
+| #133 | open (own PR) | kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90 | existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank) |
+| #127 | open | undirected pairs evaluated once | bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact |
+
+Pending upstream: spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions.
+
+| Entry | Members affected | Note |
+|---|---|---|
+| Classical against MinCovDet covariance, precision, partial correlation | 1/5 | cov-sq_MinCovDet is unbundled (#136): it is the square of cov_MinCovDet. The axis readouts (pcorr\|pcorr_mcd, r^2\|mcd^2) are unaffected. |
+| Gaussian against kernel MI | 1/1 | #134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above. |
+| Marginal against conditional (covariance against precision or partial correlation) | 11/15 | cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged. |
+| Chebyshev against L2 or L1 distance: extreme disagreement | 2/5 | pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays. |
+| Gaussian against kNN lagged MI | 1/2 | The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged. |
+| Euclidean against Canberra distance: gain-invariant agreement | 2/3 | pdist_euclidean and pdist_cosine are unbundled (#141); the shortlist already uses the analytic f_G(r). pdist_canberra stays. |
+| L1 against L2 distance: tail weight of disagreement | 2/2 | pdist_euclidean and pdist_cosine are unbundled (#141); L2 comes from r. pdist_cityblock stays. |
+| Pearson against Spearman or Kendall (with a normal-score intermediate) | 31/33 | kendalltau is unbundled (#140) and the lagged corr_* members leave with #144 (open); spearmanr stays, and spearmanr-sq is pending. The shortlist uses Spearman. |
+| r^2 against distance correlation (and IDS) | 2/3 | cov-sq_EmpiricalCovariance is unbundled (#136); use r^2 or the Thm-7 map of r, as the shortlist already does. |
+| Low against high band | 2/16 | The ppc members are unbundled (#139); the cohmag and plv band pairs stay. |
+| Mean against max of the squared barycentre: extreme co-excursion | 1/1 | bary-sq_euclidean_mean is unbundled (#141); it is (1 + r)/2, so z(bary-sq mean, bary-sq max) = z(r, bary-sq max) exactly. bary-sq_euclidean_max stays. |
+| Gaussian GC against model-free TE (GC = 2 TE for Gaussians) | 1/2 | te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133). |
+| Lagged MI against GC (conditioning on the target past) | 1/3 | The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14. |
+| Coherence against phase-locking value: amplitude-dependent synchrony | 1/7 | One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact. |
+| Zero lag against best lag | 2/2 | #144 (open) removes xcorr_* and adds lagcorr_peak (signed r at the lag of max \|r\|, over min(max_lag, T // 4) lags) and lagcorr_lag. If it merges before the run, shortlist row 13 becomes z(r^2, lagcorr_peak^2) with lagcorr_lag as a direct lag readout; r13 xcorr z0 and reliability do not transfer. |
+| Rigid against elastic alignment | 1/8 | pdist_euclidean is unbundled (#141); take L2 from r. |
+| Mean against max over frequency or lag | 4/25 | The xcorr member leaves with #144 (open); the ppc members are unbundled (#139). Read the frequency peak through plv mean\|max, which carries ppc (PPC = (N PLV^2 - 1)/(N - 1) per frequency). |
+| PPC against debiased wPLI (lag, both debiased) | 3/3 | ppc is unbundled (#139); plv\|dswpli carries the same lag reading, with the plv band means .98-.99 against ppc rather than exact. |
+| Gaussian against kernel or Kozachenko entropies (je, ce, si, xme, cce) | 7/24 | With #134 kernel MI, TLMI and TE leave one point out but kernel je, ce, si, xme and cce still count it, so kernel MI is no longer H + H - JE of pyspi's kernel entropies. The exclusion stands. |
+| Zero against fixed lag (samples) | 169/175 | 169 of 175 pairs leave with #144 (open). |
+| Identity and saturation controls | 7/9 | The cuts (#136, #137, #141) remove exactly the members this entry already called identities. |
+| Kendall against Spearman | 16/16 | kendalltau is unbundled (#140) on the near-identity this exclusion uses; the lagged Kendall members leave with #144. |
+| Empirical against shrinkage covariance (LedoitWolf, OAS, Shrunk) | 18/45 | The shrinkage covariances are unbundled (#136) on the same identity this exclusion uses; the precision forms stay. |
+
+Candidate pairs from new upstream SPIs (not yet entries):
+
+- Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.
+- lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.
+- Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.
 
 ## Ranked catalogue
 
@@ -118,6 +164,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** tail axis: raw readouts dominated by marginal shape in construction; beyond-IAAFT reading supported by the mechanism check (trimmed fraction), not by axis construction. **Status:** axis at 10 s; absent at 2 s.
 - **Atlas so far:** axis screen passes every gate at 10 s (pcorr|pcorr_mcd -.079, 11 SD; r2|mcd2 -.056), all four agents; absent at 2 s; "episodic coupling" not earned (distinctness fails).
 - **Calibration needed:** needs one: heavy-tailed elliptical (t-copula) against covariance-regime mixture at matched trimmed fraction, to name which raises it.
+- **Upstream pyspi:** cov-sq_MinCovDet is unbundled (#136): it is the square of cov_MinCovDet. The axis readouts (pcorr|pcorr_mcd, r^2|mcd^2) are unaffected.
 
 ### <a id="mi-ksg"></a>2. Gaussian against kNN MI (the anchor)
 
@@ -160,6 +207,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** as the anchor. **Status:** beyond IAAFT (frozen estimator check).
 - **Atlas so far:** full bank -2.2 to -7.0 SD; estimator check (frozen) SUPPORTS, pooled -.0100, p .014; matched 2-s screen -.039, 19/19.
 - **Calibration needed:** none needed beyond the anchor.
+- **Upstream pyspi:** #134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.
 
 ### <a id="mediation"></a>5. Marginal against conditional (covariance against precision or partial correlation)
 
@@ -174,6 +222,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** core axis by construction (strong instantaneous mediation, SR 3.25/2.88); fails with lagged, partial mediation. **Status:** raw; local estimator effect.
 - **Atlas so far:** global dz ~ 0; local signature in unregularised precision tracks spectral entropy (estimation effect); LedoitWolf fails the held-out test.
 - **Calibration needed:** done (construction).
+- **Upstream pyspi:** cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged.
 
 ### <a id="chebyshev"></a>6. Chebyshev against L2 or L1 distance: extreme disagreement
 
@@ -188,6 +237,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** tail axis readouts dominated by marginal shape raw; beyond-IAAFT on normal-scored windows removes that. **Status:** axis at 2 s; fails at 10 s.
 - **Atlas so far:** matched 2-s screen -.037 to -.067, 18-19/19, t(3) to -11.5, eyes-open ~0; axis screen l1|linf passes at 2 s (-.049), fails at 10 s; PRIOS 7/7 p .005 (linf reliability .25).
 - **Calibration needed:** heavy-tailed difference (t-distributed innovations in the coupling) against Gaussian at matched spectra; shared gain against local decoupling.
+- **Upstream pyspi:** pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays.
 
 ### <a id="tlmi-ksg"></a>7. Gaussian against kNN lagged MI
 
@@ -202,6 +252,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** tlmi not non-Gaussian on surrogates after the sign correction (construction stage 1). **Status:** beyond IAAFT (matched screen).
 - **Atlas so far:** matched 2-s screen -.033, 19/19, dc -.032 (same family as the anchor); assumptions run: lagged MI did not move raw.
 - **Calibration needed:** none; read as a sibling of the anchor.
+- **Upstream pyspi:** The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.
 
 ### <a id="canberra"></a>8. Euclidean against Canberra distance: gain-invariant agreement
 
@@ -216,6 +267,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** not validated; calibration below is the construction test. **Status:** beyond IAAFT, normal-scored only.
 - **Atlas so far:** matched 2-s screen (normal-scored IAAFT) euclidean|canberra -.013, 19/19, t(3) -6.1, eyes-open -.002; cosine|canberra -.013 19/19; reliability .79/.93.
 - **Calibration needed:** iid version done (identities.json canberra); still required at T 200/1000 with realistic spectra, multichannel z-scoring and spatially correlated floors.
+- **Upstream pyspi:** pdist_euclidean and pdist_cosine are unbundled (#141); the shortlist already uses the analytic f_G(r). pdist_canberra stays.
 
 ### <a id="cityblock"></a>9. L1 against L2 distance: tail weight of disagreement
 
@@ -230,6 +282,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** tail axis: raw dominated by marginal shape. **Status:** failed (ceiling).
 - **Atlas so far:** assumptions run -.010 to -.017 raw (1.6-2.3x saturation under KTMD); axis screen l1|l2 -.002 (z0 1.00).
 - **Calibration needed:** as Chebyshev.
+- **Upstream pyspi:** pdist_euclidean and pdist_cosine are unbundled (#141); L2 comes from r. pdist_cityblock stays.
 
 ### <a id="rank-linear"></a>10. Pearson against Spearman or Kendall (with a normal-score intermediate)
 
@@ -244,6 +297,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** real - IAAFT zero-lag Pearson|Spearman reads joint bursts (construction stage 3, d -3.2/-2.5); propofol EEG residual killed by the deciding analysis. **Status:** failed (ceiling).
 - **Atlas so far:** raw -.01 to -.02 at ceiling; axis screen r|rho -.0007 (too small to read).
 - **Calibration needed:** done for joint bursts; a nonlinear coupling-function synthetic is still needed for "monotone nonlinearity".
+- **Upstream pyspi:** kendalltau is unbundled (#140) and the lagged corr_* members leave with #144 (open); spearmanr stays, and spearmanr-sq is pending. The shortlist uses Spearman.
 
 ### <a id="dcorr"></a>11. r^2 against distance correlation (and IDS)
 
@@ -258,6 +312,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** post hoc at strong coupling r^2|dcorr responded to form dispersion and was non-Gaussian on surrogates. **Status:** failed (animal t).
 - **Atlas so far:** full bank -4.5 to -9.7 SD; axis screen r2|dcorr -.002 (fails animal t).
 - **Calibration needed:** non-monotone (quadratic) coupling synthetic.
+- **Upstream pyspi:** cov-sq_EmpiricalCovariance is unbundled (#136); use r^2 or the Thm-7 map of r, as the shortlist already does.
 
 ### <a id="pec-log"></a>12. Envelope correlation on amplitude against log power
 
@@ -286,6 +341,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** band is core (high share, spread); ppc L|H organisation is a sub-axis. **Status:** failed (not drug-specific).
 - **Atlas so far:** not drug-specific beyond the spectrum; axis screen fails.
 - **Calibration needed:** done.
+- **Upstream pyspi:** The ppc members are unbundled (#139); the cohmag and plv band pairs stay.
 
 ### <a id="bary-max"></a>14. Mean against max of the squared barycentre: extreme co-excursion
 
@@ -300,6 +356,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** not validated. **Status:** beyond IAAFT (matched screen).
 - **Atlas so far:** matched 2-s screen -.019, 18/19, dc -.021.
 - **Calibration needed:** co-burst synthetic against Gaussian; read with Chebyshev (disagreement extremes) as its contrast.
+- **Upstream pyspi:** bary-sq_euclidean_mean is unbundled (#141); it is (1 + r)/2, so z(bary-sq mean, bary-sq max) = z(r, bary-sq max) exactly. bary-sq_euclidean_max stays.
 
 ### <a id="bary-sign"></a>15. Signed against two-sided max of the barycentre: asymmetry of co-excursions
 
@@ -328,6 +385,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** the level median(te - gc) is the only non-Gaussian reader that passed construction (SR .78, surrogates keep .14); the z version was insensitive. **Status:** level only; z unreliable.
 - **Atlas so far:** kNN version unusable (te_kraskov_DCE reliability .03/.07); TE - GC level residual small 10-s effect of unestablished cause; kernel lagged MI against TE rose in the movers.
 - **Calibration needed:** quadratic coupling synthetic exists (predictive.py controls: positive residual on coupled pairs).
+- **Upstream pyspi:** te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).
 
 ### <a id="precedence"></a>17. Lagged MI against GC (conditioning on the target past)
 
@@ -342,6 +400,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** predictive axis extended set. **Status:** raw (10 s).
 - **Atlas so far:** Gaussian link falls under KT, MD, KTMD at 10 s, propofol ~0; kernel link rose in the movers.
 - **Calibration needed:** VAR synthetic with known GC.
+- **Upstream pyspi:** The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.
 
 ### <a id="coh-icoh"></a>18. |C|^2 against |Im C| (lag)
 
@@ -370,6 +429,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** phase_amplitude axis not core. **Status:** raw; IAAFT invalid for multitaper.
 - **Atlas so far:** high band raw +.03 to +.06 (KT, KTMD, PF), MD -.055; matched 2-s low -.005 17/19.
 - **Calibration needed:** amplitude-gated phase coupling synthetic (locking only above an envelope threshold) against Gaussian.
+- **Upstream pyspi:** One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.
 
 ### <a id="best-lag"></a>20. Zero lag against best lag
 
@@ -384,6 +444,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** timing_best_shift not core. **Status:** failed (covariates); stable mean lag 10 s.
 - **Atlas so far:** 10 s: mean-lag term carries most under KT and MD; axis screen: covariate adjustment reverses it.
 - **Calibration needed:** lag-null exists.
+- **Upstream pyspi:** #144 (open) removes xcorr_* and adds lagcorr_peak (signed r at the lag of max |r|, over min(max_lag, T // 4) lags) and lagcorr_lag. If it merges before the run, shortlist row 13 becomes z(r^2, lagcorr_peak^2) with lagcorr_lag as a direct lag readout; r13 xcorr z0 and reliability do not transfer.
 
 ### <a id="history"></a>21. History length
 
@@ -426,6 +487,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** warp failed construction validation. **Status:** failed construction.
 - **Atlas so far:** 10-s only, removed by spectral adjustment; DTW options surrogate-driven.
 - **Calibration needed:** failed.
+- **Upstream pyspi:** pdist_euclidean is unbundled (#141); take L2 from r.
 
 ### <a id="pec-orth"></a>24. Envelope correlation with against without orthogonalisation
 
@@ -454,6 +516,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** spectral_peak extended set. **Status:** raw; max SPIs unreliable.
 - **Atlas so far:** survivor in sufficiency checks; max SPIs unreliable here.
 - **Calibration needed:** n/a.
+- **Upstream pyspi:** The xcorr member leaves with #144 (open); the ppc members are unbundled (#139). Read the frequency peak through plv mean|max, which carries ppc (PPC = (N PLV^2 - 1)/(N - 1) per frequency).
 
 ### <a id="ppc-dswpli"></a>26. PPC against debiased wPLI (lag, both debiased)
 
@@ -468,6 +531,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 - **Validation:** lag sub-axis. **Status:** failed (reliability, covariates).
 - **Atlas so far:** residual KTMD +.08, PF +.13 beyond stationary; axis screen fails covariates and reliability.
 - **Calibration needed:** lag-null calibration exists.
+- **Upstream pyspi:** ppc is unbundled (#139); plv|dswpli carries the same lag reading, with the plv band means .98-.99 against ppc rather than exact.
 
 ## Exclusions (scored 0)
 
@@ -500,6 +564,7 @@ Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's
 | corr(\|a\|, \|b\|) = (π/4)(₂F₁(−½,−½;1;\|γ\|²) − 1)/(1 − π/4) | same | 0.004 |
 | corr(log\|a\|², log\|b\|²) = 6 Li₂(\|γ\|²)/π² | same | 0.005 |
 | PLV = (π/4)\|γ\| ₂F₁(½,½;2;\|γ\|²) | \|γ\| .2–.95 | 0.0007 |
+| Chatterjee ξ = (3/π) arcsin((1 + ρ²)/2) − ½ | ρ 0–.95, n 20,000 | 0.002; SD at T 200 0.025–0.049 |
 | mean\|d\| / rms(d) = √(2/π) | T 200/1000, AR 0–.98 | 0.031 (finite-T bias at AR .98) |
 | max\|d\| / rms(d) depends on T and spectrum | same | 2.31–3.42 |
 | z under a 16-channel Gaussian network | 10 reps, T 1000 | r²·dCor² 0.988, r·Spearman 0.998, L1·L2 0.995, L∞·L2 0.79 |
@@ -513,6 +578,7 @@ The GC = 2 TE relation (Barnett, Barrett & Seth 2009) is definitional in pyspi: 
 - Envelope correlation: under Gaussianity its partner is |gamma|^2 = r^2 + corr(x, H[y])^2, not r^2; z(pec, r^2) mixes in lag.
 - Remove saturation from z0 by mapping the Gaussian-determined partner through the known relation (arcsin for ranks, Thm 7 for dCor, -1/2 log for MI, closed envelope forms) before correlating; z0 is then 1 minus estimator noise under the null.
 - Canberra gain invariance holds on z-scored, not normal-scored, windows; a normal-scored IAAFT construction removes it.
+- SPIs unbundled upstream as exact affine functions of a kept SPI (pdist_cosine, bary-sq_euclidean_mean, the shrinkage covariances) give exactly the z of the kept SPI, because z is a Pearson correlation of edge profiles; read and name such pairs through the kept SPI.
 
 ## Limits
 

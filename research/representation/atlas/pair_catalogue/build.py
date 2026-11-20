@@ -7,17 +7,19 @@ Numbers attached per pair, each with its source:
     (results/representation/atlas-discovery-261112/neurotycho-{short,long}-reliability-all.json);
   z0, null SD: wake z and eyes-open null SD from the assumptions run (minimal pairs) or the 42 named pairs,
     2-s and 10-s (pooled) arms, raw pyspi; the axis screen (pyspi-free, 10 s, 32 or all channels) where screened;
+  upstream: the pyspi PRs (entries.UPSTREAM) that unbundle or change an SPI of the pair;
   matched: the 2-s per-window joint-IAAFT net, drug - awake, mean over 19 sessions and sessions sharing its sign
     (results/representation/atlas-matched-screen-261119/matched-screen-deltas.npz; normal-scored construction).
 Ranking: score = interp/3 x measurability; measurability = best arm's min partner reliability x ceiling factor
 (z0 > .98: .4; > .95: .7) x null_ok. Exclusions are scored 0 and listed separately.
 """
 import json
+import re
 from pathlib import Path
 
 import numpy as np
 
-from research.representation.atlas.pair_catalogue.entries import ENTRIES, GUIDE_PROPOSALS, STATUS
+from research.representation.atlas.pair_catalogue.entries import ENTRIES, GUIDE_PROPOSALS, STATUS, UPSTREAM, UPSTREAM_NOTES
 
 HERE = Path(__file__).parent
 ROOT = HERE.parents[3]
@@ -108,10 +110,13 @@ def build():
             claimed.add(c)
             members += [p for p in classes[c] if frozenset(p) not in explicit]
         recs = [pair_record(p, rel, z, axis, matched, new) for p in members]
+        for r in recs:
+            r['upstream'] = [u['pr'] for u in UPSTREAM['prs'] if u['spis'] and any(re.search(u['spis'], x) for x in (r['a'], r['b']))]
         meas, arm, z0 = measurability(recs[0], e['null_ok'], e['tier'])
         score = 0. if e.get('exclusion') else round(e['interp'] / 3 * meas, 3)
         out.append({**{k: v for k, v in e.items() if k != 'pairs'}, 'representative': recs[0], 'members': recs, 'n_members': len(recs),
-                    'measurability': meas, 'reliability_arm': arm, 'z0_max': z0, 'score': score, 'status': STATUS.get(e['id'], 'excluded' if e.get('exclusion') else 'raw')})
+                    'measurability': meas, 'reliability_arm': arm, 'z0_max': z0, 'score': score, 'status': STATUS.get(e['id'], 'excluded' if e.get('exclusion') else 'raw'),
+                    'upstream': UPSTREAM_NOTES.get(e['id']), 'upstream_members': sum(bool(r['upstream']) for r in recs)})
     rest = []
     for c, ps in classes.items():
         if c not in claimed:
@@ -120,7 +125,7 @@ def build():
     for i, e in enumerate(out, 1):
         e['rank'] = i if e['score'] > 0 else None
     doc = dict(source='research/representation/atlas/pair_catalogue/build.py', bank='NeuroTycho r13 atlas, 272 SPIs (configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml)',
-               ranking=__doc__.split('Ranking: ')[1].strip(), entries=out, uncatalogued_classes=rest, guide_proposals=GUIDE_PROPOSALS,
+               ranking=__doc__.split('Ranking: ')[1].strip(), entries=out, uncatalogued_classes=rest, guide_proposals=GUIDE_PROPOSALS, upstream=UPSTREAM,
                identities='identities.json (identities.py)')
     (HERE / 'catalogue.json').write_text(json.dumps(doc, indent=1) + '\n')
     return doc

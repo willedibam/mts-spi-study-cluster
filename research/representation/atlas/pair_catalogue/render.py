@@ -115,6 +115,24 @@ def main():
     L.append('')
     L.append('Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor\'s windows with the screen\'s IAAFT draws or a Gaussian FT surrogate. That is the axis-screen pipeline (0.23 kSU for 33 SPIs in both arms), so about 0.1–0.3 kSU expected and 0.5 kSU worst case on Gadi. Row 8 needs a Daniell estimator added to the same pipeline. Calibration synthetics (rows 1, 2, 5, 8) are local and take minutes.\n')
 
+    U = d['upstream']
+    L.append(f"## Upstream pyspi changes (checked {U['checked']})\n")
+    L.append(f"Pin {U['pin']}, upstream main {U['upstream_main']}. The atlas config is a frozen copy of `benchmarked_p90`, so no r13 number here changes and nothing leaves the bank until the main session re-syncs it. {U['principle']}\n")
+    L.append('| PR | State | What | Impact on the catalogue |')
+    L.append('|---|---|---|---|')
+    for u in U['prs']:
+        L.append(row(u['pr'], u['state'], u['what'], u['impact']))
+    L.append(f"\nPending upstream: {U['pending']}.\n")
+    L.append('| Entry | Members affected | Note |')
+    L.append('|---|---|---|')
+    for e in E:
+        if e.get('upstream'):
+            L.append(row(e['title'], f"{e['upstream_members']}/{e['n_members']}", e['upstream']))
+    L.append('\nCandidate pairs from new upstream SPIs (not yet entries):\n')
+    for c in U['candidates']:
+        L.append(f'- {c}')
+    L.append('')
+
     L.append('## Ranked catalogue\n')
     L.append('| Rank | Entry | Level · tier | Representative pair | Reads | rel 2 s / 10 s | z₀ 2 s / 10 s | matched 2-s net | Status | Score |')
     L.append('|---|---|---|---|---|---|---|---|---|---|')
@@ -139,7 +157,9 @@ def main():
         L.append(f'- **Measurability:** reliability {rel(r)}; z₀ {z0(r)}; null SD {f2(r["null_sd"]["short"]) if r["null_sd"]["short"] is None else format(r["null_sd"]["short"], ".3f")} / {f2(r["null_sd"]["long"]) if r["null_sd"]["long"] is None else format(r["null_sd"]["long"], ".3f")}; matched 2-s net {matched(r)}.')
         L.append(f'- **Validation:** {e["validation"]}. **Status:** {e["status"]}.')
         L.append(f'- **Atlas so far:** {e["atlas"]}.')
-        L.append(f'- **Calibration needed:** {e["calibration"]}.\n')
+        L.append(f'- **Calibration needed:** {e["calibration"]}.' + ('' if e.get('upstream') else '\n'))
+        if e.get('upstream'):
+            L.append(f'- **Upstream pyspi:** {e["upstream"]}\n')
 
     L.append('## Exclusions (scored 0)\n')
     L.append('| Entry | Representative pair | Reason |')
@@ -163,6 +183,8 @@ def main():
     L.append(f'| corr(log\\|a\\|², log\\|b\\|²) = 6 Li₂(\\|γ\\|²)/π² | same | {max(abs(x["logpower_corr"] - x["logpower_formula"]) for x in ev):.3f} |')
     pl = ident['phase_locking']
     L.append(f'| PLV = (π/4)\\|γ\\| ₂F₁(½,½;2;\\|γ\\|²) | \\|γ\\| .2–.95 | {max(abs(x["plv"] - x["formula"]) for x in pl):.4f} |')
+    xi = ident['chatterjee_xi']
+    L.append(f'| Chatterjee ξ = (3/π) arcsin((1 + ρ²)/2) − ½ | ρ 0–.95, n 20,000 | {max(abs(x["xi"] - x["formula"]) for x in xi):.3f}; SD at T 200 {min(x["sd_T200"] for x in xi):.3f}–{max(x["sd_T200"] for x in xi):.3f} |')
     ds = ident['difference_signal']
     L.append(f'| mean\\|d\\| / rms(d) = √(2/π) | T 200/1000, AR 0–.98 | {max(abs(x["l1_over_rms"] - x["sqrt_2_over_pi"]) for x in ds):.3f} (finite-T bias at AR .98) |')
     L.append(f'| max\\|d\\| / rms(d) depends on T and spectrum | same | {min(x["max_over_rms"] for x in ds):.2f}–{max(x["max_over_rms"] for x in ds):.2f} |')

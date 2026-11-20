@@ -41,6 +41,13 @@ def dcor2_gaussian(rho):
     return num / (1 + np.pi / 3 - np.sqrt(3))
 
 
+def xi_n(x, y):
+    """Chatterjee's xi without ties: sort by x, then 1 - 3 sum |r_{k+1} - r_k| / (n^2 - 1) over the ranks of y."""
+    n = len(x)
+    r = np.argsort(np.argsort(y))[np.argsort(x, kind='stable')] + 1
+    return float(1 - 3 * np.abs(np.diff(r)).sum() / (n * n - 1))
+
+
 def ar1(n, a, rng):
     return lfilter([1.0], [1.0, -a], rng.standard_normal(n))
 
@@ -190,6 +197,16 @@ def main(output):
         zs['l1|l2'].append(c('l1', 'l2')); zs['linf|l2'].append(c('linf', 'l2')); zs['linf|l2_white'].append(c('linf_white', 'l2_white'))
     out['gaussian_network_z'] = {k: dict(mean=float(np.mean(v)), sd=float(np.std(v))) for k, v in zs.items()}
     out['canberra'] = canberra_check(rng)
+
+    # 8. Chatterjee's xi of a bivariate normal: (3/pi) arcsin((1 + rho^2)/2) - 1/2 (no ties; pyspi's ChatterjeeXi
+    # without ties reduces to 1 - 3 sum|r_{k+1} - r_k| / (n^2 - 1)). SD at T 200 shows its noise in 2-s windows.
+    rows = []
+    for rho in (0., .3, .6, .8, .95):
+        big = [xi_n(*bivariate(rho, 20000, rng)) for _ in range(10)]
+        small = [xi_n(*bivariate(rho, 200, rng)) for _ in range(400)]
+        rows.append(dict(rho=rho, xi=float(np.mean(big)), formula=float(3 / np.pi * np.arcsin((1 + rho ** 2) / 2) - .5),
+                         mean_T200=float(np.mean(small)), sd_T200=float(np.std(small))))
+    out['chatterjee_xi'] = rows
     out['notes'] = ('dcor2 uses every 4th sample (250 points); kendall in check 1 uses the first 4000 samples. '
                     'Envelope check: AR(1) carrier .9, shared source with a lag in samples. Canberra: excess = mean '
                     'canberra - f_G(r), f_G tabulated on Gaussian pairs; 20 reps of T 20000 iid samples, gain in 50-sample blocks.')

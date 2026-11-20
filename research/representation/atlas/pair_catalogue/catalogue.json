@@ -71,7 +71,8 @@
      "same_sign": 15,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -113,7 +114,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -154,7 +156,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec-sq_EmpiricalCovariance",
@@ -186,7 +191,8 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -227,7 +233,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_EmpiricalCovariance",
@@ -259,7 +266,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 5,
@@ -268,6 +276,8 @@
    "z0_max": 0.8262,
    "score": 0.811,
    "status": "axis at 10 s; absent at 2 s",
+   "upstream": "cov-sq_MinCovDet is unbundled (#136): it is the square of cov_MinCovDet. The axis readouts (pcorr|pcorr_mcd, r^2|mcd^2) are unaffected.",
+   "upstream_members": 1,
    "rank": 1
   },
   {
@@ -348,7 +358,8 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -399,7 +410,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "mi_gaussian",
@@ -431,7 +443,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 2,
@@ -440,6 +453,8 @@
    "z0_max": 0.973,
    "score": 0.798,
    "status": "axis; replicated (PRIOS, mouse)",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 2
   },
   {
@@ -497,7 +512,8 @@
      "long": null,
      "short": null
     },
-    "matched_2s": null
+    "matched_2s": null,
+    "upstream": []
    },
    "members": [
     {
@@ -525,7 +541,8 @@
       "long": null,
       "short": null
      },
-     "matched_2s": null
+     "matched_2s": null,
+     "upstream": []
     },
     {
      "a": "pec_log",
@@ -552,7 +569,8 @@
       "long": null,
       "short": null
      },
-     "matched_2s": null
+     "matched_2s": null,
+     "upstream": []
     }
    ],
    "n_members": 2,
@@ -561,6 +579,8 @@
    "z0_max": null,
    "score": 0.7,
    "status": "untested",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 3
   },
   {
@@ -616,7 +636,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#134 (on #133)"
+    ]
    },
    "members": [
     {
@@ -649,7 +672,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     }
    ],
    "n_members": 1,
@@ -658,6 +684,8 @@
    "z0_max": 0.984,
    "score": 0.64,
    "status": "beyond IAAFT (frozen estimator check)",
+   "upstream": "#134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.",
+   "upstream_members": 1,
    "rank": 4
   },
   {
@@ -687,7 +715,7 @@
    "calibration": "done (construction)",
    "shortlist": {
     "rank": 12,
-    "contrast": "z(cov-sq LW, prec-sq LW) at 10 s, strength-matched edges, channel-subset re-extraction for any M change",
+    "contrast": "z(cov-sq_EmpiricalCovariance, prec-sq_LedoitWolf) at 10 s (identical to z(cov-sq LW, prec-sq LW): one shrinkage factor per window), strength-matched edges, channel-subset re-extraction for any M change",
     "null": "stationary Gaussian null with the state covariance; strength covariates"
    },
    "representative": {
@@ -720,7 +748,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -753,7 +784,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_LedoitWolf",
@@ -785,7 +819,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -835,7 +872,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -867,7 +905,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_LedoitWolf",
@@ -899,7 +938,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_MinCovDet",
@@ -931,7 +973,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_OAS",
@@ -963,7 +1006,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_ShrunkCovariance",
@@ -995,7 +1041,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_MinCovDet",
@@ -1027,7 +1076,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_OAS",
@@ -1059,7 +1111,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_ShrunkCovariance",
@@ -1091,7 +1146,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_LedoitWolf",
@@ -1123,7 +1181,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_MinCovDet",
@@ -1164,7 +1225,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_OAS",
@@ -1196,7 +1258,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_ShrunkCovariance",
@@ -1228,7 +1293,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     }
    ],
    "n_members": 15,
@@ -1237,6 +1305,8 @@
    "z0_max": 0.126,
    "score": 0.578,
    "status": "raw; local estimator effect",
+   "upstream": "cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged.",
+   "upstream_members": 11,
    "rank": 5
   },
   {
@@ -1321,7 +1391,10 @@
      "same_sign": 18,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -1372,7 +1445,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_cityblock",
@@ -1422,7 +1498,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pdist_chebyshev",
@@ -1454,7 +1531,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pdist_cosine",
@@ -1486,7 +1564,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_chebyshev",
@@ -1518,7 +1599,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 5,
@@ -1527,6 +1609,8 @@
    "z0_max": 0.8125,
    "score": 0.565,
    "status": "axis at 2 s; fails at 10 s",
+   "upstream": "pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays.",
+   "upstream_members": 2,
    "rank": 6
   },
   {
@@ -1580,7 +1664,8 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -1613,7 +1698,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "tlmi_gaussian",
@@ -1645,7 +1731,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     }
    ],
    "n_members": 2,
@@ -1654,6 +1743,8 @@
    "z0_max": 0.935,
    "score": 0.523,
    "status": "beyond IAAFT (matched screen)",
+   "upstream": "The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.",
+   "upstream_members": 1,
    "rank": 7
   },
   {
@@ -1718,7 +1809,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -1751,7 +1845,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_cosine",
@@ -1783,7 +1880,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_cityblock",
@@ -1815,7 +1915,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 3,
@@ -1824,6 +1925,8 @@
    "z0_max": 0.985,
    "score": 0.488,
    "status": "beyond IAAFT, normal-scored only",
+   "upstream": "pdist_euclidean and pdist_cosine are unbundled (#141); the shortlist already uses the analytic f_G(r). pdist_canberra stays.",
+   "upstream_members": 2,
    "rank": 8
   },
   {
@@ -1881,7 +1984,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -1914,7 +2020,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_cityblock",
@@ -1946,7 +2055,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     }
    ],
    "n_members": 2,
@@ -1955,6 +2067,8 @@
    "z0_max": 0.993,
    "score": 0.436,
    "status": "failed (ceiling)",
+   "upstream": "pdist_euclidean and pdist_cosine are unbundled (#141); L2 comes from r. pdist_cityblock stays.",
+   "upstream_members": 2,
    "rank": 9
   },
   {
@@ -2020,7 +2134,8 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -2053,7 +2168,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -2085,7 +2201,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -2117,7 +2236,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -2149,7 +2271,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "NEW:pearson_normal_score",
@@ -2176,7 +2301,8 @@
       "long": null,
       "short": null
      },
-     "matched_2s": null
+     "matched_2s": null,
+     "upstream": []
     },
     {
      "a": "corr_pearson_tau-2",
@@ -2208,7 +2334,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -2240,7 +2369,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4",
@@ -2272,7 +2404,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5",
@@ -2304,7 +2439,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -2336,7 +2474,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -2368,7 +2509,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3-sq",
@@ -2400,7 +2544,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4-sq",
@@ -2432,7 +2579,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5-sq",
@@ -2464,7 +2614,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10",
@@ -2496,7 +2649,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10-sq",
@@ -2528,7 +2684,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-20",
@@ -2560,7 +2719,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-20-sq",
@@ -2592,7 +2754,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -2624,7 +2789,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -2656,7 +2824,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -2688,7 +2859,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -2720,7 +2894,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4",
@@ -2752,7 +2929,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5",
@@ -2784,7 +2964,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -2816,7 +2999,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -2848,7 +3034,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3-sq",
@@ -2880,7 +3069,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4-sq",
@@ -2912,7 +3104,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5-sq",
@@ -2944,7 +3139,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10",
@@ -2976,7 +3174,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10-sq",
@@ -3008,7 +3209,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-20",
@@ -3040,7 +3244,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-20-sq",
@@ -3072,7 +3279,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     }
    ],
    "n_members": 33,
@@ -3081,6 +3291,8 @@
    "z0_max": 0.996,
    "score": 0.433,
    "status": "failed (ceiling)",
+   "upstream": "kendalltau is unbundled (#140) and the lagged corr_* members leave with #144 (open); spearmanr stays, and spearmanr-sq is pending. The shortlist uses Spearman.",
+   "upstream_members": 31,
    "rank": 10
   },
   {
@@ -3141,7 +3353,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -3174,7 +3389,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -3206,7 +3424,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "dcorr",
@@ -3238,7 +3459,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 3,
@@ -3247,6 +3469,8 @@
    "z0_max": 0.995,
    "score": 0.423,
    "status": "failed (animal t)",
+   "upstream": "cov-sq_EmpiricalCovariance is unbundled (#136); use r^2 or the Thm-7 map of r, as the shortlist already does.",
+   "upstream_members": 2,
    "rank": 11
   },
   {
@@ -3316,7 +3540,8 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -3358,7 +3583,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pec_orth",
@@ -3390,7 +3616,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pec_orth_abs",
@@ -3422,7 +3649,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 3,
@@ -3431,6 +3659,8 @@
    "z0_max": 0.962,
    "score": 0.417,
    "status": "failed (axis screen)",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 12
   },
   {
@@ -3495,7 +3725,8 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -3537,7 +3768,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -3578,7 +3810,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -3619,7 +3854,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -3651,7 +3887,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -3683,7 +3920,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -3715,7 +3953,8 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -3747,7 +3986,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -3779,7 +4019,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -3829,7 +4070,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ppc_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -3861,7 +4103,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -3893,7 +4138,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
@@ -3925,7 +4171,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
@@ -3957,7 +4204,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -3989,7 +4237,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
@@ -4021,7 +4270,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-20",
@@ -4053,7 +4303,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 16,
@@ -4062,6 +4313,8 @@
    "z0_max": 0.665,
    "score": 0.406,
    "status": "failed (not drug-specific)",
+   "upstream": "The ppc members are unbundled (#139); the cohmag and plv band pairs stay.",
+   "upstream_members": 2,
    "rank": 13
   },
   {
@@ -4088,7 +4341,7 @@
    "calibration": "co-burst synthetic against Gaussian; read with Chebyshev (disagreement extremes) as its contrast",
    "shortlist": {
     "rank": 6,
-    "contrast": "z(bary-sq mean, bary-sq max) and the cross pair z(pdist_chebyshev, bary-sq max): extreme agreement against extreme disagreement",
+    "contrast": "z(r, bary-sq max) (identical to z(bary-sq mean, bary-sq max), since the mean is (1 + r)/2) and the cross pair z(pdist_chebyshev, bary-sq max): extreme agreement against extreme disagreement",
     "null": "real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows"
    },
    "representative": {
@@ -4121,7 +4374,10 @@
      "same_sign": 18,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -4154,7 +4410,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     }
    ],
    "n_members": 1,
@@ -4163,6 +4422,8 @@
    "z0_max": 0.726,
    "score": 0.351,
    "status": "beyond IAAFT (matched screen)",
+   "upstream": "bary-sq_euclidean_mean is unbundled (#141); it is (1 + r)/2, so z(bary-sq mean, bary-sq max) = z(r, bary-sq max) exactly. bary-sq_euclidean_max stays.",
+   "upstream_members": 1,
    "rank": 14
   },
   {
@@ -4221,7 +4482,8 @@
      "same_sign": 18,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -4254,7 +4516,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 1,
@@ -4263,6 +4526,8 @@
    "z0_max": 0.686,
    "score": 0.351,
    "status": "beyond IAAFT (matched screen)",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 15
   },
   {
@@ -4324,7 +4589,10 @@
      "same_sign": 16,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": [
+     "#134 (on #133)"
+    ]
    },
    "members": [
     {
@@ -4357,7 +4625,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "gc_gaussian_k-1_kt-1_l-1_lt-1",
@@ -4389,7 +4660,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 2,
@@ -4398,6 +4670,8 @@
    "z0_max": null,
    "score": 0.316,
    "status": "level only; z unreliable",
+   "upstream": "te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).",
+   "upstream_members": 1,
    "rank": 16
   },
   {
@@ -4458,7 +4732,8 @@
      "same_sign": 13,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -4491,7 +4766,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "tlmi_kernel_W-0.25",
@@ -4523,7 +4799,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "tlmi_kraskov_NN-4_DCE-AUTO",
@@ -4555,7 +4834,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 3,
@@ -4564,6 +4844,8 @@
    "z0_max": 0.264,
    "score": 0.316,
    "status": "raw (10 s)",
+   "upstream": "The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.",
+   "upstream_members": 1,
    "rank": 17
   },
   {
@@ -4628,7 +4910,8 @@
      "same_sign": 14,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -4670,7 +4953,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -4720,7 +5004,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -4752,7 +5037,8 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -4784,7 +5070,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -4816,7 +5103,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
@@ -4848,7 +5136,8 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 6,
@@ -4857,6 +5146,8 @@
    "z0_max": 0.451,
    "score": 0.309,
    "status": "failed (floor, covariates)",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 18
   },
   {
@@ -4918,7 +5209,8 @@
      "same_sign": 12,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -4951,7 +5243,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -4983,7 +5276,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -5024,7 +5318,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -5056,7 +5351,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -5088,7 +5386,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -5120,7 +5419,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
@@ -5152,7 +5452,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 7,
@@ -5161,6 +5462,8 @@
    "z0_max": 0.863,
    "score": 0.304,
    "status": "raw; IAAFT invalid for multitaper",
+   "upstream": "One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.",
+   "upstream_members": 1,
    "rank": 19
   },
   {
@@ -5222,7 +5525,11 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143",
+     "#144 (on #112)"
+    ]
    },
    "members": [
     {
@@ -5255,7 +5562,11 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -5296,7 +5607,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     }
    ],
    "n_members": 2,
@@ -5305,6 +5619,8 @@
    "z0_max": 0.989,
    "score": 0.24,
    "status": "failed (covariates); stable mean lag 10 s",
+   "upstream": "#144 (open) removes xcorr_* and adds lagcorr_peak (signed r at the lag of max |r|, over min(max_lag, T // 4) lags) and lagcorr_lag. If it merges before the run, shortlist row 13 becomes z(r^2, lagcorr_peak^2) with lagcorr_lag as a direct lag readout; r13 xcorr z0 and reliability do not transfer.",
+   "upstream_members": 2,
    "rank": 20
   },
   {
@@ -5363,7 +5679,8 @@
      "same_sign": 16,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -5396,7 +5713,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1",
@@ -5428,7 +5746,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -5460,7 +5779,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -5492,7 +5812,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
@@ -5524,7 +5845,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -5556,7 +5878,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -5588,7 +5911,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
@@ -5620,7 +5944,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -5652,7 +5977,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -5684,7 +6010,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
@@ -5716,7 +6043,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -5748,7 +6076,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -5780,7 +6109,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-None",
@@ -5812,7 +6142,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -5844,7 +6175,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
@@ -5876,7 +6208,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
@@ -5908,7 +6241,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -5940,7 +6274,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-25_order-1",
@@ -5972,7 +6307,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-0-25_fmax-0-5_order-1",
@@ -6004,7 +6340,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 20,
@@ -6013,6 +6350,8 @@
    "z0_max": 0.534,
    "score": 0.158,
    "status": "raw; unreliable",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 21
   },
   {
@@ -6068,7 +6407,8 @@
      "same_sign": 14,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -6101,7 +6441,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 1,
@@ -6110,6 +6451,8 @@
    "z0_max": 0.254,
    "score": 0.124,
    "status": "untested",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 22
   },
   {
@@ -6168,7 +6511,10 @@
      "same_sign": 15,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -6201,7 +6547,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "dtw",
@@ -6233,7 +6582,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dtw_constraint-itakura",
@@ -6265,7 +6615,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dtw_constraint-sakoe-chiba_radius-auto",
@@ -6297,7 +6648,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_euclidean_max",
@@ -6329,7 +6681,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary-sq_euclidean_max",
@@ -6361,7 +6714,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_euclidean_max",
@@ -6393,7 +6747,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary-sq_euclidean_max",
@@ -6425,7 +6780,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 8,
@@ -6434,6 +6790,8 @@
    "z0_max": 0.599,
    "score": 0.113,
    "status": "failed construction",
+   "upstream": "pdist_euclidean is unbundled (#141); take L2 from r.",
+   "upstream_members": 1,
    "rank": 23
   },
   {
@@ -6488,7 +6846,8 @@
      "same_sign": 18,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -6521,7 +6880,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pec_log",
@@ -6553,7 +6913,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 2,
@@ -6562,6 +6923,8 @@
    "z0_max": 0.581,
    "score": 0.104,
    "status": "floor",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": 24
   },
   {
@@ -6618,7 +6981,8 @@
      "same_sign": 12,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -6651,7 +7015,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xcorr-sq_max_sig-True",
@@ -6683,7 +7048,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -6715,7 +7083,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -6747,7 +7116,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -6779,7 +7149,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -6811,7 +7182,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -6843,7 +7215,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -6875,7 +7248,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -6907,7 +7281,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -6939,7 +7314,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -6971,7 +7347,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -7003,7 +7382,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -7035,7 +7417,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -7067,7 +7452,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None",
@@ -7099,7 +7485,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-None",
@@ -7131,7 +7518,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -7163,7 +7551,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1",
@@ -7195,7 +7584,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-1",
@@ -7227,7 +7617,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
@@ -7259,7 +7650,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-20",
@@ -7291,7 +7683,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-0-25_fmax-0-5_order-20",
@@ -7323,7 +7716,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_dtw_corr",
@@ -7355,7 +7749,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_sgddtw_corr",
@@ -7387,7 +7782,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xpdist_euclidean_tau-1_min_rmse",
@@ -7419,7 +7815,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 25,
@@ -7428,6 +7825,8 @@
    "z0_max": 0.606,
    "score": 0.086,
    "status": "raw; max SPIs unreliable",
+   "upstream": "The xcorr member leaves with #144 (open); the ppc members are unbundled (#139). Read the frequency peak through plv mean|max, which carries ppc (PPC = (N PLV^2 - 1)/(N - 1) per frequency).",
+   "upstream_members": 4,
    "rank": 25
   },
   {
@@ -7501,7 +7900,10 @@
      "same_sign": 13,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -7552,7 +7954,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -7602,7 +8007,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -7652,7 +8060,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     }
    ],
    "n_members": 3,
@@ -7661,6 +8072,8 @@
    "z0_max": 0.3435,
    "score": 0.082,
    "status": "failed (reliability, covariates)",
+   "upstream": "ppc is unbundled (#139); plv|dswpli carries the same lag reading, with the plv band means .98-.99 against ppc rather than exact.",
+   "upstream_members": 3,
    "rank": 26
   },
   {
@@ -7719,7 +8132,10 @@
      "same_sign": 16,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -7752,7 +8168,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_cityblock",
@@ -7784,7 +8203,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pdist_cosine",
@@ -7816,7 +8236,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_canberra",
@@ -7848,7 +8271,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 4,
@@ -7857,6 +8281,8 @@
    "z0_max": 0.955,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 2,
    "rank": null
   },
   {
@@ -7920,7 +8346,8 @@
      "same_sign": 17,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -7962,7 +8389,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8003,7 +8431,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8035,7 +8464,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8076,7 +8506,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8108,7 +8539,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8149,7 +8581,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8181,7 +8614,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8213,7 +8647,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8254,7 +8689,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8295,7 +8731,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8327,7 +8766,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -8359,7 +8801,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -8391,7 +8834,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
@@ -8423,7 +8867,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -8455,7 +8900,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -8487,7 +8933,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
@@ -8519,7 +8966,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8551,7 +8999,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8583,7 +9032,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "icoh_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8615,7 +9065,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8656,7 +9107,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8688,7 +9140,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8720,7 +9173,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8770,7 +9224,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -8811,7 +9266,10 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "ppc_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -8843,7 +9301,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -8875,7 +9336,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -8907,7 +9369,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-20",
@@ -8939,7 +9402,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-None",
@@ -8971,7 +9435,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-1",
@@ -9003,7 +9468,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "sgc_parametric_max_fs-1_fmin-1e-05_fmax-0-5_order-20",
@@ -9035,7 +9501,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 32,
@@ -9044,6 +9511,8 @@
    "z0_max": 0.9713,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 4,
    "rank": null
   },
   {
@@ -9097,7 +9566,8 @@
      "same_sign": 9,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -9130,7 +9600,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 1,
@@ -9139,6 +9610,8 @@
    "z0_max": null,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": null
   },
   {
@@ -9195,7 +9668,8 @@
      "same_sign": 18,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -9228,7 +9702,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "tlmi_kraskov_NN-4",
@@ -9260,7 +9735,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
@@ -9292,7 +9768,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "tlmi_gaussian",
@@ -9324,7 +9801,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
@@ -9356,7 +9834,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 5,
@@ -9365,6 +9844,8 @@
    "z0_max": 0.993,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": null
   },
   {
@@ -9435,7 +9916,8 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -9468,7 +9950,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -9500,7 +9983,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_EmpiricalCovariance",
@@ -9532,7 +10018,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_dtw_corr",
@@ -9564,7 +10051,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_max_eig_stat_order-0_ardiff-1",
@@ -9596,7 +10084,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "lmfit_Ridge",
@@ -9628,7 +10117,10 @@
       "same_sign": 3,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "phi_star_t-1_norm-0",
@@ -9660,7 +10152,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "xcorr_max_sig-True",
@@ -9692,7 +10187,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -9724,7 +10222,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -9756,7 +10257,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "plv_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -9788,7 +10292,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "plv_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -9820,7 +10327,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "plv_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
@@ -9852,7 +10362,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_LedoitWolf",
@@ -9884,7 +10397,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_MinCovDet",
@@ -9916,7 +10430,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_OAS",
@@ -9948,7 +10463,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_ShrunkCovariance",
@@ -9980,7 +10496,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_dtw_max",
@@ -10012,7 +10529,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary-sq_dtw_max",
@@ -10044,7 +10562,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_max_eig_stat_order-0_ardiff-10",
@@ -10076,7 +10595,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_max_eig_stat_order-1_ardiff-10",
@@ -10108,7 +10628,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_max_eig_stat_order-1_ardiff-1",
@@ -10140,7 +10661,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "lmfit_Ridge",
@@ -10172,7 +10694,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "lmfit_SGDRegressor",
@@ -10204,7 +10729,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "phi_Geo_t-1_norm-0",
@@ -10236,7 +10764,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "phi_star_t-1_norm-0",
@@ -10268,7 +10799,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "phi_star_t-1_norm-1",
@@ -10300,7 +10832,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "coint_aeg_tstat_trend-c_autolag-aic_maxlag-10",
@@ -10332,7 +10867,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_aeg_tstat_trend-ct_autolag-aic_maxlag-10",
@@ -10364,7 +10900,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xcorr_mean_sig-True",
@@ -10396,7 +10933,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "xcorr-sq_mean_sig-True",
@@ -10428,7 +10968,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "coint_johansen_max_eig_stat_order-0_ardiff-10",
@@ -10460,7 +11003,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_trace_stat_order-0_ardiff-10",
@@ -10492,7 +11036,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_max_eig_stat_order-0_ardiff-1",
@@ -10524,7 +11069,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_trace_stat_order-0_ardiff-1",
@@ -10556,7 +11102,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dtw",
@@ -10588,7 +11135,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "lcss",
@@ -10620,7 +11168,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dtw",
@@ -10652,7 +11201,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "lcss",
@@ -10684,7 +11234,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dtw_constraint-itakura",
@@ -10716,7 +11267,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "lcss_constraint-itakura",
@@ -10748,7 +11300,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xme_gaussian_k1",
@@ -10780,7 +11333,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xme_kozachenko_k1",
@@ -10812,7 +11366,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 43,
@@ -10821,6 +11376,8 @@
    "z0_max": 0.964,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 15,
    "rank": null
   },
   {
@@ -10882,7 +11439,8 @@
      "same_sign": 16,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -10915,7 +11473,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ce_gaussian",
@@ -10947,7 +11506,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cce_gaussian_n-5",
@@ -10979,7 +11539,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "si_gaussian_k-1",
@@ -11011,7 +11572,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xme_gaussian_k1",
@@ -11043,7 +11605,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "je_gaussian",
@@ -11075,7 +11638,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ce_gaussian",
@@ -11107,7 +11671,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xme_gaussian_k1",
@@ -11139,7 +11704,8 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xme_gaussian_k10",
@@ -11171,7 +11737,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "si_gaussian_k-1",
@@ -11203,7 +11770,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "je_kozachenko",
@@ -11235,7 +11803,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "ce_kozachenko",
@@ -11267,7 +11836,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "xme_kozachenko_k1",
@@ -11299,7 +11869,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "si_kozachenko_k-1",
@@ -11331,7 +11902,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "mi_kraskov_NN-4",
@@ -11363,7 +11935,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "tlmi_kraskov_NN-4",
@@ -11395,7 +11970,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "te_kraskov_NN-4_k-1_kt-1_l-1_lt-1",
@@ -11427,7 +12005,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "mi_kraskov_NN-4_DCE-AUTO",
@@ -11459,7 +12040,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "tlmi_kraskov_NN-4_DCE-AUTO",
@@ -11491,7 +12075,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "te_kernel_W-0.25_k-1",
@@ -11523,7 +12110,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "je_kernel_W-0.5",
@@ -11555,7 +12145,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     },
     {
      "a": "je_gaussian",
@@ -11587,7 +12180,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "je_kozachenko",
@@ -11619,7 +12213,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "je_kernel_W-0.5",
@@ -11651,7 +12246,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 24,
@@ -11660,6 +12256,8 @@
    "z0_max": 0.933,
    "score": 0.0,
    "status": "excluded",
+   "upstream": "With #134 kernel MI, TLMI and TE leave one point out but kernel je, ce, si, xme and cce still count it, so kernel MI is no longer H + H - JE of pyspi's kernel entropies. The exclusion stands.",
+   "upstream_members": 7,
    "rank": null
   },
   {
@@ -11718,7 +12316,10 @@
      "same_sign": 16,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": [
+     "#144 (on #112)"
+    ]
    },
    "members": [
     {
@@ -11751,7 +12352,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -11783,7 +12387,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "mi_gaussian",
@@ -11815,7 +12422,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -11847,7 +12455,11 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -11879,7 +12491,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -11911,7 +12526,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -11943,7 +12561,11 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -11975,7 +12597,11 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -12007,7 +12633,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -12039,7 +12668,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -12071,7 +12703,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -12103,7 +12738,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -12135,7 +12773,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -12167,7 +12808,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -12199,7 +12843,11 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -12231,7 +12879,11 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -12263,7 +12915,11 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -12295,7 +12951,11 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -12327,7 +12987,11 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -12359,7 +13023,11 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -12391,7 +13059,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -12423,7 +13094,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -12455,7 +13129,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -12487,7 +13164,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -12519,7 +13199,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -12551,7 +13234,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -12583,7 +13269,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -12615,7 +13304,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -12647,7 +13339,10 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -12679,7 +13374,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -12711,7 +13409,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "spearmanr",
@@ -12743,7 +13444,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -12775,7 +13479,11 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -12807,7 +13515,11 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -12839,7 +13551,11 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -12871,7 +13587,11 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -12903,7 +13623,11 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau-sq",
@@ -12935,7 +13659,11 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -12967,7 +13695,11 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -12999,7 +13731,11 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -13031,7 +13767,11 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -13063,7 +13803,11 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -13095,7 +13839,11 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "kendalltau",
@@ -13127,7 +13875,11 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143",
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -13159,7 +13911,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -13191,7 +13946,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -13223,7 +13981,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -13255,7 +14016,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -13287,7 +14051,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -13319,7 +14086,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -13351,7 +14121,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -13383,7 +14156,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -13415,7 +14191,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -13447,7 +14226,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -13479,7 +14261,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -13511,7 +14296,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -13543,7 +14331,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -13575,7 +14366,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4",
@@ -13607,7 +14401,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4",
@@ -13639,7 +14436,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4",
@@ -13671,7 +14471,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5",
@@ -13703,7 +14506,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5",
@@ -13735,7 +14541,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -13767,7 +14576,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -13799,7 +14611,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -13831,7 +14646,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -13863,7 +14681,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -13895,7 +14716,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-1-sq",
@@ -13927,7 +14751,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -13959,7 +14786,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -13991,7 +14821,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -14023,7 +14856,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -14055,7 +14891,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2-sq",
@@ -14087,7 +14926,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3-sq",
@@ -14119,7 +14961,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3-sq",
@@ -14151,7 +14996,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3-sq",
@@ -14183,7 +15031,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3-sq",
@@ -14215,7 +15066,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4-sq",
@@ -14247,7 +15101,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4-sq",
@@ -14279,7 +15136,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4-sq",
@@ -14311,7 +15171,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5-sq",
@@ -14343,7 +15206,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5-sq",
@@ -14375,7 +15241,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10",
@@ -14407,7 +15276,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10-sq",
@@ -14439,7 +15311,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -14471,7 +15346,10 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -14503,7 +15381,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -14535,7 +15416,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -14567,7 +15451,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -14599,7 +15486,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -14631,7 +15521,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -14663,7 +15556,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -14695,7 +15591,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -14727,7 +15626,10 @@
       "same_sign": 5,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -14759,7 +15661,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -14791,7 +15696,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3",
@@ -14823,7 +15731,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3",
@@ -14855,7 +15766,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3",
@@ -14887,7 +15801,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3",
@@ -14919,7 +15836,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4",
@@ -14951,7 +15871,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4",
@@ -14983,7 +15906,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4",
@@ -15015,7 +15941,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5",
@@ -15047,7 +15976,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5",
@@ -15079,7 +16011,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -15111,7 +16046,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -15143,7 +16081,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -15175,7 +16116,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -15207,7 +16151,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -15239,7 +16186,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -15271,7 +16221,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2-sq",
@@ -15303,7 +16256,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2-sq",
@@ -15335,7 +16291,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2-sq",
@@ -15367,7 +16326,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2-sq",
@@ -15399,7 +16361,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2-sq",
@@ -15431,7 +16396,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3-sq",
@@ -15463,7 +16431,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3-sq",
@@ -15495,7 +16466,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3-sq",
@@ -15527,7 +16501,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3-sq",
@@ -15559,7 +16536,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4-sq",
@@ -15591,7 +16571,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4-sq",
@@ -15623,7 +16606,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4-sq",
@@ -15655,7 +16641,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5-sq",
@@ -15687,7 +16676,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5-sq",
@@ -15719,7 +16711,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-10",
@@ -15751,7 +16746,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-10-sq",
@@ -15783,7 +16781,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -15815,7 +16816,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -15847,7 +16851,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -15879,7 +16886,10 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -15911,7 +16921,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -15943,7 +16956,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -15975,7 +16991,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2",
@@ -16007,7 +17026,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2",
@@ -16039,7 +17061,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2",
@@ -16071,7 +17096,10 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2",
@@ -16103,7 +17131,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2",
@@ -16135,7 +17166,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3",
@@ -16167,7 +17201,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3",
@@ -16199,7 +17236,10 @@
       "same_sign": 6,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3",
@@ -16231,7 +17271,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3",
@@ -16263,7 +17306,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4",
@@ -16295,7 +17341,10 @@
       "same_sign": 7,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4",
@@ -16327,7 +17376,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4",
@@ -16359,7 +17411,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-5",
@@ -16391,7 +17446,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-5",
@@ -16423,7 +17481,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1-sq",
@@ -16455,7 +17516,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1-sq",
@@ -16487,7 +17551,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1-sq",
@@ -16519,7 +17586,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1-sq",
@@ -16551,7 +17621,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1-sq",
@@ -16583,7 +17656,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1-sq",
@@ -16615,7 +17691,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2-sq",
@@ -16647,7 +17726,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2-sq",
@@ -16679,7 +17761,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2-sq",
@@ -16711,7 +17796,10 @@
       "same_sign": 8,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2-sq",
@@ -16743,7 +17831,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2-sq",
@@ -16775,7 +17866,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3-sq",
@@ -16807,7 +17901,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3-sq",
@@ -16839,7 +17936,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3-sq",
@@ -16871,7 +17971,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3-sq",
@@ -16903,7 +18006,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4-sq",
@@ -16935,7 +18041,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4-sq",
@@ -16967,7 +18076,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4-sq",
@@ -16999,7 +18111,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-5-sq",
@@ -17031,7 +18146,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-5-sq",
@@ -17063,7 +18181,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-10",
@@ -17095,7 +18216,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-10-sq",
@@ -17127,7 +18251,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "coint_johansen_max_eig_stat_order-0_ardiff-10",
@@ -17159,7 +18286,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_max_eig_stat_order-1_ardiff-10",
@@ -17191,7 +18319,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "coint_johansen_trace_stat_order-1_ardiff-10",
@@ -17223,7 +18352,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "mi_kraskov_NN-4",
@@ -17255,7 +18385,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "mi_kraskov_NN-4_DCE-AUTO",
@@ -17287,7 +18418,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "mi_kernel_W-0.25",
@@ -17319,7 +18451,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#134 (on #133)"
+     ]
     }
    ],
    "n_members": 175,
@@ -17328,6 +18463,8 @@
    "z0_max": 0.996,
    "score": 0.0,
    "status": "excluded",
+   "upstream": "169 of 175 pairs leave with #144 (open).",
+   "upstream_members": 169,
    "rank": null
   },
   {
@@ -17403,7 +18540,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -17454,7 +18594,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -17486,7 +18629,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -17518,7 +18664,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "mi_gaussian",
@@ -17550,7 +18699,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "mi_gaussian",
@@ -17582,7 +18732,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -17614,7 +18765,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -17646,7 +18800,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_euclidean",
@@ -17678,7 +18835,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "pdist_euclidean",
@@ -17710,7 +18870,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     }
    ],
    "n_members": 9,
@@ -17719,6 +18882,8 @@
    "z0_max": 0.9651,
    "score": 0.0,
    "status": "excluded",
+   "upstream": "The cuts (#136, #137, #141) remove exactly the members this entry already called identities.",
+   "upstream_members": 7,
    "rank": null
   },
   {
@@ -17774,7 +18939,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -17807,7 +18975,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "spearmanr-sq",
@@ -17839,7 +19010,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -17871,7 +19045,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -17903,7 +19080,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3",
@@ -17935,7 +19115,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4",
@@ -17967,7 +19150,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5",
@@ -17999,7 +19185,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1-sq",
@@ -18031,7 +19220,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2-sq",
@@ -18063,7 +19255,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3-sq",
@@ -18095,7 +19290,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4-sq",
@@ -18127,7 +19325,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5-sq",
@@ -18159,7 +19360,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-10",
@@ -18191,7 +19395,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-10-sq",
@@ -18223,7 +19430,10 @@
       "same_sign": 18,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-20",
@@ -18255,7 +19465,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-20-sq",
@@ -18287,7 +19500,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     }
    ],
    "n_members": 16,
@@ -18296,6 +19512,8 @@
    "z0_max": 0.999,
    "score": 0.0,
    "status": "excluded",
+   "upstream": "kendalltau is unbundled (#140) on the near-identity this exclusion uses; the lagged Kendall members leave with #144.",
+   "upstream_members": 16,
    "rank": null
   },
   {
@@ -18376,7 +19594,10 @@
      "same_sign": 13,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -18427,7 +19648,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_MinCovDet",
@@ -18477,7 +19701,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_MinCovDet",
@@ -18518,7 +19745,10 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_MinCovDet",
@@ -18550,7 +19780,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_LedoitWolf",
@@ -18582,7 +19813,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_LedoitWolf",
@@ -18614,7 +19848,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_LedoitWolf",
@@ -18646,7 +19883,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_LedoitWolf",
@@ -18678,7 +19918,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_OAS",
@@ -18710,7 +19953,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_OAS",
@@ -18742,7 +19988,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_OAS",
@@ -18774,7 +20023,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_OAS",
@@ -18806,7 +20058,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_ShrunkCovariance",
@@ -18838,7 +20093,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_ShrunkCovariance",
@@ -18870,7 +20128,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_ShrunkCovariance",
@@ -18902,7 +20163,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_ShrunkCovariance",
@@ -18934,7 +20198,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     }
    ],
    "n_members": 16,
@@ -18943,6 +20210,8 @@
    "z0_max": 0.9701,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 15,
    "rank": null
   },
   {
@@ -18998,7 +20267,8 @@
      "same_sign": 11,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -19031,7 +20301,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -19063,7 +20334,8 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -19095,7 +20367,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -19127,7 +20400,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -19159,7 +20433,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5",
@@ -19191,7 +20466,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25",
@@ -19223,7 +20499,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5",
@@ -19255,7 +20532,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 8,
@@ -19264,6 +20542,8 @@
    "z0_max": 0.175,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": null
   },
   {
@@ -19319,7 +20599,8 @@
      "same_sign": 13,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -19352,7 +20633,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -19384,7 +20666,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -19416,7 +20699,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -19448,7 +20732,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dspli_multitaper_mean_fs-1_fmin-0_fmax-0-25",
@@ -19480,7 +20765,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "dspli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5",
@@ -19512,7 +20798,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 6,
@@ -19521,6 +20808,8 @@
    "z0_max": 0.965,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": null
   },
   {
@@ -19584,7 +20873,8 @@
      "same_sign": 15,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -19617,7 +20907,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -19649,7 +20940,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -19681,7 +20975,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_EmpiricalCovariance",
@@ -19713,7 +21010,8 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_EmpiricalCovariance",
@@ -19745,7 +21043,8 @@
       "same_sign": 16,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -19777,7 +21076,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -19809,7 +21111,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_EmpiricalCovariance",
@@ -19841,7 +21146,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_EmpiricalCovariance",
@@ -19873,7 +21179,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_EmpiricalCovariance",
@@ -19905,7 +21212,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_EmpiricalCovariance",
@@ -19937,7 +21245,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_EmpiricalCovariance",
@@ -19969,7 +21280,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_EmpiricalCovariance",
@@ -20001,7 +21315,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_EmpiricalCovariance",
@@ -20033,7 +21348,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_EmpiricalCovariance",
@@ -20065,7 +21381,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_LedoitWolf",
@@ -20097,7 +21414,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_LedoitWolf",
@@ -20129,7 +21449,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_LedoitWolf",
@@ -20161,7 +21484,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_LedoitWolf",
@@ -20193,7 +21517,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_LedoitWolf",
@@ -20225,7 +21550,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_LedoitWolf",
@@ -20257,7 +21583,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_LedoitWolf",
@@ -20289,7 +21618,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_LedoitWolf",
@@ -20321,7 +21653,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_LedoitWolf",
@@ -20353,7 +21686,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_LedoitWolf",
@@ -20385,7 +21719,8 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_OAS",
@@ -20417,7 +21752,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_OAS",
@@ -20449,7 +21787,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_OAS",
@@ -20481,7 +21822,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_OAS",
@@ -20513,7 +21855,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_OAS",
@@ -20545,7 +21888,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_LedoitWolf",
@@ -20577,7 +21921,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_LedoitWolf",
@@ -20609,7 +21956,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_LedoitWolf",
@@ -20641,7 +21991,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_LedoitWolf",
@@ -20673,7 +22024,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_LedoitWolf",
@@ -20705,7 +22057,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_MinCovDet",
@@ -20737,7 +22090,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_MinCovDet",
@@ -20769,7 +22125,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_MinCovDet",
@@ -20801,7 +22160,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_MinCovDet",
@@ -20833,7 +22193,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_MinCovDet",
@@ -20865,7 +22226,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_MinCovDet",
@@ -20897,7 +22259,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov-sq_MinCovDet",
@@ -20929,7 +22294,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_MinCovDet",
@@ -20961,7 +22329,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec-sq_MinCovDet",
@@ -20993,7 +22362,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pcorr_MinCovDet",
@@ -21025,7 +22395,8 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 45,
@@ -21034,6 +22405,8 @@
    "z0_max": 0.454,
    "score": 0.0,
    "status": "excluded",
+   "upstream": "The shrinkage covariances are unbundled (#136) on the same identity this exclusion uses; the precision forms stay.",
+   "upstream_members": 18,
    "rank": null
   },
   {
@@ -21091,7 +22464,10 @@
      "same_sign": 19,
      "sessions": 19,
      "usable": true
-    }
+    },
+    "upstream": [
+     "#135-#143"
+    ]
    },
    "members": [
     {
@@ -21124,7 +22500,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "spearmanr",
@@ -21156,7 +22535,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "cov_LedoitWolf",
@@ -21188,7 +22568,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_MinCovDet",
@@ -21220,7 +22603,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_OAS",
@@ -21252,7 +22638,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "cov_ShrunkCovariance",
@@ -21284,7 +22673,10 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "prec_EmpiricalCovariance",
@@ -21316,7 +22708,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_LedoitWolf",
@@ -21348,7 +22741,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_MinCovDet",
@@ -21380,7 +22774,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_OAS",
@@ -21412,7 +22807,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "prec_ShrunkCovariance",
@@ -21444,7 +22840,8 @@
       "same_sign": 19,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "kendalltau-sq",
@@ -21476,7 +22873,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#135-#143"
+     ]
     },
     {
      "a": "corr_pearson_tau-1",
@@ -21508,7 +22908,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-2",
@@ -21540,7 +22943,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-3",
@@ -21572,7 +22978,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-4",
@@ -21604,7 +23013,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-5",
@@ -21636,7 +23048,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-10",
@@ -21668,7 +23083,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_pearson_tau-20",
@@ -21700,7 +23118,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-1",
@@ -21732,7 +23153,10 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-2",
@@ -21764,7 +23188,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-3",
@@ -21796,7 +23223,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-4",
@@ -21828,7 +23258,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-5",
@@ -21860,7 +23293,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-10",
@@ -21892,7 +23328,10 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_spearman_tau-20",
@@ -21924,7 +23363,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-1",
@@ -21956,7 +23398,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-2",
@@ -21988,7 +23433,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-3",
@@ -22020,7 +23468,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-4",
@@ -22052,7 +23503,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-5",
@@ -22084,7 +23538,10 @@
       "same_sign": 15,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-10",
@@ -22116,7 +23573,10 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "corr_kendall_tau-20",
@@ -22148,7 +23608,10 @@
       "same_sign": 14,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "xcorr_max_sig-True",
@@ -22189,7 +23652,10 @@
       "same_sign": 17,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "xcorr_mean_sig-True",
@@ -22221,7 +23687,10 @@
       "same_sign": 9,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "xcorr_mean_sig-False",
@@ -22253,7 +23722,10 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": [
+      "#144 (on #112)"
+     ]
     },
     {
      "a": "bary_dtw_max",
@@ -22285,7 +23757,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "bary_sgddtw_max",
@@ -22317,7 +23790,8 @@
       "same_sign": 12,
       "sessions": 19,
       "usable": true
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pec_orth",
@@ -22349,7 +23823,8 @@
       "same_sign": 13,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "pec_orth_log",
@@ -22381,7 +23856,8 @@
       "same_sign": 10,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 40,
@@ -22390,6 +23866,8 @@
    "z0_max": 0.548,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 30,
    "rank": null
   },
   {
@@ -22441,7 +23919,8 @@
      "same_sign": 11,
      "sessions": 19,
      "usable": false
-    }
+    },
+    "upstream": []
    },
    "members": [
     {
@@ -22474,7 +23953,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     },
     {
      "a": "plv_multitaper_mean_fs-1_fmin-0_fmax-0-5",
@@ -22506,7 +23986,8 @@
       "same_sign": 11,
       "sessions": 19,
       "usable": false
-     }
+     },
+     "upstream": []
     }
    ],
    "n_members": 2,
@@ -22515,6 +23996,8 @@
    "z0_max": 0.0,
    "score": 0.0,
    "status": "excluded",
+   "upstream": null,
+   "upstream_members": 0,
    "rank": null
   }
  ],
@@ -22524,7 +24007,57 @@
   "Classes with no entry in assumptions.READINGS: chebyshev vs cityblock (axis screen), canberra vs euclidean/cosine (gain-invariant agreement on z-scored data), aggregation mean vs max for bary-sq (joint extreme co-excursion).",
   "Envelope correlation: under Gaussianity its partner is |gamma|^2 = r^2 + corr(x, H[y])^2, not r^2; z(pec, r^2) mixes in lag.",
   "Remove saturation from z0 by mapping the Gaussian-determined partner through the known relation (arcsin for ranks, Thm 7 for dCor, -1/2 log for MI, closed envelope forms) before correlating; z0 is then 1 minus estimator noise under the null.",
-  "Canberra gain invariance holds on z-scored, not normal-scored, windows; a normal-scored IAAFT construction removes it."
+  "Canberra gain invariance holds on z-scored, not normal-scored, windows; a normal-scored IAAFT construction removes it.",
+  "SPIs unbundled upstream as exact affine functions of a kept SPI (pdist_cosine, bary-sq_euclidean_mean, the shrinkage covariances) give exactly the z of the kept SPI, because z is a Pearson correlation of edge profiles; read and name such pairs through the kept SPI."
  ],
+ "upstream": {
+  "checked": "2026-11-20",
+  "pin": "5d61d9c (computation 3.0.0.r13)",
+  "upstream_main": "5e25d27",
+  "principle": "z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) changes z only through curvature, which the catalogue already treats as an identity or saturation control, and the mapped-partner convention uses the analytic form. Kendall is not an exact function of Spearman (the relation depends on the copula), but its residual was already excluded as a near-ceiling diagnostic. So the merged cuts remove no reading; they agree with the identity, shrinkage, kendall-spearman and debias exclusions.",
+  "prs": [
+   {
+    "pr": "#135-#143",
+    "state": "merged 20 Nov",
+    "spis": "^cov_(ShrunkCovariance|LedoitWolf|OAS)$|^cov-sq_(EmpiricalCovariance|ShrunkCovariance|GraphicalLasso|LedoitWolf|MinCovDet|OAS)$|^lmfit_|^g?pdcoh_|^ppc_|^kendalltau|^pdist_(cosine|euclidean)$|^bary-sq_euclidean_mean$|^phi_(Geo|star)_t-1_norm-1$",
+    "what": "37 SPIs unbundled as redundant (shrinkage covariances, six cov-sq, lmfit, pdcoh/gpdcoh, ppc, kendalltau(-sq), pdist cosine/euclidean, bary-sq mean, phi norm-1)",
+    "impact": "config only: classes and values unchanged, still r13. All 37 are in the 272-SPI bank; no catalogue reading depends on one that has no exact kept equivalent"
+   },
+   {
+    "pr": "#144 (on #112)",
+    "state": "open; decision A4 approved 20 Nov",
+    "spis": "^corr_.*_tau-|^xcorr",
+    "what": "48 corr_*_tau-k and xcorr SPIs leave the bundles (45 are in the bank); 13 directed lagcorr_* SPIs (lag, peak, asym, onesided) come in",
+    "impact": "removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak"
+   },
+   {
+    "pr": "#134 (on #133)",
+    "state": "open (own PR)",
+    "spis": "^(mi|tlmi|te)_kernel",
+    "what": "kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14",
+    "impact": "kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer"
+   },
+   {
+    "pr": "#133",
+    "state": "open (own PR)",
+    "spis": null,
+    "what": "kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90",
+    "impact": "existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank)"
+   },
+   {
+    "pr": "#127",
+    "state": "open",
+    "spis": null,
+    "what": "undirected pairs evaluated once",
+    "impact": "bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact"
+   }
+  ],
+  "pending": "spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions",
+  "candidates": [
+   "Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.",
+   "lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.",
+   "Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion."
+  ]
+ },
  "identities": "identities.json (identities.py)"
 }
