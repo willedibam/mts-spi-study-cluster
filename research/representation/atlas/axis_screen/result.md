@@ -40,6 +40,17 @@ Detail for the MinCovDet axis (rows 1–2):
 
 Detail for `l1|linf` (row 4, 2-s arm): real Δ −.048 against IAAFT +.001, so the change is entirely beyond linear. At 10 s it is screened (Δ −.044, t(3) −6.1) but fails size (1.7 null SD), eyes-open (.35 of Δ) and covariates, and sleep moves it .62 as far: the 10-s maximum over 1,000 samples is dominated by a few transients. The class has no entry in `assumptions.READINGS`; by the two neighbouring distance classes the reading is "how far each pair's largest disagreement departs from its typical disagreement" (the tail of x − y, on normal-scored channels so not marginal shape). Rank 4 because it holds only at one window length.
 
+## MinCovDet mechanism check (post hoc)
+
+Criteria stated and committed before the run. Code: [mechanism.py](mechanism.py); 10-s arm, every window; real against the screen's 3 IAAFT draws (same seeds), net = real − mean IAAFT; animal-level t(3) on the 4 animal means, as in the gates. sklearn's MinCovDet covariance is the classical covariance of its reweighted support, so the whole classical–robust difference is carried by the samples outside it. The guide earns "episodic coupling" only if those samples are temporally clustered, involve several channels and carry a distinct network. Each property is measured on the top 5% of samples by robust distance (50 per window, the same count in real and IAAFT, so estimation noise matches):
+
+- **Clustered:** Fano factor of top-5% counts in 0.5-s bins (about 1 for independent samples; IAAFT carries the clustering that the spectrum alone gives). Holds if the drug-window net is > 0 in 4/4 animals with t(3) p < .05.
+- **Several channels:** node participation ratio of the outlying network d = corr(top 5%) − corr(rest). Holds if it is ≥ 5 channels in drug windows (not a one- or two-channel artefact); the number of channels beyond |x| = 2 at those samples is reported.
+- **Distinct network:** r_net, the correlation of d's two parts (top-5% against rest edge profiles), has a drug-window net < 0 in 4/4 animals with t(3) p < .05 (more distinct than selection by distance gives in IAAFT), and the network recurs: the between-window correlation of d within a session has a net > 0 in 4/4 animals.
+- **Link to the axis:** the clustering and distinctness nets also move with the drug (drug − awake eyes-closed: Fano net up, r_net net down, 4/4 animals); the window-level correlation of the axis net with each metric net within drug sessions is reported.
+
+Outcomes: all hold, "episodic coupling" is earned for the drug change; the drug-state levels hold but the change does not, the outlying samples are episodic in both states and the axis is not explained by more episodes; clustering fails, the reading stays "time-heterogeneous dependence".
+
 ## What failed
 
 - **Best lag against zero lag** (`r|xcmax`, F2): Δ −.103, t(3) −7.1, 4.6 null SD, split-half .01, but the spectral-covariate-adjusted Δ reverses sign (−.59 of Δ) and eyes-open is .30: a spectral-shape effect, not lag. `r2|xc2max` (F2 −.016) fails covariates the same way; F3 (beyond stationary) it is ≈ 0.
@@ -80,5 +91,5 @@ Not to freeze: anything with a multitaper or best-lag member under an IAAFT null
 
 - Four animals; session-level screen with an animal-level gate. Drug and calendar are confounded within archives; eyes-open, split-half, sleep and recovery are the specificity checks.
 - 33 of the atlas's 272 SPIs, chosen for readable minimal pairs; pyspi-free implementations validated on two windows.
-- The MinCovDet mechanism check (are discarded samples temporally clustered, multi-channel, with a distinct network?) was not run; the reading stays at "time-heterogeneous dependence".
+- The MinCovDet mechanism check is a separate post hoc section above.
 - The prereg's IAAFT degeneracy assumption failed for multitaper and xcorr statistics (above); the frozen gates were applied unchanged, and the affected axes are set aside by a post hoc rule stated before PRIOS.

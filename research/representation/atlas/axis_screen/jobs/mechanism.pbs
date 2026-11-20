@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N axis_mechanism
+#PBS -j oe
+# MinCovDet mechanism check (../result.md). From the synced checkout's root:
+#   qsub -l ncpus=48,mem=190GB,walltime=04:00:00 research/representation/atlas/axis_screen/jobs/mechanism.pbs
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; B=$A/banks/neurotycho-long; O=$A/axis_screen/mechanism-long; mkdir -p "$O"
+git rev-parse HEAD > "$O/commit.txt"
+python -u -m research.representation.atlas.axis_screen.mechanism compute "$B" "$O" "$PBS_NCPUS"
+python -u -m research.representation.atlas.axis_screen.mechanism collect "$O" "$B/manifest.json" "$A/axis_screen/mechanism-long.npz"
+python -u -m research.representation.atlas.axis_screen.mechanism score "$A/axis_screen/mechanism-long.npz" "$B/manifest.json" "$A/axis_screen/mechanism-long.json"
