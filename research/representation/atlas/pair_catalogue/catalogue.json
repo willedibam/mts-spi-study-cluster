@@ -638,7 +638,7 @@
      "usable": true
     },
     "upstream": [
-     "#134 (on #133)"
+     "#134"
     ]
    },
    "members": [
@@ -674,7 +674,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     }
    ],
@@ -684,7 +684,7 @@
    "z0_max": 0.984,
    "score": 0.64,
    "status": "beyond IAAFT (frozen estimator check)",
-   "upstream": "#134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.",
+   "upstream": "#134 (merged 20 Nov, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.",
    "upstream_members": 1,
    "rank": 4
   },
@@ -1975,7 +1975,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     }
    ],
@@ -4833,7 +4833,7 @@
      "usable": false
     },
     "upstream": [
-     "#134 (on #133)"
+     "#134"
     ]
    },
    "members": [
@@ -4869,7 +4869,7 @@
       "usable": false
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -5043,7 +5043,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12179,7 +12179,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12214,7 +12214,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12249,7 +12249,7 @@
       "usable": false
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12284,7 +12284,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12319,7 +12319,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12354,7 +12354,7 @@
       "usable": false
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -12389,7 +12389,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     },
     {
@@ -18695,7 +18695,7 @@
       "usable": true
      },
      "upstream": [
-      "#134 (on #133)"
+      "#134"
      ]
     }
    ],
@@ -24254,9 +24254,9 @@
   "Ceiling rule for mapped pairs: when the Gaussian-determined partner is mapped through its exact relation, z0 is 1 minus estimator noise by construction, so z0 > .98 excludes the best-mapped pairs (xi_g|xi z0 .980 excluded while mi_g|xi, a cruder map of the same contrast, passes). For mapped pairs, judge informativeness by the null SD of the net, not by z0."
  ],
  "upstream": {
-  "checked": "2026-11-20",
+  "checked": "2026-11-21",
   "pin": "5d61d9c (computation 3.0.0.r13)",
-  "upstream_main": "5e25d27",
+  "upstream_main": "e8bfaf4",
   "principle": "z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) changes z only through curvature, which the catalogue already treats as an identity or saturation control, and the mapped-partner convention uses the analytic form. Kendall is not an exact function of Spearman (the relation depends on the copula), but its residual was already excluded as a near-ceiling diagnostic. So the merged cuts remove no reading; they agree with the identity, shrinkage, kendall-spearman and debias exclusions.",
   "prs": [
    {
@@ -24274,22 +24274,22 @@
     "impact": "removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak"
    },
    {
-    "pr": "#134 (on #133)",
-    "state": "open (own PR)",
+    "pr": "#134",
+    "state": "merged 20 Nov (e8bfaf4)",
     "spis": "^(mi|tlmi|te)_kernel",
     "what": "kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14",
-    "impact": "kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer"
+    "impact": "kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer. The repo pin is still r13: bump it (HPC.md, \"pyspi\") before computing shortlist rows 11 and 14, into a new output directory"
    },
    {
     "pr": "#133",
-    "state": "open (own PR)",
+    "state": "merged 20 Nov (4c5d9f1)",
     "spis": null,
     "what": "kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90",
     "impact": "existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank)"
    },
    {
     "pr": "#127",
-    "state": "open",
+    "state": "merged 20 Nov (87a6d60)",
     "spis": null,
     "what": "undirected pairs evaluated once",
     "impact": "bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact"
@@ -24299,7 +24299,7 @@
   "candidates": [
    "Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).",
    "lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.",
-   "Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion."
+   "Kernel DCE-AUTO (#133, merged): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion."
   ]
  },
  "identities": "identities.json (identities.py)"

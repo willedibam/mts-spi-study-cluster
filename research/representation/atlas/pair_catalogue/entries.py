@@ -411,10 +411,10 @@ STATUS = {
     'xi': 'candidate at 10 s (mi_g|xi, post hoc); primary at ceiling',
 }
 
-# Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 20 Nov 2026: pin 5d61d9c (r13), upstream main 5e25d27.
+# Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 21 Nov 2026: pin 5d61d9c (r13), upstream main e8bfaf4.
 # `spis` patterns mark the affected members in catalogue.json; the atlas config is a frozen copy, so nothing leaves the bank until it is re-synced.
 UPSTREAM = dict(
-    checked='2026-11-20', pin='5d61d9c (computation 3.0.0.r13)', upstream_main='5e25d27',
+    checked='2026-11-21', pin='5d61d9c (computation 3.0.0.r13)', upstream_main='e8bfaf4',
     principle=('z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly '
                'the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one '
                'delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) '
@@ -429,13 +429,13 @@ UPSTREAM = dict(
         dict(pr='#144 (on #112)', state='open; decision A4 approved 20 Nov', spis=r'^corr_.*_tau-|^xcorr',
              what='48 corr_*_tau-k and xcorr SPIs leave the bundles (45 are in the bank); 13 directed lagcorr_* SPIs (lag, peak, asym, onesided) come in',
              impact='removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak'),
-        dict(pr='#134 (on #133)', state='open (own PR)', spis=r'^(mi|tlmi|te)_kernel',
+        dict(pr='#134', state='merged 20 Nov (e8bfaf4)', spis=r'^(mi|tlmi|te)_kernel',
              what='kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14',
-             impact='kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer'),
-        dict(pr='#133', state='open (own PR)', spis=None,
+             impact='kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer. The repo pin is still r13: bump it (HPC.md, "pyspi") before computing shortlist rows 11 and 14, into a new output directory'),
+        dict(pr='#133', state='merged 20 Nov (4c5d9f1)', spis=None,
              what='kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90',
              impact='existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank)'),
-        dict(pr='#127', state='open', spis=None, what='undirected pairs evaluated once',
+        dict(pr='#127', state='merged 20 Nov (87a6d60)', spis=None, what='undirected pairs evaluated once',
              impact='bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact'),
     ],
     pending='spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions',
@@ -443,7 +443,7 @@ UPSTREAM = dict(
         ('Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).'),
         ('lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) '
          'contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.'),
-        ('Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); '
+        ('Kernel DCE-AUTO (#133, merged): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); '
          'mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.'),
     ],
 )
@@ -463,7 +463,7 @@ UPSTREAM_NOTES = {
     'band': 'The ppc members are unbundled (#139); the cohmag and plv band pairs stay.',
     'coh-plv': 'One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.',
     'warp': 'pdist_euclidean is unbundled (#141); take L2 from r.',
-    'mi-kernel': '#134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.',
+    'mi-kernel': '#134 (merged 20 Nov, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.',
     'tlmi-ksg': 'The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.',
     'gc-te': 'te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).',
     'precedence': 'The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.',

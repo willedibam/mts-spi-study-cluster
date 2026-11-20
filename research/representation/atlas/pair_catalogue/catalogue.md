@@ -73,24 +73,24 @@ Ordered for the next computation: the gain-discriminating and envelope readouts 
 
 Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's windows with the screen's IAAFT draws or a Gaussian FT surrogate. That is the axis-screen pipeline (0.23 kSU for 33 SPIs in both arms), so about 0.1–0.3 kSU expected and 0.5 kSU worst case on Gadi. Row 8 needs a Daniell estimator added to the same pipeline. Calibration synthetics (rows 1, 2, 5, 8) are local and take minutes.
 
-## Upstream pyspi changes (checked 2026-11-20)
+## Upstream pyspi changes (checked 2026-11-21)
 
-Pin 5d61d9c (computation 3.0.0.r13), upstream main 5e25d27. The atlas config is a frozen copy of `benchmarked_p90`, so no r13 number here changes and nothing leaves the bank until the main session re-syncs it. z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) changes z only through curvature, which the catalogue already treats as an identity or saturation control, and the mapped-partner convention uses the analytic form. Kendall is not an exact function of Spearman (the relation depends on the copula), but its residual was already excluded as a near-ceiling diagnostic. So the merged cuts remove no reading; they agree with the identity, shrinkage, kendall-spearman and debias exclusions.
+Pin 5d61d9c (computation 3.0.0.r13), upstream main e8bfaf4. The atlas config is a frozen copy of `benchmarked_p90`, so no r13 number here changes and nothing leaves the bank until the main session re-syncs it. z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) changes z only through curvature, which the catalogue already treats as an identity or saturation control, and the mapped-partner convention uses the analytic form. Kendall is not an exact function of Spearman (the relation depends on the copula), but its residual was already excluded as a near-ceiling diagnostic. So the merged cuts remove no reading; they agree with the identity, shrinkage, kendall-spearman and debias exclusions.
 
 | PR | State | What | Impact on the catalogue |
 |---|---|---|---|
 | #135-#143 | merged 20 Nov | 37 SPIs unbundled as redundant (shrinkage covariances, six cov-sq, lmfit, pdcoh/gpdcoh, ppc, kendalltau(-sq), pdist cosine/euclidean, bary-sq mean, phi norm-1) | config only: classes and values unchanged, still r13. All 37 are in the 272-SPI bank; no catalogue reading depends on one that has no exact kept equivalent |
 | #144 (on #112) | open; decision A4 approved 20 Nov | 48 corr_*_tau-k and xcorr SPIs leave the bundles (45 are in the bank); 13 directed lagcorr_* SPIs (lag, peak, asym, onesided) come in | removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak |
-| #134 (on #133) | open (own PR) | kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14 | kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer |
-| #133 | open (own PR) | kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90 | existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank) |
-| #127 | open | undirected pairs evaluated once | bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact |
+| #134 | merged 20 Nov (e8bfaf4) | kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14 | kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer. The repo pin is still r13: bump it (HPC.md, "pyspi") before computing shortlist rows 11 and 14, into a new output directory |
+| #133 | merged 20 Nov (4c5d9f1) | kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90 | existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank) |
+| #127 | merged 20 Nov (87a6d60) | undirected pairs evaluated once | bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact |
 
 Pending upstream: spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions.
 
 | Entry | Members affected | Note |
 |---|---|---|
 | Classical against MinCovDet covariance, precision, partial correlation | 1/5 | cov-sq_MinCovDet is unbundled (#136): it is the square of cov_MinCovDet. The axis readouts (pcorr\|pcorr_mcd, r^2\|mcd^2) are unaffected. |
-| Gaussian against kernel MI | 1/1 | #134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above. |
+| Gaussian against kernel MI | 1/1 | #134 (merged 20 Nov, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above. |
 | Marginal against conditional (covariance against precision or partial correlation) | 11/15 | cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged. |
 | Chebyshev against L2 or L1 distance: extreme disagreement | 2/5 | pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays. |
 | Gaussian against kNN lagged MI | 1/2 | The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged. |
@@ -117,7 +117,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 
 - Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).
 - lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.
-- Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.
+- Kernel DCE-AUTO (#133, merged): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.
 
 ## Ranked catalogue
 
@@ -209,7 +209,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Validation:** as the anchor. **Status:** beyond IAAFT (frozen estimator check).
 - **Atlas so far:** full bank -2.2 to -7.0 SD; estimator check (frozen) SUPPORTS, pooled -.0100, p .014; matched 2-s screen -.039, 19/19.
 - **Calibration needed:** none needed beyond the anchor.
-- **Upstream pyspi:** #134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.
+- **Upstream pyspi:** #134 (merged 20 Nov, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.
 
 ### <a id="xi"></a>5. Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence
 
