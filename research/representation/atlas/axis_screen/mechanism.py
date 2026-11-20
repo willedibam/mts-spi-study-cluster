@@ -19,7 +19,13 @@ screen's MinCovDet fit (random_state 42):
   z_pc, z_c2   the screen's z(pcorr, pcorr_mcd) and z(r2, mcd2), recomputed from the same fit
 Per unit x state and version: recurrence = mean pairwise correlation across windows of corr(top K) - corr(rest).
 
-  python -m research.representation.atlas.axis_screen.mechanism compute <bank> <out dir> <workers>
+prep (preprocessing sensitivity, result.md): 'ns' (default) normal-scores each channel per window, as the screen; 'z' only
+z-scores it (the pyspi treatment). A '-m' suffix ends the IAAFT on the marginal step (exact marginals, approximate
+spectra) instead of the spectrum step. On z-scored heavy-tailed data the spectrum-final draws lose the marginal tails,
+and MinCovDet responds to marginal kurtosis alone, so the z-scored test needs '-m'.
+  kurt     mean excess kurtosis over channels of the prepared window (0 after normal-scoring)
+
+  python -m research.representation.atlas.axis_screen.mechanism compute <bank> <out dir> <workers> [ns|z|ns-m|z-m]
   python -m research.representation.atlas.axis_screen.mechanism collect <out dir> <manifest.json> <out.npz>
   python -m research.representation.atlas.axis_screen.mechanism score <mechanism.npz> <manifest.json> <out.json>
 """
@@ -30,7 +36,7 @@ from multiprocessing import Pool
 
 KF, BIN = .05, 50
 VERS = ('real', 'iaaft0', 'iaaft1', 'iaaft2')
-METRICS = ('eps', 'fano', 'run', 'n_ext', 'pr_node', 'amp', 'r_net', 'z_pc', 'z_c2')
+METRICS = ('eps', 'fano', 'run', 'n_ext', 'pr_node', 'amp', 'r_net', 'z_pc', 'z_c2', 'kurt')
 
 
 def _corr(u, v):
@@ -40,6 +46,7 @@ def _corr(u, v):
 def metrics(v):
     """Metrics and the top-K minus rest correlation profile for one normal-scored window (T x M)."""
     from sklearn.covariance import MinCovDet
+    from scipy.stats import kurtosis
     from research.representation.atlas.axis_screen.stats import zscore
     x = zscore(np.asarray(v, np.float64))
     T, M = x.shape
@@ -60,31 +67,34 @@ def metrics(v):
     out = dict(eps=1 - mcd.support_.mean(), fano=n.var() / n.mean(), run=K / (e == 1).sum(), n_ext=(np.abs(x[top]) > 2).sum(1).mean(),
                pr_node=s_.sum() ** 2 / (s_ ** 2).sum(), amp=g[top].mean() / g[~top].mean(), r_net=_corr(co, ci),
                z_pc=_corr(pc(np.linalg.inv(C))[a, b], pc(mcd.precision_)[a, b]),
-               z_c2=_corr(C[a, b] ** 2, mcd.covariance_[a, b] ** 2))
+               z_c2=_corr(C[a, b] ** 2, mcd.covariance_[a, b] ** 2), kurt=float(kurtosis(x).mean()))
     return np.array([out[m] for m in METRICS]), (co - ci).astype(np.float32)
 
 
 def window(args):
-    bank, out, wid = args
+    bank, out, wid, prep = args
     from research.representation.atlas.extract import seed
     from research.representation.atlas.axis_screen.run import _ns
+    from research.representation.atlas.axis_screen.stats import zscore
     from mtsspi.surrogates import multivariate_iaaft
     target = Path(out) / f'{wid}.npz'
     if target.exists():
         return wid, 0.
     t0 = time.time()
     with np.load(Path(bank) / 'windows.npz') as W:
-        v = _ns(np.asarray(W[wid], np.float64))
-    X = [v] + [multivariate_iaaft(v, np.random.default_rng([seed(wid), 10, k]), final='spectrum')[0] for k in range(3)]
+        v = np.asarray(W[wid], np.float64)
+    v = _ns(v) if prep.split('-')[0] == 'ns' else zscore(v)
+    final = 'marginal' if prep.endswith('-m') else 'spectrum'
+    X = [v] + [multivariate_iaaft(v, np.random.default_rng([seed(wid), 10, k]), final=final)[0] for k in range(3)]
     R = [metrics(x) for x in X]
     np.savez(target, m=np.stack([r[0] for r in R]), d=np.stack([r[1] for r in R]))
     return wid, time.time() - t0
 
 
-def compute(bank, out, workers):
+def compute(bank, out, workers, prep='ns'):
     from research.representation.atlas.axis_screen.run import jobs
     Path(out).mkdir(parents=True, exist_ok=True)
-    J = [(str(bank), str(out), i) for j in jobs(bank, out) for i, _ in j[4]]
+    J = [(str(bank), str(out), i, prep) for j in jobs(bank, out) for i, _ in j[4]]
     print('windows', len(J), flush=True)
     with Pool(workers, maxtasksperchild=8) as p:
         for k, (wid, sec) in enumerate(p.imap_unordered(window, J)):
@@ -121,6 +131,7 @@ def score(path, manifest, output):
     rows = {r['id']: r for r in json.load(open(manifest))['rows']}
     ids = [str(i) for i in D['ids']]
     unit = np.array([rows[i]['unit'] for i in ids]); state = np.array([rows[i]['state'] for i in ids])
+    start = np.array([rows[i].get('start_s', rows[i].get('onset_s', np.nan)) for i in ids], float)
     ag = {rows[i]['unit']: rows[i].get('agent', '') for i in ids}; an = {rows[i]['unit']: rows[i].get('animal', '') for i in ids}
     M = D['m'].astype(float)  # (window, version, metric)
     net = M[:, 0] - M[:, 1:].mean(1)
@@ -136,16 +147,24 @@ def score(path, manifest, output):
         return dict(mean=float(d.mean()), animals=am.round(4).tolist(), t3=float(ttest_1samp(am, 0).statistic) if len(am) > 1 else None,
                     positive=int((am > 0).sum()), negative=int((am < 0).sum()))
 
+    def split_half(x):  # within-awake second half minus first, as score.py
+        o = []
+        for u in ses:
+            r = np.flatnonzero((unit == u) & (state == REF)); r = r[np.argsort(start[r])]; h = len(r) // 2
+            o.append(np.nanmean(x[r[-h:]]) - np.nanmean(x[r[:h]]))
+        return np.array(o)
+
     out = dict(sessions=len(ses), animals=animals, metrics={})
     for k, name in enumerate(METRICS):
         x, xr, xi = net[:, k], M[:, 0, k], M[:, 1:, k].mean(1)
         lev = lambda s, y: float(np.mean([mean(y, u, s) for u in ses]))
-        dd = delta(x, ses, 'drug')
+        dd = delta(x, ses, 'drug'); sh = split_half(x); nsd = float(np.nanstd(sh, ddof=1) / np.sqrt(2))
         out['metrics'][name] = dict(
             awake=dict(real=lev(REF, xr), iaaft=lev(REF, xi)), drug=dict(real=lev('drug', xr), iaaft=lev('drug', xi)),
             drug_level_net=animal(np.array([mean(x, u, 'drug') for u in ses]), ses),
             awake_level_net=animal(np.array([mean(x, u, REF) for u in ses]), ses),
-            delta_net=animal(dd, ses), delta_real=float(delta(xr, ses, 'drug').mean()), delta_iaaft=float(delta(xi, ses, 'drug').mean()),
+            delta_net=animal(dd, ses), null_sd=nsd, sd_multiple=float(dd.mean() / nsd), split_half=float(np.nanmean(sh)),
+            delta_real=float(delta(xr, ses, 'drug').mean()), delta_iaaft=float(delta(xi, ses, 'drug').mean()),
             agents={a: float(dd[np.array([ag[u] for u in ses]) == a].mean()) for a in DRUGS},
             eyes_open=float(delta(x, ses, 'awake_eo').mean()),
             sleep=float(np.mean(delta(x, [u for u in set(unit) if has(u, 'sleep') and has(u, REF)], 'sleep'))),
@@ -166,7 +185,7 @@ def score(path, manifest, output):
     for n, r in out['metrics'].items():
         print(f"{n:7s} awake real {r['awake']['real']:+.3f} iaaft {r['awake']['iaaft']:+.3f} | drug real {r['drug']['real']:+.3f} "
               f"iaaft {r['drug']['iaaft']:+.3f} | drug net {r['drug_level_net']['mean']:+.4f} ({r['drug_level_net']['positive']}+) "
-              f"Δnet {r['delta_net']['mean']:+.4f} t3 {r['delta_net']['t3']:+.2f} ({r['delta_net']['positive']}+/{r['delta_net']['negative']}-) "
+              f"Δnet {r['delta_net']['mean']:+.4f} ({r['sd_multiple']:+.1f} SD) t3 {r['delta_net']['t3']:+.2f} ({r['delta_net']['positive']}+/{r['delta_net']['negative']}-) "
               f"eo {r['eyes_open']:+.4f} sleep {r['sleep']:+.4f} rec {r['recovery']:+.4f}")
     print('recurrence', out['recurrence'])
     print('window r with axis', {k: round(v, 3) for k, v in out['window_r_with_axis'].items()})
@@ -175,7 +194,7 @@ def score(path, manifest, output):
 if __name__ == '__main__':
     cmd = sys.argv[1]
     if cmd == 'compute':
-        compute(sys.argv[2], sys.argv[3], int(sys.argv[4]))
+        compute(sys.argv[2], sys.argv[3], int(sys.argv[4]), *sys.argv[5:6])
     elif cmd == 'collect':
         collect(*sys.argv[2:5])
     elif cmd == 'score':
