@@ -33,7 +33,7 @@ Detail for the MinCovDet axis (rows 1–2):
 
 - Per agent (row 2): KT −.062, KTMD −.045, MD −.053, PF −.083; row 1: −.048, −.091, −.035, −.120. Every agent, including ketamine.
 - Distinct from the MI pair: rMI .21–.28; node-additive structure removed (double-centred Δ equals Δ: −.043, −.079).
-- Mean-profile Δ is smaller than the per-window Δ (−.033 against −.056; −.024 against −.079): much of the effect is window-specific (which samples MCD discards differs between windows) rather than one stable edge pattern. That fits "a minority of samples carries a different dependence pattern" and does not by itself say "episodic coupling" (the guide's stronger reading needs the support mask; not done).
+- Mean-profile Δ is smaller than the per-window Δ (−.033 against −.056; −.024 against −.079): much of the effect is window-specific (which samples MCD discards differs between windows) rather than one stable edge pattern. That fits "a minority of samples carries a different dependence pattern"; the support-mask check (below) does not earn "episodic coupling" for the drug change.
 - **Post hoc**, reliability: MinCovDet edge-profile reliability falls beyond IAAFT under the drug (net −.025 to −.031 for `mcd`, `mcd2`, `pcorr_mcd`; 4/4 animals, t(3) −6 to −12), the only statistics where it does. The disattenuated Δ keeps its sign in 4/4 animals, so the axis is not only a reliability change.
 - 2-s arm: absent (`r2|mcd2` not screened; `rho2|mcd2` −.003). At T 200 and M 126 MinCovDet keeps about 163 of 200 samples and is close to classical, so this is a power limit of the estimator, not evidence against the axis.
 - Reading (guide's worked example): time-heterogeneous dependence, a minority of time samples carrying a conditional-dependence pattern that departs from the bulk, more so (less agreement between robust and classical) under every drug, beyond what the IAAFT surrogate with the same spectra and covariance gives. Sleep moves it .05–.14 as far.
@@ -50,6 +50,20 @@ Criteria stated and committed before the run. Code: [mechanism.py](mechanism.py)
 - **Link to the axis:** the clustering and distinctness nets also move with the drug (drug − awake eyes-closed: Fano net up, r_net net down, 4/4 animals); the window-level correlation of the axis net with each metric net within drug sessions is reported.
 
 Outcomes: all hold, "episodic coupling" is earned for the drug change; the drug-state levels hold but the change does not, the outlying samples are episodic in both states and the axis is not explained by more episodes; clustering fails, the reading stays "time-heterogeneous dependence".
+
+**Result (job 184674717, 24 SU; `mechanism-long.json`).** Recomputed z(pcorr, pcorr_mcd) reproduces the screen exactly (Δ net −.0790, t(3) −10.72). Nets are real − IAAFT; t(3) on animal means.
+
+| Metric | Awake net | Drug net | Drug − awake net | Verdict |
+|---|---|---|---|---|
+| Trimmed fraction (outside MCD support; real .44 awake, .48 drug) | +.020 (t 11.1) | +.036 (4/4, t 19.5) | +.015 (4/4, t 4.2; KT .006, MD .008, KTMD .016, PF .031) | moves with the axis |
+| Clustering (Fano, 0.5-s bins) | +5.2 (t 6.6) | +1.5 (4/4, t 4.2) | −3.7 (0/4) | clustered in both states, less so under the drug |
+| Channels beyond \|x\| 2 at top-5% samples | +8.8 | +7.4 (4/4) | −1.4 (0/4) | multi-channel (about 16 of 126; IAAFT 8.5) |
+| Node participation of the outlying network | −1.4 | +0.2 (about 108 of 126) | +1.6 | spread over most channels, not focal |
+| Amplitude of top-5% samples / rest | +.61 | +.52 (4/4) | −.08 (0/4) | outlying samples are high-amplitude in both states |
+| r_net (outlying against bulk edge profile) | −.045 (t −5.0) | −.029 (3/4, t −1.6) | +.016 (2/2) | distinct awake; under the drug the rule fails |
+| Recurrence of the outlying network across windows | +.089 | +.121 (4/4, t 5.2) | +.032 (2/2, t 0.2) | recurs in both states, no drug change |
+
+By the criteria above, "episodic coupling" is not earned for the drug change: under the drug the outlying samples are clustered, multi-channel and recurrent, but the distinctness rule fails (3/4), and neither clustering nor distinctness increases with the drug (clustering beyond IAAFT falls, because the drug's slower spectra make the surrogate's own outlying samples more clustered: IAAFT Fano 3.2 awake, 8.1 drug). What carries the axis is the trimmed fraction: MinCovDet trims more samples than the spectrum-matched surrogate, more so under the drug, ordered by agent as the axis is (propofol largest, ketamine smallest), and it is the metric most correlated with the axis net within drug sessions (window r −.49; clustering −.03, r_net +.15). The reading stays time-heterogeneous dependence, made more specific: under every drug a larger fraction of samples falls outside the robust core covariance than the drug's spectra predict, rather than a few more or more distinct episodes. Awake, the outlying samples already form clustered, high-amplitude, multi-channel, recurrent and distinct events beyond the surrogate (an awake property, not read here). Not separated: a heavier-tailed or less elliptical joint distribution and a mixture of covariance regimes both raise the trimmed fraction.
 
 ## What failed
 
