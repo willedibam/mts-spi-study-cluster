@@ -69,6 +69,7 @@ Ordered for the next computation: the gain-discriminating and envelope readouts 
 | 12 | Marginal against conditional (covariance against precision or partial correlation) | `cov-sq_EmpiricalCovariance` · `prec-sq_EmpiricalCovariance` | mediation: direct against indirect association given the observed channels | z(cov-sq_EmpiricalCovariance, prec-sq_LedoitWolf) at 10 s (identical to z(cov-sq LW, prec-sq LW): one shrinkage factor per window), strength-matched edges, channel-subset re-extraction for any M change | stationary Gaussian null with the state covariance |
 | 13 | Zero lag against best lag | `cov-sq_EmpiricalCovariance` · `xcorr-sq_max_sig-True` | coupling carried at a stable non-zero lag | z(r^2, xcorr-sq max), 10 s, mean-lag term = stationary - zero-phase, per agent | zero-phase and stationary Gaussian nulls with the state mean cross-spectrum (discovery.py lag-null) |
 | 14 | Lagged MI against GC (conditioning on the target past) | `tlmi_gaussian` · `gc_gaussian_k-1_kt-1_l-1_lt-1` | precedence: what the source adds beyond the target's past | z(tlmi_gaussian, gc_gaussian) at 10 s and the kernel link beside it (higher-order part) | stationary null (Gaussian) |
+| 15 | Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence | `cov_EmpiricalCovariance` · `xi_tau-0` | functional dependence beyond the Gaussian copula: pairs whose rank-functional dependence departs from what… | z(xi_g, xi) net and the level mean(xi - xi_g), drug - awake, with the anchor, MinCovDet, dCor and lag-1 links (xi_screen.md) | real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows |
 
 Expected compute: rows 1–4 and 6–7 are pyspi-free statistics on the anchor's windows with the screen's IAAFT draws or a Gaussian FT surrogate. That is the axis-screen pipeline (0.23 kSU for 33 SPIs in both arms), so about 0.1–0.3 kSU expected and 0.5 kSU worst case on Gadi. Row 8 needs a Daniell estimator added to the same pipeline. Calibration synthetics (rows 1, 2, 5, 8) are local and take minutes.
 
@@ -114,7 +115,7 @@ Pending upstream: spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending 
 
 Candidate pairs from new upstream SPIs (not yet entries):
 
-- Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.
+- Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).
 - lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.
 - Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.
 
@@ -126,28 +127,29 @@ Candidate pairs from new upstream SPIs (not yet entries):
 | 2 | [Gaussian against kNN MI (the anchor)](#mi-ksg) | estimator · higher-order | `mi_gaussian` · `mi_kraskov_NN-4_DCE-AUTO` | non-Gaussian (nonlinear) dependence: after normal-scoring, I - G is the KL divergence from the covariance-matched… | 0.82, 0.69 / 0.93, 0.89 | 0.91 / 0.97 (ax 0.96) | -0.028 (19/19) | axis; replicated (PRIOS, mouse) | 0.80 |
 | 3 | [Envelope correlation against its Gaussian determinant \|gamma\|^2 (pyspi-free partner)](#envelope-gamma) | principled · higher-order | `pec` · `NEW:analytic_gamma2` | amplitude co-modulation beyond linear coupling: envelope correlation in excess of what the pair's second-order… | 0.41, – / 0.70, – | – / – | – | untested | 0.70 |
 | 4 | [Gaussian against kernel MI](#mi-kernel) | estimator · higher-order | `mi_gaussian` · `mi_kernel_W-0.25` | non-Gaussian dependence (same quantity as the anchor, different estimator bias) | 0.82, 0.69 / 0.93, 0.91 | 0.89 / 0.98 | -0.039 (19/19) | beyond IAAFT (frozen estimator check) | 0.64 |
-| 5 | [Marginal against conditional (covariance against precision or partial correlation)](#mediation) | assumption · linear-static | `cov-sq_EmpiricalCovariance` · `prec-sq_EmpiricalCovariance` | mediation: direct against indirect association given the observed channels | 0.77, 0.56 / 0.91, 0.87 | 0.12 / 0.13 | +0.000 (19/19) | raw; local estimator effect | 0.58 |
-| 6 | [Chebyshev against L2 or L1 distance: extreme disagreement](#chebyshev) | principled · higher-order | `pdist_euclidean` · `pdist_chebyshev` | heavy-tailed disagreement: intermittent large divergence of a pair beyond what a Gaussian difference signal with the… | 0.83, 0.52 / 0.94, 0.56 | 0.78 / 0.75 (ax 0.81) | -0.037 (18/19) | axis at 2 s; fails at 10 s | 0.56 |
-| 7 | [Gaussian against kNN lagged MI](#tlmi-ksg) | estimator · higher-order | `tlmi_gaussian` · `tlmi_kraskov_NN-4_DCE-AUTO` | non-Gaussian dependence at a one-sample (10 ms) lag | 0.68, 0.48 / 0.88, 0.78 | 0.81 / 0.94 | -0.033 (19/19) | beyond IAAFT (matched screen) | 0.52 |
-| 8 | [Euclidean against Canberra distance: gain-invariant agreement](#canberra) | principled · higher-order | `pdist_euclidean` · `pdist_canberra` | amplitude-dependent correlation: whether a pair's correlation differs between high- and low-amplitude samples | 0.83, 0.79 / 0.94, 0.93 | 0.96 / 0.98 | -0.013 (19/19) | beyond IAAFT, normal-scored only | 0.49 |
-| 9 | [L1 against L2 distance: tail weight of disagreement](#cityblock) | principled · higher-order | `pdist_euclidean` · `pdist_cityblock` | kurtosis of the disagreement signal x - y beyond Gaussian (constant sqrt(2/pi) ratio for Gaussian) | 0.83, 0.82 / 0.94, 0.94 | 0.99 / 0.99 | -0.004 (19/19) | failed (ceiling) | 0.44 |
-| 10 | [Pearson against Spearman or Kendall (with a normal-score intermediate)](#rank-linear) | assumption · higher-order | `cov_EmpiricalCovariance` · `spearmanr` | copula departure in concordance: dependence that is monotone but not Gaussian-copula (joint bursts read here in… | 0.81, 0.81 / 0.93, 0.93 | 0.99 / 1.00 | -0.001 (19/19) | failed (ceiling) | 0.43 |
-| 11 | [r^2 against distance correlation (and IDS)](#dcorr) | principled · higher-order | `cov-sq_EmpiricalCovariance` · `dcorr` | any-form (including non-monotone) dependence beyond the Gaussian value | 0.77, 0.77 / 0.91, 0.91 | 0.99 / 0.99 | -0.006 (19/19) | failed (animal t) | 0.42 |
-| 12 | [Envelope correlation on amplitude against log power](#pec-log) | estimator · higher-order | `pec` · `pec_log` | burst-driven against proportional amplitude co-modulation: log compresses large excursions, so the pair departs when… | 0.41, 0.39 / 0.70, 0.70 | 0.93 / 0.96 | -0.006 (19/19) | failed (axis screen) | 0.42 |
-| 13 | [Low against high band](#band) | assumption · linear-spectral | `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` | frequency locus of coupling | 0.72, 0.38 / 0.91, 0.61 | 0.48 / 0.67 | -0.034 (19/19) | failed (not drug-specific) | 0.41 |
-| 14 | [Mean against max of the squared barycentre: extreme co-excursion](#bary-max) | principled · higher-order | `bary-sq_euclidean_mean` · `bary-sq_euclidean_max` | joint extreme excursions (co-bursts): pairs whose largest common excursion exceeds what a Gaussian sum with the same… | 0.81, 0.45 / 0.93, 0.53 | 0.73 / 0.71 | -0.019 (18/19) | beyond IAAFT (matched screen) | 0.35 |
-| 15 | [Signed against two-sided max of the barycentre: asymmetry of co-excursions](#bary-sign) | assumption · higher-order | `bary_euclidean_max` · `bary-sq_euclidean_max` | asymmetry (skew) of joint excursions: whether pairs co-burst upward and downward alike | 0.43, 0.45 / 0.54, 0.53 | 0.69 / 0.68 | -0.029 (18/19) | beyond IAAFT (matched screen) | 0.35 |
-| 16 | [Gaussian GC against model-free TE (GC = 2 TE for Gaussians)](#gc-te) | principled · higher-order | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_kernel_W-0.25_k-1` | non-Gaussian predictive (directed) dependence: prediction of the target from the source beyond its own past that a… | 0.14, 0.49 / 0.47, 0.68 | – / – | +0.013 (16/19) | level only; z unreliable | 0.32 |
-| 17 | [Lagged MI against GC (conditioning on the target past)](#precedence) | assumption · linear-spectral | `tlmi_gaussian` · `gc_gaussian_k-1_kt-1_l-1_lt-1` | precedence: what the source adds beyond the target's past | 0.68, 0.14 / 0.88, 0.47 | 0.26 / 0.26 | -0.001 (13/19) | raw (10 s) | 0.32 |
-| 18 | [\|C\|^2 against \|Im C\| (lag)](#coh-icoh) | assumption · linear-spectral | `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25` | non-zero-lag share of coupling | 0.72, 0.18 / 0.91, 0.46 | -0.11 / -0.45 | +0.017 (14/19) | failed (floor, covariates) | 0.31 |
-| 19 | [Coherence against phase-locking value: amplitude-dependent synchrony](#coh-plv) | principled · higher-order | `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` | amplitude-dependent synchrony: phase locking concentrated in high- or low-amplitude epochs, beyond the fixed Gaussian… | 0.38, 0.45 / 0.61, 0.73 | 0.78 / 0.86 | +0.002 (12/19) | raw; IAAFT invalid for multitaper | 0.30 |
-| 20 | [Zero lag against best lag](#best-lag) | assumption · linear-spectral | `cov-sq_EmpiricalCovariance` · `xcorr-sq_max_sig-True` | coupling carried at a stable non-zero lag | 0.77, 0.74 / 0.91, 0.90 | 0.94 / 0.99 | -0.017 (19/19) | failed (covariates); stable mean lag 10 s | 0.24 |
-| 21 | [History length](#history) | assumption · linear-spectral | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2` | memory of the interaction | 0.14, 0.10 / 0.47, 0.52 | 0.34 / 0.53 | -0.013 (16/19) | raw; unreliable | 0.16 |
-| 22 | [Gaussian GC against symbolic TE](#symbolic) | estimator · higher-order | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_symbolic_k-3` | ordinal-pattern (amplitude-free) predictive structure beyond linear-Gaussian | 0.14, 0.19 / 0.47, 0.37 | 0.05 / 0.25 | -0.016 (14/19) | untested | 0.12 |
-| 23 | [Rigid against elastic alignment](#warp) | assumption · higher-order | `pdist_euclidean` · `dtw` | variable-lag (warped) alignment | 0.83, 0.41 / 0.94, 0.68 | 0.59 / 0.60 | -0.038 (15/19) | failed construction | 0.11 |
-| 24 | [Envelope correlation with against without orthogonalisation](#pec-orth) | assumption · linear-spectral | `pec` · `pec_orth` | lagged share of amplitude coupling (volume-conduction-free) | 0.41, 0.03 / 0.70, 0.16 | 0.58 / 0.49 | +0.038 (18/19) | floor | 0.10 |
-| 25 | [Mean against max over frequency or lag](#peak) | assumption · linear-spectral | `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25` | spectral peakedness of coupling (narrowband against broadband) | 0.72, 0.23 / 0.91, 0.26 | 0.61 / 0.50 | +0.004 (12/19) | raw; max SPIs unreliable | 0.09 |
-| 26 | [PPC against debiased wPLI (lag, both debiased)](#ppc-dswpli) | assumption · linear-spectral | `ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5` | non-zero-lag share of phase coupling (lag variability candidate beyond the stationary null) | 0.73, 0.03 / 0.91, 0.12 | 0.30 / 0.25 (ax 0.28) | +0.018 (13/19) | failed (reliability, covariates) | 0.08 |
+| 5 | [Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence](#xi) | principled · higher-order | `cov_EmpiricalCovariance` · `xi_tau-0` | functional dependence beyond the Gaussian copula: pairs whose rank-functional dependence departs from what their… | 0.81, – / 0.93, – | – / – | – | post hoc screen (xi_screen.md) | 0.62 |
+| 6 | [Marginal against conditional (covariance against precision or partial correlation)](#mediation) | assumption · linear-static | `cov-sq_EmpiricalCovariance` · `prec-sq_EmpiricalCovariance` | mediation: direct against indirect association given the observed channels | 0.77, 0.56 / 0.91, 0.87 | 0.12 / 0.13 | +0.000 (19/19) | raw; local estimator effect | 0.58 |
+| 7 | [Chebyshev against L2 or L1 distance: extreme disagreement](#chebyshev) | principled · higher-order | `pdist_euclidean` · `pdist_chebyshev` | heavy-tailed disagreement: intermittent large divergence of a pair beyond what a Gaussian difference signal with the… | 0.83, 0.52 / 0.94, 0.56 | 0.78 / 0.75 (ax 0.81) | -0.037 (18/19) | axis at 2 s; fails at 10 s | 0.56 |
+| 8 | [Gaussian against kNN lagged MI](#tlmi-ksg) | estimator · higher-order | `tlmi_gaussian` · `tlmi_kraskov_NN-4_DCE-AUTO` | non-Gaussian dependence at a one-sample (10 ms) lag | 0.68, 0.48 / 0.88, 0.78 | 0.81 / 0.94 | -0.033 (19/19) | beyond IAAFT (matched screen) | 0.52 |
+| 9 | [Euclidean against Canberra distance: gain-invariant agreement](#canberra) | principled · higher-order | `pdist_euclidean` · `pdist_canberra` | amplitude-dependent correlation: whether a pair's correlation differs between high- and low-amplitude samples | 0.83, 0.79 / 0.94, 0.93 | 0.96 / 0.98 | -0.013 (19/19) | beyond IAAFT, normal-scored only | 0.49 |
+| 10 | [L1 against L2 distance: tail weight of disagreement](#cityblock) | principled · higher-order | `pdist_euclidean` · `pdist_cityblock` | kurtosis of the disagreement signal x - y beyond Gaussian (constant sqrt(2/pi) ratio for Gaussian) | 0.83, 0.82 / 0.94, 0.94 | 0.99 / 0.99 | -0.004 (19/19) | failed (ceiling) | 0.44 |
+| 11 | [Pearson against Spearman or Kendall (with a normal-score intermediate)](#rank-linear) | assumption · higher-order | `cov_EmpiricalCovariance` · `spearmanr` | copula departure in concordance: dependence that is monotone but not Gaussian-copula (joint bursts read here in… | 0.81, 0.81 / 0.93, 0.93 | 0.99 / 1.00 | -0.001 (19/19) | failed (ceiling) | 0.43 |
+| 12 | [r^2 against distance correlation (and IDS)](#dcorr) | principled · higher-order | `cov-sq_EmpiricalCovariance` · `dcorr` | any-form (including non-monotone) dependence beyond the Gaussian value | 0.77, 0.77 / 0.91, 0.91 | 0.99 / 0.99 | -0.006 (19/19) | failed (animal t) | 0.42 |
+| 13 | [Envelope correlation on amplitude against log power](#pec-log) | estimator · higher-order | `pec` · `pec_log` | burst-driven against proportional amplitude co-modulation: log compresses large excursions, so the pair departs when… | 0.41, 0.39 / 0.70, 0.70 | 0.93 / 0.96 | -0.006 (19/19) | failed (axis screen) | 0.42 |
+| 14 | [Low against high band](#band) | assumption · linear-spectral | `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` | frequency locus of coupling | 0.72, 0.38 / 0.91, 0.61 | 0.48 / 0.67 | -0.034 (19/19) | failed (not drug-specific) | 0.41 |
+| 15 | [Mean against max of the squared barycentre: extreme co-excursion](#bary-max) | principled · higher-order | `bary-sq_euclidean_mean` · `bary-sq_euclidean_max` | joint extreme excursions (co-bursts): pairs whose largest common excursion exceeds what a Gaussian sum with the same… | 0.81, 0.45 / 0.93, 0.53 | 0.73 / 0.71 | -0.019 (18/19) | beyond IAAFT (matched screen) | 0.35 |
+| 16 | [Signed against two-sided max of the barycentre: asymmetry of co-excursions](#bary-sign) | assumption · higher-order | `bary_euclidean_max` · `bary-sq_euclidean_max` | asymmetry (skew) of joint excursions: whether pairs co-burst upward and downward alike | 0.43, 0.45 / 0.54, 0.53 | 0.69 / 0.68 | -0.029 (18/19) | beyond IAAFT (matched screen) | 0.35 |
+| 17 | [Gaussian GC against model-free TE (GC = 2 TE for Gaussians)](#gc-te) | principled · higher-order | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_kernel_W-0.25_k-1` | non-Gaussian predictive (directed) dependence: prediction of the target from the source beyond its own past that a… | 0.14, 0.49 / 0.47, 0.68 | – / – | +0.013 (16/19) | level only; z unreliable | 0.32 |
+| 18 | [Lagged MI against GC (conditioning on the target past)](#precedence) | assumption · linear-spectral | `tlmi_gaussian` · `gc_gaussian_k-1_kt-1_l-1_lt-1` | precedence: what the source adds beyond the target's past | 0.68, 0.14 / 0.88, 0.47 | 0.26 / 0.26 | -0.001 (13/19) | raw (10 s) | 0.32 |
+| 19 | [\|C\|^2 against \|Im C\| (lag)](#coh-icoh) | assumption · linear-spectral | `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25` | non-zero-lag share of coupling | 0.72, 0.18 / 0.91, 0.46 | -0.11 / -0.45 | +0.017 (14/19) | failed (floor, covariates) | 0.31 |
+| 20 | [Coherence against phase-locking value: amplitude-dependent synchrony](#coh-plv) | principled · higher-order | `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` | amplitude-dependent synchrony: phase locking concentrated in high- or low-amplitude epochs, beyond the fixed Gaussian… | 0.38, 0.45 / 0.61, 0.73 | 0.78 / 0.86 | +0.002 (12/19) | raw; IAAFT invalid for multitaper | 0.30 |
+| 21 | [Zero lag against best lag](#best-lag) | assumption · linear-spectral | `cov-sq_EmpiricalCovariance` · `xcorr-sq_max_sig-True` | coupling carried at a stable non-zero lag | 0.77, 0.74 / 0.91, 0.90 | 0.94 / 0.99 | -0.017 (19/19) | failed (covariates); stable mean lag 10 s | 0.24 |
+| 22 | [History length](#history) | assumption · linear-spectral | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2` | memory of the interaction | 0.14, 0.10 / 0.47, 0.52 | 0.34 / 0.53 | -0.013 (16/19) | raw; unreliable | 0.16 |
+| 23 | [Gaussian GC against symbolic TE](#symbolic) | estimator · higher-order | `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_symbolic_k-3` | ordinal-pattern (amplitude-free) predictive structure beyond linear-Gaussian | 0.14, 0.19 / 0.47, 0.37 | 0.05 / 0.25 | -0.016 (14/19) | untested | 0.12 |
+| 24 | [Rigid against elastic alignment](#warp) | assumption · higher-order | `pdist_euclidean` · `dtw` | variable-lag (warped) alignment | 0.83, 0.41 / 0.94, 0.68 | 0.59 / 0.60 | -0.038 (15/19) | failed construction | 0.11 |
+| 25 | [Envelope correlation with against without orthogonalisation](#pec-orth) | assumption · linear-spectral | `pec` · `pec_orth` | lagged share of amplitude coupling (volume-conduction-free) | 0.41, 0.03 / 0.70, 0.16 | 0.58 / 0.49 | +0.038 (18/19) | floor | 0.10 |
+| 26 | [Mean against max over frequency or lag](#peak) | assumption · linear-spectral | `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25` | spectral peakedness of coupling (narrowband against broadband) | 0.72, 0.23 / 0.91, 0.26 | 0.61 / 0.50 | +0.004 (12/19) | raw; max SPIs unreliable | 0.09 |
+| 27 | [PPC against debiased wPLI (lag, both debiased)](#ppc-dswpli) | assumption · linear-spectral | `ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5` | non-zero-lag share of phase coupling (lag variability candidate beyond the stationary null) | 0.73, 0.03 / 0.91, 0.12 | 0.30 / 0.25 (ax 0.28) | +0.018 (13/19) | failed (reliability, covariates) | 0.08 |
 
 ## Readings
 
@@ -209,7 +211,21 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** none needed beyond the anchor.
 - **Upstream pyspi:** #134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.
 
-### <a id="mediation"></a>5. Marginal against conditional (covariance against precision or partial correlation)
+### <a id="xi"></a>5. Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence
+
+- **Pairs:** `cov_EmpiricalCovariance` · `xi_tau-0`; `spearmanr` · `xi_tau-0`; `dcorr` · `xi_tau-0`; `mi_kraskov_NN-4_DCE-AUTO` · `xi_tau-0` (+2 more in the JSON).
+- **What differs:** linear correlation (mapped through the Gaussian relation) against a rank statistic that tends to 1 only when one channel is a measurable function of the other, monotone or not; xi is directed, symmetrised here, with |xi(i -> j) - xi(j -> i)| as a separate readout.
+- **Character reading:** functional dependence beyond the Gaussian copula: pairs whose rank-functional dependence departs from what their correlation gives under a Gaussian process (non-monotone coupling, tail dependence, regime mixtures).
+- **Literal reading:** organisation of Gaussian-predicted against observed xi.
+- **Other consequences:** rank-based: invariant to each channel's marginal, so normal-scoring does not change it (unlike MinCovDet); a temporal mixture of Gaussian regimes and a non-monotone coupling both move it; the level sign does not separate them; directed: asymmetry (which channel is more nearly a function of the other) is zero in expectation under any Gaussian process; noisy: SD about .05 at T 200 for every rho, .02 at T 1000. **Main confound:** estimator noise at short windows; shared non-monotone transforms of a common drive.
+- **Null:** real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows.
+- **Gaussian relation:** xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 for a bivariate normal (identities.json; deviation .002 at n 20,000); time-exchangeable, so the static-statistic principle applies.
+- **Measurability:** reliability 0.81, – / 0.93, –; z₀ – / –; null SD – / –; matched 2-s net –.
+- **Validation:** not validated; pyspi-free implementation equals pyspi ChatterjeeXi to 2e-16. **Status:** post hoc screen (xi_screen.md).
+- **Atlas so far:** not in the 272-SPI bank (upstream full; into benchmarked_p90 with pyspi #133); post hoc screen on the axis-screen windows: xi_screen.md.
+- **Calibration needed:** if the primary moves: shared gain, covariance-regime mixture and non-monotone coupling synthetics at matched r, to name which one moves it.
+
+### <a id="mediation"></a>6. Marginal against conditional (covariance against precision or partial correlation)
 
 - **Pairs:** `cov-sq_EmpiricalCovariance` · `prec-sq_EmpiricalCovariance`; `cov-sq_LedoitWolf` · `prec-sq_LedoitWolf`; `cov_EmpiricalCovariance` · `pcorr_EmpiricalCovariance`; `cov_EmpiricalCovariance` · `prec_EmpiricalCovariance` (+11 more in the JSON).
 - **What differs:** conditioning on every other observed channel.
@@ -224,7 +240,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** done (construction).
 - **Upstream pyspi:** cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged.
 
-### <a id="chebyshev"></a>6. Chebyshev against L2 or L1 distance: extreme disagreement
+### <a id="chebyshev"></a>7. Chebyshev against L2 or L1 distance: extreme disagreement
 
 - **Pairs:** `pdist_euclidean` · `pdist_chebyshev`; `pdist_cityblock` · `pdist_chebyshev`; `pdist_chebyshev` · `pdist_canberra`; `pdist_cosine` · `pdist_chebyshev` (+1 more in the JSON).
 - **What differs:** largest single-sample |x - y| against its RMS (or mean).
@@ -239,7 +255,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** heavy-tailed difference (t-distributed innovations in the coupling) against Gaussian at matched spectra; shared gain against local decoupling.
 - **Upstream pyspi:** pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays.
 
-### <a id="tlmi-ksg"></a>7. Gaussian against kNN lagged MI
+### <a id="tlmi-ksg"></a>8. Gaussian against kNN lagged MI
 
 - **Pairs:** `tlmi_gaussian` · `tlmi_kraskov_NN-4_DCE-AUTO`; `tlmi_gaussian` · `tlmi_kernel_W-0.25`.
 - **What differs:** estimator of I(x_{t-1}; y_t): Gaussian against kNN (DCE) or kernel.
@@ -254,7 +270,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** none; read as a sibling of the anchor.
 - **Upstream pyspi:** The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.
 
-### <a id="canberra"></a>8. Euclidean against Canberra distance: gain-invariant agreement
+### <a id="canberra"></a>9. Euclidean against Canberra distance: gain-invariant agreement
 
 - **Pairs:** `pdist_euclidean` · `pdist_canberra`; `pdist_cosine` · `pdist_canberra`; `pdist_cityblock` · `pdist_canberra`.
 - **What differs:** Euclidean (= 2T(1 - r) on z-scored data, amplitude-weighted) against Canberra sum |x-y|/(|x|+|y|), which is invariant to a gain shared by both channels at each sample.
@@ -269,7 +285,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** iid version done (identities.json canberra); still required at T 200/1000 with realistic spectra, multichannel z-scoring and spatially correlated floors.
 - **Upstream pyspi:** pdist_euclidean and pdist_cosine are unbundled (#141); the shortlist already uses the analytic f_G(r). pdist_canberra stays.
 
-### <a id="cityblock"></a>9. L1 against L2 distance: tail weight of disagreement
+### <a id="cityblock"></a>10. L1 against L2 distance: tail weight of disagreement
 
 - **Pairs:** `pdist_euclidean` · `pdist_cityblock`; `pdist_cityblock` · `pdist_cosine`.
 - **What differs:** mean against RMS absolute difference.
@@ -284,7 +300,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** as Chebyshev.
 - **Upstream pyspi:** pdist_euclidean and pdist_cosine are unbundled (#141); L2 comes from r. pdist_cityblock stays.
 
-### <a id="rank-linear"></a>10. Pearson against Spearman or Kendall (with a normal-score intermediate)
+### <a id="rank-linear"></a>11. Pearson against Spearman or Kendall (with a normal-score intermediate)
 
 - **Pairs:** `cov_EmpiricalCovariance` · `spearmanr`; `cov_EmpiricalCovariance` · `kendalltau`; `cov-sq_EmpiricalCovariance` · `spearmanr-sq`; `corr_pearson_tau-1` · `corr_spearman_tau-1` (+29 more in the JSON).
 - **What differs:** linear correlation against correlation of ranks.
@@ -299,7 +315,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** done for joint bursts; a nonlinear coupling-function synthetic is still needed for "monotone nonlinearity".
 - **Upstream pyspi:** kendalltau is unbundled (#140) and the lagged corr_* members leave with #144 (open); spearmanr stays, and spearmanr-sq is pending. The shortlist uses Spearman.
 
-### <a id="dcorr"></a>11. r^2 against distance correlation (and IDS)
+### <a id="dcorr"></a>12. r^2 against distance correlation (and IDS)
 
 - **Pairs:** `cov-sq_EmpiricalCovariance` · `dcorr`; `cov-sq_EmpiricalCovariance` · `ids`; `dcorr` · `ids`.
 - **What differs:** linear r^2 against a distance-based (dCor) or Fourier-feature (IDS) dependence measure.
@@ -314,7 +330,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** non-monotone (quadratic) coupling synthetic.
 - **Upstream pyspi:** cov-sq_EmpiricalCovariance is unbundled (#136); use r^2 or the Thm-7 map of r, as the shortlist already does.
 
-### <a id="pec-log"></a>12. Envelope correlation on amplitude against log power
+### <a id="pec-log"></a>13. Envelope correlation on amplitude against log power
 
 - **Pairs:** `pec` · `pec_log`; `pec_orth` · `pec_orth_log`; `pec_orth_abs` · `pec_orth_log_abs`.
 - **What differs:** transform of the broadband Hilbert envelope before correlating: |a| against log|a|^2.
@@ -328,7 +344,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Atlas so far:** axis screen fails; matched 2-s -.006, 19/19 (small).
 - **Calibration needed:** co-burst synthetic against proportional gain.
 
-### <a id="band"></a>13. Low against high band
+### <a id="band"></a>14. Low against high band
 
 - **Pairs:** `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5`; `ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5`; `plv_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5`; `cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5` (+12 more in the JSON).
 - **What differs:** 0-25 Hz against 25-50 Hz (effectively 25-40 Hz after the 40-Hz low-pass).
@@ -343,7 +359,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** done.
 - **Upstream pyspi:** The ppc members are unbundled (#139); the cohmag and plv band pairs stay.
 
-### <a id="bary-max"></a>14. Mean against max of the squared barycentre: extreme co-excursion
+### <a id="bary-max"></a>15. Mean against max of the squared barycentre: extreme co-excursion
 
 - **Pairs:** `bary-sq_euclidean_mean` · `bary-sq_euclidean_max`.
 - **What differs:** RMS against maximum of the sum signal (x + y)/2 (the Euclidean barycentre); the mirror of Chebyshev, which uses the difference.
@@ -358,7 +374,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** co-burst synthetic against Gaussian; read with Chebyshev (disagreement extremes) as its contrast.
 - **Upstream pyspi:** bary-sq_euclidean_mean is unbundled (#141); it is (1 + r)/2, so z(bary-sq mean, bary-sq max) = z(r, bary-sq max) exactly. bary-sq_euclidean_max stays.
 
-### <a id="bary-sign"></a>15. Signed against two-sided max of the barycentre: asymmetry of co-excursions
+### <a id="bary-sign"></a>16. Signed against two-sided max of the barycentre: asymmetry of co-excursions
 
 - **Pairs:** `bary_euclidean_max` · `bary-sq_euclidean_max`.
 - **What differs:** largest positive co-excursion against largest co-excursion of either sign.
@@ -372,7 +388,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Atlas so far:** matched 2-s screen -.029, 18/19, dc -.027 (reliability .43/.45 at 2 s).
 - **Calibration needed:** skewed common-burst synthetic.
 
-### <a id="gc-te"></a>16. Gaussian GC against model-free TE (GC = 2 TE for Gaussians)
+### <a id="gc-te"></a>17. Gaussian GC against model-free TE (GC = 2 TE for Gaussians)
 
 - **Pairs:** `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_kernel_W-0.25_k-1`; `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1`.
 - **What differs:** estimator of transfer entropy with history 1: pyspi gc_gaussian is Gaussian TE in nats (= Geweke GC / 2) against kernel or kNN TE.
@@ -387,7 +403,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** quadratic coupling synthetic exists (predictive.py controls: positive residual on coupled pairs).
 - **Upstream pyspi:** te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).
 
-### <a id="precedence"></a>17. Lagged MI against GC (conditioning on the target past)
+### <a id="precedence"></a>18. Lagged MI against GC (conditioning on the target past)
 
 - **Pairs:** `tlmi_gaussian` · `gc_gaussian_k-1_kt-1_l-1_lt-1`; `tlmi_kernel_W-0.25` · `te_kernel_W-0.25_k-1`; `tlmi_kraskov_NN-4_DCE-AUTO` · `te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1`.
 - **What differs:** conditioning on the target's own past sample.
@@ -402,7 +418,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** VAR synthetic with known GC.
 - **Upstream pyspi:** The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.
 
-### <a id="coh-icoh"></a>18. |C|^2 against |Im C| (lag)
+### <a id="coh-icoh"></a>19. |C|^2 against |Im C| (lag)
 
 - **Pairs:** `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `icoh_multitaper_mean_fs-1_fmin-0_fmax-0-25`; `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `icoh_multitaper_mean_fs-1_fmin-0_fmax-0-5`; `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `icoh_multitaper_mean_fs-1_fmin-0-25_fmax-0-5`; `cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5` · `icoh_multitaper_max_fs-1_fmin-0_fmax-0-5` (+2 more in the JSON).
 - **What differs:** removal of the zero-phase (real) part of coherency.
@@ -416,7 +432,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Atlas so far:** zero-phase null reproduces 50-75% of the rise; stable mean lag under KT and MD; axis screen: spectral covariates reverse it.
 - **Calibration needed:** lag-null calibration exists.
 
-### <a id="coh-plv"></a>19. Coherence against phase-locking value: amplitude-dependent synchrony
+### <a id="coh-plv"></a>20. Coherence against phase-locking value: amplitude-dependent synchrony
 
 - **Pairs:** `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `plv_multitaper_mean_fs-1_fmin-0-25_fmax-0-5`; `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `plv_multitaper_mean_fs-1_fmin-0_fmax-0-5`; `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `plv_multitaper_mean_fs-1_fmin-0_fmax-0-25`; `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` (+3 more in the JSON).
 - **What differs:** |C|^2 (amplitude-weighted) against PLV (unit-modulus phases), same band and tapers.
@@ -431,7 +447,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** amplitude-gated phase coupling synthetic (locking only above an envelope threshold) against Gaussian.
 - **Upstream pyspi:** One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.
 
-### <a id="best-lag"></a>20. Zero lag against best lag
+### <a id="best-lag"></a>21. Zero lag against best lag
 
 - **Pairs:** `cov-sq_EmpiricalCovariance` · `xcorr-sq_max_sig-True`; `cov_EmpiricalCovariance` · `xcorr_max_sig-True`.
 - **What differs:** correlation at lag 0 against the maximum over lags within +-T/4.
@@ -446,7 +462,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** lag-null exists.
 - **Upstream pyspi:** #144 (open) removes xcorr_* and adds lagcorr_peak (signed r at the lag of max |r|, over min(max_lag, T // 4) lags) and lagcorr_lag. If it merges before the run, shortlist row 13 becomes z(r^2, lagcorr_peak^2) with lagcorr_lag as a direct lag readout; r13 xcorr z0 and reliability do not transfer.
 
-### <a id="history"></a>21. History length
+### <a id="history"></a>22. History length
 
 - **Pairs:** `gc_gaussian_k-1_kt-1_l-1_lt-1` · `gc_gaussian_MAX-CORR-AIS_k-max-10_tau-max-2`; `te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1` · `te_kraskov_NN-4_DCE-AUTO_k-2_kt-1_l-1_lt-1`; `sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-None` · `sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-5_order-1`; `sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-None` · `sgc_parametric_mean_fs-1_fmin-1e-05_fmax-0-25_order-1` (+16 more in the JSON).
 - **What differs:** target history length or AR order.
@@ -460,7 +476,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Atlas so far:** TE k1|k2 rose under every drug but partners unreliable.
 - **Calibration needed:** n/a.
 
-### <a id="symbolic"></a>22. Gaussian GC against symbolic TE
+### <a id="symbolic"></a>23. Gaussian GC against symbolic TE
 
 - **Pairs:** `gc_gaussian_k-1_kt-1_l-1_lt-1` · `te_symbolic_k-3`.
 - **What differs:** Gaussian TE (history 1) against ordinal-pattern TE (pattern length 3).
@@ -474,7 +490,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Atlas so far:** not read.
 - **Calibration needed:** n/a.
 
-### <a id="warp"></a>23. Rigid against elastic alignment
+### <a id="warp"></a>24. Rigid against elastic alignment
 
 - **Pairs:** `pdist_euclidean` · `dtw`; `dtw` · `lcss`; `dtw_constraint-itakura` · `lcss_constraint-itakura`; `dtw_constraint-sakoe-chiba_radius-auto` · `lcss_constraint-sakoe-chiba` (+4 more in the JSON).
 - **What differs:** rigid against warped alignment.
@@ -489,7 +505,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** failed.
 - **Upstream pyspi:** pdist_euclidean is unbundled (#141); take L2 from r.
 
-### <a id="pec-orth"></a>24. Envelope correlation with against without orthogonalisation
+### <a id="pec-orth"></a>25. Envelope correlation with against without orthogonalisation
 
 - **Pairs:** `pec` · `pec_orth`; `pec_log` · `pec_orth_log`.
 - **What differs:** pairwise orthogonalisation (Hipp et al. 2012) removes the zero-lag linear part before the envelope.
@@ -503,7 +519,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Atlas so far:** mostly floor; residual also in sleep and eyes open.
 - **Calibration needed:** lag-null exists.
 
-### <a id="peak"></a>25. Mean against max over frequency or lag
+### <a id="peak"></a>26. Mean against max over frequency or lag
 
 - **Pairs:** `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `cohmag_multitaper_max_fs-1_fmin-0_fmax-0-25`; `xcorr-sq_max_sig-True` · `xcorr-sq_mean_sig-True`; `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `cohmag_multitaper_max_fs-1_fmin-0_fmax-0-5`; `cohmag_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `cohmag_multitaper_max_fs-1_fmin-0-25_fmax-0-5` (+21 more in the JSON).
 - **What differs:** peak against average over frequency (or lags).
@@ -518,7 +534,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 - **Calibration needed:** n/a.
 - **Upstream pyspi:** The xcorr member leaves with #144 (open); the ppc members are unbundled (#139). Read the frequency peak through plv mean|max, which carries ppc (PPC = (N PLV^2 - 1)/(N - 1) per frequency).
 
-### <a id="ppc-dswpli"></a>26. PPC against debiased wPLI (lag, both debiased)
+### <a id="ppc-dswpli"></a>27. PPC against debiased wPLI (lag, both debiased)
 
 - **Pairs:** `ppc_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-5`; `ppc_multitaper_mean_fs-1_fmin-0_fmax-0-25` · `dswpli_multitaper_mean_fs-1_fmin-0_fmax-0-25`; `ppc_multitaper_mean_fs-1_fmin-0-25_fmax-0-5` · `dswpli_multitaper_mean_fs-1_fmin-0-25_fmax-0-5`.
 - **What differs:** zero-lag removal on debiased phase statistics.

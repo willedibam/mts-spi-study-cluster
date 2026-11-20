@@ -689,6 +689,248 @@
    "rank": 4
   },
   {
+   "id": "xi",
+   "level": "principled",
+   "title": "Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence",
+   "new": [
+    "xi_tau-0",
+    "xi_tau-1"
+   ],
+   "classes": [],
+   "differs": "linear correlation (mapped through the Gaussian relation) against a rank statistic that tends to 1 only when one channel is a measurable function of the other, monotone or not; xi is directed, symmetrised here, with |xi(i -> j) - xi(j -> i)| as a separate readout",
+   "character": "functional dependence beyond the Gaussian copula: pairs whose rank-functional dependence departs from what their correlation gives under a Gaussian process (non-monotone coupling, tail dependence, regime mixtures)",
+   "literal": "organisation of Gaussian-predicted against observed xi",
+   "consequences": [
+    "rank-based: invariant to each channel's marginal, so normal-scoring does not change it (unlike MinCovDet)",
+    "a temporal mixture of Gaussian regimes and a non-monotone coupling both move it; the level sign does not separate them",
+    "directed: asymmetry (which channel is more nearly a function of the other) is zero in expectation under any Gaussian process",
+    "noisy: SD about .05 at T 200 for every rho, .02 at T 1000"
+   ],
+   "confound": "estimator noise at short windows; shared non-monotone transforms of a common drive",
+   "tier": "higher-order",
+   "null": "real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows",
+   "interp": 2,
+   "null_ok": 1,
+   "gaussian_relation": "xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 for a bivariate normal (identities.json; deviation .002 at n 20,000); time-exchangeable, so the static-statistic principle applies",
+   "validation": "not validated; pyspi-free implementation equals pyspi ChatterjeeXi to 2e-16",
+   "atlas": "not in the 272-SPI bank (upstream full; into benchmarked_p90 with pyspi #133); post hoc screen on the axis-screen windows: xi_screen.md",
+   "calibration": "if the primary moves: shared gain, covariance-regime mixture and non-monotone coupling synthetics at matched r, to name which one moves it",
+   "shortlist": {
+    "rank": 15,
+    "contrast": "z(xi_g, xi) net and the level mean(xi - xi_g), drug - awake, with the anchor, MinCovDet, dCor and lag-1 links (xi_screen.md)",
+    "null": "real - joint spectrum-final IAAFT (window-matched, all channels jointly, >= 3 draws), normal-scored windows"
+   },
+   "representative": {
+    "a": "cov_EmpiricalCovariance",
+    "b": "xi_tau-0",
+    "reliability": {
+     "short": [
+      0.806,
+      null
+     ],
+     "long": [
+      0.927,
+      null
+     ]
+    },
+    "z0": {
+     "short": null,
+     "long": null
+    },
+    "null_sd": {
+     "short": null,
+     "long": null
+    },
+    "axis_screen": {
+     "long": null,
+     "short": null
+    },
+    "matched_2s": null,
+    "upstream": []
+   },
+   "members": [
+    {
+     "a": "cov_EmpiricalCovariance",
+     "b": "xi_tau-0",
+     "reliability": {
+      "short": [
+       0.806,
+       null
+      ],
+      "long": [
+       0.927,
+       null
+      ]
+     },
+     "z0": {
+      "short": null,
+      "long": null
+     },
+     "null_sd": {
+      "short": null,
+      "long": null
+     },
+     "axis_screen": {
+      "long": null,
+      "short": null
+     },
+     "matched_2s": null,
+     "upstream": []
+    },
+    {
+     "a": "spearmanr",
+     "b": "xi_tau-0",
+     "reliability": {
+      "short": [
+       0.806,
+       null
+      ],
+      "long": [
+       0.931,
+       null
+      ]
+     },
+     "z0": {
+      "short": null,
+      "long": null
+     },
+     "null_sd": {
+      "short": null,
+      "long": null
+     },
+     "axis_screen": {
+      "long": null,
+      "short": null
+     },
+     "matched_2s": null,
+     "upstream": []
+    },
+    {
+     "a": "dcorr",
+     "b": "xi_tau-0",
+     "reliability": {
+      "short": [
+       0.77,
+       null
+      ],
+      "long": [
+       0.913,
+       null
+      ]
+     },
+     "z0": {
+      "short": null,
+      "long": null
+     },
+     "null_sd": {
+      "short": null,
+      "long": null
+     },
+     "axis_screen": {
+      "long": null,
+      "short": null
+     },
+     "matched_2s": null,
+     "upstream": []
+    },
+    {
+     "a": "mi_kraskov_NN-4_DCE-AUTO",
+     "b": "xi_tau-0",
+     "reliability": {
+      "short": [
+       0.693,
+       null
+      ],
+      "long": [
+       0.887,
+       null
+      ]
+     },
+     "z0": {
+      "short": null,
+      "long": null
+     },
+     "null_sd": {
+      "short": null,
+      "long": null
+     },
+     "axis_screen": {
+      "long": null,
+      "short": null
+     },
+     "matched_2s": null,
+     "upstream": []
+    },
+    {
+     "a": "cov-sq_MinCovDet",
+     "b": "xi_tau-0",
+     "reliability": {
+      "short": [
+       0.745,
+       null
+      ],
+      "long": [
+       0.824,
+       null
+      ]
+     },
+     "z0": {
+      "short": null,
+      "long": null
+     },
+     "null_sd": {
+      "short": null,
+      "long": null
+     },
+     "axis_screen": {
+      "long": null,
+      "short": null
+     },
+     "matched_2s": null,
+     "upstream": [
+      "#135-#143"
+     ]
+    },
+    {
+     "a": "xi_tau-0",
+     "b": "xi_tau-1",
+     "reliability": {
+      "short": [
+       null,
+       null
+      ],
+      "long": [
+       null,
+       null
+      ]
+     },
+     "z0": {
+      "short": null,
+      "long": null
+     },
+     "null_sd": {
+      "short": null,
+      "long": null
+     },
+     "axis_screen": {
+      "long": null,
+      "short": null
+     },
+     "matched_2s": null,
+     "upstream": []
+    }
+   ],
+   "n_members": 6,
+   "measurability": 0.927,
+   "reliability_arm": "long",
+   "z0_max": null,
+   "score": 0.618,
+   "status": "post hoc screen (xi_screen.md)",
+   "upstream": null,
+   "upstream_members": 1,
+   "rank": 5
+  },
+  {
    "id": "mediation",
    "level": "assumption",
    "title": "Marginal against conditional (covariance against precision or partial correlation)",
@@ -1307,7 +1549,7 @@
    "status": "raw; local estimator effect",
    "upstream": "cov_{LedoitWolf,OAS,ShrunkCovariance} and their cov-sq forms are unbundled (#136). One shrinkage factor per window makes z(cov-sq LW, prec-sq LW) = z(cov-sq Emp, prec-sq LW) exactly, so the shortlist contrast now names kept SPIs; prec_* and pcorr_* are unchanged.",
    "upstream_members": 11,
-   "rank": 5
+   "rank": 6
   },
   {
    "id": "chebyshev",
@@ -1611,7 +1853,7 @@
    "status": "axis at 2 s; fails at 10 s",
    "upstream": "pdist_euclidean and pdist_cosine are unbundled (#141); on z-scored windows L2 = sqrt(2T(1 - r)), so take it from r (the shortlist row is pyspi-free anyway). pdist_chebyshev stays.",
    "upstream_members": 2,
-   "rank": 6
+   "rank": 7
   },
   {
    "id": "tlmi-ksg",
@@ -1745,7 +1987,7 @@
    "status": "beyond IAAFT (matched screen)",
    "upstream": "The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.",
    "upstream_members": 1,
-   "rank": 7
+   "rank": 8
   },
   {
    "id": "canberra",
@@ -1927,7 +2169,7 @@
    "status": "beyond IAAFT, normal-scored only",
    "upstream": "pdist_euclidean and pdist_cosine are unbundled (#141); the shortlist already uses the analytic f_G(r). pdist_canberra stays.",
    "upstream_members": 2,
-   "rank": 8
+   "rank": 9
   },
   {
    "id": "cityblock",
@@ -2069,7 +2311,7 @@
    "status": "failed (ceiling)",
    "upstream": "pdist_euclidean and pdist_cosine are unbundled (#141); L2 comes from r. pdist_cityblock stays.",
    "upstream_members": 2,
-   "rank": 9
+   "rank": 10
   },
   {
    "id": "rank-linear",
@@ -3293,7 +3535,7 @@
    "status": "failed (ceiling)",
    "upstream": "kendalltau is unbundled (#140) and the lagged corr_* members leave with #144 (open); spearmanr stays, and spearmanr-sq is pending. The shortlist uses Spearman.",
    "upstream_members": 31,
-   "rank": 10
+   "rank": 11
   },
   {
    "id": "dcorr",
@@ -3471,7 +3713,7 @@
    "status": "failed (animal t)",
    "upstream": "cov-sq_EmpiricalCovariance is unbundled (#136); use r^2 or the Thm-7 map of r, as the shortlist already does.",
    "upstream_members": 2,
-   "rank": 11
+   "rank": 12
   },
   {
    "id": "pec-log",
@@ -3661,7 +3903,7 @@
    "status": "failed (axis screen)",
    "upstream": null,
    "upstream_members": 0,
-   "rank": 12
+   "rank": 13
   },
   {
    "id": "band",
@@ -4315,7 +4557,7 @@
    "status": "failed (not drug-specific)",
    "upstream": "The ppc members are unbundled (#139); the cohmag and plv band pairs stay.",
    "upstream_members": 2,
-   "rank": 13
+   "rank": 14
   },
   {
    "id": "bary-max",
@@ -4424,7 +4666,7 @@
    "status": "beyond IAAFT (matched screen)",
    "upstream": "bary-sq_euclidean_mean is unbundled (#141); it is (1 + r)/2, so z(bary-sq mean, bary-sq max) = z(r, bary-sq max) exactly. bary-sq_euclidean_max stays.",
    "upstream_members": 1,
-   "rank": 14
+   "rank": 15
   },
   {
    "id": "bary-sign",
@@ -4528,7 +4770,7 @@
    "status": "beyond IAAFT (matched screen)",
    "upstream": null,
    "upstream_members": 0,
-   "rank": 15
+   "rank": 16
   },
   {
    "id": "gc-te",
@@ -4672,7 +4914,7 @@
    "status": "level only; z unreliable",
    "upstream": "te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).",
    "upstream_members": 1,
-   "rank": 16
+   "rank": 17
   },
   {
    "id": "precedence",
@@ -4846,7 +5088,7 @@
    "status": "raw (10 s)",
    "upstream": "The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.",
    "upstream_members": 1,
-   "rank": 17
+   "rank": 18
   },
   {
    "id": "coh-icoh",
@@ -5148,7 +5390,7 @@
    "status": "failed (floor, covariates)",
    "upstream": null,
    "upstream_members": 0,
-   "rank": 18
+   "rank": 19
   },
   {
    "id": "coh-plv",
@@ -5464,7 +5706,7 @@
    "status": "raw; IAAFT invalid for multitaper",
    "upstream": "One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.",
    "upstream_members": 1,
-   "rank": 19
+   "rank": 20
   },
   {
    "id": "best-lag",
@@ -5621,7 +5863,7 @@
    "status": "failed (covariates); stable mean lag 10 s",
    "upstream": "#144 (open) removes xcorr_* and adds lagcorr_peak (signed r at the lag of max |r|, over min(max_lag, T // 4) lags) and lagcorr_lag. If it merges before the run, shortlist row 13 becomes z(r^2, lagcorr_peak^2) with lagcorr_lag as a direct lag readout; r13 xcorr z0 and reliability do not transfer.",
    "upstream_members": 2,
-   "rank": 20
+   "rank": 21
   },
   {
    "id": "history",
@@ -6352,7 +6594,7 @@
    "status": "raw; unreliable",
    "upstream": null,
    "upstream_members": 0,
-   "rank": 21
+   "rank": 22
   },
   {
    "id": "symbolic",
@@ -6453,7 +6695,7 @@
    "status": "untested",
    "upstream": null,
    "upstream_members": 0,
-   "rank": 22
+   "rank": 23
   },
   {
    "id": "warp",
@@ -6792,7 +7034,7 @@
    "status": "failed construction",
    "upstream": "pdist_euclidean is unbundled (#141); take L2 from r.",
    "upstream_members": 1,
-   "rank": 23
+   "rank": 24
   },
   {
    "id": "pec-orth",
@@ -6925,7 +7167,7 @@
    "status": "floor",
    "upstream": null,
    "upstream_members": 0,
-   "rank": 24
+   "rank": 25
   },
   {
    "id": "peak",
@@ -7827,7 +8069,7 @@
    "status": "raw; max SPIs unreliable",
    "upstream": "The xcorr member leaves with #144 (open); the ppc members are unbundled (#139). Read the frequency peak through plv mean|max, which carries ppc (PPC = (N PLV^2 - 1)/(N - 1) per frequency).",
    "upstream_members": 4,
-   "rank": 25
+   "rank": 26
   },
   {
    "id": "ppc-dswpli",
@@ -8074,7 +8316,7 @@
    "status": "failed (reliability, covariates)",
    "upstream": "ppc is unbundled (#139); plv|dswpli carries the same lag reading, with the plv band means .98-.99 against ppc rather than exact.",
    "upstream_members": 3,
-   "rank": 26
+   "rank": 27
   },
   {
    "id": "braycurtis",
@@ -24054,7 +24296,7 @@
   ],
   "pending": "spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions",
   "candidates": [
-   "Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.",
+   "Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).",
    "lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.",
    "Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion."
   ]

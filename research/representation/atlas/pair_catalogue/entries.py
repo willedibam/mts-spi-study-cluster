@@ -369,6 +369,23 @@ ENTRIES = [
          differs='Gaussian TE (history 1) against ordinal-pattern TE (pattern length 3)', character='ordinal-pattern (amplitude-free) predictive structure beyond linear-Gaussian',
          literal='linear against symbolic TE', consequences=['pattern length and history differ (not minimal)', 'reliability .19/.37'], confound='reliability; history mismatch',
          tier='higher-order', null=IAAFT, interp=1, null_ok=1, gaussian_relation='none closed', validation='n/a', atlas='not read', calibration='n/a'),
+    dict(id='xi', level='principled', title="Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence",
+         pairs=[['cov_EmpiricalCovariance', 'xi_tau-0'], ['spearmanr', 'xi_tau-0'], ['dcorr', 'xi_tau-0'], ['mi_kraskov_NN-4_DCE-AUTO', 'xi_tau-0'],
+                ['cov-sq_MinCovDet', 'xi_tau-0'], ['xi_tau-0', 'xi_tau-1']],
+         new=['xi_tau-0', 'xi_tau-1'], classes=[],
+         differs='linear correlation (mapped through the Gaussian relation) against a rank statistic that tends to 1 only when one channel is a measurable function of the other, monotone or not; xi is directed, symmetrised here, with |xi(i -> j) - xi(j -> i)| as a separate readout',
+         character='functional dependence beyond the Gaussian copula: pairs whose rank-functional dependence departs from what their correlation gives under a Gaussian process (non-monotone coupling, tail dependence, regime mixtures)',
+         literal='organisation of Gaussian-predicted against observed xi',
+         consequences=['rank-based: invariant to each channel\'s marginal, so normal-scoring does not change it (unlike MinCovDet)',
+                       'a temporal mixture of Gaussian regimes and a non-monotone coupling both move it; the level sign does not separate them',
+                       'directed: asymmetry (which channel is more nearly a function of the other) is zero in expectation under any Gaussian process',
+                       'noisy: SD about .05 at T 200 for every rho, .02 at T 1000'],
+         confound='estimator noise at short windows; shared non-monotone transforms of a common drive', tier='higher-order', null=IAAFT, interp=2, null_ok=1,
+         gaussian_relation='xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 for a bivariate normal (identities.json; deviation .002 at n 20,000); time-exchangeable, so the static-statistic principle applies',
+         validation='not validated; pyspi-free implementation equals pyspi ChatterjeeXi to 2e-16',
+         atlas='not in the 272-SPI bank (upstream full; into benchmarked_p90 with pyspi #133); post hoc screen on the axis-screen windows: xi_screen.md',
+         calibration='if the primary moves: shared gain, covariance-regime mixture and non-monotone coupling synthetics at matched r, to name which one moves it',
+         shortlist=dict(rank=15, contrast='z(xi_g, xi) net and the level mean(xi - xi_g), drug - awake, with the anchor, MinCovDet, dCor and lag-1 links (xi_screen.md)', null=IAAFT)),
 ]
 
 GUIDE_PROPOSALS = [
@@ -390,6 +407,7 @@ STATUS = {
     'mediation': 'raw; local estimator effect', 'coh-icoh': 'failed (floor, covariates)', 'ppc-dswpli': 'failed (reliability, covariates)',
     'best-lag': 'failed (covariates); stable mean lag 10 s', 'band': 'failed (not drug-specific)', 'peak': 'raw; max SPIs unreliable',
     'precedence': 'raw (10 s)', 'history': 'raw; unreliable', 'warp': 'failed construction', 'pec-orth': 'floor', 'symbolic': 'untested',
+    'xi': 'post hoc screen (xi_screen.md)',
 }
 
 # Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 20 Nov 2026: pin 5d61d9c (r13), upstream main 5e25d27.
@@ -421,10 +439,7 @@ UPSTREAM = dict(
     ],
     pending='spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions',
     candidates=[
-        ('Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: '
-         'xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads '
-         'functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads '
-         'which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.'),
+        ('Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).'),
         ('lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) '
          'contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.'),
         ('Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); '
