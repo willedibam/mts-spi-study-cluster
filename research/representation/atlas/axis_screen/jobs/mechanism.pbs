@@ -7,11 +7,13 @@
 #PBS -j oe
 # MinCovDet mechanism check (../result.md). From the synced checkout's root:
 #   qsub -l ncpus=48,mem=190GB,walltime=04:00:00 research/representation/atlas/axis_screen/jobs/mechanism.pbs
+# preprocessing sensitivity (outputs suffixed -$PREP): add -v PREP=z-m, z or ns-m (see mechanism.py)
 set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
-A=$MTS_SCRATCH/atlas; B=$A/banks/neurotycho-long; O=$A/axis_screen/mechanism-long; mkdir -p "$O"
+PREP=${PREP:-ns}; S=$([ "$PREP" = ns ] && echo "" || echo "-$PREP")
+A=$MTS_SCRATCH/atlas; B=$A/banks/neurotycho-long; N=mechanism-long$S; O=$A/axis_screen/$N; mkdir -p "$O"
 git rev-parse HEAD > "$O/commit.txt"
-python -u -m research.representation.atlas.axis_screen.mechanism compute "$B" "$O" "$PBS_NCPUS"
-python -u -m research.representation.atlas.axis_screen.mechanism collect "$O" "$B/manifest.json" "$A/axis_screen/mechanism-long.npz"
-python -u -m research.representation.atlas.axis_screen.mechanism score "$A/axis_screen/mechanism-long.npz" "$B/manifest.json" "$A/axis_screen/mechanism-long.json"
+python -u -m research.representation.atlas.axis_screen.mechanism compute "$B" "$O" "$PBS_NCPUS" "$PREP"
+python -u -m research.representation.atlas.axis_screen.mechanism collect "$O" "$B/manifest.json" "$A/axis_screen/$N.npz"
+python -u -m research.representation.atlas.axis_screen.mechanism score "$A/axis_screen/$N.npz" "$B/manifest.json" "$A/axis_screen/$N.json"
