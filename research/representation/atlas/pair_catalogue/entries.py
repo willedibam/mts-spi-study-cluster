@@ -382,10 +382,10 @@ ENTRIES = [
                        'noisy: SD about .05 at T 200 for every rho, .02 at T 1000'],
          confound='estimator noise at short windows; shared non-monotone transforms of a common drive', tier='higher-order', null=IAAFT, interp=2, null_ok=1,
          gaussian_relation='xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 for a bivariate normal (identities.json; deviation .002 at n 20,000); time-exchangeable, so the static-statistic principle applies',
-         validation='not validated; pyspi-free implementation equals pyspi ChatterjeeXi to 2e-16',
-         atlas='not in the 272-SPI bank (upstream full; into benchmarked_p90 with pyspi #133); post hoc screen on the axis-screen windows: xi_screen.md',
-         calibration='if the primary moves: shared gain, covariance-regime mixture and non-monotone coupling synthetics at matched r, to name which one moves it',
-         shortlist=dict(rank=15, contrast='z(xi_g, xi) net and the level mean(xi - xi_g), drug - awake, with the anchor, MinCovDet, dCor and lag-1 links (xi_screen.md)', null=IAAFT)),
+         validation='not validated (generator untested); pyspi-free implementation equals pyspi ChatterjeeXi to 2e-16; screen windows reproduced to 6e-8',
+         atlas='not in the 272-SPI bank (upstream full; into benchmarked_p90 with pyspi #133). Post hoc screen (xi_screen.md): primary xi_g|xi 10 s -.006 (-5.0 SD) but z0 .980, ceiling-excluded; 2 s -.018, fails reliability. mi_g|xi passes every gate at 10 s (-.0078, -6.0 SD, 23/23, all agents; rMI .43, window r with the MinCovDet net .20). Level xi - xi_g net +.013 (t3 6.9). Other xi axes are the MinCovDet axis, the icoh family and the anchor with xi as a stand-in for r',
+         calibration='needed before naming: shared gain, covariance-regime mixture and non-monotone coupling synthetics at matched r; shared gain raised xi above xi_g by +.049 in the smoke',
+         shortlist=dict(rank=15, contrast='screened: mi_g|xi passes at 10 s; next is the generator synthetic at matched r, 10 s only', null=IAAFT)),
 ]
 
 GUIDE_PROPOSALS = [
@@ -395,6 +395,7 @@ GUIDE_PROPOSALS = [
     'Remove saturation from z0 by mapping the Gaussian-determined partner through the known relation (arcsin for ranks, Thm 7 for dCor, -1/2 log for MI, closed envelope forms) before correlating; z0 is then 1 minus estimator noise under the null.',
     'Canberra gain invariance holds on z-scored, not normal-scored, windows; a normal-scored IAAFT construction removes it.',
     'SPIs unbundled upstream as exact affine functions of a kept SPI (pdist_cosine, bary-sq_euclidean_mean, the shrinkage covariances) give exactly the z of the kept SPI, because z is a Pearson correlation of edge profiles; read and name such pairs through the kept SPI.',
+    'Ceiling rule for mapped pairs: when the Gaussian-determined partner is mapped through its exact relation, z0 is 1 minus estimator noise by construction, so z0 > .98 excludes the best-mapped pairs (xi_g|xi z0 .980 excluded while mi_g|xi, a cruder map of the same contrast, passes). For mapped pairs, judge informativeness by the null SD of the net, not by z0.',
 ]
 
 # Atlas status per entry (short; the full record is each entry's `atlas` field).
@@ -407,7 +408,7 @@ STATUS = {
     'mediation': 'raw; local estimator effect', 'coh-icoh': 'failed (floor, covariates)', 'ppc-dswpli': 'failed (reliability, covariates)',
     'best-lag': 'failed (covariates); stable mean lag 10 s', 'band': 'failed (not drug-specific)', 'peak': 'raw; max SPIs unreliable',
     'precedence': 'raw (10 s)', 'history': 'raw; unreliable', 'warp': 'failed construction', 'pec-orth': 'floor', 'symbolic': 'untested',
-    'xi': 'post hoc screen (xi_screen.md)',
+    'xi': 'candidate at 10 s (mi_g|xi, post hoc); primary at ceiling',
 }
 
 # Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 20 Nov 2026: pin 5d61d9c (r13), upstream main 5e25d27.

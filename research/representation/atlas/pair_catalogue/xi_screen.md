@@ -58,3 +58,48 @@ Does Chatterjee's ξ, a rank statistic that tends to 1 only when one channel is 
 ξ costs about 0.1 s per window-version at M 126, T 1,000. The rest is regenerating the IAAFT and Gaussian-null versions and reading 8.7 GB of profiles per arm.
 - **Expected:** about 25 SU (10 s) and 10 SU (2 s) on one 48-core node.
 - **Worst case:** 0.1 kSU.
+
+## Result (20 November)
+
+Outputs: `results/representation/atlas-pair-catalogue-xi-261120/` (`score-long.json`, `score-short.json`, `netcorr-long.json`); the npz files are on Gadi scratch, `atlas/pair_catalogue/`. Jobs 184750735 (10 s) and 184750736 (2 s): 12.8 SU in all, exit 0.
+
+**Reproduction passed.** In every window and version of both arms, the regenerated r profile matched the stored one to 3e-8 and the 33 × 33 z block to 6e-8.
+
+**Primary `xi_g|xi`: uninformative under the stated rule.**
+- 10 s: Δ −.0061 (t₃ −3.5, −5.0 null SD, 23/23 sessions, eyes-open ≈ 0), but z₀ = .9802, just over the .98 ceiling, so it is not usable and not screened.
+- 2 s: Δ −.018 (−7.9 SD); passes every gate except reliability (Kin2 changes sign after disattenuation). ξ's reliability falls by .17 under drug, and the window-mean profile Δ is a third of the per-window one.
+- The ceiling rule misfires here. With the exact Gaussian map, z₀ is 1 minus estimator noise by construction, so a correctly mapped pair is the one most likely to exceed .98 even though its null SD is well defined. Proposal: judge ceiling for mapped pairs by the null SD, not by z₀ (see catalogue guide proposals).
+
+**Screen (10 s): 9 F1 axes involve a ξ row. Only one is ξ-specific.**
+
+| Coordinates | Δ | Reading |
+|---|---|---|
+| `mcd2\|xi`, `mcd2\|xi1`, `mcd2\|xi_g` | −.053 to −.056 | the MinCovDet axis; ξ is a stand-in for r (`r2\|mcd2` −.056) |
+| `icoh_bb\|xi`, `icoh_lo\|xi`, `icoh_bb\|xi1`, `icoh_lo\|xi1` | +.020 to +.027 | the existing imaginary-coherence-against-static family (`dcorr\|icoh_bb`, `tau2\|icoh_bb`, `l1\|icoh_bb` are axes); window-level r with `icoh_bb\|r2` net .92 |
+| `xi_g\|ksg` | −.013 | the MI anchor with the arcsin map (r with the MI net .92) |
+| `mi_g\|xi` | −.0078 | ξ-specific: see below |
+
+**`mi_g|xi`: the primary's contrast with the −½ log(1 − r²) map. Passes every gate at 10 s.**
+- Statistics: Δ −.0078, t₃ −5.1, −6.0 null SD, q 1e-4, 23/23 sessions, eyes-open +.0008, z₀ .965, reliability .93/.89.
+- Window-mean profile Δ −.0053 (68% of the per-window Δ). Sleep ratio .10.
+- Agents: ketamine −.015, ketamine–medetomidine −.008, propofol −.005, medetomidine −.003 (small, as in the MinCovDet and band exceptions).
+- At 2 s: −.019 (−8.6 SD), fails reliability.
+- **Post hoc, exploratory (`xi_screen.py netcorr`):** window-level correlation within drug sessions, n = 230.
+  - With the primary's net: .90.
+  - With the MI anchor's net: .43.
+  - With the MinCovDet axis (`r2|mcd2`) net: .20.
+  - With the ξ − ξ_G level net: −.71.
+- Reading: under drug, beyond IAAFT, ξ's edge ordering departs from what r predicts under a Gaussian copula, and windows with a larger ξ excess over ξ_G show the larger departure (r −.71), so the excess is uneven over edges.
+  - It shares under half its window variance with the MI anchor (rMI .43 < .5), so it is not placed in the MI family.
+  - It is nearly independent of the MinCovDet axis at window level.
+- The stated rule ("`mcd2|xi` fails") cannot test the MinCovDet link: `mcd2|xi` moves exactly as `r2|mcd2` does, because it reads MinCovDet against any linear-like partner. The window-level correlation (.20) replaces it, and is post hoc.
+- Status: **candidate, not named.** It is map-dependent (the stated primary is ceiling-excluded), small (Δ −.008), and its generator is untested. Naming needs the synthetic check stated above (shared gain, covariance-regime mixture, non-monotone coupling at matched r). The shared gain is the live alternative: in the smoke it raised ξ above ξ_G by +.049.
+
+**Levels (drug − awake eyes-closed, net of IAAFT).**
+- 10 s: mean ξ − ξ_G +.013 (t₃ 6.9; 4/4 animals; all agents, medetomidine smallest +.005). Asymmetry +.0012 (t₃ 4.0).
+- 2 s: mean ξ − ξ_G +.022 (t₃ 8.5). Asymmetry +.003.
+- Read with the primary (positive level, negative ordering): more functional dependence than the Gaussian copula gives, unevenly over edges. The level's sign does not separate a gain from a regime mixture.
+
+**2-s axes involving ξ:** only `xi_g|ksg` (anchor) and `pec|xi1`, `pec_log|xi1` (envelope against lag-1 ξ; diagnostic row, not read).
+
+**Cost:** 12.8 SU (expected about 35, worst case 0.1 kSU). The IAAFT regeneration was faster than estimated.

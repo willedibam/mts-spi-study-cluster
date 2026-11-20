@@ -210,6 +210,35 @@ def score(path, manifest, output):
     print('xi rows screened', {f: [r['pair'] for r in v] for f, v in res['xi_rows'].items()}, 'reproduction', res['reproduction'])
 
 
+NETCORR = (('mi_g', 'xi'), ('xi_g', 'xi'), ('r2', 'mcd2'), ('mi_g', 'ksg'), ('icoh_bb', 'xi'), ('icoh_bb', 'r2'))
+
+
+def netcorr(path, output):
+    """Post hoc, exploratory: window-level correlation (drug windows, centred per session) of real - mean IAAFT nets."""
+    D = np.load(path)
+    keys = [str(k) for k in D['keys']]; vers = [str(v) for v in D['versions']]
+    g = [str(x).split('__') for x in D['group']]
+    unit = np.array([a for a, _ in g]); state = np.array([b for _, b in g])
+    real, ia = vers.index('real'), [i for i, v in enumerate(vers) if v.startswith('iaaft')]
+
+    def net(a, b):
+        Z, j = (D['Z32'], len(keys)) if b == 'ksg' else (D['Z'], keys.index(b))
+        return Z[:, real, keys.index(a), j] - Z[:, ia, keys.index(a), j].mean(1)
+    C = {f'{a}|{b}': net(a, b) for a, b in NETCORR}
+    C['xi-xi_g level'] = D['lev'][:, real, 0] - D['lev'][:, ia, 0].mean(1)
+    dm = state == 'drug'
+    X = []
+    for x in C.values():
+        x = x.astype(float).copy()
+        for u in set(unit[dm]):
+            m = dm & (unit == u); x[m] -= np.nanmean(x[m])
+        X.append(x[dm])
+    X = np.array(X); ok = np.isfinite(X).all(0)
+    out = dict(names=list(C), n_windows=int(ok.sum()), r=np.corrcoef(X[:, ok]).round(3).tolist())
+    json.dump(out, open(output, 'w'), indent=1)
+    print(json.dumps(out))
+
+
 if __name__ == '__main__':
     cmd = sys.argv[1]
     if cmd == 'compute':
@@ -218,3 +247,5 @@ if __name__ == '__main__':
         collect(sys.argv[2], sys.argv[3])
     elif cmd == 'score':
         score(sys.argv[2], sys.argv[3], sys.argv[4])
+    elif cmd == 'netcorr':
+        netcorr(sys.argv[2], sys.argv[3])
