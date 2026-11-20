@@ -74,6 +74,21 @@ Question: does the MinCovDet axis z(pcorr, pcorr_mcd) hold when windows are only
 - **Holds without normal-scoring** if the `z-m` z_pc drug − awake net is < 0 in 4/4 animals, one-sided t(3) p < .05, at least 3 null SD, and < 0 under every agent. Its size relative to `ns-m` is reported; within 0.5–2× counts as the same size.
 - **Outcomes:** holds at the same size, the axis does not depend on normal-scoring; holds smaller (< 0.5×), the z-scored version is diluted by marginal tails; fails, the axis is defined only at the copula level, and any other dataset must normal-score. If `ns-m` itself fails the screen's gates, the marginal-final surrogate's spectral mismatch is too large to read the `z-m` arm and the test is uninformative.
 
+**Result (jobs 184745396–8, 74 SU; `mechanism-long-{z-m,ns-m,z}.json`).** The axis fails without normal-scoring, so it is a copula-level property only. The test is informative: `ns-m` passes every gate, so changing the surrogate's final step is not what removes it. z_pc drug − awake, t(3) on animal means (Chibi, George, Kin2, Su):
+
+| Arm | Real Δ | IAAFT Δ | Net Δ (animals) | t(3) | Null SD | Agents KT / KTMD / MD / PF |
+|---|---|---|---|---|---|---|
+| `ns` (screen) | −.129 | −.050 | −.079 (−.070, −.083, −.100, −.068) | −10.7 | 11.4 | −.048 / −.091 / −.035 / −.120 |
+| `ns-m` | −.129 | −.053 | −.075 (−.070, −.074, −.100, −.068) | −10.6 | 9.5 | −.044 / −.090 / −.029 / −.112 |
+| `z-m` (primary) | −.094 | −.085 | −.009 (−.034, +.049, −.121, −.007) | −0.8 | 1.0 | +.076 / −.042 / +.026 / −.041 |
+| `z` (confounded) | −.094 | −.021 | −.073 (−.088, −.046, −.117, −.074) | −5.5 | 16.1 | −.002 / −.113 / −.005 / −.105 |
+
+- On z-scored windows the real z still falls by about three quarters as much as on normal-scored ones (−.094 against −.129). What changes is the null: a linear process with the drug's spectra and each channel's own marginals (marginal-final IAAFT) falls almost as far (−.085). With Gaussian marginals it falls −.053. The drug barely changes channel kurtosis (real .51 awake, .49 drug), so this is the drug's spectral change acting through the existing mild tails, not a change in the tails.
+- Even awake, the z-scored arm sits on the other side of its null: real z_pc .941 against marginal-final IAAFT .872 (net +.069, t(3) 4.6). Normal-scored, it is −.041. On z-scored data, the axis level is dominated by how the channels' tails line up in time, which the surrogate gets wrong in both directions.
+- The naive z-scored arm (`z`) looks as strong as the screen (−16 null SD), as calibration predicted: spectrum-final draws lose the tails (surrogate kurtosis .14 against real .51). Its agent pattern (KT and MD ≈ 0) also differs from the screen's. So it is not evidence either way, and pyspi-bank results on z-scored data with spectral or spectrum-final controls should not be read for this axis.
+- Secondary, `r2|mcd2` (z_c2) under `z-m`: −.022, 4/4 animals, t(3) −5.7, every agent negative, but 1.9 null SD (≤ 3) and 48% of `ns-m` (−.047). The trimmed fraction under `z-m` still rises beyond the null: +.008, 4/4, t(3) 5.4, 3.5 SD, though KT −.006.
+- Reading: the robust-against-classical divergence is a drug-specific change in joint, copula-level atypicality (what normal-scoring isolates). Without normal-scoring it cannot be told apart from the drug's spectra acting on the channels' marginal tails. Any further test of this axis (PRIOS included) must normal-score; it did. The MI pair has no such dependence (`findings.md`, copula-level section: raw ≈ normal-scored).
+
 ## What failed
 
 - **Best lag against zero lag** (`r|xcmax`, F2): Δ −.103, t(3) −7.1, 4.6 null SD, split-half .01, but the spectral-covariate-adjusted Δ reverses sign (−.59 of Δ) and eyes-open is .30: a spectral-shape effect, not lag. `r2|xc2max` (F2 −.016) fails covariates the same way; F3 (beyond stationary) it is ≈ 0.
