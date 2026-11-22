@@ -169,6 +169,14 @@ def main():
             L.append(row(e['title'], pair(e['representative']), e.get('exclusion') or 'interpretability 0'))
     L.append('')
 
+    L.append('## Characters the bank cannot reach\n')
+    L.append('Every minimal pair of the r13 bank is catalogued above, so these are characters no pair of the bank reads. Upstream pyspi now has SPIs for four of them (none in benchmarked_p90; reaching them needs the pin bump and an atlas config that adds them). Each is a Gaussian-referenced level with expectation ~0, a cleaner readout than a z pair; *broad* marks a general property of dependence, *narrow* one tied to a band, lag or order. Nothing here has been computed.\n')
+    for o in d['outside_bank']:
+        L.append(f"### {o['character'][0].upper() + o['character'][1:]} ({o['breadth']})\n")
+        for k, lab in (('spi', 'SPI'), ('gaussian', 'Gaussian value'), ('null', 'Null'), ('confound', 'Confounds'), ('links', 'Links')):
+            L.append(f"- **{lab}:** {o[k]}")
+        L.append('')
+
     L.append('## Gaussian relations: numerical check ([`identities.json`](identities.json))\n')
     L.append('| Relation | Check | Largest deviation |')
     L.append('|---|---|---|')

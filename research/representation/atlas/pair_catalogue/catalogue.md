@@ -569,6 +569,50 @@ Candidate pairs from new upstream SPIs (not yet entries):
 | Signed against squared | `cov_EmpiricalCovariance` · `cov-sq_EmpiricalCovariance` | single-statistic property (sign of r); not a pair character |
 | Structural zeros and non-finite SPIs | `plv_multitaper_mean_fs-1_fmin-0_fmax-0-5` · `pli_multitaper_mean_fs-1_fmin-0_fmax-0-5` | structural; use ppc\|dswpli or cohmag\|icoh for lag |
 
+## Characters the bank cannot reach
+
+Every minimal pair of the r13 bank is catalogued above, so these are characters no pair of the bank reads. Upstream pyspi now has SPIs for four of them (none in benchmarked_p90; reaching them needs the pin bump and an atlas config that adds them). Each is a Gaussian-referenced level with expectation ~0, a cleaner readout than a z pair; *broad* marks a general property of dependence, *narrow* one tied to a band, lag or order. Nothing here has been computed.
+
+### Coupling that comes and goes in episodes within the window (time-heterogeneous coupling), against stationary coupling (broad)
+
+- **SPI:** `edge_acf1`, with `edge_excessvar` and `edge_topshare_f-0-05` (EdgeTimeSeries, pyspi #115)
+- **Gaussian value:** built in: each is referenced to its value for a Gaussian pair with the same r and lag-1 auto- and cross-correlations (Isserlis), so expectation ~0; a level readout, no partner needed
+- **Null:** real - joint spectrum-final IAAFT on normal-scored windows, as for the anchor
+- **Confounds:** a shared, slowly varying gain with unchanged coupling also makes the edge series persistent and heavy-tailed (the Canberra row separates the two); `edge_acf1` is a lag-1 (10 ms) statistic, so on 100-Hz ECoG with strong low-frequency power it reads persistence at the sampling scale, not at the scale of coupling episodes
+- **Links:** discriminates the MinCovDet reading: a mixture of covariance regimes with dwell longer than one sample raises `edge_acf1`; a heavy-tailed but serially independent copula raises `edge_excessvar` and `edge_topshare` but leaves `edge_acf1` ~0. Sliding-window variance alone cannot make this split (Hindriks et al. 2016).
+
+### Whether a pair is jointly extreme more often in the upper than the lower tail (asymmetric copula, e.g. co-occurring sharp deflections of one polarity) (broad)
+
+- **SPI:** `tailasym_q-0-95` and `tailasym_q-0-9`, with `tailasym_upper_*` and `tailasym_lower_*` (TailDependenceAsymmetry, pyspi #116)
+- **Gaussian value:** zero for every radially symmetric copula (Gaussian and t included) at any r; the minimal pair z(tailasym_upper, tailasym_lower) has z0 = 1 minus noise under the null, so it needs the null-SD ceiling rule (guide proposal 7)
+- **Null:** real - IAAFT is valid but not needed for the level (expectation 0 exactly under symmetry); IAAFT checks finite-T bias
+- **Confounds:** the sign depends on channel polarity (common-reference ECoG keeps it consistent; a bipolar montage would not); k = 10 tail samples per window at 2 s and q .95, so 10-s windows or q .9 only
+- **Links:** rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen
+
+### Cross-frequency coupling: the low-band phase of one channel modulating the high-band amplitude of another (narrow)
+
+- **SPI:** `pac_{mi,mvl}_{excess,z}` (PhaseAmplitudeCoupling, pyspi #123); directed; full.yaml default phase 0.01-0.05, amplitude 0.15-0.4 cycles/sample (1-5 Hz and 15-40 Hz at 100 Hz)
+- **Gaussian value:** non-overlapping bands of a stationary Gaussian process are independent, so the surrogate-normalised excess is ~0 up to band leakage
+- **Null:** built-in surrogate normalisation; joint IAAFT as a check
+- **Confounds:** non-sinusoidal waveforms and sharp transients produce PAC without any modulation (Kramer, Tort & Kopell 2008; Aru et al. 2015; Cole & Voytek 2017), which matters under anaesthesia slow waves; slow-alpha PAC under propofol is reported in human EEG (Purdon et al. 2013; Mukamel et al. 2014), so a propofol effect is expected, not new
+- **Links:** a band-specific, directed level readout with no natural minimal partner in the bank; z(cohmag in the phase band, pac) would read whether cross-frequency coupling follows same-band coupling
+
+### Lag-tolerant co-occurrence of extremes (co-bursts with jitter) (narrow)
+
+- **SPI:** `es_*` (EventSynchronisation, pyspi #116), upper-tail events at quantile .95
+- **Gaussian value:** none closed: event rates and gaps depend on the spectra, so only real - IAAFT is interpretable
+- **Null:** real - joint spectrum-final IAAFT
+- **Confounds:** event counts per window are small at 2 s; the tolerance is set by local inter-event gaps
+- **Links:** z(bary-sq max, es) would read whether co-bursts are aligned (zero lag) or jittered
+
+### Time-irreversibility of the pair beyond linear lag (third-order, e.g. sawtooth-like coupling) (narrow)
+
+- **SPI:** none in pyspi (searched 2026-11-22); pyspi-free cross-bicovariance asymmetry E[x_t^2 y_{t+tau}] - E[x_{t+tau}^2 y_t] on normal-scored windows (Ramsey & Rothman 1996; used as a surrogate test statistic by Schreiber & Schmitz 2000)
+- **Gaussian value:** zero for any Gaussian process; the linear part of irreversibility (forward against reversed lagged correlation, as in Deco et al. 2022) is fixed by the cross-covariance, so IAAFT keeps it and it belongs to the lag entries, which fail the spectral covariates
+- **Null:** real - joint spectrum-final IAAFT
+- **Confounds:** third moments are noisy at T 200; amplitude asymmetry of each channel enters unless normal-scored
+- **Links:** higher-order and lag-specific; lowest priority
+
 ## Gaussian relations: numerical check ([`identities.json`](identities.json))
 
 | Relation | Check | Largest deviation |

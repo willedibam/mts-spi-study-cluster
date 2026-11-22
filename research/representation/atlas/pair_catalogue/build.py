@@ -19,7 +19,7 @@ from pathlib import Path
 
 import numpy as np
 
-from research.representation.atlas.pair_catalogue.entries import ENTRIES, GUIDE_PROPOSALS, STATUS, UPSTREAM, UPSTREAM_NOTES
+from research.representation.atlas.pair_catalogue.entries import ENTRIES, GUIDE_PROPOSALS, OUTSIDE_BANK, STATUS, UPSTREAM, UPSTREAM_NOTES
 
 HERE = Path(__file__).parent
 ROOT = HERE.parents[3]
@@ -125,7 +125,7 @@ def build():
     for i, e in enumerate(out, 1):
         e['rank'] = i if e['score'] > 0 else None
     doc = dict(source='research/representation/atlas/pair_catalogue/build.py', bank='NeuroTycho r13 atlas, 272 SPIs (configs/pyspi/atlas/benchmarked_p90_pcorr_symbolic.yaml)',
-               ranking=__doc__.split('Ranking: ')[1].strip(), entries=out, uncatalogued_classes=rest, guide_proposals=GUIDE_PROPOSALS, upstream=UPSTREAM,
+               ranking=__doc__.split('Ranking: ')[1].strip(), entries=out, uncatalogued_classes=rest, guide_proposals=GUIDE_PROPOSALS, outside_bank=OUTSIDE_BANK, upstream=UPSTREAM,
                identities='identities.json (identities.py)')
     (HERE / 'catalogue.json').write_text(json.dumps(doc, indent=1) + '\n')
     return doc
