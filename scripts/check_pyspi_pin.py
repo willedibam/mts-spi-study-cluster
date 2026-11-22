@@ -38,7 +38,7 @@ def _get(path: str, accept: str = "application/vnd.github+json") -> bytes:
 def _computation(ref: str) -> str:
     source = _get(f"repos/{REPO}/contents/pyspi/_parallel.py?ref={ref}", "application/vnd.github.raw").decode()
     match = re.search(r'^COMPUTATION_VERSION = "([^"]+)"', source, re.M)
-    return match.group(1).rsplit(".", 1)[-1] if match else "?"
+    return match.group(1) if match else "?"
 
 
 def main() -> None:

@@ -1149,7 +1149,7 @@ requires-dist = [
     { name = "pyarrow", specifier = ">=15.0" },
     { name = "pycatch22", marker = "extra == 'atlas'", specifier = ">=0.5.0" },
     { name = "pyclustering", specifier = ">=0.10.1" },
-    { name = "pyspi", git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=5d61d9c0c21622a1759dfc861811ed023e94b53c" },
+    { name = "pyspi", git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=3b92736e779b03cc11bb81e13a3c0592b41a4191" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "scikit-learn", specifier = ">=1.8" },
     { name = "scipy", specifier = ">=1.11" },
@@ -1921,7 +1921,7 @@ wheels = [
 [[package]]
 name = "pyspi"
 version = "3.0.0"
-source = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=5d61d9c0c21622a1759dfc861811ed023e94b53c#5d61d9c0c21622a1759dfc861811ed023e94b53c" }
+source = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=3b92736e779b03cc11bb81e13a3c0592b41a4191#3b92736e779b03cc11bb81e13a3c0592b41a4191" }
 dependencies = [
     { name = "colorama" },
     { name = "dtaidistance" },
@@ -1929,6 +1929,7 @@ dependencies = [
     { name = "mne" },
     { name = "mne-connectivity" },
     { name = "nitime" },
+    { name = "numba" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyedm" },
