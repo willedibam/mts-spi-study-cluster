@@ -98,6 +98,19 @@ Question: does the 2-s `l1|linf` axis (Chebyshev against L1) hold on z-scored wi
 - **Holds without normal-scoring** if the `z-m` z_l1linf drug − awake net is < 0 in 4/4 animals, one-sided t(3) p < .05, at least 3 null SD, and < 0 under every agent (the screen's net is negative under all four). Its size relative to `ns-m` is reported; within 0.5–2× counts as the same size.
 - **Outcomes:** holds at the same size, the axis does not depend on normal-scoring and is the only screen axis that does not; holds smaller (< 0.5×), diluted by marginal tails; fails, the axis is copula-level only, like MinCovDet. If `ns-m` fails these gates, the test is uninformative. The PRIOS result (normal-scored) is unaffected either way; the outcome sets whether other datasets must normal-score to test it.
 
+**Result (job 184847962, 5.4 SU; `linf-short-{ns,ns-m,z,z-m}.json`).** The axis fails without normal-scoring, so like MinCovDet it is copula-level only. `ns` reproduces the screen (net −.0493 against −.0493), and `ns-m` passes every gate, so the test is informative. z_l1linf drug − awake, t(3) on animal means (Chibi, George, Kin2, Su):
+
+| Arm | Real Δ | IAAFT Δ | Net Δ (animals) | t(3) | Null SD | Agents KT / KTMD / MD / PF |
+|---|---|---|---|---|---|---|
+| `ns` (screen) | −.048 | +.001 | −.049 (−.051, −.042, −.051, −.066) | −10.3 | 4.7 | −.046 / −.059 / −.021 / −.056 |
+| `ns-m` | −.048 | −.004 | −.044 (−.044, −.038, −.045, −.063) | −8.8 | 4.4 | −.042 / −.052 / −.016 / −.053 |
+| `z-m` (primary) | −.083 | −.085 | +.002 (+.001, −.004, +.010, +.014) | +1.3 | 0.2 | .000 / +.010 / .000 / −.016 |
+| `z` (confounded) | −.083 | −.102 | +.019 (+.021, +.002, +.039, +.046) | +2.7 | 1.3 | +.016 / +.038 / −.002 / −.009 |
+
+- On z-scored windows the real z falls further than on normal-scored ones (−.083 against −.048), and a linear process with the drug's spectra and each channel's own marginals falls by the same amount (−.085). Unlike the 10-s MinCovDet case, the drug does change the 2-s marginals: mean channel excess kurtosis rises from .14 awake to .27 under the drug (z-scored windows). The Chebyshev change on the raw scale is therefore fully accounted for by heavier channel tails placed in time by the drug's spectra.
+- The spectrum-final arm (`z`) reverses sign (+.019): its draws lose the tails (kurtosis .16 under the drug against .27), so its z falls further than the real one. As for MinCovDet, pyspi-bank results on z-scored data with spectrum-final controls should not be read for this axis.
+- Reading: on normal-scored windows the drug changes the tail of x_i − x_j beyond a Gaussian copula with the same spectra (a copula-level change in how often channels disagree by large amounts). On the raw scale it cannot be told apart from the drug's heavier channel tails. Any further test must normal-score, which PRIOS did.
+
 ## Scalar-gain test: calibrated, not run
 
 Question: are the MI and MinCovDet axes one property, a shared scalar gain on a fixed carrier (x = a(t) y(t) + floor, so local covariance a²S + N fluctuates with rank one, even with a spatially correlated floor)? Synthetic calibration only ([gain.py](gain.py), output `results/.../gain-calib.txt`; 10-s windows, M 126, 10 windows per generator). No statistic separates the H0 generators (shared slow, burst and correlated-floor gain) from the alternatives (two sources with independent gains, per-channel gain, an amplitude-linked global mode, constant-power switching), so nothing was frozen or run on real data.
@@ -139,7 +152,7 @@ Signs are drug − awake. For any new human dataset (or longer PRIOS epochs, if 
 
 1. `pcorr|pcorr_mcd` (−) and `r2|mcd2` (−): robust against classical (MinCovDet). Needs T well above M (10-s windows at M ≈ 126; at T 200 only with M ≲ 60, and even then near the reliability floor).
 2. `mi_g|ksg` (−): the MI anchor, with its siblings `r2|ksg`, `dcorr|ksg` as the same axis.
-3. `l1|linf` (−) at 2-s windows only: Chebyshev against L1.
+3. `l1|linf` (−) at 2-s windows only: Chebyshev against L1 (normal-scored only; fails on z-scored windows).
 4. `mcd2|ksg` (−) as the combined MCD + MI readout (strongest single PRIOS row, 7/7).
 
 Not to freeze: anything with a multitaper or best-lag member under an IAAFT null; lag, phase-lag and frequency-locus pairs (all fail the spectral covariates); reliability falls (reproduced by IAAFT).
@@ -153,8 +166,7 @@ Not to freeze: anything with a multitaper or best-lag member under an IAAFT null
 
 ## Status and open items (22 November)
 
-- Answer to the screen's question: no axis matches the MI pair on every gate and on transfer. MinCovDet passes every macaque 10-s gate with a larger effect, but it is copula-level only (fails on z-scored windows), absent at 2 s and unusable in PRIOS. `l1|linf` transfers (7/7) but depends on window length, sits below the PRIOS reliability floor and has no reading under the guide. The MI pair remains the anchor.
-- Running: the z-scored check of `l1|linf` at 2 s (criteria frozen in its section above).
+- Answer to the screen's question: no axis matches the MI pair on every gate and on transfer. MinCovDet passes every macaque 10-s gate with a larger effect, but it is copula-level only (fails on z-scored windows), absent at 2 s and unusable in PRIOS. `l1|linf` transfers (7/7) but depends on window length, is copula-level only (fails on z-scored windows, where the drug's heavier channel tails account for it), sits below the PRIOS reliability floor and has no reading under the guide. The MI pair remains the anchor and is the only axis that holds without normal-scoring.
 - Open: a confirmatory human test of MinCovDet needs long continuous epochs (T well above M); PRIOS's 2-s inter-stimulation epochs cannot supply them.
 - Open: mechanism. Shared gain is a sufficient generator of the MinCovDet sign; the scalar-gain test is not identifiable in 10-s windows, and only perturbation data can separate gain from coupling.
 - For the guide owner: the worked example's "large common-mode samples are kept by MinCovDet" holds only when the amplitude lies along one mode; a shared gain inflates every direction and those samples are trimmed.
