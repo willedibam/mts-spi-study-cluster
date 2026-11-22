@@ -142,3 +142,11 @@ Not to freeze: anything with a multitaper or best-lag member under an IAAFT null
 - 33 of the atlas's 272 SPIs, chosen for readable minimal pairs; pyspi-free implementations validated on two windows.
 - The MinCovDet mechanism check is a separate post hoc section above.
 - The prereg's IAAFT degeneracy assumption failed for multitaper and xcorr statistics (above); the frozen gates were applied unchanged, and the affected axes are set aside by a post hoc rule stated before PRIOS.
+
+## Status and open items (22 November)
+
+- Answer to the screen's question: no axis matches the MI pair on every gate and on transfer. MinCovDet passes every macaque 10-s gate with a larger effect, but it is copula-level only (fails on z-scored windows), absent at 2 s and unusable in PRIOS. `l1|linf` transfers (7/7) but depends on window length, sits below the PRIOS reliability floor and has no reading under the guide. The MI pair remains the anchor.
+- Open, highest value: `l1|linf` has not had the z-scored check that removed MinCovDet's excess; rerun the 2-s arm on z-scored windows against marginal-final IAAFT (about 30 SU, worst case 60). Freeze the criteria of the MinCovDet sensitivity section first.
+- Open: a confirmatory human test of MinCovDet needs long continuous epochs (T well above M); PRIOS's 2-s inter-stimulation epochs cannot supply them.
+- Open: mechanism. Shared gain is a sufficient generator of the MinCovDet sign; the scalar-gain test is not identifiable in 10-s windows, and only perturbation data can separate gain from coupling.
+- For the guide owner: the worked example's "large common-mode samples are kept by MinCovDet" holds only when the amplitude lies along one mode; a shared gain inflates every direction and those samples are trimmed.
