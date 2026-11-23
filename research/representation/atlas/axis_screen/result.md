@@ -121,6 +121,35 @@ Question: are the MI and MinCovDet axes one property, a shared scalar gain on a 
 - **Why it cannot be rescued here.** 10-s windows give 20 half-second blocks with few effective samples each (slow spectra), so power against realistic independent gains is low. A powered version would need minutes of continuous data per state. Even then, 126-channel ECoG is almost certainly multi-source, so scalar gain would be rejected in every state, and rejection excludes only the scalar family, not source-specific gain (workstream context, 17 November). It would not decide whether the axes share a generator.
 - **Standing:** gain remains a sufficient generator of both axes' sign (simulations here and in `mi_pair/nonstat`); whether the axes are one property is open. Current evidence points to two properties of one class: window r .2–.3, and different agent orders (MI largest under ketamine, MinCovDet under propofol).
 
+## Gaussian-referenced readouts: envelope, Canberra, co-excursion, amplitude direction (23 November, post hoc to the screen)
+
+Question: of the pair catalogue's uncomputed readouts with an exact Gaussian partner, does any move beyond IAAFT under the drug as the MI pair does, and does any say whether the anchor's departure is a shared gain or a coupling that changes with amplitude? Code: [gaussref.py](gaussref.py) (readouts, exact Gaussian maps checked against Monte Carlo to 4e-4), [gaussref_calib.py](gaussref_calib.py) (synthetic calibration, `gaussref-calib.json`), job [jobs/gaussref.pbs](jobs/gaussref.pbs). The [character-analysis cumulant test](../mi_pair/preregs/cumulants-prereg.md) (in progress in another session) includes a power-envelope level on 32-channel normal-scored 10-s windows; this one uses the amplitude envelope, all 126 channels, both arms and z-scored windows.
+
+**Calibration (before any real-data output; 32 channels, AR(1) .9 with 3-factor coupling, 8 repetitions; net = real − mean of 3 IAAFT draws).** Selected cells, 10 s (2 s in brackets):
+
+| Generator | `env_E`, `z-m` | `can_E` real level, no surrogate | `can_z`, `z` | `envdir_z`, `z-m` |
+|---|---|---|---|---|
+| Gaussian | −.003 (+.006) | −.000 | −.001 | −.021 |
+| Static heavy-tailed marginals | −.005 (−.000) | +.022 | −.015 | −.020 |
+| Separate per-channel gains | −.006 (+.001) | +.026 | −.024 | +.074 |
+| Shared gain | +.152 (+.088) | +.001 | −.080 | −.113 |
+| Gain over a fixed floor (coupling rises with amplitude) | +.094 (+.050) | +.002 | −.023 | +.129 |
+| Amplitude-linked decoupling | +.211 (+.065) | +.001 | −.166 | −.099 |
+| Amplitude lead, half the channels 100 ms behind | +.161 (+.038) | — | −.070 | −.220 |
+
+- **`env_E`** (mean over edges of envelope correlation minus its exact Gaussian value g(|γ|²)) is ≈ 0 for Gaussian, heavy-tailed and separate-gain data under every null, and positive for every generator with shared amplitude modulation. `z` and `z-m` agree within .01. It reads shared amplitude co-modulation beyond linear coupling; it does not separate a gain from a coupling change.
+- **Canberra cannot do the job proposed for it** (pair catalogue, principle 4). Its level is gain-invariant (shared gain +.001), but on realistic multichannel windows it does not respond to amplitude-linked decoupling (+.001, +.003 on the top fifth of edges by |r|), and per-channel heavy tails move it (+.02). `can_z` is not gain-invariant at finite T (shared gain −.08): r is dominated by high-gain samples and Canberra weights samples equally, so their edge orderings decorrelate. The catalogue's iid check (T 20,000, decoupling .85 → .2 on one pair) does not carry over.
+- **`cob_z`, `asym_z`, `envdir_z`, `env_z`, `envlog_z`** respond to most generators with mixed signs, including separate per-channel gains (`envdir_z` +.07, +.48 normal-scored). They are computed and reported, with no reading claimed.
+
+**Frozen criteria (committed before the run).**
+- **Primary:** `env_E` net, `z-m` (z-scored windows, marginal-final IAAFT, the screen's seeds), 10-s arm, all channels and windows; drug − awake eyes-closed per session, scored by `mechanism.score`.
+- **Passes** if the net Δ has one sign in 4/4 animals, two-sided t(3) p < .05 (|t| > 3.18), at least 3 split-half null SD, the same sign under every agent, and eyes-open |Δ| below a third of |Δ|. The 2-s arm and the `z` and `ns` preps are reported under the same gates; a pass needs only the primary.
+- **Reading if it passes:** the drug changes shared amplitude co-modulation beyond what linear coupling with the same spectra and channel marginals gives: a shared gain, coupling that changes with amplitude, or amplitude coupling with a lead. It does not say which. If it fails, the anchor's departure is not accompanied by a change in shared amplitude co-modulation at the scale of the broadband envelope.
+- **Link to the anchor (secondary, stated now):** within drug sessions, session-demeaned window-level r of the `env_E` net with the anchor net and with the MinCovDet net, from `screen-long.npz` (the anchor's 32-channel subset). r ≥ .5 with the anchor: shared amplitude co-modulation is a candidate common source; r < .3: separate.
+- **Not read:** the other eight readouts (descriptive), and any per-agent or sleep pattern beyond the gate.
+
+**Compute:** Gadi, 48 cpus, one job, 2 arms × 3 preps × 1,260 windows × 4 versions; about 2.7 s per 10-s window version (IAAFT). Expected about 0.03 kSU, worst case 0.1 kSU.
+
 ## What failed
 
 - **Best lag against zero lag** (`r|xcmax`, F2): Δ −.103, t(3) −7.1, 4.6 null SD, split-half .01, but the spectral-covariate-adjusted Δ reverses sign (−.59 of Δ) and eyes-open is .30: a spectral-shape effect, not lag. `r2|xc2max` (F2 −.016) fails covariates the same way; F3 (beyond stationary) it is ≈ 0.
