@@ -1,0 +1,19 @@
+reproduction gate: max |(real, N0) z - stored| = 0.00e+00 -> PASS
+cut fraction, mean (share of windows with < 300 samples left):
+  awake_ec  0.144  (0.00)
+  awake_eo  0.201  (0.00)
+  sleep     0.165  (0.00)
+  KT        0.204  (0.00)
+  KTMD      0.192  (0.00)
+  MD        0.129  (0.00)
+  PF        0.090  (0.00)
+N0     pooled drug Δ -0.0133 | animal means [-0.0189 -0.0087 -0.0115 -0.0137] (4/4 < 0, one-sided t p = 0.0044) | eyes-open SD 0.0020
+       KT -0.0159 (4/4 down)  KTMD -0.0155 (11/11 down)  MD -0.0062 (4/4 down)  PF -0.0117 (4/4 down)  SLP -0.0010 (7/7 down)
+CUT    pooled drug Δ -0.0154 | animal means [-0.0185 -0.012  -0.015  -0.0181] (4/4 < 0, one-sided t p = 0.0009) | eyes-open SD 0.0020
+       KT -0.0118 (4/4 down)  KTMD -0.0206 (11/11 down)  MD -0.0071 (4/4 down)  PF -0.0133 (4/4 down)  SLP -0.0005 (6/7 down)
+SHIFT  pooled drug Δ -0.0179 | animal means [-0.0233 -0.0121 -0.0168 -0.0224] (4/4 < 0, one-sided t p = 0.0029) | eyes-open SD 0.0034
+       KT -0.0175 (4/4 down)  KTMD -0.0231 (11/11 down)  MD -0.0074 (4/4 down)  PF -0.0147 (4/4 down)  SLP -0.0015 (5/7 down)
+
+retained: CUT 1.16  SHIFT 1.35  (pooled drug Δ over N0's)
+  20110621ktmdanesthesiaandsleepchibitoruyanagawa: N0 -0.0279  CUT -0.0363  SHIFT -0.0433
+  20110622ktmdanesthesiaandsleepchibitoruyanagawa: N0 -0.0216  CUT -0.0235  SHIFT -0.0233

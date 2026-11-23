@@ -1,21 +1,26 @@
-"""Draft redesign of fig:mi (v11): what was measured, the pattern effect in Δz, replication, and its timescale.
+"""Draft redesign of fig:mi (v14): what was measured, the pattern effect in Δz, and its replication.
 
     python plot_character_draft.py <results/representation/atlas-mi-pair-261117> <output stem>
 
-Reads the checksum-listed zns arrays (macaque), the segment-surrogate score and calibration, the mouse induction
-z arrays, the human propofol (PRIOS) per-patient contrasts from the scorer summary, and the few raw windows it draws
-(figwin/windows.npz, copied from the Gadi banks by fig_windows.py). The traces in (a) are the real pair ringed in
-(b): the propofol window's off-band pair of largest G inside (b)'s view in both windows. Above (c), four of its dots
-drawn as their raw windows (stacked traces of every 4th electrode): the median wake, sleep and propofol windows and
-the most extreme window, the propofol one being (b)'s. (d) shares (c)'s axis, so subject and window effects compare
-directly. The glyphs in (a) are synthetic (fixed seed): a coupling that switches on and off between "seconds" (the
-calibration's switch form) against a Gaussian at the same correlation, with G and K computed on the drawn samples.
-The brains are cartoons; the electrodes picked on (a)'s brain are not the real pair's positions.
+Reads the checksum-listed zns arrays (macaque), the mouse induction z arrays, the human propofol (PRIOS) per-patient
+contrasts from the scorer summary, and the few raw windows it draws (figwin/windows.npz, copied from the Gadi banks by
+fig_windows.py). (b) is, per state, the window whose Δz is nearest its state's median (PANEL_B), on common axes:
+ketamine + medetomidine large (the only drug in all four macaques), wake, sleep, ketamine and propofol small;
+medetomidine alone, the weakest, is left out. (a) is one real pair, GLYPH_PAIR: of the figwin windows' off-band
+pairs, the one with the largest banked K - G among those where no sample of either channel lies beyond 5 robust SDs
+(the pair of largest K - G overall, 78-90 in the same window, owes most of it to two brief transients: K - G .67,
+.27 with them cut). Selected, not typical. Its normal-scored samples are drawn beside a synthetic Gaussian of the same
+correlation; G and K are the banked values, the Gaussian's are computed on 4000 samples. Above (c), four of its dots drawn as their raw windows (stacked traces of every 4th
+electrode): the median wake, sleep and propofol windows and the most extreme window, the propofol one being (b)'s.
+(d) shares (c)'s axis, so subject and window effects compare directly. The segment-surrogate timescale panel of v11 is dropped (checkpoint fc81155e).
+(a)'s brain is the provider's photograph of Chibi's left hemisphere with the real electrode positions (Neurotycho
+ChibiMap.mat, from the 20110621 KTMD download, saved as figwin/brain_Chibi.npz); (d)'s icons are described in icon().
 
 Presentation quantities not in the manuscript tables: the window residual (z_rec - z_surr minus its session's
 eyes-closed wake mean) in units of the eyes-open wake window SD (as review/sleepmatch_ns.py), an exact rescaling,
 drawn as the second axis of (c); and the recording pairs outside the surrogate's 95% band around the recording's own
-G-K line (chance 5%), a count that a level shift of K cannot move.
+G-K line, a count that a level shift of K cannot move. Its reference is the wake window's count, not 5% of the
+pairs: the median wake window already has 36 of 496 outside.
 """
 from argparse import ArgumentParser
 import json
@@ -23,14 +28,16 @@ from pathlib import Path
 import re
 
 import matplotlib.pyplot as plt
-from matplotlib.collections import PathCollection
+from matplotlib.collections import PathCollection, PolyCollection
 from matplotlib.legend_handler import HandlerTuple
 from matplotlib.lines import Line2D
 from matplotlib.path import Path as MPath
+from matplotlib.transforms import blended_transform_factory
 from matplotlib.patches import ConnectionPatch, Ellipse, Patch, PathPatch, Rectangle
 import numpy as np
 import pandas as pd
 from scipy.interpolate import splev, splprep
+from scipy.ndimage import binary_fill_holes, binary_opening, gaussian_filter
 from scipy.stats import norm, rankdata, t as tdist, ttest_1samp
 
 from mtsspi.figures import figure_style, raincloud
@@ -43,16 +50,23 @@ NAME = {"awake_eo": "Wake", "SLP": "Sleep", "KT": "Ketamine", "KTMD": "Ket.\\,+\
         "PF": "Propofol"}
 SHORT = {"awake_eo": "Wake", "SLP": "Sleep", "KT": "Ket.", "KTMD": "Ket.\n+med.", "MD": "Medet.", "PF": "Prop."}
 COLOR = {"awake_eo": "#8C969C", "awake_ec": "#8C969C", "SLP": "#3E5C76", "KT": "#C8553D", "KTMD": "#7B4B94",
-         "MD": "#2E86AB", "PF": "#D9A21B", "gauss": "#3E5C76", "mix": "#C8553D", "ink": "#2B2B2B"}
+         "MD": "#2E86AB", "PF": "#D9A21B", "ink": "#2B2B2B"}
 MARK = {"George": "o", "Chibi": "s", "Kin2": "^", "Su": "D"}
 GREY, LIGHT = "#78838A", "#D9DDE0"
-SEG = {"N0": 10, "N2 L500": 5, "N2 L200": 2, "N2 L100": 1, "N2 L50": .5}
 MATCH = (.65, .88)                                       # delta-fraction overlap of drug and sleep windows
 Q = 95                                                   # surrogate band
 CALLOUT = (("20120726mdanesthesiaandsleepgeorgetoruyanagawa:awake_eo:03", "median"),     # dots of (c) drawn as
            ("20120711slpanesthesiaandsleepgeorgetoruyanagawa:sleep:06", "median"),       # their raw windows
            ("20110621ktmdanesthesiaandsleepchibitoruyanagawa:drug:00", "most extreme"),
-           ("20120730pfanesthesiaandsleepchibitoruyanagawa:drug:04", "window in b"))
+           ("20120730pfanesthesiaandsleepchibitoruyanagawa:drug:08", "median"),
+           ("20120719ktanesthesiaandsleepchibitoruyanagawa:drug:03", "median"),
+           ("20120726mdanesthesiaandsleepgeorgetoruyanagawa:drug:05", "median"))
+PANEL_B = (("KTMD", "20110114ktmdanesthesiaandsleepgeorgetoruyanagawa:drug:08", "Ketamine + medetomidine"),   # each
+           ("awake_eo", CALLOUT[0][0], "Wake"), ("SLP", CALLOUT[1][0], "Sleep"),                        # state's
+           ("KT", CALLOUT[4][0], "Ketamine"),                 # median-Δz
+           ("PF", CALLOUT[3][0], "Propofol"))                                                         # window
+GLYPH_PAIR = ("20110621ktmdanesthesiaandsleepchibitoruyanagawa:drug:02", 407)        # (a): largest K - G among
+                                                         # the figwin windows' pairs that no transient touches
 
 
 # ---------------------------------------------------------------- data
@@ -125,35 +139,23 @@ def normal_score(v):
     return norm.ppf(rankdata(v) / (len(v) + 1))
 
 
-def pair(kind, n=1000, blocks=10, hi=.95, seed=3):
-    """Normal-scored samples. "mix": blocks ("seconds") alternate between coupled (r = hi) and uncoupled, the
-    calibration's switch form; "gauss": one Gaussian at the mixture's pooled correlation, so both have the same G."""
-    rng = np.random.default_rng(seed); on = np.repeat(np.arange(blocks) % 2 == 0, n // blocks)
-    u = np.empty((n, 2))
-    for b, r in ((on, hi), (~on, 0.)):
-        u[b] = rng.multivariate_normal([0, 0], [[1, r], [r, 1]], b.sum())
-    u = np.column_stack([normal_score(u[:, 0]), normal_score(u[:, 1])])
-    if kind == "gauss":
-        r = np.corrcoef(u.T)[0, 1]; z = rng.standard_normal((n, 2)); z -= z.mean(0)   # sample correlation exactly r
-        u = z @ np.linalg.inv(np.linalg.cholesky(np.cov(z.T))).T @ np.linalg.cholesky([[1, r], [r, 1]]).T
-        u = np.column_stack([normal_score(u[:, 0]), normal_score(u[:, 1])]); on = np.ones(n, bool)
-    return u, on
+def gauss(r, n=4000, seed=3):
+    """Normal-scored Gaussian sample whose correlation is exactly r."""
+    rng = np.random.default_rng(seed); z = rng.standard_normal((n, 2)); z -= z.mean(0)
+    u = z @ np.linalg.inv(np.linalg.cholesky(np.cov(z.T))).T @ np.linalg.cholesky([[1, r], [r, 1]]).T
+    return np.column_stack([normal_score(u[:, 0]), normal_score(u[:, 1])])
 
 
-def glyph(ax, kind):
-    """Draws 1000 of 4000 samples with the ellipse G sees; returns (G, K) on all 4000 (K: the KSG estimator of
-    edges.py; at n = 1000 its small-sample bias alone put the Gaussian's K .03 above its G)."""
-    u, on = pair(kind, n=4000, blocks=40)
-    G, K = -.5 * np.log(1 - np.corrcoef(u.T)[0, 1] ** 2), ksg(u[:, 0], u[:, 1], 0)
-    keep = np.random.default_rng(1).choice(len(u), 1000, replace=False); u, on = u[keep], on[keep]; x, y = u.T
-    shade = np.where(on, COLOR[kind], "#EBC3B9" if kind == "mix" else COLOR[kind])
-    ax.scatter(x, y, s=1.4, lw=0, color=shade, alpha=.6, rasterized=True)
+def glyph(ax, u, color):
+    """Joint samples (normal-scored), with the 2.45-SD ellipse of their correlation: the shape G assumes."""
+    x, y = u.T
+    ax.scatter(x, y, s=1.5, lw=0, color=color, alpha=.5, rasterized=True, zorder=2)
     r = np.corrcoef(x, y)[0, 1]; tt = np.linspace(0, 2 * np.pi, 200)
     e = np.linalg.cholesky([[1, r], [r, 1]]) @ np.vstack([np.cos(tt), np.sin(tt)]) * 2.45
-    ax.plot(e[0], e[1], color=COLOR["ink"], lw=.6)
-    ax.set(xlim=(-3.3, 3.3), ylim=(-3.3, 3.3), aspect="equal", xticks=[], yticks=[])
-    frame(ax, LIGHT, .8)
-    return G, K
+    ax.plot(e[0], e[1], color=COLOR["ink"], lw=.55, ls=(0, (3, 1.6)), zorder=3)
+    ax.set(xlim=(-3.4, 3.4), ylim=(-3.4, 3.4), aspect="equal", xticks=[], yticks=[])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
 
 
 def window_strip(ax, X, color, every=4):
@@ -221,6 +223,73 @@ def brain(ax, kind, grid, pick=None, pick_color=None, dot=3.5, fc="#EEF0F2"):
     ax.set(xlim=(-.1, 1.12), ylim=(-.02, .86 if kind != "mouse" else .62), aspect="equal"); ax.axis("off")
 
 
+def real_brain(ax, path, used, pick, pick_color):
+    """The provider's lateral photograph of the animal's left hemisphere (Neurotycho <animal>Map.mat: image I, electrode
+    X, Y in its pixels, channel i at index i - 1), cropped to the lateral view, greyed; the window's 32 electrodes in
+    ink, the other lateral ones faint, the pair in pick_color."""
+    with np.load(path) as d:
+        I, X, Y = d["I"], d["X"], d["Y"]
+    ys = np.sort(Y); lat = Y > ys[np.diff(ys).argmax()]                # the photo's lower view is the lateral one
+    top, bot = int(Y[lat].min() - 70), int(min(Y[lat].max() + 150, I.shape[0]))
+    left, right = int(max(X[lat].min() - 60, 0)), int(min(X[lat].max() + 50, I.shape[1]))
+    g = I[top:bot, left:right].mean(2) / 255
+    g = np.ma.masked_where(g > .86, g)                                  # the photo's pale background, made transparent
+    ax.imshow(g, cmap="gray", vmin=-.35, vmax=1.15, extent=(left, right, bot, top), interpolation="lanczos", zorder=0)
+    on = np.isin(np.arange(1, 129), used)
+    ax.scatter(X[lat & ~on], Y[lat & ~on], s=1.2, color="white", lw=0, alpha=.8, zorder=2)
+    ax.scatter(X[on], Y[on], s=3, color=COLOR["ink"], ec="white", lw=.25, zorder=3)
+    a, b = (np.array([X[e - 1], Y[e - 1]]) for e in pick)
+    ax.plot(*np.c_[a, b], color=pick_color, lw=1.2, zorder=4, solid_capstyle="round")
+    ax.scatter(*np.c_[a, b], s=14, color=pick_color, ec="white", lw=.5, zorder=5)
+    ax.set(xlim=(left, right), ylim=(bot, top), aspect="equal"); ax.axis("off")
+
+
+def icon(ax, name, root, fc="#EEF0F2"):
+    """(d)'s icons, lateral views with front at left, electrodes as dots.
+    macaque: outline traced from Chibi's photograph, its 107 lateral electrodes at their real positions.
+    human: the fsaverage inner-skull surface bundled with MNE, projected sideways (a brain-sized silhouette in MNI305),
+    with every grid and strip electrode of the 7 PRIOS patients (MNI305, BIDS electrodes.tsv), both hemispheres
+    projected onto one side. mouse: a schematic dorsal view (front up), electrodes on a schematic array."""
+    if name == "macaque":
+        with np.load(root / "figwin/brain_Chibi.npz") as d:
+            I, X, Y = d["I"], d["X"], d["Y"]
+        ys = np.sort(Y); lat = Y > ys[np.diff(ys).argmax()]
+        top = int(Y[lat].min() - 70); g = I[top:, :].mean(2)[::3, ::3] / 255
+        m = gaussian_filter(binary_fill_holes(binary_opening((g < .86) & (g > .02), iterations=2)).astype(float), 2)
+        ext = (0, I.shape[1], I.shape[0], top)
+        rr, cc = np.nonzero(m > .5)
+        ax.contourf(m, [.5, 2], colors=[fc], extent=ext, origin="upper", zorder=1)
+        ax.contour(m, [.5], colors=[GREY], linewidths=.6, extent=ext, origin="upper", zorder=2)
+        ax.scatter(X[lat], Y[lat], s=.5, color=COLOR["ink"], lw=0, zorder=3)
+        ax.set(xlim=(3 * cc.min() - 10, 3 * cc.max() + 10), ylim=(top + 3 * rr.max() + 10, top + 3 * rr.min() - 10))
+    elif name == "human":
+        import mne
+        s = mne.read_bem_surfaces(Path(mne.__file__).parent / "data/fsaverage/fsaverage-inner_skull-bem.fif")[0]
+        xy = s["rr"][:, [1, 2]] * 1000 * (-1, 1)
+        tri = xy[s["tris"]]
+        ax.add_collection(PolyCollection(tri, fc=fc, ec=GREY, lw=1.2, zorder=0))
+        ax.add_collection(PolyCollection(tri, fc=fc, ec=fc, lw=.3, zorder=1))
+        P = np.load(root / "figwin/prios_electrodes_mni305.npy")
+        ax.scatter(-P[:, 1], P[:, 2], s=.5, color=COLOR["ink"], lw=0, zorder=3)
+        ax.set(xlim=(xy[:, 0].min() - 3, xy[:, 0].max() + 3), ylim=(xy[:, 1].min() - 3, xy[:, 1].max() + 3))
+    else:
+        kw = {"fc": fc, "ec": GREY, "lw": .6}
+        q = np.array([(0, 1), (.33, .95), (.5, .7), (.52, .3), (.42, -.05), (0, -.12)])
+        q = np.r_[q, q[::-1][1:-1] * (-1, 1)]
+        tck, _ = splprep(np.r_[q, q[:1]].T, s=0, per=True)
+        out = np.array(splev(np.linspace(0, 1, 200), tck)).T
+        for cx in (-.13, .13):
+            ax.add_patch(Ellipse((cx, 1.12), .22, .3, zorder=0, **kw))
+        ax.add_patch(Ellipse((0, -.25), .62, .34, zorder=0, **kw))
+        ax.add_patch(PathPatch(MPath(out), zorder=1, **kw))
+        ax.plot([0, 0], [-.1, 1], color=GREY, lw=.4, zorder=2)
+        gx, gy = np.meshgrid(np.linspace(-.36, .36, 6), np.linspace(.08, .78, 5))
+        pts = np.c_[gx.ravel(), gy.ravel()]; pts = pts[MPath(out * .9 + (0, .03)).contains_points(pts) & (np.abs(pts[:, 0]) > .05)]
+        ax.scatter(*pts.T, s=.9, color=COLOR["ink"], lw=0, zorder=3)
+        ax.set(xlim=(-.6, .6), ylim=(-.45, 1.3))
+    ax.set_aspect("equal"); ax.axis("off")
+
+
 ICON = {"macaque": ((.22, .9, .24, .66, 7, 5), r"Macaque" + "\n" + "ECoG"), "mouse": ((.25, .85, .26, .46, 4, 2), "Mouse\nEEG"),
         "human": ((.45, .92, .28, .62, 5, 4), "Human\nECoG")}
 
@@ -235,8 +304,6 @@ def draw(root, output):
     sess = df.groupby(["unit", "animal", "group"])[["d", "sd", "exd", "lvl", "delta"]].mean().reset_index()
     animal = sess[sess.group.isin(DRUGS)].groupby("animal").d.mean()
     t = ttest_1samp(animal.values, 0, alternative="less")
-    ns = json.loads((root / "nonstat/nonstat-score.json").read_text())["nulls"]
-    cal = np.load(root / "nonstat/calib1.npz")
 
     figure_style()
     plt.rcParams.update({"font.size": 7.5, "axes.labelsize": 7.3, "xtick.labelsize": 6.8, "ytick.labelsize": 6.8,
@@ -251,95 +318,102 @@ def draw(root, output):
     # a: what we measured: two electrodes, their 10-s traces, and the two MI estimates of their joint samples
     def put(rect):
         ax = r1.add_axes(rect); ax.set_in_layout(False); return ax
-    pc = COLOR["PF"]
-    brain(put([.02, .66, .21, .25]), "macaque", ICON["macaque"][0], pick=(8, 23), pick_color=pc)
-    r1.text(.125, .665, "32 electrodes, 496 pairs", ha="center", va="top", fontsize=5.8, color=GREY)
-    tr = put([.02, .465, .21, .14])                          # filled after (b), with the ringed pair's traces
-    for x_, kind, name in ((.0, "gauss", "Gaussian"), (.13, "mix", "mixture over seconds")):
-        G_, K_ = glyph(put([x_ + .015, .085, .09, .09 * W / H]), kind)
-        r1.text(x_ + .06, .075, name + "\n" + rf"$G$ {G_:.2f}, $K$ {K_:.2f}".replace("0.", "."), ha="center",
-                va="top", fontsize=5.5, color=COLOR[kind], linespacing=1.15)
-    for y_, lab, c_ in ((.2, "coupled s", COLOR["mix"]), (.17, "uncoupled s", "#E2A797")):
-        r1.text(.238, y_, lab, ha="left", va="center", fontsize=4.8, color=c_)
-    r1.text(.125, .44, r"$G$: MI if the pair were Gaussian" + "\n" + r"$K$: MI of any shape (kNN)", ha="center",
-            va="top", fontsize=5.6, linespacing=1.25)
-
-    # b: every pair of one wake and one propofol window, square, zoomed on the dense pairs
-    sample = df[df.unit == min(df.loc[df.agent == "PF", "unit"])]
-    reps = []
-    for state in ("awake_ec", "drug"):
-        rows = sample[sample.state == state]
-        reps.append(rows.loc[(rows.residual - rows.residual.median()).abs().idxmin()])
-    full = 1.05 * max(v.max() for rep in reps for v in edges[rep.id][0])
-    view = (-.015, .25), (-.14, .36)                     # holds 472 and 478 of the 496 pairs
-    side = .29; paxes = []; names, colors = ("Wake, eyes closed", "Propofol"), (COLOR["ink"], COLOR["PF"])
-    for j, (rep, name, ink) in enumerate(zip(reps, names, colors)):
-        ax = put([.325 + j * .345, .11, side, side * W / H]); paxes.append(ax)
-        (g, k), _ = edges[rep.id]
-        c, w, out = band(edges, rep.id)
-        ov = ax.inset_axes([.03, .6, .36, .37])
-        xx = np.linspace(-.05, 1.1 * full, 100)
-        for a_, sc in ((ax, 1), (ov, .35)):
-            a_.fill_between(xx, np.polyval(c, xx) - w, np.polyval(c, xx) + w, color=LIGHT, lw=0, zorder=0)
-            a_.plot(xx, np.polyval(c, xx), color="white", lw=.8 * sc + .2, zorder=1)
-            a_.scatter(g[~out], k[~out], s=5 * sc, lw=0, color=GREY, alpha=.4, rasterized=True, zorder=2)
-            a_.scatter(g[out], k[out], s=11 * sc, lw=0, color=ink, alpha=.95, zorder=3)
-        ov.set(xlim=(-.04, full), ylim=(-.16, full), xticks=[], yticks=[])
-        frame(ov, GREY, .6)
-        ov.add_patch(Rectangle((view[0][0], view[1][0]), np.diff(view[0])[0], np.diff(view[1])[0], fill=False,
-                               ec=COLOR["ink"], lw=.6, zorder=4))
-        ov.text(.95, .06, "all pairs", transform=ov.transAxes, ha="right", fontsize=5.2, color=GREY)
-        ax.set(xlim=view[0], ylim=view[1])
-        ax.set_xticks([0, .1, .2], ["0", ".1", ".2"]); ax.set_yticks([0, .1, .2, .3], ["0", ".1", ".2", ".3"])
-        ax.set_title(name, fontsize=8, color=GREY if j == 0 else ink, pad=2, fontweight="bold")
-        f3 = lambda v: f"{v:.3f}".lstrip("0")
-        ax.text(.97, .16, rf"$z=$\,\textbf{{{f3(rep.real)}}}", transform=ax.transAxes, ha="right", fontsize=7.5,
-                color=ink)
-        ax.text(.97, .085, rf"its surrogate: {f3(rep.null)}", transform=ax.transAxes, ha="right", fontsize=5.8,
-                color=GREY)
-        ax.text(.97, .025, f"{out.sum()} pairs off the band (chance {round(len(g) * (100 - Q) / 100)})",
-                transform=ax.transAxes, ha="right", fontsize=5.4, color=GREY)
-        ax.set_xlabel(r"Gaussian $\mathrm{MI}$, $G$", fontsize=6.8, labelpad=1)
-        ax.set_ylabel(r"kNN $\mathrm{MI}$, $K$" if j == 0 else "", fontsize=6.8, labelpad=1)
-    # a's traces: the propofol window's off-band pair of largest G inside b's view (both windows), ringed in b
-    g, k = edges[reps[1].id][0]; out = band(edges, reps[1].id)[2]
-    inview = np.all([(e_[0] < view[0][1]) & (e_[1] < view[1][1]) for e_ in (edges[r_.id][0] for r_ in reps)], 0)
-    pk = np.flatnonzero(out & inview)
-    pk = pk[np.argmax(g[pk])]
-    assert all(np.array_equal(chan[reps[0].id], chan[r_.id]) for r_ in reps)   # same electrodes in both windows
-    for ax, rep in zip(paxes, reps):
-        ax.scatter(*np.array(edges[rep.id][0])[:, pk], s=34, facecolor="none", edgecolor=COLOR["ink"], lw=.7, zorder=5)
+    pc = COLOR["KTMD"]
+    wid, pk = GLYPH_PAIR
     e1, e2 = (int(v[pk]) for v in np.triu_indices(32, 1))
     with np.load(root / "figwin/windows.npz") as fw:
-        lab = list(fw[reps[1].id + "|chan"]); X = fw[reps[1].id][:, [lab.index(chan[reps[1].id][e]) for e in (e1, e2)]]
-    X = (X - X.mean(0)) / X.std(0)
+        lab = list(fw[wid + "|chan"]); X = fw[wid][:, [lab.index(chan[wid][e]) for e in (e1, e2)]].astype(float)
+    (gw, kw), (_, ksur) = edges[wid]
+    real_brain(put([.02, .66, .21, .25]), root / "figwin/brain_Chibi.npz", [int(v) for v in chan[wid]],
+               (int(chan[wid][e1]), int(chan[wid][e2])), pc)
+    r1.text(.125, .665, "32 electrodes (5 medial, not shown), 496 pairs", ha="center", va="top", fontsize=5.8, color=GREY)
+    tr = put([.02, .465, .21, .14])
+    Xc = X - np.median(X, 0); Xc = Xc / np.abs(Xc).max(0) * .55          # whole 10 s, transients included
     for i_ in range(2):
-        tr.plot(X[:, i_] / 5 + (1.1 - 1.1 * i_), color=pc, lw=.4)
-        tr.text(-15, 1.1 - 1.1 * i_, "xy"[i_], ha="right", va="center", fontsize=6.3, color=pc, style="italic")
+        tr.plot(Xc[:, i_] + (1.1 - 1.1 * i_), color=pc, lw=.4)
+        tr.text(-15, 1.1 - 1.1 * i_, rf"el.\,{chan[wid][(e1, e2)[i_]]}", ha="right", va="center", fontsize=5.4,
+                color=pc)
+    tr.text(1005, 1.8, r"ket.\,+\,med., 10 s", ha="right", va="bottom", fontsize=5.4, color=pc)
     tr.plot([800, 1000], [-.95] * 2, color=COLOR["ink"], lw=.8)
     tr.text(900, -1.05, "2 s", ha="center", va="top", fontsize=5.4)
     tr.set(xlim=(-30, 1005), ylim=(-1.2, 1.9)); tr.axis("off")
-    print("a's pair: electrodes", chan[reps[1].id][e1], chan[reps[1].id][e2], "G, K propofol", g[pk], k[pk],
-          "wake", np.array(edges[reps[0].id][0])[:, pk])
+    u = np.column_stack([normal_score(X[:, 0]), normal_score(X[:, 1])])
+    ug = gauss(np.corrcoef(u.T)[0, 1])
+    Gg, Kg = -.5 * np.log(1 - np.corrcoef(ug.T)[0, 1] ** 2), ksg(ug[:, 0], ug[:, 1], 0)
+    f2 = lambda v: f"{v:.2f}".lstrip("0")
+    for x_, v, col, name, G_, K_ in ((.0, ug[np.random.default_rng(1).choice(len(ug), 1000, replace=False)],
+                                      COLOR["ink"], "Gaussian, same $r$", Gg, Kg),
+                                     (.13, u, pc, "this pair", gw[pk], kw[pk])):
+        glyph(put([x_ + .01, .1, .1, .1 * W / H]), v, col)
+        r1.text(x_ + .06, .095, name, ha="center", va="top", fontsize=5.6, color=col)
+        kk = rf"\textbf{{{f2(K_)}}}" if col == pc else f2(K_)
+        r1.text(x_ + .06, .06, rf"$G$ {f2(G_)}\quad $K$ " + kk, ha="center", va="top", fontsize=5.8, color=col)
+    r1.text(.19, .02, f"its surrogate: $K$ {f2(ksur[pk])}", ha="center", va="top", fontsize=5, color=GREY)
+    r1.text(.125, .44, r"$G$: MI if the pair were Gaussian" + "\n" + r"$K$: MI of any shape (kNN)", ha="center",
+            va="top", fontsize=5.6, linespacing=1.25)
+    print("a's pair:", wid, "electrodes", chan[wid][e1], chan[wid][e2], "banked G, K", gw[pk], kw[pk], "surrogate K",
+          ksur[pk], "Gaussian G, K", Gg, Kg)
+
+    # b: every pair of one window per state, each the state's median-Δz window; the largest drug effect drawn big
+    full = 1.05 * max(v.max() for v in edges[PANEL_B[0][1]][0])
+    view = (-.02, .42), (-.17, .52)                      # common to all five, so the windows compare directly
+    f3 = lambda v: f"{v:.3f}".lstrip("0")
+    m_ = .13; rects = [[.335, .11, .3, .3 * W / H]] + [[.7 + (q % 2) * (m_ + .035), .11 + (1 - q // 2) * (m_ * W / H + .075),
+                                                       m_, m_ * W / H] for q in range(4)]
+    for j, ((s_, wid, name), rect) in enumerate(zip(PANEL_B, rects)):
+        ax = put(rect); big = j == 0; row = df[df.id == wid].iloc[0]
+        ink = COLOR["ink"] if s_ == "awake_eo" else COLOR[s_]
+        (g, k), _ = edges[wid]
+        c, w, out = band(edges, wid)
+        xx = np.linspace(-.05, 1.1 * full, 100)
+        panes = ((ax, 1), (ax.inset_axes([.03, .6, .36, .37]), .35)) if big else ((ax, .5),)
+        for a_, sc in panes:
+            a_.fill_between(xx, np.polyval(c, xx) - w, np.polyval(c, xx) + w, color=LIGHT, lw=0, zorder=0)
+            a_.plot(xx, np.polyval(c, xx), color="white", lw=.8 * sc + .2, zorder=1)
+            a_.scatter(g[~out], k[~out], s=6 * sc, lw=.25 * sc ** .5, ec="white", color=GREY, alpha=.6, rasterized=True,
+                       zorder=2)
+            a_.scatter(g[out], k[out], s=13 * sc, lw=.45 * sc ** .5, ec="white", color=ink, zorder=3)
+        ax.set(xlim=view[0], ylim=view[1])
+        ax.set_xticks([0, .2, .4], ["0", ".2", ".4"]); ax.set_yticks([0, .2, .4], ["0", ".2", ".4"])
+        if big:
+            ov = panes[1][0]
+            ov.set(xlim=(-.04, full), ylim=(-.17, full), xticks=[], yticks=[]); frame(ov, GREY, .6)
+            ov.add_patch(Rectangle((view[0][0], view[1][0]), np.diff(view[0])[0], np.diff(view[1])[0], fill=False,
+                                   ec=COLOR["ink"], lw=.6, zorder=4))
+            ov.text(.95, .06, "all pairs", transform=ov.transAxes, ha="right", fontsize=5.2, color=GREY)
+            ax.set_title(name, fontsize=8, color=ink, pad=2, fontweight="bold")
+            ax.text(.97, .135, rf"$z$ {f3(row.real)}, its surrogate {f3(row.null)}", transform=ax.transAxes, ha="right",
+                    fontsize=5.8, color=GREY)
+            ax.text(.97, .03, rf"$\Delta z$ \textbf{{{row.sd:.1f}}} wake SDs".replace("-", "--"), transform=ax.transAxes,
+                    ha="right", fontsize=9, color=ink)
+            ax.set_xlabel(r"Gaussian $\mathrm{MI}$, $G$", fontsize=6.8, labelpad=1)
+            ax.set_ylabel(r"kNN $\mathrm{MI}$, $K$", fontsize=6.8, labelpad=1)
+        else:
+            ax.tick_params(labelsize=5.4, pad=1.2, labelleft=j % 2 == 1, labelbottom=j > 2)
+            ax.set_title(name, fontsize=6.8, color=ink, pad=1.5, fontweight="bold")
+            ax.text(.96, .05, rf"$\Delta z$ \textbf{{{row.sd:+.1f}}} SD".replace("-", "--"), transform=ax.transAxes,
+                    ha="right", va="bottom", fontsize=7.5, color=ink)
     dot = lambda c_, ms: Line2D([], [], ls="", marker="o", ms=ms, color=c_)
-    r1.legend([Patch(color=LIGHT), dot(GREY, 2.5), (dot(COLOR["ink"], 3), dot(COLOR["PF"], 3))],
+    r1.legend([Patch(color=LIGHT), dot(GREY, 2.5), tuple(dot(COLOR[c_], 3) for c_ in ("ink", "SLP", "KTMD", "KT", "PF"))],
               [r"surrogate's 95\% scatter about the line", "pair", "pair off the band"], loc="center",
-              bbox_to_anchor=(.66, .895), ncol=3, frameon=False, fontsize=6, handlelength=1.6, handletextpad=.4,
-              columnspacing=1.4, handler_map={tuple: HandlerTuple(ndivide=None, pad=.3)})
+              bbox_to_anchor=(.66, .895), ncol=3, frameon=False, fontsize=6, handlelength=3.2, handletextpad=.5,
+              columnspacing=1.4, handler_map={tuple: HandlerTuple(ndivide=None, pad=.15)})
     r1.text(.66, .85, r"$z$: correlation of $G$ and $K$ across the 496 pairs; the surrogate keeps every $G$ and is "
             r"Gaussian, so only $K$ moves", ha="center", va="center", fontsize=5.9, color=GREY)
-    for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (.29, "b", "Every pair", "one 10-s window, wake vs propofol")):
+    for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (.29, "b", "Every pair", "one 10-s window per state, each its state's median")):
         r1.text(x_, .975, rf"\textbf{{{l_}}}\enspace\textbf{{{c_}}}" + (f": {r_}" if r_ else ""), fontsize=8.5,
                 va="top")
 
-    # c-e: the pattern effect, its replication, its timescale
-    left, right = r2.subfigures(1, 2, width_ratios=[2.3, 1], wspace=.02)
-    gs = left.add_gridspec(2, 2, height_ratios=[.2, 1], width_ratios=[1.4, .62], hspace=.04, wspace=.05)
-    sg = gs[0, 0].subgridspec(1, len(CALLOUT), wspace=.1)
-    strips = [left.add_subplot(sg[0, j]) for j in range(len(CALLOUT))]
+    # c-d: the pattern effect and its replication
+    left = r2
+    gs = left.add_gridspec(2, 2, height_ratios=[.22, 1], width_ratios=[2.25, .75], hspace=.04, wspace=.05)
     ax_c = left.add_subplot(gs[1, 0]); ax_f = left.add_subplot(gs[1, 1], sharey=ax_c)
+    above = blended_transform_factory(ax_c.transData, ax_c.transAxes)   # strips sit over their own state column
+    strips = [ax_c.inset_axes([STATES.index(df.loc[df.id == wid, "group"].iloc[0]) - .45, 1.07, .9, .16],
+                              transform=above) for wid, _ in CALLOUT]
+    for sax in strips:
+        sax.set_in_layout(False)                            # row 0 holds them; the layout must not shrink (c)
     head_d = left.add_subplot(gs[0, 1]); head_d.axis("off")
-    ax_h = right.subplots()
     pos = {}                                                 # window id -> its dot in (c)
     win = df[df.group.isin(STATES)]
     sdw = df[df.state == "awake_eo"].d.std(ddof=1)          # eyes-open wake window SD: the second axis is exact
@@ -358,15 +432,15 @@ def draw(root, output):
                   bbox=mask)
         ax_c.text(i, top - .0047, f"{w.sd.mean():.1f}".replace("-", "--"), ha="center", va="top", fontsize=5.8,
                   color=ink, bbox=mask)
-    for y_, lab in ((top, r"$\Delta z$"), (top - .0047, "SD")):
+    for y_, lab in ((top, r"mean $\Delta z$"), (top - .0047, "wake SDs")):
         ax_c.text(-.72, y_, lab, ha="right", va="top", fontsize=6.3, color=GREY, clip_on=False)
     ax_c.axhline(0, color=GREY, lw=.6, ls="--", zorder=0)
     ax_c.set_ylim(-.074, top + .001); ax_c.set_yticks([-.07, -.06, -.05, -.04, -.03, -.02, -.01, 0],
                                                       ["$-.07$", "", "$-.05$", "", "$-.03$", "", "$-.01$", "0"])
-    ax_c.set_ylabel(r"$\Delta z$, net of surrogate (each 10-s window)")
+    ax_c.set_ylabel(r"$\Delta z$, each 10-s window", y=.42)
     panel_title(left, "c", "Pattern", r"$z$ falls under every anaesthetic, not in sleep", sub=True)
     states_axis(ax_c)
-    assert CALLOUT[-1][0] == reps[1].id
+    assert {w_ for _, w_, _ in PANEL_B[1:]} <= {w_ for w_, _ in CALLOUT}       # (b)'s small windows are drawn above (c)
     with np.load(root / "figwin/windows.npz") as fw:        # raw windows of the called-out dots (fig_windows.py)
         for sax, (wid, note) in zip(strips, CALLOUT):
             r = df[df.id == wid].iloc[0]; s = r.group; lab = list(fw[wid + "|chan"])
@@ -377,7 +451,7 @@ def draw(root, output):
             sax.set_xlabel(f"{r.sd:+.1f} SD".replace("-", "--"), fontsize=5.6, labelpad=1.5)
             x_, y_ = pos[wid]
             ax_c.scatter(x_, y_, s=16, facecolor="none", edgecolor=COLOR["ink"], lw=.6, zorder=4)
-            con = ConnectionPatch((.5, -.34), (x_, y_), coordsA=sax.transAxes, coordsB=ax_c.transData,
+            con = ConnectionPatch((x_, top - .0105), (x_, y_), coordsA=ax_c.transData, coordsB=ax_c.transData,
                                   color=GREY, lw=.45, shrinkB=2.2, zorder=0, clip_on=False)
             con.set_in_layout(False); ax_c.add_artist(con)
         strips[0].set_ylabel("8 el.\n10 s", fontsize=5, color=GREY, labelpad=1.5, linespacing=1.05)
@@ -403,7 +477,7 @@ def draw(root, output):
                   fontsize=5.6, linespacing=1.1)
         sc_ = {"mouse": .55, "macaque": .75, "human": .95}[name]
         ic = ax_f.inset_axes([i - .42 * sc_, -.07, .84 * sc_, .025 * sc_], transform=ax_f.transData)
-        brain(ic, name, ICON[name][0], dot=1.2 if name != "mouse" else 2)
+        icon(ic, name, root)
     ax_f.text(0, -.0245, f"t(3) = {t.statistic:.1f}".replace("-", "--") + "\n" + f"p = {t.pvalue:.3f}".replace("0.", "."),
               ha="center", va="top", fontsize=5.4, color=GREY, linespacing=1.15)
     ax_f.axhline(0, color=GREY, lw=.6, ls="--", zorder=0)
@@ -414,50 +488,14 @@ def draw(root, output):
     head_d.set_title(r"\textbf{d}\enspace\textbf{Replication}" + "\nper subject, same axis", loc="left",
                      fontsize=8.5, pad=1.5, linespacing=1.2)
 
-    ax = ax_h
-    keys = list(SEG); x = np.arange(len(keys))
-    pooled = np.array([ns[k]["pooled"] for k in keys]) / ns["N0"]["pooled"]
-    an = np.array([ns[k]["animals"] for k in keys]); an = an / an[0]
-    for q, an_name in enumerate(animal.index):              # same animal order as the score (Chibi, George, Kin2, Su)
-        ax.plot(x, an[:, q], color=LIGHT, lw=.8, zorder=1)
-        ax.scatter(x, an[:, q], marker=MARK[an_name], s=11, facecolor="white", edgecolor=GREY, lw=.7, zorder=2)
-    ax.plot(x, pooled, color=COLOR["ink"], lw=1.6, zorder=3)
-    ax.scatter(x, pooled, s=20, color=COLOR["ink"], zorder=4)
-    ax.legend([Line2D([], [], color=COLOR["ink"], lw=1.6, marker="o", ms=4),
-               Line2D([], [], color=LIGHT, lw=.8, marker="o", ms=3.5, mfc="white", mec=GREY)],
-              ["pooled", "per macaque"], loc="lower left", frameon=False, fontsize=5.6, handlelength=1.8)
-    rel = lambda gname: cal[gname].mean(0)[3] / cal[gname].mean(0)[0]
-    tv = [rel(g) for g in ("gain_local", "gain_cmfloor", "switch", "burst_slow")]
-    xs_ = 5.2                                              # simulated references at 1 s, labelled directly
-    ax.plot([xs_ - .25, xs_ + .25], [rel("quadratic")] * 2, color=COLOR["gauss"], lw=1.6)
-    ax.text(xs_, rel("quadratic") - .04, "fixed\ncurve", fontsize=5.4, ha="center", va="top",
-            color=COLOR["gauss"], linespacing=1.05)
-    ax.add_patch(Rectangle((xs_ - .25, min(tv)), .5, max(tv) - min(tv), color=COLOR["mix"], alpha=.5, lw=0))
-    ax.text(xs_, min(tv) - .04, "varying\nover s", fontsize=5.4, ha="center", va="top", color=COLOR["mix"],
-            linespacing=1.05)
-    ax.text(xs_, -.045, "simul.\n1 s", fontsize=5.4, ha="center", va="top", color=GREY, linespacing=1.05, clip_on=False)
-    ax.plot([3.1, xs_ - .3], [pooled[3]] * 2, color=COLOR["ink"], lw=.5, ls=":", zorder=0)   # 1 s vs simulated
-    ax.axvline(4.6, color=LIGHT, lw=.6)
-    ax.axhline(1, color=GREY, lw=.6, ls="--", zorder=0)
-    ax.set_xticks(x, ["10", "5", "2", "1", ".5"]); ax.tick_params(axis="x", pad=13, length=0)
-    ax.set_ylim(0, 1.32); ax.set_xlim(-.5, 5.6)
-    ax.set_yticks([0, .5, 1], ["0", "50\\%", "100\\%"])
-    ax.set_ylabel("drug change retained", labelpad=1)
-    for i, k in enumerate(keys):                       # segmentation glyph under each bar
-        nseg = int(round(10 / SEG[k]))
-        for j in range(nseg):
-            ax.add_patch(Rectangle((i - .3 + j * .6 / nseg, -.075), .6 / nseg * .8, .04, color=GREY, lw=0,
-                                   clip_on=False))
-    ax.set_xlabel("surrogate refitted within segments (s)", labelpad=2)
-    panel_title(ax, "e", "Timescale", "about a second")
-
     for ext in ("pdf", "png"):
         fig.savefig(output.with_suffix("." + ext), dpi=600 if ext == "png" else None)
     plt.close(fig)
     print(f"animal means {np.round(animal.values, 4)}, t3 {t.statistic:.2f}, p {t.pvalue:.4f}")
     for name, d, ci in sets:
         print(name.replace("\n", " "), len(d), round(d.mean(), 4), np.round(ci(d), 4))
-    print("example windows z", [(round(r.real, 4), round(r.null, 4)) for r in reps], "outside", [int(band(edges, r.id)[2].sum()) for r in reps])
+    print("b windows (z, surrogate, off band)", [(s_, round(df[df.id == w_].real.iloc[0], 4), round(df[df.id == w_].null.iloc[0], 4),
+                                                  int(band(edges, w_)[2].sum())) for s_, w_, _ in PANEL_B])
     print(sdw, win.groupby("group")[["d", "sd", "lvl"]].mean().round(4).to_dict())
 
 

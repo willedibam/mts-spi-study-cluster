@@ -1,0 +1,221 @@
+{
+ "retained": {
+  "CUT": 1.1610026412321672,
+  "SHIFT": 1.3505796345128482
+ },
+ "nulls": {
+  "N0": {
+   "pooled": -0.01328712747587454,
+   "animals": {
+    "Chibi": -0.018943479210146663,
+    "George": -0.00873012761895969,
+    "Kin2": -0.011498768611406597,
+    "Su": -0.013662881286361362
+   },
+   "neg": 4,
+   "p": 0.004404231545944343,
+   "agents": {
+    "KT": [
+     -0.015872895997940232,
+     4,
+     4
+    ],
+    "KTMD": [
+     -0.01549985514915521,
+     11,
+     11
+    ],
+    "MD": [
+     -0.006172875566726616,
+     4,
+     4
+    ],
+    "PF": [
+     -0.011730609761434923,
+     4,
+     4
+    ],
+    "SLP": [
+     -0.0009801156742338855,
+     7,
+     7
+    ]
+   },
+   "eo_sd": 0.0019804571528036123,
+   "sessions": {
+    "20110112ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.016329117919557823,
+    "20110113ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.01842886609703881,
+    "20110114ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.010794323362310234,
+    "20110513ktmdanesthesiaandsleepkin2toruyanagawa": -0.010827102257803756,
+    "20110523ktmdanesthesiaandsleepsutoruyanagawa": -0.014087725460856317,
+    "20110524ktmdanesthesiaandsleepkin2toruyanagawa": -0.01235670148700171,
+    "20110525ktmdanesthesiaandsleepkin2toruyanagawa": -0.011312502089414323,
+    "20110526ktmdanesthesiaandsleepsutoruyanagawa": -0.015658968786937632,
+    "20110527ktmdanesthesiaandsleepsutoruyanagawa": -0.011241949611290136,
+    "20110621ktmdanesthesiaandsleepchibitoruyanagawa": -0.027855668632352115,
+    "20110622ktmdanesthesiaandsleepchibitoruyanagawa": -0.021605480936144464,
+    "20120705slpanesthesiaandsleepchibitoruyanagawa": -0.0007764202620599366,
+    "20120706slpanesthesiaandsleepchibitoruyanagawa": -0.00032042729978965325,
+    "20120710slpanesthesiaandsleepchibitoruyanagawa": -0.000584972407329587,
+    "20120711slpanesthesiaandsleepgeorgetoruyanagawa": -0.0017775787590914138,
+    "20120712slpanesthesiaandsleepgeorgetoruyanagawa": -0.0012921827013544235,
+    "20120713slpanesthesiaandsleepgeorgetoruyanagawa": -0.0019435877558998337,
+    "20120717slpanesthesiaandsleepchibitoruyanagawa": -0.0001656405341123508,
+    "20120719ktanesthesiaandsleepchibitoruyanagawa": -0.02570504108863038,
+    "20120720mdanesthesiaandsleepchibitoruyanagawa": -0.014195649055641801,
+    "20120724ktanesthesiaandsleepgeorgetoruyanagawa": -0.003308896216543677,
+    "20120726mdanesthesiaandsleepgeorgetoruyanagawa": -0.0021769308740105073,
+    "20120730pfanesthesiaandsleepchibitoruyanagawa": -0.016987032245606923,
+    "20120731pfanesthesiaandsleepgeorgetoruyanagawa": -0.008773015789538286,
+    "20120802pfanesthesiaandsleepchibitoruyanagawa": -0.012077356705839938,
+    "20120803pfanesthesiaandsleepgeorgetoruyanagawa": -0.009085034304754547,
+    "20120809mdanesthesiaandsleepchibitoruyanagawa": -0.005058342891569346,
+    "20120810ktanesthesiaandsleepgeorgetoruyanagawa": -0.006414384561198515,
+    "20120813ktanesthesiaandsleepchibitoruyanagawa": -0.028063262125388354,
+    "20120814mdanesthesiaandsleepgeorgetoruyanagawa": -0.0032605794456848076
+   }
+  },
+  "CUT": {
+   "pooled": -0.015426390093878842,
+   "animals": {
+    "Chibi": -0.018481233607802135,
+    "George": -0.011983179436591442,
+    "Kin2": -0.014978678608665077,
+    "Su": -0.018057484180492706
+   },
+   "neg": 4,
+   "p": 0.0009259803368218733,
+   "agents": {
+    "KT": [
+     -0.01176339327994171,
+     4,
+     4
+    ],
+    "KTMD": [
+     -0.02056289942340098,
+     11,
+     11
+    ],
+    "MD": [
+     -0.007120433090147454,
+     4,
+     4
+    ],
+    "PF": [
+     -0.013269943255361492,
+     4,
+     4
+    ],
+    "SLP": [
+     -0.0005442976462347196,
+     6,
+     7
+    ]
+   },
+   "eo_sd": 0.002040847738754974,
+   "sessions": {
+    "20110112ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.024354048106660718,
+    "20110113ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.02583065402522162,
+    "20110114ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.0171236292165167,
+    "20110513ktmdanesthesiaandsleepkin2toruyanagawa": -0.014302500725292799,
+    "20110523ktmdanesthesiaandsleepsutoruyanagawa": -0.016389184278219348,
+    "20110524ktmdanesthesiaandsleepkin2toruyanagawa": -0.017049110497969432,
+    "20110525ktmdanesthesiaandsleepkin2toruyanagawa": -0.013584424602733004,
+    "20110526ktmdanesthesiaandsleepsutoruyanagawa": -0.019864886255445857,
+    "20110527ktmdanesthesiaandsleepsutoruyanagawa": -0.017918382007812917,
+    "20110621ktmdanesthesiaandsleepchibitoruyanagawa": -0.036320350889128925,
+    "20110622ktmdanesthesiaandsleepchibitoruyanagawa": -0.023454723052409452,
+    "20120705slpanesthesiaandsleepchibitoruyanagawa": -0.0004900947759996352,
+    "20120706slpanesthesiaandsleepchibitoruyanagawa": -0.0002604435226733259,
+    "20120710slpanesthesiaandsleepchibitoruyanagawa": 0.0007699313206170047,
+    "20120711slpanesthesiaandsleepgeorgetoruyanagawa": -0.0003914606260753278,
+    "20120712slpanesthesiaandsleepgeorgetoruyanagawa": -0.0013932867118345885,
+    "20120713slpanesthesiaandsleepgeorgetoruyanagawa": -0.000283452543592085,
+    "20120717slpanesthesiaandsleepchibitoruyanagawa": -0.00176127666408508,
+    "20120719ktanesthesiaandsleepchibitoruyanagawa": -0.018181341430645627,
+    "20120720mdanesthesiaandsleepchibitoruyanagawa": -0.013500634832056536,
+    "20120724ktanesthesiaandsleepgeorgetoruyanagawa": -0.003975061978605221,
+    "20120726mdanesthesiaandsleepgeorgetoruyanagawa": -0.0028856586207437365,
+    "20120730pfanesthesiaandsleepchibitoruyanagawa": -0.022308199679878193,
+    "20120731pfanesthesiaandsleepgeorgetoruyanagawa": -0.009488621876020564,
+    "20120802pfanesthesiaandsleepchibitoruyanagawa": -0.007919723961475878,
+    "20120803pfanesthesiaandsleepgeorgetoruyanagawa": -0.013363227504071328,
+    "20120809mdanesthesiaandsleepchibitoruyanagawa": -0.008784352987397114,
+    "20120810ktanesthesiaandsleepgeorgetoruyanagawa": -0.007516627681090648,
+    "20120813ktanesthesiaandsleepchibitoruyanagawa": -0.01738054202942534,
+    "20120814mdanesthesiaandsleepgeorgetoruyanagawa": -0.003311085920392431
+   }
+  },
+  "SHIFT": {
+   "pooled": -0.01794532377009226,
+   "animals": {
+    "Chibi": -0.02328880110264124,
+    "George": -0.012066312938753373,
+    "Kin2": -0.016847917555154163,
+    "Su": -0.022430489592249747
+   },
+   "neg": 4,
+   "p": 0.0028506850965159133,
+   "agents": {
+    "KT": [
+     -0.01752875754647361,
+     4,
+     4
+    ],
+    "KTMD": [
+     -0.02310409133122743,
+     11,
+     11
+    ],
+    "MD": [
+     -0.007398331408228071,
+     4,
+     4
+    ],
+    "PF": [
+     -0.014722271562453395,
+     4,
+     4
+    ],
+    "SLP": [
+     -0.0014965621206934016,
+     5,
+     7
+    ]
+   },
+   "eo_sd": 0.0034456315187149683,
+   "sessions": {
+    "20110112ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.029293105298603815,
+    "20110113ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.02660975205286218,
+    "20110114ktmdanesthesiaandsleepgeorgetoruyanagawa": -0.013769358664288012,
+    "20110513ktmdanesthesiaandsleepkin2toruyanagawa": -0.02069761553575353,
+    "20110523ktmdanesthesiaandsleepsutoruyanagawa": -0.02404089535461291,
+    "20110524ktmdanesthesiaandsleepkin2toruyanagawa": -0.0168285474485808,
+    "20110525ktmdanesthesiaandsleepkin2toruyanagawa": -0.01301758968112816,
+    "20110526ktmdanesthesiaandsleepsutoruyanagawa": -0.022552088355242382,
+    "20110527ktmdanesthesiaandsleepsutoruyanagawa": -0.020698485066893958,
+    "20110621ktmdanesthesiaandsleepchibitoruyanagawa": -0.04332670501842464,
+    "20110622ktmdanesthesiaandsleepchibitoruyanagawa": -0.023310862167111344,
+    "20120705slpanesthesiaandsleepchibitoruyanagawa": -0.0008307353668839316,
+    "20120706slpanesthesiaandsleepchibitoruyanagawa": -0.005724584623535537,
+    "20120710slpanesthesiaandsleepchibitoruyanagawa": 0.0007944075873247339,
+    "20120711slpanesthesiaandsleepgeorgetoruyanagawa": -0.0018352385266734066,
+    "20120712slpanesthesiaandsleepgeorgetoruyanagawa": -0.0018520068450953442,
+    "20120713slpanesthesiaandsleepgeorgetoruyanagawa": -0.0011315215645593124,
+    "20120717slpanesthesiaandsleepchibitoruyanagawa": 0.00010374449456898756,
+    "20120719ktanesthesiaandsleepchibitoruyanagawa": -0.02716293339719993,
+    "20120720mdanesthesiaandsleepchibitoruyanagawa": -0.015395523045458848,
+    "20120724ktanesthesiaandsleepgeorgetoruyanagawa": -0.002037372968000428,
+    "20120726mdanesthesiaandsleepgeorgetoruyanagawa": -0.0032687010101774107,
+    "20120730pfanesthesiaandsleepchibitoruyanagawa": -0.023595363855175567,
+    "20120731pfanesthesiaandsleepgeorgetoruyanagawa": -0.011767033114093406,
+    "20120802pfanesthesiaandsleepchibitoruyanagawa": -0.01032370110627102,
+    "20120803pfanesthesiaandsleepgeorgetoruyanagawa": -0.013202988174273579,
+    "20120809mdanesthesiaandsleepchibitoruyanagawa": -0.00897575219325345,
+    "20120810ktanesthesiaandsleepgeorgetoruyanagawa": -0.006695155782458962,
+    "20120813ktanesthesiaandsleepchibitoruyanagawa": -0.034219568038235115,
+    "20120814mdanesthesiaandsleepgeorgetoruyanagawa": -0.0019533493840225733
+   }
+  }
+ }
+}
