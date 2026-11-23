@@ -399,7 +399,7 @@ GUIDE_PROPOSALS = [
 ]
 
 # Characters the r13 bank cannot reach. Checked against pyspi main on 2026-11-22 (source of statistics/misc.py,
-# events.py, crossfreq.py; configs/full.yaml). None is in benchmarked_p90, so each needs the pin bump and an atlas config
+# events.py, crossfreq.py; configs/full.yaml). In the repo pin since 3.0.0 (ce4b20e); none is in benchmarked_p90, so each needs an atlas config
 # that adds it. breadth: broad (a general property of a pair's dependence) | narrow (band-, lag- or order-specific).
 OUTSIDE_BANK = [
     dict(id='coupling-persistence', breadth='broad',
@@ -408,14 +408,14 @@ OUTSIDE_BANK = [
          gaussian='built in: each is referenced to its value for a Gaussian pair with the same r and lag-1 auto- and cross-correlations (Isserlis), so expectation ~0; a level readout, no partner needed',
          null='real - joint spectrum-final IAAFT on normal-scored windows, as for the anchor',
          confound='a shared, slowly varying gain with unchanged coupling also makes the edge series persistent and heavy-tailed (the Canberra row separates the two); `edge_acf1` is a lag-1 (10 ms) statistic, so on 100-Hz ECoG with strong low-frequency power it reads persistence at the sampling scale, not at the scale of coupling episodes',
-         links='discriminates the MinCovDet reading: a mixture of covariance regimes with dwell longer than one sample raises `edge_acf1`; a heavy-tailed but serially independent copula raises `edge_excessvar` and `edge_topshare` but leaves `edge_acf1` ~0. Sliding-window variance alone cannot make this split (Hindriks et al. 2016).'),
+         links='discriminates the MinCovDet reading: a mixture of covariance regimes with dwell longer than one sample raises `edge_acf1`; a heavy-tailed but serially independent copula raises `edge_excessvar` and `edge_topshare` but leaves `edge_acf1` ~0. Sliding-window variance alone cannot make this split (Hindriks et al. 2016). Lower value since the axis-screen MinCovDet mechanism check (outlying samples clustered in both states, clustering beyond IAAFT falls with the drug) and the MI segment surrogates (about 1-s mixture) already address persistence at the relevant scale.'),
     dict(id='tail-asymmetry', breadth='broad',
          character='whether a pair is jointly extreme more often in the upper than the lower tail (asymmetric copula, e.g. co-occurring sharp deflections of one polarity)',
          spi='`tailasym_q-0-95` and `tailasym_q-0-9`, with `tailasym_upper_*` and `tailasym_lower_*` (TailDependenceAsymmetry, pyspi #116)',
          gaussian='zero for every radially symmetric copula (Gaussian and t included) at any r; the minimal pair z(tailasym_upper, tailasym_lower) has z0 = 1 minus noise under the null, so it needs the null-SD ceiling rule (guide proposal 7)',
          null='real - IAAFT is valid but not needed for the level (expectation 0 exactly under symmetry); IAAFT checks finite-T bias',
          confound='the sign depends on channel polarity (common-reference ECoG keeps it consistent; a bipolar montage would not); k = 10 tail samples per window at 2 s and q .95, so 10-s windows or q .9 only',
-         links='rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen'),
+         links='rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen. Gain-immune: positive gains independent of the carrier sign, shared or multi-source, leave the joint distribution radially symmetric, so it reads dependence character that no gain account reaches. Pre-registered: [tailasym_screen.md](tailasym_screen.md) (23 November, not run)'),
     dict(id='pac', breadth='narrow',
          character='cross-frequency coupling: the low-band phase of one channel modulating the high-band amplitude of another',
          spi='`pac_{mi,mvl}_{excess,z}` (PhaseAmplitudeCoupling, pyspi #123); directed; full.yaml default phase 0.01-0.05, amplitude 0.15-0.4 cycles/sample (1-5 Hz and 15-40 Hz at 100 Hz)',
