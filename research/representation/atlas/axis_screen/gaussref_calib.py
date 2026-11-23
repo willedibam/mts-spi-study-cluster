@@ -105,5 +105,54 @@ def main(output, workers=8):
                 print(f'{kind:16s}' + ''.join(f"{r[m]['net']:+8.3f}({r[m]['se']:.3f})" for m in METRICS))
 
 
+def coupling_mixture(T, rng, stretch=100):
+    """Post hoc generator (result.md): coupling switches between 1-s stretches at fixed channel variance. Each channel is
+    a s_i + sqrt(1 - a^2) p_i with unit-variance shared part s and private part p; a in {.85, .3} by stretch, shared
+    across channels. No amplitude modulation, as the anchor's Gaussian-mixture reading (segment surrogates) allows."""
+    B, n = 300, T + 300
+    L = rng.uniform(.2, .8, (M, 3)) * rng.choice([-1, 1], (M, 3)) * (rng.random((M, 3)) < .6)
+    L[~L.any(1), 0] = .5  # every channel loads on a factor (s needs non-zero variance)
+    s = _ar(rng.standard_normal((n, 3))) @ L.T
+    p = _ar(rng.standard_normal((n, M)))
+    s, p = s / s.std(0), p / p.std(0)
+    a = np.where(rng.random(n // stretch + 1) < .5, .85, .3).repeat(stretch)[:n, None]
+    x = (a * s + np.sqrt(1 - a ** 2) * p)[B:]
+    return (x - x.mean(0)) / x.std(0)
+
+
+def posthoc(output, workers=8):
+    """coupling_mixture against shared_gain and gaussian, 10 s, 'z-m' and 'ns', all metrics, 8 repetitions."""
+    from research.representation.atlas.axis_screen.gaussref import METRICS
+    with Pool(workers) as p:
+        R = p.map(_posthoc_one, [(k, r) for k in ('coupling_mixture', 'shared_gain', 'gaussian') for r in range(REPS)])
+    res = {}
+    for kind in ('coupling_mixture', 'shared_gain', 'gaussian'):
+        for prep in ('z-m', 'ns'):
+            net = np.array([o[prep] for k, o in R if k == kind])
+            res[f'{kind}|T1000|{prep}'] = {m: dict(net=round(float(net[:, i].mean()), 4), se=round(float(net[:, i].std(ddof=1) / np.sqrt(len(net))), 4))
+                                           for i, m in enumerate(METRICS)}
+            print(f'{kind:16s} {prep:4s} ' + ' '.join(f"{m} {res[f'{kind}|T1000|{prep}'][m]['net']:+.3f}" for m in METRICS))
+    json.dump(dict(design=coupling_mixture.__doc__, reps=REPS, results=res), open(output, 'w'), indent=1)
+
+
+def _posthoc_one(args):
+    kind, rep = args
+    from research.representation.atlas.axis_screen.gaussref import metrics
+    from research.representation.atlas.axis_screen.run import _ns
+    from mtsspi.surrogates import multivariate_iaaft
+    rng = np.random.default_rng([rep, 1000, 99, len(kind)])
+    x = coupling_mixture(1000, rng) if kind == 'coupling_mixture' else generate(kind, 1000, rng)
+    out = {}
+    for prep in ('z-m', 'ns'):
+        v = _ns(x) if prep == 'ns' else x
+        final = 'marginal' if prep.endswith('-m') else 'spectrum'
+        m = [metrics(v)] + [metrics(multivariate_iaaft(v, np.random.default_rng([rep, k, 7]), final=final)[0]) for k in range(3)]
+        out[prep] = np.array(m[0]) - np.mean(m[1:], 0)
+    return kind, out
+
+
 if __name__ == '__main__':
-    main(sys.argv[1], *map(int, sys.argv[2:3]))
+    if sys.argv[1] == 'posthoc':
+        posthoc(sys.argv[2], *map(int, sys.argv[3:4]))
+    else:
+        main(sys.argv[1], *map(int, sys.argv[2:3]))
