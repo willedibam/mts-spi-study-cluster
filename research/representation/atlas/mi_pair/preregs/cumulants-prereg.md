@@ -86,3 +86,34 @@ The prior is stated, not tested. The segment test found a mixture over about 1-s
 ## Compute
 
 Gadi, 48 cpus. 1,260 windows × (one IAAFT draw + two cumulant passes), well under an hour wall; walltime 1 h. Expected about 0.02–0.04 kSU (10–25 min on 48 cpus at 2 SU per cpu-hour), worst case 0.1 kSU (the full 1-h walltime).
+
+## Result (job 184940876, commit f59024b4, 23 November; 2 min 37 s on 48 cpus, about 0.004 kSU)
+
+Reproduction gate passed: recomputed G matches stored G exactly (0.0e+00). The anchor reproduces: Δ`zGK` −.0133, animals −.019 to −.009, t(3) −6.1. Output: [`score.txt`](../../../../../results/representation/atlas-mi-pair-261117/cumulants/score.txt) and `cum-score.json`.
+
+| readout | Δ (drug − awake EC) | animals | t(3) | eyes-open SD |
+|---|---|---|---|---|
+| zJ | −.042 | −.055, −.026, −.039, −.055 | −6.2 | .015 |
+| zJ3 | −.0029 | −.0039, −.0022, −.0015, −.0035 | −5.0 | .0007 |
+| zJ4 | −.039 | −.053, −.024, −.036, −.048 | −6.2 | .014 |
+| L3 | +.0015 | +.0028, +.0012, −.0004, +.0008 | +1.7 | .0008 |
+| L4 | +.0072 | +.011, +.0057, +.0026, +.0060 | +3.6 | .0013 |
+| Lenv | +.009 | +.014, +.018, −.035, +.013 | +0.2 | .027 |
+
+Reading by the map:
+1. **Precondition met.** Δ`zJ` is negative in 4/4 animals.
+2. **Primary: S_z = .07; animals .07, .09, .04, .06, all below .20.** The added non-Gaussian dependence is a **symmetric co-modulation of magnitudes**, the form of a zero-mean mixture (gain or coupling varying between stretches, or decoupling episodes). The J3 change is real (4/4, t −5.0) but small: 7% of the cumulant change, against .30–.38 for the calibrated curved-coupling and mean-shifting generators.
+3. **Check: S_L = .17 (animals .20, .18, −.19, .12)** falls below the .20 boundary and agrees. It sits above the zero-mean generators' ≤ .10, so the agreement is not strong, and one animal's ratio is negative because its ΔL3 is.
+4. **Lenv: no reading.** It is positive in 3/4 animals, but one is −.035 and the pooled change is under one eyes-open SD.
+5. **Reported, not read:**
+   - Δ`zJ` / Δ`zGK` = 3.1, inside the calibrated range of 0.9–6.6.
+   - R_P = 1.46: partialling J3 and J4 out of the edge profiles enlarges the anchor's change, as for several calibrated zero-mean generators.
+   - The links rise under the drug (+.11 each, t +3.9 and +4.2).
+6. **By agent:**
+   - S_z is KT .06, KTMD .07 and PF .07.
+   - MD gives .21 on a small cumulant change (Δ`zJ` −.003).
+   - Sleep gives .03 on a negligible anchor change.
+
+**The prior was not supported.** Up/down states with the per-channel mean shift calibrated in `updown` would have given S_z near .30. Slow-wave up/down activity remains possible if it acts on the data as a gain or coupling change, not as a mean shift.
+
+**What this adds to the segment test:** the mixture over about 1-s stretches is symmetric. Stretches differ in the magnitude of shared fluctuations or of coupling, not in the sign-asymmetric shape of the joint distribution. This agrees with the propofol-only control-edge diagnostics (curvature −0.7, no curved coupling function). It does not separate gain from coupling (Limits).

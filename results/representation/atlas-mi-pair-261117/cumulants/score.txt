@@ -1,0 +1,26 @@
+reproduction gate: max |G recomputed - G stored| = 0.00e+00 -> PASS
+zGK    awake -0.0015 drug -0.0148 | Δ -0.0133 animals [-0.0189 -0.0087 -0.0115 -0.0137] t(3) -6.11 p 0.0088 | EO SD 0.0020 | median within-drug r with anchor net +1.00
+        KT -0.0159 (4/4 down)  KTMD -0.0155 (11/11 down)  MD -0.0062 (4/4 down)  PF -0.0117 (4/4 down)  SLP -0.0010 (7/7 down)
+zJ     awake -0.0142 drug -0.0558 | Δ -0.0416 animals [-0.0552 -0.0258 -0.0394 -0.055 ] t(3) -6.22 p 0.0084 | EO SD 0.0146 | median within-drug r with anchor net +0.24
+        KT -0.0402 (3/4 down)  KTMD -0.0510 (11/11 down)  MD -0.0034 (3/4 down)  PF -0.0554 (4/4 down)  SLP -0.0088 (7/7 down)
+zJ3    awake -0.0010 drug -0.0038 | Δ -0.0029 animals [-0.0039 -0.0022 -0.0015 -0.0035] t(3) -5.04 p 0.0151 | EO SD 0.0007 | median within-drug r with anchor net +0.32
+        KT -0.0024 (4/4 down)  KTMD -0.0035 (11/11 down)  MD -0.0007 (3/4 down)  PF -0.0039 (4/4 down)  SLP -0.0003 (7/7 down)
+zJ4    awake -0.0116 drug -0.0502 | Δ -0.0386 animals [-0.0526 -0.0239 -0.0358 -0.0481] t(3) -6.21 p 0.0084 | EO SD 0.0137 | median within-drug r with anchor net +0.22
+        KT -0.0378 (2/4 down)  KTMD -0.0473 (11/11 down)  MD -0.0028 (3/4 down)  PF -0.0514 (4/4 down)  SLP -0.0072 (6/7 down)
+zP     awake -0.0030 drug -0.0224 | Δ -0.0194 animals [-0.0215 -0.0164 -0.017  -0.0253] t(3) -9.69 p 0.0023 | EO SD 0.0021 | median within-drug r with anchor net +0.76
+        KT -0.0116 (4/4 down)  KTMD -0.0279 (11/11 down)  MD -0.0047 (4/4 down)  PF -0.0187 (4/4 down)  SLP -0.0001 (4/7 down)
+link3  awake +0.1959 drug +0.3010 | Δ +0.1051 animals [0.1661 0.059  0.0603 0.1259] t(3) +3.92 p 0.0296 | EO SD 0.0402 | median within-drug r with anchor net -0.33
+        KT +0.1974 (0/4 down)  KTMD +0.0947 (0/11 down)  MD +0.0427 (1/4 down)  PF +0.1040 (0/4 down)  SLP -0.0100 (6/7 down)
+link4  awake +0.1760 drug +0.2828 | Δ +0.1068 animals [0.1544 0.0505 0.0895 0.1664] t(3) +4.20 p 0.0246 | EO SD 0.0507 | median within-drug r with anchor net -0.43
+        KT +0.1755 (0/4 down)  KTMD +0.1123 (0/11 down)  MD +0.0659 (0/4 down)  PF +0.0642 (0/4 down)  SLP +0.0270 (1/7 down)
+L3     awake +0.0015 drug +0.0030 | Δ +0.0015 animals [ 0.0028  0.0012 -0.0004  0.0008] t(3) +1.67 p 0.1928 | EO SD 0.0008 | median within-drug r with anchor net -0.22
+        KT +0.0053 (0/4 down)  KTMD +0.0004 (4/11 down)  MD +0.0003 (1/4 down)  PF +0.0020 (0/4 down)  SLP -0.0003 (2/7 down)
+L4     awake +0.0036 drug +0.0107 | Δ +0.0072 animals [0.011  0.0057 0.0026 0.006 ] t(3) +3.61 p 0.0364 | EO SD 0.0013 | median within-drug r with anchor net -0.41
+        KT +0.0176 (0/4 down)  KTMD +0.0047 (0/11 down)  MD +0.0009 (1/4 down)  PF +0.0099 (1/4 down)  SLP +0.0023 (0/7 down)
+Lenv   awake +0.0469 drug +0.0558 | Δ +0.0089 animals [ 0.0142  0.0175 -0.0353  0.0134] t(3) +0.19 p 0.8601 | EO SD 0.0265 | median within-drug r with anchor net -0.15
+        KT +0.0460 (0/4 down)  KTMD -0.0105 (9/11 down)  MD +0.0091 (1/4 down)  PF +0.0249 (2/4 down)  SLP +0.0193 (0/7 down)
+zenv   awake -0.0670 drug -0.0743 | Δ -0.0072 animals [-0.0153 -0.0082  0.0259 -0.0159] t(3) -0.34 p 0.7558 | EO SD 0.0196 | median within-drug r with anchor net +0.18
+        KT -0.0642 (3/4 down)  KTMD +0.0105 (3/11 down)  MD -0.0041 (3/4 down)  PF -0.0020 (2/4 down)  SLP -0.0314 (6/7 down)
+
+retention of the anchor change after partialling J3, J4: 1.46
+J3 share of the zJ change S_z 0.07 (animals [0.07 0.09 0.04 0.06]); of the level change S_L 0.17 (animals [ 0.2   0.18 -0.19  0.12])
