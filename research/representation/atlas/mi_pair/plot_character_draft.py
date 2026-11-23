@@ -37,7 +37,7 @@ from matplotlib.patches import ConnectionPatch, Ellipse, Patch, PathPatch, Recta
 import numpy as np
 import pandas as pd
 from scipy.interpolate import splev, splprep
-from scipy.ndimage import binary_fill_holes, binary_opening, gaussian_filter
+from scipy.ndimage import binary_closing, binary_fill_holes, binary_opening, gaussian_filter
 from scipy.stats import norm, rankdata, t as tdist, ttest_1samp
 
 from mtsspi.figures import figure_style, raincloud
@@ -244,49 +244,63 @@ def real_brain(ax, path, used, pick, pick_color):
     ax.set(xlim=(left, right), ylim=(bot, top), aspect="equal"); ax.axis("off")
 
 
-def icon(ax, name, root, fc="#EEF0F2"):
-    """(d)'s icons, lateral views with front at left, electrodes as dots.
-    macaque: outline traced from Chibi's photograph, its 107 lateral electrodes at their real positions.
-    human: the fsaverage inner-skull surface bundled with MNE, projected sideways (a brain-sized silhouette in MNI305),
-    with every grid and strip electrode of the 7 PRIOS patients (MNI305, BIDS electrodes.tsv), both hemispheres
-    projected onto one side. mouse: a schematic dorsal view (front up), electrodes on a schematic array."""
-    if name == "macaque":
+VIEW = {"human": ((0, -1, 0), (0, 0, 1), (-1, 0, 0)), "macaque": ((0, -1, 0), (0, 0, 1), (-1, 0, 0)),    # lateral, front left
+        "mouse": ((0, 0, 1), (-1, 0, 0), (0, -1, 0))}                                                  # dorsal, front up
+
+
+def icon(ax, name, root, base=(.9, .91, .92)):
+    """(d)'s brains, shaded template meshes (figwin/assets.npz, from fig_assets.py), electrodes as dots.
+    human: fsaverage5 left pial, lateral, with every grid and strip electrode of the 7 PRIOS patients (MNI305, BIDS
+    electrodes.tsv), both hemispheres projected onto one side. macaque: NMT v2.0 left gray surface, lateral, with Chibi's
+    107 lateral electrodes moved from Neurotycho's photograph by a bounding-box fit (approximate; the few that land off
+    the template are moved to its nearest vertex). mouse: Allen CCF 2017 whole-brain mesh, dorsal; the 30-electrode
+    array is schematic (a grid over dorsal cortex), not the recorded positions."""
+    with np.load(root / "figwin/assets.npz") as A:
+        v, f = A[name + "_v"].astype(float), A[name + "_f"]
+    P = v @ np.array(VIEW[name], float).T; T = P[f]
+    n = np.cross(T[:, 1] - T[:, 0], T[:, 2] - T[:, 0]); n /= np.linalg.norm(n, axis=1, keepdims=True) + 1e-12
+    L = np.array([-.35, .55, 1.]); sh = np.abs(n @ (L / np.linalg.norm(L)))   # two-sided Lambert, light upper left
+    o = np.argsort(T[:, :, 2].mean(1)); c = np.clip(np.outer(.42 + .58 * sh[o], base), 0, 1)
+    ax.add_collection(PolyCollection(T[o][:, :, :2], fc=c, ec=c, lw=.12, rasterized=True, zorder=1))
+    lo, hi = P[:, :2].min(0), P[:, :2].max(0)
+    if name == "human":
+        E = np.load(root / "figwin/prios_electrodes_mni305.npy")[:, [1, 2]] * (-1, 1)
+    elif name == "macaque":
         with np.load(root / "figwin/brain_Chibi.npz") as d:
             I, X, Y = d["I"], d["X"], d["Y"]
         ys = np.sort(Y); lat = Y > ys[np.diff(ys).argmax()]
         top = int(Y[lat].min() - 70); g = I[top:, :].mean(2)[::3, ::3] / 255
-        m = gaussian_filter(binary_fill_holes(binary_opening((g < .86) & (g > .02), iterations=2)).astype(float), 2)
-        ext = (0, I.shape[1], I.shape[0], top)
-        rr, cc = np.nonzero(m > .5)
-        ax.contourf(m, [.5, 2], colors=[fc], extent=ext, origin="upper", zorder=1)
-        ax.contour(m, [.5], colors=[GREY], linewidths=.6, extent=ext, origin="upper", zorder=2)
-        ax.scatter(X[lat], Y[lat], s=.5, color=COLOR["ink"], lw=0, zorder=3)
-        ax.set(xlim=(3 * cc.min() - 10, 3 * cc.max() + 10), ylim=(top + 3 * rr.max() + 10, top + 3 * rr.min() - 10))
-    elif name == "human":
-        import mne
-        s = mne.read_bem_surfaces(Path(mne.__file__).parent / "data/fsaverage/fsaverage-inner_skull-bem.fif")[0]
-        xy = s["rr"][:, [1, 2]] * 1000 * (-1, 1)
-        tri = xy[s["tris"]]
-        ax.add_collection(PolyCollection(tri, fc=fc, ec=GREY, lw=1.2, zorder=0))
-        ax.add_collection(PolyCollection(tri, fc=fc, ec=fc, lw=.3, zorder=1))
-        P = np.load(root / "figwin/prios_electrodes_mni305.npy")
-        ax.scatter(-P[:, 1], P[:, 2], s=.5, color=COLOR["ink"], lw=0, zorder=3)
-        ax.set(xlim=(xy[:, 0].min() - 3, xy[:, 0].max() + 3), ylim=(xy[:, 1].min() - 3, xy[:, 1].max() + 3))
+        rr, cc = np.nonzero(gaussian_filter(binary_fill_holes(binary_opening((g < .86) & (g > .02), iterations=2))
+                                            .astype(float), 2) > .5)
+        E = np.c_[lo[0] + (X[lat] - 3 * cc.min()) / (3 * np.ptp(cc)) * (hi - lo)[0],
+                  hi[1] - (Y[lat] - top - 3 * rr.min()) / (3 * np.ptp(rr)) * (hi - lo)[1]]
     else:
-        kw = {"fc": fc, "ec": GREY, "lw": .6}
-        q = np.array([(0, 1), (.33, .95), (.5, .7), (.52, .3), (.42, -.05), (0, -.12)])
-        q = np.r_[q, q[::-1][1:-1] * (-1, 1)]
-        tck, _ = splprep(np.r_[q, q[:1]].T, s=0, per=True)
-        out = np.array(splev(np.linspace(0, 1, 200), tck)).T
-        for cx in (-.13, .13):
-            ax.add_patch(Ellipse((cx, 1.12), .22, .3, zorder=0, **kw))
-        ax.add_patch(Ellipse((0, -.25), .62, .34, zorder=0, **kw))
-        ax.add_patch(PathPatch(MPath(out), zorder=1, **kw))
-        ax.plot([0, 0], [-.1, 1], color=GREY, lw=.4, zorder=2)
-        gx, gy = np.meshgrid(np.linspace(-.36, .36, 6), np.linspace(.08, .78, 5))
-        pts = np.c_[gx.ravel(), gy.ravel()]; pts = pts[MPath(out * .9 + (0, .03)).contains_points(pts) & (np.abs(pts[:, 0]) > .05)]
-        ax.scatter(*pts.T, s=.9, color=COLOR["ink"], lw=0, zorder=3)
-        ax.set(xlim=(-.6, .6), ylim=(-.45, 1.3))
+        mid = P[:, 0].mean()
+        gx, gy = np.meshgrid(mid + np.r_[-np.linspace(700, 4000, 3), np.linspace(700, 4000, 3)],
+                             -np.linspace(3000, 8800, 5))
+        E = np.c_[gx.ravel(), gy.ravel()]
+    H, ex, ey = np.histogram2d(*P[:, :2].T, bins=160)                                # template's projected outline
+    inside = binary_fill_holes(binary_closing(H > 0, iterations=3, border_value=0))
+    ax.contour((ex[1:] + ex[:-1]) / 2, (ey[1:] + ey[:-1]) / 2, gaussian_filter(inside.astype(float), 1).T, [.5],
+               colors=[GREY], linewidths=.3, zorder=2)
+    ix = np.clip(np.searchsorted(ex, E[:, 0]) - 1, 0, 159); iy = np.clip(np.searchsorted(ey, E[:, 1]) - 1, 0, 159)
+    off = ~inside[ix, iy]
+    if off.any():
+        E[off] = P[((P[None, :, :2] - E[off, None]) ** 2).sum(2).argmin(1), :2]
+    ax.scatter(*E.T, s=.16 if name == "human" else .45, color=COLOR["ink"], lw=0, zorder=3)
+    pad = .03 * (hi - lo).max()
+    ax.set(xlim=(lo[0] - pad, hi[0] + pad), ylim=(lo[1] - pad, hi[1] + pad))
+    ax.set_aspect("equal"); ax.axis("off")
+
+
+def silhouette(ax, name, root):
+    """PhyloPic silhouette (CC0; artists in fig_assets.py), facing left."""
+    with np.load(root / "figwin/assets.npz") as A:
+        V, C = A[name + "_sv"].astype(float), A[name + "_sc"]
+    if name != "human":
+        V[:, 0] *= -1
+    ax.add_patch(PathPatch(MPath(V, C), fc=COLOR["ink"], ec="none"))
+    ax.set(xlim=(V[:, 0].min(), V[:, 0].max()), ylim=(V[:, 1].min(), V[:, 1].max()))
     ax.set_aspect("equal"); ax.axis("off")
 
 
@@ -385,14 +399,14 @@ def draw(root, output):
             ax.text(.97, .135, rf"$z$ {f3(row.real)}, its surrogate {f3(row.null)}", transform=ax.transAxes, ha="right",
                     fontsize=5.8, color=GREY)
             ax.text(.97, .03, rf"$\Delta z$ \textbf{{{row.sd:.1f}}} wake SDs".replace("-", "--"), transform=ax.transAxes,
-                    ha="right", fontsize=9, color=ink)
+                    ha="right", fontsize=10.5, color=ink)
             ax.set_xlabel(r"Gaussian $\mathrm{MI}$, $G$", fontsize=6.8, labelpad=1)
             ax.set_ylabel(r"kNN $\mathrm{MI}$, $K$", fontsize=6.8, labelpad=1)
         else:
             ax.tick_params(labelsize=5.4, pad=1.2, labelleft=j % 2 == 1, labelbottom=j > 2)
             ax.set_title(name, fontsize=6.8, color=ink, pad=1.5, fontweight="bold")
             ax.text(.96, .05, rf"$\Delta z$ \textbf{{{row.sd:+.1f}}} SD".replace("-", "--"), transform=ax.transAxes,
-                    ha="right", va="bottom", fontsize=7.5, color=ink)
+                    ha="right", va="bottom", fontsize=8.8, color=ink)
     dot = lambda c_, ms: Line2D([], [], ls="", marker="o", ms=ms, color=c_)
     r1.legend([Patch(color=LIGHT), dot(GREY, 2.5), tuple(dot(COLOR[c_], 3) for c_ in ("ink", "SLP", "KTMD", "KT", "PF"))],
               [r"surrogate's 95\% scatter about the line", "pair", "pair off the band"], loc="center",
@@ -475,9 +489,11 @@ def draw(root, output):
                   color=COLOR["ink"])
         ax_f.text(i, -.036, rf"\textbf{{{(d < 0).sum()}/{len(d)}}}" + "\nbelow 0", ha="center", va="top",
                   fontsize=5.6, linespacing=1.1)
-        sc_ = {"mouse": .55, "macaque": .75, "human": .95}[name]
-        ic = ax_f.inset_axes([i - .42 * sc_, -.07, .84 * sc_, .025 * sc_], transform=ax_f.transData)
-        icon(ic, name, root)
+        bw, bh = {"mouse": (.5, .026), "macaque": (.84, .024), "human": (.84, .026)}[name]
+        icon(ax_f.inset_axes([i - bw / 2, -.0715, bw, bh], transform=ax_f.transData), name, root)
+        sw = {"mouse": .48, "macaque": .56, "human": .26}[name]           # silhouettes as column heads, above the axes
+        sil = ax_f.inset_axes([i - sw / 2, 1.04, sw, .125], transform=blended_transform_factory(ax_f.transData, ax_f.transAxes))
+        sil.set_anchor("S"); silhouette(sil, name, root)
     ax_f.text(0, -.0245, f"t(3) = {t.statistic:.1f}".replace("-", "--") + "\n" + f"p = {t.pvalue:.3f}".replace("0.", "."),
               ha="center", va="top", fontsize=5.4, color=GREY, linespacing=1.15)
     ax_f.axhline(0, color=GREY, lw=.6, ls="--", zorder=0)
