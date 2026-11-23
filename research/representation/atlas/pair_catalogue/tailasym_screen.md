@@ -97,3 +97,43 @@ The screen's gate 6 (disattenuated z) does not apply to a level. Instead, the aw
 Ranks and indicator products cost well under 0.1 s per window and version at M 126, T 1,000. As in the ξ screen, the cost is regenerating the IAAFT versions.
 - Expected: about 25 SU (10 s) and 10 SU (2 s) on one 48-core node.
 - Worst case: 0.1 kSU.
+
+## Result (23 November)
+
+Jobs 184939935 (10 s, 9.8 SU) and 184939936 (2 s, 3.2 SU), commit 890dde9, pyspi 3.0.0. Scores: [`results/representation/atlas-pair-catalogue-tailasym-261123/`](../../../../results/representation/atlas-pair-catalogue-tailasym-261123/).
+
+**Checks passed:**
+- The rows equal pyspi's `TailDependenceAsymmetry` exactly (maximum difference 0.0, two windows per archive, every archive).
+- The regenerated r and z reproduce the screen to 3e-8 and 6e-8.
+
+**Polarity:** every window is common-average referenced by `prepare.py` with no per-channel sign change, so the signed primary stands. The common average partly removes events shared by all channels and shows a focal event with the opposite sign elsewhere. Array-wide one-polarity events are therefore attenuated in this readout.
+
+**Primary, by the pre-stated rule: uninformative.**
+- The awake eyes-closed split-half reliability of the `ta` edge profile is .11 at 10 s and .02 at 2 s, both below .3.
+- Descriptively, the level is flat: net −.0008 (0.2 null SD, t(3) −0.4, 14/23 sessions). The four animals split two and two, and the agents disagree (KT −.014, the others within ±.004).
+- No null is claimed. The level is too noisy per edge to rule asymmetric shared events in or out.
+
+**Secondary results:**
+
+| Readout | 10 s | 2 s | Gates |
+|---|---|---|---|
+| `ta95` level | −.0010, 0.2 SD | −.0033, 0.5 SD | fail |
+| \|ta\| level | +.0053, t(3) 2.3, 2.3 SD, 19/23 | +.0074, t(3) 4.3, 2.2 SD, 22/23 | fail: size and covariates. At 2 s the F1 covariates alone absorb it (adjusted +.0015); with skewness, −.0013 |
+| `ta_up\|ta_lo` z, F1 | −.028, t(3) −3.9, 3.2 SD, 22/23, all four animals, rMI −.02 | −.024, 1.7 SD | 10 s: all six screen gates pass. 2 s: fails size, covariates and reliability |
+| `r\|ta` z | −.014, 0.2 SD | −.033, 0.6 SD | fail (`ta` reliability .11 / .02) |
+
+- **Median channel \|skewness\| rises with the drug** in all four animals: +.055 at 10 s and +.089 at 2 s, from .19 and .22.
+- **Window-level links within drug sessions:** the `ta` level net with the MI net −.06 and with the MinCovDet net +.09; \|ta\| −.13 and −.10.
+
+**`ta_up|ta_lo` at 10 s is not read as a gain-immune character.** It passes the screen's gates, but three things weaken it:
+
+1. **Skewness absorbs part of it (post hoc,** [`posthoc-skew-long.json`](../../../../results/representation/atlas-pair-catalogue-tailasym-261123/posthoc-skew-long.json)). The level gates' covariate set, F1 plus channel skewness, was pre-stated for the level, not for this coordinate. Under it the effect keeps 94% of its size (−.026) but loses two animals: Kin2 −.004 and Su +.007, t(3) −1.6. Within drug sessions the window net correlates −.31 with skewness.
+2. **The spectra carry most of the real change.** The real z falls by −.089, and IAAFT with the drug's spectra already falls by −.061. The fall is mostly the noise of the λ estimates rising under slower spectra; the net is the remaining third.
+3. **Its gain immunity is weaker than the level's.** Radial symmetry fixes the expected λ_U and λ_L of each edge, not their sampling noise. A gain that clusters extremes in time lowers the effective tail count and so lowers this z without any asymmetry. The MinCovDet mechanism check makes this less likely: there, clustering of outlying samples beyond IAAFT falls with the drug. But that check used a different statistic, so the point is not tested.
+
+**Reading:** edge-specific tail asymmetry of mixed sign rises under the drug, with no consistent net sign. It follows the rise in channel skewness. That is consistent with one-polarity waveforms within channels (for example skewed slow waves) shared over a few neighbouring channels. It is not a coupling character that gain cannot reach. Recovery keeps .69 of the drug change, and sleep does not reproduce it (ratio −.14).
+
+**What this test settles:**
+- Asymmetry of joint extremes is not a candidate gain-immune axis at this power.
+- The drug raises channel skewness. Because ranks and normal scores remove the marginals, this shows up only through edges that share skewed events.
+- The open question for the MI and MinCovDet axes stays where it was: symmetric non-Gaussianity, a mixture of covariance regimes, or gain.

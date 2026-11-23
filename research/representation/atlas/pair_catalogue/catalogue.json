@@ -24272,7 +24272,7 @@
    "gaussian": "zero for every radially symmetric copula (Gaussian and t included) at any r; the minimal pair z(tailasym_upper, tailasym_lower) has z0 = 1 minus noise under the null, so it needs the null-SD ceiling rule (guide proposal 7)",
    "null": "real - IAAFT is valid but not needed for the level (expectation 0 exactly under symmetry); IAAFT checks finite-T bias",
    "confound": "the sign depends on channel polarity (common-reference ECoG keeps it consistent; a bipolar montage would not); k = 10 tail samples per window at 2 s and q .95, so 10-s windows or q .9 only",
-   "links": "rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen. Gain-immune: positive gains independent of the carrier sign, shared or multi-source, leave the joint distribution radially symmetric, so it reads dependence character that no gain account reaches. Pre-registered: [tailasym_screen.md](tailasym_screen.md) (23 November, not run)"
+   "links": "rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen. Gain-immune: positive gains independent of the carrier sign, shared or multi-source, leave the joint distribution radially symmetric, so it reads dependence character that no gain account reaches. Run 23 November ([tailasym_screen.md](tailasym_screen.md)): signed level flat (-.0008, 0.2 SD) but edge profile reliability .11, so uninformative by the pre-stated rule; z(ta_up, ta_lo) passes the screen gates at 10 s (-.028, 3.2 SD, 4/4) but tracks the drug rise in channel skewness (post hoc, 2/4 animals with skewness as covariate). Not a gain-immune axis at this power"
   },
   {
    "id": "pac",
