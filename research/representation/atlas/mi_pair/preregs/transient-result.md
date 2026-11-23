@@ -35,14 +35,14 @@ On that comparison, the events carry about a seventh of the change pooled, and a
 
 **Per agent, CUT against N0:**
 
-| Agent | N0 | CUT | CUT / N0 |
-|---|---|---|---|
-| Ketamine | −.0159 | −.0118 | .74 |
-| Ketamine + medetomidine | −.0155 | −.0206 | 1.33 |
-| Medetomidine | −.0062 | −.0071 | 1.15 |
-| Propofol | −.0117 | −.0133 | 1.14 |
+| Agent | N0 | CUT | CUT / N0 | CUT / SHIFT |
+|---|---|---|---|---|
+| Ketamine | −.0159 | −.0118 | .74 | .67 |
+| Ketamine + medetomidine | −.0155 | −.0206 | 1.33 | .89 |
+| Medetomidine | −.0062 | −.0071 | 1.15 | .96 |
+| Propofol | −.0117 | −.0133 | 1.13 | .90 |
 
-Ketamine is the only agent that shrinks. Every session of every agent still falls under CUT: 4/4, 11/11, 4/4 and 4/4. Sleep is near zero throughout: N0 −.0010 (7/7 down), CUT −.0005 (6/7).
+Ketamine is the only agent that shrinks, and it is the one where the events carry most: about a third, against the control. Every session of every agent still falls under CUT: 4/4, 11/11, 4/4 and 4/4. Sleep is near zero throughout: N0 −.0010 (7/7 down), CUT −.0005 (6/7).
 
 **The session that motivated the test grows under the cut.** This is Chibi's ketamine + medetomidine, with the most extreme window (drug:00, −17.5 wake SDs) and visible large events in drug:00 and drug:02.
 
