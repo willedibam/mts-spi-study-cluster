@@ -369,6 +369,23 @@ ENTRIES = [
          differs='Gaussian TE (history 1) against ordinal-pattern TE (pattern length 3)', character='ordinal-pattern (amplitude-free) predictive structure beyond linear-Gaussian',
          literal='linear against symbolic TE', consequences=['pattern length and history differ (not minimal)', 'reliability .19/.37'], confound='reliability; history mismatch',
          tier='higher-order', null=IAAFT, interp=1, null_ok=1, gaussian_relation='none closed', validation='n/a', atlas='not read', calibration='n/a'),
+    dict(id='xi', level='principled', title="Gaussian value of r against Chatterjee's xi: functional (incl. non-monotone) dependence",
+         pairs=[['cov_EmpiricalCovariance', 'xi_tau-0'], ['spearmanr', 'xi_tau-0'], ['dcorr', 'xi_tau-0'], ['mi_kraskov_NN-4_DCE-AUTO', 'xi_tau-0'],
+                ['cov-sq_MinCovDet', 'xi_tau-0'], ['xi_tau-0', 'xi_tau-1']],
+         new=['xi_tau-0', 'xi_tau-1'], classes=[],
+         differs='linear correlation (mapped through the Gaussian relation) against a rank statistic that tends to 1 only when one channel is a measurable function of the other, monotone or not; xi is directed, symmetrised here, with |xi(i -> j) - xi(j -> i)| as a separate readout',
+         character='functional dependence beyond the Gaussian copula: pairs whose rank-functional dependence departs from what their correlation gives under a Gaussian process (non-monotone coupling, tail dependence, regime mixtures)',
+         literal='organisation of Gaussian-predicted against observed xi',
+         consequences=['rank-based: invariant to each channel\'s marginal, so normal-scoring does not change it (unlike MinCovDet)',
+                       'a temporal mixture of Gaussian regimes and a non-monotone coupling both move it; the level sign does not separate them',
+                       'directed: asymmetry (which channel is more nearly a function of the other) is zero in expectation under any Gaussian process',
+                       'noisy: SD about .05 at T 200 for every rho, .02 at T 1000'],
+         confound='estimator noise at short windows; shared non-monotone transforms of a common drive', tier='higher-order', null=IAAFT, interp=2, null_ok=1,
+         gaussian_relation='xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 for a bivariate normal (identities.json; deviation .002 at n 20,000); time-exchangeable, so the static-statistic principle applies',
+         validation='not validated (generator untested); pyspi-free implementation equals pyspi ChatterjeeXi to 2e-16; screen windows reproduced to 6e-8',
+         atlas='not in the 272-SPI bank (upstream full; into benchmarked_p90 with pyspi #133). Post hoc screen (xi_screen.md): primary xi_g|xi 10 s -.006 (-5.0 SD) but z0 .980, ceiling-excluded; 2 s -.018, fails reliability. mi_g|xi passes every gate at 10 s (-.0078, -6.0 SD, 23/23, all agents; rMI .43, window r with the MinCovDet net .20). Level xi - xi_g net +.013 (t3 6.9). Other xi axes are the MinCovDet axis, the icoh family and the anchor with xi as a stand-in for r',
+         calibration='needed before naming: shared gain, covariance-regime mixture and non-monotone coupling synthetics at matched r; shared gain raised xi above xi_g by +.049 in the smoke',
+         shortlist=dict(rank=15, contrast='screened: mi_g|xi passes at 10 s; next is the generator synthetic at matched r, 10 s only', null=IAAFT)),
 ]
 
 GUIDE_PROPOSALS = [
@@ -378,6 +395,48 @@ GUIDE_PROPOSALS = [
     'Remove saturation from z0 by mapping the Gaussian-determined partner through the known relation (arcsin for ranks, Thm 7 for dCor, -1/2 log for MI, closed envelope forms) before correlating; z0 is then 1 minus estimator noise under the null.',
     'Canberra gain invariance holds on z-scored, not normal-scored, windows; a normal-scored IAAFT construction removes it.',
     'SPIs unbundled upstream as exact affine functions of a kept SPI (pdist_cosine, bary-sq_euclidean_mean, the shrinkage covariances) give exactly the z of the kept SPI, because z is a Pearson correlation of edge profiles; read and name such pairs through the kept SPI.',
+    'Ceiling rule for mapped pairs: when the Gaussian-determined partner is mapped through its exact relation, z0 is 1 minus estimator noise by construction, so z0 > .98 excludes the best-mapped pairs (xi_g|xi z0 .980 excluded while mi_g|xi, a cruder map of the same contrast, passes). For mapped pairs, judge informativeness by the null SD of the net, not by z0.',
+]
+
+# Characters the r13 bank cannot reach. Checked against pyspi main on 2026-11-22 (source of statistics/misc.py,
+# events.py, crossfreq.py; configs/full.yaml). None is in benchmarked_p90, so each needs the pin bump and an atlas config
+# that adds it. breadth: broad (a general property of a pair's dependence) | narrow (band-, lag- or order-specific).
+OUTSIDE_BANK = [
+    dict(id='coupling-persistence', breadth='broad',
+         character='coupling that comes and goes in episodes within the window (time-heterogeneous coupling), against stationary coupling',
+         spi='`edge_acf1`, with `edge_excessvar` and `edge_topshare_f-0-05` (EdgeTimeSeries, pyspi #115)',
+         gaussian='built in: each is referenced to its value for a Gaussian pair with the same r and lag-1 auto- and cross-correlations (Isserlis), so expectation ~0; a level readout, no partner needed',
+         null='real - joint spectrum-final IAAFT on normal-scored windows, as for the anchor',
+         confound='a shared, slowly varying gain with unchanged coupling also makes the edge series persistent and heavy-tailed (the Canberra row separates the two); `edge_acf1` is a lag-1 (10 ms) statistic, so on 100-Hz ECoG with strong low-frequency power it reads persistence at the sampling scale, not at the scale of coupling episodes',
+         links='discriminates the MinCovDet reading: a mixture of covariance regimes with dwell longer than one sample raises `edge_acf1`; a heavy-tailed but serially independent copula raises `edge_excessvar` and `edge_topshare` but leaves `edge_acf1` ~0. Sliding-window variance alone cannot make this split (Hindriks et al. 2016).'),
+    dict(id='tail-asymmetry', breadth='broad',
+         character='whether a pair is jointly extreme more often in the upper than the lower tail (asymmetric copula, e.g. co-occurring sharp deflections of one polarity)',
+         spi='`tailasym_q-0-95` and `tailasym_q-0-9`, with `tailasym_upper_*` and `tailasym_lower_*` (TailDependenceAsymmetry, pyspi #116)',
+         gaussian='zero for every radially symmetric copula (Gaussian and t included) at any r; the minimal pair z(tailasym_upper, tailasym_lower) has z0 = 1 minus noise under the null, so it needs the null-SD ceiling rule (guide proposal 7)',
+         null='real - IAAFT is valid but not needed for the level (expectation 0 exactly under symmetry); IAAFT checks finite-T bias',
+         confound='the sign depends on channel polarity (common-reference ECoG keeps it consistent; a bipolar montage would not); k = 10 tail samples per window at 2 s and q .95, so 10-s windows or q .9 only',
+         links='rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen'),
+    dict(id='pac', breadth='narrow',
+         character='cross-frequency coupling: the low-band phase of one channel modulating the high-band amplitude of another',
+         spi='`pac_{mi,mvl}_{excess,z}` (PhaseAmplitudeCoupling, pyspi #123); directed; full.yaml default phase 0.01-0.05, amplitude 0.15-0.4 cycles/sample (1-5 Hz and 15-40 Hz at 100 Hz)',
+         gaussian='non-overlapping bands of a stationary Gaussian process are independent, so the surrogate-normalised excess is ~0 up to band leakage',
+         null='built-in surrogate normalisation; joint IAAFT as a check',
+         confound='non-sinusoidal waveforms and sharp transients produce PAC without any modulation (Kramer, Tort & Kopell 2008; Aru et al. 2015; Cole & Voytek 2017), which matters under anaesthesia slow waves; slow-alpha PAC under propofol is reported in human EEG (Purdon et al. 2013; Mukamel et al. 2014), so a propofol effect is expected, not new',
+         links='a band-specific, directed level readout with no natural minimal partner in the bank; z(cohmag in the phase band, pac) would read whether cross-frequency coupling follows same-band coupling'),
+    dict(id='event-sync', breadth='narrow',
+         character='lag-tolerant co-occurrence of extremes (co-bursts with jitter)',
+         spi='`es_*` (EventSynchronisation, pyspi #116), upper-tail events at quantile .95',
+         gaussian='none closed: event rates and gaps depend on the spectra, so only real - IAAFT is interpretable',
+         null='real - joint spectrum-final IAAFT',
+         confound='event counts per window are small at 2 s; the tolerance is set by local inter-event gaps',
+         links='z(bary-sq max, es) would read whether co-bursts are aligned (zero lag) or jittered'),
+    dict(id='time-reversal', breadth='narrow',
+         character='time-irreversibility of the pair beyond linear lag (third-order, e.g. sawtooth-like coupling)',
+         spi='none in pyspi (searched 2026-11-22); pyspi-free cross-bicovariance asymmetry E[x_t^2 y_{t+tau}] - E[x_{t+tau}^2 y_t] on normal-scored windows (Ramsey & Rothman 1996; used as a surrogate test statistic by Schreiber & Schmitz 2000)',
+         gaussian='zero for any Gaussian process; the linear part of irreversibility (forward against reversed lagged correlation, as in Deco et al. 2022) is fixed by the cross-covariance, so IAAFT keeps it and it belongs to the lag entries, which fail the spectral covariates',
+         null='real - joint spectrum-final IAAFT',
+         confound='third moments are noisy at T 200; amplitude asymmetry of each channel enters unless normal-scored',
+         links='higher-order and lag-specific; lowest priority'),
 ]
 
 # Atlas status per entry (short; the full record is each entry's `atlas` field).
@@ -390,12 +449,13 @@ STATUS = {
     'mediation': 'raw; local estimator effect', 'coh-icoh': 'failed (floor, covariates)', 'ppc-dswpli': 'failed (reliability, covariates)',
     'best-lag': 'failed (covariates); stable mean lag 10 s', 'band': 'failed (not drug-specific)', 'peak': 'raw; max SPIs unreliable',
     'precedence': 'raw (10 s)', 'history': 'raw; unreliable', 'warp': 'failed construction', 'pec-orth': 'floor', 'symbolic': 'untested',
+    'xi': 'candidate at 10 s (mi_g|xi, post hoc); primary at ceiling',
 }
 
-# Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 20 Nov 2026: pin 5d61d9c (r13), upstream main 5e25d27.
+# Upstream pyspi (DynamicsAndNeuralSystems/pyspi) against the catalogue, checked 21 Nov 2026: pin 5d61d9c (r13), upstream main e8bfaf4.
 # `spis` patterns mark the affected members in catalogue.json; the atlas config is a frozen copy, so nothing leaves the bank until it is re-synced.
 UPSTREAM = dict(
-    checked='2026-11-20', pin='5d61d9c (computation 3.0.0.r13)', upstream_main='5e25d27',
+    checked='2026-11-21', pin='5d61d9c (computation 3.0.0.r13)', upstream_main='e8bfaf4',
     principle=('z is the Pearson correlation of two edge profiles (assumptions.py), so an SPI that is an exact affine function of a kept SPI gives exactly '
                'the same z with any partner: pdist_cosine = 1 - r, bary-sq_euclidean_mean = (1 + r)/2, cov_{LedoitWolf,OAS,ShrunkCovariance} = (1 - delta) r with one '
                'delta per window on z-scored data, and their cov-sq forms. A monotone nonlinear function (pdist_euclidean = sqrt(2T(1 - r)), lmfit of r^2, ppc of PLV) '
@@ -410,24 +470,21 @@ UPSTREAM = dict(
         dict(pr='#144 (on #112)', state='open; decision A4 approved 20 Nov', spis=r'^corr_.*_tau-|^xcorr',
              what='48 corr_*_tau-k and xcorr SPIs leave the bundles (45 are in the bank); 13 directed lagcorr_* SPIs (lag, peak, asym, onesided) come in',
              impact='removes the fixed-lag class (169 of 175 pairs) and the lag members of rank-linear, best-lag and peak; best-lag moves to lagcorr_peak'),
-        dict(pr='#134 (on #133)', state='open (own PR)', spis=r'^(mi|tlmi|te)_kernel',
+        dict(pr='#134', state='merged 20 Nov (e8bfaf4)', spis=r'^(mi|tlmi|te)_kernel',
              what='kernel MI, TLMI and TE exclude the point itself; COMPUTATION_VERSION -> 3.0.0.r14',
-             impact='kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer'),
-        dict(pr='#133', state='open (own PR)', spis=None,
+             impact='kernel values change (independent AR(1): MI .18 -> .07 nats); r13 z0 and reliability of kernel pairs do not transfer. The repo pin is still r13: bump it (HPC.md, "pyspi") before computing shortlist rows 11 and 14, into a new output directory'),
+        dict(pr='#133', state='merged 20 Nov (4c5d9f1)', spis=None,
              what='kernel Theiler window: mi_kernel_W-0.25_DCE-AUTO, tlmi_kernel_W-0.25_DCE-AUTO, te_kernel_W-0.25_DCE-AUTO_k-1; xi_tau-{0,1}, pcorr and te_symbolic_k-3 into benchmarked_p90',
              impact='existing SPIs bit-identical; adds the autocorrelation-corrected kernel partners and xi (not in the bank)'),
-        dict(pr='#127', state='open', spis=None, what='undirected pairs evaluated once',
+        dict(pr='#127', state='merged 20 Nov (87a6d60)', spis=None, what='undirected pairs evaluated once',
              impact='bit-identical values; dcorr, hsic, mgc, gwtau and other distance SPIs now give NaN for a failing pair instead of failing whole. No catalogue impact'),
     ],
     pending='spearmanr-sq and cov-sq_GraphicalLassoCV stay bundled pending separate decisions',
     candidates=[
-        ('Chatterjee xi against mapped r: xi_tau-0 (in upstream full; into p90 with #133; not in the bank). Gaussian relation verified here: '
-         'xi = (3/pi) arcsin((1 + rho^2)/2) - 1/2 (identities.json). A static statistic, so the static-statistic principle applies: z(mapped r, xi) beyond IAAFT reads '
-         'functional, including non-monotone, dependence (xi -> 1 iff y is a function of x), in the anchor and dCor family. xi_ij - xi_ji is zero under Gaussianity and reads '
-         'which channel is more nearly a function of the other. Noisy: SD about .05 at T 200 for every rho (signal .05 at rho .3), so 10-s windows only. Interpretability 2.'),
+        ('Chatterjee xi: now the `xi` entry, computed post hoc on the axis-screen windows (xi_screen.md).'),
         ('lagcorr (#112/#144, open): z(r, lagcorr_peak) replaces z(r, xcorr max) for best lag, and lagcorr_lag reads the lag directly; z(lagcorr_asym, gc_ij - gc_ji) '
          'contrasts an unconditioned lead asymmetry with one conditioned on the target past (linear-spectral; zero-phase and stationary nulls). Interpretability 1-2.'),
-        ('Kernel DCE-AUTO (#133): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); '
+        ('Kernel DCE-AUTO (#133, merged): mi_gaussian against mi_kernel_W-0.25_DCE-AUTO is the better mi-kernel member (it removes the autocorrelation bias the entry lists); '
          'mi_kernel against its DCE-AUTO form is a Theiler-window diagnostic and joins the dce exclusion.'),
     ],
 )
@@ -447,7 +504,7 @@ UPSTREAM_NOTES = {
     'band': 'The ppc members are unbundled (#139); the cohmag and plv band pairs stay.',
     'coh-plv': 'One ppc member is unbundled (#139). The shortlist row (Daniell coherence against mapped PLV) is pyspi-free, so no impact.',
     'warp': 'pdist_euclidean is unbundled (#141); take L2 from r.',
-    'mi-kernel': '#134 (open, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.',
+    'mi-kernel': '#134 (merged 20 Nov, r14) removes the self-count from kernel MI. The r13 value carries a bias largest where joint-box counts are small, which depends on T, the bandwidth and the joint density (so on coupling), so the IAAFT net need not cancel it. Recompute on r14 in a new output directory, and with #133 prefer mi_kernel_W-0.25_DCE-AUTO, which addresses the autocorrelation consequence listed above.',
     'tlmi-ksg': 'The kernel member changes value with #134 (r14) and gains a DCE-AUTO form with #133; the KSG member is unchanged.',
     'gc-te': 'te_kernel changes value with #134 (r14: self-count removed, and the next value scaled like the past, as JIDT does). Compute shortlist row 11 on r14, or use te_kernel_W-0.25_DCE-AUTO_k-1 (#133).',
     'precedence': 'The kernel link (tlmi_kernel against te_kernel) changes value with #134 (r14); the Gaussian link is unchanged. Compute the kernel link in shortlist row 14 on r14.',
