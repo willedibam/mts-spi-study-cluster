@@ -150,6 +150,25 @@ Question: of the pair catalogue's uncomputed readouts with an exact Gaussian par
 
 **Compute:** Gadi, 48 cpus, one job, 2 arms × 3 preps × 1,260 windows × 4 versions; about 2.7 s per 10-s window version (IAAFT). Expected about 0.03 kSU, worst case 0.1 kSU.
 
+**Result (job 184940410, 28 SU, 18 min; `gaussref-{long,short}-{z-m,z,ns}.json`, the npz files on Gadi scratch `atlas/axis_screen/`).** The primary fails: the drug does not change shared amplitude co-modulation beyond linear coupling.
+
+| `env_E` net | Awake level (animals > 0) | Drug level | Δ drug − awake (animals) | t(3) | Null SD | Eyes-open | Sleep |
+|---|---|---|---|---|---|---|---|
+| 10 s, `z-m` (primary) | +.041 (4/4) | +.042 | +.001 (+.007, +.006, −.018, −.013) | −0.7 | 0.1 | +.009 | +.012 |
+| 10 s, `z` | +.042 (4/4) | +.044 | +.001 | −0.6 | 0.1 | +.010 | +.012 |
+| 10 s, `ns` | +.050 (4/4) | +.059 | +.010 | +0.5 | 0.8 | +.020 | +.015 |
+| 2 s, `z-m` | +.028 (4/4) | +.013 | −.015 (4/4 negative) | −3.0 | 1.2 | +.011 | −.002 |
+
+- **A positive level in every state.** Envelope correlation exceeds its Gaussian value beyond IAAFT by about .04 at 10 s, in wake and under the drug alike, in all four animals and all three preps. By the calibration this is shared amplitude co-modulation beyond linear coupling. It is a constant property of these recordings, not something the drug changes. At 2 s the drug lowers it (−.015, 4/4), but at 1.2 null SD and with eyes-open +.011, so it fails.
+- **Unrelated to the anchor.** Within drug sessions the window-level r of the `env_E` net is −.05 with the anchor net and −.26 with the MinCovDet net (`ns`: −.27, −.40; `gaussref.py link`).
+- **Post hoc calibration (`gaussref_calib.py posthoc`, `gaussref-calib-posthoc.json`):** the anchor's segment-surrogate reading is a Gaussian mixture over about 1-s stretches. So I added the generator that reading allows: coupling switching between 1-s stretches (loading .85 or .3) at fixed channel variance. It moves `env_E` +.020 (`z-m`), against +.142 for the shared gain, and leaves Canberra at 0.
+- **Reading (inferred):** a shared slow gain of the calibration's size would raise `env_E` by about 13 null SD, and the drug moves it by 0.1. The anchor's departure is therefore not accompanied by added shared amplitude modulation at the scale of the broadband envelope. That fits the segment result better as coupling that varies between stretches without co-varying amplitude than as a gain. Not tested: how large a gain the anchor's −.013 would need, so a gain too weak to move `env_E` is not excluded.
+- **Descriptive readouts (no reading claimed, as frozen).**
+  - `can_z` (10 s, `z-m`) has the gate numbers: −.006, t(3) −3.6, 4/4, 3.5 SD, every agent negative, eyes-open +.0005. But the calibration shows it is moved by shared gain, separate gains and decoupling alike, and it tracks the anchor at window level (r .49; `ns` .59). It is a re-expression of the anchor's family, not a new character.
+  - `envdir_z`, the reciprocity of 100-ms lagged envelope coupling: real rises with the drug (+.25), as the IAAFT does (+.38). The rise is linear lag structure, as in [lag_reciprocity](../lag_reciprocity/README.md). The net (−.12, 4/4, 1.9 SD) fails size.
+  - `cob_z` and `asym_z` move only in the `ns` and `z` preps, which the calibration flags for marginal tails.
+- **For the pair catalogue owner:** principle 4 (Canberra separates gain from amplitude-dependent coupling) does not hold on finite multichannel windows; see the calibration above. Shortlist row 1 should be dropped or redesigned. Rows 6–7 (barycentre maxima) are not specific.
+
 ## What failed
 
 - **Best lag against zero lag** (`r|xcmax`, F2): Δ −.103, t(3) −7.1, 4.6 null SD, split-half .01, but the spectral-covariate-adjusted Δ reverses sign (−.59 of Δ) and eyes-open is .30: a spectral-shape effect, not lag. `r2|xc2max` (F2 −.016) fails covariates the same way; F3 (beyond stationary) it is ≈ 0.
@@ -196,6 +215,7 @@ Not to freeze: anything with a multitaper or best-lag member under an IAAFT null
 ## Status and open items (22 November)
 
 - Answer to the screen's question: no axis matches the MI pair on every gate and on transfer. MinCovDet passes every macaque 10-s gate with a larger effect, but it is copula-level only (fails on z-scored windows), absent at 2 s and unusable in PRIOS. `l1|linf` transfers (7/7) but depends on window length, is copula-level only (fails on z-scored windows, where the drug's heavier channel tails account for it), sits below the PRIOS reliability floor and has no reading under the guide. The MI pair remains the anchor and is the only axis that holds without normal-scoring.
+- Gaussian-referenced readouts (23 November): no new axis. The envelope level shows shared amplitude co-modulation beyond linear coupling in every state (+.04, 4/4), unchanged by the drug and unrelated to the anchor at window level. Canberra fails its calibration as a gain discriminator.
 - Open: a confirmatory human test of MinCovDet needs long continuous epochs (T well above M); PRIOS's 2-s inter-stimulation epochs cannot supply them.
 - Open: mechanism. Shared gain is a sufficient generator of the MinCovDet sign; the scalar-gain test is not identifiable in 10-s windows, and only perturbation data can separate gain from coupling.
 - For the guide owner: the worked example's "large common-mode samples are kept by MinCovDet" holds only when the amplitude lies along one mode; a shared gain inflates every direction and those samples are trimmed.

@@ -1,0 +1,234 @@
+{
+ "design": "Post hoc generator (result.md): coupling switches between 1-s stretches at fixed channel variance. Each channel is\n    a s_i + sqrt(1 - a^2) p_i with unit-variance shared part s and private part p; a in {.85, .3} by stretch, shared\n    across channels. No amplitude modulation, as the anchor's Gaussian-mixture reading (segment surrogates) allows.",
+ "reps": 8,
+ "results": {
+  "coupling_mixture|T1000|z-m": {
+   "env_E": {
+    "net": 0.0203,
+    "se": 0.0045
+   },
+   "env_z": {
+    "net": 0.0513,
+    "se": 0.0131
+   },
+   "envlog_z": {
+    "net": 0.0602,
+    "se": 0.0124
+   },
+   "can_E": {
+    "net": -0.0024,
+    "se": 0.0002
+   },
+   "can_z": {
+    "net": -0.0014,
+    "se": 0.0003
+   },
+   "cob_z": {
+    "net": -0.0291,
+    "se": 0.0096
+   },
+   "asym_z": {
+    "net": -0.0344,
+    "se": 0.0158
+   },
+   "envdir_z": {
+    "net": 0.0268,
+    "se": 0.0252
+   },
+   "kurt": {
+    "net": -0.0,
+    "se": 0.0
+   }
+  },
+  "coupling_mixture|T1000|ns": {
+   "env_E": {
+    "net": 0.0198,
+    "se": 0.0036
+   },
+   "env_z": {
+    "net": 0.0515,
+    "se": 0.0168
+   },
+   "envlog_z": {
+    "net": 0.0668,
+    "se": 0.0154
+   },
+   "can_E": {
+    "net": -0.0022,
+    "se": 0.0004
+   },
+   "can_z": {
+    "net": 0.0007,
+    "se": 0.0008
+   },
+   "cob_z": {
+    "net": -0.0491,
+    "se": 0.0126
+   },
+   "asym_z": {
+    "net": -0.0548,
+    "se": 0.0135
+   },
+   "envdir_z": {
+    "net": 0.0277,
+    "se": 0.0218
+   },
+   "kurt": {
+    "net": 0.0463,
+    "se": 0.0058
+   }
+  },
+  "shared_gain|T1000|z-m": {
+   "env_E": {
+    "net": 0.1419,
+    "se": 0.0316
+   },
+   "env_z": {
+    "net": -0.1032,
+    "se": 0.0228
+   },
+   "envlog_z": {
+    "net": -0.1147,
+    "se": 0.0257
+   },
+   "can_E": {
+    "net": -0.0143,
+    "se": 0.0019
+   },
+   "can_z": {
+    "net": -0.0469,
+    "se": 0.0079
+   },
+   "cob_z": {
+    "net": -0.065,
+    "se": 0.0126
+   },
+   "asym_z": {
+    "net": -0.0426,
+    "se": 0.0194
+   },
+   "envdir_z": {
+    "net": -0.1207,
+    "se": 0.0543
+   },
+   "kurt": {
+    "net": -0.0,
+    "se": 0.0
+   }
+  },
+  "shared_gain|T1000|ns": {
+   "env_E": {
+    "net": 0.3614,
+    "se": 0.0073
+   },
+   "env_z": {
+    "net": -0.1451,
+    "se": 0.0225
+   },
+   "envlog_z": {
+    "net": -0.1404,
+    "se": 0.0273
+   },
+   "can_E": {
+    "net": -0.0231,
+    "se": 0.0009
+   },
+   "can_z": {
+    "net": -0.0349,
+    "se": 0.0029
+   },
+   "cob_z": {
+    "net": -0.1281,
+    "se": 0.0192
+   },
+   "asym_z": {
+    "net": -0.0697,
+    "se": 0.0255
+   },
+   "envdir_z": {
+    "net": -0.04,
+    "se": 0.0468
+   },
+   "kurt": {
+    "net": 0.0498,
+    "se": 0.0063
+   }
+  },
+  "gaussian|T1000|z-m": {
+   "env_E": {
+    "net": 0.0052,
+    "se": 0.0018
+   },
+   "env_z": {
+    "net": 0.0019,
+    "se": 0.0129
+   },
+   "envlog_z": {
+    "net": -0.0003,
+    "se": 0.0103
+   },
+   "can_E": {
+    "net": 0.0002,
+    "se": 0.0002
+   },
+   "can_z": {
+    "net": -0.0033,
+    "se": 0.0014
+   },
+   "cob_z": {
+    "net": 0.0313,
+    "se": 0.0074
+   },
+   "asym_z": {
+    "net": 0.0298,
+    "se": 0.021
+   },
+   "envdir_z": {
+    "net": 0.0067,
+    "se": 0.026
+   },
+   "kurt": {
+    "net": 0.0,
+    "se": 0.0
+   }
+  },
+  "gaussian|T1000|ns": {
+   "env_E": {
+    "net": 0.005,
+    "se": 0.0023
+   },
+   "env_z": {
+    "net": -0.0144,
+    "se": 0.017
+   },
+   "envlog_z": {
+    "net": -0.0089,
+    "se": 0.0147
+   },
+   "can_E": {
+    "net": 0.0001,
+    "se": 0.0002
+   },
+   "can_z": {
+    "net": -0.0013,
+    "se": 0.0009
+   },
+   "cob_z": {
+    "net": -0.0039,
+    "se": 0.0125
+   },
+   "asym_z": {
+    "net": 0.0113,
+    "se": 0.0195
+   },
+   "envdir_z": {
+    "net": -0.0078,
+    "se": 0.0225
+   },
+   "kurt": {
+    "net": 0.0471,
+    "se": 0.0024
+   }
+  }
+ }
+}

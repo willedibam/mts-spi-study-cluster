@@ -126,9 +126,35 @@ def collect(out, target):
     print('collected', len(fs), 'windows ->', target)
 
 
+def link(path, screen, manifest):
+    """Secondary readout stated with the criteria: within drug sessions, session-demeaned window-level r of each metric's
+    net with the anchor net (z(mi_g, KSG), 32-channel subset) and the MinCovDet net (z(pcorr, pcorr_mcd)) of the screen."""
+    import json
+    from research.representation.atlas.axis_screen.score import DRUGS
+    D, S = np.load(path), np.load(screen)
+    rows = {r['id']: r for r in json.load(open(manifest))['rows']}
+    keys = [str(k) for k in S['keys']]
+    sid = {str(i): w for w, i in enumerate(S['ids'])}
+    ids = [str(i) for i in D['ids']]
+    w = np.array([sid[i] for i in ids])
+    net = lambda Z: Z[:, 0] - Z[:, 1:4].mean(1)
+    mi, pc, mcd = keys.index('mi_g'), keys.index('pcorr'), keys.index('pcorr_mcd')
+    ref = dict(anchor=net(S['Z32'][w, :, mi, len(keys)]), mcd=net(S['Z'][w, :, pc, mcd]))
+    m = D['m'][:, 0] - D['m'][:, 1:].mean(1)
+    unit = np.array([rows[i]['unit'] for i in ids])
+    dw = np.array([rows[i]['state'] == 'drug' and rows[i].get('agent', '') in DRUGS for i in ids])
+    dm = lambda y: y[dw] - np.array([y[dw & (unit == u)].mean() for u in unit[dw]])
+    out = {str(n): {k: round(float(np.corrcoef(dm(m[:, j]), dm(v))[0, 1]), 3) for k, v in ref.items()}
+           for j, n in enumerate(D['metrics'])}
+    print(json.dumps(dict(windows=int(dw.sum()), r=out), indent=1))
+    return out
+
+
 if __name__ == '__main__':
     cmd = sys.argv[1]
     if cmd == 'compute':
         compute(sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5])
     elif cmd == 'collect':
         collect(*sys.argv[2:4])
+    elif cmd == 'link':
+        link(*sys.argv[2:5])
