@@ -117,3 +117,38 @@ Reading by the map:
 **The prior was not supported.** Up/down states with the per-channel mean shift calibrated in `updown` would have given S_z near .30. Slow-wave up/down activity remains possible if it acts on the data as a gain or coupling change, not as a mean shift.
 
 **What this adds to the segment test:** the mixture over about 1-s stretches is symmetric. Stretches differ in the magnitude of shared fluctuations or of coupling, not in the sign-asymmetric shape of the joint distribution. This agrees with the propofol-only control-edge diagnostics (curvature −0.7, no curved coupling function). It does not separate gain from coupling (Limits).
+
+## Post hoc: where the fourth-order change sits, and the earlier co-kurtosis ≈ 0 (23 November; not preregistered)
+
+**The question.** The propofol hub test (`../review/mech.py`, `hubtest.py`; one animal) read joint co-kurtosis as ≈ 0, yet J4 rises here. Code: [`../cumulants/split.py`](../cumulants/split.py); job 184947195 at commit edd5bdd8 (1 min 46 s); calibration `split-calib.txt`.
+
+**Method.** J4 is rotation-invariant, so it splits exactly in each pair's principal axes, u = sum and v = difference:
+- Ksum: kurtosis along the shared direction;
+- Kdiff: kurtosis along the difference direction;
+- Kmix: co-modulation between the shared and difference parts.
+
+The same windows and surrogate as the frozen run were used, with all edges and with the top 10% by |r| ('tight', the hub test's population).
+
+| readout (Δ drug − awake EC) | all edges | t(3) | tight edges | t(3) |
+|---|---|---|---|---|
+| Kdiff | +.0064 (share of ΔJ4 .89) | +4.0 | +.039 (.90) | +6.7 |
+| Ksum | +.0007 (.10) | +3.0 | +.0011 (.02) | +2.2 |
+| Kmix | +.0001 (.02) | +0.4 | +.0033 (.08) | +9.5 |
+| hub-test co-kurtosis, mean(a²b²) − (1 + 2r²) | +.006 | −0.0 | −.014 | −0.4 |
+| hub-test residual kurtosis | +.11 | +5.3 | +.42 | +9.7 |
+
+- **Reconciled: there is no conflict.**
+  - Both earlier readouts reproduce across all four animals: co-kurtosis ≈ 0, residual kurtosis up.
+  - The co-kurtosis readout is almost blind to the difference direction. With a²b² = [(1+r)²u⁴ − 2(1−r²)u²v² + (1−r)²v⁴] / 4, at |r| = .93 a v⁴ term weighs 1/760 of a u⁴ term.
+  - The u direction of a tight pair is close to either channel's marginal, which normal-scoring makes Gaussian.
+  - So the earlier "co-kurtosis ≈ 0, no shared bursty driver" ruled out kurtosis along the shared direction only. The fourth-order increase sits, about 90%, in the difference direction: the two channels part in heavy-tailed excursions. That is what the hub test's residual-kurtosis rise (+12 to +14 SD) already showed.
+- **What it says about form (descriptive).**
+  - In the calibration, most zero-mean mixtures split J4 roughly evenly: Ksum .36–.41, Kdiff .36–.43, Kmix .16–.27 (burst, local gain, switching, decoupling).
+  - Only gain over a spatially coherent floor puts it mostly along the difference direction (Kdiff .81). But that generator also raises co-kurtosis strongly (+.53, t 21), which the real data do not.
+  - No calibrated generator matches both the dominance of the difference direction and the flat co-kurtosis.
+  - The calibration's |r| distribution is also lower than that of real tight neighbours. On tight pairs, normal-scoring partly forces Ksum towards 0. So the shares are compared only loosely.
+- **Reading:**
+  - Under the drugs, the added non-Gaussian dependence lies in heavy-tailed departures of each pair from its own linear relation: the pair parts, symmetrically and intermittently.
+  - It does not lie in shared co-activation or in sign-asymmetric shape.
+  - Decoupling episodes and gain over a coherent floor are both compatible in part, and neither fits fully.
+  - Post hoc: not frozen before the data.

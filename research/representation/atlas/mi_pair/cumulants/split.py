@@ -41,15 +41,19 @@ def net(v, s):
     return np.r_[D.mean(1), D[:, t].mean(1)]
 
 
+def _cal(kind, seed):        # module level, so workers import this file's path order (cumulants/calib.py, not nonstat/calib.py)
+    import calib as cc
+    assert 'updown' in cc.KINDS
+    rng = np.random.default_rng(seed); v = cc.ns(cc.synth(kind, rng)); return net(v, cc.n0(v, np.random.default_rng([seed, 0])))
+
+
 def calib(B, nw, out):
     import time
-    from joblib import Parallel, delayed
+    from multiprocessing import Pool
     import calib as cc
-    def one(kind, seed):
-        rng = np.random.default_rng(seed); v = cc.ns(cc.synth(kind, rng)); return net(v, cc.n0(v, np.random.default_rng([seed, 0])))
     t = time.time(); R = {}; print('kind          ' + ' '.join(f'{k:>12s}' for k in KEYS))
     for kind in cc.KINDS:
-        R[kind] = np.array(Parallel(n_jobs=nw)(delayed(one)(kind, 1000 * (cc.KINDS.index(kind) + 1) + s) for s in range(B)))
+        with Pool(nw) as p: R[kind] = np.array(p.starmap(_cal, [(kind, 1000 * (cc.KINDS.index(kind) + 1) + s) for s in range(B)]))
         m, sd = R[kind].mean(0), R[kind].std(0, ddof=1)
         print(f'{kind:13s} ' + ' '.join(f'{a:+.4f}({a / b * np.sqrt(B):+4.0f})' for a, b in zip(m, sd)), f'[{time.time() - t:.0f} s]', flush=True)
     np.savez(out, keys=KEYS, **R)
