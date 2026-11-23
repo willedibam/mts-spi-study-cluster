@@ -46,6 +46,17 @@ MinCovDet keeps the half of the time samples with the smallest Mahalanobis dista
 
 The defensible reading of a robust–classical divergence is time-heterogeneous dependence: "a minority of samples carries a conditional-dependence pattern different from the bulk". "Episodic coupling" is earned only if the down-weighted samples are temporally clustered, involve several channels and carry a distinct network. Check this directly from MinCovDet's support mask on the raw windows.
 
+Two corrections from the axis screen ([result](../research/representation/atlas/axis_screen/result.md), 22 November):
+- Common-mode samples are kept only when the amplitude lies along one mode. A shared gain inflates every direction, so high-amplitude samples are trimmed too, and shared gain is a sufficient generator of the axis's sign.
+- MinCovDet also trims on marginal tails. On z-scored windows the robust–classical contrast is not separable from the channels' tails placed in time by the spectrum: it fails against marginal-final IAAFT, and spectrum-final IAAFT, whose draws lose the tails, gives a spurious effect. Read it only on normal-scored windows, where the macaque drug effect is a rise in the trimmed fraction beyond the surrogate. Chebyshev distance behaves the same way.
+
+### Gaussian-determined partners (pair catalogue, 20 November)
+
+- **Static statistics.** On standardised channels, the Gaussian expectation of any time-exchangeable bivariate statistic is a fixed function of r. This covers rank correlations, MI estimators, distance correlation, IDS, L1, L2 and Canberra distances, and barycentre moments. Any pair from this set is therefore a principled non-minimal pair beyond IAAFT, read through the feature the more flexible statistic weights. Maxima (Chebyshev, barycentre max) are the exception: their expectation also depends on T and on the spectrum of x ∓ y. The relations are checked numerically in [`identities.json`](../research/representation/atlas/pair_catalogue/identities.json): Spearman (6/π) arcsin(ρ/2), Kendall (2/π) arcsin ρ, Székely's dCor, Chatterjee ξ.
+- **Envelope correlation.** Its Gaussian partner is |γ|² = r² + corr(x, H[y])² (H the Hilbert transform), not r², so z(pec, r²) mixes in lag. pec against |γ|² beyond IAAFT reads amplitude co-modulation beyond linear coupling. Likewise PLV = (π/4)|γ| ₂F₁(½, ½; 2; |γ|²) per frequency.
+- **Ceiling rule for mapped pairs.** When the Gaussian-determined partner is mapped through its exact relation, z₀ is 1 minus estimator noise by construction. Judge such pairs by the null SD of the net, not by z₀ > .98.
+- **Chebyshev against L1** (no class reading in `assumptions.READINGS`): how far each pair's largest disagreement departs from its typical disagreement, i.e. the tail of x − y. Read on normal-scored windows only (above).
+
 ## What z can and cannot say
 
 - **Sensitive to, not specific to, heterogeneity across pairs.** z responds when a property varies across pairs independently of shared strength. A uniform change barely registers, but level still moves z in three ways:
@@ -87,6 +98,9 @@ The defensible reading of a robust–classical divergence is time-heterogeneous 
 ## Mistakes already made, kept so they are not repeated
 
 - A non-Gaussian MI "level rise" from the uncorrected Kraskov estimator, read as character. Withdrawn.
+- Linear pairs whose member is a multitaper or best-lag statistic assumed degenerate under spectrum-final IAAFT. DPSS tapers and zero-padded lagged correlation are not fixed by the periodogram, so real − IAAFT moves by up to .08 with the drug (axis screen, 22 November).
+- Tail-sensitive statistics (MinCovDet, Chebyshev) on z-scored windows read against spectrum-final IAAFT. The draws lose the channel tails, giving spurious effects of −16 SD or of reversed sign.
+- A between-animal, extrapolated delta-matched regression described as "sleep at matched delta" (manuscript draft, 20 November). Within animal, sleep and drug windows barely overlap in delta fraction.
 - Absorption by 1-s segment surrogates read as "non-stationarity rather than nonlinear dependence" (19 November). A mixture within the window is route 2 of the definition; only drift slower than the window is the classic false positive.
 - A raw linear–rank fall read as nonlinearity when it tracks marginal shape.
 - Surrogate-reproduced effects called "beyond spectral".
