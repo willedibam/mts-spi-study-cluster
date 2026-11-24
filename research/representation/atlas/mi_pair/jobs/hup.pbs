@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=04:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_hup
+#PBS -j oe
+# HUP SOZ test (../preregs/hup-prereg.md), one array index per line of hup/groups.txt:  qsub -J 0-9 -v SRC=<snapshot> jobs/hup.pbs
+# SRC: frozen source snapshot (operations/sources/hup-<commit>) with its .venv link. Sets and summary run after all indices.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd $SRC/research/representation/atlas/mi_pair/hup || exit 2
+DS=/scratch/ql44/we2614/mts-spi-study/data/human/ds004100
+O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/hup; W=/scratch/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-hup-261124/windows
+mkdir -p $O/edges $W; PY="env PYTHONPATH=$SRC/src:$SRC $SRC/.venv/bin/python"
+SUBS=$(sed -n "$((PBS_ARRAY_INDEX + 1))p" groups.txt)
+$PY extract.py $DS $W $SUBS || exit 3
+OK=$(for s in $SUBS; do [ -f $W/$s.npz ] && echo $s; done)
+$PY score.py edges $W $O/edges 48 $OK || exit 4
+echo GROUPDONE $PBS_ARRAY_INDEX $OK
