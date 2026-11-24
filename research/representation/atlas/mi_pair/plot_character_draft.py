@@ -190,8 +190,7 @@ def delta_scatter(ax, d, floor=-13, s=3.5, fit=True):
             ax.plot([x0, x1], np.polyval(b, [x0, x1]), color=COLOR["ink"], lw=.6, ls=ls, zorder=4)
     for e, c, a in [(nd, COLOR["awake_eo"], .35)] + [(d[d.group == g], COLOR[g], .8) for g in ("SLP", "MD", "PF", "KT", "KTMD")]:
         lo_ = e.sd < floor
-        ax.scatter(e.delta[~lo_], e.sd[~lo_], s=s, lw=0, color=c, alpha=a, zorder=3 if c != COLOR["awake_eo"] else 2,
-                   rasterized=True)
+        ax.scatter(e.delta[~lo_], e.sd[~lo_], s=s, lw=0, color=c, alpha=a, zorder=3 if c != COLOR["awake_eo"] else 2)
         ax.scatter(e.delta[lo_], np.full(lo_.sum(), floor), s=s * 1.6, marker="v", lw=0, color=c, alpha=a, zorder=3,
                    clip_on=False)
     ax.set_xlim(.15, 1); ax.set_ylim(floor - .5, 3.5)
@@ -224,17 +223,17 @@ def glyph(ax, u, color, style="graded", key=False):
     lev = [.5, .95, .99] if style == "graded" else [.5, .9, .99]
     if style in ("dots", "graded"):
         core = ~(far | mid) if style == "graded" else ~far
-        ax.scatter(x[core], y[core], s=2.2, lw=.15, ec="white", color="#A7AFB5", alpha=.6, rasterized=True, zorder=2)
+        ax.scatter(x[core], y[core], s=2.2, lw=.15, ec="white", color="#A7AFB5", alpha=.6, zorder=2)
         if style == "graded":
-            ax.scatter(x[mid], y[mid], s=3.4, lw=.2, ec="white", color=mix(color, .42), rasterized=True, zorder=4)
-        ax.scatter(x[far], y[far], s=4.6, lw=.2, ec="white", color=color, rasterized=True, zorder=4)
+            ax.scatter(x[mid], y[mid], s=3.4, lw=.2, ec="white", color=mix(color, .42), zorder=4)
+        ax.scatter(x[far], y[far], s=4.6, lw=.2, ec="white", color=color, zorder=4)
     elif dark:
         ax.add_patch(Rectangle((-E, -E), 2 * E, 2 * E, color=DARK, lw=0, zorder=0)); o = np.argsort(q)
         c = plt.get_cmap("inferno")(.18 + .82 * np.clip(np.log1p(q[o]) / np.log1p(chi2.ppf(.999, 2)), 0, 1))
-        ax.scatter(x[o], y[o], c=c, s=np.where(far[o], 4, 1.8), lw=0, rasterized=True, zorder=2)
+        ax.scatter(x[o], y[o], c=c, s=np.where(far[o], 4, 1.8), lw=0, zorder=2)
     else:
         cm = LinearSegmentedColormap.from_list("g", [mix(color, .18), color, mix(color, 1.6, COLOR["ink"])])
-        ax.hexbin(x, y, gridsize=30, extent=(-E, E, -E, E), cmap=cm, bins="log", mincnt=1, lw=0, rasterized=True,
+        ax.hexbin(x, y, gridsize=30, extent=(-E, E, -E, E), cmap=cm, bins="log", mincnt=1, lw=0,
                   zorder=2)
     if key:                                              # lower-right corner: empty for r > 0
         for j, (c_, s_, l_) in enumerate(((mix(color, .42), 3.4, r"beyond 95\%"), (color, 4.6, r"beyond 99\%"))):
@@ -269,7 +268,7 @@ def window_strip(ax, X, color, every=4, lw=.3, scale=None):
     Z = (X - X.mean(0)) / (X.std(0) if scale is None else scale); t = np.arange(len(Z)) / 100
     n = len(range(0, Z.shape[1], every))
     for j, m in enumerate(range(0, Z.shape[1], every)):
-        ax.plot(t, Z[:, m] * .28 - j, color=color, lw=lw, rasterized=True)
+        ax.plot(t, Z[:, m] * .28 - j, color=color, lw=lw)
     ax.set(xlim=(0, t[-1]), ylim=(-n + .2, 1.2) if scale is None else (-n + .45, .55), xticks=[], yticks=[])
     frame(ax, LIGHT, .6)
 
@@ -423,7 +422,7 @@ def icon(ax, name, root, base=(.9, .91, .92), style="mesh"):
             c = np.clip(np.outer(fl[o] * (.9 + .1 * sh[o]), base) / max(base), 0, 1)
         else:
             c = np.clip(np.outer(.42 + .58 * sh[o], base), 0, 1)
-        ax.add_collection(PolyCollection(T[o][:, :, :2], fc=c, ec=c, lw=.12, rasterized=True, zorder=1))
+        ax.add_collection(PolyCollection(T[o][:, :, :2], fc=c, ec=c, lw=.12, zorder=1, rasterized=True))   # ~200k faces: vector = 40 MB SVG
         H, ex, ey = np.histogram2d(*P[:, :2].T, bins=160)                            # template's projected outline
         inside = binary_fill_holes(binary_closing(H > 0, iterations=3, border_value=0))
         ax.contour((ex[1:] + ex[:-1]) / 2, (ey[1:] + ey[:-1]) / 2, gaussian_filter(inside.astype(float), 1).T, [.5],
@@ -575,7 +574,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         for a_, sc in panes:
             a_.fill_between(xx, np.polyval(c, xx) - w, np.polyval(c, xx) + w, color=LIGHT, lw=0, zorder=0)
             a_.plot(xx, np.polyval(c, xx), color="white", lw=.8 * sc + .2, zorder=1)
-            a_.scatter(g[~out], k[~out], s=6 * sc, lw=.25 * sc ** .5, ec="white", color=GREY, alpha=.6, rasterized=True,
+            a_.scatter(g[~out], k[~out], s=6 * sc, lw=.25 * sc ** .5, ec="white", color=GREY, alpha=.6,
                        zorder=2)
             a_.scatter(g[out], k[out], s=26 * sc, lw=.5 * sc ** .5, ec="white", color=ink, zorder=3)
         ax.set(xlim=view[0], ylim=view[1])
@@ -834,7 +833,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         edge = bx.transData.inverted().transform(ax_.transAxes.transform([(1 - side, .04), (1 - side, .96)]))
         bx.add_patch(Polygon([e_, *edge], closed=True, fc=LIGHT, ec="none", alpha=.45, zorder=1, clip_on=False))
     for ext in ("svg", "pdf", "png"):
-        fig.savefig(output.with_suffix("." + ext), dpi=180 if ext == "png" else None,   # no dates: reruns
+        fig.savefig(output.with_suffix("." + ext), dpi=600,    # 600: PNG, (a)'s photograph, (d)'s meshes; no dates: reruns
                     metadata={"svg": {"Date": None}, "pdf": {"CreationDate": None}}.get(ext))   # give same files
     plt.close(fig)
     print(f"animal means {np.round(animal.values, 4)}, t3 {t.statistic:.2f}, p {t.pvalue:.4f}")

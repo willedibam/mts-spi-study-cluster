@@ -25,6 +25,17 @@ Each folder's `*_result.txt`, `*_qc.txt` or `*_sum.py` output reproduces the num
 - **Human ketamine.** `extract_kv.py` and `select_kv.py` read DANDI 001347 by asset ID (`kv_jobs*.txt`).
 - Paths to the venv (`/Users/wedi0306/Code/mts-spi-study-cluster/.venv`) and scratch directories are hard-coded as in the original runs.
 
+## Figure inputs (`figwin/`)
+
+`plot_character_draft.py` (fig:mi, also `--c-top delta` for `mi-figure-cdelta`) and `plot_delta_supp.py` read the arrays above plus `figwin/`, `human/prios-sfull/z.npz` (from gdata `.../atlas-mi-pair-261117/human/prios-sfull/`) and `zns/` (gdata, checked against `zns/SHA256SUMS`). `figwin/` is local-only and was lost once with a deleted worktree; rebuilt on 24 November 2026 with the commands below, the committed script reproduced the committed figure byte for byte. `R` is `results/representation/atlas-mi-pair-261117`.
+
+- `windows.npz`: on Gadi, `fig_windows.py /scratch/ql44/we2614/mts-spi-study/atlas/banks windows.npz <ids>`, the ids being those of `CALLOUT`, `PANEL_B`, `TRACE_MAC` and `GLYPH_PAIR[0]` in `plot_character_draft.py`.
+- `start_s.csv`: on Gadi, columns `stage,id,unit,state,session,start_s`, one row per entry of `rows` in `neurotycho-long-stage-{a,b}/manifest.json` under the banks directory.
+- `brain_{Chibi,George}.npz`: the first `.mat` in `results/representation/neurotycho/neurotycho_audit_260910/montage/{Chibi,George}.zip`, read with `scipy.io.loadmat(simplify_cells=True)` and saved as `I`, `X`, `Y` and `source` (the `.mat` name).
+- `prios_electrodes_mni305.npy`: x, y, z of the rows with `group` grid or strip and `silicon` "no" (NaN coordinates dropped), concatenated over `sub-PRIOS0{1-6,9}_ses-1_electrodes.tsv` of OpenNeuro ds004370 in sorted order (381 x 3). Local copies in `$R/figwin-src/prios-electrodes/`.
+- `assets.npz`: `fig_assets.py <download dir> $R/figwin`; the downloads and their URLs are listed in its docstring.
+- `traces_d.npz`: `fig_traces.py $R <claar_sel> <claar_ind_sel> $R/figwin-src/prios`. The Claar selections are in the notes folder `local_89f26329-.../claar/claar_sel` and `.../critic-2/data/claar_ind_sel`; the PRIOS windows are gdata `.../human/prios-sfull/windows/*.npz`.
+
 ## Provenance of `review/`
 
 - **Source.** Recovered on 17 November from the review session's transcript, `~/.claude/projects/-Users-wedi0306-Code-mts-spi-study-cluster--claude-worktrees-real-world-apps-9b53a1/e32304ac-64a6-4158-8b6e-6f8d3e9556fc.jsonl`.

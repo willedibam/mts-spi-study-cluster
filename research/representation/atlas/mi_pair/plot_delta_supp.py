@@ -53,7 +53,7 @@ def draw(root, output):
     fig.legend(h, list(NAME.values()) + ["wake and sleep fit", "extrapolated"], ncol=8, loc="outside upper center",
                fontsize=5.8, frameon=False, handletextpad=.2, columnspacing=.9, handlelength=1.6)
     for ext in ("svg", "pdf", "png"):
-        fig.savefig(output.with_suffix("." + ext), dpi=180 if ext == "png" else None,   # no dates: reruns
+        fig.savefig(output.with_suffix("." + ext), dpi=600 if ext == "png" else None,   # no dates: reruns
                     metadata={"svg": {"Date": None}, "pdf": {"CreationDate": None}}.get(ext))   # give same files
     for an in ANIMALS:
         d = df[df.animal == an]; f = d[d.group.isin(("awake_eo", "SLP")) | (d.state == "awake_ec")]
