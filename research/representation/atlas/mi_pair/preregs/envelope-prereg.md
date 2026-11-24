@@ -74,7 +74,7 @@ Pipeline as the anchor: 32 channels, T = 1000, real window normal-scored, `edges
   - Additivity: a mixture's GOF residual should be close to the coupling part's own N0 residual.
   - Without additivity, a real-data retention is read as "a fall the gain model does not produce", not as a fraction of mechanism.
 
-**Amendment, 24 November, before any calibration output existed.** The first freeze (`86b34002`) set 16 development and 24 confirmation windows, run locally. That local run was stopped after 3 minutes, before it had written anything (output is written only at the end). The calibration moved to Gadi (`jobs/envcalib.pbs`, six 48-cpu jobs sharded over generators), with 48 and 96 windows for tighter retention intervals. The thresholds, generators, candidates and selection are unchanged.
+**Amendment, 24 November, before any calibration output existed.** The first freeze (`28883b11` on main) set 16 development and 24 confirmation windows, run locally. That local run was stopped after 3 minutes, before it had written anything (output is written only at the end). The calibration moved to Gadi (`jobs/envcalib.pbs`, six 48-cpu jobs sharded over generators), with 48 and 96 windows for tighter retention intervals. The thresholds, generators, candidates and selection are unchanged.
 
 ## Real-data rule (applies only if a variant passes confirmation)
 
