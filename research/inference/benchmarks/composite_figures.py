@@ -871,14 +871,15 @@ def draw_baseline(ax, data, key, *, spread='band'):
     return right
 
 
-def draw_feature(ax, data, k, *, ylabel=True):
-    """z_ab against control on a fixed [-1, 1] range (10-90% band): boxed, no ticks, snapshots marked."""
+def draw_feature(ax, data, k, *, ylabel=True, marks=True):
+    """z_ab against control on a fixed [-1, 1] range (10-90% band): boxed, no ticks; `marks` puts the snapshot
+    triangles on (only the features whose edge planes are drawn get them)."""
     spec = data.spec
     f = spec.features[k]
     ax.axhline(0, color='.85', lw=.5, zorder=0)
     _series(ax, data, f'z{k}', Z_COLOR, 'o', ms=1.2, lw=.9, spread='band', secondary=True)
     mark_boundary(ax, spec)
-    for snapshot in data.snapshots:
+    for snapshot in data.snapshots if marks else ():
         ax.plot(snapshot.control, 1.0, 'v', color='.45', ms=2.2, zorder=5)
     ax.set(ylim=(-1.1, 1.1))
     _no_ticks(ax)
@@ -1097,7 +1098,7 @@ def draw_column(fig, x0, y0, data, glyph=None, edge_rows=None, labels='abcd', sp
     y += g['feature_title']
     for k in range(3):
         if k < len(spec.features):
-            draw_feature(axes_at(fig, left+k*step, y, side, side), data, k, ylabel=k == 0)
+            draw_feature(axes_at(fig, left+k*step, y, side, side), data, k, ylabel=k == 0, marks=k in edge_rows)
         else:
             cohort_legend(axes_at(fig, left+k*step-.05, y, side+.4, side), spec)
     y += side+g['feature_bottom']
@@ -1205,7 +1206,7 @@ def export_panels(data, out=OUT, *, stacked=False, spread='band'):
         emit(fig, f'baseline-{slug}')
     for k in range(len(spec.features)):
         fig, ax = single(g['feature'], g['feature'])
-        draw_feature(ax, data, k)
+        draw_feature(ax, data, k, marks=k in spec.edge_features)
         emit(fig, f'feature-{k+1}')
         limits = edge_limits(data, k) if spec.edge_scale == 'shared' else None
         pairs = [single(g['edge'], g['edge']) for _ in data.snapshots]
