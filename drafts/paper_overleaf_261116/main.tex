@@ -248,6 +248,23 @@ The two coordinates thus form a code for the form of dependence (\cref{fig:cases
 	\label{fig:transitions}
 \end{figure*}
 
+\subsection{Anaesthesia reorganises non-Gaussian dependence across cortical pairs}
+\label{sec:mi}
+\will{In macaque electrocorticography, $z(\text{Gaussian MI}, \text{kNN MI})$ falls beyond its matched surrogate under each of four anaesthetic conditions and not in sleep; the direction replicates in mouse EEG under isoflurane induction and human ECoG under propofol (\cref{fig:mi}). Port the results prose (robustness, delta matching, segment surrogates) from the 18 November draft.}
+
+\begin{figure*}[p]	% full width with its caption: its own page
+	\centering
+	\includegraphics[width=\linewidth]{mi-figure}
+	\caption{\textbf{Under anaesthesia, the Gaussian prediction accounts less well for how information is shared across cortical pairs.}
+	Macaque electrocorticography \cite{yanagawa2013}: 10-s windows, 32 normal-scored electrodes. For each of the 496 pairs, $G=-\tfrac12\log(1-r^2)$ is the mutual information (MI) of a Gaussian with the pair's correlation $r$, and $K$ is a nearest-neighbour estimate \cite{kraskov2004}; with normal-scored margins, $K-G$ estimates the departure from that Gaussian \cite{ince2017}. A window's coordinate is $z=\operatorname{corr}(G,K)$ over pairs; $\Delta z$ is $z$ minus that of a joint IAAFT surrogate of the window (same cross-spectra) \cite{schreiber2000surrogate}, less the session's eyes-closed wake mean, in standard deviations (SDs) of eyes-open wake windows (1~SD $=0.0040$ in $z$).
+	\textbf{(a)}~One ketamine--medetomidine pair, selected rather than typical, beside a Gaussian sample with the same $r$: $G$ is equal, $K$ is $1.41$ against $0.93$ in the surrogate. Below, the density of the channels' difference: $r$ fixes its width but not its shape (excess kurtosis $9.8$).
+	\textbf{(b)}~$K$ against $G$ for all pairs of each state's median-$\Delta z$ window. Grey, the band holding 95\% of the surrogate's pairs, drawn about the recording's line so that a level shift in $K$ moves no pair out; coloured, pairs outside it. Above, $\Delta z$ of every window in the session (shown window circled).
+	\textbf{(c)}~$\Delta z$ by state (box, interquartile range; whiskers, $1.5\times$ that range; numbers, means). Windows, sessions, animals: wake 300, 30, 4; ketamine--medetomidine 110, 11, 4; sleep 210, 7, 2; ketamine, medetomidine and propofol 40, 4, 2 each. Strips, the circled windows (8 electrodes): state medians, and ketamine--medetomidine's most extreme.
+	\textbf{(d)}~Replication on (c)'s axis: macaque animal means (one-sided test); mouse EEG under isoflurane induction \cite{claar2023}, 9 of 17 mice passing a preregistered rule; human ECoG under propofol \cite{vanblooijs2023prios}, 7 patients. Bars, 95\% intervals. Bold numbers are in each dataset's own wake SD; the human SD is four times the macaque's.
+	A fall in $\Delta z$ means $G$ predicts less well which pairs share most information beyond the surrogate's linear-Gaussian dependence; it does not measure the amount of excess MI, which rises under ketamine and falls under propofol.}
+	\label{fig:mi}
+\end{figure*}
+
 % Table style example (striped rows, shaded header); delete when unused.
 \begin{table}
 	\centering

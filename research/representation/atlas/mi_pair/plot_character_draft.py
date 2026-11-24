@@ -20,7 +20,9 @@ physiology unknown) reach 74 and 86 at about 3 robust SDs. Under the transient t
 .43 of .63 (shifted-mask control .66; K by ksg with no Theiler window), third of the window's off-band pairs and level
 with 78-90 (.41). The Gaussian tile's K_surr is its own joint IAAFT surrogate, as the bank's (edges.py). Selected, not typical. Its normal-scored samples are drawn beside a synthetic Gaussian of the same
 correlation; G and K are the banked values, the Gaussian's are computed on 4000 samples. Above (c), four of its dots drawn as their raw windows (stacked traces of every 4th
-electrode): the median wake, sleep and propofol windows and the most extreme window, the propofol one being (b)'s.
+electrode): the median wake, sleep and propofol windows and the most extreme window, the propofol one being (b)'s. --c-top stack (not the default; written as mi-figure-cstack) instead stacks, per state, its median window
+(CALLOUT's; ket. + med.'s is (b)'s big one) over the window nearest its 10th percentile of Δz over all animals
+(figwin/windows_p10.npz).
 (d) shares (c)'s axis, so subject and window effects compare directly. Its strips are one subject's wake and anaesthetised windows chosen for contrast (fig_traces.py; TRACE_MAC), each channel standardised (G and K are blind to amplitude). (a)'s glyphs (glyph()): by default graded, samples between the same-r Gaussian's 95 and 99% contours in a tint, those beyond 99% in the pair's colour; --glyph dots colours only those beyond 99%; --glyph dark colours every sample by its Gaussian distance (inferno) on a dark tile, --glyph hex bins them; the shape of the two electrodes' difference is drawn below them (--no-diff drops it). The segment-surrogate timescale panel of v11 is dropped (checkpoint fc81155e).
 (a)'s brain is the provider's photograph of Chibi's left hemisphere with the real electrode positions (Neurotycho
 ChibiMap.mat, from the 20110621 KTMD download, saved as figwin/brain_Chibi.npz; George's GeorgeMap.mat, from the
@@ -716,11 +718,20 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
 
     # c-d: the pattern effect and its replication
     left = r2
-    gs = left.add_gridspec(2, 2, height_ratios=[.4, 1], width_ratios=[1.92, 1.08], hspace=.04, wspace=.05)
+    stack = ctop == "stack"
+    gs = left.add_gridspec(2, 2, height_ratios=[.52 if stack else .4, 1], width_ratios=[1.92, 1.08], hspace=.04,
+                           wspace=.05)                   # stack: two strips per state need a taller top row
     ax_c = left.add_subplot(gs[1, 0]); ax_f = left.add_subplot(gs[1, 1], sharey=ax_c)
     above = blended_transform_factory(ax_c.transData, ax_c.transAxes)   # strips sit over their own state column
-    strips = [ax_c.inset_axes([STATES.index(df.loc[df.id == wid, "group"].iloc[0]) - .45, 1.07, .9, .16],
-                              transform=above) for wid, _ in CALLOUT] if ctop == "traces" else []
+    calls = [(wid, note, 1.07, .16) for wid, note in CALLOUT] if ctop == "traces" else []   # (id, note, bottom, height)
+    if stack:                                            # per state, stacked: its median window (CALLOUT's, so (b)'s;
+        med = {df.loc[df.id == w_, "group"].iloc[0]: w_ for w_, n_ in CALLOUT if n_ == "median"}   # ket. + med.'s is
+        med["KTMD"] = PANEL_B[0][1]                      # (b)'s big one) over the window nearest its 10th percentile
+        for s in STATES:                                 # of Δz over all animals (figwin/windows_p10.npz)
+            e = df[df.group == s]; p10 = e.loc[(e.sd - np.percentile(e.sd, 10)).abs().idxmin(), "id"]
+            calls += [(med[s], "median", 1.3, .14), (p10, "10th pct.", 1.07, .14)]
+    strips = [ax_c.inset_axes([STATES.index(df.loc[df.id == wid, "group"].iloc[0]) - .45, y0, .9, h],
+                              transform=above) for wid, _, y0, h in calls]
     if ctop == "delta":                                  # every animal: Δz against delta fraction (sleep: Chibi, George)
         for q, an in enumerate(("Chibi", "George", "Kin2", "Su")):
             dax = ax_c.inset_axes([-.45 + 1.5 * q, 1.12, 1.32, .36], transform=above); dax.set_in_layout(False)
@@ -765,14 +776,22 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     panel_title(left, "c", "Pattern", r"$z$ falls under every anaesthetic, not in sleep", sub=True)
     states_axis(ax_c); ax_c.set_xlim(-.7, None)              # room for 'wake SDs' left of Wake's mean
     assert ctop != "traces" or {w_ for _, w_, _ in PANEL_B[1:]} <= {w_ for w_, _ in CALLOUT}   # (b)'s small windows
-    with np.load(root / "figwin/windows.npz") as fw:        # raw windows of the called-out dots (fig_windows.py)
-        for sax, (wid, note) in zip(strips, CALLOUT):     # are drawn above (c)
-            r = df[df.id == wid].iloc[0]; s = r.group; lab = list(fw[wid + "|chan"])
-            X = fw[wid][:, [lab.index(v) for v in chan[wid]]].astype(float)
+    with np.load(root / "figwin/windows.npz") as fw, \
+            np.load(root / f"figwin/windows_p10.npz" if stack else root / "figwin/windows.npz") as fp:
+        for sax, (wid, note, _, _) in zip(strips, calls):  # raw windows of the called-out dots (fig_windows.py)
+            src = fw if wid + "|chan" in fw.files else fp  # are drawn above (c)
+            assert wid + "|chan" in src.files, f"{wid}: not in figwin (fig_windows.py)"
+            r = df[df.id == wid].iloc[0]; s = r.group; lab = list(src[wid + "|chan"])
+            X = src[wid][:, [lab.index(v) for v in chan[wid]]].astype(float)
             window_strip(sax, X, COLOR[s])
-            sax.set_title(rf"\textbf{{{SHORT[s].replace(chr(10), '')}}}" + "\n" + note, fontsize=5.6,
-                          color=COLOR[s], pad=1.5, linespacing=1.1)
-            sax.set_xlabel(f"{r.sd:+.1f} SD".replace("-", "--"), fontsize=5.6, labelpad=1.5)
+            sdl = f"{r.sd:+.1f} SD".replace("-", "--")
+            if stack:                                    # state name over the pair; each strip its note and Δz (SDs)
+                sax.set_title((rf"\textbf{{{SHORT[s].replace(chr(10), '')}}}" + "\n" if note == "median" else "")
+                              + f"{note} {sdl[:-3]}", fontsize=5.6, color=COLOR[s], pad=1.5, linespacing=1.1)
+            else:
+                sax.set_title(rf"\textbf{{{SHORT[s].replace(chr(10), '')}}}" + "\n" + note, fontsize=5.6,
+                              color=COLOR[s], pad=1.5, linespacing=1.1)
+                sax.set_xlabel(sdl, fontsize=5.6, labelpad=1.5)
             x_, y_ = pos[wid]
             ax_c.scatter(x_, y_, s=16, facecolor="none", edgecolor=COLOR["ink"], lw=.6, zorder=4)
             if not link:
@@ -865,7 +884,7 @@ if __name__ == "__main__":
     p.add_argument("--b-top", choices=("none", "gmarg", "resid", "big", "time", "clock"), default="time",
                    help="(b)'s top band: as is, a G marginal over the big window, per-state residual curves, larger scatters, Δz over each session (state slots; clock: real seconds within them)")
     p.add_argument("--b-animal", default=None, help="(b): each state's median-Δz window from this animal only (e.g. Chibi)")
-    p.add_argument("--c-top", choices=("traces", "delta"), default="traces",
-                   help="(c)'s top row: raw windows of called-out dots, or Δz against delta fraction for the animals with sleep")
+    p.add_argument("--c-top", choices=("traces", "stack", "delta"), default="traces",
+                   help="(c)'s top row: raw windows of called-out dots; stack: per state its median window over its 10th-percentile one; or Δz against delta fraction for the animals with sleep")
     a = p.parse_args()
     draw(a.root, a.output, a.icons, a.glyph, a.diff, a.labels, not a.no_link, a.b_top, a.b_animal, a.c_top)
