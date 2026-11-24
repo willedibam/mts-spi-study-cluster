@@ -53,7 +53,7 @@ Expected 0.6–1.3 KSU (about 300,000 edges over 47 patients with ≥ 4 SOZ cont
 
 ## Run
 
-Gadi, `jobs/hup.pbs`, ten array indices over `hup/groups.txt` (47 patients with ≥ 4 SOZ contacts in metadata, balanced by edge count), from a source snapshot `operations/sources/hup-<commit>`; then `score.py sets` and `score.py summary`. Per-edge arrays on gdata `representation/atlas-mi-pair-261117/hup/edges/`.
+Gadi, `jobs/hup.pbs`, ten array indices over `hup/groups.txt` (47 patients with ≥ 4 SOZ contacts in metadata, balanced by edge count), from the source snapshot `operations/sources/hup-b398da13` (job 185084113[], submitted 24 November; logs in scratch `operations/logs/atlas-mi-pair-hup-261124/`; windows in scratch `representation/atlas-mi-pair-hup-261124/windows/`); then `score.py sets` and `score.py summary`. Per-edge arrays on gdata `representation/atlas-mi-pair-261117/hup/edges/`.
 
 ## Deviations
 
