@@ -571,7 +571,7 @@ Candidate pairs from new upstream SPIs (not yet entries):
 
 ## Characters the bank cannot reach
 
-Every minimal pair of the r13 bank is catalogued above, so these are characters no pair of the bank reads. Upstream pyspi now has SPIs for four of them (none in benchmarked_p90; reaching them needs the pin bump and an atlas config that adds them). Each is a Gaussian-referenced level with expectation ~0, a cleaner readout than a z pair; *broad* marks a general property of dependence, *narrow* one tied to a band, lag or order. Nothing here has been computed.
+Every minimal pair of the r13 bank is catalogued above, so these are characters no pair of the bank reads. pyspi has SPIs for four of them, in the repo pin since 3.0.0 (ce4b20e) but none in benchmarked_p90, so they need an atlas config that adds them or a pyspi-free implementation checked against pyspi. Each is a Gaussian-referenced level with expectation ~0, a cleaner readout than a z pair; *broad* marks a general property of dependence, *narrow* one tied to a band, lag or order. Nothing here has been computed.
 
 ### Coupling that comes and goes in episodes within the window (time-heterogeneous coupling), against stationary coupling (broad)
 
@@ -579,7 +579,7 @@ Every minimal pair of the r13 bank is catalogued above, so these are characters 
 - **Gaussian value:** built in: each is referenced to its value for a Gaussian pair with the same r and lag-1 auto- and cross-correlations (Isserlis), so expectation ~0; a level readout, no partner needed
 - **Null:** real - joint spectrum-final IAAFT on normal-scored windows, as for the anchor
 - **Confounds:** a shared, slowly varying gain with unchanged coupling also makes the edge series persistent and heavy-tailed (the Canberra row separates the two); `edge_acf1` is a lag-1 (10 ms) statistic, so on 100-Hz ECoG with strong low-frequency power it reads persistence at the sampling scale, not at the scale of coupling episodes
-- **Links:** discriminates the MinCovDet reading: a mixture of covariance regimes with dwell longer than one sample raises `edge_acf1`; a heavy-tailed but serially independent copula raises `edge_excessvar` and `edge_topshare` but leaves `edge_acf1` ~0. Sliding-window variance alone cannot make this split (Hindriks et al. 2016).
+- **Links:** discriminates the MinCovDet reading: a mixture of covariance regimes with dwell longer than one sample raises `edge_acf1`; a heavy-tailed but serially independent copula raises `edge_excessvar` and `edge_topshare` but leaves `edge_acf1` ~0. Sliding-window variance alone cannot make this split (Hindriks et al. 2016). Lower value since the axis-screen MinCovDet mechanism check (outlying samples clustered in both states, clustering beyond IAAFT falls with the drug) and the MI segment surrogates (about 1-s mixture) already address persistence at the relevant scale.
 
 ### Whether a pair is jointly extreme more often in the upper than the lower tail (asymmetric copula, e.g. co-occurring sharp deflections of one polarity) (broad)
 
@@ -587,7 +587,7 @@ Every minimal pair of the r13 bank is catalogued above, so these are characters 
 - **Gaussian value:** zero for every radially symmetric copula (Gaussian and t included) at any r; the minimal pair z(tailasym_upper, tailasym_lower) has z0 = 1 minus noise under the null, so it needs the null-SD ceiling rule (guide proposal 7)
 - **Null:** real - IAAFT is valid but not needed for the level (expectation 0 exactly under symmetry); IAAFT checks finite-T bias
 - **Confounds:** the sign depends on channel polarity (common-reference ECoG keeps it consistent; a bipolar montage would not); k = 10 tail samples per window at 2 s and q .95, so 10-s windows or q .9 only
-- **Links:** rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen
+- **Links:** rank-based, many-sample version of bary-sign (signed against two-sided barycentre max), which already moves beyond IAAFT in the matched screen. Gain-immune: positive gains independent of the carrier sign, shared or multi-source, leave the joint distribution radially symmetric, so it reads dependence character that no gain account reaches. Run 23 November ([tailasym_screen.md](tailasym_screen.md)): signed level flat (-.0008, 0.2 SD) but edge profile reliability .11, so uninformative by the pre-stated rule; z(ta_up, ta_lo) passes the screen gates at 10 s (-.028, 3.2 SD, 4/4) but tracks the drug rise in channel skewness (post hoc, 2/4 animals with skewness as covariate). Not a gain-immune axis at this power
 
 ### Cross-frequency coupling: the low-band phase of one channel modulating the high-band amplitude of another (narrow)
 

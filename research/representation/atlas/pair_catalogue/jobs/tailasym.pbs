@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N tailasym_screen
+#PBS -j oe
+# Tail-dependence asymmetry on the axis-screen windows (../tailasym_screen.md). From the root of a checkout at the pushed branch:
+#   qsub -l ncpus=48,mem=190GB,walltime=02:00:00 -v ARM=long  research/representation/atlas/pair_catalogue/jobs/tailasym.pbs
+#   qsub -l ncpus=48,mem=190GB,walltime=01:00:00 -v ARM=short research/representation/atlas/pair_catalogue/jobs/tailasym.pbs
+set -euo pipefail
+: "${ARM:?}"
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; B=$A/banks/neurotycho-$ARM; S=$A/axis_screen/$ARM; O=$A/pair_catalogue/tailasym-$ARM; mkdir -p "$O"
+git rev-parse HEAD > "$O/commit.txt"
+python -c "import pyspi, importlib.metadata as m; print('pyspi', m.version('pyspi'), pyspi.__file__)" | tee "$O/pyspi.txt"
+M=research.representation.atlas.pair_catalogue.tailasym_screen
+python -u -m $M check "$B" 2
+python -u -m $M compute "$B" "$S" "$O" "$PBS_NCPUS"
+python -u -m $M collect "$O" "$A/pair_catalogue/tailasym-screen-$ARM.npz"
+python -u -m $M score "$A/pair_catalogue/tailasym-screen-$ARM.npz" "$B/manifest.json" "$A/pair_catalogue/tailasym-screen-$ARM.json"
+python -u -m $M netcorr "$A/pair_catalogue/tailasym-screen-$ARM.npz" "$A/pair_catalogue/tailasym-netcorr-$ARM.json"
