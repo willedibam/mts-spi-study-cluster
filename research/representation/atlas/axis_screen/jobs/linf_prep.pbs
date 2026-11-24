@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N axis_linf_prep
+#PBS -j oe
+# l1|linf preprocessing sensitivity at 2 s (../result.md). From the synced checkout's root:
+#   qsub -l ncpus=24,mem=94GB,walltime=01:00:00 research/representation/atlas/axis_screen/jobs/linf_prep.pbs
+# Runs the four arms ns, ns-m, z, z-m (see mechanism.py) on the 2-s bank; outputs linf-short-$PREP.{npz,json}.
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; B=$A/banks/neurotycho-short
+for PREP in ns ns-m z z-m; do
+    N=linf-short-$PREP; O=$A/axis_screen/$N; mkdir -p "$O"
+    git rev-parse HEAD > "$O/commit.txt"
+    python -u -m research.representation.atlas.axis_screen.linf_prep compute "$B" "$O" "$PBS_NCPUS" "$PREP"
+    python -u -m research.representation.atlas.axis_screen.linf_prep collect "$O" "$A/axis_screen/$N.npz"
+    python -u -m research.representation.atlas.axis_screen.mechanism score "$A/axis_screen/$N.npz" "$B/manifest.json" "$A/axis_screen/$N.json"
+done

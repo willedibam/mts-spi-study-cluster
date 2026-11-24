@@ -173,22 +173,24 @@ def score(path, manifest, output):
     # within drug sessions, window-level correlation of the axis net with each metric's net (session-demeaned)
     dw = np.isin(unit, ses) & (state == 'drug')
     dm = lambda y: y[dw] - np.array([np.nanmean(y[dw & (unit == u)]) for u in unit[dw]])
-    out['window_r_with_axis'] = {n: float(np.corrcoef(dm(net[:, MN.index('z_pc')]), dm(net[:, k]))[0, 1])
-                                 for k, n in enumerate(MN) if n != 'z_pc'}
-    G = [str(g) for g in D['groups']]; R = D['recurrence']
-    rec = lambda s: np.array([R[G.index(f'{u}__{s}')] for u in ses])
-    rd, ra = rec('drug'), rec(REF)
-    out['recurrence'] = dict(drug_real=float(rd[:, 0].mean()), drug_iaaft=float(rd[:, 1:].mean()),
-                             awake_real=float(ra[:, 0].mean()), awake_iaaft=float(ra[:, 1:].mean()),
-                             drug_level_net=animal(rd[:, 0] - rd[:, 1:].mean(1), ses),
-                             delta_net=animal((rd[:, 0] - rd[:, 1:].mean(1)) - (ra[:, 0] - ra[:, 1:].mean(1)), ses))
+    ax = 'z_pc' if 'z_pc' in MN else MN[0]  # linf_prep outputs: z_l1linf
+    out['window_r_with_axis'] = {n: float(np.corrcoef(dm(net[:, MN.index(ax)]), dm(net[:, k]))[0, 1])
+                                 for k, n in enumerate(MN) if n != ax}
+    if 'recurrence' in D.files:
+        G = [str(g) for g in D['groups']]; R = D['recurrence']
+        rec = lambda s: np.array([R[G.index(f'{u}__{s}')] for u in ses])
+        rd, ra = rec('drug'), rec(REF)
+        out['recurrence'] = dict(drug_real=float(rd[:, 0].mean()), drug_iaaft=float(rd[:, 1:].mean()),
+                                 awake_real=float(ra[:, 0].mean()), awake_iaaft=float(ra[:, 1:].mean()),
+                                 drug_level_net=animal(rd[:, 0] - rd[:, 1:].mean(1), ses),
+                                 delta_net=animal((rd[:, 0] - rd[:, 1:].mean(1)) - (ra[:, 0] - ra[:, 1:].mean(1)), ses))
     json.dump(out, open(output, 'w'), indent=1)
     for n, r in out['metrics'].items():
         print(f"{n:7s} awake real {r['awake']['real']:+.3f} iaaft {r['awake']['iaaft']:+.3f} | drug real {r['drug']['real']:+.3f} "
               f"iaaft {r['drug']['iaaft']:+.3f} | drug net {r['drug_level_net']['mean']:+.4f} ({r['drug_level_net']['positive']}+) "
               f"Δnet {r['delta_net']['mean']:+.4f} ({r['sd_multiple']:+.1f} SD) t3 {r['delta_net']['t3']:+.2f} ({r['delta_net']['positive']}+/{r['delta_net']['negative']}-) "
               f"eo {r['eyes_open']:+.4f} sleep {r['sleep']:+.4f} rec {r['recovery']:+.4f}")
-    print('recurrence', out['recurrence'])
+    print('recurrence', out.get('recurrence'))
     print('window r with axis', {k: round(v, 3) for k, v in out['window_r_with_axis'].items()})
 
 

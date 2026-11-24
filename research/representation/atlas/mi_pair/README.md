@@ -14,6 +14,7 @@ This folder holds the pyspi-free code behind the Gaussian-against-kNN MI result 
 | `amplitude/` | Amplitude-gate form test, macaque and mouse, with synthetic calibrations | Frozen: [`preregs/amplitude-prereg.md`](preregs/amplitude-prereg.md); inconclusive | `amplitude/gate_*.npz` |
 | `nonstat/` | Non-stationary (segment) surrogates against the stationary IAAFT null, 10-s macaque, with synthetic calibration | Frozen: [`preregs/nonstat-prereg.md`](preregs/nonstat-prereg.md); calibration shows it cannot separate gain from a coupling nonlinearity, so the real-data run is descriptive | `nonstat/calib1.*`, `nonstat/` scores |
 | `transient/` | Cut of samples beyond 5 robust SDs (±0.2 s) in any channel, against a shifted-mask control, 10-s macaque | Frozen: [`preregs/transient-prereg.md`](preregs/transient-prereg.md); result [`preregs/transient-result.md`](preregs/transient-result.md): independent of transients | `transient/score.txt`, `transient-score.json`, `SHA256SUMS` |
+| `cumulants/` | Cross-cumulant (J3 odd / J4 even) and envelope decomposition of the MI excess, 10-s macaque, with synthetic calibration | Frozen: [`preregs/cumulants-prereg.md`](preregs/cumulants-prereg.md) (J3 share .07: symmetric); post hoc `split.py` (J4 mostly along the pair difference direction) | `cumulants/calib1.*`, `split-calib.*`, `score.txt`, `split-score.*` |
 
 Each folder's `*_result.txt`, `*_qc.txt` or `*_sum.py` output reproduces the numbers quoted in `findings.md`.
 

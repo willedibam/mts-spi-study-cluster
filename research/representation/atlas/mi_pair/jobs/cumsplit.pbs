@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=00:30:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_cumsplit
+#PBS -j oe
+# Post hoc split of the fourth-order cumulant term (../cumulants/split.py).
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; cd $R/research/representation/atlas/mi_pair/cumulants || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117; mkdir -p $O/cumulants
+PY="env PYTHONPATH=$R/src $R/.venv/bin/python"; git -C $R log -1 --format='commit %H' > $O/cumulants/commit-split.txt
+for a in PF KT KTMD MD SLP; do $PY split.py $B/neurotycho-long-stage-a $O/cumulants/split_A_$a.npz $a first 48 || exit 3; done
+for a in PF KT KTMD MD; do $PY split.py $B/neurotycho-long-stage-b $O/cumulants/split_B_$a.npz $a first 48 || exit 3; done
+$PY split.py $B/neurotycho-long-stage-b $O/cumulants/split_B_SLP.npz SLP row 48 || exit 3
+$PY split.py score $O/cumulants > $O/cumulants/split-score.txt && cd $O/cumulants && sha256sum split_*.npz > SHA256SUMS-split && echo ALLDONE
