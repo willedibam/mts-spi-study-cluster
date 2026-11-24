@@ -1168,7 +1168,7 @@ requires-dist = [
     { name = "pyarrow", specifier = ">=15.0" },
     { name = "pycatch22", marker = "extra == 'atlas'", specifier = ">=0.5.0" },
     { name = "pyclustering", specifier = ">=0.10.1" },
-    { name = "pyspi", git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=736ee5c9807b4128bcb8db668ee82b7bf8e6dff4" },
+    { name = "pyspi", git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=4e0810ce1962a546b0b426ca9fdfea68387f0355" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "scikit-learn", specifier = ">=1.8" },
     { name = "scipy", specifier = ">=1.11" },
@@ -1940,7 +1940,7 @@ wheels = [
 [[package]]
 name = "pyspi"
 version = "3.0.0"
-source = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=736ee5c9807b4128bcb8db668ee82b7bf8e6dff4#736ee5c9807b4128bcb8db668ee82b7bf8e6dff4" }
+source = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi?rev=4e0810ce1962a546b0b426ca9fdfea68387f0355#4e0810ce1962a546b0b426ca9fdfea68387f0355" }
 dependencies = [
     { name = "colorama" },
     { name = "dtaidistance" },
