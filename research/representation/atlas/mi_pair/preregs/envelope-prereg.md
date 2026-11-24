@@ -61,18 +61,20 @@ Part 1 (construction, calibration rule and real-data rule) frozen 24 November 20
 
 Pipeline as the anchor: 32 channels, T = 1000, real window normal-scored, `edges.edge_mi`, one draw per null. Residual = z(real) − z(null). Retention R_v = mean residual under null v ÷ mean residual under N0 (joint IAAFT), per generator.
 
-- **Development** (`envcalib.py dev 16`): seeds 50000 + 1000·k + s, 16 windows per generator. Candidates are the four GOF variants σ ∈ {15, 40} × floor ∈ {diag, cm}. Baselines are N1 at σ 25 and 100. Each candidate also gets its DECOR arm.
+- **Development** (`envcalib.py dev 48`): seeds 50000 + 1000·k + s, 48 windows per generator. Candidates are the four GOF variants σ ∈ {15, 40} × floor ∈ {diag, cm}. Baselines are N1 at σ 25 and 100. Each candidate also gets its DECOR arm.
 - **A candidate passes** only if all of these hold:
   1. `linear` and `linear_hetspec`: |mean residual| ≤ .002.
   2. Each of the six gain generators: −.3 ≤ R ≤ .3. The bound is two-sided: overshoot fails, as N1's did. If a gain generator's N0 residual has t > −3 (no fall to remove), |mean residual| ≤ .003 instead.
   3. Each coupling generator: R ≥ .6. If its N0 t > −3, it is not gradable and is dropped from the gate (reported). At least `quadratic` and `decouple` must be gradable, or the calibration fails.
 - **Selection:** among passing candidates, the one with the largest minimum coupling R. Ties within .05 go to the larger σ, then to `diag` (fewer parameters).
-- **Confirmation** (`envcalib.py confirm 24 <variant>`): fresh seeds 90000 + …, 24 windows. The selected variant must pass the same gate on point estimates. Report a 95% bootstrap interval (over windows, ratio of means) for every R.
+- **Confirmation** (`envcalib.py confirm 96`): fresh seeds 90000 + …, 96 windows. Run in parallel with development for all four variants, but only the variant development selects is read (`gate.py --only`); the others' confirmation numbers are not looked at before the verdict. The selected variant must pass the same gate on point estimates. Report a 95% bootstrap interval (over windows, ratio of means) for every R.
   - If it fails, there is no second pick: the verdict is "cannot be separated".
 - **If no candidate passes development, or confirmation fails:** stop. The null cannot separate gain from coupling at this resolution. This is written into findings and not run on real data.
 - **Reported but never gating:** N1, DECOR, `switch`, `quad_weak` and the two mixtures.
   - Additivity: a mixture's GOF residual should be close to the coupling part's own N0 residual.
   - Without additivity, a real-data retention is read as "a fall the gain model does not produce", not as a fraction of mechanism.
+
+**Amendment, 24 November, before any calibration output existed.** The first freeze (`86b34002`) set 16 development and 24 confirmation windows, run locally. That local run was stopped after 3 minutes, before it had written anything (output is written only at the end). The calibration moved to Gadi (`jobs/envcalib.pbs`, six 48-cpu jobs sharded over generators), with 48 and 96 windows for tighter retention intervals. The thresholds, generators, candidates and selection are unchanged.
 
 ## Real-data rule (applies only if a variant passes confirmation)
 

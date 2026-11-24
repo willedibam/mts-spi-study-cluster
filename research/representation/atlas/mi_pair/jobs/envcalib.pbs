@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=01:30:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_envcalib
+#PBS -j oe
+# Synthetic calibration of the gain-over-floor null (../preregs/envelope-prereg.md). qsub -v PHASE=dev|confirm,N=<windows>,KS=<kinds csv>,TAG=<shard>
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; cd $R/research/representation/atlas/mi_pair/envnull || exit 2
+O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/envnull/calib; mkdir -p $O
+PY="env PYTHONPATH=$R/src $R/.venv/bin/python"; git -C $R log -1 --format='commit %H' > $O/commit-$PHASE-$TAG.txt
+$PY envcalib.py $PHASE $N 48 $O/calib-$PHASE-$TAG.npz $KS > $O/calib-$PHASE-$TAG.txt 2>&1 && echo ALLDONE

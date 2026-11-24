@@ -9,7 +9,9 @@ Generators (code pinned to existing calibrations):
             of nonstat 'burst' applied on top of 'quadratic' or 'decouple': additivity check)
 Nulls: N0 (joint IAAFT, the anchor), GOF variants (sigma x floor), GOF 'decor' arm of each, N1 (nonstat n1) at sigma 25 and 100.
 
-  python envcalib.py <phase: dev|confirm> <n windows> <n workers> <out.npz> [variant for confirm, e.g. 40-cm]
+  python envcalib.py <phase: dev|confirm> <n windows> <n workers> <out.npz> [kinds, comma-separated, default all]
+Seeds use each kind's index in the full KINDS list, so shards over kinds reproduce the unsharded run. Confirmation computes every
+variant on fresh seeds; the frozen rule reads only the variant that development selected (gate.py --only).
 """
 import sys, time, importlib.util, numpy as np, warnings
 from pathlib import Path
@@ -56,9 +58,9 @@ def synth(kind, rng):
     raise ValueError(kind)
 
 
-def nulls(phase, variant):
-    if phase == 'dev': return ['N0'] + [f'GOF {v}' for v in VARIANTS] + [f'DECOR {v}' for v in VARIANTS] + ['N1 s25', 'N1 s100']
-    return ['N0', f'GOF {variant}', f'DECOR {variant}']
+def nulls(phase):
+    base = ['N0'] + [f'GOF {v}' for v in VARIANTS] + [f'DECOR {v}' for v in VARIANTS]
+    return base + ['N1 s25', 'N1 s100'] if phase == 'dev' else base
 
 
 def one(args):
@@ -74,11 +76,12 @@ def one(args):
 
 
 if __name__ == '__main__':
-    phase, B, nw, out = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]; variant = sys.argv[5] if len(sys.argv) > 5 else None
-    names = nulls(phase, variant); t = time.time(); R = {}
-    jobs = [(k, SEED0[phase] + 1000 * i + s, names) for i, k in enumerate(KINDS) for s in range(B)]
+    phase, B, nw, out = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
+    ks = KINDS if len(sys.argv) < 6 or sys.argv[5] == 'all' else tuple(sys.argv[5].split(',')); assert set(ks) <= set(KINDS), ks
+    names = nulls(phase); t = time.time(); R = {}
+    jobs = [(k, SEED0[phase] + 1000 * KINDS.index(k) + s, names) for k in ks for s in range(B)]
     with Pool(nw) as p: res = p.map(one, jobs, chunksize=1)
-    for i, k in enumerate(KINDS):
+    for i, k in enumerate(ks):
         R[k] = np.array(res[i * B:(i + 1) * B]); m, sd = R[k].mean(0), R[k].std(0, ddof=1)
         print(f'{k:15s} ' + '  '.join(f'{n} {a:+.4f} (t {a / b * np.sqrt(B):+.1f})' for n, a, b in zip(names, m, sd)), flush=True)
-    print(f'[{time.time() - t:.0f} s]'); np.savez(out, nulls=names, kinds=KINDS, **R)
+    print(f'[{time.time() - t:.0f} s]'); np.savez(out, nulls=names, kinds=ks, **R)
