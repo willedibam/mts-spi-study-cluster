@@ -226,7 +226,7 @@ def glyph(ax, u, color, style="graded", key=False, sc=1.):
         core = ~(far | mid) if style == "graded" else ~far
         ax.scatter(x[core], y[core], s=2.2 * a2, lw=.15, ec="white", color="#A7AFB5", alpha=.6, zorder=2)
         if style == "graded":
-            ax.scatter(x[mid], y[mid], s=3.4 * a2, lw=.2, ec="white", color=mix(color, .42), zorder=4)
+            ax.scatter(x[mid], y[mid], s=3.4 * a2, lw=.2, ec="white", color=mix(color, .62), zorder=4)
         ax.scatter(x[far], y[far], s=4.6 * a2, lw=.2, ec="white", color=color, zorder=4)
     elif dark:
         ax.add_patch(Rectangle((-E, -E), 2 * E, 2 * E, color=DARK, lw=0, zorder=0)); o = np.argsort(q)
@@ -237,7 +237,7 @@ def glyph(ax, u, color, style="graded", key=False, sc=1.):
         ax.hexbin(x, y, gridsize=30, extent=(-E, E, -E, E), cmap=cm, bins="log", mincnt=1, lw=0,
                   zorder=2)
     if key:                                              # lower-right corner: empty for r > 0
-        for j, (c_, s_, l_) in enumerate(((mix(color, .42), 3.4, r"beyond 95\%"), (color, 4.6, r"beyond 99\%"))):
+        for j, (c_, s_, l_) in enumerate(((mix(color, .62), 3.4, r"beyond 95\%"), (color, 4.6, r"beyond 99\%"))):
             ax.scatter(-.05, -2.4 - .5 * j, s=s_ * 1.6 * a2, lw=.25, ec="white", color=c_, zorder=5)
             ax.text(.2, -2.4 - .5 * j, l_, ha="left", va="center", fontsize=4.8 * sc, color=GREY)
     g = np.linspace(-E, E, 200); GX, GY = np.meshgrid(g, g)
@@ -517,8 +517,8 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     sg = (sg - sg.mean(0)) / sg.std(0); Ksg = ksg(sg[:, 0], sg[:, 1], 0)            # the bank's (edges.py)
     f2 = lambda v: f"{v:.2f}".lstrip("0")
     gap = .015; gw_ = (AW - .03 - gap) / 2                   # glyph tiles fill (a)'s width; the gap between them
-    fb, fh = .103 + .08 * EX, .808 + .32 * EX                # difference frame's bottom and height (in), with any extra row
-    gy = (fb + fh + .155 + .1 * EX - .8 * EX) / H if diff else .25   # glyph row; with diff, the difference strip below
+    fb, fh = .263 + .08 * EX, .808 + .32 * EX                # difference frame's bottom and height (in), with any extra row
+    gy = (fb + fh + .075 + .1 * EX - .8 * EX) / H if diff else .25   # glyph row; with diff, the difference strip below
     gs_ = gw_ / .14                                          # glyph scale against the 0.14-wide tiles first drawn
     us = ug[np.random.default_rng(1).choice(len(ug), len(u), replace=False)]   # drawn: as many samples as the pair,
     us = np.column_stack([normal_score(us[:, 0]), normal_score(us[:, 1])])      # re-scored, so the margins match
@@ -581,9 +581,10 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         for a_, sc in panes:
             a_.fill_between(xx, np.polyval(c, xx) - w, np.polyval(c, xx) + w, color=LIGHT, lw=0, zorder=0)
             a_.plot(xx, np.polyval(c, xx), color="white", lw=.8 * sc + .2, zorder=1)
-            a_.scatter(g[~out], k[~out], s=6 * sc, lw=.25 * sc ** .5, ec="white", color=GREY, alpha=.6,
-                       zorder=2)
-            a_.scatter(g[out], k[out], s=26 * sc, lw=.5 * sc ** .5, ec="white", color=ink, zorder=3)
+            a_.scatter(g[~out], k[~out], s=4 * sc, lw=.25 * sc ** .5, ec="white", color=GREY, alpha=.5,
+                       zorder=2)                     # off-band dots: the smalls' smaller still, so a chance share
+            a_.scatter(g[out], k[out], s=(17 if big else 9) * sc, lw=(.4 if big else .3) * sc ** .5, ec="white",
+                       color=ink, zorder=3)          # (5%) does not cover the cloud
         ax.set(xlim=view[0], ylim=view[1])
         ax.set_xticks([0, .2, .4], ["0", ".2", ".4"]); ax.set_yticks([0, .2, .4], ["0", ".2", ".4"])
         if big:
