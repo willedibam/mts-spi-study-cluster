@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -l wd
+#PBS -N hup_screen
+#PBS -j oe
+# HUP full-pyspi screen (../preregs/hup-screen-prereg.md). Run from a source snapshot's root (its .venv is the pinned env). STAGE:
+#   bank    qsub -l ncpus=48,mem=190GB,walltime=02:00:00 -v STAGE=bank research/representation/atlas/mi_pair/jobs/hup-screen.pbs
+#   (pyspi) research/representation/atlas/jobs/farm.pbs once per bank: BANK=$MTS_SCRATCH/atlas/banks/hup-{ns,iaaft},
+#           OUT=$MTS_SCRATCH/atlas/pyspi/hup-{ns,iaaft}, SHARD_SIZE=25, CONFIG=<pyspi site-packages>/pyspi/configs/benchmarked_p90.yaml,
+#           PYSPI_SOURCE=<the snapshot .venv's site-packages> (the pinned pyspi, so farm.pbs's source check passes)
+#   post    qsub -l ncpus=48,mem=190GB,walltime=06:00:00 -v STAGE=post ...   (audit, reduce, reliability, score)
+set -euo pipefail
+cd "${PBS_O_WORKDIR:?}"
+export PYSPI_SOURCE=$(realpath .venv)/lib/python3.12/site-packages
+source jobs/gadi/env.sh
+A=$MTS_SCRATCH/atlas; O=$MTS_GDATA/representation/atlas-mi-pair-261117/hup/screen; mkdir -p "$O"
+W=$MTS_SCRATCH/representation/atlas-mi-pair-hup-261124/windows; E=$MTS_GDATA/representation/atlas-mi-pair-261117/hup/edges
+CONFIG=$PYSPI_SOURCE/pyspi/configs/benchmarked_p90.yaml
+P=research/representation/atlas/mi_pair/hup/screen.py
+echo "source $PWD" > "$O/source-$STAGE.txt"
+case "$STAGE" in
+    bank) python -u $P bank "$W" "$E" "$A" "$PBS_NCPUS" ;;
+    post)
+        for b in ns iaaft; do
+            python -m research.representation.atlas.extract "$A/banks/hup-$b" --out "$A/pyspi/hup-$b" --shard-size 25 --config "$CONFIG" --audit
+            python -u -m research.representation.atlas.discovery reduce "$A/banks/hup-$b" "$A/pyspi/hup-$b" \
+                --output "$A/discovery/hup-$b-reduced.npz" --jobs 32
+        done
+        python -u $P reliability "$A"
+        python -u $P score "$A" "$W" "$O/hup-screen.json" | tee "$O/summary.txt"
+        ;;
+    score) python -u $P score "$A" "$W" "$O/hup-screen.json" | tee "$O/summary.txt" ;;
+    *) echo "STAGE must be bank, post or score" >&2; exit 2 ;;
+esac
