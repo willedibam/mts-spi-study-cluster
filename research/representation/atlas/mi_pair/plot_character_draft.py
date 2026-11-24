@@ -211,22 +211,23 @@ def gauss(r, n=4000, seed=3):
 DARK = "#101015"
 
 
-def glyph(ax, u, color, style="graded", key=False):
+def glyph(ax, u, color, style="graded", key=False, sc=1.):
     """Joint samples (normal-scored) of one pair, each point one 10-ms sample, x one electrode and y the other, under the
     dashed probability contours of the Gaussian of the same r (the shape G assumes). graded (default): samples inside
     its 95% contour light grey, those between its 95 and 99% contours a tint of color, those beyond 99% (the wings)
     color; contours 50, 95 and 99%. dots: only the samples beyond 99% coloured; contours 50, 90, 99%. dark: every
     sample coloured by its Gaussian distance q (inferno, log scale, floored so the core stays visible), the far ones
-    larger. hex: the samples hex-binned (log count). key draws the graded colour key in the empty lower-right corner."""
-    x, y = u.T; r = np.corrcoef(x, y)[0, 1]; E = 3.4; dark = style == "dark"
+    larger. hex: the samples hex-binned (log count). key draws the graded colour key in the empty lower-right corner.
+    sc scales marker sizes and the key's text with the tile."""
+    x, y = u.T; r = np.corrcoef(x, y)[0, 1]; E = 3.4; dark = style == "dark"; a2 = sc ** 2
     q = (x ** 2 - 2 * r * x * y + y ** 2) / (1 - r ** 2); far = q > chi2.ppf(.99, 2); mid = (q > chi2.ppf(.95, 2)) & ~far
     lev = [.5, .95, .99] if style == "graded" else [.5, .9, .99]
     if style in ("dots", "graded"):
         core = ~(far | mid) if style == "graded" else ~far
-        ax.scatter(x[core], y[core], s=2.2, lw=.15, ec="white", color="#A7AFB5", alpha=.6, zorder=2)
+        ax.scatter(x[core], y[core], s=2.2 * a2, lw=.15, ec="white", color="#A7AFB5", alpha=.6, zorder=2)
         if style == "graded":
-            ax.scatter(x[mid], y[mid], s=3.4, lw=.2, ec="white", color=mix(color, .42), zorder=4)
-        ax.scatter(x[far], y[far], s=4.6, lw=.2, ec="white", color=color, zorder=4)
+            ax.scatter(x[mid], y[mid], s=3.4 * a2, lw=.2, ec="white", color=mix(color, .42), zorder=4)
+        ax.scatter(x[far], y[far], s=4.6 * a2, lw=.2, ec="white", color=color, zorder=4)
     elif dark:
         ax.add_patch(Rectangle((-E, -E), 2 * E, 2 * E, color=DARK, lw=0, zorder=0)); o = np.argsort(q)
         c = plt.get_cmap("inferno")(.18 + .82 * np.clip(np.log1p(q[o]) / np.log1p(chi2.ppf(.999, 2)), 0, 1))
@@ -237,8 +238,8 @@ def glyph(ax, u, color, style="graded", key=False):
                   zorder=2)
     if key:                                              # lower-right corner: empty for r > 0
         for j, (c_, s_, l_) in enumerate(((mix(color, .42), 3.4, r"beyond 95\%"), (color, 4.6, r"beyond 99\%"))):
-            ax.scatter(-.05, -2.4 - .5 * j, s=s_ * 1.6, lw=.25, ec="white", color=c_, zorder=5)
-            ax.text(.2, -2.4 - .5 * j, l_, ha="left", va="center", fontsize=4.8, color=GREY)
+            ax.scatter(-.05, -2.4 - .5 * j, s=s_ * 1.6 * a2, lw=.25, ec="white", color=c_, zorder=5)
+            ax.text(.2, -2.4 - .5 * j, l_, ha="left", va="center", fontsize=4.8 * sc, color=GREY)
     g = np.linspace(-E, E, 200); GX, GY = np.meshgrid(g, g)
     ax.contour(GX, GY, (GX ** 2 - 2 * r * GX * GY + GY ** 2) / (1 - r ** 2), levels=sorted(chi2.ppf(lev, 2)),
                colors=["#6E7380" if dark else COLOR["ink"]], linewidths=.5, linestyles=[(0, (3, 1.6))], zorder=3)
@@ -492,12 +493,12 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     with np.load(root / "figwin/windows.npz") as fw:
         lab = list(fw[wid + "|chan"]); X = fw[wid][:, [lab.index(chan[wid][e]) for e in (e1, e2)]].astype(float)
     (gw, kw), (_, ksur) = edges[wid]
-    AW = .31                                                 # (a)'s width (row fraction)
-    bx = put([.08, .695, .15, .25], EX)
+    AW = .36                                                 # (a)'s width (row fraction); (b) takes the rest
+    bx = put([AW / 2 - .075, .695, .15, .25], EX)                     # brain: fixed size, centred
     pts = real_brain(bx, root / f"figwin/brain_{'Chibi' if 'chibi' in wid else 'George'}.npz",
                      [int(v) for v in chan[wid]], (int(chan[wid][e1]), int(chan[wid][e2])), pc)
     Xc = X - np.median(X, 0); Xc = Xc / np.abs(Xc).max(0) * .62          # whole 10 s, transients included
-    tb = (.07, .1); fans = []                               # each trace in a box beside the brain, a fan to its electrode
+    tb = (.09, .1); fans = []                               # each trace in a box beside the brain, a fan to its electrode
     for side, i_ in zip((0, 1), np.argsort([pts[0][0], pts[1][0]])):     # the electrode further left on the left
         rect = [0 if side == 0 else AW - tb[0], .77, *tb]; ax_ = put(rect, EX)
         ax_.plot(Xc[:, i_], color=pc, lw=.4); ax_.set(xlim=(-25, 1025), ylim=(-.75, .75)); ax_.axis("off")
@@ -508,15 +509,17 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         if side == 1:
             ax_.plot([800, 1000], [-1.0] * 2, color=COLOR["ink"], lw=.8, clip_on=False)
             ax_.text(900, -1.08, "2 s", ha="center", va="top", fontsize=5.2)
-    r1.text(.155, Y(.705, EX), r"ket.\,+\,med., 10 s", ha="center", va="top", fontsize=5.4, color=pc)
+    r1.text(AW / 2, Y(.705, EX), r"ket.\,+\,med., 10 s", ha="center", va="top", fontsize=5.4, color=pc)
     u = np.column_stack([normal_score(X[:, 0]), normal_score(X[:, 1])])
     ug = gauss(np.corrcoef(u.T)[0, 1])
     Gg, Kg = -.5 * np.log(1 - np.corrcoef(ug.T)[0, 1] ** 2), ksg(ug[:, 0], ug[:, 1], 0)
     sg = multivariate_iaaft(ug, np.random.default_rng(0), final="spectrum")[0]      # its joint IAAFT surrogate, as
     sg = (sg - sg.mean(0)) / sg.std(0); Ksg = ksg(sg[:, 0], sg[:, 1], 0)            # the bank's (edges.py)
     f2 = lambda v: f"{v:.2f}".lstrip("0")
-    gw_, gap = .14, .015                                     # glyph tile width and the gap between the two tiles
-    gy = .31 if diff else .25                                # glyph row; with diff, the difference strip goes below
+    gap = .015; gw_ = (AW - .03 - gap) / 2                   # glyph tiles fill (a)'s width; the gap between them
+    fb, fh = .103 + .08 * EX, .808 + .32 * EX                # difference frame's bottom and height (in), with any extra row
+    gy = (fb + fh + .155 + .1 * EX - .8 * EX) / H if diff else .25   # glyph row; with diff, the difference strip below
+    gs_ = gw_ / .14                                          # glyph scale against the 0.14-wide tiles first drawn
     us = ug[np.random.default_rng(1).choice(len(ug), len(u), replace=False)]   # drawn: as many samples as the pair,
     us = np.column_stack([normal_score(us[:, 0]), normal_score(us[:, 1])])      # re-scored, so the margins match
     L = ((r"\textbf{Gaussian MI}", r"\textbf{kNN MI}", r"\textbf{surrogate}") if labels == "name" else
@@ -526,20 +529,20 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     for x_, v, col, name, vals in ((.0, us, COLOR["ink"], r"Gaussian, same $r$", (f2(Gg), f2(Kg), f2(Ksg))),
                                    (gw_ + gap, u, pc, "this pair (non-Gaussian)",
                                     (f2(gw[pk]), rf"\textbf{{{f2(kw[pk])}}}", f2(ksur[pk])))):
-        tile = [x_ + .015, gy, gw_, gw_ * W / H]; ga = put(tile, .8 * EX); glyph(ga, v, col, style, key=col != pc)
+        tile = [x_ + .015, gy, gw_, gw_ * W / H]; ga = put(tile, .8 * EX); glyph(ga, v, col, style, key=col != pc, sc=gs_)
         rbox(ga, (gw_ * W, gw_ * W), "#B9C0C5" if col != pc else mix(pc, .7), lw=.7)
         r1.text(x_ + .015 + gw_ / 2, Y(gy + gw_ * W / H + .018, .8 * EX), rf"\textbf{{{name}}}", ha="center", va="bottom",
-                fontsize=6, color=col)
-        keys = [ga.text(0, .955 - .075 * j, l_, transform=ga.transAxes, ha="right", va="top", fontsize=4.8,
+                fontsize=6.3, color=col)
+        keys = [ga.text(0, .955 - .075 * j, l_, transform=ga.transAxes, ha="right", va="top", fontsize=4.8 * gs_,
                         color=GREY if j == 2 else col, zorder=6, path_effects=halo) for j, l_ in enumerate(L)]
         kx = .04 + max(t_.get_window_extent(rend).width for t_ in keys) / (gw_ * W * fig.dpi)
         for j, (t_, v_) in enumerate(zip(keys, vals)):       # keys right-aligned, each value just after its key
             t_.set_x(kx)
-            ga.text(kx + .03, .955 - .075 * j, v_, transform=ga.transAxes, ha="left", va="top", fontsize=4.8,
+            ga.text(kx + .03, .955 - .075 * j, v_, transform=ga.transAxes, ha="left", va="top", fontsize=4.8 * gs_,
                     color=GREY if j == 2 else col, zorder=6, path_effects=halo)
     if diff:                                                 # same r fixes the spread of the difference, not its shape
-        fr = put([.015, .03, gw_ * 2 + gap, .235], .66 * EX); fr.axis("off"); rbox(fr, ((gw_ * 2 + gap) * W, .235 * H), LIGHT, lw=.7)
-        dx = put([.035, .085, gw_ * 2 + gap - .04, .14], .66 * EX); dd = (u[:, 0] - u[:, 1]) / (u[:, 0] - u[:, 1]).std(); xs = np.linspace(-6, 6, 300)
+        fr = put([.015, fb / H, gw_ * 2 + gap, fh / H]); fr.axis("off"); rbox(fr, ((gw_ * 2 + gap) * W, fh), LIGHT, lw=.7)
+        dx = put([.035, (fb + .235 * fh) / H, gw_ * 2 + gap - .04, .594 * fh / H]); dd = (u[:, 0] - u[:, 1]) / (u[:, 0] - u[:, 1]).std(); xs = np.linspace(-6, 6, 300)
         dx.fill_between(xs, 1e-4, norm.pdf(xs), color=LIGHT, lw=0)
         dx.plot(xs, norm.pdf(xs), color=COLOR["ink"], lw=.5, ls=(0, (3, 1.6)))
         dx.plot(xs, gaussian_kde(dd, bw_method=.15)(xs), color=pc, lw=.9)
@@ -548,9 +551,9 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
             dx.spines[sp].set_visible(False)
         dx.spines["bottom"].set_color(GREY); dx.spines["bottom"].set_linewidth(.5)
         dx.text(.5, -.1, "el. difference, in its SD (log density)", transform=dx.transAxes, ha="center", va="top",
-                fontsize=4.8, color=GREY)
-        dx.text(.99, 1.1, rf"kurtosis {kurtosis(dd):.1f}", transform=dx.transAxes, ha="right", va="top", fontsize=5, color=pc)
-        dx.text(.01, 1.1, "Gaussian 0", transform=dx.transAxes, ha="left", va="top", fontsize=5, color=COLOR["ink"])
+                fontsize=5.6, color=GREY)
+        dx.text(.99, 1.1, rf"kurtosis {kurtosis(dd):.1f}", transform=dx.transAxes, ha="right", va="top", fontsize=6, color=pc)
+        dx.text(.01, 1.1, "Gaussian 0", transform=dx.transAxes, ha="left", va="top", fontsize=6, color=COLOR["ink"])
     print("a's pair:", wid, "electrodes", chan[wid][e1], chan[wid][e2], "banked G, K", gw[pk], kw[pk], "surrogate K",
           ksur[pk], "Gaussian G, K, K_surr", Gg, Kg, Ksg)
 
@@ -558,12 +561,16 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     full = 1.05 * max(v.max() for v in edges[PANEL_B[0][1]][0])
     view = (-.02, .42), (-.17, .52)                      # common to all five, so the windows compare directly
     f3 = lambda v: f"{v:.3f}".lstrip("0")
+    B0 = .365 + AW - .31; sb = (.995 - B0) / (.995 - .365)  # (b) from B0 to .995: its layout below (drawn for AW .31),
+    bm = lambda x: B0 + (x - .365) * sb                      # squeezed by sb in x; the scatters keep square, so by sb
+    yb = .11 + (1 - sb) * .3 * W / H / 2                     # in y too, centred on where the big one was
     m_ = .124; rects = [[.365, .11, .3, .3 * W / H]] + [[.715 + (q % 2) * (m_ + .032), .11 + (1 - q // 2) * (m_ * W / H + .075),
                                                        m_, m_ * W / H] for q in range(4)]
     if btop == "big":                                    # still square, larger: the smalls drop their y labels (same
         bi, si, g1, g2, gv = 2.288, 1.014, .12, .1, .26  # view as the big one) and the gaps close; sizes in inches
         rects = [[.365, .11, bi / W, bi / H]] + [[.365 + (bi + g1 + (q % 2) * (si + g2)) / W, .11 + (1 - q // 2) * (si + gv) / H,
                                                  si / W, si / H] for q in range(4)]
+    rects = [[bm(r[0]), yb + (r[1] - .11) * sb, r[2] * sb, r[3] * sb] for r in rects]
     for j, ((s_, wid, name), rect) in enumerate(zip(PANEL_B, rects)):
         ax = put(rect); big = j == 0; row = df[df.id == wid].iloc[0]
         ink = COLOR["ink"] if s_ == "awake_eo" else COLOR[s_]
@@ -612,11 +619,11 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     dot = lambda c_, ms: Line2D([], [], ls="", marker="o", ms=ms, color=c_)
     r1.legend([Patch(color=LIGHT), dot(GREY, 2.5), tuple(dot(COLOR[c_], 3) for c_ in ("ink", "SLP", "KTMD", "KT", "PF"))],
               [r"surrogate's 95\% scatter about the line", "pair", "pair off the band"], loc="center",
-              bbox_to_anchor=(.855, .835) if btop == "gmarg" else (.685, Y(.895, EX)), ncol=1 if btop == "gmarg" else 3,
+              bbox_to_anchor=(bm(.855), .835) if btop == "gmarg" else (bm(.685), Y(.895, EX)), ncol=1 if btop == "gmarg" else 3,
               frameon=False, fontsize=6, handlelength=3.2, handletextpad=.5,
               columnspacing=1.4, handler_map={tuple: HandlerTuple(ndivide=None, pad=.15)})
     if btop == "resid":                                  # per state, the share of pairs at least x from the line
-        rx = put([.365, .852, .63, .32 / H]); rx.axvspan(0, 1, color=LIGHT, lw=0, zorder=0)
+        rx = put([B0, .852, .63 * sb, .32 / H]); rx.axvspan(0, 1, color=LIGHT, lw=0, zorder=0)
         sur = []
         for s_, wid, name in PANEL_B:
             (g, k), (gs, ks) = edges[wid]; c, w, out = band(edges, wid)
@@ -641,7 +648,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         SEG = ("awake_eo", "awake_ec", None, "recovery_ec")  # seconds (figwin/start_s.csv, from the bank manifests);
         sv = pd.read_csv(root / "figwin/start_s.csv").drop_duplicates("id").set_index("id")   # slots, and the separate
         df["t"], df["rec"] = df.id.map(sv.start_s) + 5, df.id.map(sv.session)   # recordings in one, joined by breaks
-        tl = put([.365, .795, .3, .42 / H]); tr = put([.715, .795, .28, .42 / H]); tr.sharey(tl)
+        tl = put([B0, .795, .3 * sb, .42 / H]); tr = put([bm(.715), .795, .28 * sb, .42 / H]); tr.sharey(tl)
         sel = lambda d, st: d[d.state == st] if st else d[d.state.isin(("drug", "sleep"))]
         def xs(e, brk):                                  # positions within a slot (from 0) and the slot's length
             if not clock:
@@ -701,7 +708,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         tr.tick_params(labelleft=False)
         tl.set_ylabel("$\\Delta z$, wake SDs", fontsize=5.4, labelpad=1)
     small = df[df.id.isin([w_ for _, w_, _ in PANEL_B[1:]])].animal.unique()
-    for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (.325, "b", "Every pair", "one 10-s window per state, each its state's median"
+    for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (AW, "b", "Every pair", "one 10-s window per state, each its state's median"
                                                                       + (f", the small four {small[0]}'s" if len(small) == 1 else ""))):
         r1.text(x_, Y(.975, EX), rf"\textbf{{{l_}}}\enspace\textbf{{{c_}}}" + (f": {r_}" if r_ else ""), fontsize=8.5,
                 va="top")
