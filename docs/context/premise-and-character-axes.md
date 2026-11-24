@@ -42,6 +42,8 @@ Reading rules for any z feature: [`docs/interpreting-spi-pairs.md`](../interpret
 
 Datasets for a second-field character result (24 November, metadata screen against the frozen MI-pair protocol): [`dataset-candidates-character.md`](../dataset-candidates-character.md). Ranked: HUP iEEG ds004100 (within-SOZ vs matched non-SOZ edges on the MI pair; spatial, same axis), raw 30-s PeMS corridors (congestion lag as physics validation; 5-min PEMS-BAY/METR-LA cannot resolve it), FAIR-MAST magnetics (L vs H mode, unscoped).
 
+HUP MI-pair test (frozen prereg, 25 November): primary SOZ-vs-matched D_z NOT DETECTED at 26 patients. The effect is in the predicted direction, −0.78 null SD (sign test p .015, t p .08); details are in the dataset doc. A full-pyspi HUP screen is drafted ([`hup-screen-prereg.md`](../../research/representation/atlas/mi_pair/preregs/hup-screen-prereg.md)), not frozen, and waits on the catalogue choice. On 26 patients it costs about 2 KSU on the current pin and about 9–41 KSU on r13.
+
 Priority characters and status at cohort-like coupling [R]:
 - **Nonlinearity:** the form axis fails; raw linear–rank pairs read marginal shape, and their real − IAAFT version reads joint bursts. The per-edge estimator N passes on synthetic families. Pair-level reading is copula departure; separate it with normal-score Pearson.
 - **Lag:** sub-axis, frequency-confounded. ℓ passes and transfers.
