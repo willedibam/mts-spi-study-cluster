@@ -62,13 +62,10 @@ contrasts:
   label: lag-1 $\times$ lag-2 corr.
   reading: Period-3 laminar phases give matching lag-1/lag-2 profiles; period-2 alternation flips their sign.
 # Panel a: one silo per family around the t-SNE; each variant's strip is tiled with carpets of
-# recordings regenerated from the frozen generation config (see silos below). `sizes` and
-# `window_fraction` drive the per-cell medoid examples used for exemplar rings. Topology is the
-# generator's coupling graph.
+# recordings regenerated from the frozen generation config (see silos below). Topology is the
+# generator's coupling graph, drawn in each silo header with line width proportional to weight.
 panel_a:
   generation: research/proof/p90/configs/proof-p90-261014.yaml
-  sizes: [[8, 500], [16, 1000], [32, 2000]]
-  window_fraction: 0.2
   # Wave: finite-difference Laplacian on a periodic lattice, so a nearest-neighbour ring like VAR/CML.
   topology: {Noise: none, VAR: ring, Kuramoto: complete, CML: ring, Wave equation: ring}
   # Frozen output of proof_figure.choose_layout (step 6 deg): silo sides/orders, variant order within
@@ -85,13 +82,10 @@ panel_a:
     VAR: [var-self-0.2_total-0.7, var-self-0.7_total-0.2]
   rotation_deg: 60
   reflect_x: true
-  # draw.io carpet exports (user, 29 Oct): square-root scaling, height h0*sqrt(M/8), width w0*sqrt(T/500)
-  # inches, clipped at per_in samples per inch. Intermittency shows every 12th sample (strobes the
-  # period-3 laminar orbit; SPIs used every sample). Kuramoto also gets the whole record decimated to
-  # the same width: a 75-150-sample clip is under half a fast-oscillator period (~335 samples).
+  # Carpet views (user, 29 Oct): per_in samples per inch of tile width. Intermittency shows every 12th
+  # sample (strobes the period-3 laminar orbit; SPIs used every sample). Kuramoto shows the whole record
+  # decimated to the tile: a short clip is under half a fast-oscillator period (~335 samples).
   carpets:
-    h0: 0.15
-    w0: 0.315
     per_in: 238
     stride: {sti-i: 12}
     whole: [kuramoto_omega-fast, kuramoto_omega-slow]

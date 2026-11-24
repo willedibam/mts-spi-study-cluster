@@ -22,8 +22,8 @@ from sklearn.neighbors import KNeighborsClassifier
 import yaml
 
 from mtsspi.figures import raincloud
-from research.cases.composite_style import INK, carpet, panel_title, style
-from research.proof.p90.carpet_strips import bands, brick, format_layout, mirror, parse, place, rank_layouts
+from research.cases.composite_style import carpet, panel_title, style
+from research.proof.p90.carpet_strips import bands, brick, mirror, parse, place, rank_layouts
 from research.proof.p90.refresh_proof_figures import ROOT, preprocess, rank_pair
 
 CONFIG = ROOT/'research/proof/p90/configs/analysis/proof-figure-261029.yaml'
@@ -83,39 +83,6 @@ def select_contrasts(bank, output, config):
     frame = pd.DataFrame(rows)
     frame.to_csv(Path(output)/'proof-figure-contrasts.csv', index=False)
     return frame
-
-
-def select_examples(bank, embedding, config, output=None, sizes=None, all_instances=False):
-    """Per class and M/T cell (default: the diagonal in ``panel_a.sizes``): the display instance
-    (6-9) nearest its cell's t-SNE medoid, regenerated from the frozen generation config.
-    ``series`` is the whole recording (channels x T); ``carpet`` its first T/5 samples.
-    ``all_instances`` returns every instance (0-9) of each cell instead of the medoid."""
-    from mtsspi.generators.harness import generate_from_spec
-    from mtsspi.mapping import DatasetMapping, ExperimentConfig
-    a = config['panel_a']
-    specs = DatasetMapping(ExperimentConfig.from_file(ROOT/a['generation'])).specs
-    indices, xy = embedding['indices'], embedding['tsne']
-    rows = []
-    for c in config['classes']:
-        for m, t in sizes or a['sizes']:
-            cell = np.flatnonzero((bank['y'][indices] == c['name']) & (bank['M'][indices] == m) &
-                                  (bank['T'][indices] == t) & (all_instances | (bank['instance'][indices] >= 6)))
-            if all_instances:
-                chosen = cell[np.argsort(bank['instance'][indices[cell]].astype(int))]
-            else:
-                chosen = [cell[np.argmin(np.linalg.norm(xy[cell, None] - xy[None, cell], axis=-1).sum(1))]]
-            for k in chosen:
-                instance = int(bank['instance'][indices[k]])
-                spec = next(sp for sp in specs if sp.mts_class == c['name'] and sp.M == m and sp.T == t
-                            and sp.instance == instance)
-                x = np.asarray(generate_from_spec(spec)[0], dtype=float)
-                x = x if x.shape == (t, m) else x.T
-                rows.append({'name': c['name'], 'M': m, 'T': t, 'instance': instance, 'rng_seed': spec.rng_seed,
-                             'embedding_row': int(k), 'series': x.T, 'carpet': x[:int(t*a['window_fraction'])].T})
-    if output is not None:
-        pd.DataFrame([{k: v for k, v in r.items() if k not in ('carpet', 'series')} for r in rows]).to_csv(
-            Path(output)/'proof-figure-examples.csv', index=False)
-    return rows
 
 
 def legend_label(c):
@@ -194,12 +161,11 @@ def _members(config, family, order=None):
     return members
 
 
-def _geometry(config, columns, legend, order=None, silos=True):
+def _geometry(config, columns, legend, order=None):
     """Figure inches for a silo arrangement: ``columns`` maps 'left'/'right' (and optionally
     'top', above the embedding) to families. Side strips hold ``silos.channels`` channels at
     ``silos.unit_in`` per 8; the top silo takes the height left over by aligning the side columns
-    with the embedding, and its strip's unit stretches to fill it. Without silos the canvas is the
-    same, so a draw.io overlay still lines up."""
+    with the embedding, and its strip's unit stretches to fill it."""
     s = config['panel_a']['silos']
     u, gap = s['unit_in'], s['gap_in']
     count = {f: len(_members(config, f)) for f in dict.fromkeys(c['family'] for c in config['classes'])}
@@ -383,24 +349,6 @@ def _key_corner(points_in, g):
     return best, count[best]
 
 
-def _glyph(fig, x, y, w, h, kind, W, H, color):
-    """Coupling topology of the generator, drawn small: six nodes."""
-    ax = fig.add_axes([x/W, y/H, w/W, h/H]); ax.set_axis_off(); ax.set_xlim(-1.25, 1.25); ax.set_ylim(-1.15, 1.15)
-    ax.set_aspect('equal')
-    n = 6
-    if kind == 'chain':
-        pts = np.column_stack([np.linspace(-1, 1, n), .25*np.sin(np.linspace(0, np.pi, n))])
-        edges = [(i, i+1) for i in range(n-1)]
-    else:
-        ang = np.pi/2 + 2*np.pi*np.arange(n)/n; pts = np.column_stack([np.cos(ang), np.sin(ang)])
-        edges = {'none': [], 'ring': [(i, (i+1) % n) for i in range(n)],
-                 'complete': [(i, j) for i in range(n) for j in range(i+1, n)]}[kind]
-    for i, j in edges:
-        ax.plot(*pts[[i, j]].T, color=color, lw=.45, solid_capstyle='round', zorder=1)
-    for p in pts:
-        ax.add_patch(Circle(p, .2, fc='white', ec=color, lw=.5, zorder=2))
-
-
 def _bold(text):
     return rf'\textbf{{{text}}}' if plt.rcParams['text.usetex'] else text
 
@@ -545,16 +493,13 @@ def _strip_sheet(groups, config, path, per_row=4, rows=6):
     fig.savefig(path, dpi=150); plt.close(fig)
 
 
-def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, legend=True, silos=True, carpets=None,
-                      rings=True, title_tt=False, sans=False, name='proof-figure'):
+def plot_proof_figure(bank, embedding, contrasts, config, output, *, legend=True, carpets=None, name='proof-figure'):
     """Full page width (183 mm). a: square t-SNE with family silos; b: class-contrast rainclouds.
-    Font sizes follow the case composites at final size. ``sans`` sets text in Helvetica (TeX
-    ``helvet``), keeping math, and tick numbers as text, in Computer Modern math only where $...$."""
+    Font sizes follow the case composites at final size."""
     style()
-    if sans: plt.rcParams.update({'font.family': 'sans-serif', 'font.sans-serif': ['Helvetica']})
     a = config['panel_a']
     order = a.get('variant_order')
-    g = _geometry(config, a['columns'], legend, order, silos)
+    g = _geometry(config, a['columns'], legend, order)
     W, H, side, size, gap, left, bottom = (g[k] for k in ['W', 'H', 'side', 'size', 'gap', 'left', 'bottom'])
     classes = {c['name']: c for c in config['classes']}
     fig = plt.figure(figsize=(W, H))
@@ -574,9 +519,6 @@ def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, l
         use = y == c['name']
         contours[c['name']] = _island(ax, xy[use], grid, c['color'], config['islands'])
         _scatter_by_t(ax, xy[use, 0], xy[use, 1], M[use], T[use], c['color'], marker_kw)
-    rows = np.array([e['embedding_row'] for e in examples])
-    if rings: ax.scatter(xy[rows, 0], xy[rows, 1], s=marker_area(M[rows])*2.4, facecolors='none', edgecolors=INK,
-               linewidths=.45, zorder=4)
     # Axes are rotated (arbitrary in t-SNE anyway), so one plain label replaces numbered axes.
     ax.set(xticks=[], yticks=[], xlim=(centre[0]-half, centre[0]+half), ylim=(centre[1]-half, centre[1]+half))
     ax.set_xlabel('t-SNE', labelpad=3)
@@ -585,9 +527,9 @@ def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, l
     _encoding_legend(ax, corner)
     key_box = (*_corner_boxes(g)[corner], KEY_W, KEY_H)  # Leaders avoid it.
     drawn = []  # Leader vertices so far; later leaders avoid crossing them.
-    if silos and carpets is None:
+    if carpets is None:
         carpets = silo_carpets(config, legend)
-    for f, rect in (g['rects'] if silos else {}).items():
+    for f, rect in g['rects'].items():
         members = _members(config, f, order)
         _silo(fig, rect, f, members, g['strips'], carpets, config)
         for c in (c for c in members if c['name'] in g['anchors']):  # Side silos: anchor -> island contour.
@@ -611,14 +553,11 @@ def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, l
         values = values[np.isfinite(values)]; pad = max(np.ptp(values)*.08, .0001)
         rax.set(ylim=(values.min()-pad, values.max()+pad), xlim=(-.5, 1.5), xticks=[0, 1],
                 xticklabels=[tick_label(classes[c]) for c in [row.class_a, row.class_b]])
-        rax.set_title(rf'\texttt{{{row.label}}}' if title_tt else row.label, pad=4, fontsize=6.5 if title_tt else 7)
+        rax.set_title(row.label, pad=4, fontsize=7)
         rax.tick_params(axis='x', labelsize=6.5)
         if k == 0: rax.set_ylabel(r'$z_{ab}$')
         rax.yaxis.set_major_locator(MaxNLocator(3))
         rax.ticklabel_format(axis='y', style='plain', useOffset=False)
-        if sans:  # Tick numbers are text, not math: Helvetica digits and minus.
-            from matplotlib.ticker import FuncFormatter
-            rax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f'{v:.1f}'.replace('-', r'\textminus ')))
         rax.set_box_aspect(1)
     if legend:  # Four columns, filled column-wise: the single-member family joins the first pair.
         family = [c['family'] for c in config['classes']]
@@ -635,73 +574,11 @@ def plot_proof_figure(bank, embedding, contrasts, examples, config, output, *, l
     return fig
 
 
-# --------------------------------------------------------------------------- draw.io exports
+# --------------------------------------------------------------------------- silo glyphs
 def _generation(config):
     """Generator parameters per class, from the frozen generation config."""
     gen = yaml.safe_load((ROOT/config['panel_a']['generation']).read_text())
     return {c['name']: c['base_params'] for c in gen['mts_classes']}
-
-
-def carpet_size(m, t, h0=.15, w0=.315):
-    """Square-root scaling (inches): M=32 is twice as tall as M=8, T=2000 twice as wide as T=500."""
-    return w0*np.sqrt(t/500), h0*np.sqrt(m/8)
-
-
-def _carpet_views(name, m, t, cfg):
-    """(suffix, stride, samples) per exported view of one recording, per ``panel_a.carpets``."""
-    w, _ = carpet_size(m, t, cfg['h0'], cfg['w0']); n = int(round(w*cfg['per_in']))
-    stride = cfg.get('stride', {}).get(name, 1)
-    views = [(f'_stride{stride}' if stride > 1 else '', stride, n)]
-    if name in cfg.get('whole', []):
-        views.append(('_whole', int(np.ceil(t/n)), n))
-    return views
-
-
-def export_carpets(rows, config, output, *, sheet=True):
-    """One SVG per recording and view at final size (all M channels; see ``panel_a.carpets``),
-    a folder per class with a contact sheet, and ``index.csv`` (with ``embedding_row``)."""
-    style()
-    output = Path(output); cfg = config['panel_a']['carpets']; index = []
-    pad = .4/72/2  # Half the frame line, so the frame is not clipped at the canvas edge.
-    for i, c in enumerate(config['classes']):
-        folder = output/f"{i+1:02d}-{c['name']}"; folder.mkdir(parents=True, exist_ok=True)
-        for r in (r for r in rows if r['name'] == c['name']):
-            w, h = carpet_size(r['M'], r['T'], cfg['h0'], cfg['w0'])
-            for suffix, stride, n in _carpet_views(c['name'], r['M'], r['T'], cfg):
-                x = r['series'][:, ::stride][:, :n]
-                stem = f"{c['name']}_M{r['M']}_T{r['T']}_i{r['instance']}{suffix}"
-                fig = plt.figure(figsize=(w + 2*pad, h + 2*pad))
-                ax = fig.add_axes([pad/(w+2*pad), pad/(h+2*pad), w/(w+2*pad), h/(h+2*pad)])
-                carpet(ax, x); _crisp(ax)
-                for spine in ax.spines.values(): spine.set_linewidth(.4)
-                fig.savefig(folder/f'{stem}.svg', dpi=600); plt.close(fig)
-                index.append({'file': f'{folder.name}/{stem}.svg', 'name': c['name'], 'M': r['M'], 'T': r['T'],
-                              'instance': r['instance'], 'view': suffix.lstrip('_') or 'clip', 'stride': stride,
-                              'samples_shown': x.shape[1], 'samples_spanned': x.shape[1]*stride,
-                              'width_in': round(w, 4), 'height_in': round(h, 4), 'embedding_row': r['embedding_row']})
-        if sheet: _contact_sheet([r for r in rows if r['name'] == c['name']], c, cfg, folder)
-    index = pd.DataFrame(index); index.to_csv(output/'index.csv', index=False)
-    return index
-
-
-def _contact_sheet(rows, c, cfg, folder):
-    """Every exported view of one class at true size: rows = instance (and view), columns = M/T cell."""
-    cells = sorted({(r['M'], r['T']) for r in rows}, key=lambda mt: (mt[1], mt[0]))
-    lines = sorted({(r['instance'], v[0]) for r in rows for v in _carpet_views(c['name'], r['M'], r['T'], cfg)})
-    big = carpet_size(32, 2000, cfg['h0'], cfg['w0']); colw, rowh, lab = big[0] + .12, big[1] + .12, .9
-    W, H = lab + len(cells)*colw, .7 + len(lines)*rowh
-    fig = plt.figure(figsize=(W, H)); series = {(r['M'], r['T'], r['instance']): r['series'] for r in rows}
-    fig.text(.05/W, 1 - .2/H, legend_label(c), fontsize=8, color=c['color'])
-    for j, (m, t) in enumerate(cells):
-        fig.text((lab + j*colw)/W, 1 - .5/H, f'$M={m}$\n$T={t}$', fontsize=6.5)
-    for i, (inst, suffix) in enumerate(lines):
-        y = H - .7 - (i+1)*rowh + .06
-        fig.text(.05/W, (y + .1)/H, f'$i={inst}$' + (' whole' if suffix == '_whole' else ''), fontsize=6.5)
-        for j, (m, t) in enumerate(cells):
-            stride, n = next((s, n) for sf, s, n in _carpet_views(c['name'], m, t, cfg) if sf == suffix)
-            w, h = carpet_size(m, t, cfg['h0'], cfg['w0'])
-            carpet(fig.add_axes([(lab + j*colw)/W, y/H, w/W, h/H]), series[m, t, inst][:, ::stride][:, :n])
-    fig.savefig(folder/'contact-sheet.png', dpi=250); plt.close(fig)
 
 
 def _weighted_glyph(ax, kind, self_w, edge_w, color, repulsive=False):
@@ -732,25 +609,3 @@ def _glyph_weights(c, params):
     if c['family'] == 'VAR': return p['phi'], p['coupling']
     if c['family'] == 'CML': return 1 - p['eps'], p['eps']/2
     return None, None
-
-
-def export_glyphs(config, output):
-    """SVG glyphs at final size: the current topology glyph per family, and candidate
-    weighted-coupling glyphs per class built from the generator parameters."""
-    style()
-    output = Path(output); params = _generation(config); a = config['panel_a']
-    from matplotlib.colors import to_rgb
-    hue = {f: min((c['color'] for c in config['classes'] if c['family'] == f), key=lambda h: sum(to_rgb(h)))
-           for f in a['topology']}
-    (output/'topology').mkdir(parents=True, exist_ok=True); (output/'weighted').mkdir(parents=True, exist_ok=True)
-    for f, kind in a['topology'].items():
-        for name, color in [(f, hue[f]), (f'ink-{kind}', INK)]:
-            fig = plt.figure(figsize=(.3, .19)); _glyph(fig, 0, 0, .3, .19, kind, .3, .19, color)
-            fig.savefig(output/'topology'/f"{name.replace(' ', '-').lower()}.svg"); plt.close(fig)
-    for c in config['classes']:
-        p, kind = params[c['name']], a['topology'][c['family']]
-        self_w, edge_w = _glyph_weights(c, params)
-        fig = plt.figure(figsize=(.45, .45)); ax = fig.add_axes([0, 0, 1, 1]); ax.set_axis_off()
-        ax.set(xlim=(-1.75, 1.75), ylim=(-1.75, 1.75)); ax.set_aspect('equal')
-        _weighted_glyph(ax, kind, self_w, edge_w, c['color'], repulsive=p.get('K', 0) < 0)
-        fig.savefig(output/'weighted'/f"{c['name']}.svg"); plt.close(fig)

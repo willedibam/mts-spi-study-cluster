@@ -70,20 +70,15 @@ def test_segment_crossing():
 
 
 def test_frozen_layout_places_every_variant_clear_of_the_embedding():
-    from research.proof.p90.proof_figure import SILO_W, _geometry, _members
+    from research.proof.p90.proof_figure import _geometry, _members
     config = load_config(); a = config['panel_a']
     g = _geometry(config, a['columns'], legend=False, order=a.get('variant_order'))
-    assert set(g['anchors']) == {c['name'] for c in config['classes']}
+    top = {c['name'] for f in a['columns'].get('top', []) for c in _members(config, f)}
+    assert set(g['strips']) == {c['name'] for c in config['classes']}
+    assert set(g['anchors']) == set(g['strips']) - top  # The top silo has no leader.
     assert sorted(f for side in a['columns'].values() for f in side) == sorted({c['family'] for c in config['classes']})
-    assert SILO_W < g['ex0'] and g['ex0'] + g['side'] < g['W'] - SILO_W
+    ex, ey, side = g['ex0'], g['ey0'], g['side']
+    for x, y, w, h in g['rects'].values():  # No silo overlaps the embedding square.
+        assert x + w <= ex or x >= ex + side or y >= ey + side or y + h <= ey
     for f, order in (a.get('variant_order') or {}).items():
         assert [c['name'] for c in _members(config, f, a['variant_order'])] == order
-
-
-def test_carpet_views_follow_the_frozen_config():
-    from research.proof.p90.proof_figure import _carpet_views
-    cfg = load_config()['panel_a']['carpets']
-    assert [v[:2] for v in _carpet_views('sti-i', 8, 2000, cfg)] == [('_stride12', 12)]
-    (_, s0, n), (suffix, stride, _) = _carpet_views('kuramoto_omega-fast', 16, 1000, cfg)
-    assert s0 == 1 and suffix == '_whole' and stride*n >= 1000 > (stride-1)*n
-    assert [v[:2] for v in _carpet_views('gaussian-noise', 32, 500, cfg)] == [('', 1)]
