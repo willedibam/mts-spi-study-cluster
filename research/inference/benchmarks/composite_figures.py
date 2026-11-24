@@ -880,7 +880,7 @@ def draw_feature(ax, data, k, *, ylabel=True, marks=True):
     _series(ax, data, f'z{k}', Z_COLOR, 'o', ms=1.2, lw=.9, spread='band', secondary=True)
     mark_boundary(ax, spec)
     for snapshot in data.snapshots if marks else ():
-        ax.plot(snapshot.control, 1.0, 'v', color='.45', ms=2.2, zorder=5)
+        ax.plot(snapshot.control, -1.0, '^', color='.45', ms=2.2, zorder=5)
     ax.set(ylim=(-1.1, 1.1))
     _no_ticks(ax)
     _box(ax, .5)
@@ -976,7 +976,7 @@ def cohort_legend(ax, spec):
     handles = [Line2D([], [], color=Z_COLOR, marker='o', ms=2, lw=.85, label=spec.primary_label)]
     handles += [Line2D([], [], color=Z_COLOR, ls=ls, marker='o', mfc='white', ms=2, lw=.6, label=f'{c}: frozen projection')
                 for c, ls in spec.secondary_style.items()]
-    handles += [Line2D([], [], color='.45', marker='v', ls='', ms=2.6, label='snapshot controls')]
+    handles += [Line2D([], [], color='.45', marker='^', ls='', ms=2.6, label='snapshot controls')]
     ax.legend(handles=handles, loc='center left', fontsize=5.8, frameon=False, borderaxespad=0, handlelength=1.5,
               labelspacing=.35)
     ax.axis('off')
