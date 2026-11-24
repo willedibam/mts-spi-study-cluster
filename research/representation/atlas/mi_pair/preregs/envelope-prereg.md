@@ -102,3 +102,25 @@ Pipeline as the anchor: 32 channels, T = 1000, real window normal-scored, `edges
 
 - Gadi, 48 cpus: about 1,260 windows × 6 MI evaluations at ~10 s, plus fits, ≈ 22 cpu-hours, about 0.5–1 h wall.
 - Expected ≈ 0.1 kSU, worst case 0.3 kSU.
+
+## Outcome (24 November; appended, frozen text above unchanged)
+
+**No candidate passed development, so by the rule above the null cannot separate gain from coupling at this resolution. The real-data rule is void: `envnull/run.py` and `jobs/envnull.pbs` were never run.** Development retention R (GOF ÷ N0, 48 windows per generator; `python envnull/gate.py calib-dev-s{1,2,3}.npz`):
+
+| Generator | N0 residual (t) | 15-diag | 15-cm | 40-diag | 40-cm |
+|---|---|---|---|---|---|
+| `linear` / `linear_hetspec` (\|res\|) | −.0002 / +.0004 | .0002 / .0005 | .0013 / .0008 | .0002 / .0003 | .0009 / .0006 |
+| `gain_homog` | −.057 (−17) | .22 | .24 | **.37** | **.33** |
+| `gain_hetero` | −.063 (−9.5) | **.54** | **.57** | **.59** | **.62** |
+| `gain_cmfloor` | −.023 (−13) | .07 | .09 | .07 | **.40** |
+| `burst` | −.070 (−18) | **.53** | **.43** | **.76** | **.69** |
+| `burst_slow` | −.047 (−8.7) | **.33** | .20 | **.53** | **.42** |
+| `gain_local` | −.064 (−31) | **.54** | **.55** | .27 | .27 |
+| `quadratic` | −.046 (−24) | .98 | .91 | .98 | .97 |
+| `decouple` | −.018 (−17) | .89 | .80 | .97 | .86 |
+| `pair_nonmono` | −.386 (−78) | .99 | .99 | .99 | .99 |
+| `switch` (reported) | −.008 (−6.4) | −2.86 | −1.96 | −2.76 | −.94 |
+
+Bold: outside the ±.3 gain gate. `gain_hetero` and `burst` fail in every variant with 95% bootstrap intervals excluding .3. Stationary size passes and every coupling generator keeps ≥ .80, so the null fails by reproducing too little of the gain-generated fall, while `switch` overshoots; a real-data retention would therefore not bound coupling from either side. The H0 table above did not predict the floor behaviour (`gain_cmfloor` is removed under `diag`, not under 40-`cm`). Whether the failure lies in gain estimation (smoothing, shrinkage) or in the model form is not determined by these outputs. DECOR and N1 are in the shard text files and not read further.
+
+The confirmation shards (96 windows, seeds 90000 + …) were computed but, with no selected variant, not read; they remain a clean hold-out for any revised null, whereas the development seeds are now spent. Provenance: commit `cc9bbe5d`, Gadi jobs 185083831–36 (exit 0, 19–32 min walltime at 48 cpus, about 0.25 kSU), outputs `/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/envnull/calib/`.
