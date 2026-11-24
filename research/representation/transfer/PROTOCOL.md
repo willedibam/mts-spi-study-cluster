@@ -30,7 +30,7 @@ Every dataset goes through the core. An anaesthesia or other neural dataset also
      - The claim is "beyond linear".
    - **Linear-spectral.** IAAFT is degenerate here (net ≈ 0 by construction).
      - Readout: the raw value, with the zero-phase and stationary Gaussian nulls sharing the state's cross-spectrum ([`discovery.py`](../atlas/discovery.py) `spectral_null` and `lag_null`).
-     - The claim is linear-spectral character.
+     - The claim is linear-spectral character. The gated Δ is the raw readout. The nulls decompose it: the zero-phase null gives the part carried by spectral amplitude, stationary − zero-phase gives mean lag or phase, and real − stationary gives non-stationary or non-Gaussian change. Each part is reported.
    - **Linear-static.** Readout: the raw value with strength controls. Null: stationary Gaussian with the state's covariance.
 4. **Window preparation.**
    - Normal-scored or z-scored, per card.
@@ -49,12 +49,13 @@ Every dataset goes through the core. An anaesthesia or other neural dataset also
 - **Multiplicity.** Holm over the record's confirmatory cards.
 - **Wording**, by the strongest evidence the card has:
   - **Character reading:** the card passed the frozen axis-screen gates in some field, and its positive plant passes in this dataset.
-  - **Construction-supported reading:** the construction validation passed for this exact readout, and the plant passes in this dataset. The nuisance ratios it measured are stated beside the result.
+  - **Construction-supported reading:** the construction validation gave this exact readout a core or sub-axis verdict, and the plant passes in this dataset. The nuisance ratios it measured are stated beside the result; for a sub-axis, so is the knob that moves it more than its own.
   - **Literal reading only:** in every other case, including when no plant is built yet or the plant fails here.
 - **Null results.** A null is "absent" only if the plant passes. Otherwise it is "undetected at this T and M".
 - **On current evidence few cards reach a character reading.**
   - The MI anchor.
-  - MinCovDet at long T and Chebyshev at short T, both selected on macaque data and readable only on normal-scored windows.
+  - MinCovDet at long T, selected on macaque data and readable only on normal-scored windows.
+  - Chebyshev at short T passed the macaque gates but has no class reading in the guide and no plant, so it is testable with literal wording only.
   - Every other card starts with literal wording.
   - The linear-tier cards also have nuisances the construction found unbounded (noise, strength spread, mixing).
 
@@ -64,14 +65,14 @@ The pairs are checked against upstream `benchmarked_p90` at 736ee5c (161 SPIs). 
 
 | Card | Pair as computed | Tier, prep | Applies when | Positive plant | Status (source) |
 |---|---|---|---|---|---|
-| `mi-ksg` (anchor) | `mi_gaussian` · `mi_kraskov_NN-4_DCE-AUTO`; pyspi-free in [`stats.py`](../atlas/axis_screen/stats.py) | higher-order, normal-scored | always (after the tie rule) | shared slow gain, *built* ([`gain_sim.py`](../atlas/axis_screen/gain_sim.py)) | axis in macaque; replicated in PRIOS and mouse |
-| `mcd` | `cov_EmpiricalCovariance` · `cov_MinCovDet`, both squared (r2\|mcd2); the `pcorr_*` pair is reported | higher-order, normal-scored only | T/M reported, no cut-off | network switch in high-amplitude epochs, *built* ([`decoupling_generator.py`](../character_axes/decoupling_generator.py)); shared gain also produces the sign | axis at 10 s in macaque; absent at 2 s |
-| `chebyshev` | `pdist_cityblock` · `pdist_chebyshev` (l1\|linf) | higher-order, normal-scored only; fixed sample count | the maximum depends on T and the spectrum, so all states use the same T | intermittent large divergence of a subset of pairs, *to build* | axis at 2 s in macaque; fails at 10 s |
+| `mi-ksg` (anchor) | `mi_gaussian` · `mi_kraskov_NN-4_DCE-AUTO`; pyspi-free in [`stats.py`](../atlas/axis_screen/stats.py) | higher-order, normal-scored | always (after the tie rule) | shared slow gain, *to adapt* (a shared on/off gain lowers z by .068 in [`edges-prereg.md`](../atlas/mi_pair/edges-prereg.md)) | axis in macaque; replicated in PRIOS and mouse |
+| `mcd` | `cov_EmpiricalCovariance` · `cov_MinCovDet`, both squared (r2\|mcd2); the `pcorr_*` pair is reported | higher-order, normal-scored only | T/M reported, no cut-off | network switch in high-amplitude epochs, *built* ([`decoupling_generator.py`](../character_axes/decoupling_generator.py)); shared gain also produces the sign ([`gain_sim.py`](../atlas/axis_screen/gain_sim.py)) | r2\|mcd2 is row 2 of the macaque axis screen at 10 s (−.056, 4/4); not screened at 2 s; PRIOS 4/7, p .15 |
+| `chebyshev` | `pdist_cityblock` · `pdist_chebyshev` (l1\|linf) | higher-order, normal-scored only; fixed sample count | the maximum depends on T and the spectrum, so all states use the same T | intermittent large divergence of a subset of pairs, *to build* | row 4 of the macaque axis screen at 2 s; fails at 10 s; PRIOS 7/7 but with `linf` reliability .25, under the floor |
 | `rank-linear` | Pearson on normal scores, mapped by (6/π) arcsin(r/2), against `spearmanr` | higher-order, normal-scored | always | joint bursts, *built* (`edge_drivers(burst=…)` in [`generators.py`](../character_axes/validation/generators.py)) | unmapped pair failed at ceiling in macaque; mapped form untested; real − IAAFT r\|ρ reads joint bursts by construction (sub-axis; selectivity against lag and band untested) |
 | `xi` | `mi_gaussian` · `xi_tau-0` | higher-order, normal-scored | T long enough for xi's noise (10 s in macaque) | non-monotone coupling at matched r, *to build* | post hoc candidate at 10 s |
 | `canberra` | `pdist_canberra` against its analytic Gaussian value f_G(r) | higher-order, z-scored; Gaussian FT surrogate | no channel with a floor or offset near zero | correlation that changes with amplitude, *built* as a catalogue synthetic (principle 4) | beyond IAAFT on normal-scored windows only; the z-scored form, which carries the reading, is untested |
 | `envelope-gamma` | `pec` against \|γ\|² from the analytic signal (pyspi-free, not yet written) | higher-order, z-scored | a narrowband oscillation in a declared band | shared envelope modulation, *to build* | untested |
-| `gc-te` | level median(`te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1` − `gc_gaussian_k-1_kt-1_l-1_lt-1`) | higher-order level, z-scored | T long enough for the TE reliability floor | form level, *built* (family A) | z unreliable; the level is a construction sub-axis (IAAFT keeps .14 of its response; band level moves it more) |
+| `gc-te` | level median(`te_kraskov_NN-4_DCE-AUTO_k-1_kt-1_l-1_lt-1` − `gc_gaussian_k-1_kt-1_l-1_lt-1`) | higher-order level, z-scored | T long enough for the TE reliability floor | form level, *built* (family A) | z unreliable; the level is a construction sub-axis (the FT surrogate keeps .14 of its response; band level moves it more) |
 | `mediation` | r² against partial r², from `cov_EmpiricalCovariance` and `pcorr_EmpiricalCovariance` squared | linear-static, z-scored | fixed M and montage across states; T/M reported | GGM with a mediated share, *built* (family C) | construction core only for strong instantaneous mediation; raw-only in macaque. The new p90 has no `prec-sq_*`, and pcorr² differs from prec² by diagonal scaling, so this readout is not the construction readout |
 | `band` | high share and spread from `cohmag_multitaper_mean_fs-1_fmin-0_fmax-0-25` and `…fmin-0-25_fmax-0-5`; z between them reported | linear-spectral, z-scored | fs and the signal band meaningful | band dispersion, *built* (family A) | high share and spread are construction core (SR 3.7, 5.3, one generator); the z failed in macaque (not drug-specific) |
 | `lag` | z(`cohmag_…fmin-0_fmax-0-25`, `icoh_…fmin-0_fmax-0-25`) and the level icoh/√cohmag | linear-spectral, z-scored | a declared band with oscillatory coupling; the field's analogue of volume conduction declared | lag dispersion and lag level, *built* (family A) | construction sub-axis: lag level moves organisation about twice as much as dispersion, in the opposite direction; failed in macaque (floor, covariates) |
@@ -111,7 +112,7 @@ The inputs are metadata and baseline-state data only. Outputs are logged in the 
 ## Reliability floor
 
 - Reliability is the mean pairwise edge-profile correlation between baseline windows within a session, averaged over sessions.
-- Both statistics of a card must reach .3 at its T. Below that, the card is untestable: its Δ is printed descriptively and enters no test. No exceptions; a PRIOS row tested at .25 is the precedent this rules out.
+- Both statistics of a card must reach .3 at its T. For a level readout (`band`, `gc-te`), each statistic entering it must; gate 6 does not apply to levels. Below that, the card is untestable: its Δ is printed descriptively and enters no test. No exceptions; a PRIOS row tested at .25 is the precedent this rules out.
 - Usability also requires finite values in ≥ 95% of windows of every state used, and baseline real |z| < .98 for unmapped pairs.
 
 ## Contrasts and units
@@ -192,7 +193,7 @@ The macaque, mouse and human anaesthesia results came from 100 Hz ECoG. These de
   - `mcd` at T = 1000 (r2|mcd2), with the sign from the macaque axis-screen result.
   - `chebyshev` at T = 200 (2 s), with the sign from the macaque axis-screen result.
   - These were selected on macaque data. They are confirmatory only in a new anaesthesia dataset.
-  - The ladder still applies if a card fails the floor at its T.
+  - If `mi-ksg` fails the floor at T = 1000, it falls back to the ladder. `mcd` and `chebyshev` are tied to their T (Windows, fixed T).
 - **Non-minimal link, reported:** `mcd2|ksg` (MinCovDet squared covariance against KSG MI, on the KSG subset), read through `mcd` and `mi-ksg`.
 - **Reported, not tested:**
   - `pcorr|pcorr_mcd`, the macaque's largest row: robust precision needs T well above M, and it failed the PRIOS floor.
