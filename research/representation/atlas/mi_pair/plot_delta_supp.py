@@ -27,7 +27,7 @@ NAME = {"awake_eo": "wake, recovery", "SLP": "sleep", "KT": "ketamine", "KTMD": 
 
 def draw(root, output):
     df, _ = load(root)
-    figure_style()
+    figure_style(); plt.rcParams["svg.hashsalt"] = "fig-mi"
     plt.rcParams.update({"font.size": 7, "xtick.labelsize": 6.2, "ytick.labelsize": 6.2, "axes.linewidth": .7})
     fig, axs = plt.subplots(1, 4, figsize=(7.2, 2.1), sharey=True, layout="constrained")
     for ax, an in zip(axs, ANIMALS):
@@ -53,7 +53,8 @@ def draw(root, output):
     fig.legend(h, list(NAME.values()) + ["wake and sleep fit", "extrapolated"], ncol=8, loc="outside upper center",
                fontsize=5.8, frameon=False, handletextpad=.2, columnspacing=.9, handlelength=1.6)
     for ext in ("svg", "pdf", "png"):
-        fig.savefig(output.with_suffix("." + ext), dpi=180 if ext == "png" else None)
+        fig.savefig(output.with_suffix("." + ext), dpi=180 if ext == "png" else None,   # no dates: reruns
+                    metadata={"svg": {"Date": None}, "pdf": {"CreationDate": None}}.get(ext))   # give same files
     for an in ANIMALS:
         d = df[df.animal == an]; f = d[d.group.isin(("awake_eo", "SLP")) | (d.state == "awake_ec")]
         print(an, "fit slope per +0.1 delta", round(np.polyfit(f.delta, f.sd, 1)[0] / 10, 2),

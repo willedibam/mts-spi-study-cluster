@@ -472,7 +472,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     animal = sess[sess.group.isin(DRUGS)].groupby("animal").d.mean()
     t = ttest_1samp(animal.values, 0, alternative="less")
 
-    figure_style()
+    figure_style(); plt.rcParams["svg.hashsalt"] = "fig-mi"
     plt.rcParams.update({"font.size": 7.5, "axes.labelsize": 7.3, "xtick.labelsize": 6.8, "ytick.labelsize": 6.8,
                          "legend.fontsize": 6.5, "axes.linewidth": .7, "xtick.major.width": .7,
                          "ytick.major.width": .7, "xtick.major.size": 2.5, "ytick.major.size": 2.5})
@@ -834,7 +834,8 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         edge = bx.transData.inverted().transform(ax_.transAxes.transform([(1 - side, .04), (1 - side, .96)]))
         bx.add_patch(Polygon([e_, *edge], closed=True, fc=LIGHT, ec="none", alpha=.45, zorder=1, clip_on=False))
     for ext in ("svg", "pdf", "png"):
-        fig.savefig(output.with_suffix("." + ext), dpi=180 if ext == "png" else None)
+        fig.savefig(output.with_suffix("." + ext), dpi=180 if ext == "png" else None,   # no dates: reruns
+                    metadata={"svg": {"Date": None}, "pdf": {"CreationDate": None}}.get(ext))   # give same files
     plt.close(fig)
     print(f"animal means {np.round(animal.values, 4)}, t3 {t.statistic:.2f}, p {t.pvalue:.4f}")
     for name, d, ci in sets:
