@@ -40,7 +40,7 @@ Pearson aggregation is a selective compression: it removes profile levels and po
 
 Reading rules for any z feature: [`docs/interpreting-spi-pairs.md`](../interpreting-spi-pairs.md). The paper's chain (user, 11 November): character matters (introduction) → the construction makes sense (case studies) → z encodes useful information (proof-of-concept embeddings) → it works unsupervised and general-purpose (phase transitions) → it has real-world use (real-world overview, Zenodo) → bonus: one feature space across M and T.
 
-Datasets for a second-field character result (24 November, metadata screen against the frozen MI-pair protocol): [`dataset-candidates-character.md`](../dataset-candidates-character.md). Ranked: HUP iEEG ds004100 (SOZ vs non-SOZ edges on the MI pair, interictal run-pair null), raw 30-s PeMS corridors (congestion lag as physics validation; 5-min PEMS-BAY/METR-LA cannot resolve it), FAIR-MAST magnetics (L vs H mode, unscoped).
+Datasets for a second-field character result (24 November, metadata screen against the frozen MI-pair protocol): [`dataset-candidates-character.md`](../dataset-candidates-character.md). Ranked: HUP iEEG ds004100 (within-SOZ vs matched non-SOZ edges on the MI pair; spatial, same axis), raw 30-s PeMS corridors (congestion lag as physics validation; 5-min PEMS-BAY/METR-LA cannot resolve it), FAIR-MAST magnetics (L vs H mode, unscoped).
 
 Priority characters and status at cohort-like coupling [R]:
 - **Nonlinearity:** the form axis fails; raw linear–rank pairs read marginal shape, and their real − IAAFT version reads joint bursts. The per-edge estimator N passes on synthetic families. Pair-level reading is copula departure; separate it with normal-score Pearson.
