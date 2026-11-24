@@ -582,8 +582,8 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
             a_.fill_between(xx, np.polyval(c, xx) - w, np.polyval(c, xx) + w, color=LIGHT, lw=0, zorder=0)
             a_.plot(xx, np.polyval(c, xx), color="white", lw=.8 * sc + .2, zorder=1)
             a_.scatter(g[~out], k[~out], s=4 * sc, lw=.25 * sc ** .5, ec="white", color=GREY, alpha=.5,
-                       zorder=2)                     # off-band dots: the smalls' smaller still, so a chance share
-            a_.scatter(g[out], k[out], s=(17 if big else 9) * sc, lw=(.4 if big else .3) * sc ** .5, ec="white",
+                       zorder=2)                     # off-band dots 3.25x the pairs in area in every panel, so a chance share
+            a_.scatter(g[out], k[out], s=13 * sc, lw=(.4 if big else .3) * sc ** .5, ec="white",
                        color=ink, zorder=3)          # (5%) does not cover the cloud
         ax.set(xlim=view[0], ylim=view[1])
         ax.set_xticks([0, .2, .4], ["0", ".2", ".4"]); ax.set_yticks([0, .2, .4], ["0", ".2", ".4"])
