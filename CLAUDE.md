@@ -64,6 +64,7 @@
 ## Source sync
 
 - `origin` is the single source of truth. Commit and push finished work in the session that produced it; before ending a session, run `git status -sb` and report anything left uncommitted or unpushed and why.
+- Switching Claude accounts: sessions and worktree records are per account, git is shared. Before logging out, let running sessions finish, commit and push every worktree (unfinished work stays on its branch) and run `python3 scripts/check_loose_ends.py` until it prints nothing. Keep outputs worth keeping out of session worktrees: the app deletes idle worktrees, ignored files included.
 - Clusters only receive: `git pull --ff-only` there, no edits to tracked files. The runner on a cluster must be the pushed local runner; the farm submitters refuse a dirty, unpushed or stale checkout.
 - Never extend a corpus with a different pyspi computation version; re-run it into a new output directory.
 - Results are cheap to regenerate (pyspi is fast; figures are scripted), and will be regenerated repeatedly. Recompute cost is never a reason to freeze pyspi or other dependencies: upgrade when a better version exists, re-run, regenerate figures. Reproducibility comes from pinning exact versions per run, not from avoiding change.
