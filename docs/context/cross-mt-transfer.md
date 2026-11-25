@@ -6,12 +6,15 @@ Notebook/source relocation, 2026-10-15: the pending `strength_controls` → `res
 
 ## Case reruns on pyspi 3.0.0rc2, 2026-11-26
 
-- **Figure runs.** Drift (ED/xED/DTW, 80 recordings) and form (r/ρ/KSG MI, 80) were rerun locally on the rc2 pin (`becf496`, computation 3.0.0). Every recording's z is bitwise identical to the October runs, so both figures are unchanged. Outputs are in `results/cases/{drift-blocks,form-ladder}-261126/`; the earlier folders are kept.
+- **Figure runs.** Drift (ED/xED/DTW, 80 recordings) and form (r/ρ/KSG MI, 80) were rerun locally on the rc2 pin (`becf496`, computation 3.0.0). Every recording's z is bitwise identical to the October runs, so both figures are unchanged. Outputs are in `results/cases/{drift-blocks,form-ladder}-261126/`; the identical October folders were deleted.
 - **Catalogue gap.** pyspi's bundled `benchmarked_p90` on rc2 has 207 SPIs: Euclidean `PairwiseDistance` is gone and xED appears only at τ=1. The drift figure therefore stays on `spis/ed_xed_dtw_261029.yaml`.
 - **Full-catalogue screen.** The same recordings go through bundled p90 on Gadi, built by `research/cases/case_p90_261126.py`, with outputs in `/g/data/ql44/we2614/mts-spi-study/cases/p90-261126/`.
-  - Jobs: smokes 185198272 (drift) and 185198275 (form), each feeding a full farm (185198544 and 185198552, afterok; 144 cores and 570 GB each, so memory needs no smoke measurement first).
-  - Submitted while ql44 Scratch was over its inode quota, so PBS may hold them until it is cleared.
-  - The screen's purpose is to find SPI pairs that respond to lag, warping, monotone or fold contrary to their one-assumption reading. Select on reps 0–9 and confirm on 10–19, per `docs/interpreting-spi-pairs.md` rule 7.
+  - Jobs: smokes 185198272/185198275 and full farms 185198544/185198552 (144 cores, about 4 min) all exited 0; 80/80 recordings per case. Smokes ran at `e6d1440` flagged dirty, farms at `61a3f22` clean; all four `code_sha256` entries match the committed files, so the executed code is the committed code.
+  - Screen rules and labels were committed before the MPIs were loaded (`e17eba80`, docstring of `case_p90_261126.py`); outputs in `results/cases/p90-261126/screen/` (ignored; regenerate with `screen`). Plumbing: z(r, ρ), z(r, MI), z(ρ, MI) from the p90 MPIs equal the figure's values in all 80 form recordings (max difference 1e-15).
+  - Validity: drift keeps 200 SPIs (`pcorr_GraphicalLasso` non-SPD in 22 recordings; six nonparametric `sgc` non-finite), form all 207; about 400 pairs per case have a constant profile and about 1,750 are exact zeros.
+  - **Drift: no pair of two same-time statistics moved under lag or warping (0 of 561; largest |dz| .22 and .29, failing sign consistency).** Movers: 2,199 (lag) and 1,500 (warping) of 5,063 pairs that differ in same-time against timing-aware; 7,080 and 4,239 of 12,150 pairs of two timing-aware statistics (not classified).
+  - **Form: pairs of two linear statistics did move.** 1,205 of 6,430 under monotone (60% rising, median |dz| .15) and 3,222 under fold (80% rising, median .29), spread across the catalogue rather than a few SPIs. Literal reading: z between two statistics that share every form assumption changes when one block's form changes. Candidate route (inferred, not tested with strength matching): fold drives that block's linear dependence towards zero, widening the spread of strength across edges (SD of |r| .13 to .36), and z between strength-monotone statistics rises with that spread. Spread alone is not sufficient: lag widened it too (.04 to .15) without moving same-time pairs.
+  - Consequence for wording: a z change under a mechanism is a reading of that mechanism only for pairs that differ in it; the figure pairs (r, ρ, MI; ED, xED, DTW) are such pairs.
 
 ## Ordered-entry recomputation, 2026-10-21
 
