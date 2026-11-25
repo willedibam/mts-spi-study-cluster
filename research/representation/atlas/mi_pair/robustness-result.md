@@ -72,37 +72,38 @@ The figure uses the normal-scored 10-s windows and the 32-channel subsets the es
 
 Per window × channel (verified, `acf.txt`):
 
-| State | τ₁/ₑ median [IQR] (s) | ACF at 2τ₁/ₑ | First zero (s) | AUTO w median (samples) | AUTO ≥ 20 |
-|---|---|---|---|---|---|
-| awake EC | .031 [.019, .053] | +.064 | .12 | 5.4 | .04 |
-| awake EO | .032 [.020, .048] | +.073 | .10 | 5.2 | .00 |
-| KT | .085 [.058, .115] | −.039 | .17 | 13.9 | .29 |
-| KTMD | .105 [.081, .126] | −.103 | .19 | 17.6 | .40 |
-| MD | .077 [.066, .088] | −.166 | .13 | 14.3 | .24 |
-| PF | .138 [.116, .159] | −.165 | .23 | 23.2 | .64 |
-| sleep | .037 [.023, .064] | +.062 | .13 | 6.3 | .04 |
-| recovery EC | .048 [.026, .085] | +.075 | .17 | 7.5 | .06 |
+| State | τ₁/ₑ median [IQR] (s) | Envelope τ (s) | Integral to first zero (s) | ACF at 2τ₁/ₑ | First zero (s) | AUTO w median (samples) | AUTO ≥ 20 |
+|---|---|---|---|---|---|---|---|
+| awake EC | .031 [.019, .053] | .032 | .040 | +.064 | .12 | 5.4 | .04 |
+| awake EO | .032 [.020, .048] | .033 | .038 | +.073 | .10 | 5.2 | .00 |
+| KT | .085 [.058, .115] | .097 | .075 | −.039 | .17 | 13.9 | .29 |
+| KTMD | .105 [.081, .126] | .130 | .092 | −.103 | .19 | 17.6 | .40 |
+| MD | .077 [.066, .088] | .207 | .068 | −.166 | .13 | 14.3 | .24 |
+| PF | .138 [.116, .159] | .459 | .116 | −.165 | .23 | 23.2 | .64 |
+| sleep | .037 [.023, .064] | .038 | .045 | +.062 | .13 | 6.3 | .04 |
+| recovery EC | .048 [.026, .085] | .051 | .055 | +.075 | .17 | 7.5 | .06 |
 
 **The decay is not exponential (verified).**
 - Awake and sleep ACFs are below e⁻² ≈ .135 at 2τ₁/ₑ, so they decay faster than exponential. The fitted e-folding time over lags up to τ₁/ₑ is 10–20% above τ₁/ₑ. Log-ACF is concave near 0, as expected for a band-limited, smooth signal (inferred).
 - Drug ACFs are already negative at 2τ₁/ₑ and reach a lobe of −.2 to −.3 by 0.3–0.5 s (panel a). This is quasi-periodic delta, so τ₁/ₑ there is about a quarter-period, not a decay time, and 2τ₁/ₑ lands past the first zero.
 - The prereg's oscillation flag is 1.00 in every state and does not discriminate, so the first zero and the lobe are reported instead.
+- Where the ACF oscillates, the envelope τ (1/e crossing of max |ACF| at that lag or later) is the decay time of the oscillation's amplitude. Under drug it is 1.1× (KT) to 3.3× (PF) τ₁/ₑ; awake and sleep envelope τ equals τ₁/ₑ. Under PF the AUTO window (median 23 samples, .23 s) is shorter than the envelope time (.46 s); 4×AUTO (drug median 68 samples, .68 s) covers it, and that configuration still SURVIVES.
 - The AUTO window 2⟨a_i, a_j⟩ is a Bartlett-type pair decorrelation length: it sums the product of the two ACFs over all lags. That makes it the better-founded Theiler choice for a pair statistic, compared with a single channel's 1/e time.
 
-**τ in samples at 100/20/10 Hz.** Awake 3.1/0.6/0.3; KTMD 10.5/2.1/1.05; PF 13.8/2.8/1.4. The decorrelation rate 1/(2τ₁/ₑ) is about 16 Hz awake and 3.6–6.5 Hz under drug. By this criterion, 100 Hz oversamples the decorrelation time about 6× awake and 15–27× under drug, though not the 40 Hz analysis band.
+**τ in samples at 100/20/10 Hz.** Awake 3.1/0.6/0.3; KTMD 10.5/2.1/1.05; PF 13.8/2.8/1.4. The decorrelation rate 1/(2τ₁/ₑ) is about 16 Hz awake and 3.6–6.5 Hz under drug. By this criterion, 100 Hz oversamples the decorrelation time about 6× awake and 15–27× under drug, though not the 40 Hz analysis band. Because τ₁/ₑ is a quarter-period under drug, the envelope τ gives the more conservative drug figures: 1/(2τ_env) is about 1–4 Hz, and N_eff in the table below drops to the envelope values in brackets.
 
 **N_eff = T/(2τ₁/ₑ) at the median τ**
 
 | Window | Awake | KTMD | PF | Raw N at 100 / 20 / 10 Hz |
 |---|---|---|---|---|
-| 2 s | 32 | 9.5 | 7.2 | 200 / 40 / 20 |
-| 10 s | 161 | 48 | 36 | 1000 / 200 / 100 |
-| 50 s | 806 | 238 | 181 | 5000 / 1000 / 500 |
-| 100 s | 1613 | 476 | 362 | 10000 / 2000 / 1000 |
+| 2 s | 32 | 9.5 [7.7] | 7.2 [2.2] | 200 / 40 / 20 |
+| 10 s | 161 | 48 [38] | 36 [11] | 1000 / 200 / 100 |
+| 50 s | 806 | 238 [192] | 181 [54] | 5000 / 1000 / 500 |
+| 100 s | 1613 | 476 [385] | 362 [109] | 10000 / 2000 / 1000 |
 
 - Pair-level T/w_AUTO at 10 s: awake 185, KTMD 57, PF 43.
 - **Theiler w in use.** At 10 s the median AUTO w is 5 (awake) and 17 (drug); the cap of 100 is never reached. At 2 s the in-window AUTO is shorter, median 4 and 10: the ACF estimated from 200 samples is shorter than at 10 s. The cap of 20 binds for 7% of drug edges in the own bank and 18% in the cuts. 2τ₁/ₑ reaches the cap for 29% and 67%.
-- **The user's concern** that the Theiler window leaves too few samples applies only at 2 s with large windows. With 4×AUTO and k = 10 at 2 s, 40–48 of 200 samples are excluded on each side and the result is LOST in both arms. Calibration predicted this without reference to the drug: detectability at T = 200 is ≤ 0.75 for every 4×AUTO configuration.
+- **The user's concern** that the Theiler window leaves too few samples applies only at 2 s with large windows. With 4×AUTO and k = 10 at 2 s, 40–48 of 200 samples are excluded on each side and the result is LOST in both arms. Calibration predicted this without reference to the drug: at T = 200, detectability is ≤ 0.75 for every 4×AUTO configuration under ψ(T) (≤ .93 with pool ψ).
 
 **Squaring the ACF with the rate arms.**
 - The N_eff argument predicts that subsampling 100 → 20 Hz costs little: drug τ is about 2 samples at 20 Hz, so N_eff barely changes. Empirically it costs about half the effect.
@@ -118,10 +119,10 @@ Per window × channel (verified, `acf.txt`):
 
 ## Verdicts by axis
 
-**Bias correction: SURVIVES (verified, [`ksg-bias-result.md`](ksg-bias-result.md)).** The rows are reproduced here exactly. At T = 1000 the calibration's stationary drug − awake offset is positive for AUTO k4 (+.0061 ± .0035) and kshift (+.0068 ± .0044). Drug spectra alone push z up in this configuration, against the observed fall.
+**Bias correction: SURVIVES (verified, [`ksg-bias-result.md`](ksg-bias-result.md)).** The rows are reproduced here exactly. At T = 1000 the calibration's stationary drug − awake offset is positive for AUTO k4 (+.0061 ± .0035) and kshift (+.0068 ± .0044). So the estimator's response to drug spectra alone is not negative in this configuration (+1.5 to +1.8 SE), against the observed fall.
 
 **Theiler window, against the frozen reading of the user's claim**
-- **"Won't remove the effect."** Holds for every w > 0: AUTO, 2τ₁/ₑ and 4×AUTO all SURVIVE at k = 4 and k = 10. At w = 0 the result is PARTIAL (one animal at +.0012; KTMD 9/11 sessions down), against my prediction that it would survive. So the exclusion is what makes the effect consistent across animals.
+- **"Won't remove the effect."** The frozen reading (SURVIVES at every w, w = 0 included) fails literally at w = 0, which is PARTIAL (one animal at +.0012; KTMD 9/11 sessions down), against my prediction that it would survive. The failure is in the direction of the user's claim: every w > 0 (AUTO, 2τ₁/ₑ, 4×AUTO, at k = 4 and k = 10) SURVIVES, so the exclusion is what makes the effect consistent across animals.
 - **AUTO against w = 0.**
   - Magnitude: −6.7 against −4.9 own EO SD. AUTO is better.
   - Strength: |t(3)| 6.11 against 1.92. AUTO is better.
@@ -142,7 +143,7 @@ Per window × channel (verified, `acf.txt`):
 - **Magnitude is not the same.** The raw Δz is 1.5× (own bank) to 2.3× (cut) the 10-s value, against my predicted .5–1.0. Awake z itself shifts (real .89 against .97), so z is not T-invariant.
 - **Frozen calibration rule.** The real 2-s Δz must exceed the T = 200 stationary drug − awake offset by more than 2 SE under the same configuration.
   - Own bank fails: AUTO −1.5 SE, kshift −1.0 SE.
-  - Cut passes: AUTO −3.2 SE; kshift −2.04 SE, inside rounding of the threshold.
+  - Cut passes: AUTO −3.2 SE; kshift −2.04 SE, inside rounding of the threshold. The pass holds under both pooling definitions (sessions −.03596, animal means −.03593, against the threshold −.03560).
   - So the 2-s own-bank arm is not cited as robustness, and the cut arm is cited with the knife-edge noted.
   - At T = 200 the offset is negative (AUTO −.011, kshift −.017, w = 0 −.035). Short windows make the estimator respond to drug spectra in the drug direction; at 10 s it does not.
   - Limits of the rule: the calibration has 16 channels, uses only KTMD and PF drug spectra, and has n = 40 per cell.
@@ -156,7 +157,7 @@ Per window × channel (verified, `acf.txt`):
 
 Calibration (`calib.txt`, `precise.txt`; synthetic, 16 channels, real spectra):
 - At T = 1000, k = 10 has smaller stationary drug − awake offsets than k = 4 (AUTO +.0023 ± .0020 against +.0061 ± .0035) and higher detectability (1.95/3.65/1.55 against .35/3.17/1.27).
-- w = 0 at k = 10 has similar detectability (3.13/3.66/2.65) and an offset of −.0029 ± .0022, in the drug direction.
+- w = 0 at k = 10 has the highest detectability of any row (3.13/3.66/2.65) and an offset of −.0029 ± .0022, in the drug direction.
 - At T = 200 every configuration has detectability ≤ 2.5. The w = 0 offset is −.035, so 2-s windows are a poor regime for this estimator.
 - Detectability has no SE and does not penalise offsets, so it cannot rank configurations on its own.
 
@@ -174,7 +175,7 @@ On these drug-blind grounds, plus Theiler's (1986) argument for excluding tempor
 
 ## Paragraph for the paper (draft)
 
-The drug-related fall in z(G, K) did not depend on the bias correction or on the temporal-exclusion window of the kNN estimator, provided temporally adjacent samples were excluded. In 10-s windows at 100 Hz, every configuration with a Theiler window (the pair-decorrelation window, twice the 1/e time or four times the pair window; k = 4 or 10; ψ(N) or pool-adjusted digamma; or a circular-shift bias correction; 10 configurations) gave a negative drug Δz in all four animals and for every drug agent (t(3) = −5.4 to −7.9, p ≤ .006; .53–1.19 of the reference magnitude), with sleep within 0.7 eyes-open SD of eyes-closed wakefulness. Without exclusion the mean fall was similar (.82 of reference) but held in only three of four animals (t(3) = −1.9). In 2-s windows cut from the same recordings the fall persisted (t(3) = −7.5 to −8.0) and exceeded the estimator's response to drug spectra in stationary synthetic data by 2.0–3.2 SE; in an independent 2-s bank it did not exceed that response. Lowering the sampling rate to 20 or 10 Hz reduced the fall (to .03–.56 of reference in 10-s windows, .18–.39 at a matched 1,000 samples over 50–100 s), whereas low-pass filtering to the same bands at 100 Hz kept .69–.85. The effect therefore lies mostly below 8 Hz but needs dense sampling, and we analyse at 100 Hz with the pair-decorrelation Theiler window.
+The drug-related fall in z(G, K) did not depend on the bias correction or on the temporal-exclusion window of the kNN estimator, provided temporally adjacent samples were excluded. In 10-s windows at 100 Hz, every configuration with a Theiler window (the pair-decorrelation window, twice the 1/e time or four times the pair window; k = 4 or 10; ψ(N) or pool-adjusted digamma; or a circular-shift bias correction; 10 configurations) gave a negative drug Δz in all four animals and for every drug agent (t(3) = −5.4 to −7.9, p ≤ .0061; .53–1.19 of the reference magnitude), with sleep within 0.7 eyes-open SD of eyes-closed wakefulness. Without exclusion the mean fall was similar (.82 of reference) but held in only three of four animals (t(3) = −1.9). In 2-s windows cut from the same recordings the fall persisted (t(3) = −7.5 to −8.0) and exceeded the estimator's response to drug spectra in stationary synthetic data by 2.0–3.2 SE; in an independent 2-s bank it did not exceed that response. Lowering the sampling rate to 20 or 10 Hz reduced the fall (to .03–.56 of reference in 10-s windows, .18–.39 at a matched 1,000 samples over 50–100 s), whereas low-pass filtering to the same bands at 100 Hz kept .69–.85. The effect therefore lies mostly below 8 Hz (provisional, pending the band-pass arms), and lower sampling rates reduce it; we analyse at 100 Hz with the pair-decorrelation Theiler window.
 
 ## Limits
 
@@ -182,4 +183,5 @@ The drug-related fall in z(G, K) did not depend on the bias correction or on the
 - The low-rate long arms confound duration with rate (and, for the D arms, with band).
 - The 2-s calibration rule rests on a 16-channel synthetic generator using two drug spectra.
 - The ψ(T) mechanism at 4×AUTO is inferred, not tested.
-- The rb arrays (about 450 MB) stay on gdata. The text outputs here are what the numbers above are read from.
+- The low-rate session's low-pass, high-pass and band-pass ladders (jobs 185180701–3, prereg `bands-prereg.md` on its branch) were queued at writing; "mostly below 8 Hz" rests on L20/L10 alone until they land.
+- The rb arrays (about 450 MB) stay on gdata. The text outputs here are what the numbers above are read from. `robust_precise.py` was run from a temporary copy in the snapshot's mi_pair folder.
