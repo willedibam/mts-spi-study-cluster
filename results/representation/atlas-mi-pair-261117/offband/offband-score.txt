@@ -39,13 +39,13 @@ per session (unit: agent animal, mean c by state):
   KT    George 20120810 awake_ec  39.7 awake_eo  36.2 drug  59.4 recovery_ec  47.2
   KT    Chibi  20120813 awake_ec  31.2 awake_eo  32.5 drug 147.7 recovery_ec  49.6
   MD    George 20120814 awake_ec  37.1 awake_eo  38.9 drug  53.1 recovery_ec  49.0
-Δc (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 43.01, 'George': 17.23, 'Kin2': 25.03, 'Su': 27.47}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.22, p = 0.0068
+Δc (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 43.01, 'George': 17.23, 'Kin2': 25.03, 'Su': 27.47}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.22, p = 0.0068; animal mean +28.19 ± SE 5.40
   mixed model (23 drug sessions, random animal intercept) +28.47 ± 8.10; sessions up 23/23; eyes-open control per animal {'Chibi': 1.17, 'George': -2.64, 'Kin2': -0.87, 'Su': 2.13}
   per agent (session mean, sessions up): KT +62.15 (4/4), KTMD +23.80 (11/11), MD +13.65 (4/4), PF +22.92 (4/4)
   sleep +4.20 (7/7 up; animals {'Chibi': 2.42, 'George': 6.58}), ratio to pooled drug session mean +0.15; recovery (drug sessions) +7.25
 count against Δz: window Spearman(c, z_rec − z_surr) -0.825 (mean within state group -0.751); session Spearman(Δc, Δz) -0.852
 window share above the eyes-open wake 95th percentile (54; wake-calibrated window reference): awake_ec 0.047, recovery_ec 0.173, SLP 0.090, KT 0.775, KTMD 0.500, MD 0.225, PF 0.575
-panel (b) windows: KTMD c=49, awake_eo c=35, SLP c=26, KT c=70, PF c=50
+panel (b) windows (percentile of c within state): KTMD c=49 (30), awake_eo c=35 (58), SLP c=26 (17), KT c=70 (38), PF c=50 (28)
 == Step 4: surrogate residual tails (draw 0; per-window SD-standardised, two-sided) ==
 group        P(|u|>1.96) [0.05] P(|u|>2.58) [0.01] P(|u|>3.29) [0.001] P(|u|>3.89) [0.00010080645161290323]   excess kurt  rho(|e|,G)  SD top/bottom G tercile
 awake_eo                  0.0495              0.0098              0.0010              0.0001       -0.00      -0.00       0.99
@@ -90,7 +90,7 @@ KT             79.9     66     +55.1              0.700
 KTMD           48.8     47     +24.0              0.682
 MD             39.1     34     +14.3              0.325
 PF             46.5     45     +21.7              0.575
-Δ wake-reference count (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 41.34, 'George': 14.72, 'Kin2': 23.7, 'Su': 25.47}; 4/4 positive, sign p 0.0625; one-sided t(3) = 4.75, p = 0.0088
+Δ wake-reference count (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 41.34, 'George': 14.72, 'Kin2': 23.7, 'Su': 25.47}; 4/4 positive, sign p 0.0625; one-sided t(3) = 4.75, p = 0.0088; animal mean +26.31 ± SE 5.53
   mixed model (23 drug sessions, random animal intercept) +26.56 ± 6.95; sessions up 23/23; eyes-open control per animal {'Chibi': 1.46, 'George': -2.32, 'Kin2': -2.2, 'Su': 0.8}
   per agent (session mean, sessions up): KT +56.62 (4/4), KTMD +22.85 (11/11), MD +12.88 (4/4), PF +20.32 (4/4)
   sleep +2.59 (7/7 up; animals {'Chibi': 2.24, 'George': 3.06}), ratio to pooled drug session mean +0.10; recovery (drug sessions) +6.52
@@ -108,8 +108,8 @@ KT               25.71    5.69   96.5  +70.8       0.975  in excess
 KTMD             26.14    5.47   56.3  +30.2       0.964  in excess
 MD               26.15    5.55   48.0  +21.9       0.800  in excess
 PF               26.58    5.88   58.5  +31.9       0.950  in excess
-Δ excess E (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 43.16, 'George': 17.49, 'Kin2': 22.73, 'Su': 28.13}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.03, p = 0.0076
-  mixed model (23 drug sessions, random animal intercept) +28.28 ± 7.98; sessions up 23/23; eyes-open control per animal {'Chibi': 1.27, 'George': -1.87, 'Kin2': -1.58, 'Su': 1.48}
+Δ excess E (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 43.16, 'George': 17.49, 'Kin2': 22.73, 'Su': 28.13}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.03, p = 0.0076; animal mean +27.88 ± SE 5.54
+  mixed model (23 drug sessions, random animal intercept; NOT CONVERGED) +28.28 ± 7.98; sessions up 23/23; eyes-open control per animal {'Chibi': 1.27, 'George': -1.87, 'Kin2': -1.58, 'Su': 1.48}
   per agent (session mean, sessions up): KT +62.26 (4/4), KTMD +23.75 (11/11), MD +12.87 (4/4), PF +23.36 (4/4)
   sleep +2.72 (7/7 up; animals {'Chibi': 1.05, 'George': 4.96}), ratio to pooled drug session mean +0.10; recovery (drug sessions) +7.56
 decision: (i) animal test p = 0.0076; (ii) pooled drug E +36.1 against 3 x wake +23.6 and 3 x sleep +36.1 -> claim HOLDS
@@ -127,6 +127,11 @@ decomposition by tercile (off-band share, recording against null draws), within 
   W_rec − W_surr0  KTMD      low→high: 0.111/0.052  0.103/0.046  0.118/0.057
   W_rec − W_surr0  PF        low→high: 0.121/0.053  0.102/0.046  0.126/0.060
 Theiler window: recording mean 9.2, draw 0 9.0; share of pairs differing 0.45
+post hoc, per-pair-standardised count (own null SD of draws 1-99; draw 0 held out as its null): awake_eo 34.0 (null 26.2; CV of per-pair null SD 0.078), awake_ec 34.5 (null 26.7; CV of per-pair null SD 0.083), recovery_ec 41.0 (null 26.6; CV of per-pair null SD 0.096), SLP 38.3 (null 26.1; CV of per-pair null SD 0.087), KT 96.5 (null 26.3; CV of per-pair null SD 0.107), KTMD 59.7 (null 25.8; CV of per-pair null SD 0.160), MD 49.4 (null 26.8; CV of per-pair null SD 0.104), PF 61.4 (null 25.4; CV of per-pair null SD 0.196)
+Δ per-pair-standardised excess (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 44.55, 'George': 20.87, 'Kin2': 27.57, 'Su': 27.83}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.99, p = 0.0047; animal mean +30.20 ± SE 5.05
+  mixed model (23 drug sessions, random animal intercept; NOT CONVERGED) +30.63 ± 7.77; sessions up 23/23; eyes-open control per animal {'Chibi': 1.48, 'George': -1.74, 'Kin2': -3.1, 'Su': 1.27}
+  per agent (session mean, sessions up): KT +61.30 (4/4), KTMD +26.94 (11/11), MD +15.00 (4/4), PF +27.23 (4/4)
+  sleep +4.06 (7/7 up; animals {'Chibi': 2.16, 'George': 6.6}), ratio to pooled drug session mean +0.13; recovery (drug sessions) +6.54
 == Step 3: per-pair procedures, all windows, null pooled over pairs and the 100 draws (min p 2.0e-5) ==
 empirical null from awake_eo recording residuals: sigma0 = 1.052 surrogate SD
                   c    bonf    holm      wy      bh      by  storey  wake_null  own_bulk  gauss_bonf  gauss_fwer

@@ -56,8 +56,8 @@ def animal_test(S, label):
     m = smf.mixedlm('target ~ 1', dr, groups='animal').fit(reml=True)
     slp = S[S.agent == 'SLP'].target
     print(f'{label}: animal means (drugs pooled) {A.round(2).to_dict()}; {int((A > 0).sum())}/{n} positive, sign p '
-          f'{binom.sf((A > 0).sum() - 1, n, .5):.4f}; one-sided t({n - 1}) = {t.statistic:.2f}, p = {t.pvalue:.4f}')
-    print(f'  mixed model ({len(dr)} drug sessions, random animal intercept) {m.params.Intercept:+.2f} ± {m.bse.Intercept:.2f};'
+          f'{binom.sf((A > 0).sum() - 1, n, .5):.4f}; one-sided t({n - 1}) = {t.statistic:.2f}, p = {t.pvalue:.4f}; animal mean {A.mean():+.2f} ± SE {A.sem():.2f}')
+    print(f'  mixed model ({len(dr)} drug sessions, random animal intercept{"" if m.converged else "; NOT CONVERGED"}) {m.params.Intercept:+.2f} ± {m.bse.Intercept:.2f};'
           f' sessions up {int((dr.target > 0).sum())}/{len(dr)}; eyes-open control per animal {E.round(2).to_dict()}')
     print(f'  per agent (session mean, sessions up): ' + ', '.join(
         f'{a} {S[S.agent == a].target.mean():+.2f} ({int((S[S.agent == a].target > 0).sum())}/{(S.agent == a).sum()})' for a in DRUGS))
@@ -86,7 +86,8 @@ def step1(df):
     w95 = np.percentile(df[df.group == 'awake_eo'].c, 95)
     print(f'window share above the eyes-open wake 95th percentile ({w95:.0f}; wake-calibrated window reference): ' +
           ', '.join(f'{g} {np.mean(df[df.group == g].c > w95):.3f}' for g in GROUPS[1:]))
-    print('panel (b) windows: ' + ', '.join(f'{g} c={int(df[df.id == w].c.iloc[0])}' for g, w in PANEL_B.items()))
+    print('panel (b) windows (percentile of c within state): ' + ', '.join(
+        f'{g} c={int(df[df.id == w].c.iloc[0])} ({100 * np.mean(df[df.group == g].c < df[df.id == w].c.iloc[0]):.0f})' for g, w in PANEL_B.items()))
     return S, r
 
 
@@ -176,6 +177,13 @@ def step2(df, E, er, odir):
                 out.append(f'{np.mean(rr):.3f}/{np.mean(nn):.3f}')
             print(f'  {name:16s} {g:9s} low→high: ' + '  '.join(out))
     print(f'Theiler window: recording mean {Wr.mean():.1f}, draw 0 {Ws.mean():.1f}; share of pairs differing {np.mean(Wr != Ws):.2f}')
+    # post hoc: each pair standardised by its own null SD (draws 1-99), limit = pooled 95th pct of the standardised draws 1-99;
+    # draw 0 is held out of both and scored like the recording, so its count is the null of this count
+    sd = e[:, 1:].std(1); t = np.abs(e[:, 1:]) / sd[:, None]; lim = np.percentile(t.reshape(len(pos), -1), Q, axis=1)
+    d['cpp'] = (np.abs(er[pos]) / sd > lim[:, None]).sum(1); d['cpp0'] = (np.abs(e[:, 0]) / sd > lim[:, None]).sum(1); d['Epp'] = d.cpp - d.cpp0
+    print('post hoc, per-pair-standardised count (own null SD of draws 1-99; draw 0 held out as its null): ' + ', '.join(
+        f'{g} {d[d.group == g].cpp.mean():.1f} (null {d[d.group == g].cpp0.mean():.1f}; CV of per-pair null SD {np.mean(sd[(d.group == g).values].std(1) / sd[(d.group == g).values].mean(1)):.3f})' for g in GROUPS))
+    animal_test(session(d, 'Epp'), 'Δ per-pair-standardised excess (session state − awake_ec mean)')
     return d, pos, e
 
 
