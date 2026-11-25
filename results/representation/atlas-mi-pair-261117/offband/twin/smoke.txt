@@ -1,0 +1,1 @@
+gate over 24 windows: max |K_rec - zns| = 5.86e-08, max |K draw0 - zns K_surr| = 5.94e-08; max |G draw - G twin| = 3.77e-14 PASS

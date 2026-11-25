@@ -4,7 +4,7 @@ Rules frozen in [`preregs/offband-prereg.md`](preregs/offband-prereg.md) (commit
 
 ## Answer
 
-- **The frozen rule does not support "wake and sleep at chance".** Under surrogate against surrogate the count averages 25.9 per window (near-binomial). Eyes-open wake has +7.9 excess pairs and 35% of its windows have p < .05; sleep has +12.0 and 46%. Every state is "in excess" by the prereg's ≤ 10% rule. Wake's excess is real and uniform. It is a 5% wider recording scatter about the G–K line than the surrogate's (SD ratio 1.055), so it reads as a small departure from linear-stationary-Gaussian dependence. Ruled out (step 2): non-exchangeable surrogates (the null is near-binomial), dependence on G, and the recording–surrogate Theiler mismatch. Not tested: a known linear-Gaussian recording run through the whole pipeline, so a residual estimator mismatch between recordings and their surrogates is not excluded.
+- **The frozen rule does not support "wake and sleep at chance".** Under surrogate against surrogate the count averages 25.9 per window (near-binomial). Eyes-open wake has +7.9 excess pairs and 35% of its windows have p < .05; sleep has +12.0 and 46%. Every state is "in excess" by the prereg's ≤ 10% rule. Wake's excess is real and uniform. It is a 5% wider recording scatter about the G–K line than the surrogate's (SD ratio 1.055), so it reads as a small departure from linear-stationary-Gaussian dependence. Ruled out (step 2): non-exchangeable surrogates (the null is near-binomial), dependence on G, and the recording–surrogate Theiler mismatch. Pipeline mismatch is excluded by a linear-Gaussian twin run through the whole pipeline ([below](#linear-gaussian-twin-through-the-pipeline-26-november)): the twin gives +0.9 in eyes-open wake, 11% of the recording's +7.9.
 - **The relative claim holds.**
   - The animal-level test on the excess passes: t(3) = 5.03, p = .0076, 4/4 animals, 23/23 drug sessions.
   - The ratio rule passes only on a knife edge: pooled drug excess +36.1 against 3 × sleep +36.08. That pooling is window-weighted, and sleep's mean is driven by George.
@@ -219,6 +219,53 @@ Caption, reference (2) (supplement):
 
 > Off-band pairs against the awake state. Each window's G–K residuals, in units of its own surrogate's SD, are counted against the 95th percentile of the same session's eyes-open wake windows; each eyes-open window is left out of its own reference. Eyes-open wake is therefore about 25 by construction (95% of windows 13–42). Sleep stays on the wake band (mean 26.5), while anaesthesia leaves it (39–80; ketamine highest). This shows how far each state's pair-level scatter exceeds the awake state's; whether that scatter departs from Gaussian dependence is shown by panel (b) against its surrogate.
 
+## Linear-Gaussian twin through the pipeline (26 November)
+
+Rules frozen in [`preregs/offband-twin-prereg.md`](preregs/offband-twin-prereg.md) (commit `7e0bfa50`) before any twin of a real window was made. Code: `offband_twin.py`, `jobs/offband_twin.pbs` (snapshot `mi-offband-3d11dc76`; the first smoke failed on an argument bug before any output). Output: [`results/.../offband/twin/twin-score.txt`](../../../../results/representation/atlas-mi-pair-261117/offband/twin/twin-score.txt); the arrays are on gdata `.../offband/twin/`.
+
+- **What the twin is.**
+  - Each window gets three twins. A twin is a non-periodic Gaussian segment whose covariances at every lag are the window's own sample covariances.
+  - Its ends mismatch as a recording's do: median end jump 5.6 one-step increments in wake against the recording's 5.3.
+  - It goes through exactly the recording's steps: normal scoring, G and K, four joint IAAFT draws, and the count against draw 0's limit.
+  - It has no departure to find, so its excess is the pipeline's.
+  - Gate: in all 1,260 windows the recording and draw-0 K reproduce `zns` within 1.2e-7.
+- **Decision: excluded.**
+  - Eyes-open wake twin E is +0.89 (95% session bootstrap [+0.39, +1.39]), 11% of the recording's +7.9.
+  - The periodic control is +0.93 over all windows (calibrated).
+  - So **wake's excess is a property of the recordings, not of the pipeline**. It is a departure from linear-stationary-Gaussian dependence, but this check cannot say whether that is nonlinearity or non-stationarity.
+
+| State | E recording | E twin [95%] | E periodic | E rec − twin | SD ratio rec / twin |
+|---|---|---|---|---|---|
+| Eyes-open wake | +7.9 | +0.9 [0.4, 1.4] | +0.6 | +7.0 | 1.055 / 1.011 |
+| Eyes-closed wake | +8.0 | +2.3 [1.3, 3.3] | +0.9 | +5.7 | 1.052 / 1.014 |
+| Recovery | +15.6 | +3.3 [2.3, 4.2] | +1.0 | +12.3 | 1.104 / 1.017 |
+| Sleep | +12.0 | +2.4 [0.8, 4.1] | +0.7 | +9.7 | 1.085 / 1.014 |
+| Ketamine | +70.8 | +6.3 [4.5, 8.1] | +1.4 | +64.5 | 1.451 / 1.053 |
+| Ket. + med. | +30.2 | +6.3 [5.0, 7.7] | +1.5 | +23.9 | 1.258 / 1.051 |
+| Medetomidine | +21.9 | +5.2 [3.0, 8.0] | −0.1 | +16.7 | 1.166 / 1.039 |
+| Propofol | +31.9 | +8.6 [6.7, 10.8] | +4.2 | +23.3 | 1.256 / 1.064 |
+
+- **The pipeline does add a little, and more for slow, persistent signals.** The twin's excess rises from about 1–3 pairs in wake and sleep to 5–9 under anaesthesia. Its residual SD ratio rises from 1.01 to 1.05–1.06. That is 4–25% of each state's recording SD excess.
+  - Most of it needs the twin's non-periodic ends: the periodic control is about 1 everywhere except propofol, +4.2.
+  - Inferred, not tested: the propofol remainder comes from the asymmetry between the exactly normal-scored input and its approximately Gaussian spectrum-final surrogate, which grows when few samples are effectively independent.
+- **Every substantive claim survives the correction (E_rec − E_twin).**
+  - Animal test: +23.5 ± SE 5.1, t(3) = 4.59, p = .0097. All 4 animals and 23/23 drug sessions are up. The mixed model did not converge, so it is not quoted.
+  - Sleep is +2.5 (7/7 sessions, 2 animals), a ratio of 0.10 to drugs, as before.
+  - The 3× rule: drugs are 4.2× wake and 3.05× sleep. It holds, still narrowly.
+  - Ketamine's corrected excess (+59.3 session mean) is still mostly Chibi.
+- **Fidelity.**
+  - The twin's G matches the recording's across pairs with median Spearman .93 in wake and .91 in sleep.
+  - Ket. + med. (.80), propofol (.81) and medetomidine (.89) fall below the prereg's .9 flag. That is sampling: a slow, persistent signal gives a second 10-s stretch with a different G pattern. Twin numbers for those states are less closely matched.
+  - Twin Theiler windows are about 35% longer than the recording's (wake 7.2 against 5.2), from sampling noise in the long-lag autocorrelations. This affects K's exclusion window but not the count's calibration.
+- **End mismatch (descriptive).**
+  - Within state, the recording's E rises with its end jump: Spearman +.23 eyes-open, +.30 eyes-closed, +.47 recovery, +.48 sleep.
+  - The twin's E does too (+.11 to +.47), but at a much smaller level.
+  - A large end jump also marks drift across the window. So part of the wake and sleep excess may be within-window non-stationarity rather than nonlinearity. Inference; the `nonstat/` test cannot separate these.
+- **For the text.**
+  - "Wake departs slightly from linear-stationary-Gaussian dependence" is now supported: it is not an estimator artefact.
+  - Do not write "nonlinear" for wake or sleep: non-stationarity is not excluded.
+  - Quote the session-matched numbers, uncorrected or corrected; they agree (+27.9 against +23.5).
+
 ## Compute
 
 Gadi, project ql44:
@@ -228,8 +275,9 @@ Gadi, project ql44:
 | Gate | — | small (not itemised) |
 | Tier 1 | 10 × 48 cores, ~84 min | ~1.39 kSU |
 | Tier 2 | 5 windows × 20,000 draws, ~2.3 h | ~1.13 kSU |
+| Twin (26 Nov) | smoke 24 windows + 10 × 48 cores, ~18 min (one shard 34) | ~0.32 kSU (expected 0.3–0.5, worst 1.0) |
 
-Total ~2.5 kSU, against 1–2 expected and 4.8 worst case. The tier-2 runtime was underestimated.
+Total ~2.8 kSU. Tiers 1–2 came to 2.5 kSU against 1–2 expected and 4.8 worst case; the tier-2 runtime was underestimated.
 
 ## Literature (each checked 25 November)
 
@@ -239,3 +287,4 @@ Total ~2.5 kSU, against 1–2 expected and 4.8 worst case. The tier-2 runtime wa
 - Partial pooling instead of correction: [Gelman, Hill & Yajima 2012](https://doi.org/10.1080/19345747.2011.618213).
 - Edge-wise inference on networks with component-level FWER: [Zalesky, Fornito & Bullmore 2010](https://doi.org/10.1016/j.neuroimage.2010.06.041) (NBS); relevant only to a "which connected set of pairs" claim, which the figure does not make.
 - Surrogate-null reading ("dependence beyond the linear-Gaussian expectation"): [Theiler et al. 1992](https://doi.org/10.1016/0167-2789(92)90102-S), as cited in `docs/interpreting-spi-pairs.md`.
+- End-point mismatch in Fourier-based surrogates: [Schreiber & Schmitz 2000](https://arxiv.org/abs/chao-dyn/9909037), Physica D 142:346–382 (checked 26 November on arXiv; γ_jump and the advice to match end points).

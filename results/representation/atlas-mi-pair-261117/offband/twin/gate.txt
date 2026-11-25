@@ -1,0 +1,10 @@
+gate over 126 windows: max |K_rec - zns| = 5.92e-08, max |K draw0 - zns K_surr| = 5.95e-08; max |G draw - G twin| = 5.15e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 7.83e-08, max |K draw0 - zns K_surr| = 5.94e-08; max |G draw - G twin| = 3.95e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.92e-08, max |K draw0 - zns K_surr| = 5.87e-08; max |G draw - G twin| = 6.33e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.93e-08, max |K draw0 - zns K_surr| = 5.95e-08; max |G draw - G twin| = 3.84e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.94e-08, max |K draw0 - zns K_surr| = 5.96e-08; max |G draw - G twin| = 5.62e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.95e-08, max |K draw0 - zns K_surr| = 5.95e-08; max |G draw - G twin| = 6.46e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.88e-08, max |K draw0 - zns K_surr| = 1.16e-07; max |G draw - G twin| = 5.02e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.95e-08, max |K draw0 - zns K_surr| = 5.91e-08; max |G draw - G twin| = 4.02e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.89e-08, max |K draw0 - zns K_surr| = 5.95e-08; max |G draw - G twin| = 5.02e-14 PASS
+gate over 126 windows: max |K_rec - zns| = 5.94e-08, max |K draw0 - zns K_surr| = 5.96e-08; max |G draw - G twin| = 5.2e-14 PASS
