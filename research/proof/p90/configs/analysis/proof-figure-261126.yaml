@@ -1,0 +1,131 @@
+study: proof-figure-261126
+status: presentation_only
+# Display figure for the proof section, on the pyspi 3.0.0rc2 bank (proof-p90-261126, 207 SPIs). Same contract and preprocessing as
+# proof-refresh-261014 + unified_ordered_v3 (notebook proof_p90_261021); one t-SNE
+# fitted on the displayed classes only, above four class-contrast rainclouds.
+base_protocol: research/proof/p90/configs/analysis/proof-refresh-261014.yaml
+feature_contract: unified_ordered_v3
+# Display order. Variants within a family take neighbouring hues at mid lightness.
+classes:
+- {name: gaussian-noise, family: Noise, label: Gaussian, color: '#4FA3C7'}
+- {name: cauchy-noise, family: Noise, label: Cauchy, color: '#2B5BA8'}
+- {name: var-self-0.7_total-0.2, family: VAR, label: self-memory, color: '#C86FB0'}
+- {name: var-self-0.2_total-0.7, family: VAR, label: neighbour coupling, color: '#7A4AA0'}
+- {name: kuramoto_omega-fast, family: Kuramoto, label: fast freq., color: '#D9662B'}
+- {name: kuramoto_omega-slow, family: Kuramoto, label: slow freq., color: '#E8A33A'}
+- {name: sti-i, family: CML, label: intermittency, color: '#8DB03F'}
+- {name: fdstc, family: CML, label: developed turbulence, color: '#2E8B57'}
+- {name: wave-1d, family: Wave equation, label: 1-D, color: '#5A5A5A'}
+class_rationale: >-
+  Dropped var-self-0.2_total-0.2: the kept VAR pair has matched spectral radius (0.9) and
+  total weight (0.9), differing only in self versus neighbour placement. Dropped
+  defect-turbulence and frozen-chaos: intermittency (alpha 1.7522, eps 0.00115, laminar
+  period-3 phases) and fully developed turbulence (alpha 2, eps 0.3, period-2 alternation)
+  are the most distinct CML dynamics. All twelve classes are separable (5NN with each M/T
+  cell held out: 0.998), so the choice is presentational, not outcome-driven.
+# Markers: white outlines separate overlaps and keep T shapes legible.
+markers: {alpha: 0.85, edgecolor: white, linewidth: 0.3}
+# Class islands: tinted 95% highest-density region of a Gaussian KDE (Scott bandwidth)
+# with a thin contour; anchors for the example-MTS insets to be added around panel a.
+islands: {mass: 0.95, fill_alpha: 0.12, line_width: 0.35}
+tsne:
+  library: openTSNE==1.0.4
+  perplexity: 30
+  # dof > 1 lightens the kernel tails: islands spread relative to their gaps
+  # (Kobak et al. 2020, ECML PKDD). Display choice; gaps and areas stay uninterpretable.
+  # dof 2-5 roughly doubles island radius relative to gaps; 5 kept islands distinct.
+  dof: 5
+  initialization: pca
+  learning_rate: auto
+  early_exaggeration: 12
+  early_exaggeration_iter: 250
+  n_iter: 1250
+  metric: euclidean
+  random_state: 260924
+# Fixed coordinates, chosen for mechanistic readability among coordinates with training
+# AUC >= .995 in every M/T cell (instances 0-5); rainclouds show instances 6-9.
+contrasts:
+- classes: [gaussian-noise, cauchy-noise]
+  spis: [spearmanr, cov_EmpiricalCovariance]
+  label: Spearman $\times$ covariance
+  reading: Rank and moment estimates co-vary across pairs under Gaussian tails; Cauchy outliers decouple them.
+- classes: [var-self-0.7_total-0.2, var-self-0.2_total-0.7]
+  spis: [te_kraskov_NN-4_k-1_kt-1_l-1_lt-1, tlmi_kraskov_NN-4]
+  label: transfer entropy $\times$ lagged MI
+  reading: TE is lagged MI conditioned on the target's past; strong self-memory makes them rank pairs differently.
+- classes: [kuramoto_omega-fast, kuramoto_omega-slow]
+  spis: [cov_EmpiricalCovariance, pdist_cityblock]
+  label: covariance $\times$ L1 distance
+  reading: >-
+    Literal: mean-removed co-fluctuation against raw mean absolute difference (channels not z-scored). Fast
+    oscillators sweep about six cycles per 2000 samples, so both are set by phase difference (z near -1); slow
+    ones (period about 40,000 samples) sit at channel-specific levels (within-channel SD 1-3% of the spread of
+    channel means), so distance reads level offsets and covariance reads co-drift (z near 0).
+- classes: [sti-i, fdstc]
+  spis: [lagcorr_onesided_tau-2_L-None, lagcorr_onesided_tau-5_L-None]
+  label: lag-2 $\times$ lag-5 cross-corr.
+  reading: >-
+    Lags 2 and 5 share a phase of a period-3 cycle but have opposite parity. Intermittency's laminar phases
+    are period 3 (ACF -.5, -.28, +.72 at lags 1-3), so the two lag profiles agree; developed turbulence
+    alternates with period 2 (ACF -.67, +.46, -.36), so they flip sign.
+# Panel a: one silo per family around the t-SNE; each variant's strip is tiled with carpets of
+# recordings regenerated from the frozen generation config (see silos below). Topology is the
+# generator's coupling graph, drawn in each silo header with line width proportional to weight.
+panel_a:
+  generation: research/proof/p90/configs/proof-p90-261126.yaml
+  # Wave: finite-difference Laplacian on a periodic lattice, so a nearest-neighbour ring like VAR/CML.
+  topology: {Noise: none, VAR: ring, Kuramoto: complete, CML: ring, Wave equation: ring}
+  # Frozen output of proof_figure.choose_layout (step 6 deg): silo sides/orders, variant order within
+  # silos and a rotation/reflection of the arbitrary t-SNE axes, giving short leaders that neither
+  # cross nor run over other islands and a free corner for the inset key.
+  # Silo sides as in the user's draw.io arrangement (29 Oct): Wave above the embedding, without a
+  # leader (its island sits under the silo). choose_layout searched left/right only.
+  # 261126: choose_layout(..., top=('Wave equation',)) on the pyspi 3.0.0rc2 embedding (cost 7.75).
+  columns:
+    left: [Kuramoto, Noise]
+    top: [Wave equation]
+    right: [CML, VAR]
+  variant_order:
+    Noise: [gaussian-noise, cauchy-noise]
+    VAR: [var-self-0.2_total-0.7, var-self-0.7_total-0.2]
+    Kuramoto: [kuramoto_omega-fast, kuramoto_omega-slow]
+    CML: [sti-i, fdstc]
+  rotation_deg: 180
+  reflect_x: false
+  # Carpet views (user, 29 Oct): per_in samples per inch of tile width. Intermittency shows every 12th
+  # sample (strobes the period-3 laminar orbit; SPIs used every sample). Kuramoto shows the whole record
+  # decimated to the tile: a short clip is under half a fast-oscillator period (~335 samples).
+  carpets:
+    per_in: 238
+    stride: {sti-i: 12}
+    whole: [kuramoto_omega-fast, kuramoto_omega-slow]
+  # Automated silos (research/proof/p90/carpet_strips.py). Carpet height encodes M: unit_in per 8
+  # channels, so M = 8, 16, 32 are .0875, .205, .44 in tall and two M carpets stack to one 2M. Side
+  # strips hold 48 channels; the top strip holds 64, its unit stretched (~1.12x) to the height left by
+  # aligning the side columns with the embedding. Width is a time window, solved per layout to fill the
+  # strip within aspect [low, high, target]. Layouts are frozen output of proof_figure.choose_strips;
+  # edit by hand freely ('|' columns, ',' stacked levels, '+' side by side, '/' bands).
+  T_values: [500, 1000, 2000]
+  silos:
+    unit_in: 0.1175
+    gap_in: 0.03
+    channels: 48
+    top_channels: 64
+    items: [6, 9]
+    top_items: [8, 12]
+    aspect: [1.0, 4.5, 2.0]
+    instances: [6, 7, 8, 9, 0, 1, 2, 3, 4, 5]
+    layouts:  # choose_strips (18 Nov); wave-1d is its 22nd candidate, picked by eye (top ones are M=32-heavy).
+      fdstc: '16, 32 | 32, 16 | 16, 8+8, 16, 8'
+      sti-i: '16, 32 | 8, 16, 16, 8 | 16, 32'
+      kuramoto_omega-fast: '16+16, 32 | 8+8, 16, 16, 8'
+      kuramoto_omega-slow: '16, 8+8, 16, 8 | 32, 16 | 16, 32'
+      var-self-0.2_total-0.7: '16, 32 | 8, 16, 16, 8 | 16, 32'
+      var-self-0.7_total-0.2: '8+8, 16, 16, 8 | 16+16, 32'
+      gaussian-noise: '16, 32 | 32, 16 | 16, 8+8, 16, 8'
+      cauchy-noise: '16, 32 | 8, 16, 16, 8 | 16, 32'
+      wave-1d: '8+8, 16, 8+8, 32 | 16, 32, 16+16 | 32, 32'
+  silo_labels:
+    kuramoto_omega-fast: Kuramoto (fast frequencies)
+    kuramoto_omega-slow: Kuramoto (slow frequencies)
+    wave-1d: Wave 1-D

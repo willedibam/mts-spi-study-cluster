@@ -20,6 +20,20 @@ def test_fixed_pair_found_in_either_order_and_not_reselected(tmp_path):
         select_contrasts(bank, tmp_path, {'contrasts':[{'classes':['a', 'b'], 'spis':['p', 's'], 'label':''}]})
 
 
+def test_contrast_candidates_need_one_orientation_in_every_cell():
+    from research.proof.p90.proof_figure import contrast_candidates
+    y = np.repeat(['a', 'b'], 12); instance = np.tile(np.arange(6), 4)
+    M = np.tile(np.repeat([8, 16], 6), 2); T = np.full(24, 500)
+    X = np.zeros((24, 3))
+    X[12:, 0] = 1                                   # b above a in both cells
+    X[:, 1] = np.where(M == 8, 1, -1) * (y == 'b')  # flips between cells
+    X[12:, 2] = 1; X[0, 2] = np.nan                 # separates, but not finite
+    bank = {'X': X, 'y': y, 'instance': instance, 'M': M, 'T': T,
+            'pairs': np.array([['p', 'q'], ['r', 's'], ['u', 'v']])}
+    found = contrast_candidates(bank, 'a', 'b')
+    assert found.feature_index.tolist() == [0] and found.min_cell_auc.tolist() == [1.]
+
+
 def test_marker_area_is_proportional_to_m():
     np.testing.assert_allclose(marker_area([8, 16, 32]) / marker_area(8), [1, 2, 4])
 

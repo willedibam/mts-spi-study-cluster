@@ -2,7 +2,7 @@
 whose strips are tiled with example carpets (height encodes M; ``carpet_strips``); b: fixed
 class-contrast rainclouds.
 
-Settings, classes, contrasts and panel-a layout live in ``configs/analysis/proof-figure-261029.yaml``.
+Settings, classes, contrasts and panel-a layout live in ``configs/analysis/proof-figure-261126.yaml``.
 Colour = class (a family's variants take neighbouring hues), marker area proportional to M,
 marker shape = T.
 """
@@ -26,7 +26,7 @@ from research.cases.composite_style import carpet, panel_title, style
 from research.proof.p90.carpet_strips import bands, brick, mirror, parse, place, rank_layouts
 from research.proof.p90.refresh_proof_figures import ROOT, preprocess, rank_pair
 
-CONFIG = ROOT/'research/proof/p90/configs/analysis/proof-figure-261029.yaml'
+CONFIG = ROOT/'research/proof/p90/configs/analysis/proof-figure-261126.yaml'
 T_MARKERS = {500: '^', 1000: 's', 2000: 'o'}
 # Matplotlib sizes a marker's bounding box; these factors roughly equalise drawn area.
 SHAPE_AREA = {'^': 1.35, 's': .8, 'o': 1.}
@@ -83,6 +83,30 @@ def select_contrasts(bank, output, config):
     frame = pd.DataFrame(rows)
     frame.to_csv(Path(output)/'proof-figure-contrasts.csv', index=False)
     return frame
+
+
+def contrast_candidates(bank, class_a, class_b, threshold=.995):
+    """Coordinates separating two classes in every M/T cell on training instances (0-5).
+
+    Orientation is fixed by the pooled training AUC; ``min_cell_auc`` is the smallest
+    per-cell AUC in that orientation. Returns the coordinates with ``min_cell_auc >= threshold``.
+    """
+    train = bank['instance'] < 6
+    def aucs(a, b):  # P(b > a) + ties/2, per column
+        diff = b[:, None, :] - a[None, :, :]
+        return ((diff > 0) + .5*(diff == 0)).mean((0, 1))
+    pick = lambda cls, extra=True: bank['X'][train & (bank['y'] == cls) & extra]
+    with np.errstate(invalid='ignore'):
+        orientation = np.where(aucs(pick(class_a), pick(class_b)) >= .5, 1., -1.)
+        cells = sorted(set(zip(bank['M'][train], bank['T'][train])))
+        per_cell = np.array([.5 + orientation*(aucs(pick(class_a, (bank['M'] == m) & (bank['T'] == t)),
+                                                    pick(class_b, (bank['M'] == m) & (bank['T'] == t))) - .5)
+                             for m, t in cells])
+    finite = np.isfinite(np.vstack([pick(class_a), pick(class_b)])).all(0)
+    worst = np.where(finite, per_cell.min(0), np.nan)
+    keep = np.flatnonzero(worst >= threshold)
+    return pd.DataFrame({'feature_index': keep, 'spi_a': bank['pairs'][keep, 0], 'spi_b': bank['pairs'][keep, 1],
+                         'orientation': orientation[keep].astype(int), 'min_cell_auc': worst[keep]})
 
 
 def legend_label(c):
@@ -293,29 +317,32 @@ def _leader_cost(anchors, cen, rad, pts, owner):
     return cost
 
 
-def choose_layout(xy, labels, config, *, step=6, legend=False, keep=60):
+def choose_layout(xy, labels, config, *, step=6, legend=False, keep=60, top=()):
     """Search silo sides/orders and the rotation/reflection of the (arbitrary) t-SNE axes for
     short leaders that neither cross nor run over other islands, with a free corner for the
-    inset key; then the variant order inside each silo. Freeze the result in the YAML."""
+    inset key; then the variant order inside each silo. Families in ``top`` stay in the top
+    silo (no leader). Freeze the result in the YAML."""
     from itertools import combinations, permutations, product
-    families = list(dict.fromkeys(c['family'] for c in config['classes']))
+    families = [f for f in dict.fromkeys(c['family'] for c in config['classes']) if f not in top]
     names = [c['name'] for c in config['classes']]
     owner = np.array([names.index(n) for n in labels])
 
     def cost(columns, order, angle, reflect):
         g = _geometry(config, columns, legend, order)
-        anchors = np.array([g['anchors'][n][:2] for n in names])
+        led = [i for i, n in enumerate(names) if n in g['anchors']]  # top-silo classes have no leader
+        anchors = np.array([g['anchors'][names[i]][:2] for i in led])
         q = _orient(xy, angle, reflect); pts = _frame(q, g)(q)
-        cen = np.array([pts[owner == i].mean(0) for i in range(len(names))])
-        rad = np.array([np.sqrt(((pts[owner == i] - cen[i])**2).sum(1).mean())*1.6 for i in range(len(names))])
-        return _leader_cost(anchors, cen, rad, pts, owner) + _key_corner(pts, g)[1]
+        cen = np.array([pts[owner == i].mean(0) for i in led])
+        rad = np.array([np.sqrt(((pts[owner == i] - c)**2).sum(1).mean())*1.6 for i, c in zip(led, cen)])
+        own = np.array([led.index(o) if o in led else -1 for o in owner])
+        return _leader_cost(anchors, cen, rad, pts, own) + _key_corner(pts, g)[1]
 
     scored = []
     for k in (2, 3):
         for chosen in combinations(families, k):
             rest = [f for f in families if f not in chosen]
             for lo, ro in product(permutations(chosen), permutations(rest)):
-                columns = {'left': list(lo), 'right': list(ro)}
+                columns = {'left': list(lo), **({'top': list(top)} if top else {}), 'right': list(ro)}
                 for reflect in (False, True):
                     for angle in range(0, 360, step):
                         scored.append((cost(columns, None, angle, reflect), columns, angle, reflect))

@@ -1,6 +1,6 @@
 """Why two CML-intermittency recordings embed with Gaussian noise in the proof figure.
 
-Run ``python -m research.proof.p90.sti_strays``; writes to ``results/proof/figure-261029/sti-strays/``.
+Run ``python -m research.proof.p90.sti_strays``; writes to ``results/proof/figure-261126/sti-strays/``.
 - ``sti-strays-lattice.png``: the full 100-site lattice of each stray and of reference recordings,
   laminar/turbulent, with the observed 8-site window marked.
 - ``sti-continuum.{csv,png}``: every intermittency, developed-turbulence and Gaussian-noise recording,
@@ -18,7 +18,7 @@ from research.cases.composite_style import carpet, style
 from research.proof.p90.proof_figure import _specs, load_config
 from research.proof.p90.refresh_proof_figures import load_bank, preprocess
 
-OUT = Path('results/proof/figure-261029/sti-strays')
+OUT = Path('results/proof/figure-261126/sti-strays')
 STRAYS = [(8, 1000, 4), (8, 500, 8)]  # (M, T, instance) of sti-i.
 LAMINAR = .05  # |x(t) - x(t-3)| below this: on the period-3 laminar orbit.
 
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     if '--figure' in sys.argv and csv.exists():  # Reuse the continuum table: figure only.
         frame = pd.read_csv(csv)
     else:
-        bank = load_bank('data/proof/refresh-261014/features.npz', expected_spis=283, contract='unified_ordered_v3')
+        bank = load_bank('data/proof/refresh-261126/features.npz', expected_spis=207, contract='unified_ordered_v3')
         frame = continuum(config, bank); frame.to_csv(csv, index=False)
         plot_lattices(config); plot_continuum(frame)
     print(plot_figure(config, frame))
