@@ -120,6 +120,28 @@ Per window × channel (verified, `acf.txt`):
 - So N_eff does not explain the loss at fixed duration, and the matched-N arms do not test rate alone. Longer windows also add nonstationarity over 50–100 s, which IAAFT does not model.
 - The mechanism is unknown. A candidate (speculation) is that KSG's local-density resolution depends on sample density within each ~1-s excursion, which subsampling thins and longer windows do not restore.
 
+**Within-state decomposition (post hoc, descriptive; window-pooled means from `lowrate_summary.txt`, no per-rate stationary offset; figures [`grid.png`](../../../../results/representation/atlas-mi-pair-261117/robust/grid.png) and [`grid_agents.png`](../../../../results/representation/atlas-mi-pair-261117/robust/grid_agents.png), [`robust_grid_fig.py`](robust_grid_fig.py)).**
+- **Raw drug z above awake at low rates is a surrogate-level shift, not a sign change in the statistic.** Real minus surrogate under drug is negative in every arm except S10 (+.0043). Raw drug z rises at ≤ 20 Hz because the surrogate's drug − awake change turns positive (+.006 to +.040, against −.007 at the anchor). That is the spectral or reliability level that IAAFT is there to absorb.
+- **Drug side.**
+  - **At 100 Hz** real − surrogate is −.015 to −.016 in every band (anchor, L20, L10).
+  - **At 20 Hz** (N = 200 and 1000, 10 and 50 s) and in the N = 1000 arms at 10 Hz (100 s) it is −.004 to −.006. At 10 Hz × 10 s (N = 100) it is about 0 or positive.
+  - This is a contrast between two levels, not a gradient. 50 Hz is the missing point.
+- **Awake side.**
+  - At T ≤ 200 real awake z sits above its surrogate (+.0016 to +.0063). That carries about half of S20's Δz (drug side −.0040, awake +.0042), so S20's SURVIVES rests largely on the awake side.
+  - At 100 Hz in a low-passed band, awake also departs (L20 −.0050, L10 −.0082), so L20's and L10's smaller Δz comes from the awake side, not from the drug side.
+- **By agent.** Ketamine keeps −.010 to −.017 in every arm. KTMD, MD and PF shrink to −.009 to +.002 at ≤ 20 Hz (−.006 to −.016 at 100 Hz).
+- **Sizes are not comparable across cells.** The subsample pairs (anchor → S20, L20 → D20, L10 → D10) share one same-time distribution, so the difference between them is the estimator's. Whether 100 Hz inflates the departure or ≤ 20 Hz attenuates it is undetermined. The grid is a specification map, not a search for the largest cell; a configuration is chosen on drug-blind criteria.
+- **Predictions for W50 (100 Hz, 50 s, N_eff about 240), written before any W50 value is read.**
+  - If sample density carries the size, the drug side is near −.015.
+  - If N_eff (estimator noise) carries it, the drug side is near −.005, like S20L.
+  - Values in between are not read as either.
+- **Specificity (verified, synthetic; [`ksgbias/calib.txt`](../../../../results/representation/atlas-mi-pair-261117/ksgbias/calib.txt)).** At T = 1000 and 100 Hz, z real − surrogate is:
+  - **Per-channel independent gain** (`gain_ind`, no coupling change): −.002 with awake spectra; −.032 / −.046 with KTMD / PF drug spectra.
+  - **Shared gain** (`gain_shared`): −.011 awake; −.033 drug.
+  - **Stationary coupling** (`block`): about 0.
+  - So channel-level amplitude episodes lower z as much as a shared one, and the readout grows with spectral slowing. The stationary drug-blind calibration cannot see this, and the envelope null's gain gate failed for the same reason (findings).
+  - Rate dependence of this is unknown. The sweep's per-cell calibration should carry `block`, `gain_ind` and `gain_shared`, with dwell set in seconds and both awake and drug spectra.
+
 **Sampling-rate recommendation.** Keep 100 Hz.
 - The 1/e decorrelation criterion (and its 2× variant) would choose 10–20 Hz. For this estimator that loses .44–.97 of the effect at 10 s.
 - Low-pass at 100 Hz keeps .85 at 8 Hz (L20) and .69 at 4 Hz (L10), but the effect is not mostly below 8 Hz: high-pass at 2 Hz keeps it in 4/4 animals (R .77), and 0.5–2 Hz alone does not. It does not need content below 2 Hz and is not confined to one band. A slower rate is a choice of band and of sample density, not a free saving.
