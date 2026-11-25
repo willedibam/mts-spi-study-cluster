@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=05:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_kens
+#PBS -j oe
+# Surrogate-ensemble fourth-order readouts (../cumulants/kens.py; ../preregs/kens-prereg.md). Same rows and draw-0 seeds as kdiff.pbs.
+# qsub -v SRC=<source snapshot> kens.pbs   (the snapshot is a clean worktree of the pushed commit; the venv is the checkout's)
+# Scoring is local, after rsync of $O/ensemble.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; S=${SRC:-$R}; cd $S/research/representation/atlas/mi_pair/cumulants || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/ensemble; mkdir -p $O
+PY="env PYTHONPATH=$S/src $R/.venv/bin/python"; N=${NDRAW:-100}; git -C $S log -1 --format='commit %H' > $O/commit-kens.txt
+for a in PF KT KTMD MD SLP; do $PY kens.py $B/neurotycho-long-stage-a $O/ke_A_$a.npz $a first 48 $N || exit 3; done
+for a in PF KT KTMD MD; do $PY kens.py $B/neurotycho-long-stage-b $O/ke_B_$a.npz $a first 48 $N || exit 3; done
+$PY kens.py $B/neurotycho-long-stage-b $O/ke_B_SLP.npz SLP row 48 $N || exit 3
+cd $O && sha256sum ke_*.npz > SHA256SUMS-kens && echo ALLDONE

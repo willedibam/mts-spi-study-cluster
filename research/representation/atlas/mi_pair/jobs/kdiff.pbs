@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=00:30:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_kdiff
+#PBS -j oe
+# Mean difference kurtosis per window (../cumulants/kdiff.py; ../preregs/kdiff-prereg.md). Same rows and seeds as cumsplit.pbs.
+# qsub -v SRC=<source snapshot> kdiff.pbs   (the snapshot is a clean worktree of the pushed commit; the venv is the checkout's)
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; S=${SRC:-$R}; cd $S/research/representation/atlas/mi_pair/cumulants || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117; mkdir -p $O/cumulants
+PY="env PYTHONPATH=$S/src $R/.venv/bin/python"; git -C $S log -1 --format='commit %H' > $O/cumulants/commit-kdiff.txt
+for a in PF KT KTMD MD SLP; do $PY kdiff.py $B/neurotycho-long-stage-a $O/cumulants/kd_A_$a.npz $a first 48 || exit 3; done
+for a in PF KT KTMD MD; do $PY kdiff.py $B/neurotycho-long-stage-b $O/cumulants/kd_B_$a.npz $a first 48 || exit 3; done
+$PY kdiff.py $B/neurotycho-long-stage-b $O/cumulants/kd_B_SLP.npz SLP row 48 || exit 3
+$PY kdiff.py score $O/cumulants $O/zns $O/cumulants > $O/cumulants/kd-score.txt && cd $O/cumulants && sha256sum kd_*.npz > SHA256SUMS-kdiff && echo ALLDONE
