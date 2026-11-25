@@ -97,6 +97,9 @@ tr.on { background: var(--grid); font-weight: 600 }
         <div><svg id="brain" viewBox="0 0 300 220" role="img" aria-label="Electrodes on the brain"></svg><p class="note" id="brainnote"></p></div>
         <div><svg id="glyph" viewBox="0 0 220 220" role="img" aria-label="Joint samples of the pair"></svg><p class="note" id="glyphnote"></p></div>
       </div>
+      <h2 style="margin-top:12px">Shape of the dependence</h2>
+      <div class="stats" id="shapestats"></div>
+      <p class="note" id="shapenote" style="margin-bottom:10px"></p>
       <svg id="traces" viewBox="0 0 600 150" role="img" aria-label="The two electrodes' traces"></svg>
       <h2 style="margin-top:12px">This pair across the session</h2>
       <svg id="pairstrip" viewBox="0 0 600 120" role="img" aria-label="This pair's distance from the line in every window"></svg>
@@ -125,6 +128,7 @@ tr.on { background: var(--grid); font-weight: 600 }
       <p><b>Per-pair p.</b> A pair's residual from the recording's line is ranked against surrogate residuals: p = (1 + #{|surrogate| ≥ |pair|}) / (n + 1). With one draw, n = 496 and p cannot go below .002: Bonferroni over 496 pairs can never pass, and Benjamini–Hochberg only when many pairs sit at that floor. The default pools the surrogate residuals of every window of the same session and state (10–30 windows, so n = 4,960–14,880; each residual about its own surrogate line), assuming the null scatter is stable there: the band half-width varies by a median 5% (90th percentile 10%) across those windows. Pooling also assumes pairs are exchangeable under the null. Across the 112 session × state cells with fixed electrodes, pair identity explains 0.2–3% of the surrogate residual's variance (median ICC by state, most under drug), and a pair's surrogate residual correlates with its real residual in the same window at a median .01–.08. A per-pair null from many draws per window would therefore change little, and with 200 draws its p could not go below .005, coarser than the pooled null.</p>
       <p><b>Read with care.</b> (1) Pairs <i>below</i> the band are not dependence: with normal-scored marginals true MI ≥ <i>G</i>, and per-pair <i>K</i> has a sampling SD of about .05 at 1,000 samples plus a small downward bias at weak pairs under drug spectra (ksg-bias-result.md). p<sub>above</sub> picks out pairs with more kNN MI than the line predicts. (2) The baseline is not 5% off band. Over all 1,260 windows, the mean share of pairs off band is 6.8% in eyes-open and in eyes-closed wake, 7.7% in sleep and 12.6% under drug. (3) The fall in <i>z</i> is broad: dropping the top 1% or 5% of pairs that carry it leaves it at least as large (drop test, edges-result.md). The most deviant pairs are worth looking at, but they are not where Δz comes from, and they mostly do not persist: pair identity explains 1–8.5% of the real residual's variance across a session's windows of one state; the histogram shows the whole cloud widening.</p>
       <p><b>Glyph.</b> Each point is one 10-ms sample, normal-scored, under the 50, 95 and 99% contours of the Gaussian with the same <i>r</i> (the shape <i>G</i> assumes). Samples beyond 95% are tinted, beyond 99% coloured, and their times are marked under the traces. A Gaussian pair puts 1% beyond 99%.</p>
+      <p><b>Shape of the dependence.</b> Ben's diagnostics, on the pair's standardised normal scores. Rotate onto the axes of the ellipse: <i>a</i> along the correlation axis, <i>b</i> across it (positive when the second electrode sits above the axis), each unit variance under a Gaussian copula, with <i>a</i>² + <i>b</i>² the squared Mahalanobis distance. Skew is the mean cube, excess kurtosis the mean fourth power minus 3, Mardia's kurtosis the mean squared Mahalanobis distance squared (8 for a Gaussian). Outliers cluster in bursts, so the skew across the axis is tested by flipping the sign of <i>b</i> in whole 1-s blocks (all 1,024 patterns of the 10 blocks; p cannot go below .002). This p is for one chosen pair, uncorrected over 496 pairs and the windows. Over all pairs and drug sessions the change is symmetric: the sign-asymmetric cross-cumulant is 7% of it, and about 90% of the fourth-order change lies along each pair's difference direction, which is across the axis when r > 0 (cumulants test, findings.md). The traces are average-referenced, so opposite-sign deflections can come from the reference. The drug effect holds on a bipolar montage (KT, KTMD and PF −3.8 to −4.2 null SD; per-session r .80 with the average reference; <code>montage/zbip_result.txt</code>), but a single pair's outliers are not checked there.</p>
       <p><b>Data.</b> Macaque NeuroTycho ECoG, 1,260 10-s windows at 100 Hz, 4 animals; brain photographs and electrode positions for Chibi and George only. Raw traces are bundled for the figure's windows and, in each of their sessions, the window nearest each state's median Δz; others can be added from the Gadi banks with <code>fig_windows.py</code>. Built by <code>research/representation/atlas/mi_pair/explorer.py</code>.</p>
     </div>
   </section>
@@ -305,7 +309,7 @@ function drawPair() {
   if (!R) { clear($("glyph")); clear($("traces"));
     const g = $("glyph"); txt(g, 110, 100, "No raw samples bundled", { "text-anchor": "middle" }); txt(g, 110, 118, "for this window.", { "text-anchor": "middle" });
     txt(g, 110, 140, "Ringed windows in the strip have them.", { "text-anchor": "middle", "font-size": 10 });
-    $("glyphnote").textContent = ""; }
+    $("glyphnote").textContent = ""; $("shapestats").innerHTML = ""; $("shapenote").textContent = "Needs the raw samples (a ringed window)."; }
   else drawRaw(R, u, v, e, c);
   drawPairStrip(c);
 }
@@ -328,9 +332,29 @@ function drawBrain(a, e, u, v, c) {
   $("brainnote").textContent = `${a.w.animal}, left hemisphere, the provider's photograph (lower: lateral view; upper: the photograph's second view). Black: the 32 electrodes analysed; thin lines: pairs above the band.`;
 }
 
+// Ben's shape diagnostics on the standardised normal scores. Axes of the r-ellipse, s = sign r: a along the correlation
+// axis (+: el. u's high end), b across it (+: el. v above the axis; upper left when r > 0); a² + b² = D². Skew of b is
+// tested by flipping the sign of b in whole 1-s blocks, all 2^10 patterns (exact; floor 2/1024).
+const BLOCK = 100;
+function standardise(z) { const n = z.length, m = z.reduce((p, v) => p + v, 0) / n, sd = Math.sqrt(z.reduce((p, v) => p + (v - m) ** 2, 0) / n);
+  return Float64Array.from(z, v => (v - m) / sd); }
+function shape(zx, zy, r) {
+  const n = zx.length, s = r < 0 ? -1 : 1, ar = Math.abs(r);
+  const a = Float64Array.from(zx, (v, t) => (v + s * zy[t]) / Math.sqrt(2 * (1 + ar)));
+  const b = Float64Array.from(zx, (v, t) => (zy[t] - s * v) / Math.sqrt(2 * (1 - ar)));
+  const mean = f => { let p = 0; for (let t = 0; t < n; t++) p += f(t); return p / n; };
+  const skewB = mean(t => b[t] ** 3), skewA = mean(t => a[t] ** 3), kurtB = mean(t => b[t] ** 4) - 3;
+  const D2 = Float64Array.from(a, (v, t) => v * v + b[t] * b[t]), mardia = mean(t => D2[t] ** 2), c99 = -2 * Math.log(.01);
+  let nfar = 0, above = 0; for (let t = 0; t < n; t++) if (D2[t] > c99) { nfar++; if (b[t] > 0) above++; }
+  const sums = []; for (let i = 0; i < n; i += BLOCK) { let p = 0; for (let t = i; t < Math.min(i + BLOCK, n); t++) p += b[t] ** 3; sums.push(p / n); }
+  const nb = sums.length, obs = Math.abs(sums.reduce((p, v) => p + v, 0)) - 1e-12; let hit = 0;
+  for (let m = 0; m < 1 << nb; m++) { let p = 0; for (let j = 0; j < nb; j++) p += m >> j & 1 ? -sums[j] : sums[j]; if (Math.abs(p) >= obs) hit++; }
+  return { skewB, pB: hit / (1 << nb), skewA, kurtB, mardia, nfar, above, nb, D2 };
+}
+
 function drawRaw(R, u, v, e, c) {
-  const x = channel(R, u), y = channel(R, v), zx = normScores(x), zy = normScores(y), r = corr(zx, zy);
-  const q = Float64Array.from(zx, (_, t) => (zx[t] ** 2 - 2 * r * zx[t] * zy[t] + zy[t] ** 2) / (1 - r * r));
+  const x = channel(R, u), y = channel(R, v), zx = standardise(normScores(x)), zy = standardise(normScores(y)), r = corr(zx, zy);
+  const S = shape(zx, zy, r), q = S.D2;
   const c95 = -2 * Math.log(.05), c99 = -2 * Math.log(.01), far = q.map(v => v > c99), mid = q.map(v => v > c95 && v <= c99);
   // glyph
   const s = $("glyph"); clear(s); const E = 3.6, m = v => 110 + v / E * 104, mY = v => 110 - v / E * 104;
@@ -340,10 +364,14 @@ function drawRaw(R, u, v, e, c) {
   [.5, .95, .99].forEach(p => { const cc = -2 * Math.log(1 - p), a1 = Math.sqrt(cc * (1 + r)), a2 = Math.sqrt(cc * (1 - r));
     const pts = []; for (let k = 0; k <= 72; k++) { const th = k / 72 * 2 * Math.PI, s1 = a1 * Math.cos(th), s2 = a2 * Math.sin(th); pts.push(`${m((s1 + s2) / Math.SQRT2)},${mY((s1 - s2) / Math.SQRT2)}`); }
     el("polyline", { points: pts.join(" "), fill: "none", stroke: css("--fg"), "stroke-width": .8, "stroke-dasharray": "3 2" }, s); });
+  const sg = r < 0 ? -1 : 1; el("line", { x1: m(-E), y1: mY(-sg * E), x2: m(E), y2: mY(sg * E), stroke: css("--fg"), "stroke-width": .5, opacity: .5 }, s);
   txt(s, 12, 20, `el. ${e[u]} →`, { "font-size": 10 }); txt(s, 12, 32, `el. ${e[v]} ↑`, { "font-size": 10 });
-  const d = zx.map((v, t) => v - zy[t]), md = d.reduce((p, v) => p + v, 0) / T, vd = d.reduce((p, v) => p + (v - md) ** 2, 0) / T;
-  const kurt = d.reduce((p, v) => p + (v - md) ** 4, 0) / T / vd ** 2 - 3;
-  $("glyphnote").textContent = `Normal-scored samples, r ${f2(r)}. Beyond the 99% contour: ${(100 * far.filter(Boolean).length / T).toFixed(1)}% (Gaussian 1%). Excess kurtosis of their difference: ${kurt.toFixed(1)} (Gaussian 0).`;
+  $("glyphnote").textContent = `Normal-scored samples, r ${f2(r)}; hairline: the correlation axis. Beyond the 99% contour: ${(100 * S.nfar / T).toFixed(1)}% (Gaussian 1%).`;
+  const side = r < 0 ? "upper right" : "upper left", sk = v => (v < 0 ? "−" : "+") + Math.abs(v).toFixed(2);
+  $("shapestats").innerHTML = [[sk(S.skewB), "skew across axis"], [fp(S.pB), "p, 1-s block flips"],
+    [S.nfar ? `${S.above}/${S.nfar}` : "none", `beyond 99%, ${side}`], [sk(S.kurtB), "excess kurt. across"],
+    [sk(S.skewA), "skew along axis"], [S.mardia.toFixed(1), "Mardia kurt. (8)"]].map(([val, k]) => `<div><b>${val}</b><span>${k}</span></div>`).join("");
+  $("shapenote").textContent = `Gaussian copula: skews 0, excess kurtosis 0, outliers split evenly, Mardia 8. Across-axis skew > 0: excess el. ${e[v]}-above-axis points (${side} here); excess kurtosis across: occasional large departures from the axis. Per pair, uncorrected, descriptive.`;
   // traces
   const s2 = $("traces"); clear(s2); const X0 = 58, X1 = 596, tx = t => X0 + t / (T - 1) * (X1 - X0);
   [[x, e[u], 38], [y, e[v], 96]].forEach(([z, name, y0]) => {

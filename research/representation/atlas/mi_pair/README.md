@@ -41,7 +41,7 @@ Each folder's `*_result.txt`, `*_qc.txt` or `*_sum.py` output reproduces the num
 
 ## Interactive explorer
 
-`explorer.py $R $R/explorer/mi-pair-explorer.html` writes a self-contained page (about 10 MB, offline, not committed) for panel (b): every window's per-edge G and K with its surrogate and band (from `band()`, exact), per-edge p-values against the window's or the session-and-state's pooled surrogate residuals, and, for the 25 windows with raw samples, a clicked pair's traces, glyph and electrodes on the brain (Chibi and George only). Template: `explorer.html`. The build asserts that every bundled raw window reproduces the banked G.
+`explorer.py $R $R/explorer/mi-pair-explorer.html` writes a self-contained page (about 10 MB, offline, not committed) for panel (b): every window's per-edge G and K with its surrogate and band (from `band()`, exact), per-edge p-values against the window's or the session-and-state's pooled surrogate residuals, and, for the 25 windows with raw samples, a clicked pair's traces, glyph, electrodes on the brain (Chibi and George only) and copula-shape diagnostics (skew and kurtosis across and along the correlation axis, outlier side, 1-s block sign-flip p; Ben's formulas, cross-checked against an independent Python version). Template: `explorer.html`. The build asserts that every bundled raw window reproduces the banked G.
 
 ## Provenance of `review/`
 
