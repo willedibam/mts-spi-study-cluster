@@ -483,7 +483,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     low = rate != 100                                        # a low-rate arm (lowrate/): its zns and raw windows
     zdir = lowrate / "scores" / f"D{rate}" if low else root / "zns"
     fwin = lowrate / f"figwin-D{rate}" / "windows.npz" if low else root / "figwin/windows.npz"
-    fs, cut = (rate, .4 * rate) if low else (100, 40)
+    fs, fcut = (rate, .4 * rate) if low else (100, 40)
     df, edges = load(root, zdir)
     PANEL_B, CALLOUT = globals()["PANEL_B"], globals()["CALLOUT"]
     if low:
@@ -744,7 +744,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     small = df[df.id.isin([w_ for _, w_, _ in PANEL_B[1:]])].animal.unique()
     for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (AW, "b", "Every pair", "one 10-s window per state, each its state's median"
                                                                       + (f", the small four {small[0]}'s" if len(small) == 1 else "")
-                                                                      + (f"; {rate} Hz, anti-aliased (0.5--{cut:g} Hz)" if low else ""))):
+                                                                      + (f"; {rate} Hz, anti-aliased (0.5--{fcut:g} Hz)" if low else ""))):
         r1.text(x_, Y(.975, EX), rf"\textbf{{{l_}}}\enspace\textbf{{{c_}}}" + (f": {r_}" if r_ else ""), fontsize=8.5,
                 va="top")
 
@@ -806,7 +806,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     ks = np.arange(0, (ylo - .0001 if low else -.0741) / sdw, -5)   # number printed in (b)-(d): an exact rescaling of Δz
     ax_c.set_yticks(ks * sdw, [f"{k:.0f}".replace("-", "--") for k in ks]); ax_c.tick_params(axis="y", labelsize=5.8, pad=1.5)
     ax_c.set_ylabel(r"$\Delta z$ per 10-s window, wake SDs", y=.42, labelpad=2)
-    panel_title(left, "c", "Pattern", rf"$z$ at {rate} Hz, anti-aliased (0.5--{cut:g} Hz), by state" if low else
+    panel_title(left, "c", "Pattern", rf"$z$ at {rate} Hz, anti-aliased (0.5--{fcut:g} Hz), by state" if low else
                 r"$z$ falls under every anaesthetic, not in sleep", sub=True)
     states_axis(ax_c); ax_c.set_xlim(-.7, None)              # room for 'wake SDs' left of Wake's mean
     assert ctop != "traces" or {w_ for _, w_, _ in PANEL_B[1:]} <= {w_ for w_, _ in CALLOUT}   # (b)'s small windows
@@ -886,7 +886,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         ax_f.text(2.53, (lo_ + hi_) / 2, s_, transform=hd, ha="left", va="center", fontsize=5.2, color=c_,
                   clip_on=False).set_in_layout(False)
     left.text(0, .99, r"\textbf{d}\enspace\textbf{Generalisation}" + "\nacross species, recordings and agents"
-              + (f"\nmacaque at {rate} Hz; mouse and human at 100 Hz" if low else ""),
+              + (f" (macaque {rate} Hz, others 100 Hz)" if low else ""),   # a third line would hit the strips
               transform=blended_transform_factory(ax_f.transAxes, left.transSubfigure), ha="left", va="top",
               fontsize=8.5, linespacing=1.2)              # level with (c)'s suptitle
 
