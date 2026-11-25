@@ -58,9 +58,10 @@ contrasts:
   label: covariance $\times$ L1 distance
   reading: >-
     Literal: mean-removed co-fluctuation against raw mean absolute difference (channels not z-scored). Fast
-    oscillators sweep about six cycles per 2000 samples, so both are set by phase difference (z near -1); slow
-    ones (period about 40,000 samples) sit at channel-specific levels (within-channel SD 1-3% of the spread of
-    channel means), so distance reads level offsets and covariance reads co-drift (z near 0).
+    oscillators run through 1-9 cycles per record, so fluctuation dominates level offsets and L1 falls as
+    co-fluctuation rises (z near -1). Slow ones (period about 40,000 samples) sit at channel-specific levels
+    (within-channel SD 1-3% of the spread of channel means), so L1 is the level offset (r = 1.00 in checked
+    recordings) and is unrelated to co-drift (z near 0).
 - classes: [sti-i, fdstc]
   spis: [lagcorr_onesided_tau-2_L-None, lagcorr_onesided_tau-5_L-None]
   label: lag-2 $\times$ lag-5 cross-corr.
@@ -78,8 +79,9 @@ panel_a:
   # Frozen output of proof_figure.choose_layout (step 6 deg): silo sides/orders, variant order within
   # silos and a rotation/reflection of the arbitrary t-SNE axes, giving short leaders that neither
   # cross nor run over other islands and a free corner for the inset key.
-  # Silo sides as in the user's draw.io arrangement (29 Oct): Wave above the embedding, without a
-  # leader (its island sits under the silo). choose_layout searched left/right only.
+  # Wave stays above the embedding as in the user's draw.io arrangement (29 Oct), without a leader;
+  # choose_layout(..., top=('Wave equation',)) searches the other families left/right. The cost has no
+  # term for the Wave island's position: in 261126 it sits mid-embedding, linked to its silo by colour.
   # 261126: choose_layout(..., top=('Wave equation',)) on the pyspi 3.0.0rc2 embedding (cost 7.75).
   columns:
     left: [Kuramoto, Noise]
