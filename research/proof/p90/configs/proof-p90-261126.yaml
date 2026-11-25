@@ -1,8 +1,9 @@
 # Re-run of proof-p90-261014 on the released pyspi 3.0.0rc2 (bundled benchmarked_p90, 207 SPIs).
 # Same classes, sizes and seed, so the recordings are those of 261014; only pyspi differs.
+# On gdata: Scratch was over its inode quota on 26 Nov 2026 (about 4,400 files here).
 # Fresh extraction. VAR coefficients are literal: phi=self, coupling=weight PER neighbour.
 # Total ring coupling is twice the per-neighbour weight; no stability rescaling is triggered.
-base_output_dir: $MTS_SCRATCH/proof/refresh-261126/data
+base_output_dir: $MTS_GDATA/proof/refresh-261126/data
 pyspi_config: benchmarked_p90
 normalise: false
 rng_seed: 110305
