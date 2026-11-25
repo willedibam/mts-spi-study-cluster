@@ -75,3 +75,12 @@ Requested after the supervisor's question whether the per-pair departure is pers
 - Prediction: persistent under ketamine (v2: +.149), one-off or mixed under propofol (v2: +.008).
 
 **Jobs.** Frozen arms from the existing snapshot `mi-lowrate-ec3d7c29` with `score_calls.pbs` (W50 stage-A PF is not rescored); Addenda A and B from a snapshot of the commit that adds this section. Job IDs and the read commands are added below when submitted.
+
+**Submitted 26 November 2026** (queued; logs in `/scratch/ql44/we2614/mts-spi-study/logs/mi-long100/`).
+- Frozen arms, snapshot `mi-lowrate-ec3d7c29`, `score_calls.pbs`: W50 185222173–75, 185222177; W50L8 185222178, 185222180, 185222182–83; C10 185222184; C10L8 185222185.
+- Addendum A, snapshot `mi-long100-4535cf13`, `long100_seg.pbs`: 185222186 (size check first, written to `calib/calib_long100_seg.txt`).
+- Read, with `G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125/scores` (checksums: `SHA256SUMS.<job>` per arm):
+  - tables: `lowrate/summarise.py $G /g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/zns W50 W50L8 C10 C10L8`;
+  - frozen pairs: `lowrate/long100.py read $G`;
+  - Addendum A: `lowrate/long100_seg.py read $G` (after checking the size line in `calib_long100_seg.txt`);
+  - Addendum B: `lowrate/long100_edges.py $G`.
