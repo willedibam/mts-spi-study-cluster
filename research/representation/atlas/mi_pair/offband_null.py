@@ -77,6 +77,6 @@ if __name__ == '__main__':
         blocks = [list(range(a, min(a + blk, B))) for a in range(0, B, blk)]
         with Pool(nw) as p: res = p.map(draws, [(v, sel[0][1], bl) for bl in blocks], chunksize=1)
         K = np.concatenate([r[0] for r in res])[None]; W0 = res[0][1][None].astype(np.int16); Wr = theiler(v)[None].astype(np.int16)
-    np.savez(out, K=K, W_rec=Wr, W_s0=W0, file=np.array([w[0] for w in sel]), k=np.array([w[1] for w in sel]),
+    np.savez(out, K=K, W_rec=Wr, W_s0=W0, zfile=np.array([w[0] for w in sel]), k=np.array([w[1] for w in sel]),
              id=np.array([w[2] for w in sel]))
     print('done', mode, out, K.shape, flush=True)

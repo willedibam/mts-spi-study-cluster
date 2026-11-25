@@ -7,8 +7,8 @@
 # Off-band count null draws (offband_null.py; rules in preregs/offband-prereg.md). Runs from a commit-named source snapshot
 # S (git archive of src/ and this folder), never the shared checkout. Submit (walltime per mode):
 #   qsub -N ob_gate -l walltime=00:20:00 -v S=$S,MODE=gate offband.pbs
-#   qsub -N ob_t1 -J 0-9 -l walltime=03:00:00 -W depend=afterok:<gate> -v S=$S,MODE=tier1 offband.pbs
-#   qsub -N ob_t2 -J 0-4 -l walltime=04:00:00 -W depend=afterok:<gate> -v S=$S,MODE=tier2 offband.pbs
+#   qsub -r y -N ob_t1 -J 0-9 -l walltime=03:00:00 -W depend=afterok:<gate> -v S=$S,MODE=tier1 offband.pbs
+#   qsub -r y -N ob_t2 -J 0-4 -l walltime=04:00:00 -W depend=afterok:<gate> -v S=$S,MODE=tier2 offband.pbs
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 cd $S/research/representation/atlas/mi_pair || exit 2
 B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117
