@@ -28,6 +28,9 @@ correlation; G and K are the banked values, the Gaussian's are computed on 4000 
 electrode): the median wake, sleep and propofol windows and the most extreme window, the propofol one being (b)'s. --c-top stack (not the default; written as mi-figure-cstack) instead stacks, per state, its median window
 (CALLOUT's; ket. + med.'s is (b)'s big one) over the window nearest its 10th percentile of Δz over all animals
 (figwin/windows_p10.npz).
+--b-pick count (not the default; written as mi-figure-bcount) picks (b)'s windows by the same animal rule but
+nearest each state's median off-band count (ties to median Δz): the median-Δz windows sit at the 17th (sleep) to 58th
+percentile of their state's count (offband-result.md); (c) keeps its median-Δz callouts, so its strips are not (b)'s.
 (d) shares (c)'s axis, so subject and window effects compare directly. Its strips are one subject's wake and anaesthetised windows chosen for contrast (fig_traces.py; TRACE_MAC), each channel standardised (G and K are blind to amplitude). (a)'s glyphs (glyph()): by default graded, samples between the same-r Gaussian's 95 and 99% contours in a tint, those beyond 99% in the pair's colour; --glyph dots colours only those beyond 99%; --glyph dark colours every sample by its Gaussian distance (inferno) on a dark tile, --glyph hex bins them; the shape of the two electrodes' difference is drawn below them (--no-diff drops it). The segment-surrogate timescale panel of v11 is dropped (checkpoint fc81155e).
 (a)'s brain is the provider's photograph of Chibi's left hemisphere with the real electrode positions (Neurotycho
 ChibiMap.mat, from the 20110621 KTMD download, saved as figwin/brain_Chibi.npz; George's GeorgeMap.mat, from the
@@ -479,7 +482,7 @@ def pick_windows(df):
 
 
 def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", link=True, btop="none", banimal=None,
-         ctop="traces", rate=100, lowrate=None, list_windows=False):
+         ctop="traces", rate=100, lowrate=None, list_windows=False, bpick="dz"):
     low = rate != 100                                        # a low-rate arm (lowrate/): its zns and raw windows
     zdir = lowrate / "scores" / f"D{rate}" if low else root / "zns"
     fwin = lowrate / f"figwin-D{rate}" / "windows.npz" if low else root / "figwin/windows.npz"
@@ -496,6 +499,13 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         PANEL_B = tuple((s_, (lambda w: w.loc[(w.sd - df[df.group == s_].sd.median()).abs().idxmin(), "id"])(
             df[(df.group == s_) & (df.animal == an_)]) if (j_ or part != "small") else w0, n_)
             for j_, (s_, w0, n_) in enumerate(PANEL_B))
+    if bpick == "count":                                     # alt (b): the same animals (big: any; small four: Chibi),
+        cnt = {w: int(band(edges, w)[2].sum()) for w in df[df.group.isin([s_ for s_, _, _ in PANEL_B])].id}  # each
+        def mc(s_, an_=None):                                # state's window nearest its median off-band count over all
+            a_ = df[df.group == s_]; w = a_[a_.animal == an_] if an_ else a_    # animals, ties to the median Δz
+            key = (w.id.map(cnt) - a_.id.map(cnt).median()).abs() + 1e-6 * (w.sd - a_.sd.median()).abs()
+            return w.loc[key.idxmin(), "id"]
+        PANEL_B = tuple((s_, mc(s_, None if j_ == 0 else "Chibi"), n_) for j_, (s_, _, n_) in enumerate(PANEL_B))
     chan = {}                                                # electrode numbers of each window's 32 zns channels
     for p in zdir.glob("zns_[AB]_*.npz"):
         with np.load(p) as d:
@@ -742,7 +752,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
         tr.tick_params(labelleft=False)
         tl.set_ylabel("$\\Delta z$, wake SDs", fontsize=5.4, labelpad=1)
     small = df[df.id.isin([w_ for _, w_, _ in PANEL_B[1:]])].animal.unique()
-    for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (AW, "b", "Every pair", "one 10-s window per state, each its state's median"
+    for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (AW, "b", "Every pair", "one 10-s window per state, each its state's median" + (" off-band count" if bpick == "count" else "")
                                                                       + (f", the small four {small[0]}'s" if len(small) == 1 else "")
                                                                       + (f"; {rate} Hz, anti-aliased (0.5--{fcut:g} Hz)" if low else ""))):
         r1.text(x_, Y(.975, EX), rf"\textbf{{{l_}}}\enspace\textbf{{{c_}}}" + (f": {r_}" if r_ else ""), fontsize=8.5,
@@ -809,7 +819,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     panel_title(left, "c", "Pattern", rf"$z$ at {rate} Hz, anti-aliased (0.5--{fcut:g} Hz), by state" if low else
                 r"$z$ falls under every anaesthetic, not in sleep", sub=True)
     states_axis(ax_c); ax_c.set_xlim(-.7, None)              # room for 'wake SDs' left of Wake's mean
-    assert ctop != "traces" or {w_ for _, w_, _ in PANEL_B[1:]} <= {w_ for w_, _ in CALLOUT}   # (b)'s small windows
+    assert ctop != "traces" or bpick == "count" or {w_ for _, w_, _ in PANEL_B[1:]} <= {w_ for w_, _ in CALLOUT}  # (b)'s small windows
     with np.load(fwin) as fw, \
             np.load(root / f"figwin/windows_p10.npz" if stack else fwin) as fp:
         for sax, (wid, note, _, _) in zip(strips, calls):  # raw windows of the called-out dots (fig_windows.py)
@@ -924,7 +934,9 @@ if __name__ == "__main__":
     p.add_argument("--rate", type=int, choices=(100, 20, 10), default=100,
                    help="the macaque arm: 100 Hz (the figure as agreed) or the anti-aliased low-rate arm D20 or D10")
     p.add_argument("--lowrate", type=Path, default=None, help="low-rate results root (scores/D<rate>, figwin-D<rate>)")
+    p.add_argument("--b-pick", choices=("dz", "count"), default="dz",
+                   help="(b)'s windows: each state's median Δz (as agreed) or its median off-band count (alt)")
     p.add_argument("--list-windows", action="store_true", help="print the window ids figwin must hold for this arm, and stop")
     a = p.parse_args()
     draw(a.root, a.output, a.icons, a.glyph, a.diff, a.labels, not a.no_link, a.b_top, a.b_animal, a.c_top, a.rate,
-         a.lowrate, a.list_windows)
+         a.lowrate, a.list_windows, a.b_pick)
