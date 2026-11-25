@@ -1,0 +1,20 @@
+#!/bin/bash
+# Score chosen per-agent calls of one arm with lowrate/score.py (edges.py estimator); for the T = 5000 arms, whose calls
+# outrun one 5-h job. qsub -l walltime=HH:00:00 -v SRC=<snapshot>,ARM=<arm>,CALLS="A:PF:first B:SLP:row ..." score_calls.pbs
+# Each call writes $G/scores/$ARM/zns_<A|B>_<agent>.npz and appends its checksum to SHA256SUMS.<job id>.
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=190GB,walltime=24:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_long100_score
+#PBS -j oe
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+S=/scratch/ql44/we2614/mts-spi-study; L=$S/atlas/banks/mi-lowrate; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125
+PY="env PYTHONPATH=$SRC/src:$SRC/research/representation/atlas/mi_pair /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+SC=$SRC/research/representation/atlas/mi_pair/lowrate/score.py
+mkdir -p $G/scores/$ARM
+for c in $CALLS; do IFS=: read st ag rm <<< "$c"; g=stage-$(echo $st | tr AB ab)
+  t0=$SECONDS; $PY $SC $L/$ARM/$g $G/scores/$ARM/zns_${st}_${ag}.npz $ag $rm 48 || exit 5; echo "$c $((SECONDS - t0)) s"
+  (cd $G/scores/$ARM && sha256sum zns_${st}_${ag}.npz >> SHA256SUMS.${PBS_JOBID%%.*})
+done
+echo ALLDONE
