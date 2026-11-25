@@ -1,0 +1,35 @@
+gate: session-pooled drug Δz -0.01329 (anchor -.0133), 230 windows
+                                                  animal agent     span    mean   slope
+unit                                                                                   
+20110112ktmdanesthesiaandsleepgeorgetoruyanagawa  George  KTMD  19.3333 -0.0163 -0.0095
+20110113ktmdanesthesiaandsleepgeorgetoruyanagawa  George  KTMD  19.1667 -0.0184 -0.0068
+20110114ktmdanesthesiaandsleepgeorgetoruyanagawa  George  KTMD  20.1667 -0.0108  0.0001
+20110513ktmdanesthesiaandsleepkin2toruyanagawa      Kin2  KTMD  29.8333 -0.0108  0.0005
+20110523ktmdanesthesiaandsleepsutoruyanagawa          Su  KTMD  29.5000 -0.0141  0.0071
+20110524ktmdanesthesiaandsleepkin2toruyanagawa      Kin2  KTMD  29.8333 -0.0124  0.0009
+20110525ktmdanesthesiaandsleepkin2toruyanagawa      Kin2  KTMD  29.8333 -0.0113  0.0007
+20110526ktmdanesthesiaandsleepsutoruyanagawa          Su  KTMD  29.5000 -0.0157 -0.0030
+20110527ktmdanesthesiaandsleepsutoruyanagawa          Su  KTMD  31.8333 -0.0112  0.0002
+20110621ktmdanesthesiaandsleepchibitoruyanagawa    Chibi  KTMD  29.6667 -0.0279  0.0096
+20110622ktmdanesthesiaandsleepchibitoruyanagawa    Chibi  KTMD  29.5000 -0.0216  0.0009
+20120719ktanesthesiaandsleepchibitoruyanagawa      Chibi    KT   9.1667 -0.0257 -0.0033
+20120720mdanesthesiaandsleepchibitoruyanagawa      Chibi    MD  17.3333 -0.0142  0.0033
+20120724ktanesthesiaandsleepgeorgetoruyanagawa    George    KT   7.1667 -0.0033  0.0015
+20120726mdanesthesiaandsleepgeorgetoruyanagawa    George    MD   9.3333 -0.0022 -0.0024
+20120730pfanesthesiaandsleepchibitoruyanagawa      Chibi    PF   8.6667 -0.0170  0.0185
+20120731pfanesthesiaandsleepgeorgetoruyanagawa    George    PF   8.8333 -0.0088 -0.0003
+20120802pfanesthesiaandsleepchibitoruyanagawa      Chibi    PF  10.5000 -0.0121  0.0042
+20120803pfanesthesiaandsleepgeorgetoruyanagawa    George    PF   9.1667 -0.0091  0.0049
+20120809mdanesthesiaandsleepchibitoruyanagawa      Chibi    MD  14.6667 -0.0051 -0.0020
+20120810ktanesthesiaandsleepgeorgetoruyanagawa    George    KT   9.5000 -0.0064  0.0077
+20120813ktanesthesiaandsleepchibitoruyanagawa      Chibi    KT   9.1667 -0.0281 -0.0111
+20120814mdanesthesiaandsleepgeorgetoruyanagawa    George    MD   9.6667 -0.0033  0.0073
+all sessions: pooled within-session +0.00119 per 10 min; animal mean +0.00123, 4/4 > 0, t(3) 2.49, p(two-sided) 0.088
+without Chibi PF 0730: pooled within-session +0.00106 per 10 min; animal mean +0.00066, 4/4 > 0, t(3) 2.39, p(two-sided) 0.097
+         slope     mean      span
+agent                            
+KT    -0.00132 -0.01587   8.75000
+KTMD   0.00006 -0.01550  27.10606
+MD     0.00156 -0.00617  12.75000
+PF     0.00681 -0.01173   9.29167
+sessions with slope < 0: 8/23
