@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MI-pair edge explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a session strip across the top, then G–K scatter (left) beside the clicked pair (right); notes last. */
+:root {
+  --bg: #FBFBFA; --panel: #FFFFFF; --fg: #23272A; --muted: #6B757C; --line: #D9DDE0; --band: #DDE1E4; --grid: #EEF0F2;
+  --c-awake_eo: #8C969C; --c-awake_ec: #8C969C; --c-recovery_ec: #B4BBC0; --c-SLP: #3E5C76; --c-KT: #C8553D;
+  --c-KTMD: #7B4B94; --c-MD: #2E86AB; --c-PF: #D9A21B; --sel: #111;
+  --sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15181B; --panel: #1C2024; --fg: #E6E8EA; --muted: #98A2A9; --line: #343A40; --band: #30363C; --grid: #262B30;
+  --c-awake_eo: #A3ACB2; --c-awake_ec: #A3ACB2; --c-recovery_ec: #7D868C; --c-SLP: #7FA3C4; --c-KT: #E57A62;
+  --c-KTMD: #B08AC9; --c-MD: #5EB3D6; --c-PF: #E8BC4A; --sel: #fff; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15181B; --panel: #1C2024; --fg: #E6E8EA; --muted: #98A2A9; --line: #343A40; --band: #30363C; --grid: #262B30;
+  --c-awake_eo: #A3ACB2; --c-awake_ec: #A3ACB2; --c-recovery_ec: #7D868C; --c-SLP: #7FA3C4; --c-KT: #E57A62;
+  --c-KTMD: #B08AC9; --c-MD: #5EB3D6; --c-PF: #E8BC4A; --sel: #fff; color-scheme: dark }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px }
+main { max-width: 1240px; margin: 0 auto; display: grid; gap: 18px }
+h1 { font-size: 22px; margin: 0; letter-spacing: -.01em }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; font-weight: 600 }
+.sub { color: var(--muted); margin: 2px 0 0; max-width: 80ch }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+button.chip { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  border-radius: 999px; padding: 3px 10px; cursor: pointer }
+button.chip[aria-pressed="true"] { border-color: var(--fg); font-weight: 600 }
+button.chip:focus-visible, select:focus-visible, input:focus-visible, tr:focus-visible { outline: 2px solid var(--c-MD); outline-offset: 2px }
+select { font: inherit; font-size: 13px; padding: 3px 6px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; max-width: 100% }
+label { font-size: 13px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0 }
+.row { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 18px }
+@media (max-width: 860px) { .row { grid-template-columns: 1fr } }
+svg { display: block; width: 100%; height: auto; overflow: visible }
+#brain { overflow: hidden; border-radius: 8px; background: #fff }
+svg text { fill: var(--muted); font: 11px var(--sans) }
+.ax line, .ax path { stroke: var(--muted); stroke-width: .8 }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 4px 12px; font-variant-numeric: tabular-nums; margin: 6px 0 10px }
+.stats div { display: grid } .stats b { font-size: 16px } .stats span { font-size: 11px; color: var(--muted) }
+.pairgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px }
+@media (max-width: 520px) { .pairgrid { grid-template-columns: 1fr } }
+.note { color: var(--muted); font-size: 12px; margin: 4px 0 0 }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 12.5px }
+th, td { text-align: right; padding: 3px 6px; border-bottom: 1px solid var(--grid) } th:first-child, td:first-child { text-align: left }
+th { color: var(--muted); font-weight: 600 } tbody tr { cursor: pointer } tbody tr:hover { background: var(--grid) }
+tr.on { background: var(--grid); font-weight: 600 }
+.tablewrap { overflow-x: auto }
+#tip { position: fixed; pointer-events: none; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 6px;
+  padding: 4px 8px; font-size: 12px; font-variant-numeric: tabular-nums; box-shadow: 0 2px 8px rgba(0,0,0,.15) }
+.notes { columns: 2 340px; column-gap: 28px; font-size: 13px } .notes p { margin: 0 0 9px; break-inside: avoid }
+.notes b { color: var(--fg) }
+.empty { color: var(--muted); font-size: 13px; padding: 30px 8px; text-align: center; border: 1px dashed var(--line); border-radius: 8px }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>MI-pair edge explorer</h1>
+    <p class="sub">Panel (b) of fig:mi, opened up. Each dot is one electrode pair in one 10-s window: Gaussian MI <i>G</i> (from <i>r</i>) against kNN MI <i>K</i>, normal-scored, 32 of the 127 electrodes. Click a window in the strip, then a pair in the scatter or the table.</p>
+  </header>
+
+  <section class="controls" aria-label="Choose a window">
+    <div class="chips" id="presets"></div>
+    <select id="session" aria-label="Session"></select>
+    <label for="nullsel">Null for p
+      <select id="nullsel"><option value="pool">surrogates of this session &amp; state</option><option value="win">this window's surrogate (496)</option></select>
+    </label>
+    <label><input type="checkbox" id="showsur"> surrogate points</label>
+  </section>
+
+  <section class="card">
+    <h2 id="striptitle">Session</h2>
+    <svg id="strip" viewBox="0 0 1200 150" role="img" aria-label="Δz per window across the session"></svg>
+    <p class="note">Δz per window in wake SDs (the figure's scale: window residual <i>z</i> − <i>z</i><sub>surrogate</sub>, minus the session's eyes-closed mean). Ringed: raw traces bundled, so clicking a pair shows them.</p>
+  </section>
+
+  <div class="row">
+    <section class="card">
+      <h2 id="sctitle">Pairs in G–K space</h2>
+      <svg id="scatter" viewBox="0 0 540 470" role="img" aria-label="G against K for every pair"></svg>
+      <p class="note" id="scnote"></p>
+    </section>
+
+    <section class="card" id="paircard">
+      <h2 id="pairtitle">Pair</h2>
+      <div class="stats" id="pairstats"></div>
+      <div class="pairgrid">
+        <div><svg id="brain" viewBox="0 0 300 220" role="img" aria-label="Electrodes on the brain"></svg><p class="note" id="brainnote"></p></div>
+        <div><svg id="glyph" viewBox="0 0 220 220" role="img" aria-label="Joint samples of the pair"></svg><p class="note" id="glyphnote"></p></div>
+      </div>
+      <svg id="traces" viewBox="0 0 600 150" role="img" aria-label="The two electrodes' traces"></svg>
+      <h2 style="margin-top:12px">This pair across the session</h2>
+      <svg id="pairstrip" viewBox="0 0 600 120" role="img" aria-label="This pair's distance from the line in every window"></svg>
+      <p class="note">Signed distance from each window's own line, in that window's band half-widths; ±1 is the band edge.</p>
+    </section>
+  </div>
+
+  <div class="row">
+    <section class="card">
+      <h2>Scatter about the line: recording vs its surrogate</h2>
+      <svg id="hist" viewBox="0 0 540 230" role="img" aria-label="Residual distributions"></svg>
+      <p class="note" id="histnote"></p>
+    </section>
+    <section class="card">
+      <h2>Most deviant pairs in this window</h2>
+      <div class="tablewrap"><table><thead><tr><th>Pair</th><th>G</th><th>K</th><th>K<sub>s</sub></th><th>dist.</th><th>p</th><th>p<sub>above</sub></th><th>q (BH)</th></tr></thead><tbody id="tbody"></tbody></table></div>
+      <p class="note">dist.: distance from the line in band half-widths, signed. p: two-sided, against the null chosen above; p<sub>above</sub>: one-sided, K above the line. q: Benjamini–Hochberg over the window's 496 pairs.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>How the band and the p-values are made</h2>
+    <div class="notes">
+      <p><b>Surrogate.</b> One joint multivariate IAAFT draw of the window's 32 normal-scored channels (<code>mtsspi.surrogates.multivariate_iaaft</code>, final step on the spectrum). It keeps every channel's power spectrum and every cross-spectrum (so each pair's linear correlation and lag structure), with marginals approximately Gaussian, and randomises everything else. It is a linear Gaussian null for the whole 32-channel system, not a per-pair one. <i>G</i> and <i>K</i> are recomputed on it for all 496 pairs.</p>
+      <p><b>Band.</b> Fit an ordinary least-squares line to the surrogate's 496 (<i>G</i>, <i>K</i>) points; the half-width is the 95th percentile of their absolute residuals. The band is drawn at that width about the <i>recording's own</i> line, so a level shift of <i>K</i> (to which <i>z</i> is blind) cannot move points off it. The width is constant in <i>G</i>; the surrogate residual SD is roughly flat in <i>G</i> (it shrinks slightly at strong pairs under KT and PF, where the band is then conservative).</p>
+      <p><b>Per-pair p.</b> A pair's residual from the recording's line is ranked against surrogate residuals: p = (1 + #{|surrogate| ≥ |pair|}) / (n + 1). With one draw, n = 496 and p cannot go below .002, so nothing survives correction over 496 pairs. The default pools the surrogate residuals of every window of the same session and state (10–30 windows, so n = 4,960–14,880; each residual about its own surrogate line), assuming the null scatter is stable there: the band half-width varies by a median 5% (90th percentile 10%) across those windows. A true per-pair null needs many surrogate draws per window.</p>
+      <p><b>Read with care.</b> (1) Pairs <i>below</i> the band are not dependence: with normal-scored marginals true MI ≥ <i>G</i>, and per-pair <i>K</i> has a sampling SD of about .05 at 1,000 samples plus a small downward bias at weak pairs under drug spectra (ksg-bias-result.md). Use p<sub>above</sub> for excess dependence. (2) The baseline is not 5% off band: wake windows already put about 7% of pairs outside. (3) The fall in <i>z</i> is broad: dropping the top 1% or 5% of pairs that carry it leaves it at least as large (drop test, edges-result.md). The most deviant pairs are worth looking at, but they are not where Δz comes from; the histogram shows the whole cloud widening.</p>
+      <p><b>Glyph.</b> Each point is one 10-ms sample, normal-scored, under the 50, 95 and 99% contours of the Gaussian with the same <i>r</i> (the shape <i>G</i> assumes). Samples beyond 95% are tinted, beyond 99% coloured, and their times are marked under the traces. A Gaussian pair puts 1% beyond 99%.</p>
+      <p><b>Data.</b> Macaque NeuroTycho ECoG, 1,260 10-s windows at 100 Hz, 4 animals; brain photographs and electrode positions for Chibi and George only. Raw traces are bundled for the figure's windows and, in each of their sessions, the window nearest each state's median Δz; others can be added from the Gadi banks with <code>fig_windows.py</code>. Built by <code>research/representation/atlas/mi_pair/explorer.py</code>.</p>
+    </div>
+  </section>
+</main>
+<div id="tip" hidden></div>
+<script>const D=/*DATA*/null;</script>
+<script>
+"use strict";
+const NS = "http://www.w3.org/2000/svg", NE = 496, T = 1000;
+const $ = id => document.getElementById(id);
+const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+const txt = (parent, x, y, s, at = {}) => { const t = el("text", Object.assign({ x, y }, at), parent); t.textContent = s; return t; };
+const clear = s => { while (s.firstChild) s.removeChild(s.firstChild); };
+const dec16 = b => { const s = atob(b), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new Int16Array(u.buffer); };
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const col = g => css("--c-" + g) || css("--muted");
+const f2 = v => (v < 0 ? "−" : "") + Math.abs(v).toFixed(2).replace(/^0/, "");
+const f3 = v => (v < 0 ? "−" : "") + Math.abs(v).toFixed(3).replace(/^0/, "");
+const fp = p => p < .001 ? p.toExponential(0).replace("e-", "e−") : p.toFixed(3).replace(/^0/, "");
+
+const IU = []; for (let i = 0; i < 32; i++) for (let j = i + 1; j < 32; j++) IU.push([i, j]);
+const GK = dec16(D.gk), W = D.windows;
+W.forEach((w, i) => w.i = i);
+const AGENT = { KT: "ketamine", KTMD: "ket. + med.", MD: "medetomidine", PF: "propofol" };
+const stateName = w => ({ awake_eo: "eyes open", awake_ec: "eyes closed", sleep: "sleep", recovery_ec: "recovery" })[w.state] || AGENT[w.group];
+const groupColor = w => col(w.state === "recovery_ec" ? "recovery_ec" : w.group);
+const units = [...new Set(W.map(w => w.unit))];
+const byUnit = Object.fromEntries(units.map(u => [u, W.filter(w => w.unit === u)]));
+
+function gk(w) { const o = w.i * 4 * NE; return [0, 1, 2, 3].map(j => Float64Array.from(GK.subarray(o + j * NE, o + (j + 1) * NE), v => v / 1e4)); }
+function corr(x, y) { let mx = 0, my = 0; const n = x.length; for (let i = 0; i < n; i++) { mx += x[i]; my += y[i]; } mx /= n; my /= n;
+  let a = 0, b = 0, c = 0; for (let i = 0; i < n; i++) { a += (x[i] - mx) * (y[i] - my); b += (x[i] - mx) ** 2; c += (y[i] - my) ** 2; } return a / Math.sqrt(b * c); }
+
+// band (line, half-width, off-band flags) from plot_character_draft.band() on the float32 values; residuals for p here
+const cache = new Map();
+function analyse(w) {
+  if (cache.has(w.i)) return cache.get(w.i);
+  const [g, k, gs, ks] = gk(w), c = w.line, cs = w.sline, lim = w.lim;
+  const r = g.map((v, i) => k[i] - c[0] - c[1] * v), rs = gs.map((v, i) => ks[i] - cs[0] - cs[1] * v);
+  const bits = new Uint8Array(Array.from(atob(w.off), ch => ch.charCodeAt(0))), off = Array.from({ length: NE }, (_, i) => !!(bits[i >> 3] & (128 >> (i & 7))));
+  const a = { w, g, k, gs, ks, c, cs, r, rs, lim, off };
+  cache.set(w.i, a); return a;
+}
+function lowerCount(sorted, v) { let lo = 0, hi = sorted.length; while (lo < hi) { const m = (lo + hi) >> 1; if (sorted[m] < v) lo = m + 1; else hi = m; } return lo; }
+function pvalues(a, mode) {
+  const pool = mode === "pool" ? byUnit[a.w.unit].filter(v => v.state === a.w.state) : [a.w];
+  const rs = pool.flatMap(v => Array.from(analyse(v).rs)), n = rs.length;
+  const abs = Float64Array.from(rs, Math.abs).sort(), sgn = Float64Array.from(rs).sort();
+  const p = a.r.map(v => (1 + n - lowerCount(abs, Math.abs(v))) / (n + 1));
+  const pu = a.r.map(v => (1 + n - lowerCount(sgn, v)) / (n + 1));
+  const o = [...p.keys()].sort((x, y) => p[x] - p[y]), q = new Float64Array(NE); let m = 1;
+  for (let j = NE - 1; j >= 0; j--) { m = Math.min(m, p[o[j]] * NE / (j + 1)); q[o[j]] = m; }
+  return { p, pu, q, n, nwin: pool.length };
+}
+
+// state
+let cur = null, pair = 0;
+const S = { w: null };
+
+// ---------- controls
+const presets = D.panelB.map(([g, id, name]) => ({ label: "(b) " + name, id, pk: null }))
+  .concat([{ label: "(a) the one pair", id: D.glyph[0], pk: D.glyph[1] }]);
+presets.forEach(pr => { const b = document.createElement("button"); b.className = "chip"; b.textContent = pr.label; b.dataset.id = pr.id;
+  b.onclick = () => select(W.find(w => w.id === pr.id), pr.pk); $("presets").appendChild(b); });
+const unitLabel = u => { const w = byUnit[u][0], d = u.slice(0, 8), ag = (byUnit[u].find(v => v.state === "drug") || {}).group;
+  return `${w.animal} · ${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6)} · ${ag ? AGENT[ag] : "sleep"}`; };
+units.slice().sort((a, b) => unitLabel(a).localeCompare(unitLabel(b))).forEach(u => { const o = document.createElement("option"); o.value = u; o.textContent = unitLabel(u) + (byUnit[u].some(w => D.raw[w.id]) ? "  · traces" : ""); $("session").appendChild(o); });
+$("session").onchange = e => { const ws = byUnit[e.target.value]; select(ws.find(w => D.raw[w.id] && w.state !== "awake_ec" && w.state !== "awake_eo") || ws.find(w => w.state === "drug" || w.state === "sleep") || ws[0]); };
+$("nullsel").onchange = () => select(cur.w, pair);
+$("showsur").onchange = () => drawScatter();
+
+// tooltip
+const tip = $("tip");
+function showTip(e, s) { tip.textContent = s; tip.hidden = false; const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; }
+const hideTip = () => tip.hidden = true;
+
+// ---------- selection
+function select(w, pk) {
+  cur = analyse(w); cur.P = pvalues(cur, $("nullsel").value);
+  if (pk == null) { let best = 0; for (let i = 0; i < NE; i++) if (cur.P.pu[i] < cur.P.pu[best] || (cur.P.pu[i] === cur.P.pu[best] && cur.r[i] > cur.r[best])) best = i; pk = best; }
+  pair = pk; $("session").value = w.unit;
+  document.querySelectorAll("#presets button").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === w.id));
+  drawStrip(); drawScatter(); drawPair(); drawHist(); drawTable();
+}
+function pickPair(i) { pair = i; drawScatter(); drawPair(); drawTable(); }
+
+// ---------- session strip
+function drawStrip() {
+  const s = $("strip"); clear(s); const ws = byUnit[cur.w.unit], X0 = 56, X1 = 1190, Y0 = 18, Y1 = 118;
+  const groups = []; ws.forEach(w => { const g = groups[groups.length - 1]; if (!g || g.state !== w.state) groups.push({ state: w.state, ws: [w] }); else g.ws.push(w); });
+  const gap = 3, n = ws.length + gap * (groups.length - 1), dx = (X1 - X0) / Math.max(n - 1, 1);
+  const lo = Math.min(-6, ...ws.map(w => w.sd)), hi = Math.max(3, ...ws.map(w => w.sd)), y = v => Y1 - (v - lo) / (hi - lo) * (Y1 - Y0);
+  $("striptitle").textContent = "Session " + unitLabel(cur.w.unit) + " — Δz per window";
+  el("line", { x1: X0 - 6, x2: X1 + 4, y1: y(0), y2: y(0), stroke: css("--muted"), "stroke-dasharray": "3 3", "stroke-width": .8 }, s);
+  [Math.ceil(lo / 5) * 5, 0, Math.floor(hi / 5) * 5].filter((v, i, a) => a.indexOf(v) === i).forEach(v => txt(s, X0 - 12, y(v) + 4, v === 0 ? "0" : f2(v).replace(".00", ""), { "text-anchor": "end" }));
+  txt(s, 4, Y0 + 2, "Δz", { "font-size": 11 });
+  let k = 0;
+  groups.forEach(g => {
+    const xs = g.ws.map((_, j) => X0 + (k + j) * dx), c = groupColor(g.ws[0]);
+    el("polyline", { points: g.ws.map((w, j) => `${xs[j]},${y(w.sd)}`).join(" "), fill: "none", stroke: c, "stroke-width": 1.2 }, s);
+    el("line", { x1: xs[0] - 3, x2: xs[xs.length - 1] + 3, y1: Y1 + 12, y2: Y1 + 12, stroke: css("--fg"), "stroke-width": 1 }, s);
+    txt(s, (xs[0] + xs[xs.length - 1]) / 2, Y1 + 27, stateName(g.ws[0]) + ` (${g.ws.length})`, { "text-anchor": "middle" });
+    g.ws.forEach((w, j) => {
+      const on = w.i === cur.w.i, raw = !!D.raw[w.id];
+      if (raw) el("circle", { cx: xs[j], cy: y(w.sd), r: 6.5, fill: "none", stroke: css("--fg"), "stroke-width": 1 }, s);
+      const d = el("circle", { cx: xs[j], cy: y(w.sd), r: on ? 5.5 : 3.2, fill: c, stroke: on ? css("--sel") : css("--panel"), "stroke-width": on ? 2 : .8, cursor: "pointer", tabindex: 0 }, s);
+      d.onclick = () => select(w); d.onkeydown = e => { if (e.key === "Enter") select(w); };
+      d.onmousemove = e => showTip(e, `${stateName(w)} #${w.num} · Δz ${f2(w.sd)} wake SDs · z ${f3(w.z)}, surrogate ${f3(w.zs)}${raw ? " · traces" : ""}`); d.onmouseleave = hideTip;
+    });
+    k += g.ws.length + gap;
+  });
+}
+
+// ---------- axes helper
+function ticks(lo, hi, n = 5) { const st = Math.pow(10, Math.floor(Math.log10((hi - lo) / n))), m = [1, 2, 2.5, 5, 10].find(m => (hi - lo) / (st * m) <= n) * st;
+  const out = []; for (let v = Math.ceil(lo / m) * m; v <= hi + 1e-9; v += m) out.push(+v.toFixed(6)); return out; }
+function axes(s, x, y, xl, yl, xt, yt, box) {
+  const g = el("g", { class: "ax" }, s);
+  el("line", { x1: box[0], x2: box[2], y1: box[3], y2: box[3] }, g); el("line", { x1: box[0], x2: box[0], y1: box[1], y2: box[3] }, g);
+  xt.forEach(v => { el("line", { x1: x(v), x2: x(v), y1: box[3], y2: box[3] + 4 }, g); txt(s, x(v), box[3] + 16, f2(v).replace(/0+$/, "").replace(/\.$/, "") || "0", { "text-anchor": "middle" }); });
+  yt.forEach(v => { el("line", { x1: box[0] - 4, x2: box[0], y1: y(v), y2: y(v) }, g); txt(s, box[0] - 7, y(v) + 4, f2(v).replace(/0+$/, "").replace(/\.$/, "") || "0", { "text-anchor": "end" }); });
+  txt(s, (box[0] + box[2]) / 2, box[3] + 34, xl, { "text-anchor": "middle", "font-size": 12 });
+  txt(s, 0, 0, yl, { "text-anchor": "middle", "font-size": 12, transform: `translate(${box[0] - 40},${(box[1] + box[3]) / 2}) rotate(-90)` });
+}
+
+// ---------- scatter
+function drawScatter() {
+  const s = $("scatter"); clear(s); const a = cur, box = [58, 10, 528, 420], sur = $("showsur").checked;
+  const gx = [...a.g, ...(sur ? a.gs : [])], ky = [...a.k, ...(sur ? a.ks : [])];
+  const xlo = Math.min(0, ...gx) - .01, xhi = Math.max(...gx) * 1.04, ylo = Math.min(...ky) - .02, yhi = Math.max(...ky) * 1.04;
+  const x = v => box[0] + (v - xlo) / (xhi - xlo) * (box[2] - box[0]), y = v => box[3] - (v - ylo) / (yhi - ylo) * (box[3] - box[1]);
+  const clip = el("clipPath", { id: "clipS" }, el("defs", {}, s)); el("rect", { x: box[0], y: box[1], width: box[2] - box[0], height: box[3] - box[1] }, clip);
+  const G = el("g", { "clip-path": "url(#clipS)" }, s), L = v => a.c[0] + a.c[1] * v;
+  el("polygon", { points: [[xlo, L(xlo) + a.lim], [xhi, L(xhi) + a.lim], [xhi, L(xhi) - a.lim], [xlo, L(xlo) - a.lim]].map(([u, v]) => `${x(u)},${y(v)}`).join(" "), fill: css("--band") }, G);
+  el("line", { x1: x(xlo), x2: x(xhi), y1: y(L(xlo)), y2: y(L(xhi)), stroke: css("--panel"), "stroke-width": 2 }, G);
+  if (sur) { for (let i = 0; i < NE; i++) el("circle", { cx: x(a.gs[i]), cy: y(a.ks[i]), r: 2, fill: "none", stroke: css("--muted"), "stroke-width": .6, opacity: .7 }, G);
+    const Ls = v => a.cs[0] + a.cs[1] * v; el("line", { x1: x(xlo), x2: x(xhi), y1: y(Ls(xlo)), y2: y(Ls(xhi)), stroke: css("--muted"), "stroke-dasharray": "4 3", "stroke-width": 1 }, G); }
+  const c = groupColor(a.w), ord = [...a.off.keys()].sort((i, j) => a.off[i] - a.off[j]);
+  ord.forEach(i => {
+    const off = a.off[i], d = el("circle", { cx: x(a.g[i]), cy: y(a.k[i]), r: off ? 4.2 : 2.3, fill: off ? (a.r[i] > 0 ? c : "none") : css("--muted"),
+      stroke: off ? c : css("--panel"), "stroke-width": off ? 1.3 : .4, opacity: off ? 1 : .75, cursor: "pointer" }, G);
+    d.onclick = () => pickPair(i); d.onmousemove = e => showTip(e, pairTip(i)); d.onmouseleave = hideTip;
+  });
+  el("circle", { cx: x(a.g[pair]), cy: y(a.k[pair]), r: 8, fill: "none", stroke: css("--sel"), "stroke-width": 1.6 }, G);
+  axes(s, x, y, "Gaussian MI, G (nats)", "kNN MI, K (nats)", ticks(Math.max(xlo, 0), xhi), ticks(ylo, yhi), box);
+  txt(s, box[2] - 4, box[3] - 26, `z = corr(G, K) ${f3(a.w.z)}, surrogate ${f3(a.w.zs)}`, { "text-anchor": "end", "font-size": 12 });
+  const t = txt(s, box[2] - 4, box[3] - 8, `Δz ${f2(a.w.sd)} wake SDs`, { "text-anchor": "end", "font-size": 15 }); t.style.fill = c;
+  $("sctitle").textContent = `${a.w.animal} · ${stateName(a.w)} #${a.w.num}: pairs in G–K space`;
+  const up = a.r.filter((v, i) => a.off[i] && v > 0).length, dn = a.off.filter(Boolean).length - up;
+  $("scnote").textContent = `Grey band: the surrogate's 95% scatter about the line, drawn about this window's own line. ${up + dn} of 496 pairs off the band (${up} above, filled; ${dn} below, open). ` + (sur ? "Open grey circles: the surrogate's own 496 pairs; dashed: its line." : "Tick “surrogate points” to see what the band summarises.");
+}
+function pairTip(i) { const a = cur, e = D.chans[a.w.c], [u, v] = IU[i];
+  return `el. ${e[u]}–${e[v]} · G ${f2(a.g[i])} · K ${f2(a.k[i])} · Ks ${f2(a.ks[i])} · dist. ${f2(a.r[i] / a.lim)} · p ${fp(a.P.p[i])}`; }
+
+// ---------- pair panel
+function normScores(x) { const n = x.length, idx = [...x.keys()].sort((i, j) => x[i] - x[j]), out = new Float64Array(n);
+  idx.forEach((i, r) => out[i] = qnorm((r + .5) / n)); return out; }
+function qnorm(p) { // Acklam's inverse normal CDF
+  const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.357751867269, -30.66479806614716, 2.506628274631],
+    b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572],
+    c = [-.007784894002430293, -.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783],
+    d = [.007784695709041462, .3224671290700398, 2.445134137142996, 3.754408661907416], pl = .02425;
+  let q, r; if (p < pl) { q = Math.sqrt(-2 * Math.log(p)); return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  if (p > 1 - pl) { q = Math.sqrt(-2 * Math.log(1 - p)); return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  q = p - .5; r = q * q; return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1); }
+const rawCache = new Map();
+function rawOf(w) { if (!D.raw[w.id]) return null; if (!rawCache.has(w.id)) rawCache.set(w.id, dec16(D.raw[w.id])); return rawCache.get(w.id); }
+function channel(R, j) { const x = new Float64Array(T); for (let t = 0; t < T; t++) x[t] = R[t * 32 + j] / 1e3; return x; }
+
+function drawPair() {
+  const a = cur, e = D.chans[a.w.c], [u, v] = IU[pair], c = groupColor(a.w), P = a.P;
+  $("pairtitle").textContent = `Pair el. ${e[u]} – el. ${e[v]}`;
+  const st = [["G", f2(a.g[pair])], ["K", f2(a.k[pair])], ["K surrogate", f2(a.ks[pair])], ["dist. from line", f2(a.r[pair] / a.lim) + " hw"],
+    ["p", fp(P.p[pair])], ["p above", fp(P.pu[pair])], ["q (BH)", fp(P.q[pair])], ["rank by p", (1 + P.p.filter(x => x < P.p[pair]).length) + " / 496"]];
+  $("pairstats").innerHTML = st.map(([k, val]) => `<div><b>${val}</b><span>${k}</span></div>`).join("");
+  drawBrain(a, e, u, v, c);
+  const R = rawOf(a.w);
+  if (!R) { clear($("glyph")); clear($("traces"));
+    const g = $("glyph"); txt(g, 110, 100, "No raw samples bundled", { "text-anchor": "middle" }); txt(g, 110, 118, "for this window.", { "text-anchor": "middle" });
+    txt(g, 110, 140, "Ringed windows in the strip have them.", { "text-anchor": "middle", "font-size": 10 });
+    $("glyphnote").textContent = ""; }
+  else drawRaw(R, u, v, e, c);
+  drawPairStrip(c);
+}
+
+function drawBrain(a, e, u, v, c) {
+  const s = $("brain"); clear(s); const B = D.brains[a.w.animal];
+  if (!B) { txt(s, 150, 110, `No electrode map for ${a.w.animal}.`, { "text-anchor": "middle" }); $("brainnote").textContent = ""; return; }
+  s.setAttribute("viewBox", `0 0 ${B.w} ${B.h}`);
+  el("image", { href: B.img, x: 0, y: 0, width: B.w, height: B.h, opacity: .9 }, s);
+  const sc = B.w / 300, P = (el_) => [B.x[el_ - 1], B.y[el_ - 1]];
+  B.x.forEach((_, i) => el("circle", { cx: B.x[i], cy: B.y[i], r: 1.6 * sc, fill: "#fff", opacity: .7 }, s));
+  a.off.forEach((o, i) => { if (!o || a.r[i] <= 0) return; const [p, q] = IU[i], A = P(e[p]), Bq = P(e[q]);
+    el("line", { x1: A[0], y1: A[1], x2: Bq[0], y2: Bq[1], stroke: c, "stroke-width": 1.1 * sc, opacity: .55 }, s); });
+  e.forEach(el_ => { const [px, py] = P(el_); el("circle", { cx: px, cy: py, r: 3 * sc, fill: "#222", stroke: "#fff", "stroke-width": .8 * sc }, s); });
+  const A = P(e[u]), Bv = P(e[v]);
+  el("line", { x1: A[0], y1: A[1], x2: Bv[0], y2: Bv[1], stroke: "#fff", "stroke-width": 5 * sc, "stroke-linecap": "round" }, s);
+  el("line", { x1: A[0], y1: A[1], x2: Bv[0], y2: Bv[1], stroke: c, "stroke-width": 3 * sc, "stroke-linecap": "round" }, s);
+  [[A, e[u]], [Bv, e[v]]].forEach(([p, n]) => { el("circle", { cx: p[0], cy: p[1], r: 6 * sc, fill: c, stroke: "#fff", "stroke-width": 1.4 * sc }, s);
+    const t = txt(s, p[0], p[1] - 10 * sc, String(n), { "text-anchor": "middle" }); t.style.font = `600 ${13 * sc}px var(--sans)`; t.style.fill = "#fff"; t.style.paintOrder = "stroke"; t.style.stroke = "#000"; t.style.strokeWidth = 2.5 * sc; });
+  $("brainnote").textContent = `${a.w.animal}, left hemisphere, the provider's photograph (lower: lateral view; upper: the photograph's second view). Black: the 32 electrodes analysed; thin lines: pairs above the band.`;
+}
+
+function drawRaw(R, u, v, e, c) {
+  const x = channel(R, u), y = channel(R, v), zx = normScores(x), zy = normScores(y), r = corr(zx, zy);
+  const q = Float64Array.from(zx, (_, t) => (zx[t] ** 2 - 2 * r * zx[t] * zy[t] + zy[t] ** 2) / (1 - r * r));
+  const c95 = -2 * Math.log(.05), c99 = -2 * Math.log(.01), far = q.map(v => v > c99), mid = q.map(v => v > c95 && v <= c99);
+  // glyph
+  const s = $("glyph"); clear(s); const E = 3.6, m = v => 110 + v / E * 104, mY = v => 110 - v / E * 104;
+  el("rect", { x: 4, y: 4, width: 212, height: 212, fill: "none", stroke: css("--line"), rx: 6 }, s);
+  const order = [...q.keys()].sort((i, j) => q[i] - q[j]);
+  order.forEach(t => el("circle", { cx: m(zx[t]), cy: mY(zy[t]), r: far[t] ? 2.4 : mid[t] ? 2 : 1.4, fill: far[t] ? c : mid[t] ? c : css("--muted"), opacity: far[t] ? 1 : mid[t] ? .45 : .45 }, s));
+  [.5, .95, .99].forEach(p => { const cc = -2 * Math.log(1 - p), a1 = Math.sqrt(cc * (1 + r)), a2 = Math.sqrt(cc * (1 - r));
+    const pts = []; for (let k = 0; k <= 72; k++) { const th = k / 72 * 2 * Math.PI, s1 = a1 * Math.cos(th), s2 = a2 * Math.sin(th); pts.push(`${m((s1 + s2) / Math.SQRT2)},${mY((s1 - s2) / Math.SQRT2)}`); }
+    el("polyline", { points: pts.join(" "), fill: "none", stroke: css("--fg"), "stroke-width": .8, "stroke-dasharray": "3 2" }, s); });
+  txt(s, 12, 20, `el. ${e[u]} →`, { "font-size": 10 }); txt(s, 12, 32, `el. ${e[v]} ↑`, { "font-size": 10 });
+  const d = zx.map((v, t) => v - zy[t]), md = d.reduce((p, v) => p + v, 0) / T, vd = d.reduce((p, v) => p + (v - md) ** 2, 0) / T;
+  const kurt = d.reduce((p, v) => p + (v - md) ** 4, 0) / T / vd ** 2 - 3;
+  $("glyphnote").textContent = `Normal-scored samples, r ${f2(r)}. Beyond the 99% contour: ${(100 * far.filter(Boolean).length / T).toFixed(1)}% (Gaussian 1%). Excess kurtosis of their difference: ${kurt.toFixed(1)} (Gaussian 0).`;
+  // traces
+  const s2 = $("traces"); clear(s2); const X0 = 58, X1 = 596, tx = t => X0 + t / (T - 1) * (X1 - X0);
+  [[x, e[u], 38], [y, e[v], 96]].forEach(([z, name, y0]) => {
+    const mx = Math.max(...z.map(Math.abs)), sy = 24 / Math.max(mx, 3);
+    el("polyline", { points: Array.from(z, (vv, t) => `${tx(t).toFixed(1)},${(y0 - vv * sy).toFixed(1)}`).join(" "), fill: "none", stroke: c, "stroke-width": .8 }, s2);
+    txt(s2, X0 - 8, y0 + 4, "el. " + name, { "text-anchor": "end" });
+  });
+  far.forEach((f, t) => { if (f) el("line", { x1: tx(t), x2: tx(t), y1: 128, y2: 134, stroke: c, "stroke-width": 1 }, s2); });
+  txt(s2, X0, 146, "ticks: samples beyond the 99% contour", { "font-size": 10 });
+  el("line", { x1: X1 - 108, x2: X1, y1: 140, y2: 140, stroke: css("--fg"), "stroke-width": 1.2 }, s2); txt(s2, X1 - 54, 136, "2 s", { "text-anchor": "middle" });
+  txt(s2, X0, 10, "10 s, each channel standardised (as banked, average-referenced)", { "font-size": 10 });
+}
+
+function drawPairStrip(c0) {
+  const s = $("pairstrip"); clear(s); const ws = byUnit[cur.w.unit], e = D.chans[cur.w.c], [u, v] = IU[pair];
+  const vals = ws.map(w => { const ew = D.chans[w.c]; const i = IU.findIndex(([p, q]) => ew[p] === e[u] && ew[q] === e[v]); if (i < 0) return null; const a = analyse(w); return a.r[i] / a.lim; });
+  const X0 = 40, X1 = 594, n = ws.length, dx = (X1 - X0) / Math.max(n - 1, 1), fin = vals.filter(x => x != null);
+  const lo = Math.min(-2, ...fin), hi = Math.max(2, ...fin), y = vv => 104 - (vv - lo) / (hi - lo) * 94;
+  el("rect", { x: X0 - 4, y: y(1), width: X1 - X0 + 8, height: y(-1) - y(1), fill: css("--band") }, s);
+  el("line", { x1: X0 - 4, x2: X1 + 4, y1: y(0), y2: y(0), stroke: css("--panel"), "stroke-width": 1.5 }, s);
+  [lo, 0, hi].forEach(t => txt(s, X0 - 8, y(t) + 4, Math.round(t) + "", { "text-anchor": "end" }));
+  ws.forEach((w, j) => { if (vals[j] == null) return; const on = w.i === cur.w.i;
+    const d = el("circle", { cx: X0 + j * dx, cy: y(vals[j]), r: on ? 5 : 3, fill: groupColor(w), stroke: on ? css("--sel") : "none", "stroke-width": 1.5, cursor: "pointer" }, s);
+    d.onclick = () => select(w, IU.findIndex(([p, q]) => D.chans[w.c][p] === e[u] && D.chans[w.c][q] === e[v]));
+    d.onmousemove = ev => showTip(ev, `${stateName(w)} #${w.num} · dist. ${f2(vals[j])} half-widths`); d.onmouseleave = hideTip; });
+}
+
+// ---------- residual histogram
+function drawHist() {
+  const s = $("hist"); clear(s); const a = cur, box = [40, 10, 530, 190], L = a.lim * 4;
+  const lo = Math.min(-L, ...a.r), hi = Math.max(L, ...a.r), nb = 44, bw = (hi - lo) / nb;
+  const hist = arr => { const h = new Array(nb).fill(0); arr.forEach(v => h[Math.min(nb - 1, Math.max(0, Math.floor((v - lo) / bw)))]++); return h; };
+  const hr = hist(a.r), hs = hist(a.rs), top = Math.max(...hr, ...hs);
+  const x = v => box[0] + (v - lo) / (hi - lo) * (box[2] - box[0]), y = v => box[3] - v / top * (box[3] - box[1]);
+  el("rect", { x: x(-a.lim), y: box[1], width: x(a.lim) - x(-a.lim), height: box[3] - box[1], fill: css("--band") }, s);
+  const c = groupColor(a.w), step = h => { let p = `M${x(lo)},${y(0)}`; h.forEach((v, i) => p += `L${x(lo + i * bw)},${y(v)}L${x(lo + (i + 1) * bw)},${y(v)}`); return p + `L${x(hi)},${y(0)}`; };
+  el("path", { d: step(hs), fill: "none", stroke: css("--muted"), "stroke-width": 1.4, "stroke-dasharray": "4 2" }, s);
+  el("path", { d: step(hr), fill: c, "fill-opacity": .25, stroke: c, "stroke-width": 1.6 }, s);
+  axes(s, x, y, "K minus its line (nats)", "pairs", ticks(lo, hi), ticks(0, top, 3), box);
+  const sd = arr => { const m = arr.reduce((p, v) => p + v, 0) / arr.length; return Math.sqrt(arr.reduce((p, v) => p + (v - m) ** 2, 0) / (arr.length - 1)); };
+  const eo = byUnit[a.w.unit].filter(w => w.state === "awake_eo").map(w => analyse(w).off.filter(Boolean).length).sort((p, q) => p - q);
+  const med = eo.length ? eo[Math.floor(eo.length / 2)] : null;
+  $("histnote").textContent = `Filled: this window's 496 pairs about its own line (SD ${f3(sd(a.r))}); dashed: its surrogate about the surrogate's line (SD ${f3(sd(a.rs))}). Band ±${f3(a.lim)}. Off band here ${a.off.filter(Boolean).length}/496` + (med != null ? `; this session's eyes-open windows, median ${med}/496.` : ".");
+}
+
+// ---------- table
+function drawTable() {
+  const a = cur, P = a.P, e = D.chans[a.w.c], tb = $("tbody"); tb.innerHTML = "";
+  const top = [...P.p.keys()].sort((i, j) => P.p[i] - P.p[j] || Math.abs(a.r[j]) - Math.abs(a.r[i])).slice(0, 14);
+  if (!top.includes(pair)) top.push(pair);
+  top.forEach(i => { const [u, v] = IU[i], tr = document.createElement("tr"); tr.tabIndex = 0; if (i === pair) tr.className = "on";
+    tr.innerHTML = `<td>${e[u]}–${e[v]}</td><td>${f2(a.g[i])}</td><td>${f2(a.k[i])}</td><td>${f2(a.ks[i])}</td><td>${f2(a.r[i] / a.lim)}</td><td>${fp(P.p[i])}</td><td>${fp(P.pu[i])}</td><td>${fp(P.q[i])}</td>`;
+    tr.onclick = () => pickPair(i); tr.onkeydown = ev => { if (ev.key === "Enter") pickPair(i); }; tb.appendChild(tr); });
+  const nsig = [...P.q].filter(q => q < .05).length, nup = [...P.q].filter((q, i) => q < .05 && a.r[i] > 0).length;
+  tb.parentElement.parentElement.nextElementSibling.textContent =
+    `dist.: distance from the line in band half-widths, signed. p: two-sided against ${$("nullsel").value === "pool" ? `the pooled surrogate residuals of ${P.nwin} ${stateName(a.w)} windows (n ${P.n})` : "this window's 496 surrogate residuals (floor .002)"}; p above: one-sided, K above the line. q: Benjamini–Hochberg over 496 pairs; ${nsig} pairs at q < .05 (${nup} above the line).`;
+}
+
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => select(cur.w, pair));
+select(W.find(w => w.id === D.panelB[0][1]));
+</script>
+</body>
+</html>
