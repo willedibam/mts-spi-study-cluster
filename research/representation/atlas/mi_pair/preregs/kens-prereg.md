@@ -58,3 +58,17 @@ Each window is expressed as its value minus its session's eyes-closed mean, in S
 - It is still produced by any of the three routes: a nonlinear coupling function, a gain or coupling mixture, or linear mixing of non-Gaussian sources. It is not evidence of nonlinear coupling.
 - k22x > 0 means the sum and difference amplitudes rise together beyond the null, which with fixed marginals means the electrodes' amplitudes alternate. k22x < 0 means a shared gain or a coupling-strength mixture.
 - Sleep is 2 animals, so all anaesthesia-against-sleep statements remain descriptive.
+
+## Amendment (25 November 2026, before any output; the job at aacb335 never started because scratch was over its inode quota)
+
+- **Cross-only terms dropped.** The difference kurtosis is bounded. As r → 1, a spectrum-final surrogate's marginal and cross terms nearly cancel, so either term alone inverts the marginal mismatch.
+  - Local check: in drug:05, cross-only net was −.290 against −.024 for the marginal-matched null.
+  - The rows `k40x`, `k22x`, `k04x` and `Mx` are removed.
+- **New null arm `im`.** These are the same IAAFT draws, normal-scored, so their marginals equal the real window's exactly and the (ka + kb) terms cancel in the net. Their r differs from the real window's by at most .033 in the local check.
+- **Primary is now `KZ`.** For each pair, take plain k04 (real) minus the `im` ensemble mean, divided by the `im` ensemble SD. `KZ` is the mean of this over the 496 pairs.
+  - `MX` becomes `MZ`, the same construction for Mardia.
+  - All secondary readouts use `im` as the reference. The spectrum-final arm (`ia`) and the phase-randomised arm (`ft`) are diagnostics.
+- **M2 is redefined.** The marginal share of single-draw `KD` is now draw 0's net against `ia` minus its net against `im`.
+- **Decision 5 applies to `KZ`.**
+- Local check of net k04 against `ia` and against `im`, in 4 figure windows with 10 draws each: +.066 / +.060, +.179 / +.131, +.628 / +.604, +.011 / −.027.
+  - Net k22 drops under `im` in every drug window: +.033 → −.017, −.022 → −.048, +.089 → +.051.
