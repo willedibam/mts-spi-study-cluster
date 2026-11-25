@@ -74,3 +74,25 @@ Parts are on the net readout's own eyes-open SD scale, so real − surrogate = n
 - Medetomidine sits at or below sleep on KD in George (−0.55) and only just above it in Chibi. The drug-against-sleep contrast is carried by KT, KTMD and PF.
 - Sleep exists in 2 animals, so every drug-against-sleep statement here is descriptive. The binding constraint for an "anaesthesia differs from both wake and sleep" paper is sleep data, not the choice of statistic.
 - Recommendation: keep Δz as panel (c). If a level readout is shown, show MARDIA or KD beside Δz with its real and surrogate parts. A level-only panel would plot a quantity that is about two-thirds the null's shift, so its reading depends on the untested mechanism above.
+
+## Follow-ups (post hoc, 25 November)
+
+- **Level readout in MI units.** The mean over pairs of (K − G), real minus surrogate, is identical to the draft figure's `lvl` (mean K real − surrogate), because G is the same in both. In panel (c)'s units:
+  - Drug: −1.47, with animals +0.36, −2.70, −2.20 and −1.36. t(3) −2.20, p .115.
+  - Sleep: −0.09 and −0.53. AUC .65 and .72.
+  - Drug-against-sleep coefficient: −0.82, which becomes +1.76 given delta.
+  - It also carries KSG's real-only bias offset ([ksg-bias-result.md](ksg-bias-result.md)). It is not a usable readout.
+- **Component breakdown of MARDIA's drug effect, net, in MARDIA's eyes-open SDs.** Values are the drug mean, then the animals in the order Chibi, George, Kin2, Su.
+
+  | Component | Drug | Chibi | George | Kin2 | Su |
+  |---|---|---|---|---|---|
+  | k04 | +0.94 | +1.66 | +1.12 | −0.00 | +0.98 |
+  | 2·k22 | +0.72 | +0.69 | +0.45 | +1.70 | +0.04 |
+  | k40 | +0.45 | +0.59 | +0.59 | −0.13 | +0.74 |
+
+  - Sleep 2·k22 is −0.15 and −0.21.
+  - Sign of k22 (verified on synthetic pairs with normal-scored marginals): k22 = (ka + kb − 2 cum(a,a,b,b)) / (4(1 − r²)). It is negative under a shared gain or a coupling-strength mixture and positive when the two electrodes' amplitudes alternate. Positive k22 is not co-modulation.
+- **Mechanism, local check on 4 figure windows** (details in [preregs/kens-prereg.md](preregs/kens-prereg.md)):
+  - The surrogate's window-mean k04 matches the random-phase expectation computed from the window's own Fourier coefficients, so candidate (a) is supported in this form.
+  - Part of single-draw net k04 is a marginal leak: the spectrum-final IAAFT leaves platykurtic marginals, which enter k04 as (ka + kb) / (4(1 − r)²).
+  - The ensemble run (`kens.py`, Gadi job 185197089) tests both on all windows.
