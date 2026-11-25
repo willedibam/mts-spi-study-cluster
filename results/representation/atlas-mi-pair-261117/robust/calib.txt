@@ -1,0 +1,30 @@
+
+=== T = 1000: z real − surr, mean ± SE (n per cell); detectability = (block − gain_shared) / SD(block)
+w0 k4         AW block -0.0036±0.0021 gs -0.0119 det 0.61 | KTMD block -0.0066±0.0031 gs -0.0735 det 3.39 | PF block -0.0101±0.0041 gs -0.0662 det 2.16 || stationary drug − awake offset -0.0047 ± 0.0033
+w0 k4 pool    AW block -0.0036±0.0021 gs -0.0119 det 0.61 | KTMD block -0.0066±0.0031 gs -0.0735 det 3.39 | PF block -0.0101±0.0041 gs -0.0662 det 2.16 || stationary drug − awake offset -0.0047 ± 0.0033
+w0 k10        AW block -0.0010±0.0009 gs -0.0193 det 3.13 | KTMD block -0.0033±0.0025 gs -0.0617 det 3.66 | PF block -0.0046±0.0031 gs -0.0572 det 2.65 || stationary drug − awake offset -0.0029 ± 0.0022
+auto k4       AW block -0.0037±0.0025 gs -0.0093 det 0.35 | KTMD block +0.0002±0.0023 gs -0.0462 det 3.17 | PF block +0.0046±0.0042 gs -0.0288 det 1.27 || stationary drug − awake offset +0.0061 ± 0.0035
+auto k4 pool  AW block -0.0038±0.0023 gs -0.0101 det 0.43 | KTMD block +0.0010±0.0027 gs -0.0495 det 2.92 | PF block +0.0042±0.0044 gs -0.0334 det 1.35 || stationary drug − awake offset +0.0065 ± 0.0035
+auto k10      AW block -0.0009±0.0011 gs -0.0142 det 1.95 | KTMD block -0.0002±0.0016 gs -0.0382 det 3.65 | PF block +0.0029±0.0030 gs -0.0263 det 1.55 || stationary drug − awake offset +0.0023 ± 0.0020
+2te k4        AW block -0.0036±0.0026 gs -0.0101 det 0.40 | KTMD block +0.0008±0.0026 gs -0.0511 det 3.13 | PF block +0.0042±0.0046 gs -0.0356 det 1.35 || stationary drug − awake offset +0.0060 ± 0.0037
+2te k4 pool   AW block -0.0034±0.0022 gs -0.0107 det 0.53 | KTMD block +0.0003±0.0027 gs -0.0509 det 2.97 | PF block +0.0041±0.0046 gs -0.0344 det 1.34 || stationary drug − awake offset +0.0056 ± 0.0034
+2te k10       AW block -0.0012±0.0012 gs -0.0152 det 1.88 | KTMD block +0.0002±0.0019 gs -0.0438 det 3.60 | PF block +0.0019±0.0031 gs -0.0330 det 1.76 || stationary drug − awake offset +0.0022 ± 0.0022
+4auto k4      AW block -0.0044±0.0029 gs -0.0064 det 0.11 | KTMD block +0.0025±0.0028 gs -0.0214 det 1.34 | PF block +0.0054±0.0056 gs -0.0158 det 0.60 || stationary drug − awake offset +0.0084 ± 0.0043
+4auto k4 pool AW block -0.0041±0.0022 gs -0.0113 det 0.52 | KTMD block +0.0010±0.0035 gs -0.0521 det 2.41 | PF block +0.0049±0.0047 gs -0.0411 det 1.55 || stationary drug − awake offset +0.0070 ± 0.0037
+4auto k10     AW block -0.0017±0.0014 gs -0.0112 det 1.04 | KTMD block +0.0037±0.0030 gs -0.0119 det 0.83 | PF block +0.0067±0.0053 gs -0.0108 det 0.53 || stationary drug − awake offset +0.0069 ± 0.0034
+kshift        AW block -0.0048±0.0032 gs -0.0071 det 0.12 | KTMD block +0.0047±0.0042 gs -0.0475 det 1.98 | PF block -0.0006±0.0044 gs -0.0330 det 1.17 || stationary drug − awake offset +0.0068 ± 0.0044
+
+=== T = 200: z real − surr, mean ± SE (n per cell); detectability = (block − gain_shared) / SD(block)
+w0 k4         AW block +0.0115±0.0044 gs -0.0413 det 1.89 | KTMD block -0.0194±0.0077 gs -0.1189 det 2.05 | PF block -0.0267±0.0074 gs -0.1081 det 1.75 || stationary drug − awake offset -0.0346 ± 0.0069
+w0 k4 pool    AW block +0.0115±0.0044 gs -0.0413 det 1.89 | KTMD block -0.0194±0.0077 gs -0.1189 det 2.05 | PF block -0.0267±0.0074 gs -0.1081 det 1.75 || stationary drug − awake offset -0.0346 ± 0.0069
+w0 k10        AW block +0.0058±0.0027 gs -0.0365 det 2.47 | KTMD block -0.0062±0.0078 gs -0.0763 det 1.42 | PF block -0.0215±0.0057 gs -0.0804 det 1.65 || stationary drug − awake offset -0.0197 ± 0.0055
+auto k4       AW block +0.0021±0.0037 gs -0.0163 det 0.79 | KTMD block -0.0049±0.0079 gs -0.0382 det 0.67 | PF block -0.0127±0.0065 gs -0.0511 det 0.94 || stationary drug − awake offset -0.0109 ± 0.0063
+auto k4 pool  AW block +0.0029±0.0040 gs -0.0187 det 0.86 | KTMD block +0.0006±0.0083 gs -0.0510 det 0.98 | PF block -0.0113±0.0069 gs -0.0606 det 1.13 || stationary drug − awake offset -0.0082 ± 0.0067
+auto k10      AW block +0.0036±0.0028 gs -0.0164 det 1.14 | KTMD block -0.0032±0.0066 gs -0.0308 det 0.66 | PF block -0.0122±0.0045 gs -0.0402 det 0.98 || stationary drug − awake offset -0.0112 ± 0.0049
+2te k4        AW block +0.0057±0.0058 gs -0.0155 det 0.58 | KTMD block -0.0003±0.0103 gs -0.0407 det 0.62 | PF block -0.0102±0.0077 gs -0.0502 det 0.82 || stationary drug − awake offset -0.0110 ± 0.0087
+2te k4 pool   AW block +0.0025±0.0045 gs -0.0214 det 0.83 | KTMD block +0.0031±0.0097 gs -0.0451 det 0.79 | PF block -0.0104±0.0078 gs -0.0515 det 0.83 || stationary drug − awake offset -0.0061 ± 0.0077
+2te k10       AW block +0.0041±0.0058 gs -0.0083 det 0.34 | KTMD block -0.0000±0.0072 gs -0.0379 det 0.83 | PF block -0.0116±0.0055 gs -0.0499 det 1.10 || stationary drug − awake offset -0.0099 ± 0.0074
+4auto k4      AW block +0.0002±0.0053 gs -0.0037 det 0.12 | KTMD block +0.0017±0.0084 gs -0.0077 det 0.18 | PF block +0.0089±0.0080 gs -0.0246 det 0.66 || stationary drug − awake offset +0.0051 ± 0.0078
+4auto k4 pool AW block -0.0003±0.0042 gs -0.0241 det 0.91 | KTMD block +0.0088±0.0117 gs -0.0374 det 0.63 | PF block +0.0056±0.0103 gs -0.0552 det 0.93 || stationary drug − awake offset +0.0075 ± 0.0088
+4auto k10     AW block +0.0019±0.0053 gs +0.0014 det 0.02 | KTMD block +0.0000±0.0067 gs -0.0037 det 0.09 | PF block +0.0051±0.0057 gs -0.0218 det 0.75 || stationary drug − awake offset +0.0006 ± 0.0069
+kshift        AW block +0.0104±0.0052 gs -0.0238 det 1.04 | KTMD block -0.0001±0.0121 gs -0.0502 det 0.66 | PF block -0.0132±0.0095 gs -0.0555 det 0.70 || stationary drug − awake offset -0.0171 ± 0.0093

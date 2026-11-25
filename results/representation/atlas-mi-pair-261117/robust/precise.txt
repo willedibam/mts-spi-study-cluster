@@ -1,0 +1,43 @@
+calib T1000 w0 k4: offset -0.00471 se 0.00335 threshold -0.01141
+calib T1000 auto k4: offset +0.00611 se 0.00346 threshold -0.00082
+calib T1000 kshift: offset +0.00679 se 0.00439 threshold -0.00199
+calib T1000 auto k10: offset +0.00230 se 0.00201 threshold -0.00172
+calib T200 w0 k4: offset -0.03456 se 0.00692 threshold -0.04841
+calib T200 auto k4: offset -0.01087 se 0.00629 threshold -0.02345
+calib T200 kshift: offset -0.01707 se 0.00927 threshold -0.03560
+calib T200 auto k10: offset -0.01121 se 0.00489 threshold -0.02099
+rb10 w0 k4         pooled(sessions) -0.01085 animal-mean -0.01295 sd 0.00220 | sleep -0.00234 (-1.06 SD, 7/7)
+rb10 w0 k10        pooled(sessions) -0.00960 animal-mean -0.01148 sd 0.00208 | sleep -0.00181 (-0.87 SD, 7/7)
+rb10 auto k4       pooled(sessions) -0.01329 animal-mean -0.01321 sd 0.00198 | sleep -0.00098 (-0.49 SD, 7/7)
+rb10 auto k4 pool  pooled(sessions) -0.01418 animal-mean -0.01402 sd 0.00214 | sleep -0.00098 (-0.46 SD, 7/7)
+rb10 auto k10      pooled(sessions) -0.01260 animal-mean -0.01241 sd 0.00169 | sleep -0.00093 (-0.55 SD, 7/7)
+rb10 2te k4        pooled(sessions) -0.01396 animal-mean -0.01368 sd 0.00223 | sleep -0.00080 (-0.36 SD, 6/7)
+rb10 2te k4 pool   pooled(sessions) -0.01433 animal-mean -0.01422 sd 0.00215 | sleep -0.00094 (-0.44 SD, 7/7)
+rb10 2te k10       pooled(sessions) -0.01339 animal-mean -0.01302 sd 0.00208 | sleep -0.00066 (-0.32 SD, 6/7)
+rb10 4auto k4      pooled(sessions) -0.00963 animal-mean -0.00955 sd 0.00243 | sleep -0.00172 (-0.71 SD, 6/7)
+rb10 4auto k4 pool pooled(sessions) -0.01587 animal-mean -0.01544 sd 0.00232 | sleep -0.00091 (-0.39 SD, 7/7)
+rb10 4auto k10     pooled(sessions) -0.00703 animal-mean -0.00688 sd 0.00256 | sleep -0.00158 (-0.62 SD, 5/7)
+rbS2 w0 k4         pooled(sessions) -0.03513 animal-mean -0.03689 sd 0.00692 | sleep -0.00339 (-0.49 SD, 6/7) | calib thr -0.04841 -> fail (-0.08 SE)
+rbS2 w0 k10        pooled(sessions) -0.02506 animal-mean -0.02561 sd 0.00485 | sleep -0.00202 (-0.42 SD, 6/7)
+rbS2 auto k4       pooled(sessions) -0.02019 animal-mean -0.01977 sd 0.00517 | sleep -0.00064 (-0.12 SD, 5/7) | calib thr -0.02345 -> fail (-1.48 SE)
+rbS2 auto k4 pool  pooled(sessions) -0.02628 animal-mean -0.02583 sd 0.00609 | sleep -0.00053 (-0.09 SD, 5/7)
+rbS2 auto k10      pooled(sessions) -0.01414 animal-mean -0.01381 sd 0.00420 | sleep -0.00127 (-0.30 SD, 5/7) | calib thr -0.02099 -> fail (-0.60 SE)
+rbS2 2te k4        pooled(sessions) -0.02168 animal-mean -0.02167 sd 0.00574 | sleep +0.00024 (+0.04 SD, 4/7)
+rbS2 2te k4 pool   pooled(sessions) -0.02441 animal-mean -0.02450 sd 0.00634 | sleep -0.00037 (-0.06 SD, 4/7)
+rbS2 2te k10       pooled(sessions) -0.01563 animal-mean -0.01527 sd 0.00475 | sleep -0.00073 (-0.15 SD, 5/7)
+rbS2 4auto k4      pooled(sessions) -0.00788 animal-mean -0.00720 sd 0.00581 | sleep -0.00055 (-0.09 SD, 3/7)
+rbS2 4auto k4 pool pooled(sessions) -0.02551 animal-mean -0.02597 sd 0.00649 | sleep -0.00013 (-0.02 SD, 5/7)
+rbS2 4auto k10     pooled(sessions) +0.00150 animal-mean +0.00222 sd 0.00657 | sleep -0.00314 (-0.48 SD, 5/7)
+rbS2 kshift        pooled(sessions) -0.02608 animal-mean -0.02450 sd 0.00647 | sleep -0.00070 (-0.11 SD, 4/7) | calib thr -0.03560 -> fail (-0.97 SE)
+rbC2 w0 k4         pooled(sessions) -0.04307 animal-mean -0.04460 sd 0.00599 | sleep -0.00971 (-1.62 SD, 7/7) | calib thr -0.04841 -> fail (-1.23 SE)
+rbC2 w0 k10        pooled(sessions) -0.03158 animal-mean -0.03226 sd 0.00503 | sleep -0.00585 (-1.16 SD, 7/7)
+rbC2 auto k4       pooled(sessions) -0.03120 animal-mean -0.03084 sd 0.00339 | sleep -0.00434 (-1.28 SD, 6/7) | calib thr -0.02345 -> PASS (-3.23 SE)
+rbC2 auto k4 pool  pooled(sessions) -0.03696 animal-mean -0.03742 sd 0.00336 | sleep -0.00501 (-1.49 SD, 6/7)
+rbC2 auto k10      pooled(sessions) -0.02142 animal-mean -0.02038 sd 0.00350 | sleep -0.00292 (-0.83 SD, 7/7) | calib thr -0.02099 -> PASS (-2.09 SE)
+rbC2 2te k4        pooled(sessions) -0.03167 animal-mean -0.03175 sd 0.00408 | sleep -0.00470 (-1.15 SD, 6/7)
+rbC2 2te k4 pool   pooled(sessions) -0.03201 animal-mean -0.03274 sd 0.00384 | sleep -0.00505 (-1.32 SD, 7/7)
+rbC2 2te k10       pooled(sessions) -0.02559 animal-mean -0.02420 sd 0.00417 | sleep -0.00283 (-0.68 SD, 6/7)
+rbC2 4auto k4      pooled(sessions) -0.01663 animal-mean -0.01346 sd 0.00534 | sleep -0.00399 (-0.75 SD, 7/7)
+rbC2 4auto k4 pool pooled(sessions) -0.03276 animal-mean -0.03315 sd 0.00415 | sleep -0.00600 (-1.45 SD, 7/7)
+rbC2 4auto k10     pooled(sessions) -0.00492 animal-mean -0.00147 sd 0.00533 | sleep -0.00255 (-0.48 SD, 7/7)
+rbC2 kshift        pooled(sessions) -0.03596 animal-mean -0.03593 sd 0.00373 | sleep -0.00560 (-1.50 SD, 7/7) | calib thr -0.03560 -> PASS (-2.04 SE)
