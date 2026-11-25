@@ -9,6 +9,8 @@ Lag and warping each in their own block, so each $z$ answers to one mechanism. C
 | ED–xED | 1.00 | 0.26 | 1.00 | 0.62 |
 | xED–DTW | 0.99 | 0.99 | 0.43 | 0.42 |
 
+Rerun on pyspi 3.0.0rc2 (`becf496`, computation 3.0.0) on 26 November 2026: every recording's $z$ is identical to the 29 October run, and the figure is unchanged; outputs in `results/cases/drift-blocks-261126/` (the commit is recorded in `summary.json`). Full-catalogue screen of the same recordings (pyspi's bundled `benchmarked_p90`, 207 SPIs, on Gadi): `research/cases/case_p90_261126.py` and `research/cases/configs/case-p90-261126-*.yaml`, outputs in `/g/data/ql44/we2614/mts-spi-study/cases/p90-261126/`.
+
 - In the lag condition ED tracks the pair's $|\Delta\tau|$ and xED does not; under warping xED tracks the warp-amplitude difference $|\Delta A|$ and DTW does not (it ranks pairs by noise). Spearman over the delayed pairs of replicate 0: ED 0.97, xED −0.03 with $|\Delta\tau|$; xED 0.98, DTW −0.01 with $|\Delta A|$.
 - Warps of 2–10 (up from 1.2–6) lower $z$(xED, DTW) under warping from 0.51 to 0.43 but raise "all three" on $z$(ED, xED) from 0.43 to 0.62, since larger warps inflate ED and xED together. Lag (5) and warp (10) are no longer matched in their cost to ED.
 - Stacking warp on lag in the same channels (the 2026-10-28 design below, or lags 0–5 on all channels plus warp) makes $z$(ED, xED) climb back (0.17 → 0.74 in the pilot), because warped pairs raise ED and xED together. Keeping the mechanisms in separate blocks avoids that; "all three" shows the mixture.
@@ -35,5 +37,5 @@ One system, one knob: whether each channel's delay is absent, constant, or drift
 - The dated viewers of the September corpus (`pdist-euclid_dtw*.ipynb`) were removed on 18 November 2026 and are kept at tag `archive/pre-cleanup-2026-11-18` (see [research/README.md](../../README.md)).
 
 ```bash
-python -m research.cases.ed_xed_dtw.drift_blocks_261029   # pyspi on ED, xED, DTW; writes results/cases/drift-blocks-261029/
+python -m research.cases.ed_xed_dtw.drift_blocks_261029   # pyspi on ED, xED, DTW; writes results/cases/drift-blocks-261126/
 ```

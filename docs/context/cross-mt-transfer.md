@@ -4,6 +4,15 @@ Updated 2026-10-16. Historical cross-size confirmation and earlier strength cont
 
 Notebook/source relocation, 2026-10-15: the pending `strength_controls` → `research/proof/baselines` move is completed, with imports, builders and live documentation updated. All 13 baseline/control notebooks now live in `research/proof/baselines/notebooks/`; the September comparison helpers remain in `p90/`, and Zenodo/inference notebooks retain their stream homes. The [baseline study index](../../research/proof/baselines/README.md) summarizes established, partial and rejected evidence. Stored notebook outputs/execution counts and frozen configuration bindings are preserved; no scientific rerun or catalogue change. Exact historical hash replay still requires the original source revisions. The proof README no longer claims marginal explanations have generally been ruled out.
 
+## Case reruns on pyspi 3.0.0rc2, 2026-11-26
+
+- **Figure runs.** Drift (ED/xED/DTW, 80 recordings) and form (r/ρ/KSG MI, 80) were rerun locally on the rc2 pin (`becf496`, computation 3.0.0). Every recording's z is bitwise identical to the October runs, so both figures are unchanged. Outputs are in `results/cases/{drift-blocks,form-ladder}-261126/`; the earlier folders are kept.
+- **Catalogue gap.** pyspi's bundled `benchmarked_p90` on rc2 has 207 SPIs: Euclidean `PairwiseDistance` is gone and xED appears only at τ=1. The drift figure therefore stays on `spis/ed_xed_dtw_261029.yaml`.
+- **Full-catalogue screen.** The same recordings go through bundled p90 on Gadi, built by `research/cases/case_p90_261126.py`, with outputs in `/g/data/ql44/we2614/mts-spi-study/cases/p90-261126/`.
+  - Jobs: smokes 185198272 (drift) and 185198275 (form), each feeding a full farm (185198345 and 185198355, afterok).
+  - Submitted while ql44 Scratch was over its inode quota, so PBS may hold them until it is cleared.
+  - The screen's purpose is to find SPI pairs that respond to lag, warping, monotone or fold contrary to their one-assumption reading. Select on reps 0–9 and confirm on 10–19, per `docs/interpreting-spi-pairs.md` rule 7.
+
 ## Ordered-entry recomputation, 2026-10-21
 
 User decision: z uses all M(M−1) ordered off-diagonal entries (`unified_ordered_v3`), not the symmetrised upper triangle.

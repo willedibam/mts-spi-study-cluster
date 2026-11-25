@@ -10,6 +10,8 @@ One 4/4/4 channel layout, 2 × 2 over the maps. Twelve channels in three blocks 
 | $\rho$–MI | 0.94 | 0.94 | 0.62 ± 0.01 | 0.62 |
 | $\rho$–Linfoot MI | 1.00 | 0.99 | 0.62 | 0.62 |
 
+Rerun on pyspi 3.0.0rc2 (`becf496`, computation 3.0.0) on 26 November 2026: every recording's $z$ is identical to the 28 October run (KSG MI included), and the figure is unchanged; outputs in `results/cases/form-ladder-261126/` (the commit is recorded in `summary.json`). Full-catalogue screen of the same recordings (pyspi's bundled `benchmarked_p90`, 207 SPIs, on Gadi): `research/cases/case_p90_261126.py` and `research/cases/configs/case-p90-261126-*.yaml`, outputs in `/g/data/ql44/we2614/mts-spi-study/cases/p90-261126/`.
+
 - **Why sinh rather than $e^{w}$.** sinh is odd, so monotone–fold pairs have $r=\rho=0$ in population. With $e^{1.5w}$ they get $r\approx0.35$ while $\rho\approx0$, a spurious fourth pair type in a mixed recording. $\mathrm{corr}(w,\sinh 2w)=2e^{2}/\sqrt{(e^{8}-1)/2}\approx0.38$.
 - **The two effects do not add.** In "both", the fold pairs (low on both $r$ and $\rho$) add variance that $r$ and $\rho$ share, so the monotone break is diluted (0.87 against 0.50).
 - **Noise enters before the map** ($x=g(w)$, $w=(u+s\varepsilon)/\sqrt{1+s^2}$). Then a monotone g changes the marginals but not the copula, so $\rho$ and MI are exactly unchanged and only $r$ moves (verified: identical $\rho$ matrices; $z(\rho,\mathrm{MI})$ flat). With noise added *after* the map, as in the archive, the textbook reading fails: under $u^3$, noise floods the map's flat bulk and $\rho$ drops more than $r$.
@@ -28,5 +30,5 @@ One 4/4/4 channel layout, 2 × 2 over the maps. Twelve channels in three blocks 
 - The dated viewers of the September corpus (`r_rho_mi_260622` … `r_rho_mi_261020`) were removed on 18 November 2026 and are kept at tag `archive/pre-cleanup-2026-11-18` (see [research/README.md](../../README.md)).
 
 ```bash
-python -m research.cases.r_rho_mi.form_ladder_261028   # pyspi on r, rho, MI; writes results/cases/form-ladder-261028/
+python -m research.cases.r_rho_mi.form_ladder_261028   # pyspi on r, rho, MI; writes results/cases/form-ladder-261126/
 ```
