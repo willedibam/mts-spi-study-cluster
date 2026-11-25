@@ -9,7 +9,7 @@ Notebook/source relocation, 2026-10-15: the pending `strength_controls` → `res
 - **Figure runs.** Drift (ED/xED/DTW, 80 recordings) and form (r/ρ/KSG MI, 80) were rerun locally on the rc2 pin (`becf496`, computation 3.0.0). Every recording's z is bitwise identical to the October runs, so both figures are unchanged. Outputs are in `results/cases/{drift-blocks,form-ladder}-261126/`; the earlier folders are kept.
 - **Catalogue gap.** pyspi's bundled `benchmarked_p90` on rc2 has 207 SPIs: Euclidean `PairwiseDistance` is gone and xED appears only at τ=1. The drift figure therefore stays on `spis/ed_xed_dtw_261029.yaml`.
 - **Full-catalogue screen.** The same recordings go through bundled p90 on Gadi, built by `research/cases/case_p90_261126.py`, with outputs in `/g/data/ql44/we2614/mts-spi-study/cases/p90-261126/`.
-  - Jobs: smokes 185198272 (drift) and 185198275 (form), each feeding a full farm (185198345 and 185198355, afterok).
+  - Jobs: smokes 185198272 (drift) and 185198275 (form), each feeding a full farm (185198544 and 185198552, afterok; 144 cores and 570 GB each, so memory needs no smoke measurement first).
   - Submitted while ql44 Scratch was over its inode quota, so PBS may hold them until it is cleared.
   - The screen's purpose is to find SPI pairs that respond to lag, warping, monotone or fold contrary to their one-assumption reading. Select on reps 0–9 and confirm on 10–19, per `docs/interpreting-spi-pairs.md` rule 7.
 
