@@ -17,10 +17,14 @@ FROZEN_HASHES = {
     "geometry.json": "bc1777579703c232a060f536aa3969791fdb1f07ffcde1a77a9a1e3251c02357",
     "summary.json": "78e1c9ebf83f45c2007839a562b76d2335630d22333a87583f680ac7484ad9d8",
 }
+# The pilot refitted on pyspi 3.0.0rc2 (bundled benchmarked_p90): research/inference/benchmarks/rerun_261126.
+FROZEN_HASHES_261126 = {}
+FROZEN = {"r7": FROZEN_HASHES, "261126": FROZEN_HASHES_261126}
 
 
-def verify_frozen(frozen):
-    for name, expected in FROZEN_HASHES.items():
+def verify_frozen(frozen, hashes=FROZEN_HASHES):
+    assert hashes, "no frozen hashes recorded"
+    for name, expected in hashes.items():
         assert hashlib.sha256((frozen / name).read_bytes()).hexdigest() == expected, name
 
 
@@ -50,11 +54,11 @@ def export(physics, output, frozen):
     (output / "frozen-input-identity.json").write_text(json.dumps(FROZEN_HASHES, indent=2)+"\n")
 
 
-def report(root, arm, frozen):
-    verify_frozen(frozen)
-    output = root / f"{arm}-analysis"
+def report(root, arm, frozen, mpi_root=None, output=None, hashes=FROZEN_HASHES):
+    verify_frozen(frozen, hashes)
+    output = output or root / f"{arm}-analysis"
     corpus = root / arm
-    run(corpus, corpus / "mpi" / arm, output, frozen=frozen, minimum_retained_per_cell=24)
+    run(corpus, mpi_root or corpus / "mpi" / arm, output, frozen=frozen, minimum_retained_per_cell=24)
     frame = pd.read_csv(output / "scores.csv")
     assert set(frame.role) == {"evaluation"}
     with np.load(frozen / "model.npz", allow_pickle=False) as original, np.load(output / "model.npz", allow_pickle=False) as copied:
@@ -89,7 +93,7 @@ def report(root, arm, frozen):
             block_mean_se=float(np.std(meta["Q_blocks"], ddof=1)/np.sqrt(8))))
     pd.DataFrame(physics).to_csv(output / "physics-reference-audit.csv", index=False)
     result = dict(status="independent frozen confirmation" if gate["passes"] else "confirmation gate failed; descriptive only",
-        gate=gate, frozen_hashes=FROZEN_HASHES, endpoints=endpoints,
+        gate=gate, frozen_hashes=hashes, endpoints=endpoints,
         generic_summary_note="The reused generic scorer labels all outputs exploratory; this separate prospective contract determines confirmation status.")
     (output / "confirmation-report.json").write_text(json.dumps(result, indent=2)+"\n")
     print(json.dumps(result, indent=2))
@@ -101,8 +105,11 @@ if __name__ == "__main__":
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--physics", type=Path)
     parser.add_argument("--frozen", type=Path, required=True)
+    parser.add_argument("--frozen-hashes", choices=sorted(FROZEN), default="r7")
+    parser.add_argument("--mpi-root", type=Path, help="default <root>/<arm>/mpi/<arm>")
+    parser.add_argument("--output", type=Path, help="default <root>/<arm>-analysis")
     args = parser.parse_args()
     if args.stage == "export":
         export(args.physics, args.root, args.frozen)
     else:
-        report(args.root, args.stage, args.frozen)
+        report(args.root, args.stage, args.frozen, args.mpi_root, args.output, FROZEN[args.frozen_hashes])

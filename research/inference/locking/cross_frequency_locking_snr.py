@@ -176,13 +176,14 @@ def analyze(data,out,nuisance='eta',stem='snr-comparison',heading='2:1 locking t
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','extract','analyze','figure','scatter'])
     p.add_argument('--data',type=Path,default=DATA);p.add_argument('--output',type=Path,default=OUT)
+    p.add_argument('--mpis',type=Path,help='MPI root holding <corpus>/NNNN-<row>/ (default <data>/mpis)')
     p.add_argument('--workers',type=int,default=6);a=p.parse_args()
     if a.stage=='prepare':prepare(a.workers)
     else:
         a.output.mkdir(parents=True,exist_ok=True)
         if a.stage=='extract':
-            from research.proof.baselines.analyze_native_coupling import extract
-            extract(a.data,a.output,corpus=RUN)
+            from research.inference.shared.feature_bank import extract
+            extract(a.data,a.output,corpus=RUN,mpis=a.mpis)
         elif a.stage=='figure':figure(pd.read_csv(a.output/'scores.csv'),a.output)
         elif a.stage=='scatter':scatter(a.output)
         else:

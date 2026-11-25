@@ -139,14 +139,18 @@ def extract():
     write_json(DATA/"extension-sources.json",dict(sources=provenance,inventory_sha256=sha(DATA/"extension-inputs.json")))
 
 
-def analyze():
-    frame=pd.read_csv(DATA/"extension-scores.csv")
-    with np.load(DATA/"extension-summaries.npz") as a:
+COHORTS=[("StuartLandau","SL","Q_R_mean"),("StuartLandauFine","SLfine","Q_R_mean"),
+         ("MillerHuse","MH","Q_spin_abs"),("KanekoBand","Kaneko","Q_selected_band_power"),
+         ("KanekoEntropy","Kaneko","Q_temporal_entropy"),("Rossler","Rossler","Q_reference")]
+
+
+def analyze(data=DATA, out=OUT, cohorts=COHORTS, provenance=True):
+    """Fit mean/distribution PC1 per cohort on its development rows; `data` holds extension-scores.csv and -summaries.npz."""
+    frame=pd.read_csv(data/"extension-scores.csv")
+    with np.load(data/"extension-summaries.npz") as a:
         np.testing.assert_array_equal(a["row_id"],frame.row_id)
         all_marg=a["marginal"]
-    cohorts=[("StuartLandau","SL","Q_R_mean"),("StuartLandauFine","SLfine","Q_R_mean"),
-             ("MillerHuse","MH","Q_spin_abs"),("KanekoBand","Kaneko","Q_selected_band_power"),
-             ("KanekoEntropy","Kaneko","Q_temporal_entropy"),("Rossler","Rossler","Q_reference")]
+    out.mkdir(parents=True,exist_ok=True)
     metrics, diagnostics={},{}
     for name,group,target in cohorts:
         mask=(frame.system==group) | ((frame.system=="SL") & (frame.role=="development") if group=="SLfine" else False)
@@ -172,7 +176,7 @@ def analyze():
             w=vt[0];w=w*(1 if w[np.argmax(abs(w))]>=0 else -1)
             replay=(x-center)@w;scale=replay[dev].std();replay/=scale
             np.testing.assert_allclose(scores,replay,atol=3e-10)
-            np.savez_compressed(OUT/f"extension-{name}-{method}-model.npz",keep=transform.keep_indices,
+            np.savez_compressed(out/f"extension-{name}-{method}-model.npz",keep=transform.keep_indices,
                 impute=transform.impute_values,location=transform.location,scale=transform.scale,
                 component=w,center=center,score_scale=scale)
             info["independent_replay_max_error"]=float(abs(replay-scores).max())
@@ -199,11 +203,13 @@ def analyze():
         diag['display_signs_from_development_Q']={method:(-1 if spearmanr(f.loc[dev,method],f.loc[dev,'Q_reference']).statistic<0 else 1) for method in ['q','mean_PC1','distribution_PC1']}
         diag.update(development_rows=int(dev.sum()),evaluation_rows=int(evaluation.sum()),common_eligible_evaluation_rows=len(h),target=target,
                     original_q_all_evaluation_abs_rho=float(abs(spearmanr(f.loc[evaluation,'q'],f.loc[evaluation,'Q_reference']).statistic)))
-        f.to_csv(OUT/f"inference-{name}.csv",index=False)
+        f.to_csv(out/f"inference-{name}.csv",index=False)
         metrics[name]=result;diagnostics[name]=diag
         print(name,'development',int(dev.sum()),'held',len(h),[(r['method'],round(r['abs_rho'],3)) for r in result[:3]],flush=True)
-    pd.DataFrame([r for result in metrics.values() for r in result]).to_csv(OUT/'inference-extra-metrics.csv',index=False)
-    write_json(OUT/'inference-extra-provenance.json',finite_json(dict(diagnostics=diagnostics,
+    pd.DataFrame([r for result in metrics.values() for r in result]).to_csv(out/'inference-extra-metrics.csv',index=False)
+    if not provenance:
+        return
+    write_json(out/'inference-extra-provenance.json',finite_json(dict(diagnostics=diagnostics,
         status='retrospective extension to existing lean benchmark systems; no new p90',
         protocol_sha256=sha(ROOT/'research/inference/benchmarks/configs/analysis/spi-baseline-lean-extension-260921.yaml'),
         code_sha256=sha(Path(__file__)),summaries_sha256=sha(DATA/'extension-summaries.npz'),

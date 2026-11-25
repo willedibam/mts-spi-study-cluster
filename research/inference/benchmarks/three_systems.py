@@ -52,13 +52,16 @@ def check(condition, message):
         raise ValueError(message)
 
 
-def load_cml():
+def load_cml(frozen=None, confirm=None, baseline=None):
+    """Defaults: the r7 pilot model, confirmation analysis and baseline table; pass the 261126 re-run's instead."""
     pilot=ROOT/'data/order-parameter-inference/cml2d/cml2d_period_doubling_260911'
-    confirm=ROOT/'data/order-parameter-inference/cml2d/cml2d_confirmation_260911/primary-analysis'
+    frozen=frozen or pilot/'primary-analysis'
+    confirm=confirm or ROOT/'data/order-parameter-inference/cml2d/cml2d_confirmation_260911/primary-analysis'
+    baseline=baseline or ROOT/'results/baseline-comparison_260921/inference-CML2D.csv'
     report=json.loads((confirm/'confirmation-report.json').read_text())
     check(report['gate']['passes'], 'CML confirmation gate failed')
     for filename,digest in report['frozen_hashes'].items():
-        check(sha(pilot/'primary-analysis'/filename)==digest, f'CML frozen {filename} changed')
+        check(sha(frozen/filename)==digest, f'CML frozen {filename} changed')
     frame=pd.read_csv(confirm/'scores.csv')
     check(len(frame)==544 and frame.eligible.all() and frame.seed.nunique()==32, 'CML scope changed')
     with np.load(confirm/'model.npz') as m, np.load(confirm/'features.npz') as f:
@@ -79,7 +82,7 @@ def load_cml():
                 np.testing.assert_array_equal(x,a['observed'][:1000,0,:32].T)
                 examples.append(dict(control=r,x=x,mean=a['global_mean'][:100],field=a['final_state'],
                     sensors=a['sensor_indices'][0,:32],row_id=row['row_id']))
-    baseline=pd.read_csv(ROOT/'results/baseline-comparison_260921/inference-CML2D.csv').set_index('row_id').loc[frame.row_id]
+    baseline=pd.read_csv(baseline).set_index('row_id').loc[frame.row_id]
     np.testing.assert_allclose(baseline.q,frame.q,atol=1e-7)
     np.testing.assert_allclose(baseline.Q_reference,frame.Q_reference,atol=1e-7)
     check(baseline.common_eligible.all(), 'CML baseline eligibility changed')

@@ -57,10 +57,10 @@ def _load_artifact(path: Path) -> dict[str, np.ndarray]:
         raise ValueError("expected unified_ordered_v3 Pearson features")
     if subset:
         raise ValueError(f"an SPI subset was applied: {subset!r}")
-    if spi_order.size != 289 or values.shape[1] != 289 * 288 // 2:
+    if values.shape[1] != spi_order.size * (spi_order.size - 1) // 2:
         raise ValueError(
-            f"expected 289 SPIs and 41,616 pairs, got {spi_order.size} and "
-            f"{values.shape[1]}"
+            f"expected one coordinate per SPI pair, got {spi_order.size} SPIs and "
+            f"{values.shape[1]} coordinates"
         )
     return payload
 

@@ -282,8 +282,8 @@ def toy_analysis():
     np.savez_compressed(OUT / "intuition-matrices.npz", **matrices)
 
 
-def load_corpus(corpus, analysis, feature_path):
-    """Join by recording identity and validate cached MPI provenance."""
+def load_corpus(corpus, analysis, feature_path, mpi_root=None):
+    """Join by recording identity and validate cached MPI provenance (MPIs under `mpi_root`, default corpus/mpi)."""
     frame = pd.read_csv(analysis / "scores.csv")
     identity = json.loads((analysis / "eligibility.json").read_text())
     sources = {s["row_id"]: s for s in identity["sources"]}
@@ -292,7 +292,7 @@ def load_corpus(corpus, analysis, feature_path):
         index = pd.Series(np.arange(len(a["row_id"])), index=a["row_id"].astype(str))
         z = a["z"][index.loc[frame.row_id].to_numpy()]
     folders = {}
-    for p in (corpus / "mpi").rglob("meta.json"):
+    for p in (mpi_root or corpus / "mpi").rglob("meta.json"):
         m = json.loads(p.read_text())
         assert m["status"] == "complete"
         folders[m["dataset_name"]] = p.parent
@@ -335,15 +335,18 @@ def fit_coordinate(matrix, dev, groups):
         minimum_leave_seed_loading_cosine=min(cosines), features=matrix.shape[1])
 
 
-def inference_analysis():
+def inference_analysis(specifications=None, out=OUT, data=DATA, config=CONFIG):
+    """`specifications`: system -> [(corpus, analysis, features[, mpi_root])], the development cohort first."""
     kur = ROOT / "data/order_parameter/kuramoto_full_observation_260916/primary"
     pilot = ROOT / "data/order_parameter/cml2d_period_doubling_260911"
     confirm = ROOT / "data/order_parameter/cml2d_confirmation_260911"
-    specifications = {
+    default = specifications is None
+    specifications = specifications or {
         "Kuramoto": [(kur, kur / "analysis", kur / "analysis/features.npz")],
         "CML2D": [(pilot / "primary", pilot / "primary-analysis", pilot / "primary-replay/features.npz"),
                   (confirm / "primary", confirm / "primary-analysis", confirm / "primary-analysis/features.npz")],
     }
+    out.mkdir(parents=True, exist_ok=True); data.mkdir(parents=True, exist_ok=True)
     all_metrics, all_diagnostics, all_sources = [], {}, {}
     for system, parts in specifications.items():
         loaded = [load_corpus(*part) for part in parts]
@@ -408,15 +411,16 @@ def inference_analysis():
         diagnostics["development_rows"] = int(dev.sum())
         diagnostics["common_eligible_evaluation_rows"] = int(eligible.sum())
         diagnostics["original_frozen_model_sha256"] = sha(frozen_model)
-        frame.to_csv(OUT / f"inference-{system}.csv", index=False)
-        np.savez_compressed(DATA / f"inference-{system}-summaries.npz", marginal=marginal,
+        frame.to_csv(out / f"inference-{system}.csv", index=False)
+        np.savez_compressed(data / f"inference-{system}-summaries.npz", marginal=marginal,
             row_id=frame.row_id.to_numpy(dtype=str), spi_order=np.array(loaded[0][3]))
         all_diagnostics[system] = diagnostics
         print(f"inference {system}: {int(dev.sum())} development / {int(eligible.sum())} evaluation", flush=True)
-    pd.DataFrame(all_metrics).to_csv(OUT / "inference-metrics.csv", index=False)
-    write_json(OUT / "inference-provenance.json", finite_json(dict(diagnostics=all_diagnostics, sources=all_sources,
-        config_sha256=sha(CONFIG), status="exploratory retrospective baseline comparison; original q reproduced")))
-    transition_intervals()
+    pd.DataFrame(all_metrics).to_csv(out / "inference-metrics.csv", index=False)
+    write_json(out / "inference-provenance.json", finite_json(dict(diagnostics=all_diagnostics, sources=all_sources,
+        config_sha256=sha(config), status="exploratory retrospective baseline comparison; original q reproduced")))
+    if default:
+        transition_intervals()
 
 
 def transition_intervals():

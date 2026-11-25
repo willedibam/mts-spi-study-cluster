@@ -31,7 +31,6 @@ def assemble(corpus, mpi_root):
         assert meta['M']==row['M'] and meta['T']==row['T']
         assert meta['source']['archive_sha256']==manifest['archive_sha256']
         current=[s['name'] for s in meta['pyspi']['spis']]
-        assert len(current)==289
         if order is None: order=current
         assert order==current
         with np.load(folder/'spi_mpis.npz',allow_pickle=False) as a:
