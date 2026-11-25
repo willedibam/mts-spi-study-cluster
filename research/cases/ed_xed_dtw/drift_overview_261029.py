@@ -35,7 +35,7 @@ from research.cases.composite_style import (AMBER, HAIR, INK, MUTED, ROSE, SAGE,
 from research.cases.ed_xed_dtw.drift_blocks_261029 import LEVELS, PAIR_INK, make, relation, stats
 from research.cases.r_rho_mi.form_figure_261028 import boxed, channel_carpet
 
-OUT = ROOT / "results/cases/drift-blocks-261029"
+OUT = ROOT / "results/cases/drift-blocks-261126"         # pyspi 3.0.0rc2 rerun; 261029 kept for comparison
 REP, M, B = 0, 15, 5
 W, H = 7.2, 6.18
 SPI_HUES = {"grey": ("#D2D2D2", "#9A9A9A", "#575757"),   # each a ramp, light to dark in order of tolerance;

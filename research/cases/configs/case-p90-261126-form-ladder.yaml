@@ -1,0 +1,14 @@
+# Full-catalogue (pyspi's bundled benchmarked_p90) rerun of the drift and form cases (2026-11-26).
+# Recordings: 80 x (12, 2000) (M, T); built by `python -m research.cases.case_p90_261126 build`.
+name: case-p90-261126-form-ladder
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/mts-spi-study/cases/p90-261126/data/form-ladder.npz
+  sha256: d6709675b4a32570a39505fa177a02ffc9d72b856c3fc09008c8cc078d932436
+  axis_order:
+  - process
+  - observation
+base_output_dir: /g/data/ql44/we2614/mts-spi-study/cases/p90-261126/mpis
+pyspi_config: benchmarked_p90
+normalise: false
+random_seed: 20261126

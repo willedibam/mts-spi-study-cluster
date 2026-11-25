@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from mtsspi.provenance import pyspi_commit, pyspi_version
 from research.cases.composite_style import HAIR, INK, MUTED, axes_in, carpet, save, seq, style, z_label
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -73,7 +74,8 @@ def run(case: Case, out: Path, workers: int = 8):
     summary = {"levels": {k: {kk: (vv if np.isscalar(vv) else list(vv)) for kk, vv in v.items()}
                           for k, v in case.levels.items()},
                "reps": case.reps, "z_mean": frame.groupby("level", sort=False)[cols].mean().round(4).to_dict("index"),
-               "z_sd": frame.groupby("level", sort=False)[cols].std().round(4).to_dict("index"), **case.extra}
+               "z_sd": frame.groupby("level", sort=False)[cols].std().round(4).to_dict("index"),
+               "pyspi": {**pyspi_version(), "commit": pyspi_commit()}, **case.extra}
     (out / "summary.json").write_text(json.dumps(summary, indent=1, default=float) + "\n")
     return frame, examples
 

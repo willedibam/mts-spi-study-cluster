@@ -1,0 +1,14 @@
+# Full-catalogue (pyspi's bundled benchmarked_p90) rerun of the drift and form cases (2026-11-26).
+# Recordings: 80 x (15, 1000) (M, T); built by `python -m research.cases.case_p90_261126 build`.
+name: case-p90-261126-drift-blocks
+source:
+  format: named-npz-v1
+  archive: /g/data/ql44/we2614/mts-spi-study/cases/p90-261126/data/drift-blocks.npz
+  sha256: 2689d03e17a10688cd824189fe63a07ebeff77ec7f53dc191120193d641cadde
+  axis_order:
+  - process
+  - observation
+base_output_dir: /g/data/ql44/we2614/mts-spi-study/cases/p90-261126/mpis
+pyspi_config: benchmarked_p90
+normalise: false
+random_seed: 20261126
