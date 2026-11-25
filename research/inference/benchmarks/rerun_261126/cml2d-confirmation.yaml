@@ -1,0 +1,14 @@
+# Re-run on pyspi 3.0.0rc2 (bundled benchmarked_p90, 207 SPIs) of the same recordings and estimator seed.
+# Input: copy of data/order-parameter-inference/cml2d/cml2d_confirmation_260911/primary/observations.npz (544 recordings).
+name: cml2d-confirmation-primary-261126
+source:
+  format: named-npz-v1
+  archive: $MTS_GDATA/order-parameter-inference/cml2d/confirmation-primary-p90-261126/observations.npz
+  sha256: 3d3010d8503cee0f5464f8401b02e56575d590b03d6f9e85bc1d202e50435539
+  axis_order:
+  - process
+  - observation
+base_output_dir: $MTS_GDATA/order-parameter-inference/cml2d/confirmation-primary-p90-261126/mpis
+pyspi_config: benchmarked_p90
+normalise: false
+random_seed: 260911

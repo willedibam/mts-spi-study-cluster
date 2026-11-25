@@ -1,0 +1,14 @@
+# Re-run on pyspi 3.0.0rc2 (bundled benchmarked_p90, 207 SPIs) of the same recordings and estimator seed.
+# Input: copy of results/hardware-pilot-261012/full-p90-r9-261014/observations.npz (45 recordings, M=28, T=5000).
+name: hardware-full-p90-t5000-261126
+source:
+  format: named-npz-v1
+  archive: $MTS_GDATA/representation/empirical/hardware-pilot-261012/full-p90-261126/observations.npz
+  sha256: 65dd370a6597d6fe75601f48810dce381ec426bba77944e2bb9f26e01b14617c
+  axis_order:
+  - process
+  - observation
+base_output_dir: $MTS_GDATA/representation/empirical/hardware-pilot-261012/full-p90-261126/mpis
+pyspi_config: benchmarked_p90
+normalise: false
+random_seed: 261012

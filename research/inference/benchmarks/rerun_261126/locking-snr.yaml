@@ -1,0 +1,14 @@
+# Re-run on pyspi 3.0.0rc2 (bundled benchmarked_p90, 207 SPIs) of the same recordings and estimator seed.
+# Input: copy of data/order-parameter-inference/cross-frequency-locking-snr-261006/observations.npz (672 recordings, M=24, T=1000).
+name: cross-frequency-locking-snr-261006
+source:
+  format: named-npz-v1
+  archive: $MTS_GDATA/order-parameter-inference/cross-frequency-locking/snr-p90-261126/observations.npz
+  sha256: 43ee5f68907fafe6c83539785aa764b677bbe15b09d31b7e474bc76e24c08866
+  axis_order:
+  - process
+  - observation
+base_output_dir: $MTS_GDATA/order-parameter-inference/cross-frequency-locking/snr-p90-261126/mpis
+pyspi_config: benchmarked_p90
+normalise: false
+random_seed: 261092
