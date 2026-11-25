@@ -94,5 +94,7 @@ Parts are on the net readout's own eyes-open SD scale, so real − surrogate = n
   - Sign of k22 (verified on synthetic pairs with normal-scored marginals): k22 = (ka + kb − 2 cum(a,a,b,b)) / (4(1 − r²)). It is negative under a shared gain or a coupling-strength mixture and positive when the two electrodes' amplitudes alternate. Positive k22 is not co-modulation.
 - **Mechanism, local check on 4 figure windows** (details in [preregs/kens-prereg.md](preregs/kens-prereg.md)):
   - The surrogate's window-mean k04 matches the random-phase expectation computed from the window's own Fourier coefficients, so candidate (a) is supported in this form.
-  - Part of single-draw net k04 is a marginal leak: the spectrum-final IAAFT leaves platykurtic marginals, which enter k04 as (ka + kb) / (4(1 − r)²).
-  - The ensemble run (`kens.py`, Gadi job 185197089) tests both on all windows.
+  - Part of single-draw net k04 is a marginal leak. The spectrum-final IAAFT leaves platykurtic marginals, which enter k04 as (ka + kb) / (4(1 − r)²).
+  - Against the same draws normal-scored (marginals matched), net k04 falls in the 3 drug windows: +.179 → +.131, +.628 → +.604 and +.011 → −.027.
+  - Net k22 falls more: +.033 → −.017 and +.089 → +.051.
+  - The ensemble run tests both on all windows: `kens.py` at 10e6b9e, Gadi job 185197676, with B = 100 draws in three null arms.
