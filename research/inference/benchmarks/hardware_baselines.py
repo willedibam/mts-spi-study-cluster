@@ -62,7 +62,7 @@ def compute(run=RUN):
                 raise ValueError(f"MPI archive changed: {row['name']}")
             with np.load(path, allow_pickle=False) as archive:
                 order = order or list(archive.files)
-                if list(archive.files) != order or len(order) != 289:
+                if list(archive.files) != order:
                     raise ValueError('SPI catalogue differs between records')
                 means.append(summarize({k: archive[k] for k in order}, order)[:, 0])
             carrier = phase_properties(x, (90, 140))

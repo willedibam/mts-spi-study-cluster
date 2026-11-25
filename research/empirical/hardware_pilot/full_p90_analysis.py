@@ -39,20 +39,21 @@ class FullP90:
             return {name: archive[name] for name in names}
 
 
-def load_run(root, *, expected_spis=289, min_coverage=.90):
+def load_run(root, *, expected_spis=289, computation="3.0.0.r9", workers=4, min_coverage=.90):
     """Validate the saved execution identity, unchanged config and complete census.
 
     Cluster paths are relocated in memory; the frozen YAML bytes remain unchanged.
     Undefined SPIs are retained as missing features, never repaired or removed here.
     The production coverage gate matches full_p90_run; tiny fixtures may override it.
+    Defaults are the r9 run; a re-run passes its computation, worker count and SPI count (None skips it).
     """
     root = Path(root).resolve()
     identity = json.loads((root / "execution-identity.json").read_text())
     required = {"corpus_config_sha256", "pyspi_config_sha256", "code_sha256", "pyspi_version"}
     code_files = {"run_corpus.py", "corpus.py", "generated_corpus.py", "compute.py"}
     if (not required.issubset(identity) or set(identity["code_sha256"]) != code_files
-            or identity["pyspi_version"]["computation"] != "3.0.0.r9"):
-        raise ValueError("A frozen, complete r9 execution identity is required")
+            or identity["pyspi_version"]["computation"] != computation):
+        raise ValueError(f"A frozen, complete {computation} execution identity is required")
     config = ArchiveCorpus.from_file(root / "external.yaml")
     config = replace(config, archive=root / "observations.npz", base_output_dir=root / "mpis")
     manifest = json.loads((root / "manifest.json").read_text())
@@ -75,8 +76,8 @@ def load_run(root, *, expected_spis=289, min_coverage=.90):
                 raise ValueError(f"{entry.name}: {error}")
             directory = entry.output_dir(config)
             meta = json.loads((directory / "meta.json").read_text())
-            if meta.get("job", {}).get("n_jobs") != 4:
-                raise ValueError(f"Unexpected worker count for {entry.name}; expected n_jobs=4")
+            if meta.get("job", {}).get("n_jobs") != workers:
+                raise ValueError(f"Unexpected worker count for {entry.name}; expected n_jobs={workers}")
             member_hash = array_sha256(observations[entry.name])
             if member_hash != meta["source"]["member_sha256"] or member_hash != row["member_sha256"]:
                 raise ValueError(f"Source member hash mismatch: {entry.name}")
@@ -85,7 +86,7 @@ def load_run(root, *, expected_spis=289, min_coverage=.90):
             current_catalogue = meta["pyspi"]["spis"]
             revision = revision or meta["experiment"]["git_commit"]
             catalogue = current_catalogue if catalogue is None else catalogue
-            if (catalogue != current_catalogue or len(catalogue) != expected_spis
+            if (catalogue != current_catalogue or (expected_spis is not None and len(catalogue) != expected_spis)
                     or meta["experiment"]["git_commit"] != revision or meta["experiment"]["git_dirty"]):
                 raise ValueError(f"Mixed catalogue/source revision or dirty runner: {entry.name}")
             names = [item["name"] for item in catalogue]
@@ -249,14 +250,15 @@ def frozen_benchmark(bank):
     return pd.DataFrame(rows)
 
 
-def analyse(root, *, exploratory=False):
+def analyse(root, *, exploratory=False, **load):
     """Write compact numerical evidence, return objects for optional notebook plots.
 
     Primary ER fit and correlation-filtered refit use ER availability only. A common-
     complete ER fit is added only if primary projection loses SW recordings. Optional
     SW/pooled fits are descriptive sampling-design sensitivities, not held-out tests.
+    `load` goes to load_run. The frozen 2/20 ms benchmark runs only when both lag SPIs are in the catalogue.
     """
-    bank = load_run(root)
+    bank = load_run(root, **load)
     er = np.array([row["topology"] == "ER" for row in bank.rows])
     no_double_corr = np.array([not (correlation_endpoint(s.spi_a) and correlation_endpoint(s.spi_b)) for s in bank.schema])
     models, unavailable = {"er": fit_pca(bank.z, er)}, {}
@@ -289,8 +291,11 @@ def analyse(root, *, exploratory=False):
                                top20_double_correlation=int(table.head(20).both_correlation.sum()))
     scores_table.to_csv(output / "scores.csv", index=False)
     np.savez_compressed(output / "features.npz", **arrays)
-    benchmark = frozen_benchmark(bank)
-    benchmark.to_csv(output / "frozen-lag-benchmark.csv", index=False)
+    lag_benchmark = set(LAG_PAIR) <= set(spi_order)
+    benchmark = frozen_benchmark(bank) if lag_benchmark else pd.DataFrame(
+        columns=["name", "archive_profile_max_error", "archive_parity_pass", "reconstruction_target_met"])
+    if lag_benchmark:
+        benchmark.to_csv(output / "frozen-lag-benchmark.csv", index=False)
     primary = models["er"].project(bank.z)[:, 0]
     filtered = models["er_no_double_correlation"].project(bank.z)[:, 0] if "er_no_double_correlation" in models else np.full(len(er), np.nan)
     comparisons = {}
@@ -305,7 +310,7 @@ def analyse(root, *, exploratory=False):
                   models=summaries, unavailable_sensitivities=unavailable,
                   er_leave_record_loading_cosines=loading_stability(bank.z, models["er"]).tolist(),
                   correlation_exclusion_sensitivity=comparisons, sources=bank.sources,
-                  benchmark_archive_profile_max_error=float(parity.max()) if np.isfinite(parity).all() else None,
+                  benchmark_archive_profile_max_error=float(parity.max()) if len(parity) and np.isfinite(parity).all() else None,
                   benchmark_archive_parity_failures=benchmark.loc[~benchmark.archive_parity_pass, "name"].tolist(),
                   benchmark_reconstruction_passes=int(benchmark.reconstruction_target_met.sum()),
                   benchmark_reconstruction_failures=benchmark.loc[~benchmark.reconstruction_target_met, "name"].tolist(),
