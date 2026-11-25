@@ -1,0 +1,38 @@
+rb10: 1260 windows, T = 1000, shift False
+reproduction gate: max |auto k4 z − stored zns| = 2.53e-07 -> PASS
+
+w0 k4: animal means [-0.0202  0.0012 -0.0047 -0.028 ]; 3/4 < 0; t(3) = -1.92, p = 0.0755; pooled drug Δz -0.0109 (-4.9 own EO SD; EO SD 0.0022); R 0.82; paired vs auto k4 t(3) = +0.05
+  KT -0.0207 (4/4 down) | KTMD -0.0069 (9/11 down) | MD -0.0075 (4/4 down) | PF -0.0152 (4/4 down) | SLP -0.0023 (7/7 down) | awake z real 0.962, K<0 drug real/surr 0.00/0.02
+
+w0 k4 pool: animal means [-0.0202  0.0012 -0.0047 -0.028 ]; 3/4 < 0; t(3) = -1.92, p = 0.0755; pooled drug Δz -0.0109 (-4.9 own EO SD; EO SD 0.0022); R 0.82; paired vs auto k4 t(3) = +0.05
+  KT -0.0207 (4/4 down) | KTMD -0.0069 (9/11 down) | MD -0.0075 (4/4 down) | PF -0.0152 (4/4 down) | SLP -0.0023 (7/7 down) | awake z real 0.962, K<0 drug real/surr 0.00/0.02
+
+w0 k10: animal means [-0.0171  0.0004 -0.004  -0.0252]; 3/4 < 0; t(3) = -1.94, p = 0.0737; pooled drug Δz -0.0096 (-4.6 own EO SD; EO SD 0.0021); R 0.72; paired vs auto k4 t(3) = +0.37
+  KT -0.0184 (4/4 down) | KTMD -0.0070 (9/11 down) | MD -0.0069 (4/4 down) | PF -0.0107 (4/4 down) | SLP -0.0018 (7/7 down) | awake z real 0.982, K<0 drug real/surr 0.00/0.01
+
+auto k4: animal means [-0.0189 -0.0087 -0.0115 -0.0137]; 4/4 < 0; t(3) = -6.11, p = 0.0044; pooled drug Δz -0.0133 (-6.7 own EO SD; EO SD 0.0020); R 1.00; paired vs auto k4 t(3) = +nan | w median awake/drug 5/17, at cap 0.000/0.000
+  KT -0.0159 (4/4 down) | KTMD -0.0155 (11/11 down) | MD -0.0062 (4/4 down) | PF -0.0117 (4/4 down) | SLP -0.0010 (7/7 down) | awake z real 0.966, K<0 drug real/surr 0.33/0.28
+
+auto k4 pool: animal means [-0.0207 -0.009  -0.0118 -0.0145]; 4/4 < 0; t(3) = -5.59, p = 0.0056; pooled drug Δz -0.0142 (-6.6 own EO SD; EO SD 0.0021); R 1.07; paired vs auto k4 t(3) = -2.28 | w median awake/drug 5/17, at cap 0.000/0.000
+  KT -0.0162 (4/4 down) | KTMD -0.0163 (11/11 down) | MD -0.0063 (4/4 down) | PF -0.0141 (4/4 down) | SLP -0.0010 (7/7 down) | awake z real 0.965, K<0 drug real/surr 0.53/0.50
+
+auto k10: animal means [-0.0181 -0.0083 -0.0109 -0.0122]; 4/4 < 0; t(3) = -5.98, p = 0.0047; pooled drug Δz -0.0126 (-7.5 own EO SD; EO SD 0.0017); R 0.95; paired vs auto k4 t(3) = +3.56 | w median awake/drug 5/17, at cap 0.000/0.000
+  KT -0.0144 (4/4 down) | KTMD -0.0154 (11/11 down) | MD -0.0059 (4/4 down) | PF -0.0096 (4/4 down) | SLP -0.0009 (7/7 down) | awake z real 0.984, K<0 drug real/surr 0.17/0.14
+
+2te k4: animal means [-0.0204 -0.0092 -0.0117 -0.0135]; 4/4 < 0; t(3) = -5.70, p = 0.0054; pooled drug Δz -0.0140 (-6.2 own EO SD; EO SD 0.0022); R 1.05; paired vs auto k4 t(3) = -1.43 | w median awake/drug 8/24, at cap 0.000/0.000
+  KT -0.0162 (4/4 down) | KTMD -0.0161 (11/11 down) | MD -0.0062 (4/4 down) | PF -0.0134 (4/4 down) | SLP -0.0008 (6/7 down) | awake z real 0.964, K<0 drug real/surr 0.25/0.18
+
+2te k4 pool: animal means [-0.0207 -0.0092 -0.0114 -0.0155]; 4/4 < 0; t(3) = -5.63, p = 0.0056; pooled drug Δz -0.0143 (-6.7 own EO SD; EO SD 0.0022); R 1.08; paired vs auto k4 t(3) = -2.11 | w median awake/drug 8/24, at cap 0.000/0.000
+  KT -0.0162 (4/4 down) | KTMD -0.0165 (11/11 down) | MD -0.0066 (4/4 down) | PF -0.0142 (4/4 down) | SLP -0.0009 (7/7 down) | awake z real 0.965, K<0 drug real/surr 0.53/0.51
+
+2te k10: animal means [-0.0197 -0.0089 -0.0116 -0.0119]; 4/4 < 0; t(3) = -5.57, p = 0.0057; pooled drug Δz -0.0134 (-6.4 own EO SD; EO SD 0.0021); R 1.01; paired vs auto k4 t(3) = +0.34 | w median awake/drug 8/24, at cap 0.000/0.000
+  KT -0.0145 (4/4 down) | KTMD -0.0167 (11/11 down) | MD -0.0056 (4/4 down) | PF -0.0110 (4/4 down) | SLP -0.0007 (6/7 down) | awake z real 0.982, K<0 drug real/surr 0.09/0.06
+
+4auto k4: animal means [-0.0129 -0.0071 -0.0088 -0.0095]; 4/4 < 0; t(3) = -7.89, p = 0.0021; pooled drug Δz -0.0096 (-4.0 own EO SD; EO SD 0.0024); R 0.72; paired vs auto k4 t(3) = +3.80 | w median awake/drug 20/68, at cap 0.000/0.006
+  KT -0.0159 (4/4 down) | KTMD -0.0103 (10/11 down) | MD -0.0055 (2/4 down) | PF -0.0055 (4/4 down) | SLP -0.0017 (6/7 down) | awake z real 0.959, K<0 drug real/surr 0.03/0.01
+
+4auto k4 pool: animal means [-0.023  -0.0108 -0.0116 -0.0164]; 4/4 < 0; t(3) = -5.53, p = 0.0058; pooled drug Δz -0.0159 (-6.8 own EO SD; EO SD 0.0023); R 1.19; paired vs auto k4 t(3) = -2.73 | w median awake/drug 20/68, at cap 0.000/0.006
+  KT -0.0166 (4/4 down) | KTMD -0.0182 (11/11 down) | MD -0.0073 (4/4 down) | PF -0.0172 (4/4 down) | SLP -0.0009 (7/7 down) | awake z real 0.965, K<0 drug real/surr 0.55/0.52
+
+4auto k10: animal means [-0.0104 -0.0045 -0.0057 -0.0069]; 4/4 < 0; t(3) = -5.44, p = 0.0061; pooled drug Δz -0.0070 (-2.7 own EO SD; EO SD 0.0026); R 0.53; paired vs auto k4 t(3) = +6.93 | w median awake/drug 20/68, at cap 0.000/0.006
+  KT -0.0143 (4/4 down) | KTMD -0.0067 (9/11 down) | MD -0.0056 (3/4 down) | PF -0.0022 (2/4 down) | SLP -0.0016 (5/7 down) | awake z real 0.975, K<0 drug real/surr 0.00/0.00

@@ -1,0 +1,76 @@
+100Hz  ns  EO SD 0.0020 (EO mean +0.0003) | KT -0.0159 (-8.0 SD, 4/4) | KTMD -0.0155 (-7.8 SD, 11/11) | MD -0.0062 (-3.1 SD, 4/4) | PF -0.0117 (-5.9 SD, 4/4) | SLP -0.0010 (-0.5 SD, 7/7) | animals Chibi -0.0189, George -0.0087, Kin2 -0.0115, Su -0.0137; t(3) -6.11, p 0.0044; pooled -0.0132 = -6.7 SD; EO per-animal +0.0005
+100Hz  raw EO SD 0.0015 (EO mean +0.0002) | KT -0.0158 (-10.3 SD, 4/4) | KTMD -0.0166 (-10.8 SD, 11/11) | MD -0.0048 (-3.1 SD, 4/4) | PF -0.0115 (-7.5 SD, 4/4) | SLP -0.0019 (-1.2 SD, 6/7) | animals Chibi -0.0198, George -0.0082, Kin2 -0.0110, Su -0.0150; t(3) -5.37, p 0.0063; pooled -0.0135 = -8.8 SD; EO per-animal +0.0004
+100Hz  T 1000 n_win 1260 | ns real/surr awake_ec z 0.9660/0.9674; drug z 0.9453/0.9602; sleep z 0.9742/0.9765
+100Hz  K<0 (ns real/surr) awake_ec 0.168/0.170; awake_eo 0.177/0.177; drug 0.332/0.276; sleep 0.181/0.177
+LP2    ns  EO SD 0.0052 (EO mean -0.0002) | KT -0.0045 (-0.9 SD, 3/4) | KTMD -0.0061 (-1.2 SD, 7/11) | MD +0.0057 (+1.1 SD, 0/4) | PF +0.0009 (+0.2 SD, 3/4) | SLP -0.0008 (-0.2 SD, 3/7) | animals Chibi +0.0028, George -0.0017, Kin2 -0.0024, Su -0.0192; t(3) -1.06, p 0.1829; pooled -0.0051 = -1.0 SD; EO per-animal -0.0002
+LP2    raw EO SD 0.0071 (EO mean +0.0008) | KT -0.0059 (-0.8 SD, 4/4) | KTMD +0.0007 (+0.1 SD, 7/11) | MD +0.0080 (+1.1 SD, 0/4) | PF +0.0002 (+0.0 SD, 3/4) | SLP -0.0003 (-0.0 SD, 5/7) | animals Chibi +0.0077, George -0.0028, Kin2 -0.0024, Su -0.0042; t(3) -0.16, p 0.4432; pooled -0.0004 = -0.1 SD; EO per-animal +0.0002
+LP2    T 1000 n_win 1260 | ns real/surr awake_ec z 0.8951/0.9068; drug z 0.8942/0.9086; sleep z 0.9110/0.9227
+LP2    K<0 (ns real/surr) awake_ec 0.471/0.454; awake_eo 0.588/0.561; drug 0.510/0.513; sleep 0.527/0.504
+LP2    Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.002/0.002, 35; drug 0.004/0.002, 38; sleep 0.002/0.001, 35
+LP2    window residual r with 100 Hz: 0.19
+L10    ns  EO SD 0.0033 (EO mean +0.0007) | KT -0.0140 (-4.3 SD, 4/4) | KTMD -0.0086 (-2.6 SD, 10/11) | MD -0.0005 (-0.2 SD, 1/4) | PF -0.0061 (-1.9 SD, 3/4) | SLP -0.0022 (-0.7 SD, 7/7) | animals Chibi -0.0083, George -0.0045, Kin2 -0.0073, Su -0.0163; t(3) -3.59, p 0.0185; pooled -0.0091 = -2.8 SD; EO per-animal +0.0005
+L10    raw EO SD 0.0044 (EO mean +0.0007) | KT -0.0120 (-2.7 SD, 4/4) | KTMD -0.0033 (-0.7 SD, 9/11) | MD +0.0019 (+0.4 SD, 1/4) | PF -0.0063 (-1.4 SD, 3/4) | SLP -0.0012 (-0.3 SD, 4/7) | animals Chibi -0.0014, George -0.0048, Kin2 -0.0049, Su -0.0111; t(3) -2.75, p 0.0355; pooled -0.0055 = -1.2 SD; EO per-animal +0.0005
+L10    T 1000 n_win 1260 | ns real/surr awake_ec z 0.9301/0.9383; drug z 0.9177/0.9338; sleep z 0.9435/0.9531
+L10    K<0 (ns real/surr) awake_ec 0.444/0.422; awake_eo 0.511/0.481; drug 0.514/0.509; sleep 0.501/0.466
+L10    Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 18; drug 0.001/0.000, 24; sleep 0.000/0.000, 17
+L10    window residual r with 100 Hz: 0.46
+L20    ns  EO SD 0.0025 (EO mean +0.0005) | KT -0.0168 (-6.8 SD, 4/4) | KTMD -0.0130 (-5.3 SD, 11/11) | MD -0.0038 (-1.5 SD, 4/4) | PF -0.0087 (-3.5 SD, 4/4) | SLP -0.0011 (-0.4 SD, 7/7) | animals Chibi -0.0168, George -0.0067, Kin2 -0.0068, Su -0.0148; t(3) -4.30, p 0.0116; pooled -0.0113 = -4.6 SD; EO per-animal +0.0012
+L20    raw EO SD 0.0042 (EO mean +0.0014) | KT -0.0173 (-4.1 SD, 4/4) | KTMD -0.0110 (-2.6 SD, 11/11) | MD -0.0015 (-0.4 SD, 3/4) | PF -0.0087 (-2.1 SD, 3/4) | SLP -0.0004 (-0.1 SD, 4/7) | animals Chibi -0.0141, George -0.0070, Kin2 -0.0059, Su -0.0127; t(3) -4.86, p 0.0083; pooled -0.0099 = -2.4 SD; EO per-animal +0.0014
+L20    T 1000 n_win 1260 | ns real/surr awake_ec z 0.9551/0.9601; drug z 0.9309/0.9473; sleep z 0.9638/0.9698
+L20    K<0 (ns real/surr) awake_ec 0.319/0.304; awake_eo 0.357/0.332; drug 0.465/0.439; sleep 0.370/0.336
+L20    Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 10; drug 0.000/0.000, 20; sleep 0.000/0.000, 10
+L20    window residual r with 100 Hz: 0.68
+LP15   ns  EO SD 0.0020 (EO mean -0.0001) | KT -0.0177 (-8.7 SD, 4/4) | KTMD -0.0158 (-7.8 SD, 11/11) | MD -0.0049 (-2.4 SD, 4/4) | PF -0.0102 (-5.0 SD, 4/4) | SLP -0.0010 (-0.5 SD, 6/7) | animals Chibi -0.0192, George -0.0089, Kin2 -0.0084, Su -0.0153; t(3) -4.93, p 0.0080; pooled -0.0130 = -6.4 SD; EO per-animal +0.0004
+LP15   raw EO SD 0.0020 (EO mean -0.0003) | KT -0.0195 (-9.6 SD, 4/4) | KTMD -0.0160 (-7.9 SD, 11/11) | MD -0.0039 (-1.9 SD, 4/4) | PF -0.0098 (-4.8 SD, 4/4) | SLP -0.0017 (-0.8 SD, 6/7) | animals Chibi -0.0194, George -0.0089, Kin2 -0.0098, Su -0.0149; t(3) -5.41, p 0.0062; pooled -0.0132 = -6.5 SD; EO per-animal -0.0004
+LP15   T 1000 n_win 1260 | ns real/surr awake_ec z 0.9692/0.9718; drug z 0.9383/0.9544; sleep z 0.9752/0.9783
+LP15   K<0 (ns real/surr) awake_ec 0.194/0.193; awake_eo 0.231/0.222; drug 0.406/0.362; sleep 0.221/0.211
+LP15   Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 6; drug 0.000/0.000, 19; sleep 0.000/0.000, 7
+LP15   window residual r with 100 Hz: 0.80
+LP25   ns  EO SD 0.0019 (EO mean -0.0001) | KT -0.0178 (-9.2 SD, 4/4) | KTMD -0.0159 (-8.2 SD, 11/11) | MD -0.0065 (-3.3 SD, 4/4) | PF -0.0108 (-5.6 SD, 4/4) | SLP -0.0024 (-1.2 SD, 7/7) | animals Chibi -0.0184, George -0.0093, Kin2 -0.0103, Su -0.0177; t(3) -5.78, p 0.0051; pooled -0.0139 = -7.2 SD; EO per-animal +0.0006
+LP25   raw EO SD 0.0019 (EO mean -0.0001) | KT -0.0192 (-9.9 SD, 4/4) | KTMD -0.0158 (-8.2 SD, 11/11) | MD -0.0057 (-3.0 SD, 4/4) | PF -0.0118 (-6.1 SD, 4/4) | SLP -0.0023 (-1.2 SD, 7/7) | animals Chibi -0.0190, George -0.0097, Kin2 -0.0105, Su -0.0167; t(3) -6.12, p 0.0044; pooled -0.0140 = -7.2 SD; EO per-animal +0.0001
+LP25   T 1000 n_win 1260 | ns real/surr awake_ec z 0.9679/0.9696; drug z 0.9423/0.9581; sleep z 0.9750/0.9777
+LP25   K<0 (ns real/surr) awake_ec 0.172/0.173; awake_eo 0.186/0.184; drug 0.364/0.316; sleep 0.191/0.189
+LP25   Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 5; drug 0.000/0.000, 19; sleep 0.000/0.000, 6
+LP25   window residual r with 100 Hz: 0.84
+HP2    ns  EO SD 0.0012 (EO mean +0.0000) | KT -0.0098 (-8.0 SD, 4/4) | KTMD -0.0136 (-11.1 SD, 11/11) | MD -0.0052 (-4.3 SD, 3/4) | PF -0.0083 (-6.8 SD, 4/4) | SLP -0.0008 (-0.7 SD, 6/7) | animals Chibi -0.0124, George -0.0097, Kin2 -0.0100, Su -0.0089; t(3) -13.78, p 0.0004; pooled -0.0102 = -8.4 SD; EO per-animal +0.0002
+HP2    raw EO SD 0.0019 (EO mean -0.0000) | KT -0.0112 (-5.8 SD, 4/4) | KTMD -0.0188 (-9.8 SD, 11/11) | MD -0.0035 (-1.8 SD, 3/4) | PF -0.0128 (-6.7 SD, 4/4) | SLP -0.0011 (-0.6 SD, 7/7) | animals Chibi -0.0163, George -0.0132, Kin2 -0.0118, Su -0.0108; t(3) -10.89, p 0.0008; pooled -0.0130 = -6.8 SD; EO per-animal +0.0001
+HP2    T 1000 n_win 1260 | ns real/surr awake_ec z 0.9659/0.9662; drug z 0.9540/0.9648; sleep z 0.9731/0.9741
+HP2    K<0 (ns real/surr) awake_ec 0.163/0.165; awake_eo 0.155/0.160; drug 0.188/0.158; sleep 0.159/0.159
+HP2    Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 4; drug 0.000/0.000, 10; sleep 0.000/0.000, 5
+HP2    window residual r with 100 Hz: 0.57
+HP4    ns  EO SD 0.0026 (EO mean -0.0000) | KT -0.0052 (-2.0 SD, 3/4) | KTMD -0.0177 (-6.9 SD, 11/11) | MD -0.0023 (-0.9 SD, 4/4) | PF -0.0192 (-7.5 SD, 4/4) | SLP -0.0006 (-0.2 SD, 6/7) | animals Chibi -0.0118, George -0.0166, Kin2 -0.0116, Su -0.0078; t(3) -6.66, p 0.0035; pooled -0.0119 = -4.7 SD; EO per-animal +0.0004
+HP4    raw EO SD 0.0033 (EO mean -0.0002) | KT -0.0068 (-2.1 SD, 3/4) | KTMD -0.0274 (-8.3 SD, 11/11) | MD -0.0021 (-0.6 SD, 4/4) | PF -0.0268 (-8.1 SD, 4/4) | SLP -0.0013 (-0.4 SD, 6/7) | animals Chibi -0.0191, George -0.0216, Kin2 -0.0166, Su -0.0159; t(3) -14.27, p 0.0004; pooled -0.0183 = -5.5 SD; EO per-animal +0.0000
+HP4    T 1000 n_win 1260 | ns real/surr awake_ec z 0.9650/0.9647; drug z 0.9404/0.9531; sleep z 0.9719/0.9724
+HP4    K<0 (ns real/surr) awake_ec 0.154/0.162; awake_eo 0.153/0.162; drug 0.163/0.169; sleep 0.146/0.150
+HP4    Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 4; drug 0.000/0.000, 6; sleep 0.000/0.000, 4
+HP4    window residual r with 100 Hz: 0.45
+HP8    ns  EO SD 0.0025 (EO mean -0.0005) | KT -0.0065 (-2.6 SD, 4/4) | KTMD -0.0306 (-12.4 SD, 10/11) | MD -0.0035 (-1.4 SD, 4/4) | PF -0.0337 (-13.7 SD, 4/4) | SLP +0.0002 (+0.1 SD, 3/7) | animals Chibi -0.0157, George -0.0315, Kin2 -0.0239, Su -0.0099; t(3) -4.29, p 0.0117; pooled -0.0203 = -8.2 SD; EO per-animal -0.0006
+HP8    raw EO SD 0.0026 (EO mean +0.0005) | KT -0.0087 (-3.3 SD, 4/4) | KTMD -0.0350 (-13.3 SD, 9/11) | MD -0.0047 (-1.8 SD, 4/4) | PF -0.0463 (-17.7 SD, 4/4) | SLP -0.0007 (-0.3 SD, 5/7) | animals Chibi -0.0161, George -0.0373, Kin2 -0.0297, Su -0.0235; t(3) -5.90, p 0.0049; pooled -0.0266 = -10.1 SD; EO per-animal +0.0007
+HP8    T 1000 n_win 1260 | ns real/surr awake_ec z 0.9647/0.9636; drug z 0.9158/0.9366; sleep z 0.9722/0.9717
+HP8    K<0 (ns real/surr) awake_ec 0.146/0.149; awake_eo 0.161/0.171; drug 0.166/0.198; sleep 0.131/0.139
+HP8    Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 4; drug 0.000/0.000, 4; sleep 0.000/0.000, 4
+HP8    window residual r with 100 Hz: 0.35
+HP15   ns  EO SD 0.0034 (EO mean -0.0000) | KT -0.0068 (-2.0 SD, 4/4) | KTMD -0.0264 (-7.8 SD, 8/11) | MD -0.0027 (-0.8 SD, 3/4) | PF -0.0503 (-14.9 SD, 4/4) | SLP +0.0011 (+0.3 SD, 2/7) | animals Chibi -0.0090, George -0.0408, Kin2 -0.0247, Su -0.0054; t(3) -2.46, p 0.0453; pooled -0.0200 = -5.9 SD; EO per-animal +0.0014
+HP15   raw EO SD 0.0044 (EO mean +0.0003) | KT -0.0065 (-1.5 SD, 4/4) | KTMD -0.0343 (-7.7 SD, 9/11) | MD -0.0049 (-1.1 SD, 3/4) | PF -0.0501 (-11.3 SD, 4/4) | SLP -0.0008 (-0.2 SD, 5/7) | animals Chibi -0.0117, George -0.0416, Kin2 -0.0305, Su -0.0217; t(3) -4.14, p 0.0128; pooled -0.0263 = -5.9 SD; EO per-animal +0.0019
+HP15   T 1000 n_win 1260 | ns real/surr awake_ec z 0.9358/0.9343; drug z 0.8896/0.9112; sleep z 0.9406/0.9378
+HP15   K<0 (ns real/surr) awake_ec 0.187/0.190; awake_eo 0.174/0.181; drug 0.189/0.235; sleep 0.186/0.192
+HP15   Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 4; drug 0.000/0.000, 3; sleep 0.000/0.000, 4
+HP15   window residual r with 100 Hz: 0.19
+BP2-4  ns  EO SD 0.0033 (EO mean +0.0012) | KT -0.0083 (-2.5 SD, 4/4) | KTMD -0.0048 (-1.4 SD, 7/11) | MD -0.0006 (-0.2 SD, 2/4) | PF +0.0010 (+0.3 SD, 2/4) | SLP -0.0030 (-0.9 SD, 6/7) | animals Chibi -0.0022, George -0.0039, Kin2 -0.0025, Su -0.0080; t(3) -3.08, p 0.0271; pooled -0.0042 = -1.2 SD; EO per-animal +0.0013
+BP2-4  raw EO SD 0.0033 (EO mean +0.0013) | KT -0.0087 (-2.7 SD, 4/4) | KTMD -0.0031 (-1.0 SD, 7/11) | MD -0.0003 (-0.1 SD, 2/4) | PF -0.0018 (-0.5 SD, 2/4) | SLP -0.0019 (-0.6 SD, 5/7) | animals Chibi -0.0028, George -0.0036, Kin2 -0.0036, Su -0.0038; t(3) -16.09, p 0.0003; pooled -0.0035 = -1.1 SD; EO per-animal +0.0009
+BP2-4  T 1000 n_win 1260 | ns real/surr awake_ec z 0.9473/0.9548; drug z 0.9394/0.9511; sleep z 0.9531/0.9619
+BP2-4  K<0 (ns real/surr) awake_ec 0.230/0.218; awake_eo 0.225/0.206; drug 0.263/0.248; sleep 0.247/0.231
+BP2-4  Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 26; drug 0.001/0.001, 28; sleep 0.000/0.000, 26
+BP2-4  window residual r with 100 Hz: 0.36
+BP4-8  ns  EO SD 0.0035 (EO mean +0.0006) | KT -0.0048 (-1.4 SD, 3/4) | KTMD -0.0124 (-3.5 SD, 10/11) | MD -0.0020 (-0.6 SD, 2/4) | PF -0.0081 (-2.3 SD, 3/4) | SLP -0.0017 (-0.5 SD, 5/7) | animals Chibi -0.0070, George -0.0092, Kin2 -0.0060, Su -0.0131; t(3) -5.65, p 0.0055; pooled -0.0088 = -2.5 SD; EO per-animal +0.0005
+BP4-8  raw EO SD 0.0024 (EO mean +0.0007) | KT -0.0054 (-2.2 SD, 3/4) | KTMD -0.0141 (-5.8 SD, 11/11) | MD -0.0007 (-0.3 SD, 2/4) | PF -0.0066 (-2.7 SD, 3/4) | SLP -0.0013 (-0.5 SD, 5/7) | animals Chibi -0.0058, George -0.0112, Kin2 -0.0063, Su -0.0136; t(3) -4.82, p 0.0085; pooled -0.0092 = -3.8 SD; EO per-animal +0.0008
+BP4-8  T 1000 n_win 1260 | ns real/surr awake_ec z 0.9657/0.9689; drug z 0.9447/0.9564; sleep z 0.9678/0.9726
+BP4-8  K<0 (ns real/surr) awake_ec 0.123/0.120; awake_eo 0.111/0.109; drug 0.151/0.144; sleep 0.125/0.122
+BP4-8  Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 14; drug 0.000/0.000, 15; sleep 0.000/0.000, 14
+BP4-8  window residual r with 100 Hz: 0.49
+BP8-15 ns  EO SD 0.0014 (EO mean +0.0001) | KT -0.0103 (-7.4 SD, 3/4) | KTMD -0.0308 (-22.2 SD, 11/11) | MD -0.0047 (-3.4 SD, 4/4) | PF -0.0224 (-16.1 SD, 4/4) | SLP -0.0008 (-0.6 SD, 6/7) | animals Chibi -0.0174, George -0.0263, Kin2 -0.0234, Su -0.0142; t(3) -7.42, p 0.0025; pooled -0.0203 = -14.7 SD; EO per-animal +0.0001
+BP8-15 raw EO SD 0.0019 (EO mean -0.0001) | KT -0.0152 (-8.2 SD, 3/4) | KTMD -0.0362 (-19.4 SD, 11/11) | MD -0.0040 (-2.2 SD, 4/4) | PF -0.0270 (-14.4 SD, 4/4) | SLP -0.0011 (-0.6 SD, 6/7) | animals Chibi -0.0217, George -0.0278, Kin2 -0.0297, Su -0.0235; t(3) -13.80, p 0.0004; pooled -0.0257 = -13.7 SD; EO per-animal +0.0001
+BP8-15 T 1000 n_win 1260 | ns real/surr awake_ec z 0.9775/0.9789; drug z 0.9283/0.9509; sleep z 0.9802/0.9825
+BP8-15 K<0 (ns real/surr) awake_ec 0.087/0.090; awake_eo 0.096/0.101; drug 0.107/0.124; sleep 0.079/0.086
+BP8-15 Theiler cap 100: capped fraction (ns real/surr), median w awake_ec 0.000/0.000, 9; drug 0.000/0.000, 9; sleep 0.000/0.000, 9
+BP8-15 window residual r with 100 Hz: 0.49

@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=04:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N rb10
+#PBS -j oe
+# Theiler-window and k sweep at 10 s (preregs/robust-prereg.md). SRC = source snapshot of the pushed commit that froze the prereg.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd $SRC/research/representation/atlas/mi_pair || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; R=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117; O=$R/robust; mkdir -p $O
+PY="env PYTHONPATH=$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"; echo "commit $(basename $SRC)" > $O/commit10.txt
+for a in PF KT KTMD MD SLP; do $PY robust.py run $B/neurotycho-long-stage-a $O/rb10_A_$a.npz $a first 48 || exit 3; done
+for a in PF KT KTMD MD; do $PY robust.py run $B/neurotycho-long-stage-b $O/rb10_B_$a.npz $a first 48 || exit 3; done
+$PY robust.py run $B/neurotycho-long-stage-b $O/rb10_B_SLP.npz SLP row 48 || exit 3
+$PY robust.py score $O rb10 $R/zns > $O/score10.txt && cd $O && sha256sum rb10_*.npz > SHA256SUMS.rb10 && echo ALLDONE
