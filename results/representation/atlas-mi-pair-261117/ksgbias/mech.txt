@@ -1,0 +1,4 @@
+AW-T1000: median AUTO w 5; mean K at MI 0 (sd): w=0 +0.0145 (0.025) AUTO -0.0051 (0.022) 2xAUTO -0.0053 (0.022) 4xAUTO -0.0056 (0.023) 8xAUTO -0.0062 (0.023) shuffled iid -0.0002 (0.019) k10 AUTO -0.0026 (0.015)
+KTMD-T1000: median AUTO w 17; mean K at MI 0 (sd): w=0 +0.1073 (0.066) AUTO -0.0374 (0.043) 2xAUTO -0.0394 (0.044) 4xAUTO -0.0421 (0.046) 8xAUTO -0.0463 (0.051) shuffled iid -0.0000 (0.020) k10 AUTO -0.0169 (0.033)
+PF-T1000: median AUTO w 22; mean K at MI 0 (sd): w=0 +0.1020 (0.062) AUTO -0.0400 (0.048) 2xAUTO -0.0426 (0.049) 4xAUTO -0.0466 (0.053) 8xAUTO -0.0513 (0.060) shuffled iid -0.0007 (0.020) k10 AUTO -0.0187 (0.037)
+PF-T200: median AUTO w 14; mean K at MI 0 (sd): w=0 +0.2586 (0.153) AUTO -0.0236 (0.156) 2xAUTO -0.0356 (0.168) 4xAUTO -0.0387 (0.169) 8xAUTO -0.0367 (0.170) shuffled iid +0.0005 (0.041) k10 AUTO +0.0164 (0.122)

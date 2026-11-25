@@ -1,0 +1,32 @@
+reproduction gate: max |k4 z − stored| = 7.46e-09 -> PASS
+
+k4: animal means [-0.0189 -0.0087 -0.0115 -0.0137]; 4/4 < 0; t(3) = -6.11, one-sided p = 0.0044; pooled drug Δz -0.0133; eyes-open SD 0.0020
+  KT    Δz -0.0159 (4/4 down) | weak edges (G<.01): K real +0.0072, surr -0.0035, frac K<0 real 0.45
+  KTMD  Δz -0.0155 (11/11 down) | weak edges (G<.01): K real -0.0183, surr -0.0080, frac K<0 real 0.65
+  MD    Δz -0.0062 (4/4 down) | weak edges (G<.01): K real -0.0007, surr +0.0019, frac K<0 real 0.52
+  PF    Δz -0.0117 (4/4 down) | weak edges (G<.01): K real -0.0252, surr -0.0093, frac K<0 real 0.68
+  SLP   Δz -0.0010 (7/7 down) | weak edges (G<.01): K real +0.0056, surr +0.0055, frac K<0 real 0.41
+
+kpool: animal means [-0.0207 -0.009  -0.0118 -0.0145]; 4/4 < 0; t(3) = -5.59, one-sided p = 0.0056; pooled drug Δz -0.0142; eyes-open SD 0.0021
+  KT    Δz -0.0162 (4/4 down) | weak edges (G<.01): K real -0.0197, surr -0.0295, frac K<0 real 0.67
+  KTMD  Δz -0.0163 (11/11 down) | weak edges (G<.01): K real -0.0505, surr -0.0393, frac K<0 real 0.86
+  MD    Δz -0.0063 (4/4 down) | weak edges (G<.01): K real -0.0255, surr -0.0226, frac K<0 real 0.78
+  PF    Δz -0.0141 (4/4 down) | weak edges (G<.01): K real -0.0662, surr -0.0482, frac K<0 real 0.91
+  SLP   Δz -0.0010 (7/7 down) | weak edges (G<.01): K real -0.0058, surr -0.0058, frac K<0 real 0.59
+  retention vs k4: pooled 1.07; KT 1.02 KTMD 1.05 MD 1.03 PF 1.20
+
+k2te: animal means [-0.0207 -0.0092 -0.0114 -0.0155]; 4/4 < 0; t(3) = -5.63, one-sided p = 0.0056; pooled drug Δz -0.0143; eyes-open SD 0.0022
+  KT    Δz -0.0162 (4/4 down) | weak edges (G<.01): K real -0.0205, surr -0.0296, frac K<0 real 0.67
+  KTMD  Δz -0.0165 (11/11 down) | weak edges (G<.01): K real -0.0518, surr -0.0398, frac K<0 real 0.87
+  MD    Δz -0.0066 (4/4 down) | weak edges (G<.01): K real -0.0260, surr -0.0228, frac K<0 real 0.79
+  PF    Δz -0.0142 (4/4 down) | weak edges (G<.01): K real -0.0668, surr -0.0489, frac K<0 real 0.91
+  SLP   Δz -0.0009 (7/7 down) | weak edges (G<.01): K real -0.0066, surr -0.0060, frac K<0 real 0.60
+  retention vs k4: pooled 1.08; KT 1.02 KTMD 1.06 MD 1.07 PF 1.21
+
+kshift: animal means [-0.0215 -0.0103 -0.0124 -0.0127]; 4/4 < 0; t(3) = -5.73, one-sided p = 0.0053; pooled drug Δz -0.0148; eyes-open SD 0.0019
+  KT    Δz -0.0154 (4/4 down) | weak edges (G<.01): K real +0.0143, surr -0.0032, frac K<0 real 0.39
+  KTMD  Δz -0.0176 (11/11 down) | weak edges (G<.01): K real -0.0029, surr -0.0053, frac K<0 real 0.53
+  MD    Δz -0.0064 (4/4 down) | weak edges (G<.01): K real +0.0019, surr -0.0012, frac K<0 real 0.48
+  PF    Δz -0.0148 (4/4 down) | weak edges (G<.01): K real -0.0066, surr -0.0071, frac K<0 real 0.55
+  SLP   Δz -0.0007 (5/7 down) | weak edges (G<.01): K real +0.0018, surr +0.0004, frac K<0 real 0.48
+  retention vs k4: pooled 1.11; KT 0.97 KTMD 1.14 MD 1.04 PF 1.26
