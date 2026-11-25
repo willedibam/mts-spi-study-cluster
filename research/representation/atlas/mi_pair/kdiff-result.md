@@ -9,7 +9,7 @@
 
 ## Verdict: a companion level readout, not a replacement for panel (c)
 
-**Superseded on 26 November by [kens-result.md](kens-result.md).** Against a spectrum- and marginal-matched null ensemble, KD's drug effect is the null moving, so keep Δz alone.
+**Superseded on 26 November by [kens-result.md](kens-result.md).** Against a spectrum- and marginal-matched null ensemble, about two-thirds of KD's drug effect is the null moving, and the rest scales with the null's spread, so keep Δz alone.
 
 **Gates.**
 - The net `Kdiff` reproduction passes for all 10 files, with a maximum gap of 1.7e-9.
