@@ -33,7 +33,7 @@ from research.cases.composite_style import (AMBER, HAIR, INK, LAVENDER, MUTED, S
                                             shade, style, z_label)
 from research.cases.r_rho_mi.form_ladder_261028 import COLOURS, LEVELS, PAIR_INK, make, relation, stats
 
-OUT = ROOT / "results/cases/form-ladder-261126"          # pyspi 3.0.0rc2 rerun; 261028 kept for comparison
+OUT = ROOT / "results/cases/form-ladder-261126"          # pyspi 3.0.0rc2 rerun (z identical to October)
 HUES = (SAGE, LAVENDER, AMBER)
 W, H = 7.2, 4.95
 B, M, REP = 4, 12, 10

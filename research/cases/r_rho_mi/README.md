@@ -2,7 +2,7 @@
 
 ## Current case (2026-10-28): `form_ladder_261028.py`; figure `form_overview_261029.py` (main; its helpers still come from the row-layout draft `form_figure_261028.py`), viewed and regenerated, with separate panel files, in `notebooks/form_figure.ipynb`
 
-One 4/4/4 channel layout, 2 × 2 over the maps. Twelve channels in three blocks of four observe one AR(1) latent ($a=0.8$). Block 1 is linear; block 2 is linear or monotone ($\sinh 2w$); block 3 is linear or folded ($w^2$). The "both" condition is the 4 linear / 4 monotone / 4 fold recording shown in the figure. Generator `mtsspi.generators.generate_form_ladder_mts(maps=...)`; T = 2,000, 20 recordings per condition, the same draws in every condition. Outputs in `results/cases/form-ladder-261028/`.
+One 4/4/4 channel layout, 2 × 2 over the maps. Twelve channels in three blocks of four observe one AR(1) latent ($a=0.8$). Block 1 is linear; block 2 is linear or monotone ($\sinh 2w$); block 3 is linear or folded ($w^2$). The "both" condition is the 4 linear / 4 monotone / 4 fold recording shown in the figure. Generator `mtsspi.generators.generate_form_ladder_mts(maps=...)`; T = 2,000, 20 recordings per condition, the same draws in every condition. Outputs in `results/cases/form-ladder-261126/` (the 26 November rerun below; the October folder was removed as identical).
 
 | $z$ (ordered entries) | linear | monotone | fold | both |
 | --- | --- | --- | --- | --- |

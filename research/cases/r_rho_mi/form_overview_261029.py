@@ -35,7 +35,7 @@ from research.cases.composite_style import HAIR, INK, MUTED, axes_in, panel_titl
 from research.cases.r_rho_mi.form_figure_261028 import B, HUES, MAPS, M, REP, boxed, channel_carpet, ink, linfoot
 from research.cases.r_rho_mi.form_ladder_261028 import COLOURS, LEVELS, PAIR_INK, make, relation, stats
 
-OUT = ROOT / "results/cases/form-ladder-261126"          # pyspi 3.0.0rc2 rerun; 261028 kept for comparison
+OUT = ROOT / "results/cases/form-ladder-261126"          # pyspi 3.0.0rc2 rerun (z identical to October)
 W, H = 7.2, 6.40
 # (strong, weak) pairs per condition: block-1 channels with the lowest noise level, then the third
 PAIRS = {"linear": ((0, 1), (2, 3)), "monotone": ((0, 4), (2, 6)), "fold": ((0, 8), (2, 10))}

@@ -67,7 +67,7 @@ CASE = Case(name="form_ladder", levels=LEVELS, make=make, stats=stats,
                                       "z_entries": "ordered off-diagonal, M(M-1)"})
 
 if __name__ == "__main__":
-    out = ROOT / "results/cases/form-ladder-261126"        # pyspi 3.0.0rc2 rerun; 261028 kept for comparison
+    out = ROOT / "results/cases/form-ladder-261126"        # pyspi 3.0.0rc2 rerun (z identical to October)
     frame, examples = run(CASE, out)
     print(frame.groupby("level", sort=False).agg(["mean", "std"]).drop(columns="rep").round(3).T.to_string())
     print(system_figure(CASE, frame, examples, out))
