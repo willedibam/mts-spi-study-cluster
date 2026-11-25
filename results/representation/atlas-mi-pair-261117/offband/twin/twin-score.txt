@@ -1,0 +1,30 @@
+t1 reproduction gate: max |K draw 0 − zns K_surr| = 0.00e+00 over 1260 windows PASS
+gate: max |K_rec − zns| 7.83e-08, max |K draw 0 − zns K_surr| 1.16e-07, max |G draw − G twin| 6.46e-14 over 1260 windows
+== Linear-Gaussian twin through the pipeline: excess E = count − own null mean (pairs of 496) ==
+group           n  E rec E twin  95% (sessions) E periodic E rec−twin c twin null twin SD ratio rec/twin
+awake_eo      300   +7.9  +0.89 [+0.39, +1.39]      +0.55       +7.0   26.6      25.7    1.055/1.011
+awake_ec      300   +8.0  +2.31 [+1.30, +3.29]      +0.90       +5.7   27.8      25.5    1.052/1.014
+recovery_ec   220  +15.6  +3.28 [+2.33, +4.24]      +0.98      +12.3   29.0      25.7    1.104/1.017
+SLP           210  +12.0  +2.36 [+0.82, +4.13]      +0.67       +9.7   27.7      25.4    1.085/1.014
+KT             40  +70.8  +6.29 [+4.48, +8.11]      +1.35      +64.5   31.6      25.3    1.451/1.053
+KTMD          110  +30.2  +6.26 [+4.99, +7.69]      +1.46      +23.9   32.1      25.9    1.258/1.051
+MD             40  +21.9  +5.15 [+2.98, +7.96]      -0.05      +16.7   31.2      26.0    1.166/1.039
+PF             40  +31.9  +8.64 [+6.67, +10.77]      +4.20      +23.3   35.1      26.5    1.256/1.064
+decision (awake_eo): twin E +0.89 [+0.39, +1.39], share of the recording excess 0.11 -> EXCLUDED: pipeline mismatch is at most a quarter of the wake excess
+periodic control, all windows: E +0.93 -> calibrated
+secondary: corrected excess E_rec − E_twin
+Δ corrected excess (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 37.55, 'George': 15.04, 'Kin2': 16.79, 'Su': 24.78}; 4/4 positive, sign p 0.0625; one-sided t(3) = 4.59, p = 0.0097; animal mean +23.54 ± SE 5.13
+  mixed model (23 drug sessions, random animal intercept; NOT CONVERGED) +24.05 ± 7.89; sessions up 23/23; eyes-open control per animal {'Chibi': 0.64, 'George': 2.26, 'Kin2': -0.3, 'Su': 0.84}
+  per agent (session mean, sessions up): KT +59.26 (4/4), KTMD +19.22 (11/11), MD +10.54 (4/4), PF +17.45 (4/4)
+  sleep +2.48 (7/7 up; animals {'Chibi': 1.1, 'George': 4.31}), ratio to pooled drug session mean +0.10; recovery (drug sessions) +6.76
+  ratio rule on corrected E: pooled drug +29.6, wake +7.0 (4.2x), sleep +9.7 (3.1x)
+fidelity (median per window): Spearman(G twin, G rec), mean |G twin − G rec| / mean G rec, Theiler window twin/rec, end jump rec/twin
+  awake_eo     0.929  0.213    7.2/  5.2  5.25/5.55
+  awake_ec     0.932  0.215    9.2/  7.0  6.08/5.99
+  recovery_ec  0.911  0.263   11.4/  8.8  6.32/7.13
+  SLP          0.912  0.239   10.3/  7.8  7.58/7.80
+  KT           0.915  0.251   20.5/ 16.4  20.75/19.90
+  KTMD         0.797  0.403   23.2/ 19.2  36.49/34.56
+  MD           0.893  0.301   20.5/ 16.3  18.66/23.55
+  PF           0.806  0.382   29.2/ 24.5  30.27/27.98
+end mismatch, within state: Spearman(E rec, end jump rec) / Spearman(E twin, end jump twin): awake_eo +0.23/+0.11, awake_ec +0.30/+0.42, recovery_ec +0.47/+0.32, SLP +0.48/+0.47, KT -0.68/+0.30, KTMD -0.20/+0.28, MD +0.03/+0.27, PF +0.24/+0.36
