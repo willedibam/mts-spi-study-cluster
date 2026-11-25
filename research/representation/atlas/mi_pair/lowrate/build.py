@@ -104,7 +104,8 @@ def archive(args):
 
 def write(bank, rows, arrays, T, fs, record):
     bank.mkdir(parents=True, exist_ok=True)
-    assert {r['id'] for r in rows} == set(arrays) and all(arrays[r['id']].shape == (T, r['M']) for r in rows)
+    assert {r['id'] for r in rows} <= set(arrays) and all(   # arrays hold both stages; this bank gets its own rows
+        arrays[r['id']].shape == (T, r['M']) for r in rows)
     np.savez(bank / 'windows.partial.npz', **{r['id']: np.asarray(arrays[r['id']], np.float64) for r in rows})
     (bank / 'windows.partial.npz').replace(bank / 'windows.npz')
     (bank / 'manifest.json').write_text(json.dumps(dict(dataset='neurotycho', arm=record['arm'], fs=fs, T=T, rows=rows,
