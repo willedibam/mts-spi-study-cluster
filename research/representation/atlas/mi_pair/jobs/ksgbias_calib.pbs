@@ -10,6 +10,6 @@ export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 cd $SRC/research/representation/atlas/mi_pair || exit 2
 B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/ksgbias; mkdir -p $O
 PY="env PYTHONPATH=$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"; echo "commit $(basename $SRC)" > $O/calib-commit.txt
-$PY ksgbias_calib.py $B/neurotycho-long-stage-a $O/calib.npz 40 48 > $O/calib.txt || exit 3
+[ -f $O/calib.npz ] && $PY ksgbias_calib.py score $O/calib.npz > $O/calib.txt || $PY ksgbias_calib.py $B/neurotycho-long-stage-a $O/calib.npz 40 48 > $O/calib.txt || exit 3
 $PY ksgbias_calib.py mech $B/neurotycho-long-stage-a $O/mech.npz 40 48 > $O/mech.txt || exit 4
 cd $O && sha256sum calib.npz mech.npz > calib.sha256 && echo ALLDONE

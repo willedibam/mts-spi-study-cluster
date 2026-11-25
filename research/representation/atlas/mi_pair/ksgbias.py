@@ -13,7 +13,7 @@ and `estimators.py`. Per edge, on the normal-scored real window and on its surro
   python ksgbias.py <bank dir> <out.npz> <agent> <rowmode: first|row> <n workers>
   python ksgbias.py score <dir with kb_[AB]_*.npz>
 
-Decision rule: preregs/ksgbias-prereg.md (frozen before any corrected real-data value was computed).
+Decision rule: preregs/ksgbias-prereg.md (frozen before any corrected real-data value was looked at).
 """
 import sys, glob, json, numpy as np, warnings
 from multiprocessing import Pool

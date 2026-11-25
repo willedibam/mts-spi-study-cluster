@@ -101,7 +101,7 @@ def score(f):
         print(f'\n=== {s}')
         for k in KINDS:
             q = (sset == s) & (kind == k); A = X[q]  # (n, real/surr, 6, E)
-            print(f'{k} (n {q.sum()}, median w {np.median(A[:, 0, 5]):.0f}, at cap {(A[:, 0, 5] >= int(s.split("T")[1]) // 10).mean():.2f})')
+            print(f'{k} (n {q.sum()}, median w {np.median(A[:, 0, 5]):.0f}, at cap {(A[:, 0, 5] >= int(s.split("-T")[1]) // 10).mean():.2f})')
             for c, e in enumerate(EST):
                 kr, ks, g, gs = A[:, 0, 1 + c], A[:, 1, 1 + c], A[:, 0, 0], A[:, 1, 0]
                 dz = np.array([zc(g[i], kr[i]) - zc(gs[i], ks[i]) for i in range(len(A))]) if k != 'indep' else np.full(1, np.nan)

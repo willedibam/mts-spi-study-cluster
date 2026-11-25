@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=04:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N kb_real
+#PBS -j oe
+# Bias-corrected KSG rescoring (preregs/ksgbias-prereg.md). SRC = source snapshot of the pushed commit that froze the prereg.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd $SRC/research/representation/atlas/mi_pair || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117; mkdir -p $O/ksgbias
+PY="env PYTHONPATH=$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"; echo "commit $(basename $SRC)" > $O/ksgbias/commit.txt
+for a in PF KT KTMD MD SLP; do $PY ksgbias.py $B/neurotycho-long-stage-a $O/ksgbias/kb_A_$a.npz $a first 48 || exit 3; done
+for a in PF KT KTMD MD; do $PY ksgbias.py $B/neurotycho-long-stage-b $O/ksgbias/kb_B_$a.npz $a first 48 || exit 3; done
+$PY ksgbias.py $B/neurotycho-long-stage-b $O/ksgbias/kb_B_SLP.npz SLP row 48 || exit 3
+$PY ksgbias.py score $O/ksgbias > $O/ksgbias/score.txt && cd $O/ksgbias && sha256sum kb_*.npz > SHA256SUMS && echo ALLDONE
