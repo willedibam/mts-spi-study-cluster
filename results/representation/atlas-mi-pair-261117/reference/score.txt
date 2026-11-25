@@ -1,0 +1,26 @@
+bipolar 1260 windows; CAR 1260
+
+auto k4: animal means [-0.0476 -0.0257 -0.0242 -0.0666]; 4/4 < 0; t(3) = -4.08, p = 0.0133; pooled drug Δz -0.0385 (-2.7 own EO SD; EO SD 0.0144); CAR -0.0133; R 2.89; R vs anchor 2.89; rule: SURVIVES
+  KT -0.0286 (4/4 down) | KTMD -0.0462 (11/11 down) | MD -0.0110 (4/4 down) | PF -0.0545 (4/4 down) | SLP -0.0015 (5/7 down)
+  per-session drug Δ, bipolar vs CAR: r = +0.60 (n = 23)
+
+auto k10: animal means [-0.0476 -0.0229 -0.0154 -0.0449]; 4/4 < 0; t(3) = -4.09, p = 0.0132; pooled drug Δz -0.0334 (-3.9 own EO SD; EO SD 0.0085); CAR -0.0126; R 2.65; R vs anchor 2.51; rule: SURVIVES
+  KT -0.0381 (4/4 down) | KTMD -0.0376 (11/11 down) | MD -0.0153 (4/4 down) | PF -0.0351 (4/4 down) | SLP -0.0058 (7/7 down)
+  per-session drug Δ, bipolar vs CAR: r = +0.82 (n = 23)
+
+kshift: animal means [-0.0421 -0.0301 -0.0378 -0.0716]; 4/4 < 0; t(3) = -5.00, p = 0.0077; pooled drug Δz -0.0407 (-2.0 own EO SD; EO SD 0.0204); CAR -0.0148; R 2.75; R vs anchor 3.06; rule: SURVIVES
+  KT -0.0215 (4/4 down) | KTMD -0.0533 (11/11 down) | MD -0.0080 (4/4 down) | PF -0.0579 (4/4 down) | SLP -0.0022 (5/7 down)
+
+w0 k4: animal means [-0.0547  0.0043 -0.0117 -0.1109]; 3/4 < 0; t(3) = -1.68, p = 0.0958; pooled drug Δz -0.0333 (-1.9 own EO SD; EO SD 0.0172); CAR -0.0109; R 3.07; R vs anchor 2.51; rule: PARTIAL
+  KT -0.0356 (3/4 down) | KTMD -0.0469 (9/11 down) | MD -0.0076 (2/4 down) | PF -0.0195 (2/4 down) | SLP -0.0075 (5/7 down)
+  per-session drug Δ, bipolar vs CAR: r = +0.71 (n = 23)
+
+2te k4: animal means [-0.047  -0.0244 -0.0238 -0.0727]; 4/4 < 0; t(3) = -3.62, p = 0.0181; pooled drug Δz -0.0385 (-2.6 own EO SD; EO SD 0.0145); CAR -0.0140; R 2.76; R vs anchor 2.89; rule: SURVIVES
+  KT -0.0294 (4/4 down) | KTMD -0.0455 (11/11 down) | MD -0.0090 (3/4 down) | PF -0.0576 (4/4 down) | SLP -0.0002 (6/7 down)
+  per-session drug Δ, bipolar vs CAR: r = +0.56 (n = 23)
+
+4auto k4: animal means [-0.0235 -0.0118 -0.0153 -0.0416]; 4/4 < 0; t(3) = -3.47, p = 0.0202; pooled drug Δz -0.0202 (-1.4 own EO SD; EO SD 0.0144); CAR -0.0096; R 2.10; R vs anchor 1.52; rule: SURVIVES
+  KT -0.0144 (3/4 down) | KTMD -0.0281 (11/11 down) | MD -0.0083 (4/4 down) | PF -0.0163 (4/4 down) | SLP -0.0039 (6/7 down)
+  per-session drug Δ, bipolar vs CAR: r = +0.24 (n = 23)
+
+VERDICT (AUTO k4 ψ(T), R vs anchor -0.0133): SURVIVES
