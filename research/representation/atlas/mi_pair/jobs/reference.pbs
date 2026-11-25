@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=06:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N bp10
+#PBS -j oe
+# Bipolar reference axis at 10 s (preregs/reference-prereg.md). SRC = source snapshot of the pushed commit that froze the prereg.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd $SRC/research/representation/atlas/mi_pair || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; RAW=/scratch/ql44/we2614/mts-spi-study/data/atlas/neurotycho/raw
+R=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117; O=$R/reference; mkdir -p $O
+PY="env PYTHONPATH=$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"; echo "commit $(basename $SRC)" > $O/commit.txt
+J=reference/pairs.json
+# Gates (drug-blind): map index = channel, and bank-derived bipolar = re-cut from raw.
+$PY reference/bank.py mapcheck $J $B/neurotycho-long-stage-a $B/neurotycho-long-stage-b > $O/gate.txt || exit 3
+$PY reference/bank.py gate $B/neurotycho-long-stage-a $J $RAW 20110112ktmdanesthesiaandsleepgeorgetoruyanagawa 20120730pfanesthesiaandsleepchibitoruyanagawa >> $O/gate.txt || exit 3
+cat $O/gate.txt; grep -q 'map gate: PASS' $O/gate.txt && grep -q 'identity gate: PASS' $O/gate.txt || exit 4
+for s in a b; do $PY reference/bank.py derive $B/neurotycho-long-stage-$s $J $B/neurotycho-long-stage-$s-bipolar || exit 5; done
+for a in PF KT KTMD MD SLP; do $PY robust.py run $B/neurotycho-long-stage-a-bipolar $O/bp10_A_$a.npz $a first 48 --shift || exit 6; done
+for a in PF KT KTMD MD; do $PY robust.py run $B/neurotycho-long-stage-b-bipolar $O/bp10_B_$a.npz $a first 48 --shift || exit 6; done
+$PY robust.py run $B/neurotycho-long-stage-b-bipolar $O/bp10_B_SLP.npz SLP row 48 --shift || exit 6
+$PY reference/score.py $O $R/robust > $O/score.txt && $PY robust.py score $O bp10 > $O/score_full.txt && cd $O && sha256sum bp10_*.npz gate.txt score*.txt > SHA256SUMS && echo ALLDONE
