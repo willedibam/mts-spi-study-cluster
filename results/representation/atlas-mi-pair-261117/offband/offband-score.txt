@@ -1,0 +1,153 @@
+== Step 1: off-band count per window (band() of plot_character_draft.py; 496 pairs, nominal 24.8) ==
+group           n   mean median over 24.8 over own-animal wake  per animal (mean c)
+awake_eo      300   33.8     32      +9.0                 -0.0  {'Chibi': 31.3, 'George': 37.4, 'Kin2': 30.6, 'Su': 32.6}
+awake_ec      300   33.7     31      +8.9                 -0.0  {'Chibi': 29.7, 'George': 39.2, 'Kin2': 31.5, 'Su': 30.4}
+recovery_ec   220   41.2     38     +16.4                 +7.3  {'Chibi': 41.7, 'George': 47.4, 'Kin2': 31.6, 'Su': 30.9}
+SLP           210   38.0     36     +13.2                 +4.1  {'Chibi': 31.7, 'George': 46.4}
+KT             40   96.5     85     +71.7                +62.2  {'Chibi': 134.9, 'George': 58.2}
+KTMD          110   56.3     54     +31.5                +23.2  {'Chibi': 53.0, 'George': 56.8, 'Kin2': 56.5, 'Su': 57.9}
+MD             40   48.0     46     +23.2                +13.7  {'Chibi': 48.4, 'George': 47.8}
+PF             40   58.5     58     +33.7                +24.2  {'Chibi': 55.3, 'George': 61.8}
+per session (unit: agent animal, mean c by state):
+  KTMD  George 20110112 awake_ec  43.1 awake_eo  34.3 drug  61.4 recovery_ec  36.0
+  KTMD  George 20110113 awake_ec  30.2 awake_eo  34.3 drug  52.5 recovery_ec  49.5
+  KTMD  George 20110114 awake_ec  39.9 awake_eo  30.2 drug  56.6 recovery_ec  42.3
+  KTMD  Kin2   20110513 awake_ec  32.3 awake_eo  31.6 drug  59.5 recovery_ec  30.2
+  KTMD  Su     20110523 awake_ec  32.9 awake_eo  37.3 drug  56.4 recovery_ec  31.2
+  KTMD  Kin2   20110524 awake_ec  33.3 awake_eo  28.6 drug  57.8 recovery_ec  35.1
+  KTMD  Kin2   20110525 awake_ec  28.9 awake_eo  31.7 drug  52.3 recovery_ec  29.5
+  KTMD  Su     20110526 awake_ec  30.9 awake_eo  31.5 drug  59.1 recovery_ec  29.3
+  KTMD  Su     20110527 awake_ec  27.5 awake_eo  28.9 drug  58.2 recovery_ec  32.3
+  KTMD  Chibi  20110621 awake_ec  28.6 awake_eo  28.7 drug  55.5
+  KTMD  Chibi  20110622 awake_ec  30.3 awake_eo  27.3 drug  50.4 recovery_ec  69.6
+  SLP   Chibi  20120705 awake_ec  27.5 awake_eo  32.2 sleep  31.4
+  SLP   Chibi  20120706 awake_ec  28.9 awake_eo  28.3 sleep  31.8
+  SLP   Chibi  20120710 awake_ec  29.7 awake_eo  34.1 sleep  32.3
+  SLP   George 20120711 awake_ec  38.6 awake_eo  40.5 sleep  45.4
+  SLP   George 20120712 awake_ec  39.0 awake_eo  39.2 sleep  43.8
+  SLP   George 20120713 awake_ec  41.8 awake_eo  41.8 sleep  49.9
+  SLP   Chibi  20120717 awake_ec  31.2 awake_eo  32.5 sleep  31.4
+  KT    Chibi  20120719 awake_ec  26.2 awake_eo  37.5 drug 122.1 recovery_ec  33.0
+  MD    Chibi  20120720 awake_ec  31.1 awake_eo  30.6 drug  56.0 recovery_ec  35.3
+  KT    George 20120724 awake_ec  40.4 awake_eo  38.2 drug  56.9 recovery_ec  60.1
+  MD    George 20120726 awake_ec  37.0 awake_eo  37.7 drug  42.4 recovery_ec  49.0
+  PF    Chibi  20120730 awake_ec  29.1 awake_eo  31.0 drug  62.0 recovery_ec  41.9
+  PF    George 20120731 awake_ec  37.7 awake_eo  40.9 drug  63.2 recovery_ec  40.4
+  PF    Chibi  20120802 awake_ec  30.0 awake_eo  30.5 drug  48.6 recovery_ec  35.5
+  PF    George 20120803 awake_ec  45.6 awake_eo  36.2 drug  60.3 recovery_ec  53.4
+  MD    Chibi  20120809 awake_ec  32.4 awake_eo  30.2 drug  40.7 recovery_ec  27.0
+  KT    George 20120810 awake_ec  39.7 awake_eo  36.2 drug  59.4 recovery_ec  47.2
+  KT    Chibi  20120813 awake_ec  31.2 awake_eo  32.5 drug 147.7 recovery_ec  49.6
+  MD    George 20120814 awake_ec  37.1 awake_eo  38.9 drug  53.1 recovery_ec  49.0
+Δc (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 43.01, 'George': 17.23, 'Kin2': 25.03, 'Su': 27.47}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.22, p = 0.0068; animal mean +28.19 ± SE 5.40
+  mixed model (23 drug sessions, random animal intercept) +28.47 ± 8.10; sessions up 23/23; eyes-open control per animal {'Chibi': 1.17, 'George': -2.64, 'Kin2': -0.87, 'Su': 2.13}
+  per agent (session mean, sessions up): KT +62.15 (4/4), KTMD +23.80 (11/11), MD +13.65 (4/4), PF +22.92 (4/4)
+  sleep +4.20 (7/7 up; animals {'Chibi': 2.42, 'George': 6.58}), ratio to pooled drug session mean +0.15; recovery (drug sessions) +7.25
+count against Δz: window Spearman(c, z_rec − z_surr) -0.825 (mean within state group -0.751); session Spearman(Δc, Δz) -0.852
+window share above the eyes-open wake 95th percentile (54; wake-calibrated window reference): awake_ec 0.047, recovery_ec 0.173, SLP 0.090, KT 0.775, KTMD 0.500, MD 0.225, PF 0.575
+panel (b) windows (percentile of c within state): KTMD c=49 (30), awake_eo c=35 (58), SLP c=26 (17), KT c=70 (38), PF c=50 (28)
+== Step 4: surrogate residual tails (draw 0; per-window SD-standardised, two-sided) ==
+group        P(|u|>1.96) [0.05] P(|u|>2.58) [0.01] P(|u|>3.29) [0.001] P(|u|>3.89) [0.00010080645161290323]   excess kurt  rho(|e|,G)  SD top/bottom G tercile
+awake_eo                  0.0495              0.0098              0.0010              0.0001       -0.00      -0.00       0.99
+awake_ec                  0.0498              0.0103              0.0012              0.0001        0.04      +0.00       1.01
+recovery_ec               0.0501              0.0106              0.0015              0.0003        0.13      +0.01       1.02
+SLP                       0.0493              0.0101              0.0011              0.0002        0.04      +0.00       1.01
+KT                        0.0506              0.0110              0.0015              0.0003        0.11      -0.00       1.01
+KTMD                      0.0515              0.0123              0.0019              0.0003        0.23      -0.01       0.98
+MD                        0.0493              0.0111              0.0016              0.0005        0.17      -0.01       1.00
+PF                        0.0511              0.0131              0.0025              0.0004        0.31      -0.00       0.97
+all                       0.0499              0.0105              0.0013              0.0002        0.08      -0.00       1.00
+== Post hoc: count from residual scale against tail shape ==
+group        SD rec/sur      c c from scale rec exc. kurt
+awake_eo          1.055   33.8         34.7          0.08
+awake_ec          1.052   33.7         35.0          0.17
+recovery_ec       1.104   41.2         44.5          0.47
+SLP               1.085   38.0         39.9          0.21
+KT                1.451   96.5        105.9          0.78
+KTMD              1.258   56.3         61.2          0.62
+MD                1.166   48.0         52.1          0.28
+PF                1.256   58.5         61.8          0.50
+window Spearman(c, SD ratio) +0.906
+== Step 5 check: channel-additive structure of the residual magnitude (median R2 over windows; chance .063) ==
+awake_eo     log u^2: recording 0.063, surrogate 0.063; off-band indicator 0.069
+awake_ec     log u^2: recording 0.067, surrogate 0.063; off-band indicator 0.073
+recovery_ec  log u^2: recording 0.078, surrogate 0.064; off-band indicator 0.083
+SLP          log u^2: recording 0.065, surrogate 0.065; off-band indicator 0.074
+KT           log u^2: recording 0.088, surrogate 0.076; off-band indicator 0.105
+KTMD         log u^2: recording 0.081, surrogate 0.081; off-band indicator 0.090
+MD           log u^2: recording 0.084, surrogate 0.067; off-band indicator 0.082
+PF           log u^2: recording 0.086, surrogate 0.090; off-band indicator 0.094
+between-window share of var(log u^2): 0.0111
+== Wake reference: off-band against the same session's eyes-open wake residual spread (surrogate-SD units) ==
+null spread (eyes-open windows, leave-one-out): mean 25.0, SD 7.5, 2.5–97.5% [12.95 42.  ]
+wake limit in surrogate SDs: median 2.08 (surrogate own 95%: 1.95)
+group          mean median over 24.8 share > wake 97.5%
+awake_eo       25.0     24      +0.2              0.020
+awake_ec       25.2     24      +0.4              0.033
+recovery_ec    32.1     30      +7.3              0.145
+SLP            26.5     25      +1.7              0.057
+KT             79.9     66     +55.1              0.700
+KTMD           48.8     47     +24.0              0.682
+MD             39.1     34     +14.3              0.325
+PF             46.5     45     +21.7              0.575
+Δ wake-reference count (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 41.34, 'George': 14.72, 'Kin2': 23.7, 'Su': 25.47}; 4/4 positive, sign p 0.0625; one-sided t(3) = 4.75, p = 0.0088; animal mean +26.31 ± SE 5.53
+  mixed model (23 drug sessions, random animal intercept) +26.56 ± 6.95; sessions up 23/23; eyes-open control per animal {'Chibi': 1.46, 'George': -2.32, 'Kin2': -2.2, 'Su': 0.8}
+  per agent (session mean, sessions up): KT +56.62 (4/4), KTMD +22.85 (11/11), MD +12.88 (4/4), PF +20.32 (4/4)
+  sleep +2.59 (7/7 up; animals {'Chibi': 2.24, 'George': 3.06}), ratio to pooled drug session mean +0.10; recovery (drug sessions) +6.52
+per pair, BH q = .05 against the session's eyes-open pool (min p about 2e-4, so Bonferroni is out of reach): mean discoveries awake_eo 0.03, awake_ec 0.09, recovery_ec 1.26, SLP 0.15, KT 23.95, KTMD 2.33, MD 1.05, PF 1.43
+panel (b) windows: KTMD 44, awake_eo 22, SLP 26, KT 66, PF 37
+== Step 2: the count under surrogate against surrogate (99 draws per window, about their own lines, draw 0's limit) ==
+t1 reproduction gate: max |K draw 0 − zns K_surr| = 0.00e+00 over 1260 windows PASS
+pooled null count: mean 25.87, SD within window 5.22 (Binomial 4.85; inflation 1.08), 2.5–97.5% [13. 41.]
+group        null mean null SD      c      E share p<.05  verdict
+awake_eo         25.92    4.94   33.8   +7.9       0.350  in excess
+awake_ec         25.71    5.11   33.7   +8.0       0.327  in excess
+recovery_ec      25.64    5.12   41.2  +15.6       0.591  in excess
+SLP              25.99    5.13   38.0  +12.0       0.457  in excess
+KT               25.71    5.69   96.5  +70.8       0.975  in excess
+KTMD             26.14    5.47   56.3  +30.2       0.964  in excess
+MD               26.15    5.55   48.0  +21.9       0.800  in excess
+PF               26.58    5.88   58.5  +31.9       0.950  in excess
+Δ excess E (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 43.16, 'George': 17.49, 'Kin2': 22.73, 'Su': 28.13}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.03, p = 0.0076; animal mean +27.88 ± SE 5.54
+  mixed model (23 drug sessions, random animal intercept; NOT CONVERGED) +28.28 ± 7.98; sessions up 23/23; eyes-open control per animal {'Chibi': 1.27, 'George': -1.87, 'Kin2': -1.58, 'Su': 1.48}
+  per agent (session mean, sessions up): KT +62.26 (4/4), KTMD +23.75 (11/11), MD +12.87 (4/4), PF +23.36 (4/4)
+  sleep +2.72 (7/7 up; animals {'Chibi': 1.05, 'George': 4.96}), ratio to pooled drug session mean +0.10; recovery (drug sessions) +7.56
+decision: (i) animal test p = 0.0076; (ii) pooled drug E +36.1 against 3 x wake +23.6 and 3 x sleep +36.1 -> claim HOLDS
+decomposition by tercile (off-band share, recording against null draws), within each window:
+  G                awake_eo  low→high: 0.066/0.053  0.066/0.052  0.072/0.051
+  G                SLP       low→high: 0.071/0.052  0.073/0.052  0.086/0.054
+  G                KTMD      low→high: 0.104/0.053  0.102/0.052  0.135/0.053
+  G                PF        low→high: 0.109/0.055  0.103/0.054  0.141/0.052
+  Theiler W_rec    awake_eo  low→high: 0.060/0.050  0.064/0.051  0.077/0.055
+  Theiler W_rec    SLP       low→high: 0.065/0.046  0.070/0.049  0.091/0.060
+  Theiler W_rec    KTMD      low→high: 0.084/0.033  0.104/0.050  0.149/0.074
+  Theiler W_rec    PF        low→high: 0.088/0.031  0.109/0.052  0.154/0.077
+  W_rec − W_surr0  awake_eo  low→high: 0.067/0.052  0.066/0.051  0.068/0.052
+  W_rec − W_surr0  SLP       low→high: 0.075/0.052  0.071/0.050  0.078/0.054
+  W_rec − W_surr0  KTMD      low→high: 0.111/0.052  0.103/0.046  0.118/0.057
+  W_rec − W_surr0  PF        low→high: 0.121/0.053  0.102/0.046  0.126/0.060
+Theiler window: recording mean 9.2, draw 0 9.0; share of pairs differing 0.45
+post hoc, per-pair-standardised count (own null SD of draws 1-99; draw 0 held out as its null): awake_eo 34.0 (null 26.2; CV of per-pair null SD 0.078), awake_ec 34.5 (null 26.7; CV of per-pair null SD 0.083), recovery_ec 41.0 (null 26.6; CV of per-pair null SD 0.096), SLP 38.3 (null 26.1; CV of per-pair null SD 0.087), KT 96.5 (null 26.3; CV of per-pair null SD 0.107), KTMD 59.7 (null 25.8; CV of per-pair null SD 0.160), MD 49.4 (null 26.8; CV of per-pair null SD 0.104), PF 61.4 (null 25.4; CV of per-pair null SD 0.196)
+Δ per-pair-standardised excess (session state − awake_ec mean): animal means (drugs pooled) {'Chibi': 44.55, 'George': 20.87, 'Kin2': 27.57, 'Su': 27.83}; 4/4 positive, sign p 0.0625; one-sided t(3) = 5.99, p = 0.0047; animal mean +30.20 ± SE 5.05
+  mixed model (23 drug sessions, random animal intercept; NOT CONVERGED) +30.63 ± 7.77; sessions up 23/23; eyes-open control per animal {'Chibi': 1.48, 'George': -1.74, 'Kin2': -3.1, 'Su': 1.27}
+  per agent (session mean, sessions up): KT +61.30 (4/4), KTMD +26.94 (11/11), MD +15.00 (4/4), PF +27.23 (4/4)
+  sleep +4.06 (7/7 up; animals {'Chibi': 2.16, 'George': 6.6}), ratio to pooled drug session mean +0.13; recovery (drug sessions) +6.54
+== Step 3: per-pair procedures, all windows, null pooled over pairs and the 100 draws (min p 2.0e-5) ==
+empirical null from awake_eo recording residuals: sigma0 = 1.052 surrogate SD
+                  c    bonf    holm      wy      bh      by  storey  wake_null  own_bulk  gauss_bonf  gauss_fwer
+group                                                                                                           
+awake_eo     33.780   0.367   0.367   0.420   0.547   0.063   0.049     26.583    26.343       0.530       0.086
+awake_ec     33.737   0.473   0.473   0.527   0.747   0.183   0.049     27.020    27.613       0.717       0.103
+recovery_ec  41.200   1.332   1.332   1.409   2.691   0.882   0.077     33.914    29.450       2.100       0.139
+SLP          38.014   0.762   0.762   0.843   1.562   0.390   0.070     30.510    27.395       1.129       0.119
+KT           96.525  10.825  10.825  11.350  31.375  14.300   0.287     85.500    29.800      12.875       0.131
+KTMD         56.336   1.664   1.664   1.873   4.300   0.845   0.165     48.545    32.355       3.345       0.190
+MD           48.050   1.275   1.275   1.325   3.250   0.850   0.139     40.350    27.025       2.225       0.140
+PF           58.525   1.925   1.925   2.075   3.975   0.825   0.158     50.250    32.825       3.200       0.227
+== Step 3, panel (b) windows: each pair its own 20,000-draw null ==
+t2 reproduction gate: max |K draw 0 − zns K_surr| = 0.00e+00 over 5 windows PASS
+KTMD      c= 49 bonf 4 holm 4 bh 10 by 0 storey 0.141 wy 3 gauss_fwer 0.165; per-pair null SD CV 0.209; Spearman(per-pair p, pooled p) 0.968; null corr shared-channel +0.013, disjoint -0.004
+awake_eo  c= 35 bonf 1 holm 1 bh 1 by 0 storey 0.0524 wy 1 gauss_fwer 0.0451; per-pair null SD CV 0.013; Spearman(per-pair p, pooled p) 1.000; null corr shared-channel +0.001, disjoint -0.002
+SLP       c= 26 bonf 0 holm 0 bh 0 by 0 storey 0.0685 wy 0 gauss_fwer 0.0561; per-pair null SD CV 0.013; Spearman(per-pair p, pooled p) 1.000; null corr shared-channel +0.000, disjoint -0.002
+KT        c= 70 bonf 7 holm 7 bh 25 by 7 storey 0.25 wy 6 gauss_fwer 0.0701; per-pair null SD CV 0.061; Spearman(per-pair p, pooled p) 0.993; null corr shared-channel +0.009, disjoint -0.004
+PF        c= 50 bonf 0 holm 0 bh 0 by 0 storey 0.0363 wy 0 gauss_fwer 0.335; per-pair null SD CV 0.174; Spearman(per-pair p, pooled p) 0.979; null corr shared-channel +0.015, disjoint -0.004

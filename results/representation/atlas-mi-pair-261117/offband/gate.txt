@@ -1,0 +1,1 @@
+gate: max |K draw0 - zns K_surr| over 48 windows = 0 PASS
