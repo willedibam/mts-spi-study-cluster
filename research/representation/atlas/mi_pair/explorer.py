@@ -7,7 +7,7 @@ and position on the brain.
 Reads zns/ (every 10-s window's 496 edges, normal-scored arm, as the figure), figwin/brain_*.npz, and the raw windows
 in figwin/windows.npz plus figwin/explorer_windows.npz. The latter holds, for each session of PANEL_B and GLYPH_PAIR,
 the window nearest its state's median Δz in that session (plus the figure's own windows); regenerate on Gadi with
-`fig_windows.py <banks> explorer_windows.npz <ids>`, the ids printed by this script. The page template is
+`fig_windows.py <banks> explorer_windows.npz <ids>`, the ids from `python explorer.py <root> --ids`. The page template is
 explorer.html beside this file; the data are inlined so the page works offline.
 """
 import base64, io, json, sys
@@ -19,8 +19,16 @@ from scipy.stats import norm, rankdata
 
 import plot_character_draft as P
 
-root, out = Path(sys.argv[1]), Path(sys.argv[2])
+root = Path(sys.argv[1])
 df, edges = P.load(root)
+if sys.argv[2] == "--ids":                                   # the windows whose raw samples explorer_windows.npz holds
+    fixed = [w for _, w, _ in P.PANEL_B] + [P.GLYPH_PAIR[0]]; ids = set(fixed)
+    for u in df[df.id.isin(fixed)].unit.unique():
+        for _, g in df[df.unit == u].groupby("state"):
+            if not g.id.isin(fixed).any():
+                ids.add(g.loc[(g.sd - g.sd.median()).abs().idxmin(), "id"])
+    print(" ".join(sorted(ids))); sys.exit()
+out = Path(sys.argv[2])
 iu = np.triu_indices(32, 1)
 b64 = lambda a: base64.b64encode(np.ascontiguousarray(a).tobytes()).decode()
 ns = lambda x: norm.ppf((np.apply_along_axis(rankdata, 0, x) - .5) / len(x))   # as edges.ns

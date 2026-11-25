@@ -36,7 +36,7 @@ Each folder's `*_result.txt`, `*_qc.txt` or `*_sum.py` output reproduces the num
 - `brain_{Chibi,George}.npz`: the first `.mat` in `results/representation/neurotycho/neurotycho_audit_260910/montage/{Chibi,George}.zip`, read with `scipy.io.loadmat(simplify_cells=True)` and saved as `I`, `X`, `Y` and `source` (the `.mat` name).
 - `prios_electrodes_mni305.npy`: x, y, z of the rows with `group` grid or strip and `silicon` "no" (NaN coordinates dropped), concatenated over `sub-PRIOS0{1-6,9}_ses-1_electrodes.tsv` of OpenNeuro ds004370 in sorted order (381 x 3). Local copies in `$R/figwin-src/prios-electrodes/`.
 - `assets.npz`: `fig_assets.py <download dir> $R/figwin`; the downloads and their URLs are listed in its docstring.
-- `explorer_windows.npz` (only for `explorer.py`): `fig_windows.py` as above, with the ids `explorer.py` selects (each PANEL_B and GLYPH_PAIR session's window nearest each state's median Δz, plus the figure's windows; listed in its docstring's rule, fetched 25 November 2026).
+- `explorer_windows.npz` (only for `explorer.py`): `fig_windows.py` as above, with the ids from `explorer.py $R --ids` (each PANEL_B and GLYPH_PAIR session's window nearest each state's median Δz, plus those windows; fetched 25 November 2026).
 - `traces_d.npz`: `fig_traces.py $R <claar_sel> <claar_ind_sel> $R/figwin-src/prios`. The Claar selections are in the notes folder `local_89f26329-.../claar/claar_sel` and `.../critic-2/data/claar_ind_sel`; the PRIOS windows are gdata `.../human/prios-sfull/windows/*.npz`.
 
 ## Interactive explorer
