@@ -186,6 +186,8 @@ The drug-related fall in z(G, K) did not depend on the bias correction or on the
 ## Limits
 
 - Each axis is varied from the anchor, with one surrogate draw per window, 32-channel subsets and four animals.
+- The reference is held fixed: common average, one channel dropped. The surrogate is a joint IAAFT draw that keeps each pair's cross-spectrum, so zero-lag linear mixing enters real and surrogate alike; a different reference can still change the non-Gaussian part and the edge profile z is taken over. Bipolar derivations are possible from the provider's electrode maps (as in [`neurotycho-source-pilot.md`](../../neurotycho/notes/neurotycho-source-pilot.md)) but are untested here.
+- Window placement within the drug interval is not varied. The ten 10-s drug windows are spread evenly over the labelled Anesthetized interval, which starts 4.5–14.7 min after the injection label in the six locally audited archives. They span about 7–11 min of it for KT and PF, 10–18 min for MD and 20–32 min for KTMD, so time under drug is confounded with agent.
 - The low-rate long arms confound duration with rate (and, for the D arms, with band). The missing cells are 100 Hz on 50-s windows at 0.5–40 and 0.5–8 Hz.
 - The 2-s calibration rule rests on a 16-channel synthetic generator using two drug spectra.
 - The ψ(T) mechanism at 4×AUTO is inferred, not tested.
