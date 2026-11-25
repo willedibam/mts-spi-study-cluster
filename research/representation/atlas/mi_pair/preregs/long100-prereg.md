@@ -55,7 +55,7 @@ Gadi, pushed snapshot `operations/sources/mi-lowrate-<commit>`. Build (30 archiv
 
 Requested after the supervisor's question whether the per-pair departure is persistent or a one-window transient, and whether it survives aggregation over longer stretches. They cannot change the readings above.
 
-**What existed when they were frozen.** The four banks (build job 185197383, gate A 0.0); the drug-blind calibration (job 185200307; read: offset(5000) − offset(1000) +.0008 ± .0015); W50 stage-A PF from the timing call (job 185200308, 80 windows in 3,808 s on 48 cores; `scores/W50/zns_A_PF.npz`, sha256 `9c91abd0…e210`). This session printed only that file's array shapes, not its values; the session that ran it reported only the timing.
+**What existed when they were frozen.** The four banks (build job 185197383, gate A 0.0); the drug-blind calibration (job 185200307; read: offset(5000) − offset(1000) +.0008 ± .0015); W50 stage-A PF from the timing call (job 185200308, 80 windows in 3,808 s on 48 cores; `scores/W50/zns_A_PF.npz`, sha256 `9c91abd0…e210`). The session that froze these addenda printed only that file's array shapes, not its values; whether another session read its values was not verified.
 
 **Restated cost (from the timing call).** One 48-window round of W50 takes about 32 min, so a W50 window costs about 1,900 core-s. Remaining W50 calls 27 rounds, W50L8 29, C10 and C10L8 about 2 h each, Addendum A about 6 h: expected 3.8 kSU, worst 5.7 kSU. Walltimes are three times the timed rate.
 
@@ -84,3 +84,4 @@ Requested after the supervisor's question whether the per-pair departure is pers
   - frozen pairs: `lowrate/long100.py read $G`;
   - Addendum A: `lowrate/long100_seg.py read $G` (after checking the size line in `calib_long100_seg.txt`);
   - Addendum B: `lowrate/long100_edges.py $G`.
+  - `long100.py read` prints R, t and the rule's call without the calibration offset: the primary call is attributed to duration only after applying off₅₀₀₀ − off₁₀₀₀ (+.0008 ± .0015, `calib/calib_long100.txt`) by hand as the rule above states, with the offset-adjusted R reported beside R.
