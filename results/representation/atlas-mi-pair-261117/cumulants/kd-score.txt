@@ -1,0 +1,22 @@
+gate kd_A_KT.npz: max |Kdiff recomputed - split.py| = 4.7e-10 PASS
+gate kd_A_KTMD.npz: max |Kdiff recomputed - split.py| = 4.4e-10 PASS
+gate kd_A_MD.npz: max |Kdiff recomputed - split.py| = 1.8e-10 PASS
+gate kd_A_PF.npz: max |Kdiff recomputed - split.py| = 1.7e-09 PASS
+gate kd_A_SLP.npz: max |Kdiff recomputed - split.py| = 2.9e-10 PASS
+gate kd_B_KT.npz: max |Kdiff recomputed - split.py| = 2.5e-10 PASS
+gate kd_B_KTMD.npz: max |Kdiff recomputed - split.py| = 5.3e-10 PASS
+glyph pair ('20110621ktmdanesthesiaandsleepchibitoruyanagawa:drug:02', 407): k04 real 9.898 surrogate -0.270
+gate kd_B_MD.npz: max |Kdiff recomputed - split.py| = 3.3e-10 PASS
+gate kd_B_PF.npz: max |Kdiff recomputed - split.py| = 3.8e-10 PASS
+gate kd_B_SLP.npz: max |Kdiff recomputed - split.py| = 3.0e-10 PASS
+KD        drug  +1.19 SD (animals +2.11 +1.42 -0.00 +1.24) t(3)  +2.71 p 0.0729 | sleep +0.81 +0.64 | drug-sleep Chibi +1.29 AUC 0.61 MD +0.83 George +0.78 AUC 0.62 MD -0.55 | β drug|δ +1.04->+0.83 | ρδ sleep +0.20 drug -0.09
+KD_real   drug  +0.44 SD (animals +1.43 +0.49 -0.97 +0.82) t(3)  +0.87 p 0.4474 | sleep +0.73 +0.64 | drug-sleep Chibi +0.70 AUC 0.46 MD +0.36 George -0.15 AUC 0.48 MD -1.32 | β drug|δ +0.29->+0.45 | ρδ sleep +0.22 drug -0.19
+KD_surr   drug  -2.65 SD (animals -2.49 -3.29 -3.27 -1.53) t(3)  -6.37 p 0.0078 | sleep -0.36 -0.06 | drug-sleep Chibi -2.13 AUC 0.81 MD -1.69 George -3.23 AUC 0.86 MD -2.55 | β drug|δ -2.66->-1.35 | ρδ sleep -0.02 drug -0.53
+KDmed     drug  +0.47 SD (animals +1.01 +0.77 -0.61 +0.69) t(3)  +1.28 p 0.2894 | sleep +0.71 +0.32 | drug-sleep Chibi +0.30 AUC 0.55 MD +0.61 George +0.45 AUC 0.58 MD -0.40 | β drug|δ +0.37->+0.03 | ρδ sleep +0.13 drug -0.13
+KD_loose  drug  +0.36 SD (animals +1.38 +0.26 -0.57 +0.38) t(3)  +0.91 p 0.4290 | sleep +0.70 +0.61 | drug-sleep Chibi +0.68 AUC 0.54 MD +0.49 George -0.36 AUC 0.45 MD -0.44 | β drug|δ +0.18->+0.06 | ρδ sleep +0.19 drug -0.37
+KD_mid    drug  +0.69 SD (animals +1.69 +0.79 -0.25 +0.54) t(3)  +1.74 p 0.1807 | sleep +0.54 +0.42 | drug-sleep Chibi +1.15 AUC 0.63 MD +0.74 George +0.37 AUC 0.56 MD -0.23 | β drug|δ +0.77->+0.74 | ρδ sleep +0.17 drug -0.22
+KD_tight  drug  +1.89 SD (animals +2.29 +2.44 +0.71 +2.11) t(3)  +4.74 p 0.0178 | sleep +0.83 +0.61 | drug-sleep Chibi +1.46 AUC 0.63 MD +0.90 George +1.83 AUC 0.70 MD -0.70 | β drug|δ +1.64->+1.27 | ρδ sleep +0.19 drug +0.13
+MARDIA    drug  +2.11 SD (animals +2.94 +2.16 +1.57 +1.76) t(3)  +6.96 p 0.0061 | sleep +0.76 +0.61 | drug-sleep Chibi +2.19 AUC 0.78 MD +1.41 George +1.56 AUC 0.72 MD +0.19 | β drug|δ +1.88->+1.05 | ρδ sleep +0.25 drug +0.03
+KD_raw    drug  +0.32 SD (animals -0.09 -0.04 -0.69 +2.11) t(3)  +0.53 p 0.6346 | sleep +0.39 +0.54 | drug-sleep Chibi -0.47 AUC 0.37 MD -0.14 George -0.58 AUC 0.42 MD -0.96 | β drug|δ -0.53->-0.53 | ρδ sleep +0.24 drug -0.18
+ZGK       drug  -3.27 SD (animals -4.69 -2.16 -2.85 -3.38) t(3)  -6.11 p 0.0088 | sleep -0.11 -0.41 | drug-sleep Chibi -4.58 AUC 0.93 MD -2.38 George -1.75 AUC 0.82 MD -0.67 | β drug|δ -3.21->-1.81 | ρδ sleep -0.32 drug +0.02
+window r with ZGK (all windows, sd units): {'KD_sd': -0.44, 'KD_real_sd': -0.36, 'KD_surr_sd': 0.32, 'KDmed_sd': -0.27, 'KD_loose_sd': -0.32, 'KD_mid_sd': -0.36, 'KD_tight_sd': -0.47, 'MARDIA_sd': -0.53, 'KD_raw_sd': -0.19, 'ZGK_sd': 1.0}
