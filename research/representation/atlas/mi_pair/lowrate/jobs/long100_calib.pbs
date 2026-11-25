@@ -1,0 +1,15 @@
+#!/bin/bash
+# Drug-blind T = 1000 / 5000 stationary offset (lowrate/long100.py calib) on the W50 stage-A bank. qsub -v SRC=<snapshot> long100_calib.pbs
+# Expected ~0.13 kSU, worst ~0.3 kSU.
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=190GB,walltime=06:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_long100_calib
+#PBS -j oe
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+S=/scratch/ql44/we2614/mts-spi-study; L=$S/atlas/banks/mi-lowrate; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125
+PY="env PYTHONPATH=$SRC/src:$SRC/research/representation/atlas/mi_pair:$SRC/research/representation/atlas/mi_pair/lowrate /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+mkdir -p $G/calib && cd $G/calib || exit 2
+$PY $SRC/research/representation/atlas/mi_pair/lowrate/long100.py calib $L/W50/stage-a calib_long100.npz 200 40 48 || exit 3
+$PY $SRC/research/representation/atlas/mi_pair/lowrate/long100.py cscore calib_long100.npz > calib_long100.txt && sha256sum calib_long100.npz calib_long100.txt > SHA256SUMS && echo ALLDONE

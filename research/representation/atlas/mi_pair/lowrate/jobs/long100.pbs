@@ -1,0 +1,18 @@
+#!/bin/bash
+# 100 Hz 50-s banks and cuts (lowrate/long100.py build). qsub -v SRC=<snapshot dir> long100.pbs. Expected ~0.02 kSU, worst ~0.1 kSU.
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=30,mem=190GB,walltime=02:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_long100_build
+#PBS -j oe
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+S=/scratch/ql44/we2614/mts-spi-study; OUT=$S/atlas/banks/mi-lowrate; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125
+ARMS="W50 W50L8 C10 C10L8"
+cd $SRC || exit 2
+env PYTHONPATH=$SRC:$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python research/representation/atlas/mi_pair/lowrate/long100.py build \
+    $S/atlas/banks $OUT $S/data/atlas/neurotycho/raw $OUT 30 || exit 3
+# gdata: manifests and the gate only (banks stay on scratch, regenerable); sums in their own file
+mkdir -p $G/banks && cd $OUT && cp gate_a_long100.json $G/banks/ && for a in $ARMS; do for g in stage-a stage-b; do
+  mkdir -p $G/banks/$a/$g; cp $a/$g/manifest.json $G/banks/$a/$g/; done; done
+cd $OUT && sha256sum $(for a in $ARMS; do echo $a/*/windows.npz; done) > $G/banks/SHA256SUMS-long100 && echo ALLDONE
