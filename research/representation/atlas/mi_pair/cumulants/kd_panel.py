@@ -116,7 +116,7 @@ def main(root, out):
         tk.set_color(COLOR[g])
     b1.tick_params(axis='x', length=0); b1.set_ylabel(r'window-mean $k_{04}$, absolute')
     b1.legend(fontsize=5.4, loc='upper right', handletextpad=.3, handlelength=1)
-    b1.set_title(r'\textbf{f}\enspace Absolute: data above every null, everywhere', fontsize=6.8, pad=3, loc='left')
+    b1.set_title(r'\textbf{f}\enspace Absolute: animal means above every null, every state', fontsize=6.8, pad=3, loc='left')
     fig.suptitle(r"Panel (c)'s construction with mean difference kurtosis over the 496 pairs (a--e): window minus its "
                  r"session's eyes-closed mean, in eyes-open SDs. Numbers: window means; markers: animal means; "
                  r"clipped at the axis.", x=0, ha='left', fontsize=6.6)
