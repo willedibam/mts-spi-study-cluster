@@ -73,7 +73,7 @@ build-backend = "setuptools.build_meta"
 [tool.uv.sources]
 # One exact commit, recorded in uv.lock. Bump `rev` freely (HPC.md, "pyspi");
 # a fork branch is pinned the same way, by its commit on willedibam/pyspi.
-pyspi = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi", rev = "4e0810ce1962a546b0b426ca9fdfea68387f0355" }
+pyspi = { git = "https://github.com/DynamicsAndNeuralSystems/pyspi", rev = "becf4968f3c976c1bea5f4bdeffcffbea4cdfb4c" }
 
 # Installed by `uv sync` unless --no-dev: tests and notebook execution.
 [dependency-groups]
