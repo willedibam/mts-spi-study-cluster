@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=64GB,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -j oe
+# Off-band count null draws (offband_null.py; rules in preregs/offband-prereg.md). Runs from a commit-named source snapshot
+# S (git archive of src/ and this folder), never the shared checkout. Submit (walltime per mode):
+#   qsub -N ob_gate -l walltime=00:20:00 -v S=$S,MODE=gate offband.pbs
+#   qsub -N ob_t1 -J 0-9 -l walltime=03:00:00 -W depend=afterok:<gate> -v S=$S,MODE=tier1 offband.pbs
+#   qsub -N ob_t2 -J 0-4 -l walltime=04:00:00 -W depend=afterok:<gate> -v S=$S,MODE=tier2 offband.pbs
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd $S/research/representation/atlas/mi_pair || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117
+O=$G/offband; mkdir -p $O; PY="env PYTHONPATH=$S/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+basename $S > $O/source.txt
+PANEL_B=(20110114ktmdanesthesiaandsleepgeorgetoruyanagawa:drug:08 20120717slpanesthesiaandsleepchibitoruyanagawa:awake_eo:08
+         20120706slpanesthesiaandsleepchibitoruyanagawa:sleep:15 20120719ktanesthesiaandsleepchibitoruyanagawa:drug:03
+         20120730pfanesthesiaandsleepchibitoruyanagawa:drug:08)
+case $MODE in
+  gate)  $PY offband_null.py gate $B $G/zns 48 48 | tee $O/gate.txt; exit ${PIPESTATUS[0]} ;;
+  tier1) $PY offband_null.py tier1 $B $O/t1_$PBS_ARRAY_INDEX.npz $PBS_ARRAY_INDEX 10 100 48 || exit 3 ;;
+  tier2) $PY offband_null.py tier2 $B $O/t2_$PBS_ARRAY_INDEX.npz ${PANEL_B[$PBS_ARRAY_INDEX]} 20000 100 48 || exit 3 ;;
+esac
