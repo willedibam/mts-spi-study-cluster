@@ -39,6 +39,7 @@ LAB = {'w0 k4': 'w0', 'w0 k10': 'w0 k10', 'auto k4': 'AUTO', 'auto k4 pool': 'AU
 LOW = [('L20', '0.5-8 Hz @100'), ('L10', '0.5-4 Hz @100'), ('S20', '20 Hz sub'), ('D20', '20 Hz dec'),
        ('S10', '10 Hz sub'), ('D10', '10 Hz dec'), ('S20L', '50 s @20 sub'), ('D20L', '50 s @20 dec'),
        ('S10L', '100 s @10 sub'), ('D10L', '100 s @10 dec')]
+YLIM = (-.063, .024)
 KSHIFT10 = dict(a=np.array([-.022, -.010, -.012, -.013]), t=-5.73, p=.0053, ag=np.array([-.0154, -.0176, -.0064, -.0148]),
                 R=1.11)
 
@@ -106,24 +107,25 @@ def figure(d, stem):
             v = verdict(r); m = r['a'].mean()
             ax.scatter(x + rng.uniform(-.18, .18, 4), r['a'], s=5, color='#B9BFC3', lw=0, zorder=2)
             ax.plot(x, m, 'o', ms=4.2, color=VCOL[v], zorder=3, mfc=VCOL[v] if v == 'SURVIVES' else 'white', mew=1.1)
-            if cal is not None:
-                ax.errorbar(x + .32, cal[0], yerr=[[2 * cal[1]], [0]], fmt='D', ms=2.6, mfc='white', color='#6B7378', lw=.7,
+            assert YLIM[0] < r['a'].min() and r['a'].max() < YLIM[1] - .006, (gname, k)  # no clipped animal, clear of labels
+            if cal is not None:  # the -2 SE bar is the frozen 2-s rule; at 10 s no rule was frozen, so diamond only
+                ax.errorbar(x + .32, cal[0], yerr=[[2 * cal[1] if gname.startswith('2 s') else 0], [0]], fmt='D', ms=2.6, mfc='white', color='#6B7378', lw=.7,
                             capsize=1.5, mew=.7, zorder=2)
             ticks.append(x); labs.append(lab); x += 1
-        ax.text((x0 + x - 1) / 2, .0105, gname, ha='center', va='bottom', fontsize=7.5, linespacing=1.1)
+        ax.text((x0 + x - 1) / 2, YLIM[1] - .005, gname, ha='center', va='bottom', fontsize=7.5, linespacing=1.1)
         if gi < len(groups) - 1:
             ax.axvline(x, color='#D9DDE0', lw=.6, zorder=0)
         x += 1
     ax.axhline(0, color=INK, lw=.5); ax.axhline(ref, color=INK, lw=.5, ls=(0, (2, 2)))
     ax.text(x - 1.2, ref - .0012, 'anchor', fontsize=6.5, ha='right', va='top')
     ax.set_xticks(ticks); ax.set_xticklabels(labs, rotation=70, fontsize=6.5, ha='right', rotation_mode='anchor')
-    ax.set(xlim=(-1, x - 1), ylim=(-.063, .017), ylabel=r'drug $-$ awake EC $\Delta z$')
+    ax.set(xlim=(-1, x - 1), ylim=YLIM, ylabel=r'drug $-$ awake EC $\Delta z$')
     h = [plt.Line2D([], [], marker='o', ls='', ms=4.2, color=VCOL['SURVIVES'], label='mean of animals: SURVIVES'),
          plt.Line2D([], [], marker='o', ls='', ms=4.2, color=VCOL['PARTIAL'], mfc='white', mew=1.1, label='PARTIAL'),
          plt.Line2D([], [], marker='o', ls='', ms=4.2, color=VCOL['LOST'], mfc='white', mew=1.1, label='LOST'),
          plt.Line2D([], [], marker='o', ls='', ms=2.5, color='#B9BFC3', label='animal means (4)'),
          plt.Line2D([], [], marker='D', ls='', ms=2.6, mfc='white', color='#6B7378',
-                    label=r'stationary offset, synthetic (bar: $-2$ SE)')]
+                    label=r'stationary offset, synthetic (2 s bar: rule threshold)')]
     fig.legend(handles=h, ncol=5, fontsize=7, loc='outside lower center', handletextpad=.3, columnspacing=1.2)
     for ext in ('svg', 'pdf', 'png'):
         fig.savefig(f'{stem}.{ext}', dpi=180 if ext == 'png' else None)
