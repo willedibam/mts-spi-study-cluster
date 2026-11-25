@@ -44,7 +44,7 @@ def through(y, seeds):
 
 
 def task(a):
-    kind, q, gidx, k, v, zrec, zsur = a
+    kind, q, gidx, k, v, zrec, zsur = a[:7]
     if kind == 'gate':                                                     # recording path and draw 0 against the stored zns K
         kr = edge_mi(v)[1]; ks = edge_mi(multivariate_iaaft(v, np.random.default_rng(k), final='spectrum')[0])[1]
         return kind, q, None, (float(np.abs(kr - zrec).max()), float(np.abs(ks - zsur).max()), jump(v))
