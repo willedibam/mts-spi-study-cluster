@@ -5,7 +5,7 @@
 - **Gadi job:** 185182245, run from the snapshot `mi-kdiff-f42dce5`. It ran for 1 min 42 s on 48 CPUs (about 3 SU) and exited 0.
 - **Outputs:**
   - [`kd-score.txt`](../../../../results/representation/atlas-mi-pair-261117/cumulants/kd-score.txt), `kd-score.json`, `kd-windows.csv.gz` and the `kd_*.npz` files are in `results/representation/atlas-mi-pair-261117/cumulants/`.
-  - The `kd_*.npz` files are checked against `SHA256SUMS-kdiff`.
+  - The score files and `kd-windows.csv.gz` are tracked in git. The `kd_*.npz` files (34 MB) are not; they are on gdata at `/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/cumulants/` and are checked against `SHA256SUMS-kdiff`.
 
 ## Verdict: a companion level readout, not a replacement for panel (c)
 
