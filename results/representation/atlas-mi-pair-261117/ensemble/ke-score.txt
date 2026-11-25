@@ -1,0 +1,60 @@
+gate ke_A_KT.npz: max |draw-0 net k04 - kd KD| = 5.6e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_A_KTMD.npz: max |draw-0 net k04 - kd KD| = 7.5e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_A_MD.npz: max |draw-0 net k04 - kd KD| = 7.6e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_A_PF.npz: max |draw-0 net k04 - kd KD| = 6.5e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_A_SLP.npz: max |draw-0 net k04 - kd KD| = 3.7e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_B_KT.npz: max |draw-0 net k04 - kd KD| = 7.1e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_B_KTMD.npz: max |draw-0 net k04 - kd KD| = 7.5e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_B_MD.npz: max |draw-0 net k04 - kd KD| = 4.5e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_B_PF.npz: max |draw-0 net k04 - kd KD| = 1.3e-08 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+gate ke_B_SLP.npz: max |draw-0 net k04 - kd KD| = 4.0e-09 PASS | max |kmarg im - real| 0.0e+00 | zero-sd pairs {}
+B = 100, windows 1260, tail chance 0.030; zero-sd pairs in total {'KZ': 0, 'MZ': 0, 'K40Z': 0, 'K22Z': 0, 'KZ_ia': 0, 'KZ_ft': 0}
+KD         drug  +1.19 SD (animals +2.11 +1.42 -0.00 +1.24) t(3)  +2.71 p 0.0729 | sleep +0.81 +0.64 | drug-sleep Chibi +1.29 AUC 0.61 MD +0.83 George +0.78 AUC 0.62 MD -0.55 | β drug|δ +1.04->+0.83 | ρδ sleep +0.20 drug -0.09
+ZGK        drug  -3.27 SD (animals -4.69 -2.16 -2.85 -3.38) t(3)  -6.11 p 0.0088 | sleep -0.11 -0.41 | drug-sleep Chibi -4.58 AUC 0.93 MD -2.38 George -1.75 AUC 0.82 MD -0.67 | β drug|δ -3.21->-1.81 | ρδ sleep -0.32 drug +0.02
+KZ         drug  -0.00 SD (animals +0.71 +0.17 -1.00 +0.10) t(3)  -0.01 p 0.9901 | sleep +0.54 +0.42 | drug-sleep Chibi +0.17 AUC 0.56 MD -0.20 George -0.24 AUC 0.55 MD -0.98 | β drug|δ -0.03->+0.08 | ρδ sleep +0.19 drug -0.16
+MZ         drug  +0.04 SD (animals +0.94 -0.08 -0.83 +0.12) t(3)  +0.10 p 0.9266 | sleep +0.45 +0.41 | drug-sleep Chibi +0.49 AUC 0.49 MD -0.18 George -0.49 AUC 0.40 MD -0.99 | β drug|δ +0.02->+0.08 | ρδ sleep +0.23 drug -0.21
+KZ_tight   drug  +0.50 SD (animals +0.79 +0.91 -0.51 +0.80) t(3)  +1.48 p 0.2366 | sleep +0.54 +0.34 | drug-sleep Chibi +0.24 AUC 0.46 MD -0.09 George +0.57 AUC 0.58 MD -1.08 | β drug|δ +0.40->+0.38 | ρδ sleep +0.16 drug +0.05
+K40Z       drug  -0.27 SD (animals -0.18 -0.10 -0.97 +0.18) t(3)  -1.08 p 0.3603 | sleep +0.07 +0.22 | drug-sleep Chibi -0.25 AUC 0.58 MD +0.08 George -0.31 AUC 0.60 MD -0.39 | β drug|δ -0.28->-0.44 | ρδ sleep +0.21 drug -0.17
+K22Z       drug  +0.40 SD (animals +0.47 +0.02 +1.21 -0.09) t(3)  +1.35 p 0.2690 | sleep -0.21 -0.23 | drug-sleep Chibi +0.68 AUC 0.70 MD +0.10 George +0.24 AUC 0.57 MD +0.36 | β drug|δ +0.47->+0.53 | ρδ sleep -0.19 drug +0.07
+KZ_ia      drug  +0.22 SD (animals +0.99 +0.42 -0.73 +0.21) t(3)  +0.62 p 0.5765 | sleep +0.58 +0.45 | drug-sleep Chibi +0.41 AUC 0.48 MD -0.06 George -0.03 AUC 0.50 MD -0.87 | β drug|δ +0.19->+0.20 | ρδ sleep +0.20 drug -0.11
+KZ_ft      drug  +0.43 SD (animals +1.40 +0.53 -0.53 +0.33) t(3)  +1.09 p 0.3549 | sleep +0.70 +0.51 | drug-sleep Chibi +0.69 AUC 0.51 MD +0.02 George +0.02 AUC 0.51 MD -0.89 | β drug|δ +0.37->+0.28 | ρδ sleep +0.20 drug -0.09
+KD0        drug  +1.19 SD (animals +2.11 +1.42 -0.00 +1.24) t(3)  +2.71 p 0.0729 | sleep +0.81 +0.64 | drug-sleep Chibi +1.29 AUC 0.61 MD +0.83 George +0.78 AUC 0.62 MD -0.55 | β drug|δ +1.04->+0.83 | ρδ sleep +0.20 drug -0.09
+KD_ens     drug  +0.82 SD (animals +1.80 +0.91 -0.50 +1.06) t(3)  +1.71 p 0.1863 | sleep +0.76 +0.69 | drug-sleep Chibi +1.04 AUC 0.53 MD +0.62 George +0.21 AUC 0.54 MD -0.99 | β drug|δ +0.64->+0.63 | ρδ sleep +0.23 drug -0.15
+KD_ens_ia  drug  +1.20 SD (animals +2.17 +1.36 -0.02 +1.29) t(3)  +2.65 p 0.0771 | sleep +0.80 +0.75 | drug-sleep Chibi +1.37 AUC 0.60 MD +0.85 George +0.61 AUC 0.60 MD -0.75 | β drug|δ +1.01->+0.79 | ρδ sleep +0.24 drug -0.09
+MN         drug  +1.00 SD (animals +2.06 +0.84 -0.08 +1.17) t(3)  +2.25 p 0.1098 | sleep +0.65 +0.70 | drug-sleep Chibi +1.40 AUC 0.59 MD +0.78 George +0.14 AUC 0.54 MD -0.83 | β drug|δ +0.79->+0.63 | ρδ sleep +0.27 drug -0.19
+K40N       drug  +0.14 SD (animals +0.39 +0.18 -0.72 +0.72) t(3)  +0.46 p 0.6788 | sleep +0.24 +0.40 | drug-sleep Chibi +0.15 AUC 0.54 MD +0.67 George -0.22 AUC 0.44 MD -0.48 | β drug|δ -0.03->-0.33 | ρδ sleep +0.24 drug -0.27
+K22N       drug  +0.16 SD (animals +0.11 -0.16 +1.18 -0.50) t(3)  +0.43 p 0.6974 | sleep -0.29 -0.33 | drug-sleep Chibi +0.40 AUC 0.64 MD -0.44 George +0.17 AUC 0.54 MD +0.59 | β drug|δ +0.29->+0.42 | ρδ sleep -0.20 drug +0.13
+TUN        drug  +0.15 SD (animals +0.36 +0.13 -0.78 +0.87) t(3)  +0.42 p 0.7033 | sleep +0.27 +0.39 | drug-sleep Chibi +0.09 AUC 0.48 MD +0.90 George -0.26 AUC 0.44 MD -0.60 | β drug|δ -0.08->-0.44 | ρδ sleep +0.21 drug -0.24
+TVN        drug  +0.90 SD (animals +1.80 +0.98 -0.50 +1.31) t(3)  +1.81 p 0.1676 | sleep +0.76 +0.51 | drug-sleep Chibi +1.04 AUC 0.56 MD +1.34 George +0.47 AUC 0.57 MD -0.95 | β drug|δ +0.77->+0.82 | ρδ sleep +0.17 drug -0.23
+TAIL       drug  -0.15 SD (animals +0.33 -0.07 -0.84 -0.01) t(3)  -0.60 p 0.5934 | sleep +0.54 +0.43 | drug-sleep Chibi -0.21 AUC 0.59 MD -0.27 George -0.51 AUC 0.64 MD -0.71 | β drug|δ -0.35->-0.37 | ρδ sleep +0.23 drug -0.21
+TAILM      drug  -0.11 SD (animals +0.39 -0.17 -0.75 +0.09) t(3)  -0.47 p 0.6711 | sleep +0.48 +0.30 | drug-sleep Chibi -0.09 AUC 0.56 MD -0.26 George -0.48 AUC 0.62 MD -0.79 | β drug|δ -0.28->-0.29 | ρδ sleep +0.19 drug -0.22
+gate pipeline: KD and ZGK t(3) + AUCs against kd-score.json, max gap 0.0e+00 PASS
+
+mechanism, raw units: per-animal drug - eyes-closed change of window means (pooled = mean of animals)
+  k04_real  pooled +0.0303 | Chibi +0.0977 George +0.0333 Kin2 -0.0659 Su +0.0561
+  k04_pred  pooled -0.0581 | Chibi -0.0590 George -0.0643 Kin2 -0.0719 Su -0.0371
+  k04_ia    pooled -0.0526 | Chibi -0.0522 George -0.0604 Kin2 -0.0645 Su -0.0332
+  k04_im    pooled -0.0260 | Chibi -0.0262 George -0.0289 Kin2 -0.0319 Su -0.0170
+  k04_ft    pooled -0.0583 | Chibi -0.0588 George -0.0654 Kin2 -0.0720 Su -0.0372
+  k22_real  pooled +0.0163 | Chibi +0.0164 George +0.0069 Kin2 +0.0523 Su -0.0106
+  k22_pred  pooled -0.0202 | Chibi -0.0204 George -0.0230 Kin2 -0.0240 Su -0.0134
+  k22_ia    pooled -0.0155 | Chibi -0.0138 George -0.0193 Kin2 -0.0185 Su -0.0105
+  k22_im    pooled +0.0113 | Chibi +0.0130 George +0.0121 Kin2 +0.0143 Su +0.0056
+  k22_ft    pooled -0.0204 | Chibi -0.0205 George -0.0231 Kin2 -0.0250 Su -0.0131
+  m2        pooled +0.0277 | Chibi +0.0255 George +0.0315 Kin2 +0.0366 Su +0.0173
+  kd0       pooled +0.0836 | Chibi +0.1477 George +0.0995 Kin2 -0.0000 Su +0.0869
+  km_real   pooled +0.0000 | Chibi +0.0000 George +0.0000 Kin2 +0.0000 Su +0.0000
+  km_ia     pooled -0.0508 | Chibi -0.0502 George -0.0597 Kin2 -0.0620 Su -0.0314
+  km_im     pooled +0.0000 | Chibi +0.0000 George +0.0000 Kin2 +0.0000 Su +0.0000
+  km_ft     pooled -0.0615 | Chibi -0.0628 George -0.0680 Kin2 -0.0766 Su -0.0385
+  km_pred   pooled -0.0611 | Chibi -0.0630 George -0.0674 Kin2 -0.0751 Su -0.0390
+  M1 k04 pred / ia: pooled ratio 1.105, window r 0.974 -> spectral concentration HOLDS
+  M1 k04 pred / ft: pooled ratio 0.995, window r 0.988 -> spectral concentration HOLDS
+  M1 k04 pred / im: pooled ratio 2.232, window r 0.952
+  M1 k22 pred / ia: pooled ratio 1.304, window r 0.938
+  M1 k22 pred / ft: pooled ratio 0.989, window r 0.970
+  M1 k22 pred / im: pooled ratio -1.796, window r -0.911
+  M2 marginal term share of single-draw KD drug change: 0.332 (animals Chibi +0.17 George +0.32 Kin2 -4595.97 Su +0.20)
+
+decision: KZ t(3) -0.01 vs KD +2.71, positive in 3/4 animals -> KZ does not replace KD as the level readout; AUC Chibi 0.56 vs Δz 0.93 George 0.55 vs Δz 0.82 -> does not improve on Δz for anaesthesia against sleep; KZ not positive in 4/4: the level readouts' drug effect is attributed to the null's spectral and marginal shifts
+window r with ZGK (sd units): {'KD_sd': -0.44, 'ZGK_sd': 1.0, 'KZ_sd': -0.28, 'MZ_sd': -0.3, 'KZ_tight_sd': -0.31, 'K40Z_sd': 0.02, 'K22Z_sd': -0.04, 'KZ_ia_sd': -0.33, 'KZ_ft_sd': -0.38, 'KD0_sd': -0.44, 'KD_ens_sd': -0.41, 'KD_ens_ia_sd': -0.46, 'MN_sd': -0.44, 'K40N_sd': -0.11, 'K22N_sd': 0.02, 'TUN_sd': -0.08, 'TVN_sd': -0.39, 'TAIL_sd': -0.23, 'TAILM_sd': -0.23}
