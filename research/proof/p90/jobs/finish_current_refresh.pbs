@@ -13,4 +13,5 @@ set -euo pipefail
 cd "${PBS_O_WORKDIR:?}"
 source jobs/gadi/env.sh
 exec >"logs/${PBS_JOBNAME}_${PBS_JOBID%%.*}.log" 2>&1
-python -m research.proof.p90.finish_current_refresh
+# ARGS: e.g. "--config research/proof/p90/configs/proof-p90-261126.yaml --spis 207 --computation 3.0.0"
+python -m research.proof.p90.finish_current_refresh ${ARGS:-}

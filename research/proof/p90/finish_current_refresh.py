@@ -1,7 +1,9 @@
-"""Audit and reconstruct the feature bank of the current-p90 proof rerun of 2026-10-14.
+"""Audit a proof corpus and build its feature bank (`<run>/features.npz`).
 
-It also executed the 2026-10-14 notebook, since deleted; the bank is analysed in
-`proof_p90_261021` and `proof_figure_261029`."""
+Defaults are the current-p90 rerun of 2026-10-14 (283 SPIs, computation r9), whose bank is
+analysed in `proof_p90_261021` and `proof_figure_261029`. The 2026-11-26 rerun on pyspi
+3.0.0rc2: `--config research/proof/p90/configs/proof-p90-261126.yaml --spis 207 --computation 3.0.0`."""
+import argparse
 from collections import Counter
 import json
 import subprocess
@@ -12,8 +14,13 @@ from mtsspi.utils import project_root
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", default="research/proof/p90/configs/proof-p90-261014.yaml")
+    parser.add_argument("--spis", type=int, default=283)
+    parser.add_argument("--computation", default="3.0.0.r9")
+    args = parser.parse_args()
     root = project_root()
-    corpus = load_corpus(root / "research/proof/p90/configs/proof-p90-261014.yaml")
+    corpus = load_corpus(root / args.config)
     entries = corpus.entries()
     audit = audit_outputs(corpus, entries)
     if audit["complete"] != 1080 or audit["failures"]:
@@ -24,8 +31,8 @@ def main():
     errors = Counter()
     for entry in entries:
         meta = json.loads((entry.output_dir(corpus) / "meta.json").read_text())
-        assert meta["pyspi"]["n_spis"] == 283
-        assert meta["pyspi"]["version"]["computation"] == "3.0.0.r9"
+        assert meta["pyspi"]["n_spis"] == args.spis
+        assert meta["pyspi"]["version"]["computation"] == args.computation
         assert meta["job"]["estimator_rng_policy"] == "pyspi_fixed_seeds"
         errors.update(meta["pyspi"]["errors"].keys())
     audit["validity_refusals_by_spi"] = dict(errors)
