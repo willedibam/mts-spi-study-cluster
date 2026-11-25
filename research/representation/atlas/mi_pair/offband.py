@@ -255,6 +255,14 @@ def wake_ref(df, er, e0):
     for g in GROUPS:
         x = df[df.group == g].cw; print(f'{g:12s} {x.mean():6.1f} {x.median():6.0f} {x.mean() - 24.8:+9.1f} {np.mean(x > hi):18.3f}')
     animal_test(session(df, 'cw'), 'Δ wake-reference count (session state − awake_ec mean)')
+    u = np.abs(er) / e0.std(1, keepdims=True); bhw = np.empty(len(df), int)      # per pair: p against the session's eyes-open pool
+    for _, d in df.groupby('unit'):
+        eo = d.index[d.state == 'awake_eo'].values
+        for i in d.index.values:
+            pool = np.sort(u[eo[eo != i]].ravel()); p = (1 + pool.size - np.searchsorted(pool, u[i])) / (pool.size + 1); bhw[i] = bh(p)
+    df['bhw'] = bhw
+    print('per pair, BH q = .05 against the session\'s eyes-open pool (min p about 2e-4, so Bonferroni is out of reach): mean discoveries ' +
+          ', '.join(f'{g} {df[df.group == g].bhw.mean():.2f}' for g in GROUPS))
     print('panel (b) windows: ' + ', '.join(f'{g} {int(df[df.id == w].cw.iloc[0])}' for g, w in PANEL_B.items()))
     return df
 
