@@ -21,8 +21,9 @@ from plot_character_draft import COLOR, SHORT, STATES, NAME, GREY, LIGHT
 from offband import load, load_null, wake_counts, PANEL_B
 
 
-def strip(ax, df, col, lo, hi, ref, top, rng, wake_line=True):
-    ax.axhspan(lo, hi, color=LIGHT, lw=0, zorder=0) if hi > lo else ax.axhline(lo, color=GREY, lw=.6, ls=(0, (3, 1.6)), zorder=0)
+def strip(ax, df, col, lo, hi, ref, top, rng, wake_line=True, mid=None, ref_in=True):
+    ax.axhspan(lo, hi, color=LIGHT, lw=0, zorder=0) if hi > lo else None
+    ax.axhline(lo if mid is None else mid, color=GREY, lw=.6, ls=(0, (3, 1.6)), zorder=0)
     wm = df[df.group == 'awake_eo'][col].median()
     if wake_line: ax.axhline(wm, color=GREY, lw=.7, zorder=1)
     for i, s in enumerate(STATES):
@@ -33,27 +34,29 @@ def strip(ax, df, col, lo, hi, ref, top, rng, wake_line=True):
     ax.set_xticks(range(len(STATES)), [SHORT[s] for s in STATES]); ax.set_xlim(-.6, len(STATES) - .4); ax.set_ylim(0, top)
     ax.text(-.55, 1.01, 'median', transform=ax.get_xaxis_transform(), ha='right', va='bottom', fontsize=5.6, color=GREY)
     ax.set_ylabel('off-band pairs of 496'); ax.tick_params(axis='x', length=0)
-    ax.text(len(STATES) - .45, lo - 2, ref, ha='right', va='top', fontsize=5.6, color=GREY)
-    if wake_line: ax.text(len(STATES) - .45, wm + 2, 'wake median', ha='right', va='bottom', fontsize=5.6, color=GREY)
+    if ref_in: ax.text(len(STATES) - .45, lo - 2, ref, ha='right', va='top', fontsize=5.6, color=GREY)
+    if wake_line: ax.text(len(STATES) - .38, wm, 'wake\nmedian', ha='left', va='center', fontsize=5.6, color=GREY, clip_on=False)
 
 
 def draw(root, out, null=None, both=False):
     df, E, er, e0 = load(root / 'zns')
     if null:
         pos, e, _, _ = load_null(df, E, null, 't1'); L = df.L.values[pos]
-        c0 = (np.abs(e[:, 1:]) > L[:, None, None]).sum(2); lo, hi = np.percentile(c0, [2.5, 97.5]); ref = r'surrogate vs.\ surrogate, 95\% range'
+        c0 = (np.abs(e[:, 1:]) > L[:, None, None]).sum(2); lo, hi = np.percentile(c0, [2.5, 97.5]); mid = c0.mean()
+        ref = r'surrogate vs.\ surrogate: mean (dashed), single-window 95\% range'
     else:
-        lo = hi = .05 * 496; ref = r'nominal 5\%'
+        lo = hi = .05 * 496; mid = None; ref = r'nominal 5\%'
     figure_style(); plt.rcParams.update({'font.size': 7.5, 'axes.labelsize': 7.3, 'xtick.labelsize': 6.8, 'ytick.labelsize': 6.8,
                                          'axes.linewidth': .7, 'svg.hashsalt': 'fig-mi-offband'})
     rng = np.random.default_rng(0); top = 5 * np.ceil(df.c.max() / 5) + 2
     if not both:
-        fig, ax = plt.subplots(figsize=(3.0, 1.9)); strip(ax, df, 'c', lo, hi, ref, top, rng)
+        fig, ax = plt.subplots(figsize=(3.0, 1.9)); strip(ax, df, 'c', lo, hi, ref, top, rng, mid=mid)
     else:
         wake_counts(df, er, e0); n0 = df[df.group == 'awake_eo'].cw; wlo, whi = np.percentile(n0, [2.5, 97.5])
         fig = plt.figure(figsize=(7.2, 4.1)); g = fig.add_gridspec(2, 5, height_ratios=[1, 1.15])
+        gt = g[0, :].subgridspec(1, 5)
         for j, s in enumerate(('awake_eo', 'SLP', 'KT', 'KTMD', 'PF')):
-            ax = fig.add_subplot(g[0, j]); i = int(np.where(df.id == PANEL_B[s])[0][0]); (gg, kk) = E[i, 0]
+            ax = fig.add_subplot(gt[0, j]); i = int(np.where(df.id == PANEL_B[s])[0][0]); (gg, kk) = E[i, 0]
             c = np.polyfit(gg, kk, 1); sd = e0[i].std(); xx = np.linspace(-.05, .5, 50); ink = COLOR['ink'] if s == 'awake_eo' else COLOR[s]
             ax.fill_between(xx, np.polyval(c, xx) - df.L[i], np.polyval(c, xx) + df.L[i], color=LIGHT, lw=0, zorder=0)
             for sg in (-1, 1): ax.plot(xx, np.polyval(c, xx) + sg * df.Lw[i] * sd, color=GREY, lw=.5, ls=(0, (2.5, 1.5)), zorder=1)
@@ -64,10 +67,11 @@ def draw(root, out, null=None, both=False):
             ax.set(xlim=(-.02, .42), ylim=(-.17, .52), xticks=[0, .2, .4], yticks=[0, .2, .4], aspect='equal')
             ax.set_title(f'{NAME[s]}\n{os_.sum()} / {ow.sum()}', fontsize=6.8, color=ink, pad=2)
             ax.set_xlabel('$G$', labelpad=1); ax.set_ylabel('$K$', labelpad=1) if j == 0 else ax.set_yticklabels([])
-        for j, (col, a, b, r, name) in enumerate((('c', lo, hi, ref, r'surrogate reference (beyond Gaussian)'),
-                                                 ('cw', wlo, whi, r'eyes-open wake, leave-one-out 95\% range', r'wake reference (beyond the awake state)'))):
+        for j, (col, a, b, r, m, name) in enumerate((('c', lo, hi, ref, mid, r'surrogate reference (beyond linear-Gaussian)'),
+                                                 ('cw', wlo, whi, r'eyes-open wake, left out one at a time: mean, 95\% range', n0.mean(), r'wake reference (beyond the awake state)'))):
             ax = fig.add_subplot(g[1, 0:3] if j == 0 else g[1, 3:5])
-            strip(ax, df, col, a, b, r, top, rng, wake_line=col == 'c'); ax.set_title(name, fontsize=7, pad=12)
+            strip(ax, df, col, a, b, r, top, rng, wake_line=col == 'c', mid=m, ref_in=False)
+            ax.set_title(name, fontsize=7, pad=19); ax.text(.5, 1.075, r, transform=ax.transAxes, ha='center', va='bottom', fontsize=5.6, color=GREY)
     for ext in ('svg', 'pdf', 'png'):
         fig.savefig(out.with_suffix('.' + ext), dpi=600, metadata={'svg': {'Date': None}, 'pdf': {'CreationDate': None}}.get(ext))
     plt.close(fig)
