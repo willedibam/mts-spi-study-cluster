@@ -23,8 +23,8 @@ The table below is in panel (c)'s units. "Drug" is the mean over 4 animals; "sle
 |---|---|---|---|---|---|
 | ZGK (Δz) | −3.27, −6.11, .009 | −4.69 −2.16 −2.85 −3.38 | −0.11 −0.41 | −4.58 .93 / −1.75 .82 | .56 |
 | **KD (primary)** | +1.19, +2.71, .073 | +2.11 +1.42 −0.00 +1.24 | +0.81 +0.64 | +1.29 .61 / +0.78 .62 | .80 |
-| KD_real | +0.44, +0.87, .45 | +1.43 +0.49 −0.97 +0.82 | +0.73 +0.64 | .46 / .48 | — |
-| KD_surr | −2.65, −6.37, .008 | −2.49 −3.29 −3.27 −1.53 | −0.36 −0.06 | .81 / .86 | .51 |
+| KD_real (own scale) | +0.44, +0.87, .45 | +1.43 +0.49 −0.97 +0.82 | +0.73 +0.64 | .46 / .48 | — |
+| KD_surr (own scale) | −2.65, −6.37, .008 | −2.49 −3.29 −3.27 −1.53 | −0.36 −0.06 | .81 / .86 | .51 |
 | KD_tight | +1.89, +4.74, .018 | +2.29 +2.44 +0.71 +2.11 | +0.83 +0.61 | .63 / .70 | .77 |
 | MARDIA | +2.11, +6.96, .006 | +2.94 +2.16 +1.57 +1.76 | +0.76 +0.61 | .78 / .72 | .56 |
 | KD_raw | +0.32, +0.53, .63 | −0.09 −0.04 −0.69 +2.11 | +0.39 +0.54 | .37 / .42 | — |
@@ -35,21 +35,36 @@ The table below is in panel (c)'s units. "Drug" is the mean over 4 animals; "sle
 - So it is a companion, not a replacement.
 - MARDIA is the strongest level readout: 4/4 animals, t(3) +6.96. Its AUCs are below Δz's in both animals, and its retention equals Δz's.
 
-## What carries KD's drug effect: the null moves, the data barely do
+## What carries the level readouts' drug effect: mostly the null falling
 
-- `KD_real` barely moves under drug (+0.44, t(3) +0.87). `KD_surr` falls (−2.65, t(3) −6.37, 4/4 animals). The net rise is therefore mostly the IAAFT surrogate's difference kurtosis turning negative. That surrogate is a Gaussian-like process with the window's spectrum.
-- The likely cause is the slow-wave spectrum (inferred):
-  - Within drug windows, `KD_surr` tracks the delta fraction (Spearman −.53), and half its drug coefficient goes when delta is adjusted for.
-  - Slow, near-periodic differences are platykurtic: a sinusoid's excess kurtosis is −1.5.
-- The honest wording is "under drug the electrode differences are heavier-tailed than their spectrum predicts", not "more kurtotic".
-- Δz does not decompose the same way. Here z_real and z_surr are both in Δz's eyes-open SD units, from the stored `zns` V[:, 1]:
+Parts are on the net readout's own eyes-open SD scale, so real − surrogate = net. Recomputed from `kd-windows.csv.gz` and the `kd_*.npz` files. The table rows `KD_real` and `KD_surr` above are each on their own scale and are not comparable.
+
+| Part | Drug | Animals | t(3) | Sleep | Raw k04 drug − EC | Spearman with delta (drug windows) |
+|---|---|---|---|---|---|---|
+| KD net | +1.19 | +2.11 +1.42 −0.00 +1.24 | +2.71 | +0.81 +0.64 | +.102 | — |
+| KD real | +0.43 | +1.39 +0.47 −0.94 +0.80 | +0.87 | +0.71 +0.62 | +.046 | −.31 |
+| KD surrogate | −0.76 | −0.71 −0.94 −0.94 −0.44 | −6.37 | −0.10 −0.02 | −.056 | −.60 |
+| MARDIA net | +2.11 | +2.94 +2.16 +1.57 +1.76 | +6.96 | +0.76 +0.61 | +.205 | — |
+| MARDIA real | +0.54 | +1.45 +0.36 −0.43 +0.79 | +1.37 | +0.52 +0.51 | +.061 | −.30 |
+| MARDIA surrogate | −1.57 | −1.49 −1.81 −2.01 −0.97 | −6.97 | −0.23 −0.10 | −.143 | −.71 |
+
+- About 64% of KD's drug rise, and 74% of MARDIA's, is the surrogate's kurtosis falling. The surrogate fall is consistent in 4/4 animals. The real part rises in 3/4 animals (Kin2 falls) and is not significant.
+- The surrogate's mean k04 is already negative in eyes-closed wake (−.042) and falls further with delta. Two candidate mechanisms remain; neither is tested:
+  - **(a) Finite-sample bias.** Sample kurtosis is biased negative when the effective sample size is small, and slow-wave windows have fewer effective samples. This bias hits the real data equally. On this reading the net is the bias-corrected quantity, and the flat real part is a genuine rise masked by bias. That is the case for subtracting a spectrum-matched null.
+  - **(b) A spectral or phase-structure effect** specific to the IAAFT construction, which would not apply to the real data in the same way.
+  - Telling (a) from (b) needs the k04 of Gaussian processes at each window's spectrum, or a bias correction by effective n. Neither has been run.
+- Safe wording: "under drug the electrode differences are heavier-tailed than a Gaussian with the same spectrum". Do not write "more kurtotic" in absolute terms.
+- Δz split the same way, with z_real and z_surr both in Δz's eyes-open SD units, from the stored `zns` V[:, 1]:
 
   | Part | Drug | Animals | t(3) | Sleep |
   |---|---|---|---|---|
   | z_real | −4.95 | −0.84 −6.79 −7.33 −4.85 | −3.37 | +0.96 −0.82 |
   | z_surr | −1.68 | +3.85 −4.63 −4.48 −1.47 | −0.85 | — |
 
-  Both parts move, and they move heterogeneously, Chibi's surrogate in the opposite direction. Only their difference is consistent in all 4 animals. So the real data carry more of Δz's drug effect than of KD's. Δz's consistency still comes from the contrast with the null, not from either part alone.
+  - For Δz the real part carries most of the effect and falls in 4/4 animals.
+  - The surrogate part is inconsistent: Chibi's rises by +3.85.
+  - The net is the tightest of the three (t(3) −6.11 against −3.37 for z_real), because subtracting the null removes animal-specific spectral shifts.
+  - So Δz's drug effect sits mainly in the data, while the kurtosis readouts' sits mainly in the null.
 
 ## Reading
 
@@ -58,4 +73,4 @@ The table below is in panel (c)'s units. "Drug" is the mean over 4 animals; "sle
 - Window-level correlation with ZGK is −.44 for KD and −.53 for MARDIA. They are related but not redundant.
 - Medetomidine sits at or below sleep on KD in George (−0.55) and only just above it in Chibi. The drug-against-sleep contrast is carried by KT, KTMD and PF.
 - Sleep exists in 2 animals, so every drug-against-sleep statement here is descriptive. The binding constraint for an "anaesthesia differs from both wake and sleep" paper is sleep data, not the choice of statistic.
-- Recommendation: keep Δz as panel (c). If a level readout is shown, show MARDIA or KD beside Δz with its real and surrogate parts. A level-only panel would show mostly the null's spectral shift.
+- Recommendation: keep Δz as panel (c). If a level readout is shown, show MARDIA or KD beside Δz with its real and surrogate parts. A level-only panel would plot a quantity that is about two-thirds the null's shift, so its reading depends on the untested mechanism above.
