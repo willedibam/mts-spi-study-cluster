@@ -26,7 +26,7 @@ The reproduction gate passed: k4 z matches the stored `zns` z to a maximum diffe
   - every drug agent's Δz is below 0;
   - R = 1.11, against a threshold of .5.
 - Per-agent retention is KT .97, KTMD 1.14, MD 1.04, PF 1.26. Sessions down under kshift: KT 4/4, KTMD 11/11, MD 4/4, PF 4/4.
-- R was predicted at .85–1.1 and came in at 1.11, just above that range. The bias slightly *diluted* the drug effect; it did not carry it.
+- R was predicted at .85–1.1 and came in at 1.11, just above that range. R is at least 1 under every candidate (kpool and k2te 1.07–1.08 as well), so no correction finds the bias carrying the drug effect.
 - **Descriptive:**
   - Sleep Δz under kshift is −.0007, with 5/7 sessions down, against −.0010 and 7/7 under k4. It stays at control level.
   - Eyes-open SD is .0019–.0022 for every estimator.
@@ -50,14 +50,15 @@ Mean K at MI 0, KSG k = 4 with pool ψ. Spectra: KTMD drug (median AUTO w 17), P
 - **Serial dependence is necessary.** The time-shuffled pair has no bias.
 - **The sign flips with the window.**
   - With no window, the bias is the familiar positive one from temporal neighbours.
-  - Any Theiler window flips it negative. The negative bias grows with w, and it roughly halves at k = 10.
-  - Its size tracks the spectrum: it is about 8× larger under drug slowing than in awake windows. This is why it shows most under KTMD and PF.
-- **ψ(N) masks most of it.** `edges.py` and JIDT use ψ(N) rather than ψ of the pool left after the window, which adds roughly 2w/N (+.034 at w = 17). So k4's level at stationary independence is ≈ 0 (KTMD −.0006, PF +.006 in calibration), while kpool's is −.038 / −.040.
-- **Why it does not reach z.** IAAFT matches the spectrum and w, so the surrogate carries the same offset. Real − surrogate cancels it, and kpool and k2te change Δz by under 10%.
+  - AUTO and every longer window run give a negative bias. Windows between 0 and AUTO were not run.
+  - It deepens only slowly with w: about ×1.25 for an 8× longer window. It roughly halves at k = 10.
+  - It tracks the spectrum, not w/T. It is about 8× larger under drug slowing than in awake windows, which is why it shows most under KTMD and PF. At T = 200 its AUTO value (−.024) is smaller than at T = 1000.
+- **ψ(N) masks most of it.** `edges.py` uses ψ(N) (JIDT's convention: unverified) rather than ψ of the pool left after the window, which adds roughly 2w/N (+.034 at w = 17). So k4's level at stationary independence is ≈ 0 (KTMD −.0006, PF +.006 in calibration), while kpool's is −.038 / −.040.
+- **Why it does not reach z.** IAAFT matches the spectrum and w, so the surrogate carries the same offset. Real − surrogate cancels it, and kpool and k2te change pooled Δz by 7–8%. Per agent the change reaches 20–21% (PF); the section below shows why.
 - **The micro-mechanism is unknown.** A run-structure account (neighbours arriving in serially correlated runs) was considered and dropped, because it does not fix the sign.
 - **Literature (unverified).** No source found documents a *negative* KSG bias induced by a Theiler window. The positive bias without a window is standard; the window is meant to remove it (Theiler 1986; Kraskov et al. 2004).
 
-### 2. Real-only bias: per-channel amplitude nonstationarity
+### 2. Real-only bias under drug: per-channel structure that a shift keeps and IAAFT does not (amplitude nonstationarity inferred)
 
 Calibration at T = 1000, real − surrogate K at MI-0 edges:
 
@@ -70,13 +71,38 @@ Calibration at T = 1000, real − surrogate K at MI-0 edges:
 - **In the real data.** Weak edges are those with G < .01; values are K real − K surrogate.
   - k4: KTMD −.010, PF −.016, MD −.003, KT +.011, sleep .000.
   - kshift: KTMD +.002, PF +.001, MD +.003, KT +.018.
-  - So the real-only part shows where the drug slows the spectrum, and kshift removes it (verified).
+  - So the real-only part shows where the drug slows the spectrum, and kshift removes it (verified). That its cause is amplitude nonstationarity is inferred, by analogy with the calibration.
   - The positive KT residual is inferred to be genuine weak-edge dependence, as in the gain_shared case. That inference is not tested.
 - **Its effect on z is small.** Calibration gain alone lowers z beyond IAAFT by about the same amount under k4 and kshift. The real-only bias at MI-0 edges therefore carries little of z, which the real R = 1.11 confirms.
   - Whether the z fall itself reflects gain/nonstationarity rather than coupling nonlinearity is a separate question. That belongs to the [nonstat](preregs/nonstat-prereg.md) and [envelope](preregs/envelope-prereg.md) tests, not to this one.
 - **Earlier k4-only looks** (disclosed in the prereg) agree:
   - dropping edges with G < .01 retains 90% of Δz (t(3) −7.0);
   - clipping K below the surrogate band retains 78% (t(3) −5.45).
+
+## Across edges and states (post hoc, descriptive)
+
+- **Source:** [`ksgbias_edges.py`](ksgbias_edges.py), output [`edges.txt`](../../../../results/representation/atlas-mi-pair-261117/ksgbias/edges.txt).
+- **Definitions.**
+  - b = k4 − kshift is k4's per-edge bias at independence under the pair's own serial structure.
+  - p = kpool − k4 is the ψ term, ≈ −2w/N.
+  - Values are medians over windows of the mean over edges. ρ is the Spearman correlation over edges within a window.
+
+**Bias level, by state** (b real − b surrogate):
+
+| | KT | KTMD | MD | PF | Sleep |
+|---|---|---|---|---|---|
+| Drug or sleep | −.007 | −.013 | −.006 | −.016 | −.001 |
+| Awake (EC and EO) | −.000 to −.001 | −.001 | −.000 to −.001 | −.001 | −.000 to −.001 |
+
+- **State.** Real b is ≈ +.005 in every awake and sleep condition, with the surrogate at the same value. Under drug it falls (KTMD −.010, PF −.012) while the surrogate stays positive. The real-only bias is a drug-state phenomenon; it is absent awake and asleep (verified).
+- **Variation across edges with G and w.**
+  - b varies weakly with G: ρ(b, G) is +.07 to +.24.
+  - It varies somewhat more with w: ρ(b, w) is +.10 to +.32.
+  - In both cases the real and surrogate values match to within .07 in every cell. So the edge-to-edge pattern of the bias is shared with the surrogate; only its level is real-only. This is why removing it hardly moves z = corr(G, K) beyond the surrogate (inferred from these numbers).
+- **Why kpool shifts per-agent Δz.**
+  - w correlates with G: ρ(w, G) is +.34 to +.52, highest under KT, MD and PF drug.
+  - So the ψ correction is more negative at strong edges (ρ(p, G) −.33 to −.53). This lowers corr(G, K) in real and surrogate by about the same amount, and the effect varies with how much drug changes w.
+  - That explains R up to 1.20 under PF for kpool and k2te. It does not carry the effect.
 
 ## Panel (b)
 
@@ -87,9 +113,9 @@ Panel (b) is the per-edge K in `mi-figure.png`. The fraction of weak edges with 
 | k4 | .45 | .65 | .52 | .68 | .41 |
 | kshift | .39 | .53 | .48 | .55 | .48 |
 
-- The prediction was .4–.6 under kshift; observed values are .39–.55 (verified).
+- The prediction was .4–.6 under kshift. Observed values are .39–.55: KT at .39 is just outside the range, the rest are inside.
 - Per-edge SD at MI 0 and T = 1000 is about .045–.05. So under an estimator whose bias at independence is removed, about half the weak edges are still negative.
-- **What the negative values are.** Mostly sampling spread around a near-zero level. On top of that, k4 adds an offset of −.010 to −.025 at weak edges under KTMD and PF, which is the real-only nonstationarity bias above.
+- **What the negative values are.** Mostly sampling spread around a near-zero level. Under KTMD and PF, k4 also puts the weak-edge mean at −.018 and −.025. Of that, −.010 and −.016 is the real-only bias (real − surrogate); the rest is shared with the surrogate.
 - **Not a Kraskov bias that a Theiler/DCE correction fixes.**
   - A longer or 2τ(1/e) window (k2te) makes the level *more* negative, not less.
   - The w already in use is 2⟨acf_i, acf_j⟩, a cross-integral-time version of the supervisor's 1/e criterion (inferred). Any longer window deepens the bias (mechanism table).
