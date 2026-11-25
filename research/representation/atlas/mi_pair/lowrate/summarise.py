@@ -74,6 +74,27 @@ def table(x, name, ref=None):
     return '\n'.join(lines)
 
 
+def animal_drug(x, v):
+    S = sessions(x, v); A = {}
+    for u in S:
+        if S[u]['ag'] != 'SLP' and 'drug' in S[u]:
+            A.setdefault(S[u]['an'], []).append(S[u]['drug'])
+    return {k: np.mean(A[k]) for k in A}
+
+
+def band(xD, xS, name):
+    """Prereg band reading: B = pooled drug delta(D) / pooled drug delta(S); paired animal-level D - S, t(3)."""
+    out = []
+    for v, vn in ((1, 'ns'), (0, 'raw')):
+        a, b = animal_drug(xD, v), animal_drug(xS, v); k = sorted(set(a) & set(b))
+        d = np.array([a[i] - b[i] for i in k]); B = np.mean([a[i] for i in k]) / np.mean([b[i] for i in k])
+        t = ttest_1samp(d, 0).statistic
+        call = ('band-neutral' if .75 <= B <= 1.33 else 'stronger in slow band' if B > 1.33 and t <= -2.35
+                else 'weaker in slow band' if B < .75 and t >= 2.35 else 'inconclusive')
+        out.append(f'{name:10s} {vn:3s} B {B:.2f}; D-S per animal {", ".join(f"{i} {x:+.4f}" for i, x in zip(k, d))}; t(3) {t:+.2f} -> {call}')
+    return '\n'.join(out)
+
+
 if __name__ == '__main__':
     root, z100 = Path(sys.argv[1]), sys.argv[2]
     ref = load(z100)
@@ -81,3 +102,6 @@ if __name__ == '__main__':
     print(table(ref, '100Hz'))
     for a in arms:
         print(table(load(root / a), a, ref))
+    for d, s_ in (('D20', 'S20'), ('D10', 'S10'), ('D20L', 'S20L'), ('D10L', 'S10L')):
+        if d in arms and s_ in arms:
+            print(band(load(root / d), load(root / s_), f'{d}/{s_}'))
