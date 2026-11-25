@@ -83,6 +83,9 @@ def step1(df):
     rho_in = np.mean([spearmanr(d.c, d.res).statistic for _, d in df.groupby('group')])
     print(f'count against Δz: window Spearman(c, z_rec − z_surr) {rho_w:+.3f} (mean within state group {rho_in:+.3f}); '
           f'session Spearman(Δc, Δz) {rho_s:+.3f}')
+    w95 = np.percentile(df[df.group == 'awake_eo'].c, 95)
+    print(f'window share above the eyes-open wake 95th percentile ({w95:.0f}; wake-calibrated window reference): ' +
+          ', '.join(f'{g} {np.mean(df[df.group == g].c > w95):.3f}' for g in GROUPS[1:]))
     print('panel (b) windows: ' + ', '.join(f'{g} c={int(df[df.id == w].c.iloc[0])}' for g, w in PANEL_B.items()))
     return S, r
 
@@ -226,12 +229,43 @@ def channels(df, er, e0):
     lu = np.log((er / e0.std(1, keepdims=True)) ** 2); print(f'between-window share of var(log u^2): {lu.mean(1).var() / lu.var():.4f}')
 
 
+def wake_counts(df, er, e0):
+    """Adds cw (wake-reference count) and Lw (its limit in surrogate SDs) to df; see wake_ref."""
+    u = np.abs(er) / e0.std(1, keepdims=True); cw = np.empty(len(df)); lim = np.empty(len(df))
+    for _, d in df.groupby('unit'):
+        eo = d.index[d.state == 'awake_eo'].values; L = np.percentile(u[eo], Q)
+        for i in d.index.values:
+            lim[i] = np.percentile(u[eo[eo != i]], Q) if i in eo else L; cw[i] = np.sum(u[i] > lim[i])
+    df['cw'], df['Lw'] = cw.astype(int), lim
+    return u
+
+
+def wake_ref(df, er, e0):
+    """Reference (2), 'beyond the awake state' (added 25 November at the coordinator's request, after step 1 was seen; not in
+    the prereg). Each window's recording residuals in its own surrogate's SD (u = e_rec / SD(e_0), so state-specific estimator
+    noise stays matched), against the 95th percentile of |u| pooled over the same session's eyes-open wake windows; each
+    eyes-open window is scored leave-one-window-out, which gives the reference's null spread. Wake is ~24.8 by construction."""
+    print('== Wake reference: off-band against the same session\'s eyes-open wake residual spread (surrogate-SD units) ==')
+    wake_counts(df, er, e0)
+    n0 = df[df.group == 'awake_eo'].cw
+    print(f'null spread (eyes-open windows, leave-one-out): mean {n0.mean():.1f}, SD {n0.std():.1f}, 2.5–97.5% {np.percentile(n0, [2.5, 97.5])}')
+    print(f'wake limit in surrogate SDs: median {df.Lw.median():.2f} (surrogate own 95%: {np.median(df.L / e0.std(1)):.2f})')
+    hi = np.percentile(n0, 97.5)
+    print(f'{"group":12s} {"mean":>6s} {"median":>6s} {"over 24.8":>9s} {"share > wake 97.5%":>18s}')
+    for g in GROUPS:
+        x = df[df.group == g].cw; print(f'{g:12s} {x.mean():6.1f} {x.median():6.0f} {x.mean() - 24.8:+9.1f} {np.mean(x > hi):18.3f}')
+    animal_test(session(df, 'cw'), 'Δ wake-reference count (session state − awake_ec mean)')
+    print('panel (b) windows: ' + ', '.join(f'{g} {int(df[df.id == w].cw.iloc[0])}' for g, w in PANEL_B.items()))
+    return df
+
+
 if __name__ == '__main__':
     df, E, er, e0 = load(sys.argv[1]); G = E[:, 0, 0]
     S, r1 = step1(df)
     tails(df, er, e0)
     scale_shape(df, er, e0)
     channels(df, er, e0)
+    wake_ref(df, er, e0)
     if len(sys.argv) > 2:
         d, pos, e = step2(df, E, er, sys.argv[2]); step3(d, df, er, e, pos)
         if list(Path(sys.argv[2]).glob('t2_*.npz')): tier2(df, E, er, sys.argv[2])
