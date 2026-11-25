@@ -56,6 +56,12 @@ Mean K at MI 0, KSG k = 4 with pool ψ. Spectra: KTMD drug (median AUTO w 17), P
 - **ψ(N) masks most of it.** `edges.py` uses ψ(N) (JIDT's convention: unverified) rather than ψ of the pool left after the window, which adds roughly 2w/N (+.034 at w = 17). So k4's level at stationary independence is ≈ 0 (KTMD −.0006, PF +.006 in calibration), while kpool's is −.038 / −.040.
 - **Why it does not reach z.** IAAFT matches the spectrum and w, so the surrogate carries the same offset. Real − surrogate cancels it, and kpool and k2te change pooled Δz by 7–8%. Per agent the change reaches 20–21% (PF); the section below shows why.
 - **The micro-mechanism is unknown.** A run-structure account (neighbours arriving in serially correlated runs) was considered and dropped, because it does not fix the sign.
+- **Independent corroboration** (mi-pair-lowrate session, branch `claude/mi-pair-lowrate-3a8e2a`, scores on gdata `atlas-mi-pair-lowrate-261125/scores/`; not rerun here). The measure is the fraction of all edges with K < 0, real / surrogate.
+  - **At 100 Hz:** drug .33 / .28, awake .17 / .17.
+  - **Decimating or subsampling to 20 Hz** removes the drug excess (drug .12, awake .13), with median w 2–4.
+  - **Low-pass filtering at 8 or 4 Hz while keeping 100 Hz** raises the fraction in every state, to .32–.51.
+  - This fits a bias that follows how slow the spectrum is (mechanism table), not the anaesthetic state.
+  - Their wording, "serial dependence surviving the Theiler window", needs a qualification. With no window the bias is positive here; the window is what makes it negative.
 - **Literature (unverified).** No source found documents a *negative* KSG bias induced by a Theiler window. The positive bias without a window is standard; the window is meant to remove it (Theiler 1986; Kraskov et al. 2004).
 
 ### 2. Real-only bias under drug: per-channel structure that a shift keeps and IAAFT does not (amplitude nonstationarity inferred)
