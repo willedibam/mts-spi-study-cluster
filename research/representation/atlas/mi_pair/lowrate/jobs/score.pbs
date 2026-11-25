@@ -1,0 +1,25 @@
+#!/bin/bash
+# Score low-rate arms with lowrate/score.py (edges.py estimator). qsub -v SRC=<snapshot>,ARMS="<arms>",GATE=0|1 score.pbs
+# Gate B first when GATE=1: the original 100 Hz stage-A PF bank must reproduce the stored zns_A_PF V to 1e-6 (the estimator check reproduced to 7e-9).
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=05:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_lowrate_score
+#PBS -j oe
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+S=/scratch/ql44/we2614/mts-spi-study; B=$S/atlas/banks; L=$B/mi-lowrate; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125
+PY="env PYTHONPATH=$SRC/src:$SRC/research/representation/atlas/mi_pair /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+SC=$SRC/research/representation/atlas/mi_pair/lowrate/score.py
+mkdir -p $G/scores
+if [ "$GATE" = 1 ]; then
+  $PY $SC $B/neurotycho-long-stage-a $G/scores/gateB_A_PF.npz PF first 48 || exit 3
+  $PY -c "import numpy as np; a=np.load('$G/scores/gateB_A_PF.npz')['V']; b=np.load('/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/zns/zns_A_PF.npz')['V']; d=np.abs(a-b).max(); print('gate B max|dV|', d); exit(0 if d < 1e-6 else 4)" || exit 4
+fi
+for a in $ARMS; do mkdir -p $G/scores/$a
+  for ag in PF KT KTMD MD SLP; do $PY $SC $L/$a/stage-a $G/scores/$a/zns_A_$ag.npz $ag first 48 || exit 5; done
+  for ag in PF KT KTMD MD; do $PY $SC $L/$a/stage-b $G/scores/$a/zns_B_$ag.npz $ag first 48 || exit 5; done
+  $PY $SC $L/$a/stage-b $G/scores/$a/zns_B_SLP.npz SLP row 48 || exit 5
+  (cd $G/scores/$a && sha256sum zns_*.npz > SHA256SUMS)
+done
+echo ALLDONE

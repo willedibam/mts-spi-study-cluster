@@ -1,0 +1,17 @@
+#!/bin/bash
+# Low-rate banks (lowrate/build.py). qsub -v SRC=<snapshot dir> build.pbs. Expected ~0.05 kSU, worst ~0.15 kSU.
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=30,mem=150GB,walltime=02:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_lowrate_build
+#PBS -j oe
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+S=/scratch/ql44/we2614/mts-spi-study; OUT=$S/atlas/banks/mi-lowrate; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125
+cd $SRC || exit 2
+env PYTHONPATH=$SRC:$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python research/representation/atlas/mi_pair/lowrate/build.py \
+    $S/atlas/banks $S/data/atlas/neurotycho/raw $OUT 30 || exit 3
+# gdata: every manifest and the gate, and the small (T 100-200) banks; the T = 1000 banks stay on scratch (gdata near quota)
+mkdir -p $G/banks && cd $OUT && cp gate_a.json $G/banks/ && for a in *; do [ -d $a ] || continue; for g in stage-a stage-b; do
+  mkdir -p $G/banks/$a/$g; cp $a/$g/manifest.json $G/banks/$a/$g/; case $a in D20|S20|D10|S10) cp $a/$g/windows.npz $G/banks/$a/$g/;; esac; done; done
+cd $OUT && sha256sum */*/windows.npz > $G/banks/SHA256SUMS && echo ALLDONE
