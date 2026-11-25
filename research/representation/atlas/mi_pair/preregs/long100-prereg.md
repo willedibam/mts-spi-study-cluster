@@ -50,3 +50,28 @@ Secondary:
 ## Compute
 
 Gadi, pushed snapshot `operations/sources/mi-lowrate-<commit>`. Build (30 archives, 30 cpus, 190 GB: twice the band build's sample volume): expected 0.02 kSU, worst 0.1. Calibration (720 synthetic windows at T = 5000, about 300 cpu-s each, plus T = 1000): expected 0.13 kSU, worst 0.3. The estimator is brute-force O(T²): one KSG pair costs 1.27 s at T = 5000 against 0.036 s at T = 1000 (35×, measured locally), about 2,500 cpu-s per 50-s window. Scoring: W50 and W50L8 about 1.7 kSU each, C10 and C10L8 about 0.25 kSU each (one arm per job); one timing call first (stage-A PF, all 48 workers), after which the worst case is restated. Expected 4.1 kSU, worst 6.8 kSU. `score.py` writes only at the end of a call, so walltimes are set at three times the timed rate.
+
+## Addenda A and B (frozen 26 November 2026, before any further output)
+
+Requested after the supervisor's question whether the per-pair departure is persistent or a one-window transient, and whether it survives aggregation over longer stretches. They cannot change the readings above.
+
+**What existed when they were frozen.** The four banks (build job 185197383, gate A 0.0); the drug-blind calibration (job 185200307; read: offset(5000) − offset(1000) +.0008 ± .0015); W50 stage-A PF from the timing call (job 185200308, 80 windows in 3,808 s on 48 cores; `scores/W50/zns_A_PF.npz`, sha256 `9c91abd0…e210`). This session printed only that file's array shapes, not its values; the session that ran it reported only the timing.
+
+**Restated cost (from the timing call).** One 48-window round of W50 takes about 32 min, so a W50 window costs about 1,900 core-s. Remaining W50 calls 27 rounds, W50L8 29, C10 and C10L8 about 2 h each, Addendum A about 6 h: expected 3.8 kSU, worst 5.7 kSU. Walltimes are three times the timed rate.
+
+**Addendum A: the 50-s windows against a 10-s segment null** ([`../lowrate/long100_seg.py`](../lowrate/long100_seg.py), [`../lowrate/jobs/long100_seg.pbs`](../lowrate/jobs/long100_seg.pbs)).
+- Why: a 50-s window can owe excess over a stationary IAAFT to slow change between its 10-s pieces (gain or linear-coupling drift), which is non-stationarity, not coupling form. Over a whole drug period this would grow.
+- Null: nonstat's N2 at L = 1000 (joint IAAFT, spectrum-final, per 10-s piece, concatenated) on each normal-scored W50 window; seed `default_rng([row, 1000])`; rows and subsets as `score.py`. The real KSG is not recomputed; z_real comes from the W50 score, matched by id, subset labels and the Gaussian-MI vector (gate: max difference < 1e-5).
+- Size check (run first, drug-blind): `long100.py`'s generators, sources and seeds at T = 5000 (100 `block` and 40 `gain_shared` per spectrum), scored against N0 (must reproduce `calib_long100.npz`'s dz to 1e-8) and N2. N2 passes if its drug-blind offset mean(KTMD, PF) − AW of z_real − z_N2 on `block` is within 2 SE of 0 or within ±.001. If it fails, Addendum A is reported as descriptive only.
+- Reading: R_seg = pooled drug Δ(real − N2) / pooled drug Δ(real − N0) over animal means, W50, normal-scored. R_seg is read only if W50's own N0 drug Δ is ≤ −2 own eyes-open SD with 4/4 animals negative; otherwise only the per-animal differences are reported. **Not drift**: R_seg ≥ .75. **Mostly drift**: R_seg ≤ .5. Otherwise **partial**.
+- Prediction: not drift (R_seg about .8–1.0), since 5-s and 2-s segments kept all of the 10-s change.
+
+**Addendum B: is a pair's departure persistent or one-off?** ([`../lowrate/long100_edges.py`](../lowrate/long100_edges.py); no new compute: the W50 and C10 score files' per-edge G and K).
+- P1, the test: `reorder.py` v2's cross-window repeat of the pair-level residual (isotonic fit of K on G, then an additive node fit), real minus surrogate, session Δ = drug − awake eyes-closed. At 50 s over the W50 windows of a session; at 10 s over C10 cuts from different 50-s windows only. A persistent pair property repeats more as estimator noise falls; one-off episodes do not.
+- **Persistent** at the pair level: r50 − r10 drug Δ > 0 in ≥ 3/4 animals, and pooled r50 drug Δ > 0 with one-sided p < .05. **One-off**: pooled r50 − r10 ≤ 0 and r50 drug Δ not significantly > 0. Otherwise **mixed**. Per agent reported.
+- Descriptive: the repeat across the five contiguous cuts of one 50-s window (inflated by shared slow state); P2, per edge the number of cuts (of 5) above the cut's own surrogate band, against each cut's own surrogate, as the ratio to independence; P(above the band at 50 s | that number).
+- Scope: persistence only. Like v2, it cannot separate gain from coupling (v2's gate failed on a heterogeneous fixed channel floor, +.037), and the node fit removes additive node effects only.
+- Synthetic check of the reader (local, planted): a persistent pair pattern gives r50 − r10 +.30 and PERSISTENT; episodic, pair-random departures in 20% of pairs per cut give r50 −.02 and ONE-OFF.
+- Prediction: persistent under ketamine (v2: +.149), one-off or mixed under propofol (v2: +.008).
+
+**Jobs.** Frozen arms from the existing snapshot `mi-lowrate-ec3d7c29` with `score_calls.pbs` (W50 stage-A PF is not rescored); Addenda A and B from a snapshot of the commit that adds this section. Job IDs and the read commands are added below when submitted.

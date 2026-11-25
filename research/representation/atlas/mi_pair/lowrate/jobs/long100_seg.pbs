@@ -1,0 +1,23 @@
+#!/bin/bash
+# long100 Addendum A: N2 size calibration at T = 5000, then the W50 windows against the 10-s segment null (lowrate/long100_seg.py).
+# qsub -v SRC=<snapshot> long100_seg.pbs. Expected ~0.55 kSU (calib ~0.1, score ~0.45), worst ~0.9 kSU.
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=190GB,walltime=18:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_l100_seg
+#PBS -j oe
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+S=/scratch/ql44/we2614/mts-spi-study; L=$S/atlas/banks/mi-lowrate; G=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-lowrate-261125
+PY="env PYTHONPATH=$SRC/src /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
+SC=$SRC/research/representation/atlas/mi_pair/lowrate/long100_seg.py
+mkdir -p $G/calib $G/scores/W50seg
+t0=$SECONDS; $PY $SC calib $L/W50/stage-a $G/calib/calib_long100_seg.npz 100 40 48 || exit 3; echo "calib $((SECONDS - t0)) s"
+$PY $SC cread $G/calib/calib_long100_seg.npz $G/calib/calib_long100.npz > $G/calib/calib_long100_seg.txt || exit 4
+(cd $G/calib && sha256sum calib_long100_seg.npz calib_long100_seg.txt > SHA256SUMS-seg)
+for c in A:PF:first A:KT:first A:KTMD:first A:MD:first A:SLP:first B:PF:first B:KT:first B:KTMD:first B:MD:first B:SLP:row; do
+  IFS=: read st ag rm <<< "$c"; g=stage-$(echo $st | tr AB ab)
+  t0=$SECONDS; $PY $SC score $L/W50/$g $G/scores/W50seg/zns_${st}_${ag}.npz $ag $rm 48 || exit 5; echo "$c $((SECONDS - t0)) s"
+done
+(cd $G/scores/W50seg && sha256sum zns_*.npz > SHA256SUMS)
+echo ALLDONE
