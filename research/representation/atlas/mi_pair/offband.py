@@ -212,11 +212,26 @@ def tier2(df, E, er, odir):
               f' null corr shared-channel {cs[sh & off].mean():+.3f}, disjoint {cs[~sh & off].mean():+.3f}')
 
 
+def channels(df, er, e0):
+    """Step 5 check: share of each window's log squared standardised residual (and off-band indicator) that is channel-additive
+    (u_i + u_j, 32 parameters; chance R2 31/495 = .063). Near chance means crossed channel random effects would pool nothing."""
+    print('== Step 5 check: channel-additive structure of the residual magnitude (median R2 over windows; chance .063) ==')
+    iu = np.triu_indices(32, 1); X = np.zeros((NP, 32)); X[np.arange(NP), iu[0]] = 1; X[np.arange(NP), iu[1]] = 1; P = X @ np.linalg.pinv(X)
+    r2 = lambda y: 1 - (((y - y.mean()) - P @ (y - y.mean())) ** 2).sum() / ((y - y.mean()) ** 2).sum()
+    for g in GROUPS:
+        m = np.where(df.group == g)[0]; sd = lambda w: e0[w].std()
+        print(f'{g:12s} log u^2: recording {np.median([r2(np.log((er[w] / sd(w)) ** 2)) for w in m]):.3f}, surrogate '
+              f'{np.median([r2(np.log((e0[w] / sd(w)) ** 2)) for w in m]):.3f}; off-band indicator '
+              f'{np.nanmedian([r2((np.abs(er[w]) > df.L.values[w]).astype(float)) for w in m]):.3f}')
+    lu = np.log((er / e0.std(1, keepdims=True)) ** 2); print(f'between-window share of var(log u^2): {lu.mean(1).var() / lu.var():.4f}')
+
+
 if __name__ == '__main__':
     df, E, er, e0 = load(sys.argv[1]); G = E[:, 0, 0]
     S, r1 = step1(df)
     tails(df, er, e0)
     scale_shape(df, er, e0)
+    channels(df, er, e0)
     if len(sys.argv) > 2:
         d, pos, e = step2(df, E, er, sys.argv[2]); step3(d, df, er, e, pos)
         if list(Path(sys.argv[2]).glob('t2_*.npz')): tier2(df, E, er, sys.argv[2])
