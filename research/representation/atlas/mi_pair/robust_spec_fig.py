@@ -1,7 +1,7 @@
 """Specification curve for robustness-result.md: drug - awake EC Δz (normal-scored z real - IAAFT) per configuration,
 animal means and their mean, grouped by axis, with the drug-blind stationary offsets where calibrated. Reads only the
-text outputs in results/.../robust/ (score10/scoreS2/scoreC2.txt, precise.txt, lowrate_summary.txt); the 10-s kshift row
-is ksg-bias-result.md's (animal means rounded there to 3 dp).
+text outputs in results/.../robust/ (score10/scoreS2/scoreC2.txt, precise.txt, lowrate_summary.txt,
+bands_summary.txt); the 10-s kshift row is ksg-bias-result.md's (animal means rounded there to 3 dp).
 
   python robust_spec_fig.py <robust results dir> <stem>        writes <stem>.svg/.pdf/.png
 """
@@ -36,7 +36,7 @@ RB = ['w0 k4', 'w0 k10', 'auto k4', 'auto k4 pool', 'auto k10', 'kshift', '2te k
 LAB = {'w0 k4': 'w0', 'w0 k10': 'w0 k10', 'auto k4': 'AUTO', 'auto k4 pool': 'AUTO pool', 'auto k10': 'AUTO k10',
        'kshift': 'AUTO kshift', '2te k4': r'2$\tau$', '2te k4 pool': r'2$\tau$ pool', '2te k10': r'2$\tau$ k10',
        '4auto k4': '4AUTO', '4auto k4 pool': '4AUTO pool', '4auto k10': '4AUTO k10'}
-LOW = [('L20', '0.5-8 Hz @100'), ('L10', '0.5-4 Hz @100'), ('S20', '20 Hz sub'), ('D20', '20 Hz dec'),
+LOW = [('L20', '0.5-8 Hz @100'), ('L10', '0.5-4 Hz @100'), ('LP2', '0.5-2 Hz @100'), ('HP2', '2-40 Hz @100'), ('S20', '20 Hz sub'), ('D20', '20 Hz dec'),
        ('S10', '10 Hz sub'), ('D10', '10 Hz dec'), ('S20L', '50 s @20 sub'), ('D20L', '50 s @20 dec'),
        ('S10L', '100 s @10 sub'), ('D10L', '100 s @10 dec')]
 YLIM = (-.063, .024)
@@ -91,13 +91,13 @@ def calib(path):
 
 
 def figure(d, stem):
-    d = Path(d); C = calib(d / 'precise.txt'); L = low(d / 'lowrate_summary.txt')
+    d = Path(d); C = calib(d / 'precise.txt'); L = low(d / 'lowrate_summary.txt') | low(d / 'bands_summary.txt')
     s10 = rb(d / 'score10.txt'); s10['kshift'] = KSHIFT10
     groups = [('10 s, 100 Hz', [(k, LAB[k], s10[k], C.get((1000, k))) for k in RB]),
               ('2 s, own bank', [(k, LAB[k], r, C.get((200, k))) for k in RB for r in [rb(d / 'scoreS2.txt')[k]]]),
               ('2 s, cut from 10 s', [(k, LAB[k], r, C.get((200, k))) for k in RB for r in [rb(d / 'scoreC2.txt')[k]]]),
-              ('rate, band\n10 s', [(k, l, L[k], None) for k, l in LOW[:6]]),
-              ('N = 1000\n50-100 s', [(k, l, L[k], None) for k, l in LOW[6:]])]
+              ('rate, band\n10 s', [(k, l, L[k], None) for k, l in LOW[:8]]),
+              ('N = 1000\n50-100 s', [(k, l, L[k], None) for k, l in LOW[8:]])]
     fig, ax = plt.subplots(figsize=(7.4, 3.3))
     x, ticks, labs, rng = 0, [], [], np.random.default_rng(0)
     ref = s10['auto k4']['a'].mean()
