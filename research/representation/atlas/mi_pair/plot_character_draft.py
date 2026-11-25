@@ -3,6 +3,11 @@
     python plot_character_draft.py <results/representation/atlas-mi-pair-261117> <output stem>
     (the figure as agreed: python plot_character_draft.py results/representation/atlas-mi-pair-261117
      results/representation/atlas-mi-pair-261117/mi-figure; writes .svg, .pdf and .png)
+    --rate 20|10 --lowrate <results/representation/atlas-mi-pair-lowrate-261125>: the same figure on the anti-aliased
+    low-rate macaque arm D<rate> (lowrate/, preregs/lowrate-prereg.md): zns from <lowrate>/scores/D<rate>, raw windows
+    from <lowrate>/figwin-D<rate>/windows.npz (fig_windows.py on that arm's bank; --list-windows prints the ids), and
+    (b)'s and (c)'s windows re-picked by the same median rule from that arm (pick_windows); (a)'s pair, (d)'s strips and
+    the mouse and human columns are unchanged (mouse and human stay at 100 Hz, as the figure says).
 
 Reads the checksum-listed zns arrays (macaque), the mouse induction z arrays, the human propofol (PRIOS) per-patient
 contrasts from the scorer summary, and the few raw windows it draws (figwin/windows.npz, copied from the Gadi banks by
@@ -155,10 +160,11 @@ def band(edges, wid):
     return c, lim, np.abs(k - np.polyval(c, g)) > lim
 
 
-def load(root):
-    df, _ = read(root / "zns")
+def load(root, zdir=None):
+    zdir = zdir or root / "zns"
+    df, _ = read(zdir)
     edges, delta = {}, []
-    for p in sorted((root / "zns").glob("zns_[AB]_*.npz")):
+    for p in sorted(zdir.glob("zns_[AB]_*.npz")):
         with np.load(p) as d:
             edges.update(zip(d["id"], d["E"][:, 1])); delta.append(d["delta_fraction"])
     df["delta"] = np.concatenate(delta)
@@ -457,17 +463,41 @@ ICON = {"macaque": ((.22, .9, .24, .66, 7, 5), r"Macaque" + "\n" + "ECoG"), "mou
 
 
 # ---------------------------------------------------------------- figure
+def pick_windows(df):
+    """PANEL_B and CALLOUT re-picked on another arm by the rule they were picked by at 100 Hz: the big (b) window, any
+    animal's window nearest the state's median Δz; (b)'s smalls and (c)'s medians, Chibi's nearest it (medetomidine:
+    any animal's); ket. + med.'s most extreme window, the lowest Δz."""
+    def med(s_, an_=None):
+        w = df[(df.group == s_) & ((df.animal == an_) if an_ else True)]
+        return w.loc[(w.sd - df[df.group == s_].sd.median()).abs().idxmin(), "id"]
+    pb = (("KTMD", med("KTMD"), "Ketamine + medetomidine"), ("awake_eo", med("awake_eo", "Chibi"), "Wake"),
+          ("SLP", med("SLP", "Chibi"), "Sleep"), ("KT", med("KT", "Chibi"), "Ketamine"), ("PF", med("PF", "Chibi"), "Propofol"))
+    k = df[df.group == "KTMD"]
+    co = ((pb[1][1], "median"), (pb[2][1], "median"), (k.loc[k.sd.idxmin(), "id"], "most extreme"), (pb[4][1], "median"),
+          (pb[3][1], "median"), (med("MD"), "median"))
+    return pb, co
+
+
 def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", link=True, btop="none", banimal=None,
-         ctop="traces"):
-    df, edges = load(root)
-    PANEL_B = globals()["PANEL_B"]
+         ctop="traces", rate=100, lowrate=None, list_windows=False):
+    low = rate != 100                                        # a low-rate arm (lowrate/): its zns and raw windows
+    zdir = lowrate / "scores" / f"D{rate}" if low else root / "zns"
+    fwin = lowrate / f"figwin-D{rate}" / "windows.npz" if low else root / "figwin/windows.npz"
+    fs, cut = (rate, .4 * rate) if low else (100, 40)
+    df, edges = load(root, zdir)
+    PANEL_B, CALLOUT = globals()["PANEL_B"], globals()["CALLOUT"]
+    if low:
+        PANEL_B, CALLOUT = pick_windows(df)
+    if list_windows:                                         # the ids fig_windows.py must copy for this arm
+        print(" ".join(dict.fromkeys([w_ for _, w_, _ in PANEL_B] + [w_ for w_, _ in CALLOUT] + [GLYPH_PAIR[0], *TRACE_MAC])))
+        return
     if banimal:                                              # same rule, one animal: its window nearest each state's
         an_, _, part = banimal.partition(":")                # pooled median Δz; "<animal>:small" keeps the big one
         PANEL_B = tuple((s_, (lambda w: w.loc[(w.sd - df[df.group == s_].sd.median()).abs().idxmin(), "id"])(
             df[(df.group == s_) & (df.animal == an_)]) if (j_ or part != "small") else w0, n_)
             for j_, (s_, w0, n_) in enumerate(PANEL_B))
     chan = {}                                                # electrode numbers of each window's 32 zns channels
-    for p in (root / "zns").glob("zns_[AB]_*.npz"):
+    for p in zdir.glob("zns_[AB]_*.npz"):
         with np.load(p) as d:
             chan.update(zip(d["id"], d["chan"]))
     sess = df.groupby(["unit", "animal", "group"])[["d", "sd", "exd", "lvl", "delta"]].mean().reset_index()
@@ -492,7 +522,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     pc = COLOR["KTMD"]
     wid, pk = GLYPH_PAIR
     e1, e2 = (int(v[pk]) for v in np.triu_indices(32, 1))
-    with np.load(root / "figwin/windows.npz") as fw:
+    with np.load(fwin) as fw:
         lab = list(fw[wid + "|chan"]); X = fw[wid][:, [lab.index(chan[wid][e]) for e in (e1, e2)]].astype(float)
     (gw, kw), (_, ksur) = edges[wid]
     AW = .36                                                 # (a)'s width (row fraction); (b) takes the rest
@@ -503,14 +533,14 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     tb = (.09, .1); fans = []                               # each trace in a box beside the brain, a fan to its electrode
     for side, i_ in zip((0, 1), np.argsort([pts[0][0], pts[1][0]])):     # the electrode further left on the left
         rect = [0 if side == 0 else AW - tb[0], .77, *tb]; ax_ = put(rect, EX)
-        ax_.plot(Xc[:, i_], color=pc, lw=.4); ax_.set(xlim=(-25, 1025), ylim=(-.75, .75)); ax_.axis("off")
+        n_ = len(Xc); ax_.plot(Xc[:, i_], color=pc, lw=.4); ax_.set(xlim=(-n_ / 40, n_ + n_ / 40), ylim=(-.75, .75)); ax_.axis("off")
         rbox(ax_, (tb[0] * W, tb[1] * H), LIGHT, lw=.7, fc="white")
         ax_.text(.5, 1.06, rf"el.\,{chan[wid][(e1, e2)[i_]]}", transform=ax_.transAxes, ha="center", va="bottom",
                  fontsize=5.6, color=pc)
         fans.append((pts[i_], ax_, side))
         if side == 1:
-            ax_.plot([800, 1000], [-1.0] * 2, color=COLOR["ink"], lw=.8, clip_on=False)
-            ax_.text(900, -1.08, "2 s", ha="center", va="top", fontsize=5.2)
+            ax_.plot([n_ * 4 // 5, n_], [-1.0] * 2, color=COLOR["ink"], lw=.8, clip_on=False)
+            ax_.text(n_ * 9 // 10, -1.08, "2 s", ha="center", va="top", fontsize=5.2)
     r1.text(AW / 2, Y(.705, EX), r"ket.\,+\,med., 10 s", ha="center", va="top", fontsize=5.4, color=pc)
     u = np.column_stack([normal_score(X[:, 0]), normal_score(X[:, 1])])
     ug = gauss(np.corrcoef(u.T)[0, 1])
@@ -707,12 +737,14 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
                 ax.plot([x0[-1] + L_[-1] - 600, x0[-1] + L_[-1]], [-.1] * 2, transform=bt, color=COLOR["ink"], lw=.8,
                         clip_on=False, solid_capstyle="butt")
                 ax.text(x0[-1] + L_[-1] - 300, -.14, "10 min", transform=bt, ha="center", va="top", fontsize=5)
-        tl.set(ylim=(-13, 3.5), yticks=[0, -5, -10], yticklabels=["0", "--5", "--10"])
+        tl.set(ylim=(-13, 3.5) if not low else (min(-13, 1.05 * df.sd.min()), max(3.5, 1.05 * df.sd.max())),
+               yticks=[0, -5, -10], yticklabels=["0", "--5", "--10"])
         tr.tick_params(labelleft=False)
         tl.set_ylabel("$\\Delta z$, wake SDs", fontsize=5.4, labelpad=1)
     small = df[df.id.isin([w_ for _, w_, _ in PANEL_B[1:]])].animal.unique()
     for x_, l_, c_, r_ in ((.0, "a", "One pair", ""), (AW, "b", "Every pair", "one 10-s window per state, each its state's median"
-                                                                      + (f", the small four {small[0]}'s" if len(small) == 1 else ""))):
+                                                                      + (f", the small four {small[0]}'s" if len(small) == 1 else "")
+                                                                      + (f"; {rate} Hz, anti-aliased (0.5--{cut:g} Hz)" if low else ""))):
         r1.text(x_, Y(.975, EX), rf"\textbf{{{l_}}}\enspace\textbf{{{c_}}}" + (f": {r_}" if r_ else ""), fontsize=8.5,
                 va="top")
 
@@ -769,15 +801,17 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
                   linespacing=1.1).set_in_layout(False)  # axis;
                                                           # out of the layout, so the margin text does not push (c) right
     ax_c.axhline(0, color=GREY, lw=.6, ls="--", zorder=0)
-    ax_c.set_ylim(-.074, top + .001)                        # ticks in eyes-open wake window SDs, the unit of every
-    ks = np.arange(0, -.0741 / sdw, -5)                      # number printed in (b)-(d): an exact rescaling of Δz
+    ylo = min(-.074, 1.03 * win.d.min()) if low else -.074   # a low-rate arm: room for its lowest window
+    ax_c.set_ylim(ylo, top + .001)                          # ticks in eyes-open wake window SDs, the unit of every
+    ks = np.arange(0, (ylo - .0001 if low else -.0741) / sdw, -5)   # number printed in (b)-(d): an exact rescaling of Δz
     ax_c.set_yticks(ks * sdw, [f"{k:.0f}".replace("-", "--") for k in ks]); ax_c.tick_params(axis="y", labelsize=5.8, pad=1.5)
     ax_c.set_ylabel(r"$\Delta z$ per 10-s window, wake SDs", y=.42, labelpad=2)
-    panel_title(left, "c", "Pattern", r"$z$ falls under every anaesthetic, not in sleep", sub=True)
+    panel_title(left, "c", "Pattern", rf"$z$ at {rate} Hz, anti-aliased (0.5--{cut:g} Hz), by state" if low else
+                r"$z$ falls under every anaesthetic, not in sleep", sub=True)
     states_axis(ax_c); ax_c.set_xlim(-.7, None)              # room for 'wake SDs' left of Wake's mean
     assert ctop != "traces" or {w_ for _, w_, _ in PANEL_B[1:]} <= {w_ for w_, _ in CALLOUT}   # (b)'s small windows
-    with np.load(root / "figwin/windows.npz") as fw, \
-            np.load(root / f"figwin/windows_p10.npz" if stack else root / "figwin/windows.npz") as fp:
+    with np.load(fwin) as fw, \
+            np.load(root / f"figwin/windows_p10.npz" if stack else fwin) as fp:
         for sax, (wid, note, _, _) in zip(strips, calls):  # raw windows of the called-out dots (fig_windows.py)
             src = fw if wid + "|chan" in fw.files else fp  # are drawn above (c)
             assert wid + "|chan" in src.files, f"{wid}: not in figwin (fig_windows.py)"
@@ -805,7 +839,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     sets = [("macaque", animal.values, tint), ("mouse", mouse_induction(root), bint), ("human", hum[0], tint)]
     own = {"macaque": sdw, "mouse": mouse_wake_sd(root), "human": hum[-1]}     # each dataset's own wake window SD
     pb = {s_: w_ for s_, w_, _ in PANEL_B}
-    with np.load(root / "figwin/windows.npz") as fw, np.load(root / "figwin/traces_d.npz") as td:
+    with np.load(fwin) as fw, np.load(root / "figwin/traces_d.npz") as td:
         mac = {k: fw[w_][:, [list(fw[w_ + "|chan"]).index(v) for v in chan[w_]]] for k, w_ in zip(("wake", "anaes"), TRACE_MAC)}
         TR = {"macaque": mac, "mouse": {k: td["mouse:" + k] for k in ("wake", "anaes")},
               "human": {k: td["human:" + k] for k in ("wake", "anaes")}}
@@ -830,7 +864,7 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
             sx = ax_f.inset_axes([i - .45, y0, .9, TW[1] - TW[0]], transform=hd); sx.set_in_layout(False)
             window_strip(sx, X, col, every=max(1, X.shape[1] // 5), lw=.25)   # each channel standardised, as G and K
                                                                               # see it: amplitude does not move them
-        ax_f.text(i + .45, TW[1] + .004, f"{len(TR[name]['anaes']) // 100} s", transform=hd, ha="right", va="bottom",
+        ax_f.text(i + .45, TW[1] + .004, f"{len(TR[name]['anaes']) // (fs if name == 'macaque' else 100)} s", transform=hd, ha="right", va="bottom",
                   fontsize=4.6, color=GREY).set_in_layout(False)
         ax_f.text(i, 1.012, FACTS[name].format(n=len(d)), transform=blended_transform_factory(ax_f.transData, ax_f.transAxes),
                   ha="center", va="bottom", fontsize=5.4, color=GREY, linespacing=1.3)
@@ -851,7 +885,8 @@ def draw(root, output, icons="mesh", style="dots", diff=False, labels="name", li
     for (lo_, hi_), s_, c_ in ((TW, "wake", COLOR["awake_eo"]), (TA, "anaes.", COLOR["ink"])):
         ax_f.text(2.53, (lo_ + hi_) / 2, s_, transform=hd, ha="left", va="center", fontsize=5.2, color=c_,
                   clip_on=False).set_in_layout(False)
-    left.text(0, .99, r"\textbf{d}\enspace\textbf{Generalisation}" + "\nacross species, recordings and agents",
+    left.text(0, .99, r"\textbf{d}\enspace\textbf{Generalisation}" + "\nacross species, recordings and agents"
+              + (f"\nmacaque at {rate} Hz; mouse and human at 100 Hz" if low else ""),
               transform=blended_transform_factory(ax_f.transAxes, left.transSubfigure), ha="left", va="top",
               fontsize=8.5, linespacing=1.2)              # level with (c)'s suptitle
 
@@ -886,5 +921,10 @@ if __name__ == "__main__":
     p.add_argument("--b-animal", default=None, help="(b): each state's median-Δz window from this animal only (e.g. Chibi)")
     p.add_argument("--c-top", choices=("traces", "stack", "delta"), default="traces",
                    help="(c)'s top row: raw windows of called-out dots; stack: per state its median window over its 10th-percentile one; or Δz against delta fraction for the animals with sleep")
+    p.add_argument("--rate", type=int, choices=(100, 20, 10), default=100,
+                   help="the macaque arm: 100 Hz (the figure as agreed) or the anti-aliased low-rate arm D20 or D10")
+    p.add_argument("--lowrate", type=Path, default=None, help="low-rate results root (scores/D<rate>, figwin-D<rate>)")
+    p.add_argument("--list-windows", action="store_true", help="print the window ids figwin must hold for this arm, and stop")
     a = p.parse_args()
-    draw(a.root, a.output, a.icons, a.glyph, a.diff, a.labels, not a.no_link, a.b_top, a.b_animal, a.c_top)
+    draw(a.root, a.output, a.icons, a.glyph, a.diff, a.labels, not a.no_link, a.b_top, a.b_animal, a.c_top, a.rate,
+         a.lowrate, a.list_windows)
