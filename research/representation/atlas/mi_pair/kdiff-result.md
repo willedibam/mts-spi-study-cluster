@@ -9,6 +9,8 @@
 
 ## Verdict: a companion level readout, not a replacement for panel (c)
 
+**Superseded on 26 November by [kens-result.md](kens-result.md).** Against a spectrum- and marginal-matched null ensemble, about two-thirds of KD's drug effect is the null moving, and the rest scales with the null's spread, so keep Δz alone.
+
 **Gates.**
 - The net `Kdiff` reproduction passes for all 10 files, with a maximum gap of 1.7e-9.
 - The glyph gate printed 9.90 against the frozen 2.37. The frozen reference was wrong; the data are not at fault (verified):
@@ -97,4 +99,4 @@ Parts are on the net readout's own eyes-open SD scale, so real − surrogate = n
   - Part of single-draw net k04 is a marginal leak. The spectrum-final IAAFT leaves platykurtic marginals, which enter k04 as (ka + kb) / (4(1 − r)²).
   - Against the same draws normal-scored (marginals matched), net k04 falls in the 3 drug windows: +.179 → +.131, +.628 → +.604 and +.011 → −.027.
   - Net k22 falls more: +.033 → −.017 and +.089 → +.051.
-  - The ensemble run tests both on all windows: `kens.py` at 10e6b9e, Gadi job 185197676, with B = 100 draws in three null arms.
+  - The ensemble run tested both on all windows: [kens-result.md](kens-result.md). Spectral concentration and the marginal leak hold. Against the spectrum- and marginal-matched null, the standardised k04 readout has no drug effect (t(3) −0.01). This withdraws the "companion" recommendation above: keep Δz alone.

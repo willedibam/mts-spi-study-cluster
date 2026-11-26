@@ -1,0 +1,31 @@
+levels by animal and state (window means; TAIL chance 0.030)
+                       KZ   TAIL    net  logsd
+animal state                                  
+Chibi  awake_ec     0.783  0.163  0.138 -1.773
+       awake_eo     0.927  0.190  0.160 -1.777
+       drug         1.076  0.194  0.270 -1.321
+       recovery_ec  0.820  0.180  0.156 -1.723
+       sleep        0.910  0.186  0.174 -1.703
+George awake_ec     0.639  0.136  0.154 -1.566
+       awake_eo     0.821  0.162  0.174 -1.604
+       drug         0.650  0.126  0.206 -1.174
+       recovery_ec  0.796  0.162  0.192 -1.483
+       sleep        0.942  0.182  0.229 -1.503
+Kin2   awake_ec     0.677  0.143  0.130 -1.695
+       awake_eo     0.675  0.138  0.125 -1.725
+       drug         0.315  0.085  0.096 -1.203
+       recovery_ec  0.483  0.113  0.090 -1.744
+Su     awake_ec     0.922  0.187  0.169 -1.720
+       awake_eo     0.887  0.182  0.164 -1.712
+       drug         0.958  0.187  0.242 -1.378
+       recovery_ec  0.426  0.098  0.078 -1.800
+
+change from the session eyes-closed mean (unit means, then animal means)
+               d_KZ  d_TAIL  d_net  d_logsd
+state animal                               
+drug  Chibi   0.257   0.023  0.124    0.438
+      George  0.062  -0.005  0.062    0.388
+      Kin2   -0.361  -0.058 -0.034    0.492
+      Su      0.035  -0.001  0.073    0.343
+sleep Chibi   0.197   0.037  0.053    0.099
+      George  0.150   0.030  0.048    0.078
