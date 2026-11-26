@@ -101,3 +101,18 @@ Read before freezing, during the dataset screen (`../dataset-screen-macaque-anae
 - **Movement and residual drug in W2:** W2 is a reversal check, not a clean baseline.
 - **Array assignment of channels is inferred**, so the cross-block secondary may mix arrays.
 - **Transfer:** one 2.8 GB file, to be downloaded only on the user's go-ahead.
+
+## Pre-data clarifications (26 November, before any window was selected or any z computed)
+
+Scripts: `ferraina/extract_fb.py`, `select_fb.py`, `fb_z.py`, `fb_score.py`. They settle points the text above left open; the decision rule is unchanged.
+
+1. **Artefact rule scope:** as in the atlas NeuroTycho chain, `window_ok` is applied to the window on all good channels after the common average, not only to the 32 analysis channels. The flat mask counts a flat run in any good channel.
+2. **Covariates:** burst index and delta fraction are computed on the 32 analysis channels after the common average and before normal-scoring.
+3. **Bootstrap:** each state's accepted windows in time order. Blocks of 30 consecutive accepted windows start at uniform random positions, and ⌈n/30⌉ blocks are concatenated and truncated to n. Seed 20261126.
+4. **Block null:** blocks are grid positions k // 30 from the state's start.
+5. **Pair subsets:** a channel number ≤ 96 marks the first block. The cross-block and within-block z are rescored from the saved per-pair MI. `zgk_pairs` is asserted equal to `zgk` on the first window.
+6. **Compute (the earlier estimate was wrong):** about 75 s per window (4 × 496 KSG estimates), so about 13 core-hours for the primary, about 1.5 h wall-clock on 9 local workers.
+   - Local: the primary, then the as-recorded secondary.
+   - Gadi: the raw secondary (IAAFT converges slowly on raw data; Claar) and the all-channel secondary.
+   - Deferred: the time course over the whole recording, including transitions (about 940 more windows). For now it is plotted from the state windows only.
+7. **Seeds:** IAAFT seed = state offset (W1 0, D 100000, W2 200000) + 10·k, with draws seed + 0, 1, 2.
