@@ -61,3 +61,7 @@ For each of the twelve arms (LP2, LP4 = L10, LP8 = L20, LP15, LP25, HP2, HP4, HP
 ## Compute
 
 Timed locally (one core, this code): a 16-channel KSG evaluation takes 3.9 s at T = 1000 and 119 s at T = 5000; 32 channels at T = 1000, 19.5 s (the band sweep on Gadi implied about 20 s). Part 0: 1,200 realisations × about 350 core-s (the 50-s cell is two thirds of it), about 117 core-hours, 0.25 kSU expected, 0.5 worst. Part A: 13 × 1,260 × 20 core-s, about 0.18 kSU. Part B: about 0.02 kSU. All three: about 0.45 kSU expected, 0.9 worst.
+
+## Jobs
+
+- Part 0, snapshot `operations/sources/mi-knockout-5a9913e3`, `jobs/knockout_map.pbs`: 185243883 (submitted 26 November 2026). Output in `atlas-mi-pair-lowrate-261125/knockout/` on gdata: `map.npz`, and `map.txt` from `python knockout.py mread map.npz ../calib/calib_long100.npz`.
