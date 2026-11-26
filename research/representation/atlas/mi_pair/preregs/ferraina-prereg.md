@@ -202,3 +202,28 @@ W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index 
 - **Pending secondaries (none can change the verdict):**
   - as-recorded reference: running locally (now the most informative secondary, given the reference finding);
   - raw, all channels, k = 10 and kshift: Gadi.
+
+## Clarification 9 (26 November, after the primary result was read): everything here is post hoc
+
+None of this changes the frozen verdict.
+
+- **k standardised at 4:** the k = 10 secondary of Clarification 8 is dropped and not run. kshift stays.
+- **The ceiling rule was miscalibrated [V]:**
+  - NeuroTycho's own 10-s normal-scored awake eyes-closed z medians are .967–.983 across its ten agent × animal files (`results/.../zns/zns_*.npz`). Most are above the .97 cut, so the rule would have flagged NeuroTycho too.
+  - The rule's purpose holds: a z near 1 leaves little headroom, so an absolute Δz is not comparable across levels. But a fixed cut on z does not serve that purpose, so future preregs should not reuse it.
+- **Headroom-scaled reading (Fisher atanh of real and surrogate z, then residual) [V numbers; the scale is a heuristic]:**
+  - Monkey B: Δ_D −.33. NeuroTycho drug − awake per file: −.08 to −.38 (KTMD −.10 and −.13).
+  - On this scale monkey B's change is NeuroTycho-sized. But atanh's slope at z .995 is about 5× its slope at .975, the pairs are not independent samples, and W2 is lower still (−.42 against W1), so this is not evidence of a drug effect.
+- **Per-array common average, on the same accepted windows (`ferraina/select_pa.py`):** each array is referenced to its own mean and its last channel dropped (96 and 192), leaving 190 channels.
+  - Median r is −.04 to +.00 both within and across arrays in every state (45–51% of pairs positive), against ±.45 to ±.78 under the joint average. So the joint average's pair structure was made by the reference, and most within-array covariance is a component shared across each array.
+- **Runs added (Gadi):** `pa` (per-array, 32 channels), `pa_kshift`, and `paall` (all 190 per-array channels).
+  - The full-system run replaces the joint-average all-channel secondary, which would inherit the reference-made structure.
+  - Random 32-channel subsets are rescored from `paall`'s saved per-pair MI, with no extra compute.
+  - Declared runs kept: `ns_kshift` and `raw`.
+- **KSG implementation:** `claar/surr_pairs.ksg` now uses a KD-tree search. Its output is identical to brute force [V]:
+  - synthetic pairs, including tied values, at w 0–100: maximum difference 0;
+  - stored primary z and per-pair MI reproduced exactly on windows from every state.
+- **Seen while smoke-testing:** one D window's `pa_kshift` z, real .981 and surrogates .991–.992. No other per-array or kshift value was read before the runs.
+- **Gadi (`jobs/ferraina_sec.pbs`, 48 cores):**
+  - Job A runs `ns_kshift`, `raw`, `pa` and `pa_kshift`: expected 0.07 kSU, worst 0.2.
+  - Job B runs `paall`: expected 0.3 kSU, worst 1.0.
