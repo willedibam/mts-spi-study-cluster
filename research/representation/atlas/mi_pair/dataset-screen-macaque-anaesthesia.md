@@ -91,3 +91,43 @@ No open dataset found here has natural sleep alongside a drug in the same macaqu
 - **Not searched:** OpenNeuro in full (the catalogue download was stopped; Part C covered all 74 iEEG sets), CRCNS (the listing page had no hits), EBRAINS (the API call failed), OSF.
 
 Scratch files from this screen (not committed) are in this session's scratchpad.
+
+## Consolidated inventory: wake, sleep and drug datasets for the MI pair (26 November, evening)
+
+Compiled from this screen, [Part C](../../dataset_candidates/candidates.md#part-c--anaesthesia-replication-of-the-atlas-mi-pair-19-november-2026), the [scoping table](../../representation_state/notes/real-world-application-scoping.md) and the MI-pair results; no new search. "Run" means an MI-pair residual exists in this repository. W = wake, S = natural sleep, D = drug. Status of unrun sets was checked by grepping `findings.md`, `mi_pair/` and the git log for the dataset name [V for absence in those places only].
+
+**Scored**
+
+| Dataset | Species, recording | States | Units | MI-pair outcome |
+|---|---|---|---|---|
+| NeuroTycho | macaque, 128-ch ECoG | W (eyes open, closed), S, ketamine, KT–medetomidine, medetomidine, propofol | 4 | Anchor: drugs fall in 22 of 23 sessions; sleep same sign at about a tenth |
+| Claar, DANDI 000458 | mouse, skull EEG | W, isoflurane | 17 | −.0191; real z falls; burst-suppression-borne |
+| PRIOS, ds004370 | human ECoG | W (ward), propofol (theatre, later day) | 5 of 7 | REPLICATES −.0083; surrogate-driven; clear of its own-spectrum offset (speccalib) |
+| Kauvar, DANDI 001347 | human sEEG | W, sub-anaesthetic ketamine | 7 | ABSENT |
+| Ferraina, Zenodo 15466548 | macaque, 2 Utah arrays | W, dexmedetomidine + ketamine, W | 1 (LFP) | Frozen UNINFORMATIVE (ceiling); secondaries fall in the same direction; surrogate-driven |
+| Chennu | human scalp EEG, 19 ch | W, propofol sedation levels | 20 | Null within ±0.2 SD; z .983 |
+| ds004541 | human scalp EEG, 58 ch (6–23 good) | W, loss of consciousness (agent unstated) | 4 of 8 | +.0055, 1/4 negative; z .985 |
+| Leung fly | fly, 15 bipolar LFP | W, isoflurane | 13 | Residual about 0 (−.002); no null scale |
+
+**Open, never run for the MI pair**
+
+- **Bajwa ds005620** (human 65-ch scalp EEG, W vs propofol sedation, 20 people): both screens list it as "already used", but no MI-pair result exists; it was the atlas plan's confirmation step [I]. It was set aside only by the scalp-ceiling inference from Chennu and ds004541, which has not been tested on a 65-channel montage [I].
+- **Sleep without drug (W + S, other subjects):** ANPHY-Sleep (83-ch EEG, 29 adults, W/N1–N3/REM), the MNI iEEG atlas (W/N3/REM), RESPect ds003848 (ECoG/sEEG, 6), ds003768 (32-ch EEG–fMRI, 33), DREAM (awakenings with experience labels). None run.
+- **Psychedelics:** OpenScope Psycode DANDI 001417 (mouse Neuropixels LFP, psilocybin vs saline day, 10 mice, task running throughout); PsiConnect ds006110 (human EEG, psilocybin, 62; EEG files not inspected); Zenodo 3992359 (human DMT EEG, 35); Zenodo 17080375 (psilocybin + midazolam EEG, ICA-cleaned). LSD: only fMRI is open (ds003059, tier B); DANDI 001765 (rat LSD) has no wake baseline.
+- **Other drugs:** Dryad 98sf7m0ft (macaque dexmedetomidine, 3 sessions); EBRAINS 10.25493/S0DM-BK5 (rat 16-ch epidural EEG, propofol, sevoflurane, ketamine; stimulation-centred); GIN `SW_lab/Anesthesia_CA1` (mouse CA1, several anaesthetics); DANDI 001285 (provenance unchecked).
+- **Fly sleep:** the held-out flies with sleep (Leung 2025, OSF 8wvsq) [U whether continuous].
+
+**By request or restricted** (W + S + D in the same subjects marked ★)
+
+- ★ Saalmann (macaque laminar probes; W, NREM, isoflurane, propofol).
+- ★ Zelmann, DABI (human sEEG, 14; operating-room W and propofol, plus ward W and S in 13); access requested 20 November.
+- ★ Iowa (human iEEG; 19 propofol, 10 dexmedetomidine inductions, 24 overnight sleeps; DUA); subject overlap [U].
+- ★ Paediatric sEEG (PMC12835890; 30 children; W, slow-wave sleep, propofol on different days); no data statement.
+- Miller lab (macaque, 4 Utah arrays; propofol, ketamine, dexmedetomidine, 2 animals each).
+- Ferraina monkeys C and P LFP; the 2 unreleased PRIOS patients; the remaining Purdon subjects.
+- Krom (UCLA depth, propofol, 8); Tian (MGH sEEG, ketamine then propofol, 10); Michigan ketamine 128-ch EEG (Vlisides, 10–15; sub-anaesthetic and anaesthetic dose).
+- Massimini/Laureys Zenodo 806176 (restricted; scalp; W vs ketamine, propofol, xenon and N3 in separate groups).
+- Imperial LSD and psilocybin MEG, DMT EEG.
+- Jarraya macaque fMRI (ketamine, propofol, sevoflurane; tier B).
+
+**Not searched:** OpenNeuro beyond its iEEG sets, CRCNS, EBRAINS (API failed), OSF, Figshare (search unusable), rodent sleep plus anaesthesia LFP. The cheapest next lookup is Table S1 of Luppi et al. (bioRxiv 2025.03.22.644729), a cross-species list of awake and anaesthetised datasets [U, not read].
