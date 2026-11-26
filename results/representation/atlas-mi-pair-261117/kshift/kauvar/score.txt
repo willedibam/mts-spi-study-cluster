@@ -1,0 +1,62 @@
+gate: 600 windows, max |k4 z − stored| real 1.66e-04, surrogate 1.89e-15 -> FAIL
+
+===== frozen scorer on the k4 view
+
+$ kauvar/kv_sum.py kv_k4.npz
+sub-SD168: windows ref/inf/post 30/30/30, Δ_inf +0.0099, Δ_post +0.0178, split-half -0.0039 | BI 0.94/0.92 δ 0.50/0.55 | 1−z² real/surr ref 0.639/0.632 inf 0.632/0.638
+sub-SD172: windows ref/inf/post 30/30/30, Δ_inf +0.0048, Δ_post +0.0116, split-half +0.0064 | BI 0.96/0.98 δ 0.40/0.47 | 1−z² real/surr ref 0.905/0.914 inf 0.863/0.874
+sub-SD181: windows ref/inf/post 30/30/30, Δ_inf -0.0058, Δ_post -0.0042, split-half -0.0019 | BI 0.97/0.98 δ 0.44/0.44 | 1−z² real/surr ref 0.216/0.222 inf 0.260/0.256
+sub-SD185: windows ref/inf/post 30/30/30, Δ_inf -0.0113, Δ_post -0.0013, split-half +0.0075 | BI 0.96/0.97 δ 0.32/0.29 | 1−z² real/surr ref 0.737/0.757 inf 0.749/0.759
+sub-SD186: windows ref/inf/post 30/30/0, Δ_inf -0.0053, Δ_post +nan, split-half -0.0018 | BI 0.97/0.98 δ 0.42/0.37 | 1−z² real/surr ref 0.491/0.498 inf 0.494/0.494
+sub-SD211: windows ref/inf/post 30/30/30, Δ_inf +0.0021, Δ_post +0.0051, split-half +0.0029 | BI 0.93/0.95 δ 0.62/0.57 | 1−z² real/surr ref 0.291/0.285 inf 0.295/0.294
+sub-SD245: windows ref/inf/post 30/30/30, Δ_inf +0.0057, Δ_post +0.0100, split-half -0.0075 | BI 0.96/0.97 δ 0.31/0.23 | 1−z² real/surr ref 0.811/0.809 inf 0.708/0.710
+PRIMARY Δ_inf: n=7, negative 3 (one-sided sign p=0.7734), mean +0.0000 [-0.0053, +0.0051], null SD 0.0055 → +0.0 SD → ABSENT
+secondary post-infusion − reference: n=6, negative 2, mean +0.0065
+secondary within-infusion Spearman(residual, BI): median +0.12, positive 4/7
+
+
+===== frozen scorer on the kshift view (descriptive)
+
+$ kauvar/kv_sum.py kv_kshift.npz
+sub-SD168: windows ref/inf/post 30/30/30, Δ_inf +0.0077, Δ_post +0.0234, split-half -0.0085 | BI 0.94/0.92 δ 0.50/0.55 | 1−z² real/surr ref 0.711/0.712 inf 0.699/0.710
+sub-SD172: windows ref/inf/post 30/30/30, Δ_inf +0.0022, Δ_post +0.0126, split-half -0.0066 | BI 0.96/0.98 δ 0.40/0.47 | 1−z² real/surr ref 0.939/0.947 inf 0.908/0.918
+sub-SD181: windows ref/inf/post 30/30/30, Δ_inf -0.0072, Δ_post -0.0043, split-half -0.0075 | BI 0.97/0.98 δ 0.44/0.44 | 1−z² real/surr ref 0.271/0.278 inf 0.324/0.319
+sub-SD185: windows ref/inf/post 30/30/30, Δ_inf -0.0115, Δ_post -0.0034, split-half +0.0141 | BI 0.96/0.97 δ 0.32/0.29 | 1−z² real/surr ref 0.822/0.837 inf 0.824/0.831
+sub-SD186: windows ref/inf/post 30/30/0, Δ_inf -0.0001, Δ_post +nan, split-half +0.0002 | BI 0.97/0.98 δ 0.42/0.37 | 1−z² real/surr ref 0.575/0.580 inf 0.570/0.576
+sub-SD211: windows ref/inf/post 30/30/30, Δ_inf +0.0033, Δ_post +0.0083, split-half +0.0002 | BI 0.93/0.95 δ 0.62/0.57 | 1−z² real/surr ref 0.368/0.364 inf 0.377/0.379
+sub-SD245: windows ref/inf/post 30/30/30, Δ_inf +0.0007, Δ_post +0.0111, split-half -0.0080 | BI 0.96/0.97 δ 0.31/0.23 | 1−z² real/surr ref 0.866/0.864 inf 0.798/0.796
+PRIMARY Δ_inf: n=7, negative 3 (one-sided sign p=0.7734), mean -0.0007 [-0.0053, +0.0035], null SD 0.0082 → -0.1 SD → ABSENT
+secondary post-infusion − reference: n=6, negative 2, mean +0.0079
+secondary within-infusion Spearman(residual, BI): median +0.03, positive 5/7
+
+
+===== frozen scorer on the k2te view (descriptive)
+
+$ kauvar/kv_sum.py kv_k2te.npz
+sub-SD168: windows ref/inf/post 30/30/30, Δ_inf +0.0101, Δ_post +0.0208, split-half -0.0020 | BI 0.94/0.92 δ 0.50/0.55 | 1−z² real/surr ref 0.670/0.660 inf 0.662/0.664
+sub-SD172: windows ref/inf/post 30/30/30, Δ_inf +0.0048, Δ_post +0.0191, split-half +0.0069 | BI 0.96/0.98 δ 0.40/0.47 | 1−z² real/surr ref 0.933/0.938 inf 0.905/0.911
+sub-SD181: windows ref/inf/post 30/30/30, Δ_inf -0.0064, Δ_post -0.0055, split-half -0.0022 | BI 0.97/0.98 δ 0.44/0.44 | 1−z² real/surr ref 0.220/0.227 inf 0.267/0.263
+sub-SD185: windows ref/inf/post 30/30/30, Δ_inf -0.0088, Δ_post -0.0010, split-half +0.0088 | BI 0.96/0.97 δ 0.32/0.29 | 1−z² real/surr ref 0.779/0.794 inf 0.774/0.784
+sub-SD186: windows ref/inf/post 30/30/0, Δ_inf -0.0039, Δ_post +nan, split-half -0.0012 | BI 0.97/0.98 δ 0.42/0.37 | 1−z² real/surr ref 0.511/0.517 inf 0.511/0.512
+sub-SD211: windows ref/inf/post 30/30/30, Δ_inf +0.0021, Δ_post +0.0053, split-half +0.0020 | BI 0.93/0.95 δ 0.62/0.57 | 1−z² real/surr ref 0.334/0.327 inf 0.339/0.335
+sub-SD245: windows ref/inf/post 30/30/30, Δ_inf +0.0032, Δ_post +0.0165, split-half -0.0010 | BI 0.96/0.97 δ 0.31/0.23 | 1−z² real/surr ref 0.848/0.845 inf 0.774/0.771
+PRIMARY Δ_inf: n=7, negative 3 (one-sided sign p=0.7734), mean +0.0001 [-0.0044, +0.0048], null SD 0.0045 → +0.0 SD → ABSENT
+secondary post-infusion − reference: n=6, negative 2, mean +0.0092
+secondary within-infusion Spearman(residual, BI): median +0.05, positive 4/7
+
+
+## Kauvar: infusion − reference, 7 subjects (frozen ABSENT: |mean| within 2 null SD and CI lower end > −.010). R is undefined: Δ(k4) ≈ 0
+| Estimator | mean Δ | own null SD | Δ / null SD | R | units < 0 | test | sign = k4 | Δ real z | Δ surr z |
+|---|---|---|---|---|---|---|---|---|---|
+| k4 | +0.0000 | 0.0055 | +0.0 | 1.00 | 3/7 | sign p 0.7734 | 7/7 | +0.0191 | +0.0191 |
+| kshift | -0.0007 | 0.0082 | -0.1 | -81.92 | 3/7 | sign p 0.7734 | 7/7 | +0.0165 | +0.0173 |
+| | per unit (k4 → kshift): sub-SD168 +0.0099→+0.0077, sub-SD172 +0.0048→+0.0022, sub-SD181 -0.0058→-0.0072, sub-SD185 -0.0113→-0.0115, sub-SD186 -0.0053→-0.0001, sub-SD211 +0.0021→+0.0033, sub-SD245 +0.0057→+0.0007 |
+| k2te | +0.0001 | 0.0045 | +0.0 | 16.12 | 3/7 | sign p 0.7734 | 7/7 | +0.0170 | +0.0169 |
+k4: subject-bootstrap 95% CI [-0.0053, +0.0051]
+kshift: subject-bootstrap 95% CI [-0.0053, +0.0035]
+k2te: subject-bootstrap 95% CI [-0.0044, +0.0048]
+
+mean subtracted shift offset (k4 − kshift, mean over pairs), real / surrogate mean:
+  reference: +0.0049 / +0.0053 (n 210)
+  infusion: +0.0055 / +0.0056 (n 210)
+  postinfusion: +0.0053 / +0.0055 (n 180)

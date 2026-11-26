@@ -1,0 +1,206 @@
+claar_z_ns gate: 983 windows, max |k4 z − stored| real 2.89e-05, surrogate 1.89e-15 -> FAIL
+claar_z_ind gate: 406 windows, max |k4 z − stored| real 2.40e-05, surrogate 1.89e-15 -> FAIL
+claar_z_late gate: 235 windows, max |k4 z − stored| real 1.83e-05, surrogate 1.78e-15 -> FAIL
+
+===== frozen scorers on the k4 view
+
+$ claar/claar_sum.py claar_ns_k4.npz
+sessions included 18 | primary units 17
+windows awake/iso per session {np.str_('sub-551397_ses-20210211'): (27, 24), np.str_('sub-551399_ses-20210128'): (26, 11), np.str_('sub-569062_ses-20210218'): (27, 30), np.str_('sub-569064_ses-20210408'): (27, 30), np.str_('sub-569068_ses-20210304'): (23, 30), np.str_('sub-569069_ses-20210312'): (19, 30), np.str_('sub-569070_ses-20210401'): (26, 30), np.str_('sub-569072_ses-20210422'): (28, 30), np.str_('sub-569073_ses-20210415'): (18, 30), np.str_('sub-569073_ses-20210416'): (26, 30), np.str_('sub-571619_ses-20210319'): (27, 30), np.str_('sub-571620_ses-20210513'): (30, 30), np.str_('sub-575102_ses-20210603'): (30, 30), np.str_('sub-586466_ses-20210729'): (30, 30), np.str_('sub-586468_ses-20210819'): (26, 30), np.str_('sub-590479_ses-20210921'): (29, 30), np.str_('sub-590480_ses-20211111'): (24, 30), np.str_('sub-599017_ses-20220210'): (25, 30)}
+PRIMARY normal-scored        n=17 negative 16/17 (need ≥13; one-sided p=0.0001) mean Δ -0.0191 [-0.0260, -0.0132] = -7.3 null SD (null SD 0.0026)
+verdict (≥13 negative and mean beyond −2 null SD → replicates; ≤9 negative or mean not beyond −2 SD → falsified; else inconclusive): REPLICATES
+per session Δ: {np.str_('sub-551397_ses-20210211'): -0.0137, np.str_('sub-551399_ses-20210128'): -0.0569, np.str_('sub-569062_ses-20210218'): -0.0099, np.str_('sub-569064_ses-20210408'): -0.01, np.str_('sub-569068_ses-20210304'): 0.0041, np.str_('sub-569069_ses-20210312'): -0.0169, np.str_('sub-569070_ses-20210401'): -0.0235, np.str_('sub-569072_ses-20210422'): -0.0307, np.str_('sub-569073_ses-20210415'): -0.0121, np.str_('sub-571619_ses-20210319'): -0.0118, np.str_('sub-571620_ses-20210513'): -0.0235, np.str_('sub-575102_ses-20210603'): -0.0399, np.str_('sub-586466_ses-20210729'): -0.0128, np.str_('sub-586468_ses-20210819'): -0.0129, np.str_('sub-590479_ses-20210921'): -0.0308, np.str_('sub-590480_ses-20211111'): -0.009, np.str_('sub-599017_ses-20220210'): -0.0138}
+real z awake/iso mean 0.994 0.977 | surrogate 0.996 0.996
+secondary stationary awake   n=17 negative 16/17 (need ≥13; one-sided p=0.0001) mean Δ -0.0194 [-0.0267, -0.0133] = -7.4 null SD (null SD 0.0026)
+burst: within-iso Spearman(residual, BI) median +0.75, positive in 17/17
+burst: across mice Spearman(Δ, median iso BI) +0.52 (p=0.034); median iso BI by mouse [0.41, 0.56, 0.56, 0.5, 0.73, 0.49, 0.45, 0.54, 0.75, 0.64, 0.53, 0.57, 0.61, 0.7, 0.41, 0.75, 0.62]
+burst: continuous-like iso windows (BI ≥ .85) only: 7 sessions, negative 4, mean Δ -0.0004 = -0.1 null SD
+second 569073 session Δ -0.0134
+
+
+$ claar/claar_ind_sum.py claar_ns_k4.npz claar_ind_k4.npz
+sub-551397 induction windows 26, target  0
+sub-551399 induction windows 24, target  7, Δ_ind -0.0059
+sub-569062 induction windows 27, target  4, Δ_ind -0.0008
+sub-569064 induction windows 22, target  1
+sub-569068 induction windows 37, target  2
+sub-569069 induction windows 26, target  0
+sub-569070 induction windows 32, target  9, Δ_ind -0.0011
+sub-569072 induction windows 23, target 11, Δ_ind -0.0078
+sub-569073 induction windows 27, target  2
+sub-571619 induction windows 11, target  3, Δ_ind -0.0156
+sub-571620 induction windows 25, target  1
+sub-575102 induction windows 23, target  3, Δ_ind -0.0070
+sub-586466 induction windows 23, target  0
+sub-586468 induction windows 15, target  4, Δ_ind -0.0113
+sub-590479 induction windows 23, target  3, Δ_ind -0.0009
+sub-590480 induction windows  8, target  0
+sub-599017 induction windows 25, target  5, Δ_ind -0.0060
+PRIMARY Δ_ind: n=9, negative 9 (need ≥8, p=0.0020), mean -0.0063 [-0.0095, -0.0034] = -2.4 null SD → PRESENT
+secondary all induction windows: mean -0.0074, negative 17/17
+secondary within-induction Spearman: residual~BI median +0.63 (17/17 positive); residual~δ median -0.56 (17/17 negative)
+
+
+$ claar/claar_late_sum.py claar_ns_k4.npz claar_ind_k4.npz claar_late_k4.npz
+sub-551397 late windows 11, Δ_late +0.0005
+sub-569062 late windows 14, Δ_late -0.0028, induction target − late +0.0020 (4 targets)
+sub-569064 late windows  5, Δ_late +0.0000
+sub-569072 late windows  4, Δ_late -0.0007, induction target − late -0.0071 (11 targets)
+sub-569073 late windows  8, Δ_late +0.0015
+sub-571619 late windows 60, Δ_late +0.0009, induction target − late -0.0164 (3 targets)
+sub-571620 late windows 28, Δ_late -0.0002
+sub-575102 late windows  7, Δ_late -0.0004, induction target − late -0.0065 (3 targets)
+sub-586466 late windows 29, Δ_late +0.0004
+sub-586468 late windows 23, Δ_late -0.0003, induction target − late -0.0110 (4 targets)
+sub-590479 late windows 15, Δ_late -0.0005, induction target − late -0.0004 (3 targets)
+sub-590480 late windows 11, Δ_late +0.0008
+sub-599017 late windows 20, Δ_late +0.0003, induction target − late -0.0063 (5 targets)
+PRIMARY Δ_late (late − early awake): n=13, negative 6 (p=0.7095), mean -0.0000 [-0.0006, +0.0004] = -0.0 null SD
+verdict: DRIFT NEGLIGIBLE (explains if mean ≤ -0.0032; negligible if mean > -0.0032 and CI lower > -0.0063)
+secondary induction target − late awake: n=7, negative 6 (p=0.0625), mean -0.0065 [-0.0108, -0.0024] = -2.5 null SD
+
+
+===== frozen scorers on the kshift view (descriptive)
+
+$ claar/claar_sum.py claar_ns_kshift.npz
+sessions included 18 | primary units 17
+windows awake/iso per session {np.str_('sub-551397_ses-20210211'): (27, 24), np.str_('sub-551399_ses-20210128'): (26, 11), np.str_('sub-569062_ses-20210218'): (27, 30), np.str_('sub-569064_ses-20210408'): (27, 30), np.str_('sub-569068_ses-20210304'): (23, 30), np.str_('sub-569069_ses-20210312'): (19, 30), np.str_('sub-569070_ses-20210401'): (26, 30), np.str_('sub-569072_ses-20210422'): (28, 30), np.str_('sub-569073_ses-20210415'): (18, 30), np.str_('sub-569073_ses-20210416'): (26, 30), np.str_('sub-571619_ses-20210319'): (27, 30), np.str_('sub-571620_ses-20210513'): (30, 30), np.str_('sub-575102_ses-20210603'): (30, 30), np.str_('sub-586466_ses-20210729'): (30, 30), np.str_('sub-586468_ses-20210819'): (26, 30), np.str_('sub-590479_ses-20210921'): (29, 30), np.str_('sub-590480_ses-20211111'): (24, 30), np.str_('sub-599017_ses-20220210'): (25, 30)}
+PRIMARY normal-scored        n=17 negative 16/17 (need ≥13; one-sided p=0.0001) mean Δ -0.0173 [-0.0229, -0.0122] = -6.7 null SD (null SD 0.0026)
+verdict (≥13 negative and mean beyond −2 null SD → replicates; ≤9 negative or mean not beyond −2 SD → falsified; else inconclusive): REPLICATES
+per session Δ: {np.str_('sub-551397_ses-20210211'): -0.013, np.str_('sub-551399_ses-20210128'): -0.0439, np.str_('sub-569062_ses-20210218'): -0.0093, np.str_('sub-569064_ses-20210408'): -0.0094, np.str_('sub-569068_ses-20210304'): 0.0039, np.str_('sub-569069_ses-20210312'): -0.0173, np.str_('sub-569070_ses-20210401'): -0.0216, np.str_('sub-569072_ses-20210422'): -0.0282, np.str_('sub-569073_ses-20210415'): -0.0119, np.str_('sub-571619_ses-20210319'): -0.0085, np.str_('sub-571620_ses-20210513'): -0.0226, np.str_('sub-575102_ses-20210603'): -0.0369, np.str_('sub-586466_ses-20210729'): -0.0131, np.str_('sub-586468_ses-20210819'): -0.0126, np.str_('sub-590479_ses-20210921'): -0.0287, np.str_('sub-590480_ses-20211111'): -0.0081, np.str_('sub-599017_ses-20220210'): -0.0128}
+real z awake/iso mean 0.993 0.977 | surrogate 0.994 0.995
+secondary stationary awake   n=17 negative 16/17 (need ≥13; one-sided p=0.0001) mean Δ -0.0176 [-0.0237, -0.0124] = -6.8 null SD (null SD 0.0026)
+burst: within-iso Spearman(residual, BI) median +0.78, positive in 17/17
+burst: across mice Spearman(Δ, median iso BI) +0.55 (p=0.021); median iso BI by mouse [0.41, 0.56, 0.56, 0.5, 0.73, 0.49, 0.45, 0.54, 0.75, 0.64, 0.53, 0.57, 0.61, 0.7, 0.41, 0.75, 0.62]
+burst: continuous-like iso windows (BI ≥ .85) only: 7 sessions, negative 4, mean Δ +0.0003 = +0.1 null SD
+second 569073 session Δ -0.0123
+
+
+$ claar/claar_ind_sum.py claar_ns_kshift.npz claar_ind_kshift.npz
+sub-551397 induction windows 26, target  0
+sub-551399 induction windows 24, target  7, Δ_ind -0.0057
+sub-569062 induction windows 27, target  4, Δ_ind -0.0008
+sub-569064 induction windows 22, target  1
+sub-569068 induction windows 37, target  2
+sub-569069 induction windows 26, target  0
+sub-569070 induction windows 32, target  9, Δ_ind -0.0010
+sub-569072 induction windows 23, target 11, Δ_ind -0.0076
+sub-569073 induction windows 27, target  2
+sub-571619 induction windows 11, target  3, Δ_ind -0.0166
+sub-571620 induction windows 25, target  1
+sub-575102 induction windows 23, target  3, Δ_ind -0.0063
+sub-586466 induction windows 23, target  0
+sub-586468 induction windows 15, target  4, Δ_ind -0.0110
+sub-590479 induction windows 23, target  3, Δ_ind -0.0012
+sub-590480 induction windows  8, target  0
+sub-599017 induction windows 25, target  5, Δ_ind -0.0045
+PRIMARY Δ_ind: n=9, negative 9 (need ≥8, p=0.0020), mean -0.0061 [-0.0095, -0.0031] = -2.3 null SD → PRESENT
+secondary all induction windows: mean -0.0070, negative 17/17
+secondary within-induction Spearman: residual~BI median +0.62 (17/17 positive); residual~δ median -0.60 (17/17 negative)
+
+
+$ claar/claar_late_sum.py claar_ns_kshift.npz claar_ind_kshift.npz claar_late_kshift.npz
+sub-551397 late windows 11, Δ_late +0.0006
+sub-569062 late windows 14, Δ_late -0.0027, induction target − late +0.0020 (4 targets)
+sub-569064 late windows  5, Δ_late -0.0000
+sub-569072 late windows  4, Δ_late -0.0007, induction target − late -0.0069 (11 targets)
+sub-569073 late windows  8, Δ_late +0.0009
+sub-571619 late windows 60, Δ_late +0.0010, induction target − late -0.0176 (3 targets)
+sub-571620 late windows 28, Δ_late -0.0000
+sub-575102 late windows  7, Δ_late -0.0006, induction target − late -0.0057 (3 targets)
+sub-586466 late windows 29, Δ_late +0.0004
+sub-586468 late windows 23, Δ_late -0.0001, induction target − late -0.0109 (4 targets)
+sub-590479 late windows 15, Δ_late -0.0004, induction target − late -0.0008 (3 targets)
+sub-590480 late windows 11, Δ_late +0.0008
+sub-599017 late windows 20, Δ_late +0.0003, induction target − late -0.0048 (5 targets)
+PRIMARY Δ_late (late − early awake): n=13, negative 7 (p=0.5000), mean -0.0000 [-0.0006, +0.0004] = -0.0 null SD
+verdict: DRIFT NEGLIGIBLE (explains if mean ≤ -0.0032; negligible if mean > -0.0032 and CI lower > -0.0063)
+secondary induction target − late awake: n=7, negative 6 (p=0.0625), mean -0.0064 [-0.0110, -0.0022] = -2.5 null SD
+
+
+===== frozen scorers on the k2te view (descriptive)
+
+$ claar/claar_sum.py claar_ns_k2te.npz
+sessions included 18 | primary units 17
+windows awake/iso per session {np.str_('sub-551397_ses-20210211'): (27, 24), np.str_('sub-551399_ses-20210128'): (26, 11), np.str_('sub-569062_ses-20210218'): (27, 30), np.str_('sub-569064_ses-20210408'): (27, 30), np.str_('sub-569068_ses-20210304'): (23, 30), np.str_('sub-569069_ses-20210312'): (19, 30), np.str_('sub-569070_ses-20210401'): (26, 30), np.str_('sub-569072_ses-20210422'): (28, 30), np.str_('sub-569073_ses-20210415'): (18, 30), np.str_('sub-569073_ses-20210416'): (26, 30), np.str_('sub-571619_ses-20210319'): (27, 30), np.str_('sub-571620_ses-20210513'): (30, 30), np.str_('sub-575102_ses-20210603'): (30, 30), np.str_('sub-586466_ses-20210729'): (30, 30), np.str_('sub-586468_ses-20210819'): (26, 30), np.str_('sub-590479_ses-20210921'): (29, 30), np.str_('sub-590480_ses-20211111'): (24, 30), np.str_('sub-599017_ses-20220210'): (25, 30)}
+PRIMARY normal-scored        n=17 negative 16/17 (need ≥13; one-sided p=0.0001) mean Δ -0.0188 [-0.0253, -0.0132] = -8.0 null SD (null SD 0.0023)
+verdict (≥13 negative and mean beyond −2 null SD → replicates; ≤9 negative or mean not beyond −2 SD → falsified; else inconclusive): REPLICATES
+per session Δ: {np.str_('sub-551397_ses-20210211'): -0.013, np.str_('sub-551399_ses-20210128'): -0.0567, np.str_('sub-569062_ses-20210218'): -0.0097, np.str_('sub-569064_ses-20210408'): -0.0089, np.str_('sub-569068_ses-20210304'): 0.0014, np.str_('sub-569069_ses-20210312'): -0.0166, np.str_('sub-569070_ses-20210401'): -0.0227, np.str_('sub-569072_ses-20210422'): -0.0288, np.str_('sub-569073_ses-20210415'): -0.0123, np.str_('sub-571619_ses-20210319'): -0.0112, np.str_('sub-571620_ses-20210513'): -0.0229, np.str_('sub-575102_ses-20210603'): -0.0377, np.str_('sub-586466_ses-20210729'): -0.0131, np.str_('sub-586468_ses-20210819'): -0.0129, np.str_('sub-590479_ses-20210921'): -0.0293, np.str_('sub-590480_ses-20211111'): -0.0107, np.str_('sub-599017_ses-20220210'): -0.014}
+real z awake/iso mean 0.994 0.978 | surrogate 0.996 0.996
+secondary stationary awake   n=17 negative 17/17 (need ≥13; one-sided p=0.0000) mean Δ -0.0191 [-0.0262, -0.0134] = -8.1 null SD (null SD 0.0023)
+burst: within-iso Spearman(residual, BI) median +0.77, positive in 17/17
+burst: across mice Spearman(Δ, median iso BI) +0.44 (p=0.076); median iso BI by mouse [0.41, 0.56, 0.56, 0.5, 0.73, 0.49, 0.45, 0.54, 0.75, 0.64, 0.53, 0.57, 0.61, 0.7, 0.41, 0.75, 0.62]
+burst: continuous-like iso windows (BI ≥ .85) only: 7 sessions, negative 4, mean Δ -0.0004 = -0.2 null SD
+second 569073 session Δ -0.0128
+
+
+$ claar/claar_ind_sum.py claar_ns_k2te.npz claar_ind_k2te.npz
+sub-551397 induction windows 26, target  0
+sub-551399 induction windows 24, target  7, Δ_ind -0.0051
+sub-569062 induction windows 27, target  4, Δ_ind -0.0007
+sub-569064 induction windows 22, target  1
+sub-569068 induction windows 37, target  2
+sub-569069 induction windows 26, target  0
+sub-569070 induction windows 32, target  9, Δ_ind -0.0011
+sub-569072 induction windows 23, target 11, Δ_ind -0.0068
+sub-569073 induction windows 27, target  2
+sub-571619 induction windows 11, target  3, Δ_ind -0.0098
+sub-571620 induction windows 25, target  1
+sub-575102 induction windows 23, target  3, Δ_ind -0.0058
+sub-586466 induction windows 23, target  0
+sub-586468 induction windows 15, target  4, Δ_ind -0.0085
+sub-590479 induction windows 23, target  3, Δ_ind -0.0009
+sub-590480 induction windows  8, target  0
+sub-599017 induction windows 25, target  5, Δ_ind -0.0049
+PRIMARY Δ_ind: n=9, negative 9 (need ≥8, p=0.0020), mean -0.0048 [-0.0069, -0.0028] = -1.9 null SD → ABSENT
+secondary all induction windows: mean -0.0070, negative 17/17
+secondary within-induction Spearman: residual~BI median +0.67 (17/17 positive); residual~δ median -0.56 (17/17 negative)
+
+
+$ claar/claar_late_sum.py claar_ns_k2te.npz claar_ind_k2te.npz claar_late_k2te.npz
+sub-551397 late windows 11, Δ_late +0.0005
+sub-569062 late windows 14, Δ_late -0.0027, induction target − late +0.0020 (4 targets)
+sub-569064 late windows  5, Δ_late +0.0000
+sub-569072 late windows  4, Δ_late -0.0007, induction target − late -0.0061 (11 targets)
+sub-569073 late windows  8, Δ_late +0.0010
+sub-571619 late windows 60, Δ_late +0.0011, induction target − late -0.0109 (3 targets)
+sub-571620 late windows 28, Δ_late -0.0001
+sub-575102 late windows  7, Δ_late -0.0006, induction target − late -0.0052 (3 targets)
+sub-586466 late windows 29, Δ_late +0.0004
+sub-586468 late windows 23, Δ_late -0.0003, induction target − late -0.0082 (4 targets)
+sub-590479 late windows 15, Δ_late -0.0005, induction target − late -0.0005 (3 targets)
+sub-590480 late windows 11, Δ_late +0.0008
+sub-599017 late windows 20, Δ_late +0.0003, induction target − late -0.0052 (5 targets)
+PRIMARY Δ_late (late − early awake): n=13, negative 6 (p=0.7095), mean -0.0000 [-0.0006, +0.0004] = -0.0 null SD
+verdict: DRIFT NEGLIGIBLE (explains if mean ≤ -0.0032; negligible if mean > -0.0032 and CI lower > -0.0063)
+secondary induction target − late awake: n=7, negative 6 (p=0.0625), mean -0.0049 [-0.0078, -0.0018] = -1.9 null SD
+
+
+## Claar primary: isoflurane − awake, 17 mice (frozen: ≥ 13/17 negative and mean beyond −2 null SD)
+| Estimator | mean Δ | own null SD | Δ / null SD | R | units < 0 | test | sign = k4 | Δ real z | Δ surr z |
+|---|---|---|---|---|---|---|---|---|---|
+| k4 | -0.0191 | 0.0026 | -7.3 | 1.00 | 16/17 | sign p 0.0001 | 17/17 | -0.0190 | +0.0001 |
+| kshift | -0.0173 | 0.0026 | -6.7 | 0.91 | 16/17 | sign p 0.0001 | 17/17 | -0.0169 | +0.0004 |
+| | per unit (k4 → kshift): sub-551397_ses-20210211 -0.0137→-0.0130, sub-551399_ses-20210128 -0.0569→-0.0439, sub-569062_ses-20210218 -0.0099→-0.0093, sub-569064_ses-20210408 -0.0100→-0.0094, sub-569068_ses-20210304 +0.0041→+0.0039, sub-569069_ses-20210312 -0.0169→-0.0173, sub-569070_ses-20210401 -0.0235→-0.0216, sub-569072_ses-20210422 -0.0307→-0.0282, sub-569073_ses-20210415 -0.0121→-0.0119, sub-571619_ses-20210319 -0.0118→-0.0085, sub-571620_ses-20210513 -0.0235→-0.0226, sub-575102_ses-20210603 -0.0399→-0.0369, sub-586466_ses-20210729 -0.0128→-0.0131, sub-586468_ses-20210819 -0.0129→-0.0126, sub-590479_ses-20210921 -0.0308→-0.0287, sub-590480_ses-20211111 -0.0090→-0.0081, sub-599017_ses-20220210 -0.0138→-0.0128 |
+| k2te | -0.0188 | 0.0023 | -8.0 | 0.98 | 16/17 | sign p 0.0001 | 17/17 | -0.0181 | +0.0006 |
+
+## Claar Addendum A: induction target − awake (frozen: ≥ k negative, mean below −2 null SD; null SD = primary split half)
+| Estimator | mean Δ_ind | Δ / own null SD | R | mice < 0 | sign p | sign = k4 | Δ real z | Δ surr z |
+|---|---|---|---|---|---|---|---|---|
+| k4 | -0.0063 | -2.4 | 1.00 | 9/9 | 0.0020 | 9/9 | -0.0075 | -0.0012 |
+| kshift | -0.0061 | -2.4 | 0.97 | 9/9 | 0.0020 | 9/9 | -0.0074 | -0.0013 |
+| k2te | -0.0048 | -2.1 | 0.77 | 9/9 | 0.0020 | 9/9 | -0.0059 | -0.0010 |
+
+## Claar Addendum B: late − early awake (frozen: drift explains if mean ≤ Δ_ind/2)
+| Estimator | mean Δ_late | Δ_late / Δ_ind (same estimator) | mice < 0 | sign = k4 |
+|---|---|---|---|---|
+| k4 | -0.0000 | +0.01 | 6/13 | 13/13 |
+| kshift | -0.0000 | +0.01 | 7/13 | 12/13 |
+| k2te | -0.0000 | +0.01 | 6/13 | 13/13 |
+
+mean subtracted shift offset (k4 − kshift, mean over pairs), real / surrogate mean:
+  awake: +0.0084 / +0.0088 (n 468)
+  iso: +0.0202 / +0.0199 (n 515)
+  induction target: +0.0138 / +0.0143 (n 49)
+  induction other: +0.0140 / +0.0137 (n 357)
+  late: +0.0083 / +0.0085 (n 235)
