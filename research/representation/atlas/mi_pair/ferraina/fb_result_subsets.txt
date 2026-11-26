@@ -1,0 +1,23 @@
+gate 1, full paall (fb_score: ΔD -0.0033 [-0.0041, -0.0030], -2.34 SD, 1.00, +0.0015, PRESENT): {'z1': 0.9846, 'dD': -0.0033, 'lo': -0.0041, 'hi': -0.003, 'sd': -2.3403, 'fr': 1.0, 'dR': 0.0015, 'v': 'PRESENT', 'dreal': 0.0065, 'dsurr': 0.0103}
+gate 2, pa subset real z from paall pairs vs Z_pa: max |diff| 1.55e-06; surrogate (IAAFT over 190 vs 32 channels, not expected equal) 9.82e-03
+pa subset with 190-channel surrogates: {'z1': 0.9735, 'dD': -0.0043, 'lo': -0.0058, 'hi': -0.0038, 'sd': -1.7519, 'fr': 1.0, 'dR': 0.0017, 'v': 'UNINFORMATIVE', 'dreal': 0.0146, 'dsurr': 0.0198}
+
+random 32-channel subsets, all: n 1000 (5/50/95%)
+  W1 median real z +0.9654 +0.9834 +0.9913
+  ΔD -0.0050 -0.0033 -0.0020   CI high < 0 in 1.00
+  ΔD / W1 block SD -6.3122 -2.3864 -0.9842   beyond −2 SD in 0.62
+  D blocks below W1 mean +1.0000 +1.0000 +1.0000
+  Δrec +0.0001 +0.0016 +0.0030   > 0 in 0.96
+  median Δ real z +0.0006 +0.0074 +0.0248   median Δ surr z +0.0043 +0.0112 +0.0285
+  W1 z ≥ .97 in 0.90
+  verdicts {'PRESENT': 602, 'UNINFORMATIVE': 343, 'ABSENT': 54, 'INCONCLUSIVE': 1, 'REVERSED': 0}
+
+random 32-channel subsets, balanced 13-19 per array: n 831 (5/50/95%)
+  W1 median real z +0.9657 +0.9834 +0.9912
+  ΔD -0.0050 -0.0033 -0.0020   CI high < 0 in 1.00
+  ΔD / W1 block SD -6.3640 -2.3851 -0.9771   beyond −2 SD in 0.63
+  D blocks below W1 mean +1.0000 +1.0000 +1.0000
+  Δrec +0.0001 +0.0016 +0.0030   > 0 in 0.96
+  median Δ real z +0.0006 +0.0075 +0.0247   median Δ surr z +0.0043 +0.0112 +0.0281
+  W1 z ≥ .97 in 0.90
+  verdicts {'PRESENT': 503, 'UNINFORMATIVE': 280, 'ABSENT': 47, 'INCONCLUSIVE': 1, 'REVERSED': 0}
