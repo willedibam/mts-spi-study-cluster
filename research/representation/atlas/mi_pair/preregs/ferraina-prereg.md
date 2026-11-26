@@ -137,3 +137,15 @@ Scripts: `ferraina/extract_fb.py`, `select_fb.py`, `fb_z.py`, `fb_score.py`. The
 | W2 | .71 / .84 / .94 | .20 / .32 / .47 | .031 / .043 / .060 |
 
 W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index and more δ. That fits the residual drug the prereg anticipated, and it weakens W2 as a reversal check.
+
+## Clarification 8 (26 November): during the primary run, before any residual, surrogate z or state comparison was read
+
+**What had been seen:** one real z, W1 window 0 (.994), printed while checking the KSG change below. No surrogate z, residual or other window.
+
+- **KSG implementation:** `claar/surr_pairs.ksg` now takes the k-th neighbour distance with `np.partition` instead of a full sort. The output is identical: 141 pairs from 3 windows per state, real and IAAFT, maximum difference 0 [V]. It is about 1.7–2.3× faster. The running primary uses the old code; every later run uses the new one.
+- **Compute correction:** the all-channel secondary has 18,145 pairs, 36.6× the primary. That is about 475 core-hours at the old speed, not "about 3 core-days", and roughly half that with the change [I].
+- **Two added secondaries (Gadi), reported beside the primary; they do not enter the verdict:**
+  - **k = 10, AUTO window.** On NeuroTycho it retained R .95 (t(3) −5.98) and was the better configuration on drug-blind calibration (`robustness-result.md`).
+  - **kshift:** k4 minus the mean k4 of the same pair with x_j circularly shifted by T/4, T/2 and 3T/4, as `ksgbias.py`. It removes the real-only weak-edge bias under slow drug spectra; on NeuroTycho, R 1.11 (`ksg-bias-result.md`).
+  - **Why:** these are the two configurations the NeuroTycho robustness work gives a case for over k4 AUTO. The primary stays k4 AUTO: it is frozen, NeuroTycho's reference values are in k4, and switching after seeing a real z would be result-dependent.
+- **Theiler window by state (descriptive, reported with the result):** the median AUTO window is 3, 21 and 7 samples in W1, D and W2. NeuroTycho shows the same pattern (awake eyes-closed 5, KTMD 17, PF 22). There, the resulting KSG bias was shared with the surrogate and cancelled in Δz.

@@ -10,7 +10,7 @@ def acf(x):
 def ksg(x, y, w):
     n = len(x); dx = np.abs(x[:, None] - x[None, :]); dy = np.abs(y[:, None] - y[None, :]); d = np.maximum(dx, dy)
     t = np.arange(n); ex = np.abs(t[:, None] - t[None, :]) <= w
-    d = np.where(ex, np.inf, d); eps = np.sort(d, 1)[:, K_NN - 1]
+    d = np.where(ex, np.inf, d); eps = np.partition(d, K_NN - 1, axis=1)[:, K_NN - 1]
     nx = np.sum(np.where(ex, False, dx < eps[:, None]), 1); ny = np.sum(np.where(ex, False, dy < eps[:, None]), 1)
     return digamma(K_NN) + digamma(n) - np.mean(digamma(nx + 1) + digamma(ny + 1))
 def pec(a, orth):
