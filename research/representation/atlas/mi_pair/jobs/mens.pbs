@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=10:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_mens
+#PBS -j oe
+# Surrogate-ensemble KSG MI per pair (../mens.py; ../preregs/mens-prereg.md). Same rows and draw-0 seeds as edges_recompute.pbs.
+# qsub -v SRC=<source snapshot>,STAGE=A mens.pbs ; then STAGE=B. Scoring is local, after rsync of $O.
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; S=${SRC:-$R}; cd $S/research/representation/atlas/mi_pair || exit 2
+B=/scratch/ql44/we2614/mts-spi-study/atlas/banks; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/mens; mkdir -p $O
+PY="env PYTHONPATH=$S/src $R/.venv/bin/python"; N=${NDRAW:-50}; git -C $S log -1 --format='commit %H' > $O/commit-$STAGE.txt
+if [ "$STAGE" = A ]; then
+  for a in PF KT KTMD MD SLP; do $PY mens.py run $B/neurotycho-long-stage-a $O/mn_A_$a.npz $a first 48 $N || exit 3; done
+elif [ "$STAGE" = B ]; then
+  for a in PF KT KTMD MD; do $PY mens.py run $B/neurotycho-long-stage-b $O/mn_B_$a.npz $a first 48 $N || exit 3; done
+  $PY mens.py run $B/neurotycho-long-stage-b $O/mn_B_SLP.npz SLP row 48 $N || exit 3
+else exit 4; fi
+cd $O && sha256sum mn_${STAGE}_*.npz > SHA256SUMS-$STAGE && echo ALLDONE
