@@ -18,14 +18,14 @@ Before submission:
 - k4 gate, k4 only, so no kshift value was printed. It was exact on the machine that made each stored z: macOS for 4 Claar primary, 2 induction, 2 late and 3 Kauvar windows; a Gadi login node for 2 PRIOS windows.
 - The same PRIOS windows on macOS gave a real-window gap of 1.8e-4, with the surrogates exact. Normal-scored windows share one quantile set, so their distance ties are exact and different hardware breaks them differently (inferred from that pattern). Claar and Kauvar run on Gadi may therefore show a gap of this size on real windows. R is computed against the same run's k4.
 
-## Results (Claar, PRIOS primary, Kauvar; 26 November)
+## Results (26 November)
 
-All three jobs exited 0. Walltime and charge (48 cores × 2 SU/h): Claar 21 min, 34 SU; PRIOS 4.7 min, 7.5 SU; Kauvar 13 min, 21 SU; 0.06 kSU in all. Outputs, with checksums, are copied to `results/representation/atlas-mi-pair-261117/kshift/<study>/` (score.txt is the full log: the gates, the frozen scorers run on each estimator's view, and the tables below).
+All four jobs exited 0. Walltime and charge (48 cores × 2 SU/h): Claar 21 min, 34 SU; PRIOS 4.7 min, 7.5 SU; Kauvar 13 min, 21 SU; PRIOS S-full 2 h 12 min, 212 SU; 0.27 kSU in all. Outputs, with checksums, are copied to `results/representation/atlas-mi-pair-261117/kshift/<study>/` (score.txt is the full log: the gates, the frozen scorers run on each estimator's view, and the tables below).
 
 Reproduction on Gadi, over every window:
-- PRIOS was exact: real and surrogate gaps 0.
+- PRIOS was exact: real and surrogate gaps 0 (primary on the gate windows, S-full on all 3,911 windows).
 - Claar showed a maximum real-window gap of 2.9e-5 (primary), 2.4e-5 (induction) and 1.8e-5 (late), and Kauvar 1.7e-4. Every surrogate gap was ≤ 1.9e-15. This is the platform-tie pattern declared in the preregs (the stored Claar and Kauvar z were made on macOS). The gate prints FAIL at 1e-6 for this reason only.
-- The frozen scorers run on the Gadi k4 column reprint every frozen line to the printed decimal: Claar primary −0.0191 [−0.0260, −0.0132], 16/17, −7.3 null SD, REPLICATES; Δ_ind −0.0063, 9/9, −2.4, PRESENT; Δ_late −0.0000, 6/13, DRIFT NEGLIGIBLE; PRIOS −0.0083, 5/5, p .0095, REPLICATES; Kauvar +0.0000 [−0.0053, +0.0051], null SD .0055, ABSENT.
+- The frozen scorers run on the Gadi k4 column reprint every frozen line to the printed decimal: Claar primary −0.0191 [−0.0260, −0.0132], 16/17, −7.3 null SD, REPLICATES; Δ_ind −0.0063, 9/9, −2.4, PRESENT; Δ_late −0.0000, 6/13, DRIFT NEGLIGIBLE; PRIOS −0.0083, 5/5, p .0095, REPLICATES; Kauvar +0.0000 [−0.0053, +0.0051], null SD .0055, ABSENT. PRIOS S-full −0.0083, 6/7, p .0226 (7 subjects included), REPLICATES.
 
 R = Δ(kshift)/Δ(k4) is taken against the same run's k4. The own null SD is the split-half SD across units of that estimator's residuals. "Sign = k4" counts units whose Δ has the same sign under both estimators. The real/surrogate split is the per-unit Δ of the real z and of the surrogate mean z (residual = real − surrogate). k2te is a candidate only and is descriptive.
 
@@ -46,6 +46,9 @@ R = Δ(kshift)/Δ(k4) is taken against the same run's k4. The own null SD is the
 | Kauvar, infusion − reference | k4 | +0.0000 [−0.0053, +0.0051] | .0055 | +0.0 | undefined | 3/7 | sign p .77 | | +0.0191 | +0.0191 | ABSENT (frozen) |
 | | kshift | −0.0007 [−0.0053, +0.0035] | .0082 | −0.1 | undefined | 3/7 | sign p .77 | 7/7 | +0.0165 | +0.0173 | **ABSENT holds** |
 | | k2te | +0.0001 [−0.0044, +0.0048] | .0045 | +0.0 | undefined | 3/7 | sign p .77 | 7/7 | +0.0170 | +0.0169 | ABSENT holds |
+| PRIOS S-full (all good channels, 10 draws), propofol − awake | k4 | −0.0083 | .0126 | −0.7 | 1 | 6/7 | t(6) −2.52, p .0226 | | +0.0217 | +0.0300 | REPLICATES (frozen) |
+| | kshift | −0.0110 | .0131 | −0.8 | 1.32 | 7/7 | t(6) −2.87, p .0142 | 6/7 | +0.0241 | +0.0350 | **SURVIVES** |
+| | k2te | −0.0139 | .0120 | −1.2 | 1.68 | 7/7 | t(6) −3.53, p .0062 | 6/7 | +0.0165 | +0.0304 | |
 
 Per-unit Δ under k4 → kshift, the real/surrogate split per unit and the BI secondaries are in each score.txt. The rows under each study:
 - **Claar primary.** Every mouse keeps its sign. The one positive mouse (569068) stays positive (+0.0041 → +0.0039). The largest shrinkage is in 551399 (−0.0569 → −0.0439) and 571619 (−0.0118 → −0.0085). The effect remains carried by the real windows (Δ real z −0.0169, surrogates +0.0004). The burst secondaries are unchanged: within-iso Spearman(residual, BI) median +0.78 with 17/17 positive (k4 +0.75); the continuous-like iso windows (BI ≥ .85, 7 sessions) give +0.0003 (k4 −0.0004), so under both estimators the effect is borne by burst-suppression windows.
@@ -54,7 +57,6 @@ Per-unit Δ under k4 → kshift, the real/surrogate split per unit and the BI se
 - **Claar Addendum B.** kshift Δ_late is −0.0000, far from Δ_ind/2 = −0.0031, so drift does not explain the induction effect under kshift either.
 - **PRIOS.** The frozen REPLICATES rule holds under kshift (mean < 0, p .0023, no subject > 0) with R 1.17. The T = 200 caveat does not bite: R is above 1, not pushed down. Under both estimators the residual falls because the surrogate z rises more than the real z (Δ real z +0.0191, Δ surr z +0.0288 under kshift). This is the surrogate-driven fall already recorded for the k4 primary, so kshift does not change what the PRIOS effect is made of. The split-half null SD (.0158; −0.6 SD) is as uninformative as under k4 at n = 5 (robust null SD .0033, −2.9). Shift offsets are larger at T = 200 than in Claar (+0.0438 awake, +0.0449 propofol, real) and again equal real vs surrogate (+0.0428).
 - **Kauvar.** R is undefined (the table's arithmetic value is −82, meaningless at Δ(k4) = +0.0000). kshift Δ_inf is −0.0007, −0.1 own null SD, CI lower −0.0053 > −.010: ABSENT holds. kshift's own null SD (.0082) is half again as wide as k4's (.0055), which loosens the band, but on the k4 scale the mean is also −0.1 SD, so the reading does not depend on it. Per-subject signs agree with k4 in 7/7. Offsets are small and equal across states and real vs surrogate (+0.0049 to +0.0056).
+- **PRIOS S-full.** The frozen REPLICATES rule holds under kshift with R 1.32 (7/7 negative, p .0142). The one subject that is positive under k4, PRIOS01 (+0.0011), turns negative under kshift (−0.0018), so kshift removes the one exception the rule allowed; the other six keep their sign (k4 → kshift: PRIOS02 −0.0038 → −0.0080, PRIOS03 −0.0105 → −0.0125, PRIOS04 −0.0041 → −0.0031, PRIOS05 −0.0092 → −0.0134, PRIOS06 −0.0260 → −0.0316, PRIOS09 −0.0054 → −0.0062). The effect is surrogate-driven as in the primary (Δ real z +0.0241, Δ surr z +0.0350). Split-half null SD .0131 (−0.8 SD); robust null SD .0030 (−3.6; k4 −2.7). Offsets +0.0433 awake, +0.0439 propofol (real), +0.0425 and +0.0428 on surrogates.
 
 Not rescored: PRIOS S-A, S-B, S-AB and ds004541 (declared). NeuroTycho 2-s needs no compute: [`robustness-result.md`](robustness-result.md) already has the 32-channel 2-s kshift rows (own bank R 1.29, which fails the calibration rule; cut arm R 1.15, passing at −2.04 SE). Those rows use the same `neurotycho-short` bank (1,260 windows) at 32 channels. The old 2-s arm (16-channel subsets, 126-channel joint IAAFT, the atlas pipeline before `edges.py recompute`; [`preregs/robust-prereg.md`](preregs/robust-prereg.md)) is not rescored with kshift. That needs its own gate against the old pipeline; it is left as a follow-up.
-
-PRIOS S-full: pending (job 185283893).

@@ -1,0 +1,43 @@
+gate: 3911 windows, max |k4 z − stored| real 0.00e+00, surrogate 0.00e+00 -> PASS
+
+===== frozen null-scale script on the k4 view
+
+$ human/nulls.py prios_k4.npz
+/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/kshift/prios-sfull/views/prios_k4.npz
+  included 7: PRIOS01 +0.0011 (split +0.0019), PRIOS02 -0.0038 (split -0.0021), PRIOS03 -0.0105 (split +0.0331), PRIOS04 -0.0041 (split +0.0014), PRIOS05 -0.0092 (split +0.0017), PRIOS06 -0.0260 (split -0.0006), PRIOS09 -0.0054 (split -0.0017)
+  mean Δ -0.0083, 6/7 negative, one-sided p 0.0226; null SD 0.0126 -> -0.7; robust null SD 0.0031 -> -2.7; d_z -0.95
+  Δ real z +0.0217 (3/7 negative), Δ surrogate z +0.0300; real z awake 0.766
+
+
+===== frozen null-scale script on the kshift view (descriptive)
+
+$ human/nulls.py prios_kshift.npz
+/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/kshift/prios-sfull/views/prios_kshift.npz
+  included 7: PRIOS01 -0.0018 (split +0.0024), PRIOS02 -0.0080 (split -0.0017), PRIOS03 -0.0125 (split +0.0342), PRIOS04 -0.0031 (split +0.0003), PRIOS05 -0.0134 (split +0.0012), PRIOS06 -0.0316 (split -0.0005), PRIOS09 -0.0062 (split -0.0030)
+  mean Δ -0.0110, 7/7 negative, one-sided p 0.0142; null SD 0.0131 -> -0.8; robust null SD 0.0030 -> -3.6; d_z -1.08
+  Δ real z +0.0241 (3/7 negative), Δ surrogate z +0.0350; real z awake 0.691
+
+
+===== frozen null-scale script on the k2te view (descriptive)
+
+$ human/nulls.py prios_k2te.npz
+/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/kshift/prios-sfull/views/prios_k2te.npz
+  included 7: PRIOS01 -0.0016 (split +0.0021), PRIOS02 -0.0129 (split -0.0024), PRIOS03 -0.0189 (split +0.0313), PRIOS04 -0.0061 (split +0.0007), PRIOS05 -0.0135 (split +0.0016), PRIOS06 -0.0338 (split -0.0001), PRIOS09 -0.0104 (split -0.0018)
+  mean Δ -0.0139, 7/7 negative, one-sided p 0.0062; null SD 0.0120 -> -1.2; robust null SD 0.0020 -> -6.8; d_z -1.34
+  Δ real z +0.0165 (4/7 negative), Δ surrogate z +0.0304; real z awake 0.738
+
+
+## PRIOS: propofol − awake (frozen REPLICATES: mean < 0, one-sided t p < .05, at most one subject > 0)
+| Estimator | mean Δ | own null SD | Δ / null SD | R | units < 0 | test | sign = k4 | Δ real z | Δ surr z |
+|---|---|---|---|---|---|---|---|---|---|
+| k4 | -0.0083 | 0.0126 | -0.7 | 1.00 | 6/7 | t(6) -2.52, p 0.0226 | 7/7 | +0.0217 | +0.0300 |
+| kshift | -0.0110 | 0.0131 | -0.8 | 1.32 | 7/7 | t(6) -2.87, p 0.0142 | 6/7 | +0.0241 | +0.0350 |
+| | per unit (k4 → kshift): PRIOS01 +0.0011→-0.0018, PRIOS02 -0.0038→-0.0080, PRIOS03 -0.0105→-0.0125, PRIOS04 -0.0041→-0.0031, PRIOS05 -0.0092→-0.0134, PRIOS06 -0.0260→-0.0316, PRIOS09 -0.0054→-0.0062 |
+| k2te | -0.0139 | 0.0120 | -1.2 | 1.68 | 7/7 | t(6) -3.53, p 0.0062 | 6/7 | +0.0165 | +0.0304 |
+k4: frozen rule applied (descriptive for kshift/k2te): REPLICATES
+kshift: frozen rule applied (descriptive for kshift/k2te): REPLICATES
+k2te: frozen rule applied (descriptive for kshift/k2te): REPLICATES
+
+mean subtracted shift offset (k4 − kshift, mean over pairs), real / surrogate mean:
+  awake: +0.0433 / +0.0425 (n 2897)
+  anaes: +0.0439 / +0.0428 (n 1014)
