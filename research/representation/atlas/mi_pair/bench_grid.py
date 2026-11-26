@@ -2,7 +2,9 @@
 Per 10-s window, the value minus its session's eyes-closed mean, in eyes-open SD units, in its natural sign (not drug-oriented);
 rainclouds per state, printed number the window mean, open markers animal means. Y-limits differ by metric (1st-99th percentile of
 the windows shown, at least +-3), and windows outside are drawn at the limit. Title tags: C1 (same sign in all 10 drug cells),
-r = sleep/drug ratio (C2 needs its 90% CI below .25). BSR omitted (constant 0).
+r = sleep/drug ratio (C2 needs its 90% CI below .25). BSR omitted (constant 0). Panels are ordered and outlined by literature
+tier (bench_fig.TIERS): colour and opacity of the frame and name, opaque for ours and clinical monitor indices (starred),
+fainter for research markers, faintest for generic connectivity and the ablation.
   python bench_grid.py <bench results dir> <output stem>
 """
 import sys, json
@@ -12,14 +14,15 @@ import numpy as np
 import pandas as pd
 from mtsspi.figures import figure_style, raincloud
 from plot_character_draft import COLOR, DRUGS, GREY, MARK, SHORT, STATES       # read only
-from bench_fig import NAMES
+from bench_fig import ORDER, TIER, TSTYLE, TLABEL, TIERS, label
 
 
 def main(d, out):
     d = Path(d); J = json.load(open(d / 'bench-score.json')); S, sign = J['res'], J['sign']
     W = pd.read_csv(d / 'bench-windows.csv.gz'); W = W[W.group.isin(STATES)]
-    M = [m for m in S if m != 'BSR']
+    M = [m for m in ORDER if m in S]
     figure_style(); plt.rcParams.update({'font.size': 6, 'axes.labelsize': 6, 'xtick.labelsize': 5, 'ytick.labelsize': 5.4, 'svg.hashsalt': 'bench-grid'})
+    plt.rcParams['text.latex.preamble'] += r'\usepackage{bm}'
     fig = plt.figure(figsize=(7.2, 9.2), layout='constrained'); axs = fig.subplots(5, 4).ravel(); rng = np.random.default_rng(0)
     for a, m in zip(axs, M):
         v = W[m] * sign[m]; lo, hi = np.percentile(v, [1, 99]); lo, hi = min(lo, -3), max(hi, 3); pad = .12 * (hi - lo); yl = (lo, hi + pad)
@@ -36,15 +39,20 @@ def main(d, out):
         for tk, s in zip(a.get_xticklabels(), STATES):
             tk.set_color(COLOR[s])
         a.tick_params(axis='x', length=0)
-        r = S[m]; tag = ('C1' if r['C1'] else 'no C1') + f", r {r['ratio']:+.2f}".replace('-', '--')
-        a.set_title(f'{NAMES[m]}\\enspace\\textit{{{tag}}}' if m != 'DZ' else r'\textbf{$\Delta z$ (panel (c))}\enspace' + f'\\textit{{{tag}}}',
-                    fontsize=6.2, loc='left', pad=2)
+        r = S[m]; tag = ('C1' if r['C1'] else 'no C1') + f", r {r['ratio']:+.2f}".replace('-', '--'); col, al = TSTYLE[TIER[m]]
+        for sp in a.spines.values():
+            sp.set_visible(True); sp.set_color(col); sp.set_alpha(al); sp.set_linewidth(1.6 if TIER[m] in ('ours', 'clinical') else 1.0)
+        a.tick_params(axis='y', direction='in', length=2)
+        t = a.set_title(label(m) + r'\enspace\textit{' + tag + '}', fontsize=6.2, loc='left', pad=2, color=col); t.set_alpha(max(al, .6))
     for a in axs[len(M):]:
         a.axis('off')
     for a in axs[::4]:
         a.set_ylabel('wake SDs')
     fig.suptitle(r"Panel (c)'s construction per metric: window minus its session's eyes-closed mean, in eyes-open SDs, natural sign. "
-                 r"Numbers: window means; markers: animal means; y-scales differ by metric; clipped at the axes.", x=0, ha='left', fontsize=6)
+                 r"Numbers: window means; markers: animal means;" + '\n' + r"y-scales differ by metric; clipped at the axes. Frame by literature "
+                 r"tier, opacity falling with establishment: black ours, green $\star$ clinical monitor, blue published research marker, "
+                 r"grey generic connectivity and ablation." + '\n' + r"C1: same sign in all 10 drug cells; r: sleep/drug ratio.",
+                 x=0, ha='left', fontsize=6)
     for ext in ('png', 'pdf'):
         fig.savefig(Path(out).with_suffix('.' + ext), dpi=300, metadata={'CreationDate': None} if ext == 'pdf' else None)
     print('wrote', Path(out).with_suffix('.png'))

@@ -6,6 +6,8 @@ Rule: [`preregs/bench-prereg.md`](preregs/bench-prereg.md), frozen before output
 
 Per metric in panel (c)'s construction: [`bench-grid.png`](../../../../results/representation/atlas-mi-pair-261117/bench/bench-grid.png) ([`bench_grid.py`](bench_grid.py)).
 
+Both figures group metrics by literature tier (`bench_fig.TIERS`, set from the literature, not from these results). Starred are indices of, or components of, deployed depth-of-anaesthesia monitors: spectral entropy (GE Entropy), SEF95, and a band-truncated proxy of BIS's beta ratio. Next are published research markers of anaesthetic or conscious state, then generic connectivity summaries, then the ablation. There is no single best clinical index: BIS and Entropy are the deployed monitors, and BIS itself is not computed here.
+
 ## Verdict on the frozen criterion
 
 - **Passing both C1 (same sign in all 10 drug cells) and C2 (sleep/drug ratio 90% CI below .25):** Δz (ratio .07 [.04, .11]) and spectral entropy (.18 [.15, .21]). Δz is not unique on the criterion.
