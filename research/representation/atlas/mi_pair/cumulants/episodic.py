@@ -6,7 +6,8 @@ Per window, 1-s segments (step 0.5 s, 19 segments), Fisher z of r per pair and s
   glob   share of the pair-by-segment z variance (pair means removed) on its first principal component (do pairs move together)
   gc     time course of the mean z over pairs (global coupling), correlated over segments (Spearman) with raw-window segment
          log RMS, log delta (1-4 Hz) power and log high-band (25-45 Hz) power, averaged over the 32 channels; gcv_r, gcv_s:
-         the same with the normal-scored window's own segment RMS, for the recording and for its surrogate (the null)
+         the same with the normal-scored window's own segment RMS, for the recording and for its surrogate (the null); gca_r,
+         gca_s: the same with mean |z| over pairs (unsigned, so common-average-reference anticorrelation counts as coupling)
   k04    mean difference-axis excess kurtosis (kens.stats), and per window the Spearman over pairs of the pair's cv excess
          (real minus surrogate) with its k04
   python episodic.py <bank dir> <out.npz> <agent> <rowmode: first|row> <n workers>
@@ -51,10 +52,11 @@ def one(args):
     rb = [spearmanr(gc, b[:, j])[0] for j in range(3)]
     lr = lambda y: np.log([np.sqrt(np.mean(y[i:i + SEG] ** 2)) for i in range(0, len(y) - SEG + 1, STEP)])  # scored-scale RMS
     rv, rs = spearmanr(gc, lr(v))[0], spearmanr(zs.mean(1), lr(s))[0]
-    return np.array([cvr.mean(), cvs.mean(), glob_share(zr), glob_share(zs), *rb, k04.mean(), spearmanr(cvr - cvs, k04)[0], rv, rs], np.float32)
+    av, as_ = spearmanr(np.abs(zr).mean(1), lr(v))[0], spearmanr(np.abs(zs).mean(1), lr(s))[0]   # unsigned: CAR anticorrelation
+    return np.array([cvr.mean(), cvs.mean(), glob_share(zr), glob_share(zs), *rb, k04.mean(), spearmanr(cvr - cvs, k04)[0], rv, rs, av, as_], np.float32)
 
 
-COLS = ('cv_r', 'cv_s', 'glob_r', 'glob_s', 'gc_rms', 'gc_delta', 'gc_high', 'k04', 'rho_cv_k04', 'gcv_r', 'gcv_s')
+COLS = ('cv_r', 'cv_s', 'glob_r', 'glob_s', 'gc_rms', 'gc_delta', 'gc_high', 'k04', 'rho_cv_k04', 'gcv_r', 'gcv_s', 'gca_r', 'gca_s')
 
 
 def score(d):
@@ -68,9 +70,10 @@ def score(d):
     df = pd.concat(fr, ignore_index=True); assert df.id.is_unique
     df['group'] = np.where(df.state == 'drug', df.agent, np.where(df.state == 'sleep', 'SLP', df.state))
     df['cv_x'], df['glob_x'], df['gcv_x'] = df.cv_r - df.cv_s, df.glob_r - df.glob_s, df.gcv_r - df.gcv_s
+    df['gca_x'] = df.gca_r - df.gca_s
     pd.set_option('display.width', 200)
-    print(df.groupby(['animal', 'group'])[['cv_x', 'glob_x', 'gc_rms', 'gc_delta', 'gc_high', 'gcv_r', 'gcv_s', 'gcv_x', 'k04', 'rho_cv_k04']].mean().round(3).to_string())
-    print('\nall animals:'); print(df.groupby('group')[['cv_x', 'glob_x', 'gc_rms', 'gc_delta', 'gc_high', 'gcv_r', 'gcv_s', 'gcv_x', 'k04', 'rho_cv_k04']].mean().round(3).to_string())
+    print(df.groupby(['animal', 'group'])[['cv_x', 'glob_x', 'gc_rms', 'gc_delta', 'gc_high', 'gcv_r', 'gcv_s', 'gcv_x', 'gca_x', 'k04', 'rho_cv_k04']].mean().round(3).to_string())
+    print('\nall animals:'); print(df.groupby('group')[['cv_x', 'glob_x', 'gc_rms', 'gc_delta', 'gc_high', 'gcv_r', 'gcv_s', 'gcv_x', 'gca_x', 'k04', 'rho_cv_k04']].mean().round(3).to_string())
     df.to_csv(Path(d) / 'ep-windows.csv.gz', index=False)
 
 
