@@ -4,6 +4,8 @@ Rule: [`preregs/bench-prereg.md`](preregs/bench-prereg.md), frozen before output
 
 ![bench](../../../../results/representation/atlas-mi-pair-261117/bench/bench.png)
 
+Per metric in panel (c)'s construction: [`bench-grid.png`](../../../../results/representation/atlas-mi-pair-261117/bench/bench-grid.png) ([`bench_grid.py`](bench_grid.py)).
+
 ## Verdict on the frozen criterion
 
 - **Passing both C1 (same sign in all 10 drug cells) and C2 (sleep/drug ratio 90% CI below .25):** Δz (ratio .07 [.04, .11]) and spectral entropy (.18 [.15, .21]). Δz is not unique on the criterion.
