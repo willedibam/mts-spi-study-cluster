@@ -175,6 +175,7 @@ W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index 
 
 - **Criteria:** 1 and 3 hold, 2 and 4 fail.
 - **Ceiling:** the W1 median real z is .9947, at or above the .97 cut, so the verdict is UNINFORMATIVE.
+- **Precedence:** ABSENT's numeric conditions also hold (|Δ_D| 1.24 SD ≤ 2; CI lower end −.0026 > −.010). The frozen ceiling clause ("no verdict is given") takes precedence, so the verdict is UNINFORMATIVE; without that clause it would read ABSENT.
 
 **Readings:**
 
@@ -183,10 +184,13 @@ W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index 
 - **No reversal [V]:** W2 sits below D.
   - W2's amplitude is still 2.4× W1's, so the data cannot separate residual drug from time in the recording [I].
 - **Mechanism [V]:** real z barely moves (means .9937, .9950 and .9944). The residual falls because the IAAFT z rises (.9946, .9977, .9978).
-  - In NeuroTycho the real z itself falls (findings), so on this point the result differs from NeuroTycho; it does not replicate it.
+  - In NeuroTycho the real z itself falls (findings, PRIOS bullet), so on this point the result differs. Human propofol ECoG (PRIOS) shows monkey B's pattern: real z does not fall and the surrogate rises more.
 - **Ceiling [V]:** 1 − z² is about .01 in every state.
   - **Post hoc, descriptive:** within-array pairs carry the ceiling (W1 median z .997). Cross-array pairs sit at .965 in W1, .992 in D and .991 in W2.
-  - **Likely cause [I]:** a 4 × 4 mm array has pair MI graded mostly by strength, so both estimators rank the pairs alike. This is the geometry the asymmetry note anticipated.
+  - **Reference-made pair structure [V], post hoc:** after the joint common average, within-array pairs are positively correlated and cross-array pairs negatively, at about equal size. Median r within/cross is +.46/−.45 in W1, +.78/−.75 in D and +.72/−.69 in W2, and 91–97% of within-array pairs are positive against 0–6% of cross-array pairs; every 10th window was checked.
+  - This is the signature of a common average over two arrays carrying different signals: each channel is dominated by ±(A − B)/2. So much of the |r| spread, and with it the ceiling, is made by the reference.
+  - It also explains why |r| rises under the drug after the common average (W1 .45, D .76) while it fell as recorded (screen: .69 to .49).
+  - Array geometry (a 4 × 4 mm array) may add to the ceiling [I]. The as-recorded secondary will separate the two; a per-array common average would be the natural reference, but it was not preregistered.
 - **Secondaries [V]:**
   - D windows with burst index ≥ .85: Δ_D −.0018.
   - At W1's median burst index (regression): Δ_D −.0017.
@@ -196,5 +200,5 @@ W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index 
   - Within-state Spearman(residual, burst index): W1 +.34, D +.05, W2 +.21.
 - **Bearing:** by the frozen rule this result counts neither for nor against NeuroTycho; it shows only that the sign agrees. Monkeys C and P would be read under the same rule if their LFP becomes available.
 - **Pending secondaries (none can change the verdict):**
-  - as-recorded reference: running locally;
+  - as-recorded reference: running locally (now the most informative secondary, given the reference finding);
   - raw, all channels, k = 10 and kshift: Gadi.
