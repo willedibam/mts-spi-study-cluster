@@ -13,19 +13,21 @@
 ## Part 0: synthetic response map (drug-blind)
 
 **Generators.** 16 channels, phase-randomised from the periodograms of normal-scored W50 stage-A windows (awake eyes-closed of KTMD units, KTMD drug, PF drug; 32-channel subset as `edges.py`), interpolated onto a 100-s grid at 100 Hz, so every scored window is cut from inside a longer signal and has non-circular ends, as real windows do. Four 4-channel blocks with stationary linear coupling (`long100.gen`'s mixing). Then:
-- `block`: nothing more (false-positive reference), n = 100 per spectrum;
-- `gain_shared`: ×3 broadband gain switch, Markov, mean dwell 1 s, n = 40;
-- `gain_B4`: the same switch on the 8–15 Hz component only, n = 40;
-- `xfreq`: 8–15 Hz amplitude ×3 while the channel-mean 0.1–2 Hz component is positive (cross-frequency coupling), n = 40.
+- `block`: nothing more (false-positive reference);
+- `gain_shared`: ×3 broadband gain switch, Markov, mean dwell 1 s;
+- `gain_B4`: the same switch on the 8–15 Hz component only;
+- `xfreq`: 8–15 Hz amplitude ×3 while the channel-mean 0.1–2 Hz component is positive (cross-frequency coupling).
+
+n = 100 draws per generator and spectrum. Draw i of every generator shares its base signal, IAAFT draw and knockout phase, so generator differences are paired. n is set from the robustness calibration at T = 1000, where `gain_shared` detectability was only .35 SD on the awake spectrum (1.27 PF, 3.17 KTMD).
 
 **Cells.** Each realisation, normal-scored, against its own spectrum-final joint IAAFT, z(G, K) real − surrogate: 100 Hz 10 s (anchor-like) and 50 s; 8 Hz low-pass then 20 Hz, 10 s (T = 200) and 50 s (T = 1000); 8 Hz low-pass, 8 Hz high-pass and 8–15 Hz band-pass at 100 Hz, 10 s (order-8 zero-phase Butterworth on the whole signal, then cut); Theiler window fixed at 0.25 s and 1 s in every state, 100 Hz 10 s. Plus the 14 knockout variants of Part A on the anchor-like cut.
 
-**Readouts (descriptive).** Per cell and generator, the drug − awake contrast built as the real readout is: the generator on the drug spectra (mean of KTMD and PF) minus `block` on the awake spectrum, and its ratio to the anchor-like cell. Knockout loss ℓ_B and sufficiency s_B per generator (definitions in Part A), with bootstrap SEs over draws.
+**Readouts (descriptive).** Per cell, the drug − awake contrast split into a spectrum offset (`block` on the drug spectra, mean of KTMD and PF, minus `block` on the awake spectrum) and a structure effect (generator minus `block` on the drug spectra, paired), each ± SE; the structure effect's ratio to the anchor-like cell. Sanity anchor: the anchor-like `block` and `gain_shared` values beside long100's circular T = 1000 calibration; a gap means the offset depends on circular ends. Knockout loss ℓ_B and sufficiency s_B per generator (definitions in Part A), with bootstrap SEs over draws.
 
 **What Part 0 licenses in Part A.**
-- *False positives and ends.* Each `block` knockout numerator (z_real − z_knock-B, per spectrum) must be within 2 SE of 0 or ±.001. A band that fails gets no real-data reading; the low bands are the ones at risk, since end mismatch introduced by the knockout weighs most there.
+- *False positives and ends.* Each `block` knockout and sufficiency numerator (z_real − z_knock-B and z_keep-B − z_all, per spectrum) must be within 2 SE of 0 or ±.001. A band that fails gets no real-data reading; the low bands are the ones at risk, since end mismatch introduced by the knockout weighs most there.
 - *Denominator.* Ratios are read only where |D| ≥ 3 bootstrap SE; otherwise only the numerators are reported (the same rule applies to real data).
-- *Identifiability.* `gain_B4`'s excess loss over `gain_shared`'s, ℓ_B − ℓ^gain_B, must be larger in B4 than the largest |excess| of any other band, with the bootstrap 2.5 % point of that difference above 0. A "within 2 SE" criterion is not used, because it passes on noise. If this fails, Part A is reported as tables only, with no locus claim. Gates of this kind have failed before here (reorder v1 and v2, the envelope null, the scalar-gain test).
+- *Identifiability* (assessed only if both denominators pass). `gain_B4`'s excess loss over `gain_shared`'s, ℓ_B − ℓ^gain_B, must be larger in B4 than the largest |excess| of any other band, with the paired-bootstrap 2.5 % point of that difference above 0. A "within 2 SE" criterion is not used, because it passes on noise. If this fails, Part A is reported as tables only, with no locus claim. Gates of this kind have failed before here (reorder v1 and v2, the envelope null, the scalar-gain test).
 - Everything else in Part 0 is descriptive: it shows how a known gain switch moves with rate, duration, band-limiting and a fixed Theiler window, which is what the deferred real-data arms (below) would have to be read against.
 
 ## Part A: knockouts on the anchor windows
@@ -58,4 +60,4 @@ For each of the twelve arms (LP2, LP4 = L10, LP8 = L20, LP15, LP25, HP2, HP4, HP
 
 ## Compute
 
-Timed locally (one core, this code): a 16-channel KSG evaluation takes 3.9 s at T = 1000 and 119 s at T = 5000; 32 channels at T = 1000, 19.5 s (the band sweep on Gadi implied about 20 s). Part 0: 660 realisations × about 350 core-s (the 50-s cell is two thirds of it), about 64 core-hours, 0.13 kSU expected, 0.3 worst. Part A: 13 × 1,260 × 20 core-s, about 0.18 kSU. Part B: about 0.02 kSU. All three: about 0.33 kSU expected, 0.7 worst.
+Timed locally (one core, this code): a 16-channel KSG evaluation takes 3.9 s at T = 1000 and 119 s at T = 5000; 32 channels at T = 1000, 19.5 s (the band sweep on Gadi implied about 20 s). Part 0: 1,200 realisations × about 350 core-s (the 50-s cell is two thirds of it), about 117 core-hours, 0.25 kSU expected, 0.5 worst. Part A: 13 × 1,260 × 20 core-s, about 0.18 kSU. Part B: about 0.02 kSU. All three: about 0.45 kSU expected, 0.9 worst.

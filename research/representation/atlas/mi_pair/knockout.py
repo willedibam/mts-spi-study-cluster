@@ -6,13 +6,13 @@ map:    Part 0, drug-blind. Synthetic 16-channel signals with known structure (g
         cut from inside a longer signal (no circular ends). Each realisation is scored in every cell of CELLS (rate,
         duration, band, Theiler window: z(G, K) real and against its own spectrum-final joint IAAFT) and by the 14
         band-knockout variants of its anchor-like 10-s, 100 Hz cut. Per-edge G and K are stored for every evaluation.
-        python knockout.py map <W50 stage-a bank> <out.npz> <n block> <n other> <workers>
+        python knockout.py map <W50 stage-a bank> <out.npz> <n per generator and spectrum> <workers>
 score:  Part A, real data. The 14 knockout variants of each anchor window (edges.py recompute's rows, subsets, normal-
         scoring), phase seed default_rng([row, 2000]). Stores z and per-edge G, K per variant.
         python knockout.py score <bank dir> <out.npz> <agent> <first|row> <workers>
 offset: Part B. long100.py's T = 1000 drug-blind calibration (calib_one: `block`, `gain_shared`) on a band-sweep arm's bank.
         python knockout.py offset <arm stage-a bank> <out.npz> <n block> <n gain_shared> <workers>
-mread:  descriptive tables of a map file.  python knockout.py mread <map.npz>
+mread:  descriptive tables of a map file.  python knockout.py mread <map.npz> [calib_long100.npz]
 
 The real-data reading is written at the freeze, after Part 0 returns.
 PYTHONPATH=<repo>/src:<repo>/research/representation/atlas/mi_pair:<repo>/research/representation/atlas/mi_pair/lowrate
@@ -114,15 +114,17 @@ def sources(d):
     return src
 
 
-def run_map(d, out, nb, ng, nw):
+def run_map(d, out, n, nw):
+    """n draws per generator and spectrum. The seed omits the generator, so draw i of every generator shares its base
+    signal, IAAFT draw and knockout phase (synth draws the gain switch last): generator differences are paired."""
     src = sources(d); jobs, lab = [], []
     for si, (tag, _, _) in enumerate(SPECTRA):
-        for ki, kind in enumerate(GENS):
-            for i in range(nb if kind == 'block' else ng):
-                jobs.append((kind, 9 * 10 ** 6 + 10 ** 5 * si + 10 ** 4 * ki + i, src[tag][i % len(src[tag])]))
+        for kind in GENS:
+            for i in range(n):
+                jobs.append((kind, 9 * 10 ** 6 + 10 ** 5 * si + i, src[tag][i % len(src[tag])]))
                 lab.append((kind, tag, i))
     with Pool(nw) as p:
-        R = p.map(map_one, jobs, chunksize=1)
+        R = p.map(map_one, jobs[::-1], chunksize=1)[::-1]
     np.savez(out, Z=np.array([r[0] for r in R]), E=np.array([r[1] for r in R]), Zk=np.array([r[2] for r in R]),
              Ek=np.array([r[3] for r in R]), kind=np.array([k for k, _, _ in lab]), tag=np.array([t for _, t, _ in lab]),
              i=np.array([i for _, _, i in lab]), cells=np.array(list(CELLS)), variants=np.array(VARIANTS),
@@ -130,44 +132,59 @@ def run_map(d, out, nb, ng, nw):
     print('done', out, flush=True)
 
 
-def mread(f):
-    """Descriptive. Drug-minus-awake contrasts use the generator on the drug spectra (mean of KTMD and PF) minus `block`
-    on the awake spectrum, the real readout's construction. SEs over generator draws (bootstrap for ratios)."""
-    D = np.load(f); Z, Zk, kind, tag = D['Z'], D['Zk'], D['kind'], D['tag']; cells = list(D['cells'])
-    sel = lambda k, t: (kind == k) & (tag == t)
+def mread(f, ref=None):
+    """Descriptive. Drug - awake contrast of a generator = spectrum offset (`block` on the drug spectra, mean of KTMD and PF,
+    minus `block` on AW) + structure effect (generator minus `block` on the drug spectra, paired by draw). SEs over draws;
+    ratios by paired bootstrap over draw index, read only where the denominator is >= 3 SE."""
+    D = np.load(f); cells = list(D['cells']); kind, tag, idx = D['kind'], D['tag'], D['i']
+    zc = D['Z'][..., 0] - D['Z'][..., 1]; Zk = D['Zk']
+    g = lambda A, k, t: A[(kind == k) & (tag == t)][np.argsort(idx[(kind == k) & (tag == t)])]   # ordered by draw
     se = lambda x: x.std(ddof=1) / np.sqrt(len(x))
-    print('z_real - z_IAAFT per cell: mean +- SE by generator and spectrum')
+    drug = lambda A, k: (g(A, k, 'KTMD') + g(A, k, 'PF')) / 2                                      # paired by draw index
+    off = drug(zc, 'block').mean(0) - g(zc, 'block', 'AW').mean(0)
+    offse = np.sqrt(drug(zc, 'block').var(0, ddof=1) / len(drug(zc, 'block')) + g(zc, 'block', 'AW').var(0, ddof=1) / len(g(zc, 'block', 'AW')))
+    print('per cell, z_real - z_IAAFT: spectrum offset (block, drug - AW) | structure effect (generator - block, drug spectra, paired)')
     for c, nm in enumerate(cells):
-        print(f'{nm:8s} ' + ' | '.join(f'{k} ' + ' '.join(f'{t} {(Z[sel(k, t), c, 0] - Z[sel(k, t), c, 1]).mean():+.4f}'
-                                                         f'±{se(Z[sel(k, t), c, 0] - Z[sel(k, t), c, 1]):.4f}' for t in ('AW', 'KTMD', 'PF')) for k in GENS))
-    dz = lambda k, c: np.mean([(Z[sel(k, t), c, 0] - Z[sel(k, t), c, 1]).mean() for t in ('KTMD', 'PF')]) - \
-        (Z[sel('block', 'AW'), c, 0] - Z[sel('block', 'AW'), c, 1]).mean()
-    print('drug - awake contrast per cell, ratio to A100x10:')
-    for k in GENS[1:]:
-        print(f'{k:12s} ' + '  '.join(f'{nm} {dz(k, c):+.4f} (R {dz(k, c) / dz(k, 0):.2f})' for c, nm in enumerate(cells)))
-    print('block, knockout numerators per spectrum (end-mismatch and false-positive check): z_real - z_knockB')
+        eff = {k: drug(zc, k)[:, c] - drug(zc, 'block')[:, c] for k in GENS[1:]}
+        print(f'{nm:8s} offset {off[c]:+.4f}±{offse[c]:.4f} | ' + '  '.join(
+            f'{k} {e.mean():+.4f}±{se(e):.4f}' + (f' (R {e.mean() / (drug(zc, k)[:, 0] - drug(zc, "block")[:, 0]).mean():.2f})' if c else '')
+            for k, e in eff.items()))
+    print('  (R: structure effect relative to the anchor-like cell; unstable where that cell is < 3 SE)')
+    print('block knockout numerators per spectrum (false positives, end mismatch): knock z_real - z_knockB | keep z_keepB - z_all')
+    flag = []
     for t in ('AW', 'KTMD', 'PF'):
-        b = Zk[sel('block', t)]
-        print(f'{t:4s} ' + '  '.join(f'{BN[j]} {(b[:, 0] - b[:, 1 + j]).mean():+.4f}±{se(b[:, 0] - b[:, 1 + j]):.4f}' for j in range(6)) +
-              f'  all {(b[:, 0] - b[:, 13]).mean():+.4f}±{se(b[:, 0] - b[:, 13]):.4f}')
-    rng = np.random.default_rng(0)
+        b = g(Zk, 'block', t); nk = [b[:, 0] - b[:, 1 + j] for j in range(6)]; ns_ = [b[:, 7 + j] - b[:, 13] for j in range(6)]
+        bad = lambda x: abs(x.mean()) > max(2 * se(x), .001)
+        flag += [f'{t} knock{BN[j]}' for j in range(6) if bad(nk[j])] + [f'{t} keep{BN[j]}' for j in range(6) if bad(ns_[j])]
+        print(f'{t:4s} knock ' + ' '.join(f'{BN[j]} {nk[j].mean():+.4f}±{se(nk[j]):.4f}' for j in range(6)) +
+              f' | keep ' + ' '.join(f'{BN[j]} {ns_[j].mean():+.4f}±{se(ns_[j]):.4f}' for j in range(6)) +
+              f' | real - all {(b[:, 0] - b[:, 13]).mean():+.4f}±{se(b[:, 0] - b[:, 13]):.4f}')
+    print('false-positive check:', 'PASS' if not flag else 'FAIL in ' + ', '.join(flag))
+    n = len(g(Zk, 'block', 'AW')); rng = np.random.default_rng(0)
 
-    def ratios(k, boot):
-        pick = lambda m: rng.choice(np.where(m)[0], m.sum()) if boot else np.where(m)[0]
-        g = np.concatenate([Zk[pick(sel(k, t))] for t in ('KTMD', 'PF')]); a = Zk[pick(sel('block', 'AW'))]
-        dl = lambda j0, j1: (g[:, j0] - g[:, j1]).mean() - (a[:, j0] - a[:, j1]).mean()
-        Dd = dl(0, 13); return np.array([dl(0, 1 + j) / Dd for j in range(6)] + [dl(7 + j, 13) / Dd for j in range(6)] + [Dd])
-    print('knockout loss l_B and sufficiency s_B (drug spectra minus awake block), bootstrap SE over draws:')
+    def ratios(k, j):                                 # l_B (6), s_B (6), D for generator k at draw indices j
+        G, A = drug(Zk, k)[j], g(Zk, 'block', 'AW')[j]
+        dl = lambda a, b: (G[:, a] - G[:, b]).mean() - (A[:, a] - A[:, b]).mean(); Dd = dl(0, 13)
+        return np.array([dl(0, 1 + b) / Dd for b in range(6)] + [dl(7 + b, 13) / Dd for b in range(6)] + [Dd])
+    J = [rng.integers(0, n, n) for _ in range(1000)]; full = np.arange(n); ok = {}
+    print('knockout loss l_B and sufficiency s_B (drug spectra minus awake block), paired bootstrap SE:')
     for k in GENS[1:]:
-        r, bs = ratios(k, False), np.array([ratios(k, True) for _ in range(500)]).std(0)
-        print(f'{k:12s} D {r[12]:+.4f}±{bs[12]:.4f}' + (' (|D| < 3 SE: ratios unstable, read numerators)' if abs(r[12]) < 3 * bs[12] else '') + ' | l ' + ' '.join(f'{BN[j]} {r[j]:+.2f}±{bs[j]:.2f}' for j in range(6)) +
-              ' | s ' + ' '.join(f'{BN[j]} {r[6 + j]:+.2f}±{bs[6 + j]:.2f}' for j in range(6)))
-    rg, rb = ratios('gain_shared', False), ratios('gain_B4', False)
-    bd = np.array([ratios('gain_B4', True) - ratios('gain_shared', True) for _ in range(500)])
-    e = rb[:6] - rg[:6]; c = e[3] - np.max(np.abs(np.delete(e, 3)))
-    cb = bd[:, 3] - np.max(np.abs(np.delete(bd[:, :6], 3, 1)), 1)
-    print(f'identifiability: gain_B4 l_B - gain_shared l_B = {np.round(e, 2)}; B4 minus largest other |.| {c:+.2f}'
-          f' (bootstrap 2.5% {np.percentile(cb, 2.5):+.2f}) ->', 'B4 singled out' if np.percentile(cb, 2.5) > 0 else 'not singled out')
+        r, bs = ratios(k, full), np.array([ratios(k, j) for j in J]).std(0); ok[k] = abs(r[12]) >= 3 * bs[12]
+        print(f'{k:12s} D {r[12]:+.4f}±{bs[12]:.4f}' + ('' if ok[k] else ' (|D| < 3 SE: ratios not read)') + ' | l ' +
+              ' '.join(f'{BN[b]} {r[b]:+.2f}±{bs[b]:.2f}' for b in range(6)) + ' | s ' + ' '.join(f'{BN[b]} {r[6 + b]:+.2f}±{bs[6 + b]:.2f}' for b in range(6)))
+    if ok['gain_B4'] and ok['gain_shared']:
+        ex = lambda j: (ratios('gain_B4', j) - ratios('gain_shared', j))[:6]
+        cf = lambda e: e[3] - np.max(np.abs(np.delete(e, 3)))
+        e = ex(full); lo = np.percentile([cf(ex(j)) for j in J], 2.5)
+        print(f'identifiability: gain_B4 - gain_shared excess loss {np.round(e, 2)}; B4 minus largest other |.| {cf(e):+.2f} '
+              f'(paired bootstrap 2.5% {lo:+.2f}) ->', 'B4 singled out' if lo > 0 else 'not singled out')
+    else:
+        print('identifiability: not assessed (a denominator is < 3 SE)')
+    if ref and Path(ref).exists():                    # sanity anchor: long100's circular T = 1000 calibration
+        R = np.load(ref)
+        for k in ('block', 'gain_shared'):
+            print(f'anchor-like {k}: ' + '  '.join(f'{t} map {g(zc, k, t)[:, 0].mean():+.4f} / long100 circular '
+                                                   f'{R["dz"][(R["kind"] == k) & (R["tag"] == t) & (R["T"] == 1000)].mean():+.4f}' for t in ('AW', 'KTMD', 'PF')))
 
 
 def score(d, out, agent, rowmode, nw):                # rows, subsets as edges.py recompute
@@ -205,9 +222,9 @@ def offset(d, out, nb, ng, nw):                       # long100.calib at T = 100
 if __name__ == '__main__':
     a = sys.argv
     if a[1] == 'map':
-        run_map(a[2], a[3], int(a[4]), int(a[5]), int(a[6]))
+        run_map(a[2], a[3], int(a[4]), int(a[5]))
     elif a[1] == 'mread':
-        mread(a[2])
+        mread(a[2], a[3] if len(a) > 3 else None)
     elif a[1] == 'score':
         score(a[2], a[3], a[4], a[5], int(a[6]))
     elif a[1] == 'offset':

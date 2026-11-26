@@ -1,9 +1,9 @@
 #!/bin/bash
 # Part 0 of preregs/knockout-prereg.md: drug-blind synthetic response map (knockout.py map) from the W50 stage-A spectra.
-# qsub -v SRC=<snapshot> knockout_map.pbs. Expected ~0.13 kSU, worst ~0.3 kSU.
+# qsub -v SRC=<snapshot> knockout_map.pbs. Expected ~0.25 kSU, worst ~0.5 kSU.
 #PBS -P ql44
 #PBS -q normal
-#PBS -l ncpus=48,mem=190GB,walltime=08:00:00,jobfs=4GB
+#PBS -l ncpus=48,mem=190GB,walltime=12:00:00,jobfs=4GB
 #PBS -l storage=scratch/ql44+gdata/ql44
 #PBS -N mi_knockout_map
 #PBS -j oe
@@ -12,5 +12,5 @@ S=/scratch/ql44/we2614/mts-spi-study; L=$S/atlas/banks/mi-lowrate; G=/g/data/ql4
 M=$SRC/research/representation/atlas/mi_pair
 PY="env PYTHONPATH=$SRC/src:$M:$M/lowrate /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"
 mkdir -p $G/knockout && cd $G/knockout || exit 2
-$PY $M/knockout.py map $L/W50/stage-a map.npz 100 40 48 || exit 3
-$PY $M/knockout.py mread map.npz > map.txt && sha256sum map.npz map.txt > SHA256SUMS-map && echo ALLDONE
+$PY $M/knockout.py map $L/W50/stage-a map.npz 100 48 || exit 3
+$PY $M/knockout.py mread map.npz $G/calib/calib_long100.npz > map.txt && sha256sum map.npz map.txt > SHA256SUMS-map && echo ALLDONE
