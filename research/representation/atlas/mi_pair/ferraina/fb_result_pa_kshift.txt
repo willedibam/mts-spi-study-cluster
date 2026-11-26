@@ -1,0 +1,9 @@
+variant pa_kshift; residual = real z − mean of 3 joint-IAAFT draws; moving blocks of 30 windows, 10000 resamples
+  W1: n 156  real z median 0.9655  1−z² median 0.0677  surr z median 0.9646  residual mean -0.0002 sd 0.0054  BI median 0.969  δ median 0.197
+  D: n 278  real z median 0.9853  1−z² median 0.0291  surr z median 0.9903  residual mean -0.0052 sd 0.0025  BI median 0.906  δ median 0.847
+  W2: n 131  real z median 0.9870  1−z² median 0.0258  surr z median 0.9899  residual mean -0.0030 sd 0.0031  BI median 0.840  δ median 0.323
+PRIMARY: n W1/D/W2 156/278/131  ΔD -0.0050 [-0.0062, -0.0044]  Δrec +0.0022 [+0.0016, +0.0033]  W2−W1 -0.0028
+  W1 5-min block means [-0.0002, 0.0008, 0.0004, 0.001, 0.0002, -0.0045]  null SD 0.0021; ΔD = -2.43 null SD
+  D 5-min block means [-0.0059, -0.006, -0.0052, -0.0057, -0.0048, -0.0049, -0.0049, -0.0049, -0.0042, -0.0047]  fraction below W1 mean 1.00
+  criteria [CI<0, beyond −2 SD, ≥80% D blocks below, Δrec>0] = [np.True_, np.True_, np.True_, np.True_]; W1 median real z ≥ .97: False
+VERDICT (pa_kshift): PRESENT

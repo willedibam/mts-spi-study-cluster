@@ -1,0 +1,9 @@
+variant raw; residual = real z − mean of 3 joint-IAAFT draws; moving blocks of 30 windows, 10000 resamples
+  W1: n 156  real z median 0.9945  1−z² median 0.0111  surr z median 0.9947  residual mean -0.0022 sd 0.0083  BI median 0.969  δ median 0.197
+  D: n 278  real z median 0.9953  1−z² median 0.0094  surr z median 0.9975  residual mean -0.0026 sd 0.0016  BI median 0.906  δ median 0.847
+  W2: n 131  real z median 0.9929  1−z² median 0.0142  surr z median 0.9976  residual mean -0.0069 sd 0.0070  BI median 0.840  δ median 0.323
+PRIMARY: n W1/D/W2 156/278/131  ΔD -0.0004 [-0.0021, +0.0005]  Δrec -0.0043 [-0.0053, -0.0027]  W2−W1 -0.0047
+  W1 5-min block means [-0.0034, -0.0002, -0.0006, -0.001, -0.0005, -0.0098]  null SD 0.0037; ΔD = -0.09 null SD
+  D 5-min block means [-0.003, -0.0026, -0.0023, -0.0034, -0.0023, -0.0024, -0.0024, -0.0024, -0.002, -0.0026]  fraction below W1 mean 0.90
+  criteria [CI<0, beyond −2 SD, ≥80% D blocks below, Δrec>0] = [np.False_, np.False_, np.True_, np.False_]; W1 median real z ≥ .97: True
+VERDICT (raw): UNINFORMATIVE (ceiling)

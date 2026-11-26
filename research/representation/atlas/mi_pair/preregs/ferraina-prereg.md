@@ -246,3 +246,23 @@ Declared secondary (`asis`, same 32 channels and windows, no re-referencing); ou
   - The recording reference is undocumented. If it is a shared electrode, every channel carries one common signal, and the high z is that common signal [I]. The drug raises local LFP power (W2 is still 2.4× W1), which would lower the reference's share and with it |r| (screen: .69 to .49) and the real z, without any change in how cortical sites depend on each other [I]. The data cannot separate this mixing-ratio change from a change in dependence character.
   - So this is the NeuroTycho-like pattern, but under the reference least able to show it is cortical. The per-array common average (`pa`, `paall`, Gadi), which removes a shared reference signal, is the test that can.
 
+## Secondary results: Gadi job A (26 November)
+
+Job 185276259 (exit 0, 30 min on 48 cores), snapshot `mi-ferraina-26a3290e`; output `fb_z_secA.npz` (sha256 52b30dcc…, verified after transfer), scored with `fb_score.py` into `ferraina/fb_result_<variant>.txt`. None can change the frozen verdict; `pa` and `pa_kshift` are post hoc (Clarification 9).
+
+| Variant | W1 / D / W2 median real z | surrogate z | Δ_D [95% CI] | null SD units | Δ_rec | Rule reads |
+|---|---|---|---|---|---|---|
+| ns (primary) | .9947 / .9952 / .9955 | .9947 / .9977 / .9978 | −.0018 [−.0026, −.0014] | −1.24 | −.0008 | UNINFORMATIVE |
+| ns_kshift | .9929 / .9942 / .9947 | .9929 / .9971 / .9971 | −.0022 [−.0030, −.0018] | −1.54 | −.0005 | UNINFORMATIVE |
+| raw | .9945 / .9953 / .9929 | .9947 / .9975 / .9976 | −.0004 [−.0021, +.0005] | −0.09 | −.0043 | UNINFORMATIVE |
+| asis | .9981 / .9971 / .9984 | .9983 / .9986 / .9991 | −.0013 [−.0016, −.0011] | −8.40 | +.0006 | PRESENT |
+| pa | .9735 / .9881 / .9896 | .9733 / .9929 / .9925 | −.0043 [−.0057, −.0038] | −1.95 | +.0016 | UNINFORMATIVE (z .9735 ≥ .97; misses −2 SD) |
+| pa_kshift | .9655 / .9853 / .9870 | .9646 / .9903 / .9899 | −.0050 [−.0062, −.0044] | −2.43 | +.0022 | PRESENT |
+
+- **Per-array reference [V]:** W1 z drops to NeuroTycho's level (.97, against NeuroTycho awake .967–.983). There, Δ_D is −.0043 to −.0050 (about one-third of NeuroTycho's −.015), every D block lies below the W1 mean, and W2 partly reverses it.
+- **Mechanism [V]:** under the per-array reference the real z rises under the drug (.9735 → .9881) and the surrogate rises more (→ .9929). So the residual falls because the surrogate's z gains more than the real data's, as in PRIOS and the primary, not because the real z falls, as in NeuroTycho. Only the as-recorded reference shows a falling real z, and there a shared reference signal could produce it (section above).
+- **W1 null [V]:** in every variant the last W1 5-minute block is the most negative (−.0036 to −.0098), and it alone sets much of the block-null SD. It precedes the injection at 2039 s; handling or anticipation is possible but untested [I]. With it, `pa` misses −2 SD by .05.
+- **Forking paths:** six variants were scored and two pass the rule; both passing ones are post hoc or secondary. So these are descriptive, not a replication.
+- **raw:** without normal scoring, W1 is noisier (residual SD .0083) and there is no D shift; the decline sits in W2 instead. Heavy-tailed amplitude under raw scaling is the likely reason [I].
+- **Reading:** the sign of the drug Δ_D is negative under every reference and estimator, and it is largest where the baseline z is most NeuroTycho-like. But in every reference without a shared signal, the fall comes from the surrogate's z rising, not from the real z falling, so on mechanism monkey B matches PRIOS rather than NeuroTycho [I]. `paall` (job 185276261, running) tests whether this holds over all 190 channels and random 32-channel subsets.
+
