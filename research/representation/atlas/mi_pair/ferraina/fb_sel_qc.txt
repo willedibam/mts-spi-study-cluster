@@ -1,0 +1,4 @@
+{"bad_channels": [], "dropped_after_car": 192, "n_kept": 191, "sel32_channels": [1, 7, 13, 19, 26, 32, 38, 44, 50, 56, 62, 68, 75, 81, 87, 93, 99, 105, 111, 117, 124, 130, 136, 142, 148, 154, 160, 166, 173, 179, 185, 191], "n_sel32_le96": 16}
+W1 grid 174 exposed 0 rejected 18 accepted 156 BI [0.891, 0.969, 0.996] delta [0.144, 0.197, 0.3] rms [0.017, 0.018, 0.023]
+D grid 300 exposed 7 rejected 15 accepted 278 BI [0.825, 0.906, 0.968] delta [0.794, 0.847, 0.891] rms [0.067, 0.078, 0.093]
+W2 grid 157 exposed 0 rejected 26 accepted 131 BI [0.712, 0.84, 0.937] delta [0.195, 0.323, 0.465] rms [0.031, 0.043, 0.06]

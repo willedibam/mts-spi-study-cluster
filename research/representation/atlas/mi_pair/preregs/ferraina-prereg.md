@@ -116,3 +116,24 @@ Scripts: `ferraina/extract_fb.py`, `select_fb.py`, `fb_z.py`, `fb_score.py`. The
    - Gadi: the raw secondary (IAAFT converges slowly on raw data; Claar) and the all-channel secondary.
    - Deferred: the time course over the whole recording, including transitions (about 940 more windows). For now it is plotted from the state windows only.
 7. **Seeds:** IAAFT seed = state offset (W1 0, D 100000, W2 200000) + 10·k, with draws seed + 0, 1, 2.
+
+## Deviation 1 (26 November): post-QC, pre-z. Artefact scale from each state, not from W1
+
+**What had been seen:** amplitude and rejection counts only (`ferraina/fb_sel_qc.txt`); no z, residual or MI on any window.
+- Under the frozen W1-scale rule, 0 of 293 D windows passed and 2 of 157 W2 windows passed, against 156 of 174 in W1.
+- **Cause:** a global amplitude change, not artefact. The median channel SD relative to W1's robust scale is 4.6 in D, 4.3 between injection and deep anaesthesia, and 2.5 in W2. Per channel, D's robust scale is 2.8–6.5× W1's (5th–95th percentile). In D, a median of 187 of 191 channels exceed the 5% outlier limit.
+- **Why this is the reverse of Claar:** Claar Deviation 1 moved to the wake scale because burst suppression shrank the isoflurane MAD. Here the anaesthetised LFP is continuous and larger, so the wake scale flags the state itself.
+
+**Change:** each state's robust centre and scale come from its own grid windows. This is the atlas default, and the NeuroTycho effect was established with it. Everything else is unchanged.
+
+**Effect:** accepted windows are W1 156 (18 rejected), D 278 (15 rejected, 7 exposed) and W2 131 (26 rejected). The W1-scale rule leaves no D windows, so no sensitivity run under it is possible.
+
+**QC by state (5th, 50th and 95th percentiles):**
+
+| State | Burst index | δ fraction | Window SD (file units) |
+|---|---|---|---|
+| W1 | .89 / .97 / 1.00 | .14 / .20 / .30 | .017 / .018 / .023 |
+| D | .83 / .91 / .97 | .79 / .85 / .89 | .067 / .078 / .093 |
+| W2 | .71 / .84 / .94 | .20 / .32 / .47 | .031 / .043 / .060 |
+
+W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index and more δ. That fits the residual drug the prereg anticipated, and it weakens W2 as a reversal check.

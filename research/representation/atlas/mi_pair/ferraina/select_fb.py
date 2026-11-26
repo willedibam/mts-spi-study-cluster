@@ -1,5 +1,5 @@
 """Windows for monkey B by the frozen rule (preregs/ferraina-prereg.md): bad channels on W1 eligible 100-Hz data, CAR over
-good channels (last dropped), 10-s grid windows per state, atlas window_ok with W1's robust centre/scale on all good
+good channels (last dropped), 10-s grid windows per state, atlas window_ok with each state's own robust centre/scale (Deviation 1) on all good
 channels, exposed-block exclusion. Saves the 32-channel primary set, the all-good set, and per-window burst index and
 delta fraction (both on the 32 CAR channels).    python select_fb.py EXTRACT.npz OUT_DIR"""
 import sys, os, json, numpy as np
@@ -17,7 +17,9 @@ w1 = np.concatenate([Y[idx(s):idx(s) + L] for s in grid['W1']]).astype(np.float6
 bad = bad_channels(w1); good = [i for i in range(Y.shape[1]) if i not in bad]
 kept = good[:-1]; M = len(kept)
 sel32 = np.round(np.arange(32) * (M - 1) / 31).astype(int)
-centre, scale = robust_scale(reference(w1[:, good], 'car'))
+# Deviation 1: each state's own robust centre/scale (atlas default), since D amplitude is ~4.6x W1 on every channel.
+cs = {st: robust_scale(reference(np.concatenate([Y[idx(s):idx(s) + L, good] for s in starts]).astype(np.float64), 'car'))
+      for st, starts in grid.items()}
 flat = FL[:, good].any(axis=1)
 rows, W32, WALL, WAS = [], [], [], []
 bi = lambda w: float(np.median(1.4826 * np.median(np.abs(w - np.median(w, 0)), 0) / w.std(0)))
@@ -25,7 +27,7 @@ for st, starts in grid.items():
     for k, s in enumerate(starts):
         excl = any(s < b and s + 10 > a for a, b in EXPOSED)
         i = idx(s); w = reference(Y[i:i + L, good].astype(np.float64), 'car')
-        ok = (not excl) and window_ok(w, centre, scale, flat[i:i + L])
+        ok = (not excl) and window_ok(w, *cs[st], flat[i:i + L])
         r = dict(state=st, k=k, start_s=s, exposed=excl, ok=bool(ok))
         if ok:
             w32 = w[:, sel32]; r.update(burst_index=bi(w32), delta_fraction=delta_fraction(w32), rms=float(np.median(w32.std(0))))
