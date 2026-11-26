@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=64GB,walltime=04:00:00,jobfs=2GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mikshift
+#PBS -j oe
+# Post-hoc secondary (kshift) of the completed MI-pair drug tests (../kshift/kz.py; preregs claar, human, kauvar).
+#   qsub -v SRC=<snapshot>,STUDY=claar|kauvar|prios|prios-sfull jobs/kshift.pbs     (prios-sfull: -l walltime=10:00:00)
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+cd $SRC/research/representation/atlas/mi_pair/kshift || exit 2
+I=/scratch/ql44/we2614/mts-spi-study/atlas/kshift-inputs; H=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/human
+O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/kshift/$STUDY; mkdir -p $O/views
+PY="env PYTHONPATH=$SRC/src:$SRC /home/562/we2614/mts-spi-study-cluster/.venv/bin/python"; echo "commit $(basename $SRC) study $STUDY" > $O/commit.txt
+case $STUDY in
+  claar)
+    for k in sel ind_sel late_sel; do $PY kz.py claar $I/claar_$k $O/kz_$k.npz 48 > $O/kz_$k.log 2>&1 || exit 3; done
+    $PY kscore.py claar $O/kz_sel.npz $O/kz_ind_sel.npz $O/kz_late_sel.npz $I/claar_stored $O/views > $O/score.txt 2>&1 || exit 4 ;;
+  kauvar)
+    $PY kz.py kauvar $I/kv_sel $O/kz.npz 48 > $O/kz.log 2>&1 || exit 3
+    $PY kscore.py kauvar $O/kz.npz $I/kv_stored/kv_z.npz $O/views > $O/score.txt 2>&1 || exit 4 ;;
+  prios)
+    $PY kz.py prios $H/prios/windows $O/kz.npz 48 > $O/kz.log 2>&1 || exit 3
+    $PY kscore.py prios $O/kz.npz $H/prios/z.npz $O/views > $O/score.txt 2>&1 || exit 4 ;;
+  prios-sfull)
+    $PY kz.py prios $H/prios-sfull/windows $O/kz.npz 48 all10 > $O/kz.log 2>&1 || exit 3
+    $PY kscore.py prios $O/kz.npz $H/prios-sfull/z.npz $O/views > $O/score.txt 2>&1 || exit 4 ;;
+  *) exit 5 ;;
+esac
+cd $O && sha256sum kz*.npz score.txt > SHA256SUMS && echo ALLDONE

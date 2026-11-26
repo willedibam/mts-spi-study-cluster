@@ -106,3 +106,12 @@ Deviations and failures:
 - SD186 puffPostinfusion failed in extraction (`padlen` error in the filter, most likely a very short segment from an early trigger detection). It was not investigated; it affects only the post-infusion secondary (n = 6).
 - Transfer: about 2.8 GB of LFP plus the DC trigger reads.
 - Compute: 600 windows, 113 min local (7 cores, numpy KSG + IAAFT; no pyspi).
+
+## Post-hoc secondary (kshift), 26 November 2026: declared before any kshift value was computed
+
+Added after the result above; it changes no frozen verdict. Code [`../kshift/kz.py`](../kshift/kz.py), [`../kshift/kscore.py`](../kshift/kscore.py); result [`../kshift-result.md`](../kshift-result.md).
+
+- **Estimator.** kshift = k4 minus the mean k4 of the same pair with x_j circularly shifted by T/4, T/2 and 3T/4 (2.5, 5, 7.5 s), with the same AUTO Theiler window and ψ(N) (`ksgbias.py` `edge_all`). It is applied to the real window and to each of the 3 joint-IAAFT draws (same seeds), and z = corr over pairs of (Gaussian MI, kshift). Optional third column: k2te (2τ₁/ₑ window, pool ψ), a candidate only. k = 4.
+- **Estimand.** Δ_inf (infusion − reference, 7 subjects), recomputed with kshift, with the frozen scorer `kv_sum.py` rerun unchanged. The k4 Δ is +0.0000, so R = Δ(kshift)/Δ(k4) is undefined and is not reported. Reported instead: kshift Δ_inf and its subject-bootstrap CI against the frozen ABSENT bounds (|mean| within 2 own null SD, CI lower end > −.010), per-subject sign agreement with k4, and Δ split into real-z and surrogate-z changes.
+- **Reading.** "ABSENT holds" if kshift meets the frozen ABSENT conditions; otherwise the frozen rule's other labels apply, descriptively.
+- **Gate.** The k4 column must reproduce the stored z (verified exactly on 3 windows on the machine that made them). On Gadi, real-window z may differ at about 1e-4 because exact distance ties among normal scores break differently on different hardware. Reported real and surrogate separately.
