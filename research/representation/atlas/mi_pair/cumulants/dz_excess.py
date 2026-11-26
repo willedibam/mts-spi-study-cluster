@@ -4,7 +4,8 @@ track the pair's fourth-order cumulants? Per window, from the zns edge arrays (n
   sdG, mG     spread and mean over pairs of Gaussian MI G; sdE, mE: of the excess E = K - G; sdEs: the surrogate's sdE;
   absk04      mean |k04| over pairs (k04 signed mean cancels when pairs are kurtotic in both directions); negfrac: share k04 < 0;
   rmsz04      root mean square over pairs of k04's z against the 100 marginal-matched IAAFT draws ('im');
-  rho_E_*     within-window Spearman over pairs of E with k04, |k04| and Mardia M.
+  rho_E_*     within-window Spearman over pairs of E with k04, |k04| and Mardia M (all scale with |r|);
+  rho_X_absz  the same for X = E - E_surrogate (excess beyond the IAAFT draw) with |k04 z against 'im'|: both sides null-controlled.
   python dz_excess.py <zns dir> <ensemble dir>
 """
 import glob, sys
@@ -26,9 +27,10 @@ def main(zd, ed):
             k04, M = re[3], re[4]; z04 = (k04 - mu[3]) / sd[3]
             R.append(dict(animal=d['animal'][i], grp=d['agent'][i] if d['state'][i] == 'drug' else d['state'][i],
                           zr=np.arctanh(np.corrcoef(g, k)[0, 1]), zs=np.arctanh(np.corrcoef(gs, ks)[0, 1]),
-                          mG=g.mean(), sdG=g.std(), mE=e.mean(), sdE=e.std(), sdEs=(ks - gs).std(),
+                          mG=g.mean(), sdG=g.std(), mE=e.mean(), sdE=e.std(), mEs=(ks - gs).mean(), sdEs=(ks - gs).std(),
                           k04=k04.mean(), absk04=np.abs(k04).mean(), negfrac=(k04 < 0).mean(), rmsz04=np.sqrt((z04 ** 2).mean()),
                           rho_E_k04=spearmanr(e, k04)[0], rho_E_absk04=spearmanr(e, np.abs(k04))[0], rho_E_M=spearmanr(e, M)[0],
+                          rho_X_absz=spearmanr(e - (ks - gs), np.abs(z04))[0],
                           delta=d['delta_fraction'][i]))
     pd.set_option('display.width', 250)
     print(pd.DataFrame(R).groupby(['animal', 'grp']).mean().round(3).to_string())
