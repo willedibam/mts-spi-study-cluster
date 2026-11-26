@@ -200,7 +200,7 @@ W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index 
   - Within-state Spearman(residual, burst index): W1 +.34, D +.05, W2 +.21.
 - **Bearing:** by the frozen rule this result counts neither for nor against NeuroTycho; it shows only that the sign agrees. Monkeys C and P would be read under the same rule if their LFP becomes available.
 - **Pending secondaries (none can change the verdict):**
-  - as-recorded reference: running locally (now the most informative secondary, given the reference finding);
+  - as-recorded reference: done, see "Secondary result: as-recorded reference" below;
   - raw, all channels, k = 10 and kshift: Gadi.
 
 ## Clarification 9 (26 November, after the primary result was read): everything here is post hoc
@@ -231,3 +231,18 @@ None of this changes the frozen verdict.
   - Snapshot: `operations/sources/mi-ferraina-26a3290e`.
   - Inputs: Scratch `atlas/ferraina/sel/` (md5 matches local).
   - Outputs: gdata `representation/atlas-mi-pair-261117/ferraina/fb_z_secA.npz` and `fb_z_secB.npz`.
+
+## Secondary result: as-recorded reference (26 November)
+
+Declared secondary (`asis`, same 32 channels and windows, no re-referencing); output `ferraina/fb_result_asis.txt`. It cannot change the frozen verdict.
+
+- **Rule applied to it [V]:** all four criteria hold, so it reads PRESENT (PRESENT takes precedence over the ceiling clause, as frozen).
+  - Δ_D −.0013 [−.0016, −.0011]; −8.4 W1 block-null SD (null SD .0002); 10/10 D blocks below the W1 mean.
+  - Δ_rec +.0006 [+.0004, +.0010]: partial reversal; W2 − W1 −.0007.
+- **Level and mechanism [V]:** median real z .9981 / .9971 / .9984 (W1 / D / W2); surrogate .9983 / .9986 / .9991. Unlike the joint common average, the real z falls under the drug and returns, as in NeuroTycho; the surrogate also rises a little.
+- **Size:** smaller in absolute terms than the primary (−.0013 against −.0018) and about one-tenth of NeuroTycho's −.015. It passes because W1 is far more stable as recorded (residual SD .0005 against .0035), so the block null is narrow.
+- **Caveats:**
+  - The ceiling is higher still (1 − z² ≈ .004 in W1), so the absolute Δz is not comparable to NeuroTycho's.
+  - The recording reference is undocumented. If it is a shared electrode, every channel carries one common signal, and the high z is that common signal [I]. The drug raises local LFP power (W2 is still 2.4× W1), which would lower the reference's share and with it |r| (screen: .69 to .49) and the real z, without any change in how cortical sites depend on each other [I]. The data cannot separate this mixing-ratio change from a change in dependence character.
+  - So this is the NeuroTycho-like pattern, but under the reference least able to show it is cortical. The per-array common average (`pa`, `paall`, Gadi), which removes a shared reference signal, is the test that can.
+
