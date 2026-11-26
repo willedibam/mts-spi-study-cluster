@@ -26,6 +26,28 @@ def phase_randomized(x, rng):
     return np.fft.irfft(f * phase[:, None], n=len(x), axis=0)
 
 
+def band_masks(T, fs, bands):
+    """Boolean rfft-bin masks for a T-sample window at fs, one per band [lo, hi) in Hz; DC and Nyquist never included."""
+    f = np.fft.rfftfreq(T, 1 / fs)
+    inner = f > 0
+    if T % 2 == 0:
+        inner[-1] = False
+    return [inner & (f >= lo) & (f < hi) for lo, hi in bands]
+
+
+def band_phase_randomized(x, phase, mask):
+    """Rotate the rfft bins in ``mask`` of a (T, M) array by ``phase`` (radians, one per bin), all channels alike.
+
+    Every auto- and cross-spectrum is kept exactly, as is each frequency's phase difference between channels. Destroyed:
+    phase relations between frequencies when at least one of them is in the mask, i.e. non-Gaussian structure within
+    the masked band and its coupling to the rest of the spectrum. A mask of every bin but DC and Nyquist, with phases
+    drawn as ``phase_randomized`` draws them, gives that surrogate exactly. Periodic boundaries are assumed.
+    """
+    x = np.asarray(x, dtype=np.float64)
+    rot = np.where(mask, np.exp(1j * np.asarray(phase)), 1)
+    return np.fft.irfft(np.fft.rfft(x, axis=0) * rot[:, None], n=len(x), axis=0)
+
+
 def multivariate_iaaft(x, rng, iterations=200, tolerance=1e-10, final='marginal'):
     """Amplitude-adjusted multivariate surrogate of a (T, M) array.
 

@@ -1,7 +1,7 @@
 import numpy as np
 
 from mtsspi.character_axes import AXES, axis_scores, is_antisymmetric, profile_correlation
-from mtsspi.surrogates import multivariate_iaaft, phase_randomized
+from mtsspi.surrogates import band_masks, band_phase_randomized, multivariate_iaaft, phase_randomized
 
 
 def coupled(rng, T=2000, M=4):
@@ -21,6 +21,23 @@ def test_phase_randomized_preserves_cross_spectrum():
     cs = np.einsum('fi,fj->fij', fs, fs.conj())
     assert np.allclose(cx, cs, atol=1e-8 * np.abs(cx).max())
     assert not np.allclose(x, s)
+
+
+def test_band_knockout_partitions_and_reduces_to_phase_randomized():
+    rng = np.random.default_rng(3)
+    x = coupled(rng, T=1000)
+    bands = [(.1, 2), (2, 4), (4, 8), (8, 15), (15, 25), (25, 50)]
+    masks = band_masks(len(x), 100, bands)
+    assert (np.sum(masks, 0) == np.r_[0, np.ones(499), 0]).all()   # exact partition of 0.1-49.9 Hz
+    phase = np.random.default_rng(9).uniform(-np.pi, np.pi, 501)
+    full = band_phase_randomized(x, phase, np.any(masks, 0))
+    assert np.allclose(full, phase_randomized(x, np.random.default_rng(9)))
+    assert np.allclose(band_phase_randomized(x, phase, np.zeros(501, bool)), x)
+    s = band_phase_randomized(x, phase, masks[3])
+    fx, fs = np.fft.rfft(x, axis=0), np.fft.rfft(s, axis=0)
+    cx, cs = np.einsum('fi,fj->fij', fx, fx.conj()), np.einsum('fi,fj->fij', fs, fs.conj())
+    assert np.allclose(cx, cs, atol=1e-8 * np.abs(cx).max())
+    assert np.allclose(fx[~masks[3]], fs[~masks[3]]) and not np.allclose(fx[masks[3]], fs[masks[3]])
 
 
 def test_iaaft_keeps_marginals_and_linear_coupling_but_removes_nonlinear():
