@@ -149,3 +149,52 @@ W2 is not a return to W1: its amplitude is 2.4× W1's, with a lower burst index 
   - **kshift:** k4 minus the mean k4 of the same pair with x_j circularly shifted by T/4, T/2 and 3T/4, as `ksgbias.py`. It removes the real-only weak-edge bias under slow drug spectra; on NeuroTycho, R 1.11 (`ksg-bias-result.md`).
   - **Why:** these are the two configurations the NeuroTycho robustness work gives a case for over k4 AUTO. The primary stays k4 AUTO: it is frozen, NeuroTycho's reference values are in k4, and switching after seeing a real z would be result-dependent.
 - **Theiler window by state (descriptive, reported with the result):** the median AUTO window is 3, 21 and 7 samples in W1, D and W2. NeuroTycho shows the same pattern (awake eyes-closed 5, KTMD 17, PF 22). There, the resulting KSG bias was shared with the surrogate and cancelled in Δz.
+
+## Result (26 November): UNINFORMATIVE (ceiling)
+
+- **Output:** `ferraina/fb_result_ns.txt`.
+- **z file:** `data/ferraina_zen15466548/fb_z_ns.npz` (outside the repo, 9.4 MB, md5 beb29b5208757837d023745ce55389d2).
+- **Code:** scripts as at ed7b7ca8. The KSG change in Clarification 8 gives identical output.
+
+| | W1 | D | W2 |
+|---|---|---|---|
+| Accepted windows | 156 | 278 | 131 |
+| Real z, median | .9947 | .9952 | .9955 |
+| IAAFT z, median | .9947 | .9977 | .9978 |
+| Residual, mean (SD) | −.0009 (.0035) | −.0026 (.0012) | −.0034 (.0031) |
+
+**Primary results:**
+
+| Quantity | Value |
+|---|---|
+| Δ_D | −.0018 [−.0026, −.0014] |
+| Δ_D in block-null SD | −1.24 (null SD .0014) |
+| D blocks below the W1 mean | 10 of 10 |
+| Δ_rec | −.0008 [−.0013, +.0003] |
+| W2 − W1 | −.0025 |
+
+- **Criteria:** 1 and 3 hold, 2 and 4 fail.
+- **Ceiling:** the W1 median real z is .9947, at or above the .97 cut, so the verdict is UNINFORMATIVE.
+
+**Readings:**
+
+- **Direction [V]:** the residual is lower under the drug, with a CI that excludes 0 and every D block below the W1 mean. That is NeuroTycho's sign at about one-eighth of its size (−.015).
+  - It does not exceed W1's own block-to-block variation: one W1 block, at −.0037, is below the D mean.
+- **No reversal [V]:** W2 sits below D.
+  - W2's amplitude is still 2.4× W1's, so the data cannot separate residual drug from time in the recording [I].
+- **Mechanism [V]:** real z barely moves (means .9937, .9950 and .9944). The residual falls because the IAAFT z rises (.9946, .9977, .9978).
+  - In NeuroTycho the real z itself falls (findings), so on this point the result differs from NeuroTycho; it does not replicate it.
+- **Ceiling [V]:** 1 − z² is about .01 in every state.
+  - **Post hoc, descriptive:** within-array pairs carry the ceiling (W1 median z .997). Cross-array pairs sit at .965 in W1, .992 in D and .991 in W2.
+  - **Likely cause [I]:** a 4 × 4 mm array has pair MI graded mostly by strength, so both estimators rank the pairs alike. This is the geometry the asymmetry note anticipated.
+- **Secondaries [V]:**
+  - D windows with burst index ≥ .85: Δ_D −.0018.
+  - At W1's median burst index (regression): Δ_D −.0017.
+  - So burst-like D windows do not drive it.
+  - Cross-array pairs: Δ_D −.0022 [−.0035, −.0017]. Within-array pairs: Δ_D −.0016 [−.0024, −.0013].
+  - W1 drift (later − earlier half): −.0005.
+  - Within-state Spearman(residual, burst index): W1 +.34, D +.05, W2 +.21.
+- **Bearing:** by the frozen rule this result counts neither for nor against NeuroTycho; it shows only that the sign agrees. Monkeys C and P would be read under the same rule if their LFP becomes available.
+- **Pending secondaries (none can change the verdict):**
+  - as-recorded reference: running locally;
+  - raw, all channels, k = 10 and kshift: Gadi.

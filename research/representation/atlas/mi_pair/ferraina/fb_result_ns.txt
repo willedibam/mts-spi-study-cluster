@@ -1,0 +1,19 @@
+variant ns; residual = real z − mean of 3 joint-IAAFT draws; moving blocks of 30 windows, 10000 resamples
+  W1: n 156  real z median 0.9947  1−z² median 0.0106  surr z median 0.9947  residual mean -0.0009 sd 0.0035  BI median 0.969  δ median 0.197
+  D: n 278  real z median 0.9952  1−z² median 0.0095  surr z median 0.9977  residual mean -0.0026 sd 0.0012  BI median 0.906  δ median 0.847
+  W2: n 131  real z median 0.9955  1−z² median 0.0089  surr z median 0.9978  residual mean -0.0034 sd 0.0031  BI median 0.840  δ median 0.323
+PRIMARY: n W1/D/W2 156/278/131  ΔD -0.0018 [-0.0026, -0.0014]  Δrec -0.0008 [-0.0013, +0.0003]  W2−W1 -0.0025
+  W1 5-min block means [-0.0015, -0.0, -0.0003, -0.0004, -0.0001, -0.0037]  null SD 0.0014; ΔD = -1.24 null SD
+  D 5-min block means [-0.0031, -0.003, -0.0024, -0.0033, -0.0025, -0.0028, -0.0027, -0.0023, -0.0018, -0.0024]  fraction below W1 mean 1.00
+  criteria [CI<0, beyond −2 SD, ≥80% D blocks below, Δrec>0] = [np.True_, np.False_, np.True_, np.False_]; W1 median real z ≥ .97: True
+VERDICT (ns): UNINFORMATIVE (ceiling)
+
+SECONDARY
+  W1 drift, later − earlier half: -0.0005
+D windows with BI ≥ .85: n W1/D/W2 156/242/131  ΔD -0.0018 [-0.0026, -0.0015]  Δrec -0.0008 [-0.0012, +0.0003]  W2−W1 -0.0025
+  D residual on BI: slope +0.0011; at W1 median BI 0.969: ΔD -0.0017; D BI range 0.769–1.035
+  within W1: Spearman(residual, BI) +0.34, (residual, δ) -0.16
+  within D: Spearman(residual, BI) +0.05, (residual, δ) +0.10
+  within W2: Spearman(residual, BI) +0.21, (residual, δ) -0.17
+  cross-block pairs (256): cross-block pairs: n W1/D/W2 156/278/131  ΔD -0.0022 [-0.0035, -0.0017]  Δrec -0.0012 [-0.0017, +0.0006]  W2−W1 -0.0035
+  within-block pairs (240): within-block pairs: n W1/D/W2 156/278/131  ΔD -0.0016 [-0.0024, -0.0013]  Δrec -0.0005 [-0.0010, +0.0004]  W2−W1 -0.0021
