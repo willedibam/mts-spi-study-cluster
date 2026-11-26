@@ -227,3 +227,7 @@ None of this changes the frozen verdict.
 - **Gadi (`jobs/ferraina_sec.pbs`, 48 cores):**
   - Job A runs `ns_kshift`, `raw`, `pa` and `pa_kshift`: expected 0.07 kSU, worst 0.2.
   - Job B runs `paall`: expected 0.3 kSU, worst 1.0.
+- **Submitted 26 November:** A is 185276259, B is 185276261 (`afterok` on A).
+  - Snapshot: `operations/sources/mi-ferraina-26a3290e`.
+  - Inputs: Scratch `atlas/ferraina/sel/` (md5 matches local).
+  - Outputs: gdata `representation/atlas-mi-pair-261117/ferraina/fb_z_secA.npz` and `fb_z_secB.npz`.
