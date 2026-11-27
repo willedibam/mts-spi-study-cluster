@@ -13,6 +13,21 @@ Read 27 November 2026 by the frozen rule of [`preregs/sleep-prereg.md`](preregs/
 
 The precondition checks pass. Wake real z is .903 (ceiling .98), reliability is G .915 and K .761 (floor .3), and the N3 half-width is .37 null SD (limit .675). Null SD is .0068 (N3) and .0067 (N2) raw. The p is the floor of 200,000 Monte Carlo flips. The ratios are descriptive: PRIOS is 2-s CAR ECoG and the macaque is 10-s ECoG, so the units are approximate across datasets. One patient (sub-098) has 3 N3 windows, below the 10 required, and is out of the N3 contrast.
 
+## Figure
+
+![](../../../../results/representation/atlas-mi-pair-261117/sleep/mi-sleep-figure.png)
+
+`sleep/plot_sleep.py` (post hoc; reads the macaque `zns` arrays, PRIOS S-full `z.npz`, and this run's `result.json` and per-patient delta fractions, copied to `results/representation/atlas-mi-pair-261117/sleep/`).
+
+- **(a)** Panel (c) of the MI figure with human rows added. It shows the raw change in z beyond the joint-IAAFT surrogate, state minus eyes-closed wake.
+  - Macaque: one dot per animal; the tick is the session mean.
+  - Human PRIOS propofol (S-full) and MNI N2 and N3: one dot per patient; the tick is the mean and the bar the t 90% CI.
+  - Shading: the raw margin ±.0021.
+- **(b)** The frozen decision: patient Δ in each contrast's wake split-half null SD, 10-min and processing-matched 1-min rows.
+  - Shading: the ±.675 margin.
+  - Reference lines: PRIOS propofol −2.7 (robust null SD), macaque drug session mean −3.29 and macaque sleep −0.24 (eyes-open SD). The units differ across datasets.
+- **(c)** Post hoc: the unit's Δ (as in a) against the rise in delta fraction over that unit's own wake (0.5–4 Hz share of 0.5–40 Hz at 100 Hz). Macaque: one point per session, against eyes-closed wake. Human: one point per patient, N2 and N3 against wake. The rise is taken within each unit, so the montage-dependent level cancels.
+
 ## Reported rows (as frozen; not part of the verdict)
 
 - **PRIOS null construction** (unscaled, 1.4826 MAD; .0070): N3 −2.01 [−2.38, −1.65], N2 −1.24 [−1.60, −0.87]. The unit choice does not change the reading.
@@ -51,16 +66,22 @@ The precondition checks pass. Wake real z is .903 (ceiling .98), reliability is 
   - Burst-suppression ratio: N3 +2.7e-5 and N2 +5.3e-5 raw, undefined in null SD because the wake split-half null SD is 0. There is no suppression in any state.
   - So Δz is one of the smallest moves in the panel (about 1/10 of the spectral and complexity metrics), but it is not null.
 
-## Post hoc descriptives (not in the prereg; `sleep/table.py`; cross-montage, inferred)
+## Post hoc descriptives (not in the prereg; `sleep/table.py`, `sleep/plot_sleep.py`; inferred)
 
-- **Median delta fraction** (`prepare.delta_fraction`) across patients:
-  - wake .34 (IQR .25–.45)
-  - N2 .63 (.56–.70)
-  - N3 .79 (.74–.86)
-- **Mean |r|:** .106, .142 and .166 respectively.
-- **Comparison with the macaque:** its sleep windows sat at delta .50–.85 (Chibi .50–.65), and its drug windows mostly at .80–.95 (`findings.md`, "Not sleep depth"). Human N3 therefore reaches the macaque drug range, which macaque sleep mostly did not.
-- **One reading (inferred, untested):** the macaque "not sleep" result may be "not light sleep". The montage and preprocessing differ, so the delta values are only roughly comparable.
-- **Across patients, the N3 Δ does not track the change in delta fraction** (r −.01, n 64) or in mean |r| (r −.20). Depth explains the state difference, not its size between patients.
+- **Depth reached, as the within-unit rise in delta fraction over the unit's own wake** (medians):
+  - Macaque sleep: +.11 (range .07–.18).
+  - Macaque drugs: ketamine +.26, ketamine–medetomidine +.34, medetomidine +.30, propofol +.37.
+  - Human N2: +.30 (IQR .21–.39).
+  - Human N3: +.47 (.34–.55).
+  - Absolute medians, for reference: human wake .34, N2 .63, N3 .79. They are not comparable with the macaque's absolute levels, because montages differ.
+  - So the macaque sleep sessions were spectrally shallow, while human N2 is as deep as the macaque drugs and N3 is deeper.
+- **A macaque depth line predicts the human result out of sample.**
+  - Over all 30 macaque sessions (23 drug, 7 sleep), Δ = +.0011 − .0411 × rise (r −.72).
+  - At the human median rise it predicts N2 −.0111 (observed −.0086) and N3 −.0182 (observed −.0140): right sign and order, about 25% too large.
+  - Within macaque drug sessions alone, Δ still tracks depth (r −.54, n 23).
+  - The five drug sessions with a sleep-like rise (< .2, all George) have Δ −.002 to −.009, near macaque sleep (−.001). This agrees with the George delta-matched check in `findings.md`.
+- **Between human patients, Δ does not track the delta rise** (r −.01, n 64) or the change in mean |r| (r −.20). Per-patient Δ is dominated by wake noise (4–6 windows), which may mask a between-patient slope (inferred).
+- **Reading (inferred, post hoc, cross-species):** Δz behaves as a readout of how far the state moves toward slow-wave dynamics, beyond what a stationary process with the same spectrum gives, not as a drug-specific signature. The macaque "drugs, not sleep" contrast compared deep drug states with shallow sleep. A plausible mechanism, not tested here, is the intermittent, non-Gaussian dependence of slow-oscillation up and down states (Steriade et al. 1993), which joint IAAFT does not keep.
 
 ## Deviations
 
@@ -68,7 +89,7 @@ None to the frozen analysis: the code, rules and rows are as frozen, and nothing
 
 - The N2 and 1-min verdict lines in `result.txt` print "N3 shifts …" because the label is hard-coded in `analyse.verdict`. The rule was applied to each contrast's own numbers. The label is left unedited.
 - The `analyse.py` report does not print the BSR row because its null SD is 0; it is given above from `result.json`.
-- `table.py` was added after the result was read. It only reformats frozen outputs and computes the post hoc descriptives.
+- `table.py` and `plot_sleep.py` were added after the result was read. They only reformat frozen outputs and compute the post hoc descriptives and the figure.
 
 ## Limits (pre-stated, unchanged)
 

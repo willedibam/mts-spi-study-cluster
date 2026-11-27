@@ -1,0 +1,81 @@
+baseline: 65 subjects; wake real z 0.903; reliability G 0.915 K 0.761; margins ±0.675 null SD, ±0.0021 raw
+
+N3: n 64; Δ raw -0.01399 [-0.01652, -0.01147]; null SD 0.00675; Δ -2.07 SD [-2.45, -1.70]; 62/64 negative; sign-flip p 0.0000
+  VERDICT: MOVES: N3 shifts the MI pair by more than a quarter of the human anaesthesia effect
+  ratios: PRIOS sd +0.77, raw +1.69; macaque sd +0.63, raw +1.05
+  PRIOS construction: robust null SD 0.00696 -> -2.01 [-2.38, -1.65]
+  Δ real z -0.01461, Δ surrogate z -0.00062; Fisher -1.81 SD [-2.20, -1.42]
+  gates: {'g1_signflip_two': 0.0, 'g1': True, 'g2_size_sd': -2.0724, 'g2': False, 'g3_split_ratio': 0.027, 'g3': True, 'g4': 'not applied (no nuisance contrast)', 'g5_adjusted': -0.0058, 'g5': False, 'g6_disattenuated': -0.0221, 'g6': True}
+  no_shared_contact: n 64, -0.78 SD [-0.95, -0.61], raw -0.02526
+  M16: n 40, -2.58 SD [-2.95, -2.20], raw -0.01602
+  centre G: n 25, -2.54 SD, raw -0.01739
+  centre M: n 29, -1.56 SD, raw -0.01017
+  centre N: n 10, -2.36 SD, raw -0.01657
+  bench (target − wake, own null SD; reported, not criterion):
+    DZ       -2.07 [  -2.45,   -1.70]  2/64 up
+    SW      +22.96 [ +21.44,  +24.48]  64/64 up
+    ALPHA    -8.50 [  -9.87,   -7.14]  3/64 up
+    BR       -1.18 [  -2.56,   +0.19]  34/64 up
+    SEF95   -16.74 [ -18.16,  -15.32]  0/64 up
+    SE      -31.96 [ -34.03,  -29.89]  0/64 up
+    AP       +5.15 [  +4.07,   +6.22]  60/64 up
+    LZC     -30.43 [ -32.52,  -28.33]  0/64 up
+    PE       -9.33 [ -10.62,   -8.04]  4/64 up
+    ABSR    +14.31 [ +12.66,  +15.95]  62/64 up
+    EIG      +9.61 [  +7.98,  +11.23]  62/64 up
+    COHD     +3.38 [  +2.49,   +4.27]  51/64 up
+    WPLID    +1.93 [  +1.50,   +2.37]  54/64 up
+    COHA     +2.08 [  +0.85,   +3.31]  40/64 up
+    WPLIA    +1.13 [  +0.17,   +2.08]  38/64 up
+    KURA     -0.17 [  -0.79,   +0.45]  37/64 up
+    WSMI     -1.93 [  -2.52,   -1.33]  12/64 up
+    MG       +7.92 [  +6.14,   +9.69]  61/64 up
+    MK       +1.51 [  -0.08,   +3.10]  42/64 up
+    MKG      -5.90 [  -7.26,   -4.54]  9/64 up
+    DELTA   +22.96 [ +21.44,  +24.48]  64/64 up
+
+N2: n 65; Δ raw -0.00857 [-0.01109, -0.00605]; null SD 0.00671; Δ -1.28 SD [-1.65, -0.90]; 54/65 negative; sign-flip p 0.0000
+  VERDICT: MOVES: N3 shifts the MI pair by more than a quarter of the human anaesthesia effect
+  ratios: PRIOS sd +0.47, raw +1.03; macaque sd +0.39, raw +0.64
+  PRIOS construction: robust null SD 0.00692 -> -1.24 [-1.60, -0.87]
+  Δ real z -0.00655, Δ surrogate z +0.00201; Fisher -1.19 SD [-1.57, -0.82]
+  gates: {'g1_signflip_two': 0.0, 'g1': True, 'g2_size_sd': -1.2774, 'g2': False, 'g3_split_ratio': 0.0481, 'g3': True, 'g4': 'not applied (no nuisance contrast)', 'g5_adjusted': -0.001, 'g5': False, 'g6_disattenuated': -0.0126, 'g6': True}
+  no_shared_contact: n 65, -0.47 SD [-0.62, -0.31], raw -0.01488
+  M16: n 41, -1.89 SD [-2.31, -1.47], raw -0.01163
+  centre G: n 25, -1.60 SD, raw -0.01100
+  centre M: n 29, -0.80 SD, raw -0.00522
+  centre N: n 11, -1.78 SD, raw -0.01187
+  bench (target − wake, own null SD; reported, not criterion):
+    DZ       -1.28 [  -1.65,   -0.90]  11/65 up
+    SW      +14.75 [ +13.45,  +16.06]  65/65 up
+    ALPHA    -5.55 [  -6.80,   -4.30]  9/65 up
+    BR       -0.66 [  -1.90,   +0.58]  30/65 up
+    SEF95    -9.33 [ -10.64,   -8.01]  3/65 up
+    SE      -14.42 [ -15.84,  -13.00]  0/65 up
+    AP       +3.81 [  +2.87,   +4.75]  58/65 up
+    LZC     -14.77 [ -16.36,  -13.18]  0/65 up
+    PE       -2.87 [  -4.05,   -1.68]  23/65 up
+    ABSR     +7.13 [  +5.77,   +8.49]  61/65 up
+    EIG      +3.96 [  +2.85,   +5.07]  55/65 up
+    COHD     +4.18 [  +3.34,   +5.02]  58/65 up
+    WPLID    +2.65 [  +2.20,   +3.11]  61/65 up
+    COHA     +2.30 [  +1.08,   +3.52]  48/65 up
+    WPLIA    +1.88 [  +0.88,   +2.87]  44/65 up
+    KURA     -0.17 [  -0.75,   +0.40]  37/65 up
+    WSMI     -1.96 [  -2.50,   -1.42]  6/65 up
+    MG       +2.64 [  +1.24,   +4.03]  52/65 up
+    MK       +1.74 [  +0.58,   +2.90]  50/65 up
+    MKG      -0.03 [  -0.79,   +0.73]  29/65 up
+    DELTA   +14.75 [ +13.45,  +16.06]  65/65 up
+
+N3_1min: n 65; Δ raw -0.01468 [-0.01734, -0.01202]; null SD 0.00874; Δ -1.68 SD [-1.98, -1.37]; 60/65 negative; sign-flip p 0.0000
+  VERDICT: MOVES: N3 shifts the MI pair by more than a quarter of the human anaesthesia effect
+  ratios: PRIOS sd +0.62, raw +1.77; macaque sd +0.51, raw +1.10
+  PRIOS construction: robust null SD 0.00692 -> -2.12 [-2.51, -1.74]
+  Δ real z -0.01762, Δ surrogate z -0.00295; Fisher -1.39 SD [-1.70, -1.08]
+
+N2_1min: n 65; Δ raw -0.00953 [-0.01191, -0.00715]; null SD 0.00873; Δ -1.09 SD [-1.36, -0.82]; 56/65 negative; sign-flip p 0.0000
+  VERDICT: MOVES: N3 shifts the MI pair by more than a quarter of the human anaesthesia effect
+  ratios: PRIOS sd +0.40, raw +1.15; macaque sd +0.33, raw +0.72
+  PRIOS construction: robust null SD 0.00692 -> -1.38 [-1.72, -1.03]
+  Δ real z -0.00334, Δ surrogate z +0.00619; Fisher -1.21 SD [-1.50, -0.92]
