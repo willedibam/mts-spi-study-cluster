@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=1,mem=16GB,walltime=00:30:00
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_sleep_depth
+#PBS -j oe
+# Depth-graded test inside human NREM sleep (../preregs/sleep-depth-prereg.md) on the frozen windows of sleep.pbs.
+# qsub -v SRC=<source snapshot> sleep_depth.pbs   (the snapshot is a clean worktree of the pushed freeze commit; the venv is the checkout's)
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; S=${SRC:-$R}; cd $S/research/representation/atlas/mi_pair/sleep || exit 2
+O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/sleep; mkdir -p $O/depth
+PY="env PYTHONPATH=$S/src $R/.venv/bin/python"; git -C $S log -1 --format='commit %H' > $O/depth/commit.txt
+(cd $O && sha256sum -c --quiet SHA256SUMS) > $O/depth/check.txt 2>&1 || exit 3
+$PY depth.py $O/windows $O/depth/result.json > $O/depth/result.txt 2>&1 || exit 4
+cd $O/depth && sha256sum result.json > SHA256SUMS && echo ALLDONE
