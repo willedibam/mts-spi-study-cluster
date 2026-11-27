@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -P ql44
+#PBS -q normal
+#PBS -l ncpus=48,mem=96GB,walltime=10:00:00,jobfs=4GB
+#PBS -l storage=scratch/ql44+gdata/ql44
+#PBS -N mi_sleep
+#PBS -j oe
+# Human NREM sleep test (../preregs/sleep-prereg.md). Data fetched beforehand on a login node (../sleep/fetch.py) into D.
+# qsub -v SRC=<source snapshot> sleep.pbs   (the snapshot is a clean worktree of the pushed freeze commit; the venv is the checkout's)
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+R=/home/562/we2614/mts-spi-study-cluster; S=${SRC:-$R}; cd $S/research/representation/atlas/mi_pair/sleep || exit 2
+D=/scratch/ql44/we2614/mts-spi-study/data/mni_ieeg_atlas; O=/g/data/ql44/we2614/mts-spi-study/representation/atlas-mi-pair-261117/sleep; mkdir -p $O/windows
+PY="env PYTHONPATH=$S/src $R/.venv/bin/python"; git -C $S log -1 --format='commit %H' > $O/commit.txt
+$PY score.py run $D $O/windows wake:1min,sleepN2:10min,sleepN3:10min,sleepN2:1min,sleepN3:1min 0 1 48 > $O/score.log 2>&1 || exit 3
+$PY analyse.py $O/windows $O/result.json > $O/result.txt 2>&1 || exit 4
+cd $O && sha256sum windows/sub-*.npz result.json > SHA256SUMS && echo ALLDONE
