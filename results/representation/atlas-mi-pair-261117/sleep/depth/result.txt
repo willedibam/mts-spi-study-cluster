@@ -1,0 +1,10 @@
+primary         beta -0.0505 [-0.0611, -0.0399] n 64 neg 62 p 5e-06 UNINFORMATIVE (90% CI half-width above the margin) | gamma +0.0015 [-0.0001, +0.0032] n 52 INCONCLUSIVE
+adjusted        beta -0.0286 [-0.0405, -0.0168] n 64 neg 51 p 3e-05 UNINFORMATIVE (90% CI half-width above the margin) | gamma -0.0011 [-0.0025, +0.0004] n 52 INCONCLUSIVE
+control_draw1   beta +0.0020 [-0.0032, +0.0071] n 64 neg 29 p 0.54 FLAT | gamma -0.0004 [-0.0015, +0.0006] n 52 NO OFFSET
+real_z          beta +0.0236 [-0.0097, +0.0569] n 64 neg 40 p 0.25 UNINFORMATIVE (90% CI half-width above the margin) | gamma -0.0078 [-0.0125, -0.0032] n 52 UNINFORMATIVE (90% CI half-width above the margin)
+surrogate_z     beta +0.0741 [+0.0415, +0.1067] n 64 neg 27 p 0.0001 UNINFORMATIVE (90% CI half-width above the margin) | gamma -0.0094 [-0.0140, -0.0048] n 52 UNINFORMATIVE (90% CI half-width above the margin)
+within_N2       beta -0.0558 [-0.0672, -0.0445] n 64 neg 59 p 5e-06 UNINFORMATIVE (90% CI half-width above the margin)
+within_N3       beta -0.0399 [-0.0648, -0.0150] n 64 neg 51 p 0.0063 UNINFORMATIVE (90% CI half-width above the margin)
+common_range    beta -0.0754 [-0.0998, -0.0510] n 52 neg 47 p 5e-06 UNINFORMATIVE (90% CI half-width above the margin) | gamma +0.0017 [-0.0002, +0.0035] n 52 INCONCLUSIVE
+fisher          beta -0.3123 [-0.3657, -0.2590] n 64 neg 63 p 5e-06 UNINFORMATIVE (90% CI half-width above the margin) | gamma +0.0181 [+0.0080, +0.0282] n 52 UNINFORMATIVE (90% CI half-width above the margin)
+descriptive {'beta_over_macaque': 1.2284, 'median_delta_gap_N3_N2': 0.164, 'implied_N3_minus_N2': -0.0083, 'observed_N3_minus_N2': -0.0055} 

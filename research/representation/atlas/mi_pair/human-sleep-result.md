@@ -31,7 +31,7 @@ The precondition checks pass. Wake real z is .903 (ceiling .98), reliability is 
 ## Reported rows (as frozen; not part of the verdict)
 
 - **PRIOS null construction** (unscaled, 1.4826 MAD; .0070): N3 −2.01 [−2.38, −1.65], N2 −1.24 [−1.60, −0.87]. The unit choice does not change the reading.
-- **Real against surrogate z.** The N3 fall is in the real data: real z −.0146, surrogate z −.0006. So N3 is not the estimator responding to the sleep spectrum, since a matched IAAFT does not reproduce it. N2 is mixed: real −.0066, surrogate +.0020.
+- **Real against surrogate z.** The N3 fall is in real z: real −.0146, surrogate −.0006 (processing-matched 1-min clips: −.0176 against −.0029), so across states a matched IAAFT does not reproduce it. N2 is mixed: real −.0066, surrogate +.0020 (1-min: −.0033 against +.0062). This is a level decomposition across separate recordings. Within sleep the depth gradient runs through the surrogate instead (depth test below), so surrogate z is not a function of delta fraction alone, and only net is read as the effect. (Corrected 27 November: an earlier sentence here said the fall was "not the estimator responding to the sleep spectrum"; that holds only for this between-state comparison.)
 - **Fisher z:** N3 −1.81 SD [−2.20, −1.42], N2 −1.19 [−1.57, −0.82].
 - **Processing-matched 1-min clips**, with the same power-line step as wake:
   - N3 −.0147 raw, −1.68 SD [−1.98, −1.37], 60/65 down.
@@ -82,6 +82,34 @@ The precondition checks pass. Wake real z is .903 (ceiling .98), reliability is 
   - The five drug sessions with a sleep-like rise (< .2, all George) have Δ −.002 to −.009, near macaque sleep (−.001). This agrees with the George delta-matched check in `findings.md`.
 - **Between human patients, Δ does not track the delta rise** (r −.01, n 64) or the change in mean |r| (r −.20). Per-patient Δ is dominated by wake noise (4–6 windows), which may mask a between-patient slope (inferred).
 - **Reading (inferred, post hoc, cross-species):** Δz behaves as a readout of how far the state moves toward slow-wave dynamics, beyond what a stationary process with the same spectrum gives, not as a drug-specific signature. The macaque "drugs, not sleep" contrast compared deep drug states with shallow sleep. A plausible mechanism, not tested here, is the intermittent, non-Gaussian dependence of slow-oscillation up and down states (Steriade et al. 1993), which joint IAAFT does not keep.
+
+## Depth-graded test (frozen; [`preregs/sleep-depth-prereg.md`](preregs/sleep-depth-prereg.md), freeze `731faea5`)
+
+Question: inside sleep, does Δz fall with window delta fraction, and do N2 and N3 differ at equal delta? This is the necessary within-subject check of the post hoc depth reading. A drug against sleep comparison at matched depth needs both in the same subjects, which no dataset in hand has. Gadi job 185409700 (`jobs/sleep_depth.pbs`, 1 CPU, 39 s, exit 0; input checksums verified). Outputs are in `results/representation/atlas-mi-pair-261117/sleep/depth/`.
+
+**Frozen outcome: no reading.** β (the slope on delta within state) is UNINFORMATIVE: its 90% CI half-width, .0106, exceeds the .0103 margin. γ (N3 − N2 at equal delta) is INCONCLUSIVE. None of readings A–F is earned; the nearest is D ("no claim").
+
+| Row | β per unit delta [90% CI] | Neg | p | γ raw [90% CI] (n 52) |
+|---|---|---|---|---|
+| Primary (net) | −.0505 [−.0611, −.0399] | 62/64 | 5e-6 | +.0015 [−.0001, +.0032] |
+| Adjusted (mean and SD of abs r, participation ratio, burst) | −.0286 [−.0405, −.0168] | 51/64 | 3e-5 | −.0011 [−.0025, +.0004] |
+| Control (surrogate draw 1 as real) | +.0020 [−.0032, +.0071], FLAT | 29/64 | .54 | −.0004 [−.0015, +.0006], NO OFFSET |
+| Real z alone | +.0236 [−.0097, +.0569] | 40/64 | .25 | −.0078 [−.0125, −.0032] |
+| Surrogate z alone | +.0741 [+.0415, +.1067] | 27/64 | 1e-4 | −.0094 [−.0140, −.0048] |
+| Within N2 only | −.0558 [−.0672, −.0445] | 59/64 | 5e-6 | – |
+| Within N3 only | −.0399 [−.0648, −.0150] | 51/64 | .006 | – |
+| Common delta range | −.0754 [−.0998, −.0510] (n 52) | 47/52 | 5e-6 | +.0017 [−.0002, +.0035] |
+| Fisher z (sign and p only) | −.312 | 63/64 | 5e-6 | +.018 |
+
+- **The rule's flaw (mine).** The UNINFORMATIVE-first order was copied from the equivalence test. It discards a CI that lies wholly beyond the margin when the CI is wide. Here the CI excludes the margin by about 4× and excludes zero (p 5e-6), but the half-width misses by 3%. The verdict stands as frozen. `analyse.verdict` has the same order; that is a protocol follow-up, not a fix here.
+- **Descriptively (not by the rule):**
+  - Δz falls with depth within sleep in 62/64 patients, in each stage separately.
+  - The pipeline control is flat.
+  - The coupling-strength covariates keep 57% of the slope. Depth and coupling strength are collinear within state (r ≈ +.6), so the two are not separated.
+  - β is 1.23 × the macaque line slope.
+- **γ does not support a stage account.** At equal delta, N3 is not below N2: the point estimate is above, and the lower bound is −.0001. β × the median delta gap (.164) gives −.0083 against the observed N3 − N2 difference of −.0055. The linear term over-predicts, consistent with a shallower slope in N3. "No offset" is not earned either.
+- **The route caveat fired.** The prereg said that if β came from surrogate z rising rather than real z falling, the depth effect would be the estimator's response to the window spectrum. It did: surrogate z rises with delta (+.074), while real z rises less (+.024, not distinguishable from 0 or from the surrogate). I think that frozen sentence is too strong. Net measures dependence relative to a stationary process with the window's spectrum. "Real z gains less agreement than its spectrum predicts" is the same pattern `findings.md` counts as the effect for PRIOS propofol (real +.022, surrogate +.030). So the within-sleep gradient is a net effect beyond the spectrum by the anchor's definition, but it is not a fall in raw real z. Within sleep and from wake to N3 (real falls, surrogate flat), the route differs. Whether the two are one mechanism is open (inferred).
+- **Bottom line (inferred).** The depth reading survived a test it could have failed descriptively (sign, both stages, control flat, no N3 offset), but it is not established by the frozen rule. It does not separate depth from coupling strength, and it says nothing about drug against sleep at equal depth.
 
 ## Deviations
 
