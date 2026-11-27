@@ -7,10 +7,11 @@ has the cores and thread settings its worker count assumes.
 from __future__ import annotations
 
 from hashlib import sha256
-from importlib.metadata import PackageNotFoundError, version
+from importlib.metadata import PackageNotFoundError, requires, version
 import json
 import os
 from pathlib import Path
+import re
 import resource
 import subprocess
 import sys
@@ -106,6 +107,37 @@ def pyspi_version() -> dict[str, str]:
     # `source` separates a run made from a pinned snapshot (PYSPI_SOURCE) from
     # one made with the environment's install at the same computation revision.
     return {"dist": dist, "computation": str(computation), "source": source}
+
+
+_NON_NUMERICAL = frozenset({"tqdm", "colorama", "pyyaml"})
+
+
+def pyspi_dependency_versions() -> dict[str, str]:
+    """Installed version of each runtime dependency pyspi declares, extras excluded.
+
+    pyspi's computation version does not move when a dependency does, yet a
+    dependency can change values: scikit-learn's covariance solvers between
+    releases, or spectral_connectivity's Wilson factorisation start. Packages
+    that cannot change a value (progress bars, terminal colour, YAML parsing)
+    are left out, so bumping them does not invalidate a corpus.
+    """
+    try:
+        requirements = requires("pyspi") or []
+    except PackageNotFoundError:
+        return {}
+    versions = {}
+    for requirement in requirements:
+        spec, _, marker = requirement.partition(";")
+        if "extra" in marker:
+            continue
+        name = re.match(r"[A-Za-z0-9._-]+", spec.strip()).group(0)
+        if name.lower() in _NON_NUMERICAL:
+            continue
+        try:
+            versions[name] = version(name)
+        except PackageNotFoundError:
+            versions[name] = "missing"
+    return dict(sorted(versions.items()))
 
 
 def atomic_savez(path: Path, arrays: dict[str, np.ndarray]) -> None:

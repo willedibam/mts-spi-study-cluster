@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from contextlib import contextmanager
 import random
 from pathlib import Path
+import re
+import warnings
 from typing import Any, Dict, List, Mapping
 
 import numpy as np
@@ -61,6 +63,38 @@ class ComputeResult:
     # because it was not computed -- and pyspi's record of the sample.
     pairs: np.ndarray | None = None
     sampling: Dict[str, Any] | None = None
+    # pyspi's other outcome records (see `Calculator`): {identifier: reason}
+    # for SPIs not appropriate for the dataset, {identifier: [[source, target,
+    # message], ...]} for single pairs that were not appropriate or failed, and
+    # {identifier: [message, ...]} for the warnings each SPI raised.
+    not_appropriate: Dict[str, str] | None = None
+    pair_not_appropriate: Dict[str, list] | None = None
+    pair_errors: Dict[str, list] | None = None
+    warnings: Dict[str, List[str]] | None = None
+
+
+# How `Calculator` re-emits a warning an SPI raised: 'SPI "<identifier>": <message>'.
+# Its other messages ('... is not appropriate ...', 'Caught error ...') repeat
+# `not_appropriate` and `errors`.
+_SPI_WARNING = re.compile(r'SPI "(?P<spi>[^"]+)": (?P<message>.*)', re.DOTALL)
+
+
+@contextmanager
+def _spi_warnings():
+    """Collect `{identifier: [message, ...]}` from pyspi's re-emitted SPI warnings.
+
+    Every warning is passed on afterwards under the caller's filters, so job
+    logs keep them. An SPI resumed from a pyspi checkpoint has no warnings.
+    """
+    collected: Dict[str, List[str]] = {}
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        yield collected
+    for record in caught:
+        match = _SPI_WARNING.fullmatch(str(record.message))
+        if match:
+            collected.setdefault(match["spi"], []).append(match["message"])
+        warnings.warn_explicit(record.message, record.category, record.filename, record.lineno)
 
 
 def run_pyspi(
@@ -91,7 +125,7 @@ def run_pyspi(
     )
     run = dict(n_jobs=n_jobs, checkpoint_dir=checkpoint_dir, resume=resume,
                mp_context=mp_context, progress=False)
-    with seeded_estimator_rng(random_seed):
+    with seeded_estimator_rng(random_seed), _spi_warnings() as spi_warnings:
         if pair_tolerance is None:
             calc.compute(**run)
         elif not hasattr(calc, "compute_pairs"):
@@ -127,7 +161,17 @@ def run_pyspi(
         table=calc.table.copy(), matrices=matrices, metadata=metadata,
         timings=spi_timings, errors=dict(getattr(calc, "errors", {}) or {}),
         pairs=getattr(calc, "pairs", None), sampling=getattr(calc, "sampling", None),
+        # getattr: a pyspi snapshot older than these records lacks them.
+        not_appropriate=dict(getattr(calc, "not_appropriate", {}) or {}),
+        pair_not_appropriate=_listed(getattr(calc, "pair_not_appropriate", {}) or {}),
+        pair_errors=_listed(getattr(calc, "pair_errors", {}) or {}),
+        warnings=spi_warnings,
     )
+
+
+def _listed(record: Mapping[str, list]) -> Dict[str, list]:
+    """pyspi's `{identifier: [(source, target, message), ...]}` with lists for JSON."""
+    return {spi: [list(entry) for entry in entries] for spi, entries in record.items()}
 
 
 # Structural traits that mean "the matrix is not symmetric, do not fold it".

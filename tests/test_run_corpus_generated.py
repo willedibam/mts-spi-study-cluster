@@ -65,9 +65,44 @@ def test_result_from_another_pyspi_revision_is_not_complete(corpus):
     meta = json.loads(path.read_text())
     meta["execution_identity"]["pyspi_version"]["computation"] = "3.0.0.r7"
     path.write_text(json.dumps(meta))
-    assert run_corpus.completion_error(corpus, entry) == "execution identity mismatch: pyspi_version"
+    assert run_corpus.completion_error(corpus, entry) == (
+        "execution identity mismatch: pyspi_version (computation)")
     audit = run_corpus.audit_outputs(corpus, [entry])
     assert audit["complete"] == 0 and audit["failures"][0]["index"] == 1
+
+
+def test_result_from_another_dependency_version_is_not_complete(corpus):
+    entry = corpus.entries()[0]
+    directory = run_corpus.run_dataset(corpus, entry)
+    path = directory / "meta.json"
+    meta = json.loads(path.read_text())
+    assert "spectral-connectivity" in meta["execution_identity"]["pyspi_dependencies"]
+    meta["execution_identity"]["pyspi_dependencies"]["spectral-connectivity"] = "1.0.0"
+    path.write_text(json.dumps(meta))
+    assert run_corpus.completion_error(corpus, entry) == (
+        "execution identity mismatch: pyspi_dependencies (spectral-connectivity)")
+
+
+def test_refusals_failed_pairs_and_warnings_are_kept(corpus, monkeypatch):
+    fake = run_corpus.run_pyspi
+
+    def with_outcomes(*args, **kwargs):
+        result = fake(*args, **kwargs)
+        result.not_appropriate = {"cov": "too short"}
+        result.pair_not_appropriate = {"cov": [["proc-0", "proc-1", "dependent"]]}
+        result.pair_errors = {"cov": [["proc-1", "proc-2", "ValueError: x"]]}
+        result.warnings = {"cov": ["did not converge"]}
+        return result
+
+    monkeypatch.setattr(run_corpus, "run_pyspi", with_outcomes)
+    entry = corpus.entries()[0]
+    directory = run_corpus.run_dataset(corpus, entry)
+    meta = json.loads((directory / "meta.json").read_text())
+    assert meta["pyspi"]["not_appropriate"] == {"cov": "too short"}
+    assert meta["pyspi"]["warnings"] == {"cov": ["did not converge"]}
+    pairs = json.loads((directory / meta["paths"]["pair_outcomes"]).read_text())
+    assert pairs["pair_not_appropriate"] == {"cov": [["proc-0", "proc-1", "dependent"]]}
+    assert pairs["pair_errors"] == {"cov": [["proc-1", "proc-2", "ValueError: x"]]}
 
 
 def test_a_lost_series_makes_the_recording_incomplete(corpus):

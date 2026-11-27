@@ -4,7 +4,8 @@
 
 One contract for every corpus (see :mod:`mtsspi.corpus`): a recording is complete
 only if its metadata names this corpus config, this pyspi config, this code and
-this pyspi computation version, and its SPI archive matches its catalogue.
+this pyspi computation version and these versions of pyspi's dependencies, and
+its SPI archive matches its catalogue.
 Outputs are written atomically and validated after writing, so `--skip-existing`
 never accepts a partial or stale result, and `--audit` fails on a mixed corpus.
 """
@@ -22,8 +23,8 @@ from .compute import ComputeResult, run_pyspi
 from .corpus import ArchiveCorpus, CorpusEntry
 from .generated_corpus import GeneratedCorpus
 from .provenance import (
-    atomic_json, atomic_savez, file_sha256, peak_memory_mib, pyspi_commit, pyspi_version,
-    repository_provenance, worker_resources,
+    atomic_json, atomic_savez, file_sha256, peak_memory_mib, pyspi_commit,
+    pyspi_dependency_versions, pyspi_version, repository_provenance, worker_resources,
 )
 from .utils import load_yaml, resolve_path, timestamp, to_relative
 
@@ -44,6 +45,8 @@ def execution_identity(corpus) -> dict[str, Any]:
         "pyspi_config_sha256": file_sha256(corpus.pyspi_config),
         "code_sha256": {name: file_sha256(here / name) for name in _CODE},
         "pyspi_version": pyspi_version(),
+        # A dependency can change values while pyspi's computation version stays.
+        "pyspi_dependencies": pyspi_dependency_versions(),
     }
 
 
@@ -74,6 +77,11 @@ def completion_error(
     recorded = meta.get("execution_identity", {})
     for key, value in current.items():
         if recorded.get(key) != value:
+            held = recorded.get(key)
+            if isinstance(value, dict) and isinstance(held, dict):
+                differ = sorted(name for name in value.keys() | held.keys()
+                                if value.get(name) != held.get(name))
+                return f"execution identity mismatch: {key} ({', '.join(differ)})"
             return f"execution identity mismatch: {key}"
     if meta.get("normalise") is not corpus.normalise:
         return "normalisation mismatch"
@@ -130,6 +138,10 @@ def _metadata(
             "commit": pyspi_commit(),
             "n_spis": len(result.metadata),
             "errors": result.errors or {},
+            # Why a NaN is NaN when the SPI did not fail as a whole. Per-pair
+            # records grow with M^2, so they are in `paths.pair_outcomes`.
+            "not_appropriate": result.not_appropriate or {},
+            "warnings": result.warnings or {},
             "timings": {
                 name: round(float(seconds), 6)
                 for name, seconds in (result.timings or {}).items()
@@ -146,7 +158,7 @@ def _metadata(
                 for item in result.metadata
             ],
         },
-        "paths": {"spi_archive": "spi_mpis.npz"},
+        "paths": {"spi_archive": "spi_mpis.npz", "pair_outcomes": "pair_outcomes.json"},
         "dataset_dir": to_relative(entry.output_dir(corpus)),
     }
 
@@ -191,6 +203,11 @@ def run_dataset(
     )
     elapsed = time.perf_counter() - start
     atomic_savez(dataset_dir / "spi_mpis.npz", result.matrices)
+    # {spi: [[source, target, reason], ...]}: pyspi's refused and failed pairs.
+    atomic_json(dataset_dir / "pair_outcomes.json", {
+        "pair_not_appropriate": result.pair_not_appropriate or {},
+        "pair_errors": result.pair_errors or {},
+    })
     meta = _metadata(corpus, entry, result, source, identity)
     if sampled:
         # Which entries of each matrix were computed; the rest are NaN.
